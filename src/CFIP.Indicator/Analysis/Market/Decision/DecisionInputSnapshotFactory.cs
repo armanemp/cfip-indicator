@@ -62,13 +62,7 @@ namespace cAlgo
                 request.HigherTfPenalty,
                 request.Reference,
                 request.ClosedM5,
-                request.TimeframeAgreement,
-                request.IndependentEvidence,
-                request.StructuralConfirmations,
-                request.RegimeQuality,
-                request.RetestQuality,
-                request.ClosedBarTriggerReady,
-                request.CalibrateConfidence);
+                request.Evidence);
         }
     }
 }
