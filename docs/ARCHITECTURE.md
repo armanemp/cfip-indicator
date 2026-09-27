@@ -53,3 +53,8 @@ All production `.cs` files must remain below 64 KiB. Configuration is split by p
 - Runtime value objects such as the closed-bar MTF context have dedicated files.
 - Cache-entry/support types also have dedicated files.
 - A partial CFIPIndicator file may contain only the host surface or one cohesive behavior module; it must not hide unrelated helper types.
+
+
+## Dependency direction
+
+Core models and utilities are platform-neutral. cTrader-specific Bars, native-indicator instances, broker types and chart controls live in their owning analysis/trading/UI layers. A Core model may describe strategy state, but must not require the cTrader API merely to exist.

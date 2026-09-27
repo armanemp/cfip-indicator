@@ -68,8 +68,8 @@ if not label or label.group(1) != "CFIP-SMART-CLEAN66":
 
 model_files = sorted(MODEL_ROOT.glob("*.cs"))
 expected_models = {
-    "Frame", "Level", "Zone", "ExecutionIntent", "ExecutionModel",
-    "Prediction", "Decision", "Plan", "Native", "OssIndicatorSnapshot",
+    "Level", "Zone", "ExecutionIntent", "ExecutionModel",
+    "Prediction", "Decision", "Plan", "OssIndicatorSnapshot",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
@@ -229,3 +229,11 @@ if not mtf_model.exists():
     raise SystemExit("MTF context model must have its own source file")
 if len(re.findall(r"\bclass\s+MtfClosedContext\b", mtf_model.read_text(encoding="utf-8"))) != 1:
     raise SystemExit("MTF context model isolation failed")
+
+
+# Core models must stay platform-neutral. cTrader API contracts belong to
+# analysis/infrastructure/host layers, not to Core.
+for p in sorted(MODEL_ROOT.glob("*.cs")):
+    text_module = p.read_text(encoding="utf-8")
+    if re.search(r"\bcAlgo\.API(?:\.Indicators|\.Internals)?\b", text_module):
+        raise SystemExit(f"Platform dependency leaked into Core model: {p}")
