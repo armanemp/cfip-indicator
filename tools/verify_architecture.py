@@ -215,7 +215,7 @@ ATOMIC_METHOD_OWNERS = {
 for method, owner in ATOMIC_METHOD_OWNERS.items():
     if not owner.exists():
         raise SystemExit(f"Atomic analysis owner missing: {owner}")
-    count = len(re.findall(r"\\b" + re.escape(method) + r"\\s*\\(", owner.read_text(encoding="utf-8")))
+    count = len(re.findall(r"\b" + re.escape(method) + r"\s*\(", owner.read_text(encoding="utf-8")))
     if count != 1:
         raise SystemExit(f"Atomic method ownership failed: {method} in {owner} (count={count})")
 
@@ -224,7 +224,7 @@ FRAME_CODE = FRAME_ANALYZER.read_text(encoding="utf-8")
 if "BuildReason(" in FRAME_CODE or "AddFrame(" in FRAME_CODE:
     raise SystemExit("MarketFrameAnalyzer retains secondary responsibilities")
 SCORING = ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs"
-if len(re.findall(r"\\bprivate void AddScore\\s*\\(", SCORING.read_text(encoding="utf-8"))) != 2:
+if len(re.findall(r"\bprivate void AddScore\s*\(", SCORING.read_text(encoding="utf-8"))) != 2:
     raise SystemExit("MarketFrameScoring must own both AddScore overloads")
 
 required_method_files = {
