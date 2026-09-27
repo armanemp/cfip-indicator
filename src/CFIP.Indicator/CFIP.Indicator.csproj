@@ -5,10 +5,17 @@
     <AssemblyName>CFIP.Indicator</AssemblyName>
     <RootNamespace>CFIP.Indicator</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Deterministic>true</Deterministic>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="cAlgo.API">
-      <HintPath>$(UserProfile)\Documents\cAlgo\API\cAlgo.API.dll</HintPath>
+    <Reference Include="cAlgo.API" Condition="'$(CFIP_CTRADER_API)' != ''">
+      <HintPath>$(CFIP_CTRADER_API)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="cAlgo.API" Condition="'$(CFIP_CTRADER_API)' == ''">
+      <HintPath>$(UserProfile)DocumentscAlgoAPIcAlgo.API.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
