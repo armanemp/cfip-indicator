@@ -46,9 +46,7 @@ namespace CFIP.Indicator
             if (outcome == null)
                 return;
 
-            Direction direction = outcome.TradeIdentity == null
-                ? Direction.Wait
-                : outcome.TradeIdentity.Direction;
+            Direction direction = outcome.Direction;
 
             if (direction == Direction.Wait)
                 return;

@@ -7,6 +7,7 @@ namespace CFIP.Indicator
         public sealed class OutcomeEvent
         {
             public TradeIdentity TradeIdentity { get; private set; }
+            public Direction Direction { get; private set; }
             public double EntryPrice { get; private set; }
             public double ExitPrice { get; private set; }
             public double ResultAmount { get; private set; }
@@ -20,6 +21,7 @@ namespace CFIP.Indicator
     
             public OutcomeEvent(
                 TradeIdentity tradeIdentity,
+                Direction direction,
                 double entryPrice,
                 double exitPrice,
                 double resultAmount,
@@ -34,6 +36,9 @@ namespace CFIP.Indicator
                 TradeIdentity =
                     tradeIdentity ??
                     throw new ArgumentNullException("tradeIdentity");
+                if (direction == Direction.Wait)
+                    throw new ArgumentException("Outcome direction must be directional.", "direction");
+                Direction = direction;
                 EntryPrice = entryPrice;
                 ExitPrice = exitPrice;
                 ResultAmount = resultAmount;
