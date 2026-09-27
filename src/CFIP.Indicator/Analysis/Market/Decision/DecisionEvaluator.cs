@@ -82,13 +82,18 @@ namespace cAlgo
                     ? evidence.BullConfidenceAdjustment
                     : evidence.BearConfidenceAdjustment;
 
+            int higherTimeframePenalty =
+                decision.Direction == 1
+                    ? evidence.BullHigherTimeframePenalty
+                    : evidence.BearHigherTimeframePenalty;
+
             decision.Confidence =
                 _confidenceCalculator.Calculate(
                     strongestShare,
                     evidence.TimeframeAgreement,
                     decision.SmartQuality,
                     calibrationAdjustment,
-                    evidence.HigherTimeframePenalty);
+                    higherTimeframePenalty);
 
             decision.TriggerReady =
                 evidence.ClosedBarTriggerReady;
