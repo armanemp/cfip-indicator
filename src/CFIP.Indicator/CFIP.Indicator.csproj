@@ -3,18 +3,15 @@
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Library</OutputType>
     <AssemblyName>CFIP.Indicator</AssemblyName>
-    <RootNamespace>CFIP.Indicator</RootNamespace>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>cAlgo</RootNamespace>
     <Deterministic>true</Deterministic>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Nullable>disable</Nullable>
+    <CAlgoApiPath Condition="'$(CFIP_CTRADER_API)' != ''">$(CFIP_CTRADER_API)</CAlgoApiPath>
+    <CAlgoApiPath Condition="'$(CFIP_CTRADER_API)' == ''">$(UserProfile)\Documents\cAlgo\API\cAlgo.API.dll</CAlgoApiPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="cAlgo.API" Condition="'$(CFIP_CTRADER_API)' != ''">
-      <HintPath>$(CFIP_CTRADER_API)</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="cAlgo.API" Condition="'$(CFIP_CTRADER_API)' == ''">
-      <HintPath>$(UserProfile)\Documents\cAlgo\API\cAlgo.API.dll</HintPath>
+    <Reference Include="cAlgo.API">
+      <HintPath>$(CAlgoApiPath)</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

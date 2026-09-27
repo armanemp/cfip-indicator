@@ -1,19 +1,28 @@
 # CFIP Indicator
 
-A clean, modular cTrader indicator implementation.
+Clean, modular cTrader indicator source.
 
 ## Architecture
 
-Market -> MTF -> Analysis -> Decision -> Entry -> Trade Plan -> Risk -> Execution -> Broker -> Lifecycle -> Live Management -> Outcome -> Presentation.
+The implementation is organized by responsibility:
 
-Automatic trading and automatic pending orders are supported. Manual trade-entry/order-placement controls are not part of the product.
+- Core and state
+- Market and analysis
+- Planning
+- Trading and risk
+- Runtime/lifecycle
+- Chart and presentation
 
-## Development
+The execution path is automatic. Manual BUY/SELL entry controls are not included. Safety controls for closing managed positions and cancelling managed pending orders remain available.
 
-- .NET 6 SDK
-- cTrader Automate API
-- VS Code + C# tooling
+## Build
 
-## Documentation
+The project targets .NET 6 and references the cTrader Automate API DLL supplied by cTrader.
 
-See the files under `docs/` for the roadmap, architecture, workflow, safety gates, editing guide and reference coverage.
+Set the MSBuild property `CFIP_CTRADER_API` to the full path of `cAlgo.API.dll`, then build the solution.
+
+The project does not add third-party NuGet dependencies.
+
+## Source baseline
+
+Behavior is maintained against the complete reference implementation while the source is split into responsibility-based files. The split does not introduce a compatibility layer or parallel execution engine.

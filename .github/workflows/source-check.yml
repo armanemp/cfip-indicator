@@ -1,0 +1,30 @@
+name: Source checks
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+      - shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,re
+          root=pathlib.Path("src/CFIP.Indicator")
+          files=list(root.rglob("*.cs"))
+          text="\n".join(p.read_text(encoding="utf-8") for p in files)
+          for pattern in (r"CFIPClean\d+", r"\bCFIP[A-Za-z_]*\d+\b", r"Migrated from"):
+              if re.search(pattern, text, re.I):
+                  raise SystemExit("Versioned residue detected: "+pattern)
+          if "class CFIPIndicator" not in text:
+              raise SystemExit("Indicator entry point missing")
+          params=len(re.findall(r"\[Parameter\s*\(", text))
+          if params != 513:
+              raise SystemExit(f"Unexpected parameter count: {params}")
+          print(f"Checked {len(files)} C# files and {params} parameters")
+          PY
