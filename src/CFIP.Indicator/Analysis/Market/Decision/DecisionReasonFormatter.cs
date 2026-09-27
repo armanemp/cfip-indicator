@@ -4,7 +4,7 @@ namespace cAlgo
 {
     internal sealed class DecisionReasonFormatter
     {
-        public string Build(Decision decision, int buyShare, int sellShare)
+        public string Format(Decision decision, int buyShare, int sellShare)
         {
             if (decision == null)
                 return string.Empty;
