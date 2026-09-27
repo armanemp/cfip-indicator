@@ -42,21 +42,46 @@ namespace cAlgo
                     Edge = consensus.Edge,
                     Regime = input.Regime,
                     TimeframeAgreement =
-                        evidence.TimeframeAgreement,
+                        (consensus.Direction == 1 ? evidence.BullTimeframeAgreement : evidence.BearTimeframeAgreement),
                     IndependentEvidence =
-                        evidence.IndependentEvidence,
+                        (consensus.Direction == 1 ? evidence.BullIndependentEvidence : evidence.BearIndependentEvidence),
                     StructuralConfirmations =
-                        evidence.StructuralConfirmations,
+                        (consensus.Direction == 1 ? evidence.BullStructuralConfirmations : evidence.BearStructuralConfirmations),
                     RegimeQuality =
                         evidence.RegimeQuality,
                     RetestQuality =
-                        evidence.RetestQuality
+                        (consensus.Direction == 1 ? evidence.BullRetestQuality : evidence.BearRetestQuality)
                 };
 
             int strongestShare =
                 Math.Max(
                     consensus.BuyShare,
                     consensus.SellShare);
+
+            int selectedTimeframeAgreement =
+                consensus.Direction == 1
+                    ? evidence.BullTimeframeAgreement
+                    : evidence.BearTimeframeAgreement;
+
+            int selectedIndependentEvidence =
+                consensus.Direction == 1
+                    ? evidence.BullIndependentEvidence
+                    : evidence.BearIndependentEvidence;
+
+            int selectedStructuralConfirmations =
+                consensus.Direction == 1
+                    ? evidence.BullStructuralConfirmations
+                    : evidence.BearStructuralConfirmations;
+
+            int selectedRetestQuality =
+                consensus.Direction == 1
+                    ? evidence.BullRetestQuality
+                    : evidence.BearRetestQuality;
+
+            decision.TimeframeAgreement = selectedTimeframeAgreement;
+            decision.IndependentEvidence = selectedIndependentEvidence;
+            decision.StructuralConfirmations = selectedStructuralConfirmations;
+            decision.RetestQuality = selectedRetestQuality;
 
             decision.SmartQuality =
                 _qualityCalculator.Calculate(
@@ -90,13 +115,15 @@ namespace cAlgo
             decision.Confidence =
                 _confidenceCalculator.Calculate(
                     strongestShare,
-                    evidence.TimeframeAgreement,
+                    selectedTimeframeAgreement,
                     decision.SmartQuality,
                     calibrationAdjustment,
                     higherTimeframePenalty);
 
             decision.TriggerReady =
-                evidence.ClosedBarTriggerReady;
+                decision.Direction == 1
+                    ? evidence.BullClosedBarTriggerReady
+                    : evidence.BearClosedBarTriggerReady;
 
             return decision;
         }
