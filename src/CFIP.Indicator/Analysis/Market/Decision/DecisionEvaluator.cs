@@ -50,24 +50,32 @@ namespace cAlgo
                     consensus.SellShare);
 
             int selectedTimeframeAgreement =
-                consensus.Direction == 1
-                    ? evidence.BullTimeframeAgreement
-                    : evidence.BearTimeframeAgreement;
+                consensus.Direction == 0
+                    ? 0
+                    : consensus.Direction == 1
+                        ? evidence.BullTimeframeAgreement
+                        : evidence.BearTimeframeAgreement;
 
             int selectedIndependentEvidence =
-                consensus.Direction == 1
-                    ? evidence.BullIndependentEvidence
-                    : evidence.BearIndependentEvidence;
+                consensus.Direction == 0
+                    ? 0
+                    : consensus.Direction == 1
+                        ? evidence.BullIndependentEvidence
+                        : evidence.BearIndependentEvidence;
 
             int selectedStructuralConfirmations =
-                consensus.Direction == 1
-                    ? evidence.BullStructuralConfirmations
-                    : evidence.BearStructuralConfirmations;
+                consensus.Direction == 0
+                    ? 0
+                    : consensus.Direction == 1
+                        ? evidence.BullStructuralConfirmations
+                        : evidence.BearStructuralConfirmations;
 
             int selectedRetestQuality =
-                consensus.Direction == 1
-                    ? evidence.BullRetestQuality
-                    : evidence.BearRetestQuality;
+                consensus.Direction == 0
+                    ? 0
+                    : consensus.Direction == 1
+                        ? evidence.BullRetestQuality
+                        : evidence.BearRetestQuality;
 
             decision.TimeframeAgreement = selectedTimeframeAgreement;
             decision.IndependentEvidence = selectedIndependentEvidence;
