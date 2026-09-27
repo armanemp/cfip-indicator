@@ -1590,6 +1590,37 @@ namespace cAlgo
                 TimeSpan.FromSeconds(5);
     
             private LivePositionManager _livePositionManager;
+
+            private const string ChartObjectPrefix = "CFIP_";
+            private Border _panel;
+            private StackPanel _panelStack;
+            private StackPanel _panelRowsStack;
+            private ScrollViewer _panelScroll;
+            private Button _panelToggleButton;
+            private Button _panelRestoreButton;
+            private Button _closeSafetyButton;
+            private Button _cancelSafetyButton;
+            private TextBlock _panelHeaderTitle;
+            private readonly List<TextBlock> _panelRows =
+                new List<TextBlock>();
+            private bool _panelVisible = true;
+
+            private Border _popup;
+            private TextBlock _popupText;
+            private Button _popupCloseButton;
+            private DateTime _popupExpiresUtc = DateTime.MinValue;
+
+            private readonly Dictionary<string, DateTime> _alertCooldowns =
+                new Dictionary<string, DateTime>(StringComparer.Ordinal);
+            private string _lastAlertMessage = string.Empty;
+            private int _lastAlertDirection;
+            private bool _lastAlertCritical;
+
+            private DateTime _lastEndOfDayAlertDate = DateTime.MinValue;
+            private DateTime _lastEndOfDayCloseDate = DateTime.MinValue;
+            private int _lastHistoricalHostBar = -1;
+            private DateTime _lastAlertEvaluationUtc = DateTime.MinValue;
+            private DateTime _lastRenderedPredictionUtc = DateTime.MinValue;
     
             public ConfigSnapshot Configuration
             {
