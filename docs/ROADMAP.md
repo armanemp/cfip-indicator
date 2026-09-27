@@ -46,7 +46,7 @@ Acceptance:
 
 ## Phase 2 — Atomic indicators and analysis modules
 
-Status: next.
+Status: complete.
 
 Goal: every indicator, analyzer, scorer, detector, model, and helper has one clear file owner and one responsibility.
 
@@ -79,6 +79,15 @@ Work:
 6. Remove helper clusters that only exist because of the old monolithic source.
 7. Add deterministic numerical fixtures and symmetry checks for BUY/SELL.
 
+Completed in this phase:
+
+- Split market context behaviors into dedicated analysis owners for volume expansion, MACD bias, VWAP bias, healthy volatility, premium/discount and live bias.
+- Split market-frame scoring from frame construction and moved decision reason formatting into the decision boundary.
+- Split liquidity analysis into liquidity-sweep, swing-point and equal-level owners.
+- Split FVG detection/selection from FVG lifecycle/mitigation behavior.
+- Split Order Block confluence helpers from the primary Order Block analyzer.
+- Removed the obsolete monolithic analyzer files and preserved the same method semantics through partial-host ownership.
+
 Acceptance:
 
 - One artifact/responsibility per file.
@@ -87,6 +96,8 @@ Acceptance:
 - All source owners are recorded in the editing guide.
 
 ## Phase 3 — Decision and intelligence services
+
+Status: next.
 
 Goal: turn analysis outputs into immutable decision inputs and deterministic decision services.
 

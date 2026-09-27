@@ -7,7 +7,7 @@ MODEL_ROOT = ROOT / "Core" / "Models"
 ENUM_ROOT = ROOT / "Core" / "Enums"
 
 LEGACY_FILES = {
-    "Analysis/Indicators.cs", "Analysis/Market.cs", "Analysis/Reaction.cs", "Analysis/Structure.cs",
+    "Analysis/Indicators.cs", "Analysis/Market.cs", "Analysis/Reaction.cs", "Analysis/Structure.cs", "Analysis/Market/MarketContextAnalyzer.cs", "Analysis/Structure/LiquidityAnalyzer.cs", "Analysis/Structure/Zones/FvgAnalyzer.cs",
     "Planning/Entry.cs", "Planning/Filters.cs", "Planning/TradePlan.cs",
     "Runtime/Lifecycle.cs", "Trading/ActiveManagement.cs", "Trading/Alerts.cs",
     "Trading/Execution.cs", "Trading/Validation.cs", "UI/Chart.cs", "UI/Historical.cs",
@@ -185,6 +185,47 @@ for filename, method in indicator_files.items():
     candidates = [p for p in files if p.name == filename]
     if len(candidates) != 1 or method not in candidates[0].read_text(encoding="utf-8"):
         raise SystemExit(f"Indicator isolation check failed: {filename}")
+
+# Atomic analysis ownership checks. Each conceptual behavior remains in one file.
+ATOMIC_METHOD_OWNERS = {
+    "HasVolumeExpansion": ROOT / "Analysis" / "Market" / "VolumeExpansionAnalyzer.cs",
+    "HasMacdBias": ROOT / "Analysis" / "Market" / "MacdBiasAnalyzer.cs",
+    "HasVwapBias": ROOT / "Analysis" / "Market" / "VwapBiasAnalyzer.cs",
+    "HasHealthyVolatility": ROOT / "Analysis" / "Market" / "HealthyVolatilityAnalyzer.cs",
+    "PremiumDiscountBias": ROOT / "Analysis" / "Market" / "PremiumDiscountAnalyzer.cs",
+    "LiveBias": ROOT / "Analysis" / "Market" / "LiveBiasAnalyzer.cs",
+    "AddFrame": ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs",
+    "BuildReason": ROOT / "Analysis" / "Market" / "Decision" / "DecisionReasonFormatter.cs",
+    "BullLiquiditySweep": ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs",
+    "BearLiquiditySweep": ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs",
+    "FindSwingHigh": ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs",
+    "FindSwingLow": ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs",
+    "FindSwingHighAbove": ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs",
+    "FindSwingLowBelow": ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs",
+    "FindEqualHigh": ROOT / "Analysis" / "Structure" / "EqualLevelAnalyzer.cs",
+    "FindEqualLow": ROOT / "Analysis" / "Structure" / "EqualLevelAnalyzer.cs",
+    "FindNearestFvg": ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs",
+    "SelectNearestFvg": ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs",
+    "IsZoneFullyMitigated": ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs",
+    "HasZoneRetest": ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs",
+    "BuildManagedFvgZone": ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs",
+    "HasOrderBlockLiquiditySweep": ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockConfluenceAnalyzer.cs",
+    "HasOrderBlockFvgConfluence": ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockConfluenceAnalyzer.cs",
+}
+for method, owner in ATOMIC_METHOD_OWNERS.items():
+    if not owner.exists():
+        raise SystemExit(f"Atomic analysis owner missing: {owner}")
+    count = len(re.findall(r"^\s*(?:public|private|protected|internal)\b[^\r\n{;]*\b" + re.escape(method) + r"\s*\(", owner.read_text(encoding="utf-8"), re.MULTILINE))
+    if count != 1:
+        raise SystemExit(f"Atomic method ownership failed: {method} in {owner} (count={count})")
+
+FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
+FRAME_CODE = FRAME_ANALYZER.read_text(encoding="utf-8")
+if "BuildReason(" in FRAME_CODE or "AddFrame(" in FRAME_CODE:
+    raise SystemExit("MarketFrameAnalyzer retains secondary responsibilities")
+SCORING = ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs"
+if len(re.findall(r"\bprivate void AddScore\s*\(", SCORING.read_text(encoding="utf-8"))) != 2:
+    raise SystemExit("MarketFrameScoring must own both AddScore overloads")
 
 required_method_files = {
     "BuildExecutionIntent": ROOT / "Planning" / "Execution" / "ExecutionIntentBuilder.cs",
