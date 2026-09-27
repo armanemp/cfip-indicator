@@ -1,3 +1,5 @@
+using cAlgo.API;
+
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
