@@ -33,7 +33,6 @@ namespace cAlgo
         public bool UseHistoricalChoppinessGuard { get; set; }
         public double SmartScoreTemperature { get; set; }
         public int MinimumSmartDirectionShare { get; set; }
-        public int HigherTfPenalty { get; set; }
 
         public DateTime Reference { get; set; }
         public int ClosedM5 { get; set; }
