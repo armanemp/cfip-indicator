@@ -303,6 +303,44 @@ for helper_name in (
     if len(owners) != 1:
         raise SystemExit(f"Decision gate ownership failed: {helper_name}")
 
+# Broker mutation boundary checks.
+PRODUCTION_ROOT = ROOT
+MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
+MUTATION_ALLOWED_FILES = {
+    "BrokerMarketOrderMutation.cs",
+    "BrokerPendingOrderPlacement.cs",
+    "BrokerLimitOrderPlacement.cs",
+    "BrokerPendingOrderCancellation.cs",
+    "BrokerStopLossMutation.cs",
+    "BrokerTakeProfitMutation.cs",
+    "BrokerPositionCloseMutation.cs",
+}
+BROKER_MUTATION_TOKENS = (
+    "ExecuteMarketOrder(",
+    "PlaceStopOrder(",
+    "PlaceLimitOrder(",
+    "ModifyStopLossPrice(",
+    "ModifyTakeProfitPrice(",
+    "ModifyPendingOrder(",
+    "CancelPendingOrder(",
+    "ClosePosition(",
+)
+for p in sorted(PRODUCTION_ROOT.rglob("*.cs")):
+    relative = p.relative_to(ROOT)
+    text_module = strip_for_static_checks(p.read_text(encoding="utf-8"))
+    direct = [token for token in BROKER_MUTATION_TOKENS if token in text_module]
+    if not direct:
+        continue
+    if p.parent != MUTATION_ALLOWED_ROOT or p.name not in MUTATION_ALLOWED_FILES:
+        raise SystemExit(
+            f"Broker mutation escaped boundary: {relative} -> {', '.join(direct)}"
+        )
+
+EXECUTION_PLAN = ROOT / "Trading" / "Execution" / "ExecutionPlanPreparation.cs"
+if any(token in strip_for_static_checks(EXECUTION_PLAN.read_text(encoding="utf-8"))
+       for token in BROKER_MUTATION_TOKENS):
+    raise SystemExit("Broker mutation leaked into execution plan preparation")
+
 # Planning/risk ownership checks.
 PLANNING_ROOT = ROOT / "Planning"
 RISK_ROOT = ROOT / "Trading" / "Risk"
