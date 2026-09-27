@@ -203,7 +203,7 @@ namespace cAlgo
                                                             PendingOrderExpiryMinutes));
                                 
                                                 TradeResult result =
-                                                    PlaceStopOrder(
+                                                    TryPlaceStopOrder(
                                                         direction == 1
                                                             ? TradeType.Buy
                                                             : TradeType.Sell,
@@ -216,7 +216,8 @@ namespace cAlgo
                                                         ProtectionType.Relative,
                                                         expiration,
                                                         TradeExecutionMetadata.DefaultExecutionComment,
-                                                        false);
+                                                        false,
+                                                        "CONTINUATION STOP");
                                 
                                                 if (result == null ||
                                                     !result.IsSuccessful ||
