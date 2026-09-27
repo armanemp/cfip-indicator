@@ -65,9 +65,9 @@ internal static class Program
             return 6;
         }
 
-        if (csFiles.Length < 98)
+        if (csFiles.Length < 107)
         {
-            Console.Error.WriteLine($"Expected at least 98 migrated C# files, found {csFiles.Length}.");
+            Console.Error.WriteLine($"Expected at least 107 migrated C# files, found {csFiles.Length}.");
             return 7;
         }
 

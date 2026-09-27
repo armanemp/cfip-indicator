@@ -9,7 +9,7 @@ Status: IMPLEMENTED / ARCHITECTURAL HARDENING IN PROGRESS
 The complete top-level v89 implementation surface has been transferred into the new repository as domain-oriented source files. The former single cTrader host class is represented by responsibility-based partial files.
 
 Current migration inventory:
-- 98 C# source files under src/CFIP.Indicator.
+- 107 C# source files under src/CFIP.Indicator.
 - 512 public cTrader parameters preserved.
 - 7 cTrader host partial files.
 - Core, Market, Analysis/Structure, Decision, Planning, Risk, Execution, CTrader infrastructure, Lifecycle, LiveManagement, Outcomes, Presentation and Configuration modules present.
