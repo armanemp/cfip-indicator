@@ -52,6 +52,7 @@ namespace cAlgo
                             _state.Plan,
                             _state.Runtime,
                             _configuration,
+                            _state.Suitability,
                             volume,
                             riskAmount,
                             estimatedMargin);
