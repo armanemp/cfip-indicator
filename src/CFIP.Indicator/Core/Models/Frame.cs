@@ -52,5 +52,10 @@ namespace cAlgo
                         public bool VolatilityBull;
                         public bool VolatilityBear;
                         public bool Choppy;
+                        public int OssBullVotes;
+                        public int OssBearVotes;
+                        public int OssIndicatorCount;
+                        public bool OssBull;
+                        public bool OssBear;
                     }
 }

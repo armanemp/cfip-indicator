@@ -89,7 +89,30 @@ namespace cAlgo
                                                         false,
                                                         contentWidth);
                                     
-                                                    AddPanelRow(
+                                                    
+                                                    if (UseOssExtendedIndicatorConfluence &&
+                                                        _m5Frame != null &&
+                                                        _m5Frame.OssIndicatorCount > 0)
+                                                    {
+                                                        AddPanelRow(
+                                                            ref slot,
+                                                            "OSS INDICATORS  " +
+                                                            _m5Frame.OssBullVotes +
+                                                            "/" +
+                                                            _m5Frame.OssBearVotes +
+                                                            " B/S  •  " +
+                                                            _m5Frame.OssIndicatorCount +
+                                                            " CHECKS",
+                                                            _m5Frame.OssBull
+                                                                ? TpLineColor
+                                                                : _m5Frame.OssBear
+                                                                    ? SlLineColor
+                                                                    : PanelSecondaryTextColor,
+                                                            false,
+                                                            contentWidth);
+                                                    }
+
+AddPanelRow(
                                                         ref slot,
                                                         _decision.TriggerReady
                                                             ? "TRIGGER  CONFIRMED"

@@ -245,7 +245,35 @@ namespace cAlgo
                                     bars.ClosePrices[index],
                                     f.Atr) > 0;
                 
-                            int bull = 0;
+                            
+                            if (UseOssExtendedIndicatorConfluence &&
+                                ReferenceEquals(bars, _m5Bars) &&
+                                index >= bars.Count - 3)
+                            {
+                                OssIndicatorSnapshot oss =
+                                    BuildOssIndicatorSnapshot(
+                                        bars,
+                                        index);
+
+                                if (oss != null)
+                                {
+                                    f.OssBullVotes = oss.BullVotes;
+                                    f.OssBearVotes = oss.BearVotes;
+                                    f.OssIndicatorCount = oss.IndicatorCount;
+                                    f.OssBull =
+                                        oss.BullVotes >=
+                                        Math.Max(
+                                            1,
+                                            MinimumOssIndicatorAgreement);
+                                    f.OssBear =
+                                        oss.BearVotes >=
+                                        Math.Max(
+                                            1,
+                                            MinimumOssIndicatorAgreement);
+                                }
+                            }
+
+int bull = 0;
                             int bear = 0;
                             int evidence = 0;
                 
@@ -320,7 +348,30 @@ namespace cAlgo
                             AddScore(f.EqualLow, 5, ref bull, ref evidence);
                             AddScore(f.EqualHigh, 5, ref bear, ref evidence);
                 
-                            if (f.Rsi > 50)
+                            
+                            if (UseOssExtendedIndicatorConfluence &&
+                                f.OssIndicatorCount > 0)
+                            {
+                                AddScore(
+                                    f.OssBull,
+                                    Math.Max(
+                                        1,
+                                        OssConfluenceWeight),
+                                    ref bull,
+                                    ref evidence,
+                                    true);
+
+                                AddScore(
+                                    f.OssBear,
+                                    Math.Max(
+                                        1,
+                                        OssConfluenceWeight),
+                                    ref bear,
+                                    ref evidence,
+                                    true);
+                            }
+
+if (f.Rsi > 50)
                                 bull += 3;
                             else if (f.Rsi < 50)
                                 bear += 3;

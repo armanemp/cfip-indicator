@@ -10,11 +10,11 @@ Repository: https://github.com/mihakralj/QuanTAlib
 
 Apache-2.0. The project advertises a large technical-indicator catalog and streaming/fixed-memory calculation design. The current package line reviewed for this project targets a newer .NET runtime than the cTrader net6 production target, so it is a benchmark candidate rather than a production dependency at this stage.
 
-## FacioQuo Stock Indicators (net6 compatibility candidate)
+## FacioQuo Stock Indicators 2.7.3 — optional production adapter
 
 Repository: https://github.com/facioquo/stock-indicators-dotnet
 
-Apache-2.0. The 2.7.3 line targets netstandard2.0/2.1 and is retained as a possible future production adapter candidate. No production dependency is introduced until numerical fixtures and runtime behavior are validated against CFIP.
+Apache-2.0. The 2.7.3 compatibility line targets netstandard2.0/2.1 and is now isolated behind CFIP adapters for optional M5 secondary confluence. It never owns final decisions, risk, orders or broker lifecycle. The option is disabled by default until numerical fixture validation is complete.
 
 ## FacioQuo.Stock.Indicators 3.0.1
 

@@ -41,8 +41,18 @@ raw = "\n".join(p.read_text(encoding="utf-8") for p in files)
 code = strip_for_static_checks(raw)
 
 parameters = len(re.findall(r"\[Parameter\s*\(", code))
-if parameters != 513:
-    raise SystemExit(f"Expected 513 parameters, found {parameters}")
+if parameters != 516:
+    raise SystemExit(f"Expected 516 total parameters, found {parameters}")
+parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
+if len(parameter_files) != 27:
+    raise SystemExit(f"Expected 27 parameter-group files, found {len(parameter_files)}")
+baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
+baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
+if baseline_parameters != 513:
+    raise SystemExit(f"Expected 513 baseline parameters, found {baseline_parameters}")
+extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
+if extension_parameters != 3:
+    raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
 
 parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
 if len(parameter_files) != 26:
@@ -99,7 +109,17 @@ MODULAR_HELPERS = {
     "RenderPanelContextRows",
     "RenderPanelAutoTradingRows",
 }
-reference_methods = [m for m in methods if m not in MODULAR_HELPERS]
+OSS_EXTENSION_METHODS = {
+    "GetOssQuotes",
+    "FacioQuoRsi",
+    "FacioQuoMacdHistogram",
+    "FacioQuoBollingerPercentB",
+    "FacioQuoMfi",
+    "FacioQuoStochBias",
+    "FacioQuoSuperTrend",
+    "BuildOssIndicatorSnapshot",
+}
+reference_methods = [m for m in methods if m not in MODULAR_HELPERS and m not in OSS_EXTENSION_METHODS]
 unique_methods = set(reference_methods)
 if len(reference_methods) != 312:
     raise SystemExit(f"Expected 312 reference method declarations, found {len(reference_methods)}")
@@ -167,3 +187,18 @@ for relative, method in ROW_EXPECTATIONS.items():
     text_module = path.read_text(encoding="utf-8")
     if text_module.count(f"private void {method}(") != 1:
         raise SystemExit(f"Panel renderer ownership check failed: {relative}")
+
+oss_files = {
+    "FacioQuoRsi.cs": "FacioQuoRsi",
+    "FacioQuoMacd.cs": "FacioQuoMacdHistogram",
+    "FacioQuoBollingerBands.cs": "FacioQuoBollingerPercentB",
+    "FacioQuoMfi.cs": "FacioQuoMfi",
+    "FacioQuoStoch.cs": "FacioQuoStochBias",
+    "FacioQuoSuperTrend.cs": "FacioQuoSuperTrend",
+    "OssIndicatorConfluenceAnalyzer.cs": "BuildOssIndicatorSnapshot",
+}
+OSS_ROOT = ROOT / "Analysis" / "Indicators" / "External"
+for filename, method in oss_files.items():
+    path = OSS_ROOT / filename
+    if not path.exists() or method not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"OSS indicator module missing: {filename}")
