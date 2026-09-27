@@ -15,6 +15,11 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private void InitializeRelativeStrengthIndex(Native set, Bars bars)
+        {
+            set.Rsi = Indicators.RelativeStrengthIndex(bars.ClosePrices, Math.Max(2, RsiPeriod));
+        }
+
         private double Rsi(Bars bars, int index)
                         {
                             if (bars == null || index < 0 || index >= bars.Count)
