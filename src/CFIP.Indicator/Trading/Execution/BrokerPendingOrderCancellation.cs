@@ -20,8 +20,10 @@ namespace cAlgo
                                 TradeResult result =
                                     CancelPendingOrder(order);
                 
-                                if (result == null ||
-                                    !result.IsSuccessful)
+                                if (!BrokerConfirmationPolicy.IsSuccessfulMutation(
+                                        result != null,
+                                        result != null &&
+                                        result.IsSuccessful))
                                 {
                                     Print(
                                         "CFIP pending cancel rejected ({0}).",
