@@ -32,11 +32,9 @@ private double CalculateVolume(
                                 else
                                 {
                                     double riskAmount =
-                                        Math.Max(
-                                            0,
-                                            Account.Equity) *
-                                        EffectiveAutoRiskPercent() /
-                                        100.0;
+                                        RiskAmountCalculator.Calculate(
+                                            Account.Equity,
+                                            EffectiveAutoRiskPercent());
                 
                                     if (riskAmount <= 0)
                                         return 0;
