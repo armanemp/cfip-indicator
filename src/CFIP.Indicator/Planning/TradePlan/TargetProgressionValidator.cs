@@ -18,15 +18,10 @@ namespace cAlgo
                             double previous,
                             double next)
                         {
-                            if (!IsFinitePositive(previous) ||
-                                !IsFinitePositive(next))
-                                return false;
-                
-                            return direction == 1
-                                ? next > previous
-                                : direction == -1
-                                    ? next < previous
-                                    : false;
+                            return TargetProgressionRule.IsValid(
+                                direction,
+                                previous,
+                                next);
                         }
     }
 }
