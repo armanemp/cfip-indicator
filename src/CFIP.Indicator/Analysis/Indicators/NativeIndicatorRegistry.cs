@@ -43,52 +43,11 @@ namespace cAlgo
                 
                             try
                             {
-                                set.Fast =
-                                    Indicators.ExponentialMovingAverage(
-                                        bars.ClosePrices,
-                                        Math.Max(2, FastEma));
-                
-                                set.Slow =
-                                    Indicators.ExponentialMovingAverage(
-                                        bars.ClosePrices,
-                                        Math.Max(3, SlowEma));
-                
-                                set.Atr =
-                                    Indicators.AverageTrueRange(
-                                        bars,
-                                        Math.Max(2, AtrPeriod),
-                                        MovingAverageType.WilderSmoothing);
-                
-                                set.Rsi =
-                                    Indicators.RelativeStrengthIndex(
-                                        bars.ClosePrices,
-                                        Math.Max(2, RsiPeriod));
-                
-                                set.Dms =
-                                    Indicators.DirectionalMovementSystem(
-                                        bars,
-                                        Math.Max(2, AdxPeriod),
-                                        MovingAverageType.WilderSmoothing);
-                
-                                int macdFastPeriod =
-                                    Math.Max(
-                                        2,
-                                        MacdFastPeriod);
-                
-                                int macdSlowPeriod =
-                                    Math.Max(
-                                        macdFastPeriod + 1,
-                                        MacdSlowPeriod);
-                
-                                set.MacdFast =
-                                    Indicators.ExponentialMovingAverage(
-                                        bars.ClosePrices,
-                                        macdFastPeriod);
-                
-                                set.MacdSlow =
-                                    Indicators.ExponentialMovingAverage(
-                                        bars.ClosePrices,
-                                        macdSlowPeriod);
+                                InitializeExponentialMovingAverages(set, bars);
+                                InitializeAverageTrueRange(set, bars);
+                                InitializeRelativeStrengthIndex(set, bars);
+                                InitializeDirectionalMovementSystem(set, bars);
+                                InitializeMacd(set, bars);
                             }
                             catch (Exception ex)
                             {
