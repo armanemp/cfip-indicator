@@ -91,11 +91,12 @@ namespace cAlgo
 
                     Evidence =
                         new DecisionEvidenceSnapshot(
-                            TimeframeAgreement(
-                                1,
-                                reference),
+                            TimeframeAgreement(1, reference),
+                            TimeframeAgreement(-1, reference),
                             IndependentEvidence(1),
+                            IndependentEvidence(-1),
                             StructuralConfirmations(1),
+                            StructuralConfirmations(-1),
                             RegimeQuality(
                                 regime,
                                 _m5Bars,
@@ -104,10 +105,18 @@ namespace cAlgo
                                 _m5Bars,
                                 closedM5,
                                 1),
+                            RetestQuality(
+                                _m5Bars,
+                                closedM5,
+                                -1),
                             ClosedBarTriggerReady(
                                 _m5Bars,
                                 closedM5,
                                 1),
+                            ClosedBarTriggerReady(
+                                _m5Bars,
+                                closedM5,
+                                -1),
                             ConfidenceCalibrationAdjustment(1),
                             ConfidenceCalibrationAdjustment(-1),
                             HigherTimeframeConfidencePenalty(1),
