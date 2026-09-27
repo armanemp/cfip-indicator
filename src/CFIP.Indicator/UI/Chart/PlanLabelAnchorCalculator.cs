@@ -7,7 +7,7 @@ using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
 
 // CFIP Indicator — PlanLabelAnchorCalculator.cs
-Single-responsibility plan-label renderer.
+// Single-responsibility plan-label renderer.
 
 
 namespace cAlgo
