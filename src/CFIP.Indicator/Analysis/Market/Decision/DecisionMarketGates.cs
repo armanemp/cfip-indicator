@@ -31,11 +31,7 @@ namespace cAlgo
                 NewsBlocked(
                     TimeInUtc,
                     out reason))
-                return new DecisionFilterResult(
-                    false,
-                    string.IsNullOrWhiteSpace(reason)
-                        ? "NEWS BLACKOUT"
-                        : reason);
+                return new DecisionFilterResult(false, reason);
 
             return new DecisionFilterResult(true, string.Empty);
         }
