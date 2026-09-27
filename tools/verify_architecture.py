@@ -303,6 +303,32 @@ for helper_name in (
     if len(owners) != 1:
         raise SystemExit(f"Decision gate ownership failed: {helper_name}")
 
+# Presentation/UI boundary checks.
+UI_ROOT = ROOT / "UI"
+UI_FORBIDDEN_TOKENS = (
+    "ExecuteMarketOrder(",
+    "PlaceStopOrder(",
+    "PlaceLimitOrder(",
+    "ModifyStopLossPrice(",
+    "ModifyTakeProfitPrice(",
+    "ModifyPendingOrder(",
+    "CancelPendingOrder(",
+    "ClosePosition(",
+    "PassesDecisionFilters(",
+    "EvaluateDecision(",
+    "EvaluateDecisionConfirmationGates(",
+    "EvaluateDecisionSmartGates(",
+    "EvaluateDecisionStructureGates(",
+    "EvaluateDecisionMarketGates(",
+    "EvaluateDecisionLifecycleGates(",
+)
+for p in sorted(UI_ROOT.rglob("*.cs")):
+    relative = p.relative_to(ROOT)
+    ui_text = strip_for_static_checks(p.read_text(encoding="utf-8"))
+    for token in UI_FORBIDDEN_TOKENS:
+        if token in ui_text:
+            raise SystemExit(f"UI authority violation: {relative} -> {token}")
+
 # Broker mutation boundary checks.
 PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
