@@ -63,7 +63,7 @@ label = re.search(
     r'\[Parameter\("Auto Trade Label"[^\n]*DefaultValue\s*=\s*"([^"]+)"',
     "\n".join(p.read_text(encoding="utf-8") for p in parameter_files),
 )
-if not label or label.group(1) != "CFIP-SMART-CLEAN66":
+if not label or label.group(1) != "CFIP-SMART":
     raise SystemExit("Managed broker identity label parity check failed")
 
 model_files = sorted(MODEL_ROOT.glob("*.cs"))
