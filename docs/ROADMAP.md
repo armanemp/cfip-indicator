@@ -86,5 +86,10 @@ A phase is complete only when implementation, tests, relevant runtime gates, doc
 v69-v89 remain frozen historical references in CFIP-PRO. This repository uses semantic implementation versions. Never overwrite a frozen reference artifact.
 
 ## Current state
-Phase 0: IN PROGRESS.
+Phase 0: COMPLETE.
+Phase 1: ACTIVE — architecture foundation.
 All later phases: NOT STARTED in this repository.
+
+Phase 0 acceptance: repository scaffold, roadmap, architecture, workflow, migration plan, .NET 6 project, solution and cTrader API reference are committed. No runtime acceptance is claimed.
+
+Phase 1 immediate objective: establish real Core contracts and CTrader adapter boundaries before migrating v89 behavior.
