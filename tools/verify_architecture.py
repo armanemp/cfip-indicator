@@ -303,6 +303,66 @@ for helper_name in (
     if len(owners) != 1:
         raise SystemExit(f"Decision gate ownership failed: {helper_name}")
 
+# Planning/risk ownership checks.
+PLANNING_ROOT = ROOT / "Planning"
+RISK_ROOT = ROOT / "Trading" / "Risk"
+REQUIRED_PLANNING_FILES = {
+    "TradePlan/PlanBuilder.cs",
+    "TradePlan/PlanIntegrityValidator.cs",
+    "TradePlan/TargetProgressionValidator.cs",
+    "TradePlan/StructuralStopPlanner.cs",
+    "TradePlan/MinimumRequiredRiskRewardCalculator.cs",
+    "TradePlan/TargetLevelBuilder.cs",
+    "TradePlan/TargetLevelCandidateMerger.cs",
+    "TradePlan/TargetLevelMerger.cs",
+    "TradePlan/TargetSelector.cs",
+    "TradePlan/TargetStageSelector.cs",
+    "TradePlan/TargetMetadataEnricher.cs",
+    "Entry/ClosedBarTriggerReadyEvaluator.cs",
+    "Entry/BullTriggerScoreAnalyzer.cs",
+    "Entry/BearTriggerScoreAnalyzer.cs",
+}
+for relative in REQUIRED_PLANNING_FILES:
+    if not (PLANNING_ROOT / relative).exists():
+        raise SystemExit(f"Planning owner missing: {relative}")
+
+REQUIRED_RISK_FILES = {
+    "DailyLossGuard.cs",
+    "AutoRiskPolicy.cs",
+    "AggressiveRiskPolicy.cs",
+    "MarginSafetyCalculator.cs",
+    "VolumeSizer.cs",
+    "ManagedPositionCounter.cs",
+    "AutoPlanRiskValidator.cs",
+    "AggressiveVolumeSizer.cs",
+    "SuitabilityCalculator.cs",
+    "SessionWindowEvaluator.cs",
+    "AverageAtrCalculator.cs",
+    "MarketSuitabilityRefreshCoordinator.cs",
+    "MarketSuitabilityGuard.cs",
+    "SuitabilityRiskMultiplierCalculator.cs",
+    "AutoTradeSafetyGuard.cs",
+}
+for relative in REQUIRED_RISK_FILES:
+    if not (RISK_ROOT / relative).exists():
+        raise SystemExit(f"Risk owner missing: {relative}")
+
+for p in sorted(PLANNING_ROOT.rglob("*.cs")):
+    relative = str(p.relative_to(ROOT)).replace("\\", "/")
+    text_module = strip_for_static_checks(p.read_text(encoding="utf-8"))
+    if any(token in text_module for token in (
+        "ExecuteMarketOrder", "PlaceLimitOrder", "PlaceStopOrder",
+        "ModifyStopLossPrice", "ModifyTakeProfitPrice", "ClosePosition",
+        "CancelPendingOrder",
+    )):
+        raise SystemExit(f"Broker mutation leaked into planning: {relative}")
+
+plan_model = ROOT / "Core" / "Models" / "Plan.cs"
+plan_text = plan_model.read_text(encoding="utf-8")
+for required in ("Entry", "IdealEntry", "EntryTrigger", "EntryInvalidation", "Stop", "Tp1"):
+    if required not in plan_text:
+        raise SystemExit(f"Plan semantic field missing: {required}")
+
 # Panel semantic renderer isolation.
 PANEL_ROOT = ROOT / "UI" / "Panel"
 ROW_EXPECTATIONS = {
