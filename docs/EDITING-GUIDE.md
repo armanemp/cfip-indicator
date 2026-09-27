@@ -43,3 +43,8 @@ Do not add compatibility aliases, duplicate business rules or a second execution
 | Outcome chart markers | UI/Chart/OutcomeMarkerRenderer.cs |
 
 Presentation methods should be added under UI even when their callers are in Trading. Broker mutation methods must remain in their execution/lifecycle ownership directories.
+
+
+| Market index/range helpers | Analysis/Market/Math/IndexMath.cs |
+| Price normalization/protection math | Trading/Execution/PriceMath.cs |
+| Platform-neutral numeric guards | Core/Math/NumericGuards.cs |

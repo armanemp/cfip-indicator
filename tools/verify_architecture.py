@@ -231,12 +231,12 @@ if len(re.findall(r"\bclass\s+MtfClosedContext\b", mtf_model.read_text(encoding=
     raise SystemExit("MTF context model isolation failed")
 
 
-# Core models must stay platform-neutral. cTrader API contracts belong to
-# analysis/infrastructure/host layers, not to Core.
-for p in sorted(MODEL_ROOT.glob("*.cs")):
+# Core must remain platform-neutral. cTrader API contracts belong to
+# analysis/trading/infrastructure/host layers, not to Core.
+for p in sorted((ROOT / "Core").rglob("*.cs")):
     text_module = p.read_text(encoding="utf-8")
     if re.search(r"\bcAlgo\.API(?:\.Indicators|\.Internals)?\b", text_module):
-        raise SystemExit(f"Platform dependency leaked into Core model: {p}")
+        raise SystemExit(f"Platform dependency leaked into Core: {p}")
 
 
 # Presentation boundary: only UI-owned modules may touch cTrader chart objects.
