@@ -251,6 +251,7 @@ namespace cAlgo
                                     return
                                         string.IsNullOrWhiteSpace(
                                             AutoTradeLabel)
+                                            ? "CFIP-SMART"
                                             : AutoTradeLabel.Trim();
                                 }
     }
