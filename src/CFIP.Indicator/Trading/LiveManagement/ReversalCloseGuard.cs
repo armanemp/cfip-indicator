@@ -89,5 +89,68 @@ namespace cAlgo
                     true);
             }
         }
+        private bool IsDecisiveOppositeDirection(int positionDirection)
+        {
+            if (_m5Frame == null ||
+                _m5Bars == null ||
+                positionDirection == 0)
+                return false;
+
+            int opposite = positionDirection * -1;
+
+            bool m5Structural =
+                opposite == 1
+                    ? (_m5Frame.MssBull || _m5Frame.ChochBull)
+                    : (_m5Frame.MssBear || _m5Frame.ChochBear);
+
+            bool m5Force =
+                opposite == 1
+                    ? (_m5Frame.DisplacementBull &&
+                       _m5Frame.LiquidityBull)
+                    : (_m5Frame.DisplacementBear &&
+                       _m5Frame.LiquidityBear);
+
+            bool m15Aligned =
+                _m15Frame != null &&
+                _m15Frame.Direction == opposite;
+
+            bool m15Structure =
+                m15Aligned &&
+                (opposite == 1
+                    ? (_m15Frame.MssBull || _m15Frame.ChochBull)
+                    : (_m15Frame.MssBear || _m15Frame.ChochBear));
+
+            int evidence = 0;
+
+            if (opposite == 1)
+            {
+                if (_m5Frame.MssBull) evidence++;
+                if (_m5Frame.ChochBull) evidence++;
+                if (_m5Frame.DisplacementBull) evidence++;
+                if (_m5Frame.LiquidityBull) evidence++;
+            }
+            else
+            {
+                if (_m5Frame.MssBear) evidence++;
+                if (_m5Frame.ChochBear) evidence++;
+                if (_m5Frame.DisplacementBear) evidence++;
+                if (_m5Frame.LiquidityBear) evidence++;
+            }
+
+            if (!m5Structural ||
+                evidence < Math.Max(1, ReversalCloseMinimumEvidence))
+                return false;
+
+            if (RequireReversalForce &&
+                !m5Force)
+                return false;
+
+            if (RequireM15ReversalForOpposite &&
+                (!m15Aligned || !m15Structure))
+                return false;
+
+            return true;
+        }
+
     }
 }
