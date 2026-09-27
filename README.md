@@ -24,6 +24,12 @@ This repository is a clean architectural migration from the frozen CFIP-PRO v89 
 - cTrader API: %USERPROFILE%\Documents\cAlgo\API\cAlgo.API.dll
 - VS Code + C# Dev Kit
 
+## Current migration status
+
+The v89 implementation surface is now decomposed into 107 C# files: 101 top-level declarations plus seven cTrader host partials. All 512 public parameters are preserved, and the nine v89 service interfaces have been extracted. Core domain types are isolated under `CFIP.Indicator.Core`.
+
+Runtime acceptance is intentionally still pending. The project must pass real cTrader compilation and controlled broker scenarios before a release is declared.
+
 ## Documents
 - docs/ROADMAP.md
 - docs/ARCHITECTURE.md
