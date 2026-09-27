@@ -63,13 +63,8 @@ namespace CFIP.Indicator
                 Suitability = value;
             }
     
-            // The cycle state is a downstream data carrier. Later phases extend
-            // this with immutable cycle snapshots and explicit orchestration.
             public void ResetCycleOutputs()
             {
-                // MTF is rebuilt on every Calculate cycle. Market and Structure
-                // snapshots are intentionally retained until the closed-bar
-                // reference changes, because their builders are reference-gated.
                 Decision = null;
                 Entry = null;
                 Plan = null;
@@ -77,6 +72,8 @@ namespace CFIP.Indicator
                 Execution = null;
                 Broker = null;
                 Presentation = null;
+                Prediction = null;
+                Suitability = null;
             }
         }
 }
