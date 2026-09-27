@@ -8,10 +8,24 @@ Edit the smallest authoritative module that owns the behavior.
 | Domain models | `Core/Models/*.cs` — one type per file |
 | Enums | `Core/Enums/*.cs` — one enum per file |
 | Native indicators | `Analysis/Indicators/*.cs` |
-| Market context / frame | `Analysis/Market/*.cs` |
+| Market-frame construction | `Analysis/Market/MarketFrameAnalyzer.cs` |
+| Market-frame scoring | `Analysis/Market/MarketFrameScoring.cs` |
+| Market context: volume | `Analysis/Market/VolumeExpansionAnalyzer.cs` |
+| Market context: MACD | `Analysis/Market/MacdBiasAnalyzer.cs` |
+| Market context: VWAP | `Analysis/Market/VwapBiasAnalyzer.cs` |
+| Market context: volatility | `Analysis/Market/HealthyVolatilityAnalyzer.cs` |
+| Market context: premium/discount | `Analysis/Market/PremiumDiscountAnalyzer.cs` |
+| Market context: live bias | `Analysis/Market/LiveBiasAnalyzer.cs` |
 | Decision | `Analysis/Market/Decision/*.cs` |
+| Decision reason formatting | `Analysis/Market/Decision/DecisionReasonFormatter.cs` |
 | Reaction | `Analysis/Reaction/*.cs` |
-| Structure / FVG / Order Block / liquidity | `Analysis/Structure/**/*.cs` |
+| Liquidity sweep | `Analysis/Structure/LiquiditySweepAnalyzer.cs` |
+| Swing points | `Analysis/Structure/SwingPointAnalyzer.cs` |
+| Equal highs/lows | `Analysis/Structure/EqualLevelAnalyzer.cs` |
+| FVG detection / selection | `Analysis/Structure/Zones/FvgDetectionAnalyzer.cs` |
+| FVG lifecycle / mitigation | `Analysis/Structure/Zones/FvgLifecycleAnalyzer.cs` |
+| Order Block analysis | `Analysis/Structure/Zones/OrderBlockAnalyzer.cs` |
+| Order Block confluence | `Analysis/Structure/Zones/OrderBlockConfluenceAnalyzer.cs` |
 | Entry / trigger | `Planning/Entry/*.cs` |
 | Execution model / trigger validation | `Planning/Execution/*.cs` |
 | Trade plan / stop / targets | `Planning/TradePlan/*.cs` |
