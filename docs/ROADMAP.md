@@ -4,29 +4,27 @@
 
 Deliver the complete indicator from the complete behavioral reference without dropping features and without creating duplicate engines or compatibility layers.
 
-## Implementation order
+## Completed in the clean baseline
 
-1. Clean repository foundation
-2. Complete parameter and behavior parity
-3. Market data, time and MTF
-4. Indicators and market model
-5. Structure, FVG, Order Block and liquidity
-6. Decision and confluence
-7. Entry and trigger
-8. Risk, structural SL and target ladder
-9. Unified automatic execution
-10. Pending-order lifecycle
-11. Position lifecycle and reconciliation
-12. Live position management
-13. Outcome telemetry and calibration
-14. Chart, panel, popup, alerts and historical presentation
-15. Performance and cleanup
-16. Compile/runtime acceptance
+- All reference parameters are preserved: 513/513.
+- Reference method parity is complete across the split modules.
+- The single cTrader host is normalized to `CFIPIndicator`.
+- Versioned class, file, namespace, identity and migration naming has been removed.
+- The implementation is split into responsibility-based partial modules.
+- Automatic market execution and automatic pending-order logic are retained.
+- Smart structural SL/TP, lifecycle, live management, prediction, alerts, panel, popup and historical rendering are retained.
+- No manual BUY/SELL/order-entry controls are introduced.
+
+## Remaining acceptance gates
+
+1. Compile the solution against the actual cTrader Automate API DLL installed with the target cTrader build.
+2. Run controlled cTrader scenarios for market execution, pending orders, rejection, slippage, protection recovery, partial close, close confirmation, restart/reconnect reconciliation, reversal, invalidation and end-of-day handling.
+3. Verify chart/panel/popup rendering on the target cTrader build.
+4. Review runtime resource usage and remove only proven inefficiencies.
 
 ## Non-negotiable behavior
 
 - Automatic trading and automatic pending orders share the same strategy state and broker identity.
-- No manual BUY/SELL/order-entry controls.
 - Smart SL/TP are strategy-generated.
 - Entry, trigger, requested entry and actual fill remain distinct.
 - Broker state is authoritative after mutations.
