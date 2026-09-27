@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>CFIP.Planning.Contracts</AssemblyName>
+    <RootNamespace>cAlgo</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskPercentPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskAmountCalculator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Risk/MarginUsagePolicy.cs" />
+  </ItemGroup>
+</Project>

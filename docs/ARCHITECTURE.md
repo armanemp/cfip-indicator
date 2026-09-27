@@ -55,7 +55,7 @@ Core models may describe strategy state, but must not require the cTrader API me
 
 Analysis may consume market data and configuration, but must not mutate broker state.
 
-Planning may create plans/intents, but must not submit or mutate broker objects.
+Planning may create plans/intents, but must not submit or mutate broker objects. Plan construction, target selection, stop planning and trigger evaluation are separate owners. Risk policy, sizing, margin safety and market suitability are separate from plan construction and broker mutation.
 
 Trading may execute broker mutations, but must not invent alternative analytical authority.
 
@@ -103,6 +103,10 @@ Broker mutation calls are restricted to the execution, pending, lifecycle and li
 - Confirmation, smart, structure, market and lifecycle gates: dedicated gate modules.
 - Reason formatting: DecisionReasonFormatter.cs; DecisionReasonBuilder.cs only composes the formatter.
 - Intelligence helpers remain single-purpose modules and do not become a second decision authority.
+
+## Planning and risk boundary
+
+Planning owns executable trade intent as data, not broker submission. Entry/trigger, target, stop and plan-integrity concerns are isolated. Risk owns exposure policy, volume sizing, margin safety, daily-loss protection and market suitability; it does not create or mutate broker positions/orders.
 
 ## Core boundary
 

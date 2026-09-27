@@ -26,9 +26,19 @@ Edit the smallest authoritative module that owns the behavior.
 | FVG lifecycle / mitigation | `Analysis/Structure/Zones/FvgLifecycleAnalyzer.cs` |
 | Order Block analysis | `Analysis/Structure/Zones/OrderBlockAnalyzer.cs` |
 | Order Block confluence | `Analysis/Structure/Zones/OrderBlockConfluenceAnalyzer.cs` |
-| Entry / trigger | `Planning/Entry/*.cs` |
+| Entry trigger readiness | `Planning/Entry/ClosedBarTriggerReadyEvaluator.cs` |
+| Bullish trigger scoring | `Planning/Entry/BullTriggerScoreAnalyzer.cs` |
+| Bearish trigger scoring | `Planning/Entry/BearTriggerScoreAnalyzer.cs` |
 | Execution model / trigger validation | `Planning/Execution/*.cs` |
-| Trade plan / stop / targets | `Planning/TradePlan/*.cs` |
+| Plan construction | `Planning/TradePlan/PlanBuilder.cs` |
+| Plan integrity | `Planning/TradePlan/PlanIntegrityValidator.cs` |
+| Structural stop | `Planning/TradePlan/StructuralStopPlanner.cs` |
+| Minimum required RR | `Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs` |
+| Target levels | `Planning/TradePlan/TargetLevelBuilder.cs` |
+| Target candidate merging | `Planning/TradePlan/TargetLevelCandidateMerger.cs`, `TargetLevelMerger.cs` |
+| Target selection | `Planning/TradePlan/TargetSelector.cs`, `TargetStageSelector.cs` |
+| Target metadata | `Planning/TradePlan/TargetMetadataEnricher.cs` |
+| Target progression | `Planning/TradePlan/TargetProgressionValidator.cs`, `TargetProgressionRule.cs` |
 | Runtime / MTF / calculation | `Runtime/**/*.cs` |
 | Automatic market execution | `Trading/Execution/AutomaticMarket/*.cs` |
 | Aggressive execution | `Trading/Execution/Aggressive/*.cs` |
@@ -36,6 +46,14 @@ Edit the smallest authoritative module that owns the behavior.
 | Broker mutation coordination | `Trading/Execution/BrokerMutationCoordinator.cs` |
 | Broker identity | `Trading/Identity/*.cs` |
 | Risk / suitability | `Trading/Risk/*.cs` |
+| Daily loss guard | `Trading/Risk/DailyLossGuard.cs` |
+| Risk percent policy | `Trading/Risk/RiskPercentPolicy.cs` |
+| Risk amount | `Trading/Risk/RiskAmountCalculator.cs` |
+| Margin safety | `Trading/Risk/MarginSafetyCalculator.cs`, `MarginUsagePolicy.cs` |
+| Volume sizing | `Trading/Risk/VolumeSizer.cs`, `AggressiveVolumeSizer.cs` |
+| Market suitability | `Trading/Risk/SuitabilityCalculator.cs`, `MarketSuitabilityGuard.cs` |
+| Session window | `Trading/Risk/SessionWindowEvaluator.cs` |
+| Auto-trade safety | `Trading/Risk/AutoTradeSafetyGuard.cs` |
 | Lifecycle events | `Trading/Lifecycle/*.cs` |
 | Live management | `Trading/LiveManagement/*.cs` |
 | Prediction / intelligence | `Trading/Intelligence/**/*.cs` |

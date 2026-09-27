@@ -1,6 +1,5 @@
-// ============================================================================
-// CFIP Indicator — TargetSelection.cs
-// ============================================================================
+// CFIP Indicator — TargetSelector.cs
+// Single-responsibility planning module.
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private List<Level> SelectTargets(
+private List<Level> SelectTargets(
                                             List<Level> levels,
                                             int closedM5,
                                             double entry,
@@ -302,112 +301,6 @@ namespace cAlgo
                                             }
                                 
                                             return selected;
-                                        }
-        
-        private double SelectTarget(
-                                            List<Level> selected,
-                                            int position,
-                                            double entry,
-                                            double risk,
-                                            int direction,
-                                            double alternateRR)
-                                        {
-                                            if (selected != null &&
-                                                position < selected.Count &&
-                                                selected[position] != null)
-                                                return selected[position].Price;
-                                
-                                            bool requireHtf =
-                                                position == 0
-                                                    ? RequireHtfRewardForTp1
-                                                    : RequireHtfRewardForTp2Plus;
-                                
-                                            double minimumRR =
-                                                Math.Max(
-                                                    0.50,
-                                                    alternateRR);
-                                
-                                            double maximumRR =
-                                                Math.Max(
-                                                    minimumRR,
-                                                    MaximumRewardRR);
-                                
-                                            if (!AllowSyntheticTargetFallback ||
-                                                requireHtf ||
-                                                minimumRR > maximumRR)
-                                                return 0;
-                                
-                                            return NormalizePrice(
-                                                direction == 1
-                                                    ? entry +
-                                                      risk *
-                                                      minimumRR
-                                                    : entry -
-                                                      risk *
-                                                      minimumRR);
-                                        }
-        
-        private void ApplyTargetMeta(
-                                            List<Level> candidates,
-                                            double target,
-                                            double atr,
-                                            out string source,
-                                            out int quality)
-                                        {
-                                            source =
-                                                target > 0
-                                                    ? "RR"
-                                                    : "";
-                                
-                                            quality =
-                                                target > 0
-                                                    ? 55
-                                                    : 0;
-                                
-                                            if (target <= 0)
-                                                return;
-                                
-                                            Level best = null;
-                                            double bestDistance = double.MaxValue;
-                                
-                                            for (int i = 0; i < candidates.Count; i++)
-                                            {
-                                                double distance =
-                                                    Math.Abs(
-                                                        candidates[i].Price -
-                                                        target);
-                                
-                                                if (distance <= atr * 0.15 &&
-                                                    distance < bestDistance)
-                                                {
-                                                    best =
-                                                        candidates[i];
-                                
-                                                    bestDistance =
-                                                        distance;
-                                                }
-                                            }
-                                
-                                            if (best != null)
-                                            {
-                                                source =
-                                                    best.Kind +
-                                                    "@" +
-                                                    best.Timeframe;
-                                
-                                                quality =
-                                                    ClampInt(
-                                                        (int)Math.Round(
-                                                            best.Score),
-                                                        0,
-                                                        100);
-                                
-                                                if (best.Age <= 5)
-                                                    quality =
-                                                        Math.Min(
-                                                            100,
-                                                            quality + 5);
-                                            }
                                         }
     }
 }

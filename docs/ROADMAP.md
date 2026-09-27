@@ -128,6 +128,8 @@ Acceptance:
 
 ## Phase 4 — Planning and risk
 
+Status: complete.
+
 Goal: isolate trade planning from execution and risk side effects.
 
 Work:
@@ -147,6 +149,18 @@ Work:
 - Daily loss guard.
 - Market suitability.
 - Spread/session/event/volatility guards.
+
+Completed in this phase:
+
+- Split plan construction, plan integrity and target progression into explicit owners.
+- Split structural stop planning and minimum required RR.
+- Split target-level construction, candidate merging, target selection, stage selection, target metadata and HTF source classification.
+- Split closed-bar trigger readiness and bullish/bearish trigger scoring.
+- Split risk controls into daily loss, risk policies, margin safety, volume sizing, position counting and auto-plan validation.
+- Split suitability/session/risk-scaling guards into dedicated owners.
+- Added pure target progression, risk percent, risk amount and margin usage policies.
+- Added deterministic planning/risk contract fixtures to CI.
+- Removed empty legacy planning/risk parent modules.
 
 Acceptance:
 
