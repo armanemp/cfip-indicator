@@ -227,59 +227,6 @@ namespace cAlgo
                             return false;
                         }
         
-        private int CalibratedConfidence(
-                            int baseConfidence,
-                            int direction)
-                        {
-                            if (!UseEmpiricalCalibration ||
-                                !EnableConfidenceCalibration ||
-                                !EnableOutcomeTelemetry ||
-                                !_directionSamples.ContainsKey(
-                                    direction))
-                                return baseConfidence;
-                
-                            int totalSamples =
-                                _directionSamples.Values.Sum();
-                
-                            if (totalSamples <
-                                Math.Max(
-                                    1,
-                                    CalibrationMinimumSamples))
-                                return baseConfidence;
-                
-                            int samples =
-                                _directionSamples[direction];
-                
-                            if (samples <
-                                CalibrationDirectionalMinimumSamples)
-                                return baseConfidence;
-                
-                            int wins =
-                                _directionWins.ContainsKey(
-                                    direction)
-                                    ? _directionWins[direction]
-                                    : 0;
-                
-                            double rate =
-                                samples <= 0
-                                    ? 0.5
-                                    : (double)wins /
-                                      samples;
-                
-                            int adjustment =
-                                ClampInt(
-                                    (int)Math.Round(
-                                        (rate - 0.5) *
-                                        2.0 *
-                                        CalibrationMaxConfidenceAdjustment),
-                                    -CalibrationMaxConfidenceAdjustment,
-                                    CalibrationMaxConfidenceAdjustment);
-                
-                            return ClampInt(
-                                baseConfidence +
-                                adjustment,
-                                0,
-                                100);
-                        }
+
     }
 }
