@@ -456,88 +456,12 @@ if (f.Rsi > 50)
                             return f;
                         }
         
-        private void AddScore(
-                            bool condition,
-                            int score,
-                            ref int total,
-                            ref int evidence)
-                        {
-                            if (!condition)
-                                return;
-                
-                            total += score;
-                            evidence++;
-                        }
+
         
-        private void AddScore(
-                            bool condition,
-                            int score,
-                            ref int total,
-                            ref int evidence,
-                            bool countAsEvidence)
-                        {
-                            if (!condition)
-                                return;
-                
-                            total += score;
-                
-                            if (countAsEvidence)
-                                evidence++;
-                        }
+
         
-        private void AddFrame(
-                            Frame frame,
-                            double weight,
-                            ref double buy,
-                            ref double sell,
-                            ref int evidence)
-                        {
-                            if (frame == null || frame.Quality <= 0 || weight <= 0)
-                                return;
-                
-                            double scale =
-                                weight / 10.0;
-                
-                            buy += frame.BullScore * scale;
-                            sell += frame.BearScore * scale;
-                
-                            if (frame.Direction != 0)
-                                evidence++;
-                        }
+
         
-        private string BuildReason(
-                            Decision d,
-                            int buyShare,
-                            int sellShare)
-                        {
-                            return
-                                (d.Direction == 1
-                                    ? "BUY"
-                                    : "SELL") +
-                                " | CONF " +
-                                d.Confidence +
-                                " | EDGE " +
-                                d.Edge +
-                                " | SMART " +
-                                d.SmartQuality +
-                                " | MTF " +
-                                d.TimeframeAgreement +
-                                " | EVID " +
-                                d.IndependentEvidence +
-                                " | STRUCT " +
-                                d.StructuralConfirmations +
-                                " | RETEST " +
-                                d.RetestQuality +
-                                " | REGIME " +
-                                d.Regime +
-                                " | " +
-                                buyShare +
-                                "/" +
-                                sellShare +
-                                (string.IsNullOrWhiteSpace(d.BlockReason)
-                                    ? ""
-                                    : " | BLOCK " +
-                                      d.BlockReason);
-                        }
+
     }
 }
