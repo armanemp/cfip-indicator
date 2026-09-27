@@ -7,6 +7,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyConsensusSymmetry();
+            VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
             VerifyConfidenceCalibration();
             VerifyThresholdReasons();
@@ -31,6 +32,43 @@ namespace cAlgo
             Assert(buy.BuyShare == sell.SellShare, "BUY/SELL share symmetry");
             Assert(buy.SellShare == sell.BuyShare, "SELL/BUY share symmetry");
             Assert(buy.Edge == sell.Edge, "BUY/SELL edge symmetry");
+        }
+
+        private static void VerifyNeutralQualityIsolation()
+        {
+            DecisionQualityCalculator calculator =
+                new DecisionQualityCalculator();
+
+            DecisionEvidenceSnapshot directional =
+                new DecisionEvidenceSnapshot(
+                    90, 10,
+                    8, 1,
+                    6, 1,
+                    70,
+                    90, 10,
+                    true, false,
+                    0, 0,
+                    0, 10);
+
+            int neutralQuality =
+                calculator.Calculate(
+                    50,
+                    0,
+                    0,
+                    0,
+                    directional.RegimeQuality);
+
+            int expected =
+                NumericGuards.ClampInt(
+                    (int)Math.Round(
+                        50 * 0.28 +
+                        70 * 0.12),
+                    0,
+                    100);
+
+            Assert(
+                neutralQuality == expected,
+                "neutral quality ignores directional evidence");
         }
 
         private static void VerifyQualityBoundaries()
