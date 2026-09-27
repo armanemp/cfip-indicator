@@ -195,7 +195,7 @@ ATOMIC_METHOD_OWNERS = {
     "PremiumDiscountBias": ROOT / "Analysis" / "Market" / "PremiumDiscountAnalyzer.cs",
     "LiveBias": ROOT / "Analysis" / "Market" / "LiveBiasAnalyzer.cs",
     "AddFrame": ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs",
-    "BuildReason": ROOT / "Analysis" / "Market" / "Decision" / "DecisionReasonFormatter.cs",
+    "Format": ROOT / "Analysis" / "Market" / "Decision" / "DecisionReasonFormatter.cs",
     "BullLiquiditySweep": ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs",
     "BearLiquiditySweep": ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs",
     "FindSwingHigh": ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs",
