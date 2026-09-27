@@ -332,14 +332,14 @@ for filename in REQUIRED_BROKER_MUTATION_FILES:
         raise SystemExit(f"Broker mutation owner missing: {filename}")
 
 BROKER_MUTATION_PATTERNS = (
-    r"(?<!Try)ExecuteMarketOrder\\s*\\(",
-    r"(?<!Try)PlaceStopOrder\\s*\\(",
-    r"(?<!Try)PlaceLimitOrder\\s*\\(",
-    r"(?<!Try)ModifyStopLossPrice\\s*\\(",
-    r"(?<!Try)ModifyTakeProfitPrice\\s*\\(",
-    r"(?<!Try)ModifyPendingOrder\\s*\\(",
-    r"(?<!Try)CancelPendingOrder\\s*\\(",
-    r"(?<!Try)ClosePosition\\s*\\(",
+    r"(?<!Try)ExecuteMarketOrder\s*\(",
+    r"(?<!Try)PlaceStopOrder\s*\(",
+    r"(?<!Try)PlaceLimitOrder\s*\(",
+    r"(?<!Try)ModifyStopLossPrice\s*\(",
+    r"(?<!Try)ModifyTakeProfitPrice\s*\(",
+    r"(?<!Try)ModifyPendingOrder\s*\(",
+    r"(?<!Try)CancelPendingOrder\s*\(",
+    r"(?<!Try)ClosePosition\s*\(",
 )
 for p in sorted(PRODUCTION_ROOT.rglob("*.cs")):
     relative = p.relative_to(ROOT)
@@ -356,8 +356,8 @@ for p in sorted(PRODUCTION_ROOT.rglob("*.cs")):
         )
 
 EXECUTION_PLAN = ROOT / "Trading" / "Execution" / "ExecutionPlanPreparation.cs"
-if any(token in strip_for_static_checks(EXECUTION_PLAN.read_text(encoding="utf-8"))
-       for token in BROKER_MUTATION_TOKENS):
+if any(re.search(pattern, strip_for_static_checks(EXECUTION_PLAN.read_text(encoding="utf-8")))
+       for pattern in BROKER_MUTATION_PATTERNS):
     raise SystemExit("Broker mutation leaked into execution plan preparation")
 
 # Planning/risk ownership checks.
