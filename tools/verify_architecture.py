@@ -131,8 +131,19 @@ if len(unique_methods) != 311:
 if methods.count("AddScore") != 2:
     raise SystemExit("Expected exactly one overloaded method pair: AddScore")
 
-if re.search(r"CFIPClean\d+|Clean\d+|CFIP_MTF_LiveEntryEngine_Clean", code, re.I):
-    raise SystemExit("Legacy/versioned strategy identifier detected")
+VERSION_RESIDUE_PATTERNS = (
+    re.compile(r"\bv\d+\b", re.I),
+    re.compile(r"\b(?:rev|release)[-_ ]?\d+\b", re.I),
+    re.compile(r"\bClean\d+\b", re.I),
+    re.compile(r"\bCFIPClean\d+\b", re.I),
+    re.compile(r"CFIP_MTF_LiveEntryEngine_Clean", re.I),
+    re.compile(r"\bCFIP[\s_-]*(?:SMART|AUTO)[\s_-]*\d+\b", re.I),
+)
+for production_file in files:
+    source_text = production_file.read_text(encoding="utf-8")
+    for residue_pattern in VERSION_RESIDUE_PATTERNS:
+        if residue_pattern.search(source_text):
+            raise SystemExit(f"Version/historical residue detected in production source: {production_file}")
 
 if re.search(r"\b(?:Buy|Sell)\b.{0,100}\b(?:Button|ToggleButton)\b", code, re.I):
     raise SystemExit("Manual trade-entry controls detected")
