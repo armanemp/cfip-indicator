@@ -379,7 +379,7 @@ namespace cAlgo
                                         }
                         
                                         TradeResult result =
-                                            ExecuteMarketOrder(
+                                            TryExecuteMarketOrder(
                                                 type,
                                                 SymbolName,
                                                 volume,
@@ -387,7 +387,8 @@ namespace cAlgo
                                                 stopPips,
                                                 targetPips,
                                                 TradeExecutionMetadata.DefaultExecutionComment,
-                                                false);
+                                                false,
+                                                "AUTOMATIC MARKET");
                         
                                         if (result == null)
                                         {
