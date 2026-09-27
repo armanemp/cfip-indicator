@@ -19,7 +19,7 @@ namespace CFIP.Indicator
         {
             private readonly ReadOnlyCollection<BlockReason> _blockReasons;
     
-            // This is the exact Phase-6 snapshot received by Entry.
+            // This is the exact  snapshot received by Entry.
             public DecisionSnapshot Decision { get; private set; }
     
             public Direction Direction { get; private set; }
@@ -1415,7 +1415,7 @@ namespace CFIP.Indicator
                     entry,
                     mtf,
                     runtime,
-                    "PHASE8_INPUT_INCOMPLETE");
+                    "PLAN_INPUT_INCOMPLETE");
     
             if (!decision.DecisionEligible ||
                 entry.Model == null ||
@@ -1699,7 +1699,7 @@ namespace CFIP.Indicator
                     entryPrice,
                     "EXECUTION_ANCHOR",
                     Provenance.Direct(
-                        "PHASE8",
+                        "TRADE_PLAN",
                         "PLAN_EXECUTION_ANCHOR")),
                 new PriceLevel(
                     stop.Price,
@@ -1715,7 +1715,7 @@ namespace CFIP.Indicator
                 runtime.ServerUtc,
                 mtf.M5 != null ? mtf.M5.ClosedIndex : -1,
                 Provenance.Direct(
-                    "PHASE8",
+                    "TRADE_PLAN",
                     structuralStop
                         ? "STRUCTURAL_RISK_TARGET_PLAN"
                         : "EXPLICIT_STOP_FALLBACK_TARGET_PLAN"));
@@ -2270,7 +2270,7 @@ namespace CFIP.Indicator
                                 : 1,
                             "InvalidPlanEntry",
                             Provenance.Direct(
-                                "PHASE8",
+                                "TRADE_PLAN",
                                 "INVALID_PLAN")),
                         new PriceZone(
                             runtime != null && runtime.Bid > 0
@@ -2281,7 +2281,7 @@ namespace CFIP.Indicator
                                 : 1,
                             "InvalidPlanZone",
                             Provenance.Direct(
-                                "PHASE8",
+                                "TRADE_PLAN",
                                 "INVALID_PLAN")),
                         null,
                         new PriceLevel(
@@ -2290,7 +2290,7 @@ namespace CFIP.Indicator
                                 : 1,
                             "InvalidPlanInvalidation",
                             Provenance.Direct(
-                                "PHASE8",
+                                "TRADE_PLAN",
                                 "INVALID_PLAN")));
     
             double safeEntry =
@@ -2317,13 +2317,13 @@ namespace CFIP.Indicator
                     safeEntry,
                     "InvalidPlanExecutionAnchor",
                     Provenance.Direct(
-                        "PHASE8",
+                        "TRADE_PLAN",
                         "INVALID_PLAN")),
                 new PriceLevel(
                     safeEntry,
                     "InvalidPlanStop",
                     Provenance.FallbackFrom(
-                        "PHASE8",
+                        "TRADE_PLAN",
                         reason,
                         FallbackKind.None,
                         "Plan is explicitly invalid and must not reach execution.")),
@@ -2337,7 +2337,7 @@ namespace CFIP.Indicator
                     ? mtf.M5.ClosedIndex
                     : -1,
                 Provenance.Direct(
-                    "PHASE8",
+                    "TRADE_PLAN",
                     reason));
         }
     }
