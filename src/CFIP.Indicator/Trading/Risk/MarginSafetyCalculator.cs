@@ -29,16 +29,9 @@ private double AdjustVolumeForMargin(
                                         Account.FreeMargin);
                 
                                 double usage =
-                                    Math.Max(
-                                        10,
-                                        Math.Min(
-                                            100,
-                                            MaxAutoMarginUsagePercent -
-                                            Math.Max(
-                                                0,
-                                                Math.Min(
-                                                    40,
-                                                    MarginBufferPercent))));
+                                    MarginUsagePolicy.CalculateAllowedPercent(
+                                        MaxAutoMarginUsagePercent,
+                                        MarginBufferPercent);
                 
                                 double allowed =
                                     freeMargin *
