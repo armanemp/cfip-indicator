@@ -1,0 +1,116 @@
+// CFIP Indicator — TimeframeAgreementAnalyzer.cs
+// Single-responsibility decision evidence module.
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using cAlgo.API;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private int TimeframeAgreement(
+                                    int direction,
+                                    DateTime reference)
+                                {
+                                    if (direction == 0)
+                                        return 0;
+                        
+                                    Frame[] frames =
+                                    {
+                                        _m5Frame,
+                                        _m15Frame,
+                                        _m30Frame,
+                                        _h1Frame,
+                                        _h4Frame,
+                                        _d1Frame,
+                                        _w1Frame
+                                    };
+                        
+                                    Bars[] bars =
+                                    {
+                                        _m5Bars,
+                                        _m15Bars,
+                                        _m30Bars,
+                                        _h1Bars,
+                                        _h4Bars,
+                                        _d1Bars,
+                                        _w1Bars
+                                    };
+                        
+                                    double[] weights =
+                                    {
+                                        Math.Max(0, M5Weight),
+                                        Math.Max(0, M15Weight),
+                                        Math.Max(0, M30Weight),
+                                        Math.Max(0, H1Weight),
+                                        Math.Max(0, H4Weight),
+                                        Math.Max(0, D1Weight),
+                                        Math.Max(0, W1Weight)
+                                    };
+                        
+                                    bool[] enabled =
+                                    {
+                                        true,
+                                        true,
+                                        M30Weight > 0,
+                                        H1Weight > 0,
+                                        H4Weight > 0,
+                                        D1Weight > 0,
+                                        SmartWeeklyContext &&
+                                        W1Weight > 0
+                                    };
+                        
+                                    double totalWeight = 0;
+                                    double alignedWeight = 0;
+                        
+                                    for (int i = 0;
+                                         i < frames.Length;
+                                         i++)
+                                    {
+                                        if (!enabled[i] ||
+                                            weights[i] <= 0 ||
+                                            frames[i] == null ||
+                                            bars[i] == null ||
+                                            frames[i].Quality <= 0)
+                                            continue;
+                        
+                                        int closedIndex =
+                                            ClosedIndex(
+                                                bars[i],
+                                                reference);
+                        
+                                        if (closedIndex < 0 ||
+                                            frames[i].Index != closedIndex)
+                                            continue;
+                        
+                                        // A neutral timeframe is not evidence against the selected
+                                        // direction; it contributes no alignment weight.
+                                        if (frames[i].Direction == 0)
+                                            continue;
+                        
+                                        totalWeight +=
+                                            weights[i];
+                        
+                                        if (frames[i].Direction == direction)
+                                            alignedWeight +=
+                                                weights[i];
+                                    }
+                        
+                                    return
+                                        totalWeight <= 0
+                                            ? 0
+                                            : ClampInt(
+                                                (int)Math.Round(
+                                                    100.0 *
+                                                    alignedWeight /
+                                                    totalWeight),
+                                                0,
+                                                100);
+                                }
+    }
+}
