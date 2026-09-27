@@ -24,7 +24,7 @@ namespace cAlgo
                     _configuration =
                         ConfigSnapshot.Build(
                             this,
-                            "CFIP-PRO-");
+                            "CFIP");
         
                     _runtimeAuthority =
                         new RuntimeAuthority();
