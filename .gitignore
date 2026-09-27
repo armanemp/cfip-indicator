@@ -1,0 +1,14 @@
+bin/
+obj/
+.vs/
+TestResults/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.user
+*.suo
+*.userprefs
+*.algo
+*.algo.zip
+Thumbs.db
+.DS_Store
