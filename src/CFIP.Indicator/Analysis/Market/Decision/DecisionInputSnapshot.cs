@@ -33,7 +33,6 @@ namespace cAlgo
         public bool UseHistoricalChoppinessGuard { get; }
         public double SmartScoreTemperature { get; }
         public int MinimumSmartDirectionShare { get; }
-        public int HigherTfPenalty { get; }
 
         public DateTime Reference { get; }
         public int ClosedM5 { get; }
@@ -67,7 +66,6 @@ namespace cAlgo
             bool useHistoricalChoppinessGuard,
             double smartScoreTemperature,
             int minimumSmartDirectionShare,
-            int higherTfPenalty,
             DateTime reference,
             int closedM5,
             DecisionEvidenceSnapshot evidence)
@@ -105,8 +103,6 @@ namespace cAlgo
             UseHistoricalChoppinessGuard = useHistoricalChoppinessGuard;
             SmartScoreTemperature = smartScoreTemperature;
             MinimumSmartDirectionShare = minimumSmartDirectionShare;
-            HigherTfPenalty = higherTfPenalty;
-
             Reference = reference;
             ClosedM5 = closedM5;
 
