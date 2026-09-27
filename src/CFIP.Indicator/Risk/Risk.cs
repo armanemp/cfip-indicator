@@ -48,5 +48,36 @@ namespace CFIP.Indicator
             }
         }
     
+    public static class RiskPolicy
+    {
+        public static double ResolveRiskPercent(
+            ConfigSnapshot configuration,
+            DecisionPolicyMode policyMode,
+            MarketSuitabilitySnapshot suitability)
+        {
+            if (configuration == null)
+                return 0;
+
+            string key =
+                policyMode == DecisionPolicyMode.Aggressive
+                    ? "AggressiveRiskPercentEquity"
+                    : "RiskPercentEquity";
+
+            double baseRisk = Math.Max(
+                0.05,
+                configuration.Get(key, 0.50));
+
+            if (!configuration.Get("UseSmartRiskScaling", true) ||
+                suitability == null)
+                return baseRisk;
+
+            double multiplier =
+                Math.Max(0.25, Math.Min(1.0, suitability.RiskMultiplier));
+
+            return Math.Max(
+                0.05,
+                Math.Min(baseRisk, baseRisk * multiplier));
+        }
+    }
     
 }
