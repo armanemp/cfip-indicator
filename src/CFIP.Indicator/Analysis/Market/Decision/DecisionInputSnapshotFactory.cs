@@ -59,7 +59,6 @@ namespace cAlgo
                 request.UseHistoricalChoppinessGuard,
                 request.SmartScoreTemperature,
                 request.MinimumSmartDirectionShare,
-                request.HigherTfPenalty,
                 request.Reference,
                 request.ClosedM5,
                 request.Evidence);
