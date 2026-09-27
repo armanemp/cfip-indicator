@@ -1,6 +1,3 @@
-// CFIP Indicator — PlanLabelRenderCoordinator.cs
-Single-responsibility plan-label renderer.
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,6 +5,10 @@ using System.Linq;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
+
+// CFIP Indicator — PlanLabelRenderCoordinator.cs
+Single-responsibility plan-label renderer.
+
 
 namespace cAlgo
 {
