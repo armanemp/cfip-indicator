@@ -7,7 +7,7 @@ using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
 
 // CFIP Indicator — PopupRemover.cs
-Single-responsibility popup renderer.
+// Single-responsibility popup renderer.
 
 
 namespace cAlgo
