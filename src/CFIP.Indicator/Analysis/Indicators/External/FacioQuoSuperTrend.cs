@@ -20,7 +20,7 @@ namespace cAlgo
 
             if (quotes == null ||
                 quotes.Count < 60)
-                return 0;
+                return double.NaN;
 
             var results =
                 StockIndicator.GetSuperTrend(
@@ -29,10 +29,10 @@ namespace cAlgo
                     3)
                     .ToList();
 
-            return results.Count == 0
-                ? 0
-                : (double)(
-                    results[results.Count - 1].SuperTrend ?? 0);
+            return results.Count == 0 ||
+                   !results[results.Count - 1].SuperTrend.HasValue
+                ? double.NaN
+                : (double)results[results.Count - 1].SuperTrend.Value;
         }
     }
 }

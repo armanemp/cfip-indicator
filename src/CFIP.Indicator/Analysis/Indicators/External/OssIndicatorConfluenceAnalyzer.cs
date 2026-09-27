@@ -16,27 +16,14 @@ namespace cAlgo
                 return null;
 
             OssIndicatorSnapshot snapshot =
-                new OssIndicatorSnapshot();
-
-            snapshot.Rsi =
-                FacioQuoRsi(
-                    bars,
-                    index);
-
-            snapshot.MacdHistogram =
-                FacioQuoMacdHistogram(
-                    bars,
-                    index);
-
-            snapshot.BollingerPercentB =
-                FacioQuoBollingerPercentB(
-                    bars,
-                    index);
-
-            snapshot.Mfi =
-                FacioQuoMfi(
-                    bars,
-                    index);
+                new OssIndicatorSnapshot
+                {
+                    Rsi = FacioQuoRsi(bars, index),
+                    MacdHistogram = FacioQuoMacdHistogram(bars, index),
+                    BollingerPercentB = FacioQuoBollingerPercentB(bars, index),
+                    Mfi = FacioQuoMfi(bars, index),
+                    SuperTrend = FacioQuoSuperTrend(bars, index)
+                };
 
             FacioQuoStochBias(
                 bars,
@@ -46,46 +33,60 @@ namespace cAlgo
 
             snapshot.StochK = k;
             snapshot.StochD = d;
-            snapshot.SuperTrend =
-                FacioQuoSuperTrend(
-                    bars,
-                    index);
 
-            double close =
-                bars.ClosePrices[index];
+            double close = bars.ClosePrices[index];
 
-            if (snapshot.Rsi > 50)
-                snapshot.BullVotes++;
-            else if (snapshot.Rsi > 0 &&
-                     snapshot.Rsi < 50)
-                snapshot.BearVotes++;
+            bool rsiValid = IsFiniteValue(snapshot.Rsi);
+            bool macdValid = IsFiniteValue(snapshot.MacdHistogram);
+            bool bollingerValid = IsFiniteValue(snapshot.BollingerPercentB);
+            bool mfiValid = IsFiniteValue(snapshot.Mfi);
+            bool stochValid =
+                IsFiniteValue(snapshot.StochK) &&
+                IsFiniteValue(snapshot.StochD);
+            bool superTrendValid = IsFiniteValue(snapshot.SuperTrend);
 
-            if (snapshot.MacdHistogram > 0)
-                snapshot.BullVotes++;
-            else if (snapshot.MacdHistogram < 0)
-                snapshot.BearVotes++;
-
-            if (snapshot.BollingerPercentB > 0.5)
-                snapshot.BullVotes++;
-            else if (snapshot.BollingerPercentB > 0 &&
-                     snapshot.BollingerPercentB < 0.5)
-                snapshot.BearVotes++;
-
-            if (snapshot.Mfi > 50)
-                snapshot.BullVotes++;
-            else if (snapshot.Mfi > 0 &&
-                     snapshot.Mfi < 50)
-                snapshot.BearVotes++;
-
-            if (k > 0 && d > 0)
+            if (rsiValid)
             {
-                if (k > d)
+                if (snapshot.Rsi > 50)
                     snapshot.BullVotes++;
-                else if (k < d)
+                else if (snapshot.Rsi < 50)
                     snapshot.BearVotes++;
             }
 
-            if (snapshot.SuperTrend > 0)
+            if (macdValid)
+            {
+                if (snapshot.MacdHistogram > 0)
+                    snapshot.BullVotes++;
+                else if (snapshot.MacdHistogram < 0)
+                    snapshot.BearVotes++;
+            }
+
+            if (bollingerValid)
+            {
+                if (snapshot.BollingerPercentB > 0.5)
+                    snapshot.BullVotes++;
+                else if (snapshot.BollingerPercentB < 0.5)
+                    snapshot.BearVotes++;
+            }
+
+            if (mfiValid)
+            {
+                if (snapshot.Mfi > 50)
+                    snapshot.BullVotes++;
+                else if (snapshot.Mfi < 50)
+                    snapshot.BearVotes++;
+            }
+
+            if (stochValid)
+            {
+                if (snapshot.StochK > snapshot.StochD)
+                    snapshot.BullVotes++;
+                else if (snapshot.StochK < snapshot.StochD)
+                    snapshot.BearVotes++;
+            }
+
+            if (superTrendValid &&
+                IsFiniteValue(close))
             {
                 if (close > snapshot.SuperTrend)
                     snapshot.BullVotes++;
@@ -94,16 +95,21 @@ namespace cAlgo
             }
 
             snapshot.IndicatorCount =
-                Math.Min(
-                    6,
-                    (snapshot.Rsi > 0 ? 1 : 0) +
-                    (Math.Abs(snapshot.MacdHistogram) > 0 ? 1 : 0) +
-                    (snapshot.BollingerPercentB > 0 ? 1 : 0) +
-                    (snapshot.Mfi > 0 ? 1 : 0) +
-                    (k > 0 && d > 0 ? 1 : 0) +
-                    (snapshot.SuperTrend > 0 ? 1 : 0));
+                (rsiValid ? 1 : 0) +
+                (macdValid ? 1 : 0) +
+                (bollingerValid ? 1 : 0) +
+                (mfiValid ? 1 : 0) +
+                (stochValid ? 1 : 0) +
+                (superTrendValid ? 1 : 0);
 
             return snapshot;
+        }
+
+        private bool IsFiniteValue(double value)
+        {
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value);
         }
     }
 }

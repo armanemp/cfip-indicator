@@ -199,3 +199,23 @@ for filename, method in oss_files.items():
     path = OSS_ROOT / filename
     if not path.exists() or method not in path.read_text(encoding="utf-8"):
         raise SystemExit(f"OSS indicator module missing: {filename}")
+
+
+# Strict type isolation: production behavior files may not hide helper types
+# inside the cTrader partial host. Every helper/model type must have a file owner.
+for p in files:
+    text_module = p.read_text(encoding="utf-8")
+    if re.search(
+        r"^\s{8,}(?:public|private|protected|internal)\s+"
+        r"(?:static\s+|sealed\s+|abstract\s+|readonly\s+)*"
+        r"(?:class|struct|record)\s+[A-Za-z_]\w*",
+        text_module,
+        re.MULTILINE,
+    ):
+        raise SystemExit(f"Nested helper type detected: {p}")
+
+mtf_model = ROOT / "Runtime" / "Mtf" / "MtfClosedContext.cs"
+if not mtf_model.exists():
+    raise SystemExit("MTF context model must have its own source file")
+if len(re.findall(r"\bclass\s+MtfClosedContext\b", mtf_model.read_text(encoding="utf-8"))) != 1:
+    raise SystemExit("MTF context model isolation failed")

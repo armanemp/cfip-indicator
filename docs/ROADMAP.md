@@ -56,3 +56,15 @@ Validate controlled scenarios for:
 - Verify chart/panel/popup behavior across timeframes.
 - Verify resource usage and remove only proven inefficiencies.
 - Freeze a release baseline only after static, compile and runtime gates pass.
+
+
+## Phase 1.1 — Type isolation hardening
+
+Completed:
+- Extracted the closed-bar MTF context into its own runtime model file.
+- Extracted the OSS quote-cache entry into its own file.
+- Added strict verifier rules against nested production helper types.
+- Corrected OSS indicator validity semantics so valid zero-valued observations are not discarded as missing data.
+- Restored AutoTradeLabel identity parity as a mandatory static invariant.
+
+Next implementation remains Phase 2: reduce high-coupling partial-method clusters into explicit internal services without changing the single-host cTrader compatibility surface.

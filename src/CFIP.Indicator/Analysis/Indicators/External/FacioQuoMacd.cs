@@ -28,7 +28,7 @@ namespace cAlgo
 
             if (quotes == null ||
                 quotes.Count < slow + 20)
-                return 0;
+                return double.NaN;
 
             var results =
                 StockIndicator.GetMacd(
@@ -38,9 +38,10 @@ namespace cAlgo
                     9)
                     .ToList();
 
-            return results.Count == 0
-                ? 0
-                : results[results.Count - 1].Histogram ?? 0;
+            return results.Count == 0 ||
+                   !results[results.Count - 1].Histogram.HasValue
+                ? double.NaN
+                : results[results.Count - 1].Histogram.Value;
         }
     }
 }

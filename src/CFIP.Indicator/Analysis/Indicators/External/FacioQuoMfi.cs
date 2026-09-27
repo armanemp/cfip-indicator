@@ -20,7 +20,7 @@ namespace cAlgo
 
             if (quotes == null ||
                 quotes.Count < 40)
-                return 0;
+                return double.NaN;
 
             var results =
                 StockIndicator.GetMfi(
@@ -28,9 +28,10 @@ namespace cAlgo
                     14)
                     .ToList();
 
-            return results.Count == 0
-                ? 0
-                : results[results.Count - 1].Mfi ?? 0;
+            return results.Count == 0 ||
+                   !results[results.Count - 1].Mfi.HasValue
+                ? double.NaN
+                : results[results.Count - 1].Mfi.Value;
         }
     }
 }

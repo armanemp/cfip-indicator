@@ -45,3 +45,11 @@ External analytical libraries are optional adapters/benchmarks. They may extend 
 ## File-size rule
 
 All production `.cs` files must remain below 64 KiB. Configuration is split by parameter group, so there is no special large-file exception.
+
+
+## Type ownership
+
+- No nested production helper/model classes are permitted inside the cTrader host.
+- Runtime value objects such as the closed-bar MTF context have dedicated files.
+- Cache-entry/support types also have dedicated files.
+- A partial CFIPIndicator file may contain only the host surface or one cohesive behavior module; it must not hide unrelated helper types.

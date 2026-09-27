@@ -8,15 +8,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private sealed class OssQuoteCacheEntry
-        {
-            public Bars Bars { get; set; }
-            public int FirstIndex { get; set; } = -1;
-            public int ClosedIndex { get; set; } = -1;
-            public int BarCount { get; set; } = -1;
-            public List<StockQuote> Quotes { get; set; }
-        }
-
         private readonly List<OssQuoteCacheEntry> _ossQuoteCaches =
             new List<OssQuoteCacheEntry>();
 

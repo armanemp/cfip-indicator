@@ -20,16 +20,17 @@ namespace cAlgo
 
             if (quotes == null ||
                 quotes.Count < Math.Max(20, RsiPeriod + 5))
-                return 0;
+                return double.NaN;
 
             var results =
                 StockIndicator.GetRsi(
                     quotes,Math.Max(2, RsiPeriod))
                     .ToList();
 
-            return results.Count == 0
-                ? 0
-                : results[results.Count - 1].Rsi ?? 0;
+            return results.Count == 0 ||
+                   !results[results.Count - 1].Rsi.HasValue
+                ? double.NaN
+                : results[results.Count - 1].Rsi.Value;
         }
     }
 }

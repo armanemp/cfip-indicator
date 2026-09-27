@@ -20,7 +20,7 @@ namespace cAlgo
 
             if (quotes == null ||
                 quotes.Count < 40)
-                return 0;
+                return double.NaN;
 
             var results =
                 StockIndicator.GetBollingerBands(
@@ -29,9 +29,10 @@ namespace cAlgo
                     2)
                     .ToList();
 
-            return results.Count == 0
-                ? 0
-                : results[results.Count - 1].PercentB ?? 0;
+            return results.Count == 0 ||
+                   !results[results.Count - 1].PercentB.HasValue
+                ? double.NaN
+                : results[results.Count - 1].PercentB.Value;
         }
     }
 }

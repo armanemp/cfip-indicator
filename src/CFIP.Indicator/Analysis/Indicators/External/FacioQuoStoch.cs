@@ -15,8 +15,8 @@ namespace cAlgo
             out double k,
             out double d)
         {
-            k = 0;
-            d = 0;
+            k = double.NaN;
+            d = double.NaN;
 
             IReadOnlyList<StockQuote> quotes =
                 GetOssQuotes(

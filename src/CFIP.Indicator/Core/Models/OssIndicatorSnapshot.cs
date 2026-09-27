@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     internal sealed class OssIndicatorSnapshot
@@ -5,12 +7,13 @@ namespace cAlgo
         public int BullVotes { get; set; }
         public int BearVotes { get; set; }
         public int IndicatorCount { get; set; }
-        public double Rsi { get; set; }
-        public double MacdHistogram { get; set; }
-        public double BollingerPercentB { get; set; }
-        public double Mfi { get; set; }
-        public double StochK { get; set; }
-        public double StochD { get; set; }
-        public double SuperTrend { get; set; }
+
+        public double Rsi { get; set; } = double.NaN;
+        public double MacdHistogram { get; set; } = double.NaN;
+        public double BollingerPercentB { get; set; } = double.NaN;
+        public double Mfi { get; set; } = double.NaN;
+        public double StochK { get; set; } = double.NaN;
+        public double StochD { get; set; } = double.NaN;
+        public double SuperTrend { get; set; } = double.NaN;
     }
 }
