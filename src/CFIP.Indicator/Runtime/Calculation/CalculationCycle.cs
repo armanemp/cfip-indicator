@@ -1,8 +1,3 @@
-// ============================================================================
-// CFIP Indicator — CalculationCycle.cs
-// One responsibility per module. Behavioral parity with v73 is preserved.
-// ============================================================================
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;

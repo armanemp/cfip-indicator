@@ -12,4 +12,4 @@ Every admitted component must document:
 - reason for adoption
 - tests/benchmarks
 
-The baseline indicator currently has no third-party runtime dependency.
+The production indicator currently has no mandatory third-party runtime dependency. Candidate libraries and their compatibility decisions are recorded in `docs/OSS-COMPONENT-REGISTER.md`.

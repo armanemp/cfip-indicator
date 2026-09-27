@@ -1,42 +1,48 @@
 # OSS Component Register
 
-## Production boundary
+## Admission policy
 
-CFIP remains the strategy and execution authority. OSS components are introduced only behind adapters or benchmark projects.
+OSS is an isolated source and research boundary. A component is promoted to production only after runtime compatibility, numerical validation, performance value, license review and architectural isolation have all been demonstrated.
 
-## QuanTAlib
+## Current production policy
 
-Repository: https://github.com/mihakralj/QuanTAlib
+The cTrader indicator currently has no mandatory third-party runtime dependency.
 
-Apache-2.0. The project advertises a large technical-indicator catalog and streaming/fixed-memory calculation design. The current package line reviewed for this project targets a newer .NET runtime than the cTrader net6 production target, so it is a benchmark candidate rather than a production dependency at this stage.
+OSS components may provide:
 
-## FacioQuo Stock Indicators 2.7.3 — optional production adapter
+- numerical indicator cross-checks;
+- optional secondary confluence;
+- offline research and benchmark tooling;
+- source-level reference implementations.
+
+OSS components may not become a second decision engine, execution engine, broker layer or lifecycle authority.
+
+## Candidate: FacioQuo Stock Indicators
 
 Repository: https://github.com/facioquo/stock-indicators-dotnet
 
-Apache-2.0. The 2.7.3 compatibility line targets netstandard2.0/2.1 and is now isolated behind CFIP adapters for optional M5 secondary confluence. It never owns final decisions, risk, orders or broker lifecycle. The option is disabled by default until numerical fixture validation is complete.
+License: Apache-2.0.
 
-## FacioQuo.Stock.Indicators 3.0.1
+The current 3.x package line provides a broad technical-indicator catalog and streaming-oriented APIs, but its NuGet package currently targets .NET 8/9/10. It is therefore a research and numerical-validation candidate for the current cTrader target, not a direct production dependency. citeturn867652search0turn358101search7
 
-Repository: https://github.com/facioquo/stock-indicators-dotnet
+The previous 2.x package line remains useful as a compatibility reference because the 2.7.3 package was published with .NET Standard 2.0 compatibility. Its maintenance trajectory must be reviewed before any long-lived production dependency is chosen. citeturn867652search5
 
-Apache-2.0. The current v3 line provides a broad technical-indicator catalog and streaming/buffer-oriented APIs. Its current package target is newer than the net6 production target, so CFIP treats it as a .NET 8 research/validation benchmark rather than a direct production dependency.
+## Candidate: TA-Lib.NETCore
 
-The benchmark harness lives under `tools/CFIP.StockIndicators.Benchmark`. It never owns CFIP decision or broker execution.
+Repository: https://github.com/hmG3/TA-Lib.NETCore
 
-## QuantConnect LEAN
+License: LGPL-3.0.
+
+The implementation is written in C# with no .NET platform dependencies, making it technically interesting for fixture-level numerical validation. The copyleft license requires a dedicated legal/package-boundary review before commercial distribution. It remains a benchmark/adapter candidate until that review is complete. citeturn358101search1
+
+## Candidate: QuantConnect LEAN
 
 Repository: https://github.com/QuantConnect/Lean
 
-Apache-2.0 and highly modular. It is valuable as an offline research/backtesting architecture, but embedding it into this indicator would create a second trading engine and is therefore intentionally rejected for direct runtime integration.
+License: Apache-2.0.
 
-## Adoption gate
+LEAN is a mature modular algorithmic-trading engine, but its current development and build requirements target modern .NET and it would introduce a second trading-engine abstraction if embedded in the cTrader indicator. It is therefore an architectural reference and offline research candidate, not a cTrader runtime dependency. citeturn867652search2turn867652search10
 
-An OSS component is promoted from benchmark to production only when it is compatible with the target runtime, numerically validated against CFIP fixtures, measurably useful, license-compatible and isolated from decision/execution authority.
+## Current OSS rule
 
-## Extended secondary confluence
-
-The optional M5 OSS confluence now cross-checks ten independent numerical signals:
-RSI, MACD histogram, Bollinger %B, MFI, Stochastic, SuperTrend, Aroon oscillator, CCI, OBV direction and Parabolic SAR.
-
-These signals are supporting evidence only. They do not replace CFIP structure, liquidity, MTF, decision gates, risk policy or broker lifecycle authority.
+Do not copy a complete external trading engine into the cTrader indicator. Prefer narrow adapters around individual numerical indicators or research tools, and retain CFIP as the sole authority for structure, decision, risk, execution and broker lifecycle.
