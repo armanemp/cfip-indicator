@@ -386,7 +386,7 @@ namespace cAlgo
                                                 NormalizeLabel(),
                                                 stopPips,
                                                 targetPips,
-                                                "CFIP SMART73",
+                                                TradeExecutionMetadata.DefaultExecutionComment,
                                                 false);
                         
                                         if (result == null)
