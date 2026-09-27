@@ -64,7 +64,6 @@ namespace cAlgo
 
             DecisionFilterResult smartResult =
                 EvaluateDecisionSmartGates(
-                    closedM5,
                     decision,
                     adaptiveQualityThreshold,
                     adaptiveShareThreshold);
