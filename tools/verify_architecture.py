@@ -105,6 +105,8 @@ MODULAR_HELPERS = {
     "RenderPanelTradePlanRows",
     "RenderPanelContextRows",
     "RenderPanelAutoTradingRows",
+    "AddDirectionalVote",
+    "IsFiniteValue",
 }
 OSS_EXTENSION_METHODS = {
     "GetOssQuotes",

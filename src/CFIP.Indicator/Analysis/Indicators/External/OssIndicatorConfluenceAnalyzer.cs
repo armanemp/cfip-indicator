@@ -125,11 +125,5 @@ namespace cAlgo
                 snapshot.BearVotes++;
         }
 
-        private bool IsFiniteValue(double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value);
-        }
     }
 }
