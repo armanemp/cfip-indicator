@@ -22,11 +22,9 @@ private double CalculateAggressiveVolume(
                                     return 0;
                 
                                 double amount =
-                                    Math.Max(
-                                        0,
-                                        Account.Equity) *
-                                    EffectiveAggressiveRiskPercent() /
-                                    100.0;
+                                    RiskAmountCalculator.Calculate(
+                                        Account.Equity,
+                                        EffectiveAggressiveRiskPercent());
                 
                                 if (amount <= 0)
                                     return 0;
