@@ -15,6 +15,12 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private void InitializeExponentialMovingAverages(Native set, Bars bars)
+        {
+            set.Fast = Indicators.ExponentialMovingAverage(bars.ClosePrices, Math.Max(2, FastEma));
+            set.Slow = Indicators.ExponentialMovingAverage(bars.ClosePrices, Math.Max(3, SlowEma));
+        }
+
         private double Ema(Bars bars, int index, bool fast)
                         {
                             if (bars == null || index < 0 || index >= bars.Count)
