@@ -2,13 +2,13 @@ namespace cAlgo
 {
     internal readonly struct DecisionFrameContribution
     {
-        public int Bull { get; }
-        public int Bear { get; }
+        public double Bull { get; }
+        public double Bear { get; }
         public int Evidence { get; }
 
         public DecisionFrameContribution(
-            int bull,
-            int bear,
+            double bull,
+            double bear,
             int evidence)
         {
             Bull = bull;
