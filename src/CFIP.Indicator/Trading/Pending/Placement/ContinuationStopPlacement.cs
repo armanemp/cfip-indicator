@@ -219,9 +219,12 @@ namespace cAlgo
                                                         false,
                                                         "CONTINUATION STOP");
                                 
-                                                if (result == null ||
-                                                    !result.IsSuccessful ||
-                                                    result.PendingOrder == null)
+                                                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
+                                                        result != null,
+                                                        result != null &&
+                                                        result.IsSuccessful,
+                                                        result != null &&
+                                                        result.PendingOrder != null))
                                                 {
                                                     _autoOrdersBlockReason =
                                                         result != null &&
