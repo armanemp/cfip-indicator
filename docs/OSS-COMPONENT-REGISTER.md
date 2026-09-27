@@ -33,3 +33,10 @@ Apache-2.0 and highly modular. It is valuable as an offline research/backtesting
 ## Adoption gate
 
 An OSS component is promoted from benchmark to production only when it is compatible with the target runtime, numerically validated against CFIP fixtures, measurably useful, license-compatible and isolated from decision/execution authority.
+
+## Extended secondary confluence
+
+The optional M5 OSS confluence now cross-checks ten independent numerical signals:
+RSI, MACD histogram, Bollinger %B, MFI, Stochastic, SuperTrend, Aroon oscillator, CCI, OBV direction and Parabolic SAR.
+
+These signals are supporting evidence only. They do not replace CFIP structure, liquidity, MTF, decision gates, risk policy or broker lifecycle authority.

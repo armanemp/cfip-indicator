@@ -15,5 +15,10 @@ namespace cAlgo
         public double StochK { get; set; } = double.NaN;
         public double StochD { get; set; } = double.NaN;
         public double SuperTrend { get; set; } = double.NaN;
+
+        public double AroonOscillator { get; set; } = double.NaN;
+        public double Cci { get; set; } = double.NaN;
+        public double ObvBias { get; set; } = double.NaN;
+        public double ParabolicSar { get; set; } = double.NaN;
     }
 }

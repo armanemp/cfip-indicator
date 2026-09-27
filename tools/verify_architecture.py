@@ -115,6 +115,10 @@ OSS_EXTENSION_METHODS = {
     "FacioQuoStochBias",
     "FacioQuoSuperTrend",
     "BuildOssIndicatorSnapshot",
+    "FacioQuoAroonOscillator",
+    "FacioQuoCci",
+    "FacioQuoObvBias",
+    "FacioQuoParabolicSar",
 }
 reference_methods = [m for m in methods if m not in MODULAR_HELPERS and m not in OSS_EXTENSION_METHODS]
 unique_methods = set(reference_methods)
@@ -193,6 +197,10 @@ oss_files = {
     "FacioQuoStoch.cs": "FacioQuoStochBias",
     "FacioQuoSuperTrend.cs": "FacioQuoSuperTrend",
     "OssIndicatorConfluenceAnalyzer.cs": "BuildOssIndicatorSnapshot",
+    "FacioQuoAroon.cs": "FacioQuoAroonOscillator",
+    "FacioQuoCci.cs": "FacioQuoCci",
+    "FacioQuoObv.cs": "FacioQuoObvBias",
+    "FacioQuoParabolicSar.cs": "FacioQuoParabolicSar",
 }
 OSS_ROOT = ROOT / "Analysis" / "Indicators" / "External"
 for filename, method in oss_files.items():

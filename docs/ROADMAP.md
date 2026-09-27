@@ -68,3 +68,13 @@ Completed:
 - Restored AutoTradeLabel identity parity as a mandatory static invariant.
 
 Next implementation remains Phase 2: reduce high-coupling partial-method clusters into explicit internal services without changing the single-host cTrader compatibility surface.
+
+
+## Phase 3.1 — Extended numerical confluence
+
+Completed:
+- Added dedicated OSS adapters for Aroon, CCI, OBV and Parabolic SAR.
+- Extended the optional secondary M5 confluence surface from 6 to 10 indicators.
+- Kept every secondary indicator in its own source file.
+- Kept missing-data semantics explicit via NaN rather than overloading valid zero values.
+- Kept OSS signals strictly subordinate to CFIP decision and execution authority.
