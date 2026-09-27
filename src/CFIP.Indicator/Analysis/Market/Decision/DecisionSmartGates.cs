@@ -6,7 +6,6 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private DecisionFilterResult EvaluateDecisionSmartGates(
-            int closedM5,
             Decision decision,
             int adaptiveQualityThreshold,
             int adaptiveShareThreshold)
