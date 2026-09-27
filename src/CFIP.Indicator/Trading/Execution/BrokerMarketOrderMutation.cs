@@ -1,0 +1,41 @@
+// CFIP Indicator — BrokerMarketOrderMutation.cs
+// Single-responsibility broker mutation module.
+
+using System;
+using cAlgo.API;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private TradeResult TryExecuteMarketOrder(
+            TradeType tradeType,
+            string symbolName,
+            double volume,
+            string label,
+            double stopPips,
+            double targetPips,
+            string comment,
+            bool hasTrailingStop,
+            string context)
+        {
+            try
+            {
+                return ExecuteMarketOrder(
+                    tradeType,
+                    symbolName,
+                    volume,
+                    label,
+                    stopPips,
+                    targetPips,
+                    comment,
+                    hasTrailingStop);
+            }
+            catch (Exception ex)
+            {
+                Print("CFIP market mutation failed ({0}): {1}", context, ex.Message);
+                return null;
+            }
+        }
+    }
+}
