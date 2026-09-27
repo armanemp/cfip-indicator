@@ -64,6 +64,15 @@ Edit the smallest authoritative module that owns the behavior.
 | Session window | `Trading/Risk/SessionWindowEvaluator.cs` |
 | Auto-trade safety | `Trading/Risk/AutoTradeSafetyGuard.cs` |
 | Lifecycle events | `Trading/Lifecycle/*.cs` |
+| Pending-fill plan | `Trading/Lifecycle/PendingFillPlanBuilder.cs` |
+| Pending-fill protection | `Trading/Lifecycle/PendingFillProtectionCoordinator.cs` |
+| Broker fill reconciliation | `Trading/Lifecycle/LiveFillReconciliation.cs` |
+| Broker state snapshot | `Trading/Lifecycle/BrokerStateSnapshot.cs` |
+| Live-plan recovery | `Trading/Lifecycle/ManagedLivePlanRecovery.cs`, `LivePlanFactory.cs` |
+| Live-plan target recovery | `Trading/Lifecycle/LivePlanTargetEnrichment.cs`, `LivePlanFurtherTargetSelector.cs` |
+| Position/pending circuit breakers | `Trading/Lifecycle/PositionCircuitBreaker.cs`, `PendingOrderCircuitBreaker.cs` |
+| Live-plan exit / managed lookup | `Trading/Lifecycle/LivePlanExitCoordinator.cs`, `ManagedPositionLookup.cs` |
+| Execution runtime state | `Trading/Execution/State/*.cs` — auto-trading state, lifecycle state, target stage, labels |
 | Live management | `Trading/LiveManagement/*.cs` |
 | Prediction / intelligence | `Trading/Intelligence/**/*.cs` |
 | Fresh trigger evidence | `Trading/Intelligence/FreshTriggerEvidenceAnalyzer.cs` |
