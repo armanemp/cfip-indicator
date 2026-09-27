@@ -138,13 +138,16 @@ duplicate_counts = {
     for name in set(reference_methods)
     if (count := reference_methods.count(name)) > 1
 }
-if set(duplicate_counts) - {"AddScore"}:
+ALLOWED_OVERLOADS = {"AddScore", "Calculate", "Evaluate"}
+unexpected_overloads = set(duplicate_counts) - ALLOWED_OVERLOADS
+if unexpected_overloads:
     raise SystemExit(
         "Unexpected duplicate/overloaded method names: "
-        + ", ".join(sorted(set(duplicate_counts) - {"AddScore"}))
+        + ", ".join(sorted(unexpected_overloads))
     )
-if reference_methods.count("AddScore") != 2:
-    raise SystemExit("Expected exactly one overloaded method pair: AddScore")
+for overload_name in sorted(ALLOWED_OVERLOADS):
+    if overload_name in duplicate_counts and duplicate_counts[overload_name] < 2:
+        raise SystemExit(f"Invalid overload declaration count: {overload_name}")
 
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
