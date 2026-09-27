@@ -237,7 +237,7 @@ namespace cAlgo
                                         }
                         
                                         TradeResult result =
-                                            ExecuteMarketOrder(
+                                            TryExecuteMarketOrder(
                                                 type,
                                                 SymbolName,
                                                 volume,
@@ -245,11 +245,15 @@ namespace cAlgo
                                                 stopPips,
                                                 tpPips,
                                                 TradeExecutionMetadata.DefaultExecutionComment,
-                                                false);
+                                                false,
+                                                "AGGRESSIVE MARKET");
                         
-                                        if (result == null ||
-                                            !result.IsSuccessful ||
-                                            result.Position == null)
+                                        if (!BrokerConfirmationPolicy.CanAdoptPosition(
+                                                result != null,
+                                                result != null &&
+                                                result.IsSuccessful,
+                                                result != null &&
+                                                result.Position != null))
                                         {
                                             _autoExecutionBlockReason =
                                                 result != null &&

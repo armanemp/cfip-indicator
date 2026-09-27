@@ -303,6 +303,63 @@ for helper_name in (
     if len(owners) != 1:
         raise SystemExit(f"Decision gate ownership failed: {helper_name}")
 
+# Broker mutation boundary checks.
+PRODUCTION_ROOT = ROOT
+MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
+MUTATION_ALLOWED_FILES = {
+    "BrokerMarketOrderMutation.cs",
+    "BrokerPendingOrderPlacement.cs",
+    "BrokerLimitOrderPlacement.cs",
+    "BrokerPendingOrderCancellation.cs",
+    "BrokerStopLossMutation.cs",
+    "BrokerTakeProfitMutation.cs",
+    "BrokerPositionCloseMutation.cs",
+}
+REQUIRED_BROKER_MUTATION_FILES = {
+    "BrokerMarketOrderMutation.cs",
+    "BrokerPendingOrderPlacement.cs",
+    "BrokerLimitOrderPlacement.cs",
+    "BrokerPendingOrderCancellation.cs",
+    "BrokerStopLossMutation.cs",
+    "BrokerTakeProfitMutation.cs",
+    "BrokerPositionCloseMutation.cs",
+    "BrokerProtectionCoordinator.cs",
+    "BrokerConfirmationPolicy.cs",
+}
+for filename in REQUIRED_BROKER_MUTATION_FILES:
+    path = MUTATION_ALLOWED_ROOT / filename
+    if not path.exists():
+        raise SystemExit(f"Broker mutation owner missing: {filename}")
+
+BROKER_MUTATION_PATTERNS = (
+    r"(?<!Try)ExecuteMarketOrder\s*\(",
+    r"(?<!Try)PlaceStopOrder\s*\(",
+    r"(?<!Try)PlaceLimitOrder\s*\(",
+    r"(?<!Try)ModifyStopLossPrice\s*\(",
+    r"(?<!Try)ModifyTakeProfitPrice\s*\(",
+    r"(?<!Try)ModifyPendingOrder\s*\(",
+    r"(?<!Try)CancelPendingOrder\s*\(",
+    r"(?<!Try)ClosePosition\s*\(",
+)
+for p in sorted(PRODUCTION_ROOT.rglob("*.cs")):
+    relative = p.relative_to(ROOT)
+    text_module = strip_for_static_checks(p.read_text(encoding="utf-8"))
+    direct = [
+        pattern for pattern in BROKER_MUTATION_PATTERNS
+        if re.search(pattern, text_module)
+    ]
+    if not direct:
+        continue
+    if p.parent != MUTATION_ALLOWED_ROOT or p.name not in MUTATION_ALLOWED_FILES:
+        raise SystemExit(
+            f"Broker mutation escaped boundary: {relative}"
+        )
+
+EXECUTION_PLAN = ROOT / "Trading" / "Execution" / "ExecutionPlanPreparation.cs"
+if any(re.search(pattern, strip_for_static_checks(EXECUTION_PLAN.read_text(encoding="utf-8")))
+       for pattern in BROKER_MUTATION_PATTERNS):
+    raise SystemExit("Broker mutation leaked into execution plan preparation")
+
 # Planning/risk ownership checks.
 PLANNING_ROOT = ROOT / "Planning"
 RISK_ROOT = ROOT / "Trading" / "Risk"

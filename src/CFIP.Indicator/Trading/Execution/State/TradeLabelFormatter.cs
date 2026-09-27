@@ -1,0 +1,22 @@
+// CFIP Indicator — TradeLabelFormatter.cs
+// Single-responsibility execution state module.
+
+using System;
+using cAlgo.API;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private string NormalizeLabel()
+                                {
+                                    return
+                                        string.IsNullOrWhiteSpace(
+                                            AutoTradeLabel)
+                                            ? "CFIP-SMART"
+                                            : AutoTradeLabel.Trim();
+                                }
+    }
+}

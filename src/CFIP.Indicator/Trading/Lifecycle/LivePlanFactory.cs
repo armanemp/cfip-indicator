@@ -1,0 +1,60 @@
+// CFIP Indicator — LivePlanFactory.cs
+// Single-responsibility lifecycle module.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using cAlgo.API;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private Plan CreateManagedPlanFromExecution(
+                            int direction,
+                            double entry,
+                            double stop,
+                            double target,
+                            int createdM5,
+                            double volume,
+                            ExecutionMode entryMode =
+                                ExecutionMode.BreakoutMarket)
+                        {
+                            double risk =
+                                Math.Abs(
+                                    entry -
+                                    stop);
+                
+                            return new Plan
+                            {
+                                Direction = direction,
+                                EntryMode = entryMode,
+                                Entry = NormalizePrice(entry),
+                                IdealEntry = NormalizePrice(entry),
+                                Stop = NormalizePrice(stop),
+                                Tp1 = NormalizePrice(target),
+                                Tp2 = 0,
+                                Tp3 = 0,
+                                Tp4 = 0,
+                                Risk = Math.Max(
+                                    Symbol.PipSize,
+                                    risk),
+                                Tp1RR =
+                                    risk > 0
+                                        ? Math.Abs(
+                                            target - entry) /
+                                          risk
+                                        : 0,
+                                StopSource = "LIVE / STRUCTURAL",
+                                StopQuality = 100,
+                                Tp1Source = "LIVE / ADAPTIVE",
+                                Tp1Quality = 100,
+                                CreatedM5 = createdM5,
+                                OriginalVolume = volume,
+                                IsLivePosition = true
+                            };
+                        }
+    }
+}

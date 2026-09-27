@@ -189,7 +189,7 @@ namespace cAlgo
                                                             PendingOrderExpiryMinutes));
                                 
                                                 TradeResult result =
-                                                    PlaceLimitOrder(
+                                                    TryPlaceLimitOrder(
                                                         direction == 1
                                                             ? TradeType.Buy
                                                             : TradeType.Sell,
@@ -202,11 +202,15 @@ namespace cAlgo
                                                         ProtectionType.Relative,
                                                         expiration,
                                                         TradeExecutionMetadata.DefaultExecutionComment,
-                                                        false);
+                                                        false,
+                                                        "REVERSAL LIMIT");
                                 
-                                                if (result == null ||
-                                                    !result.IsSuccessful ||
-                                                    result.PendingOrder == null)
+                                                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
+                                                        result != null,
+                                                        result != null &&
+                                                        result.IsSuccessful,
+                                                        result != null &&
+                                                        result.PendingOrder != null))
                                                 {
                                                     _autoOrdersBlockReason =
                                                         result != null &&

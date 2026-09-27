@@ -21,3 +21,6 @@ jobs:
       - run: dotnet restore tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj
       - run: dotnet build tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj --configuration Release --no-restore
       - run: dotnet run --project tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj --configuration Release --no-build
+      - run: dotnet restore tools/CFIP.Execution.Contracts/CFIP.Execution.Contracts.csproj
+      - run: dotnet build tools/CFIP.Execution.Contracts/CFIP.Execution.Contracts.csproj --configuration Release --no-restore
+      - run: dotnet run --project tools/CFIP.Execution.Contracts/CFIP.Execution.Contracts.csproj --configuration Release --no-build

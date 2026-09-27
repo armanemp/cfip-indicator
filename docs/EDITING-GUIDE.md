@@ -39,11 +39,20 @@ Edit the smallest authoritative module that owns the behavior.
 | Target selection | `Planning/TradePlan/TargetSelector.cs`, `TargetStageSelector.cs` |
 | Target metadata | `Planning/TradePlan/TargetMetadataEnricher.cs` |
 | Target progression | `Planning/TradePlan/TargetProgressionValidator.cs`, `TargetProgressionRule.cs` |
+| Executable plan preparation | `Trading/Execution/ExecutionPlanPreparation.cs` |
 | Runtime / MTF / calculation | `Runtime/**/*.cs` |
 | Automatic market execution | `Trading/Execution/AutomaticMarket/*.cs` |
 | Aggressive execution | `Trading/Execution/Aggressive/*.cs` |
 | Pending orders | `Trading/Pending/**/*.cs` |
-| Broker mutation coordination | `Trading/Execution/BrokerMutationCoordinator.cs` |
+| Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
+| Pending stop-order mutation | `Trading/Execution/BrokerPendingOrderPlacement.cs` |
+| Pending limit-order mutation | `Trading/Execution/BrokerLimitOrderPlacement.cs` |
+| Pending cancellation mutation | `Trading/Execution/BrokerPendingOrderCancellation.cs` |
+| Stop-loss mutation | `Trading/Execution/BrokerStopLossMutation.cs` |
+| Take-profit mutation | `Trading/Execution/BrokerTakeProfitMutation.cs` |
+| Position-close mutation | `Trading/Execution/BrokerPositionCloseMutation.cs` |
+| Broker protection coordination | `Trading/Execution/BrokerProtectionCoordinator.cs` |
+| Broker mutation confirmation policy | `Trading/Execution/BrokerConfirmationPolicy.cs` |
 | Broker identity | `Trading/Identity/*.cs` |
 | Risk / suitability | `Trading/Risk/*.cs` |
 | Daily loss guard | `Trading/Risk/DailyLossGuard.cs` |
@@ -55,6 +64,15 @@ Edit the smallest authoritative module that owns the behavior.
 | Session window | `Trading/Risk/SessionWindowEvaluator.cs` |
 | Auto-trade safety | `Trading/Risk/AutoTradeSafetyGuard.cs` |
 | Lifecycle events | `Trading/Lifecycle/*.cs` |
+| Pending-fill plan | `Trading/Lifecycle/PendingFillPlanBuilder.cs` |
+| Pending-fill protection | `Trading/Lifecycle/PendingFillProtectionCoordinator.cs` |
+| Broker fill reconciliation | `Trading/Lifecycle/LiveFillReconciliation.cs` |
+| Broker state snapshot | `Trading/Lifecycle/BrokerStateSnapshot.cs` |
+| Live-plan recovery | `Trading/Lifecycle/ManagedLivePlanRecovery.cs`, `LivePlanFactory.cs` |
+| Live-plan target recovery | `Trading/Lifecycle/LivePlanTargetEnrichment.cs`, `LivePlanFurtherTargetSelector.cs` |
+| Position/pending circuit breakers | `Trading/Lifecycle/PositionCircuitBreaker.cs`, `PendingOrderCircuitBreaker.cs` |
+| Live-plan exit / managed lookup | `Trading/Lifecycle/LivePlanExitCoordinator.cs`, `ManagedPositionLookup.cs` |
+| Execution runtime state | `Trading/Execution/State/*.cs` — auto-trading state, lifecycle state, target stage, labels |
 | Live management | `Trading/LiveManagement/*.cs` |
 | Prediction / intelligence | `Trading/Intelligence/**/*.cs` |
 | Fresh trigger evidence | `Trading/Intelligence/FreshTriggerEvidenceAnalyzer.cs` |
@@ -73,6 +91,10 @@ Edit the smallest authoritative module that owns the behavior.
 Do not add compatibility aliases, duplicate business rules or a second execution path. Update the authoritative owner, migrate callers, remove the old owner, then run static and runtime acceptance.
 
 
+| Broker fill reconciliation | `Trading/Lifecycle/LiveFillReconciliation.cs` |
+| Broker state snapshot | `Trading/Lifecycle/BrokerStateSnapshot.cs` |
+| Pending fill plan | `Trading/Lifecycle/PendingFillPlanBuilder.cs` |
+| Pending fill protection | `Trading/Lifecycle/PendingFillProtectionCoordinator.cs` |
 | Outcome telemetry | Trading/Intelligence/OutcomeTelemetryEngine.cs |
 | Prediction calculations | Trading/Intelligence/Prediction/ |
 | Prediction rendering | UI/Chart/PredictionRenderer.cs |

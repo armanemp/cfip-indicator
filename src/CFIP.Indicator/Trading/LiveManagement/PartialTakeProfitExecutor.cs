@@ -63,23 +63,19 @@ namespace cAlgo
                         closeVolume >=
                         position.VolumeInUnits;
 
-                    TradeResult closeResult =
-                        closingEverything
-                            ? ClosePosition(position)
-                            : ClosePosition(
-                                position,
-                                closeVolume);
+                    bool closeAccepted =
+                        TryClosePosition(
+                            position,
+                            "PARTIAL CLOSE • " + tag,
+                            closingEverything
+                                ? (double?)null
+                                : closeVolume);
 
-                    if (closeResult == null ||
-                        !closeResult.IsSuccessful)
+                    if (!closeAccepted)
                     {
                         Print(
-                            "CFIP partial close rejected ({0}): {1}",
-                            tag,
-                            closeResult != null &&
-                            closeResult.Error.HasValue
-                                ? closeResult.Error.Value.ToString()
-                                : "UNKNOWN");
+                            "CFIP partial close rejected ({0}).",
+                            tag);
                         return false;
                     }
 

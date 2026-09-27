@@ -1,10 +1,8 @@
-// ============================================================================
-// CFIP Indicator — BrokerStateSynchronization.cs
-// ============================================================================
+// CFIP Indicator — LiveFillReconciliation.cs
+// Single-responsibility lifecycle module.
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using cAlgo.API;
 using cAlgo.API.Indicators;
@@ -268,71 +266,6 @@ namespace cAlgo
                                         -1;
                         
                                     RecalculatePlanRR();
-                                }
-        
-        private void SynchronizeLiveBrokerState()
-                                {
-                                    _activeBrokerStop = 0;
-                                    _activeBrokerTarget = 0;
-                        
-                                    if (_plan == null ||
-                                        !_plan.IsLivePosition)
-                                        return;
-                        
-                                    Position position =
-                                        GetManagedLivePositionForPlan();
-                        
-                                    if (position == null)
-                                        return;
-                        
-                                    int direction =
-                                        position.TradeType == TradeType.Buy
-                                            ? 1
-                                            : -1;
-                        
-                                    if (IsFinitePositive(position.EntryPrice))
-                                        _plan.Entry =
-                                            NormalizePrice(position.EntryPrice);
-                        
-                                    if (position.StopLoss.HasValue &&
-                                        IsFinitePositive(position.StopLoss.Value) &&
-                                        IsValidStop(
-                                            direction,
-                                            position.EntryPrice,
-                                            position.StopLoss.Value))
-                                    {
-                                        _activeBrokerStop =
-                                            NormalizePrice(position.StopLoss.Value);
-                                    }
-                        
-                                    if (position.TakeProfit.HasValue &&
-                                        IsFinitePositive(position.TakeProfit.Value))
-                                    {
-                                        _activeBrokerTarget =
-                                            NormalizePrice(position.TakeProfit.Value);
-                                    }
-                                }
-        
-        private double GetActiveBrokerStopPrice()
-                                {
-                                    if (_plan != null &&
-                                        _plan.IsLivePosition &&
-                                        IsFinitePositive(_activeBrokerStop))
-                                        return _activeBrokerStop;
-                        
-                                    return _plan == null
-                                        ? 0
-                                        : _plan.Stop;
-                                }
-        
-        private double GetActiveBrokerTargetPrice()
-                                {
-                                    return
-                                        _plan != null &&
-                                        _plan.IsLivePosition &&
-                                        IsFinitePositive(_activeBrokerTarget)
-                                            ? _activeBrokerTarget
-                                            : 0;
                                 }
     }
 }
