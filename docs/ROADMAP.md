@@ -1,37 +1,58 @@
 # CFIP Indicator — Roadmap
 
-## Completed
+## Baseline
 
-- Reference behavior preserved from the complete v73 baseline.
-- 513/513 parameters preserved.
-- 311/311 reference methods preserved.
-- Indicators isolated into dedicated files.
-- Structure, zones, liquidity, decision, planning, execution, pending orders, lifecycle, risk, intelligence and UI decomposed into focused modules.
-- v73 managed broker label restored.
-- Architecture and cTrader compile gates added.
+The complete v73 behavior remains the behavioral reference. The current repository preserves the full 513-parameter surface and 311 unique reference methods.
 
-## Phase 2 — domain-boundary extraction
+## Phase 1 — Artifact-level modularization
 
-- Replace cross-module mutable field access with explicit domain snapshots/contracts.
-- Move broker API calls behind a narrow broker mutation boundary.
-- Separate decision state, execution intent, broker snapshot and presentation state.
-- Add deterministic fixtures for MTF, FVG, Order Block, liquidity, decision, entry, SL/TP and lifecycle transitions.
+Completed in the current refactor:
 
-## Phase 3 — advanced analytics
+- One native indicator per file.
+- One analyzer per file.
+- One domain model per file.
+- One enum per file.
+- One cTrader parameter Group per file.
+- Execution-intent construction and validation moved out of model declarations.
+- Legacy monolithic source paths blocked by architecture verification.
+- Production source file-size limit set to 64 KiB without a configuration-file exception.
 
-- Benchmark OSS indicator backends against cTrader native calculations.
-- Adopt only compatible, measured components.
-- Add feature-level confidence/provenance so every decision contribution is explainable.
-- Expand prediction and outcome calibration without allowing prediction to directly execute trades.
+## Phase 2 — Object-level service isolation
 
-## Phase 4 — trading acceptance
+Next:
 
-- Compile against the target installed cTrader Automate API.
-- Test market execution, pending orders, rejection, slippage, missing protection, partial close, reconnect/restart, reversal, invalidation and end-of-day handling.
-- Verify chart/panel state always matches broker state after every mutation.
+- Convert high-coupling `partial class` method clusters into explicit internal services with narrow inputs/outputs.
+- Introduce immutable cycle snapshots for market/analysis/decision/planning boundaries.
+- Remove direct cross-layer field access where a service contract can replace it.
+- Keep one broker mutation boundary and one execution authority.
 
-## Phase 5 — performance and release
+## Phase 3 — Advanced indicators and numerical cross-validation
 
-- Benchmark calculation latency and memory.
-- Remove only proven repeated scans/allocations.
-- Produce release build only after source, compile and scenario gates pass.
+- Add an optional adapter for a netstandard-compatible OSS indicator library after fixture-level numerical validation.
+- Compare selected indicators against CFIP calculations and keep CFIP decisions authoritative.
+- Expand momentum, volatility, trend, channel and oscillator coverage without duplicating existing semantics.
+- Add per-indicator health/availability metadata.
+
+## Phase 4 — Trading correctness and scenario suite
+
+Validate controlled scenarios for:
+
+- market execution;
+- stop/limit pending orders;
+- rejection/slippage;
+- structural SL/TP;
+- partial close / break-even;
+- dynamic target progression;
+- reversal / invalidation / exhaustion;
+- restart/reconnect reconciliation;
+- duplicate events and idempotency;
+- daily-loss and suitability guards;
+- multi-position and multi-fill behavior.
+
+## Phase 5 — cTrader acceptance and release hardening
+
+- Compile against the target cTrader Automate API.
+- Run the indicator on the target cTrader build.
+- Verify chart/panel/popup behavior across timeframes.
+- Verify resource usage and remove only proven inefficiencies.
+- Freeze a release baseline only after static, compile and runtime gates pass.

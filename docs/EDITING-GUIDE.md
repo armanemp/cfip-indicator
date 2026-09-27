@@ -1,35 +1,36 @@
-# Editing Guide
+# CFIP Indicator — Editing Guide
 
-Change the file that owns the behavior.
+Edit the smallest authoritative module that owns the behavior.
 
-| Responsibility | Owner |
+| Concern | Owner |
 |---|---|
-| EMA | Analysis/Indicators/ExponentialMovingAverage.cs |
-| ATR | Analysis/Indicators/AverageTrueRange.cs |
-| RSI | Analysis/Indicators/RelativeStrengthIndex.cs |
-| ADX | Analysis/Indicators/AverageDirectionalIndex.cs |
-| DMI | Analysis/Indicators/DirectionalMovementIndex.cs |
-| Market frame | Analysis/Market/MarketFrameAnalyzer.cs |
-| Decision construction | Analysis/Market/Decision/DecisionEngine.cs |
-| Decision evidence | Analysis/Market/Decision/DecisionEvidence.cs |
-| Decision filters | Analysis/Market/Decision/DecisionFilters.cs |
-| FVG | Analysis/Structure/Zones/FvgAnalyzer.cs |
-| Order Block | Analysis/Structure/Zones/OrderBlockAnalyzer.cs |
-| Liquidity | Analysis/Structure/LiquidityAnalyzer.cs |
-| Entry trigger | Planning/Entry/EntryTriggerAnalyzer.cs |
-| Execution model | Planning/Execution/ |
-| Trade plan | Planning/TradePlan/ |
-| Runtime | Runtime/ |
-| Risk | Trading/Risk/ |
-| Pending orders | Trading/Pending/ |
-| Market execution | Trading/Execution/AutomaticMarket/ |
-| Broker mutations | Trading/Execution/ |
-| Lifecycle | Trading/Lifecycle/ |
-| Live management | Trading/LiveManagement/ |
-| Prediction / calibration | Trading/Intelligence/ |
-| Alerts | Trading/Alerts/AlertEngine.cs |
-| Chart | UI/Chart/ |
-| Panel | UI/Panel/ |
-| Popup | UI/Popup/PopupView.cs |
+| Public cTrader parameters | `Indicator/Parameters/*.cs` — one file per parameter Group |
+| Domain models | `Core/Models/*.cs` — one type per file |
+| Enums | `Core/Enums/*.cs` — one enum per file |
+| Native indicators | `Analysis/Indicators/*.cs` |
+| Market context / frame | `Analysis/Market/*.cs` |
+| Decision | `Analysis/Market/Decision/*.cs` |
+| Reaction | `Analysis/Reaction/*.cs` |
+| Structure / FVG / Order Block / liquidity | `Analysis/Structure/**/*.cs` |
+| Entry / trigger | `Planning/Entry/*.cs` |
+| Execution model / trigger validation | `Planning/Execution/*.cs` |
+| Trade plan / stop / targets | `Planning/TradePlan/*.cs` |
+| Runtime / MTF / calculation | `Runtime/**/*.cs` |
+| Automatic market execution | `Trading/Execution/AutomaticMarket/*.cs` |
+| Aggressive execution | `Trading/Execution/Aggressive/*.cs` |
+| Pending orders | `Trading/Pending/**/*.cs` |
+| Broker mutation coordination | `Trading/Execution/BrokerMutationCoordinator.cs` |
+| Broker identity | `Trading/Identity/*.cs` |
+| Risk / suitability | `Trading/Risk/*.cs` |
+| Lifecycle events | `Trading/Lifecycle/*.cs` |
+| Live management | `Trading/LiveManagement/*.cs` |
+| Prediction / intelligence | `Trading/Intelligence/**/*.cs` |
+| Alerts | `Trading/Alerts/*.cs` |
+| Validation | `Trading/Validation/*.cs` |
+| Chart | `UI/Chart/**/*.cs` |
+| Panel | `UI/Panel/**/*.cs` |
+| Popup | `UI/Popup/**/*.cs` |
+| Historical rendering | `UI/Historical/**/*.cs` |
+| Shared math/text/time utilities | `Core/{Math,Text,Time}/*.cs` |
 
-Do not create a second execution path, second decision engine or compatibility layer.
+Do not add compatibility aliases, duplicate business rules or a second execution path. Update the authoritative owner, migrate callers, remove the old owner, then run static and runtime acceptance.
