@@ -1,0 +1,22 @@
+name: OSS indicator benchmark
+
+on:
+  push:
+    paths:
+      - "tools/CFIP.StockIndicators.Benchmark/**"
+      - ".github/workflows/oss-benchmark.yml"
+  pull_request:
+    paths:
+      - "tools/CFIP.StockIndicators.Benchmark/**"
+      - ".github/workflows/oss-benchmark.yml"
+
+jobs:
+  stock-indicators:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - run: dotnet restore tools/CFIP.StockIndicators.Benchmark/CFIP.StockIndicators.Benchmark.csproj
+      - run: dotnet run --project tools/CFIP.StockIndicators.Benchmark/CFIP.StockIndicators.Benchmark.csproj --no-restore --configuration Release
