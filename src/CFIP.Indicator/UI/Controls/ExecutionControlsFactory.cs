@@ -13,7 +13,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-    {private void CreateQuickExecutionControls()
+        private void CreateQuickExecutionControls()
                         {
                             if (_quickExecutionStack != null)
                                 return;
