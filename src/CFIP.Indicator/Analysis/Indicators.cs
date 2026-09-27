@@ -1,0 +1,1 @@
+// Native indicator implementations now live in Analysis/Indicators/.\n// This file is retained temporarily as a compatibility shell during modularization.\n
