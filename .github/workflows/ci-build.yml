@@ -18,3 +18,6 @@ jobs:
       - run: dotnet restore tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj
       - run: dotnet build tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj --configuration Release --no-restore
       - run: dotnet run --project tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj --configuration Release --no-build
+      - run: dotnet restore tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj
+      - run: dotnet build tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj --configuration Release --no-restore
+      - run: dotnet run --project tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj --configuration Release --no-build
