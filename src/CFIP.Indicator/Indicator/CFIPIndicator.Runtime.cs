@@ -235,6 +235,7 @@ namespace cAlgo
                             _suitabilityEngine.Evaluate(
                                 _state.Runtime,
                                 _state.Market,
+                                _state.Decision,
                                 _configuration));
 
                         _state.SetDecision(
