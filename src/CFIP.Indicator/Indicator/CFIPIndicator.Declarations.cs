@@ -20,7 +20,7 @@ namespace cAlgo
             private Bars _w1Bars;
     
             // ====================================================================
-            // Complete v73 parameter surface carried forward unchanged.
+            // Complete  parameter surface carried forward unchanged.
             // These parameters are configuration inputs only. Business logic will
             // migrate to ConfigSnapshot in subsequent phases.
             // No parameter is silently dropped during the architectural migration.
