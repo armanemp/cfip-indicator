@@ -41,16 +41,7 @@ namespace cAlgo
                     Direction = consensus.Direction,
                     Edge = consensus.Edge,
                     Regime = input.Regime,
-                    TimeframeAgreement =
-                        (consensus.Direction == 1 ? evidence.BullTimeframeAgreement : evidence.BearTimeframeAgreement),
-                    IndependentEvidence =
-                        (consensus.Direction == 1 ? evidence.BullIndependentEvidence : evidence.BearIndependentEvidence),
-                    StructuralConfirmations =
-                        (consensus.Direction == 1 ? evidence.BullStructuralConfirmations : evidence.BearStructuralConfirmations),
-                    RegimeQuality =
-                        evidence.RegimeQuality,
-                    RetestQuality =
-                        (consensus.Direction == 1 ? evidence.BullRetestQuality : evidence.BearRetestQuality)
+                    RegimeQuality = evidence.RegimeQuality
                 };
 
             int strongestShare =
@@ -86,7 +77,10 @@ namespace cAlgo
             decision.SmartQuality =
                 _qualityCalculator.Calculate(
                     strongestShare,
-                    evidence);
+                    selectedTimeframeAgreement,
+                    selectedIndependentEvidence,
+                    selectedStructuralConfirmations,
+                    evidence.RegimeQuality);
 
             if (decision.Direction == 0)
             {
