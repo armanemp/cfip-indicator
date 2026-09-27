@@ -10,7 +10,7 @@ namespace cAlgo
             if (decision == null)
                 return string.Empty;
 
-            return _formatter.Build(
+            return _formatter.Format(
                 decision,
                 decision.BuyShare,
                 decision.SellShare);
