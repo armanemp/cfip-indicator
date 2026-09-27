@@ -15,6 +15,11 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private void InitializeDirectionalMovementSystem(Native set, Bars bars)
+        {
+            set.Dms = Indicators.DirectionalMovementSystem(bars, Math.Max(2, AdxPeriod), MovingAverageType.WilderSmoothing);
+        }
+
         private double Adx(Bars bars, int index)
                         {
                             if (bars == null || index < 0 || index >= bars.Count)
