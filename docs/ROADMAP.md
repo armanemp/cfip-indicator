@@ -87,9 +87,16 @@ v69-v89 remain frozen historical references in CFIP-PRO. This repository uses se
 
 ## Current state
 Phase 0: COMPLETE.
-Phase 1: ACTIVE — architecture foundation.
+Phase 1: ACTIVE — structural foundation implemented; dependency hardening and test expansion in progress.
 All later phases: NOT STARTED in this repository.
 
 Phase 0 acceptance: repository scaffold, roadmap, architecture, workflow, migration plan, .NET 6 project, solution and cTrader API reference are committed. No runtime acceptance is claimed.
 
 Phase 1 immediate objective: establish real Core contracts and CTrader adapter boundaries before migrating v89 behavior.
+
+
+## 2026-09-27 migration wave update
+
+The v89 reference has been decomposed into 107 C# source files representing 101 top-level declarations, plus a seven-file partial cTrader host. All 512 public parameters remain preserved. Nine v89 service interfaces are explicitly extracted. Core domain types are isolated under `CFIP.Indicator.Core` and are no longer declared in the cTrader host namespace.
+
+This is a migration milestone, not runtime acceptance. Real cTrader compilation, broker execution, restart/reconnect, partial-close and live-management scenarios remain mandatory before release.
