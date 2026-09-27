@@ -215,7 +215,7 @@ ATOMIC_METHOD_OWNERS = {
 for method, owner in ATOMIC_METHOD_OWNERS.items():
     if not owner.exists():
         raise SystemExit(f"Atomic analysis owner missing: {owner}")
-    count = len(re.findall(r"^\s*(?:public|private|protected|internal)\b[^\\r\\n{;]*\b" + re.escape(method) + r"\s*\\(", owner.read_text(encoding="utf-8"), re.MULTILINE))
+    count = len(re.findall(r"^\s*(?:public|private|protected|internal)\b[^\r\n{;]*\b" + re.escape(method) + r"\s*\(", owner.read_text(encoding="utf-8"), re.MULTILINE))
     if count != 1:
         raise SystemExit(f"Atomic method ownership failed: {method} in {owner} (count={count})")
 
