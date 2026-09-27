@@ -26,11 +26,11 @@ namespace cAlgo
                 return;
 
             var results =
-                quotes
-                    .GetStoch(
-                        14,
-                        3,
-                        3)
+                StockIndicator.GetStoch(
+                    quotes,
+                    14,
+                    3,
+                    3)
                     .ToList();
 
             if (results.Count == 0)

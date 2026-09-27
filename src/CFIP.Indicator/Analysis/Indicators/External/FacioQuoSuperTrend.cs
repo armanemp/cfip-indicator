@@ -21,10 +21,10 @@ namespace cAlgo
                 return 0;
 
             var results =
-                quotes
-                    .GetSuperTrend(
-                        10,
-                        3)
+                StockIndicator.GetSuperTrend(
+                    quotes,
+                    10,
+                    3)
                     .ToList();
 
             return results.Count == 0

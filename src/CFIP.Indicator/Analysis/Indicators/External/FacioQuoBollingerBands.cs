@@ -21,10 +21,10 @@ namespace cAlgo
                 return 0;
 
             var results =
-                quotes
-                    .GetBollingerBands(
-                        20,
-                        2)
+                StockIndicator.GetBollingerBands(
+                    quotes,
+                    20,
+                    2)
                     .ToList();
 
             return results.Count == 0

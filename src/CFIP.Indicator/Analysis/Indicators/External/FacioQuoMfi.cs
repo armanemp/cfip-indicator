@@ -21,8 +21,9 @@ namespace cAlgo
                 return 0;
 
             var results =
-                quotes
-                    .GetMfi(14)
+                StockIndicator.GetMfi(
+                    quotes,
+                    14)
                     .ToList();
 
             return results.Count == 0

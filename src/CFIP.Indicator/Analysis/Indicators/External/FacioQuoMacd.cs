@@ -29,11 +29,11 @@ namespace cAlgo
                 return 0;
 
             var results =
-                quotes
-                    .GetMacd(
-                        fast,
-                        slow,
-                        9)
+                StockIndicator.GetMacd(
+                    quotes,
+                    fast,
+                    slow,
+                    9)
                     .ToList();
 
             return results.Count == 0

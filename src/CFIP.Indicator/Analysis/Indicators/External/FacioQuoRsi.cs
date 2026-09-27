@@ -21,8 +21,8 @@ namespace cAlgo
                 return 0;
 
             var results =
-                quotes
-                    .GetRsi(Math.Max(2, RsiPeriod))
+                StockIndicator.GetRsi(
+                    quotes,Math.Max(2, RsiPeriod))
                     .ToList();
 
             return results.Count == 0

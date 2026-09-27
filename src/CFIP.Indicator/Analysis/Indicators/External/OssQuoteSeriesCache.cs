@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Skender.Stock.Indicators;
+using StockQuote = StockQuote;
+using StockIndicator = Skender.Stock.Indicators.Indicator;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -14,13 +15,13 @@ namespace cAlgo
             public int FirstIndex { get; set; } = -1;
             public int ClosedIndex { get; set; } = -1;
             public int BarCount { get; set; } = -1;
-            public List<Quote> Quotes { get; set; }
+            public List<StockQuote> Quotes { get; set; }
         }
 
         private readonly List<OssQuoteCacheEntry> _ossQuoteCaches =
             new List<OssQuoteCacheEntry>();
 
-        private IReadOnlyList<Quote> GetOssQuotes(
+        private IReadOnlyList<StockQuote> GetOssQuotes(
             Bars bars,
             int closedIndex)
         {
@@ -47,8 +48,8 @@ namespace cAlgo
             if (!stale)
                 return cache.Quotes;
 
-            List<Quote> quotes =
-                new List<Quote>(
+            List<StockQuote> quotes =
+                new List<StockQuote>(
                     Math.Max(
                         0,
                         closedIndex - firstIndex + 1));
@@ -58,7 +59,7 @@ namespace cAlgo
                  i++)
             {
                 quotes.Add(
-                    new Quote
+                    new StockQuote
                     {
                         Date = bars.OpenTimes[i],
                         Open = (decimal)bars.OpenPrices[i],
