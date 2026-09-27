@@ -1,6 +1,5 @@
 // ============================================================================
 // CFIP Indicator — PanelTextFormatting.cs
-// One responsibility per module. Behavioral parity with v73 is preserved.
 // ============================================================================
 
 using System;
