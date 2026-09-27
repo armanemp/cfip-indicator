@@ -58,3 +58,10 @@ All production `.cs` files must remain below 64 KiB. Configuration is split by p
 ## Dependency direction
 
 Core models and utilities are platform-neutral. cTrader-specific Bars, native-indicator instances, broker types and chart controls live in their owning analysis/trading/UI layers. A Core model may describe strategy state, but must not require the cTrader API merely to exist.
+
+
+## Presentation boundary
+
+Chart object creation/removal and visual renderers live only under UI/Chart, UI/Historical, UI/Panel or UI/Popup. Trading and Intelligence modules may request presentation through shared partial methods, but they do not own chart mutations.
+
+Broker mutation calls are restricted to the execution, pending, lifecycle and live-management boundaries. Analysis, planning, intelligence and UI cannot directly mutate broker state.

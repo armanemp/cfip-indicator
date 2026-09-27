@@ -237,3 +237,25 @@ for p in sorted(MODEL_ROOT.glob("*.cs")):
     text_module = p.read_text(encoding="utf-8")
     if re.search(r"\bcAlgo\.API(?:\.Indicators|\.Internals)?\b", text_module):
         raise SystemExit(f"Platform dependency leaked into Core model: {p}")
+
+
+# Presentation boundary: only UI-owned modules may touch cTrader chart objects.
+chart_api = re.compile(r"\bChart\.(?:Draw|RemoveObject|FindObject)\b")
+broker_mutation = re.compile(
+    r"\b(?:ExecuteMarketOrder|PlaceLimitOrder|PlaceStopOrder|"
+    r"ModifyStopLossPrice|ModifyTakeProfitPrice|ClosePosition|CancelPendingOrder)\b"
+)
+for p in files:
+    relative = str(p.relative_to(ROOT)).replace("\\", "/")
+    text_module = strip_for_static_checks(p.read_text(encoding="utf-8"))
+    if chart_api.search(text_module) and "/UI/" not in ("/" + relative):
+        raise SystemExit(f"Chart API leaked outside UI: {relative}")
+    if broker_mutation.search(text_module):
+        allowed = (
+            relative.startswith("Trading/Execution/") or
+            relative.startswith("Trading/Pending/") or
+            relative.startswith("Trading/LiveManagement/") or
+            relative.startswith("Trading/Lifecycle/")
+        )
+        if not allowed:
+            raise SystemExit(f"Broker mutation leaked outside execution boundary: {relative}")

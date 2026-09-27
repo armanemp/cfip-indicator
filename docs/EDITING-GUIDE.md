@@ -34,3 +34,12 @@ Edit the smallest authoritative module that owns the behavior.
 | Shared math/text/time utilities | `Core/{Math,Text,Time}/*.cs` |
 
 Do not add compatibility aliases, duplicate business rules or a second execution path. Update the authoritative owner, migrate callers, remove the old owner, then run static and runtime acceptance.
+
+
+| Outcome telemetry | Trading/Intelligence/OutcomeTelemetryEngine.cs |
+| Prediction calculations | Trading/Intelligence/Prediction/ |
+| Prediction rendering | UI/Chart/PredictionRenderer.cs |
+| Pending-order chart rendering | UI/Chart/PendingOrderRenderer.cs |
+| Outcome chart markers | UI/Chart/OutcomeMarkerRenderer.cs |
+
+Presentation methods should be added under UI even when their callers are in Trading. Broker mutation methods must remain in their execution/lifecycle ownership directories.
