@@ -279,6 +279,21 @@ if not (DECISION_SERVICE_ROOT / "DecisionEvidenceSnapshot.cs").exists():
 if (ROOT / "Trading" / "Intelligence" / "DecisionFeatures.cs").exists():
     raise SystemExit("DecisionFeatures.cs must remain removed after intelligence split")
 
+FILTER_PIPELINE = ROOT / "Analysis" / "Market" / "Decision" / "DecisionFilters.cs"
+FILTER_CODE = FILTER_PIPELINE.read_text(encoding="utf-8")
+if len(re.findall(r"^\s*private\s+bool\s+PassesDecisionFilters\s*\(", FILTER_CODE, re.MULTILINE)) != 1:
+    raise SystemExit("DecisionFilters must own exactly one pipeline entry point")
+for helper_name in (
+    "EvaluateDecisionConfirmationGates",
+    "EvaluateDecisionSmartGates",
+    "EvaluateDecisionStructureGates",
+    "EvaluateDecisionMarketGates",
+    "EvaluateDecisionLifecycleGates",
+):
+    owners = [p for p in files if helper_name in p.read_text(encoding="utf-8")]
+    if len(owners) != 1:
+        raise SystemExit(f"Decision gate ownership failed: {helper_name}")
+
 # Panel semantic renderer isolation.
 PANEL_ROOT = ROOT / "UI" / "Panel"
 ROW_EXPECTATIONS = {
