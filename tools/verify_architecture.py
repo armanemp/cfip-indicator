@@ -321,6 +321,7 @@ REQUIRED_PLANNING_FILES = {
     "Entry/ClosedBarTriggerReadyEvaluator.cs",
     "Entry/BullTriggerScoreAnalyzer.cs",
     "Entry/BearTriggerScoreAnalyzer.cs",
+    "TradePlan/TargetProgressionRule.cs",
 }
 for relative in REQUIRED_PLANNING_FILES:
     if not (PLANNING_ROOT / relative).exists():
@@ -342,6 +343,9 @@ REQUIRED_RISK_FILES = {
     "MarketSuitabilityGuard.cs",
     "SuitabilityRiskMultiplierCalculator.cs",
     "AutoTradeSafetyGuard.cs",
+    "RiskPercentPolicy.cs",
+    "RiskAmountCalculator.cs",
+    "MarginUsagePolicy.cs",
 }
 for relative in REQUIRED_RISK_FILES:
     if not (RISK_ROOT / relative).exists():
