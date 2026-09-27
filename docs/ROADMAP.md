@@ -170,6 +170,8 @@ Acceptance:
 
 ## Phase 5 — Automatic trading, pending orders and lifecycle
 
+Status: complete.
+
 Goal: isolate every broker-facing behavior while keeping one mutation boundary.
 
 Work:
@@ -188,6 +190,17 @@ Work:
 - Dynamic target progression.
 - Reversal/exhaustion/invalidation handling.
 - Restart/reconnect adoption.
+
+Completed in this phase:
+
+- Centralized market-order, pending-order, stop-loss, take-profit, position-close and protection mutations into explicit broker mutation owners under Trading/Execution.
+- Removed direct broker mutation calls from market execution, aggressive execution, pending placement and lifecycle orchestration callers.
+- Moved executable plan reconstruction out of the broker mutation boundary.
+- Split execution runtime state into auto-trading state, lifecycle state, target-stage state and trade-label formatting owners.
+- Split broker reconciliation and lifecycle recovery helpers into dedicated modules.
+- Split pending-fill plan construction from pending-fill protection recovery and event orchestration.
+- Added deterministic broker confirmation/adoption policy and execution contract fixtures.
+- Added static CI enforcement that broker mutation APIs cannot escape the approved mutation owners.
 
 Acceptance:
 
