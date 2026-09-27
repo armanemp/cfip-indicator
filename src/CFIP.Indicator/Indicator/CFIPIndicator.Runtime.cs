@@ -47,6 +47,12 @@ namespace cAlgo
         
                     _tradePlanBuilder =
                         new TradePlanBuilder();
+
+                    _predictionEngine =
+                        new PredictionEngine();
+
+                    _suitabilityEngine =
+                        new MarketSuitabilityEngine();
         
                     _executionPolicy =
                         new ExecutionPolicy();
@@ -223,6 +229,12 @@ namespace cAlgo
                         _state.Market != null &&
                         _state.Structure != null)
                     {
+                        _state.SetSuitability(
+                            _suitabilityEngine.Evaluate(
+                                _state.Runtime,
+                                _state.Market,
+                                _configuration));
+
                         _state.SetDecision(
                             _decisionEngine.Evaluate(
                                 _state.Runtime,
