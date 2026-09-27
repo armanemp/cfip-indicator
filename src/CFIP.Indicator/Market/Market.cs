@@ -16,6 +16,7 @@ namespace CFIP.Indicator
             public double PipSize { get; private set; }
             public double SpreadPips { get; private set; }
             public bool SymbolTradingEnabled { get; private set; }
+            public bool MarketOpen { get; private set; }
             public double Equity { get; private set; }
             public double FreeMargin { get; private set; }
             public double Balance { get; private set; }
@@ -35,6 +36,7 @@ namespace CFIP.Indicator
                 double pipSize,
                 double spreadPips,
                 bool symbolTradingEnabled,
+                bool marketOpen,
                 double equity,
                 double freeMargin,
                 double balance,
@@ -56,6 +58,7 @@ namespace CFIP.Indicator
                 PipSize = Math.Max(0, pipSize);
                 SpreadPips = Math.Max(0, spreadPips);
                 SymbolTradingEnabled = symbolTradingEnabled;
+                MarketOpen = marketOpen;
                 Equity = Math.Max(0, equity);
                 FreeMargin = Math.Max(0, freeMargin);
                 Balance = Math.Max(0, balance);
