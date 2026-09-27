@@ -28,8 +28,10 @@ namespace cAlgo
                                 TradeResult result =
                                     position.ModifyTakeProfitPrice(normalized);
                 
-                                if (result == null ||
-                                    !result.IsSuccessful)
+                                if (!BrokerConfirmationPolicy.IsSuccessfulMutation(
+                                        result != null,
+                                        result != null &&
+                                        result.IsSuccessful))
                                 {
                                     Print(
                                         "CFIP TP mutation rejected ({0}).",
