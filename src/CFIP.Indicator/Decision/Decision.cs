@@ -502,7 +502,7 @@ namespace CFIP.Indicator
                     }
                 }
     
-                // Preserve the v73 confirmation concept without treating BOS/MSS/CHOCH
+                // Preserve the  confirmation concept without treating BOS/MSS/CHOCH
                 // as three independent confirmations. A structural-break family counts
                 // once per timeframe; M5 displacement remains a distinct confirmation.
                 e.BullStructuralConfirmations =
@@ -673,7 +673,7 @@ namespace CFIP.Indicator
                     structure.PremiumDiscount != null &&
                     structure.PremiumDiscount.Available)
                 {
-                    // Preserve the v73 location bias: discount supports BUY,
+                    // Preserve the  location bias: discount supports BUY,
                     // premium supports SELL. This affects directional score only;
                     // it is not an independent-evidence count.
                     if (structure.PremiumDiscount.IsDiscount)
