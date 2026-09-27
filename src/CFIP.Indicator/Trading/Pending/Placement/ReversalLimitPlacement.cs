@@ -189,7 +189,7 @@ namespace cAlgo
                                                             PendingOrderExpiryMinutes));
                                 
                                                 TradeResult result =
-                                                    PlaceLimitOrder(
+                                                    TryPlaceLimitOrder(
                                                         direction == 1
                                                             ? TradeType.Buy
                                                             : TradeType.Sell,
@@ -202,7 +202,8 @@ namespace cAlgo
                                                         ProtectionType.Relative,
                                                         expiration,
                                                         TradeExecutionMetadata.DefaultExecutionComment,
-                                                        false);
+                                                        false,
+                                                        "REVERSAL LIMIT");
                                 
                                                 if (result == null ||
                                                     !result.IsSuccessful ||
