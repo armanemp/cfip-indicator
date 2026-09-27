@@ -130,7 +130,6 @@ namespace cAlgo
 
             decision.EntryAllowed =
                 PassesDecisionFilters(
-                    chartIndex,
                     closedM5,
                     reference,
                     decision,
