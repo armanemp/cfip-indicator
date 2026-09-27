@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool BullStructure(
+        // ============================================================
+        
+                private bool BullStructure(
                     Bars bars,
                     int index,
                     double atr)
@@ -2024,5 +2026,7 @@ namespace cAlgo
         
                     return true;
                 }
+        
+                // ============================================================
     }
 }

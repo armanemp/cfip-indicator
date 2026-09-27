@@ -2,57 +2,32 @@
 
 ## Authority chain
 
-Market input
--> Runtime snapshot
--> MTF snapshot
--> Market model
--> Decision
--> Entry/Trigger
--> Trade Plan
--> Risk
--> Execution Policy
--> Execution Intent
--> Broker Gateway
--> Broker State
--> Lifecycle
--> Live Management
--> Outcome
--> Presentation
+Market -> MTF -> Analysis -> Decision -> Entry/Trigger -> Trade Plan -> Risk -> Execution -> Broker -> Lifecycle -> Live Management -> Outcome -> Presentation.
 
-## Boundaries
+## Ownership
 
-Core: pure domain types and invariants.
+**Core**: enums, arithmetic, direction and price invariants.
 
-Market: runtime, time, MTF and market-frame construction.
+**Indicator**: cTrader entry point, parameters and state carrier.
 
-Analysis: structure, FVG, Order Block, liquidity and confluence. No broker mutation.
+**Runtime**: initialization, closed-bar context and calculation orchestration.
 
-Decision: direction, evidence, confidence, regime and decision eligibility.
+**Analysis**: indicators, market frame, structure, zones, liquidity and live reaction.
 
-Planning: ideal entry, entry zone, trigger, invalidation, identity and trade plan.
+**Planning**: entry selection, filters, trade plan, structural stop and target ladder.
 
-Risk: risk budget, sizing, exposure, protection and target validation.
+**Trading**: execution, broker mutation coordination, validation, active management and alerts.
 
-Execution: unified execution policy, intent, eligibility and idempotency.
+**UI**: chart, panel, popup and historical rendering.
 
-Infrastructure: cTrader/platform translation and broker mutation gateway.
+## Rules
 
-Lifecycle: pending/position state, reconciliation, confirmation, retry and recovery.
+There is exactly one indicator host and one automatic execution path.
 
-Live Management: protection maintenance, break-even, structural repricing, dynamic targets, partial exits and exit precedence.
+The presentation layer consumes authoritative state. It never decides whether a trade should exist.
 
-Outcomes: realized outcomes, telemetry and calibration. No execution authority.
+Broker mutations remain isolated to the broker/execution boundary.
 
-Presentation: chart, panel, alerts and prediction rendering only.
+The strategy plan and broker lifecycle are different states. Submission is not fill confirmation.
 
-## Invariants
-
-BUY=+1, SELL=-1, WAIT=0.
-Decision is not execution.
-Trade plan is not broker state.
-Broker state is authoritative after mutation.
-Lifecycle follows broker reality.
-Partial close requires broker volume confirmation.
-Close requires broker confirmation.
-SL only moves protectively.
-Presentation never creates trading authority.
+No module creates an alternate trade-entry engine.

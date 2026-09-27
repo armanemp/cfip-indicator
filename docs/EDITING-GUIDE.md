@@ -1,21 +1,26 @@
 # Editing Guide
 
-| Feature | Owner |
-|---|---|
-| Direction | Core |
-| MTF/time | Market |
-| Indicators/regime | Market |
-| Structure/FVG/Order Blocks/liquidity | Analysis |
-| Confidence/evidence/confluence | Decision |
-| Entry/Trigger | Planning |
-| Structural SL/targets | Planning + Risk |
-| Sizing/exposure | Risk |
-| Market/stop/limit execution | Execution |
-| Broker mutation | Infrastructure/CTrader |
-| Pending/position lifecycle | Lifecycle |
-| BE/trailing/partial/exit management | Live Management |
-| Outcomes/calibration | Outcomes |
-| Chart/panel/alerts/prediction | Presentation |
-| Public parameters | Indicator + Configuration |
+Use the file that owns the behavior.
 
-Change the authoritative owner first. Add tests with every behavior change. Do not introduce a second implementation of an existing rule.
+| Behavior | File |
+|---|---|
+| Enums / indicator entry point | Core/Enums.cs, Indicator/CFIPIndicator.cs |
+| Parameters | Indicator/Parameters.cs |
+| Runtime / closed-bar cycle | Runtime/Lifecycle.cs |
+| Native indicators | Analysis/Indicators.cs |
+| Market frame | Analysis/Market.cs |
+| Live reaction | Analysis/Reaction.cs |
+| Entry / trigger | Planning/Entry.cs |
+| Trade plan / stop / targets | Planning/TradePlan.cs |
+| Filters | Planning/Filters.cs |
+| Active plan management | Trading/ActiveManagement.cs |
+| Structural validation | Trading/Validation.cs |
+| Broker execution and pending orders | Trading/Execution.cs |
+| Chart | UI/Chart.cs |
+| Panel | UI/Panel.cs |
+| Popup | UI/Popup.cs |
+| Alerts | Trading/Alerts.cs |
+| Historical rendering | UI/Historical.cs |
+| Shared utilities | Core/Utilities.cs |
+
+Do not add compatibility names or a second execution path. Update the authoritative owner and then update callers and tests.

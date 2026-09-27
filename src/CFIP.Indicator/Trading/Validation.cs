@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double MinimumTakeProfitDistancePrice()
+        // ============================================================
+        
+                private double MinimumTakeProfitDistancePrice()
                 {
                     try
                     {
@@ -713,5 +715,7 @@ namespace cAlgo
                         40,
                         SmartConsensusThreshold - 12);
                 }
+        
+                // ============================================================
     }
 }

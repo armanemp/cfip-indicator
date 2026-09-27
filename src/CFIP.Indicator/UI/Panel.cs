@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int PanelRowCount = 64;
+        // ============================================================
+        
+                private const int PanelRowCount = 64;
                 private const int PanelHeaderHeight = 30;
                 private const int QuickExecutionRowHeight = 38;
                 private const int QuickExecutionButtonHeight = 30;
@@ -2942,5 +2944,7 @@ namespace cAlgo
                     _panelStableHeaderSinceUtc =
                         DateTime.MinValue;
                 }
+        
+                // ============================================================
     }
 }

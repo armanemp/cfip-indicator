@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool IsTriggerReached(
+        // ============================================================
+        
+                private bool IsTriggerReached(
                     int direction,
                     double market,
                     double trigger)
@@ -3171,5 +3173,7 @@ namespace cAlgo
                                     quality + 5);
                     }
                 }
+        
+                // ============================================================
     }
 }

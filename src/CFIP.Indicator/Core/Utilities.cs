@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private int ClosedIndex(
+        // ============================================================
+        
+                        private int ClosedIndex(
                     Bars bars,
                     DateTime reference)
                 {
@@ -291,5 +293,9 @@ namespace cAlgo
         
                     _outcomeDrawn.Clear();
                 }
+        
+                // ============================================================
+        
+                // ============================================================
     }
 }

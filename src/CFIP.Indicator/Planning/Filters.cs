@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private int RetestQuality(
+        // ============================================================
+        
+                private int RetestQuality(
                     Bars bars,
                     int index,
                     int direction)
@@ -453,5 +455,7 @@ namespace cAlgo
                            _lastSignalM5 <
                            CooldownM5Bars;
                 }
+        
+                // ============================================================
     }
 }

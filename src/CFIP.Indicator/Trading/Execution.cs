@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool HasTradingPermission()
+        // ============================================================
+        
+                private bool HasTradingPermission()
                 {
                     try
                     {
@@ -2303,5 +2305,7 @@ namespace cAlgo
                         ? TpLineColor
                         : PanelWarningColor;
                 }
+        
+                // ============================================================
     }
 }

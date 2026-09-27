@@ -1,28 +1,29 @@
 # CFIP Indicator
 
-Clean, modular cTrader indicator source.
+Clean, modular cTrader indicator.
 
-## Architecture
+## Source organization
 
-The implementation is organized by responsibility:
+The implementation is split by responsibility while remaining one cTrader indicator and one execution authority:
 
-- Core and state
-- Market and analysis
+- Core
+- Indicator
+- Runtime
+- Analysis
 - Planning
-- Trading and risk
-- Runtime/lifecycle
-- Chart and presentation
+- Trading
+- UI
 
-The execution path is automatic. Manual BUY/SELL entry controls are not included. Safety controls for closing managed positions and cancelling managed pending orders remain available.
+Automatic market execution and automatic pending-order placement are part of the execution path. Manual BUY/SELL/order-entry controls are not included. Close/cancel safety controls remain available for managed broker objects.
 
 ## Build
 
-The project targets .NET 6 and references the cTrader Automate API DLL supplied by cTrader.
+Target: .NET 6.
 
-Set the MSBuild property `CFIP_CTRADER_API` to the full path of `cAlgo.API.dll`, then build the solution.
+The project references the cTrader Automate API from cTrader's standard local installation. Set `CFIP_CTRADER_API` when a custom DLL path is required.
 
-The project does not add third-party NuGet dependencies.
+No third-party NuGet packages are required.
 
-## Source baseline
+## Baseline
 
-Behavior is maintained against the complete reference implementation while the source is split into responsibility-based files. The split does not introduce a compatibility layer or parallel execution engine.
+Behavior is migrated from the complete reference implementation. The reference is treated as behavioral source material; source names, files and internal identifiers are normalized to the clean project vocabulary.

@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ShowPopup(
+        // ============================================================
+        
+                private void ShowPopup(
                     string message)
                 {
                     if (!ShowPopupAlerts)
@@ -226,5 +228,7 @@ namespace cAlgo
                     _popupUntilUtc =
                         DateTime.MinValue;
                 }
+        
+                // ============================================================
     }
 }

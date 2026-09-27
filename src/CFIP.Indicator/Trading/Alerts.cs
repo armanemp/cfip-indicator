@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void SendUnifiedAlert(
+        // ============================================================
+        
+                private void SendUnifiedAlert(
                     string key,
                     string message,
                     int direction,
@@ -1562,6 +1564,8 @@ namespace cAlgo
         
                     RecalculatePlanRR();
                 }
+        
+                // ============================================================
         
                 private void SetAutoTradingRuntimeState(bool enabled, string reason)
                 {
@@ -5081,5 +5085,7 @@ namespace cAlgo
                     {
                     }
                 }
+        
+                // ============================================================
     }
 }

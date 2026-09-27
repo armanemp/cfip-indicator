@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void RenderPlan()
+        // ============================================================
+        
+                private void RenderPlan()
                 {
                     if (_plan == null)
                     {
@@ -1140,5 +1142,7 @@ namespace cAlgo
                     ClearPlanObjects();
                     RemovePredictionObjects();
                 }
+        
+                // ============================================================
     }
 }

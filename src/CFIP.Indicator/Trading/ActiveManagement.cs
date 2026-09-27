@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ReconcilePreTradePlanDirection(int closedM5)
+        // ============================================================
+        
+                private void ReconcilePreTradePlanDirection(int closedM5)
                 {
                     if (_plan == null ||
                         _plan.IsLivePosition ||
@@ -1642,5 +1644,7 @@ namespace cAlgo
                         ? proposed > current
                         : proposed < current;
                 }
+        
+                // ============================================================
     }
 }

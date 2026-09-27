@@ -9,7 +9,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void RenderHistoricalSignals()
+        // ============================================================
+        
+                private void RenderHistoricalSignals()
                 {
                     RemoveHistoricalObjects();
         
@@ -93,5 +95,7 @@ namespace cAlgo
         
                     _historicalDrawn.Clear();
                 }
+        
+                // ============================================================
     }
 }
