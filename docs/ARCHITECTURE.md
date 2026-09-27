@@ -70,3 +70,10 @@ Broker mutation calls are restricted to the execution, pending, lifecycle and li
 ## Core boundary
 
 Core is platform-neutral. It contains domain models, numeric guards, text helpers and generic time-window parsing only. cTrader-dependent bar/index and price normalization helpers are owned by Market and Trading/Execution respectively.
+
+
+## Utility ownership
+
+- Numeric guards, text helpers and time-window parsing are standalone platform-neutral static modules.
+- Market index/range helpers are standalone market utilities.
+- Broker-aware price normalization remains under Trading/Execution because it requires live symbol metadata.
