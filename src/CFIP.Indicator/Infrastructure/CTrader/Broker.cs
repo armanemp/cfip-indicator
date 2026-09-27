@@ -154,10 +154,10 @@ namespace CFIP.Indicator
     
         public sealed class CTraderBrokerGateway : IBrokerGateway
         {
-            private readonly CFIP_MTF_LiveEntryEngine_Clean_v87 _host;
+            private readonly CFIPIndicator _host;
     
             public CTraderBrokerGateway(
-                CFIP_MTF_LiveEntryEngine_Clean_v87 host)
+                CFIPIndicator host)
             {
                 _host = host ?? throw new ArgumentNullException("host");
             }
@@ -205,7 +205,7 @@ namespace CFIP.Indicator
                     string label =
                         _host.Configuration.Get(
                             "AutoTradeLabel",
-                            "CFIP-SMART-CLEAN");
+                            "CFIP-SMART");
     
                     string comment =
                         "CFIP|SIGNAL|" +
@@ -585,7 +585,7 @@ namespace CFIP.Indicator
                 string label =
                     _host.Configuration.Get(
                         "AutoTradeLabel",
-                        "CFIP-SMART-CLEAN");
+                        "CFIP-SMART");
     
                 return
                     string.Equals(
@@ -611,7 +611,7 @@ namespace CFIP.Indicator
                 string label =
                     _host.Configuration.Get(
                         "AutoTradeLabel",
-                        "CFIP-SMART-CLEAN");
+                        "CFIP-SMART");
     
                 return
                     string.Equals(
@@ -858,10 +858,10 @@ namespace CFIP.Indicator
     
         public sealed class CTraderBrokerStateReader : IBrokerStateReader
         {
-            private readonly CFIP_MTF_LiveEntryEngine_Clean_v87 _host;
+            private readonly CFIPIndicator _host;
     
             public CTraderBrokerStateReader(
-                CFIP_MTF_LiveEntryEngine_Clean_v87 host)
+                CFIPIndicator host)
             {
                 _host = host ?? throw new ArgumentNullException("host");
             }
@@ -873,7 +873,7 @@ namespace CFIP.Indicator
                 string label =
                     _host.Configuration.Get(
                         "AutoTradeLabel",
-                        "CFIP-SMART-CLEAN");
+                        "CFIP-SMART");
     
                 var positions = new List<BrokerPositionSnapshot>();
                 foreach (var position in _host.Positions)
