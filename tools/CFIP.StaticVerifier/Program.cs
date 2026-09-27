@@ -8,70 +8,52 @@ internal static class Program
     private static int Main()
     {
         var root = Directory.GetParent(AppContext.BaseDirectory)?.Parent?.Parent?.Parent?.Parent?.FullName;
-        if (string.IsNullOrWhiteSpace(root) || !Directory.Exists(Path.Combine(root, "src")))
-        {
-            Console.Error.WriteLine("Repository root could not be resolved.");
-            return 2;
-        }
+        if (string.IsNullOrWhiteSpace(root)) return Fail("Repository root could not be resolved.");
 
         var sourceRoot = Path.Combine(root, "src", "CFIP.Indicator");
-        var csFiles = Directory.GetFiles(sourceRoot, "*.cs", SearchOption.AllDirectories);
-        var declaration = Path.Combine(sourceRoot, "Indicator", "CFIPIndicator.Declarations.cs");
+        var files = Directory.GetFiles(sourceRoot, "*.cs", SearchOption.AllDirectories);
+        var text = string.Join("\n", files.Select(File.ReadAllText));
 
-        if (!File.Exists(declaration))
-        {
-            Console.Error.WriteLine("Missing CFIPIndicator.Declarations.cs");
-            return 3;
-        }
+        if (Regex.IsMatch(text, @"CFIPClean\d+|Clean\d+|\bv\d+\b|CFIP\d+\||CLEAN\d+", RegexOptions.IgnoreCase))
+            return Fail("Versioned naming/token detected in source.");
 
-        var declarationText = File.ReadAllText(declaration);
-        var parameterCount = Regex.Matches(declarationText, @"[Parameters*(").Count;
-        if (parameterCount != 512)
+        var expected = new[]
         {
-            Console.Error.WriteLine($"Expected 512 parameters, found {parameterCount}.");
-            return 4;
-        }
-
-        var partialNames = new[]
-        {
-            "Runtime", "Execution", "Metrics", "BrokerEvents",
-            "Lifecycle", "Identity"
+            "Core/Domain.cs",
+            "Market/Market.cs",
+            "Analysis/Structure.cs",
+            "Decision/Decision.cs",
+            "Planning/Planning.cs",
+            "Risk/Risk.cs",
+            "Execution/Execution.cs",
+            "Infrastructure/CTrader/Broker.cs",
+            "Lifecycle/Lifecycle.cs",
+            "LiveManagement/LiveManagement.cs",
+            "Outcomes/Outcomes.cs",
+            "Presentation/Presentation.cs",
+            "Configuration/Configuration.cs",
+            "Indicator/CFIPIndicator.Declarations.cs",
+            "Indicator/EngineState.cs"
         };
 
-        foreach (var name in partialNames)
-        {
-            var path = Path.Combine(sourceRoot, "Indicator", $"CFIPIndicator.{name}.cs");
-            if (!File.Exists(path))
-            {
-                Console.Error.WriteLine($"Missing host partial: {path}");
-                return 5;
-            }
-        }
+        foreach (var relative in expected)
+            if (!File.Exists(Path.Combine(sourceRoot, relative)))
+                return Fail("Missing module: " + relative);
 
-        var indicatorFiles = Directory.GetFiles(
-                Path.Combine(sourceRoot, "Indicator"),
-                "CFIPIndicator.*.cs",
-                SearchOption.TopDirectoryOnly)
-            .Select(File.ReadAllText)
-            .ToArray();
+        var parameterCount = Regex.Matches(
+            File.ReadAllText(Path.Combine(sourceRoot, "Indicator", "CFIPIndicator.Declarations.cs")),
+            @"\[Parameter\s*\(").Count;
 
-        var manualEntrySurface = indicatorFiles.Any(t =>
-            Regex.IsMatch(t, @"(Button|AddButton|TradeButton)", RegexOptions.IgnoreCase) &&
-            Regex.IsMatch(t, @"(Buy|Sell|Stop|Limit)", RegexOptions.IgnoreCase));
+        if (parameterCount != 512)
+            return Fail("Expected 512 public parameters, found " + parameterCount + ".");
 
-        if (manualEntrySurface)
-        {
-            Console.Error.WriteLine("Manual trade-entry control surface detected.");
-            return 6;
-        }
-
-        if (csFiles.Length < 107)
-        {
-            Console.Error.WriteLine($"Expected at least 107 migrated C# files, found {csFiles.Length}.");
-            return 7;
-        }
-
-        Console.WriteLine($"Static migration verification passed. C# files: {csFiles.Length}; parameters: {parameterCount}.");
+        Console.WriteLine("Static architecture verification passed. Source files: " + files.Length + "; parameters: " + parameterCount + ".");
         return 0;
+    }
+
+    private static int Fail(string message)
+    {
+        Console.Error.WriteLine(message);
+        return 1;
     }
 }

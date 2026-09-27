@@ -1,7 +1,7 @@
-// Partial cTrader host orchestration module migrated from v89.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CFIP.Indicator;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
@@ -10,7 +10,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                private int CountManagedPositions()
+                        private int CountManagedPositions()
                 {
                     if (_configuration == null)
                         return 0;
@@ -18,7 +18,7 @@ namespace cAlgo
                     string label =
                         _configuration.Get(
                             "AutoTradeLabel",
-                            "CFIP-SMART-CLEAN89");
+                            "CFIP-SMART");
         
                     int count = 0;
                     foreach (var position in Positions)
@@ -37,7 +37,7 @@ namespace cAlgo
                     string label =
                         _configuration.Get(
                             "AutoTradeLabel",
-                            "CFIP-SMART-CLEAN89");
+                            "CFIP-SMART");
         
                     int count = 0;
                     foreach (var order in PendingOrders)
@@ -56,7 +56,7 @@ namespace cAlgo
                     string label =
                         _configuration.Get(
                             "AutoTradeLabel",
-                            "CFIP-SMART-CLEAN89");
+                            "CFIP-SMART");
         
                     double total = 0;
                     HistoricalTrade[] trades =

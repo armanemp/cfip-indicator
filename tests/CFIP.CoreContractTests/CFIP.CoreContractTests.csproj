@@ -5,8 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Include="../../src/CFIP.Indicator/Core/*.cs" LinkBase="Core" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Domain.cs" Link="Domain.cs" />
   </ItemGroup>
 </Project>

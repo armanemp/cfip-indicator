@@ -1,4 +1,4 @@
-name: Static Architecture Verification
+name: Architecture Verification
 
 on:
   push:
@@ -13,7 +13,5 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x'
-      - name: Run migration verifier
-        run: dotnet run --project tools/CFIP.StaticVerifier/CFIP.StaticVerifier.csproj --configuration Release
-      - name: Run core contract tests
-        run: dotnet run --project tests/CFIP.CoreContractTests/CFIP.CoreContractTests.csproj --configuration Release
+      - run: dotnet run --project tools/CFIP.StaticVerifier/CFIP.StaticVerifier.csproj --configuration Release
+      - run: dotnet run --project tests/CFIP.CoreContractTests/CFIP.CoreContractTests.csproj --configuration Release

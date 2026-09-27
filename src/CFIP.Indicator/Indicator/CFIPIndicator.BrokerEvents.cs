@@ -1,7 +1,7 @@
-// Partial cTrader host orchestration module migrated from v89.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CFIP.Indicator;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
@@ -10,7 +10,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                private void PendingOrders_Created(
+                        private void PendingOrders_Created(
                     PendingOrderCreatedEventArgs args)
                 {
                     if (args == null ||
@@ -71,7 +71,7 @@ namespace cAlgo
                             _state != null ? _state.Plan : null);
         
                     _lifecycle.TryTransition(
-                        CFIPClean89LifecycleState.LivePosition,
+                        LifecycleState.LivePosition,
                         TimeInUtc,
                         "PENDING_FILLED_TO_POSITION");
                 }

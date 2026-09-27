@@ -1,14 +1,14 @@
-// cTrader host declarations and the complete preserved v89 public parameter surface.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CFIP.Indicator;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
 
 namespace cAlgo
 {
-        public partial class CFIPIndicator : Indicator
+            public partial class CFIPIndicator : Indicator
         {
             private Bars _m1Bars;
             private Bars _m5Bars;
@@ -22,7 +22,7 @@ namespace cAlgo
             // ====================================================================
             // Complete v73 parameter surface carried forward unchanged.
             // These parameters are configuration inputs only. Business logic will
-            // migrate to CFIPClean89ConfigSnapshot in subsequent phases.
+            // migrate to ConfigSnapshot in subsequent phases.
             // No parameter is silently dropped during the architectural migration.
             // ====================================================================
             #region Migrated Configuration Surface (513 parameters)
@@ -58,12 +58,12 @@ namespace cAlgo
             public bool UseAdvancedConfluence { get; set; }
     
     // Compatibility parameter retained for preset parity. The clean Decision
-            // engine does not interpret Trigger/Entry state; Phase 7 owns it.
+            // engine does not interpret Trigger/Entry state;  owns it.
     [Parameter("Allow Strong Trigger Override", Group = "01 · Decision", DefaultValue = true)]
             public bool AllowStrongTriggerOverride { get; set; }
     
     // Compatibility parameters retained for preset parity. M1 trigger and M5
-            // execution confirmation belong to the Phase 7 Entry/Trigger owner.
+            // execution confirmation belong to the  Entry/Trigger owner.
     [Parameter("M1 Trigger", Group = "02 · MTF", DefaultValue = false)]
             public bool UseM1Trigger { get; set; }
     
@@ -490,8 +490,8 @@ namespace cAlgo
     [Parameter("Enable Automatic Orders", Group = "13 · AUTO TRADING", DefaultValue = false)]
             public bool EnableAutomaticOrders { get; set; }
     
-    [Parameter("Pending Order Mode", Group = "13 · AUTO TRADING", DefaultValue = CFIPClean89PendingOrderMode.Adaptive)]
-            public CFIPClean89PendingOrderMode PendingOrderMode { get; set; }
+    [Parameter("Pending Order Mode", Group = "13 · AUTO TRADING", DefaultValue = PendingOrderMode.Adaptive)]
+            public PendingOrderMode PendingOrderMode { get; set; }
     
     [Parameter("Pending Order Expiry Minutes", Group = "13 · AUTO TRADING", DefaultValue = 120, MinValue = 15, MaxValue = 1440)]
             public int PendingOrderExpiryMinutes { get; set; }
@@ -523,8 +523,8 @@ namespace cAlgo
     [Parameter("Confirmed Signals Only", Group = "13 · AUTO TRADING", DefaultValue = true)]
             public bool ConfirmedSignalsOnly { get; set; }
     
-    [Parameter("Sizing Mode", Group = "13 · AUTO TRADING", DefaultValue = CFIPClean89SizingMode.RiskPercentEquity)]
-            public CFIPClean89SizingMode SizingMode { get; set; }
+    [Parameter("Sizing Mode", Group = "13 · AUTO TRADING", DefaultValue = SizingMode.RiskPercentEquity)]
+            public SizingMode SizingMode { get; set; }
     
     [Parameter("Risk % Equity", Group = "13 · AUTO TRADING", DefaultValue = 0.50, MinValue = 0.05, MaxValue = 5)]
             public double RiskPercentEquity { get; set; }
@@ -541,8 +541,8 @@ namespace cAlgo
     [Parameter("Minimum Auto Level Quality", Group = "13 · AUTO TRADING", DefaultValue = 72, MinValue = 40, MaxValue = 100)]
             public int MinimumAutoLevelQuality { get; set; }
     
-    [Parameter("Auto TP Stage", Group = "13 · AUTO TRADING", DefaultValue = CFIPClean89TargetStage.TP1)]
-            public CFIPClean89TargetStage AutoTpStage { get; set; }
+    [Parameter("Auto TP Stage", Group = "13 · AUTO TRADING", DefaultValue = TargetStage.TP1)]
+            public TargetStage AutoTpStage { get; set; }
     
     [Parameter("Enable Dynamic TP Advance", Group = "13 · AUTO TRADING", DefaultValue = true)]
             public bool EnableDynamicTpAdvance { get; set; }
@@ -589,7 +589,7 @@ namespace cAlgo
     [Parameter("Margin Buffer %", Group = "13 · AUTO TRADING", DefaultValue = 10, MinValue = 0, MaxValue = 40)]
             public double MarginBufferPercent { get; set; }
     
-    [Parameter("Auto Trade Label", Group = "13 · AUTO TRADING", DefaultValue = "CFIP-SMART-CLEAN89")]
+    [Parameter("Auto Trade Label", Group = "13 · AUTO TRADING", DefaultValue = "CFIP-SMART")]
             public string AutoTradeLabel { get; set; }
     
     [Parameter("Smart Broker Protection", Group = "13 · AUTO TRADING", DefaultValue = true)]
@@ -676,8 +676,8 @@ namespace cAlgo
     [Parameter("Show Panel Background", Group = "14 · DISPLAY — CORE", DefaultValue = true)]
             public bool ShowPanelBackground { get; set; }
     
-    [Parameter("Panel Position", Group = "14 · DISPLAY — CORE", DefaultValue = CFIPClean89PanelCorner.BottomLeft)]
-            public CFIPClean89PanelCorner PanelPosition { get; set; }
+    [Parameter("Panel Position", Group = "14 · DISPLAY — CORE", DefaultValue = PanelCorner.BottomLeft)]
+            public PanelCorner PanelPosition { get; set; }
     
     [Parameter("Panel Width", Group = "14 · DISPLAY — CORE", DefaultValue = 430, MinValue = 220, MaxValue = 700)]
             public int PanelWidth { get; set; }
@@ -1033,7 +1033,7 @@ namespace cAlgo
     [Parameter("Smart Consensus Threshold", Group = "21 · Complete Intelligence", DefaultValue = 57, MinValue = 50, MaxValue = 95)]
             public int SmartConsensusThreshold { get; set; }
     
-    // Compatibility parameter retained for preset parity. v89 replaces the old
+    // Compatibility parameter retained for preset parity.  replaces the old
             // additive regime-weighting layer with deduplicated evidence plus
             // regime-adaptive quality/share/edge policy.
     [Parameter("Adaptive Regime Weighting", Group = "21 · Complete Intelligence", DefaultValue = true)]
@@ -1456,8 +1456,8 @@ namespace cAlgo
             [Parameter("Sound File Path", Group = "12 · ALERTS — ADVANCED", DefaultValue = "")]
             public string SoundFilePath { get; set; }
     
-    [Parameter("Popup Position", Group = "12 · ALERTS — ADVANCED", DefaultValue = CFIPClean89PanelCorner.TopRight)]
-            public CFIPClean89PanelCorner PopupPosition { get; set; }
+    [Parameter("Popup Position", Group = "12 · ALERTS — ADVANCED", DefaultValue = PanelCorner.TopRight)]
+            public PanelCorner PopupPosition { get; set; }
     
     [Parameter("Popup Width", Group = "12 · ALERTS — ADVANCED", DefaultValue = 430, MinValue = 220, MaxValue = 700)]
             public int PopupWidth { get; set; }
@@ -1564,23 +1564,23 @@ namespace cAlgo
     [Parameter("Aggressive Risk % Equity", Group = "13 · AUTO TRADING", DefaultValue = 0.25, MinValue = 0.05, MaxValue = 5)]
             public double AggressiveRiskPercentEquity { get; set; }
     
-    [Parameter("Aggressive TP Stage", Group = "13 · AUTO TRADING", DefaultValue = CFIPClean89TargetStage.TP1)]
-            public CFIPClean89TargetStage AggressiveTpStage { get; set; }
+    [Parameter("Aggressive TP Stage", Group = "13 · AUTO TRADING", DefaultValue = TargetStage.TP1)]
+            public TargetStage AggressiveTpStage { get; set; }
     
     [Parameter("Aggressive Require Smart Agreement", Group = "13 · AUTO TRADING", DefaultValue = true)]
             public bool AggressiveRequireSmartAgreement { get; set; }
     
             #endregion
     
-            private CFIPClean89ConfigSnapshot _configuration;
-            private CFIPClean89EngineState _state;
-            private CFIPClean89LifecycleManager _lifecycle;
-            private CFIPClean89RuntimeAuthority _runtimeAuthority;
-            private CFIPClean89MarketModelBuilder _marketModelBuilder;
-            private CFIPClean89StructureLedgerBuilder _structureBuilder;
-            private CFIPClean89DecisionEngine _decisionEngine;
-            private ICFIPClean89EntryTriggerEngine _entryTriggerEngine;
-            private ICFIPClean89TradePlanBuilder _tradePlanBuilder;
+            private ConfigSnapshot _configuration;
+            private EngineState _state;
+            private LifecycleManager _lifecycle;
+            private RuntimeAuthority _runtimeAuthority;
+            private MarketModelBuilder _marketModelBuilder;
+            private StructureLedgerBuilder _structureBuilder;
+            private DecisionEngine _decisionEngine;
+            private IEntryTriggerEngine _entryTriggerEngine;
+            private ITradePlanBuilder _tradePlanBuilder;
             private DateTime _lastMarketReferenceUtc = DateTime.MinValue;
             private readonly HashSet<string> _submittedExecutionKeys =
                 new HashSet<string>(StringComparer.Ordinal);
@@ -1589,19 +1589,19 @@ namespace cAlgo
             private static readonly TimeSpan BrokerConfirmationGrace =
                 TimeSpan.FromSeconds(5);
     
-            private CFIPClean89LivePositionManager _livePositionManager;
+            private LivePositionManager _livePositionManager;
     
-            public CFIPClean89ConfigSnapshot Configuration
+            public ConfigSnapshot Configuration
             {
                 get { return _configuration; }
             }
     
-            public CFIPClean89RuntimeAuthority RuntimeAuthority
+            public RuntimeAuthority RuntimeAuthority
             {
                 get { return _runtimeAuthority; }
             }
     
-            public CFIPClean89LifecycleState LifecycleState
+            public LifecycleState LifecycleState
             {
                 get { return _lifecycle.State; }
             }

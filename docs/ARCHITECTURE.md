@@ -1,83 +1,58 @@
 # CFIP Indicator — Architecture
 
 ## Authority chain
-Market Input -> RuntimeSnapshot -> MTF -> MarketModel -> DecisionSnapshot -> EntrySnapshot -> TradePlan -> Risk -> ExecutionPolicy -> ExecutionIntent -> BrokerGateway -> BrokerState -> Lifecycle -> LiveManagement -> Outcome -> PresentationState
 
-No stage may bypass the next authoritative boundary.
+Market input
+-> Runtime snapshot
+-> MTF snapshot
+-> Market model
+-> Decision
+-> Entry/Trigger
+-> Trade Plan
+-> Risk
+-> Execution Policy
+-> Execution Intent
+-> Broker Gateway
+-> Broker State
+-> Lifecycle
+-> Live Management
+-> Outcome
+-> Presentation
 
-## Dependency rule
-Dependencies point inward toward domain contracts. Core must not reference cAlgo.API, chart drawing, broker collections or UI controls.
+## Boundaries
 
-CTrader infrastructure translates platform objects into domain snapshots and translates domain intents into broker mutations.
+Core: pure domain types and invariants.
 
-## Ownership
-Core: pure domain types, enums, contracts, value objects and invariants.
+Market: runtime, time, MTF and market-frame construction.
 
-Market: runtime snapshot, time, timeframe and MTF data.
+Analysis: structure, FVG, Order Block, liquidity and confluence. No broker mutation.
 
-Analysis: trend, momentum, structure, FVG, OB, liquidity and confluence. Side-effect free.
+Decision: direction, evidence, confidence, regime and decision eligibility.
 
-Decision: direction, confidence, evidence, regime, eligibility and block reasons.
+Planning: ideal entry, entry zone, trigger, invalidation, identity and trade plan.
 
-Planning: entry, trigger, invalidation, TradePlan and target ladder.
+Risk: risk budget, sizing, exposure, protection and target validation.
 
-Risk: risk budget, sizing, exposure, leverage, SL/TP validity and broker constraints.
+Execution: unified execution policy, intent, eligibility and idempotency.
 
-Execution: execution policy, intent, idempotency and eligibility. No direct platform API.
-
-Infrastructure/CTrader: platform adapters, broker gateway and event translation.
+Infrastructure: cTrader/platform translation and broker mutation gateway.
 
 Lifecycle: pending/position state, reconciliation, confirmation, retry and recovery.
 
-LiveManagement: protection maintenance, BE, structural repricing, partial close, reversal, exhaustion, invalidation and EOD actions.
+Live Management: protection maintenance, break-even, structural repricing, dynamic targets, partial exits and exit precedence.
 
-Outcomes: realized outcomes, telemetry, calibration and drift. No broker authority.
+Outcomes: realized outcomes, telemetry and calibration. No execution authority.
 
-Presentation: chart, terminal, alerts and localization. Rendering only.
+Presentation: chart, panel, alerts and prediction rendering only.
 
-## Key invariants
-- BUY=+1, SELL=-1, WAIT=0.
-- Analysis is side-effect free.
-- Decision != execution.
-- TradePlan != broker state.
-- Broker is authoritative after mutation.
-- Lifecycle follows broker reality.
-- Execution is idempotent.
-- Pending fills cannot become unmanaged.
-- Partial TP requires broker confirmation.
-- SL moves only protectively.
-- Target ladder has one authority.
-- No manual entry/order controls.
-- Safety controls are separate from entry controls.
-- Closed-bar data is required for decisions.
-- Fallbacks carry provenance.
-- All parameters have disposition.
-- BUY/SELL logic is symmetric.
-- Presentation is downstream.
+## Invariants
 
-## Entry terminology
-IdealEntry = preferred structural price.
-EntryZone = allowed structural retest region.
-Trigger = activation threshold.
-RequestedEntry = exact broker-requested price.
-ActualFill = broker-confirmed price.
-Invalidation = structural/risk boundary.
-
-These concepts must remain separate in code and presentation.
-
-## State separation
-Strategy state and broker state are separate.
-
-Strategy: WAITING, SIGNAL, PLAN_READY, EXECUTION_READY.
-Broker lifecycle: FLAT, PENDING, LIVE, EXIT_REQUESTED, RECOVERY, CLOSED.
-
-A strategy transition never implies a broker transition.
-
-## Error taxonomy
-Analysis: DATA_INCOMPLETE, MODEL_INVALID.
-Decision: DECISION_BLOCKED, DECISION_UNCERTAIN.
-Execution: EXECUTION_INVALID, EXECUTION_REJECTED, BROKER_CONSTRAINT.
-Lifecycle: STATE_CONFLICT, ORPHAN_POSITION, ORPHAN_ORDER, RECOVERY_REQUIRED.
-Presentation: PRESENTATION_DEGRADED.
-
-Presentation errors never alter trading authority.
+BUY=+1, SELL=-1, WAIT=0.
+Decision is not execution.
+Trade plan is not broker state.
+Broker state is authoritative after mutation.
+Lifecycle follows broker reality.
+Partial close requires broker volume confirmation.
+Close requires broker confirmation.
+SL only moves protectively.
+Presentation never creates trading authority.

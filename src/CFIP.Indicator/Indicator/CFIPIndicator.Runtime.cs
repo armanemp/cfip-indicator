@@ -1,7 +1,7 @@
-// Partial cTrader host orchestration module migrated from v89.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CFIP.Indicator;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
@@ -10,7 +10,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                protected override void Initialize()
+                        protected override void Initialize()
                 {
                     _m1Bars = MarketData.GetBars(TimeFrame.Minute);
                     _m5Bars = MarketData.GetBars(TimeFrame.Minute5);
@@ -22,61 +22,61 @@ namespace cAlgo
                     _w1Bars = MarketData.GetBars(TimeFrame.Weekly);
         
                     _configuration =
-                        CFIPClean89ConfigSnapshot.Build(
+                        ConfigSnapshot.Build(
                             this,
-                            "CFIP-PRO-v89");
+                            "CFIP-PRO-");
         
                     _runtimeAuthority =
-                        new CFIPClean89RuntimeAuthority();
+                        new RuntimeAuthority();
         
                     _runtimeAuthority.InitializeFromConfiguration(
                         _configuration);
         
                     _marketModelBuilder =
-                        new CFIPClean89MarketModelBuilder(
+                        new MarketModelBuilder(
                             Indicators);
         
                     _structureBuilder =
-                        new CFIPClean89StructureLedgerBuilder();
+                        new StructureLedgerBuilder();
         
                     _decisionEngine =
-                        new CFIPClean89DecisionEngine();
+                        new DecisionEngine();
         
                     _entryTriggerEngine =
-                        new CFIPClean89EntryTriggerEngine();
+                        new EntryTriggerEngine();
         
                     _tradePlanBuilder =
-                        new CFIPClean89TradePlanBuilder();
+                        new TradePlanBuilder();
         
                     _executionPolicy =
-                        new CFIPClean89ExecutionPolicy();
+                        new ExecutionPolicy();
         
                     _executionPlanner =
-                        new CFIPClean89ExecutionPlanner();
+                        new ExecutionPlanner();
         
                     _brokerGateway =
-                        new CFIPClean89CTraderBrokerGateway(this);
+                        new CTraderBrokerGateway(this);
         
                     _brokerStateReader =
-                        new CFIPClean89CTraderBrokerStateReader(this);
+                        new CTraderBrokerStateReader(this);
         
                     _pendingOrderLifecycle =
-                        new CFIPClean89PendingOrderLifecycleManager(
+                        new PendingOrderLifecycleManager(
                             _configuration.Get(
                                 "AutoTradeLabel",
-                                "CFIP-SMART-CLEAN89"));
+                                "CFIP-SMART"));
         
                     _positionLifecycle =
-                        new CFIPClean89PositionLifecycleManager(
+                        new PositionLifecycleManager(
                             _configuration.Get(
                                 "AutoTradeLabel",
-                                "CFIP-SMART-CLEAN89"));
+                                "CFIP-SMART"));
         
                     _livePositionManager =
-                        new CFIPClean89LivePositionManager();
+                        new LivePositionManager();
         
-                    _state = new CFIPClean89EngineState();
-                    _lifecycle = new CFIPClean89LifecycleManager();
+                    _state = new EngineState();
+                    _lifecycle = new LifecycleManager();
         
                     PendingOrders.Created += PendingOrders_Created;
                     PendingOrders.Modified += PendingOrders_Modified;
@@ -118,7 +118,7 @@ namespace cAlgo
                     _state.ResetCycleOutputs();
         
                     _state.SetRuntime(
-                        new CFIPClean89RuntimeSnapshot(
+                        new RuntimeSnapshot(
                             serverUtc,
                             SymbolName,
                             Math.Max(0, Symbol.Bid),
@@ -141,7 +141,7 @@ namespace cAlgo
                                 : 0,
                             CalculateDailyRealizedNetProfit(serverUtc.Date),
                             serverUtc.Date,
-                            new CFIPClean89BrokerConstraints(
+                            new BrokerConstraints(
                                 Math.Max(0, Symbol.VolumeInUnitsMin),
                                 Math.Max(0, Symbol.VolumeInUnitsStep),
                                 ConvertMinimumDistanceToPips(
@@ -151,8 +151,8 @@ namespace cAlgo
                             CountManagedPositions(),
                             CountManagedPendingOrders()));
         
-                    CFIPClean89MtfSnapshot mtf =
-                        CFIPClean89MtfSnapshotBuilder.Build(
+                    MtfSnapshot mtf =
+                        MtfSnapshotBuilder.Build(
                             serverUtc,
                             userLocalTime,
                             Bars,
@@ -176,7 +176,7 @@ namespace cAlgo
                             !mtf.IsPrimaryDecisionReady
                         ))
                     {
-                        CFIPClean89MarketModel market =
+                        MarketModel market =
                             _marketModelBuilder.Build(
                                 _state.Runtime,
                                 mtf,
@@ -193,7 +193,7 @@ namespace cAlgo
         
                         _state.SetMarket(market);
         
-                        CFIPClean89StructureSnapshot structure =
+                        StructureSnapshot structure =
                             _structureBuilder.Build(
                                 mtf,
                                 market,

@@ -7,16 +7,14 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Deterministic>true</Deterministic>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Using Include="CFIP.Indicator.Core" />
   </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="cAlgo.API" Condition="'$(CFIP_CTRADER_API)' != ''">
       <HintPath>$(CFIP_CTRADER_API)</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="cAlgo.API" Condition="'$(CFIP_CTRADER_API)' == ''">
-      <HintPath>$(UserProfile)DocumentscAlgoAPIcAlgo.API.dll</HintPath>
+      <HintPath>$(UserProfile)\Documents\cAlgo\API\cAlgo.API.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

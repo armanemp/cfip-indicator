@@ -1,7 +1,7 @@
-// Partial cTrader host orchestration module migrated from v89.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CFIP.Indicator;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
@@ -10,7 +10,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                private void ProcessLivePositionManagement()
+                        private void ProcessLivePositionManagement()
                 {
                     if (_livePositionManager == null ||
                         _positionLifecycle == null ||
@@ -21,7 +21,7 @@ namespace cAlgo
                         !Server.IsConnected)
                         return;
         
-                    IReadOnlyList<CFIPClean89LivePositionAction> actions =
+                    IReadOnlyList<LivePositionAction> actions =
                         _livePositionManager.Evaluate(
                             _state.Broker.Positions,
                             _state.Runtime,
@@ -32,14 +32,14 @@ namespace cAlgo
         
                     for (int i = 0; i < actions.Count; i++)
                     {
-                        CFIPClean89LivePositionAction action =
+                        LivePositionAction action =
                             actions[i];
         
                         if (action == null)
                             continue;
         
                         if (action.Kind ==
-                            CFIPClean89LivePositionActionKind.Close)
+                            LivePositionActionKind.Close)
                         {
                             _positionLifecycle.RequestClose(
                                 action.BrokerPositionId,
@@ -49,7 +49,7 @@ namespace cAlgo
                         }
         
                         if (action.Kind ==
-                            CFIPClean89LivePositionActionKind.ProtectionUpdate)
+                            LivePositionActionKind.ProtectionUpdate)
                         {
                             bool protectionQueued =
                                 _positionLifecycle.RequestProtectionMutation(
@@ -68,9 +68,9 @@ namespace cAlgo
                         }
         
                         if (action.Kind ==
-                            CFIPClean89LivePositionActionKind.PartialClose)
+                            LivePositionActionKind.PartialClose)
                         {
-                            CFIPClean89ExecutionResult result =
+                            ExecutionResult result =
                                 _brokerGateway.PartialClosePosition(
                                     action.BrokerPositionId,
                                     action.VolumeInUnits);
@@ -83,7 +83,7 @@ namespace cAlgo
                             if (!result.Accepted)
                             {
                                 _lifecycle.TryTransition(
-                                    CFIPClean89LifecycleState.RecoveryRequired,
+                                    LifecycleState.RecoveryRequired,
                                     _state.Runtime.ServerUtc,
                                     "PARTIAL_CLOSE_FAILED_" +
                                     action.Reason);
@@ -109,7 +109,7 @@ namespace cAlgo
                     // Pending -> Position protection handoff survives a restart or
                     // missed Filled event by transferring expected protection to
                     // every broker Position associated with the pending PlanId.
-                    IReadOnlyList<CFIPClean89PendingOrderRecord> pendingRecords =
+                    IReadOnlyList<PendingOrderRecord> pendingRecords =
                         _pendingOrderLifecycle != null
                             ? _pendingOrderLifecycle.Records
                             : null;
@@ -118,12 +118,12 @@ namespace cAlgo
                     {
                         for (int i = 0; i < pendingRecords.Count; i++)
                         {
-                            CFIPClean89PendingOrderRecord pending =
+                            PendingOrderRecord pending =
                                 pendingRecords[i];
         
                             if (pending == null ||
                                 pending.State !=
-                                CFIPClean89PendingOrderLifecycleState.Filled)
+                                PendingOrderLifecycleState.Filled)
                                 continue;
         
                             IReadOnlyList<string> positionIds =
@@ -145,22 +145,22 @@ namespace cAlgo
                     _positionLifecycle.EvaluateRetryActions(
                         _state.Runtime.ServerUtc);
         
-                    IReadOnlyList<CFIPClean89PositionAction> actions =
+                    IReadOnlyList<PositionAction> actions =
                         _positionLifecycle.DrainActions();
         
                     for (int i = 0; i < actions.Count; i++)
                     {
-                        CFIPClean89PositionAction action = actions[i];
+                        PositionAction action = actions[i];
         
                         if (action.Kind !=
-                                CFIPClean89PositionActionKind.RestoreProtection &&
+                                PositionActionKind.RestoreProtection &&
                             action.Kind !=
-                                CFIPClean89PositionActionKind.Close)
+                                PositionActionKind.Close)
                             continue;
         
-                        CFIPClean89ExecutionResult result =
+                        ExecutionResult result =
                             action.Kind ==
-                                CFIPClean89PositionActionKind.RestoreProtection
+                                PositionActionKind.RestoreProtection
                                 ? _brokerGateway.ModifyProtection(
                                     action.BrokerPositionId,
                                     action.StopLoss,
@@ -176,10 +176,10 @@ namespace cAlgo
                         if (!result.Accepted)
                         {
                             _lifecycle.TryTransition(
-                                CFIPClean89LifecycleState.RecoveryRequired,
+                                LifecycleState.RecoveryRequired,
                                 _state.Runtime.ServerUtc,
                                 action.Kind ==
-                                    CFIPClean89PositionActionKind.Close
+                                    PositionActionKind.Close
                                     ? "POSITION_CLOSE_RETRY_" + action.Reason
                                     : "POSITION_PROTECTION_RECOVERY_FAILED_" +
                                       action.Reason);
@@ -199,25 +199,25 @@ namespace cAlgo
                         _state.Runtime.ServerUtc,
                         IsDailyLossLimitBreached());
         
-                    IReadOnlyList<CFIPClean89PendingOrderAction> actions =
+                    IReadOnlyList<PendingOrderAction> actions =
                         _pendingOrderLifecycle.DrainActions();
         
                     for (int i = 0; i < actions.Count; i++)
                     {
-                        CFIPClean89PendingOrderAction action =
+                        PendingOrderAction action =
                             actions[i];
         
-                        CFIPClean89ExecutionResult result;
+                        ExecutionResult result;
         
                         if (action.Kind ==
-                            CFIPClean89PendingOrderActionKind.Cancel)
+                            PendingOrderActionKind.Cancel)
                         {
                             result =
                                 _brokerGateway.CancelPendingOrder(
                                     action.BrokerOrderId);
                         }
                         else if (action.Kind ==
-                                 CFIPClean89PendingOrderActionKind.RestoreProtection)
+                                 PendingOrderActionKind.RestoreProtection)
                         {
                             result =
                                 _brokerGateway.ModifyPendingProtection(
@@ -238,7 +238,7 @@ namespace cAlgo
                         if (!result.Accepted)
                         {
                             _lifecycle.TryTransition(
-                                CFIPClean89LifecycleState.RecoveryRequired,
+                                LifecycleState.RecoveryRequired,
                                 _state.Runtime.ServerUtc,
                                 "PENDING_ACTION_FAILED_" +
                                 action.Reason);
@@ -284,7 +284,7 @@ namespace cAlgo
                     if (expired.Count > 0 &&
                         _lifecycle != null)
                         _lifecycle.TryTransition(
-                            CFIPClean89LifecycleState.RecoveryRequired,
+                            LifecycleState.RecoveryRequired,
                             utc,
                             "BROKER_CONFIRMATION_TIMEOUT");
         
@@ -328,27 +328,27 @@ namespace cAlgo
                     if (_state.Broker.Positions.Count > 0)
                     {
                         _lifecycle.TryTransition(
-                            CFIPClean89LifecycleState.LivePosition,
+                            LifecycleState.LivePosition,
                             _state.Runtime.ServerUtc,
                             "BROKER_POSITION_PRESENT");
                     }
                     else if (_state.Broker.PendingOrders.Count > 0)
                     {
                         _lifecycle.TryTransition(
-                            CFIPClean89LifecycleState.PendingOrder,
+                            LifecycleState.PendingOrder,
                             _state.Runtime.ServerUtc,
                             "BROKER_PENDING_PRESENT");
                     }
                     else if (!awaitingConfirmation &&
                              (_lifecycle.State ==
-                              CFIPClean89LifecycleState.LivePosition ||
+                              LifecycleState.LivePosition ||
                               _lifecycle.State ==
-                              CFIPClean89LifecycleState.PendingOrder ||
+                              LifecycleState.PendingOrder ||
                               _lifecycle.State ==
-                              CFIPClean89LifecycleState.ExitRequested))
+                              LifecycleState.ExitRequested))
                     {
                         _lifecycle.TryTransition(
-                            CFIPClean89LifecycleState.Closed,
+                            LifecycleState.Closed,
                             _state.Runtime.ServerUtc,
                             "BROKER_OBJECTS_ABSENT");
                     }

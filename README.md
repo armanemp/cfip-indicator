@@ -1,37 +1,19 @@
 # CFIP Indicator
 
-Standalone multi-file C# implementation of the CFIP cTrader trading system.
+A clean, modular cTrader indicator implementation.
 
-This repository is a clean architectural migration from the frozen CFIP-PRO v89 reference implementation. v89 is a behavioral/reference source, not the target file layout.
+## Architecture
 
-## Principles
-- Preserve validated behavior during migration.
-- One authoritative owner for each trading concept.
-- Analysis has no broker side effects.
-- Decision is not execution.
-- TradePlan is not broker state.
-- BrokerGateway is the only broker mutation boundary.
-- Lifecycle follows broker reality.
-- UI is downstream.
-- Automatic trading and automatic pending orders are the product model; no manual entry/order buttons.
-- BUY/SELL logic must remain symmetric.
-- No silent fallbacks.
-- Every public parameter has a disposition.
+Market -> MTF -> Analysis -> Decision -> Entry -> Trade Plan -> Risk -> Execution -> Broker -> Lifecycle -> Live Management -> Outcome -> Presentation.
 
-## Toolchain
-- Windows 11
-- .NET SDK 6.0.428
-- cTrader API: %USERPROFILE%\Documents\cAlgo\API\cAlgo.API.dll
-- VS Code + C# Dev Kit
+Automatic trading and automatic pending orders are supported. Manual trade-entry/order-placement controls are not part of the product.
 
-## Current migration status
+## Development
 
-The v89 implementation surface is now decomposed into 107 C# files: 101 top-level declarations plus seven cTrader host partials. All 512 public parameters are preserved, and the nine v89 service interfaces have been extracted. Core domain types are isolated under `CFIP.Indicator.Core`.
+- .NET 6 SDK
+- cTrader Automate API
+- VS Code + C# tooling
 
-Runtime acceptance is intentionally still pending. The project must pass real cTrader compilation and controlled broker scenarios before a release is declared.
+## Documentation
 
-## Documents
-- docs/ROADMAP.md
-- docs/ARCHITECTURE.md
-- docs/WORKFLOW.md
-- docs/MIGRATION.md
+See the files under `docs/` for the roadmap, architecture, workflow, safety gates, editing guide and reference coverage.

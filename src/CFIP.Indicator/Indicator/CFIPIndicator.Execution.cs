@@ -1,7 +1,7 @@
-// Partial cTrader host orchestration module migrated from v89.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CFIP.Indicator;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
@@ -10,7 +10,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                private void TryExecuteCurrentCycle()
+                        private void TryExecuteCurrentCycle()
                 {
                     if (_state.Plan == null ||
                         !_state.Plan.IsValid ||
@@ -34,7 +34,7 @@ namespace cAlgo
                         CalculateRiskAmount(_state.Plan, volume);
         
                     TradeType tradeType =
-                        _state.Plan.Direction == CFIPClean89Direction.Buy
+                        _state.Plan.Direction == Direction.Buy
                             ? TradeType.Buy
                             : TradeType.Sell;
         
@@ -60,15 +60,15 @@ namespace cAlgo
                         return;
         
                     _lifecycle.TryTransition(
-                        CFIPClean89LifecycleState.SignalDetected,
+                        LifecycleState.SignalDetected,
                         _state.Runtime.ServerUtc,
                         "DECISION_PLAN_READY");
                     _lifecycle.TryTransition(
-                        CFIPClean89LifecycleState.PlanReady,
+                        LifecycleState.PlanReady,
                         _state.Runtime.ServerUtc,
                         "TRADE_PLAN_VALID");
                     _lifecycle.TryTransition(
-                        CFIPClean89LifecycleState.ExecutionReady,
+                        LifecycleState.ExecutionReady,
                         _state.Runtime.ServerUtc,
                         "EXECUTION_POLICY_ACCEPTED");
         
@@ -90,7 +90,7 @@ namespace cAlgo
                     if (!result.Accepted)
                     {
                         _lifecycle.TryTransition(
-                            CFIPClean89LifecycleState.Rejected,
+                            LifecycleState.Rejected,
                             _state.Runtime.ServerUtc,
                             "BROKER_EXECUTION_REJECTED");
                         return;
@@ -99,7 +99,7 @@ namespace cAlgo
                     _submittedExecutionKeys.Add(
                         intent.Identity.IdempotencyKey);
         
-                    if (intent.Kind == CFIPClean89ExecutionKind.Market)
+                    if (intent.Kind == ExecutionKind.Market)
                         RegisterBrokerConfirmation(
                             "POSITION",
                             result.BrokerPositionId,
@@ -110,7 +110,7 @@ namespace cAlgo
                             result.BrokerOrderId,
                             _state.Runtime.ServerUtc);
         
-                    if (intent.Kind != CFIPClean89ExecutionKind.Market &&
+                    if (intent.Kind != ExecutionKind.Market &&
                         result.BrokerOrderId.Length > 0 &&
                         _pendingOrderLifecycle != null)
                     {
@@ -127,17 +127,17 @@ namespace cAlgo
                         }
                     }
         
-                    if (intent.Kind == CFIPClean89ExecutionKind.Market)
+                    if (intent.Kind == ExecutionKind.Market)
                     {
                         _lifecycle.TryTransition(
-                            CFIPClean89LifecycleState.LivePosition,
+                            LifecycleState.LivePosition,
                             _state.Runtime.ServerUtc,
                             "BROKER_MARKET_ACCEPTED");
                     }
                     else
                     {
                         _lifecycle.TryTransition(
-                            CFIPClean89LifecycleState.PendingOrder,
+                            LifecycleState.PendingOrder,
                             _state.Runtime.ServerUtc,
                             "BROKER_PENDING_ACCEPTED");
                     }
@@ -145,7 +145,7 @@ namespace cAlgo
                     if (result.ReconciliationRequired &&
                         result.BrokerPositionId.Length > 0)
                     {
-                        CFIPClean89ExecutionResult protectionResult =
+                        ExecutionResult protectionResult =
                             _brokerGateway.ModifyProtection(
                                 result.BrokerPositionId,
                                 intent.StopLoss.Price,
@@ -155,7 +155,7 @@ namespace cAlgo
                         {
                             _state.Execution = protectionResult;
                             _lifecycle.TryTransition(
-                                CFIPClean89LifecycleState.RecoveryRequired,
+                                LifecycleState.RecoveryRequired,
                                 _state.Runtime.ServerUtc,
                                 "BROKER_PROTECTION_RECOVERY_FAILED");
                         }
@@ -166,20 +166,20 @@ namespace cAlgo
                     }
                 }
         
-                private bool IsExecutionDuplicate(CFIPClean89TradePlan plan)
+                private bool IsExecutionDuplicate(TradePlan plan)
                 {
                     string label =
                         _configuration.Get(
                             "AutoTradeLabel",
-                            "CFIP-SMART-CLEAN89");
+                            "CFIP-SMART");
                     string signal =
                         plan.Identity.SignalId ?? string.Empty;
         
                     foreach (var key in new[]
                     {
-                        "CFIP89|EXEC|" + plan.Identity.PlanId + "|" + CFIPClean89ExecutionKind.Market,
-                        "CFIP89|EXEC|" + plan.Identity.PlanId + "|" + CFIPClean89ExecutionKind.Stop,
-                        "CFIP89|EXEC|" + plan.Identity.PlanId + "|" + CFIPClean89ExecutionKind.Limit
+                        "CFIP|EXEC|" + plan.Identity.PlanId + "|" + ExecutionKind.Market,
+                        "CFIP|EXEC|" + plan.Identity.PlanId + "|" + ExecutionKind.Stop,
+                        "CFIP|EXEC|" + plan.Identity.PlanId + "|" + ExecutionKind.Limit
                     })
                     {
                         if (_submittedExecutionKeys.Contains(key))
@@ -230,7 +230,7 @@ namespace cAlgo
                     return false;
                 }
         
-                private double CalculateNormalizedVolume(CFIPClean89TradePlan plan)
+                private double CalculateNormalizedVolume(TradePlan plan)
                 {
                     if (plan == null || Symbol.PipSize <= 0)
                         return 0;
@@ -248,8 +248,8 @@ namespace cAlgo
         
                     if (_configuration.Get(
                             "SizingMode",
-                            CFIPClean89SizingMode.RiskPercentEquity) ==
-                        CFIPClean89SizingMode.FixedLots)
+                            SizingMode.RiskPercentEquity) ==
+                        SizingMode.FixedLots)
                     {
                         raw =
                             Symbol.QuantityToVolumeInUnits(
@@ -292,7 +292,7 @@ namespace cAlgo
                 }
         
                 private double CalculateRiskAmount(
-                    CFIPClean89TradePlan plan,
+                    TradePlan plan,
                     double volume)
                 {
                     if (plan == null || volume <= 0 || Symbol.PipSize <= 0)
