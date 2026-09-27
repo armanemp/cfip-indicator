@@ -15,6 +15,11 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private void InitializeAverageTrueRange(Native set, Bars bars)
+        {
+            set.Atr = Indicators.AverageTrueRange(bars, Math.Max(2, AtrPeriod), MovingAverageType.WilderSmoothing);
+        }
+
         private double Atr(Bars bars, int index)
                         {
                             if (bars == null || index < 0 || index >= bars.Count)
