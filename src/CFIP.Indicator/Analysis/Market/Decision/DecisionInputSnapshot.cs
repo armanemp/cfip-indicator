@@ -33,18 +33,11 @@ namespace cAlgo
         public bool UseHistoricalChoppinessGuard { get; }
         public double SmartScoreTemperature { get; }
         public int MinimumSmartDirectionShare { get; }
-        public int HigherTfPenalty { get; }
 
         public DateTime Reference { get; }
         public int ClosedM5 { get; }
 
-        public Func<int, DateTime, int> TimeframeAgreement { get; }
-        public Func<int, int> IndependentEvidence { get; }
-        public Func<int, int> StructuralConfirmations { get; }
-        public Func<string, int> RegimeQuality { get; }
-        public Func<int, int, int> RetestQuality { get; }
-        public Func<int, int, bool> ClosedBarTriggerReady { get; }
-        public Func<int, int, int> CalibrateConfidence { get; }
+        public DecisionEvidenceSnapshot Evidence { get; }
 
         public DecisionInputSnapshot(
             Frame m5Frame,
@@ -73,16 +66,9 @@ namespace cAlgo
             bool useHistoricalChoppinessGuard,
             double smartScoreTemperature,
             int minimumSmartDirectionShare,
-            int higherTfPenalty,
             DateTime reference,
             int closedM5,
-            Func<int, DateTime, int> timeframeAgreement,
-            Func<int, int> independentEvidence,
-            Func<int, int> structuralConfirmations,
-            Func<string, int> regimeQuality,
-            Func<int, int, int> retestQuality,
-            Func<int, int, bool> closedBarTriggerReady,
-            Func<int, int, int> calibrateConfidence)
+            DecisionEvidenceSnapshot evidence)
         {
             M5Frame = m5Frame;
             M15Frame = m15Frame;
@@ -117,18 +103,10 @@ namespace cAlgo
             UseHistoricalChoppinessGuard = useHistoricalChoppinessGuard;
             SmartScoreTemperature = smartScoreTemperature;
             MinimumSmartDirectionShare = minimumSmartDirectionShare;
-            HigherTfPenalty = higherTfPenalty;
-
             Reference = reference;
             ClosedM5 = closedM5;
 
-            TimeframeAgreement = timeframeAgreement;
-            IndependentEvidence = independentEvidence;
-            StructuralConfirmations = structuralConfirmations;
-            RegimeQuality = regimeQuality;
-            RetestQuality = retestQuality;
-            ClosedBarTriggerReady = closedBarTriggerReady;
-            CalibrateConfidence = calibrateConfidence;
+            Evidence = evidence ?? throw new ArgumentNullException(nameof(evidence));
         }
     }
 }

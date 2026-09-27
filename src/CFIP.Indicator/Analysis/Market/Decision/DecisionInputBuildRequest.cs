@@ -33,17 +33,10 @@ namespace cAlgo
         public bool UseHistoricalChoppinessGuard { get; set; }
         public double SmartScoreTemperature { get; set; }
         public int MinimumSmartDirectionShare { get; set; }
-        public int HigherTfPenalty { get; set; }
 
         public DateTime Reference { get; set; }
         public int ClosedM5 { get; set; }
 
-        public Func<int, DateTime, int> TimeframeAgreement { get; set; }
-        public Func<int, int> IndependentEvidence { get; set; }
-        public Func<int, int> StructuralConfirmations { get; set; }
-        public Func<string, int> RegimeQuality { get; set; }
-        public Func<int, int, int> RetestQuality { get; set; }
-        public Func<int, int, bool> ClosedBarTriggerReady { get; set; }
-        public Func<int, int, int> CalibrateConfidence { get; set; }
+        public DecisionEvidenceSnapshot Evidence { get; set; }
     }
 }

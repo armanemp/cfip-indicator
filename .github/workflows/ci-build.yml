@@ -15,3 +15,6 @@ jobs:
           dotnet-version: '6.0.x'
       - run: dotnet restore tools/CFIP.Indicator.CI/CFIP.Indicator.CI.csproj
       - run: dotnet build tools/CFIP.Indicator.CI/CFIP.Indicator.CI.csproj --configuration Release --no-restore
+      - run: dotnet restore tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj
+      - run: dotnet build tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj --configuration Release --no-restore
+      - run: dotnet run --project tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj --configuration Release --no-build

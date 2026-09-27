@@ -195,7 +195,7 @@ ATOMIC_METHOD_OWNERS = {
     "PremiumDiscountBias": ROOT / "Analysis" / "Market" / "PremiumDiscountAnalyzer.cs",
     "LiveBias": ROOT / "Analysis" / "Market" / "LiveBiasAnalyzer.cs",
     "AddFrame": ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs",
-    "BuildReason": ROOT / "Analysis" / "Market" / "Decision" / "DecisionReasonFormatter.cs",
+    "Format": ROOT / "Analysis" / "Market" / "Decision" / "DecisionReasonFormatter.cs",
     "BullLiquiditySweep": ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs",
     "BearLiquiditySweep": ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs",
     "FindSwingHigh": ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs",
@@ -240,6 +240,68 @@ print(
     f"Architecture OK: {len(files)} C# files, {parameters} parameters, "
     f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
 )
+
+# Decision services must remain free of cTrader host dependencies.
+DECISION_SERVICE_ROOT = ROOT / "Analysis" / "Market" / "Decision"
+DECISION_SERVICE_FILES = {
+    "DecisionEvidenceSnapshot.cs",
+    "DecisionScoreSnapshot.cs",
+    "DecisionScoreCalculator.cs",
+    "DecisionConsensusSnapshot.cs",
+    "DecisionConsensusCalculator.cs",
+    "DecisionQualityCalculator.cs",
+    "DecisionConfidenceCalculator.cs",
+    "EmpiricalConfidenceCalibrator.cs",
+    "DecisionFilterResult.cs",
+    "DecisionThresholdFilterInput.cs",
+    "DecisionThresholdFilterEvaluator.cs",
+    "DecisionSmartConsensusFilterInput.cs",
+    "DecisionSmartConsensusFilterEvaluator.cs",
+    "DecisionReasonFormatter.cs",
+}
+for filename in DECISION_SERVICE_FILES:
+    path = DECISION_SERVICE_ROOT / filename
+    if not path.exists():
+        raise SystemExit(f"Decision service missing: {filename}")
+    text_module = path.read_text(encoding="utf-8")
+    if re.search(r"\bcAlgo\.API(?:\.Indicators|\.Internals)?\b", text_module):
+        raise SystemExit(f"cTrader dependency leaked into pure decision service: {filename}")
+
+SNAPSHOT = DECISION_SERVICE_ROOT / "DecisionInputSnapshot.cs"
+SNAPSHOT_CODE = SNAPSHOT.read_text(encoding="utf-8")
+if "Func<" in SNAPSHOT_CODE:
+    raise SystemExit("DecisionInputSnapshot contains executable callbacks")
+REQUEST = DECISION_SERVICE_ROOT / "DecisionInputBuildRequest.cs"
+if "Func<" in REQUEST.read_text(encoding="utf-8"):
+    raise SystemExit("DecisionInputBuildRequest contains executable callbacks")
+if not (DECISION_SERVICE_ROOT / "DecisionEvidenceSnapshot.cs").exists():
+    raise SystemExit("Immutable decision evidence snapshot is missing")
+if (ROOT / "Trading" / "Intelligence" / "DecisionFeatures.cs").exists():
+    raise SystemExit("DecisionFeatures.cs must remain removed after intelligence split")
+
+FILTER_PIPELINE = ROOT / "Analysis" / "Market" / "Decision" / "DecisionFilters.cs"
+FILTER_CODE = FILTER_PIPELINE.read_text(encoding="utf-8")
+if len(re.findall(r"^\s*private\s+bool\s+PassesDecisionFilters\s*\(", FILTER_CODE, re.MULTILINE)) != 1:
+    raise SystemExit("DecisionFilters must own exactly one pipeline entry point")
+for helper_name in (
+    "EvaluateDecisionConfirmationGates",
+    "EvaluateDecisionSmartGates",
+    "EvaluateDecisionStructureGates",
+    "EvaluateDecisionMarketGates",
+    "EvaluateDecisionLifecycleGates",
+):
+    declaration_pattern = re.compile(
+        r"^\s*(?:public|private|protected|internal)\b[^\r\n{;]*\b"
+        + re.escape(helper_name)
+        + r"\s*\(",
+        re.MULTILINE,
+    )
+    owners = [
+        p for p in files
+        if len(declaration_pattern.findall(p.read_text(encoding="utf-8"))) == 1
+    ]
+    if len(owners) != 1:
+        raise SystemExit(f"Decision gate ownership failed: {helper_name}")
 
 # Panel semantic renderer isolation.
 PANEL_ROOT = ROOT / "UI" / "Panel"

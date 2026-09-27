@@ -39,6 +39,11 @@ Edit the smallest authoritative module that owns the behavior.
 | Lifecycle events | `Trading/Lifecycle/*.cs` |
 | Live management | `Trading/LiveManagement/*.cs` |
 | Prediction / intelligence | `Trading/Intelligence/**/*.cs` |
+| Fresh trigger evidence | `Trading/Intelligence/FreshTriggerEvidenceAnalyzer.cs` |
+| Structural sequence | `Trading/Intelligence/StructuralSequenceAnalyzer.cs` |
+| Entry location quality | `Trading/Intelligence/EntryLocationQualityAnalyzer.cs` |
+| Proxy expected value | `Trading/Intelligence/ProxyExpectedValueCalculator.cs` |
+| No-trade regime | `Trading/Intelligence/NoTradeRegimeAnalyzer.cs` |
 | Alerts | `Trading/Alerts/*.cs` |
 | Validation | `Trading/Validation/*.cs` |
 | Chart | `UI/Chart/**/*.cs` |

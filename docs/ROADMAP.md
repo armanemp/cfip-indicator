@@ -97,7 +97,7 @@ Acceptance:
 
 ## Phase 3 — Decision and intelligence services
 
-Status: next.
+Status: complete.
 
 Goal: turn analysis outputs into immutable decision inputs and deterministic decision services.
 
@@ -108,6 +108,17 @@ Work:
 - Keep outcome telemetry and calibration as observation services, not decision authorities.
 - Add explicit immutable input/output contracts.
 - Add deterministic fixture tests and contradiction tests.
+
+Completed in this phase:
+
+- Replaced callback-bearing decision inputs with an immutable directional evidence snapshot.
+- Split decision score, consensus/share conversion, quality and confidence calculations into dedicated deterministic services.
+- Isolated empirical confidence calibration and higher-timeframe conflict penalties.
+- Split decision evidence collection into timeframe agreement, independent evidence, structural confirmation and direction acceptance owners.
+- Split decision filtering into threshold, confirmation, smart, structure, market and lifecycle gate owners.
+- Split intelligence helpers into fresh-trigger, structural-sequence, entry-location, expected-value and no-trade-regime owners.
+- Removed the multi-concern decision feature module and duplicate reason-formatting implementation.
+- Added deterministic C# contract fixtures and CI execution for them.
 
 Acceptance:
 

@@ -83,38 +83,42 @@ namespace cAlgo
                         SmartScoreTemperature,
                     MinimumSmartDirectionShare =
                         MinimumSmartDirectionShare,
-                    HigherTfPenalty =
-                        HigherTfPenalty,
 
                     Reference = reference,
                     ClosedM5 = closedM5,
 
-                    TimeframeAgreement =
-                        TimeframeAgreement,
-                    IndependentEvidence =
-                        IndependentEvidence,
-                    StructuralConfirmations =
-                        StructuralConfirmations,
-                    RegimeQuality =
-                        value =>
+                    Evidence =
+                        new DecisionEvidenceSnapshot(
+                            TimeframeAgreement(1, reference),
+                            TimeframeAgreement(-1, reference),
+                            IndependentEvidence(1),
+                            IndependentEvidence(-1),
+                            StructuralConfirmations(1),
+                            StructuralConfirmations(-1),
                             RegimeQuality(
-                                value,
+                                regime,
                                 _m5Bars,
                                 closedM5),
-                    RetestQuality =
-                        (bar, direction) =>
                             RetestQuality(
                                 _m5Bars,
-                                bar,
-                                direction),
-                    ClosedBarTriggerReady =
-                        (bar, direction) =>
+                                closedM5,
+                                1),
+                            RetestQuality(
+                                _m5Bars,
+                                closedM5,
+                                -1),
                             ClosedBarTriggerReady(
                                 _m5Bars,
-                                bar,
-                                direction),
-                    CalibrateConfidence =
-                        CalibratedConfidence
+                                closedM5,
+                                1),
+                            ClosedBarTriggerReady(
+                                _m5Bars,
+                                closedM5,
+                                -1),
+                            ConfidenceCalibrationAdjustment(1),
+                            ConfidenceCalibrationAdjustment(-1),
+                            HigherTimeframeConfidencePenalty(1),
+                            HigherTimeframeConfidencePenalty(-1))
                 };
 
             Decision decision =
@@ -124,7 +128,6 @@ namespace cAlgo
 
             decision.EntryAllowed =
                 PassesDecisionFilters(
-                    chartIndex,
                     closedM5,
                     reference,
                     decision,

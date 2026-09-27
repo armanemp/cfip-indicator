@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>CFIP.Decision.Contracts</AssemblyName>
+    <RootNamespace>cAlgo</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" Link="Core/Math/NumericGuards.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" Link="Core/Models/Decision.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvidenceSnapshot.cs" Link="Decision/DecisionEvidenceSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusSnapshot.cs" Link="Decision/DecisionConsensusSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusCalculator.cs" Link="Decision/DecisionConsensusCalculator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionQualityCalculator.cs" Link="Decision/DecisionQualityCalculator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionConfidenceCalculator.cs" Link="Decision/DecisionConfidenceCalculator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/EmpiricalConfidenceCalibrator.cs" Link="Decision/EmpiricalConfidenceCalibrator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionFilterResult.cs" Link="Decision/DecisionFilterResult.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionThresholdFilterInput.cs" Link="Decision/DecisionThresholdFilterInput.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionThresholdFilterEvaluator.cs" Link="Decision/DecisionThresholdFilterEvaluator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionSmartConsensusFilterInput.cs" Link="Decision/DecisionSmartConsensusFilterInput.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionSmartConsensusFilterEvaluator.cs" Link="Decision/DecisionSmartConsensusFilterEvaluator.cs" />
+  </ItemGroup>
+</Project>

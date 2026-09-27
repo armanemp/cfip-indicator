@@ -61,6 +61,10 @@ Trading may execute broker mutations, but must not invent alternative analytical
 
 Presentation consumes state and renders it; it does not decide or trade.
 
+## Decision service boundary
+
+Decision input snapshots are immutable data carriers. Pure decision services perform no broker mutation, chart mutation or executable callback dispatch. Direction-specific evidence is captured for both BUY and SELL before consensus selection so neutral states cannot inherit directional evidence. Decision filtering is an ordered pipeline of narrow gate owners; the pipeline itself only orchestrates gate results.
+
 ## File ownership
 
 A source file should contain one primary production artifact and one coherent responsibility. Domain types, enums, indicators, analyzers, execution policies, lifecycle handlers, renderers and adapters are separated into dedicated files.
@@ -90,6 +94,15 @@ Chart object creation/removal and visual renderers live only under UI modules. T
 ## Broker boundary
 
 Broker mutation calls are restricted to the execution, pending, lifecycle and live-management boundaries.
+
+## Decision ownership
+
+- Input/evidence snapshot: Analysis/Market/Decision/DecisionInput*.cs and DecisionEvidenceSnapshot.cs.
+- Score, consensus, quality and confidence: dedicated Decision*Calculator.cs services.
+- Decision threshold and smart consensus: dedicated pure filter evaluators.
+- Confirmation, smart, structure, market and lifecycle gates: dedicated gate modules.
+- Reason formatting: DecisionReasonFormatter.cs; DecisionReasonBuilder.cs only composes the formatter.
+- Intelligence helpers remain single-purpose modules and do not become a second decision authority.
 
 ## Core boundary
 

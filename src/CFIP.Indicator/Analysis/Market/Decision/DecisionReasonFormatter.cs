@@ -1,51 +1,42 @@
-// CFIP Indicator — DecisionReasonFormatter.cs
-// Single-responsibility analysis module.
-
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using cAlgo.API;
-using cAlgo.API.Indicators;
-using cAlgo.API.Internals;
 
 namespace cAlgo
 {
-    public partial class CFIPIndicator : Indicator
+    internal sealed class DecisionReasonFormatter
     {
-        private string BuildReason(
-                            Decision d,
-                            int buyShare,
-                            int sellShare)
-                        {
-                            return
-                                (d.Direction == 1
-                                    ? "BUY"
-                                    : "SELL") +
-                                " | CONF " +
-                                d.Confidence +
-                                " | EDGE " +
-                                d.Edge +
-                                " | SMART " +
-                                d.SmartQuality +
-                                " | MTF " +
-                                d.TimeframeAgreement +
-                                " | EVID " +
-                                d.IndependentEvidence +
-                                " | STRUCT " +
-                                d.StructuralConfirmations +
-                                " | RETEST " +
-                                d.RetestQuality +
-                                " | REGIME " +
-                                d.Regime +
-                                " | " +
-                                buyShare +
-                                "/" +
-                                sellShare +
-                                (string.IsNullOrWhiteSpace(d.BlockReason)
-                                    ? ""
-                                    : " | BLOCK " +
-                                      d.BlockReason);
-                        }
+        public string Format(Decision decision, int buyShare, int sellShare)
+        {
+            if (decision == null)
+                return string.Empty;
+
+            return
+                (decision.Direction == 1
+                    ? "BUY"
+                    : "SELL") +
+                " | CONF " +
+                decision.Confidence +
+                " | EDGE " +
+                decision.Edge +
+                " | SMART " +
+                decision.SmartQuality +
+                " | MTF " +
+                decision.TimeframeAgreement +
+                " | EVID " +
+                decision.IndependentEvidence +
+                " | STRUCT " +
+                decision.StructuralConfirmations +
+                " | RETEST " +
+                decision.RetestQuality +
+                " | REGIME " +
+                decision.Regime +
+                " | " +
+                buyShare +
+                "/" +
+                sellShare +
+                (string.IsNullOrWhiteSpace(decision.BlockReason)
+                    ? ""
+                    : " | BLOCK " +
+                      decision.BlockReason);
+        }
     }
 }
