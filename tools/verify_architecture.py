@@ -315,6 +315,22 @@ MUTATION_ALLOWED_FILES = {
     "BrokerTakeProfitMutation.cs",
     "BrokerPositionCloseMutation.cs",
 }
+REQUIRED_BROKER_MUTATION_FILES = {
+    "BrokerMarketOrderMutation.cs",
+    "BrokerPendingOrderPlacement.cs",
+    "BrokerLimitOrderPlacement.cs",
+    "BrokerPendingOrderCancellation.cs",
+    "BrokerStopLossMutation.cs",
+    "BrokerTakeProfitMutation.cs",
+    "BrokerPositionCloseMutation.cs",
+    "BrokerProtectionCoordinator.cs",
+    "BrokerConfirmationPolicy.cs",
+}
+for filename in REQUIRED_BROKER_MUTATION_FILES:
+    path = MUTATION_ALLOWED_ROOT / filename
+    if not path.exists():
+        raise SystemExit(f"Broker mutation owner missing: {filename}")
+
 BROKER_MUTATION_TOKENS = (
     "ExecuteMarketOrder(",
     "PlaceStopOrder(",
