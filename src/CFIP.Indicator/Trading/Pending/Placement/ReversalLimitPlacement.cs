@@ -201,7 +201,7 @@ namespace cAlgo
                                                         pendingIntent.TargetPips,
                                                         ProtectionType.Relative,
                                                         expiration,
-                                                        "CFIP SMART73",
+                                                        TradeExecutionMetadata.DefaultExecutionComment,
                                                         false);
                                 
                                                 if (result == null ||
