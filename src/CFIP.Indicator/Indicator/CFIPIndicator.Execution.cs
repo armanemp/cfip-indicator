@@ -264,11 +264,12 @@ namespace cAlgo
                         raw =
                             Symbol.VolumeForProportionalRisk(
                                 ProportionalAmountType.Equity,
-                                Math.Max(
-                                    0.01,
-                                    _configuration.Get(
-                                        "RiskPercentEquity",
-                                        0.50)),
+                                RiskPolicy.ResolveRiskPercent(
+                                    _configuration,
+                                    _state.Decision == null
+                                        ? DecisionPolicyMode.Confirmed
+                                        : _state.Decision.PolicyMode,
+                                    _state.Suitability),
                                 stopPips,
                                 RoundingMode.Down);
                     }
