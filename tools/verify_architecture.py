@@ -241,6 +241,44 @@ print(
     f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
 )
 
+# Decision services must remain free of cTrader host dependencies.
+DECISION_SERVICE_ROOT = ROOT / "Analysis" / "Market" / "Decision"
+DECISION_SERVICE_FILES = {
+    "DecisionEvidenceSnapshot.cs",
+    "DecisionScoreSnapshot.cs",
+    "DecisionScoreCalculator.cs",
+    "DecisionConsensusSnapshot.cs",
+    "DecisionConsensusCalculator.cs",
+    "DecisionQualityCalculator.cs",
+    "DecisionConfidenceCalculator.cs",
+    "EmpiricalConfidenceCalibrator.cs",
+    "DecisionFilterResult.cs",
+    "DecisionThresholdFilterInput.cs",
+    "DecisionThresholdFilterEvaluator.cs",
+    "DecisionSmartConsensusFilterInput.cs",
+    "DecisionSmartConsensusFilterEvaluator.cs",
+    "DecisionReasonFormatter.cs",
+}
+for filename in DECISION_SERVICE_FILES:
+    path = DECISION_SERVICE_ROOT / filename
+    if not path.exists():
+        raise SystemExit(f"Decision service missing: {filename}")
+    text_module = path.read_text(encoding="utf-8")
+    if re.search(r"\bcAlgo\.API(?:\.Indicators|\.Internals)?\b", text_module):
+        raise SystemExit(f"cTrader dependency leaked into pure decision service: {filename}")
+
+SNAPSHOT = DECISION_SERVICE_ROOT / "DecisionInputSnapshot.cs"
+SNAPSHOT_CODE = SNAPSHOT.read_text(encoding="utf-8")
+if "Func<" in SNAPSHOT_CODE:
+    raise SystemExit("DecisionInputSnapshot contains executable callbacks")
+REQUEST = DECISION_SERVICE_ROOT / "DecisionInputBuildRequest.cs"
+if "Func<" in REQUEST.read_text(encoding="utf-8"):
+    raise SystemExit("DecisionInputBuildRequest contains executable callbacks")
+if not (DECISION_SERVICE_ROOT / "DecisionEvidenceSnapshot.cs").exists():
+    raise SystemExit("Immutable decision evidence snapshot is missing")
+if (ROOT / "Trading" / "Intelligence" / "DecisionFeatures.cs").exists():
+    raise SystemExit("DecisionFeatures.cs must remain removed after intelligence split")
+
 # Panel semantic renderer isolation.
 PANEL_ROOT = ROOT / "UI" / "Panel"
 ROW_EXPECTATIONS = {
