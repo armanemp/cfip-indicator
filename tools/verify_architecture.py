@@ -135,3 +135,23 @@ print(
     f"Architecture OK: {len(files)} C# files, {parameters} parameters, "
     f"{len(methods)} method declarations / {len(unique_methods)} unique methods."
 )
+
+# Panel semantic renderer isolation.
+PANEL_ROOT = ROOT / "UI" / "Panel"
+ROW_EXPECTATIONS = {
+    "PanelRowsRenderer.cs": "RenderPanelRows",
+    "PanelRowWriter.cs": "SetPanelRow",
+    "Rows/PanelOverviewRowsRenderer.cs": "RenderPanelOverviewRows",
+    "Rows/PanelDecisionRowsRenderer.cs": "RenderPanelDecisionRows",
+    "Rows/PanelExecutionRowsRenderer.cs": "RenderPanelExecutionRows",
+    "Rows/PanelTradePlanRowsRenderer.cs": "RenderPanelTradePlanRows",
+    "Rows/PanelContextRowsRenderer.cs": "RenderPanelContextRows",
+    "Rows/PanelAutoTradingRowsRenderer.cs": "RenderPanelAutoTradingRows",
+}
+for relative, method in ROW_EXPECTATIONS.items():
+    path = PANEL_ROOT / relative
+    if not path.exists():
+        raise SystemExit(f"Panel renderer module missing: {relative}")
+    text_module = path.read_text(encoding="utf-8")
+    if text_module.count(f"private void {method}(") != 1:
+        raise SystemExit(f"Panel renderer ownership check failed: {relative}")

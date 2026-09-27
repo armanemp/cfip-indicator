@@ -1,0 +1,168 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using cAlgo.API;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private void RenderPanelDecisionRows(
+            ref int slot,
+            int contentWidth)
+        {
+                                                if (_decision != null)
+                                                {
+                                                    int direction =
+                                                        _decision.Direction;
+                                    
+                                                    string decisionState =
+                                                        direction == 1
+                                                            ? "BUY"
+                                                            : direction == -1
+                                                                ? "SELL"
+                                                                : "NEUTRAL";
+                                    
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "DECISION  •  " +
+                                                        decisionState +
+                                                        "  •  " +
+                                                        (_decision.EntryAllowed
+                                                            ? "READY"
+                                                            : "WATCH / BLOCKED"),
+                                                        PanelDirectionColor(
+                                                            direction),
+                                                        true,
+                                                        contentWidth);
+                                    
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "CONF " +
+                                                        _decision.Confidence +
+                                                        "  •  EDGE " +
+                                                        _decision.Edge +
+                                                        "  •  SMART " +
+                                                        _decision.SmartQuality,
+                                                        PanelDirectionColor(
+                                                            direction),
+                                                        true,
+                                                        contentWidth);
+                                    
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "MTF " +
+                                                        _decision.TimeframeAgreement +
+                                                        "  •  EVID " +
+                                                        _decision.IndependentEvidence +
+                                                        "  •  STRUCT " +
+                                                        _decision.StructuralConfirmations,
+                                                        PanelSecondaryTextColor,
+                                                        false,
+                                                        contentWidth);
+                                    
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "REGIME " +
+                                                        _decision.Regime +
+                                                        "  •  Q" +
+                                                        _decision.RegimeQuality +
+                                                        "  •  RETEST " +
+                                                        _decision.RetestQuality +
+                                                        "  •  SHARE " +
+                                                        _decision.BuyShare +
+                                                        "/" +
+                                                        _decision.SellShare,
+                                                        PanelSecondaryTextColor,
+                                                        false,
+                                                        contentWidth);
+                                    
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "CONFLUENCE  " +
+                                                        ConfluenceText(
+                                                            _m5Frame),
+                                                        PanelAccentColor,
+                                                        false,
+                                                        contentWidth);
+                                    
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        _decision.TriggerReady
+                                                            ? "TRIGGER  CONFIRMED"
+                                                            : "TRIGGER  WAITING",
+                                                        _decision.TriggerReady
+                                                            ? TriggerLineColor
+                                                            : PanelWarningColor,
+                                                        true,
+                                                        contentWidth);
+                                    
+                                                    if (!string.IsNullOrWhiteSpace(
+                                                            _decision.BlockReason))
+                                                    {
+                                                        AddPanelRow(
+                                                            ref slot,
+                                                            "BLOCK  " +
+                                                            _decision.BlockReason,
+                                                            SlLineColor,
+                                                            true,
+                                                            contentWidth);
+                                                    }
+                                    
+                                                    if (_prediction != null &&
+                                                        _prediction.Direction != 0 &&
+                                                        _prediction.Confidence >=
+                                                        Math.Max(
+                                                            MinimumEarlyConfidence,
+                                                            EarlySetupConfidence))
+                                                    {
+                                                        AddPanelRow(
+                                                            ref slot,
+                                                            "EARLY ANALYSIS  •  " +
+                                                            (_prediction.Direction == 1
+                                                                ? "BUY"
+                                                                : "SELL") +
+                                                            "  •  CONF " +
+                                                            _prediction.Confidence,
+                                                            PanelDirectionColor(
+                                                                _prediction.Direction),
+                                                            true,
+                                                            contentWidth);
+                                    
+                                                        AddPanelRow(
+                                                            ref slot,
+                                                            "PREDICTION  " +
+                                                            ExecutionModeText(
+                                                                _prediction.Mode) +
+                                                            "  •  ENTRY " +
+                                                            Price(_prediction.Entry) +
+                                                            "  •  TRIGGER " +
+                                                            Price(_prediction.Trigger),
+                                                            PanelDirectionColor(
+                                                                _prediction.Direction),
+                                                            false,
+                                                            contentWidth);
+                                    
+                                                        AddPanelRow(
+                                                            ref slot,
+                                                            "PRED TARGETS  " +
+                                                            Price(_prediction.Target1) +
+                                                            "  /  " +
+                                                            Price(_prediction.Target2) +
+                                                            "  /  " +
+                                                            Price(_prediction.Target3) +
+                                                            "  /  " +
+                                                            Price(_prediction.Target4),
+                                                            PanelSecondaryTextColor,
+                                                            false,
+                                                            contentWidth);
+                                                    }
+                                                }
+                                    
+            
+        }
+    }
+}

@@ -24,7 +24,7 @@ The cTrader host remains a single `CFIPIndicator` partial type solely for platfo
 
 There is exactly one decision authority, one strategy state, one broker identity and one automatic execution authority.
 
-The presentation layer consumes authoritative state and never decides whether a trade should exist. Broker mutations are isolated to the trading/execution boundary.
+The presentation layer consumes authoritative state and never decides whether a trade should exist. Panel row composition is split by semantic section; row mutation is isolated in a dedicated writer. Broker mutations are isolated to the trading/execution boundary.
 
 ## Non-negotiable invariants
 
