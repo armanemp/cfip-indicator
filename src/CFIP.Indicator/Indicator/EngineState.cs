@@ -15,6 +15,8 @@ namespace CFIP.Indicator
             public ExecutionResult Execution { get; private set; }
             public BrokerStateSnapshot Broker { get; private set; }
             public PresentationState Presentation { get; private set; }
+            public PredictionSnapshot Prediction { get; private set; }
+            public MarketSuitabilitySnapshot Suitability { get; private set; }
     
             public void SetRuntime(RuntimeSnapshot value)
             {
@@ -49,6 +51,16 @@ namespace CFIP.Indicator
             public void SetPlan(TradePlan value)
             {
                 Plan = value;
+            }
+
+            public void SetPrediction(PredictionSnapshot value)
+            {
+                Prediction = value;
+            }
+
+            public void SetSuitability(MarketSuitabilitySnapshot value)
+            {
+                Suitability = value;
             }
     
             // The cycle state is a downstream data carrier. Later phases extend
