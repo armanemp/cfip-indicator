@@ -29,62 +29,44 @@ namespace cAlgo
                                         reason = "NO DIRECTION";
                                         return false;
                                     }
-                        
+
                                     int adaptiveQualityThreshold;
                                     int adaptiveShareThreshold;
                                     int adaptiveEdgeThreshold;
-                        
+
                                     GetAdaptiveSmartThresholds(
                                         d.Regime,
                                         out adaptiveQualityThreshold,
                                         out adaptiveShareThreshold,
                                         out adaptiveEdgeThreshold);
-                        
-                                    if (d.Confidence < MinimumConfidence)
+
+                                    DecisionFilterResult thresholdResult =
+                                        new DecisionThresholdFilterEvaluator().Evaluate(
+                                            d,
+                                            new DecisionThresholdFilterInput(
+                                                d.Confidence,
+                                                d.Edge,
+                                                d.SmartQuality,
+                                                d.TimeframeAgreement,
+                                                d.IndependentEvidence,
+                                                d.StructuralConfirmations,
+                                                MinimumConfidence,
+                                                adaptiveEdgeThreshold,
+                                                adaptiveQualityThreshold,
+                                                RequireHigherTfAgreement,
+                                                MinimumTimeframeAgreement,
+                                                MinimumIndependentEvidence,
+                                                SmartMinimumIndependentEvidence,
+                                                EnableSmartDecisionEngine,
+                                                RequireStructuralConfirmation,
+                                                MinimumStructuralConfirmations));
+
+                                    if (!thresholdResult.Allowed)
                                     {
-                                        reason = "CONFIDENCE";
+                                        reason = thresholdResult.Reason;
                                         return false;
                                     }
-                        
-                                    if (d.Edge < adaptiveEdgeThreshold)
-                                    {
-                                        reason = "EDGE";
-                                        return false;
-                                    }
-                        
-                                    if (d.SmartQuality < adaptiveQualityThreshold)
-                                    {
-                                        reason = "SMART QUALITY";
-                                        return false;
-                                    }
-                        
-                                    if (RequireHigherTfAgreement &&
-                                        d.TimeframeAgreement <
-                                        MinimumTimeframeAgreement)
-                                    {
-                                        reason = "MTF AGREEMENT";
-                                        return false;
-                                    }
-                        
-                                    if (d.IndependentEvidence <
-                                        Math.Max(
-                                            MinimumIndependentEvidence,
-                                            EnableSmartDecisionEngine
-                                                ? SmartMinimumIndependentEvidence
-                                                : 0))
-                                    {
-                                        reason = "INDEPENDENT EVIDENCE";
-                                        return false;
-                                    }
-                        
-                                    if (RequireStructuralConfirmation &&
-                                        d.StructuralConfirmations <
-                                        MinimumStructuralConfirmations)
-                                    {
-                                        reason = "STRUCTURE";
-                                        return false;
-                                    }
-                        
+
                                     if (RequireCoreAgreement &&
                                         _m5Frame != null &&
                                         _m15Frame != null)
@@ -166,43 +148,30 @@ namespace cAlgo
                                         return false;
                                     }
                         
-                                    if (EnableSmartDecisionEngine)
-                                    {
-                                        int strongest =
-                                            Math.Max(
-                                                d.BuyShare,
-                                                d.SellShare);
-                        
-                                        if (RequireSmartConsensus &&
-                                            strongest <
-                                            Math.Max(
+                                    DecisionFilterResult smartConsensusResult =
+                                        new DecisionSmartConsensusFilterEvaluator().Evaluate(
+                                            new DecisionSmartConsensusFilterInput(
+                                                EnableSmartDecisionEngine,
+                                                RequireSmartConsensus,
+                                                Math.Max(d.BuyShare, d.SellShare),
                                                 SmartConsensusThreshold,
-                                                adaptiveShareThreshold))
-                                        {
-                                            bool soft =
-                                                AllowSmartSoftGate &&
-                                                d.SmartQuality >=
-                                                SmartStrongSetupQuality &&
-                                                d.Edge >=
-                                                SmartStrongSetupEdge &&
-                                                d.IndependentEvidence >=
-                                                SmartMinimumIndependentEvidence + 1;
-                        
-                                            if (!soft)
-                                            {
-                                                reason = "SMART CONSENSUS";
-                                                return false;
-                                            }
-                                        }
-                        
-                                        if (d.TimeframeAgreement <
-                                            SmartMinimumTimeframeAgreement)
-                                        {
-                                            reason = "SMART MTF";
-                                            return false;
-                                        }
+                                                adaptiveShareThreshold,
+                                                AllowSmartSoftGate,
+                                                d.SmartQuality,
+                                                SmartStrongSetupQuality,
+                                                d.Edge,
+                                                SmartStrongSetupEdge,
+                                                d.IndependentEvidence,
+                                                SmartMinimumIndependentEvidence,
+                                                d.TimeframeAgreement,
+                                                SmartMinimumTimeframeAgreement));
+
+                                    if (!smartConsensusResult.Allowed)
+                                    {
+                                        reason = smartConsensusResult.Reason;
+                                        return false;
                                     }
-                        
+
                                     if (UseSmartEntryQualityFilter &&
                                         d.SmartQuality <
                                         Math.Max(
