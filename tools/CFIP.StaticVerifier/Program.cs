@@ -48,16 +48,27 @@ internal static class Program
             }
         }
 
-        var forbiddenManualEntry = csFiles
+        var indicatorFiles = Directory.GetFiles(
+                Path.Combine(sourceRoot, "Indicator"),
+                "CFIPIndicator.*.cs",
+                SearchOption.TopDirectoryOnly)
             .Select(File.ReadAllText)
-            .Any(t =>
-                Regex.IsMatch(t, @"Manuals+Buy", RegexOptions.IgnoreCase) ||
-                Regex.IsMatch(t, @"Manuals+Sell", RegexOptions.IgnoreCase));
+            .ToArray();
 
-        if (forbiddenManualEntry)
+        var manualEntrySurface = indicatorFiles.Any(t =>
+            Regex.IsMatch(t, @"(Button|AddButton|TradeButton)", RegexOptions.IgnoreCase) &&
+            Regex.IsMatch(t, @"(Buy|Sell|Stop|Limit)", RegexOptions.IgnoreCase));
+
+        if (manualEntrySurface)
         {
-            Console.Error.WriteLine("Manual BUY/SELL entry surface detected.");
+            Console.Error.WriteLine("Manual trade-entry control surface detected.");
             return 6;
+        }
+
+        if (csFiles.Length < 98)
+        {
+            Console.Error.WriteLine($"Expected at least 98 migrated C# files, found {csFiles.Length}.");
+            return 7;
         }
 
         Console.WriteLine($"Static migration verification passed. C# files: {csFiles.Length}; parameters: {parameterCount}.");
