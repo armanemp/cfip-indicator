@@ -290,7 +290,16 @@ for helper_name in (
     "EvaluateDecisionMarketGates",
     "EvaluateDecisionLifecycleGates",
 ):
-    owners = [p for p in files if helper_name in p.read_text(encoding="utf-8")]
+    declaration_pattern = re.compile(
+        r"^\s*(?:public|private|protected|internal)\b[^\r\n{;]*\b"
+        + re.escape(helper_name)
+        + r"\s*\(",
+        re.MULTILINE,
+    )
+    owners = [
+        p for p in files
+        if len(declaration_pattern.findall(p.read_text(encoding="utf-8"))) == 1
+    ]
     if len(owners) != 1:
         raise SystemExit(f"Decision gate ownership failed: {helper_name}")
 
