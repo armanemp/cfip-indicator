@@ -6,18 +6,18 @@ namespace cAlgo
     {
         public int Calculate(
             int strongestShare,
-            DecisionEvidenceSnapshot evidence)
+            int timeframeAgreement,
+            int independentEvidence,
+            int structuralConfirmations,
+            int regimeQuality)
         {
-            if (evidence == null)
-                throw new ArgumentNullException(nameof(evidence));
-
             return NumericGuards.ClampInt(
                 (int)Math.Round(
                     strongestShare * 0.28 +
-                    evidence.TimeframeAgreement * 0.23 +
-                    Math.Min(100, evidence.IndependentEvidence * 10) * 0.20 +
-                    Math.Min(100, evidence.StructuralConfirmations * 16) * 0.17 +
-                    evidence.RegimeQuality * 0.12),
+                    timeframeAgreement * 0.23 +
+                    Math.Min(100, independentEvidence * 10) * 0.20 +
+                    Math.Min(100, structuralConfirmations * 16) * 0.17 +
+                    regimeQuality * 0.12),
                 0,
                 100);
         }
