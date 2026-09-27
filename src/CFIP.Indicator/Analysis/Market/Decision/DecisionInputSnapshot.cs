@@ -35,13 +35,15 @@ namespace cAlgo
         public int MinimumSmartDirectionShare { get; }
         public int HigherTfPenalty { get; }
 
-        public int TimeframeAgreement { get; }
-        public int IndependentEvidence { get; }
-        public int StructuralConfirmations { get; }
-        public int RegimeQuality { get; }
-        public int RetestQuality { get; }
-        public bool TriggerReady { get; }
+        public DateTime Reference { get; }
+        public int ClosedM5 { get; }
 
+        public Func<int, DateTime, int> TimeframeAgreement { get; }
+        public Func<int, int> IndependentEvidence { get; }
+        public Func<int, int> StructuralConfirmations { get; }
+        public Func<string, int> RegimeQuality { get; }
+        public Func<int, int, int> RetestQuality { get; }
+        public Func<int, int, bool> ClosedBarTriggerReady { get; }
         public Func<int, int, int> CalibrateConfidence { get; }
 
         public DecisionInputSnapshot(
@@ -72,12 +74,14 @@ namespace cAlgo
             double smartScoreTemperature,
             int minimumSmartDirectionShare,
             int higherTfPenalty,
-            int timeframeAgreement,
-            int independentEvidence,
-            int structuralConfirmations,
-            int regimeQuality,
-            int retestQuality,
-            bool triggerReady,
+            DateTime reference,
+            int closedM5,
+            Func<int, DateTime, int> timeframeAgreement,
+            Func<int, int> independentEvidence,
+            Func<int, int> structuralConfirmations,
+            Func<string, int> regimeQuality,
+            Func<int, int, int> retestQuality,
+            Func<int, int, bool> closedBarTriggerReady,
             Func<int, int, int> calibrateConfidence)
         {
             M5Frame = m5Frame;
@@ -104,9 +108,10 @@ namespace cAlgo
             PremiumDiscountBias = premiumDiscountBias;
             UseM1Trigger = useM1Trigger;
 
-            Regime = string.IsNullOrWhiteSpace(regime)
-                ? "UNKNOWN"
-                : regime;
+            Regime =
+                string.IsNullOrWhiteSpace(regime)
+                    ? "UNKNOWN"
+                    : regime;
 
             AdaptiveRegimeWeighting = adaptiveRegimeWeighting;
             UseHistoricalChoppinessGuard = useHistoricalChoppinessGuard;
@@ -114,13 +119,15 @@ namespace cAlgo
             MinimumSmartDirectionShare = minimumSmartDirectionShare;
             HigherTfPenalty = higherTfPenalty;
 
+            Reference = reference;
+            ClosedM5 = closedM5;
+
             TimeframeAgreement = timeframeAgreement;
             IndependentEvidence = independentEvidence;
             StructuralConfirmations = structuralConfirmations;
             RegimeQuality = regimeQuality;
             RetestQuality = retestQuality;
-            TriggerReady = triggerReady;
-
+            ClosedBarTriggerReady = closedBarTriggerReady;
             CalibrateConfidence = calibrateConfidence;
         }
     }
