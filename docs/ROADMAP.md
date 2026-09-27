@@ -1,36 +1,37 @@
 # CFIP Indicator — Roadmap
 
-## Goal
+## Completed
 
-Deliver the complete indicator from the complete behavioral reference without dropping features and without creating duplicate engines or compatibility layers.
+- Reference behavior preserved from the complete v73 baseline.
+- 513/513 parameters preserved.
+- 311/311 reference methods preserved.
+- Indicators isolated into dedicated files.
+- Structure, zones, liquidity, decision, planning, execution, pending orders, lifecycle, risk, intelligence and UI decomposed into focused modules.
+- v73 managed broker label restored.
+- Architecture and cTrader compile gates added.
 
-## Completed in the clean baseline
+## Phase 2 — domain-boundary extraction
 
-- All reference parameters are preserved: 513/513.
-- Reference method parity is complete across the split modules.
-- The single cTrader host is normalized to `CFIPIndicator`.
-- Versioned class, file, namespace, identity and migration naming has been removed.
-- The implementation is split into responsibility-based partial modules.
-- Automatic market execution and automatic pending-order logic are retained.
-- Smart structural SL/TP, lifecycle, live management, prediction, alerts, panel, popup and historical rendering are retained.
-- No manual BUY/SELL/order-entry controls are introduced.
+- Replace cross-module mutable field access with explicit domain snapshots/contracts.
+- Move broker API calls behind a narrow broker mutation boundary.
+- Separate decision state, execution intent, broker snapshot and presentation state.
+- Add deterministic fixtures for MTF, FVG, Order Block, liquidity, decision, entry, SL/TP and lifecycle transitions.
 
-## Remaining acceptance gates
+## Phase 3 — advanced analytics
 
-1. Compile the solution against the actual cTrader Automate API DLL installed with the target cTrader build.
-2. Run controlled cTrader scenarios for market execution, pending orders, rejection, slippage, protection recovery, partial close, close confirmation, restart/reconnect reconciliation, reversal, invalidation and end-of-day handling.
-3. Verify chart/panel/popup rendering on the target cTrader build.
-4. Review runtime resource usage and remove only proven inefficiencies.
+- Benchmark OSS indicator backends against cTrader native calculations.
+- Adopt only compatible, measured components.
+- Add feature-level confidence/provenance so every decision contribution is explainable.
+- Expand prediction and outcome calibration without allowing prediction to directly execute trades.
 
-## Non-negotiable behavior
+## Phase 4 — trading acceptance
 
-- Automatic trading and automatic pending orders share the same strategy state and broker identity.
-- Smart SL/TP are strategy-generated.
-- Entry, trigger, requested entry and actual fill remain distinct.
-- Broker state is authoritative after mutations.
-- Lifecycle follows broker reality.
-- Partial close and close are confirmed by broker state before their state is consumed.
-- SL moves only in the protective direction.
-- Analytical decisions use closed-bar references.
-- BUY and SELL remain symmetric.
-- No hidden fallback changes semantics.
+- Compile against the target installed cTrader Automate API.
+- Test market execution, pending orders, rejection, slippage, missing protection, partial close, reconnect/restart, reversal, invalidation and end-of-day handling.
+- Verify chart/panel state always matches broker state after every mutation.
+
+## Phase 5 — performance and release
+
+- Benchmark calculation latency and memory.
+- Remove only proven repeated scans/allocations.
+- Produce release build only after source, compile and scenario gates pass.

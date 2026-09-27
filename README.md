@@ -1,29 +1,23 @@
 # CFIP Indicator
 
-Clean, modular cTrader indicator.
+Clean, modular cTrader indicator with a single execution authority.
+
+## Current state
+
+- 513 configuration parameters preserved from the behavioral baseline.
+- Strategy behavior decomposed into responsibility-isolated source modules.
+- Automatic market execution and automatic pending orders retained.
+- Manual BUY/SELL/order-entry controls are absent.
+- .NET 6 production target.
+- GitHub CI verifies architecture and compiles against the `cTrader.Automate` package.
 
 ## Source organization
 
-The implementation is split by responsibility while remaining one cTrader indicator and one execution authority:
+- Core: math, text and time primitives.
+- Analysis: one native indicator per file plus market, decision, reaction, structure, zone and liquidity analyzers.
+- Planning: entry, trigger, filters, execution model, trade plan and target engines.
+- Runtime: initialization, MTF context and calculation cycle.
+- Trading: identity, pending orders, execution, lifecycle, live management, risk, validation and intelligence.
+- UI: chart, panel, historical and popup renderers.
 
-- Core
-- Indicator
-- Runtime
-- Analysis
-- Planning
-- Trading
-- UI
-
-Automatic market execution and automatic pending-order placement are part of the execution path. Manual BUY/SELL/order-entry controls are not included. Close/cancel safety controls remain available for managed broker objects.
-
-## Build
-
-Target: .NET 6.
-
-The project references the cTrader Automate API from cTrader's standard local installation. Set `CFIP_CTRADER_API` when a custom DLL path is required.
-
-No third-party NuGet packages are required.
-
-## Baseline
-
-Behavior is migrated from the complete reference implementation. The reference is treated as behavioral source material; source names, files and internal identifiers are normalized to the clean project vocabulary.
+See `docs/ARCHITECTURE.md`, `docs/EDITING-GUIDE.md`, `docs/ROADMAP.md` and `docs/OSS-COMPONENT-REGISTER.md`.

@@ -1,26 +1,35 @@
 # Editing Guide
 
-Use the file that owns the behavior.
+Change the file that owns the behavior.
 
-| Behavior | File |
+| Responsibility | Owner |
 |---|---|
-| Enums / indicator entry point | Core/Enums.cs, Indicator/CFIPIndicator.cs |
-| Parameters | Indicator/Parameters.cs |
-| Runtime / closed-bar cycle | Runtime/Lifecycle.cs |
-| Native indicators | Analysis/Indicators.cs |
-| Market frame | Analysis/Market.cs |
-| Live reaction | Analysis/Reaction.cs |
-| Entry / trigger | Planning/Entry.cs |
-| Trade plan / stop / targets | Planning/TradePlan.cs |
-| Filters | Planning/Filters.cs |
-| Active plan management | Trading/ActiveManagement.cs |
-| Structural validation | Trading/Validation.cs |
-| Broker execution and pending orders | Trading/Execution.cs |
-| Chart | UI/Chart.cs |
-| Panel | UI/Panel.cs |
-| Popup | UI/Popup.cs |
-| Alerts | Trading/Alerts.cs |
-| Historical rendering | UI/Historical.cs |
-| Shared utilities | Core/Utilities.cs |
+| EMA | Analysis/Indicators/ExponentialMovingAverage.cs |
+| ATR | Analysis/Indicators/AverageTrueRange.cs |
+| RSI | Analysis/Indicators/RelativeStrengthIndex.cs |
+| ADX | Analysis/Indicators/AverageDirectionalIndex.cs |
+| DMI | Analysis/Indicators/DirectionalMovementIndex.cs |
+| Market frame | Analysis/Market/MarketFrameAnalyzer.cs |
+| Decision construction | Analysis/Market/Decision/DecisionEngine.cs |
+| Decision evidence | Analysis/Market/Decision/DecisionEvidence.cs |
+| Decision filters | Analysis/Market/Decision/DecisionFilters.cs |
+| FVG | Analysis/Structure/Zones/FvgAnalyzer.cs |
+| Order Block | Analysis/Structure/Zones/OrderBlockAnalyzer.cs |
+| Liquidity | Analysis/Structure/LiquidityAnalyzer.cs |
+| Entry trigger | Planning/Entry/EntryTriggerAnalyzer.cs |
+| Execution model | Planning/Execution/ |
+| Trade plan | Planning/TradePlan/ |
+| Runtime | Runtime/ |
+| Risk | Trading/Risk/ |
+| Pending orders | Trading/Pending/ |
+| Market execution | Trading/Execution/AutomaticMarket/ |
+| Broker mutations | Trading/Execution/ |
+| Lifecycle | Trading/Lifecycle/ |
+| Live management | Trading/LiveManagement/ |
+| Prediction / calibration | Trading/Intelligence/ |
+| Alerts | Trading/Alerts/AlertEngine.cs |
+| Chart | UI/Chart/ |
+| Panel | UI/Panel/ |
+| Popup | UI/Popup/PopupView.cs |
 
-Do not add compatibility names or a second execution path. Update the authoritative owner and then update callers and tests.
+Do not create a second execution path, second decision engine or compatibility layer.
