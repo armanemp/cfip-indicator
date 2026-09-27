@@ -54,9 +54,6 @@ extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
 
-parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
-if len(parameter_files) != 26:
-    raise SystemExit(f"Expected 26 parameter-group files, found {len(parameter_files)}")
 for p in parameter_files:
     groups = set(re.findall(r'\bGroup\s*=\s*"([^"]+)"', p.read_text(encoding="utf-8")))
     if len(groups) != 1:

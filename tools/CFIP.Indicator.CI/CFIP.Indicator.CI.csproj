@@ -12,6 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="cTrader.Automate" Version="1.0.21" />
+    <PackageReference Include="Skender.Stock.Indicators" Version="2.7.3" />
     <Compile Include="../../src/CFIP.Indicator/**/*.cs" />
   </ItemGroup>
 </Project>
