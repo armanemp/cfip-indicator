@@ -26,7 +26,7 @@ The cTrader host remains a single `CFIPIndicator` partial type solely for platfo
 
 There is exactly one decision authority, one strategy state, one managed broker identity and one automatic execution authority.
 
-The presentation layer consumes authoritative state and never decides whether a trade should exist. Broker mutations are isolated to the trading boundary.
+The presentation layer consumes authoritative state and never decides whether a trade should exist. Broker mutations are isolated to the Trading/Execution boundary. Direct cTrader mutation APIs are permitted only in explicit broker mutation owner files; execution, pending and lifecycle modules consume those owners and broker-confirmed results.
 
 ## Non-negotiable invariants
 
@@ -56,6 +56,8 @@ Core models may describe strategy state, but must not require the cTrader API me
 Analysis may consume market data and configuration, but must not mutate broker state.
 
 Planning may create plans/intents, but must not submit or mutate broker objects. Plan construction, target selection, stop planning and trigger evaluation are separate owners. Risk policy, sizing, margin safety and market suitability are separate from plan construction and broker mutation.
+
+The broker mutation boundary owns only broker API mutations. Executable plan preparation and structural target/stop rebuilding are outside that boundary. Broker-confirmed positions and pending orders are authoritative; rejected or incomplete mutation results are never adopted as live broker state.
 
 Trading may execute broker mutations, but must not invent alternative analytical authority.
 
