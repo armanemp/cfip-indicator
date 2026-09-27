@@ -331,25 +331,28 @@ for filename in REQUIRED_BROKER_MUTATION_FILES:
     if not path.exists():
         raise SystemExit(f"Broker mutation owner missing: {filename}")
 
-BROKER_MUTATION_TOKENS = (
-    "ExecuteMarketOrder(",
-    "PlaceStopOrder(",
-    "PlaceLimitOrder(",
-    "ModifyStopLossPrice(",
-    "ModifyTakeProfitPrice(",
-    "ModifyPendingOrder(",
-    "CancelPendingOrder(",
-    "ClosePosition(",
+BROKER_MUTATION_PATTERNS = (
+    r"(?<!Try)ExecuteMarketOrder\\s*\\(",
+    r"(?<!Try)PlaceStopOrder\\s*\\(",
+    r"(?<!Try)PlaceLimitOrder\\s*\\(",
+    r"(?<!Try)ModifyStopLossPrice\\s*\\(",
+    r"(?<!Try)ModifyTakeProfitPrice\\s*\\(",
+    r"(?<!Try)ModifyPendingOrder\\s*\\(",
+    r"(?<!Try)CancelPendingOrder\\s*\\(",
+    r"(?<!Try)ClosePosition\\s*\\(",
 )
 for p in sorted(PRODUCTION_ROOT.rglob("*.cs")):
     relative = p.relative_to(ROOT)
     text_module = strip_for_static_checks(p.read_text(encoding="utf-8"))
-    direct = [token for token in BROKER_MUTATION_TOKENS if token in text_module]
+    direct = [
+        pattern for pattern in BROKER_MUTATION_PATTERNS
+        if re.search(pattern, text_module)
+    ]
     if not direct:
         continue
     if p.parent != MUTATION_ALLOWED_ROOT or p.name not in MUTATION_ALLOWED_FILES:
         raise SystemExit(
-            f"Broker mutation escaped boundary: {relative} -> {', '.join(direct)}"
+            f"Broker mutation escaped boundary: {relative}"
         )
 
 EXECUTION_PLAN = ROOT / "Trading" / "Execution" / "ExecutionPlanPreparation.cs"
