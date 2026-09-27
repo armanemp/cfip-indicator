@@ -109,7 +109,7 @@ namespace cAlgo
         [Parameter("Margin Buffer %", Group = "13 · AUTO TRADING", DefaultValue = 10, MinValue = 0, MaxValue = 40)]
         public double MarginBufferPercent { get; set; }
 
-        [Parameter("Auto Trade Label", Group = "13 · AUTO TRADING", DefaultValue = "CFIP-SMART-CLEAN66")]
+        [Parameter("Auto Trade Label", Group = "13 · AUTO TRADING", DefaultValue = "CFIP-SMART")]
         public string AutoTradeLabel { get; set; }
 
         [Parameter("Smart Broker Protection", Group = "13 · AUTO TRADING", DefaultValue = true)]
