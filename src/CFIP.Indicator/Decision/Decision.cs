@@ -18,7 +18,7 @@ namespace CFIP.Indicator
             public string Regime { get; private set; }
             public int RegimeQuality { get; private set; }
     
-            // Decision-level eligibility. Entry/Trigger eligibility belongs to Phase 7.
+            // Decision-level eligibility. Entry/Trigger eligibility belongs to .
             public bool DecisionEligible { get; private set; }
     
             public DecisionPolicyMode PolicyMode { get; private set; }
@@ -359,9 +359,9 @@ namespace CFIP.Indicator
                             blocks.Add(BlockReason.MtfDisagreement);
                     }
         
-                    // Legacy name retained for preset parity. In Phase 6 this is
+                    // Legacy name retained for preset parity. In  this is
                     // only a Decision-quality policy floor; actual Entry/Trigger eligibility
-                    // remains exclusively owned by Phase 7.
+                    // remains exclusively owned by .
                     if (configuration.Get("UseSmartEntryQualityFilter", true) &&
                         quality < Math.Max(
                             configuration.Get("SmartQualityThreshold", 70),
@@ -1032,8 +1032,8 @@ namespace CFIP.Indicator
                 if (eligible)
                     return DecisionPolicyMode.Confirmed;
     
-                // Phase 6 owns only policy state. Trigger/retest execution remains
-                // Phase 7. Pending therefore means "directional setup exists but
+                //  owns only policy state. Trigger/retest execution remains
+                // . Pending therefore means "directional setup exists but
                 // one or more policy gates are not yet satisfied".
                 if (direction != Direction.Wait &&
                     cfg.Get("EnableSmartDecisionEngine", true) &&
