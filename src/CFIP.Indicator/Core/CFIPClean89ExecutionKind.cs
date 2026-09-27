@@ -1,12 +1,9 @@
-// Migrated from CFIP-PRO v89.
+// Migrated from CFIP-PRO v89; now isolated from the cTrader host namespace.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using cAlgo.API;
-using cAlgo.API.Indicators;
-using cAlgo.API.Internals;
 
-namespace cAlgo
+namespace CFIP.Indicator.Core
 {
         public enum CFIPClean89ExecutionKind
         {
