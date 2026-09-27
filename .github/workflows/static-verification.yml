@@ -15,3 +15,5 @@ jobs:
           dotnet-version: '6.0.x'
       - name: Run migration verifier
         run: dotnet run --project tools/CFIP.StaticVerifier/CFIP.StaticVerifier.csproj --configuration Release
+      - name: Run core contract tests
+        run: dotnet run --project tests/CFIP.CoreContractTests/CFIP.CoreContractTests.csproj --configuration Release
