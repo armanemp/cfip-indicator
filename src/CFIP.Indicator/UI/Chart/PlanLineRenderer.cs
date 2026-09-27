@@ -7,7 +7,7 @@ using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
 
 // CFIP Indicator — PlanLineRenderer.cs
-Single-responsibility chart plan renderer.
+// Single-responsibility chart plan renderer.
 
 
 namespace cAlgo
