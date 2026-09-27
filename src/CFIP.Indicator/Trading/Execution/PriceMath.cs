@@ -1,3 +1,5 @@
+using cAlgo.API;
+
 // ============================================================================
 // CFIP Indicator — PriceMath.cs
 // One responsibility per module. Behavioral parity with v73 is preserved.
