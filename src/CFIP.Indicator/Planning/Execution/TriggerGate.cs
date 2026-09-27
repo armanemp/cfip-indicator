@@ -1,0 +1,97 @@
+// ============================================================================
+// CFIP Indicator — TriggerGate.cs
+// One responsibility per module. Behavioral parity with v73 is preserved.
+// ============================================================================
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using cAlgo.API;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        // ============================================================
+                        
+                                private bool IsTriggerReached(
+                                    int direction,
+                                    double market,
+                                    double trigger)
+                                {
+                                    if (!IsFinitePositive(market) ||
+                                        !IsFinitePositive(trigger))
+                                        return false;
+                        
+                                    double tolerance =
+                                        Math.Max(
+                                            Symbol.TickSize,
+                                            Symbol.PipSize * 0.10);
+                        
+                                    return direction == 1
+                                        ? market >= trigger - tolerance
+                                        : direction == -1 &&
+                                          market <= trigger + tolerance;
+                                }
+        
+        private bool IsContinuationExecutionContext(
+                                    int direction)
+                                {
+                                    if (_decision == null ||
+                                        _decision.Direction != direction ||
+                                        _m5Frame == null ||
+                                        _m15Frame == null)
+                                        return false;
+                        
+                                    bool m5Aligned =
+                                        _m5Frame.Direction == direction;
+                        
+                                    bool m15Compatible =
+                                        _m15Frame.Direction == direction ||
+                                        (_m15Frame.Direction == 0 &&
+                                         AllowM15NeutralPullback);
+                        
+                                    bool trendRegime =
+                                        string.Equals(
+                                            _decision.Regime,
+                                            "TREND",
+                                            StringComparison.OrdinalIgnoreCase) ||
+                                        string.Equals(
+                                            _decision.Regime,
+                                            "EXPANSION",
+                                            StringComparison.OrdinalIgnoreCase);
+                        
+                                    return
+                                        m5Aligned &&
+                                        m15Compatible &&
+                                        (trendRegime ||
+                                         _decision.StructuralConfirmations >=
+                                         Math.Max(
+                                             3,
+                                             MinimumStructuralConfirmations));
+                                }
+        
+        private string ExecutionModeText(
+                                    ExecutionMode mode)
+                                {
+                                    switch (mode)
+                                    {
+                                        case ExecutionMode.WaitingForTrigger:
+                                            return "WAIT TRIGGER";
+                                        case ExecutionMode.RetestMarket:
+                                            return "RETEST MARKET";
+                                        case ExecutionMode.BreakoutMarket:
+                                            return "BREAKOUT MARKET";
+                                        case ExecutionMode.ContinuationStop:
+                                            return "CONTINUATION STOP";
+                                        case ExecutionMode.ReversalLimit:
+                                            return "REVERSAL LIMIT";
+                                        default:
+                                            return "NONE";
+                                    }
+                                }
+    }
+}

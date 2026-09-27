@@ -1,0 +1,123 @@
+// ============================================================================
+// CFIP Indicator — PendingOrderPolicy.cs
+// One responsibility per module. Behavioral parity with v73 is preserved.
+// ============================================================================
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using cAlgo.API;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private bool TrendContinuationStrong()
+                                {
+                                    if (_decision == null ||
+                                        _m5Frame == null ||
+                                        _m15Frame == null ||
+                                        _decision.Direction == 0)
+                                        return false;
+                        
+                                    return
+                                        _m5Frame.Direction == _decision.Direction &&
+                                        _m15Frame.Direction == _decision.Direction &&
+                                        _decision.StructuralConfirmations >=
+                                        Math.Max(
+                                            3,
+                                            MinimumStructuralConfirmations) &&
+                                        _decision.Confidence >=
+                                        PendingMinimumConfidence &&
+                                        _decision.SmartQuality >=
+                                        PendingMinimumSmartQuality &&
+                                        _decision.TimeframeAgreement >=
+                                        PendingMinimumTrendQuality;
+                                }
+        
+        private bool ReversalSetupStrong()
+                                {
+                                    if (_reaction == null ||
+                                        _decision == null ||
+                                        _reaction.Direction == 0 ||
+                                        _decision.Direction == 0)
+                                        return false;
+                        
+                                    return
+                                        _reaction.Direction != _decision.Direction &&
+                                        _reaction.EntryAllowed &&
+                                        _reaction.Confidence >=
+                                        Math.Max(
+                                            PendingMinimumConfidence,
+                                            ReversalProtectionMinimumQuality) &&
+                                        _reaction.IndependentEvidence >=
+                                        Math.Max(
+                                            2,
+                                            ReversalCloseMinimumEvidence);
+                                }
+        
+        private bool PendingModeAllowsStop()
+                                {
+                                    return
+                                        PendingOrderMode == PendingOrderMode.Adaptive ||
+                                        PendingOrderMode == PendingOrderMode.ContinuationStop ||
+                                        PendingOrderMode == PendingOrderMode.Both;
+                                }
+        
+        private bool PendingModeAllowsLimit()
+                                {
+                                    return
+                                        PendingOrderMode == PendingOrderMode.Adaptive ||
+                                        PendingOrderMode == PendingOrderMode.ReversalLimit ||
+                                        PendingOrderMode == PendingOrderMode.Both;
+                                }
+        
+        private double EffectiveRiskStopPips(double stopPips)
+                                {
+                                    double value =
+                                        Math.Max(
+                                            0,
+                                            stopPips);
+                        
+                                    if (IncludeSpreadInRiskSizing)
+                                        value +=
+                                            Math.Max(
+                                                0,
+                                                (Symbol.Ask - Symbol.Bid) /
+                                                Math.Max(
+                                                    Symbol.PipSize,
+                                                    1e-9));
+                        
+                                    return value;
+                                }
+        
+        private bool IsValidPendingEntry(
+                                    int direction,
+                                    double price,
+                                    bool stopOrder)
+                                {
+                                    if (!IsFinitePositive(price))
+                                        return false;
+                        
+                                    double tolerance =
+                                        Math.Max(
+                                            Symbol.TickSize,
+                                            Symbol.PipSize * 0.10);
+                        
+                                    if (direction == 1)
+                                        return stopOrder
+                                            ? price > Symbol.Ask + tolerance
+                                            : price < Symbol.Ask - tolerance;
+                        
+                                    if (direction == -1)
+                                        return stopOrder
+                                            ? price < Symbol.Bid - tolerance
+                                            : price > Symbol.Bid + tolerance;
+                        
+                                    return false;
+                                }
+    }
+}

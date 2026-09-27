@@ -1,0 +1,146 @@
+// ============================================================================
+// CFIP Indicator — PanelTextFormatting.cs
+// One responsibility per module. Behavioral parity with v73 is preserved.
+// ============================================================================
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using cAlgo.API;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private int FrameDirection(
+                                    Frame frame)
+                                {
+                                    return frame == null
+                                        ? 0
+                                        : frame.Direction;
+                                }
+        
+        private string GetStablePanelState(
+                                    string candidate)
+                                {
+                                    if (string.IsNullOrWhiteSpace(
+                                            candidate))
+                                        candidate = "WAITING";
+                        
+                                    DateTime now =
+                                        TimeInUtc;
+                        
+                                    bool authoritative =
+                                        _plan != null ||
+                                        candidate.IndexOf(
+                                            "ACTIVE",
+                                            StringComparison.OrdinalIgnoreCase) >= 0;
+                        
+                                    if (authoritative ||
+                                        PanelStateHoldSeconds <= 0 ||
+                                        string.IsNullOrWhiteSpace(
+                                            _panelStableHeader))
+                                    {
+                                        _panelStableHeader =
+                                            candidate;
+                        
+                                        _panelStableHeaderSinceUtc =
+                                            now;
+                        
+                                        return _panelStableHeader;
+                                    }
+                        
+                                    double heldSeconds =
+                                        (now -
+                                         _panelStableHeaderSinceUtc)
+                                        .TotalSeconds;
+                        
+                                    if (!string.Equals(
+                                            _panelStableHeader,
+                                            candidate,
+                                            StringComparison.OrdinalIgnoreCase) &&
+                                        heldSeconds >=
+                                        Math.Max(
+                                            0,
+                                            PanelStateHoldSeconds))
+                                    {
+                                        _panelStableHeader =
+                                            candidate;
+                        
+                                        _panelStableHeaderSinceUtc =
+                                            now;
+                                    }
+                        
+                                    return _panelStableHeader;
+                                }
+        
+        private string ConfluenceText(
+                                    Frame frame)
+                                {
+                                    if (frame == null)
+                                        return "WAIT";
+                        
+                                    List<string> parts =
+                                        new List<string>();
+                        
+                                    if (UseVolumeExpansion)
+                                        parts.Add(
+                                            frame.VolumeBull
+                                                ? "VOL+"
+                                                : frame.VolumeBear
+                                                    ? "VOL-"
+                                                    : "VOL0");
+                        
+                                    if (UseMacdBias)
+                                        parts.Add(
+                                            frame.MacdBull
+                                                ? "MACD+"
+                                                : frame.MacdBear
+                                                    ? "MACD-"
+                                                    : "MACD0");
+                        
+                                    if (UseVwapBias)
+                                        parts.Add(
+                                            frame.VwapBull
+                                                ? "VWAP+"
+                                                : frame.VwapBear
+                                                    ? "VWAP-"
+                                                    : "VWAP0");
+                        
+                                    if (UseHealthyVolatility)
+                                        parts.Add(
+                                            frame.VolatilityBull
+                                                ? "ATR+"
+                                                : frame.VolatilityBear
+                                                    ? "ATR-"
+                                                    : "ATR0");
+                        
+                                    return parts.Count == 0
+                                        ? "OFF"
+                                        : string.Join(
+                                            " | ",
+                                            parts.ToArray());
+                                }
+        
+        private string FrameText(
+                                    Frame frame)
+                                {
+                                    if (frame == null)
+                                        return "WAIT";
+                        
+                                    return
+                                        (frame.Direction == 1
+                                            ? "BUY"
+                                            : frame.Direction == -1
+                                                ? "SELL"
+                                                : "NEUTRAL") +
+                                        " | Q" +
+                                        frame.Quality +
+                                        " | E" +
+                                        frame.Evidence;
+                                }
+    }
+}
