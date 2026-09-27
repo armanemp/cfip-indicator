@@ -1,152 +1,274 @@
-# CFIP Indicator — Roadmap
+# CFIP Indicator — Implementation Roadmap
 
 ## Working rule
 
-Each phase is intentionally scoped so it can be completed in one implementation response. A phase is marked complete only after source changes, static checks, and documentation for that phase are updated.
+One implementation response completes exactly one phase. A phase is complete only when its source changes, static verification, documentation, and available CI checks are updated.
 
-## Baseline
+When work resumes in a new chat, read this file first, then `docs/ARCHITECTURE.md` and `docs/WORKFLOW.md`. Continue from the first phase marked `next`; do not repeat completed phases.
 
-The complete behavioral reference remains the v73 source material used to establish feature and method parity. The production tree no longer uses the historical source as an implementation file.
+## Behavioral baseline
 
-Baseline guarantees:
+The complete historical behavioral reference is the v73 source material used for parity. It is reference material only; no historical source file or versioned production identifier belongs in the production tree.
 
-- 513 configuration parameters preserved.
-- 311 reference methods preserved across the modular source tree.
+Current baseline guarantees:
+
+- 513 behavioral configuration parameters are preserved.
+- 311 reference methods are preserved across the modular source tree.
 - One cTrader host.
 - One decision authority.
-- One broker identity.
+- One strategy state.
+- One managed broker identity.
 - One automatic execution authority.
-- Automatic market execution and automatic pending orders retained.
-- Manual trade-entry controls absent.
-- Production source files constrained below 64 KiB.
-- OSS components isolated under `oss/` and admitted only through explicit review.
+- Automatic market execution and automatic pending orders are retained.
+- Manual trade-entry controls are absent.
+- Production source files remain below the repository file-size limit.
+- OSS components live under `oss/` and are admitted only through explicit compatibility, license, and benchmark gates.
 
-## Phase 1 — Repository and artifact modularization
+## Phase 1 — Canonical source hygiene and architecture contract
 
-Status: complete.
+Status: complete in this response.
 
-Completed:
+Deliverables completed:
 
-- One native technical indicator per source file.
-- One market/structure/zone/liquidity analyzer per source file or cohesive analyzer boundary.
-- One domain model per source file.
-- One enum per source file.
-- cTrader parameter groups split under `Indicator/Parameters/`.
-- Runtime MTF context and cache-support types extracted.
-- Duplicate monolithic source paths removed.
-- Production file-size limit established.
-- OSS boundary established.
+- Remove versioned product/source identifiers from production code.
+- Replace versioned execution comments with a centralized, version-neutral trade metadata owner.
+- Align architecture verification with the canonical managed trade label.
+- Add strict production-source residue detection for version-style identifiers.
+- Keep historical version details restricted to this roadmap/workflow documentation.
+- Preserve the separate `oss/` boundary.
+- Keep the CI source/architecture gate as the first protection against regression.
 
 Acceptance:
 
-- No duplicated production engine.
-- No versioned production file/class naming.
-- One source owner for every declared responsibility.
+- No `v<number>`, `Clean<number>`, versioned CFIP strategy identifier, or numbered trade comment remains in production source.
+- Broker identity label is stable and version-neutral.
+- Architecture verification matches the current source tree.
 
-## Phase 2 — Decision service isolation
-
-Status: complete in this implementation response.
-
-Completed:
-
-- Decision evaluation moved behind an explicit `DecisionEngine` service.
-- Decision input construction moved behind `DecisionInputSnapshotFactory`.
-- Weighted frame contribution calculation moved behind `DecisionFrameContributionCalculator`.
-- Human-readable decision reason construction moved behind `DecisionReasonBuilder`.
-- cTrader host now performs only state adaptation and decision filtering around those services.
-- Existing decision mathematics and thresholds remain behaviorally equivalent to the reference implementation.
-
-Acceptance:
-
-- Decision services compile without requiring chart controls or broker mutation APIs.
-- Decision evaluator remains deterministic for the same immutable input snapshot.
-- No second decision authority introduced.
-
-## Phase 3 — Indicator and numerical analysis layer
+## Phase 2 — Atomic indicators and analysis modules
 
 Status: next.
 
-Scope:
+Goal: every indicator, analyzer, scorer, detector, model, and helper has one clear file owner and one responsibility.
 
-- Keep every indicator implementation in its own file.
-- Standardize indicator input/output contracts.
-- Add health and availability metadata.
-- Build numerical fixture tests for the native and optional OSS indicators.
-- Benchmark optional OSS indicator libraries before any production dependency is admitted.
-- Keep zero-valued observations distinct from missing observations.
-- Add only indicators that improve independent evidence, regime detection, momentum, volatility or trend interpretation.
+Work:
 
-OSS gate:
+1. Audit every `Analysis/Indicators` file and keep exactly one indicator implementation per file.
+2. Audit native and optional OSS indicator adapters separately.
+3. Split any remaining multi-concern market analyzers into:
+   - market context;
+   - regime detection;
+   - volatility;
+   - trend;
+   - momentum;
+   - volume;
+   - indicator confluence;
+   - decision inputs.
+4. Split structure into explicit owners for:
+   - swing structure;
+   - BOS;
+   - MSS/CHOCH;
+   - displacement;
+   - liquidity;
+   - equal highs/lows;
+   - FVG;
+   - Order Block;
+   - supply/demand;
+   - mitigation;
+   - zone lookup/selection.
+5. Preserve CFIP-specific semantics and closed-bar MTF behavior exactly.
+6. Remove helper clusters that only exist because of the old monolithic source.
+7. Add deterministic numerical fixtures and symmetry checks for BUY/SELL.
 
-- Direct runtime use is allowed only when the library is compatible with the target cTrader/.NET runtime.
-- Otherwise use an offline benchmark or source adapter.
-- No OSS trading engine is embedded into the indicator.
+Acceptance:
 
-## Phase 4 — Market, structure and intelligence service isolation
+- One artifact/responsibility per file.
+- No analyzer owns unrelated analysis domains.
+- No duplicate indicator or structure logic.
+- All source owners are recorded in the editing guide.
 
-Scope:
+## Phase 3 — Decision and intelligence services
 
-- Split market context, regime, structure, FVG, Order Block, liquidity and reaction services into explicit service boundaries.
-- Remove remaining large partial-method clusters.
-- Replace host field reads with explicit snapshots/contracts where practical.
-- Keep CFIP-specific FVG/OB/liquidity semantics authoritative.
-- Preserve MTF closed-bar synchronization.
+Goal: turn analysis outputs into immutable decision inputs and deterministic decision services.
 
-## Phase 5 — Planning and risk isolation
+Work:
 
-Scope:
+- Separate evidence collection, weighting, consensus, confidence, edge, regime quality, adaptive thresholds, and decision filtering.
+- Keep prediction separate from confirmed decision.
+- Keep outcome telemetry and calibration as observation services, not decision authorities.
+- Add explicit immutable input/output contracts.
+- Add deterministic fixture tests and contradiction tests.
 
-- Separate entry selection, trigger gating, execution intent, structural stop, target sources, target classification, target selection and RR validation.
-- Separate risk sizing, margin protection, daily loss limits and market-suitability policy.
-- Keep requested entry, trigger, actual fill, structural stop and broker protection distinct.
-- Add stronger invariant tests for SL/TP monotonicity and reward-path safety.
+Acceptance:
 
-## Phase 6 — Trading, lifecycle and automatic execution isolation
+- One decision authority.
+- Same input snapshot produces the same decision.
+- No UI/broker dependency in pure decision services.
 
-Scope:
+## Phase 4 — Planning and risk
 
-- Separate automatic market execution, aggressive execution, pending placement, broker mutation coordination, identity, reconciliation, lifecycle handlers and live management.
-- Keep exactly one broker mutation boundary.
-- Verify partial close, break-even, dynamic target progression, reversal, invalidation, protection recovery and reconnect behavior.
-- Preserve the rule that broker-confirmed state is authoritative.
+Goal: isolate trade planning from execution and risk side effects.
 
-## Phase 7 — Presentation isolation
+Work:
 
-Scope:
+- Entry zone selection.
+- Trigger logic.
+- Execution intent.
+- Structural invalidation.
+- Structural SL.
+- Target source interfaces.
+- Target aggregation.
+- Target classification.
+- Target progression.
+- RR validation.
+- Risk sizing.
+- Margin safety.
+- Daily loss guard.
+- Market suitability.
+- Spread/session/event/volatility guards.
 
-- Separate chart object cleanup, signal rendering, plan lines, labels, prediction rendering, pending-order rendering, outcome markers, historical rendering, panel sections, panel layout/theme, popup and execution controls.
-- Presentation consumes authoritative state only.
-- No UI component may create or cancel trades.
+Acceptance:
 
-## Phase 8 — Verification and scenario hardening
+- Requested entry, trigger, actual fill, SL, TP and broker protection are distinct values/states.
+- SL is protective-only.
+- Target progression is monotonic and path-safe.
 
-Scope:
+## Phase 5 — Automatic trading, pending orders and lifecycle
 
-- Static architecture verification.
-- Full source-parity verification against the behavioral reference.
-- Deterministic unit and contract tests.
-- Controlled scenario tests for every automatic trading path.
-- Negative-path tests for rejection, slippage, duplicate events, missing protection and invalid state transitions.
-- Resource and allocation review.
+Goal: isolate every broker-facing behavior while keeping one mutation boundary.
 
-## Phase 9 — cTrader acceptance
+Work:
 
-Scope:
+- Automatic market execution.
+- Aggressive execution.
+- Continuation stop placement.
+- Reversal limit placement.
+- Broker mutation coordinator.
+- Broker identity.
+- Position/pending reconciliation.
+- Lifecycle handlers.
+- Missing-protection recovery.
+- Partial close.
+- Break-even.
+- Dynamic target progression.
+- Reversal/exhaustion/invalidation handling.
+- Restart/reconnect adoption.
 
-- Compile against the target installed cTrader Automate API.
-- Validate the target cTrader build.
-- Verify all timeframes and MTF behavior.
-- Verify panel, chart and popup rendering.
-- Verify automatic market and pending execution.
-- Verify broker lifecycle and recovery in real cTrader scenarios.
+Acceptance:
+
+- Broker-confirmed state is authoritative.
+- Rejected mutations never become synthetic state.
+- Pending order is never treated as a position before broker confirmation.
+- Exactly one broker mutation boundary exists.
+
+## Phase 6 — Presentation and UI
+
+Goal: presentation becomes a pure consumer of authoritative state.
+
+Work:
+
+- Chart object cleanup.
+- Signal rendering.
+- Plan lines.
+- Plan labels.
+- Prediction rendering.
+- Pending-order rendering.
+- Outcome markers.
+- Historical rendering.
+- Panel layout.
+- Panel semantic sections.
+- Theme/visual settings.
+- Popup.
+- Execution controls.
+
+Acceptance:
+
+- UI never decides whether a trade should exist.
+- UI never mutates broker state directly.
+- Each renderer has one file owner and one rendering responsibility.
+
+## Phase 7 — OSS research, adapters and benchmarks
+
+Goal: use strong OSS where it materially improves numerical analysis without importing a second trading engine.
+
+Rules:
+
+- All OSS stays under `oss/` or an explicitly named adapter/benchmark boundary.
+- Direct runtime dependencies must be compatible with the target cTrader/.NET runtime.
+- Incompatible projects are benchmark/reference-only.
+- No OSS trading engine becomes the execution authority.
+- License and attribution are documented before adoption.
+- Numerical parity and performance are measured before promotion.
+
+Priority candidates:
+
+- Technical indicator libraries for numerical cross-checking.
+- Lightweight statistical/time-series components that are compatible with the target runtime.
+- Research-only algorithmic trading engines for architectural benchmarking, never as a second live execution engine.
+
+Acceptance:
+
+- Every adopted component has an upstream source, license, compatibility result, benchmark result, and isolated adapter owner.
+- Production cTrader build remains dependency-minimal.
+
+## Phase 8 — Static verification and contract testing
+
+Goal: make architectural and behavioral drift mechanically detectable.
+
+Work:
+
+- One-type-per-file verification where applicable.
+- One-responsibility ownership checks.
+- Parameter parity checks.
+- Reference-method coverage checks.
+- Production version-residue checks.
+- Dependency-direction checks.
+- UI/broker boundary checks.
+- Decision purity checks.
+- BUY/SELL symmetry tests.
+- SL/TP invariants.
+- Lifecycle transition invariants.
+- Duplicate-event idempotency tests.
+
+Acceptance:
+
+- CI rejects architectural regression before cTrader testing.
+- Static checks cover the same boundaries documented in the architecture.
+
+## Phase 9 — cTrader compile and runtime acceptance
+
+Goal: prove the finished source on the target cTrader environment.
+
+Work:
+
+- Compile against the target installed Automate API.
+- Verify all relevant chart timeframes.
+- Verify closed-bar MTF synchronization.
+- Verify chart/panel/popup rendering.
+- Verify automatic market execution.
+- Verify pending orders.
+- Verify rejection/slippage behavior.
+- Verify protection recovery.
+- Verify partial close and break-even.
+- Verify restart/reconnect reconciliation.
+- Verify reversal, invalidation and end-of-day handling.
+- Review runtime memory/allocation behavior.
+
+Acceptance:
+
+- No known compile errors.
+- No known runtime authority violations.
+- All critical trading scenarios pass controlled acceptance.
 
 ## Phase 10 — Final hardening
 
-Scope:
+Goal: freeze the architecture without freezing legitimate future extension.
 
-- Remove proven inefficiencies only.
-- Freeze source boundaries.
-- Verify OSS attribution and license records.
-- Ensure no historical version residue remains in production source.
-- Keep historical reference/version details only in roadmap/workflow documentation.
+Work:
+
+- Remove only proven inefficiencies.
+- Remove dead code and duplicate helpers.
+- Freeze module ownership boundaries.
+- Verify OSS licenses and attribution.
+- Ensure production source contains no historical/version residue.
+- Keep historical version details only where required for roadmap/workflow continuity.
 - Produce final operator and maintenance documentation.
