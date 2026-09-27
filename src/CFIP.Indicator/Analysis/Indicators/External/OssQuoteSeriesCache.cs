@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using StockQuote = StockQuote;
+using StockQuote = Skender.Stock.Indicators.Quote;
 using StockIndicator = Skender.Stock.Indicators.Indicator;
 using cAlgo.API;
 using cAlgo.API.Internals;

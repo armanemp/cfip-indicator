@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
-using Skender.Stock.Indicators;
+using StockQuote = Skender.Stock.Indicators.Quote;
+using StockIndicator = Skender.Stock.Indicators.Indicator;
 using cAlgo.API;
 
 namespace cAlgo
@@ -11,7 +12,7 @@ namespace cAlgo
             Bars bars,
             int index)
         {
-            IReadOnlyList<Quote> quotes =
+            IReadOnlyList<StockQuote> quotes =
                 GetOssQuotes(
                     bars,
                     index);
