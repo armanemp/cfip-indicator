@@ -83,8 +83,6 @@ namespace cAlgo
                         SmartScoreTemperature,
                     MinimumSmartDirectionShare =
                         MinimumSmartDirectionShare,
-                    HigherTfPenalty =
-                        HigherTfPenalty,
 
                     Reference = reference,
                     ClosedM5 = closedM5,
