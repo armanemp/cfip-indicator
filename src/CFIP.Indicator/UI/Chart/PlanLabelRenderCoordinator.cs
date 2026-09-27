@@ -1,7 +1,3 @@
-// ============================================================================
-// CFIP Indicator — PlanLabelsRenderer.cs
-// ============================================================================
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,6 +5,10 @@ using System.Linq;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
+
+// CFIP Indicator — PlanLabelRenderCoordinator.cs
+// Single-responsibility plan-label renderer.
+
 
 namespace cAlgo
 {
@@ -211,175 +211,6 @@ namespace cAlgo
                                             activeBrokerTarget,
                                             PanelAccentColor);
                                     }
-                                }
-        
-        private int GetLabelAnchorBar(
-                                    string name,
-                                    int referenceBar)
-                                {
-                                    if (Bars == null ||
-                                        Bars.Count < 2)
-                                        return 0;
-                        
-                                    bool prediction =
-                                        name != null &&
-                                        name.IndexOf(
-                                            "PRED_",
-                                            StringComparison.OrdinalIgnoreCase) >= 0;
-                        
-                                    int left;
-                        
-                                    if (!prediction &&
-                                        FullWidthLevelLines)
-                                    {
-                                        try
-                                        {
-                                            left =
-                                                Chart.FirstVisibleBarIndex;
-                                        }
-                                        catch
-                                        {
-                                            left =
-                                                referenceBar -
-                                                Math.Max(
-                                                    1,
-                                                    LineLengthBars);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        left =
-                                            referenceBar -
-                                            Math.Max(
-                                                1,
-                                                LineLengthBars);
-                                    }
-                        
-                                    left =
-                                        Math.Max(
-                                            0,
-                                            Math.Min(
-                                                Bars.Count - 1,
-                                                left));
-                        
-                                    int offset =
-                                        Math.Max(
-                                            1,
-                                            LabelLeftOffsetBars);
-                        
-                                    return
-                                        Math.Max(
-                                            0,
-                                            Math.Min(
-                                                Bars.Count - 1,
-                                                left + offset));
-                                }
-        
-        private void DrawPlanLabel(
-                                    string name,
-                                    string text,
-                                    int bar,
-                                    double price,
-                                    Color color)
-                                {
-                                    try
-                                    {
-                                        if (!IsFinitePositive(price) ||
-                                            Bars == null ||
-                                            Bars.Count < 2)
-                                            return;
-                        
-                                        int labelBar =
-                                            GetLabelAnchorBar(
-                                                name,
-                                                Math.Max(
-                                                    0,
-                                                    Math.Min(
-                                                        Bars.Count - 1,
-                                                        bar)));
-                        
-                                        double atr =
-                                            Bars.Count >= 3
-                                                ? Atr(
-                                                    Bars,
-                                                    Math.Max(
-                                                        1,
-                                                        Math.Min(
-                                                            Bars.Count - 2,
-                                                            labelBar)))
-                                                : 0;
-                        
-                                        double labelOffset =
-                                            Math.Max(
-                                                Symbol.PipSize * 2,
-                                                atr > 0
-                                                    ? atr * 0.06
-                                                    : Symbol.PipSize * 3);
-                        
-                                        double labelPrice =
-                                            NormalizePrice(
-                                                price +
-                                                labelOffset);
-                        
-                                        ChartText label =
-                                            Chart.DrawText(
-                                                name,
-                                                text,
-                                                Bars.OpenTimes[labelBar],
-                                                labelPrice,
-                                                color);
-                        
-                                        label.FontSize =
-                                            Math.Max(
-                                                8,
-                                                PanelFontSize);
-                        
-                                        label.FontFamily =
-                                            string.IsNullOrWhiteSpace(
-                                                PanelFontFamily)
-                                                ? "Arial"
-                                                : PanelFontFamily;
-                        
-                                        label.IsBold =
-                                            PanelBold;
-                        
-                                        label.HorizontalAlignment =
-                                            HorizontalAlignment.Right;
-                        
-                                        label.VerticalAlignment =
-                                            VerticalAlignment.Bottom;
-                        
-                                        label.IsInteractive =
-                                            false;
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Print(
-                                            "CFIP plan label failed: {0}",
-                                            ex.Message);
-                                    }
-                                }
-        
-        private void RemovePlanLabels()
-                                {
-                                    Chart.RemoveObject(
-                                        P + "ENTRY_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "IDEAL_ENTRY_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "TRIGGER_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "SL_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "TP1_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "TP2_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "TP3_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "TP4_LABEL");
-                                    Chart.RemoveObject(
-                                        P + "ACTIVE_TP_LABEL");
                                 }
     }
 }

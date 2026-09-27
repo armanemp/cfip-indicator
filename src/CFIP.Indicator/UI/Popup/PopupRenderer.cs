@@ -1,7 +1,3 @@
-// ============================================================================
-// CFIP Indicator — PopupView.cs
-// ============================================================================
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,12 +6,14 @@ using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
 
+// CFIP Indicator — PopupRenderer.cs
+// Single-responsibility popup renderer.
+
+
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        // ============================================================
-                
                         private void ShowPopup(
                             string message)
                         {
@@ -196,42 +194,6 @@ namespace cAlgo
                                     Math.Max(
                                         1,
                                         PopupDurationSeconds));
-                        }
-        
-        private void RemoveExpiredPopup()
-                        {
-                            if (_popup == null)
-                                return;
-                
-                            if (KeepPopupUntilNextAlert)
-                                return;
-                
-                            if (_popupUntilUtc >
-                                TimeInUtc)
-                                return;
-                
-                            RemovePopup();
-                        }
-        
-        private void RemovePopup()
-                        {
-                            if (_popup != null)
-                            {
-                                try
-                                {
-                                    Chart.RemoveControl(
-                                        _popup);
-                                }
-                                catch
-                                {
-                                }
-                            }
-                
-                            _popup = null;
-                            _popupText = null;
-                            _popupCloseButton = null;
-                            _popupUntilUtc =
-                                DateTime.MinValue;
                         }
     }
 }

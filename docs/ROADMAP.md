@@ -211,6 +211,8 @@ Acceptance:
 
 ## Phase 6 — Presentation and UI
 
+Status: complete.
+
 Goal: presentation becomes a pure consumer of authoritative state.
 
 Work:
@@ -228,6 +230,16 @@ Work:
 - Theme/visual settings.
 - Popup.
 - Execution controls.
+
+Completed in this phase:
+
+- Split plan-line rendering into coordinator, line renderer, object clearer/remover owners.
+- Split plan-label rendering into coordinator, anchor calculator, renderer and remover owners.
+- Split popup rendering, expiration cleanup and removal into explicit owners.
+- Moved execution controls under the UI boundary.
+- Kept chart/panel/popup modules free of broker mutation and decision-gate authority.
+- Added static CI enforcement for UI authority boundaries.
+- Preserved the existing semantic panel sections and chart render responsibilities without introducing a second source of trading truth.
 
 Acceptance:
 
