@@ -10,7 +10,8 @@ namespace cAlgo
         public bool ClosedBarTriggerReady { get; }
         public int BullConfidenceAdjustment { get; }
         public int BearConfidenceAdjustment { get; }
-        public int HigherTimeframePenalty { get; }
+        public int BullHigherTimeframePenalty { get; }
+        public int BearHigherTimeframePenalty { get; }
 
         public DecisionEvidenceSnapshot(
             int timeframeAgreement,
@@ -21,7 +22,8 @@ namespace cAlgo
             bool closedBarTriggerReady,
             int bullConfidenceAdjustment,
             int bearConfidenceAdjustment,
-            int higherTimeframePenalty)
+            int bullHigherTimeframePenalty,
+            int bearHigherTimeframePenalty)
         {
             TimeframeAgreement = NumericGuards.ClampInt(timeframeAgreement, 0, 100);
             IndependentEvidence = Math.Max(0, independentEvidence);
@@ -31,7 +33,8 @@ namespace cAlgo
             ClosedBarTriggerReady = closedBarTriggerReady;
             BullConfidenceAdjustment = NumericGuards.ClampInt(bullConfidenceAdjustment, -100, 100);
             BearConfidenceAdjustment = NumericGuards.ClampInt(bearConfidenceAdjustment, -100, 100);
-            HigherTimeframePenalty = Math.Max(0, higherTimeframePenalty);
+            BullHigherTimeframePenalty = Math.Max(0, bullHigherTimeframePenalty);
+            BearHigherTimeframePenalty = Math.Max(0, bearHigherTimeframePenalty);
         }
     }
 }
