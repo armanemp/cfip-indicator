@@ -138,6 +138,8 @@ namespace cAlgo
                                 : 0,
                             Server.IsConnected &&
                             Symbol.IsTradingEnabled,
+                            Symbol.MarketHours != null &&
+                            Symbol.MarketHours.IsOpened(),
                             Math.Max(0, Account.Equity),
                             Math.Max(0, Account.FreeMargin),
                             Math.Max(0, Account.Balance),
