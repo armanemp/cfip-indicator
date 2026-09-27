@@ -163,8 +163,36 @@ namespace CFIP.Indicator
                 var blocks = new List<BlockReason>();
     
                 if (decision == null || entry == null || plan == null ||
-                    runtime == null || configuration == null)
+                    runtime == null || configuration == null || suitability == null)
                     return Blocked(blocks, BlockReason.DataIncomplete);
+
+                if (configuration.Get("EnableMarketSuitabilityGuard", true) &&
+                    configuration.Get("HardMarketSuitabilityGate", true) &&
+                    !suitability.Eligible)
+                {
+                    switch (suitability.ReasonCode)
+                    {
+                        case SuitabilityReason.SessionBlocked:
+                        case SuitabilityReason.SessionUnsuitable:
+                        case SuitabilityReason.FridayCutoff:
+                            blocks.Add(BlockReason.SessionBlocked);
+                            break;
+                        case SuitabilityReason.NewsBlackout:
+                            blocks.Add(BlockReason.NewsBlocked);
+                            break;
+                        case SuitabilityReason.VolatilityShock:
+                            blocks.Add(BlockReason.VolatilityBlocked);
+                            break;
+                        case SuitabilityReason.TradingDisabled:
+                        case SuitabilityReason.MarketClosed:
+                            blocks.Add(BlockReason.BrokerUnavailable);
+                            break;
+                        case SuitabilityReason.ScoreBelowThreshold:
+                        default:
+                            blocks.Add(BlockReason.PolicyBlocked);
+                            break;
+                    }
+                }
     
                 bool market =
                     entry.Mode == EntryMode.RetestMarket ||
@@ -226,8 +254,20 @@ namespace CFIP.Indicator
                     blocks.Add(BlockReason.EntryInvalid);
                 }
     
+                bool aggressive = decision.PolicyMode == DecisionPolicyMode.Aggressive;
+                bool pendingPolicy = decision.PolicyMode == DecisionPolicyMode.Pending;
+                bool allowAggressive = aggressive &&
+                    configuration.Get("EnableAggressiveAutoEntry", false);
+                bool allowPendingPolicy = pendingPolicy &&
+                    configuration.Get("EnableAutomaticOrders", false);
+
                 if (configuration.Get("ConfirmedSignalsOnly", true) &&
+                    !allowAggressive &&
+                    !allowPendingPolicy &&
                     decision.PolicyMode != DecisionPolicyMode.Confirmed)
+                    blocks.Add(BlockReason.PolicyBlocked);
+
+                if (aggressive && !allowAggressive)
                     blocks.Add(BlockReason.PolicyBlocked);
     
                 if (decision.Confidence <
