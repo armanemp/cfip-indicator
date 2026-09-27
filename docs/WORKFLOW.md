@@ -1,18 +1,65 @@
 # CFIP Indicator — Workflow
 
-Before changing code, read the roadmap, architecture, affected module, relevant reference behavior and tests.
+## Continuation rule
 
-For every behavior record the owner, inputs, outputs, side effects, broker effects, presentation effects, failure modes, direction symmetry, tests and migration destination.
+One assistant implementation response = one complete phase.
 
-Implementation order:
-1. Contract.
-2. Authoritative implementation.
-3. Caller migration.
-4. Tests.
-5. Duplicate-path removal.
-6. Runtime validation.
-7. Documentation.
+When resuming in another chat:
 
-Do not add compatibility layers for obsolete names. Do not duplicate business rules. Do not let UI call broker APIs. Do not treat broker submission acceptance as fill confirmation.
+1. Read `docs/ROADMAP.md`.
+2. Read `docs/ARCHITECTURE.md`.
+3. Read this workflow.
+4. Inspect the current GitHub main branch.
+5. Continue from the first phase marked `next`.
+6. Do not repeat a completed phase unless a regression is found.
 
-Automated-trading validation uses controlled environments and covers market entry, pending orders, rejection, slippage, missing protection, partial close, close confirmation, disconnect/reconnect, restart adoption, duplicate events, daily loss, reversal, exhaustion, invalidation, EOD and multi-position fills.
+## Implementation order inside every phase
+
+Contract -> authoritative implementation -> caller migration -> tests/static checks -> duplicate-path removal -> runtime validation -> documentation.
+
+## Ownership rule
+
+Edit the smallest authoritative module that owns the behavior. Do not introduce compatibility aliases or parallel business rules.
+
+## Source hygiene rule
+
+Production source must be version-neutral.
+
+Versioned/historical source identifiers may appear only in roadmap/workflow material when they are necessary to identify the behavioral baseline. They must not appear in production C#, configuration, broker comments, class names, file names, namespaces, labels, or runtime identities.
+
+## Modularity rule
+
+Every indicator, analyzer, detector, model, enum, execution policy, lifecycle handler and renderer gets one clear source-file owner.
+
+A file may contain multiple small declarations only when they are inseparable implementation details of the same primary artifact and the architecture verifier explicitly permits them. Nested helper/model types inside the cTrader host are not permitted.
+
+## Trading safety rule
+
+The strategy plan and broker lifecycle are different states.
+
+- Accepted submission is not fill confirmation.
+- A rejected broker action is not successful state.
+- Broker-confirmed state is authoritative.
+- SL changes are protective-only.
+- Partial close and close state are consumed only after confirmation.
+- Reconnect/restart reconciliation runs before assuming new lifecycle state.
+- Automatic market and pending execution share one managed identity and one strategy authority.
+- Manual entry controls remain absent.
+
+## OSS rule
+
+OSS is isolated under `oss/` or an explicit adapter/benchmark boundary.
+
+Before production adoption, record upstream source, license, compatibility with target cTrader/.NET, benchmark results, numerical fixture results and the exact adapter owner.
+
+Do not embed a second trading engine.
+
+## Required verification for every phase
+
+Check affected source ownership, references/callers, public parameter compatibility, dependency direction, BUY/SELL symmetry, side effects, failure paths, idempotency, and runtime authority.
+
+Update roadmap status only after the phase is actually complete.
+
+## Current execution policy
+
+Work directly against the GitHub repository state. Use versioned/historical information only for continuity documentation, never as production identity.
