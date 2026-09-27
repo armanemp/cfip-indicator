@@ -47,8 +47,13 @@ method_pattern = re.compile(
     r'[\w<>\[\],.?]+\s+([A-Za-z_]\w*)\s*\('
 )
 methods = method_pattern.findall(code)
-if len(methods) != 311:
-    raise SystemExit(f'Expected 311 reference methods, found {len(methods)}')
+unique_methods = set(methods)
+if len(methods) != 312:
+    raise SystemExit(f'Expected 312 reference method declarations, found {len(methods)}')
+if len(unique_methods) != 311:
+    raise SystemExit(f'Expected 311 unique reference methods, found {len(unique_methods)}')
+if methods.count('AddScore') != 2:
+    raise SystemExit('Expected exactly one overloaded method pair: AddScore')
 
 if re.search(r'CFIPClean\d+|Clean\d+|CFIP_MTF_LiveEntryEngine_Clean', code, re.I):
     raise SystemExit('Legacy/versioned strategy identifier detected')
@@ -89,5 +94,5 @@ if hosts < 2:
 
 print(
     f'Architecture OK: {len(files)} C# files, {parameters} parameters, '
-    f'{len(methods)} methods, {hosts} partial modules.'
+    f'{len(methods)} method declarations / {len(unique_methods)} unique methods, {hosts} partial modules.'
 )
