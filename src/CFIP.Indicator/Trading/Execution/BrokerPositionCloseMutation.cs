@@ -25,8 +25,10 @@ namespace cAlgo
                                             volumeInUnits.Value)
                                         : ClosePosition(position);
                 
-                                if (result == null ||
-                                    !result.IsSuccessful)
+                                if (!BrokerConfirmationPolicy.IsSuccessfulMutation(
+                                        result != null,
+                                        result != null &&
+                                        result.IsSuccessful))
                                 {
                                     Print(
                                         "CFIP close rejected ({0}).",
