@@ -1,6 +1,5 @@
 from pathlib import Path
 import re
-import sys
 
 ROOT = Path('src/CFIP.Indicator')
 PARAMETERS = ROOT / 'Indicator' / 'Parameters.cs'
@@ -28,36 +27,40 @@ bad_legacy = sorted(LEGACY_FILES & rel)
 if bad_legacy:
     raise SystemExit('Legacy monolithic files remain: ' + ', '.join(bad_legacy))
 
-def strip_comments_and_strings(text):
-    text = re.sub(r'/\\*[\\s\\S]*?\\*/', ' ', text)
-    text = re.sub(r'//[^\\r\\n]*', ' ', text)
+def strip_for_static_checks(text):
+    text = re.sub(r'/\*[\s\S]*?\*/', ' ', text)
+    text = re.sub(r'//[^\r\n]*', ' ', text)
     text = re.sub(r'@?"(?:""|\\.|[^"\\])*"', 'S', text)
-    text = re.sub(r"'(?:\\\\.|[^'\\\\])*'", 'C', text)
+    text = re.sub(r"'(?:\\.|[^'\\])*'", 'C', text)
     return text
 
-source = '\\n'.join(p.read_text(encoding='utf-8') for p in files)
-code = strip_comments_and_strings(source)
+raw = '\n'.join(p.read_text(encoding='utf-8') for p in files)
+code = strip_for_static_checks(raw)
 
-parameters = len(re.findall(r'\\[Parameter\\s*\\(', code))
+parameters = len(re.findall(r'\[Parameter\s*\(', code))
 if parameters != 513:
     raise SystemExit(f'Expected 513 parameters, found {parameters}')
 
 method_pattern = re.compile(
-    r'\\b(?:public|private|protected|internal)\\s+'
-    r'(?:static\\s+|sealed\\s+|virtual\\s+|override\\s+|async\\s+|readonly\\s+|unsafe\\s+|partial\\s+)*'
-    r'[\\w<>\\[\\],.?]+\\s+([A-Za-z_]\\w*)\\s*\\('
+    r'\b(?:public|private|protected|internal)\s+'
+    r'(?:static\s+|sealed\s+|virtual\s+|override\s+|async\s+|readonly\s+|unsafe\s+|partial\s+)*'
+    r'[\w<>\[\],.?]+\s+([A-Za-z_]\w*)\s*\('
 )
 methods = method_pattern.findall(code)
 if len(methods) != 311:
     raise SystemExit(f'Expected 311 reference methods, found {len(methods)}')
 
-if re.search(r'CFIPClean\\d+|Clean\\d+|CFIP_MTF_LiveEntryEngine_Clean', code, re.I):
+if re.search(r'CFIPClean\d+|Clean\d+|CFIP_MTF_LiveEntryEngine_Clean', code, re.I):
     raise SystemExit('Legacy/versioned strategy identifier detected')
 
-if re.search(r'\\b(?:Buy|Sell)\\b.{0,100}\\b(?:Button|ToggleButton)\\b', code, re.I):
+if re.search(r'\b(?:Buy|Sell)\b.{0,100}\b(?:Button|ToggleButton)\b', code, re.I):
     raise SystemExit('Manual trade-entry controls detected')
 
-oversized = [str(p.relative_to(ROOT)) for p in files if p != PARAMETERS and p.stat().st_size > 65536]
+oversized = [
+    str(p.relative_to(ROOT))
+    for p in files
+    if p != PARAMETERS and p.stat().st_size > 65536
+]
 if oversized:
     raise SystemExit('Oversized production modules: ' + ', '.join(sorted(oversized)))
 
@@ -73,12 +76,18 @@ for filename, method in indicator_files.items():
     if len(candidates) != 1 or method not in candidates[0].read_text(encoding='utf-8'):
         raise SystemExit(f'Indicator isolation check failed: {filename}')
 
-label = re.search(r'\\[Parameter\\(\"Auto Trade Label\"[^\\n]*DefaultValue\\s*=\\s*\"([^\"]+)\"', PARAMETERS.read_text(encoding='utf-8'))
+label = re.search(
+    r'\[Parameter\("Auto Trade Label"[^\n]*DefaultValue\s*=\s*"([^"]+)"',
+    PARAMETERS.read_text(encoding='utf-8'),
+)
 if not label or label.group(1) != 'CFIP-SMART-CLEAN66':
-    raise SystemExit('v73 broker identity label parity check failed')
+    raise SystemExit('Managed broker identity label parity check failed')
 
-hosts = len(re.findall(r'\\bpartial\\s+class\\s+CFIPIndicator\\s*:', code))
+hosts = len(re.findall(r'\bpartial\s+class\s+CFIPIndicator\s*:', code))
 if hosts < 2:
     raise SystemExit('Expected multiple focused CFIPIndicator partial modules')
 
-print(f'Architecture OK: {len(files)} C# files, {parameters} parameters, {len(methods)} methods, {hosts} partial modules.')
+print(
+    f'Architecture OK: {len(files)} C# files, {parameters} parameters, '
+    f'{len(methods)} methods, {hosts} partial modules.'
+)

@@ -161,8 +161,11 @@ namespace cAlgo
                 private string _panelStableHeader = "";
                 private DateTime _panelStableHeaderSinceUtc = DateTime.MinValue;
                 private Button _popupCloseButton;
-        
-                private readonly Dictionary<int, int> _directionSamples =
+        private int _runtimeTpStageIndex = -1;
+        private int _runtimeTpStagePlanCreatedM5 = -1;
+        private int _lastReactionAlertBar = -1;
+
+        private readonly Dictionary<int, int> _directionSamples =
                     new Dictionary<int, int>();
         
                 private readonly Dictionary<int, int> _directionWins =
