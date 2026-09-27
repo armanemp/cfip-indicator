@@ -248,9 +248,12 @@ namespace cAlgo
                                                 false,
                                                 "AGGRESSIVE MARKET");
                         
-                                        if (result == null ||
-                                            !result.IsSuccessful ||
-                                            result.Position == null)
+                                        if (!BrokerConfirmationPolicy.CanAdoptPosition(
+                                                result != null,
+                                                result != null &&
+                                                result.IsSuccessful,
+                                                result != null &&
+                                                result.Position != null))
                                         {
                                             _autoExecutionBlockReason =
                                                 result != null &&
