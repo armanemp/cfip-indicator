@@ -78,14 +78,14 @@ namespace cAlgo
                                     double atr)
                                 {
                                     Zone fvg =
-                                        FindNearestFvg(
+                                        FindEfficientFvg(
                                             bars,
                                             index,
                                             direction,
                                             atr);
                         
                                     Zone ob =
-                                        FindNearestOrderBlock(
+                                        FindEfficientOrderBlock(
                                             bars,
                                             index,
                                             direction,
