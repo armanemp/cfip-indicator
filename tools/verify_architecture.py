@@ -1023,12 +1023,20 @@ if CALCULATION_CYCLE.stat().st_size > 4096:
 if len(re.findall(r"\bpublic\s+override\s+void\s+Calculate\s*\(", CALCULATION_CYCLE_CODE)) != 1:
     raise SystemExit("CalculationCycle must own exactly one Calculate override")
 for token in (
+    "RunCalculationPreparationStage(",
+    "RunClosedBarAnalysisStage(",
+    "ProcessLiveCalculationStages(",
+):
+    if token not in CALCULATION_CYCLE_CODE:
+        raise SystemExit(f"CalculationCycle stage orchestration call missing: {token}")
+
+for forbidden in (
     "TryPrepareCalculationCycle(",
     "ProcessNewClosedBar(",
     "ProcessLiveCalculation(",
 ):
-    if token not in CALCULATION_CYCLE_CODE:
-        raise SystemExit(f"CalculationCycle orchestration call missing: {token}")
+    if forbidden in CALCULATION_CYCLE_CODE:
+        raise SystemExit(f"CalculationCycle must not directly own extracted stage: {forbidden}")
 for forbidden in (
     "AnalyzeFrame(",
     "BuildDecision(",
@@ -1047,6 +1055,7 @@ for required_path in (
     ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs",
     ROOT / "Runtime" / "Calculation" / "CalculationDecisionAlerts.cs",
     ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs",
+    ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs",
 ):
     if not required_path.exists():
         raise SystemExit(f"Calculation-cycle owner missing: {required_path}")
