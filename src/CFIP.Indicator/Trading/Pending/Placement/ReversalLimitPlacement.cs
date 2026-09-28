@@ -48,7 +48,7 @@ namespace cAlgo
                         closedM5,
                         direction,
                         "LIMIT",
-                        out submissionGateReason)
+                        out submissionGateReason))
                 {
                     _autoOrdersBlockReason =
                         submissionGateReason;
