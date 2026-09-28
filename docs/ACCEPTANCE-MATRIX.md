@@ -64,3 +64,18 @@ The source/architecture failure is therefore a documentation-continuity defect i
 | Explicit AutoTradingEnabled re-arm transition | Required | Required |
 
 The automated state-machine contract proves deterministic transitions and the no-blind-re-arm invariant. It does not emulate live terminal event timing or broker-side behavior.
+
+
+## Phase 1.4 — Closed-bar retry and signal/execution synchronization
+
+| Contract | Automated controlled check | Live cTrader |
+|---|---:|---:|
+| Repeated closed-bar failures are bounded | Required | Required |
+| Closed-bar retry uses timestamp/backoff/circuit | Required | Required |
+| Recoverable analysis fault does not starve management | Required | Required |
+| Pre-trade SL uses authoritative plan value | Required | Required |
+| Live SL/TP reporting uses broker-confirmed values | Required | Required |
+| Pending order reporting uses broker-confirmed values | Required | Required |
+| Missing pending decision/reaction dependency is handled explicitly | Required | Required |
+
+The repository contracts cover deterministic retry state, stage continuation and source synchronization. Target-terminal tests remain required for live event timing, broker normalization and reconnect behavior.
