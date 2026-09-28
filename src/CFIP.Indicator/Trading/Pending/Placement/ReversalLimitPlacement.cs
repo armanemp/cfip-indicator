@@ -7,6 +7,12 @@ namespace cAlgo
         private bool PlaceReversalLimit(
             int closedM5)
         {
+            if (!CanRunAutomaticEntry())
+            {
+                ApplyRuntimeEntryGate();
+                return false;
+            }
+
             if (!TryPrepareReversalLimit(closedM5, out int direction, out _, out double targetEntry, out double stop, out double target, out _, out _, out double volume, out ExecutionIntent pendingIntent))
                 return false;
             string reason;
