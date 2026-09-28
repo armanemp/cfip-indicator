@@ -206,7 +206,7 @@ ATOMIC_METHOD_OWNERS = {
     "FindEqualLow": ROOT / "Analysis" / "Structure" / "EqualLevelAnalyzer.cs",
     "FindNearestFvg": ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs",
     "SelectNearestFvg": ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs",
-    "IsZoneFullyMitigated": ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs",
+    "IsZoneFullyMitigated": ROOT / "Analysis" / "Structure" / "Zones" / "FvgMitigationEvaluator.cs",
     "HasZoneRetest": ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs",
     "BuildManagedFvgZone": ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs",
     "HasOrderBlockLiquiditySweep": ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockConfluenceAnalyzer.cs",
