@@ -38,7 +38,7 @@ namespace cAlgo
                                     
                                                 AddPanelRow(
                                                     ref slot,
-                                                    "MTF ALIGNMENT",
+                                                    MtfAlignmentText(),
                                                     PanelSectionColor,
                                                     true,
                                                     contentWidth);
