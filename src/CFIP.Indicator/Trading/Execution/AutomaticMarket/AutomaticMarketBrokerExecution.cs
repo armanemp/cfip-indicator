@@ -17,17 +17,12 @@ namespace cAlgo
             try
             {
                 string submissionReason;
-                ExecutionIntent marketIntent;
-
                 if (!TryValidateAutomaticMarketSubmission(
                         closedM5,
                         type,
                         entry,
                         target,
                         volume,
-                        stopPips,
-                        targetPips,
-                        out marketIntent,
                         out submissionReason))
                 {
                     _autoExecutionBlockReason =
@@ -61,8 +56,6 @@ namespace cAlgo
                     return;
                 }
 
-                string fillReason;
-
                 if (!BrokerConfirmationPolicy.CanAdoptPosition(
                         true,
                         result.IsSuccessful,
@@ -81,8 +74,7 @@ namespace cAlgo
 
                 if (!TryAcceptAutomaticMarketFill(
                         closedM5,
-                        result,
-                        out fillReason))
+                        result))
                     return;
 
                 if (!TryResolveAutomaticPostFillTarget(
