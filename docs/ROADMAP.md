@@ -925,6 +925,30 @@ Acceptance:
 Operational note:
 - A future runtime-recovery control may re-arm execution only after the fault condition has been inspected; automatic re-arming is intentionally not enabled in this hardening phase.
 
+### Phase 29C — Startup and panel resilience
+
+Status: complete.
+
+Goal: ensure a newly attached indicator instance has a visible, diagnosable chart surface even when initialization or data preparation is not yet ready.
+
+Completed:
+- Create the panel bootstrap surface before secondary market-data and native-indicator initialization.
+- Give the panel an explicit initial size, margin and alignment instead of relying on later render-cycle layout.
+- Add initialization fault capture by stage for market-data loading, native-indicator registration and runtime-state initialization.
+- Keep automatic execution disabled until initialization completes successfully.
+- Prevent `Calculate()` from entering the live analysis/execution path before initialization readiness is established.
+- Keep an initialization error visible in the panel and write the full exception to the cTrader log.
+- Preserve the existing runtime calculation fault boundary and fail-closed execution behavior.
+
+Acceptance:
+- A newly attached instance can display a visible bootstrap panel before analysis data is ready.
+- Initialization faults are diagnosable from the chart and cTrader log.
+- No automatic execution path can run from a partially initialized instance.
+- Production build and CI compile/runtime gates remain green.
+
+Operational note:
+- Existing cTrader instances may still contain the previous compiled assembly; after pulling this change, rebuild and re-add the Indicator instance so the new startup path is actually loaded.
+
 ### Phase 30 — Automatic market execution certification
 
 Status: planned.
