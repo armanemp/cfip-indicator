@@ -63,15 +63,24 @@ namespace cAlgo
                         
                                         bool mutationRequired = false;
                                         bool mutationSucceeded = true;
-                        
+                                        bool stopConfirmed = false;
+                                        bool targetConfirmed =
+                                            !SyncBrokerTakeProfit;
+
                                         int positionDirection =
                                             position.TradeType == TradeType.Buy
                                                 ? 1
                                                 : -1;
-                        
-                                        if (IsValidStop(
+
+                                        double market =
+                                            positionDirection == 1
+                                                ? Symbol.Bid
+                                                : Symbol.Ask;
+
+                                        if (IsValidManagedStop(
                                                 positionDirection,
                                                 position.EntryPrice,
+                                                market,
                                                 _plan.Stop))
                                         {
                                             double normalizedStop =
@@ -89,12 +98,23 @@ namespace cAlgo
                                             if (materiallyDifferent)
                                             {
                                                 mutationRequired = true;
-                                                mutationSucceeded =
+
+                                                bool stopMutationSucceeded =
                                                     TryModifyStopLoss(
                                                         position,
                                                         normalizedStop,
-                                                        "LIVE PROTECTION • SL") &&
+                                                        "LIVE PROTECTION • SL");
+
+                                                mutationSucceeded =
+                                                    stopMutationSucceeded &&
                                                     mutationSucceeded;
+
+                                                stopConfirmed =
+                                                    stopMutationSucceeded;
+                                            }
+                                            else
+                                            {
+                                                stopConfirmed = true;
                                             }
                                         }
                         
@@ -140,12 +160,23 @@ namespace cAlgo
                                                 if (materiallyDifferent)
                                                 {
                                                     mutationRequired = true;
-                                                    mutationSucceeded =
+
+                                                    bool targetMutationSucceeded =
                                                         TryModifyTakeProfit(
                                                             position,
                                                             normalizedTarget,
-                                                            "LIVE PROTECTION • TP") &&
+                                                            "LIVE PROTECTION • TP");
+
+                                                    mutationSucceeded =
+                                                        targetMutationSucceeded &&
                                                         mutationSucceeded;
+
+                                                    targetConfirmed =
+                                                        targetMutationSucceeded;
+                                                }
+                                                else
+                                                {
+                                                    targetConfirmed = true;
                                                 }
                                             }
                                         }
@@ -167,8 +198,12 @@ namespace cAlgo
                                                 positionDirection,
                                                 true);
                                         }
-                                        else if (!_brokerProtectionRecoveryRequired)
+                                        else if (stopConfirmed &&
+                                                 targetConfirmed)
                                         {
+                                            _brokerProtectionRecoveryRequired =
+                                                false;
+
                                             SetLifecycleState(
                                                 LifecycleState.LivePosition,
                                                 "LIVE POSITION • BROKER STATE SYNCHRONIZED");
