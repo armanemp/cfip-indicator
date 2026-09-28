@@ -88,7 +88,8 @@ namespace cAlgo
                     selectedTimeframeAgreement,
                     selectedIndependentEvidence,
                     selectedStructuralConfirmations,
-                    evidence.RegimeQuality);
+                    evidence.RegimeQuality,
+                    selectedRetestQuality);
 
             if (decision.Direction == 0)
             {
