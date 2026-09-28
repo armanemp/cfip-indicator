@@ -169,7 +169,7 @@ if re.search(r"\b(?:Buy|Sell)\b.{0,100}\b(?:Button|ToggleButton)\b", code, re.I)
 oversized = [
     str(p.relative_to(ROOT))
     for p in files
-    if p.stat().st_size > 65536
+    if p.stat().st_size > 20 * 1024
 ]
 if oversized:
     raise SystemExit("Oversized production modules: " + ", ".join(sorted(oversized)))
