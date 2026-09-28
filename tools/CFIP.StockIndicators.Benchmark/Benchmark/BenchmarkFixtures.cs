@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FacioQuo.Stock.Indicators;
 using V2Quote = Skender.Stock.Indicators.Quote;
 
