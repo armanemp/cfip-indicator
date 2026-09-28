@@ -280,6 +280,18 @@ namespace cAlgo
                 atr <= 0)
                 return null;
 
+            if (_zoneCacheBuildDepth > 0)
+            {
+                if (_activeZoneCandidateCache != null &&
+                    ReferenceEquals(
+                        _activeZoneCandidateCache.Bars,
+                        bars) &&
+                    _activeZoneCandidateCache.Index == index)
+                    return _activeZoneCandidateCache;
+
+                return null;
+            }
+
             for (int i = 0;
                  i < _zoneCandidateCaches.Count;
                  i++)
@@ -313,12 +325,16 @@ namespace cAlgo
             _activeZoneCandidateCache =
                 cache;
 
+            _zoneCacheBuildDepth++;
+
             try
             {
                 BuildOrderBlockCandidates(cache);
             }
             finally
             {
+                _zoneCacheBuildDepth--;
+
                 _activeZoneCandidateCache =
                     null;
             }
