@@ -41,15 +41,15 @@ raw = "\n".join(p.read_text(encoding="utf-8") for p in files)
 code = strip_for_static_checks(raw)
 
 parameters = len(re.findall(r"\[Parameter\s*\(", code))
-if parameters != 535:
-    raise SystemExit(f"Expected 535 total parameters, found {parameters}")
+if parameters != 537:
+    raise SystemExit(f"Expected 537 total parameters, found {parameters}")
 parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
 if len(parameter_files) != 27:
     raise SystemExit(f"Expected 27 parameter-group files, found {len(parameter_files)}")
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 532:
-    raise SystemExit(f"Expected 532 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 534:
+    raise SystemExit(f"Expected 534 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
