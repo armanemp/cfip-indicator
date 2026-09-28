@@ -20,28 +20,11 @@ namespace cAlgo
                 _decision.Direction == 0)
                 return false;
 
-            if (policy ==
-                    DecisionPolicyMode.Confirmed)
-            {
-                if (!_decision.EntryAllowed)
-                    return false;
-            }
-            else
-            {
-                if (!_decision.EntryAllowed)
-                {
-                    bool softEligible =
-                        !IsHardDecisionBlockReason(
-                            _decision.BlockReason) &&
-                        _decision.Confidence >=
-                            MinimumAutoConfidence &&
-                        _decision.SmartQuality >=
-                            MinimumAutoSmartQuality;
+            if (!_decision.EntryAllowed)
+                return false;
 
-                    if (!softEligible)
-                        return false;
-                }
-            }
+            if (!_decision.TriggerReady)
+                return false;
 
             if (BlockSameBarReentryAfterExit &&
                 _lastExitM5 == closedM5)
