@@ -30,9 +30,13 @@ namespace cAlgo
             f.EmaSlow = Ema(bars, index, false);
 
             MarketRegimeSnapshot regimeSnapshot =
-                AnalyzeMarketRegime(
+                ReferenceEquals(
                     bars,
-                    index);
+                    _m5Bars)
+                    ? GetActiveM5Regime(index)
+                    : AnalyzeMarketRegime(
+                        bars,
+                        index);
 
             f.Choppiness =
                 regimeSnapshot.Choppiness;
