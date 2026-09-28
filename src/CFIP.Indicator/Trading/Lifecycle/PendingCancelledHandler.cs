@@ -22,6 +22,12 @@ namespace cAlgo
                                         !IsManagedPendingOrder(args.PendingOrder))
                                         return;
                         
+
+                                    if (!_lifecycleEventGuard.TryBegin(
+                                            "PENDING_CANCELLED",
+                                            args.PendingOrder.Id))
+                                        return;
+                        
                                     PendingOrder remaining =
                                         GetManagedPendingOrder();
                         

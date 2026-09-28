@@ -11,5 +11,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../src/CFIP.Indicator/Trading/Execution/BrokerConfirmationPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleEventIdempotencyGuard.cs" />
   </ItemGroup>
 </Project>

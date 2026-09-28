@@ -13,6 +13,8 @@ namespace cAlgo
             VerifyThresholdReasons();
             VerifySmartConsensusReasons();
 
+            VerifyConsensusSymmetry();
+            VerifyConfidenceDeterminism();
             Console.WriteLine("Decision contracts OK");
         }
 
@@ -217,7 +219,53 @@ namespace cAlgo
                         90, 75));
 
             Assert(accepted.Allowed, "smart consensus acceptance");
+        }        private static void VerifyConsensusSymmetry()
+        {
+            DecisionConsensusCalculator calculator =
+                new DecisionConsensusCalculator();
+
+            DecisionConsensusSnapshot buyDominant =
+                calculator.Calculate(82, 54, 10, 70);
+
+            DecisionConsensusSnapshot sellDominant =
+                calculator.Calculate(54, 82, 10, 70);
+
+            Assert(
+                buyDominant.BuyShare == sellDominant.SellShare,
+                "consensus BUY/SELL share symmetry");
+
+            Assert(
+                buyDominant.SellShare == sellDominant.BuyShare,
+                "consensus SELL/BUY share symmetry");
+
+            Assert(
+                buyDominant.Direction == 1 &&
+                sellDominant.Direction == -1,
+                "consensus directional symmetry");
+
+            Assert(
+                buyDominant.StrongestShare ==
+                sellDominant.StrongestShare,
+                "consensus strongest-share symmetry");
         }
+
+        private static void VerifyConfidenceDeterminism()
+        {
+            DecisionConfidenceCalculator calculator =
+                new DecisionConfidenceCalculator();
+
+            int first =
+                calculator.Calculate(82, 74, 78, 3, 4);
+
+            int second =
+                calculator.Calculate(82, 74, 78, 3, 4);
+
+            Assert(
+                first == second,
+                "confidence deterministic repeatability");
+        }
+
+
 
         private static void Assert(bool condition, string name)
         {

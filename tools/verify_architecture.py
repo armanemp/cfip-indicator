@@ -241,6 +241,65 @@ print(
     f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
 )
 
+# Phase 8 contract/source invariants.
+CONTRACTS = {
+    "decision": Path("tools/CFIP.Decision.Contracts/Program.cs"),
+    "planning": Path("tools/CFIP.Planning.Contracts/Program.cs"),
+    "execution": Path("tools/CFIP.Execution.Contracts/Program.cs"),
+}
+for name, path in CONTRACTS.items():
+    if not path.exists():
+        raise SystemExit(f"Contract fixture missing: {path}")
+
+for token, path in {
+    "VerifyConsensusSymmetry": CONTRACTS["decision"],
+    "VerifyConfidenceDeterminism": CONTRACTS["decision"],
+    "VerifyStopTargetProtection": CONTRACTS["planning"],
+    "VerifyLifecycleTransitions": CONTRACTS["planning"],
+    "VerifyLifecycleEventIdempotency": CONTRACTS["execution"],
+}.items():
+    if token not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"Contract fixture missing: {token}")
+
+for required_file in (
+    ROOT / "Core" / "Math" / "PriceProtectionRule.cs",
+    ROOT / "Trading" / "Lifecycle" / "LifecycleTransitionPolicy.cs",
+    ROOT / "Trading" / "Lifecycle" / "LifecycleEventIdempotencyGuard.cs",
+    ROOT / "Trading" / "Lifecycle" / "LifecycleEventState.cs",
+):
+    if not required_file.exists():
+        raise SystemExit(f"Phase 8 invariant owner missing: {required_file}")
+
+if "PriceProtectionRule.IsValidStop(" not in (ROOT / "Trading" / "Validation" / "PriceProtectionValidation.cs").read_text(encoding="utf-8"):
+    raise SystemExit("Production stop validation is not delegated to PriceProtectionRule")
+if "PriceProtectionRule.IsValidTarget(" not in (ROOT / "Trading" / "Validation" / "PriceProtectionValidation.cs").read_text(encoding="utf-8"):
+    raise SystemExit("Production target validation is not delegated to PriceProtectionRule")
+
+event_handlers = {
+    "POSITION_OPENED": ROOT / "Trading" / "Lifecycle" / "PositionOpenedHandler.cs",
+    "PENDING_CREATED": ROOT / "Trading" / "Lifecycle" / "PendingCreatedHandler.cs",
+    "PENDING_FILLED": ROOT / "Trading" / "Lifecycle" / "PendingFilledHandler.cs",
+    "PENDING_CANCELLED": ROOT / "Trading" / "Lifecycle" / "PendingCancelledHandler.cs",
+    "POSITION_CLOSED": ROOT / "Trading" / "Lifecycle" / "PositionClosedHandler.cs",
+}
+for event_type, path in event_handlers.items():
+    text_module = path.read_text(encoding="utf-8")
+    if "_lifecycleEventGuard.TryBegin(" not in text_module or event_type not in text_module:
+        raise SystemExit(f"Lifecycle idempotency guard missing from {path}")
+
+for forbidden in (
+    "ExecuteMarketOrder(",
+    "PlaceStopOrder(",
+    "PlaceLimitOrder(",
+    "ClosePosition(",
+    "CancelPendingOrder(",
+):
+    for root in (ROOT / "Analysis", ROOT / "Planning"):
+        for p in sorted(root.rglob("*.cs")):
+            if forbidden in strip_for_static_checks(p.read_text(encoding="utf-8")):
+                raise SystemExit(f"Broker mutation escaped analysis/planning: {p} -> {forbidden}")
+
+
 # Decision services must remain free of cTrader host dependencies.
 DECISION_SERVICE_ROOT = ROOT / "Analysis" / "Market" / "Decision"
 DECISION_SERVICE_FILES = {

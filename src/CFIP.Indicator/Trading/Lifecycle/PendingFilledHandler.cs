@@ -16,6 +16,13 @@ namespace cAlgo
                 !IsManagedPosition(args.Position))
                 return;
 
+
+            if (args.PendingOrder == null ||
+                !_lifecycleEventGuard.TryBegin(
+                    "PENDING_FILLED",
+                    args.PendingOrder.Id))
+                return;
+
             RemoveManagedPendingOrderObjects();
 
             int direction =

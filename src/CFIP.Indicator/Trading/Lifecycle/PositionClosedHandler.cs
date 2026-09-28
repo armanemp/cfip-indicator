@@ -20,6 +20,12 @@ namespace cAlgo
                                         !IsManagedPosition(args.Position))
                                         return;
                         
+
+                                    if (!_lifecycleEventGuard.TryBegin(
+                                            "POSITION_CLOSED",
+                                            args.Position.Id))
+                                        return;
+                        
                                     _lastExitM5 =
                                         Math.Max(
                                             _lastExitM5,

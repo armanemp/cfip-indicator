@@ -67,10 +67,11 @@ namespace cAlgo
                                             Symbol.TickSize,
                                             MinimumTakeProfitDistancePrice());
                         
-                                    return direction == 1
-                                        ? target > entry + minimumDistance
-                                        : direction == -1 &&
-                                          target < entry - minimumDistance;
+                                    return PriceProtectionRule.IsValidTarget(
+                                        direction,
+                                        entry,
+                                        target,
+                                        minimumDistance);
                                 }
         
         private double MinimumProtectionDistancePrice()
@@ -124,10 +125,11 @@ namespace cAlgo
                                             Symbol.TickSize,
                                             MinimumProtectionDistancePrice());
                         
-                                    return direction == 1
-                                        ? stop < entry - minimumDistance
-                                        : direction == -1 &&
-                                          stop > entry + minimumDistance;
+                                    return PriceProtectionRule.IsValidStop(
+                                        direction,
+                                        entry,
+                                        stop,
+                                        minimumDistance);
                                 }
     }
 }

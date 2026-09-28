@@ -12,6 +12,7 @@ namespace cAlgo
             VerifyMissingEntitiesAreRejected();
             VerifyMutationSuccessRequiresResult();
 
+            VerifyLifecycleEventIdempotency();
             Console.WriteLine("Execution contracts OK");
         }
 
@@ -82,7 +83,37 @@ namespace cAlgo
                     true,
                     true),
                 "successful trade result");
+        }        private static void VerifyLifecycleEventIdempotency()
+        {
+            LifecycleEventIdempotencyGuard guard =
+                new LifecycleEventIdempotencyGuard();
+
+            Assert(
+                guard.TryBegin("POSITION_OPENED", 101),
+                "first position-open event");
+
+            Assert(
+                !guard.TryBegin("POSITION_OPENED", 101),
+                "duplicate position-open event blocked");
+
+            Assert(
+                guard.TryBegin("POSITION_OPENED", 102),
+                "different entity remains independent");
+
+            Assert(
+                guard.TryBegin("POSITION_CLOSED", 101),
+                "different event type remains independent");
+
+            Assert(
+                !guard.TryBegin("POSITION_CLOSED", 101),
+                "duplicate position-close event blocked");
+
+            Assert(
+                !guard.TryBegin("POSITION_OPENED", 0),
+                "invalid entity blocked");
         }
+
+
 
         private static void Assert(bool condition, string name)
         {

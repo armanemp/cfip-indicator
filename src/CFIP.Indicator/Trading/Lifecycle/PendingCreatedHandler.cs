@@ -22,6 +22,12 @@ namespace cAlgo
                                         !IsManagedPendingOrder(args.PendingOrder))
                                         return;
                         
+
+                                    if (!_lifecycleEventGuard.TryBegin(
+                                            "PENDING_CREATED",
+                                            args.PendingOrder.Id))
+                                        return;
+                        
                                     SetLifecycleState(
                                         LifecycleState.PendingOrder,
                                         "PENDING ORDER CREATED #" +

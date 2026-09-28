@@ -15,5 +15,8 @@
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskPercentPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskAmountCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/MarginUsagePolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Enums/LifecycleState.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/PriceProtectionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleTransitionPolicy.cs" />
   </ItemGroup>
 </Project>

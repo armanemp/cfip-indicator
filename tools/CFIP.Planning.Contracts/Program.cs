@@ -12,6 +12,8 @@ namespace cAlgo
             VerifyRiskAmount();
             VerifyMarginUsage();
 
+            VerifyStopTargetProtection();
+            VerifyLifecycleTransitions();
             Console.WriteLine("Planning contracts OK");
         }
 
@@ -93,7 +95,103 @@ namespace cAlgo
             Assert(
                 MarginUsagePolicy.CalculateAllowedPercent(120, 0) == 100,
                 "margin ceiling");
+        }        private static void VerifyStopTargetProtection()
+        {
+            Assert(
+                PriceProtectionRule.IsValidStop(1, 100, 98, 1),
+                "BUY stop invariant");
+
+            Assert(
+                PriceProtectionRule.IsValidStop(-1, 100, 102, 1),
+                "SELL stop invariant");
+
+            Assert(
+                PriceProtectionRule.IsValidTarget(1, 100, 102, 1),
+                "BUY target invariant");
+
+            Assert(
+                PriceProtectionRule.IsValidTarget(-1, 100, 98, 1),
+                "SELL target invariant");
+
+            Assert(
+                !PriceProtectionRule.IsValidStop(1, 100, 101, 1),
+                "BUY stop wrong side");
+
+            Assert(
+                !PriceProtectionRule.IsValidStop(-1, 100, 99, 1),
+                "SELL stop wrong side");
+
+            Assert(
+                !PriceProtectionRule.IsValidTarget(1, 100, 99, 1),
+                "BUY target wrong side");
+
+            Assert(
+                !PriceProtectionRule.IsValidTarget(-1, 100, 101, 1),
+                "SELL target wrong side");
+
+            Assert(
+                PriceProtectionRule.IsValidStop(1, 100, 98, 1) ==
+                PriceProtectionRule.IsValidTarget(-1, 100, 98, 1),
+                "SELL target mirrors BUY stop");
+
+            Assert(
+                PriceProtectionRule.IsValidStop(-1, 100, 102, 1) ==
+                PriceProtectionRule.IsValidTarget(1, 100, 102, 1),
+                "BUY target mirrors SELL stop");
         }
+
+        private static void VerifyLifecycleTransitions()
+        {
+            Assert(
+                LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.Flat,
+                    LifecycleState.Signal),
+                "flat to signal");
+
+            Assert(
+                LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.Signal,
+                    LifecycleState.PlanReady),
+                "signal to plan");
+
+            Assert(
+                LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.ExecutionReady,
+                    LifecycleState.PendingOrder),
+                "execution to pending");
+
+            Assert(
+                LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.PendingOrder,
+                    LifecycleState.LivePosition),
+                "pending to live");
+
+            Assert(
+                LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.LivePosition,
+                    LifecycleState.ExitRequested),
+                "live to exit");
+
+            Assert(
+                LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.ExitRequested,
+                    LifecycleState.Closed),
+                "exit to closed");
+
+            Assert(
+                LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.Closed,
+                    LifecycleState.Closed),
+                "closed state idempotency");
+
+            Assert(
+                !LifecycleTransitionPolicy.IsAllowed(
+                    LifecycleState.Closed,
+                    LifecycleState.PendingOrder),
+                "closed to pending blocked");
+        }
+
+
 
         private static void Assert(bool condition, string name)
         {

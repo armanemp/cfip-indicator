@@ -25,6 +25,11 @@ namespace cAlgo
                                     Position position =
                                         args.Position;
                         
+                                    if (!_lifecycleEventGuard.TryBegin(
+                                            "POSITION_OPENED",
+                                            args.Position.Id))
+                                        return;
+                        
                                     int direction =
                                         position.TradeType == TradeType.Buy
                                             ? 1

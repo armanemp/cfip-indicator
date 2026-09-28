@@ -277,27 +277,25 @@ Acceptance:
 
 ## Phase 8 — Static verification and contract testing
 
+Status: complete.
+
 Goal: make architectural and behavioral drift mechanically detectable.
 
-Work:
+Completed in this phase:
 
-- One-type-per-file verification where applicable.
-- One-responsibility ownership checks.
-- Parameter parity checks.
-- Reference-method coverage checks.
-- Production version-residue checks.
-- Dependency-direction checks.
-- UI/broker boundary checks.
-- Decision purity checks.
-- BUY/SELL symmetry tests.
-- SL/TP invariants.
-- Lifecycle transition invariants.
-- Duplicate-event idempotency tests.
+- Extended the architecture verifier with explicit Phase 8 contract-fixture and analysis/planning boundary checks.
+- Added deterministic BUY/SELL consensus symmetry and confidence repeatability checks.
+- Extracted platform-neutral SL/TP directionality and minimum-distance invariants into `PriceProtectionRule` and wired production validation to it.
+- Added lifecycle transition invariants as an explicit policy and executable contract fixture, including safe same-state idempotency and blocked terminal misuse.
+- Added a real one-shot `LifecycleEventIdempotencyGuard` and integrated it into position-open, pending-create, pending-fill, pending-cancel and position-close handlers.
+- Kept legitimately repeatable position/pending modification events outside the one-shot guard.
+- Reused the existing decision/planning/execution contract projects so the invariants run inside the normal cTrader CI workflow.
 
 Acceptance:
 
 - CI rejects architectural regression before cTrader testing.
 - Static checks cover the same boundaries documented in the architecture.
+- BUY/SELL symmetry, SL/TP directionality, lifecycle transitions and duplicate-event behavior are executable contracts.
 
 ## Phase 9 — cTrader compile and runtime acceptance
 
