@@ -130,6 +130,25 @@ namespace cAlgo
                                     if (frame == null)
                                         return "WAIT";
                         
+                                    string zones =
+                                        "FVG " +
+                                        (frame.FvgBull
+                                            ? "B" + frame.FvgBullQuality
+                                            : frame.FvgBear
+                                                ? "S" + frame.FvgBearQuality
+                                                : "0") +
+                                        " • OB " +
+                                        (frame.ObBull
+                                            ? "B" + frame.ObBullQuality
+                                            : frame.ObBear
+                                                ? "S" + frame.ObBearQuality
+                                                : "0") +
+                                        (frame.FvgObBullConfluence
+                                            ? " • FVG+OB B"
+                                            : frame.FvgObBearConfluence
+                                                ? " • FVG+OB S"
+                                                : "");
+
                                     return
                                         (frame.Direction == 1
                                             ? "BUY"
@@ -139,7 +158,9 @@ namespace cAlgo
                                         " | Q" +
                                         frame.Quality +
                                         " | E" +
-                                        frame.Evidence;
+                                        frame.Evidence +
+                                        " | " +
+                                        zones;
                                 }
     }
 }
