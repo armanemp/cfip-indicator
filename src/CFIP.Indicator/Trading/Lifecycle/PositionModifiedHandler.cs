@@ -39,29 +39,11 @@ namespace cAlgo
                                     if (!boundToActivePlan)
                                         return;
 
-                                    double market =
-                                        direction == 1
-                                            ? Symbol.Bid
-                                            : Symbol.Ask;
-
-                                    bool brokerStopValid =
-                                        position.StopLoss.HasValue &&
-                                        IsFinitePositive(
-                                            position.StopLoss.Value) &&
-                                        IsValidManagedStop(
-                                            direction,
-                                            position.EntryPrice,
-                                            market,
-                                            position.StopLoss.Value);
-
-                                    bool brokerTargetValid =
-                                        position.TakeProfit.HasValue &&
-                                        IsFinitePositive(
-                                            position.TakeProfit.Value) &&
-                                        IsValidTarget(
-                                            direction,
-                                            position.EntryPrice,
-                                            position.TakeProfit.Value);
+                                    bool protectionHealthy =
+                                        EvaluateBrokerProtection(
+                                            position,
+                                            out bool brokerStopValid,
+                                            out bool brokerTargetValid);
 
                                     _activeBrokerStop =
                                         brokerStopValid
@@ -82,9 +64,7 @@ namespace cAlgo
                                             LifecycleState.ExitRequested)
                                     {
                                         _brokerProtectionRecoveryRequired =
-                                            !brokerStopValid ||
-                                            (SyncBrokerTakeProfit &&
-                                             !brokerTargetValid);
+                                            !protectionHealthy;
                         
                                         SetLifecycleState(
                                             _brokerProtectionRecoveryRequired
