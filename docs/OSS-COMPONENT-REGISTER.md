@@ -1,48 +1,76 @@
 # OSS Component Register
 
-## Production boundary
+## Production OSS component — Skender.Stock.Indicators 2.7.3
 
-CFIP remains the strategy and execution authority. OSS components are admitted only behind narrow adapters or benchmark projects.
+**Upstream:** https://github.com/facioquo/stock-indicators-dotnet
+**NuGet:** https://www.nuget.org/packages/Skender.Stock.Indicators/2.7.3
+**License:** Apache-2.0
+**Production role:** numerical indicator confluence and cross-check only.
 
-## Candidate: FacioQuo Stock Indicators
+**Target-runtime compatibility:** package 2.7.3 provides a .NET Standard 2.0
+asset and is compatible with the net6.0 production target.
 
-Repository: https://github.com/facioquo/stock-indicators-dotnet
+**Adapter owners:**
 
-License: Apache-2.0.
+- Analysis/Indicators/External/FacioQuoRsi.cs
+- Analysis/Indicators/External/FacioQuoMacd.cs
+- Analysis/Indicators/External/FacioQuoBollingerBands.cs
+- Analysis/Indicators/External/FacioQuoMfi.cs
+- Analysis/Indicators/External/FacioQuoStoch.cs
+- Analysis/Indicators/External/FacioQuoSuperTrend.cs
+- Analysis/Indicators/External/FacioQuoAroon.cs
+- Analysis/Indicators/External/FacioQuoCci.cs
+- Analysis/Indicators/External/FacioQuoObv.cs
+- Analysis/Indicators/External/FacioQuoParabolicSar.cs
+- Analysis/Indicators/External/OssIndicatorConfluenceAnalyzer.cs
+- Analysis/Indicators/External/OssQuoteSeriesCache.cs
+- Analysis/Indicators/External/OssIndicatorSnapshotCache.cs
 
-The upstream project provides a broad technical-indicator catalog and streaming-oriented APIs. The current package line targets a newer .NET runtime than the production cTrader target, so it remains a research and numerical-validation candidate rather than a direct production dependency. citeturn867652search0turn358101search7
+**Authority boundary:** the dependency cannot own CFIP structure, decision,
+planning, risk, execution, broker mutation, lifecycle or presentation.
 
-Its earlier compatibility line is useful as a reference for .NET Standard-based numerical validation, but no external package is promoted to the production indicator until runtime compatibility and fixture parity are proven. citeturn867652search5
+**Verification:** the OSS benchmark checks deterministic parity against the
+FacioQuo v3 research line for the common indicator suite and validates all 10
+production OSS indicator series. The benchmark also measures batch calculation
+time for both package generations.
 
-## Candidate: TA-Lib.NETCore
+**Maintenance note:** the v2 package line is being phased out upstream with
+maintenance scheduled to end after 2026. CFIP therefore remains pinned to 2.7.3
+until a maintained package line can target the actual cTrader production runtime.
 
-Repository: https://github.com/hmG3/TA-Lib.NETCore
+## Research candidate — FacioQuo.Stock.Indicators 3.0.1
 
-License: LGPL-3.0.
+**Upstream:** https://github.com/facioquo/stock-indicators-dotnet
+**NuGet:** https://www.nuget.org/packages/FacioQuo.Stock.Indicators/3.0.1
+**License:** Apache-2.0
 
-The implementation is written entirely in C# with no .NET platform dependencies. It is technically suitable for numerical cross-checking, but the license requires a separate commercial distribution review before any bundled use. It remains a benchmark/adapter candidate. citeturn358101search1
+Package 3.0.1 targets .NET 8, .NET 9 and .NET 10. It is therefore not promoted
+into the net6.0 cTrader production assembly.
 
-## Candidate: QuantConnect LEAN
+The benchmark keeps the v3 API isolated and provides the migration reference for
+the eventual package transition. No production source references the v3 namespace.
 
-Repository: https://github.com/QuantConnect/Lean
+## Research candidate — TA-Lib.NETCore
 
-License: Apache-2.0.
+**Upstream:** https://github.com/hmG3/TA-Lib.NETCore
+**License:** LGPL-3.0
 
-LEAN is a modular algorithmic-trading engine and a useful architectural reference, but embedding it in the cTrader indicator would introduce a second trading-engine abstraction. It is therefore restricted to offline research and architectural benchmarking. citeturn867652search2turn867652search10
+TA-Lib.NETCore remains a numerical cross-check candidate. Any bundled use requires
+an explicit distribution and license review plus deterministic CFIP fixture parity.
 
-## Current OSS rule
+## Research/reference candidate — QuantConnect LEAN
 
-Do not copy a complete external trading engine into the cTrader indicator.
+**Upstream:** https://github.com/QuantConnect/Lean
+**License:** Apache-2.0
 
-Prefer narrow numerical adapters, offline benchmarks and fixture comparison. OSS components never own CFIP structure, decision, risk, order placement, broker mutation or lifecycle authority.
+LEAN is a complete algorithmic-trading engine. It is restricted to offline
+architectural comparison and research and must never become a second live trading
+engine inside CFIP.
 
-## Promotion gate
+## Admission rules
 
-A candidate becomes a production dependency only after:
+Every production OSS component must have an upstream source, exact package version,
+license/attribution, target-runtime compatibility evidence, isolated adapter ownership,
+deterministic numerical coverage and benchmark evidence.
 
-- target cTrader/.NET compatibility is demonstrated;
-- numerical fixture parity is demonstrated;
-- performance value is measured;
-- license and attribution are reviewed;
-- the adapter has an isolated owner;
-- decision and execution authority remain inside CFIP.
+OSS never becomes the CFIP decision or execution authority.
