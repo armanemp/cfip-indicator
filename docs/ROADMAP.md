@@ -878,6 +878,29 @@ Acceptance:
 - All baseline timeframes operate correctly.
 - Baseline evidence is recorded.
 
+### Phase 29A — Smart analytical fusion refinement
+
+Status: complete.
+
+Goal: improve analytical intelligence and signal quality before execution certification without changing broker authority.
+
+Completed:
+- Quality-weighted timeframe contributions so weak-quality frames cannot dominate consensus solely through raw score magnitude.
+- Correlation-aware independent evidence fusion with diminishing returns across related structure, location, trend/momentum and context/participation evidence families.
+- Smart Quality recalibration to include retest quality and the normalized 0–8 independent-evidence range.
+- Early prediction integrity hardening so ties and below-threshold predictions cannot retain a directional state.
+- Added deterministic contract coverage for evidence caps, BUY/SELL symmetry and quality-weighted frame contributions.
+- Documented the smart-intelligence boundary and empirical-accuracy limitation.
+
+Acceptance:
+- Smart fusion remains deterministic and BUY/SELL symmetric.
+- No broker mutation, risk authority or execution state is modified by this phase.
+- No new user parameter is required for the new fusion rules.
+- Adaptive Learning remains deferred.
+- Higher empirical accuracy remains subject to replay/outcome validation.
+
+Next: continue with Phase 30 automatic market execution certification after the local analytical runtime remains stable.
+
 ### Phase 30 — Automatic market execution certification
 
 Status: planned.
