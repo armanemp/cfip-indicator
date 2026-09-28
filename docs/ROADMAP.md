@@ -413,3 +413,29 @@ Acceptance:
 - No production file exceeds the enforced 20 KiB ceiling.
 
 Next: continue with the largest remaining planning/trading modules, prioritizing PlanBuilder and TargetSelector where selection, validation and state construction are still concentrated.
+
+
+## Phase 13 — Trade-plan construction decomposition
+
+Status: complete.
+
+Goal: isolate entry/stop/risk preparation, target validation and final Plan materialization without changing trade-plan semantics.
+
+Completed:
+
+- Reduced PlanBuilder.cs to an orchestration owner.
+- Isolated execution/entry validation, structural-stop selection, fallback stop handling and risk bounds in PlanInputPreparation.cs.
+- Isolated fixed TP1..TP4 stage selection, RR validation, HTF reward requirements and TP1 obstacle checks in PlanTargetPreparation.cs.
+- Isolated Plan field construction, RR derivation and target metadata enrichment in PlanMaterialization.cs.
+- Preserved fixed stage-slot alignment and existing target/RR validation semantics.
+- Added static ownership checks for the trade-plan construction boundary.
+- Updated editing ownership documentation.
+
+Acceptance:
+
+- BuildPlan does not directly calculate stops, targets or target metadata.
+- Entry, stop, target selection and materialization have explicit owners.
+- Requested/ideal/actual entry, stop and TP stages remain distinct.
+- No production file exceeds 20 KiB.
+
+Next: audit TargetSelector itself and then the remaining large trading/validation modules, with special attention to duplicated target-obstacle and reward-path rules.
