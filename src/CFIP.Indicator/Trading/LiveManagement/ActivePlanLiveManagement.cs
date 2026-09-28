@@ -27,6 +27,11 @@ namespace cAlgo
                                     double previousTp2 =
                                         _plan.Tp2;
                         
+                                    double favorable =
+                                        _plan.Direction == 1
+                                            ? _peakPrice - _plan.Entry
+                                            : _plan.Entry - _peakPrice;
+
                                     double peakRR =
                                         favorable /
                                         Math.Max(
