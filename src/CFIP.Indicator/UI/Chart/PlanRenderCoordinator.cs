@@ -71,13 +71,20 @@ namespace cAlgo
                                                  _plan.EntryTrigger,
                                                  _plan.IdealEntry));
                         
+                                        bool triggerVisualState =
+                                            !_plan.IsLivePosition &&
+                                            (_plan.EntryMode ==
+                                                ExecutionMode.WaitingForTrigger ||
+                                             _plan.EntryMode ==
+                                                ExecutionMode.ContinuationStop);
+
                                         DrawPlanLine(
                                             P + "TRIGGER",
                                             _plan.EntryTrigger,
                                             TriggerLineColor,
                                             ShowTrigger &&
                                             triggerDistinct &&
-                                            !_plan.IsLivePosition);
+                                            triggerVisualState);
                         
                                         double displayStop =
                                             GetActiveBrokerStopPrice();
