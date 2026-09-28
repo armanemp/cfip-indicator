@@ -15,6 +15,12 @@ namespace cAlgo
     {
         private void SyncQuickExecutionControls()
                         {
+                            DateTime now =
+                                TimeInUtc;
+
+                            if ((now - _lastQuickControlSyncUtc).TotalMilliseconds < 250)
+                                return;
+
                             EnsureExecutionRuntimeState();
                 
                             _executionToggleSyncing = true;
@@ -82,6 +88,9 @@ namespace cAlgo
                             finally
                             {
                                 _executionToggleSyncing = false;
+
+                                _lastQuickControlSyncUtc =
+                                    now;
                             }
                         }
     }
