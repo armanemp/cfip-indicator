@@ -60,8 +60,11 @@ private void DrawOutcomeMarker(
                                         0,
                                         _outcomeSequence);
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                Print(
+                                    "CFIP outcome marker render failed: {0}",
+                                    ex.ToString());
                             }
                         }
     }
