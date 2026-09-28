@@ -120,7 +120,7 @@ namespace cAlgo
                                                 return;
                                             }
                                 
-                                            if (TrendContinuationStrong() &&
+                                            if (continuationStrong &&
                                                 PendingModeAllowsStop())
                                             {
                                                 if (PlaceContinuationStop(closedM5))
@@ -131,7 +131,7 @@ namespace cAlgo
                                                 }
                                             }
                                 
-                                            if (ReversalSetupStrong() &&
+                                            if (reversalStrong &&
                                                 PendingModeAllowsLimit())
                                             {
                                                 CheckReversalProtection();
