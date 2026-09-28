@@ -413,15 +413,16 @@ if "TryClosePosition(" not in mismatch_block:
 
 PROTECTION_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
 PROTECTION_CODE = PROTECTION_RUNTIME.read_text(encoding="utf-8")
-if "IsValidManagedStop(" not in PROTECTION_CODE:
+BOUND_PROTECTION_CODE = (ROOT / "Trading" / "Execution" / "Aggressive" / "BoundPlanProtection.cs").read_text(encoding="utf-8")
+if "IsValidManagedStop(" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must validate managed stops against market price")
-if "ProtectionProgressionRule.ShouldAdvanceStop(" not in PROTECTION_CODE:
+if "ProtectionProgressionRule.ShouldAdvanceStop(" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must enforce monotonic SL progression")
-if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in PROTECTION_CODE:
+if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must enforce configured TP progression")
-if "brokerStopValid" not in PROTECTION_CODE:
+if "brokerStopValid" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must inspect actual broker SL validity before clearing recovery")
-if "brokerTargetValid" not in PROTECTION_CODE:
+if "brokerTargetValid" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must inspect actual broker TP validity before clearing recovery")
 
 BROKER_STATE = ROOT / "Trading" / "Lifecycle" / "BrokerStateSnapshot.cs"
