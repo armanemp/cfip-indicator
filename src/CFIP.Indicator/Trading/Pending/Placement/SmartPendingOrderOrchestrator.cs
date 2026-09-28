@@ -31,6 +31,15 @@ namespace cAlgo
                                                     "DISABLED";
                                                 return;
                                             }
+
+                                            string capacityReason;
+                                            if (!ValidateConfiguredPositionCapacity(
+                                                    out capacityReason))
+                                            {
+                                                _autoOrdersBlockReason =
+                                                    capacityReason;
+                                                return;
+                                            }
                                 
                                             if (GetManagedPosition() != null)
                                             {
