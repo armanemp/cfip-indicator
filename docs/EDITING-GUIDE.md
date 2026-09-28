@@ -26,6 +26,9 @@ Edit the smallest authoritative module that owns the behavior.
 | Equal highs/lows | `Analysis/Structure/EqualLevelAnalyzer.cs` |
 | FVG detection / selection | `Analysis/Structure/Zones/FvgDetectionAnalyzer.cs` |
 | FVG lifecycle / mitigation | `Analysis/Structure/Zones/FvgLifecycleAnalyzer.cs` |
+| FVG lifecycle orchestration | `Analysis/Structure/Zones/FvgLifecycleAnalyzer.cs` |
+| FVG mitigation state | `Analysis/Structure/Zones/FvgMitigationEvaluator.cs` |
+| FVG quality | `Analysis/Structure/Zones/FvgZoneQualityCalculator.cs` |
 | Order Block analysis | `Analysis/Structure/Zones/OrderBlockAnalyzer.cs` |
 | Order Block confluence | `Analysis/Structure/Zones/OrderBlockConfluenceAnalyzer.cs` |
 | Entry trigger readiness | `Planning/Entry/ClosedBarTriggerReadyEvaluator.cs` |
