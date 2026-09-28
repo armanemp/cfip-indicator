@@ -10,9 +10,9 @@ namespace cAlgo
             double atr,
             double maximumExtensionAtr)
         {
-            if (!IsFinitePositive(requestedEntry) ||
-                !IsFinitePositive(actualFill) ||
-                !IsFinitePositive(atr) ||
+            if (!IsPositiveFiniteValue(requestedEntry) ||
+                !IsPositiveFiniteValue(actualFill) ||
+                !IsPositiveFiniteValue(atr) ||
                 double.IsNaN(maximumExtensionAtr) ||
                 double.IsInfinity(maximumExtensionAtr))
                 return false;
@@ -31,7 +31,7 @@ namespace cAlgo
                 allowedDistance;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsPositiveFiniteValue(double value)
         {
             return
                 !double.IsNaN(value) &&

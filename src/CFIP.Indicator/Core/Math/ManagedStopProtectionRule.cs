@@ -12,9 +12,9 @@ namespace cAlgo
             double minimumDistance)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(entry) ||
-                !IsFinitePositive(market) ||
-                !IsFinitePositive(stop) ||
+                !IsPositiveFinitePrice(entry) ||
+                !IsPositiveFinitePrice(market) ||
+                !IsPositiveFinitePrice(stop) ||
                 !IsFiniteNonNegative(minimumDistance))
                 return false;
 
@@ -24,7 +24,7 @@ namespace cAlgo
             return stop > market + minimumDistance;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsPositiveFinitePrice(double value)
         {
             return
                 !double.IsNaN(value) &&
