@@ -52,6 +52,12 @@ namespace cAlgo
         [Parameter("Range Efficiency Threshold", Group = "17 · Smart Engine", DefaultValue = 0.30, MinValue = 0.10, MaxValue = 0.60, Step = 0.01)]
         public double RangeEfficiencyThreshold { get; set; }
 
+        [Parameter("Micro Range Width ATR", Group = "17 · Smart Engine", DefaultValue = 3.50, MinValue = 1.0, MaxValue = 10.0, Step = 0.25)]
+        public double MicroRangeWidthAtr { get; set; }
+
+        [Parameter("Micro Range Return ATR", Group = "17 · Smart Engine", DefaultValue = 0.80, MinValue = 0.20, MaxValue = 2.50, Step = 0.05)]
+        public double MicroRangeReturnAtr { get; set; }
+
         [Parameter("Compression ATR Ratio", Group = "17 · Smart Engine", DefaultValue = 0.78, MinValue = 0.50, MaxValue = 1.0, Step = 0.01)]
         public double CompressionAtrRatio { get; set; }
 
