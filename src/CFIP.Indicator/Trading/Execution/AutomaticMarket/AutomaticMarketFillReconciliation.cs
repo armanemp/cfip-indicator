@@ -7,27 +7,8 @@ namespace cAlgo
     {
         private bool TryAcceptAutomaticMarketFill(
             int closedM5,
-            TradeResult result,
-            out string reason)
-        {
-            reason = "";
-
-            if (!BrokerConfirmationPolicy.CanAdoptPosition(
-                    true,
-                    result != null &&
-                    result.IsSuccessful,
-                    result != null &&
-                    result.Position != null))
-            {
-                reason =
-                    result != null &&
-                    result.Error.HasValue
-                        ? result.Error.Value.ToString()
-                        : "TRADE REJECTED";
-                return false;
-            }
-
-            _lastAutoM5 =
+            TradeResult result)
+        {            _lastAutoM5 =
                 closedM5;
 
             _autoExecutionBlockReason =
