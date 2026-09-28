@@ -270,9 +270,9 @@ for required_file in (
     if not required_file.exists():
         raise SystemExit(f"Phase 8 invariant owner missing: {required_file}")
 
-if "PriceProtectionRule.IsValidStop(" not in (ROOT / "Trading" / "Validation" / "PriceProtectionValidation.cs").read_text(encoding="utf-8"):
+if "PriceProtectionRule.ValidateStop(" not in (ROOT / "Trading" / "Validation" / "PriceProtectionValidation.cs").read_text(encoding="utf-8"):
     raise SystemExit("Production stop validation is not delegated to PriceProtectionRule")
-if "PriceProtectionRule.IsValidTarget(" not in (ROOT / "Trading" / "Validation" / "PriceProtectionValidation.cs").read_text(encoding="utf-8"):
+if "PriceProtectionRule.ValidateTarget(" not in (ROOT / "Trading" / "Validation" / "PriceProtectionValidation.cs").read_text(encoding="utf-8"):
     raise SystemExit("Production target validation is not delegated to PriceProtectionRule")
 
 event_handlers = {

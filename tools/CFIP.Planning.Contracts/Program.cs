@@ -98,45 +98,45 @@ namespace cAlgo
         }        private static void VerifyStopTargetProtection()
         {
             Assert(
-                PriceProtectionRule.IsValidStop(1, 100, 98, 1),
+                PriceProtectionRule.ValidateStop(1, 100, 98, 1),
                 "BUY stop invariant");
 
             Assert(
-                PriceProtectionRule.IsValidStop(-1, 100, 102, 1),
+                PriceProtectionRule.ValidateStop(-1, 100, 102, 1),
                 "SELL stop invariant");
 
             Assert(
-                PriceProtectionRule.IsValidTarget(1, 100, 102, 1),
+                PriceProtectionRule.ValidateTarget(1, 100, 102, 1),
                 "BUY target invariant");
 
             Assert(
-                PriceProtectionRule.IsValidTarget(-1, 100, 98, 1),
+                PriceProtectionRule.ValidateTarget(-1, 100, 98, 1),
                 "SELL target invariant");
 
             Assert(
-                !PriceProtectionRule.IsValidStop(1, 100, 101, 1),
+                !PriceProtectionRule.ValidateStop(1, 100, 101, 1),
                 "BUY stop wrong side");
 
             Assert(
-                !PriceProtectionRule.IsValidStop(-1, 100, 99, 1),
+                !PriceProtectionRule.ValidateStop(-1, 100, 99, 1),
                 "SELL stop wrong side");
 
             Assert(
-                !PriceProtectionRule.IsValidTarget(1, 100, 99, 1),
+                !PriceProtectionRule.ValidateTarget(1, 100, 99, 1),
                 "BUY target wrong side");
 
             Assert(
-                !PriceProtectionRule.IsValidTarget(-1, 100, 101, 1),
+                !PriceProtectionRule.ValidateTarget(-1, 100, 101, 1),
                 "SELL target wrong side");
 
             Assert(
-                PriceProtectionRule.IsValidStop(1, 100, 98, 1) ==
-                PriceProtectionRule.IsValidTarget(-1, 100, 98, 1),
+                PriceProtectionRule.ValidateStop(1, 100, 98, 1) ==
+                PriceProtectionRule.ValidateTarget(-1, 100, 98, 1),
                 "SELL target mirrors BUY stop");
 
             Assert(
-                PriceProtectionRule.IsValidStop(-1, 100, 102, 1) ==
-                PriceProtectionRule.IsValidTarget(1, 100, 102, 1),
+                PriceProtectionRule.ValidateStop(-1, 100, 102, 1) ==
+                PriceProtectionRule.ValidateTarget(1, 100, 102, 1),
                 "BUY target mirrors SELL stop");
         }
 

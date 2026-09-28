@@ -2,15 +2,15 @@ namespace cAlgo
 {
     internal static class PriceProtectionRule
     {
-        public static bool IsValidStop(
+        public static bool ValidateStop(
             int direction,
             double entry,
             double stop,
             double minimumDistance)
         {
-            if (!IsFinitePositive(entry) ||
-                !IsFinitePositive(stop) ||
-                !IsFinite(minimumDistance) ||
+            if (!IsFinitePositivePrice(entry) ||
+                !IsFinitePositivePrice(stop) ||
+                !IsFiniteDistance(minimumDistance) ||
                 minimumDistance < 0)
                 return false;
 
@@ -20,15 +20,15 @@ namespace cAlgo
                   stop > entry + minimumDistance;
         }
 
-        public static bool IsValidTarget(
+        public static bool ValidateTarget(
             int direction,
             double entry,
             double target,
             double minimumDistance)
         {
-            if (!IsFinitePositive(entry) ||
-                !IsFinitePositive(target) ||
-                !IsFinite(minimumDistance) ||
+            if (!IsFinitePositivePrice(entry) ||
+                !IsFinitePositivePrice(target) ||
+                !IsFiniteDistance(minimumDistance) ||
                 minimumDistance < 0)
                 return false;
 
@@ -38,12 +38,12 @@ namespace cAlgo
                   target < entry - minimumDistance;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositivePrice(double value)
         {
             return IsFinite(value) && value > 0;
         }
 
-        private static bool IsFinite(double value)
+        private static bool IsFiniteDistance(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);

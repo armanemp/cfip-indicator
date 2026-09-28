@@ -67,7 +67,7 @@ namespace cAlgo
                                             Symbol.TickSize,
                                             MinimumTakeProfitDistancePrice());
                         
-                                    return PriceProtectionRule.IsValidTarget(
+                                    return PriceProtectionRule.ValidateTarget(
                                         direction,
                                         entry,
                                         target,
@@ -125,7 +125,7 @@ namespace cAlgo
                                             Symbol.TickSize,
                                             MinimumProtectionDistancePrice());
                         
-                                    return PriceProtectionRule.IsValidStop(
+                                    return PriceProtectionRule.ValidateStop(
                                         direction,
                                         entry,
                                         stop,
