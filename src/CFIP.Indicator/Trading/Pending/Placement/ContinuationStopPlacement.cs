@@ -36,9 +36,7 @@ namespace cAlgo
                 return false;
             }
 
-            try
-            {
-                string submissionGateReason;
+            string submissionGateReason;
 
                 if (!TryAcquirePendingSubmission(
                         closedM5,
@@ -70,13 +68,13 @@ namespace cAlgo
                             false,
                             "CONTINUATION STOP");
                 }
-                catch
-                {
-                    RecordPendingSubmissionFailure();
-                    throw;
-                }
+            catch
+            {
+                RecordPendingSubmissionFailure();
+                throw;
+            }
 
-                RecordPendingSubmission(result);
+            RecordPendingSubmission(result);
 
                 if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
                         result != null,
@@ -132,8 +130,7 @@ namespace cAlgo
                     "CFIP pending stop failed: {0}",
                     ex.Message);
 
-                return false;
-            }
+                return false;            }
         }
     }
 }
