@@ -14,7 +14,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void RenderPanel()
+        private void RenderPanel(
+            bool force = false)
                                 {
                                     if (!ShowUnifiedPanel)
                                     {
@@ -24,6 +25,13 @@ namespace cAlgo
                         
                                     if (_panel == null)
                                         CreatePanel();
+
+                                    DateTime now =
+                                        TimeInUtc;
+
+                                    if (!force &&
+                                        (now - _lastPanelRenderUtc).TotalMilliseconds < 250)
+                                        return;
                         
                                     if (_panel == null ||
                                         _panelStack == null ||
@@ -194,6 +202,9 @@ namespace cAlgo
                         
                                     RenderPanelRows(
                                         contentWidth);
+
+                                    _lastPanelRenderUtc =
+                                        now;
                         
                                     int scrollHeight =
                                         EstimatePanelScrollHeight(
