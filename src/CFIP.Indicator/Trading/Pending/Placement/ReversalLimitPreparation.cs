@@ -21,13 +21,6 @@ namespace cAlgo
                 _reaction == null
                     ? 0
                     : _reaction.Direction;
-
-            if (direction == 0)
-            {
-                _autoOrdersBlockReason =
-                    "PENDING LIMIT • NO REVERSAL DIRECTION";
-                return false;
-            }
             atr = 0;
             targetEntry = 0;
             stop = 0;
@@ -36,6 +29,13 @@ namespace cAlgo
             targetPips = 0;
             volume = 0;
             pendingIntent = null;
+
+            if (direction == 0)
+            {
+                _autoOrdersBlockReason =
+                    "PENDING LIMIT • NO REVERSAL DIRECTION";
+                return false;
+            }
 
             atr =
                 Atr(
