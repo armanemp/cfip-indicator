@@ -212,10 +212,38 @@ namespace cAlgo
                                                 break;
 
                                             case 8:
-                                                RegisterAllNative();
+                                                RegisterNative(_m1Bars);
                                                 break;
 
                                             case 9:
+                                                RegisterNative(_m5Bars);
+                                                break;
+
+                                            case 10:
+                                                RegisterNative(_m15Bars);
+                                                break;
+
+                                            case 11:
+                                                RegisterNative(_m30Bars);
+                                                break;
+
+                                            case 12:
+                                                RegisterNative(_h1Bars);
+                                                break;
+
+                                            case 13:
+                                                RegisterNative(_h4Bars);
+                                                break;
+
+                                            case 14:
+                                                RegisterNative(_d1Bars);
+                                                break;
+
+                                            case 15:
+                                                RegisterNative(_w1Bars);
+                                                break;
+
+                                            case 16:
                                                 try
                                                 {
                                                     Positions.Opened += OnPositionOpened;
@@ -234,7 +262,7 @@ namespace cAlgo
                                                 }
                                                 break;
 
-                                            case 10:
+                                            case 17:
                                                 InitializeExecutionRuntimeState();
 
                                                 SetLifecycleState(
