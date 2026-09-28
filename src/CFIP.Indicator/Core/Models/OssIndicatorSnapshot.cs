@@ -11,6 +11,7 @@ namespace cAlgo
         public double Rsi { get; set; } = double.NaN;
         public double MacdHistogram { get; set; } = double.NaN;
         public double BollingerPercentB { get; set; } = double.NaN;
+        public double BollingerWidth { get; set; } = double.NaN;
         public double Mfi { get; set; } = double.NaN;
         public double StochK { get; set; } = double.NaN;
         public double StochD { get; set; } = double.NaN;
