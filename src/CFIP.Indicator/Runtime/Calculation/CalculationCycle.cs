@@ -17,6 +17,8 @@ namespace cAlgo
                 if (!_initializationReady)
                     return;
 
+                BeginRuntimeFaultCycle();
+
                 int closedM5;
                 bool newClosedBar;
                 DateTime reference;
@@ -41,6 +43,8 @@ namespace cAlgo
                 ProcessLiveCalculationStages(
                     index,
                     closedM5);
+
+                CompleteRuntimeFaultCycle();
             }
             catch (OutOfMemoryException)
             {
