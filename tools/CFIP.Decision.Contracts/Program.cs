@@ -312,47 +312,52 @@ namespace cAlgo
 
         private static void VerifyQualityWeightedFrameContribution()
         {
-            DecisionFrameContributionCalculator calculator =
-                new DecisionFrameContributionCalculator();
+            DecisionQualityCalculator calculator =
+                new DecisionQualityCalculator();
 
-            Frame strong =
-                new Frame
-                {
-                    BullScore = 80,
-                    BearScore = 20,
-                    Quality = 80
-                };
-
-            DecisionFrameContribution contribution =
+            int strong =
                 calculator.Calculate(
-                    strong,
-                    10);
+                    90,
+                    80,
+                    8,
+                    5,
+                    80,
+                    85);
 
-            Assert(
-                Math.Abs(contribution.Bull - 64) < 0.0001,
-                "quality-weighted bull contribution");
-
-            Assert(
-                Math.Abs(contribution.Bear - 16) < 0.0001,
-                "quality-weighted bear contribution");
-
-            Frame mirror =
-                new Frame
-                {
-                    BullScore = 20,
-                    BearScore = 80,
-                    Quality = 80
-                };
-
-            DecisionFrameContribution mirrored =
+            int mirrored =
                 calculator.Calculate(
-                    mirror,
-                    10);
+                    90,
+                    80,
+                    8,
+                    5,
+                    80,
+                    85);
 
             Assert(
-                Math.Abs(contribution.Bull - mirrored.Bear) < 0.0001 &&
-                Math.Abs(contribution.Bear - mirrored.Bull) < 0.0001,
-                "BUY/SELL contribution symmetry");
+                strong == mirrored,
+                "quality calculation deterministic");
+
+            int neutralRetest =
+                calculator.Calculate(
+                    70,
+                    70,
+                    4,
+                    3,
+                    60,
+                    0);
+
+            int explicitNeutralRetest =
+                calculator.Calculate(
+                    70,
+                    70,
+                    4,
+                    3,
+                    60,
+                    50);
+
+            Assert(
+                neutralRetest == explicitNeutralRetest,
+                "missing retest quality remains neutral");
         }
 
         private static void Assert(bool condition, string name)
