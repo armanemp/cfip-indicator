@@ -27,11 +27,18 @@ namespace cAlgo
                                         atr <= 0)
                                         return null;
                         
+                                    int effectiveLookback =
+                                        Math.Min(
+                                            FvgLookback,
+                                            Math.Max(
+                                                1,
+                                                MaximumZoneAgeBars));
+
                                     int first =
                                         Math.Max(
                                             1,
                                             index -
-                                            FvgLookback);
+                                            effectiveLookback);
                         
                                     double nearestPrice =
                                         IsFinitePositive(selectionPrice)
