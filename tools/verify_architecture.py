@@ -69,7 +69,7 @@ if not label or label.group(1) != "CFIP-SMART":
 model_files = sorted(MODEL_ROOT.glob("*.cs"))
 expected_models = {
     "Level", "Zone", "ExecutionIntent", "ExecutionModel",
-    "Prediction", "Decision", "Plan", "OssIndicatorSnapshot",
+    "Prediction", "Decision", "Plan", "OssIndicatorSnapshot", "MarketRegimeSnapshot",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
