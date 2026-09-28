@@ -34,20 +34,14 @@ namespace cAlgo
                     return;
                 }
 
-                string submissionKey =
-                    "NORMAL|" +
-                    closedM5 +
-                    "|" +
-                    (_plan == null
-                        ? 0
-                        : _plan.Direction);
-
                 string submissionGateReason;
 
-                if (!_normalSubmissionGate.TryAcquire(
-                        Server.TimeInUtc,
-                        submissionKey,
-                        out submissionGateReason))
+                if (!TryAcquireNormalSubmission(
+                        closedM5,
+                        _plan == null
+                            ? 0
+                            : _plan.Direction,
+                        out submissionGateReason)
                 {
                     _autoExecutionBlockReason =
                         submissionGateReason;
@@ -76,17 +70,11 @@ namespace cAlgo
                 }
                 catch
                 {
-                    _normalSubmissionGate.Record(
-                        Server.TimeInUtc,
-                        false);
+                    RecordNormalSubmissionFailure();
                     throw;
                 }
 
-                _normalSubmissionGate.Record(
-                    Server.TimeInUtc,
-                    result != null &&
-                    result.IsSuccessful &&
-                    result.Position != null);
+                RecordNormalSubmission(result);
 
                 if (result == null)
                 {
