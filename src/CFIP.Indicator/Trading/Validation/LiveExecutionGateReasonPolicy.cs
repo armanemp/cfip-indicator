@@ -2,10 +2,9 @@
 // Live execution-gate reason classification policy.
 
 using System;
+using cAlgo.API;
 
-namespace cusing cAlgo.API;
-
-lgo
+namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
