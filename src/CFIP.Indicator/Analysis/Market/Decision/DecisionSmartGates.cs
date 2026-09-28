@@ -49,6 +49,60 @@ namespace cAlgo
                 MinimumProxyExpectedValue)
                 return new DecisionFilterResult(false, "EXPECTED VALUE");
 
+            if (UseStrictRegimeQualityGate)
+            {
+                MarketRegimeSnapshot regime =
+                    GetActiveM5Regime(
+                        decision.ClosedM5);
+
+                if (regime != null)
+                {
+                    if (regime.Regime == "COMPRESSION" ||
+                        regime.Regime == "RANGE")
+                        return new DecisionFilterResult(
+                            false,
+                            "REGIME " +
+                            regime.Regime);
+
+                    if (regime.Quality <
+                        Math.Max(
+                            MinimumDirectionalRegimeQuality,
+                            adaptiveQualityThreshold))
+                    {
+                        return new DecisionFilterResult(
+                            false,
+                            "REGIME QUALITY");
+                    }
+
+                    if ((regime.Regime == "TRANSITION" ||
+                         regime.Regime == "HIGH_VOLATILITY") &&
+                        (regime.Quality <
+                            MinimumDirectionalRegimeQuality + 5 ||
+                         decision.Edge <
+                            Math.Max(
+                                SmartStrongSetupEdge - 2,
+                                0)))
+                    {
+                        return new DecisionFilterResult(
+                            false,
+                            "REGIME TRANSITION");
+                    }
+
+                    if (decision.Direction != 0 &&
+                        regime.Direction != 0 &&
+                        regime.Direction != decision.Direction &&
+                        regime.Quality <
+                            Math.Max(
+                                72,
+                                MinimumDirectionalRegimeQuality + 8))
+                    {
+                        return new DecisionFilterResult(
+                            false,
+                            "REGIME DIRECTION CONFLICT");
+                    }
+                }
+            }
+
             if (UseRegimeNoTradeGuard &&
                 NoTradeRegimeBlocked(
                     decision.Regime,
