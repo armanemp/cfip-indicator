@@ -883,20 +883,29 @@ Acceptance:
 
 ## Phase 1.4 — Closed-bar retry semantics
 
-Status: planned.
+Status: implementation complete; CI certification pending.
 
-Work:
+Work completed:
 
-- bounded retries;
-- failure timestamp;
-- retry backoff;
-- stale-analysis detection;
-- retry suppression after repeated fault.
+- bounded repeated closed-bar analysis failures with exponential retry backoff;
+- recorded the failing closed-bar key, failure timestamp and next retry time;
+- opened a retry circuit after repeated failures and kept newer closed bars independently eligible;
+- prevented closed-bar analysis failure from aborting the management/protection/reconciliation path;
+- preserved ordinary non-ready preparation behavior without forcing unnecessary live-cycle work;
+- synchronized pre-trade SL rendering with the authoritative plan while retaining broker-confirmed SL for live positions;
+- changed market/aggressive execution alerts to report broker-confirmed SL/TP values rather than desired plan values;
+- changed pending-order placement reporting to use broker-confirmed order price/SL/TP;
+- hardened pending setup against missing decision/reaction dependencies;
+- removed a silent reversal pending execution-model catch and converted it to an explicit bounded failure reason;
+- added runtime contract coverage and architecture gates for the retry policy and signal/execution synchronization.
 
 Acceptance:
 
-- no CPU storm;
-- no repeated full-history rebuild loop.
+- no CPU storm from repeated closed-bar faults;
+- no repeated full-history rebuild loop for the same failing closed bar;
+- management and protection continue during recoverable analysis faults;
+- visual pre-trade levels come from the active plan and live levels come from broker-confirmed state;
+- execution/pending reporting never presents intended protection as confirmed broker state.
 
 ## Phase 1.5 — Safety supervisor
 
@@ -2996,9 +3005,9 @@ CFIP is not considered fully complete until all of the following are true:
 
 # 9. Execution queue for continuation
 
-The current research milestone Track 19.1 and the completed safety-first phases through Phase 1.3 are recorded above. The certification sequence continues from the next dependency below.
+The current research milestone Track 19.1 and the completed safety-first phases through Phase 1.4 are recorded above. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 1.4 — Runtime recovery semantics**
+**NEXT: Phase 1.5 — Safety supervisor**
 
 Then proceed in dependency order:
 
@@ -3058,7 +3067,7 @@ Then proceed in dependency order:
 Track 19.1 is intentionally recorded as already complete because it was a
 research milestone executed ahead of the main certification queue.
 
-Phases 0.1, 0.2, 1.1, 1.2 and 1.3 are also intentionally recorded as complete and
+Phases 0.1, 0.2, 1.1, 1.2, 1.3 and 1.4 are also intentionally recorded as complete and
 must not be restarted unless a regression is demonstrated.
 
 Do not restart completed historical phases unless a regression is demonstrated.
