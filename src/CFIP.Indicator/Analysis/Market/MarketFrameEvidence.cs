@@ -168,37 +168,79 @@ namespace cAlgo
                     index,
                     f.Atr);
 
-            f.FvgBull =
-                UseFvg &&
-                FindNearestFvg(
-                    bars,
-                    index,
-                    1,
-                    f.Atr) != null;
+            Zone bullFvg =
+                UseFvg
+                    ? FindNearestFvg(
+                        bars,
+                        index,
+                        1,
+                        f.Atr)
+                    : null;
 
+            Zone bearFvg =
+                UseFvg
+                    ? FindNearestFvg(
+                        bars,
+                        index,
+                        -1,
+                        f.Atr)
+                    : null;
+
+            Zone bullOb =
+                UseOrderBlock
+                    ? FindNearestOrderBlock(
+                        bars,
+                        index,
+                        1,
+                        f.Atr)
+                    : null;
+
+            Zone bearOb =
+                UseOrderBlock
+                    ? FindNearestOrderBlock(
+                        bars,
+                        index,
+                        -1,
+                        f.Atr)
+                    : null;
+
+            f.FvgBull =
+                bullFvg != null;
             f.FvgBear =
-                UseFvg &&
-                FindNearestFvg(
-                    bars,
-                    index,
-                    -1,
-                    f.Atr) != null;
+                bearFvg != null;
+            f.FvgBullQuality =
+                bullFvg == null
+                    ? 0
+                    : bullFvg.Quality;
+            f.FvgBearQuality =
+                bearFvg == null
+                    ? 0
+                    : bearFvg.Quality;
 
             f.ObBull =
-                UseOrderBlock &&
-                FindNearestOrderBlock(
-                    bars,
-                    index,
-                    1,
-                    f.Atr) != null;
-
+                bullOb != null;
             f.ObBear =
-                UseOrderBlock &&
-                FindNearestOrderBlock(
-                    bars,
-                    index,
-                    -1,
-                    f.Atr) != null;
+                bearOb != null;
+            f.ObBullQuality =
+                bullOb == null
+                    ? 0
+                    : bullOb.Quality;
+            f.ObBearQuality =
+                bearOb == null
+                    ? 0
+                    : bearOb.Quality;
+
+            f.FvgObBullConfluence =
+                bullFvg != null &&
+                bullOb != null &&
+                bullFvg.High >= bullOb.Low &&
+                bullOb.High >= bullFvg.Low;
+
+            f.FvgObBearConfluence =
+                bearFvg != null &&
+                bearOb != null &&
+                bearFvg.High >= bearOb.Low &&
+                bearOb.High >= bearFvg.Low;
 
             f.TrendBull =
                 f.EmaFast > f.EmaSlow &&

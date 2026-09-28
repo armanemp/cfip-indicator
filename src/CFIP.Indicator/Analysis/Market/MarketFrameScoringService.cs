@@ -33,10 +33,57 @@ namespace cAlgo
             AddScore(f.DisplacementBear, 10, ref bear, ref evidence);
             AddScore(f.LiquidityBull, 10, ref bull, ref evidence);
             AddScore(f.LiquidityBear, 10, ref bear, ref evidence);
-            AddScore(f.FvgBull, 8, ref bull, ref evidence);
-            AddScore(f.FvgBear, 8, ref bear, ref evidence);
-            AddScore(f.ObBull, 9, ref bull, ref evidence);
-            AddScore(f.ObBear, 9, ref bear, ref evidence);
+            if (f.FvgBull)
+            {
+                bull +=
+                    5 +
+                    Math.Min(
+                        5,
+                        f.FvgBullQuality / 20);
+                evidence++;
+            }
+
+            if (f.FvgBear)
+            {
+                bear +=
+                    5 +
+                    Math.Min(
+                        5,
+                        f.FvgBearQuality / 20);
+                evidence++;
+            }
+
+            if (f.ObBull)
+            {
+                bull +=
+                    6 +
+                    Math.Min(
+                        5,
+                        f.ObBullQuality / 20);
+                evidence++;
+            }
+
+            if (f.ObBear)
+            {
+                bear +=
+                    6 +
+                    Math.Min(
+                        5,
+                        f.ObBearQuality / 20);
+                evidence++;
+            }
+
+            if (f.FvgObBullConfluence &&
+                Math.Min(
+                    f.FvgBullQuality,
+                    f.ObBullQuality) >= 75)
+                bull += 4;
+
+            if (f.FvgObBearConfluence &&
+                Math.Min(
+                    f.FvgBearQuality,
+                    f.ObBearQuality) >= 75)
+                bear += 4;
             AddScore(f.TrendBull, 10, ref bull, ref evidence);
             AddScore(f.TrendBear, 10, ref bear, ref evidence);
             AddScore(f.MomentumBull, 8, ref bull, ref evidence);
