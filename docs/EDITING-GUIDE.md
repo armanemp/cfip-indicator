@@ -32,6 +32,9 @@ Edit the smallest authoritative module that owns the behavior.
 | Bullish trigger scoring | `Planning/Entry/BullTriggerScoreAnalyzer.cs` |
 | Bearish trigger scoring | `Planning/Entry/BearTriggerScoreAnalyzer.cs` |
 | Execution model / trigger validation | `Planning/Execution/*.cs` |
+| Execution-zone orchestration | `Planning/Execution/ExecutionZoneBuilder.cs` |
+| Execution-zone candidate selection | `Planning/Execution/ExecutionZoneCandidateSelector.cs` |
+| Execution-zone quality | `Planning/Execution/ExecutionZoneQualityEvaluator.cs` |
 | Plan construction orchestration | `Planning/TradePlan/PlanBuilder.cs` |
 | Plan entry/stop/risk preparation | `Planning/TradePlan/PlanInputPreparation.cs` |
 | Plan target preparation/validation | `Planning/TradePlan/PlanTargetPreparation.cs` |
