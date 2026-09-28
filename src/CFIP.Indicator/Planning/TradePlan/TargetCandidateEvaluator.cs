@@ -1,0 +1,209 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using cAlgo.API;
+using cAlgo.API.Internals;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private bool TryScoreTargetCandidate(
+            Level candidate,
+            List<Level> selected,
+            int closedM5,
+            double entry,
+            double risk,
+            int direction,
+            double atr,
+            double requiredStageRR,
+            double maximumRR,
+            double previous,
+            bool requireHtf,
+            int stage,
+            out double score)
+        {
+            score = double.MinValue;
+
+            if (candidate == null ||
+                !IsValidTarget(
+                    direction,
+                    entry,
+                    candidate.Price))
+                return false;
+
+            if (candidate.Age >
+                MaximumSetupAgeBars)
+                return false;
+
+            bool htf =
+                IsHtfTimeframe(
+                    candidate.Timeframe);
+
+            if (requireHtf &&
+                (!htf ||
+                 candidate.Score <
+                 MinimumHtfRewardQuality))
+                return false;
+
+            double distance =
+                Math.Abs(
+                    candidate.Price -
+                    entry);
+
+            double rr =
+                distance /
+                Math.Max(
+                    Symbol.PipSize,
+                    risk);
+
+            double minimumCandidateRR =
+                requiredStageRR;
+
+            if (htf)
+                minimumCandidateRR =
+                    Math.Max(
+                        minimumCandidateRR,
+                        MinimumHtfTargetRR);
+
+            if (rr < minimumCandidateRR ||
+                rr > maximumRR)
+                return false;
+
+            if (distance >
+                atr *
+                Math.Max(
+                    1.0,
+                    MaximumTargetExtensionAtr))
+                return false;
+
+            double spacing =
+                atr *
+                Math.Max(
+                    0.05,
+                    MinimumTpSpacingAtr);
+
+            if (selected.Any(
+                x =>
+                    x != null &&
+                    Math.Abs(
+                        x.Price -
+                        candidate.Price) <=
+                    spacing * 0.50))
+                return false;
+
+            if (stage > 0)
+            {
+                if (direction == 1 &&
+                    candidate.Price <=
+                    previous +
+                    spacing)
+                    return false;
+
+                if (direction == -1 &&
+                    candidate.Price >=
+                    previous -
+                    spacing)
+                    return false;
+            }
+
+            if (RejectTargetObstacle &&
+                HasTargetObstacle(
+                    _m5Bars,
+                    closedM5,
+                    direction,
+                    entry,
+                    candidate.Price,
+                    atr))
+                return false;
+
+            if (RejectTargetObstacle &&
+                HasOpposingZonePathObstacle(
+                    _m5Bars,
+                    closedM5,
+                    direction,
+                    entry,
+                    candidate.Price,
+                    atr))
+                return false;
+
+            if (stage >= 1 &&
+                RejectTargetObstacle &&
+                HasHigherTfZonePathObstacle(
+                    _m5Bars.OpenTimes[
+                        closedM5],
+                    direction,
+                    entry,
+                    candidate.Price))
+                return false;
+
+            double normalizedDistance =
+                distance /
+                Math.Max(
+                    Symbol.PipSize,
+                    atr);
+
+            double efficiency =
+                Math.Max(
+                    0,
+                    25 -
+                    Math.Abs(
+                        rr -
+                        requiredStageRR) *
+                    4);
+
+            score =
+                candidate.Score +
+                efficiency;
+
+            if (htf)
+                score +=
+                    Math.Max(
+                        0,
+                        HtfRewardBonus);
+
+            if (candidate.Kind.IndexOf(
+                    "LIQUIDITY",
+                    StringComparison.OrdinalIgnoreCase) >= 0)
+                score +=
+                    Math.Max(
+                        0,
+                        LiquidityRewardBonus);
+
+            if (candidate.Kind.IndexOf(
+                    "FVG",
+                    StringComparison.OrdinalIgnoreCase) >= 0 ||
+                candidate.Kind.IndexOf(
+                    "ORDER_BLOCK",
+                    StringComparison.OrdinalIgnoreCase) >= 0)
+                score +=
+                    Math.Max(
+                        0,
+                        ZoneRewardBonus);
+
+            score +=
+                Math.Min(
+                    20,
+                    Math.Max(
+                        1,
+                        candidate.Hits) *
+                    2);
+
+            score +=
+                SmartTargetNearestBias /
+                (1.0 +
+                 Math.Max(
+                     0,
+                     normalizedDistance)) *
+                10.0;
+
+            score +=
+                stage *
+                (htf
+                    ? HtfRewardBonus * 0.35
+                    : 2.0);
+
+            return true;
+        }
+    }
+}
