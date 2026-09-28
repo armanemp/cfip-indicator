@@ -27,11 +27,6 @@ namespace cAlgo
                                 {
                                     try
                                     {
-                                        TradeType type =
-                                            _reaction.Direction == 1
-                                                ? TradeType.Buy
-                                                : TradeType.Sell;
-                        
                                         if (!EnsureTradingPermission())
                                         {
                                             _autoExecutionBlockReason =
