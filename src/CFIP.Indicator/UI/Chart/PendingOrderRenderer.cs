@@ -38,15 +38,7 @@ private void RenderManagedPendingOrder()
                 
                             if (!ShowLevelLines)
                                 return;
-                
-                            if (pending == null ||
-                                !IsFinitePositive(
-                                    pending.TargetPrice))
-                                return;
-                
-                            if (!ShowLevelLines)
-                                return;
-                
+                                
                             int anchorBar =
                                 Bars == null ||
                                 Bars.Count < 2
