@@ -315,21 +315,24 @@ if PLAN_BUILDER.stat().st_size > 4096:
     raise SystemExit("PlanBuilder.cs must remain a thin orchestration boundary")
 for token in (
     "TryPreparePlanInputs(",
+    "BuildTargetLevels(",
+    "SelectTargets(",
     "TryBuildPlanTargets(",
     "CreatePlanFromInputs(",
     "EnrichPlanTargetMetadata(",
+    "ValidatePlanIntegrity(",
 ):
     if token not in PLAN_BUILDER_CODE:
         raise SystemExit(f"PlanBuilder orchestration call missing: {token}")
-for forbidden in (
-    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+BuildStructuralStop\\s*\\(",
-    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+BuildTargetLevels\\s*\\(",
-    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+SelectTarget\\s*\\(",
-    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+ApplyTargetMeta\\s*\\(",
-    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+HasTargetObstacle\\s*\\(",
+for declaration in (
+    "private double BuildStructuralStop(",
+    "private List<Level> BuildTargetLevels(",
+    "private double SelectTarget(",
+    "private void ApplyTargetMeta(",
+    "private bool HasTargetObstacle(",
 ):
-    if re.search(forbidden, PLAN_BUILDER_CODE):
-        raise SystemExit(f"PlanBuilder retains extracted responsibility: {forbidden}")
+    if declaration in PLAN_BUILDER_CODE:
+        raise SystemExit(f"PlanBuilder retains extracted responsibility: {declaration}")
 for required_path in (
     ROOT / "Planning" / "TradePlan" / "PlanInputPreparation.cs",
     ROOT / "Planning" / "TradePlan" / "PlanTargetPreparation.cs",
@@ -357,12 +360,14 @@ for required_path in (
 ):
     if not required_path.exists():
         raise SystemExit(f"Target selection owner missing: {required_path}")
-for forbidden in (
-    r"private\s+[A-Za-z0-9_<>,\[\]?.]+\s+TryScoreTargetCandidate\s*\(",
-    r"private\s+[A-Za-z0-9_<>,\[\]?.]+\s+BuildTargetSelectionRequiredRR\s*\(",
+for declaration in (
+    "private double[] BuildTargetSelectionRequiredRR(",
+    "private double FindPreviousSelectedTargetPrice(",
+    "private bool RequiresHtfRewardForTargetStage(",
+    "private bool TryScoreTargetCandidate(",
 ):
-    if re.search(forbidden, TARGET_SELECTOR_CODE):
-        raise SystemExit(f"TargetSelector retains extracted responsibility: {forbidden}")
+    if declaration in TARGET_SELECTOR_CODE:
+        raise SystemExit(f"TargetSelector retains extracted responsibility: {declaration}")
 
 # Market-frame analysis boundary.
 MARKET_FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
