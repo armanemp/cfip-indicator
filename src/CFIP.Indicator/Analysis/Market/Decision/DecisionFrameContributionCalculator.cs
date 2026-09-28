@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     internal sealed class DecisionFrameContributionCalculator
@@ -16,11 +18,35 @@ namespace cAlgo
                     0);
             }
 
-            double scale = weight / 10.0;
+            double totalScore =
+                Math.Max(
+                    1.0,
+                    frame.BullScore + frame.BearScore);
+
+            double buyShare =
+                100.0 *
+                Math.Max(0, frame.BullScore) /
+                totalScore;
+
+            double sellShare =
+                100.0 -
+                buyShare;
+
+            double qualityFactor =
+                Math.Max(
+                    0.0,
+                    Math.Min(
+                        1.0,
+                        frame.Quality / 100.0));
+
+            double scale =
+                Math.Max(
+                    0.0,
+                    weight / 10.0);
 
             return new DecisionFrameContribution(
-                frame.BullScore * scale,
-                frame.BearScore * scale,
+                buyShare * qualityFactor * scale,
+                sellShare * qualityFactor * scale,
                 frame.Direction == 0 ? 0 : 1);
         }
     }
