@@ -386,16 +386,20 @@ AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "Aggressi
 AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
 BROKER_PROTECTION_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
 BROKER_PROTECTION_CODE = BROKER_PROTECTION_EXECUTION.read_text(encoding="utf-8")
+BOUND_PLAN_PROTECTION = ROOT / "Trading" / "Execution" / "Aggressive" / "BoundPlanProtection.cs"
+BOUND_PLAN_CODE = BOUND_PLAN_PROTECTION.read_text(encoding="utf-8")
+ORPHAN_PROTECTION = ROOT / "Trading" / "Execution" / "Aggressive" / "OrphanManagedProtection.cs"
+ORPHAN_PROTECTION_CODE = ORPHAN_PROTECTION.read_text(encoding="utf-8")
+
 if "Never apply its stop/target to another position" not in BROKER_PROTECTION_CODE:
     raise SystemExit("Broker protection must document and enforce plan-position identity")
 if 'position.Id == _plan.PositionId' not in BROKER_PROTECTION_CODE:
-    raise SystemExit("Plan protection must be bound to the plan PositionId")
-if "_plan.Stop" not in BROKER_PROTECTION_CODE or "_plan.PositionId" not in BROKER_PROTECTION_CODE:
-    raise SystemExit("Plan protection binding markers missing")
-orphan_marker = 'if (!AutoProtectBrokerPositions)\n                                        return;'
-if orphan_marker not in BROKER_PROTECTION_CODE:
-    raise SystemExit("Label-only orphan protection path missing")
-if "ORPHAN MANAGED POSITION" not in BROKER_PROTECTION_CODE:
+    raise SystemExit("Plan protection lookup must be bound to the plan PositionId")
+if "_plan.Stop" not in BOUND_PLAN_CODE:
+    raise SystemExit("Bound plan protection must consume the active plan stop")
+if "_plan.PositionId" not in BROKER_PROTECTION_CODE:
+    raise SystemExit("Plan position identity must remain in the protection orchestrator")
+if "ORPHAN MANAGED POSITION" not in ORPHAN_PROTECTION_CODE:
     raise SystemExit("Orphan broker protection must use its own protection context")
 
 if "AGGRESSIVE FILL MISMATCH" not in AGGRESSIVE_CODE:
