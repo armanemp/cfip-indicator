@@ -32,12 +32,14 @@ namespace cAlgo
             }
 
             reference =
-                _m5Bars.OpenTimes[
-                    _m5Bars.Count - 1];
+                TimeInUtc;
 
             mtf =
                 BuildMtfClosedContext(
                     reference);
+
+            _lastMtfClosedContext =
+                mtf;
 
             closedM5 =
                 mtf.M5;
