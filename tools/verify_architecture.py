@@ -308,6 +308,25 @@ print(
     f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
 )
 
+# Market-frame analysis boundary.
+MARKET_FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
+MARKET_FRAME_ANALYZER_CODE = MARKET_FRAME_ANALYZER.read_text(encoding="utf-8")
+if MARKET_FRAME_ANALYZER.stat().st_size > 4096:
+    raise SystemExit("MarketFrameAnalyzer.cs must remain a thin orchestration boundary")
+if "BuildMarketFrameEvidence(" not in MARKET_FRAME_ANALYZER_CODE:
+    raise SystemExit("MarketFrameAnalyzer must delegate evidence construction")
+if "ScoreMarketFrame(" not in MARKET_FRAME_ANALYZER_CODE:
+    raise SystemExit("MarketFrameAnalyzer must delegate frame scoring")
+for required_path in (
+    ROOT / "Analysis" / "Market" / "MarketFrameEvidence.cs",
+    ROOT / "Analysis" / "Market" / "MarketFrameScoringService.cs",
+):
+    if not required_path.exists():
+        raise SystemExit(f"Market-frame owner missing: {required_path}")
+for token in ("AddScore(", "BuildOssIndicatorSnapshot(", "BullStructure(", "FindNearestFvg("):
+    if token in MARKET_FRAME_ANALYZER_CODE:
+        raise SystemExit(f"MarketFrameAnalyzer retains extracted evidence/scoring responsibility: {token}")
+
 # Calculation-cycle orchestration boundary.
 CALCULATION_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
 CALCULATION_CYCLE_CODE = CALCULATION_CYCLE.read_text(encoding="utf-8")
