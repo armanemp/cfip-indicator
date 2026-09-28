@@ -61,6 +61,11 @@ Edit the smallest authoritative module that owns the behavior.
 | Live calculation cycle | `Runtime/Calculation/CalculationLiveCycle.cs` |
 | Runtime / MTF / calculation support | `Runtime/**/*.cs` |
 | Automatic market execution | `Trading/Execution/AutomaticMarket/*.cs` |
+| Automatic market pre-trade eligibility | `Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs` |
+| Automatic market execution preparation | `Trading/Execution/AutomaticMarket/AutomaticMarketExecutionPreparation.cs` |
+| Automatic market submission validation | `Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs` |
+| Automatic market fill reconciliation | `Trading/Execution/AutomaticMarket/AutomaticMarketFillReconciliation.cs` |
+| Automatic market post-fill target resolution | `Trading/Execution/AutomaticMarket/AutomaticMarketPostFillTargetResolver.cs` |
 | Aggressive execution | `Trading/Execution/Aggressive/*.cs` |
 | Pending orders | `Trading/Pending/**/*.cs` |
 | Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
