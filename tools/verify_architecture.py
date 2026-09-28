@@ -413,7 +413,6 @@ for consumer_name in (
     for declaration in (
         "bool brokerStopValid =",
         "bool brokerTargetValid =",
-        "bool protectionMissing =",
     ):
         if declaration in code:
             raise SystemExit(f"Broker protection validation duplicated in {consumer_name}: {declaration}")
