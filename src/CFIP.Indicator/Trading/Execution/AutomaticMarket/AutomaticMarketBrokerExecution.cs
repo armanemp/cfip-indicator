@@ -41,7 +41,7 @@ namespace cAlgo
                         _plan == null
                             ? 0
                             : _plan.Direction,
-                        out submissionGateReason)
+                        out submissionGateReason))
                 {
                     _autoExecutionBlockReason =
                         submissionGateReason;
