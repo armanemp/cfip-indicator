@@ -69,6 +69,39 @@ namespace cAlgo
                                 }
 
                 private bool HasOrderBlockFvgConfluence(
+                                    List<Zone> candidates,
+                                    double atr,
+                                    double zoneLow,
+                                    double zoneHigh)
+                                {
+                                    if (!UseFvg ||
+                                        candidates == null ||
+                                        atr <= 0)
+                                        return false;
+
+                                    for (int i = 0;
+                                         i < candidates.Count;
+                                         i++)
+                                    {
+                                        Zone managed =
+                                            candidates[i];
+
+                                        if (managed == null)
+                                            continue;
+
+                                        if (managed.High >=
+                                                zoneLow -
+                                                atr * 0.05 &&
+                                            managed.Low <=
+                                                zoneHigh +
+                                                atr * 0.05)
+                                            return true;
+                                    }
+
+                                    return false;
+                                }
+
+        private bool HasOrderBlockFvgConfluence(
                                     Bars bars,
                                     int startIndex,
                                     int endIndex,
