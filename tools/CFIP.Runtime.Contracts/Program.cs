@@ -22,6 +22,7 @@ namespace cAlgo
             VerifyLifecycleIdempotency();
             VerifyRuntimeStageIsolation();
             VerifyRuntimeFaultStateMachine();
+            VerifyClosedBarRetryPolicy();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -729,6 +730,119 @@ namespace cAlgo
             Assert(
                 !machine.CanAutomaticEntryProceed,
                 "enable transition cannot bypass blocked state");
+        }
+
+        private static void VerifyClosedBarRetryPolicy()
+        {
+            RuntimeFaultStateMachine machine =
+                new RuntimeFaultStateMachine();
+
+            DateTime t =
+                new DateTime(
+                    2026,
+                    1,
+                    1,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            string reason;
+
+            Assert(
+                machine.CanAttemptClosedBarAnalysis(
+                    101,
+                    t,
+                    out reason),
+                "first closed-bar attempt allowed");
+
+            machine.RecordClosedBarAnalysisFailure(
+                101,
+                t);
+
+            Assert(
+                machine.ClosedBarFailureCount == 1,
+                "first closed-bar failure counted");
+
+            Assert(
+                machine.ClosedBarLastFailureUtc == t,
+                "failure timestamp recorded");
+
+            Assert(
+                !machine.CanAttemptClosedBarAnalysis(
+                    101,
+                    t.AddMilliseconds(500),
+                    out reason),
+                "first closed-bar retry is backed off");
+
+            Assert(
+                machine.CanAttemptClosedBarAnalysis(
+                    101,
+                    t.AddSeconds(1),
+                    out reason),
+                "first closed-bar retry becomes eligible");
+
+            machine.RecordClosedBarAnalysisFailure(
+                101,
+                t.AddSeconds(1));
+
+            Assert(
+                machine.ClosedBarFailureCount == 2,
+                "second closed-bar failure counted");
+
+            Assert(
+                !machine.CanAttemptClosedBarAnalysis(
+                    101,
+                    t.AddSeconds(2),
+                    out reason),
+                "second retry uses longer backoff");
+
+            Assert(
+                machine.CanAttemptClosedBarAnalysis(
+                    102,
+                    t.AddSeconds(2),
+                    out reason),
+                "new closed bar is not blocked by prior bar failure");
+
+            Assert(
+                machine.HasStaleClosedBarFailure(102),
+                "prior closed-bar failure is detectable as stale");
+
+            machine.RecordClosedBarAnalysisFailure(
+                101,
+                t.AddSeconds(3));
+
+            machine.RecordClosedBarAnalysisFailure(
+                101,
+                t.AddSeconds(7));
+
+            Assert(
+                machine.ClosedBarFailureCount == 4,
+                "fourth closed-bar failure counted");
+
+            Assert(
+                !machine.CanAttemptClosedBarAnalysis(
+                    101,
+                    t.AddSeconds(8),
+                    out reason),
+                "repeated closed-bar failure opens retry circuit");
+
+            Assert(
+                machine.CanAttemptClosedBarAnalysis(
+                    102,
+                    t.AddSeconds(8),
+                    out reason),
+                "new closed bar bypasses stale retry circuit");
+
+            machine.RecordClosedBarAnalysisSuccess(101);
+
+            Assert(
+                machine.ClosedBarFailureCount == 0,
+                "successful retry clears failure state");
+
+            Assert(
+                machine.ClosedBarLastFailureUtc == DateTime.MinValue,
+                "successful retry clears failure timestamp");
         }
 
         private static void Assert(bool condition, string name)

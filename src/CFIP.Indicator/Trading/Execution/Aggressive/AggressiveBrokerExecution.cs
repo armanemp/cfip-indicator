@@ -172,6 +172,12 @@ namespace cAlgo
                           result.Position.Id +
                           " • BROKER PROTECTION RECOVERY");
 
+                double confirmedStop =
+                    GetActiveBrokerStopPrice();
+
+                double confirmedTarget =
+                    GetActiveBrokerTargetPrice();
+
                 SendUnifiedAlert(
                     "AUTO-REACTION|" +
                     closedM5,
@@ -184,10 +190,14 @@ namespace cAlgo
                     " | ENTRY " +
                     Price(
                         result.Position.EntryPrice) +
-                    " | SL " +
-                    Price(actualStop) +
-                    " | TP " +
-                    Price(actualTarget),
+                    " | BROKER SL " +
+                    (IsFinitePositive(confirmedStop)
+                        ? Price(confirmedStop)
+                        : "RECOVERY") +
+                    " | BROKER TP " +
+                    (IsFinitePositive(confirmedTarget)
+                        ? Price(confirmedTarget)
+                        : "RECOVERY"),
                     _reaction.Direction,
                     true);
             }

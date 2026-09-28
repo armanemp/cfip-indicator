@@ -24,21 +24,46 @@ namespace cAlgo
                 DateTime reference;
                 MtfClosedContext mtf;
 
-                if (!RunCalculationPreparationStage(
-                    index,
-                    out closedM5,
-                    out newClosedBar,
-                    out reference,
-                    out mtf))
-                    return;
+                bool prepared =
+                    RunCalculationPreparationStage(
+                        index,
+                        out closedM5,
+                        out newClosedBar,
+                        out reference,
+                        out mtf);
 
-                if (newClosedBar &&
-                    !RunClosedBarAnalysisStage(
+                if (!prepared)
+                {
+                    if (!_runtimeFaultStateMachine.CycleFaulted)
+                        return;
+
+                    // A preparation fault must not starve management. Reuse the
+                    // last known closed context while the fault state keeps
+                    // automatic entry blocked.
+                    closedM5 =
+                        Math.Max(
+                            1,
+                            _lastEvaluatedM5);
+
+                    ProcessLiveCalculationStages(
+                        index,
+                        closedM5);
+
+                    CompleteRuntimeFaultCycle();
+                    return;
+                }
+
+                if (newClosedBar)
+                {
+                    // Closed-bar analysis may fail, or be in retry backoff. In
+                    // either case management/protection must still run on the
+                    // already-known broker state.
+                    RunClosedBarAnalysisStage(
                         index,
                         closedM5,
                         reference,
-                        mtf))
-                    return;
+                        mtf);
+                }
 
                 ProcessLiveCalculationStages(
                     index,

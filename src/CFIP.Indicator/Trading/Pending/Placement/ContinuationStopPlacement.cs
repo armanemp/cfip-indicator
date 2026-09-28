@@ -91,13 +91,11 @@ namespace cAlgo
               _plan = null;
               _executionModel = null;
               RemovePlanObjects();
-              _autoOrdersBlockReason = "ORDER PLACED • STOP " + Price(trigger);
-              SendUnifiedAlert(
-                  "PENDING-STOP|" + closedM5,
-                  "CFIP STOP | " + (direction == 1 ? "BUY" : "SELL") +
-                  " | ENTRY " + Price(trigger) + " | SL " + Price(stop) + " | TP " + Price(target),
+              ReportConfirmedPendingOrderPlacement(
+                  result.PendingOrder,
                   direction,
-                  true);
+                  closedM5,
+                  "STOP");
               return true;
           }
           catch (Exception ex)

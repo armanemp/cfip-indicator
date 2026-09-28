@@ -84,9 +84,11 @@ namespace cAlgo
                                             }
 
                                             bool continuationStrong =
+                                                _decision != null &&
                                                 TrendContinuationStrong();
 
                                             bool reversalStrong =
+                                                _reaction != null &&
                                                 ReversalSetupStrong();
 
                                             int pendingDirection =

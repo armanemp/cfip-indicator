@@ -93,7 +93,9 @@ namespace cAlgo
                                     }
                         
                                     double displayStop =
-                                        GetActiveBrokerStopPrice();
+                                        _plan.IsLivePosition
+                                            ? GetActiveBrokerStopPrice()
+                                            : _plan.Stop;
                         
                                     if (ShowSL &&
                                         IsFinitePositive(displayStop))

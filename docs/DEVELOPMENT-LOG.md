@@ -180,3 +180,43 @@ Result:
 - next phase after CI confirmation: **Phase 1.4 — Runtime recovery semantics**.
 
 Certification record: implementation snapshot was verified by Source and architecture workflow 758, Runtime acceptance workflow 567, and cTrader compile workflow 751 before this documentation-only continuity update.
+
+## Phase 1.4 — Closed-bar retry semantics and signal/execution synchronization
+
+Status: complete.
+
+Goal:
+- bound repeated closed-bar analysis faults;
+- prevent analysis failure from starving safety-critical management;
+- make visual and execution reporting agree with the authoritative plan/broker state.
+
+Implementation:
+- added bounded closed-bar retry state to `RuntimeFaultStateMachine`: failure key, timestamp, exponential backoff, retry circuit and stale-failure detection;
+- changed `Calculate()` so recoverable preparation/closed-bar analysis faults no longer cause an early return before management, protection and reconciliation;
+- kept ordinary non-ready preparation exits unchanged when there is no runtime fault to recover;
+- synchronized pre-trade SL rendering to `Plan.Stop` while preserving broker-confirmed SL as the live source;
+- changed automatic market and aggressive success alerts to report broker-confirmed broker SL/TP values;
+- changed pending Stop/Limit placement reporting to use the broker-confirmed pending order fields;
+- guarded pending setup paths against missing decision/reaction dependencies;
+- changed a silent reversal pending execution-model catch into an explicit failure state;
+- added deterministic runtime contract coverage for closed-bar retry/backoff/circuit behavior;
+- extended source/architecture verification for retry policy and signal/execution visual synchronization.
+
+Deep audit findings:
+- `MaximumOpenPositions` is publicly configurable above 1 while the current execution-capacity owner intentionally supports only a single active plan; this remains queued for Track 7.4 rather than being silently changed;
+- M1 trigger configuration currently influences scoring but confirmed trigger readiness remains M5-based; Track 8.1 is required before changing the semantics;
+- confidence is a deterministic composite score, not a calibrated probability; Track 9.2/9.3 must establish calibration before any probability wording is introduced;
+- submission-gate failure history is shared per execution path rather than partitioned by signal identity; Track 2.1 will address coherent retry keys;
+- daily-loss/trading-day/EOD semantics and cross-instance identity remain explicit later-track work;
+- the UI already separates prediction/watch, confirmed signal and active plan conceptually, but a single immutable visual-state snapshot remains the planned Track 5.4 refinement.
+
+Verification:
+- Source and architecture checks: PASS (job 109187144452);
+- Runtime acceptance contracts: PASS (job 109187144646);
+- cTrader compile: PASS (job 109187144983).
+
+Result:
+- Phase 1.4 complete;
+- next phase: **Phase 1.5 — Safety supervisor**;
+- operator pull: required at the completed phase boundary after final verified documentation merge.
+
