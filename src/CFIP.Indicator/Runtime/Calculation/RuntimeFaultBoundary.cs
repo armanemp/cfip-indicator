@@ -54,12 +54,5 @@ namespace cAlgo
             }
         }
 
-        protected override void OnException(Exception exception)
-        {
-            HandleRuntimeFault(
-                exception,
-                -1,
-                "UNHANDLED");
-        }
     }
 }
