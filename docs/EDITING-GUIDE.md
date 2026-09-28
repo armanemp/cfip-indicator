@@ -93,6 +93,9 @@ Edit the smallest authoritative module that owns the behavior.
 | Live-plan exit / managed lookup | `Trading/Lifecycle/LivePlanExitCoordinator.cs`, `ManagedPositionLookup.cs` |
 | Execution runtime state | `Trading/Execution/State/*.cs` — auto-trading state, lifecycle state, target stage, labels |
 | Live management | `Trading/LiveManagement/*.cs` |
+| Live target progression orchestration | `Trading/LiveManagement/TargetProgression.cs` |
+| Live target candidate evaluation | `Trading/LiveManagement/LiveTargetCandidateEvaluator.cs` |
+| Plan TP risk/reward recalculation | `Trading/LiveManagement/PlanRiskRewardRecalculator.cs` |
 | Prediction / intelligence | `Trading/Intelligence/**/*.cs` |
 | Fresh trigger evidence | `Trading/Intelligence/FreshTriggerEvidenceAnalyzer.cs` |
 | Structural sequence | `Trading/Intelligence/StructuralSequenceAnalyzer.cs` |
