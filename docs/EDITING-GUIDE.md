@@ -8,6 +8,7 @@ Edit the smallest authoritative module that owns the behavior.
 | Domain models | `Core/Models/*.cs` — one type per file |
 | Enums | `Core/Enums/*.cs` — one enum per file |
 | Native indicators | `Analysis/Indicators/*.cs` |
+| Production OSS numerical adapters | `Analysis/Indicators/External/Skender*.cs`, `OssIndicatorConfluenceAnalyzer.cs`, `OssQuoteSeriesCache.cs`, `OssIndicatorSnapshotCache.cs` |
 | Market-frame orchestration | `Analysis/Market/MarketFrameAnalyzer.cs` |
 | Market-frame evidence | `Analysis/Market/MarketFrameEvidence.cs` |
 | Market-frame scoring / quality | `Analysis/Market/MarketFrameScoringService.cs`, `MarketFrameScoring.cs` |

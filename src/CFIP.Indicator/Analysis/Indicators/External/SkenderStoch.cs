@@ -9,29 +9,37 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double FacioQuoParabolicSar(
+        private void SkenderStochBias(
             Bars bars,
-            int index)
+            int index,
+            out double k,
+            out double d)
         {
+            k = double.NaN;
+            d = double.NaN;
+
             IReadOnlyList<StockQuote> quotes =
                 GetOssQuotes(
                     bars,
                     index);
 
-            if (quotes == null || quotes.Count < 60)
-                return double.NaN;
+            if (quotes == null ||
+                quotes.Count < 40)
+                return;
 
             var results =
-                StockIndicator.GetParabolicSar(
+                StockIndicator.GetStoch(
                     quotes,
-                    0.02,
-                    0.20)
+                    14,
+                    3,
+                    3)
                     .ToList();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].Sar.HasValue
-                ? double.NaN
-                : results[results.Count - 1].Sar.Value;
+            if (results.Count == 0)
+                return;
+
+            k = results[results.Count - 1].K ?? 0;
+            d = results[results.Count - 1].D ?? 0;
         }
     }
 }

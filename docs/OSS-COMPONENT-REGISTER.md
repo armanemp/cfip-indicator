@@ -5,23 +5,25 @@
 **Upstream:** https://github.com/facioquo/stock-indicators-dotnet
 **NuGet:** https://www.nuget.org/packages/Skender.Stock.Indicators/2.7.3
 **License:** Apache-2.0
-**Production role:** numerical indicator confluence and cross-check only.
+**Production role:** numerical indicator confluence and numerical cross-check only.
+
+**Adapter naming:** production adapter files and methods use the `Skender*` prefix because the production API consumed by CFIP is the `Skender.Stock.Indicators` package, even though the upstream repository retains the `FacioQuo` GitHub owner/name.
 
 **Target-runtime compatibility:** package 2.7.3 provides a .NET Standard 2.0
 asset and is compatible with the net6.0 production target.
 
 **Adapter owners:**
 
-- Analysis/Indicators/External/FacioQuoRsi.cs
-- Analysis/Indicators/External/FacioQuoMacd.cs
-- Analysis/Indicators/External/FacioQuoBollingerBands.cs
-- Analysis/Indicators/External/FacioQuoMfi.cs
-- Analysis/Indicators/External/FacioQuoStoch.cs
-- Analysis/Indicators/External/FacioQuoSuperTrend.cs
-- Analysis/Indicators/External/FacioQuoAroon.cs
-- Analysis/Indicators/External/FacioQuoCci.cs
-- Analysis/Indicators/External/FacioQuoObv.cs
-- Analysis/Indicators/External/FacioQuoParabolicSar.cs
+- Analysis/Indicators/External/SkenderRsi.cs
+- Analysis/Indicators/External/SkenderMacd.cs
+- Analysis/Indicators/External/SkenderBollingerBands.cs
+- Analysis/Indicators/External/SkenderMfi.cs
+- Analysis/Indicators/External/SkenderStoch.cs
+- Analysis/Indicators/External/SkenderSuperTrend.cs
+- Analysis/Indicators/External/SkenderAroon.cs
+- Analysis/Indicators/External/SkenderCci.cs
+- Analysis/Indicators/External/SkenderObv.cs
+- Analysis/Indicators/External/SkenderParabolicSar.cs
 - Analysis/Indicators/External/OssIndicatorConfluenceAnalyzer.cs
 - Analysis/Indicators/External/OssQuoteSeriesCache.cs
 - Analysis/Indicators/External/OssIndicatorSnapshotCache.cs

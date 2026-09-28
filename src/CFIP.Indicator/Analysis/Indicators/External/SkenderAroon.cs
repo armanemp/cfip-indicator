@@ -9,7 +9,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double FacioQuoRsi(
+        private double SkenderAroonOscillator(
             Bars bars,
             int index)
         {
@@ -18,19 +18,19 @@ namespace cAlgo
                     bars,
                     index);
 
-            if (quotes == null ||
-                quotes.Count < Math.Max(20, RsiPeriod + 5))
+            if (quotes == null || quotes.Count < 40)
                 return double.NaN;
 
             var results =
-                StockIndicator.GetRsi(
-                    quotes,Math.Max(2, RsiPeriod))
+                StockIndicator.GetAroon(
+                    quotes,
+                    25)
                     .ToList();
 
             return results.Count == 0 ||
-                   !results[results.Count - 1].Rsi.HasValue
+                   !results[results.Count - 1].Oscillator.HasValue
                 ? double.NaN
-                : results[results.Count - 1].Rsi.Value;
+                : results[results.Count - 1].Oscillator.Value;
         }
     }
 }

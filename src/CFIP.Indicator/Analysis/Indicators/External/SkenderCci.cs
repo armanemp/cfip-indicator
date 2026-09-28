@@ -9,7 +9,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double FacioQuoBollingerPercentB(
+        private double SkenderCci(
             Bars bars,
             int index)
         {
@@ -18,21 +18,19 @@ namespace cAlgo
                     bars,
                     index);
 
-            if (quotes == null ||
-                quotes.Count < 40)
+            if (quotes == null || quotes.Count < 40)
                 return double.NaN;
 
             var results =
-                StockIndicator.GetBollingerBands(
+                StockIndicator.GetCci(
                     quotes,
-                    20,
-                    2)
+                    20)
                     .ToList();
 
             return results.Count == 0 ||
-                   !results[results.Count - 1].PercentB.HasValue
+                   !results[results.Count - 1].Cci.HasValue
                 ? double.NaN
-                : results[results.Count - 1].PercentB.Value;
+                : results[results.Count - 1].Cci.Value;
         }
     }
 }
