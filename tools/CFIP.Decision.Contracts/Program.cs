@@ -248,112 +248,63 @@ namespace cAlgo
             IndependentEvidenceFusionCalculator calculator =
                 new IndependentEvidenceFusionCalculator();
 
-            Frame structuralOnly =
-                new Frame
-                {
-                    StructureBull = true,
-                    MssBull = true,
-                    ChochBull = true,
-                    DisplacementBull = true
-                };
-
             int structural =
                 calculator.Calculate(
                     new IndependentEvidenceFusionInput(
-                        structuralOnly.StructureBull,
-                        structuralOnly.MssBull || structuralOnly.ChochBull,
-                        structuralOnly.DisplacementBull,
-                        structuralOnly.LiquidityBull,
-                        structuralOnly.FvgBull,
-                        structuralOnly.ObBull,
-                        structuralOnly.TrendBull,
-                        structuralOnly.MomentumBull,
-                        structuralOnly.MacdBull,
-                        structuralOnly.VwapBull,
-                        structuralOnly.VolumeBull,
-                        structuralOnly.VolatilityBull,
-                        structuralOnly.RejectionBull,
-                        structuralOnly.EqualLow));
+                        true,
+                        true,
+                        true,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false));
 
             Assert(
                 structural == 2,
                 "correlated structural evidence is capped");
 
-            Frame fullBull =
-                new Frame
-                {
-                    StructureBull = true,
-                    MssBull = true,
-                    ChochBull = true,
-                    DisplacementBull = true,
-                    LiquidityBull = true,
-                    FvgBull = true,
-                    ObBull = true,
-                    TrendBull = true,
-                    MomentumBull = true,
-                    MacdBull = true,
-                    VwapBull = true,
-                    VolumeBull = true,
-                    VolatilityBull = true,
-                    RejectionBull = true,
-                    EqualLow = true
-                };
-
             int bull =
                 calculator.Calculate(
                     new IndependentEvidenceFusionInput(
-                        fullBull.StructureBull,
-                        fullBull.MssBull || fullBull.ChochBull,
-                        fullBull.DisplacementBull,
-                        fullBull.LiquidityBull,
-                        fullBull.FvgBull,
-                        fullBull.ObBull,
-                        fullBull.TrendBull,
-                        fullBull.MomentumBull,
-                        fullBull.MacdBull,
-                        fullBull.VwapBull,
-                        fullBull.VolumeBull,
-                        fullBull.VolatilityBull,
-                        fullBull.RejectionBull,
-                        fullBull.EqualLow));
-
-            Frame fullBear =
-                new Frame
-                {
-                    StructureBear = true,
-                    MssBear = true,
-                    ChochBear = true,
-                    DisplacementBear = true,
-                    LiquidityBear = true,
-                    FvgBear = true,
-                    ObBear = true,
-                    TrendBear = true,
-                    MomentumBear = true,
-                    MacdBear = true,
-                    VwapBear = true,
-                    VolumeBear = true,
-                    VolatilityBear = true,
-                    RejectionBear = true,
-                    EqualHigh = true
-                };
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true));
 
             int bear =
                 calculator.Calculate(
                     new IndependentEvidenceFusionInput(
-                        fullBear.StructureBear,
-                        fullBear.MssBear || fullBear.ChochBear,
-                        fullBear.DisplacementBear,
-                        fullBear.LiquidityBear,
-                        fullBear.FvgBear,
-                        fullBear.ObBear,
-                        fullBear.TrendBear,
-                        fullBear.MomentumBear,
-                        fullBear.MacdBear,
-                        fullBear.VwapBear,
-                        fullBear.VolumeBear,
-                        fullBear.VolatilityBear,
-                        fullBear.RejectionBear,
-                        fullBear.EqualHigh));
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true));
 
             Assert(bull == 8, "maximum independent evidence");
             Assert(bear == bull, "BUY/SELL evidence symmetry");
