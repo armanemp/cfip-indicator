@@ -51,28 +51,59 @@ namespace cAlgo
                         
                                         _plan.IsLivePosition = true;
                         
+                                        double market =
+                                            direction == 1
+                                                ? Symbol.Bid
+                                                : Symbol.Ask;
+
+                                        bool brokerStopValid =
+                                            IsFinitePositive(
+                                                position.StopLoss.HasValue
+                                                    ? position.StopLoss.Value
+                                                    : 0) &&
+                                            IsValidManagedStop(
+                                                direction,
+                                                position.EntryPrice,
+                                                market,
+                                                position.StopLoss.HasValue
+                                                    ? position.StopLoss.Value
+                                                    : 0);
+
+                                        bool brokerTargetValid =
+                                            IsFinitePositive(
+                                                position.TakeProfit.HasValue
+                                                    ? position.TakeProfit.Value
+                                                    : 0) &&
+                                            IsValidTarget(
+                                                direction,
+                                                position.EntryPrice,
+                                                position.TakeProfit.HasValue
+                                                    ? position.TakeProfit.Value
+                                                    : 0);
+
                                         _activeBrokerStop =
-                                            position.StopLoss.HasValue
+                                            brokerStopValid
                                                 ? NormalizePrice(
                                                     position.StopLoss.Value)
                                                 : 0;
-                        
+
                                         _activeBrokerTarget =
-                                            position.TakeProfit.HasValue
+                                            brokerTargetValid
                                                 ? NormalizePrice(
                                                     position.TakeProfit.Value)
                                                 : 0;
-                        
+
                                         _brokerProtectionRecoveryRequired =
-                                            !position.StopLoss.HasValue ||
-                                            !position.TakeProfit.HasValue;
-                        
+                                            !brokerStopValid ||
+                                            (SyncBrokerTakeProfit &&
+                                             !brokerTargetValid);
+
                                         SetLifecycleState(
                                             _brokerProtectionRecoveryRequired
                                                 ? LifecycleState.RecoveryRequired
                                                 : LifecycleState.LivePosition,
                                             _brokerProtectionRecoveryRequired
-                                                ? "POSITION OPENED • PROTECTION MISSING"
+                                                ? "POSITION OPENED • PROTECTION MISSING OR INVALID"
                                                 : "POSITION OPENED • LIVE");
                                     }
                         
