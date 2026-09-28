@@ -533,20 +533,29 @@ namespace cAlgo
                                             return;
                                         }
                         
+                                        bool protectionOk = true;
+
                                         if (AutoBrokerProtection)
                                         {
-                                            EnsureBrokerProtectionForPosition(
-                                                result.Position,
-                                                _plan.Stop,
-                                                target,
-                                                "NEW MARKET ENTRY",
-                                                _plan.Direction);
+                                            protectionOk =
+                                                EnsureBrokerProtectionForPosition(
+                                                    result.Position,
+                                                    _plan.Stop,
+                                                    target,
+                                                    "NEW MARKET ENTRY",
+                                                    _plan.Direction);
                                         }
-                        
+
                                         SetAutoTradingState(
-                                            "EXECUTED",
-                                            "POSITION #" +
-                                            result.Position.Id);
+                                            protectionOk
+                                                ? "EXECUTED"
+                                                : "RECOVERY",
+                                            protectionOk
+                                                ? "POSITION #" +
+                                                  result.Position.Id
+                                                : "POSITION #" +
+                                                  result.Position.Id +
+                                                  " • BROKER PROTECTION RECOVERY");
                         
                                         SendUnifiedAlert(
                                             "AUTO|" +
