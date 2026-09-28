@@ -308,6 +308,42 @@ print(
     f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
 )
 
+# Calculation-cycle orchestration boundary.
+CALCULATION_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
+CALCULATION_CYCLE_CODE = CALCULATION_CYCLE.read_text(encoding="utf-8")
+if CALCULATION_CYCLE.stat().st_size > 4096:
+    raise SystemExit("CalculationCycle.cs must remain a thin orchestration boundary")
+if len(re.findall(r"\\bpublic\\s+override\\s+void\\s+Calculate\\s*\\(", CALCULATION_CYCLE_CODE)) != 1:
+    raise SystemExit("CalculationCycle must own exactly one Calculate override")
+for token in (
+    "TryPrepareCalculationCycle(",
+    "ProcessNewClosedBar(",
+    "ProcessLiveCalculation(",
+):
+    if token not in CALCULATION_CYCLE_CODE:
+        raise SystemExit(f"CalculationCycle orchestration call missing: {token}")
+for forbidden in (
+    "AnalyzeFrame(",
+    "BuildDecision(",
+    "BuildEarlyPrediction(",
+    "TryAutoTrade(",
+    "TryAggressiveAutoTrade(",
+    "TrySmartPendingOrders(",
+    "ProtectBrokerPositions(",
+    "MonitorOutcome(",
+    "RenderPanel(",
+):
+    if forbidden in CALCULATION_CYCLE_CODE:
+        raise SystemExit(f"CalculationCycle retains extracted responsibility: {forbidden}")
+for required_path in (
+    ROOT / "Runtime" / "Calculation" / "CalculationPreparation.cs",
+    ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs",
+    ROOT / "Runtime" / "Calculation" / "CalculationDecisionAlerts.cs",
+    ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs",
+):
+    if not required_path.exists():
+        raise SystemExit(f"Calculation-cycle owner missing: {required_path}")
+
 # Phase 8 contract/source invariants.
 CONTRACTS = {
     "decision": Path("tools/CFIP.Decision.Contracts/Program.cs"),
