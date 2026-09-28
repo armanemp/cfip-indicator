@@ -227,6 +227,19 @@ SCORING = ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs"
 if len(re.findall(r"\bprivate void AddScore\s*\(", SCORING.read_text(encoding="utf-8"))) != 2:
     raise SystemExit("MarketFrameScoring must own both AddScore overloads")
 
+CAPACITY_GUARD = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
+CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
+if "MaximumOpenPositions > 1" not in CAPACITY_CODE:
+    raise SystemExit("Single-plan execution capacity guard missing")
+for execution_path in [
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketTradeExecution.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs",
+    ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
+]:
+    execution_code = execution_path.read_text(encoding="utf-8")
+    if "ValidateConfiguredPositionCapacity(" not in execution_code:
+        raise SystemExit(f"Execution capacity guard missing in {execution_path.name}")
+
 AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketTradeExecution.cs"
 AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
 if 'SetAutoTradingState(\n                                            protectionOk\n                                                ? "EXECUTED"\n                                                : "RECOVERY"' not in AUTO_MARKET_CODE:
