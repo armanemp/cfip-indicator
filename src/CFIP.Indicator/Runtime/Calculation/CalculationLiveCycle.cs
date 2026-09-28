@@ -5,62 +5,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ProcessLiveCalculation(
-            int index,
-            int closedM5)
-        {
-            UpdateLiveReaction();
-
-            SynchronizePreTradePlanWithDecision();
-
-            RecoverManagedLivePlan(
-                closedM5);
-
-            if (!AutoTradingEnabled &&
-                AutoTradingReminder)
-                CheckAutoTradingDisabledReminder(
-                    closedM5);
-
-            SyncQuickExecutionControls();
-
-            TryEnsureAutomaticPlan(
-                closedM5);
-
-            UpdateExecutionModel(
-                closedM5);
-
-            SynchronizeLiveBrokerState();
-
-            EvaluateActivePlan(
-                closedM5);
-
-            TryAutoTrade(
-                closedM5);
-
-            TryAggressiveAutoTrade(
-                closedM5);
-
-            TrySmartPendingOrders(
-                closedM5);
-
-            ProtectBrokerPositions(
-                closedM5);
-
-            MonitorOutcome(
-                closedM5);
-
-            CheckEndOfDayAlert(
-                TimeInUtc);
-
-            CheckReversalProtection();
-
-            SynchronizeLiveBrokerState();
-
-            RenderCalculationState(
-                index,
-                closedM5);
-        }
-
         private void UpdateLiveReaction()
         {
             if (_m5Bars == null ||

@@ -24,9 +24,10 @@ namespace cAlgo
                 ": " +
                 exception.Message;
 
-            // A runtime fault must fail closed for all automatic order paths.
-            // Broker-confirmed state remains untouched and can be reconciled
-            // independently on the next healthy cycle.
+            // A stage fault must fail closed for automatic order creation while
+            // allowing independent management, protection and reconciliation stages
+            // to continue in the same calculation cycle. Broker-confirmed state
+            // remains authoritative.
             _autoTradingEnabledRuntime = false;
             _automaticOrdersEnabledRuntime = false;
             _autoExecutionBlockReason = "RUNTIME FAULT";

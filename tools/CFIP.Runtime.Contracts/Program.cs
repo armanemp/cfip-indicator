@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace cAlgo
 {
@@ -19,6 +20,7 @@ namespace cAlgo
             VerifyStaleLivePlanRecovery();
             VerifyLifecycleFlows();
             VerifyLifecycleIdempotency();
+            VerifyRuntimeStageIsolation();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -460,6 +462,116 @@ namespace cAlgo
                     LifecycleState.Closed,
                     LifecycleState.PendingOrder),
                 "closed state cannot create pending order");
+        }
+
+        private static void VerifyRuntimeStageIsolation()
+        {
+            string cyclePath =
+                Path.Combine(
+                    "src",
+                    "CFIP.Indicator",
+                    "Runtime",
+                    "Calculation",
+                    "CalculationCycle.cs");
+
+            string stagesPath =
+                Path.Combine(
+                    "src",
+                    "CFIP.Indicator",
+                    "Runtime",
+                    "Calculation",
+                    "CalculationStageIsolation.cs");
+
+            Assert(
+                File.Exists(cyclePath),
+                "calculation cycle source exists");
+
+            Assert(
+                File.Exists(stagesPath),
+                "calculation stage isolation source exists");
+
+            string cycle =
+                File.ReadAllText(
+                    cyclePath);
+
+            string stages =
+                File.ReadAllText(
+                    stagesPath);
+
+            foreach (string requiredCall in new[]
+            {
+                "RunCalculationPreparationStage(",
+                "RunClosedBarAnalysisStage(",
+                "ProcessLiveCalculationStages("
+            })
+            {
+                Assert(
+                    cycle.Contains(requiredCall),
+                    "Calculate uses " + requiredCall.Trim('(', ' '));
+            }
+
+            Assert(
+                !cycle.Contains("ProcessNewClosedBar("),
+                "Calculate does not directly own closed-bar analysis");
+
+            Assert(
+                !cycle.Contains("ProcessLiveCalculation("),
+                "Calculate does not directly own live-cycle orchestration");
+
+            foreach (string requiredStage in new[]
+            {
+                "LIVE ANALYSIS",
+                "PLAN SYNCHRONIZATION",
+                "BROKER LIFECYCLE RECOVERY",
+                "PLAN CREATION",
+                "BROKER STATE",
+                "ACTIVE PLAN MANAGEMENT",
+                "EXECUTION",
+                "BROKER PROTECTION",
+                "TELEMETRY",
+                "REVERSAL MANAGEMENT",
+                "PRESENTATION"
+            })
+            {
+                Assert(
+                    stages.Contains(requiredStage),
+                    "isolated stage " + requiredStage);
+            }
+
+            Assert(
+                stages.Contains("HandleRuntimeFault("),
+                "stage fault containment");
+
+            Assert(
+                stages.Contains("return true;"),
+                "stage fault continues to next stage");
+
+            Assert(
+                stages.IndexOf(
+                    "LIVE ANALYSIS",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "PLAN SYNCHRONIZATION",
+                    StringComparison.Ordinal),
+                "analysis stage precedes downstream stages");
+
+            Assert(
+                stages.IndexOf(
+                    "PLAN SYNCHRONIZATION",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "BROKER STATE",
+                    StringComparison.Ordinal),
+                "management path remains reachable after analysis stage");
+
+            Assert(
+                stages.IndexOf(
+                    "BROKER PROTECTION",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "PRESENTATION",
+                    StringComparison.Ordinal),
+                "protection precedes presentation");
         }
 
         private static void VerifyLifecycleIdempotency()

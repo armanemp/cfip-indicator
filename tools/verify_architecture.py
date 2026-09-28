@@ -149,6 +149,60 @@ for overload_name in sorted(ALLOWED_OVERLOADS):
     if overload_name in duplicate_counts and duplicate_counts[overload_name] < 2:
         raise SystemExit(f"Invalid overload declaration count: {overload_name}")
 
+# Phase 1.1 calculation-stage isolation gates.
+CALCULATION_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
+CALCULATION_STAGE_ISOLATION = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
+
+if not CALCULATION_STAGE_ISOLATION.exists():
+    raise SystemExit("Calculation stage isolation module is missing")
+
+calculation_cycle_code = CALCULATION_CYCLE.read_text(encoding="utf-8")
+stage_isolation_code = CALCULATION_STAGE_ISOLATION.read_text(encoding="utf-8")
+
+for required_call in (
+    "RunCalculationPreparationStage(",
+    "RunClosedBarAnalysisStage(",
+    "ProcessLiveCalculationStages(",
+):
+    if required_call not in calculation_cycle_code:
+        raise SystemExit(
+            f"Calculate stage orchestration missing: {required_call}"
+        )
+
+if "ProcessNewClosedBar(" in calculation_cycle_code:
+    raise SystemExit("Calculate must not directly own closed-bar analysis")
+
+if "ProcessLiveCalculation(" in calculation_cycle_code:
+    raise SystemExit("Calculate must not directly own live-cycle orchestration")
+
+required_stage_markers = (
+    "LIVE ANALYSIS",
+    "PLAN SYNCHRONIZATION",
+    "BROKER LIFECYCLE RECOVERY",
+    "PLAN CREATION",
+    "BROKER STATE",
+    "ACTIVE PLAN MANAGEMENT",
+    "EXECUTION",
+    "BROKER PROTECTION",
+    "TELEMETRY",
+    "REVERSAL MANAGEMENT",
+    "PRESENTATION",
+)
+for marker in required_stage_markers:
+    if marker not in stage_isolation_code:
+        raise SystemExit(
+            f"Runtime stage boundary missing: {marker}"
+        )
+
+if stage_isolation_code.count("RunCalculationStage(") < len(required_stage_markers):
+    raise SystemExit("Runtime stage isolation lost one or more failure boundaries")
+
+if "HandleRuntimeFault(" not in stage_isolation_code:
+    raise SystemExit("Runtime stage isolation must route recoverable failures through HandleRuntimeFault")
+
+if "return true;" not in stage_isolation_code:
+    raise SystemExit("Runtime stage isolation must continue after recoverable stage faults")
+
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
     re.compile(r"\b(?:rev|release)[-_ ]?\d+\b", re.I),

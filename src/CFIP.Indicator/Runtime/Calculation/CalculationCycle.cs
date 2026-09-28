@@ -15,56 +15,58 @@ namespace cAlgo
             try
             {
                 if (!_initializationReady)
-                                return;
-                
-                            try
-                            {
-                                if (!TryPrepareCalculationCycle(
-                                    out int closedM5,
-                                    out bool newClosedBar,
-                                    out DateTime reference,
-                                    out MtfClosedContext mtf))
-                                    return;
-                
-                                if (newClosedBar &&
-                                    !ProcessNewClosedBar(
-                                        index,
-                                        closedM5,
-                                        reference,
-                                        mtf))
-                                    return;
-                
-                                ProcessLiveCalculation(
-                                    index,
-                                    closedM5);
-                            }
-                            catch (OutOfMemoryException)
-                            {
-                                Print(
-                                    "CFIP fatal runtime fault: OutOfMemoryException at index {0}",
-                                    index);
-                                throw;
-                            }
-                            catch (StackOverflowException)
-                            {
-                                Print(
-                                    "CFIP fatal runtime fault: StackOverflowException at index {0}",
-                                    index);
-                                throw;
-                            }
-                            catch (Exception ex)
-                            {
-                                HandleRuntimeFault(
-                                    ex,
-                                    index,
-                                    "CALCULATE");
-                            }
-                        
+                    return;
+
+                int closedM5;
+                bool newClosedBar;
+                DateTime reference;
+                MtfClosedContext mtf;
+
+                if (!RunCalculationPreparationStage(
+                    index,
+                    out closedM5,
+                    out newClosedBar,
+                    out reference,
+                    out mtf))
+                    return;
+
+                if (newClosedBar &&
+                    !RunClosedBarAnalysisStage(
+                        index,
+                        closedM5,
+                        reference,
+                        mtf))
+                    return;
+
+                ProcessLiveCalculationStages(
+                    index,
+                    closedM5);
+            }
+            catch (OutOfMemoryException)
+            {
+                Print(
+                    "CFIP fatal runtime fault: OutOfMemoryException at index {0}",
+                    index);
+                throw;
+            }
+            catch (StackOverflowException)
+            {
+                Print(
+                    "CFIP fatal runtime fault: StackOverflowException at index {0}",
+                    index);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                HandleRuntimeFault(
+                    ex,
+                    index,
+                    "CALCULATE ORCHESTRATION");
             }
             finally
             {
                 _calculationBusy = false;
             }
-}
+        }
     }
 }
