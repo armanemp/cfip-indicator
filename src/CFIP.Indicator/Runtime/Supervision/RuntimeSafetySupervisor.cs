@@ -8,8 +8,7 @@ namespace cAlgo
         private void RunRuntimeSafetySupervisor(
             DateTime nowUtc)
         {
-            if (_calculationBusy ||
-                _runtimeTimerBusy)
+            if (_calculationBusy)
                 return;
 
             int closedM5 =
