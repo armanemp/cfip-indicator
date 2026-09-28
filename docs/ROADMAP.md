@@ -630,3 +630,30 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: perform a cross-path automatic execution consistency audit across Market, Aggressive and Pending, then finish the remaining near-ceiling UI/Panel and lifecycle modules.
+
+
+## Phase 21 — Cross-path automatic execution consistency
+
+Status: complete.
+
+Goal: enforce common execution invariants across market, aggressive and pending paths without collapsing their distinct setup semantics.
+
+Completed:
+
+- Verified Market and Aggressive paths both build and validate ExecutionIntent before mutation.
+- Verified Market and Aggressive paths both use the broker-confirmation policy before adopting a position.
+- Verified both market paths retain explicit broker-protection handling.
+- Verified pending Stop and Limit paths build/validate pending intents and require broker-confirmed pending-order adoption.
+- Removed duplicate daily-loss and repeated setup-strength evaluation from SmartPendingOrderOrchestrator.cs by caching the existing boolean results.
+- Preserved distinct Stop-versus-Limit and Normal-versus-Aggressive policies.
+- Added static cross-path execution invariant checks.
+
+Acceptance:
+
+- No execution path bypasses its explicit broker mutation owner.
+- Broker rejection cannot create synthetic position/pending state.
+- ExecutionIntent validation precedes broker submission on all automatic entry paths.
+- Protection remains an explicit recovery boundary after accepted fills.
+- No production file exceeds 20 KiB.
+
+Next: continue the remaining near-ceiling lifecycle/UI audit, prioritizing LiveFillReconciliation and the large panel row renderers, then run a final repository-wide responsibility and dead-code sweep.
