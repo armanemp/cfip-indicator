@@ -363,3 +363,28 @@ Acceptance:
 - Repository source, architecture checks and modular ownership remain intact.
 - Current main commit passes the source/architecture, cTrader compile and runtime acceptance workflows.
 - Phase 9 remains explicitly open only for hands-on cTrader terminal/broker validation; Phase 10 repository hardening is complete.
+## Phase 11 — Deep runtime decomposition and oversized-module audit
+
+Status: complete.
+
+Goal: remove remaining dense runtime orchestration while preserving behavior and enforcing the current production-module ceiling.
+
+Completed:
+
+- Reduced Runtime/Calculation/CalculationCycle.cs to a thin orchestration entrypoint.
+- Isolated calculation preparation and early-exit state handling in CalculationPreparation.cs.
+- Isolated newly-closed-bar MTF analysis, decision construction, prediction refresh and historical-signal synchronization in CalculationClosedBar.cs.
+- Isolated high-confidence, restriction and smart-decision alert state handling in CalculationDecisionAlerts.cs.
+- Isolated tick-level reaction, recovery, automatic-plan retry, execution-model refresh, broker synchronization, execution/lifecycle processing and final presentation in CalculationLiveCycle.cs.
+- Added static ownership checks requiring the thin Calculate() boundary and its extracted runtime modules.
+- Audited all 333 production C# files against the current 20 KiB ceiling; no production file exceeds the limit.
+- Corrected architecture documentation so the documented module ceiling matches the enforced verifier ceiling.
+
+Acceptance:
+
+- Calculation-cycle early-return behavior remains preserved, including the MTF-data early exit.
+- Calculate() owns orchestration only.
+- Extracted calculation owners are explicit and regression-protected by static verification.
+- No production .cs file exceeds 20 KiB.
+
+Next: continue the deep oversized-module audit from the remaining near-ceiling planning, analysis, trading and UI files, prioritizing modules whose single method still carries multiple state transitions or concerns.
