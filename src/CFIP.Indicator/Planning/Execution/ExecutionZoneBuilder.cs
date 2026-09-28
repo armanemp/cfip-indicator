@@ -290,30 +290,6 @@ namespace cAlgo
                                             0.01,
                                             PrecisionBreakoutBufferAtr);
                         
-                                    bool inside =
-                                        market >= low - tolerance &&
-                                        market <= high + tolerance;
-                        
-                                    bool triggerReached =
-                                        IsTriggerReached(
-                                            direction,
-                                            market,
-                                            model.Trigger);
-                        
-                                    bool continuation =
-                                        IsContinuationExecutionContext(direction);
-                        
-                                    bool retestReady =
-                                        inside &&
-                                        !triggerReached;
-                        
-                                    bool qualityReady =
-                                        !RequirePrecisionEntry ||
-                                        quality >=
-                                        Math.Max(
-                                            40,
-                                            MinimumEntryQuality);
-
                                     ideal =
                                         low +
                                         (high - low) * 0.50;
