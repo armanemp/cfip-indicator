@@ -196,6 +196,7 @@ namespace cAlgo
                 private string _marketSuitabilityReason = "NOT EVALUATED";
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
                 private MtfClosedContext _lastMtfClosedContext;
+                private readonly MtfClosedContextCache _mtfClosedContextCache = new MtfClosedContextCache();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
                 private DateTime _initializationStartedUtc = DateTime.MinValue;
                 private int _initializationPendingDataLoads;
