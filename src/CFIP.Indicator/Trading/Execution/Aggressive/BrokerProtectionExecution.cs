@@ -187,7 +187,7 @@ namespace cAlgo
                                                          Symbol.TickSize,
                                                          Symbol.PipSize * 0.25));
 
-                                                if (materialiallyDifferent)
+                                                if (materiallyDifferent)
                                                 {
                                                     mutationRequired = true;
 
