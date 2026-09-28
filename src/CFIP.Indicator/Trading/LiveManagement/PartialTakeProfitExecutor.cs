@@ -91,10 +91,56 @@ namespace cAlgo
 
                         if (shouldMove)
                         {
-                            TryModifyStopLoss(
-                                position,
-                                position.EntryPrice,
-                                "PARTIAL BREAK-EVEN");
+                            double market =
+                                _plan.Direction == 1
+                                    ? Symbol.Bid
+                                    : Symbol.Ask;
+
+                            bool breakEvenValid =
+                                IsFinitePositive(market) &&
+                                IsValidManagedStop(
+                                    _plan.Direction,
+                                    position.EntryPrice,
+                                    market,
+                                    position.EntryPrice);
+
+                            bool breakEvenApplied =
+                                breakEvenValid &&
+                                TryModifyStopLoss(
+                                    position,
+                                    position.EntryPrice,
+                                    "PARTIAL BREAK-EVEN");
+
+                            if (breakEvenApplied)
+                            {
+                                _plan.Stop =
+                                    NormalizePrice(
+                                        position.EntryPrice);
+
+                                _brokerProtectionRecoveryRequired =
+                                    false;
+                            }
+                            else
+                            {
+                                _brokerProtectionRecoveryRequired =
+                                    true;
+
+                                SetLifecycleState(
+                                    LifecycleState.RecoveryRequired,
+                                    "PARTIAL CLOSE • BREAK-EVEN REJECTED");
+
+                                SendUnifiedAlert(
+                                    "BREAKEVEN-REJECTED|" +
+                                    position.Id +
+                                    "|" +
+                                    tag,
+                                    "CFIP BREAK-EVEN PROTECTION REJECTED | #" +
+                                    position.Id +
+                                    " | " +
+                                    tag,
+                                    _plan.Direction,
+                                    true);
+                            }
                         }
                     }
 
