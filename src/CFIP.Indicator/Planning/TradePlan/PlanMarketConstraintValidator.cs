@@ -3,7 +3,9 @@
 
 using System;
 
-namespace cAlgo
+namespace cusing cAlgo.API;
+
+lgo
 {
     public partial class CFIPIndicator : Indicator
     {
