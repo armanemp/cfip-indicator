@@ -7,16 +7,9 @@
     <Deterministic>true</Deterministic>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <CAlgoApiPath Condition="'$(CFIP_CTRADER_API)' != ''">$(CFIP_CTRADER_API)</CAlgoApiPath>
-    <CAlgoApiPath Condition="'$(CFIP_CTRADER_API)' == ''">$(UserProfile)\Documents\cAlgo\API\cAlgo.API.dll</CAlgoApiPath>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="cTrader.Automate" Version="1.0.21" />
     <PackageReference Include="Skender.Stock.Indicators" Version="2.7.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="cAlgo.API">
-      <HintPath>$(CAlgoApiPath)</HintPath>
-      <Private>false</Private>
-    </Reference>
   </ItemGroup>
 </Project>
