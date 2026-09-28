@@ -24,41 +24,38 @@ namespace cAlgo
                 percentOfOriginal <= 0)
                 return true;
 
-            foreach (Position position in Positions)
-            {
-                if (position == null ||
-                    position.SymbolName != SymbolName ||
-                    !IsManagedPosition(position))
-                    continue;
+            Position position =
+                GetManagedLivePositionForPlan();
 
-                double closeVolume =
-                    Symbol.NormalizeVolumeInUnits(
-                        _plan.OriginalVolume *
-                        percentOfOriginal /
-                        100.0,
-                        RoundingMode.Down);
+            if (position == null)
+                return false;
 
+            double closeVolume =
+                Symbol.NormalizeVolumeInUnits(
+                    _plan.OriginalVolume *
+                    percentOfOriginal /
+                    100.0,
+                    RoundingMode.Down);
+
+            closeVolume =
+                Math.Min(
+                    closeVolume,
+                    position.VolumeInUnits);
+
+            if (closeVolume < Symbol.VolumeInUnitsMin)
+                return false;
+
+            double remainder =
+                position.VolumeInUnits -
+                closeVolume;
+
+            if (remainder > 0 &&
+                remainder < Symbol.VolumeInUnitsMin)
                 closeVolume =
-                    Math.Min(
-                        closeVolume,
-                        position.VolumeInUnits);
+                    position.VolumeInUnits;
 
-                if (closeVolume <
-                    Symbol.VolumeInUnitsMin)
-                    return false;
-
-                double remainder =
-                    position.VolumeInUnits -
-                    closeVolume;
-
-                if (remainder > 0 &&
-                    remainder <
-                    Symbol.VolumeInUnitsMin)
-                    closeVolume =
-                        position.VolumeInUnits;
-
-                try
-                {
+            try
+            {
                     bool closingEverything =
                         closeVolume >=
                         position.VolumeInUnits;
