@@ -40,7 +40,14 @@ Edit the smallest authoritative module that owns the behavior.
 | Target metadata | `Planning/TradePlan/TargetMetadataEnricher.cs` |
 | Target progression | `Planning/TradePlan/TargetProgressionValidator.cs`, `TargetProgressionRule.cs` |
 | Executable plan preparation | `Trading/Execution/ExecutionPlanPreparation.cs` |
-| Runtime / MTF / calculation | `Runtime/**/*.cs` |
+| Runtime initialization | `Runtime/Initialization/*.cs` |
+| MTF context / closed-bar mapping | `Runtime/Mtf/*.cs` |
+| Calculation entrypoint | `Runtime/Calculation/CalculationCycle.cs` — orchestration only |
+| Calculation preparation | `Runtime/Calculation/CalculationPreparation.cs` |
+| Newly-closed-bar calculation | `Runtime/Calculation/CalculationClosedBar.cs` |
+| Decision alerts in calculation cycle | `Runtime/Calculation/CalculationDecisionAlerts.cs` |
+| Live calculation cycle | `Runtime/Calculation/CalculationLiveCycle.cs` |
+| Runtime / MTF / calculation support | `Runtime/**/*.cs` |
 | Automatic market execution | `Trading/Execution/AutomaticMarket/*.cs` |
 | Aggressive execution | `Trading/Execution/Aggressive/*.cs` |
 | Pending orders | `Trading/Pending/**/*.cs` |
