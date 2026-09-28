@@ -169,185 +169,38 @@ namespace cAlgo
                                 ? -1
                                 : 0;
 
-            string regime;
+            MarketRegimeClassificationInput classification =
+                new MarketRegimeClassificationInput
+                {
+                    AtrRatio = atrRatio,
+                    Choppiness = choppiness,
+                    RangeEfficiency = efficiency,
+                    RangeWidthAtr = rangeWidthAtr,
+                    ReturnAtr = returnAtr,
+                    Adx = adx,
+                    EmaSpreadAtr = emaSpreadAtr
+                };
 
-            bool microRange =
-                rangeWidthAtr <=
-                    Math.Max(
-                        1.0,
-                        MicroRangeWidthAtr) &&
-                returnAtr <=
-                    Math.Max(
-                        0.20,
-                        MicroRangeReturnAtr) &&
-                choppiness >=
-                    Math.Max(
-                        55,
-                        RangeChoppinessThreshold);
+            string regime =
+                MarketRegimeClassifier.Classify(
+                    classification,
+                    CompressionAtrRatio,
+                    ExpansionAtrRatio,
+                    HighVolatilityAtrRatio,
+                    RangeChoppinessThreshold,
+                    RangeEfficiencyThreshold,
+                    MicroRangeWidthAtr,
+                    MicroRangeReturnAtr,
+                    MinimumTrendAdx,
+                    MinimumTransitionAdx,
+                    MinimumTrendEfficiency,
+                    TrendChoppinessThreshold,
+                    MinimumTrendSpreadAtr);
 
-            if ((atrRatio <=
-                    Math.Min(
-                        0.95,
-                        CompressionAtrRatio) &&
-                 choppiness >=
-                    Math.Max(
-                        52,
-                        RangeChoppinessThreshold) &&
-                 efficiency <=
-                    Math.Max(
-                        0.35,
-                        RangeEfficiencyThreshold)) ||
-                (microRange &&
-                 adx <
-                    Math.Max(
-                        20,
-                        MinimumTrendAdx) &&
-                 efficiency <=
-                    Math.Max(
-                        0.35,
-                        RangeEfficiencyThreshold)))
-            {
-                regime = "COMPRESSION";
-            }
-            else if (atrRatio >=
-                         Math.Max(
-                             1.45,
-                             HighVolatilityAtrRatio) &&
-                     (adx < Math.Max(18, MinimumTrendAdx) ||
-                      choppiness >=
-                      Math.Max(
-                          55,
-                          RangeChoppinessThreshold)))
-            {
-                regime = "HIGH_VOLATILITY";
-            }
-            else if (adx < Math.Max(20, MinimumTrendAdx) &&
-                     choppiness >=
-                     Math.Max(
-                         55,
-                         RangeChoppinessThreshold) &&
-                     efficiency <=
-                     Math.Max(
-                         0.30,
-                         RangeEfficiencyThreshold))
-            {
-                regime = "RANGE";
-            }
-            else if (atrRatio >=
-                         Math.Max(
-                             1.25,
-                             ExpansionAtrRatio) &&
-                     (adx >= Math.Max(18, MinimumTransitionAdx) ||
-                      efficiency >=
-                      Math.Max(
-                          0.30,
-                          MinimumTrendEfficiency)))
-            {
-                regime = "EXPANSION";
-            }
-            else if (adx >=
-                         Math.Max(
-                             20,
-                             MinimumTrendAdx) &&
-                     choppiness <=
-                         Math.Min(
-                             60,
-                             TrendChoppinessThreshold) &&
-                     efficiency >=
-                         Math.Max(
-                             0.25,
-                             MinimumTrendEfficiency) &&
-                     emaSpreadAtr >=
-                         Math.Max(
-                             0.20,
-                             MinimumTrendSpreadAtr))
-            {
-                regime = "TREND";
-            }
-            else
-            {
-                regime = "TRANSITION";
-            }
-
-            int quality;
-
-            switch (regime)
-            {
-                case "TREND":
-                    quality =
-                        (int)Math.Round(
-                            48 +
-                            Math.Min(
-                                35,
-                                adx * 1.25) +
-                            efficiency * 18 -
-                            Math.Max(
-                                0,
-                                choppiness - 38) * 0.40 +
-                            Math.Min(
-                                12,
-                                emaSpreadAtr * 8));
-                    break;
-
-                case "EXPANSION":
-                    quality =
-                        (int)Math.Round(
-                            55 +
-                            Math.Min(
-                                30,
-                                adx * 0.90) +
-                            efficiency * 18 -
-                            Math.Max(
-                                0,
-                                choppiness - 45) * 0.50);
-                    break;
-
-                case "RANGE":
-                    quality =
-                        (int)Math.Round(
-                            32 +
-                            Math.Max(
-                                0,
-                                18 -
-                                adx) +
-                            Math.Max(
-                                0,
-                                0.35 -
-                                efficiency) * 15);
-                    break;
-
-                case "COMPRESSION":
-                    quality =
-                        22;
-                    break;
-
-                case "HIGH_VOLATILITY":
-                    quality =
-                        (int)Math.Round(
-                            34 +
-                            Math.Min(
-                                20,
-                                adx) +
-                            efficiency * 10 -
-                            Math.Max(
-                                0,
-                                atrRatio - 1.50) * 12);
-                    break;
-
-                case "TRANSITION":
-                    quality =
-                        (int)Math.Round(
-                            40 +
-                            Math.Min(
-                                15,
-                                adx * 0.60) +
-                            efficiency * 10);
-                    break;
-
-                default:
-                    quality = 35;
-                    break;
-            }
+            int quality =
+                MarketRegimeClassifier.Quality(
+                    regime,
+                    classification);
 
             int stability = 1;
 
