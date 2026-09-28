@@ -18,7 +18,14 @@ namespace cAlgo
                             int chartIndex,
                             int closedM5)
                         {
-                            ClearWatchObjects();
+                            if (_lastSignalMarkerClearM5 != closedM5)
+                            {
+                                Chart.RemoveObject(P + "BOS_MARKER");
+                                Chart.RemoveObject(P + "MSS_MARKER");
+                                Chart.RemoveObject(P + "SWEEP_MARKER");
+                                _lastSignalMarkerClearM5 =
+                                    closedM5;
+                            }
                 
                             if (Bars == null ||
                                 Bars.Count < 2)
@@ -52,7 +59,14 @@ namespace cAlgo
                             if (visualDirection == 0)
                             {
                                 Chart.RemoveObject(P + "WATCH_ARROW");
+                                RemovePlanLine(P + "WATCH_TRIGGER");
                                 Chart.RemoveObject(P + "REACTION_ARROW");
+
+                                _lastSignalRenderVisible = false;
+                                _lastSignalRenderBar = -1;
+                                _lastSignalRenderDirection = 0;
+                                _lastSignalRenderState = "";
+
                                 return;
                             }
                 
@@ -140,6 +154,24 @@ namespace cAlgo
                                     P + "WATCH_ARROW");
                             }
                 
+                            if (_executionModel != null &&
+                                _executionModel.Direction == visualDirection &&
+                                IsFinitePositive(
+                                    _executionModel.Trigger) &&
+                                ShowTrigger)
+                            {
+                                DrawPlanLine(
+                                    P + "WATCH_TRIGGER",
+                                    _executionModel.Trigger,
+                                    TriggerLineColor,
+                                    true);
+                            }
+                            else
+                            {
+                                RemovePlanLine(
+                                    P + "WATCH_TRIGGER");
+                            }
+
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");
                 
