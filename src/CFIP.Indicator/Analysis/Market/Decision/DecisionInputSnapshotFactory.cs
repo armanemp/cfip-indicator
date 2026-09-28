@@ -4,12 +4,12 @@ namespace cAlgo
 {
     internal sealed class DecisionInputSnapshotFactory
     {
-        private readonly DecisionFrameContributionCalculator _contributionCalculator;
+        private readonly FrameDecisionContributionAdapter _contributionCalculator;
 
         public DecisionInputSnapshotFactory()
         {
             _contributionCalculator =
-                new DecisionFrameContributionCalculator();
+                new FrameDecisionContributionAdapter();
         }
 
         public DecisionInputSnapshot Create(
