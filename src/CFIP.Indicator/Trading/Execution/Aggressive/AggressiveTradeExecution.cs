@@ -26,6 +26,18 @@ namespace cAlgo
                                         !_reaction.EntryAllowed ||
                                         _reaction.Direction == 0)
                                         return;
+
+                                    string capacityReason;
+                                    if (!ValidateConfiguredPositionCapacity(
+                                            out capacityReason))
+                                    {
+                                        _autoExecutionBlockReason =
+                                            "AGGRESSIVE • " + capacityReason;
+                                        SetAutoTradingState(
+                                            "BLOCKED",
+                                            "AGGRESSIVE • " + capacityReason);
+                                        return;
+                                    }
                         
                                     if (GetManagedPendingOrder() != null)
                                     {
