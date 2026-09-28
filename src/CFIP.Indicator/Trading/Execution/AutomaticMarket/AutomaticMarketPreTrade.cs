@@ -38,7 +38,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "OFF",
                                             "DISABLED");
-                                        return;
+                                        return false;
                                     }
 
                                     string capacityReason;
@@ -49,7 +49,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             capacityReason);
-                                        return;
+                                        return false;
                                     }
                         
                                     PendingOrder existingPending =
@@ -62,7 +62,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "ARMED",
                                             "WAITING FOR PENDING ORDER");
-                                        return;
+                                        return false;
                                     }
                         
                                     if (DailyLossLimitHit(
@@ -73,7 +73,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             "DAILY LOSS LIMIT REACHED");
-                                        return;
+                                        return false;
                                     }
                         
                                     if (_plan == null)
@@ -109,7 +109,7 @@ namespace cAlgo
                                                         : "WAITING FOR SMART-ELIGIBLE PLAN");
                                             }
                         
-                                            return;
+                                            return false;
                                         }
                                     }
                         
@@ -121,7 +121,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "ARMED",
                                             "WAITING FOR DECISION");
-                                        return;
+                                        return false;
                                     }
                         
                                     if (!_decision.EntryAllowed)
@@ -146,7 +146,7 @@ namespace cAlgo
                                                     ? "WAITING FOR CONFIRMATION"
                                                     : _decision.BlockReason);
                         
-                                            return;
+                                            return false;
                                         }
                                     }
                         
@@ -158,7 +158,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "ARMED",
                                             "ALREADY TRADED THIS M5");
-                                        return;
+                                        return false;
                                     }
                         
                                     if (_decision.Confidence <
@@ -175,7 +175,7 @@ namespace cAlgo
                                             _decision.Confidence +
                                             " < " +
                                             MinimumAutoConfidence);
-                                        return;
+                                        return false;
                                     }
                         
                                     if (_decision.SmartQuality <
@@ -192,7 +192,7 @@ namespace cAlgo
                                             _decision.SmartQuality +
                                             " < " +
                                             MinimumAutoSmartQuality);
-                                        return;
+                                        return false;
                                     }
                         
                                     string suitabilityReason;
@@ -208,7 +208,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             suitabilityReason);
-                                        return;
+                                        return false;
                                     }
                         
                                     int levelQuality =
@@ -230,7 +230,7 @@ namespace cAlgo
                                             levelQuality +
                                             " < " +
                                             MinimumAutoLevelQuality);
-                                        return;
+                                        return false;
                                     }
                         
                                     if (ManagedPositionCount() >=
@@ -243,12 +243,12 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             "MAX OPEN POSITIONS");
-                                        return;
+                                        return false;
                                     }
                         
                                     double plannedEntry = _plan.Entry;
                         
-                                    double entry =
+                                    entry =
                                         NormalizePrice(
                                             _plan.Direction == 1
                                                 ? Symbol.Ask
@@ -264,7 +264,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             "ATR UNAVAILABLE");
-                                        return;
+                                        return false;
                                     }
                         
                                     if (Math.Abs(
@@ -276,12 +276,8 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             "ENTRY EXTENSION");
-                                        return;
+                                        return false;
                                     }
-                        
-                                    double stopPips;
-                                    double targetPips;
-                                    double target;
                         
                                     if (!TryPrepareExecutablePlan(
                                             closedM5,
@@ -293,7 +289,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             "INVALID SMART EXECUTION PLAN");
-                                        return;
+                                        return false;
                                     }
                         
                                     string executableEntryReason;
@@ -308,13 +304,13 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "ARMED",
                                             executableEntryReason);
-                                        return;
+                                        return false;
                                     }
                         
                                     double effectiveStopPips =
                                         EffectiveRiskStopPips(stopPips);
                         
-                                    double volume =
+                                    volume =
                                         CalculateVolume(
                                             effectiveStopPips);
                         
@@ -331,7 +327,7 @@ namespace cAlgo
                                         SetAutoTradingState(
                                             "BLOCKED",
                                             "VOLUME BELOW MINIMUM");
-                                        return;
+                                        return false;
                                     }
 
                                     type =
