@@ -1,6 +1,5 @@
 using System;
 using cAlgo.API;
-using cAlgo.API.Internals;
 
 namespace cAlgo
 {
@@ -64,7 +63,7 @@ namespace cAlgo
         }
 
         private bool HasZoneRetest(
-            cAlgo.API.Internals.Bars bars,
+            Bars bars,
             int createdIndex,
             int currentIndex,
             double low,
