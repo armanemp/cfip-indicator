@@ -489,6 +489,23 @@ for filename, method in oss_files.items():
     if not path.exists() or method not in path.read_text(encoding="utf-8"):
         raise SystemExit(f"OSS indicator module missing: {filename}")
 
+PRODUCTION_CSPROJ = ROOT / "CFIP.Indicator.csproj"
+BENCHMARK_CSPROJ = Path("tools/CFIP.StockIndicators.Benchmark/CFIP.StockIndicators.Benchmark.csproj")
+PRODUCTION_PACKAGE = "PackageReference Include=\"Skender.Stock.Indicators\" Version=\"2.7.3\""
+RESEARCH_PACKAGE = "PackageReference Include=\"FacioQuo.Stock.Indicators\" Version=\"3.0.1\""
+
+if PRODUCTION_PACKAGE not in PRODUCTION_CSPROJ.read_text(encoding="utf-8"):
+    raise SystemExit("Production OSS package pin is missing or changed")
+if "FacioQuo.Stock.Indicators" in raw:
+    raise SystemExit("Research-only FacioQuo.Stock.Indicators leaked into production source")
+if not BENCHMARK_CSPROJ.exists():
+    raise SystemExit("OSS benchmark project is missing")
+benchmark_project = BENCHMARK_CSPROJ.read_text(encoding="utf-8")
+if RESEARCH_PACKAGE not in benchmark_project:
+    raise SystemExit("Research OSS benchmark package pin is missing")
+if PRODUCTION_PACKAGE not in benchmark_project:
+    raise SystemExit("Production OSS package must also be covered by the benchmark")
+
 
 # Strict type isolation: production behavior files may not hide helper types
 # inside the cTrader partial host. Every helper/model type must have a file owner.
