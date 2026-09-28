@@ -55,35 +55,11 @@ namespace cAlgo
                         
                                         _plan.IsLivePosition = true;
                         
-                                        double market =
-                                            direction == 1
-                                                ? Symbol.Bid
-                                                : Symbol.Ask;
-
-                                        bool brokerStopValid =
-                                            IsFinitePositive(
-                                                position.StopLoss.HasValue
-                                                    ? position.StopLoss.Value
-                                                    : 0) &&
-                                            IsValidManagedStop(
-                                                direction,
-                                                position.EntryPrice,
-                                                market,
-                                                position.StopLoss.HasValue
-                                                    ? position.StopLoss.Value
-                                                    : 0);
-
-                                        bool brokerTargetValid =
-                                            IsFinitePositive(
-                                                position.TakeProfit.HasValue
-                                                    ? position.TakeProfit.Value
-                                                    : 0) &&
-                                            IsValidTarget(
-                                                direction,
-                                                position.EntryPrice,
-                                                position.TakeProfit.HasValue
-                                                    ? position.TakeProfit.Value
-                                                    : 0);
+                                        bool protectionHealthy =
+                                            EvaluateBrokerProtection(
+                                                position,
+                                                out bool brokerStopValid,
+                                                out bool brokerTargetValid);
 
                                         _activeBrokerStop =
                                             brokerStopValid
@@ -98,9 +74,7 @@ namespace cAlgo
                                                 : 0;
 
                                         _brokerProtectionRecoveryRequired =
-                                            !brokerStopValid ||
-                                            (SyncBrokerTakeProfit &&
-                                             !brokerTargetValid);
+                                            !protectionHealthy;
 
                                         SetLifecycleState(
                                             _brokerProtectionRecoveryRequired
