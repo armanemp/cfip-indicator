@@ -29,6 +29,22 @@ namespace cAlgo
             f.EmaFast = Ema(bars, index, true);
             f.EmaSlow = Ema(bars, index, false);
 
+            MarketRegimeSnapshot regimeSnapshot =
+                AnalyzeMarketRegime(
+                    bars,
+                    index);
+
+            f.Choppiness =
+                regimeSnapshot.Choppiness;
+            f.AtrRatio =
+                regimeSnapshot.AtrRatio;
+            f.EmaSpreadAtr =
+                regimeSnapshot.EmaSpreadAtr;
+            f.EmaSlopeAtr =
+                regimeSnapshot.EmaSlopeAtr;
+            f.RangeEfficiency =
+                regimeSnapshot.RangeEfficiency;
+
             f.StructureBull =
                 UseInternalStructure &&
                 BullStructure(
@@ -215,11 +231,18 @@ namespace cAlgo
 
             f.Choppy =
                 UseHistoricalChoppinessGuard &&
-                f.Adx < AdxMinimum &&
-                Math.Abs(
-                    f.EmaFast -
-                    f.EmaSlow) <
-                f.Atr * 0.35;
+                (f.Choppiness >=
+                    Math.Max(
+                        55,
+                        RangeChoppinessThreshold) ||
+                 (f.Adx <
+                    Math.Max(
+                        18,
+                        MinimumTrendAdx) &&
+                  f.EmaSpreadAtr <
+                    Math.Max(
+                        0.25,
+                        MinimumTrendSpreadAtr)));
 
             f.EqualHigh =
                 UseEqualHighLow &&
