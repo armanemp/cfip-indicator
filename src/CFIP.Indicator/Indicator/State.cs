@@ -200,6 +200,7 @@ namespace cAlgo
         private double _lastExecutionModelMarket;
 
         private DateTime _lastPanelRenderUtc = DateTime.MinValue;
+        private DateTime _lastQuickControlSyncUtc = DateTime.MinValue;
         private int _lastLiveM1FrameIndex = -1;
 
         private int _lastSignalRenderBar = -1;
