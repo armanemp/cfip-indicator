@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>CFIP.Runtime.Contracts</AssemblyName>
+    <RootNamespace>cAlgo</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/CFIP.Indicator/Core/Enums/LifecycleState.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/PriceProtectionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ManagedStopProtectionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionFillAcceptanceRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Runtime/Mtf/MtfClosedContext.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Execution/BrokerConfirmationPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleEventIdempotencyGuard.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleTransitionPolicy.cs" />
+  </ItemGroup>
+</Project>

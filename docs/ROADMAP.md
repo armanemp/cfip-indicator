@@ -299,7 +299,19 @@ Acceptance:
 
 ## Phase 9 — cTrader compile and runtime acceptance
 
+Status: in progress.
+
 Goal: prove the finished source on the target cTrader environment.
+
+Automated acceptance completed in this phase:
+
+- Extended the cTrader CI workflow with a dedicated runtime-acceptance contract executable.
+- Added deterministic contracts for MTF context integrity, market/pending broker confirmation, rejection handling, fill-envelope symmetry, initial SL/TP directionality, managed break-even protection, monotonic target progression, lifecycle flows, and lifecycle event idempotency.
+- Separated initial protective-stop validation from post-entry managed-stop validation so break-even/profit-lock stops can move into protected profit while never crossing the current market.
+- Fixed normal automatic-market rejection handling so broker error information is preserved instead of being replaced by a misleading null-result state.
+- Kept broker-confirmed state as the only accepted execution state.
+
+Hands-on cTrader acceptance still requires the actual target terminal and broker session. Repository CI cannot reproduce the cTrader chart UI, live broker server, order-fill timing, slippage, reconnection, or terminal resource profile. Those checks remain explicitly required before this phase can be marked complete.
 
 Work:
 

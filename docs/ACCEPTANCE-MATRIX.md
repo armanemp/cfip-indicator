@@ -18,3 +18,23 @@
 | Alerts / popup / chart / panel | PASS | PASS | PASS | Required | Required |
 
 Static/source parity is not a substitute for live cTrader scenario acceptance.
+
+## Phase 9 — Automated controlled acceptance
+
+The repository now executes a dedicated runtime contract suite covering the state and invariant portions of the Phase 9 scenarios:
+
+| Scenario | Automated controlled check | Live cTrader |
+|---|---|---:|
+| Closed-bar MTF context | PASS | Required |
+| Market execution confirmation/rejection | PASS | Required |
+| Pending-order confirmation/rejection | PASS | Required |
+| Fill/slippage envelope symmetry | PASS | Required |
+| Initial SL/TP protection | PASS | Required |
+| Managed break-even/profit lock | PASS | Required |
+| Target progression | PASS | Required |
+| Restart/recovery lifecycle transitions | PASS | Required |
+| Reversal/invalidation/exit lifecycle | PASS | Required |
+| End-of-day exit lifecycle | PASS | Required |
+| Duplicate lifecycle events | PASS | Required |
+
+The automated suite validates deterministic state/invariant behavior only. It does not emulate the live cTrader terminal, broker server, chart rendering engine, event timing, reconnection behavior, or memory profile.

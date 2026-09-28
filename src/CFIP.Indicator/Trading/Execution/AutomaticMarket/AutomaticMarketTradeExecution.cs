@@ -389,28 +389,29 @@ namespace cAlgo
                                                 TradeExecutionMetadata.DefaultExecutionComment,
                                                 false,
                                                 "AUTOMATIC MARKET");
-                        
-                                        if (!BrokerConfirmationPolicy.CanAdoptPosition(
-                                                result != null,
-                                                result != null &&
-                                                result.IsSuccessful,
-                                                result != null &&
-                                                result.Position != null))
+                                        if (result == null)
                                         {
+                                            _autoExecutionBlockReason =
+                                                "NULL TRADE RESULT";
                                             SetAutoTradingState(
                                                 "ERROR",
                                                 "NULL TRADE RESULT");
                                             return;
                                         }
-                        
-                                        if (!result.IsSuccessful ||
-                                            result.Position == null)
+
+                                        if (!BrokerConfirmationPolicy.CanAdoptPosition(
+                                                true,
+                                                result.IsSuccessful,
+                                                result.Position != null))
                                         {
-                                            SetAutoTradingState(
-                                                "ERROR",
+                                            _autoExecutionBlockReason =
                                                 result.Error.HasValue
                                                     ? result.Error.Value.ToString()
-                                                    : "TRADE REJECTED");
+                                                    : "TRADE REJECTED";
+
+                                            SetAutoTradingState(
+                                                "ERROR",
+                                                _autoExecutionBlockReason);
                                             return;
                                         }
                         

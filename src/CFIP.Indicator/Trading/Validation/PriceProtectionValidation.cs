@@ -14,122 +14,132 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        // ============================================================
-                        
-                                private double MinimumTakeProfitDistancePrice()
-                                {
-                                    try
-                                    {
-                                        double distance =
-                                            Math.Max(
-                                                0,
-                                                Symbol.MinTakeProfitDistance);
-                        
-                                        if (distance <= 0)
-                                            return
-                                                Math.Max(
-                                                    Symbol.TickSize,
-                                                    Symbol.PipSize);
-                        
-                                        if (Symbol.MinDistanceType ==
-                                            SymbolMinDistanceType.Pips)
-                                            return
-                                                distance *
-                                                Math.Max(
-                                                    Symbol.PipSize,
-                                                    Symbol.TickSize);
-                        
-                                        return
-                                            Symbol.Bid *
-                                            distance /
-                                            100.0;
-                                    }
-                                    catch
-                                    {
-                                        return
-                                            Math.Max(
-                                                Symbol.TickSize,
-                                                Symbol.PipSize);
-                                    }
-                                }
-        
+        private double MinimumTakeProfitDistancePrice()
+        {
+            try
+            {
+                double distance =
+                    Math.Max(
+                        0,
+                        Symbol.MinTakeProfitDistance);
+
+                if (distance <= 0)
+                    return Math.Max(
+                        Symbol.TickSize,
+                        Symbol.PipSize);
+
+                if (Symbol.MinDistanceType ==
+                    SymbolMinDistanceType.Pips)
+                    return distance *
+                        Math.Max(
+                            Symbol.PipSize,
+                            Symbol.TickSize);
+
+                return Symbol.Bid * distance / 100.0;
+            }
+            catch
+            {
+                return Math.Max(
+                    Symbol.TickSize,
+                    Symbol.PipSize);
+            }
+        }
+
         private bool IsValidTarget(
-                                    int direction,
-                                    double entry,
-                                    double target)
-                                {
-                                    if (!IsFinitePositive(entry) ||
-                                        !IsFinitePositive(target))
-                                        return false;
-                        
-                                    double minimumDistance =
-                                        Math.Max(
-                                            Symbol.TickSize,
-                                            MinimumTakeProfitDistancePrice());
-                        
-                                    return PriceProtectionRule.ValidateTarget(
-                                        direction,
-                                        entry,
-                                        target,
-                                        minimumDistance);
-                                }
-        
+            int direction,
+            double entry,
+            double target)
+        {
+            if (!IsFinitePositive(entry) ||
+                !IsFinitePositive(target))
+                return false;
+
+            double minimumDistance =
+                Math.Max(
+                    Symbol.TickSize,
+                    MinimumTakeProfitDistancePrice());
+
+            return PriceProtectionRule.ValidateTarget(
+                direction,
+                entry,
+                target,
+                minimumDistance);
+        }
+
         private double MinimumProtectionDistancePrice()
-                                {
-                                    try
-                                    {
-                                        double distance =
-                                            Math.Max(
-                                                0,
-                                                Symbol.MinStopLossDistance);
-                        
-                                        if (distance <= 0)
-                                            return
-                                                Math.Max(
-                                                    Symbol.TickSize,
-                                                    Symbol.PipSize);
-                        
-                                        if (Symbol.MinDistanceType ==
-                                            SymbolMinDistanceType.Pips)
-                                            return
-                                                distance *
-                                                Math.Max(
-                                                    Symbol.PipSize,
-                                                    Symbol.TickSize);
-                        
-                                        return
-                                            Symbol.Bid *
-                                            distance /
-                                            100.0;
-                                    }
-                                    catch
-                                    {
-                                        return
-                                            Math.Max(
-                                                Symbol.TickSize,
-                                                Symbol.PipSize);
-                                    }
-                                }
-        
+        {
+            try
+            {
+                double distance =
+                    Math.Max(
+                        0,
+                        Symbol.MinStopLossDistance);
+
+                if (distance <= 0)
+                    return Math.Max(
+                        Symbol.TickSize,
+                        Symbol.PipSize);
+
+                if (Symbol.MinDistanceType ==
+                    SymbolMinDistanceType.Pips)
+                    return distance *
+                        Math.Max(
+                            Symbol.PipSize,
+                            Symbol.TickSize);
+
+                return Symbol.Bid * distance / 100.0;
+            }
+            catch
+            {
+                return Math.Max(
+                    Symbol.TickSize,
+                    Symbol.PipSize);
+            }
+        }
+
         private bool IsValidStop(
-                                    int direction,
-                                    double entry,
-                                    double stop)
-                                {
-                                    if (!IsFinitePositive(entry) ||
-                                        !IsFinitePositive(stop))
-                                        return false;
-                        
-                                    double minimumDistance =
-                                        Math.Max(
-                                            Symbol.TickSize,
-                                            MinimumProtectionDistancePrice());
-                        
-                                    return PriceProtectionRule.ValidateStop(
-                                        direction,
-                                        entry,
-                                        stop,
-                                        minimumDistance);
-                                }
+            int direction,
+            double entry,
+            double stop)
+        {
+            if (!IsFinitePositive(entry) ||
+                !IsFinitePositive(stop))
+                return false;
+
+            double minimumDistance =
+                Math.Max(
+                    Symbol.TickSize,
+                    MinimumProtectionDistancePrice());
+
+            return PriceProtectionRule.ValidateStop(
+                direction,
+                entry,
+                stop,
+                minimumDistance);
+        }
+
+        private bool IsValidManagedStop(
+            int direction,
+            double entry,
+            double market,
+            double stop)
+        {
+            if (!IsFinitePositive(entry) ||
+                !IsFinitePositive(market) ||
+                !IsFinitePositive(stop))
+                return false;
+
+            double minimumDistance =
+                Math.Max(
+                    Symbol.TickSize,
+                    MinimumProtectionDistancePrice());
+
+            return ManagedStopProtectionRule.Validate(
+                direction,
+                entry,
+                market,
+                stop,
+                minimumDistance);
+        }
     }
 }
