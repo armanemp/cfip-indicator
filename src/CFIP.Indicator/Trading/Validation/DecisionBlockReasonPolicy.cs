@@ -32,6 +32,9 @@ namespace cAlgo
                 case "REGIME TRANSITION":
                 case "REGIME DIRECTION CONFLICT":
                 case "REGIME UNSTABLE":
+                case "TREND EVIDENCE":
+                case "EXPANSION EVIDENCE":
+                case "HIGH VOL EVIDENCE":
                     return true;
 
                 default:
