@@ -106,6 +106,7 @@ namespace cAlgo
                         atr,
                         stop,
                         target,
+                        aggressiveIntent,
                         result,
                         out double actualStop,
                         out double actualTarget))
