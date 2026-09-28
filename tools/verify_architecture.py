@@ -157,6 +157,20 @@ VERSION_RESIDUE_PATTERNS = (
     re.compile(r"CFIP_MTF_LiveEntryEngine_Clean", re.I),
     re.compile(r"\bCFIP[\s_-]*(?:SMART|AUTO)[\s_-]*\d+\b", re.I),
 )
+HISTORICAL_IDENTIFIER_PATTERN = re.compile(
+    r"\b(?:Legacy|Compatibility|Compat|Deprecated|Versioned|Obsolete|Alias)\w*\b",
+    re.I,
+)
+COMPATIBILITY_ALIAS_PATTERN = re.compile(
+    r"^\s*using\s+\w*(?:Legacy|Compatibility|Compat|Deprecated|Versioned|Alias)\w*\s*=",
+    re.I | re.MULTILINE,
+)
+EMPTY_CATCH_PATTERN = re.compile(
+    r"\bcatch(?:\s*\([^)]*\))?\s*\{\s*\}",
+    re.I,
+)
+GENERATED_DIR_NAMES = {"bin", "obj", ".vs", "TestResults"}
+GENERATED_SUFFIXES = {".dll", ".pdb", ".exe", ".nupkg"}
 hygiene_errors = []
 
 for production_file in files:
