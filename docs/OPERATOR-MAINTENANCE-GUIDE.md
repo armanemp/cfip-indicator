@@ -44,6 +44,8 @@ Partial closes remain pending until broker confirmation. Break-even protection a
 
 An automatic market or aggressive entry whose broker protection mutation fails is shown as `RECOVERY` in the auto-trading state; execution success is not presented as fully protected execution.
 
+The current live execution state is single-plan: `Maximum Open Positions` must remain `1`. Values above `1` are blocked by the execution-capacity guard until multi-plan lifecycle state is implemented.
+
 Aggressive fills outside the accepted execution envelope request closure. A close rejection leaves the position in explicit recovery rather than silently accepting the mismatched fill.
 
 ## Lifecycle and recovery
