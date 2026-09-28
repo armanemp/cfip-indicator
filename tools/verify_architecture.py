@@ -396,6 +396,48 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Cross-path automatic execution consistency.
+CROSS_PATH_CONTRACTS = {
+    "AutomaticMarketBrokerExecution.cs": (
+        "BuildExecutionIntent(",
+        "ValidateExecutionIntent(",
+        "TryExecuteMarketOrder(",
+        "BrokerConfirmationPolicy.CanAdoptPosition(",
+        "EnsureBrokerProtectionForPosition(",
+    ),
+    "AggressiveBrokerExecution.cs": (
+        "BuildExecutionIntent(",
+        "ValidateExecutionIntent(",
+        "TryExecuteMarketOrder(",
+        "BrokerConfirmationPolicy.CanAdoptPosition(",
+        "EnsureBrokerProtectionForPosition(",
+    ),
+    "ContinuationStopPlacement.cs": (
+        "BuildExecutionIntent(",
+        "ValidateExecutionIntent(",
+        "TryPlaceStopOrder(",
+        "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+    ),
+    "ReversalLimitPlacement.cs": (
+        "BuildExecutionIntent(",
+        "ValidateExecutionIntent(",
+        "TryPlaceLimitOrder(",
+        "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+    ),
+}
+for filename, tokens in CROSS_PATH_CONTRACTS.items():
+    path = (
+        ROOT / "Trading" / "Execution" / "AutomaticMarket" / filename
+        if filename == "AutomaticMarketBrokerExecution.cs"
+        else ROOT / "Trading" / "Execution" / "Aggressive" / filename
+        if filename == "AggressiveBrokerExecution.cs"
+        else ROOT / "Trading" / "Pending" / "Placement" / filename
+    )
+    code = path.read_text(encoding="utf-8")
+    for token in tokens:
+        if token not in code:
+            raise SystemExit(f"Cross-path execution contract missing in {filename}: {token}")
+
 # Pending placement boundary.
 PENDING_STOP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
 PENDING_STOP_CODE = PENDING_STOP.read_text(encoding="utf-8")
