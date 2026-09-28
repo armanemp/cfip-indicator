@@ -104,12 +104,7 @@ namespace cAlgo
                                                 market);
                                     }
                         
-                                    double low = 0;
-                                    double high = 0;
-                                    string source = "NONE";
-                                    int quality = 0;
-                        
-                                    if (m5Fvg != null && m5Ob != null)
+                                                                        if (m5Fvg != null && m5Ob != null)
                                     {
                                         double overlapLow =
                                             Math.Max(m5Fvg.Low, m5Ob.Low);
@@ -246,7 +241,7 @@ namespace cAlgo
                                         high <= low)
                                         return false;
                         
-                                    double ideal =
+                                    ideal =
                                         low +
                                         (high - low) * 0.50;
                         
@@ -283,13 +278,13 @@ namespace cAlgo
                                             0,
                                             100);
                         
-                                    double tolerance =
+                                    tolerance =
                                         atr *
                                         Math.Max(
                                             0.02,
                                             ExecutionZoneAtr);
                         
-                                    double triggerBuffer =
+                                    triggerBuffer =
                                         atr *
                                         Math.Max(
                                             0.01,
