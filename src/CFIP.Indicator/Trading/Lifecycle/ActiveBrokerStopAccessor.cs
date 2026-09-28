@@ -19,9 +19,7 @@ namespace cAlgo
                                         IsFinitePositive(_activeBrokerStop))
                                         return _activeBrokerStop;
                         
-                                    return _plan == null
-                                        ? 0
-                                        : _plan.Stop;
+                                    return 0;
                                 }
     }
 }
