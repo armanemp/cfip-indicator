@@ -13,6 +13,7 @@ namespace cAlgo
             VerifyFillEnvelopeSymmetry();
             VerifyInitialProtectionDirectionality();
             VerifyManagedBreakEvenDirectionality();
+            VerifyProtectionProgression();
             VerifyTargetProgression();
             VerifyLifecycleFlows();
             VerifyLifecycleIdempotency();
@@ -250,6 +251,77 @@ namespace cAlgo
                     94,
                     1),
                 "SELL stop beyond market");
+        }
+
+        private static void VerifyProtectionProgression()
+        {
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    100,
+                    101),
+                "BUY SL advances upward");
+
+            Assert(
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    101,
+                    100),
+                "BUY SL backward move blocked");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    100,
+                    99),
+                "SELL SL advances downward");
+
+            Assert(
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    99,
+                    100),
+                "SELL SL backward move blocked");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    105,
+                    106,
+                    true),
+                "BUY TP advances forward");
+
+            Assert(
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    106,
+                    105,
+                    true),
+                "BUY TP backward move blocked");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    95,
+                    94,
+                    true),
+                "SELL TP advances forward");
+
+            Assert(
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    94,
+                    95,
+                    true),
+                "SELL TP backward move blocked");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    106,
+                    105,
+                    false),
+                "TP policy can explicitly allow backward move");
         }
 
         private static void VerifyTargetProgression()
