@@ -388,3 +388,28 @@ Acceptance:
 - No production .cs file exceeds 20 KiB.
 
 Next: continue the deep oversized-module audit from the remaining near-ceiling planning, analysis, trading and UI files, prioritizing modules whose single method still carries multiple state transitions or concerns.
+
+
+## Phase 12 — Market-frame decomposition
+
+Status: complete.
+
+Goal: separate market-frame evidence collection from scoring/quality calculation while keeping the market-frame analyzer as a thin composition boundary.
+
+Completed:
+
+- Split market-frame evidence construction from score, direction and quality calculation.
+- Kept the existing indicator, structure, liquidity, zone, market-context and OSS evidence formulas unchanged.
+- Preserved BUY/SELL symmetry and the existing score weights, thresholds and quality formula.
+- Reduced MarketFrameAnalyzer.cs to a thin orchestration owner.
+- Added static ownership checks for the three-part market-frame boundary.
+- Updated the editing guide and architecture contract to reflect the new ownership.
+
+Acceptance:
+
+- Evidence construction and scoring have separate source-file owners.
+- MarketFrameAnalyzer contains orchestration only.
+- Existing score/direction/quality behavior remains in the scoring owner.
+- No production file exceeds the enforced 20 KiB ceiling.
+
+Next: continue with the largest remaining planning/trading modules, prioritizing PlanBuilder and TargetSelector where selection, validation and state construction are still concentrated.
