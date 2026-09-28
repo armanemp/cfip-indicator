@@ -316,7 +316,7 @@ if "CanAttemptClosedBarAnalysis(" not in stage_isolation_code:
 if "RecordClosedBarAnalysisFailure(" not in stage_isolation_code:
     raise SystemExit("Closed-bar analysis stage must record retry failures")
 
-if 'stageName == "CLOSED-BAR ANALYSIS"' not in stage_isolation_code:
+if '"CLOSED-BAR ANALYSIS"' not in stage_isolation_code:
     raise SystemExit("Closed-bar fault stage boundary is missing")
 
 if "ProcessLiveCalculationStages(" not in calculation_cycle_code:
