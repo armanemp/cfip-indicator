@@ -61,8 +61,12 @@ namespace cAlgo
                                             "EXECUTED",
                                             StringComparison.OrdinalIgnoreCase))
                                         return TpLineColor;
-                        
+
                                     if (string.Equals(
+                                            _autoTradingState,
+                                            "RECOVERY",
+                                            StringComparison.OrdinalIgnoreCase) ||
+                                        string.Equals(
                                             _autoTradingState,
                                             "BLOCKED",
                                             StringComparison.OrdinalIgnoreCase) ||
