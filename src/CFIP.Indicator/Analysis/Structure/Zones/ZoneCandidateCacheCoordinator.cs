@@ -466,7 +466,8 @@ namespace cAlgo
                             i,
                             cache.Index,
                             1,
-                            cache.Atr);
+                            cache.Atr,
+                            cache.BullFvgs);
 
                     if (bull != null &&
                         bull.Quality >=
@@ -485,7 +486,8 @@ namespace cAlgo
                             i,
                             cache.Index,
                             -1,
-                            cache.Atr);
+                            cache.Atr,
+                            cache.BearFvgs);
 
                     if (bear != null &&
                         bear.Quality >=
