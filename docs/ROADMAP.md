@@ -835,9 +835,17 @@ Acceptance:
 
 ### Phase 29 — Hands-on cTrader terminal baseline
 
-Status: next.
+Status: in progress.
 
 Goal: validate the production assembly on the actual target cTrader terminal and broker/demo environment.
+
+Completed in this phase:
+
+- Verified the target LiteFinance cTrader Windows terminal and its local Algo API files.
+- Verified the repository builds successfully against the official cTrader.Automate 1.0.21 SDK.
+- Corrected the production indicator project to consume the pinned cTrader.Automate package instead of an environment-dependent Documents\\cAlgo\\API\\cAlgo.API.dll reference.
+- Kept the CI project aligned with the same SDK and excluded generated bin/obj source artifacts from its compile glob.
+- Confirmed the SDK used by the repository exposes direct trading methods on Indicator, while the separately installed local API DLL exposes a smaller API surface; this remains a runtime compatibility item to validate in the terminal.
 
 Work:
 
