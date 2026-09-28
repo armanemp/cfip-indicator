@@ -784,4 +784,24 @@ Acceptance:
 - Existing stop directionality and risk limits remain unchanged.
 - No production file exceeds 20 KiB.
 
-Next: perform the final repository-wide duplicate-owner/dead-code sweep and inspect the remaining near-ceiling execution/chart modules before final cTrader hands-on validation.
+Phase 27 completed the final repository-wide duplicate-owner/dead-code sweep; only hands-on cTrader validation remains.
+
+
+## Phase 27 — Final repository-wide ownership/dead-code sweep
+
+Status: complete.
+
+Goal: close the remaining architecture loop without introducing another broad refactor cycle.
+
+Completed:
+- Audited the remaining near-ceiling execution, chart, lifecycle and analysis modules and retained modules whose size is explained by one coherent responsibility.
+- Reduced the remaining multi-concern plan-integrity and signal/decision validation modules to explicit single-purpose owners.
+- Preserved the existing structural-stop decomposition instead of re-splitting already-correct ownership.
+- Added verifier coverage for final owner boundaries and explicitly obsolete production paths.
+- Updated the maintenance/editing ownership documentation.
+- GitHub Actions passed on the final PR revision: Source and architecture checks, Runtime acceptance contracts and cTrader compile.
+
+Acceptance boundary:
+- Repository source architecture is complete and regression-gated.
+- No production module exceeds the enforced 20 KiB ceiling.
+- Remaining release work is hands-on cTrader terminal/broker validation required by the acceptance matrix; further code changes should be driven by a concrete runtime finding.
