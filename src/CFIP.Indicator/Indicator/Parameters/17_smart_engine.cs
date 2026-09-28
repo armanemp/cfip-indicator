@@ -72,5 +72,11 @@ namespace cAlgo
 
         [Parameter("Minimum Transition ADX", Group = "17 · Smart Engine", DefaultValue = 18, MinValue = 10, MaxValue = 40)]
         public int MinimumTransitionAdx { get; set; }
+
+        [Parameter("Require Regime Stability", Group = "17 · Smart Engine", DefaultValue = true)]
+        public bool RequireRegimeStability { get; set; }
+
+        [Parameter("Minimum Regime Stability Bars", Group = "17 · Smart Engine", DefaultValue = 2, MinValue = 1, MaxValue = 4)]
+        public int MinimumRegimeStability { get; set; }
     }
 }
