@@ -104,6 +104,33 @@ namespace cAlgo
                 }
             }
 
+            if (UseStrictRegimeQualityGate &&
+                RequireRegimeStability)
+            {
+                MarketRegimeSnapshot regime =
+                    GetActiveM5Regime(
+                        closedM5);
+
+                if (regime != null &&
+                    (regime.Regime == "TREND" ||
+                     regime.Regime == "EXPANSION") &&
+                    regime.Stability <
+                    Math.Max(
+                        1,
+                        MinimumRegimeStability))
+                {
+                    if (regime.Quality <
+                        Math.Max(
+                            MinimumDirectionalRegimeQuality + 5,
+                            adaptiveQualityThreshold + 5))
+                    {
+                        return new DecisionFilterResult(
+                            false,
+                            "REGIME UNSTABLE");
+                    }
+                }
+            }
+
             if (UseRegimeNoTradeGuard &&
                 NoTradeRegimeBlocked(
                     decision.Regime,
