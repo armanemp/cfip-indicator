@@ -46,11 +46,11 @@ namespace cAlgo
             }
 
             if (input.UseM1Trigger &&
-                input.M5Frame != null)
+                input.M1Frame != null)
             {
-                if (input.M5Frame.Direction == 1)
+                if (input.M1Frame.Direction == 1)
                     buy += 3;
-                else if (input.M5Frame.Direction == -1)
+                else if (input.M1Frame.Direction == -1)
                     sell += 3;
             }
 

@@ -19,6 +19,7 @@ namespace cAlgo
                 throw new ArgumentNullException(nameof(request));
 
             return new DecisionInputSnapshot(
+                request.M1Frame,
                 request.M5Frame,
                 request.M15Frame,
                 request.M30Frame,

@@ -34,6 +34,7 @@ namespace cAlgo
             DecisionInputBuildRequest request =
                 new DecisionInputBuildRequest
                 {
+                    M1Frame = _m1Frame,
                     M5Frame = _m5Frame,
                     M15Frame = _m15Frame,
                     M30Frame = _m30Frame,

@@ -4,6 +4,7 @@ namespace cAlgo
 {
     internal sealed class DecisionInputSnapshot
     {
+        public Frame M1Frame { get; }
         public Frame M5Frame { get; }
         public Frame M15Frame { get; }
         public Frame M30Frame { get; }
@@ -40,6 +41,7 @@ namespace cAlgo
         public DecisionEvidenceSnapshot Evidence { get; }
 
         public DecisionInputSnapshot(
+            Frame m1Frame,
             Frame m5Frame,
             Frame m15Frame,
             Frame m30Frame,
@@ -70,6 +72,7 @@ namespace cAlgo
             int closedM5,
             DecisionEvidenceSnapshot evidence)
         {
+            M1Frame = m1Frame;
             M5Frame = m5Frame;
             M15Frame = m15Frame;
             M30Frame = m30Frame;

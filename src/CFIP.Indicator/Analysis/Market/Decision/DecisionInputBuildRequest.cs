@@ -4,6 +4,7 @@ namespace cAlgo
 {
     internal sealed class DecisionInputBuildRequest
     {
+        public Frame M1Frame { get; set; }
         public Frame M5Frame { get; set; }
         public Frame M15Frame { get; set; }
         public Frame M30Frame { get; set; }
