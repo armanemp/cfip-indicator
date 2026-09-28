@@ -399,10 +399,10 @@ for required_path in (
 # Cross-path automatic execution consistency.
 CROSS_PATH_CONTRACTS = {
     "AutomaticMarketBrokerExecution.cs": (
-        "BuildExecutionIntent(",
-        "ValidateExecutionIntent(",
+        "TryValidateAutomaticMarketSubmission(",
         "TryExecuteMarketOrder(",
         "BrokerConfirmationPolicy.CanAdoptPosition(",
+        "TryAcceptAutomaticMarketFill(",
         "EnsureBrokerProtectionForPosition(",
     ),
     "AggressiveBrokerExecution.cs": (
@@ -410,17 +410,18 @@ CROSS_PATH_CONTRACTS = {
         "ValidateExecutionIntent(",
         "TryExecuteMarketOrder(",
         "BrokerConfirmationPolicy.CanAdoptPosition(",
+        "TryProcessAcceptedAggressiveFill(",
         "EnsureBrokerProtectionForPosition(",
     ),
     "ContinuationStopPlacement.cs": (
-        "BuildExecutionIntent(",
-        "ValidateExecutionIntent(",
+        "TryPrepareContinuationStop(",
+        "ValidatePendingSubmission(",
         "TryPlaceStopOrder(",
         "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
     ),
     "ReversalLimitPlacement.cs": (
-        "BuildExecutionIntent(",
-        "ValidateExecutionIntent(",
+        "TryPrepareReversalLimit(",
+        "ValidatePendingSubmission(",
         "TryPlaceLimitOrder(",
         "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
     ),
@@ -437,6 +438,25 @@ for filename, tokens in CROSS_PATH_CONTRACTS.items():
     for token in tokens:
         if token not in code:
             raise SystemExit(f"Cross-path execution contract missing in {filename}: {token}")
+
+for path, tokens in {
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs": (
+        "BuildExecutionIntent(",
+        "ValidateExecutionIntent(",
+    ),
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs": (
+        "ReconcileLivePlanToActualFill(",
+        "IsExecutableFillPrice(",
+    ),
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs": (
+        "AutoTarget(",
+        "RequestLivePlanExit(",
+    ),
+}.items():
+    code = path.read_text(encoding="utf-8")
+    for token in tokens:
+        if token not in code:
+            raise SystemExit(f"Automatic-market owner contract missing: {path.name}: {token}")
 
 # Pending placement boundary.
 PENDING_STOP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
