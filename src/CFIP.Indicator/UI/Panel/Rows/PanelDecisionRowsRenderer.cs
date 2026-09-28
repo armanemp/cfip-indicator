@@ -64,6 +64,21 @@ namespace cAlgo
                                                         false,
                                                         contentWidth);
                                     
+                                                    MarketRegimeSnapshot regime =
+                                                        _m5RegimeSnapshot;
+
+                                                    string regimeMetrics =
+                                                        regime == null
+                                                            ? string.Empty
+                                                            : "  •  ADX " +
+                                                              Math.Round(regime.Adx, 1) +
+                                                              "  •  CHOP " +
+                                                              Math.Round(regime.Choppiness, 1) +
+                                                              "  •  ATRx " +
+                                                              Math.Round(regime.AtrRatio, 2) +
+                                                              "  •  EFF " +
+                                                              Math.Round(regime.RangeEfficiency, 2);
+
                                                     AddPanelRow(
                                                         ref slot,
                                                         "REGIME " +
@@ -75,7 +90,8 @@ namespace cAlgo
                                                         "  •  SHARE " +
                                                         _decision.BuyShare +
                                                         "/" +
-                                                        _decision.SellShare,
+                                                        _decision.SellShare +
+                                                        regimeMetrics,
                                                         PanelSecondaryTextColor,
                                                         false,
                                                         contentWidth);
