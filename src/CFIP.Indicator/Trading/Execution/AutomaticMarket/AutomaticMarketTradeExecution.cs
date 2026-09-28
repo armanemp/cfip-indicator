@@ -30,6 +30,17 @@ namespace cAlgo
                                             "DISABLED");
                                         return;
                                     }
+
+                                    string capacityReason;
+                                    if (!ValidateConfiguredPositionCapacity(
+                                            out capacityReason))
+                                    {
+                                        _autoExecutionBlockReason = capacityReason;
+                                        SetAutoTradingState(
+                                            "BLOCKED",
+                                            capacityReason);
+                                        return;
+                                    }
                         
                                     PendingOrder existingPending =
                                         GetManagedPendingOrder();
