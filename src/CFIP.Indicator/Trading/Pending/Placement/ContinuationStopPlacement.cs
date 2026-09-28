@@ -7,17 +7,7 @@ namespace cAlgo
         private bool PlaceContinuationStop(
             int closedM5)
         {
-            if (!TryPrepareContinuationStop(
-                    closedM5,
-                    out int direction,
-                    out _,
-                    out double trigger,
-                    out double stop,
-                    out double target,
-                    out _,
-                    out _,
-                    out double volume,
-                    out ExecutionIntent pendingIntent))
+            if (!TryPrepareContinuationStop(closedM5, out int direction, out _, out double trigger, out double stop, out double target, out _, out _, out double volume, out ExecutionIntent pendingIntent))
                 return false;
             string reason;
             if (!ValidatePendingSubmission(
@@ -83,12 +73,7 @@ namespace cAlgo
                     result != null &&
                     result.IsSuccessful &&
                     result.PendingOrder != null);
-                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
-                        result != null,
-                        result != null &&
-                        result.IsSuccessful,
-                        result != null &&
-                        result.PendingOrder != null))
+                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(result != null, result?.IsSuccessful == true, result?.PendingOrder != null))
                 {
                     _autoOrdersBlockReason =
                         result != null &&
