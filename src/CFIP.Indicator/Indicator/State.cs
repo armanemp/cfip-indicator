@@ -20,6 +20,7 @@ namespace cAlgo
         
                 private MarketRegimeSnapshot _m5RegimeSnapshot;
                 private int _m5RegimeSnapshotIndex = -1;
+                private readonly M5RegimeCoreCache _m5RegimeCoreCache = new M5RegimeCoreCache();
 
                 private Frame _m1Frame;
                 private Frame _m5Frame;
