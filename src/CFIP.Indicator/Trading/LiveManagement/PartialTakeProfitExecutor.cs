@@ -56,53 +56,54 @@ namespace cAlgo
 
             try
             {
-                    bool closingEverything =
-                        closeVolume >=
-                        position.VolumeInUnits;
+                bool closingEverything =
+                    closeVolume >=
+                    position.VolumeInUnits;
 
-                    bool closeAccepted =
-                        TryClosePosition(
-                            position,
-                            "PARTIAL CLOSE • " + tag,
-                            closingEverything
-                                ? (double?)null
-                                : closeVolume);
+                bool closeAccepted =
+                    TryClosePosition(
+                        position,
+                        "PARTIAL CLOSE • " + tag,
+                        closingEverything
+                            ? (double?)null
+                            : closeVolume);
 
-                    if (!closeAccepted)
+                if (!closeAccepted)
+                {
+                    Print(
+                        "CFIP partial close rejected ({0}).",
+                        tag);
+                    return false;
+                }
+
+                if (MoveToBreakEvenAfterPartial &&
+                    !closingEverything)
+                {
+                    bool shouldMove =
+                        !position.StopLoss.HasValue ||
+                        BetterStop(
+                            _plan.Direction,
+                            position.EntryPrice,
+                            position.StopLoss.Value);
+
+                    if (shouldMove)
                     {
-                        Print(
-                            "CFIP partial close rejected ({0}).",
-                            tag);
-                        return false;
-                    }
+                        double market =
+                            _plan.Direction == 1
+                                ? Symbol.Bid
+                                : Symbol.Ask;
 
-                    if (MoveToBreakEvenAfterPartial &&
-                        !closingEverything)
-                    {
-                        bool shouldMove =
-                            !position.StopLoss.HasValue ||
-                            BetterStop(
+                        bool breakEvenValid =
+                            IsFinitePositive(market) &&
+                            IsValidManagedStop(
                                 _plan.Direction,
                                 position.EntryPrice,
-                                position.StopLoss.Value);
+                                market,
+                                position.EntryPrice);
 
-                        if (shouldMove)
+                        if (breakEvenValid)
                         {
-                            double market =
-                                _plan.Direction == 1
-                                    ? Symbol.Bid
-                                    : Symbol.Ask;
-
-                            bool breakEvenValid =
-                                IsFinitePositive(market) &&
-                                IsValidManagedStop(
-                                    _plan.Direction,
-                                    position.EntryPrice,
-                                    market,
-                                    position.EntryPrice);
-
                             bool breakEvenApplied =
-                                breakEvenValid &&
                                 TryModifyStopLoss(
                                     position,
                                     position.EntryPrice,
@@ -114,11 +115,18 @@ namespace cAlgo
                                     NormalizePrice(
                                         position.EntryPrice);
 
+                                _activeBrokerStop =
+                                    _plan.Stop;
+
                                 _brokerProtectionRecoveryRequired =
                                     false;
                             }
                             else
                             {
+                                _plan.Stop =
+                                    NormalizePrice(
+                                        position.EntryPrice);
+
                                 _brokerProtectionRecoveryRequired =
                                     true;
 
@@ -140,37 +148,38 @@ namespace cAlgo
                             }
                         }
                     }
-
-                    if (EnableLevelHitAlerts &&
-                        AlertOnLevelHit)
-                    {
-                        SendUnifiedAlert(
-                            "PARTIAL|" +
-                            tag +
-                            "|" +
-                            _plan.CreatedM5,
-                            "CFIP partial close at " +
-                            tag +
-                            " - closed " +
-                            percentOfOriginal.ToString("F0") +
-                            "% of original size",
-                            _plan.Direction,
-                            false);
-                    }
-
-                    return true;
                 }
-                catch (Exception ex)
+
+                if (EnableLevelHitAlerts &&
+                    AlertOnLevelHit)
                 {
-                    Print(
-                        "CFIP partial close failed ({0}): {1}",
-                        tag,
-                        ex.Message);
-                    return false;
+                    SendUnifiedAlert(
+                        "PARTIAL|" +
+                        tag +
+                        "|" +
+                        _plan.CreatedM5,
+                        "CFIP partial close at " +
+                        tag +
+                        " - closed " +
+                        percentOfOriginal.ToString("F0") +
+                        "% of original size",
+                        _plan.Direction,
+                        false);
                 }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP partial close failed ({0}): {1}",
+                    tag,
+                    ex.Message);
+                return false;
             }
 
-            return false;
+            // The broker owns confirmation of the position mutation; no synthetic
+            // post-close state is created from the requested volume.
         }
     }
 }
