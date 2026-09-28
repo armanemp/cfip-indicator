@@ -443,7 +443,9 @@ if "return 0;" not in ACTIVE_STOP_CODE:
 
 ACTIVE_PLAN = ROOT / "Trading" / "LiveManagement" / "ActivePlanEvaluation.cs"
 ACTIVE_PLAN_CODE = ACTIVE_PLAN.read_text(encoding="utf-8")
-if "IsFinitePositive(liveStop)" not in ACTIVE_PLAN_CODE:
+ACTIVE_PLAN_LEVELS = ROOT / "Trading" / "LiveManagement" / "ActivePlanLevelExitHandler.cs"
+ACTIVE_PLAN_LEVEL_CODE = ACTIVE_PLAN_LEVELS.read_text(encoding="utf-8")
+if "IsFinitePositive(liveStop)" not in ACTIVE_PLAN_LEVEL_CODE:
     raise SystemExit("Live SL exit must require a confirmed broker stop")
 
 for handler_name in ("PositionOpenedHandler.cs", "PositionModifiedHandler.cs"):
