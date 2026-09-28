@@ -2,10 +2,9 @@
 // Validate market, spread and entry-extension constraints for a trade plan.
 
 using System;
+using cAlgo.API;
 
-namespace cusing cAlgo.API;
-
-lgo
+namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
