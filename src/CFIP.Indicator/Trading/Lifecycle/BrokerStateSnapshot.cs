@@ -25,7 +25,23 @@ namespace cAlgo
                 GetManagedLivePositionForPlan();
 
             if (position == null)
+            {
+                // The broker position is authoritative. If the live plan's bound
+                // position no longer exists, clear the stale plan even when the
+                // PositionClosed event was missed during reconnect/restart.
+                _brokerProtectionRecoveryRequired = false;
+                _executionModel = null;
+                _activeBrokerStop = 0;
+                _activeBrokerTarget = 0;
+
+                SetLifecycleState(
+                    LifecycleState.Closed,
+                    "BROKER STATE • BOUND POSITION NOT FOUND");
+
+                _plan = null;
+                RemovePlanObjects();
                 return;
+            }
 
             int direction =
                 position.TradeType == TradeType.Buy
