@@ -30,6 +30,15 @@ namespace cAlgo
                                             ? 1
                                             : -1;
 
+                                    bool boundToActivePlan =
+                                        _plan != null &&
+                                        _plan.IsLivePosition &&
+                                        _plan.PositionId > 0 &&
+                                        _plan.PositionId == position.Id;
+
+                                    if (!boundToActivePlan)
+                                        return;
+
                                     double market =
                                         direction == 1
                                             ? Symbol.Bid
