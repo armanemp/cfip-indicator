@@ -544,3 +544,32 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: audit AutomaticMarketPreTrade.cs and AutomaticMarketBrokerExecution.cs as a single execution chain, preserving broker mutation ownership and rejection/recovery semantics.
+
+
+## Phase 18 — Automatic market execution decomposition
+
+Status: complete.
+
+Goal: separate pre-trade eligibility, execution preparation, submission validation, broker fill adoption and post-fill target resolution while preserving one broker mutation boundary.
+
+Completed:
+
+- Reduced AutomaticMarketPreTrade.cs to orchestration.
+- Isolated auto-trading eligibility gates and position-capacity checks.
+- Isolated market quote, executable-plan preparation, entry-envelope validation and volume sizing.
+- Isolated execution-intent validation before broker submission.
+- Isolated broker-confirmed fill adoption and fill-envelope reconciliation.
+- Isolated post-fill target resolution and invalid-target exit handling.
+- Kept market-order mutation in BrokerMarketOrderMutation.cs and broker protection in BrokerProtectionCoordinator.cs.
+- Preserved explicit RECOVERY state when broker protection cannot be established.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- Pre-trade eligibility, execution preparation and broker execution have explicit owners.
+- Broker-confirmed state remains authoritative.
+- Rejected mutations never become synthetic state.
+- Fill mismatch and post-fill target failure continue to enter the existing recovery/exit paths.
+- No production file exceeds 20 KiB.
+
+Next: audit aggressive execution and pending placement for the same preparation/mutation/recovery boundary, then perform the final cross-path execution consistency review.
