@@ -14,31 +14,19 @@ namespace cAlgo
     {
 private void RenderManagedPendingOrder()
                         {
+                            RemoveManagedPendingOrderObjects();
+                
                             PendingOrder pending =
                                 GetManagedPendingOrder();
-
+                
                             if (pending == null ||
                                 !IsFinitePositive(
                                     pending.TargetPrice))
-                            {
-                                RemoveManagedPendingOrderObjects();
                                 return;
-                            }
-
-                            DateTime now =
-                                TimeInUtc;
-
-                            if ((now - _lastPendingRenderUtc).TotalMilliseconds < 120)
-                                return;
-
-                            _lastPendingRenderUtc =
-                                now;
-
-                            RemoveManagedPendingOrderObjects();
                 
                             if (!ShowLevelLines)
                                 return;
-                                
+                
                             int anchorBar =
                                 Bars == null ||
                                 Bars.Count < 2

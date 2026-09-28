@@ -68,44 +68,6 @@ namespace cAlgo
                                         minimumDepth;
                                 }
 
-                private bool HasOrderBlockFvgConfluenceFromCandidates(
-                                    List<Zone> candidates,
-                                    double atr,
-                                    double zoneLow,
-                                    double zoneHigh,
-                                    int minimumAge,
-                                    int maximumAge)
-                                {
-                                    if (!UseFvg ||
-                                        candidates == null ||
-                                        atr <= 0 ||
-                                        minimumAge > maximumAge)
-                                        return false;
-
-                                    for (int i = 0;
-                                         i < candidates.Count;
-                                         i++)
-                                    {
-                                        Zone managed =
-                                            candidates[i];
-
-                                        if (managed == null ||
-                                            managed.Age < minimumAge ||
-                                            managed.Age > maximumAge)
-                                            continue;
-
-                                        if (managed.High >=
-                                                zoneLow -
-                                                atr * 0.05 &&
-                                            managed.Low <=
-                                                zoneHigh +
-                                                atr * 0.05)
-                                            return true;
-                                    }
-
-                                    return false;
-                                }
-
         private bool HasOrderBlockFvgConfluence(
                                     Bars bars,
                                     int startIndex,
@@ -120,47 +82,12 @@ namespace cAlgo
                                         atr <= 0 ||
                                         startIndex >= endIndex)
                                         return false;
-
-                                    ZoneCandidateCache active =
-                                        _activeZoneCandidateCache;
-
-                                    if (active != null &&
-                                        ReferenceEquals(
-                                            active.Bars,
-                                            bars))
-                                    {
-                                        List<Zone> activeFvgs =
-                                            direction == 1
-                                                ? active.BullFvgs
-                                                : active.BearFvgs;
-
-                                        int minimumAge =
-                                            Math.Max(
-                                                0,
-                                                active.Index -
-                                                endIndex);
-
-                                        int maximumAge =
-                                            Math.Max(
-                                                0,
-                                                active.Index -
-                                                (startIndex + 1));
-
-                                        return
-                                            HasOrderBlockFvgConfluenceFromCandidates(
-                                                activeFvgs,
-                                                atr,
-                                                zoneLow,
-                                                zoneHigh,
-                                                minimumAge,
-                                                maximumAge);
-                                    }
-
+                        
                                     int first =
                                         Math.Max(
                                             2,
                                             startIndex + 1);
-
+                        
                                     for (int i = first;
                                          i <= endIndex;
                                          i++)
@@ -171,21 +98,22 @@ namespace cAlgo
                                                   bars.HighPrices[i - 2]
                                                 : bars.LowPrices[i - 2] -
                                                   bars.HighPrices[i];
-
+                        
                                         if (gap <
-                                            atr * MinimumFvgAtr)
+                                            atr *
+                                            MinimumFvgAtr)
                                             continue;
-
+                        
                                         double low =
                                             direction == 1
                                                 ? bars.HighPrices[i - 2]
                                                 : bars.HighPrices[i];
-
+                        
                                         double high =
                                             direction == 1
                                                 ? bars.LowPrices[i]
                                                 : bars.LowPrices[i - 2];
-
+                        
                                         Zone managed =
                                             BuildManagedFvgZone(
                                                 bars,
@@ -197,10 +125,10 @@ namespace cAlgo
                                                 gap,
                                                 false,
                                                 atr);
-
+                        
                                         if (managed == null)
                                             continue;
-
+                        
                                         if (managed.High >=
                                                 zoneLow -
                                                 atr * 0.05 &&
@@ -208,7 +136,7 @@ namespace cAlgo
                                                 zoneHigh +
                                                 atr * 0.05)
                                             return true;
-
+                        
                                         if (UseTwoBarImbalanceFvg &&
                                             i >= startIndex + 2)
                                         {
@@ -218,20 +146,21 @@ namespace cAlgo
                                                       bars.HighPrices[i - 1]
                                                     : bars.LowPrices[i - 1] -
                                                       bars.HighPrices[i];
-
+                        
                                             if (twoBarGap >=
-                                                atr * MinimumFvgAtr)
+                                                atr *
+                                                MinimumFvgAtr)
                                             {
                                                 double twoLow =
                                                     direction == 1
                                                         ? bars.HighPrices[i - 1]
                                                         : bars.HighPrices[i];
-
+                        
                                                 double twoHigh =
                                                     direction == 1
                                                         ? bars.LowPrices[i]
                                                         : bars.LowPrices[i - 1];
-
+                        
                                                 Zone managedTwoBar =
                                                     BuildManagedFvgZone(
                                                         bars,
@@ -243,7 +172,7 @@ namespace cAlgo
                                                         twoBarGap,
                                                         true,
                                                         atr);
-
+                        
                                                 if (managedTwoBar != null &&
                                                     managedTwoBar.High >=
                                                         zoneLow -
@@ -255,7 +184,7 @@ namespace cAlgo
                                             }
                                         }
                                     }
-
+                        
                                     return false;
                                 }
     }

@@ -25,18 +25,6 @@ namespace cAlgo
                                     PendingOrder pendingAuthority =
                                         GetManagedPendingOrder();
 
-                                    if (_plan != null)
-                                    {
-                                        DateTime now =
-                                            TimeInUtc;
-
-                                        if ((now - _lastPlanRenderUtc).TotalMilliseconds < 120)
-                                            return;
-
-                                        _lastPlanRenderUtc =
-                                            now;
-                                    }
-
                                     if (pendingAuthority != null &&
                                         !_plan.IsLivePosition)
                                     {

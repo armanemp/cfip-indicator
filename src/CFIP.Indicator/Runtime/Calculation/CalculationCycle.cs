@@ -38,6 +38,13 @@ namespace cAlgo
                     index);
                 throw;
             }
+            catch (StackOverflowException)
+            {
+                Print(
+                    "CFIP fatal runtime fault: StackOverflowException at index {0}",
+                    index);
+                throw;
+            }
             catch (Exception ex)
             {
                 HandleRuntimeFault(

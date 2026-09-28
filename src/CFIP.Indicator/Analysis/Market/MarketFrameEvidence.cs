@@ -168,42 +168,37 @@ namespace cAlgo
                     index,
                     f.Atr);
 
-            Zone bullFvg = null;
-            Zone bearFvg = null;
-            Zone bullOb = null;
-            Zone bearOb = null;
+            f.FvgBull =
+                UseFvg &&
+                FindNearestFvg(
+                    bars,
+                    index,
+                    1,
+                    f.Atr) != null;
 
-            if (UseFvg)
-            {
-                bullFvg = FindEfficientFvg(bars, index, 1, f.Atr);
-                bearFvg = FindEfficientFvg(bars, index, -1, f.Atr);
-            }
+            f.FvgBear =
+                UseFvg &&
+                FindNearestFvg(
+                    bars,
+                    index,
+                    -1,
+                    f.Atr) != null;
 
-            if (UseOrderBlock)
-            {
-                bullOb = FindEfficientOrderBlock(bars, index, 1, f.Atr);
-                bearOb = FindEfficientOrderBlock(bars, index, -1, f.Atr);
-            }
+            f.ObBull =
+                UseOrderBlock &&
+                FindNearestOrderBlock(
+                    bars,
+                    index,
+                    1,
+                    f.Atr) != null;
 
-            f.FvgBull = bullFvg != null;
-            f.FvgBear = bearFvg != null;
-            f.FvgBullQuality = bullFvg == null ? 0 : bullFvg.Quality;
-            f.FvgBearQuality = bearFvg == null ? 0 : bearFvg.Quality;
-
-            f.ObBull = bullOb != null;
-            f.ObBear = bearOb != null;
-            f.ObBullQuality = bullOb == null ? 0 : bullOb.Quality;
-            f.ObBearQuality = bearOb == null ? 0 : bearOb.Quality;
-
-            f.FvgObBullConfluence =
-                bullFvg != null && bullOb != null &&
-                bullFvg.High >= bullOb.Low &&
-                bullOb.High >= bullFvg.Low;
-
-            f.FvgObBearConfluence =
-                bearFvg != null && bearOb != null &&
-                bearFvg.High >= bearOb.Low &&
-                bearOb.High >= bearFvg.Low;
+            f.ObBear =
+                UseOrderBlock &&
+                FindNearestOrderBlock(
+                    bars,
+                    index,
+                    -1,
+                    f.Atr) != null;
 
             f.TrendBull =
                 f.EmaFast > f.EmaSlow &&

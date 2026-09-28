@@ -76,39 +76,6 @@ namespace cAlgo
                                     return _panelStableHeader;
                                 }
         
-        
-        private string MtfAlignmentText()
-                                {
-                                    if (_lastMtfClosedContext == null)
-                                        return
-                                            "MTF ALIGNMENT  •  WAITING";
-
-                                    MtfClosedContext mtf =
-                                        _lastMtfClosedContext;
-
-                                    string status =
-                                        mtf.HasPrimaryDecisionHistory
-                                            ? "READY"
-                                            : "BUILDING";
-
-                                    return
-                                        "MTF ALIGNMENT  •  REF " +
-                                        mtf.Reference.ToString(
-                                            "HH:mm:ss") +
-                                        " UTC  •  M5 " +
-                                        mtf.M5 +
-                                        "  M15 " +
-                                        mtf.M15 +
-                                        "  M30 " +
-                                        mtf.M30 +
-                                        "  H1 " +
-                                        mtf.H1 +
-                                        "  H4 " +
-                                        mtf.H4 +
-                                        "  • " +
-                                        status;
-                                }
-
         private string ConfluenceText(
                                     Frame frame)
                                 {
@@ -163,25 +130,6 @@ namespace cAlgo
                                     if (frame == null)
                                         return "WAIT";
                         
-                                    string zones =
-                                        "FVG " +
-                                        (frame.FvgBull
-                                            ? "B" + frame.FvgBullQuality
-                                            : frame.FvgBear
-                                                ? "S" + frame.FvgBearQuality
-                                                : "0") +
-                                        " • OB " +
-                                        (frame.ObBull
-                                            ? "B" + frame.ObBullQuality
-                                            : frame.ObBear
-                                                ? "S" + frame.ObBearQuality
-                                                : "0") +
-                                        (frame.FvgObBullConfluence
-                                            ? " • FVG+OB B"
-                                            : frame.FvgObBearConfluence
-                                                ? " • FVG+OB S"
-                                                : "");
-
                                     return
                                         (frame.Direction == 1
                                             ? "BUY"
@@ -191,9 +139,7 @@ namespace cAlgo
                                         " | Q" +
                                         frame.Quality +
                                         " | E" +
-                                        frame.Evidence +
-                                        " | " +
-                                        zones;
+                                        frame.Evidence;
                                 }
     }
 }

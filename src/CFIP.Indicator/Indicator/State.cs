@@ -31,8 +31,6 @@ namespace cAlgo
                 private Frame _w1Frame;
         
                 private readonly List<Native> _native = new List<Native>();
-                private readonly List<ZoneCandidateCache> _zoneCandidateCaches =
-                    new List<ZoneCandidateCache>();
                 private readonly HashSet<string> _historicalDrawn = new HashSet<string>();
                 private readonly HashSet<string> _outcomeDrawn = new HashSet<string>();
                 private int _outcomeSequence;
@@ -191,32 +189,5 @@ namespace cAlgo
                 private string _marketSuitabilityState = "UNKNOWN";
                 private string _marketSuitabilityReason = "NOT EVALUATED";
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
-        private ZoneCandidateCache _activeZoneCandidateCache;
-        private int _zoneCacheBuildDepth;
-
-        private DateTime _lastLiveReactionCalcUtc = DateTime.MinValue;
-        private int _lastLiveReactionM5 = -1;
-        private double _lastLiveReactionMarket;
-
-        private DateTime _lastExecutionModelBuildUtc = DateTime.MinValue;
-        private int _lastExecutionModelM5 = -1;
-        private double _lastExecutionModelMarket;
-
-        private DateTime _lastPanelRenderUtc = DateTime.MinValue;
-        private MtfClosedContext _lastMtfClosedContext;
-        private bool _runtimeSupervisorBusy;
-        private int _lastSupervisorProcessedM5 = -1;
-        private int _lastSupervisorFailedM5 = -1;
-        private DateTime _lastSupervisorFailureUtc = DateTime.MinValue;
-        private DateTime _lastPlanRenderUtc = DateTime.MinValue;
-        private DateTime _lastPendingRenderUtc = DateTime.MinValue;
-        private DateTime _lastQuickControlSyncUtc = DateTime.MinValue;
-        private int _lastLiveM1FrameIndex = -1;
-
-        private int _lastSignalRenderBar = -1;
-        private int _lastSignalRenderDirection;
-        private string _lastSignalRenderState = "";
-        private bool _lastSignalRenderVisible;
-        private int _lastSignalMarkerClearM5 = -1;
     }
 }

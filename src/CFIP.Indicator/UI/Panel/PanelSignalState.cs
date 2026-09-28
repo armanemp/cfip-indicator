@@ -65,18 +65,6 @@ namespace cAlgo
                                          _reaction.Direction == -1))
                                         return _reaction.Direction;
 
-                                    if (_decision != null &&
-                                        !_decision.EntryAllowed &&
-                                        ShowEarlyWatch &&
-                                        ShowEarlyArrow &&
-                                        _decision.Confidence >=
-                                        Math.Max(
-                                            55,
-                                            MinimumConfidence - 15) &&
-                                        (_decision.Direction == 1 ||
-                                         _decision.Direction == -1))
-                                        return _decision.Direction;
-
                                     if (_m5Frame != null &&
                                         (_m5Frame.Direction == 1 ||
                                          _m5Frame.Direction == -1) &&
@@ -134,15 +122,6 @@ namespace cAlgo
                                                 ? "SELL READY"
                                                 : "READY";
                         
-                                    if (_decision != null &&
-                                        !_decision.EntryAllowed &&
-                                        direction == _decision.Direction &&
-                                        (_decision.Direction == 1 ||
-                                         _decision.Direction == -1))
-                                        return direction == 1
-                                            ? "BUY WATCH"
-                                            : "SELL WATCH";
-
                                     if (_prediction != null &&
                                         _prediction.Direction != 0)
                                         return direction == 1

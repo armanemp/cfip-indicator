@@ -18,14 +18,7 @@ namespace cAlgo
                             int chartIndex,
                             int closedM5)
                         {
-                            if (_lastSignalMarkerClearM5 != closedM5)
-                            {
-                                Chart.RemoveObject(P + "BOS_MARKER");
-                                Chart.RemoveObject(P + "MSS_MARKER");
-                                Chart.RemoveObject(P + "SWEEP_MARKER");
-                                _lastSignalMarkerClearM5 =
-                                    closedM5;
-                            }
+                            ClearWatchObjects();
                 
                             if (Bars == null ||
                                 Bars.Count < 2)
@@ -59,14 +52,7 @@ namespace cAlgo
                             if (visualDirection == 0)
                             {
                                 Chart.RemoveObject(P + "WATCH_ARROW");
-                                RemovePlanLine(P + "WATCH_TRIGGER");
                                 Chart.RemoveObject(P + "REACTION_ARROW");
-
-                                _lastSignalRenderVisible = false;
-                                _lastSignalRenderBar = -1;
-                                _lastSignalRenderDirection = 0;
-                                _lastSignalRenderState = "";
-
                                 return;
                             }
                 
@@ -133,71 +119,27 @@ namespace cAlgo
                                         ? "CONFIRMED"
                                         : "WATCH";
                 
-                            bool arrowChanged =
-                                !_lastSignalRenderVisible ||
-                                _lastSignalRenderBar != arrowBar ||
-                                _lastSignalRenderDirection != visualDirection ||
-                                !string.Equals(
-                                    _lastSignalRenderState,
-                                    arrowState,
-                                    StringComparison.Ordinal) ||
-                                Chart.FindObject(
-                                    P + "WATCH_ARROW") == null;
-
                             if (ShowSignalArrow)
                             {
-                                if (arrowChanged)
-                                {
-                                    DrawIcon(
-                                        P + "WATCH_ARROW",
-                                        visualDirection == 1
-                                            ? ChartIconType.UpArrow
-                                            : ChartIconType.DownArrow,
-                                        arrowBar,
-                                        visualDirection == 1
-                                            ? Bars.LowPrices[arrowBar] - offset
-                                            : Bars.HighPrices[arrowBar] + offset,
-                                        SignalArrowColorFor(
-                                            visualDirection,
-                                            arrowState));
-                                }
+                                DrawIcon(
+                                    P + "WATCH_ARROW",
+                                    visualDirection == 1
+                                        ? ChartIconType.UpArrow
+                                        : ChartIconType.DownArrow,
+                                    arrowBar,
+                                    visualDirection == 1
+                                        ? Bars.LowPrices[arrowBar] - offset
+                                        : Bars.HighPrices[arrowBar] + offset,
+                                    SignalArrowColorFor(
+                                        visualDirection,
+                                        arrowState));
                             }
                             else
                             {
                                 Chart.RemoveObject(
                                     P + "WATCH_ARROW");
                             }
-
-                            _lastSignalRenderVisible =
-                                ShowSignalArrow;
-
-                            _lastSignalRenderBar =
-                                arrowBar;
-
-                            _lastSignalRenderDirection =
-                                visualDirection;
-
-                            _lastSignalRenderState =
-                                arrowState;
                 
-                            if (_executionModel != null &&
-                                _executionModel.Direction == visualDirection &&
-                                IsFinitePositive(
-                                    _executionModel.Trigger) &&
-                                ShowTrigger)
-                            {
-                                DrawPlanLine(
-                                    P + "WATCH_TRIGGER",
-                                    _executionModel.Trigger,
-                                    TriggerLineColor,
-                                    true);
-                            }
-                            else
-                            {
-                                RemovePlanLine(
-                                    P + "WATCH_TRIGGER");
-                            }
-
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");
                 
