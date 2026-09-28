@@ -309,7 +309,19 @@ namespace cAlgo
                 _zoneCandidateCaches.RemoveAt(0);
 
             BuildFvgCandidates(cache);
-            BuildOrderBlockCandidates(cache);
+
+            _activeZoneCandidateCache =
+                cache;
+
+            try
+            {
+                BuildOrderBlockCandidates(cache);
+            }
+            finally
+            {
+                _activeZoneCandidateCache =
+                    null;
+            }
 
             return cache;
         }
@@ -466,8 +478,7 @@ namespace cAlgo
                             i,
                             cache.Index,
                             1,
-                            cache.Atr,
-                            cache.BullFvgs);
+                            cache.Atr);
 
                     if (bull != null &&
                         bull.Quality >=
@@ -486,8 +497,7 @@ namespace cAlgo
                             i,
                             cache.Index,
                             -1,
-                            cache.Atr,
-                            cache.BearFvgs);
+                            cache.Atr);
 
                     if (bear != null &&
                         bear.Quality >=
