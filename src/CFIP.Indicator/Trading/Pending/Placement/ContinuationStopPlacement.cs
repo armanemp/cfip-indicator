@@ -42,22 +42,58 @@ namespace cAlgo
 
             try
             {
-                TradeResult result =
-                    TryPlaceStopOrder(
-                        direction == 1
-                            ? TradeType.Buy
-                            : TradeType.Sell,
-                        SymbolName,
-                        volume,
-                        trigger,
-                        PendingOrderLabel(),
-                        pendingIntent.StopPips,
-                        pendingIntent.TargetPips,
-                        ProtectionType.Relative,
-                        PendingExpiration(),
-                        TradeExecutionMetadata.DefaultExecutionComment,
-                        false,
-                        "CONTINUATION STOP");
+                string submissionKey =
+                    "STOP|" +
+                    closedM5 +
+                    "|" +
+                    direction;
+
+                string submissionGateReason;
+
+                if (!_pendingSubmissionGate.TryAcquire(
+                        Server.TimeInUtc,
+                        submissionKey,
+                        out submissionGateReason))
+                {
+                    _autoOrdersBlockReason =
+                        submissionGateReason;
+                    return false;
+                }
+
+                TradeResult result;
+
+                try
+                {
+                    result =
+                        TryPlaceStopOrder(
+                            direction == 1
+                                ? TradeType.Buy
+                                : TradeType.Sell,
+                            SymbolName,
+                            volume,
+                            trigger,
+                            PendingOrderLabel(),
+                            pendingIntent.StopPips,
+                            pendingIntent.TargetPips,
+                            ProtectionType.Relative,
+                            PendingExpiration(),
+                            TradeExecutionMetadata.DefaultExecutionComment,
+                            false,
+                            "CONTINUATION STOP");
+                }
+                catch
+                {
+                    _pendingSubmissionGate.Record(
+                        Server.TimeInUtc,
+                        false);
+                    throw;
+                }
+
+                _pendingSubmissionGate.Record(
+                    Server.TimeInUtc,
+                    result != null &&
+                    result.IsSuccessful &&
+                    result.PendingOrder != null);
 
                 if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
                         result != null,

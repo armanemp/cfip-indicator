@@ -42,22 +42,58 @@ namespace cAlgo
 
             try
             {
-                TradeResult result =
-                    TryPlaceLimitOrder(
-                        direction == 1
-                            ? TradeType.Buy
-                            : TradeType.Sell,
-                        SymbolName,
-                        volume,
-                        targetEntry,
-                        PendingOrderLabel(),
-                        pendingIntent.StopPips,
-                        pendingIntent.TargetPips,
-                        ProtectionType.Relative,
-                        PendingExpiration(),
-                        TradeExecutionMetadata.DefaultExecutionComment,
-                        false,
-                        "REVERSAL LIMIT");
+                string submissionKey =
+                    "LIMIT|" +
+                    closedM5 +
+                    "|" +
+                    direction;
+
+                string submissionGateReason;
+
+                if (!_pendingSubmissionGate.TryAcquire(
+                        Server.TimeInUtc,
+                        submissionKey,
+                        out submissionGateReason))
+                {
+                    _autoOrdersBlockReason =
+                        submissionGateReason;
+                    return false;
+                }
+
+                TradeResult result;
+
+                try
+                {
+                    result =
+                        TryPlaceLimitOrder(
+                            direction == 1
+                                ? TradeType.Buy
+                                : TradeType.Sell,
+                            SymbolName,
+                            volume,
+                            targetEntry,
+                            PendingOrderLabel(),
+                            pendingIntent.StopPips,
+                            pendingIntent.TargetPips,
+                            ProtectionType.Relative,
+                            PendingExpiration(),
+                            TradeExecutionMetadata.DefaultExecutionComment,
+                            false,
+                            "REVERSAL LIMIT");
+                }
+                catch
+                {
+                    _pendingSubmissionGate.Record(
+                        Server.TimeInUtc,
+                        false);
+                    throw;
+                }
+
+                _pendingSubmissionGate.Record(
+                    Server.TimeInUtc,
+                    result != null &&
+                    result.IsSuccessful &&
+                    result.PendingOrder != null);
 
                 if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
                     result != null,

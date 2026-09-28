@@ -34,17 +34,59 @@ namespace cAlgo
                     return;
                 }
 
-                TradeResult result =
-                    TryExecuteMarketOrder(
-                        type,
-                        SymbolName,
-                        volume,
-                        NormalizeLabel(),
-                        stopPips,
-                        targetPips,
-                        TradeExecutionMetadata.DefaultExecutionComment,
-                        false,
-                        "AUTOMATIC MARKET");
+                string submissionKey =
+                    "NORMAL|" +
+                    closedM5 +
+                    "|" +
+                    (_plan == null
+                        ? 0
+                        : _plan.Direction);
+
+                string submissionGateReason;
+
+                if (!_normalSubmissionGate.TryAcquire(
+                        Server.TimeInUtc,
+                        submissionKey,
+                        out submissionGateReason))
+                {
+                    _autoExecutionBlockReason =
+                        submissionGateReason;
+
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        submissionGateReason);
+                    return;
+                }
+
+                TradeResult result;
+
+                try
+                {
+                    result =
+                        TryExecuteMarketOrder(
+                            type,
+                            SymbolName,
+                            volume,
+                            NormalizeLabel(),
+                            stopPips,
+                            targetPips,
+                            TradeExecutionMetadata.DefaultExecutionComment,
+                            false,
+                            "AUTOMATIC MARKET");
+                }
+                catch
+                {
+                    _normalSubmissionGate.Record(
+                        Server.TimeInUtc,
+                        false);
+                    throw;
+                }
+
+                _normalSubmissionGate.Record(
+                    Server.TimeInUtc,
+                    result != null &&
+                    result.IsSuccessful &&
+                    result.Position != null);
 
                 if (result == null)
                 {

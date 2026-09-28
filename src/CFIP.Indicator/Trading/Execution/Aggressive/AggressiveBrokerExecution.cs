@@ -69,17 +69,59 @@ namespace cAlgo
                     return;
                 }
 
-                TradeResult result =
-                    TryExecuteMarketOrder(
-                        type,
-                        SymbolName,
-                        volume,
-                        NormalizeLabel(),
-                        stopPips,
-                        tpPips,
-                        TradeExecutionMetadata.DefaultExecutionComment,
-                        false,
-                        "AGGRESSIVE MARKET");
+                string submissionKey =
+                    "AGGRESSIVE|" +
+                    closedM5 +
+                    "|" +
+                    (_reaction == null
+                        ? 0
+                        : _reaction.Direction);
+
+                string submissionGateReason;
+
+                if (!_aggressiveSubmissionGate.TryAcquire(
+                        Server.TimeInUtc,
+                        submissionKey,
+                        out submissionGateReason))
+                {
+                    _autoExecutionBlockReason =
+                        submissionGateReason;
+
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        submissionGateReason);
+                    return;
+                }
+
+                TradeResult result;
+
+                try
+                {
+                    result =
+                        TryExecuteMarketOrder(
+                            type,
+                            SymbolName,
+                            volume,
+                            NormalizeLabel(),
+                            stopPips,
+                            tpPips,
+                            TradeExecutionMetadata.DefaultExecutionComment,
+                            false,
+                            "AGGRESSIVE MARKET");
+                }
+                catch
+                {
+                    _aggressiveSubmissionGate.Record(
+                        Server.TimeInUtc,
+                        false);
+                    throw;
+                }
+
+                _aggressiveSubmissionGate.Record(
+                    Server.TimeInUtc,
+                    result != null &&
+                    result.IsSuccessful &&
+                    result.Position != null);
 
                 if (!BrokerConfirmationPolicy.CanAdoptPosition(
                         result != null,
