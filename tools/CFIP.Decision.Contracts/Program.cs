@@ -13,6 +13,8 @@ namespace cAlgo
             VerifyThresholdReasons();
             VerifySmartConsensusReasons();
             VerifyConfidenceDeterminism();
+            VerifyCorrelationAwareEvidence();
+            VerifyQualityWeightedFrameContribution();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -62,8 +64,9 @@ namespace cAlgo
             int expected =
                 NumericGuards.ClampInt(
                     (int)Math.Round(
-                        50 * 0.28 +
-                        70 * 0.12),
+                        50 * 0.25 +
+                        70 * 0.10 +
+                        50 * 0.10),
                     0,
                     100);
 
@@ -94,7 +97,8 @@ namespace cAlgo
                     evidence.BullTimeframeAgreement,
                     evidence.BullIndependentEvidence,
                     evidence.BullStructuralConfirmations,
-                    evidence.RegimeQuality);
+                    evidence.RegimeQuality,
+                    evidence.BullRetestQuality);
 
             Assert(quality >= 0 && quality <= 100, "quality clamp");
 
@@ -236,6 +240,129 @@ namespace cAlgo
             Assert(
                 first == second,
                 "confidence deterministic repeatability");
+        }
+
+        
+        private static void VerifyCorrelationAwareEvidence()
+        {
+            IndependentEvidenceFusionCalculator calculator =
+                new IndependentEvidenceFusionCalculator();
+
+            Frame structuralOnly =
+                new Frame
+                {
+                    StructureBull = true,
+                    MssBull = true,
+                    ChochBull = true,
+                    DisplacementBull = true
+                };
+
+            int structural =
+                calculator.Calculate(
+                    structuralOnly,
+                    1);
+
+            Assert(
+                structural == 2,
+                "correlated structural evidence is capped");
+
+            Frame fullBull =
+                new Frame
+                {
+                    StructureBull = true,
+                    MssBull = true,
+                    ChochBull = true,
+                    DisplacementBull = true,
+                    LiquidityBull = true,
+                    FvgBull = true,
+                    ObBull = true,
+                    TrendBull = true,
+                    MomentumBull = true,
+                    MacdBull = true,
+                    VwapBull = true,
+                    VolumeBull = true,
+                    VolatilityBull = true,
+                    RejectionBull = true,
+                    EqualLow = true
+                };
+
+            int bull =
+                calculator.Calculate(
+                    fullBull,
+                    1);
+
+            Frame fullBear =
+                new Frame
+                {
+                    StructureBear = true,
+                    MssBear = true,
+                    ChochBear = true,
+                    DisplacementBear = true,
+                    LiquidityBear = true,
+                    FvgBear = true,
+                    ObBear = true,
+                    TrendBear = true,
+                    MomentumBear = true,
+                    MacdBear = true,
+                    VwapBear = true,
+                    VolumeBear = true,
+                    VolatilityBear = true,
+                    RejectionBear = true,
+                    EqualHigh = true
+                };
+
+            int bear =
+                calculator.Calculate(
+                    fullBear,
+                    -1);
+
+            Assert(bull == 8, "maximum independent evidence");
+            Assert(bear == bull, "BUY/SELL evidence symmetry");
+        }
+
+        private static void VerifyQualityWeightedFrameContribution()
+        {
+            DecisionFrameContributionCalculator calculator =
+                new DecisionFrameContributionCalculator();
+
+            Frame strong =
+                new Frame
+                {
+                    BullScore = 80,
+                    BearScore = 20,
+                    Quality = 80
+                };
+
+            DecisionFrameContribution contribution =
+                calculator.Calculate(
+                    strong,
+                    10);
+
+            Assert(
+                Math.Abs(contribution.Bull - 64) < 0.0001,
+                "quality-weighted bull contribution");
+
+            Assert(
+                Math.Abs(contribution.Bear - 16) < 0.0001,
+                "quality-weighted bear contribution");
+
+            Frame mirror =
+                new Frame
+                {
+                    BullScore = 20,
+                    BearScore = 80,
+                    Quality = 80
+                };
+
+            DecisionFrameContribution mirrored =
+                calculator.Calculate(
+                    mirror,
+                    10);
+
+            Assert(
+                Math.Abs(contribution.Bull - mirrored.Bear) < 0.0001 &&
+                Math.Abs(contribution.Bear - mirrored.Bull) < 0.0001,
+                "BUY/SELL contribution symmetry");
         }
 
         private static void Assert(bool condition, string name)
