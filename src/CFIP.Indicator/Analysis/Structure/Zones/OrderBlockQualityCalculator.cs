@@ -9,6 +9,7 @@ namespace cAlgo
             double body,
             double strongestBody,
             double remainingRatio,
+            double atr,
             bool displacement,
             bool structureBreak,
             bool liquiditySweep,
@@ -27,9 +28,7 @@ namespace cAlgo
                 strongestBody /
                 Math.Max(
                     Symbol.PipSize,
-                    Atr(
-                        _m5Bars,
-                        currentIndex));
+                    atr);
 
             int quality = 54;
 
