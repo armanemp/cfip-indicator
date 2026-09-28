@@ -701,7 +701,8 @@ Work:
 - generated artifacts;
 - empty catches;
 - unused compatibility paths;
-- source formatting consistency.
+- source formatting consistency;
+- executable verifier gates for empty catches, compatibility aliases, obsolete/historical identifiers, generated artifacts and mixed line endings.
 
 Acceptance:
 
