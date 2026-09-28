@@ -235,6 +235,86 @@ for before, after, reason in stage_order_requirements:
     if stage_isolation_code.index(before) >= stage_isolation_code.index(after):
         raise SystemExit(reason)
 
+# Phase 1.3 runtime fault state-machine gates.
+RUNTIME_FAULT_STATE = ROOT / "Runtime" / "Calculation" / "RuntimeFaultState.cs"
+RUNTIME_FAULT_STATE_MACHINE = ROOT / "Runtime" / "Calculation" / "RuntimeFaultStateMachine.cs"
+RUNTIME_FAULT_BOUNDARY = ROOT / "Runtime" / "Calculation" / "RuntimeFaultBoundary.cs"
+
+if not RUNTIME_FAULT_STATE.exists():
+    raise SystemExit("Runtime fault state enum is missing")
+if not RUNTIME_FAULT_STATE_MACHINE.exists():
+    raise SystemExit("Runtime fault state machine is missing")
+
+runtime_fault_state_code = RUNTIME_FAULT_STATE.read_text(encoding="utf-8")
+runtime_fault_machine_code = RUNTIME_FAULT_STATE_MACHINE.read_text(encoding="utf-8")
+runtime_fault_boundary_code = RUNTIME_FAULT_BOUNDARY.read_text(encoding="utf-8")
+
+for required_state in (
+    "Healthy",
+    "Degraded",
+    "EntryBlocked",
+    "Recovering",
+):
+    if required_state not in runtime_fault_state_code:
+        raise SystemExit(f"Runtime fault state missing: {required_state}")
+
+for required_member in (
+    "BeginCycle(",
+    "ObserveAutoTradingSetting(",
+    "RecordRecoverableFault(",
+    "BlockAutomaticEntry(",
+    "MarkManagementReadyForRecovery(",
+    "CompleteCycle(",
+    "CanAutomaticEntryProceed",
+):
+    if required_member not in runtime_fault_machine_code:
+        raise SystemExit(f"Runtime fault state-machine contract missing: {required_member}")
+
+for required_transition in (
+    "RuntimeFaultState.Degraded",
+    "RuntimeFaultState.EntryBlocked",
+    "RuntimeFaultState.Recovering",
+    "RuntimeFaultState.Healthy",
+):
+    if required_transition not in runtime_fault_machine_code:
+        raise SystemExit(f"Runtime fault transition missing: {required_transition}")
+
+if "_entryArmed = false;" not in runtime_fault_machine_code:
+    raise SystemExit("Runtime fault state machine must latch automatic entry off after a fault")
+
+if "if (explicitEnableTransition &&" not in runtime_fault_machine_code:
+    raise SystemExit("Runtime fault state machine must require an explicit enable transition for re-arm")
+
+if "CanAutomaticEntryProceed" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must expose the automatic-entry gate")
+
+if "RecordRecoverableFault(" not in runtime_fault_boundary_code or    "BlockAutomaticEntry(" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must block entry through the state machine")
+
+if "ApplyRuntimeFaultState();" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault state must be reflected in runtime authority")
+
+if "_autoTradingEnabledRuntime = false;" not in runtime_fault_boundary_code or    "_automaticOrdersEnabledRuntime = false;" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime recovery must not re-arm automatic flags")
+
+if "BeginRuntimeFaultCycle(" not in calculation_cycle_code or    "CompleteRuntimeFaultCycle(" not in calculation_cycle_code:
+    raise SystemExit("Calculate must bracket each runtime cycle with explicit fault-state lifecycle")
+
+if "MarkRuntimeManagementReadyForRecovery(" not in stage_isolation_code:
+    raise SystemExit("Management-first runtime must explicitly enter recovery only after pre-analysis management")
+
+for entry_path in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs",
+    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
+    ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
+):
+    entry_code = entry_path.read_text(encoding="utf-8")
+    if "CanRunAutomaticEntry()" not in entry_code:
+        raise SystemExit(f"Runtime entry gate missing: {entry_path.name}")
+    if "ApplyRuntimeEntryGate()" not in entry_code:
+        raise SystemExit(f"Runtime entry block action missing: {entry_path.name}")
+
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
     re.compile(r"\b(?:rev|release)[-_ ]?\d+\b", re.I),
