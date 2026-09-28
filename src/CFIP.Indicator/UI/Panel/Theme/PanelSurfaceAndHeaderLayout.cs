@@ -18,7 +18,9 @@ namespace cAlgo
                                                     int maxHeight,
                                                     int backgroundAlpha,
                                                     int borderAlpha,
-                                                    int headerHeight)
+                                                    int headerHeight,
+                                                    int scrollHeight,
+                                                    int buttonAreaHeight)
                                                 {
                                                     _panel.Width =
                                                         Math.Max(
