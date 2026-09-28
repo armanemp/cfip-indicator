@@ -20,75 +20,70 @@ namespace cAlgo
                                     if (!AutoBrokerProtection &&
                                         !AutoProtectBrokerPositions)
                                         return;
-                        
+
                                     if (_plan == null ||
                                         !_plan.IsLivePosition ||
                                         _lifecycleState ==
                                             LifecycleState.ExitRequested)
                                         return;
-                        
+
                                     if ((TimeInUtc -
                                          _lastBrokerModifyUtc).TotalMilliseconds <
                                         Math.Max(
                                             100,
                                             BrokerModifyCooldownMs))
                                         return;
-                        
-                                    string label =
-                                        string.IsNullOrWhiteSpace(
-                                            ManagedPositionLabel)
-                                            ? NormalizeLabel()
-                                            : ManagedPositionLabel.Trim();
-                        
-                                    foreach (Position position in Positions)
+
+                                    Position planPosition = null;
+
+                                    if (_plan.PositionId > 0)
                                     {
-                                        if (position == null ||
-                                            position.SymbolName !=
-                                            SymbolName)
-                                            continue;
-                        
-                                        bool byPlanId =
-                                            _plan.PositionId > 0 &&
-                                            position.Id ==
-                                            _plan.PositionId;
-                        
-                                        bool byManagedLabel =
-                                            AutoProtectBrokerPositions &&
-                                            position.Label ==
-                                            label;
-                        
-                                        if (!byPlanId &&
-                                            !byManagedLabel)
-                                            continue;
-                        
-                                        int positionDirection =
-                                            position.TradeType == TradeType.Buy
+                                        foreach (Position position in Positions)
+                                        {
+                                            if (position != null &&
+                                                position.SymbolName == SymbolName &&
+                                                position.Id == _plan.PositionId &&
+                                                IsManagedPosition(position))
+                                            {
+                                                planPosition = position;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    // The active plan may manage only its bound broker position.
+                                    // Never apply its stop/target to another position just because
+                                    // that position happens to share the managed label.
+                                    if (planPosition != null)
+                                    {
+                                        int direction =
+                                            planPosition.TradeType == TradeType.Buy
                                                 ? 1
                                                 : -1;
 
                                         double market =
-                                            positionDirection == 1
+                                            direction == 1
                                                 ? Symbol.Bid
                                                 : Symbol.Ask;
 
                                         bool brokerStopValid =
-                                            position.StopLoss.HasValue &&
+                                            planPosition.StopLoss.HasValue &&
                                             IsFinitePositive(
-                                                position.StopLoss.Value) &&
+                                                planPosition.StopLoss.Value) &&
                                             IsValidManagedStop(
-                                                positionDirection,
-                                                position.EntryPrice,
+                                                direction,
+                                                planPosition.EntryPrice,
                                                 market,
-                                                position.StopLoss.Value);
+                                                planPosition.StopLoss.Value);
 
                                         bool brokerTargetValid =
-                                            position.TakeProfit.HasValue &&
+                                            planPosition.TakeProfit.HasValue &&
                                             IsFinitePositive(
-                                                position.TakeProfit.Value) &&
+                                                planPosition.TakeProfit.Value) &&
                                             IsValidTarget(
-                                                positionDirection,
-                                                position.EntryPrice,
-                                                position.TakeProfit.Value);
+                                                direction,
+                                                planPosition.EntryPrice,
+                                                planPosition.TakeProfit.Value);
 
                                         bool stopConfirmed =
                                             brokerStopValid;
@@ -100,125 +95,94 @@ namespace cAlgo
                                         bool mutationRequired = false;
                                         bool mutationSucceeded = true;
 
-                                        bool desiredStopValid =
-                                            IsValidManagedStop(
-                                                positionDirection,
-                                                position.EntryPrice,
+                                        if (IsValidManagedStop(
+                                                direction,
+                                                planPosition.EntryPrice,
                                                 market,
-                                                _plan.Stop);
-
-                                        if (desiredStopValid)
+                                                _plan.Stop))
                                         {
                                             double normalizedStop =
                                                 NormalizePrice(_plan.Stop);
 
-                                            bool materiallyDifferent =
-                                                !brokerStopValid ||
+                                            if (!brokerStopValid ||
                                                 Math.Abs(
-                                                    position.StopLoss.Value -
+                                                    planPosition.StopLoss.Value -
                                                     normalizedStop) >=
                                                 Math.Max(
                                                     Symbol.TickSize,
-                                                    Symbol.PipSize * 0.25);
-
-                                            bool shouldAdvance =
-                                                !brokerStopValid ||
-                                                ProtectionProgressionRule.ShouldAdvanceStop(
-                                                    positionDirection,
-                                                    NormalizePrice(position.StopLoss.Value),
-                                                    normalizedStop);
-
-                                            if (materiallyDifferent &&
-                                                shouldAdvance)
+                                                    Symbol.PipSize * 0.25))
                                             {
-                                                mutationRequired = true;
+                                                bool shouldAdvance =
+                                                    !brokerStopValid ||
+                                                    ProtectionProgressionRule.ShouldAdvanceStop(
+                                                        direction,
+                                                        NormalizePrice(planPosition.StopLoss.Value),
+                                                        normalizedStop);
 
-                                                bool stopMutationSucceeded =
-                                                    TryModifyStopLoss(
-                                                        position,
-                                                        normalizedStop,
-                                                        "LIVE PROTECTION • SL");
+                                                if (shouldAdvance)
+                                                {
+                                                    mutationRequired = true;
 
-                                                mutationSucceeded =
-                                                    stopMutationSucceeded &&
-                                                    mutationSucceeded;
+                                                    bool stopMutationSucceeded =
+                                                        TryModifyStopLoss(
+                                                            planPosition,
+                                                            normalizedStop,
+                                                            "LIVE PROTECTION • SL");
 
-                                                stopConfirmed =
-                                                    stopMutationSucceeded;
-                                            }
-                                            else if (materiallyDifferent)
-                                            {
-                                                // Broker SL is already more protective; do not
-                                                // overwrite authoritative broker state.
-                                                stopConfirmed = true;
+                                                    mutationSucceeded =
+                                                        stopMutationSucceeded &&
+                                                        mutationSucceeded;
+
+                                                    stopConfirmed =
+                                                        stopMutationSucceeded;
+                                                }
+                                                else
+                                                {
+                                                    stopConfirmed = true;
+                                                }
                                             }
                                         }
 
-                                        double target = 0;
-
                                         if (SyncBrokerTakeProfit)
                                         {
-                                            target =
+                                            double target =
                                                 AutoTarget(
                                                     _plan,
                                                     EffectiveAutoTpStage());
 
-                                            bool desiredTargetValid =
-                                                IsValidTarget(
-                                                    positionDirection,
-                                                    position.EntryPrice,
-                                                    target);
-
-                                            if (desiredTargetValid)
+                                            if (IsValidTarget(
+                                                    direction,
+                                                    planPosition.EntryPrice,
+                                                    target))
                                             {
-                                                bool move = true;
-
-                                                if (PreventBrokerTpBackwardMove &&
-                                                    position.TakeProfit.HasValue &&
-                                                    brokerTargetValid)
-                                                {
-                                                    double current =
-                                                        position.TakeProfit.Value;
-
-                                                    move =
-                                                        positionDirection == 1
-                                                            ? target >= current
-                                                            : target <= current;
-                                                }
-
                                                 double normalizedTarget =
                                                     NormalizePrice(target);
 
                                                 bool materiallyDifferent =
                                                     !brokerTargetValid ||
                                                     Math.Abs(
-                                                        position.TakeProfit.HasValue
-                                                            ? position.TakeProfit.Value -
+                                                        planPosition.TakeProfit.HasValue
+                                                            ? planPosition.TakeProfit.Value -
                                                               normalizedTarget
                                                             : double.MaxValue) >=
                                                     Math.Max(
                                                         Symbol.TickSize,
                                                         Symbol.PipSize * 0.25);
 
-                                                bool shouldAdvance =
-                                                    !brokerTargetValid ||
-                                                    ProtectionProgressionRule.ShouldAdvanceTarget(
-                                                        positionDirection,
-                                                        NormalizePrice(
-                                                            position.TakeProfit.HasValue
-                                                                ? position.TakeProfit.Value
-                                                                : 0),
-                                                        normalizedTarget,
-                                                        PreventBrokerTpBackwardMove);
-
                                                 if (materiallyDifferent &&
-                                                    shouldAdvance)
+                                                    (!brokerTargetValid ||
+                                                     ProtectionProgressionRule.ShouldAdvanceTarget(
+                                                         direction,
+                                                         NormalizePrice(
+                                                             planPosition.TakeProfit.Value),
+                                                         normalizedTarget,
+                                                         PreventBrokerTpBackwardMove)))
                                                 {
                                                     mutationRequired = true;
 
                                                     bool targetMutationSucceeded =
                                                         TryModifyTakeProfit(
-                                                            position,
+                                                            planPosition,
                                                             normalizedTarget,
                                                             "LIVE PROTECTION • TP");
 
@@ -252,10 +216,10 @@ namespace cAlgo
                                             {
                                                 SendUnifiedAlert(
                                                     "PROTECTION-SYNC-FAILED|" +
-                                                    position.Id,
+                                                    planPosition.Id,
                                                     "CFIP BROKER PROTECTION SYNC REJECTED | #" +
-                                                    position.Id,
-                                                    positionDirection,
+                                                    planPosition.Id,
+                                                    direction,
                                                     true);
                                             }
                                         }
@@ -267,13 +231,153 @@ namespace cAlgo
                                                 LifecycleState.LivePosition,
                                                 "LIVE POSITION • BROKER STATE SYNCHRONIZED");
                                         }
-                        
+
                                         _lastBrokerModifyUtc =
                                             TimeInUtc;
-                        
-                                        break;
+                                        return;
+                                    }
+
+                                    if (!AutoProtectBrokerPositions)
+                                        return;
+
+                                    string label =
+                                        string.IsNullOrWhiteSpace(
+                                            ManagedPositionLabel)
+                                            ? NormalizeLabel()
+                                            : ManagedPositionLabel.Trim();
+
+                                    foreach (Position position in Positions)
+                                    {
+                                        if (position == null ||
+                                            position.SymbolName != SymbolName ||
+                                            position.Label != label)
+                                            continue;
+
+                                        int direction =
+                                            position.TradeType == TradeType.Buy
+                                                ? 1
+                                                : -1;
+
+                                        double atr =
+                                            _m5Bars == null
+                                                ? 0
+                                                : Atr(
+                                                    _m5Bars,
+                                                    Math.Max(
+                                                        1,
+                                                        closedM5));
+
+                                        if (!IsFinitePositive(atr))
+                                            atr =
+                                                Math.Max(
+                                                    Symbol.PipSize * 20,
+                                                    Math.Abs(
+                                                        Symbol.Ask -
+                                                        Symbol.Bid) * 10);
+
+                                        string stopSource;
+                                        int stopQuality;
+
+                                        double stop =
+                                            position.StopLoss.HasValue &&
+                                            IsValidManagedStop(
+                                                direction,
+                                                position.EntryPrice,
+                                                direction == 1
+                                                    ? Symbol.Bid
+                                                    : Symbol.Ask,
+                                                position.StopLoss.Value)
+                                                ? position.StopLoss.Value
+                                                : BuildStructuralStop(
+                                                    Math.Max(1, closedM5),
+                                                    direction,
+                                                    position.EntryPrice,
+                                                    atr,
+                                                    out stopSource,
+                                                    out stopQuality);
+
+                                        if (!IsValidStop(
+                                                direction,
+                                                position.EntryPrice,
+                                                stop))
+                                        {
+                                            double fallbackRisk =
+                                                atr *
+                                                Math.Max(
+                                                    0.10,
+                                                    FallbackSlAtr);
+
+                                            stop =
+                                                direction == 1
+                                                    ? position.EntryPrice - fallbackRisk
+                                                    : position.EntryPrice + fallbackRisk;
+
+                                            stop =
+                                                NormalizePrice(stop);
+                                        }
+
+                                        if (!IsValidStop(
+                                                direction,
+                                                position.EntryPrice,
+                                                stop))
+                                            continue;
+
+                                        double target =
+                                            position.TakeProfit.HasValue &&
+                                            IsValidTarget(
+                                                direction,
+                                                position.EntryPrice,
+                                                position.TakeProfit.Value)
+                                                ? position.TakeProfit.Value
+                                                : SelectStructuralAutoTarget(
+                                                    Math.Max(1, closedM5),
+                                                    direction,
+                                                    position.EntryPrice,
+                                                    stop,
+                                                    atr,
+                                                    EffectiveAutoTpStage());
+
+                                        if (!IsValidTarget(
+                                                direction,
+                                                position.EntryPrice,
+                                                target))
+                                        {
+                                            double risk =
+                                                Math.Max(
+                                                    Symbol.PipSize,
+                                                    Math.Abs(
+                                                        position.EntryPrice -
+                                                        stop));
+
+                                            target =
+                                                direction == 1
+                                                    ? position.EntryPrice +
+                                                      risk *
+                                                      Math.Max(
+                                                          1,
+                                                          MinimumRequiredRR())
+                                                    : position.EntryPrice -
+                                                      risk *
+                                                      Math.Max(
+                                                          1,
+                                                          MinimumRequiredRR());
+                                        }
+
+                                        bool protectedOk =
+                                            EnsureBrokerProtectionForPosition(
+                                                position,
+                                                stop,
+                                                target,
+                                                "ORPHAN MANAGED POSITION",
+                                                direction,
+                                                false);
+
+                                        _lastBrokerModifyUtc =
+                                            TimeInUtc;
+
+                                        if (!protectedOk)
+                                            return;
                                     }
                                 }
-
     }
 }
