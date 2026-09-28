@@ -837,6 +837,20 @@ Acceptance:
 
 Status: in progress.
 
+Runtime smoke test completed:
+- Production `.algo` loads successfully in the target LiteFinance cTrader terminal.
+- CFIP initializes and is visibly running on-chart without the previously observed compile/startup blocker.
+- The local runtime is now ready for controlled functional acceptance.
+
+Remaining acceptance work:
+- Verify M1/M5/M15/M30/H1/H4/D1/W1.
+- Verify MTF boundaries and closed-bar synchronization.
+- Verify panel, popup, chart objects and alerts.
+- Verify auto-trading runtime state and permission behavior.
+- Capture CPU/memory/resource baseline.
+
+Goal: validate the production assembly on the actual target cTrader terminal and broker/demo environment.
+
 Goal: validate the production assembly on the actual target cTrader terminal and broker/demo environment.
 
 Completed in this phase:
