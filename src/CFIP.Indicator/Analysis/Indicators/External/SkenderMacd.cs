@@ -9,7 +9,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double FacioQuoSuperTrend(
+        private double SkenderMacdHistogram(
             Bars bars,
             int index)
         {
@@ -18,21 +18,30 @@ namespace cAlgo
                     bars,
                     index);
 
+            int fast =
+                Math.Max(2, MacdFastPeriod);
+
+            int slow =
+                Math.Max(
+                    fast + 1,
+                    MacdSlowPeriod);
+
             if (quotes == null ||
-                quotes.Count < 60)
+                quotes.Count < slow + 20)
                 return double.NaN;
 
             var results =
-                StockIndicator.GetSuperTrend(
+                StockIndicator.GetMacd(
                     quotes,
-                    10,
-                    3)
+                    fast,
+                    slow,
+                    9)
                     .ToList();
 
             return results.Count == 0 ||
-                   !results[results.Count - 1].SuperTrend.HasValue
+                   !results[results.Count - 1].Histogram.HasValue
                 ? double.NaN
-                : (double)results[results.Count - 1].SuperTrend.Value;
+                : results[results.Count - 1].Histogram.Value;
         }
     }
 }

@@ -9,15 +9,10 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void FacioQuoStochBias(
+        private double SkenderBollingerPercentB(
             Bars bars,
-            int index,
-            out double k,
-            out double d)
+            int index)
         {
-            k = double.NaN;
-            d = double.NaN;
-
             IReadOnlyList<StockQuote> quotes =
                 GetOssQuotes(
                     bars,
@@ -25,21 +20,19 @@ namespace cAlgo
 
             if (quotes == null ||
                 quotes.Count < 40)
-                return;
+                return double.NaN;
 
             var results =
-                StockIndicator.GetStoch(
+                StockIndicator.GetBollingerBands(
                     quotes,
-                    14,
-                    3,
-                    3)
+                    20,
+                    2)
                     .ToList();
 
-            if (results.Count == 0)
-                return;
-
-            k = results[results.Count - 1].K ?? 0;
-            d = results[results.Count - 1].D ?? 0;
+            return results.Count == 0 ||
+                   !results[results.Count - 1].PercentB.HasValue
+                ? double.NaN
+                : results[results.Count - 1].PercentB.Value;
         }
     }
 }

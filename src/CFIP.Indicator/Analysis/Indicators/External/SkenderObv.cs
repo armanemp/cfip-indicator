@@ -9,7 +9,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double FacioQuoObvBias(
+        private double SkenderObvBias(
             Bars bars,
             int index)
         {

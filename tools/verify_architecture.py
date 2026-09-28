@@ -110,17 +110,17 @@ MODULAR_HELPERS = {
 }
 OSS_EXTENSION_METHODS = {
     "GetOssQuotes",
-    "FacioQuoRsi",
-    "FacioQuoMacdHistogram",
-    "FacioQuoBollingerPercentB",
-    "FacioQuoMfi",
-    "FacioQuoStochBias",
-    "FacioQuoSuperTrend",
+    "SkenderRsi",
+    "SkenderMacdHistogram",
+    "SkenderBollingerPercentB",
+    "SkenderMfi",
+    "SkenderStochBias",
+    "SkenderSuperTrend",
     "BuildOssIndicatorSnapshot",
-    "FacioQuoAroonOscillator",
-    "FacioQuoCci",
-    "FacioQuoObvBias",
-    "FacioQuoParabolicSar",
+    "SkenderAroonOscillator",
+    "SkenderCci",
+    "SkenderObvBias",
+    "SkenderParabolicSar",
 }
 reference_methods = [m for m in methods if m not in MODULAR_HELPERS and m not in OSS_EXTENSION_METHODS]
 unique_methods = set(reference_methods)
@@ -1343,17 +1343,17 @@ for relative, method in ROW_EXPECTATIONS.items():
         raise SystemExit(f"Panel renderer ownership check failed: {relative}")
 
 oss_files = {
-    "FacioQuoRsi.cs": "FacioQuoRsi",
-    "FacioQuoMacd.cs": "FacioQuoMacdHistogram",
-    "FacioQuoBollingerBands.cs": "FacioQuoBollingerPercentB",
-    "FacioQuoMfi.cs": "FacioQuoMfi",
-    "FacioQuoStoch.cs": "FacioQuoStochBias",
-    "FacioQuoSuperTrend.cs": "FacioQuoSuperTrend",
+    "SkenderRsi.cs": "SkenderRsi",
+    "SkenderMacd.cs": "SkenderMacdHistogram",
+    "SkenderBollingerBands.cs": "SkenderBollingerPercentB",
+    "SkenderMfi.cs": "SkenderMfi",
+    "SkenderStoch.cs": "SkenderStochBias",
+    "SkenderSuperTrend.cs": "SkenderSuperTrend",
     "OssIndicatorConfluenceAnalyzer.cs": "BuildOssIndicatorSnapshot",
-    "FacioQuoAroon.cs": "FacioQuoAroonOscillator",
-    "FacioQuoCci.cs": "FacioQuoCci",
-    "FacioQuoObv.cs": "FacioQuoObvBias",
-    "FacioQuoParabolicSar.cs": "FacioQuoParabolicSar",
+    "SkenderAroon.cs": "SkenderAroonOscillator",
+    "SkenderCci.cs": "SkenderCci",
+    "SkenderObv.cs": "SkenderObvBias",
+    "SkenderParabolicSar.cs": "SkenderParabolicSar",
 }
 OSS_ROOT = ROOT / "Analysis" / "Indicators" / "External"
 for filename, method in oss_files.items():

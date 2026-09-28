@@ -29,18 +29,18 @@ namespace cAlgo
             OssIndicatorSnapshot snapshot =
                 new OssIndicatorSnapshot
                 {
-                    Rsi = FacioQuoRsi(bars, index),
-                    MacdHistogram = FacioQuoMacdHistogram(bars, index),
-                    BollingerPercentB = FacioQuoBollingerPercentB(bars, index),
-                    Mfi = FacioQuoMfi(bars, index),
-                    SuperTrend = FacioQuoSuperTrend(bars, index),
-                    AroonOscillator = FacioQuoAroonOscillator(bars, index),
-                    Cci = FacioQuoCci(bars, index),
-                    ObvBias = FacioQuoObvBias(bars, index),
-                    ParabolicSar = FacioQuoParabolicSar(bars, index)
+                    Rsi = SkenderRsi(bars, index),
+                    MacdHistogram = SkenderMacdHistogram(bars, index),
+                    BollingerPercentB = SkenderBollingerPercentB(bars, index),
+                    Mfi = SkenderMfi(bars, index),
+                    SuperTrend = SkenderSuperTrend(bars, index),
+                    AroonOscillator = SkenderAroonOscillator(bars, index),
+                    Cci = SkenderCci(bars, index),
+                    ObvBias = SkenderObvBias(bars, index),
+                    ParabolicSar = SkenderParabolicSar(bars, index)
                 };
 
-            FacioQuoStochBias(
+            SkenderStochBias(
                 bars,
                 index,
                 out double k,
