@@ -29,25 +29,76 @@ namespace cAlgo
             f.EmaFast = Ema(bars, index, true);
             f.EmaSlow = Ema(bars, index, false);
 
-            MarketRegimeSnapshot regimeSnapshot =
-                ReferenceEquals(
+            if (ReferenceEquals(
                     bars,
-                    _m5Bars)
-                    ? GetActiveM5Regime(index)
-                    : AnalyzeMarketRegime(
-                        bars,
-                        index);
+                    _m5Bars))
+            {
+                MarketRegimeSnapshot regimeSnapshot =
+                    GetActiveM5Regime(index);
 
-            f.Choppiness =
-                regimeSnapshot.Choppiness;
-            f.AtrRatio =
-                regimeSnapshot.AtrRatio;
-            f.EmaSpreadAtr =
-                regimeSnapshot.EmaSpreadAtr;
-            f.EmaSlopeAtr =
-                regimeSnapshot.EmaSlopeAtr;
-            f.RangeEfficiency =
-                regimeSnapshot.RangeEfficiency;
+                if (regimeSnapshot != null)
+                {
+                    f.Choppiness =
+                        regimeSnapshot.Choppiness;
+                    f.AtrRatio =
+                        regimeSnapshot.AtrRatio;
+                    f.EmaSpreadAtr =
+                        regimeSnapshot.EmaSpreadAtr;
+                    f.EmaSlopeAtr =
+                        regimeSnapshot.EmaSlopeAtr;
+                    f.RangeEfficiency =
+                        regimeSnapshot.RangeEfficiency;
+                }
+            }
+            else
+            {
+                double previousFast =
+                    Ema(
+                        bars,
+                        Math.Max(
+                            1,
+                            index - 3),
+                        true);
+
+                double averageAtr =
+                    AverageAtr(
+                        bars,
+                        Math.Max(
+                            20,
+                            index - 1),
+                        20);
+
+                f.AtrRatio =
+                    averageAtr > 0
+                        ? f.Atr / averageAtr
+                        : 1.0;
+
+                f.EmaSpreadAtr =
+                    f.Atr > 0
+                        ? Math.Abs(
+                            f.EmaFast -
+                            f.EmaSlow) /
+                          f.Atr
+                        : 0;
+
+                f.EmaSlopeAtr =
+                    f.Atr > 0
+                        ? (f.EmaFast -
+                           previousFast) /
+                          f.Atr
+                        : 0;
+
+                f.RangeEfficiency =
+                    CalculateRangeEfficiency(
+                        bars,
+                        index,
+                        10);
+
+                f.Choppiness =
+                    f.Choppy
+                        ? 65
+                        : 45;
+            }
 
             f.StructureBull =
                 UseInternalStructure &&
