@@ -55,15 +55,42 @@ namespace cAlgo
             DateTime reference,
             MtfClosedContext mtf)
         {
-            return RunCalculationStage(
-                () =>
-                    ProcessNewClosedBar(
-                        index,
-                        closedM5,
-                        reference,
-                        mtf),
-                index,
-                "CLOSED-BAR ANALYSIS");
+            string retryReason;
+
+            if (!_runtimeFaultStateMachine.CanAttemptClosedBarAnalysis(
+                    closedM5,
+                    TimeInUtc,
+                    out retryReason))
+            {
+                _autoExecutionBlockReason =
+                    retryReason;
+
+                SetAutoTradingState(
+                    "BLOCKED",
+                    retryReason);
+
+                return false;
+            }
+
+            bool result =
+                RunCalculationStage(
+                    () =>
+                        ProcessNewClosedBar(
+                            index,
+                            closedM5,
+                            reference,
+                            mtf),
+                    index,
+                    "CLOSED-BAR ANALYSIS",
+                    closedM5);
+
+            if (!_runtimeFaultStateMachine.CycleFaulted)
+            {
+                _runtimeFaultStateMachine.RecordClosedBarAnalysisSuccess(
+                    closedM5);
+            }
+
+            return result;
         }
 
         private void ProcessLiveCalculationStages(
@@ -269,7 +296,8 @@ namespace cAlgo
         private bool RunCalculationStage(
             Func<bool> stage,
             int index,
-            string stageName)
+            string stageName,
+            int stateKey = -1)
         {
             try
             {
@@ -293,11 +321,25 @@ namespace cAlgo
             }
             catch (Exception ex)
             {
+                if (stageName ==
+                    "CLOSED-BAR ANALYSIS" &&
+                    stateKey >= 0)
+                {
+                    _runtimeFaultStateMachine.RecordClosedBarAnalysisFailure(
+                        stateKey,
+                        TimeInUtc);
+                }
+
                 HandleRuntimeFault(
                     ex,
                     index,
                     stageName);
-                return true;
+
+                return
+                    stageName ==
+                    "CLOSED-BAR ANALYSIS"
+                        ? false
+                        : true;
             }
         }
     }
