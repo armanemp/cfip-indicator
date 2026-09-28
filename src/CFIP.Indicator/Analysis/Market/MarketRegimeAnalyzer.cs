@@ -291,7 +291,7 @@ namespace cAlgo
 
             int stability = 1;
 
-            if (index > 40)
+            if (ReferenceEquals(bars, _m5Bars) && index > 40)
             {
                 MarketRegimeSnapshot previous =
                     AnalyzeMarketRegime(
