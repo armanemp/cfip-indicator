@@ -601,3 +601,32 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: decompose pending-order continuation-stop and reversal-limit placement, then compare all automatic execution paths for shared invariants and accidental divergence.
+
+
+## Phase 20 — Pending placement decomposition
+
+Status: complete.
+
+Goal: separate pending stop/limit preparation from placement orchestration while keeping shared submission validation and broker confirmation centralized.
+
+Completed:
+
+- Reduced ContinuationStopPlacement.cs to preparation/validation/mutation sequencing.
+- Isolated continuation-stop trigger, structural SL/TP and volume preparation.
+- Reduced ReversalLimitPlacement.cs to preparation/validation/mutation sequencing.
+- Isolated reversal-limit ideal-entry resolution, structural SL/TP and volume preparation.
+- Centralized ExecutionIntent validation, safety guards and pending expiration in PendingSubmissionValidator.cs.
+- Kept broker stop/limit mutations in their explicit broker mutation owners.
+- Preserved broker-confirmed pending-order adoption: rejected results do not create synthetic pending state.
+- Preserved Stop-versus-Limit entry semantics and existing post-success plan cleanup.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- Continuation stop and reversal limit have explicit preparation owners.
+- Shared submission validation has one owner.
+- Pending placement mutation remains inside the broker mutation boundary.
+- Existing lifecycle handlers remain the broker-confirmed source of pending creation/fill/cancellation state.
+- No production file exceeds 20 KiB.
+
+Next: perform a cross-path automatic execution consistency audit across Market, Aggressive and Pending, then finish the remaining near-ceiling UI/Panel and lifecycle modules.
