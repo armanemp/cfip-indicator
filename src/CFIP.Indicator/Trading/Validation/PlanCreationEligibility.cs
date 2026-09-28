@@ -1,6 +1,7 @@
 // CFIP Indicator — PlanCreationEligibility.cs
 // Determine whether the current authoritative decision may create a plan.
 
+using System;
 using cAlgo.API;
 
 namespace cAlgo
