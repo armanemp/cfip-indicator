@@ -70,6 +70,58 @@ namespace cAlgo
             int index,
             int closedM5)
         {
+            // Management-first rule:
+            // reconcile broker state, recover managed live state, evaluate active
+            // protection/exits and synchronize broker protection before optional
+            // live intelligence can run.
+            RunCalculationStage(
+                () =>
+                {
+                    SynchronizeLiveBrokerState();
+                    return true;
+                },
+                index,
+                "BROKER RECONCILIATION • PREFLIGHT");
+
+            RunCalculationStage(
+                () =>
+                {
+                    RecoverManagedLivePlan(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "BROKER LIFECYCLE RECOVERY");
+
+            RunCalculationStage(
+                () =>
+                {
+                    SynchronizeLiveBrokerState();
+                    return true;
+                },
+                index,
+                "BROKER RECONCILIATION • POST-RECOVERY");
+
+            RunCalculationStage(
+                () =>
+                {
+                    EvaluateActivePlan(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "ACTIVE PLAN MANAGEMENT");
+
+            RunCalculationStage(
+                () =>
+                {
+                    ProtectBrokerPositions(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "BROKER PROTECTION • PRE-ANALYSIS");
+
             RunCalculationStage(
                 () =>
                 {
@@ -87,16 +139,6 @@ namespace cAlgo
                 },
                 index,
                 "PLAN SYNCHRONIZATION");
-
-            RunCalculationStage(
-                () =>
-                {
-                    RecoverManagedLivePlan(
-                        closedM5);
-                    return true;
-                },
-                index,
-                "BROKER LIFECYCLE RECOVERY");
 
             RunCalculationStage(
                 () =>
@@ -145,25 +187,6 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
-                    SynchronizeLiveBrokerState();
-                    return true;
-                },
-                index,
-                "BROKER STATE");
-
-            RunCalculationStage(
-                () =>
-                {
-                    EvaluateActivePlan(
-                        closedM5);
-                    return true;
-                },
-                index,
-                "ACTIVE PLAN MANAGEMENT");
-
-            RunCalculationStage(
-                () =>
-                {
                     TryAutoTrade(
                         closedM5);
 
@@ -178,6 +201,17 @@ namespace cAlgo
                 index,
                 "EXECUTION");
 
+            // A new market/pending mutation may have created or changed the live
+            // broker state. Reconcile and protect it before telemetry/presentation.
+            RunCalculationStage(
+                () =>
+                {
+                    SynchronizeLiveBrokerState();
+                    return true;
+                },
+                index,
+                "BROKER RECONCILIATION • POST-EXECUTION");
+
             RunCalculationStage(
                 () =>
                 {
@@ -186,7 +220,7 @@ namespace cAlgo
                     return true;
                 },
                 index,
-                "BROKER PROTECTION");
+                "BROKER PROTECTION • POST-EXECUTION");
 
             RunCalculationStage(
                 () =>

@@ -520,16 +520,20 @@ namespace cAlgo
 
             foreach (string requiredStage in new[]
             {
+                "BROKER RECONCILIATION • PREFLIGHT",
+                "BROKER LIFECYCLE RECOVERY",
+                "BROKER RECONCILIATION • POST-RECOVERY",
+                "ACTIVE PLAN MANAGEMENT",
+                "BROKER PROTECTION • PRE-ANALYSIS",
                 "LIVE ANALYSIS",
                 "PLAN SYNCHRONIZATION",
-                "BROKER LIFECYCLE RECOVERY",
                 "PLAN CREATION",
-                "BROKER STATE",
-                "ACTIVE PLAN MANAGEMENT",
                 "EXECUTION",
-                "BROKER PROTECTION",
+                "BROKER RECONCILIATION • POST-EXECUTION",
+                "BROKER PROTECTION • POST-EXECUTION",
                 "TELEMETRY",
                 "REVERSAL MANAGEMENT",
+                "BROKER STATE FINALIZATION",
                 "PRESENTATION"
             })
             {
@@ -548,30 +552,84 @@ namespace cAlgo
 
             Assert(
                 stages.IndexOf(
+                    "BROKER RECONCILIATION • PREFLIGHT",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "LIVE ANALYSIS",
+                    StringComparison.Ordinal),
+                "broker reconciliation precedes live analysis");
+
+            Assert(
+                stages.IndexOf(
+                    "BROKER LIFECYCLE RECOVERY",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "LIVE ANALYSIS",
+                    StringComparison.Ordinal),
+                "broker recovery precedes live analysis");
+
+            Assert(
+                stages.IndexOf(
+                    "ACTIVE PLAN MANAGEMENT",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "LIVE ANALYSIS",
+                    StringComparison.Ordinal),
+                "active plan management precedes live analysis");
+
+            Assert(
+                stages.IndexOf(
+                    "BROKER PROTECTION • PRE-ANALYSIS",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "LIVE ANALYSIS",
+                    StringComparison.Ordinal),
+                "pre-analysis protection precedes live analysis");
+
+            Assert(
+                stages.IndexOf(
                     "LIVE ANALYSIS",
                     StringComparison.Ordinal) <
                 stages.IndexOf(
                     "PLAN SYNCHRONIZATION",
                     StringComparison.Ordinal),
-                "analysis stage precedes downstream stages");
+                "analysis stage precedes downstream planning");
 
             Assert(
                 stages.IndexOf(
                     "PLAN SYNCHRONIZATION",
                     StringComparison.Ordinal) <
                 stages.IndexOf(
-                    "BROKER STATE",
+                    "EXECUTION",
                     StringComparison.Ordinal),
-                "management path remains reachable after analysis stage");
+                "planning synchronization precedes execution");
 
             Assert(
                 stages.IndexOf(
-                    "BROKER PROTECTION",
+                    "BROKER RECONCILIATION • POST-EXECUTION",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "BROKER PROTECTION • POST-EXECUTION",
+                    StringComparison.Ordinal),
+                "post-execution reconciliation precedes protection");
+
+            Assert(
+                stages.IndexOf(
+                    "BROKER PROTECTION • POST-EXECUTION",
+                    StringComparison.Ordinal) <
+                stages.IndexOf(
+                    "TELEMETRY",
+                    StringComparison.Ordinal),
+                "post-execution protection precedes telemetry");
+
+            Assert(
+                stages.IndexOf(
+                    "BROKER STATE FINALIZATION",
                     StringComparison.Ordinal) <
                 stages.IndexOf(
                     "PRESENTATION",
                     StringComparison.Ordinal),
-                "protection precedes presentation");
+                "final broker state synchronization precedes presentation");
         }
 
         private static void VerifyLifecycleIdempotency()

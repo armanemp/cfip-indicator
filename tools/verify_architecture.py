@@ -179,16 +179,20 @@ if "ProcessLiveCalculation(" in calculation_cycle_code:
     raise SystemExit("Calculate must not directly own live-cycle orchestration")
 
 required_stage_markers = (
+    "BROKER RECONCILIATION • PREFLIGHT",
+    "BROKER LIFECYCLE RECOVERY",
+    "BROKER RECONCILIATION • POST-RECOVERY",
+    "ACTIVE PLAN MANAGEMENT",
+    "BROKER PROTECTION • PRE-ANALYSIS",
     "LIVE ANALYSIS",
     "PLAN SYNCHRONIZATION",
-    "BROKER LIFECYCLE RECOVERY",
     "PLAN CREATION",
-    "BROKER STATE",
-    "ACTIVE PLAN MANAGEMENT",
     "EXECUTION",
-    "BROKER PROTECTION",
+    "BROKER RECONCILIATION • POST-EXECUTION",
+    "BROKER PROTECTION • POST-EXECUTION",
     "TELEMETRY",
     "REVERSAL MANAGEMENT",
+    "BROKER STATE FINALIZATION",
     "PRESENTATION",
 )
 for marker in required_stage_markers:
@@ -205,6 +209,31 @@ if "HandleRuntimeFault(" not in stage_isolation_code:
 
 if "return true;" not in stage_isolation_code:
     raise SystemExit("Runtime stage isolation must continue after recoverable stage faults")
+
+# Phase 1.2 management-first runtime gates.
+stage_order_requirements = (
+    ("BROKER RECONCILIATION • PREFLIGHT", "LIVE ANALYSIS",
+     "broker reconciliation must precede live analysis"),
+    ("BROKER LIFECYCLE RECOVERY", "LIVE ANALYSIS",
+     "broker lifecycle recovery must precede live analysis"),
+    ("ACTIVE PLAN MANAGEMENT", "LIVE ANALYSIS",
+     "active plan management must precede live analysis"),
+    ("BROKER PROTECTION • PRE-ANALYSIS", "LIVE ANALYSIS",
+     "broker protection must precede live analysis"),
+    ("LIVE ANALYSIS", "PLAN SYNCHRONIZATION",
+     "live analysis must precede downstream planning synchronization"),
+    ("PLAN SYNCHRONIZATION", "EXECUTION",
+     "planning synchronization must precede execution"),
+    ("BROKER RECONCILIATION • POST-EXECUTION", "BROKER PROTECTION • POST-EXECUTION",
+     "post-execution reconciliation must precede broker protection"),
+    ("BROKER PROTECTION • POST-EXECUTION", "TELEMETRY",
+     "post-execution protection must precede telemetry"),
+    ("BROKER STATE FINALIZATION", "PRESENTATION",
+     "final broker state synchronization must precede presentation"),
+)
+for before, after, reason in stage_order_requirements:
+    if stage_isolation_code.index(before) >= stage_isolation_code.index(after):
+        raise SystemExit(reason)
 
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
