@@ -5,7 +5,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ProcessNewClosedBar(
+        private bool ProcessNewClosedBar(
             int hostIndex,
             int closedM5,
             DateTime reference,
@@ -27,7 +27,7 @@ namespace cAlgo
                 _status =
                     "WAITING FOR MTF DATA";
                 RenderPanel();
-                return;
+                return false;
             }
 
             _m1Frame =
@@ -123,6 +123,8 @@ namespace cAlgo
 
             UpdateHistoricalSignalPresentation(
                 hostIndex);
+        
+            return true;
         }
 
         private void UpdateHistoricalSignalPresentation(
