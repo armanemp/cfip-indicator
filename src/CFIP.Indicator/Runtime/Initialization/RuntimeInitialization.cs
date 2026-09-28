@@ -338,8 +338,11 @@ namespace cAlgo
                                     {
                                         Timer.Stop();
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
+                                        Print(
+                                            "CFIP OnDestroy timer stop failed: {0}",
+                                            ex.ToString());
                                     }
 
                                     try
@@ -352,10 +355,13 @@ namespace cAlgo
                                         PendingOrders.Filled -= OnPendingOrderFilled;
                                         PendingOrders.Cancelled -= OnPendingOrderCancelled;
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
+                                        Print(
+                                            "CFIP OnDestroy event unsubscription failed: {0}",
+                                            ex.ToString());
                                     }
-                        
+
                                     RemoveAllChartObjects();
                                     RemovePanel();
                                     RemovePopup();
