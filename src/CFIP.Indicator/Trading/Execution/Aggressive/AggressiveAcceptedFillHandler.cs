@@ -11,6 +11,7 @@ namespace cAlgo
             double atr,
             double stop,
             double target,
+            ExecutionIntent aggressiveIntent,
             TradeResult result,
             out double actualStop,
             out double actualTarget)
@@ -23,21 +24,6 @@ namespace cAlgo
                     result.Position.EntryPrice);
 
             string aggressiveFillReason;
-
-            ExecutionIntent aggressiveIntent =
-                BuildExecutionIntent(
-                    _reaction.Direction,
-                    DecisionPolicyMode.Aggressive,
-                    ExecutionIntentKind.Market,
-                    entry,
-                    0,
-                    0,
-                    0,
-                    stop,
-                    target,
-                    result.Position.VolumeInUnits,
-                    closedM5,
-                    "AGGRESSIVE MARKET");
 
             if (!ValidateActualMarketFill(
                     aggressiveIntent,
