@@ -1344,15 +1344,15 @@ for relative, method in ROW_EXPECTATIONS.items():
 
 oss_files = {
     "SkenderRsi.cs": "SkenderRsi",
-    "FacioQuoMacd.cs": "SkenderMacdHistogram",
-    "FacioQuoBollingerBands.cs": "SkenderBollingerPercentB",
+    "SkenderMacd.cs": "SkenderMacdHistogram",
+    "SkenderBollingerBands.cs": "SkenderBollingerPercentB",
     "SkenderMfi.cs": "SkenderMfi",
-    "FacioQuoStoch.cs": "SkenderStochBias",
+    "SkenderStoch.cs": "SkenderStochBias",
     "SkenderSuperTrend.cs": "SkenderSuperTrend",
     "OssIndicatorConfluenceAnalyzer.cs": "BuildOssIndicatorSnapshot",
-    "FacioQuoAroon.cs": "SkenderAroonOscillator",
+    "SkenderAroon.cs": "SkenderAroonOscillator",
     "SkenderCci.cs": "SkenderCci",
-    "FacioQuoObv.cs": "SkenderObvBias",
+    "SkenderObv.cs": "SkenderObvBias",
     "SkenderParabolicSar.cs": "SkenderParabolicSar",
 }
 OSS_ROOT = ROOT / "Analysis" / "Indicators" / "External"
