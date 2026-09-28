@@ -25,25 +25,15 @@ namespace cAlgo
                                     if (_panel == null)
                                         CreatePanel();
                         
-                                    if (_panel == null)
-                                    {
-                                        UpdateRuntimeBootstrapVisual(
-                                            "PANEL UNAVAILABLE");
-                                        return;
-                                    }
-
-                                    if (_panelStack == null ||
+                                    if (_panel == null ||
+                                        _panelStack == null ||
                                         _panelHeaderStack == null ||
                                         _panelHeaderTitle == null ||
                                         _panelRowsStack == null ||
                                         _panelScroll == null ||
                                         _buttonStack == null ||
                                         _panelRows.Count != PanelRowCount)
-                                    {
-                                        UpdateRuntimeBootstrapVisual(
-                                            "PANEL INCOMPLETE");
                                         return;
-                                    }
                         
                                     if (_panelToggleButton == null)
                                         CreatePanelToggleButton();
