@@ -954,6 +954,26 @@ Acceptance:
 - The Indicator host contract contains no unverified API surface added for diagnostics.
 - Terminal revalidation is required before declaring the on-chart instance operational again.
 
+### Phase 29E — Staged startup and live-render clarification
+
+Status: in progress.
+
+Goal: remove startup blocking caused by synchronous multi-timeframe/native initialization and keep signal presentation semantically aligned with plan state.
+
+Implemented:
+- Panel construction now occurs before heavy market-data and native-indicator acquisition.
+- Startup work is split into timed stages so the main Indicator lifecycle is released between data-feed/indicator initialization steps.
+- `Calculate()` remains gated until all startup stages are complete.
+- Timer is stopped after successful initialization and during destroy.
+- Existing runtime exception containment remains active.
+- Confirmed that a watch/reaction arrow is a non-plan visual and therefore does not imply that Entry/SL/TP plan lines should exist.
+
+Next validation:
+- Confirm fast panel appearance after attach.
+- Confirm no delayed first-render stall.
+- Confirm confirmed `_plan` state renders Entry/Trigger/SL/TP independently of the watch arrow.
+- Measure first-ready latency and live tick CPU/load before further intelligence work.
+
 ### Phase 30 — Automatic market execution certification
 
 Status: planned.
