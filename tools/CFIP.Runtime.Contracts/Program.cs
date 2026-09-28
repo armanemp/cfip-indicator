@@ -15,6 +15,8 @@ namespace cAlgo
             VerifyManagedBreakEvenDirectionality();
             VerifyProtectionProgression();
             VerifyTargetProgression();
+            VerifyExecutionCapacity();
+            VerifyStaleLivePlanRecovery();
             VerifyLifecycleFlows();
             VerifyLifecycleIdempotency();
 
@@ -353,6 +355,42 @@ namespace cAlgo
                     95,
                     98),
                 "SELL backward target blocked");
+        }
+
+        private static void VerifyExecutionCapacity()
+        {
+            Assert(
+                ExecutionCapacityRule.IsSupportedSinglePlanCapacity(1),
+                "single-plan capacity accepted");
+
+            Assert(
+                !ExecutionCapacityRule.IsSupportedSinglePlanCapacity(0),
+                "zero capacity rejected");
+
+            Assert(
+                !ExecutionCapacityRule.IsSupportedSinglePlanCapacity(2),
+                "multi-position capacity rejected");
+        }
+
+        private static void VerifyStaleLivePlanRecovery()
+        {
+            Assert(
+                LivePlanRecoveryRule.ShouldClearStaleLivePlan(
+                    true,
+                    false),
+                "stale live plan clears when broker position disappears");
+
+            Assert(
+                !LivePlanRecoveryRule.ShouldClearStaleLivePlan(
+                    true,
+                    true),
+                "live plan remains when broker position exists");
+
+            Assert(
+                !LivePlanRecoveryRule.ShouldClearStaleLivePlan(
+                    false,
+                    false),
+                "non-live plan is not cleared by broker absence");
         }
 
         private static void VerifyLifecycleFlows()
