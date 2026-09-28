@@ -27,6 +27,36 @@ namespace cAlgo
                                     int quality,
                                     string source)
                                 {
+                                    int retest =
+                                        RetestQuality(
+                                            _m5Bars,
+                                            0,
+                                            direction);
+
+                                    bool inside =
+                                        market >= low - tolerance &&
+                                        market <= high + tolerance;
+
+                                    bool triggerReached =
+                                        IsTriggerReached(
+                                            direction,
+                                            market,
+                                            model.Trigger);
+
+                                    bool continuation =
+                                        IsContinuationExecutionContext(direction);
+
+                                    bool retestReady =
+                                        inside &&
+                                        !triggerReached;
+
+                                    bool qualityReady =
+                                        !RequirePrecisionEntry ||
+                                        quality >=
+                                        Math.Max(
+                                            40,
+                                            MinimumEntryQuality);
+
                                     if (triggerReached &&
                                         AllowPrecisionBreakoutEntry)
                                     {
