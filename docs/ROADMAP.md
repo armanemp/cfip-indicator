@@ -310,6 +310,9 @@ Repository acceptance completed in this phase:
 - Separated initial protective-stop validation from post-entry managed-stop validation so break-even/profit-lock stops can move into protected profit while never crossing the current market.
 - Fixed normal automatic-market rejection handling so broker error information is preserved instead of being replaced by a misleading null-result state.
 - Kept broker-confirmed state as the only accepted execution state.
+- Bound partial take-profit mutation to the active plan position instead of an arbitrary managed position.
+- Added explicit break-even rejection recovery after a confirmed partial close; invalid broker distance is not misclassified as a rejection.
+- Made live broker protection validate managed stops against current market price, allowing safe post-entry profit-lock/trailing stops and retrying unresolved protection mutations.
 
 Hands-on cTrader acceptance remains the only open part of this phase and requires the actual target terminal and broker session. Repository CI cannot reproduce the cTrader chart UI, live broker server, order-fill timing, slippage, reconnection, or terminal resource profile. Those checks remain explicitly required before this phase can be marked complete.
 
