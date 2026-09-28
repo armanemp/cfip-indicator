@@ -2,10 +2,9 @@
 // Validate reward, target progression and higher-timeframe target constraints.
 
 using System;
+using cAlgo.API;
 
-namespace cusing cAlgo.API;
-
-lgo
+namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
@@ -96,7 +95,7 @@ lgo
                     Math.Abs(
                         plan.Tp4 -
                         plan.Entry) /
-                    plan.Risk;
+                plan.Risk;
 
                 double previousRR =
                     plan.Tp3 > 0
