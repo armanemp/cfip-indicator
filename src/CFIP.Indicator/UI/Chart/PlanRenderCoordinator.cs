@@ -28,7 +28,7 @@ namespace cAlgo
                                     if (pendingAuthority != null &&
                                         !_plan.IsLivePosition)
                                     {
-                                        ClearPlanObjects();
+                                        RemovePlanObjects();
                                         return;
                                     }
                         
