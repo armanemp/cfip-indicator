@@ -34,33 +34,13 @@ namespace cAlgo
                         probe,
                         bars.Count - 1));
 
-            for (int i = probe;
-                 i >= 0;
-                 i--)
-            {
-                TimeSpan span;
-
-                if (i + 1 < bars.Count)
-                    span =
-                        bars.OpenTimes[i + 1] -
-                        bars.OpenTimes[i];
-                else if (i > 0)
-                    span =
-                        bars.OpenTimes[i] -
-                        bars.OpenTimes[i - 1];
-                else
-                    span =
-                        TimeSpan.FromMinutes(1);
-
-                if (span <= TimeSpan.Zero)
-                    span =
-                        TimeSpan.FromMinutes(1);
-
-                if (bars.OpenTimes[i] + span <= reference)
-                    return i;
-            }
-
-            return -1;
+            // A fully closed bar is represented by the next bar already
+            // having opened. Do not infer duration from weekend/holiday gaps.
+            return Math.Min(
+                bars.Count - 2,
+                Math.Max(
+                    -1,
+                    probe - 1));
         }
 
         internal static double Highest(

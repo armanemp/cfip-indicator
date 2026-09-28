@@ -69,11 +69,18 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
+                MtfAlignmentText(),
+                PanelSectionColor,
+                false,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
                 SymbolName +
                 "  •  " +
                 Bars.TimeFrame +
                 "  •  " +
-                TimeInUtc.ToString(
+                Server.TimeInUtc.ToString(
                     "HH:mm:ss") +
                 " UTC",
                 PanelMutedTextColor,

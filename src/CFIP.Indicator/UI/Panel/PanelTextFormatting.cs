@@ -30,7 +30,7 @@ namespace cAlgo
                                         candidate = "WAITING";
                         
                                     DateTime now =
-                                        TimeInUtc;
+                                        Server.TimeInUtc;
                         
                                     bool authoritative =
                                         _plan != null ||
@@ -74,6 +74,92 @@ namespace cAlgo
                                     }
                         
                                     return _panelStableHeader;
+                                }
+        
+
+        private string MtfAlignmentText()
+                                {
+                                    DateTime now =
+                                        Server.TimeInUtc;
+
+                                    if (_lastMtfClosedContext == null)
+                                        return
+                                            "MTF ALIGNMENT  •  " +
+                                            now.ToString(
+                                                "HH:mm:ss") +
+                                            " UTC  •  WAITING";
+
+                                    int bullish = 0;
+                                    int bearish = 0;
+                                    int available = 0;
+
+                                    Frame[] frames =
+                                    {
+                                        _m5Frame,
+                                        _m15Frame,
+                                        _m30Frame,
+                                        _h1Frame,
+                                        _h4Frame
+                                    };
+
+                                    for (int i = 0;
+                                         i < frames.Length;
+                                         i++)
+                                    {
+                                        Frame frame =
+                                            frames[i];
+
+                                        if (frame == null)
+                                            continue;
+
+                                        if (frame.Direction == 1)
+                                            bullish++;
+                                        else if (frame.Direction == -1)
+                                            bearish++;
+
+                                        if (frame.Direction != 0)
+                                            available++;
+                                    }
+
+                                    string alignment =
+                                        available == 0
+                                            ? "WAIT"
+                                            : bullish == available
+                                                ? "FULL BUY"
+                                                : bearish == available
+                                                    ? "FULL SELL"
+                                                    : bullish >= 3
+                                                        ? "BUY " +
+                                                          bullish +
+                                                          "/" +
+                                                          available
+                                                        : bearish >= 3
+                                                            ? "SELL " +
+                                                              bearish +
+                                                              "/" +
+                                                              available
+                                                            : "MIXED";
+
+                                    return
+                                        "MTF ALIGNMENT  •  " +
+                                        alignment +
+                                        "  •  REF " +
+                                        _lastMtfClosedContext.Reference.ToString(
+                                            "HH:mm:ss") +
+                                        "  •  CLOSED " +
+                                        _lastMtfClosedContext.M5 +
+                                        "/" +
+                                        _lastMtfClosedContext.M15 +
+                                        "/" +
+                                        _lastMtfClosedContext.M30 +
+                                        "/" +
+                                        _lastMtfClosedContext.H1 +
+                                        "/" +
+                                        _lastMtfClosedContext.H4 +
+                                        "  •  NOW " +
+                                        now.ToString(
+                                            "HH:mm:ss") +
+                                        " UTC";
                                 }
         
         private string ConfluenceText(

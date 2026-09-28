@@ -159,6 +159,12 @@ namespace cAlgo
 
         protected override void OnTimer()
                                 {
+                                    if (_initializationReady)
+                                    {
+                                        HandleRuntimeHeartbeat();
+                                        return;
+                                    }
+
                                     try
                                     {
                                         switch (_initializationStage)
@@ -280,6 +286,8 @@ namespace cAlgo
                                                 _status = "READY";
                                                 _initializationReady = true;
                                                 Timer.Stop();
+                                                Timer.Start(
+                                                    TimeSpan.FromSeconds(1));
 
                                                 try
                                                 {

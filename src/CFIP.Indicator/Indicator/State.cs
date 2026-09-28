@@ -189,5 +189,9 @@ namespace cAlgo
                 private string _marketSuitabilityState = "UNKNOWN";
                 private string _marketSuitabilityReason = "NOT EVALUATED";
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
+                private MtfClosedContext _lastMtfClosedContext;
+                private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+                private int _lastPanelM1ClosedIndex = -1;
+                private bool _runtimeTimerBusy;
     }
 }
