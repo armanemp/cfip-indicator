@@ -355,6 +355,8 @@ Completed:
 - Added architecture gates that enforce broker-state authority, protection validation, recovery handling and removal of the obsolete stub.
 - Updated the architecture and trading-safety documentation with the hardened broker-state rules.
 - Added the operator/maintenance guide for repository build, cTrader acceptance and maintenance boundaries.
+- Hardened aggressive-entry fill-envelope rejection so an invalid fill requests closure and enters recovery only when the broker close is rejected.
+- Made successful execution with failed broker protection visibly enter an explicit `RECOVERY` auto-trading state instead of presenting a clean `EXECUTED` state.
 
 Acceptance:
 
