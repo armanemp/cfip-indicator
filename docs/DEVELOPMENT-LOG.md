@@ -152,3 +152,31 @@ Before starting the next phase:
 - implement only Phase 1.3;
 - re-run all applicable verification gates;
 - update this log and roadmap at phase completion.
+
+
+## Phase 1.3 — Runtime fault state machine
+
+Status: complete.
+
+Implementation:
+- added `Runtime/Calculation/RuntimeFaultState.cs` with `HEALTHY`, `DEGRADED`, `ENTRY_BLOCKED` and `RECOVERING`;
+- added deterministic `RuntimeFaultStateMachine` cycle/fault/recovery/re-arm semantics;
+- connected the existing `RuntimeFaultBoundary` to the new state machine;
+- added explicit fault-state cycle boundaries around `Calculate()`;
+- entered recovery only after pre-analysis reconciliation, lifecycle recovery, active-plan management and protection complete without a current-cycle recoverable fault;
+- kept broker automatic entry disarmed through recovery and after return to `HEALTHY` until an explicit `AutoTradingEnabled` false-to-true transition is observed;
+- guarded market, aggressive and pending broker-entry owners without suppressing pending safety cleanup;
+- added runtime contract and static architecture checks.
+
+Important finding:
+- `HEALTHY` is deliberately not an execution re-arm signal. Broker-confirmed state remains authoritative and recovery cannot silently reopen automatic execution.
+
+Verification:
+- source and architecture checks: PASS (workflow run 758);
+- runtime acceptance contracts: PASS (workflow run 567);
+- cTrader compile: PASS (workflow run 751).
+
+Result:
+- next phase after CI confirmation: **Phase 1.4 — Runtime recovery semantics**.
+
+Certification record: implementation snapshot was verified by Source and architecture workflow 758, Runtime acceptance workflow 567, and cTrader compile workflow 751 before this documentation-only continuity update.
