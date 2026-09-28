@@ -760,3 +760,28 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: audit StructuralStopCandidateSelector and remaining validation modules, then perform the repository-wide owner/dead-code sweep.
+
+
+## Phase 26 — Structural stop selection decomposition
+
+Status: complete.
+
+Goal: separate structural-stop candidate evaluation from final stop materialization while keeping one SL selection authority.
+
+Completed:
+
+- Reduced StructuralStopCandidateSelector.cs to orchestration.
+- Isolated risk-envelope eligibility, per-timeframe ATR resolution and candidate scoring.
+- Isolated final selected-candidate buffer/materialization.
+- Preserved spread-aware minimum risk, maximum structural risk, minimum quality, HTF bonuses, zone/liquidity bonuses, reward-path penalty and preferred-risk balancing.
+- Preserved timeframe-specific stop-buffer semantics.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- Structural SL selection has one orchestration owner and explicit evaluation/finalization owners.
+- No alternate structural-stop calculation engine is introduced.
+- Existing stop directionality and risk limits remain unchanged.
+- No production file exceeds 20 KiB.
+
+Next: perform the final repository-wide duplicate-owner/dead-code sweep and inspect the remaining near-ceiling execution/chart modules before final cTrader hands-on validation.
