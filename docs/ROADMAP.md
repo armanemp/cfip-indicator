@@ -1017,6 +1017,49 @@ Next acceptance:
 - Begin walk-forward/replay validation before tuning thresholds further.
 
 
+## Track 19 — OSS Numerical Benchmark
+
+Reference: docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md
+
+### Phase 19.1 — FacioQuo comparison
+
+Status: complete.
+
+Completed:
+
+- Preserved the production/research package boundary: Skender 2.7.3 remains the cTrader production dependency and FacioQuo 3.0.1 remains benchmark-only.
+- Reworked the isolated benchmark around a shared deterministic 800-bar OHLCV source.
+- Added TREND_UP, TREND_DOWN, RANGE and REGIME_SHIFT fixtures.
+- Added complete-series count and timestamp alignment checks.
+- Added post-warm-up numerical comparison with max/mean/RMS error and strict 1e-6 absolute tolerance.
+- Covered all 10 production OSS indicator families, including Bollinger width and Stochastic %K/%D metrics.
+- Added batch timing and per-iteration allocation measurements.
+- Added GitHub Actions job-summary reporting.
+- Added static verifier gates for benchmark structure and package isolation.
+
+Acceptance:
+
+- Deterministic comparison passes across all four scenarios.
+- Production package pins are unchanged.
+- FacioQuo remains absent from production source.
+- Numerical parity does not bypass runtime compatibility or OSS authority gates.
+
+### Phase 19.2 — TA-Lib.NETCore cross-check
+
+Status: planned.
+
+### Phase 19.3 — QuantConnect LEAN numerical/reference comparison
+
+Status: planned.
+
+### Phase 19.4 — OSS benchmark consolidation
+
+Status: planned.
+
+### Phase 19.5 — OSS admission decision
+
+Status: planned.
+
 ### Phase 30 — Automatic market execution certification
 
 Status: planned.

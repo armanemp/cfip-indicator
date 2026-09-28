@@ -1391,6 +1391,35 @@ if not BENCHMARK_CSPROJ.exists():
 benchmark_project = BENCHMARK_CSPROJ.read_text(encoding="utf-8")
 if RESEARCH_PACKAGE not in benchmark_project:
     raise SystemExit("Research OSS benchmark package pin is missing")
+TRACK_19_BENCHMARK_ROOT = Path("tools/CFIP.StockIndicators.Benchmark/Benchmark")
+TRACK_19_BENCHMARK_FILES = {
+    "BenchmarkModel.cs",
+    "BenchmarkFixtures.cs",
+    "IndicatorComparison.cs",
+    "BenchmarkReport.cs",
+}
+if not TRACK_19_BENCHMARK_ROOT.exists():
+    raise SystemExit("Track 19 benchmark source boundary is missing")
+benchmark_sources = {p.name for p in TRACK_19_BENCHMARK_ROOT.glob("*.cs")}
+if benchmark_sources != TRACK_19_BENCHMARK_FILES:
+    raise SystemExit(
+        "Track 19 benchmark module set changed unexpectedly: "
+        + ", ".join(sorted(benchmark_sources))
+    )
+comparison_code = (TRACK_19_BENCHMARK_ROOT / "IndicatorComparison.cs").read_text(encoding="utf-8")
+for required_metric in (
+    '"RSI"', '"MACD"', '"Bollinger Bands"', '"MFI"', '"Stochastic"',
+    '"SuperTrend"', '"Aroon"', '"CCI"', '"OBV"', '"Parabolic SAR"',
+):
+    if required_metric not in comparison_code:
+        raise SystemExit(f"Track 19 benchmark metric missing: {required_metric}")
+fixture_code = (TRACK_19_BENCHMARK_ROOT / "BenchmarkFixtures.cs").read_text(encoding="utf-8")
+for required_scenario in ("TREND_UP", "TREND_DOWN", "RANGE", "REGIME_SHIFT"):
+    if f'"{required_scenario}"' not in fixture_code:
+        raise SystemExit(f"Track 19 benchmark scenario missing: {required_scenario}")
+if "docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md" not in Path("docs/ROADMAP.md").read_text(encoding="utf-8"):
+    raise SystemExit("Track 19 continuity document is not linked from the roadmap")
+
 if PRODUCTION_PACKAGE not in benchmark_project:
     raise SystemExit("Production OSS package must also be covered by the benchmark")
 

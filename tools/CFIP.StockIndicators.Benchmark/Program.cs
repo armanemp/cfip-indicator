@@ -1,220 +1,148 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
+using System.Text;
 using FacioQuo.Stock.Indicators;
-using V2Indicator = Skender.Stock.Indicators.Indicator;
-using V2Quote = Skender.Stock.Indicators.Quote;
-using V3Bar = FacioQuo.Stock.Indicators.Bar;
 
-var v2Quotes = BuildV2Quotes();
-var v3Bars = BuildV3Bars();
+namespace CfipStockIndicatorsBenchmark;
 
-if (v2Quotes.Count != v3Bars.Count || v2Quotes.Count < 260)
-    throw new InvalidOperationException("Deterministic benchmark fixture is invalid.");
-
-var v2Common = CalculateV2Common(v2Quotes);
-var v3Common = CalculateV3Common(v3Bars);
-
-AssertNear("RSI", v2Common.Rsi, v3Common.Rsi);
-AssertNear("MACD histogram", v2Common.MacdHistogram, v3Common.MacdHistogram);
-AssertNear("Bollinger %B", v2Common.BollingerPercentB, v3Common.BollingerPercentB);
-AssertNear("MFI", v2Common.Mfi, v3Common.Mfi);
-AssertNear("Stochastic K", v2Common.StochK, v3Common.StochK);
-AssertNear("Stochastic D", v2Common.StochD, v3Common.StochD);
-AssertNear("SuperTrend", v2Common.SuperTrend, v3Common.SuperTrend);
-
-ValidateV2ExtendedCoverage(v2Quotes);
-
-const int iterations = 100;
-TimeSpan v2Elapsed = Measure(
-    iterations,
-    () => CalculateV2Common(v2Quotes));
-
-TimeSpan v3Elapsed = Measure(
-    iterations,
-    () => CalculateV3Common(v3Bars));
-
-Console.WriteLine(
-    $"OSS benchmark OK: {v2Quotes.Count} bars, " +
-    "v2/v3 common-indicator parity passed at tolerance 1e-6.");
-Console.WriteLine(
-    $"v2 batch suite: {v2Elapsed.TotalMilliseconds:F2} ms " +
-    $"({v2Elapsed.TotalMilliseconds / iterations:F3} ms/iteration).");
-Console.WriteLine(
-    $"v3 batch suite: {v3Elapsed.TotalMilliseconds:F2} ms " +
-    $"({v3Elapsed.TotalMilliseconds / iterations:F3} ms/iteration).");
-Console.WriteLine(
-    "Production: Skender.Stock.Indicators 2.7.3. " +
-    "Research: FacioQuo.Stock.Indicators 3.0.1.");
-
-static List<V2Quote> BuildV2Quotes()
+internal static class Program
 {
-    var quotes = new List<V2Quote>();
-    DateTime start = new DateTime(2020, 1, 1);
+    private const int TimingWarmupIterations = 5;
+    private const int TimingIterations = 20;
 
-    for (int i = 0; i < 260; i++)
+    private static int Main()
     {
-        DateTime date = start.AddMinutes(i * 5);
-        decimal open = 100m + i * 0.03m + (i % 7) * 0.08m;
-        decimal close = open + ((i % 9) - 4) * 0.04m;
-        decimal high = Math.Max(open, close) + 0.12m + (i % 3) * 0.02m;
-        decimal low = Math.Min(open, close) - 0.10m - (i % 4) * 0.02m;
+        Console.OutputEncoding = Encoding.UTF8;
 
-        quotes.Add(new V2Quote
+        var comparisons = new List<ComparisonResult>();
+
+        foreach (string scenario in BenchmarkFixtures.ScenarioNames)
         {
-            Date = date,
-            Open = open,
-            High = high,
-            Low = low,
-            Close = close,
-            Volume = 1000m + i * 5m
-        });
+            IReadOnlyList<Skender.Stock.Indicators.Quote> v2Quotes =
+                BenchmarkFixtures.BuildV2(scenario);
+            IReadOnlyList<Bar> v3Bars =
+                BenchmarkFixtures.BuildV3(scenario);
+
+            if (v2Quotes.Count != BenchmarkFixtures.BarCount ||
+                v3Bars.Count != BenchmarkFixtures.BarCount)
+            {
+                throw new InvalidOperationException(
+                    $"{scenario}: deterministic fixture count mismatch.");
+            }
+
+            IndicatorComparison.ValidateIndicatorCoverage(
+                scenario,
+                v2Quotes,
+                v3Bars);
+
+            comparisons.AddRange(
+                IndicatorComparison.Compare(
+                    scenario,
+                    v2Quotes,
+                    v3Bars));
+        }
+
+        IReadOnlyList<Skender.Stock.Indicators.Quote> timingV2Quotes =
+            BenchmarkFixtures.BuildV2("TREND_UP");
+        IReadOnlyList<Bar> timingV3Bars =
+            BenchmarkFixtures.BuildV3("TREND_UP");
+
+        BenchmarkTiming v2Timing =
+            Measure(
+                TimingWarmupIterations,
+                TimingIterations,
+                () => RunV2Suite(timingV2Quotes));
+
+        BenchmarkTiming v3Timing =
+            Measure(
+                TimingWarmupIterations,
+                TimingIterations,
+                () => RunV3Suite(timingV3Bars));
+
+        string report =
+            BenchmarkReport.Format(
+                comparisons,
+                v2Timing,
+                v3Timing);
+
+        Console.WriteLine(report);
+
+        bool passed =
+            comparisons.All(x => x.Passed) &&
+            comparisons.Count ==
+                BenchmarkFixtures.ScenarioNames.Count *
+                IndicatorComparison.Definitions.Count;
+
+        Console.WriteLine();
+        Console.WriteLine(
+            passed
+                ? "TRACK 19.1 COMPLETE: FacioQuo numerical comparison passed."
+                : "TRACK 19.1 FAILED: numerical parity regression detected.");
+
+        return passed ? 0 : 1;
     }
 
-    return quotes;
-}
-
-static List<V3Bar> BuildV3Bars()
-{
-    var bars = new List<V3Bar>();
-    DateTime start = new DateTime(2020, 1, 1);
-
-    for (int i = 0; i < 260; i++)
+    private static BenchmarkTiming Measure(
+        int warmupIterations,
+        int iterations,
+        Action action)
     {
-        DateTime date = start.AddMinutes(i * 5);
-        decimal open = 100m + i * 0.03m + (i % 7) * 0.08m;
-        decimal close = open + ((i % 9) - 4) * 0.04m;
-        decimal high = Math.Max(open, close) + 0.12m + (i % 3) * 0.02m;
-        decimal low = Math.Min(open, close) - 0.10m - (i % 4) * 0.02m;
+        for (int i = 0; i < warmupIterations; i++)
+            action();
 
-        bars.Add(new V3Bar(
-            Timestamp: date,
-            Open: open,
-            High: high,
-            Low: low,
-            Close: close,
-            Volume: 1000m + i * 5m));
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        long beforeAllocated =
+            GC.GetAllocatedBytesForCurrentThread();
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
+            action();
+
+        stopwatch.Stop();
+
+        long allocated =
+            GC.GetAllocatedBytesForCurrentThread() -
+            beforeAllocated;
+
+        return new BenchmarkTiming(
+            stopwatch.Elapsed.TotalMilliseconds,
+            stopwatch.Elapsed.TotalMilliseconds / iterations,
+            allocated / iterations);
     }
 
-    return bars;
-}
-
-static (double Rsi, double MacdHistogram, double BollingerPercentB,
-        double Mfi, double StochK, double StochD, double SuperTrend)
-    CalculateV2Common(
-        IReadOnlyList<V2Quote> quotes)
-{
-    var rsi = V2Indicator.GetRsi(quotes, 14).ToList();
-    var macd = V2Indicator.GetMacd(quotes, 12, 26, 9).ToList();
-    var bollinger = V2Indicator.GetBollingerBands(quotes, 20, 2).ToList();
-    var mfi = V2Indicator.GetMfi(quotes, 14).ToList();
-    var stochastic = V2Indicator.GetStoch(quotes, 14, 3, 3).ToList();
-    var superTrend = V2Indicator.GetSuperTrend(quotes, 10, 3).ToList();
-
-    return (
-        ToDouble(rsi[^1].Rsi),
-        ToDouble(macd[^1].Histogram),
-        ToDouble(bollinger[^1].PercentB),
-        ToDouble(mfi[^1].Mfi),
-        ToDouble(stochastic[^1].K),
-        ToDouble(stochastic[^1].D),
-        ToDouble(superTrend[^1].SuperTrend));
-}
-
-static (double Rsi, double MacdHistogram, double BollingerPercentB,
-        double Mfi, double StochK, double StochD, double SuperTrend)
-    CalculateV3Common(
-        IReadOnlyList<V3Bar> bars)
-{
-    var rsi = bars.ToRsi(14).ToList();
-    var macd = bars.ToMacd(12, 26, 9).ToList();
-    var bollinger = bars.ToBollingerBands(20, 2).ToList();
-    var mfi = bars.ToMfi(14).ToList();
-    var stochastic = bars.ToStoch(14, 3, 3).ToList();
-    var superTrend = bars.ToSuperTrend(10, 3).ToList();
-
-    return (
-        ToDouble(rsi[^1].Rsi),
-        ToDouble(macd[^1].Histogram),
-        ToDouble(bollinger[^1].PercentB),
-        ToDouble(mfi[^1].Mfi),
-        ToDouble(stochastic[^1].K),
-        ToDouble(stochastic[^1].D),
-        ToDouble(superTrend[^1].SuperTrend));
-}
-
-static void ValidateV2ExtendedCoverage(
-    IReadOnlyList<V2Quote> quotes)
-{
-    var results = new (string Name, int Count)[]
+    private static void RunV2Suite(
+        IReadOnlyList<Skender.Stock.Indicators.Quote> quotes)
     {
-        ("RSI", V2Indicator.GetRsi(quotes, 14).Count()),
-        ("MACD", V2Indicator.GetMacd(quotes, 12, 26, 9).Count()),
-        ("Bollinger", V2Indicator.GetBollingerBands(quotes, 20, 2).Count()),
-        ("MFI", V2Indicator.GetMfi(quotes, 14).Count()),
-        ("Stochastic", V2Indicator.GetStoch(quotes, 14, 3, 3).Count()),
-        ("SuperTrend", V2Indicator.GetSuperTrend(quotes, 10, 3).Count()),
-        ("Aroon", V2Indicator.GetAroon(quotes, 25).Count()),
-        ("CCI", V2Indicator.GetCci(quotes, 20).Count()),
-        ("OBV", V2Indicator.GetObv(quotes).Count()),
-        ("Parabolic SAR", V2Indicator.GetParabolicSar(quotes, 0.02, 0.20).Count())
-    };
-
-    foreach (var result in results)
-    {
-        if (result.Count != quotes.Count)
-            throw new InvalidOperationException(
-                $"Extended OSS indicator coverage failed for {result.Name}.");
-    }
-}
-
-static TimeSpan Measure(
-    int iterations,
-    Action action)
-{
-    var stopwatch = Stopwatch.StartNew();
-
-    for (int i = 0; i < iterations; i++)
-        action();
-
-    stopwatch.Stop();
-    return stopwatch.Elapsed;
-}
-
-static double ToDouble(object value)
-{
-    if (value == null)
-        return double.NaN;
-
-    return Convert.ToDouble(
-        value,
-        CultureInfo.InvariantCulture);
-}
-
-static void AssertNear(
-    string name,
-    double expected,
-    double actual,
-    double tolerance = 0.000001)
-{
-    if (double.IsNaN(expected) ||
-        double.IsInfinity(expected) ||
-        double.IsNaN(actual) ||
-        double.IsInfinity(actual))
-    {
-        throw new InvalidOperationException(
-            $"{name} produced a non-finite result: " +
-            $"v2={expected}, v3={actual}.");
+        _ = Skender.Stock.Indicators.Indicator.GetRsi(quotes, 14).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetMacd(quotes, 12, 26, 9).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetBollingerBands(quotes, 20, 2).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetMfi(quotes, 14).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetStoch(quotes, 14, 3, 3).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetSuperTrend(quotes, 10, 3).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetAroon(quotes, 25).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetCci(quotes, 20).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetObv(quotes).ToList();
+        _ = Skender.Stock.Indicators.Indicator.GetParabolicSar(quotes, 0.02, 0.20).ToList();
     }
 
-    double difference = Math.Abs(expected - actual);
-
-    if (difference > tolerance)
+    private static void RunV3Suite(
+        IReadOnlyList<Bar> bars)
     {
-        throw new InvalidOperationException(
-            $"{name} parity failed: v2={expected:G17}, " +
-            $"v3={actual:G17}, diff={difference:G17}.");
+        _ = bars.ToRsi(14).ToList();
+        _ = bars.ToMacd(12, 26, 9).ToList();
+        _ = bars.ToBollingerBands(20, 2).ToList();
+        _ = bars.ToMfi(14).ToList();
+        _ = bars.ToStoch(14, 3, 3).ToList();
+        _ = bars.ToSuperTrend(10, 3).ToList();
+        _ = bars.ToAroon(25).ToList();
+        _ = bars.ToCci(20).ToList();
+        _ = bars.ToObv().ToList();
+        _ = bars.ToParabolicSar(0.02, 0.20).ToList();
     }
 }

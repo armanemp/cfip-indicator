@@ -52,6 +52,21 @@ into the net6.0 cTrader production assembly.
 The benchmark keeps the v3 API isolated and provides the migration reference for
 the eventual package transition. No production source references the v3 namespace.
 
+## Track 19 — OSS Numerical Benchmark
+
+Phase 19.1 status: complete.
+
+The benchmark preserves the production/research package boundary and compares
+Skender 2.7.3 against FacioQuo 3.0.1 across four deterministic 800-bar market
+shapes. Coverage includes all 10 production OSS indicator families, with
+Bollinger %B/width and Stochastic %K/%D measured as separate numerical metrics.
+The benchmark checks output counts, timestamp alignment, post-warm-up finite
+coverage, maximum/mean/RMS error, repeatable batch timing and per-iteration
+allocation. A parity pass does not promote v3 into production; the net6 cTrader
+runtime gate and OSS authority rules remain mandatory.
+
+Continuity document: docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md.
+
 ## Research candidate — TA-Lib.NETCore
 
 **Upstream:** https://github.com/hmG3/TA-Lib.NETCore

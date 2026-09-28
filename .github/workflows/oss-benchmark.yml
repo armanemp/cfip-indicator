@@ -23,4 +23,6 @@ jobs:
         run: dotnet restore CFIP.StockIndicators.Benchmark.csproj
       - name: Run OSS benchmark
         working-directory: tools/CFIP.StockIndicators.Benchmark
-        run: dotnet run --project CFIP.StockIndicators.Benchmark.csproj --no-restore --configuration Release
+        run: |
+          dotnet run --project CFIP.StockIndicators.Benchmark.csproj --no-restore --configuration Release | tee benchmark-report.md
+          cat benchmark-report.md >> "$GITHUB_STEP_SUMMARY"
