@@ -156,7 +156,7 @@ Before starting the next phase:
 
 ## Phase 1.3 — Runtime fault state machine
 
-Status: implementation complete; CI certification pending.
+Status: complete.
 
 Implementation:
 - added `Runtime/Calculation/RuntimeFaultState.cs` with `HEALTHY`, `DEGRADED`, `ENTRY_BLOCKED` and `RECOVERING`;
@@ -172,7 +172,9 @@ Important finding:
 - `HEALTHY` is deliberately not an execution re-arm signal. Broker-confirmed state remains authoritative and recovery cannot silently reopen automatic execution.
 
 Verification:
-- branch PR CI certification pending for source/architecture, runtime contracts and cTrader compile.
+- source and architecture checks: PASS (workflow run 758);
+- runtime acceptance contracts: PASS (workflow run 567);
+- cTrader compile: PASS (workflow run 751).
 
 Result:
 - next phase after CI confirmation: **Phase 1.4 — Runtime recovery semantics**.

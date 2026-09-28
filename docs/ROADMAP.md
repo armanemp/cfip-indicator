@@ -869,6 +869,12 @@ Important design finding:
 
 - `HEALTHY` is a runtime health state, not an automatic re-arm signal. Recovery therefore restores health without restoring broker-entry permission. This prevents a clean cycle from silently reopening automatic execution.
 
+Verification:
+
+- Source and architecture checks: PASS (workflow run 758);
+- Runtime acceptance contracts: PASS (workflow run 567);
+- cTrader compile: PASS (workflow run 751).
+
 Acceptance:
 
 - recoverable fault blocks entry: PASS by contract and broker-entry guards;
