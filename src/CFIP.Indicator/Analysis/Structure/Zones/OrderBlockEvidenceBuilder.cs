@@ -26,6 +26,7 @@ namespace cAlgo
                         ObImpulseBars));
             displacement = false;
             strongestBody = 0;
+            structureBreak = false;
 
             for (int j =
                      createdIndex + 1;
@@ -60,8 +61,6 @@ namespace cAlgo
             if (RequireObDisplacement &&
                 !displacement)
                 return false;
-
-            structureBreak = false;
 
             int structureStart =
                 Math.Max(
