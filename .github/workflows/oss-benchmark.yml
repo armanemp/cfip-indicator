@@ -18,5 +18,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
-      - run: dotnet restore tools/CFIP.StockIndicators.Benchmark/CFIP.StockIndicators.Benchmark.csproj
-      - run: dotnet run --project tools/CFIP.StockIndicators.Benchmark/CFIP.StockIndicators.Benchmark.csproj --no-restore --configuration Release
+      - name: Restore OSS benchmark
+        working-directory: tools/CFIP.StockIndicators.Benchmark
+        run: dotnet restore CFIP.StockIndicators.Benchmark.csproj
+      - name: Run OSS benchmark
+        working-directory: tools/CFIP.StockIndicators.Benchmark
+        run: dotnet run --project CFIP.StockIndicators.Benchmark.csproj --no-restore --configuration Release
