@@ -15,6 +15,7 @@ namespace cAlgo
             VerifyConfidenceDeterminism();
             VerifyCorrelationAwareEvidence();
             VerifyQualityWeightedFrameContribution();
+            VerifyMarketRegimeClassification();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -360,6 +361,113 @@ namespace cAlgo
                 Math.Abs(contribution.Bull - mirrored.Bear) < 0.0001 &&
                 Math.Abs(contribution.Bear - mirrored.Bull) < 0.0001,
                 "BUY/SELL contribution symmetry");
+        }
+
+        private static void VerifyMarketRegimeClassification()
+        {
+            MarketRegimeClassificationInput trend =
+                new MarketRegimeClassificationInput
+                {
+                    AtrRatio = 1.00,
+                    Choppiness = 35,
+                    RangeEfficiency = 0.65,
+                    RangeWidthAtr = 8.0,
+                    ReturnAtr = 2.5,
+                    Adx = 28,
+                    EmaSpreadAtr = 0.60
+                };
+
+            string trendRegime =
+                MarketRegimeClassifier.Classify(
+                    trend, 0.78, 1.30, 1.65,
+                    58, 0.30, 3.50, 0.80,
+                    20, 18, 0.32, 58, 0.30);
+
+            Assert(
+                trendRegime == "TREND",
+                "trend regime classification");
+
+            MarketRegimeClassificationInput range =
+                new MarketRegimeClassificationInput
+                {
+                    AtrRatio = 0.95,
+                    Choppiness = 70,
+                    RangeEfficiency = 0.15,
+                    RangeWidthAtr = 2.5,
+                    ReturnAtr = 0.35,
+                    Adx = 12,
+                    EmaSpreadAtr = 0.10
+                };
+
+            string rangeRegime =
+                MarketRegimeClassifier.Classify(
+                    range, 0.78, 1.30, 1.65,
+                    58, 0.30, 3.50, 0.80,
+                    20, 18, 0.32, 58, 0.30);
+
+            Assert(
+                rangeRegime == "COMPRESSION",
+                "micro-range classification");
+
+            MarketRegimeClassificationInput expansion =
+                new MarketRegimeClassificationInput
+                {
+                    AtrRatio = 1.45,
+                    Choppiness = 45,
+                    RangeEfficiency = 0.50,
+                    RangeWidthAtr = 6.0,
+                    ReturnAtr = 2.0,
+                    Adx = 23,
+                    EmaSpreadAtr = 0.35
+                };
+
+            string expansionRegime =
+                MarketRegimeClassifier.Classify(
+                    expansion, 0.78, 1.30, 1.65,
+                    58, 0.30, 3.50, 0.80,
+                    20, 18, 0.32, 58, 0.30);
+
+            Assert(
+                expansionRegime == "EXPANSION",
+                "expansion regime classification");
+
+            MarketRegimeClassificationInput highVol =
+                new MarketRegimeClassificationInput
+                {
+                    AtrRatio = 2.00,
+                    Choppiness = 63,
+                    RangeEfficiency = 0.20,
+                    RangeWidthAtr = 9.0,
+                    ReturnAtr = 3.0,
+                    Adx = 16,
+                    EmaSpreadAtr = 0.25
+                };
+
+            string highVolRegime =
+                MarketRegimeClassifier.Classify(
+                    highVol, 0.78, 1.30, 1.65,
+                    58, 0.30, 3.50, 0.80,
+                    20, 18, 0.32, 58, 0.30);
+
+            Assert(
+                highVolRegime == "HIGH_VOLATILITY",
+                "high volatility classification");
+
+            Assert(
+                MarketRegimeClassifier.Quality(
+                    "RANGE",
+                    range) <
+                MarketRegimeClassifier.Quality(
+                    "TREND",
+                    trend),
+                "regime quality ordering");
+
+            Assert(
+                MarketRegimeClassifier.Quality(
+                    "COMPRESSION",
+                    range) <
+                50,
+                "compression quality is low");
         }
 
         private static void Assert(bool condition, string name)
