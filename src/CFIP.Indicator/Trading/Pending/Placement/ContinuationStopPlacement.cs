@@ -91,11 +91,26 @@ namespace cAlgo
               _plan = null;
               _executionModel = null;
               RemovePlanObjects();
-              _autoOrdersBlockReason = "ORDER PLACED • STOP " + Price(trigger);
+              PendingOrder confirmedOrder = result.PendingOrder;
+
+              _autoOrdersBlockReason =
+                  "ORDER PLACED • STOP " +
+                  Price(confirmedOrder.TargetPrice);
+
               SendUnifiedAlert(
                   "PENDING-STOP|" + closedM5,
                   "CFIP STOP | " + (direction == 1 ? "BUY" : "SELL") +
-                  " | ENTRY " + Price(trigger) + " | SL " + Price(stop) + " | TP " + Price(target),
+                  " | BROKER ENTRY " + Price(confirmedOrder.TargetPrice) +
+                  " | BROKER SL " +
+                  (confirmedOrder.StopLoss.HasValue &&
+                   IsFinitePositive(confirmedOrder.StopLoss.Value)
+                      ? Price(confirmedOrder.StopLoss.Value)
+                      : "RECOVERY") +
+                  " | BROKER TP " +
+                  (confirmedOrder.TakeProfit.HasValue &&
+                   IsFinitePositive(confirmedOrder.TakeProfit.Value)
+                      ? Price(confirmedOrder.TakeProfit.Value)
+                      : "RECOVERY"),
                   direction,
                   true);
               return true;
