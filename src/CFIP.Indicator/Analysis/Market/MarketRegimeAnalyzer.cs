@@ -10,7 +10,7 @@ namespace cAlgo
             int index)
         {
             MarketRegimeSnapshot snapshot =
-                AnalyzeMarketRegimeCore(
+                GetM5RegimeCoreSnapshot(
                     bars,
                     index);
 
@@ -22,7 +22,7 @@ namespace cAlgo
             int stability = 1;
 
             MarketRegimeSnapshot previous =
-                AnalyzeMarketRegimeCore(
+                GetM5RegimeCoreSnapshot(
                     bars,
                     index - 1);
 
@@ -32,7 +32,7 @@ namespace cAlgo
                 stability++;
 
                 MarketRegimeSnapshot beforePrevious =
-                    AnalyzeMarketRegimeCore(
+                    GetM5RegimeCoreSnapshot(
                         bars,
                         index - 2);
 
@@ -47,6 +47,32 @@ namespace cAlgo
                     Math.Min(
                         3,
                         stability));
+
+            return snapshot;
+        }
+
+        private MarketRegimeSnapshot GetM5RegimeCoreSnapshot(
+            Bars bars,
+            int index)
+        {
+            if (bars == null || index < 0)
+                return null;
+
+            if (_m5RegimeCoreCache.TryGet(
+                    bars,
+                    index,
+                    out MarketRegimeSnapshot cached))
+                return cached;
+
+            MarketRegimeSnapshot snapshot =
+                AnalyzeMarketRegimeCore(
+                    bars,
+                    index);
+
+            _m5RegimeCoreCache.Set(
+                bars,
+                index,
+                snapshot);
 
             return snapshot;
         }
