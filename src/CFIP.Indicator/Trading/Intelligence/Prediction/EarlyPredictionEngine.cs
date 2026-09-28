@@ -78,6 +78,62 @@ namespace cAlgo
                                             0,
                                             100);
                         
+                                    MarketRegimeSnapshot regime =
+                                        GetActiveM5Regime(
+                                            closedM5);
+
+                                    if (regime != null)
+                                    {
+                                        if (regime.Regime == "RANGE" ||
+                                            regime.Regime == "COMPRESSION")
+                                        {
+                                            p.Direction = 0;
+                                            p.Reason =
+                                                "EARLY BLOCK • " +
+                                                regime.Regime;
+                                            return p;
+                                        }
+
+                                        if (regime.Regime == "TRANSITION" &&
+                                            p.Confidence <
+                                            Math.Max(
+                                                MinimumEarlyConfidence + 8,
+                                                EarlySetupConfidence + 8))
+                                        {
+                                            p.Direction = 0;
+                                            p.Reason =
+                                                "EARLY BLOCK • TRANSITION";
+                                            return p;
+                                        }
+
+                                        if (regime.Regime == "HIGH_VOLATILITY" &&
+                                            p.Confidence <
+                                            Math.Max(
+                                                MinimumEarlyConfidence + 12,
+                                                EarlySetupConfidence + 12))
+                                        {
+                                            p.Direction = 0;
+                                            p.Reason =
+                                                "EARLY BLOCK • HIGH VOLATILITY";
+                                            return p;
+                                        }
+
+                                        if ((regime.Regime == "TREND" ||
+                                             regime.Regime == "EXPANSION") &&
+                                            regime.Direction != 0 &&
+                                            regime.Direction != candidateDirection &&
+                                            p.Confidence <
+                                            Math.Max(
+                                                70,
+                                                EarlySetupConfidence + 10))
+                                        {
+                                            p.Direction = 0;
+                                            p.Reason =
+                                                "EARLY BLOCK • REGIME CONFLICT";
+                                            return p;
+                                        }
+                                    }
+
                                     if (candidateDirection == 0 ||
                                         p.Confidence <
                                         Math.Max(
