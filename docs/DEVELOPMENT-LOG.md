@@ -103,20 +103,52 @@ Result:
 - next phase: **Phase 1.2 — Management-first runtime**;
 - operator pull: **required at this phase boundary**, after the final documentation commit for Phase 1.1.
 
+## Phase 1.2 — Management-first runtime
+
+Status: complete.
+
+Goal:
+- move safety-critical broker reconciliation, recovery, active-plan management and broker protection ahead of optional live intelligence;
+- preserve one broker mutation authority and broker-confirmed state authority.
+
+Implementation:
+- reordered the live calculation stages in `Runtime/Calculation/CalculationStageIsolation.cs`;
+- added explicit pre-analysis broker reconciliation, recovery, active-plan management and protection stages;
+- retained `UpdateLiveReaction()` as the live-analysis boundary after safety-critical management;
+- added post-execution broker reconciliation and broker protection before telemetry/presentation;
+- extended static and runtime source contracts to enforce the required stage order;
+- kept later retry/backoff and supervisor redesign work out of this phase.
+
+Important finding:
+- active reversal protection still remains after the analysis stage because its current contract consumes `_decision`, `_m5Frame` and `_m15Frame`; moving that logic earlier would change its analytical prerequisites and exceed Phase 1.2.
+
+Implementation commit:
+- `77a1b1bc9912c7e1d78bd6428077a416a636f1a7`
+
+Verification:
+- source and architecture checks: PASS (workflow run 36497702461);
+- runtime acceptance contracts: PASS (workflow run 36497702367);
+- cTrader compile: PASS (workflow run 36497702418).
+
+Result:
+- Phase 1.2 complete;
+- next phase: **Phase 1.3 — Runtime fault state machine**;
+- operator pull: **required at this phase boundary**, after the final documentation commit.
+
 ## Current continuation point
 
 Implementation queue:
-- Phase 1.2 — Management-first runtime is next.
+- Phase 1.3 — Runtime fault state machine is next.
 
 Current intent:
-- move safety-critical protection, active-plan exits, broker reconciliation and recovery ahead of heavy intelligence;
-- keep the single decision authority, single broker mutation boundary and broker-confirmed state invariant;
-- do not combine Phase 1.2 with retry/backoff or supervisor redesign from later phases.
+- introduce explicit HEALTHY / DEGRADED / ENTRY_BLOCKED / RECOVERING states around the existing runtime fault authority;
+- preserve management, protection and reconciliation availability during recoverable analysis faults;
+- do not combine Phase 1.3 with retry/backoff, timer supervisor or broader execution-safety redesign from later phases.
 
 Before starting the next phase:
 - pull the latest `main`;
 - confirm the current HEAD;
 - read the latest ROADMAP, ARCHITECTURE, WORKFLOW and this log;
-- implement only Phase 1.2;
+- implement only Phase 1.3;
 - re-run all applicable verification gates;
 - update this log and roadmap at phase completion.

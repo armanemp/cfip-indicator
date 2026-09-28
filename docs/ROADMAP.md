@@ -786,26 +786,51 @@ Acceptance:
 
 ## Phase 1.2 — Management-first runtime
 
-Status: planned.
+Status: complete.
 
 Move safety-critical live management before heavy intelligence.
 
 Order:
 
-\`\`\`
-Protection
-Active-plan exits
-Broker reconciliation
-Recovery
+```
+Broker reconciliation / recovery
+Active-plan management
+Broker protection
 Analysis
 Planning
 Entry execution
-Telemetry/presentation
-\`\`\`
+Post-execution reconciliation / protection
+Telemetry / reversal / presentation
+```
+
+Completed:
+
+- moved broker-state reconciliation ahead of optional live intelligence;
+- moved managed-live-plan recovery ahead of optional live intelligence;
+- moved active-plan exits and live management ahead of optional live intelligence;
+- moved broker protection ahead of optional live intelligence;
+- preserved the existing broker mutation owners and broker-confirmed-state authority;
+- added post-execution broker reconciliation and protection so a newly created or changed position/order state is synchronized before telemetry and presentation;
+- kept reversal analysis after the intelligence stage because its existing decision/frame evidence dependency is analytical rather than pre-analysis safety management;
+- preserved independent recoverable stage boundaries so a live-analysis fault cannot suppress downstream planning, execution, telemetry or final presentation;
+- did not introduce a second execution authority, duplicate broker mutation path or retry/backoff policy from later phases.
+
+Verification commit:
+
+`77a1b1bc9912c7e1d78bd6428077a416a636f1a7`
+
+Verification:
+
+- source and architecture checks: PASS (workflow run 36497702461);
+- runtime acceptance contracts: PASS (workflow run 36497702367);
+- cTrader compile: PASS (workflow run 36497702418).
 
 Acceptance:
 
-- analysis failure cannot starve break-even/trailing/exit/reconciliation.
+- broker reconciliation, live-plan recovery, active-plan management and broker protection execute before optional live analysis;
+- post-execution broker reconciliation and protection execute before telemetry/presentation;
+- management stages remain independently fault-contained;
+- no trading owner or broker mutation authority was duplicated or replaced.
 
 ## Phase 1.3 — Runtime fault state machine
 
@@ -2942,9 +2967,9 @@ CFIP is not considered fully complete until all of the following are true:
 
 # 9. Execution queue for continuation
 
-The current research milestone Track 19.1 is complete, and Phase 0.1 repository truth synchronization and Phase 0.2 production-source hygiene are complete. The certification sequence continues from the safety-first program below.
+The current research milestone Track 19.1 and the completed safety-first phases through Phase 1.2 are recorded above. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 1.1 — Calculate stage isolation**
+**NEXT: Phase 1.3 — Runtime fault state machine**
 
 Then proceed in dependency order:
 
@@ -3003,6 +3028,9 @@ Then proceed in dependency order:
 
 Track 19.1 is intentionally recorded as already complete because it was a
 research milestone executed ahead of the main certification queue.
+
+Phases 0.1, 0.2, 1.1 and 1.2 are also intentionally recorded as complete and
+must not be restarted unless a regression is demonstrated.
 
 Do not restart completed historical phases unless a regression is demonstrated.
 
