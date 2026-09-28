@@ -29,10 +29,11 @@ namespace cAlgo
         private int GetAuthoritativeDirection()
                                 {
                                     if (!UseAuthoritativeSignalState)
-                                        return _decision != null
+                                        return _decision != null &&
+                                               _decision.EntryAllowed
                                             ? _decision.Direction
                                             : 0;
-                        
+
                                     PendingOrder pending =
                                         GetManagedPendingOrder();
 
@@ -43,15 +44,13 @@ namespace cAlgo
                                             ? 1
                                             : -1;
 
-                                    // An active Plan owns the visual/trading thesis until it
-                                    // is invalidated or replaced. Lower-level live reaction/frame
-                                    // evidence must never flip the arrow while stale plan levels remain.
                                     if (_plan != null &&
                                         (_plan.Direction == 1 ||
                                          _plan.Direction == -1))
                                         return _plan.Direction;
 
                                     if (_decision != null &&
+                                        _decision.EntryAllowed &&
                                         (_decision.Direction == 1 ||
                                          _decision.Direction == -1))
                                         return _decision.Direction;
@@ -65,14 +64,14 @@ namespace cAlgo
                                         (_reaction.Direction == 1 ||
                                          _reaction.Direction == -1))
                                         return _reaction.Direction;
-                        
+
                                     if (_m5Frame != null &&
                                         (_m5Frame.Direction == 1 ||
                                          _m5Frame.Direction == -1) &&
                                         _m5Frame.Quality >=
                                         Math.Max(
                                             50,
-                                            LiveReactionThreshold) &&
+                                            LiveReactionStrongThreshold) &&
                                         ((_m5Frame.Direction == 1 &&
                                           (_m5Frame.MssBull ||
                                            _m5Frame.ChochBull)) ||
@@ -80,12 +79,7 @@ namespace cAlgo
                                           (_m5Frame.MssBear ||
                                            _m5Frame.ChochBear))))
                                         return _m5Frame.Direction;
-                        
-                                    if (_decision != null &&
-                                        (_decision.Direction == 1 ||
-                                         _decision.Direction == -1))
-                                        return _decision.Direction;
-                        
+
                                     if (_prediction != null &&
                                         _prediction.Direction != 0 &&
                                         _prediction.Confidence >=
@@ -93,10 +87,10 @@ namespace cAlgo
                                             MinimumEarlyConfidence,
                                             EarlySetupConfidence))
                                         return _prediction.Direction;
-                        
+
                                     return 0;
                                 }
-        
+
         private string GetAuthoritativeState(
                                     int direction)
                                 {
