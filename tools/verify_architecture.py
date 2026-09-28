@@ -340,6 +340,20 @@ if "PARTIAL CLOSE • BREAK-EVEN REJECTED" not in PARTIAL_CODE:
 
 AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
 AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
+BROKER_PROTECTION_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
+BROKER_PROTECTION_CODE = BROKER_PROTECTION_EXECUTION.read_text(encoding="utf-8")
+if "Never apply its stop/target to another position" not in BROKER_PROTECTION_CODE:
+    raise SystemExit("Broker protection must document and enforce plan-position identity")
+if 'position.Id == _plan.PositionId' not in BROKER_PROTECTION_CODE:
+    raise SystemExit("Plan protection must be bound to the plan PositionId")
+if "_plan.Stop" not in BROKER_PROTECTION_CODE or "_plan.PositionId" not in BROKER_PROTECTION_CODE:
+    raise SystemExit("Plan protection binding markers missing")
+orphan_marker = 'if (!AutoProtectBrokerPositions)\n                                        return;'
+if orphan_marker not in BROKER_PROTECTION_CODE:
+    raise SystemExit("Label-only orphan protection path missing")
+if "ORPHAN MANAGED POSITION" not in BROKER_PROTECTION_CODE:
+    raise SystemExit("Orphan broker protection must use its own protection context")
+
 if "AGGRESSIVE FILL MISMATCH" not in AGGRESSIVE_CODE:
     raise SystemExit("Aggressive execution must explicitly handle fill-envelope mismatch")
 mismatch_idx = AGGRESSIVE_CODE.find("if (!ValidateActualMarketFill(")
