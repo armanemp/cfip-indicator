@@ -21,6 +21,7 @@ namespace cAlgo
             managedLow = zoneLow;
             managedHigh = zoneHigh;
             partiallyMitigated = false;
+            remainingRatio = 0;
             double originalWidth =
                 Math.Max(
                     Symbol.TickSize,
