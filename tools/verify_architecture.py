@@ -323,6 +323,17 @@ if "GetManagedLivePositionForPlan()" not in PARTIAL_CODE:
 if "PARTIAL CLOSE • BREAK-EVEN REJECTED" not in PARTIAL_CODE:
     raise SystemExit("Partial break-even rejection recovery path is missing")
 
+AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
+AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
+if "AGGRESSIVE FILL MISMATCH" not in AGGRESSIVE_CODE:
+    raise SystemExit("Aggressive execution must explicitly handle fill-envelope mismatch")
+mismatch_idx = AGGRESSIVE_CODE.find("if (!ValidateActualMarketFill(")
+if mismatch_idx < 0:
+    raise SystemExit("Aggressive fill validation owner missing")
+mismatch_block = AGGRESSIVE_CODE[mismatch_idx:AGGRESSIVE_CODE.find("return;", mismatch_idx) + len("return;")]
+if "TryClosePosition(" not in mismatch_block:
+    raise SystemExit("Aggressive fill mismatch must request position close")
+
 PROTECTION_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
 PROTECTION_CODE = PROTECTION_RUNTIME.read_text(encoding="utf-8")
 if "IsValidManagedStop(" not in PROTECTION_CODE:
