@@ -321,7 +321,6 @@ namespace cAlgo
                     80,
                     20,
                     80,
-                    1,
                     10);
 
             Assert(
@@ -337,7 +336,6 @@ namespace cAlgo
                     20,
                     80,
                     80,
-                    -1,
                     10);
 
             Assert(
