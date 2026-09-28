@@ -21,6 +21,7 @@ namespace cAlgo
             VerifyLifecycleFlows();
             VerifyLifecycleIdempotency();
             VerifyRuntimeStageIsolation();
+            VerifyRuntimeFaultStateMachine();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -656,6 +657,78 @@ namespace cAlgo
             Assert(
                 !guard.TryBegin("POSITION_OPENED", 0),
                 "invalid entity");
+        }
+
+        private static void VerifyRuntimeFaultStateMachine()
+        {
+            RuntimeFaultStateMachine machine =
+                new RuntimeFaultStateMachine();
+
+            machine.BeginCycle();
+            machine.ObserveAutoTradingSetting(true);
+
+            Assert(
+                machine.State == RuntimeFaultState.Healthy,
+                "initial runtime state healthy");
+
+            Assert(
+                machine.CanAutomaticEntryProceed,
+                "initial automatic entry armed");
+
+            machine.RecordRecoverableFault();
+
+            Assert(
+                machine.State == RuntimeFaultState.Degraded,
+                "recoverable fault enters degraded");
+
+            machine.BlockAutomaticEntry();
+
+            Assert(
+                machine.State == RuntimeFaultState.EntryBlocked,
+                "fault blocks automatic entry");
+
+            Assert(
+                !machine.CanAutomaticEntryProceed,
+                "entry remains blocked after fault");
+
+            machine.BeginCycle();
+            machine.MarkManagementReadyForRecovery();
+
+            Assert(
+                machine.State == RuntimeFaultState.Recovering,
+                "healthy management enters recovery");
+
+            Assert(
+                !machine.CanAutomaticEntryProceed,
+                "recovery does not re-arm entry");
+
+            machine.CompleteCycle();
+
+            Assert(
+                machine.State == RuntimeFaultState.Healthy,
+                "clean recovery returns healthy");
+
+            Assert(
+                !machine.CanAutomaticEntryProceed,
+                "healthy recovery remains disarmed");
+
+            machine.ObserveAutoTradingSetting(false);
+            machine.ObserveAutoTradingSetting(true);
+
+            Assert(
+                machine.CanAutomaticEntryProceed,
+                "explicit enable transition re-arms entry");
+
+            machine.BeginCycle();
+            machine.RecordRecoverableFault();
+            machine.BlockAutomaticEntry();
+
+            machine.ObserveAutoTradingSetting(false);
+            machine.ObserveAutoTradingSetting(true);
+
+            Assert(
+                !machine.CanAutomaticEntryProceed,
+                "enable transition cannot bypass blocked state");
         }
 
         private static void Assert(bool condition, string name)
