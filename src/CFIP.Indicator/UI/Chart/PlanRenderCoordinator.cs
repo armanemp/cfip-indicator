@@ -21,6 +21,16 @@ namespace cAlgo
                                         RemovePlanObjects();
                                         return;
                                     }
+
+                                    PendingOrder pendingAuthority =
+                                        GetManagedPendingOrder();
+
+                                    if (pendingAuthority != null &&
+                                        !_plan.IsLivePosition)
+                                    {
+                                        ClearPlanObjects();
+                                        return;
+                                    }
                         
                                     // A live/confirmed Plan is authoritative for execution visuals.
                                     // Prediction and watch/reaction objects must not survive beside it,
