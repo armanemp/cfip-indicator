@@ -26,6 +26,12 @@ namespace cAlgo
                 case "DIRECTION FLIP":
                 case "CHOP":
                 case "M1 MISALIGNMENT":
+                case "REGIME RANGE":
+                case "REGIME COMPRESSION":
+                case "REGIME QUALITY":
+                case "REGIME TRANSITION":
+                case "REGIME DIRECTION CONFLICT":
+                case "REGIME UNSTABLE":
                     return true;
 
                 default:
