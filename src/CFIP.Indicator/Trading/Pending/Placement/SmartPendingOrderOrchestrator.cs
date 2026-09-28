@@ -82,18 +82,17 @@ namespace cAlgo
                                                     "PENDING ORDER ALREADY EXISTS";
                                                 return;
                                             }
-                                
-                                            if (DailyLossLimitHit(TimeInUtc))
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "DAILY LOSS LIMIT";
-                                                return;
-                                            }
-                                
+
+                                            bool continuationStrong =
+                                                TrendContinuationStrong();
+
+                                            bool reversalStrong =
+                                                ReversalSetupStrong();
+
                                             int pendingDirection =
-                                                TrendContinuationStrong()
+                                                continuationStrong
                                                     ? _decision.Direction
-                                                    : ReversalSetupStrong()
+                                                    : reversalStrong
                                                         ? _reaction.Direction
                                                         : 0;
                                 
