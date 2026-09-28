@@ -263,7 +263,7 @@ CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
 if "ExecutionCapacityRule.IsSupportedSinglePlanCapacity" not in CAPACITY_CODE:
     raise SystemExit("Single-plan execution capacity guard must delegate to the pure rule")
 for execution_path in [
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTrade.cs",
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
