@@ -13,7 +13,8 @@ namespace cAlgo
                             double stop,
                             double target,
                             string context,
-                            int direction)
+                            int direction,
+                            bool manageLifecycleState = true)
                         {
                             if (position == null ||
                                 direction != 1 &&
@@ -172,16 +173,29 @@ namespace cAlgo
                                 stopOk &&
                                 targetOk;
 
-                            _brokerProtectionRecoveryRequired =
-                                !protectedOk;
-
-                            if (!protectedOk)
+                            if (manageLifecycleState)
                             {
-                                SetLifecycleState(
-                                    LifecycleState.RecoveryRequired,
-                                    context +
-                                    " • BROKER PROTECTION MISSING OR REJECTED");
+                                _brokerProtectionRecoveryRequired =
+                                    !protectedOk;
 
+                                if (!protectedOk)
+                                {
+                                    SetLifecycleState(
+                                        LifecycleState.RecoveryRequired,
+                                        context +
+                                        " • BROKER PROTECTION MISSING OR REJECTED");
+
+                                    SendUnifiedAlert(
+                                        "PROTECTION-REJECTED|" +
+                                        position.Id,
+                                        "CFIP BROKER PROTECTION REJECTED | #" +
+                                        position.Id,
+                                        direction,
+                                        true);
+                                }
+                            }
+                            else if (!protectedOk)
+                            {
                                 SendUnifiedAlert(
                                     "PROTECTION-REJECTED|" +
                                     position.Id,
