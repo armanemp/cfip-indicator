@@ -1002,11 +1002,11 @@ Startup/resource work:
 - Calculation remains gated until initialization is complete.
 
 Research basis:
-- ADX/DMI: trend-strength and directional-movement context. citeturn965733search1turn965733search4
-- ATR: volatility expansion/compression and adaptive levels. citeturn965733search0
-- Choppiness Index: sideways/choppy versus directional market characterization. citeturn677293search0
-- Kaufman-style efficiency concepts support using path efficiency as a trend/noise discriminator. citeturn703261search0turn703261search1
-- Recent regime research supports treating regime classification as context rather than as a standalone directional signal and highlights the need for validation and anti-lookahead controls. citeturn677293search10turn965733search3
+- ADX/DMI: trend-strength and directional-movement context. Reference: https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/DMI
+- ATR: volatility expansion/compression and adaptive levels. Reference: https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/atr
+- Choppiness Index: sideways/choppy versus directional market characterization. Reference: https://www.tradingview.com/support/solutions/43000501980-choppiness-index-chop/
+- Kaufman-style efficiency concepts support using path efficiency as a trend/noise discriminator. Reference: https://www.luxalgo.com/library/concept/kaufman-efficiency-ratio/
+- Regime research supports explicit regime labels, validation and avoiding look-ahead leakage when evaluating regime-conditioned strategies. Reference: https://arxiv.org/abs/2104.03667
 
 Next acceptance:
 - Measure cold/warm startup latency and CPU/memory on the target PC.
