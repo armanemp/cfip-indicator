@@ -157,60 +157,52 @@ VERSION_RESIDUE_PATTERNS = (
     re.compile(r"CFIP_MTF_LiveEntryEngine_Clean", re.I),
     re.compile(r"\bCFIP[\s_-]*(?:SMART|AUTO)[\s_-]*\d+\b", re.I),
 )
-for production_file in files:
-    source_text = production_file.read_text(encoding="utf-8")
-    for residue_pattern in VERSION_RESIDUE_PATTERNS:
-        if residue_pattern.search(source_text):
-            raise SystemExit(f"Version/historical residue detected in production source: {production_file}")
-
-# Phase 0.2 production-source hygiene gates.
-HISTORICAL_IDENTIFIER_PATTERN = re.compile(
-    r"\b(?:Legacy|Compatibility|Compat|Deprecated|Versioned|Obsolete|Alias)\w*\b",
-    re.I,
-)
-COMPATIBILITY_ALIAS_PATTERN = re.compile(
-    r"^\s*using\s+\w*(?:Legacy|Compatibility|Compat|Deprecated|Versioned|Alias)\w*\s*=",
-    re.I | re.MULTILINE,
-)
-EMPTY_CATCH_PATTERN = re.compile(
-    r"\bcatch(?:\s*\([^)]*\))?\s*\{\s*\}",
-    re.I,
-)
-GENERATED_DIR_NAMES = {"bin", "obj", ".vs", "TestResults"}
-GENERATED_SUFFIXES = {".dll", ".pdb", ".exe", ".nupkg"}
+hygiene_errors = []
 
 for production_file in files:
     source_text = production_file.read_text(encoding="utf-8")
     static_code = strip_for_static_checks(source_text)
 
+    for residue_pattern in VERSION_RESIDUE_PATTERNS:
+        if residue_pattern.search(source_text):
+            hygiene_errors.append(f"{production_file}: version/historical residue")
+            break
+
     historical_match = HISTORICAL_IDENTIFIER_PATTERN.search(static_code)
     if historical_match:
-        raise SystemExit(
-            "Obsolete/historical production identifier detected: "
-            f"{production_file} -> {historical_match.group(0)}"
+        hygiene_errors.append(
+            f"{production_file}: obsolete/historical identifier "
+            f"({historical_match.group(0)})"
         )
 
-    alias_match = COMPATIBILITY_ALIAS_PATTERN.search(static_code)
-    if alias_match:
-        raise SystemExit(
-            f"Compatibility alias detected in production source: {production_file}"
-        )
+    if COMPATIBILITY_ALIAS_PATTERN.search(static_code):
+        hygiene_errors.append(f"{production_file}: compatibility alias")
 
     if EMPTY_CATCH_PATTERN.search(static_code):
-        raise SystemExit(f"Empty catch block detected in production source: {production_file}")
+        hygiene_errors.append(f"{production_file}: empty catch block")
 
     raw_bytes = production_file.read_bytes()
     without_crlf = raw_bytes.replace(b"\r\n", b"")
     if b"\r\n" in raw_bytes and b"\n" in without_crlf:
-        raise SystemExit(f"Mixed line endings detected in production source: {production_file}")
+        hygiene_errors.append(f"{production_file}: mixed line endings")
 
 for production_path in ROOT.rglob("*"):
     if not production_path.is_file():
         continue
     if production_path.name in GENERATED_DIR_NAMES:
-        raise SystemExit(f"Generated artifact directory detected in production tree: {production_path}")
+        hygiene_errors.append(
+            f"{production_path}: generated artifact directory"
+        )
     if production_path.suffix.lower() in GENERATED_SUFFIXES:
-        raise SystemExit(f"Generated artifact detected in production tree: {production_path}")
+        hygiene_errors.append(
+            f"{production_path}: generated artifact"
+        )
+
+if hygiene_errors:
+    raise SystemExit(
+        "Production-source hygiene failures:\n- "
+        + "\n- ".join(sorted(set(hygiene_errors)))
+    )
 
 if re.search(r"\b(?:Buy|Sell)\b.{0,100}\b(?:Button|ToggleButton)\b", code, re.I):
     raise SystemExit("Manual trade-entry controls detected")

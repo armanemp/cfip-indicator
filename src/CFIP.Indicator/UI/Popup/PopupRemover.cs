@@ -23,8 +23,11 @@ namespace cAlgo
                                     Chart.RemoveControl(
                                         _popup);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
+                                    Print(
+                                        "CFIP popup removal failed: {0}",
+                                        ex.ToString());
                                 }
                             }
                 
