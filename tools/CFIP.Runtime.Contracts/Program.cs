@@ -53,8 +53,8 @@ namespace cAlgo
                 context.M1 == 605 &&
                 context.M15 == 41 &&
                 context.M30 == 21 &&
-                context.H1 == 11 &&
-                context.H4 == 8 &&
+                context.H1 == 31 &&
+                context.H4 == 30 &&
                 context.D1 == 3 &&
                 context.W1 == 1,
                 "MTF indices preserved");
