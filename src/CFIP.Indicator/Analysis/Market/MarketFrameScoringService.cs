@@ -203,17 +203,47 @@ namespace cAlgo
                     bear) /
                 total;
 
+            double regimeContribution;
+
+            if (f.Choppy)
+            {
+                regimeContribution =
+                    Math.Max(
+                        0,
+                        8 -
+                        Math.Max(
+                            0,
+                            f.Choppiness -
+                            RangeChoppinessThreshold) *
+                        0.30);
+            }
+            else
+            {
+                regimeContribution =
+                    Math.Min(
+                        14,
+                        Math.Max(
+                            0,
+                            f.Adx -
+                            MinimumTransitionAdx) *
+                        0.35 +
+                        f.RangeEfficiency * 8 +
+                        Math.Min(
+                            4,
+                            f.EmaSpreadAtr * 2));
+            }
+
             f.Quality =
                 ClampInt(
                     (int)Math.Round(
-                        strongest * 0.50 +
+                        strongest * 0.45 +
                         Math.Min(
                             100,
-                            f.Adx * 1.5) * 0.15 +
+                            f.Adx * 1.45) * 0.15 +
                         Math.Min(
                             100,
-                            evidence * 5) * 0.25 +
-                        (f.Choppy ? 0 : 10) * 0.10),
+                            evidence * 5) * 0.23 +
+                        regimeContribution * 0.17),
                     0,
                     100);
 
