@@ -18,6 +18,9 @@ namespace cAlgo
                 private Bars _d1Bars;
                 private Bars _w1Bars;
         
+                private MarketRegimeSnapshot _m5RegimeSnapshot;
+                private int _m5RegimeSnapshotIndex = -1;
+
                 private Frame _m1Frame;
                 private Frame _m5Frame;
                 private Frame _m15Frame;
