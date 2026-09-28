@@ -28,11 +28,18 @@ namespace cAlgo
                                         atr <= 0)
                                         return null;
                         
+                                    int effectiveLookback =
+                                        Math.Min(
+                                            ObLookback,
+                                            Math.Max(
+                                                1,
+                                                MaximumZoneAgeBars));
+
                                     int first =
                                         Math.Max(
                                             2,
                                             index -
-                                            ObLookback);
+                                            effectiveLookback);
                         
                                     Zone best = null;
                                     double bestScore =
