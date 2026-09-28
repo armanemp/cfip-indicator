@@ -325,6 +325,50 @@ PROTECTION_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProt
 PROTECTION_CODE = PROTECTION_RUNTIME.read_text(encoding="utf-8")
 if "IsValidManagedStop(" not in PROTECTION_CODE:
     raise SystemExit("Live broker protection must validate managed stops against market price")
+if "brokerStopValid" not in PROTECTION_CODE:
+    raise SystemExit("Live broker protection must inspect actual broker SL validity before clearing recovery")
+if "brokerTargetValid" not in PROTECTION_CODE:
+    raise SystemExit("Live broker protection must inspect actual broker TP validity before clearing recovery")
+
+BROKER_STATE = ROOT / "Trading" / "Lifecycle" / "BrokerStateSnapshot.cs"
+BROKER_STATE_CODE = BROKER_STATE.read_text(encoding="utf-8")
+if "IsValidManagedStop(" not in BROKER_STATE_CODE:
+    raise SystemExit("Broker state snapshot must validate SL against current market")
+if "IsValidTarget(" not in BROKER_STATE_CODE:
+    raise SystemExit("Broker state snapshot must validate TP directionality")
+if "LifecycleState.RecoveryRequired" not in BROKER_STATE_CODE:
+    raise SystemExit("Invalid broker protection must enter explicit recovery")
+
+ACTIVE_STOP = ROOT / "Trading" / "Lifecycle" / "ActiveBrokerStopAccessor.cs"
+ACTIVE_STOP_CODE = ACTIVE_STOP.read_text(encoding="utf-8")
+if "return _plan.Stop" in ACTIVE_STOP_CODE:
+    raise SystemExit("Active broker SL accessor must not fall back to the desired plan stop")
+if "return 0;" not in ACTIVE_STOP_CODE:
+    raise SystemExit("Active broker SL accessor must expose zero when no confirmed broker SL exists")
+
+ACTIVE_PLAN = ROOT / "Trading" / "LiveManagement" / "ActivePlanEvaluation.cs"
+ACTIVE_PLAN_CODE = ACTIVE_PLAN.read_text(encoding="utf-8")
+if "IsFinitePositive(liveStop)" not in ACTIVE_PLAN_CODE:
+    raise SystemExit("Live SL exit must require a confirmed broker stop")
+
+for handler_name in ("PositionOpenedHandler.cs", "PositionModifiedHandler.cs"):
+    handler_path = ROOT / "Trading" / "Lifecycle" / handler_name
+    handler_code = handler_path.read_text(encoding="utf-8")
+    if "IsValidManagedStop(" not in handler_code:
+        raise SystemExit(f"{handler_name} must validate broker SL direction and market distance")
+    if "IsValidTarget(" not in handler_code:
+        raise SystemExit(f"{handler_name} must validate broker TP directionality")
+
+PROTECTION_COORDINATOR = ROOT / "Trading" / "Execution" / "BrokerProtectionCoordinator.cs"
+PROTECTION_COORDINATOR_CODE = PROTECTION_COORDINATOR.read_text(encoding="utf-8")
+for token in ("currentStopValid", "currentTargetValid", "desiredStopValid", "desiredTargetValid"):
+    if token not in PROTECTION_COORDINATOR_CODE:
+        raise SystemExit(f"Broker protection coordinator missing reconciliation guard: {token}")
+
+EMPTY_MUTATION_STUB = ROOT / "Trading" / "Execution" / "BrokerMutationCoordinator.cs"
+if EMPTY_MUTATION_STUB.exists():
+    raise SystemExit("Empty broker mutation stub must not return to production")
+
 
 INITIALIZATION = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 INITIALIZATION_CODE = INITIALIZATION.read_text(encoding="utf-8")
