@@ -40,7 +40,7 @@ namespace cAlgo
 
         private static bool IsFinitePositivePrice(double value)
         {
-            return IsFinite(value) && value > 0;
+            return IsFinitePrice(value) && value > 0;
         }
 
         private static bool IsFiniteDistance(double value)
