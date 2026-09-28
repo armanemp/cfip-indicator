@@ -67,6 +67,9 @@ Edit the smallest authoritative module that owns the behavior.
 | Automatic market fill reconciliation | `Trading/Execution/AutomaticMarket/AutomaticMarketFillReconciliation.cs` |
 | Automatic market post-fill target resolution | `Trading/Execution/AutomaticMarket/AutomaticMarketPostFillTargetResolver.cs` |
 | Aggressive execution | `Trading/Execution/Aggressive/*.cs` |
+| Aggressive pre-trade eligibility | `Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs` |
+| Aggressive execution preparation | `Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs` |
+| Aggressive accepted-fill handling | `Trading/Execution/Aggressive/AggressiveAcceptedFillHandler.cs` |
 | Pending orders | `Trading/Pending/**/*.cs` |
 | Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
 | Pending stop-order mutation | `Trading/Execution/BrokerPendingOrderPlacement.cs` |
