@@ -734,7 +734,7 @@ Acceptance:
 
 ## Phase 1.1 — Calculate stage isolation
 
-Status: planned.
+Status: complete.
 
 Goal:
 
@@ -743,7 +743,7 @@ unrelated safety-critical stages.
 
 Target stage model:
 
-\`\`\`
+```
 Broker state
 Protection / management
 Analysis
@@ -751,12 +751,38 @@ Planning
 Execution
 Telemetry
 Presentation
-\`\`\`
+```
+
+Completed:
+
+- replaced the monolithic live-cycle boundary with explicit calculation-stage orchestration;
+- preserved the existing stage order and business behavior while giving each live stage an independent recoverable-fault boundary;
+- added a dedicated `CalculationStageIsolation.cs` owner for stage orchestration;
+- separated preparation, closed-bar analysis and live-cycle orchestration;
+- recoverable closed-bar analysis faults fail closed for automatic entry but allow existing live management, protection and reconciliation stages to continue;
+- recoverable optional live-analysis faults no longer suppress downstream management stages;
+- fatal `OutOfMemoryException` and `StackOverflowException` behavior remains process-fatal;
+- routed recoverable stage faults through the existing runtime fault authority;
+- added runtime acceptance coverage for stage orchestration and ownership;
+- added architecture verifier gates for the new calculation-stage contract;
+- retained broker-confirmed state authority and avoided changes to trading strategy semantics.
+
+Verification commit:
+
+`515058ed5183f2f79841e952958e3ad3c1adff7f`
+
+Verification:
+
+- source and architecture checks: PASS (workflow run 741);
+- runtime acceptance contracts: PASS (workflow run 550);
+- cTrader compile: PASS (workflow run 734).
 
 Acceptance:
 
-- each stage has one failure boundary;
-- management is not downstream of optional analysis.
+- each extracted calculation stage has an independent recoverable-fault boundary;
+- optional analysis faults do not prevent downstream live management;
+- normal non-ready/skip behavior remains unchanged;
+- verifier, runtime contracts and cTrader compile remain green.
 
 ## Phase 1.2 — Management-first runtime
 

@@ -68,3 +68,26 @@ Work directly against the GitHub repository state. Use versioned/historical info
 ## Baseline synchronization rule
 
 Phase 0.1 must keep release-critical documentation aligned with machine-enforced facts. A verifier failure caused by missing continuity documentation blocks phase completion even when the verifier's architecture summary itself is valid.
+
+## Cross-chat project continuity
+
+The repository itself is the continuity source for development history and next-step state.
+
+At the start of a new chat, read:
+- `docs/ROADMAP.md`;
+- `docs/ARCHITECTURE.md`;
+- `docs/WORKFLOW.md`;
+- `docs/DEVELOPMENT-LOG.md`.
+
+The first phase marked `next` in `docs/ROADMAP.md` is the only implementation phase to execute in that response.
+
+Record every completed phase in `docs/DEVELOPMENT-LOG.md`, including:
+- phase and status;
+- implementation summary;
+- important findings/fixes;
+- verification results;
+- relevant commit SHA(s);
+- next phase;
+- operator pull requirement.
+
+The operator should normally pull once at a completed phase boundary, after the final verified commit for that phase. Intermediate implementation commits do not require a pull unless the operator needs them locally.
