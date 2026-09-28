@@ -2,112 +2,90 @@ using System;
 
 namespace cAlgo
 {
+    internal readonly struct IndependentEvidenceFusionInput
+    {
+        public bool Structure { get; }
+        public bool Transition { get; }
+        public bool Displacement { get; }
+        public bool Liquidity { get; }
+        public bool Fvg { get; }
+        public bool OrderBlock { get; }
+        public bool Trend { get; }
+        public bool Momentum { get; }
+        public bool Macd { get; }
+        public bool Vwap { get; }
+        public bool Volume { get; }
+        public bool Volatility { get; }
+        public bool Rejection { get; }
+        public bool EqualLevel { get; }
+
+        public IndependentEvidenceFusionInput(
+            bool structure,
+            bool transition,
+            bool displacement,
+            bool liquidity,
+            bool fvg,
+            bool orderBlock,
+            bool trend,
+            bool momentum,
+            bool macd,
+            bool vwap,
+            bool volume,
+            bool volatility,
+            bool rejection,
+            bool equalLevel)
+        {
+            Structure = structure;
+            Transition = transition;
+            Displacement = displacement;
+            Liquidity = liquidity;
+            Fvg = fvg;
+            OrderBlock = orderBlock;
+            Trend = trend;
+            Momentum = momentum;
+            Macd = macd;
+            Vwap = vwap;
+            Volume = volume;
+            Volatility = volatility;
+            Rejection = rejection;
+            EqualLevel = equalLevel;
+        }
+    }
+
     internal sealed class IndependentEvidenceFusionCalculator
     {
-        public int Calculate(Frame frame, int direction)
+        public int Calculate(
+            IndependentEvidenceFusionInput input)
         {
-            if (frame == null || direction == 0)
-                return 0;
-
-            bool structure =
-                direction == 1
-                    ? frame.StructureBull
-                    : frame.StructureBear;
-
-            bool transition =
-                direction == 1
-                    ? frame.MssBull || frame.ChochBull
-                    : frame.MssBear || frame.ChochBear;
-
-            bool displacement =
-                direction == 1
-                    ? frame.DisplacementBull
-                    : frame.DisplacementBear;
-
-            bool liquidity =
-                direction == 1
-                    ? frame.LiquidityBull
-                    : frame.LiquidityBear;
-
-            bool fvg =
-                direction == 1
-                    ? frame.FvgBull
-                    : frame.FvgBear;
-
-            bool orderBlock =
-                direction == 1
-                    ? frame.ObBull
-                    : frame.ObBear;
-
-            bool trend =
-                direction == 1
-                    ? frame.TrendBull
-                    : frame.TrendBear;
-
-            bool momentum =
-                direction == 1
-                    ? frame.MomentumBull
-                    : frame.MomentumBear;
-
-            bool macd =
-                direction == 1
-                    ? frame.MacdBull
-                    : frame.MacdBear;
-
-            bool vwap =
-                direction == 1
-                    ? frame.VwapBull
-                    : frame.VwapBear;
-
-            bool volume =
-                direction == 1
-                    ? frame.VolumeBull
-                    : frame.VolumeBear;
-
-            bool volatility =
-                direction == 1
-                    ? frame.VolatilityBull
-                    : frame.VolatilityBear;
-
-            bool rejection =
-                direction == 1
-                    ? frame.RejectionBull
-                    : frame.RejectionBear;
-
-            bool equalLevel =
-                direction == 1
-                    ? frame.EqualLow
-                    : frame.EqualHigh;
-
             double structural =
                 CappedContribution(
                     2.0,
-                    structure ? 1.0 : 0.0,
-                    transition ? 0.5 : 0.0,
-                    displacement ? 0.5 : 0.0);
+                    input.Structure ? 1.0 : 0.0,
+                    input.Transition ? 0.5 : 0.0,
+                    input.Displacement ? 0.5 : 0.0);
 
             double location =
                 CappedContribution(
                     2.0,
-                    liquidity ? 1.0 : 0.0,
-                    fvg ? 0.5 : 0.0,
-                    orderBlock ? 0.5 : 0.0);
+                    input.Liquidity ? 1.0 : 0.0,
+                    input.Fvg ? 0.5 : 0.0,
+                    input.OrderBlock ? 0.5 : 0.0);
 
             double trendMomentum =
                 CappedContribution(
                     2.0,
-                    trend ? 1.0 : 0.0,
-                    momentum ? 0.5 : 0.0,
-                    macd ? 0.25 : 0.0,
-                    vwap ? 0.25 : 0.0);
+                    input.Trend ? 1.0 : 0.0,
+                    input.Momentum ? 0.5 : 0.0,
+                    input.Macd ? 0.25 : 0.0,
+                    input.Vwap ? 0.25 : 0.0);
 
             double context =
                 CappedContribution(
                     2.0,
-                    volume ? 1.0 : 0.0,
-                    volatility ? 0.5 : 0.0,
-                    rejection ? 0.25 : 0.0,
-                    equalLevel ? 0.25 : 0.0);
+                    input.Volume ? 1.0 : 0.0,
+                    input.Volatility ? 0.5 : 0.0,
+                    input.Rejection ? 0.25 : 0.0,
+                    input.EqualLevel ? 0.25 : 0.0);
 
             return NumericGuards.ClampInt(
                 (int)Math.Round(
