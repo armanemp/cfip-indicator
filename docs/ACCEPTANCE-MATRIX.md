@@ -52,3 +52,15 @@ For the baseline verification commit `98ad11fa709c8663c5cb4dc75e77312706bcba8e`:
 | Source / architecture checks | FAIL | workflow run 726; verifier failed only on the missing Track 19 continuity link |
 
 The source/architecture failure is therefore a documentation-continuity defect identified by the machine verifier, not evidence of a runtime failure. The phase remains incomplete until the verifier passes after the documentation fix.
+
+## Phase 1.3 — Runtime fault state machine
+
+| Contract | Automated controlled check | Live cTrader |
+|---|---:|---:|
+| Recoverable fault enters explicit runtime fault state | Required | Required |
+| Entry remains blocked after recoverable fault | Required | Required |
+| Management/protection continue during entry block | Required | Required |
+| Entry remains disarmed through RECOVERING → HEALTHY | Required | Required |
+| Explicit AutoTradingEnabled re-arm transition | Required | Required |
+
+The automated state-machine contract proves deterministic transitions and the no-blind-re-arm invariant. It does not emulate live terminal event timing or broker-side behavior.
