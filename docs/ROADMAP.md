@@ -927,27 +927,32 @@ Operational note:
 
 ### Phase 29C — Startup and panel resilience
 
+Status: superseded during host-compatibility investigation.
+
+The initial bootstrap-panel implementation was intentionally removed after terminal testing showed no UI output even though the Indicator remained listed. The removed implementation introduced host-facing API surface that was not present in the previously working terminal baseline.
+
+The stable runtime fault boundary inside `Calculate()` remains active.
+
+### Phase 29D — Accepted cTrader host compatibility restoration
+
 Status: complete.
 
-Goal: ensure a newly attached indicator instance has a visible, diagnosable chart surface even when initialization or data preparation is not yet ready.
+Goal: restore the last known working cTrader Indicator host contract while retaining calculation-level fault containment.
 
 Completed:
-- Create the panel bootstrap surface before secondary market-data and native-indicator initialization.
-- Give the panel an explicit initial size, margin and alignment instead of relying on later render-cycle layout.
-- Add initialization fault capture by stage for market-data loading, native-indicator registration and runtime-state initialization.
-- Keep automatic execution disabled until initialization completes successfully.
-- Prevent `Calculate()` from entering the live analysis/execution path before initialization readiness is established.
-- Keep an initialization error visible in the panel and write the full exception to the cTrader log.
-- Preserve the existing runtime calculation fault boundary and fail-closed execution behavior.
+- Restored the minimal `[Indicator]` host declaration used by the last known working terminal baseline.
+- Removed the synthetic hidden `[Output]` introduced solely for diagnostics.
+- Removed the `ChartStaticText` bootstrap diagnostic type and its chart-static-text dependency.
+- Removed the `OnException(Exception)` override from the Indicator host because the installed LiteFinance runtime exposes an API surface that differs from the repository SDK; generic calculation faults remain contained inside `Calculate()`.
+- Restored the known-good panel construction and initialization order.
+- Kept calculation-level fail-closed runtime handling.
+- Added an architecture gate preventing the unverified host APIs from returning accidentally.
 
 Acceptance:
-- A newly attached instance can display a visible bootstrap panel before analysis data is ready.
-- Initialization faults are diagnosable from the chart and cTrader log.
-- No automatic execution path can run from a partially initialized instance.
-- Production build and CI compile/runtime gates remain green.
-
-Operational note:
-- Existing cTrader instances may still contain the previous compiled assembly; after pulling this change, rebuild and re-add the Indicator instance so the new startup path is actually loaded.
+- Production cTrader compilation passes.
+- Runtime, decision and architecture CI contracts pass.
+- The Indicator host contract contains no unverified API surface added for diagnostics.
+- Terminal revalidation is required before declaring the on-chart instance operational again.
 
 ### Phase 30 — Automatic market execution certification
 
