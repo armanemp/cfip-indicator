@@ -227,6 +227,20 @@ SCORING = ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs"
 if len(re.findall(r"\bprivate void AddScore\s*\(", SCORING.read_text(encoding="utf-8"))) != 2:
     raise SystemExit("MarketFrameScoring must own both AddScore overloads")
 
+POSITION_MODIFIED_HANDLER = ROOT / "Trading" / "Lifecycle" / "PositionModifiedHandler.cs"
+POSITION_MODIFIED_CODE = POSITION_MODIFIED_HANDLER.read_text(encoding="utf-8")
+if "boundToActivePlan" not in POSITION_MODIFIED_CODE:
+    raise SystemExit("Position modification must be bound to the active plan")
+if "if (!boundToActivePlan)" not in POSITION_MODIFIED_CODE:
+    raise SystemExit("Unbound position modifications must be ignored")
+
+POSITION_OPENED_HANDLER = ROOT / "Trading" / "Lifecycle" / "PositionOpenedHandler.cs"
+POSITION_OPENED_CODE = POSITION_OPENED_HANDLER.read_text(encoding="utf-8")
+if "boundToActivePlan" not in POSITION_OPENED_CODE:
+    raise SystemExit("Position opened handling must use explicit plan identity")
+if "_plan.IsLivePosition" not in POSITION_OPENED_CODE:
+    raise SystemExit("Position opened handling must not bind a pre-trade plan by label alone")
+
 BROKER_STATE_SNAPSHOT = ROOT / "Trading" / "Lifecycle" / "BrokerStateSnapshot.cs"
 BROKER_STATE_CODE = BROKER_STATE_SNAPSHOT.read_text(encoding="utf-8")
 if "BROKER STATE • BOUND POSITION NOT FOUND" not in BROKER_STATE_CODE:
