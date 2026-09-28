@@ -1,9 +1,8 @@
 // CFIP Indicator — SmartThresholdPolicy.cs
-// using cAlgo.API;
-
-daptive smart-decision threshold policy.
+// Adaptive smart-decision threshold policy.
 
 using System;
+using cAlgo.API;
 
 namespace cAlgo
 {
