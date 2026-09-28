@@ -89,6 +89,5 @@ namespace cAlgo
                                             TimeInUtc;
                                     }
                                 }
-                                }
     }
 }
