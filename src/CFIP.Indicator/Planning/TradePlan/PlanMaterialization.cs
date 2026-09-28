@@ -1,0 +1,170 @@
+using System;
+using System.Collections.Generic;
+using cAlgo.API;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private Plan CreatePlanFromInputs(
+            ExecutionModel execution,
+            int direction,
+            int closedM5,
+            double entry,
+            double stop,
+            string stopSource,
+            int stopQuality,
+            double tp1,
+            double tp2,
+            double tp3,
+            double tp4)
+        {
+            Plan p =
+                new Plan
+                {
+                    Direction = direction,
+                    EntryMode =
+                        execution == null
+                            ? ExecutionMode.None
+                            : execution.Mode,
+                    Entry = NormalizePrice(entry),
+                    IdealEntry =
+                        execution == null
+                            ? entry
+                            : NormalizePrice(
+                                execution.IdealEntry),
+                    EntryZoneLow =
+                        execution == null
+                            ? 0
+                            : NormalizePrice(
+                                execution.ZoneLow),
+                    EntryZoneHigh =
+                        execution == null
+                            ? 0
+                            : NormalizePrice(
+                                execution.ZoneHigh),
+                    EntryTrigger =
+                        execution == null
+                            ? 0
+                            : NormalizePrice(
+                                execution.Trigger),
+                    EntryInvalidation =
+                        execution == null
+                            ? 0
+                            : NormalizePrice(
+                                execution.Invalidation),
+                    EntryQuality =
+                        execution == null
+                            ? 0
+                            : execution.Quality,
+                    EntrySource =
+                        execution == null
+                            ? ""
+                            : execution.Source,
+                    Stop = NormalizePrice(stop),
+                    Tp1 = NormalizePrice(tp1),
+                    Tp2 =
+                        IsValidTarget(
+                            direction,
+                            entry,
+                            tp2)
+                            ? NormalizePrice(tp2)
+                            : 0,
+                    Tp3 =
+                        IsValidTarget(
+                            direction,
+                            entry,
+                            tp3)
+                            ? NormalizePrice(tp3)
+                            : 0,
+                    Tp4 =
+                        IsValidTarget(
+                            direction,
+                            entry,
+                            tp4)
+                            ? NormalizePrice(tp4)
+                            : 0,
+                    StopSource = stopSource,
+                    StopQuality = stopQuality,
+                    CreatedM5 = closedM5
+                };
+
+            p.Risk =
+                Math.Abs(
+                    p.Entry -
+                    p.Stop);
+
+            p.Tp1RR =
+                p.Tp1 > 0
+                    ? Math.Abs(
+                        p.Tp1 -
+                        p.Entry) /
+                      p.Risk
+                    : 0;
+
+            p.Tp2RR =
+                p.Tp2 > 0
+                    ? Math.Abs(
+                        p.Tp2 -
+                        p.Entry) /
+                      p.Risk
+                    : 0;
+
+            p.Tp3RR =
+                p.Tp3 > 0
+                    ? Math.Abs(
+                        p.Tp3 -
+                        p.Entry) /
+                      p.Risk
+                    : 0;
+
+            p.Tp4RR =
+                p.Tp4 > 0
+                    ? Math.Abs(
+                        p.Tp4 -
+                        p.Entry) /
+                      p.Risk
+                    : 0;
+
+            return p;
+        }
+
+        private void EnrichPlanTargetMetadata(
+            Plan p,
+            List<Level> candidates,
+            double atr)
+        {
+            ApplyTargetMeta(
+                candidates,
+                p.Tp1,
+                atr,
+                out p.Tp1Source,
+                out p.Tp1Quality);
+
+            ApplyTargetMeta(
+                candidates,
+                p.Tp2,
+                atr,
+                out p.Tp2Source,
+                out p.Tp2Quality);
+
+            ApplyTargetMeta(
+                candidates,
+                p.Tp3,
+                atr,
+                out p.Tp3Source,
+                out p.Tp3Quality);
+
+            ApplyTargetMeta(
+                candidates,
+                p.Tp4,
+                atr,
+                out p.Tp4Source,
+                out p.Tp4Quality);
+
+            p.HtfTargetCount =
+                CountHtfTargetsInPlan(
+                    p);
+        }
+    }
+}
