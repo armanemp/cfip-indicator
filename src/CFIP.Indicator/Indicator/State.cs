@@ -61,8 +61,6 @@ namespace cAlgo
                 private int _losses;
         
                 private string _status = "INITIALIZING";
-                private bool _initializationReady;
-                private ChartStaticText _runtimeBootstrapText;
                 private string _autoTradingState = "OFF";
                 private string _autoTradingReason = "DISABLED";
                 private string _autoExecutionBlockReason = "NOT EVALUATED";
