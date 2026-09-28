@@ -35,6 +35,9 @@ Edit the smallest authoritative module that owns the behavior.
 | Plan construction orchestration | `Planning/TradePlan/PlanBuilder.cs` |
 | Plan entry/stop/risk preparation | `Planning/TradePlan/PlanInputPreparation.cs` |
 | Plan target preparation/validation | `Planning/TradePlan/PlanTargetPreparation.cs` |
+| Target stage orchestration | `Planning/TradePlan/TargetSelector.cs` |
+| Target selection policy | `Planning/TradePlan/TargetSelectionPolicy.cs` |
+| Target candidate filtering/scoring | `Planning/TradePlan/TargetCandidateEvaluator.cs` |
 | Plan materialization/target metadata | `Planning/TradePlan/PlanMaterialization.cs` |
 | Plan integrity | `Planning/TradePlan/PlanIntegrityValidator.cs` |
 | Structural stop | `Planning/TradePlan/StructuralStopPlanner.cs` |
