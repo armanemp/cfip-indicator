@@ -55,3 +55,18 @@ References:
 ## Development rule
 
 New indicators are added only when they contribute a distinct evidence family or materially improve a measured decision boundary. Redundant oscillators are not added merely to increase indicator count.
+
+
+## Evidence playbooks
+
+The regime classifier is also used to decide which evidence families deserve promotion:
+
+- TREND: structure, trend alignment, higher-timeframe agreement and stable directional continuation are primary. Oscillator votes are secondary.
+- EXPANSION: displacement is required, with volume/structure/liquidity providing supporting confirmation.
+- HIGH_VOLATILITY: at least three distinct directional evidence families are required before promotion.
+- RANGE/COMPRESSION: directional trend setups are suppressed.
+- TRANSITION: weaker evidence is not promoted until the regime becomes stable enough.
+
+Volume is treated as effort and price movement as result. High volume without sufficient directional price result is not counted as a bullish/bearish confirmation.
+
+The execution state follows the analytical state. A pre-trade plan is not allowed to survive a hard thesis invalidation, while a waiting plan may remain during ordinary trigger/location waiting. A broker-confirmed pending order or live position remains authoritative over speculative chart state.
