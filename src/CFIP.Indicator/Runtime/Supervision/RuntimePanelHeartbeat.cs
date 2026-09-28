@@ -51,7 +51,9 @@ namespace cAlgo
         {
             if (!ShowUnifiedPanel ||
                 _panel == null ||
-                _panelRows.Count < 6)
+                _panelRows.Count == 0 ||
+                _panelMtfAlignmentRow < 0 ||
+                _panelClockRow < 0)
                 return;
 
             int width =
@@ -66,14 +68,14 @@ namespace cAlgo
                         PanelBorderThickness));
 
             SetPanelRow(
-                4,
+                _panelMtfAlignmentRow,
                 MtfAlignmentText(),
                 PanelSectionColor,
                 false,
                 width);
 
             SetPanelRow(
-                5,
+                _panelClockRow,
                 SymbolName +
                 "  •  " +
                 Bars.TimeFrame +

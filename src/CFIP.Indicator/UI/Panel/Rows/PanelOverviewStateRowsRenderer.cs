@@ -74,6 +74,9 @@ namespace cAlgo
                 false,
                 contentWidth);
 
+            _panelClockRow =
+                slot;
+
             AddPanelRow(
                 ref slot,
                 SymbolName +

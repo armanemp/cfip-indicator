@@ -205,6 +205,8 @@ namespace cAlgo
                 private int _lastExecutionModelM5 = -1;
                 private double _lastExecutionModelMarket;
                 private int _lastPanelM1ClosedIndex = -1;
+                private int _panelMtfAlignmentRow = -1;
+                private int _panelClockRow = -1;
                 private bool _runtimeTimerBusy;
     }
 }
