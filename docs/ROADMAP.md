@@ -805,3 +805,335 @@ Acceptance boundary:
 - Repository source architecture is complete and regression-gated.
 - No production module exceeds the enforced 20 KiB ceiling.
 - Remaining release work is hands-on cTrader terminal/broker validation required by the acceptance matrix; further code changes should be driven by a concrete runtime finding.
+
+
+## Phase 28 — Local release gate definition and readiness package
+
+Status: complete.
+
+Goal: make the local-first release sequence explicit and prevent unfinished execution behavior from being carried into Cloud work.
+
+Completed:
+
+- Added `docs/LOCAL-RELEASE-GATE.md` with a deterministic local acceptance sequence.
+- Defined demo-first and controlled-live safety progression.
+- Defined separate acceptance scenarios for market, aggressive, pending Stop/Limit, protection, lifecycle, reconciliation and recovery.
+- Defined MTF/anti-lookahead, runtime resource and evidence requirements.
+- Defined hard release blockers for synthetic broker state, duplicate execution, protection failures and lifecycle divergence.
+- Explicitly deferred Adaptive Learning from local release.
+- Established Local Release as the prerequisite milestone for all Cloud work.
+- Established Cloud migration as a separate cBot-host milestone because cTrader Cloud execution is for cBots, not custom indicators.
+
+Acceptance:
+
+- One documented local release gate exists.
+- Execution safety blockers are explicit.
+- Adaptive Learning cannot silently enter the local production scope.
+- Cloud work cannot begin until Local Release is complete.
+
+## Remaining implementation phases
+
+### Phase 29 — Hands-on cTrader terminal baseline
+
+Status: next.
+
+Goal: validate the production assembly on the actual target cTrader terminal and broker/demo environment.
+
+Work:
+
+- Compile with the target installed Automate API.
+- Attach to the chart and verify initialization.
+- Verify M1/M5/M15/M30/H1/H4/D1/W1.
+- Verify MTF boundaries and closed-bar synchronization.
+- Verify panel, popup, chart objects and alerts.
+- Verify auto-trading controls and runtime state.
+- Capture CPU/memory/resource baseline.
+
+Acceptance:
+
+- No compile/runtime startup defect.
+- No chart/UI regression that changes trading state.
+- All baseline timeframes operate correctly.
+- Baseline evidence is recorded.
+
+### Phase 30 — Automatic market execution certification
+
+Status: planned.
+
+Goal: certify normal and aggressive market execution as one broker-safe path family.
+
+Work:
+
+- BUY and SELL normal execution.
+- BUY and SELL aggressive execution.
+- ExecutionIntent validation.
+- Volume/quote/entry-envelope checks.
+- Slippage/fill-envelope handling.
+- Broker result classification.
+- Broker-confirmed position adoption.
+- Post-fill target resolution.
+- Protection failure → RECOVERY.
+- Rejection and exception handling.
+
+Acceptance:
+
+- No synthetic fill/position state.
+- One managed position per active plan.
+- Original submission intent remains available for actual-fill validation.
+- Protection is never assumed from plan state.
+
+### Phase 31 — Automatic pending-order certification
+
+Status: planned.
+
+Goal: certify Stop and Limit pending execution independently from market execution.
+
+Work:
+
+- BUY STOP / SELL STOP.
+- BUY LIMIT / SELL LIMIT.
+- Pending intent preparation and validation.
+- Expiration.
+- Broker-confirmed pending adoption.
+- Fill transition.
+- Cancellation/rejection handling.
+- Duplicate-event protection.
+
+Acceptance:
+
+- Pending is never treated as a position before confirmed fill.
+- Rejected pending mutation creates no synthetic state.
+- Stop/Limit semantics remain distinct.
+
+### Phase 32 — Protection, lifecycle and recovery certification
+
+Status: planned.
+
+Goal: prove the live trading state remains safe across protection changes and lifecycle transitions.
+
+Work:
+
+- Initial SL/TP.
+- Break-even.
+- Profit lock.
+- Trailing/structural management.
+- Partial TP.
+- Full close.
+- Missing protection recovery.
+- Restart/reconnect reconciliation.
+- Position/pending idempotency.
+
+Acceptance:
+
+- Broker-confirmed state is authoritative.
+- Invalid protection cannot be presented as safe state.
+- Recovery is explicit and retryable.
+- Lifecycle transitions are deterministic and idempotent where required.
+
+### Phase 33 — Cross-path execution stress and reconciliation
+
+Status: planned.
+
+Goal: exercise Market, Aggressive, Stop and Limit under adverse timing/state conditions.
+
+Work:
+
+- Rapid ticks.
+- Duplicate callbacks/events.
+- Broker lag.
+- Reconnect/restart.
+- Rejected mutations.
+- Fill mismatch.
+- Stale plan.
+- Invalidation during execution.
+- Concurrent-looking order events.
+
+Acceptance:
+
+- No duplicate entry.
+- No orphan managed state.
+- No lifecycle/broker divergence after reconciliation.
+- All automatic paths obey common safety invariants.
+
+### Phase 34 — Analytical accuracy and anti-lookahead certification
+
+Status: planned.
+
+Goal: establish measurable correctness of the analysis pipeline before outcome learning.
+
+Work:
+
+- Closed-bar enforcement.
+- MTF timestamp/index verification.
+- Indicator parity fixtures.
+- Structure/FVG/OB/liquidity fixtures.
+- BUY/SELL symmetry.
+- Contradiction handling.
+- Evidence deduplication.
+- Numerical edge-case handling.
+
+Acceptance:
+
+- No future leakage.
+- No cross-timeframe contamination.
+- Repeated identical input produces identical decision inputs/decision output.
+- Numerical reference tests remain deterministic.
+
+### Phase 35 — Local backtest, replay and outcome fabric
+
+Status: planned.
+
+Goal: create a reproducible local path from historical data to trade outcome.
+
+Work:
+
+- Historical replay.
+- Simulated broker events.
+- Entry/trigger/fill separation.
+- SL/TP and partial target progression.
+- MFE/MAE.
+- Time-to-outcome.
+- Regime/session/spread context.
+- Prediction vs actual outcome.
+- Outcome persistence.
+
+LEAN remains a research/reference benchmark, not the CFIP production authority.
+
+Acceptance:
+
+- Replays are deterministic.
+- Outcomes can be traced back to their originating decision and execution intent.
+- No future information enters a historical decision.
+
+### Phase 36 — Confluence calibration and regime/no-trade intelligence
+
+Status: planned.
+
+Goal: improve signal quality without adding a second trading authority.
+
+Work:
+
+- Evidence independence/redundancy handling.
+- Evidence quality scoring.
+- Historical contribution tracking.
+- Confidence calibration.
+- Regime-specific relevance.
+- Strong no-trade conditions.
+- Expected-value and setup-quality diagnostics.
+
+Acceptance:
+
+- Confidence is empirically calibratable.
+- Redundant indicators do not receive uncontrolled duplicate influence.
+- No-trade decisions have explicit, traceable reasons.
+- Risk/execution safety gates remain outside learned scoring.
+
+### Phase 37 — Local production hardening and Local Release
+
+Status: planned.
+
+Goal: freeze the local product after all previous gates pass.
+
+Work:
+
+- Final performance/memory sweep.
+- Error/recovery logging review.
+- Parameter/default audit.
+- Chart/panel/alert acceptance.
+- Demo-to-controlled-live transition checklist.
+- Final broker compatibility evidence.
+- Release artifacts and rollback procedure.
+
+Acceptance:
+
+- All Local Release Gate scenarios PASS.
+- No unresolved critical execution/lifecycle defect.
+- Production package is reproducible.
+- Local cTrader version is the accepted reference runtime.
+
+**Milestone: LOCAL PRODUCT COMPLETE.**
+
+### Phase 38 — Cloud portability architecture
+
+Status: planned — after Local Release.
+
+Goal: make the CFIP engine host-portable without changing its decision/risk authority.
+
+Work:
+
+- Separate host-neutral domain/analysis/planning/risk contracts from cTrader UI callbacks.
+- Define a cBot host adapter over the existing CFIP execution contracts.
+- Define broker/event/time abstractions required by the cBot host.
+- Preserve one decision authority and one execution authority.
+- Keep Indicator UI as presentation-only where needed.
+- Define deployment/configuration parity between local and cloud.
+
+Acceptance:
+
+- Cloud architecture reuses CFIP logic instead of forking a second strategy engine.
+- No cloud adapter can bypass risk/protection/identity invariants.
+
+### Phase 39 — Cloud cBot host implementation
+
+Status: planned.
+
+Goal: run the same CFIP strategy logic under a cTrader cBot host suitable for Cloud execution.
+
+Work:
+
+- Implement the cBot host adapter.
+- Map lifecycle callbacks and market data.
+- Map broker confirmation and reconciliation.
+- Preserve managed identity.
+- Preserve protection/recovery semantics.
+- Keep configuration compatibility.
+
+Acceptance:
+
+- cBot host produces the same decision/execution intent for identical inputs.
+- Broker state remains authoritative.
+- Indicator and cBot do not become two independent strategies.
+
+### Phase 40 — Cloud validation and operational hardening
+
+Status: planned.
+
+Goal: validate the cloud-hosted cBot without weakening the local reference.
+
+Work:
+
+- Demo cloud execution.
+- Restart/continuity behavior.
+- Failure/recovery.
+- Resource/runtime observations.
+- Broker compatibility.
+- Configuration and secret handling.
+- Operational runbook.
+
+Acceptance:
+
+- Cloud behavior is consistent with the local contract.
+- No unresolved execution or lifecycle divergence exists.
+
+### Phase 41 — Adaptive Learning (post-local/post-cloud)
+
+Status: deferred by design.
+
+Goal: introduce bounded, evidence-driven adaptation only after stable local/cloud execution and sufficient outcome data exist.
+
+Work:
+
+- Outcome dataset quality gates.
+- Rolling calibration.
+- Evidence reliability updates.
+- Bounded parameter adaptation.
+- Drift detection.
+- Offline training/evaluation.
+- Approval and rollback.
+- Optional lightweight local persistence through cTrader LocalStorage.
+
+Acceptance:
+
+- Learning cannot modify safety invariants.
+- Learning cannot create a second decision/execution authority.
+- Changes are bounded, observable, reversible and validated against out-of-sample data.

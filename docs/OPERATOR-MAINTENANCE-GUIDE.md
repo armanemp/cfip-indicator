@@ -109,3 +109,12 @@ The architecture verifier and CI workflows are regression gates, not substitutes
 ## Current release boundary
 
 The repository is hardened and CI-clean. The remaining validation boundary is hands-on cTrader acceptance against the actual target terminal and broker session, as documented in docs/ROADMAP.md and docs/ACCEPTANCE-MATRIX.md.
+
+
+## Local-first release policy
+
+Local cTrader completion is the release prerequisite. Follow `docs/LOCAL-RELEASE-GATE.md` for the exact hands-on matrix and evidence requirements.
+
+Adaptive Learning is intentionally not part of the current local production scope. The local product must first prove execution, broker confirmation, protection, lifecycle, MTF integrity, runtime stability and outcome instrumentation.
+
+Cloud is a separate post-local milestone. Since cTrader Cloud execution is available for cBots rather than custom indicators, the Cloud path will use a cBot host around the CFIP engine while preserving the same decision, risk, execution and protection contracts.
