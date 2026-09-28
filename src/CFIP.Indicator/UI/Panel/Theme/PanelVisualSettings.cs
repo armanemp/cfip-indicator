@@ -101,7 +101,94 @@ namespace cAlgo
                                                             Math.Min(
                                                                 255,
                                                                 PanelBorderAlpha));
-                                        
+
+                                                    int toggleSide =
+                                                        Math.Max(
+                                                            22,
+                                                            Math.Min(
+                                                                40,
+                                                                Math.Min(
+                                                                    PanelToggleWidth,
+                                                                    PanelToggleHeight)));
+
+                                                    int halfGap =
+                                                        Math.Max(
+                                                            0,
+                                                            buttonGap / 2);
+
+                                                    int horizontalFootprint =
+                                                        ShowPanelToggleButton
+                                                            ? toggleSide +
+                                                              buttonMargin * 3 +
+                                                              halfGap * 3
+                                                            : buttonMargin * 2 +
+                                                              buttonGap;
+
+                                                    int availableButtonWidth =
+                                                        Math.Max(
+                                                            0,
+                                                            contentWidth -
+                                                            horizontalFootprint);
+
+                                                    int eachButtonWidth =
+                                                        Math.Max(
+                                                            70,
+                                                            Math.Min(
+                                                                Math.Max(
+                                                                    70,
+                                                                    ActionButtonWidth),
+                                                                availableButtonWidth / 2));
+
+                                                    bool showSafetyButtons =
+                                                        ShowTradeActionButtons ||
+                                                        AlwaysShowSafetyButtons;
+
+                                                    ApplyPanelSurfaceAndHeaderLayout(
+                                                        contentWidth,
+                                                        panelHeight,
+                                                        padding,
+                                                        border,
+                                                        maxHeight,
+                                                        backgroundAlpha,
+                                                        borderAlpha,
+                                                        headerHeight);
+
+                                                    ApplyPanelQuickExecutionLayout(
+                                                        contentWidth,
+                                                        buttonGap);
+
+                                                    ApplyPanelRowsLayout(
+                                                        contentWidth);
+
+                                                    _buttonStack.IsVisible =
+                                                        buttons;
+
+                                                    ApplyPanelActionButtonsLayout(
+                                                        buttonHeight,
+                                                        buttonGap,
+                                                        buttonMargin,
+                                                        eachButtonWidth,
+                                                        toggleSide,
+                                                        border,
+                                                        borderAlpha,
+                                                        showSafetyButtons);
+
+                                                    ApplyPanelRestoreButtonLayout(
+                                                        borderAlpha);
+
+                                                    SetPanelAlignment();
+                                                }
+
+        private void ApplyPanelSurfaceAndHeaderLayout(
+                                                    int contentWidth,
+                                                    int panelHeight,
+                                                    int padding,
+                                                    int border,
+                                                    int maxHeight,
+                                                    int backgroundAlpha,
+                                                    int borderAlpha,
+                                                    int headerHeight)
+                                                {
                                                     _panel.Width =
                                                         Math.Max(
                                                             260,
@@ -232,6 +319,12 @@ namespace cAlgo
                                                     _buttonStack.Height =
                                                         buttonAreaHeight;
                                         
+                                                }
+
+        private void ApplyPanelQuickExecutionLayout(
+                                                    int contentWidth,
+                                                    int buttonGap)
+                                                {
                                                     _quickExecutionStack.IsVisible =
                                                         true;
                                         
@@ -289,6 +382,11 @@ namespace cAlgo
                                                         }
                                                     }
                                         
+                                                }
+
+        private void ApplyPanelRowsLayout(
+                                                    int contentWidth)
+                                                {
                                                     _buttonStack.IsVisible =
                                                         buttons;
                                         
@@ -317,56 +415,18 @@ namespace cAlgo
                                         
                                                         row.LineHeight =
                                                             Math.Max(
-                                                                14,
-                                                                PanelFontSize + 3);
-                                        
-                                                        row.BackgroundColor =
-                                                            Color.FromArgb(
-                                                                0,
-                                                                Color.Black);
-                                                    }
-                                        
-                                                    int toggleSide =
-                                                        Math.Max(
-                                                            22,
-                                                            Math.Min(
-                                                                40,
-                                                                Math.Min(
-                                                                    PanelToggleWidth,
-                                                                    PanelToggleHeight)));
-                                        
-                                                    int halfGap =
-                                                        Math.Max(
-                                                            0,
-                                                            buttonGap / 2);
-                                        
-                                                    int horizontalFootprint =
-                                                        ShowPanelToggleButton
-                                                            ? toggleSide +
-                                                              buttonMargin * 3 +
-                                                              halfGap * 3
-                                                            : buttonMargin * 2 +
-                                                              buttonGap;
-                                        
-                                                    int availableButtonWidth =
-                                                        Math.Max(
-                                                            0,
-                                                            contentWidth -
-                                                            horizontalFootprint);
-                                        
-                                                    int eachButtonWidth =
-                                                        Math.Max(
-                                                            70,
-                                                            Math.Min(
-                                                                Math.Max(
-                                                                    70,
-                                                                    ActionButtonWidth),
-                                                                availableButtonWidth / 2));
-                                        
-                                                    bool showSafetyButtons =
-                                                        ShowTradeActionButtons ||
-                                                        AlwaysShowSafetyButtons;
-                                        
+                                                }
+
+        private void ApplyPanelActionButtonsLayout(
+                                                    int buttonHeight,
+                                                    int buttonGap,
+                                                    int buttonMargin,
+                                                    int eachButtonWidth,
+                                                    int toggleSide,
+                                                    int border,
+                                                    int borderAlpha,
+                                                    bool showSafetyButtons)
+                                                {
                                                     if (_closeButton != null)
                                                     {
                                                         _closeButton.IsVisible =
@@ -552,6 +612,11 @@ namespace cAlgo
                                                                 buttonMargin);
                                                     }
                                         
+                                                }
+
+        private void ApplyPanelRestoreButtonLayout(
+                                                    int borderAlpha)
+                                                {
                                                     if (_panelRestoreButton != null)
                                                     {
                                                         _panelRestoreButton.IsVisible =
@@ -587,7 +652,6 @@ namespace cAlgo
                                                         SetPanelRestoreAlignment();
                                                     }
                                         
-                                                    SetPanelAlignment();
                                                 }
     }
 }
