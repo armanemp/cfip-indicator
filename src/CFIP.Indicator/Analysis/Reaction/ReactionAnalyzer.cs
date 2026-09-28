@@ -68,6 +68,46 @@ namespace cAlgo
                                     watchThreshold,
                                     LiveReactionThreshold);
                 
+                            MarketRegimeSnapshot regime =
+                                GetActiveM5Regime(
+                                    Math.Max(
+                                        0,
+                                        live - 1));
+
+                            if (regime != null)
+                            {
+                                if (regime.Regime == "RANGE" ||
+                                    regime.Regime == "COMPRESSION")
+                                {
+                                    watchThreshold += 8;
+                                    entryThreshold += 14;
+                                }
+                                else if (regime.Regime == "TRANSITION")
+                                {
+                                    watchThreshold += 4;
+                                    entryThreshold += 8;
+                                }
+                                else if (regime.Regime == "HIGH_VOLATILITY")
+                                {
+                                    watchThreshold += 6;
+                                    entryThreshold += 12;
+                                }
+                                else if (regime.Regime == "TREND" ||
+                                         regime.Regime == "EXPANSION")
+                                {
+                                    if (regime.Direction == 1)
+                                    {
+                                        buyQuality += 4;
+                                        sellQuality -= 4;
+                                    }
+                                    else if (regime.Direction == -1)
+                                    {
+                                        buyQuality -= 4;
+                                        sellQuality += 4;
+                                    }
+                                }
+                            }
+
                             int strongThreshold =
                                 Math.Max(
                                     entryThreshold,
@@ -96,13 +136,21 @@ namespace cAlgo
                             d.SmartQuality =
                                 d.Confidence;
                 
+                            int requiredReactionEvidence =
+                                Math.Max(
+                                    2,
+                                    LiveReversalMinimumEvidence);
+
+                            if (regime != null &&
+                                (regime.Regime == "TRANSITION" ||
+                                 regime.Regime == "HIGH_VOLATILITY"))
+                                requiredReactionEvidence++;
+
                             d.EntryAllowed =
                                 d.Confidence >=
                                 entryThreshold &&
                                 d.IndependentEvidence >=
-                                Math.Max(
-                                    2,
-                                    LiveReversalMinimumEvidence);
+                                requiredReactionEvidence;
                 
                             if (!AllowFastM5ReversalBeforeM15 &&
                                 (_m15Frame == null ||
