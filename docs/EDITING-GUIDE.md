@@ -32,7 +32,10 @@ Edit the smallest authoritative module that owns the behavior.
 | Bullish trigger scoring | `Planning/Entry/BullTriggerScoreAnalyzer.cs` |
 | Bearish trigger scoring | `Planning/Entry/BearTriggerScoreAnalyzer.cs` |
 | Execution model / trigger validation | `Planning/Execution/*.cs` |
-| Plan construction | `Planning/TradePlan/PlanBuilder.cs` |
+| Plan construction orchestration | `Planning/TradePlan/PlanBuilder.cs` |
+| Plan entry/stop/risk preparation | `Planning/TradePlan/PlanInputPreparation.cs` |
+| Plan target preparation/validation | `Planning/TradePlan/PlanTargetPreparation.cs` |
+| Plan materialization/target metadata | `Planning/TradePlan/PlanMaterialization.cs` |
 | Plan integrity | `Planning/TradePlan/PlanIntegrityValidator.cs` |
 | Structural stop | `Planning/TradePlan/StructuralStopPlanner.cs` |
 | Minimum required RR | `Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs` |
