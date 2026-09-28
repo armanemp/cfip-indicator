@@ -5,25 +5,9 @@ namespace cAlgo
     internal sealed class DecisionFrameContributionCalculator
     {
         public DecisionFrameContribution Calculate(
-            Frame frame,
-            double weight)
-        {
-            if (frame == null)
-                return new DecisionFrameContribution(0, 0, 0);
-
-            return Calculate(
-                frame.BullScore,
-                frame.BearScore,
-                frame.Quality,
-                frame.Direction,
-                weight);
-        }
-
-        public DecisionFrameContribution Calculate(
             double bullScore,
             double bearScore,
             int quality,
-            int direction,
             double weight)
         {
             if (quality <= 0 ||
@@ -62,7 +46,7 @@ namespace cAlgo
             return new DecisionFrameContribution(
                 buyShare * qualityFactor * scale,
                 sellShare * qualityFactor * scale,
-                direction == 0 ? 0 : 1);
+                0);
         }
     }
 }
