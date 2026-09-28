@@ -657,3 +657,28 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: continue the remaining near-ceiling lifecycle/UI audit, prioritizing LiveFillReconciliation and the large panel row renderers, then run a final repository-wide responsibility and dead-code sweep.
+
+
+## Phase 22 — Broker protection state ownership
+
+Status: complete.
+
+Goal: centralize broker SL/TP validity evaluation so lifecycle consumers share one protection-state authority.
+
+Completed:
+
+- Added BrokerProtectionStateEvaluator.cs as the single broker protection validity owner.
+- Updated BrokerStateSnapshot, PositionOpenedHandler and PositionModifiedHandler to consume the shared evaluator.
+- Preserved market-direction and managed-stop validation against actual broker position state.
+- Preserved the configured SyncBrokerTakeProfit semantics.
+- Added static duplication checks for the protection-state boundary.
+- Updated editing ownership documentation.
+
+Acceptance:
+
+- Broker protection validity is calculated in one lifecycle owner.
+- Consumer handlers do not recreate SL/TP validity formulas.
+- Broker state remains authoritative for protection recovery decisions.
+- No production file exceeds 20 KiB.
+
+Next: audit the large UI panel renderers for responsibility density and complete the repository-wide dead-code / duplicate-owner sweep before final cTrader hands-on validation.
