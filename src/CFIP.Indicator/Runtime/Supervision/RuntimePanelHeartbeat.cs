@@ -17,12 +17,15 @@ namespace cAlgo
                 DateTime now =
                     Server.TimeInUtc;
 
-                // The heartbeat exists for live panel time only.
-                // Market/MTF analysis remains on the normal closed-bar path.
+                // The heartbeat deliberately avoids full analysis. It supervises
+                // broker/live safety state and EOD boundaries, then refreshes only
+                // the lightweight panel clock.
                 _lastPanelHeartbeatUtc =
                     now;
 
-                // Display heartbeat only. No decision, plan or broker work.
+                RunRuntimeSafetySupervisor(
+                    now);
+
                 UpdatePanelHeartbeatRows(
                     now);
             }
