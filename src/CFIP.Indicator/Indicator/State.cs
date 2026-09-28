@@ -208,5 +208,7 @@ namespace cAlgo
                 private int _panelMtfAlignmentRow = -1;
                 private int _panelClockRow = -1;
                 private bool _runtimeTimerBusy;
+                private bool _calculationBusy;
+                private bool _panelRenderBusy;
     }
 }
