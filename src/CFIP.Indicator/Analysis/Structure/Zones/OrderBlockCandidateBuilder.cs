@@ -94,7 +94,6 @@ namespace cAlgo
                     out double managedLow,
                     out double managedHigh,
                     out bool partiallyMitigated,
-                    out double originalWidth,
                     out double remainingRatio))
                 return null;
 
@@ -127,7 +126,8 @@ namespace cAlgo
                     fvgConfluence,
                     partiallyMitigated,
                     createdIndex,
-                    currentIndex);
+                    currentIndex,
+                    atr);
 
             return new Zone
             {
