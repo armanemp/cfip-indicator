@@ -230,8 +230,10 @@ namespace cAlgo
                                     {
                                         Print(
                                             "CFIP panel creation failed: {0}",
-                                            ex.Message);
+                                            ex.ToString());
                         
+                                        UpdateRuntimeBootstrapVisual("PANEL ERROR");
+
                                         _panel = null;
                                         _panelStack = null;
                                         _panelHeaderStack = null;
