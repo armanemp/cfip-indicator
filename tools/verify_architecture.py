@@ -396,6 +396,30 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Execution-zone planning ownership.
+EXECUTION_ZONE = ROOT / "Planning" / "Execution" / "ExecutionZoneBuilder.cs"
+EXECUTION_ZONE_CODE = EXECUTION_ZONE.read_text(encoding="utf-8")
+if EXECUTION_ZONE.stat().st_size > 4096:
+    raise SystemExit("ExecutionZoneBuilder.cs must remain a planning orchestration boundary")
+for token in (
+    "TrySelectExecutionZoneCandidate(",
+    "EvaluateExecutionZoneQuality(",
+):
+    if token not in EXECUTION_ZONE_CODE:
+        raise SystemExit(f"Execution-zone orchestration call missing: {token}")
+for declaration in (
+    "private bool TrySelectExecutionZoneCandidate(",
+    "private int EvaluateExecutionZoneQuality(",
+):
+    if declaration in EXECUTION_ZONE_CODE:
+        raise SystemExit(f"ExecutionZoneBuilder retains extracted responsibility: {declaration}")
+for path in (
+    ROOT / "Planning" / "Execution" / "ExecutionZoneCandidateSelector.cs",
+    ROOT / "Planning" / "Execution" / "ExecutionZoneQualityEvaluator.cs",
+):
+    if not path.exists():
+        raise SystemExit(f"Execution-zone owner missing: {path}")
+
 # Panel row renderer ownership.
 PANEL_OVERVIEW = ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewRowsRenderer.cs"
 PANEL_OVERVIEW_CODE = PANEL_OVERVIEW.read_text(encoding="utf-8")
