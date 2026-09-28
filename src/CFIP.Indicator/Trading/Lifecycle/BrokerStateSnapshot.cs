@@ -24,7 +24,10 @@ namespace cAlgo
             Position position =
                 GetManagedLivePositionForPlan();
 
-            if (position == null)
+            if (LivePlanRecoveryRule.ShouldClearStaleLivePlan(
+                    true,
+                    position != null) &&
+                _plan != null)
             {
                 // The broker position is authoritative. If the live plan's bound
                 // position no longer exists, clear the stale plan even when the
@@ -42,6 +45,9 @@ namespace cAlgo
                 RemovePlanObjects();
                 return;
             }
+
+            if (position == null)
+                return;
 
             int direction =
                 position.TradeType == TradeType.Buy
