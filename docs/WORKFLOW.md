@@ -63,3 +63,8 @@ Update roadmap status only after the phase is actually complete.
 ## Current execution policy
 
 Work directly against the GitHub repository state. Use versioned/historical information only for continuity documentation, never as production identity.
+
+
+## Baseline synchronization rule
+
+Phase 0.1 must keep release-critical documentation aligned with machine-enforced facts. A verifier failure caused by missing continuity documentation blocks phase completion even when the verifier's architecture summary itself is valid.

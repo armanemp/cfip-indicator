@@ -114,9 +114,9 @@ Current branch:
 
 \`main\`
 
-Current commit at roadmap creation:
+Baseline verification commit:
 
-\`58707ff9168501b148ac0cdb097d752a36ef5b1a\`
+\`98ad11fa709c8663c5cb4dc75e77312706bcba8e\`
 
 Current repository state includes:
 
@@ -162,6 +162,21 @@ Current benchmark milestone already completed:
 - CI report generation.
 
 The benchmark completion does **not** constitute production package promotion.
+
+Machine-enforced baseline facts for the verification commit:
+
+- 398 production C# source files;
+- 535 public configuration parameters (532 baseline + 3 OSS extension parameters);
+- 27 parameter-group source files;
+- 500 method declarations / 467 unique baseline methods.
+
+Automated gate snapshot for the verification commit:
+
+- cTrader compile: PASS (workflow run 719);
+- runtime acceptance contracts: PASS (workflow run 535);
+- source and architecture checks: FAIL (workflow run 726) because the verifier reported that `docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md` was not linked from this roadmap.
+
+The source/architecture workflow also reported the architecture summary as 398 C# files and 535 parameters; the failing condition was the continuity-document link.
 
 ---
 
@@ -2037,6 +2052,8 @@ Completed:
 - Markdown report;
 - GitHub Actions summary;
 - static verifier gates.
+
+Continuity document: [Track 19 OSS Numerical Benchmark](TRACK-19-OSS-NUMERICAL-BENCHMARK.md).
 
 Acceptance:
 

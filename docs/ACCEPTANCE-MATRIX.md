@@ -40,3 +40,15 @@ The repository now executes a dedicated runtime contract suite covering the stat
 The automated suite validates deterministic state/invariant behavior only. It does not emulate the live cTrader terminal, broker server, chart rendering engine, event timing, reconnection behavior, or memory profile.
 
 CI executes the automated runtime acceptance contract suite on every push to `main`.
+
+## Current repository gate snapshot
+
+For the baseline verification commit `98ad11fa709c8663c5cb4dc75e77312706bcba8e`:
+
+| Gate | Result | Evidence |
+|---|---:|---|
+| cTrader compile | PASS | workflow run 719 |
+| Runtime acceptance contracts | PASS | workflow run 535 |
+| Source / architecture checks | FAIL | workflow run 726; verifier failed only on the missing Track 19 continuity link |
+
+The source/architecture failure is therefore a documentation-continuity defect identified by the machine verifier, not evidence of a runtime failure. The phase remains incomplete until the verifier passes after the documentation fix.
