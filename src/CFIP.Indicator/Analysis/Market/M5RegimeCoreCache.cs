@@ -5,8 +5,6 @@ namespace cAlgo
     internal sealed class M5RegimeCoreCache
     {
         private Bars _bars;
-        private int _barCount = -1;
-
         private int _index1 = -1;
         private int _index2 = -1;
         private int _index3 = -1;
@@ -20,7 +18,7 @@ namespace cAlgo
             int index,
             out MarketRegimeSnapshot snapshot)
         {
-            if (!IsCurrentSeries(bars))
+            if (!ReferenceEquals(_bars, bars))
             {
                 snapshot = null;
                 return false;
@@ -60,8 +58,7 @@ namespace cAlgo
             if (!IsCurrentSeries(bars))
             {
                 _bars = bars;
-                _barCount = bars.Count;
-                _index1 = -1;
+                    _index1 = -1;
                 _index2 = -1;
                 _index3 = -1;
                 _snapshot1 = null;
@@ -94,8 +91,7 @@ namespace cAlgo
 
         private bool IsCurrentSeries(Bars bars)
         {
-            return ReferenceEquals(_bars, bars) &&
-                   _barCount == (bars == null ? -1 : bars.Count);
+            return ReferenceEquals(_bars, bars);
         }
     }
 }
