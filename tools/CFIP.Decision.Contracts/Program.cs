@@ -59,7 +59,8 @@ namespace cAlgo
                     0,
                     0,
                     0,
-                    directional.RegimeQuality);
+                    directional.RegimeQuality,
+                    50);
 
             int expected =
                 NumericGuards.ClampInt(
@@ -103,7 +104,7 @@ namespace cAlgo
             Assert(quality >= 0 && quality <= 100, "quality clamp");
 
             int neutralQuality =
-                calculator.Calculate(50, 0, 0, 0, 0);
+                calculator.Calculate(50, 0, 0, 0, 0, 50);
 
             Assert(neutralQuality >= 0 && neutralQuality <= 100, "zero-input quality");
         }
@@ -312,52 +313,37 @@ namespace cAlgo
 
         private static void VerifyQualityWeightedFrameContribution()
         {
-            DecisionQualityCalculator calculator =
-                new DecisionQualityCalculator();
+            DecisionFrameContributionCalculator calculator =
+                new DecisionFrameContributionCalculator();
 
-            int strong =
+            DecisionFrameContribution contribution =
                 calculator.Calculate(
-                    90,
                     80,
-                    8,
-                    5,
+                    20,
                     80,
-                    85);
-
-            int mirrored =
-                calculator.Calculate(
-                    90,
-                    80,
-                    8,
-                    5,
-                    80,
-                    85);
+                    1,
+                    10);
 
             Assert(
-                strong == mirrored,
-                "quality calculation deterministic");
-
-            int neutralRetest =
-                calculator.Calculate(
-                    70,
-                    70,
-                    4,
-                    3,
-                    60,
-                    0);
-
-            int explicitNeutralRetest =
-                calculator.Calculate(
-                    70,
-                    70,
-                    4,
-                    3,
-                    60,
-                    50);
+                Math.Abs(contribution.Bull - 64) < 0.0001,
+                "quality-weighted bull contribution");
 
             Assert(
-                neutralRetest == explicitNeutralRetest,
-                "missing retest quality remains neutral");
+                Math.Abs(contribution.Bear - 16) < 0.0001,
+                "quality-weighted bear contribution");
+
+            DecisionFrameContribution mirrored =
+                calculator.Calculate(
+                    20,
+                    80,
+                    80,
+                    -1,
+                    10);
+
+            Assert(
+                Math.Abs(contribution.Bull - mirrored.Bear) < 0.0001 &&
+                Math.Abs(contribution.Bear - mirrored.Bull) < 0.0001,
+                "BUY/SELL contribution symmetry");
         }
 
         private static void Assert(bool condition, string name)
