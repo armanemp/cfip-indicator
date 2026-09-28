@@ -1,6 +1,5 @@
 using System;
 using cAlgo.API;
-
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
@@ -8,21 +7,9 @@ namespace cAlgo
         private bool PlaceReversalLimit(
             int closedM5)
         {
-            if (!TryPrepareReversalLimit(
-                    closedM5,
-                    out int direction,
-                    out double atr,
-                    out double targetEntry,
-                    out double stop,
-                    out double target,
-                    out double stopPips,
-                    out double targetPips,
-                    out double volume,
-                    out ExecutionIntent pendingIntent))
+            if (!TryPrepareReversalLimit(closedM5, out int direction, out _, out double targetEntry, out double stop, out double target, out _, out _, out double volume, out ExecutionIntent pendingIntent))
                 return false;
-
             string reason;
-
             if (!ValidatePendingSubmission(
                     pendingIntent,
                     direction == 1
@@ -35,28 +22,26 @@ namespace cAlgo
                     "PENDING LIMIT • ",
                     out reason))
             {
-                _autoOrdersBlockReason =
-                    reason;
+                _autoOrdersBlockReason = reason;
                 return false;
             }
-
             try
             {
+                string submissionKey =
+                    "LIMIT|" +
+                    closedM5 +
+                    "|" +
+                    direction;
                 string submissionGateReason;
-
-                if (!TryAcquirePendingSubmission(
-                        closedM5,
-                        direction,
-                        "LIMIT",
+                if (!_pendingSubmissionGate.TryAcquire(
+                        Server.TimeInUtc,
+                        submissionKey,
                         out submissionGateReason))
                 {
-                    _autoOrdersBlockReason =
-                        submissionGateReason;
+                    _autoOrdersBlockReason = submissionGateReason;
                     return false;
                 }
-
                 TradeResult result;
-
                 try
                 {
                     result =
@@ -78,18 +63,17 @@ namespace cAlgo
                 }
                 catch
                 {
-                    RecordPendingSubmissionFailure();
+                    _pendingSubmissionGate.Record(
+                        Server.TimeInUtc,
+                        false);
                     throw;
                 }
-
-                RecordPendingSubmission(result);
-
-                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
-                    result != null,
+                _pendingSubmissionGate.Record(
+                    Server.TimeInUtc,
                     result != null &&
-                    result.IsSuccessful,
-                    result != null &&
-                    result.PendingOrder != null))
+                    result.IsSuccessful &&
+                    result.PendingOrder != null);
+                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(result != null, result?.IsSuccessful == true, result?.PendingOrder != null))
                 {
                     _autoOrdersBlockReason =
                         result != null &&
@@ -98,46 +82,22 @@ namespace cAlgo
                             : "PENDING LIMIT REJECTED";
                     return false;
                 }
-
-                _lastPendingSignalM5 =
-                    closedM5;
-
+                _lastPendingSignalM5 = closedM5;
                 _plan = null;
                 _executionModel = null;
                 RemovePlanObjects();
-
-                _autoOrdersBlockReason =
-                    "ORDER PLACED • LIMIT " +
-                    Price(targetEntry);
-
+                _autoOrdersBlockReason = "ORDER PLACED • LIMIT " + Price(targetEntry);
                 SendUnifiedAlert(
-                    "PENDING-LIMIT|" +
-                    closedM5,
-                    "CFIP LIMIT ORDER | " +
-                    (direction == 1
-                        ? "BUY"
-                        : "SELL") +
-                    " | ENTRY " +
-                    Price(targetEntry) +
-                    " | SL " +
-                    Price(stop) +
-                    " | TP " +
-                    Price(target),
+                    "PENDING-LIMIT|" + closedM5,
+                    "CFIP LIMIT | " + (direction == 1 ? "BUY" : "SELL") +
+                    " | ENTRY " + Price(targetEntry) + " | SL " + Price(stop) + " | TP " + Price(target),
                     direction,
                     true);
-
                 return true;
             }
             catch (Exception ex)
             {
-                _autoOrdersBlockReason =
-                    "PENDING LIMIT • " +
-                    ex.Message;
-
-                Print(
-                    "CFIP pending limit failed: {0}",
-                    ex.Message);
-
+                _autoOrdersBlockReason = "PENDING LIMIT • " + ex.Message;
                 return false;
             }
         }
