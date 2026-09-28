@@ -114,9 +114,9 @@ Current branch:
 
 \`main\`
 
-Baseline verification commit:
+Phase 0.1 verification commit:
 
-\`98ad11fa709c8663c5cb4dc75e77312706bcba8e\`
+\`5d4b6a00fa61dda4c927800b8bd27f6dd496f3cd\`
 
 Current repository state includes:
 
@@ -170,13 +170,13 @@ Machine-enforced baseline facts for the verification commit:
 - 27 parameter-group source files;
 - 500 method declarations / 467 unique baseline methods.
 
-Automated gate snapshot for the verification commit:
+Automated gate snapshot for the Phase 0.1 verification commit:
 
-- cTrader compile: PASS (workflow run 719);
-- runtime acceptance contracts: PASS (workflow run 535);
-- source and architecture checks: FAIL (workflow run 726) because the verifier reported that `docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md` was not linked from this roadmap.
+- cTrader compile: PASS (workflow run 720);
+- runtime acceptance contracts: PASS (workflow run 536);
+- source and architecture checks: PASS (workflow run 727).
 
-The source/architecture workflow also reported the architecture summary as 398 C# files and 535 parameters; the failing condition was the continuity-document link.
+The verifier reported 398 production C# files, 535 parameters, 500 method declarations and 467 unique baseline methods.
 
 ---
 
@@ -672,20 +672,16 @@ marked as a research milestone that may be completed early.
 
 ## Phase 0.1 — Repository truth synchronization
 
-Status: next.
+Status: complete.
 
-Goal:
+Completed:
 
-Make the repository documentation and machine-enforced facts agree exactly.
-
-Work:
-
-- reconcile parameter counts;
-- reconcile source-file counts;
-- reconcile current status of architecture/runtime gates;
-- synchronize ROADMAP, WORKFLOW and ACCEPTANCE wording;
-- record current next phase;
-- verify no stale claim remains in release-critical documentation.
+- synchronized the documented parameter count to the machine-enforced 535 total (532 baseline + 3 OSS extension parameters);
+- synchronized the documented production C# count to the verifier's 398;
+- recorded the 27 parameter-group files and 500 method declarations / 467 unique baseline methods;
+- synchronized ROADMAP, WORKFLOW and ACCEPTANCE wording;
+- restored the required Track 19 continuity-document link;
+- verified cTrader compile, runtime contracts and source/architecture checks on the post-fix commit.
 
 Acceptance:
 
@@ -695,7 +691,7 @@ Acceptance:
 
 ## Phase 0.2 — Production-source hygiene
 
-Status: planned.
+Status: next.
 
 Work:
 
@@ -2901,10 +2897,9 @@ CFIP is not considered fully complete until all of the following are true:
 
 # 9. Execution queue for continuation
 
-The current research milestone Track 19.1 is complete, but the certification sequence
-continues from the safety-first program below.
+The current research milestone Track 19.1 is complete, and Phase 0.1 repository truth synchronization is complete. The certification sequence continues from the safety-first program below.
 
-**NEXT: Phase 0.1 — Repository truth synchronization**
+**NEXT: Phase 0.2 — Production-source hygiene**
 
 Then proceed in dependency order:
 
