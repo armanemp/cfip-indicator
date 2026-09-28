@@ -7,6 +7,7 @@ namespace cAlgo
     {
         private DecisionFilterResult EvaluateDecisionSmartGates(
             Decision decision,
+            int closedM5,
             int adaptiveQualityThreshold,
             int adaptiveShareThreshold)
         {
@@ -53,7 +54,7 @@ namespace cAlgo
             {
                 MarketRegimeSnapshot regime =
                     GetActiveM5Regime(
-                        decision.ClosedM5);
+                        closedM5);
 
                 if (regime != null)
                 {
