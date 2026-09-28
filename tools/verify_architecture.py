@@ -264,7 +264,7 @@ if "ExecutionCapacityRule.IsSupportedSinglePlanCapacity" not in CAPACITY_CODE:
     raise SystemExit("Single-plan execution capacity guard must delegate to the pure rule")
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTrade.cs",
-    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
     execution_code = execution_path.read_text(encoding="utf-8")
@@ -280,7 +280,7 @@ if (
 ):
     raise SystemExit("Market execution must expose broker protection recovery in auto state")
 
-AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
+AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
 AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
 if (
     "SetAutoTradingState" not in AGGRESSIVE_CODE or
@@ -390,7 +390,7 @@ if "GetManagedLivePositionForPlan()" not in PARTIAL_CODE:
 if "PARTIAL CLOSE • BREAK-EVEN REJECTED" not in PARTIAL_CODE:
     raise SystemExit("Partial break-even rejection recovery path is missing")
 
-AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
+AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
 AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
 BROKER_PROTECTION_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
 BROKER_PROTECTION_CODE = BROKER_PROTECTION_EXECUTION.read_text(encoding="utf-8")
