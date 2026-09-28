@@ -7,12 +7,6 @@ namespace cAlgo
     {
         public override void Calculate(int index)
         {
-            if (RuntimeOutput != null)
-                RuntimeOutput[index] = double.NaN;
-
-            if (!_initializationReady)
-                return;
-
             try
             {
                 if (!TryPrepareCalculationCycle(
