@@ -1,6 +1,5 @@
 using System;
 using cAlgo.API;
-
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
@@ -19,10 +18,8 @@ namespace cAlgo
                     out double volume,
                     out ExecutionIntent pendingIntent))
                 return false;
-
             TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
             string reason;
-
             if (!ValidatePendingSubmission(
                     pendingIntent,
                     type,
@@ -35,9 +32,7 @@ namespace cAlgo
                     reason;
                 return false;
             }
-
             string submissionGateReason;
-
                 if (!TryAcquirePendingSubmission(
                         closedM5,
                         direction,
@@ -48,9 +43,7 @@ namespace cAlgo
                         submissionGateReason;
                     return false;
                 }
-
                 TradeResult result;
-
                 try
                 {
                     result =
@@ -73,9 +66,7 @@ namespace cAlgo
                 RecordPendingSubmissionFailure();
                 throw;
             }
-
             RecordPendingSubmission(result);
-
                 if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
                         result != null,
                         result != null &&
@@ -90,18 +81,14 @@ namespace cAlgo
                             : "PENDING STOP REJECTED";
                     return false;
                 }
-
                 _lastPendingSignalM5 =
                     closedM5;
-
                 _plan = null;
                 _executionModel = null;
                 RemovePlanObjects();
-
                 _autoOrdersBlockReason =
                     "ORDER PLACED • STOP " +
                     Price(trigger);
-
                 SendUnifiedAlert(
                     "PENDING-STOP|" +
                     closedM5,
@@ -117,7 +104,6 @@ namespace cAlgo
                     Price(target),
                     direction,
                     true);
-
                 return true;
             }
             catch (Exception ex)
@@ -125,11 +111,9 @@ namespace cAlgo
                 _autoOrdersBlockReason =
                     "PENDING STOP • " +
                     ex.Message;
-
                 Print(
                     "CFIP pending stop failed: {0}",
                     ex.Message);
-
                 return false;            }
         }
     }
