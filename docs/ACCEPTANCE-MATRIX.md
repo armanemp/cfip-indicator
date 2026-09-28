@@ -38,3 +38,5 @@ The repository now executes a dedicated runtime contract suite covering the stat
 | Duplicate lifecycle events | PASS | Required |
 
 The automated suite validates deterministic state/invariant behavior only. It does not emulate the live cTrader terminal, broker server, chart rendering engine, event timing, reconnection behavior, or memory profile.
+
+CI executes the automated runtime acceptance contract suite on every push to `main`.
