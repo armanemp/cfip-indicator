@@ -313,7 +313,7 @@ CALCULATION_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
 CALCULATION_CYCLE_CODE = CALCULATION_CYCLE.read_text(encoding="utf-8")
 if CALCULATION_CYCLE.stat().st_size > 4096:
     raise SystemExit("CalculationCycle.cs must remain a thin orchestration boundary")
-if len(re.findall(r"\\bpublic\\s+override\\s+void\\s+Calculate\\s*\\(", CALCULATION_CYCLE_CODE)) != 1:
+if len(re.findall(r"\bpublic\s+override\s+void\s+Calculate\s*\(", CALCULATION_CYCLE_CODE)) != 1:
     raise SystemExit("CalculationCycle must own exactly one Calculate override")
 for token in (
     "TryPrepareCalculationCycle(",
