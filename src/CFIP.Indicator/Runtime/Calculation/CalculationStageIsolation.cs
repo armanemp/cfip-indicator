@@ -122,6 +122,8 @@ namespace cAlgo
                 index,
                 "BROKER PROTECTION • PRE-ANALYSIS");
 
+            MarkRuntimeManagementReadyForRecovery();
+
             RunCalculationStage(
                 () =>
                 {
@@ -201,8 +203,6 @@ namespace cAlgo
                 index,
                 "EXECUTION");
 
-            // A new market/pending mutation may have created or changed the live
-            // broker state. Reconcile and protect it before telemetry/presentation.
             RunCalculationStage(
                 () =>
                 {
