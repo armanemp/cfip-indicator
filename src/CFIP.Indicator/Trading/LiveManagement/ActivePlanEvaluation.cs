@@ -214,9 +214,10 @@ namespace cAlgo
                                         GetActiveBrokerStopPrice();
                         
                                     bool hitSl =
-                                        _plan.Direction == 1
+                                        IsFinitePositive(liveStop) &&
+                                        (_plan.Direction == 1
                                             ? market <= liveStop
-                                            : market >= liveStop;
+                                            : market >= liveStop);
                         
                                     bool hitTp1 =
                                         _plan.Tp1 > 0 &&
