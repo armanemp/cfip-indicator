@@ -277,6 +277,16 @@ namespace cAlgo
                                             case 17:
                                                 InitializeExecutionRuntimeState();
 
+                                                if (!ValidateTradeIdentityConfiguration())
+                                                {
+                                                    _autoTradingEnabledRuntime = false;
+                                                    _automaticOrdersEnabledRuntime = false;
+                                                    _autoExecutionBlockReason =
+                                                        "IDENTITY CONFIGURATION";
+                                                    _autoOrdersBlockReason =
+                                                        "IDENTITY CONFIGURATION";
+                                                }
+
                                                 SetLifecycleState(
                                                     LifecycleState.Flat,
                                                     "READY");

@@ -47,9 +47,9 @@ namespace cAlgo
                     (spread /
                      Math.Max(
                          Symbol.PipSize,
-                         atr)) *
+                         atr)) /
                     Math.Max(
-                        1.0,
+                        0.02,
                         MaximumSpreadToStopRiskRatio));
 
             double bestScore =

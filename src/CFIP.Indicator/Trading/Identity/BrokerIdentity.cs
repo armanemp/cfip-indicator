@@ -65,6 +65,32 @@ namespace cAlgo
                             }
                         }
         
+        private bool ValidateTradeIdentityConfiguration()
+                        {
+                            if (string.IsNullOrWhiteSpace(
+                                    ManagedPositionLabel))
+                                return true;
+
+                            string managed =
+                                ManagedPositionLabel.Trim();
+
+                            string execution =
+                                NormalizeLabel();
+
+                            if (string.Equals(
+                                    managed,
+                                    execution,
+                                    StringComparison.Ordinal))
+                                return true;
+
+                            Print(
+                                "CFIP identity configuration mismatch: Managed Position Label '{0}' != Auto Trade Label '{1}'. Automatic execution is blocked until they match.",
+                                managed,
+                                execution);
+
+                            return false;
+                        }
+
         private bool IsManagedPosition(Position position)
                         {
                             if (position == null ||

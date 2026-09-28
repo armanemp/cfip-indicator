@@ -140,9 +140,9 @@ namespace cAlgo
                         0.05,
                         MinimumSlAtr) *
                     atr,
-                    spread *
+                    spread /
                     Math.Max(
-                        1.0,
+                        0.02,
                         MaximumSpreadToStopRiskRatio));
 
             double maximumRisk =
