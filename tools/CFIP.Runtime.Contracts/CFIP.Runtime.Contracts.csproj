@@ -24,5 +24,7 @@
     <Compile Include="../../src/CFIP.Indicator/Trading/Execution/BrokerConfirmationPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleEventIdempotencyGuard.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleTransitionPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Runtime/Calculation/RuntimeFaultState.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Runtime/Calculation/RuntimeFaultStateMachine.cs" />
   </ItemGroup>
 </Project>
