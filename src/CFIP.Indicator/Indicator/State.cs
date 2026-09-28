@@ -192,6 +192,7 @@ namespace cAlgo
                 private string _marketSuitabilityReason = "NOT EVALUATED";
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
         private ZoneCandidateCache _activeZoneCandidateCache;
+        private int _zoneCacheBuildDepth;
 
         private DateTime _lastLiveReactionCalcUtc = DateTime.MinValue;
         private int _lastLiveReactionM5 = -1;
