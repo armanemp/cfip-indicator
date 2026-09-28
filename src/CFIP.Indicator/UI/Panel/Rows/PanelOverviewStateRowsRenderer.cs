@@ -67,13 +67,6 @@ namespace cAlgo
                 true,
                 contentWidth);
 
-            AddPanelRow(
-                ref slot,
-                MtfAlignmentText(),
-                PanelSectionColor,
-                false,
-                contentWidth);
-
             _panelClockRow =
                 slot;
 
