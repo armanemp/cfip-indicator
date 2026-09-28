@@ -43,12 +43,19 @@ namespace cAlgo
                                             ? 1
                                             : -1;
 
+                                    // An active Plan owns the visual/trading thesis until it
+                                    // is invalidated or replaced. Lower-level live reaction/frame
+                                    // evidence must never flip the arrow while stale plan levels remain.
                                     if (_plan != null &&
-                                        _plan.IsLivePosition &&
                                         (_plan.Direction == 1 ||
                                          _plan.Direction == -1))
                                         return _plan.Direction;
-                        
+
+                                    if (_decision != null &&
+                                        (_decision.Direction == 1 ||
+                                         _decision.Direction == -1))
+                                        return _decision.Direction;
+
                                     if (_reaction != null &&
                                         _reaction.EntryAllowed &&
                                         _reaction.Confidence >=
