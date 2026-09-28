@@ -49,36 +49,20 @@ namespace cAlgo
             if (position == null)
                 return;
 
+            bool protectionHealthy =
+                EvaluateBrokerProtection(
+                    position,
+                    out bool brokerStopValid,
+                    out bool brokerTargetValid);
+
             int direction =
                 position.TradeType == TradeType.Buy
                     ? 1
                     : -1;
 
-            double market =
-                direction == 1
-                    ? Symbol.Bid
-                    : Symbol.Ask;
-
             if (IsFinitePositive(position.EntryPrice))
                 _plan.Entry =
                     NormalizePrice(position.EntryPrice);
-
-            bool brokerStopValid =
-                position.StopLoss.HasValue &&
-                IsFinitePositive(position.StopLoss.Value) &&
-                IsValidManagedStop(
-                    direction,
-                    position.EntryPrice,
-                    market,
-                    position.StopLoss.Value);
-
-            bool brokerTargetValid =
-                position.TakeProfit.HasValue &&
-                IsFinitePositive(position.TakeProfit.Value) &&
-                IsValidTarget(
-                    direction,
-                    position.EntryPrice,
-                    position.TakeProfit.Value);
 
             if (brokerStopValid)
             {
@@ -97,9 +81,7 @@ namespace cAlgo
                 AutoProtectBrokerPositions;
 
             bool protectionMissing =
-                !brokerStopValid ||
-                (SyncBrokerTakeProfit &&
-                 !brokerTargetValid);
+                !protectionHealthy;
 
             if (protectionRequired &&
                 protectionMissing &&
