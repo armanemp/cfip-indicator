@@ -280,25 +280,36 @@ namespace cAlgo
                                                 out aggressiveFillReason))
                                         {
                                             SetLifecycleState(
-                                                LifecycleState.RecoveryRequired,
+                                                LifecycleState.ExitRequested,
                                                 "AGGRESSIVE FILL MISMATCH");
-                        
-                                            _plan =
-                                                CreateManagedPlanFromExecution(
-                                                    _reaction.Direction,
-                                                    actualFill,
-                                                    stop,
-                                                    target,
-                                                    closedM5,
-                                                    result.Position.VolumeInUnits);
-                        
-                                            _plan.PositionId =
-                                                result.Position.Id;
-                        
-                                            ReconcileLivePlanToActualFill(
-                                                result.Position,
-                                                closedM5);
-                        
+
+                                            bool closed =
+                                                TryClosePosition(
+                                                    result.Position,
+                                                    "AGGRESSIVE FILL MISMATCH");
+
+                                            if (!closed)
+                                            {
+                                                SetLifecycleState(
+                                                    LifecycleState.RecoveryRequired,
+                                                    "AGGRESSIVE FILL MISMATCH • CLOSE REJECTED");
+                                            }
+                                            else
+                                            {
+                                                _autoExecutionBlockReason =
+                                                    "FILL MISMATCH • POSITION CLOSE REQUESTED";
+                                            }
+
+                                            SendUnifiedAlert(
+                                                "FILL-MISMATCH|" +
+                                                result.Position.Id,
+                                                "CFIP AGGRESSIVE FILL OUTSIDE EXECUTION ENVELOPE | #" +
+                                                result.Position.Id +
+                                                " | " +
+                                                aggressiveFillReason,
+                                                _reaction.Direction,
+                                                true);
+
                                             return;
                                         }
                         
