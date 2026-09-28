@@ -30,12 +30,27 @@ namespace cAlgo
                 return false;
             }
 
-            _m1Frame =
-                m1Index >= 30
-                    ? AnalyzeFrame(
-                        _m1Bars,
-                        m1Index)
-                    : null;
+            if (m1Index >= 30)
+            {
+                bool cachedM1Frame =
+                    _m1Frame != null &&
+                    ReferenceEquals(
+                        _m1Frame.Bars,
+                        _m1Bars) &&
+                    _m1Frame.Index == m1Index;
+
+                if (!cachedM1Frame)
+                {
+                    _m1Frame =
+                        AnalyzeFrame(
+                            _m1Bars,
+                            m1Index);
+                }
+            }
+            else
+            {
+                _m1Frame = null;
+            }
 
             _m5Frame =
                 AnalyzeFrame(
