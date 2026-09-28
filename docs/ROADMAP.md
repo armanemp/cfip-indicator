@@ -2049,7 +2049,7 @@ Completed:
 - GitHub Actions summary;
 - static verifier gates.
 
-Continuity document: [Track 19 OSS Numerical Benchmark](TRACK-19-OSS-NUMERICAL-BENCHMARK.md).
+Continuity document: [Track 19 OSS Numerical Benchmark](docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md).
 
 Acceptance:
 
