@@ -33,8 +33,14 @@ namespace cAlgo
                         public bool LiquidityBear;
                         public bool FvgBull;
                         public bool FvgBear;
+                        public int FvgBullQuality;
+                        public int FvgBearQuality;
                         public bool ObBull;
                         public bool ObBear;
+                        public int ObBullQuality;
+                        public int ObBearQuality;
+                        public bool FvgObBullConfluence;
+                        public bool FvgObBearConfluence;
                         public bool TrendBull;
                         public bool TrendBear;
                         public bool MomentumBull;

@@ -49,7 +49,28 @@ namespace cAlgo
                                             _h4Frame.StructureBear) count++;
                                     }
                         
-                                    return count;
+                                    if (direction == 1)
+                                    {
+                                        if (_m5Frame.FvgBull && _m5Frame.FvgBullQuality >= 75)
+                                            count++;
+                                        if (_m5Frame.ObBull && _m5Frame.ObBullQuality >= 75)
+                                            count++;
+                                        if (_m5Frame.FvgObBullConfluence &&
+                                            Math.Min(_m5Frame.FvgBullQuality, _m5Frame.ObBullQuality) >= 80)
+                                            count++;
+                                    }
+                                    else
+                                    {
+                                        if (_m5Frame.FvgBear && _m5Frame.FvgBearQuality >= 75)
+                                            count++;
+                                        if (_m5Frame.ObBear && _m5Frame.ObBearQuality >= 75)
+                                            count++;
+                                        if (_m5Frame.FvgObBearConfluence &&
+                                            Math.Min(_m5Frame.FvgBearQuality, _m5Frame.ObBearQuality) >= 80)
+                                            count++;
+                                    }
+
+                                    return Math.Min(8, count);
                                 }
     }
 }
