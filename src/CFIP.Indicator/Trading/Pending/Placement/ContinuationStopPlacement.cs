@@ -4,7 +4,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool PlaceContinuationStop(int closedM5)
+        private bool PlaceContinuationStop(
+            int closedM5)
         {
             if (!TryPrepareContinuationStop(
                     closedM5,
@@ -18,29 +19,36 @@ namespace cAlgo
                     out double volume,
                     out ExecutionIntent pendingIntent))
                 return false;
-            TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
             string reason;
             if (!ValidatePendingSubmission(
                     pendingIntent,
-                    type,
-                    direction == 1 ? Symbol.Ask : Symbol.Bid,
+                    direction == 1
+                        ? TradeType.Buy
+                        : TradeType.Sell,
+                    direction == 1
+                        ? Symbol.Ask
+                        : Symbol.Bid,
                     volume,
                     "PENDING STOP • ",
                     out reason))
             {
-                _autoOrdersBlockReason =
-                    reason;
+                _autoOrdersBlockReason = reason;
                 return false;
             }
-            string submissionGateReason;
-                if (!TryAcquirePendingSubmission(
-                        closedM5,
-                        direction,
-                        "STOP",
+            try
+            {
+                string submissionKey =
+                    "STOP|" +
+                    closedM5 +
+                    "|" +
+                    direction;
+                string submissionGateReason;
+                if (!_pendingSubmissionGate.TryAcquire(
+                        Server.TimeInUtc,
+                        submissionKey,
                         out submissionGateReason))
                 {
-                    _autoOrdersBlockReason =
-                        submissionGateReason;
+                    _autoOrdersBlockReason = submissionGateReason;
                     return false;
                 }
                 TradeResult result;
@@ -48,7 +56,9 @@ namespace cAlgo
                 {
                     result =
                         TryPlaceStopOrder(
-                            type,
+                            direction == 1
+                                ? TradeType.Buy
+                                : TradeType.Sell,
                             SymbolName,
                             volume,
                             trigger,
@@ -61,12 +71,18 @@ namespace cAlgo
                             false,
                             "CONTINUATION STOP");
                 }
-            catch
-            {
-                RecordPendingSubmissionFailure();
-                throw;
-            }
-            RecordPendingSubmission(result);
+                catch
+                {
+                    _pendingSubmissionGate.Record(
+                        Server.TimeInUtc,
+                        false);
+                    throw;
+                }
+                _pendingSubmissionGate.Record(
+                    Server.TimeInUtc,
+                    result != null &&
+                    result.IsSuccessful &&
+                    result.PendingOrder != null);
                 if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
                         result != null,
                         result != null &&
@@ -81,40 +97,24 @@ namespace cAlgo
                             : "PENDING STOP REJECTED";
                     return false;
                 }
-                _lastPendingSignalM5 =
-                    closedM5;
+                _lastPendingSignalM5 = closedM5;
                 _plan = null;
                 _executionModel = null;
                 RemovePlanObjects();
-                _autoOrdersBlockReason =
-                    "ORDER PLACED • STOP " +
-                    Price(trigger);
+                _autoOrdersBlockReason = "ORDER PLACED • STOP " + Price(trigger);
                 SendUnifiedAlert(
-                    "PENDING-STOP|" +
-                    closedM5,
-                    "CFIP STOP ORDER | " +
-                    (direction == 1
-                        ? "BUY"
-                        : "SELL") +
-                    " | ENTRY " +
-                    Price(trigger) +
-                    " | SL " +
-                    Price(stop) +
-                    " | TP " +
-                    Price(target),
+                    "PENDING-STOP|" + closedM5,
+                    "CFIP STOP | " + (direction == 1 ? "BUY" : "SELL") +
+                    " | ENTRY " + Price(trigger) + " | SL " + Price(stop) + " | TP " + Price(target),
                     direction,
                     true);
                 return true;
             }
             catch (Exception ex)
             {
-                _autoOrdersBlockReason =
-                    "PENDING STOP • " +
-                    ex.Message;
-                Print(
-                    "CFIP pending stop failed: {0}",
-                    ex.Message);
-                return false;            }
+                _autoOrdersBlockReason = "PENDING STOP • " + ex.Message;
+                return false;
+            }
         }
     }
 }
