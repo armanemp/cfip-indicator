@@ -465,3 +465,29 @@ Acceptance:
 - No target-selection logic is duplicated in PlanBuilder.
 
 Next: audit the remaining near-ceiling structural/planning module OrderBlockCandidateBuilder, then inspect reward-path validation for overlap with target obstacle logic.
+
+
+## Phase 15 — Order-block candidate decomposition
+
+Status: complete.
+
+Goal: separate order-block geometry, impulse/structure evidence, mitigation and quality calculation while preserving candidate semantics.
+
+Completed:
+
+- Reduced OrderBlockCandidateBuilder.cs to candidate orchestration.
+- Isolated displacement and structure-break evidence in OrderBlockEvidenceBuilder.cs.
+- Isolated managed-zone mitigation and remaining-width checks in OrderBlockMitigationGuard.cs.
+- Isolated order-block quality calculation in OrderBlockQualityCalculator.cs.
+- Preserved the caller-supplied ATR for displacement and impulse-quality calculations.
+- Preserved liquidity-sweep and FVG-confluence ownership in OrderBlockConfluenceAnalyzer.cs.
+- Added static ownership checks for order-block construction.
+- Updated editing ownership documentation.
+
+Acceptance:
+
+- Candidate construction has explicit geometry, evidence, mitigation and quality owners.
+- Existing direction, break, mitigation, confluence and quality rules remain unchanged.
+- No production file exceeds 20 KiB.
+
+Next: inspect Trading/Validation/RewardPathValidation.cs together with target obstacle consumers to remove overlapping reward-path rules without changing trade rejection behavior.
