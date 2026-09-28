@@ -396,6 +396,39 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Panel row renderer ownership.
+PANEL_OVERVIEW = ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewRowsRenderer.cs"
+PANEL_OVERVIEW_CODE = PANEL_OVERVIEW.read_text(encoding="utf-8")
+if PANEL_OVERVIEW.stat().st_size > 4096:
+    raise SystemExit("PanelOverviewRowsRenderer.cs must remain a composition boundary")
+for token in (
+    "RenderPanelOverviewStateRows(",
+    "RenderPanelOverviewExecutionRows(",
+    "RenderPanelOverviewDiagnosticRows(",
+):
+    if token not in PANEL_OVERVIEW_CODE:
+        raise SystemExit(f"Panel overview composition call missing: {token}")
+
+PANEL_TRADE_PLAN = ROOT / "UI" / "Panel" / "Rows" / "PanelTradePlanRowsRenderer.cs"
+PANEL_TRADE_PLAN_CODE = PANEL_TRADE_PLAN.read_text(encoding="utf-8")
+if PANEL_TRADE_PLAN.stat().st_size > 4096:
+    raise SystemExit("PanelTradePlanRowsRenderer.cs must remain a composition boundary")
+for token in (
+    "RenderPanelTradePlanLevelRows(",
+    "RenderPanelTradePlanLiveRows(",
+):
+    if token not in PANEL_TRADE_PLAN_CODE:
+        raise SystemExit(f"Panel trade-plan composition call missing: {token}")
+for path in (
+    ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewStateRowsRenderer.cs",
+    ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewExecutionRowsRenderer.cs",
+    ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewDiagnosticRowsRenderer.cs",
+    ROOT / "UI" / "Panel" / "Rows" / "PanelTradePlanLevelRowsRenderer.cs",
+    ROOT / "UI" / "Panel" / "Rows" / "PanelTradePlanLiveRowsRenderer.cs",
+):
+    if not path.exists():
+        raise SystemExit(f"Panel row owner missing: {path}")
+
 # Broker protection state ownership.
 BROKER_PROTECTION_STATE = ROOT / "Trading" / "Lifecycle" / "BrokerProtectionStateEvaluator.cs"
 BROKER_PROTECTION_STATE_CODE = BROKER_PROTECTION_STATE.read_text(encoding="utf-8")
