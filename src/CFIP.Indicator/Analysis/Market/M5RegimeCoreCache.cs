@@ -13,7 +13,7 @@ namespace cAlgo
         private MarketRegimeSnapshot _snapshot2;
         private MarketRegimeSnapshot _snapshot3;
 
-        public bool TryGet(
+        public bool TryGetCached(
             Bars bars,
             int index,
             out MarketRegimeSnapshot snapshot)
@@ -46,7 +46,7 @@ namespace cAlgo
             return false;
         }
 
-        public void Set(
+        public void Store(
             Bars bars,
             int index,
             MarketRegimeSnapshot snapshot)
