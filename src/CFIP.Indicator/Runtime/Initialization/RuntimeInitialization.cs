@@ -389,9 +389,7 @@ namespace cAlgo
                     _initializationStartedUtc;
 
                 if (elapsed.TotalSeconds >=
-                    Math.Max(
-                        10,
-                        InitializationTimeoutSeconds))
+                    30)
                 {
                     Timer.Stop();
 
