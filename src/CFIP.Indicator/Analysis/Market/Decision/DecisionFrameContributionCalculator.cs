@@ -8,24 +8,39 @@ namespace cAlgo
             Frame frame,
             double weight)
         {
-            if (frame == null ||
-                frame.Quality <= 0 ||
+            if (frame == null)
+                return new DecisionFrameContribution(0, 0, 0);
+
+            return Calculate(
+                frame.BullScore,
+                frame.BearScore,
+                frame.Quality,
+                frame.Direction,
+                weight);
+        }
+
+        public DecisionFrameContribution Calculate(
+            double bullScore,
+            double bearScore,
+            int quality,
+            int direction,
+            double weight)
+        {
+            if (quality <= 0 ||
                 weight <= 0)
             {
-                return new DecisionFrameContribution(
-                    0,
-                    0,
-                    0);
+                return new DecisionFrameContribution(0, 0, 0);
             }
 
             double totalScore =
                 Math.Max(
                     1.0,
-                    frame.BullScore + frame.BearScore);
+                    Math.Max(0.0, bullScore) +
+                    Math.Max(0.0, bearScore));
 
             double buyShare =
                 100.0 *
-                Math.Max(0, frame.BullScore) /
+                Math.Max(0.0, bullScore) /
                 totalScore;
 
             double sellShare =
@@ -37,7 +52,7 @@ namespace cAlgo
                     0.0,
                     Math.Min(
                         1.0,
-                        frame.Quality / 100.0));
+                        quality / 100.0));
 
             double scale =
                 Math.Max(
@@ -47,7 +62,7 @@ namespace cAlgo
             return new DecisionFrameContribution(
                 buyShare * qualityFactor * scale,
                 sellShare * qualityFactor * scale,
-                frame.Direction == 0 ? 0 : 1);
+                direction == 0 ? 0 : 1);
         }
     }
 }
