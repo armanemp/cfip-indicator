@@ -304,6 +304,3 @@ namespace cAlgo
                         }
     }
 }
-                                }
-    }
-}
