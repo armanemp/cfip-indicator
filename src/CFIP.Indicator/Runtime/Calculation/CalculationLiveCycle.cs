@@ -17,9 +17,38 @@ namespace cAlgo
                 DateTime now =
                     TimeInUtc;
 
+                double market =
+                    Symbol.Ask > Symbol.Bid
+                        ? (Symbol.Ask + Symbol.Bid) * 0.5
+                        : Symbol.Ask;
+
+                double liveAtr =
+                    _m5Bars.Count > 2
+                        ? Atr(
+                            _m5Bars,
+                            Math.Max(
+                                1,
+                                liveM5 - 1))
+                        : 0;
+
+                bool newM5 =
+                    liveM5 != _lastLiveReactionM5;
+
+                bool priceMoved =
+                    _lastLiveReactionMarket <= 0 ||
+                    Math.Abs(
+                        market -
+                        _lastLiveReactionMarket) >=
+                    Math.Max(
+                        Symbol.TickSize * 2,
+                        liveAtr * 0.01);
+
+                bool intervalElapsed =
+                    (now - _lastLiveReactionCalcUtc).TotalMilliseconds >= 750;
+
                 if (_reaction == null ||
-                    liveM5 != _lastLiveReactionM5 ||
-                    (now - _lastLiveReactionCalcUtc).TotalMilliseconds >= 300)
+                    newM5 ||
+                    (intervalElapsed && priceMoved))
                 {
                     _reaction =
                         BuildReaction();
@@ -29,6 +58,9 @@ namespace cAlgo
 
                     _lastLiveReactionM5 =
                         liveM5;
+
+                    _lastLiveReactionMarket =
+                        market;
                 }
             }
 
