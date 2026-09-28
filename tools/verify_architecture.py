@@ -287,6 +287,57 @@ for event_type, path in event_handlers.items():
     if "_lifecycleEventGuard.TryBegin(" not in text_module or event_type not in text_module:
         raise SystemExit(f"Lifecycle idempotency guard missing from {path}")
 
+# Phase 9 runtime acceptance/source-path invariants.
+RUNTIME_CONTRACT = Path("tools/CFIP.Runtime.Contracts/Program.cs")
+if not RUNTIME_CONTRACT.exists():
+    raise SystemExit("Phase 9 runtime acceptance contract project is missing")
+
+for token in (
+    "VerifyMtfContextIntegrity",
+    "VerifyMarketExecutionAcceptance",
+    "VerifyPendingOrderAcceptance",
+    "VerifyRejectedMutationHandling",
+    "VerifyFillEnvelopeSymmetry",
+    "VerifyInitialProtectionDirectionality",
+    "VerifyManagedBreakEvenDirectionality",
+    "VerifyTargetProgression",
+    "VerifyLifecycleFlows",
+    "VerifyLifecycleIdempotency",
+):
+    if token not in RUNTIME_CONTRACT.read_text(encoding="utf-8"):
+        raise SystemExit(f"Runtime acceptance contract missing: {token}")
+
+MTF_BUILDER = ROOT / "Runtime" / "Mtf" / "MtfContextBuilder.cs"
+MTF_BUILDER_CODE = MTF_BUILDER.read_text(encoding="utf-8")
+if len(re.findall(r"\bClosedIndex\s*\(", MTF_BUILDER_CODE)) != 8:
+    raise SystemExit("MTF builder must resolve exactly eight closed-bar series indices")
+if "BuildMtfClosedContext(" not in MTF_BUILDER_CODE:
+    raise SystemExit("MTF closed-context owner missing")
+
+PARTIAL_EXECUTOR = ROOT / "Trading" / "LiveManagement" / "PartialTakeProfitExecutor.cs"
+PARTIAL_CODE = PARTIAL_EXECUTOR.read_text(encoding="utf-8")
+if "GetManagedLivePositionForPlan()" not in PARTIAL_CODE:
+    raise SystemExit("Partial close must bind to the active live plan position")
+if "PARTIAL CLOSE • BREAK-EVEN REJECTED" not in PARTIAL_CODE:
+    raise SystemExit("Partial break-even rejection recovery path is missing")
+
+PROTECTION_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
+PROTECTION_CODE = PROTECTION_RUNTIME.read_text(encoding="utf-8")
+if "IsValidManagedStop(" not in PROTECTION_CODE:
+    raise SystemExit("Live broker protection must validate managed stops against market price")
+
+INITIALIZATION = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
+INITIALIZATION_CODE = INITIALIZATION.read_text(encoding="utf-8")
+for token in (
+    "Positions.Opened += OnPositionOpened",
+    "Positions.Closed += OnPositionClosed",
+    "PendingOrders.Filled += OnPendingOrderFilled",
+    "Positions.Opened -= OnPositionOpened",
+    "PendingOrders.Filled -= OnPendingOrderFilled",
+):
+    if token not in INITIALIZATION_CODE:
+        raise SystemExit(f"Runtime lifecycle wiring missing: {token}")
+
 for forbidden in (
     "ExecuteMarketOrder(",
     "PlaceStopOrder(",
