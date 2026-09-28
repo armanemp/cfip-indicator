@@ -5,32 +5,28 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool PlaceContinuationStop(
-            int closedM5)
+        private bool PlaceContinuationStop(int closedM5)
         {
             if (!TryPrepareContinuationStop(
                     closedM5,
                     out int direction,
-                    out double atr,
+                    out _,
                     out double trigger,
                     out double stop,
                     out double target,
-                    out double stopPips,
-                    out double targetPips,
+                    out _,
+                    out _,
                     out double volume,
                     out ExecutionIntent pendingIntent))
                 return false;
 
+            TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
             string reason;
 
             if (!ValidatePendingSubmission(
                     pendingIntent,
-                    direction == 1
-                        ? TradeType.Buy
-                        : TradeType.Sell,
-                    direction == 1
-                        ? Symbol.Ask
-                        : Symbol.Bid,
+                    type,
+                    direction == 1 ? Symbol.Ask : Symbol.Bid,
                     volume,
                     "PENDING STOP • ",
                     out reason))
@@ -61,9 +57,7 @@ namespace cAlgo
                 {
                     result =
                         TryPlaceStopOrder(
-                            direction == 1
-                                ? TradeType.Buy
-                                : TradeType.Sell,
+                            type,
                             SymbolName,
                             volume,
                             trigger,
