@@ -20,6 +20,8 @@ namespace cAlgo
                 Bars == null)
                 return false;
 
+            RefreshLiveM1Frame();
+
             RemoveExpiredPopup();
 
             if (!HasEnoughData())
@@ -53,6 +55,28 @@ namespace cAlgo
                 _lastEvaluatedM5;
 
             return true;
+        }
+
+        private void RefreshLiveM1Frame()
+        {
+            if (_m1Bars == null ||
+                _m1Bars.Count < 32)
+                return;
+
+            int closedM1 =
+                _m1Bars.Count - 2;
+
+            if (closedM1 < 30 ||
+                closedM1 == _lastLiveM1FrameIndex)
+                return;
+
+            _m1Frame =
+                AnalyzeFrame(
+                    _m1Bars,
+                    closedM1);
+
+            _lastLiveM1FrameIndex =
+                closedM1;
         }
     }
 }
