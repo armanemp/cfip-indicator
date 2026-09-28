@@ -163,7 +163,7 @@ Current benchmark milestone already completed:
 
 The benchmark completion does **not** constitute production package promotion.
 
-Machine-enforced baseline facts for the verification commit:
+Machine-enforced baseline facts for the Phase 0.1 verification commit:
 
 - 398 production C# source files;
 - 535 public configuration parameters (532 baseline + 3 OSS extension parameters);
@@ -691,23 +691,41 @@ Acceptance:
 
 ## Phase 0.2 — Production-source hygiene
 
-Status: next.
+Status: complete.
 
-Work:
+Completed:
 
-- version residue;
-- dead aliases;
-- obsolete identifiers;
-- generated artifacts;
-- empty catches;
-- unused compatibility paths;
-- source formatting consistency;
-- executable verifier gates for empty catches, compatibility aliases, obsolete/historical identifiers, generated artifacts and mixed line endings.
+- audited production-source paths against the existing legacy/obsolete owner deny-list;
+- added verifier checks for version/historical residue, obsolete compatibility identifiers, compatibility aliases, empty catch blocks, generated artifacts and mixed line endings;
+- changed repository line-ending policy to LF to match the actual production source format;
+- removed all three discovered empty catches from production code:
+  - `Runtime/Initialization/RuntimeInitialization.cs`;
+  - `UI/Chart/OutcomeMarkerRenderer.cs`;
+  - `UI/Panel/PanelVisibility.cs`;
+  - `UI/Popup/PopupRemover.cs`;
+- replaced silent teardown/render cleanup catches with bounded diagnostic logging while preserving failure containment;
+- changed the verifier to report all hygiene findings in one run so future cleanup is faster and less iterative;
+- verified the production tree contains no generated binary/artifact paths;
+- verified there are no production source paths named Legacy, Compatibility, Obsolete, Versioned, Alias or Deprecated;
+- kept trading analysis, decision, risk and broker-mutation owners unchanged.
+
+Phase 0.2 verification commit:
+
+`f866ae3087c8e674ee46ec38e7c03aac2834d9b3`
+
+Verification:
+
+- source and architecture checks: PASS (workflow run 736);
+- runtime acceptance contracts: PASS (workflow run 545);
+- cTrader compile: PASS (workflow run 729).
 
 Acceptance:
 
 - no obsolete production identifiers;
 - no dead compatibility owner;
+- no generated production artifacts;
+- no empty catch blocks;
+- no mixed line endings;
 - verifier remains green.
 
 ---
@@ -2898,9 +2916,9 @@ CFIP is not considered fully complete until all of the following are true:
 
 # 9. Execution queue for continuation
 
-The current research milestone Track 19.1 is complete, and Phase 0.1 repository truth synchronization is complete. The certification sequence continues from the safety-first program below.
+The current research milestone Track 19.1 is complete, and Phase 0.1 repository truth synchronization and Phase 0.2 production-source hygiene are complete. The certification sequence continues from the safety-first program below.
 
-**NEXT: Phase 0.2 — Production-source hygiene**
+**NEXT: Phase 1.1 — Calculate stage isolation**
 
 Then proceed in dependency order:
 
