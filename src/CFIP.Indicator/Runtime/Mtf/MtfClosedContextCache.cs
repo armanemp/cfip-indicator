@@ -25,7 +25,7 @@ namespace cAlgo
 
         private MtfClosedContext _context;
 
-        public bool TryGet(
+        public bool TryGetCached(
             Bars m1,
             Bars m5,
             Bars m15,
@@ -62,7 +62,7 @@ namespace cAlgo
             return false;
         }
 
-        public void Set(
+        public void Store(
             Bars m1,
             Bars m5,
             Bars m15,
