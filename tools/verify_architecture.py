@@ -338,6 +338,32 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Trade-plan construction owner missing: {required_path}")
 
+# Target-selection boundary.
+TARGET_SELECTOR = ROOT / "Planning" / "TradePlan" / "TargetSelector.cs"
+TARGET_SELECTOR_CODE = TARGET_SELECTOR.read_text(encoding="utf-8")
+if TARGET_SELECTOR.stat().st_size > 4096:
+    raise SystemExit("TargetSelector.cs must remain a thin stage-orchestration boundary")
+for token in (
+    "BuildTargetSelectionRequiredRR(",
+    "FindPreviousSelectedTargetPrice(",
+    "RequiresHtfRewardForTargetStage(",
+    "TryScoreTargetCandidate(",
+):
+    if token not in TARGET_SELECTOR_CODE:
+        raise SystemExit(f"TargetSelector orchestration call missing: {token}")
+for required_path in (
+    ROOT / "Planning" / "TradePlan" / "TargetSelectionPolicy.cs",
+    ROOT / "Planning" / "TradePlan" / "TargetCandidateEvaluator.cs",
+):
+    if not required_path.exists():
+        raise SystemExit(f"Target selection owner missing: {required_path}")
+for forbidden in (
+    r"private\s+[A-Za-z0-9_<>,\[\]?.]+\s+TryScoreTargetCandidate\s*\(",
+    r"private\s+[A-Za-z0-9_<>,\[\]?.]+\s+BuildTargetSelectionRequiredRR\s*\(",
+):
+    if re.search(forbidden, TARGET_SELECTOR_CODE):
+        raise SystemExit(f"TargetSelector retains extracted responsibility: {forbidden}")
+
 # Market-frame analysis boundary.
 MARKET_FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
 MARKET_FRAME_ANALYZER_CODE = MARKET_FRAME_ANALYZER.read_text(encoding="utf-8")
