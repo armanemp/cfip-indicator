@@ -325,6 +325,94 @@ if "ProcessLiveCalculationStages(" not in calculation_cycle_code:
 if "if (newClosedBar &&" in calculation_cycle_code and    "RunClosedBarAnalysisStage(" in calculation_cycle_code:
     raise SystemExit("Calculate must not return early on closed-bar analysis result")
 
+# Phase 1.5 performance/supervision gates.
+RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
+PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
+SAFETY_SUPERVISOR = ROOT / "Runtime" / "Supervision" / "RuntimeSafetySupervisor.cs"
+MTF_CONTEXT_BUILDER = ROOT / "Runtime" / "Mtf" / "MtfContextBuilder.cs"
+M1_CLOSED_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs"
+M5_REGIME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketRegimeAnalyzer.cs"
+M5_REGIME_CACHE = ROOT / "Analysis" / "Market" / "M5RegimeCoreCache.cs"
+FVG_DETECTION = ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs"
+FVG_MITIGATION = ROOT / "Analysis" / "Structure" / "Zones" / "FvgMitigationEvaluator.cs"
+OB_DETECTION = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockAnalyzer.cs"
+OB_MITIGATION = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockMitigationGuard.cs"
+PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
+
+for required_path in (
+    RUNTIME_INIT,
+    PANEL_HEARTBEAT,
+    SAFETY_SUPERVISOR,
+    MTF_CONTEXT_BUILDER,
+    M1_CLOSED_STAGE,
+    M5_REGIME_ANALYZER,
+    M5_REGIME_CACHE,
+    FVG_DETECTION,
+    FVG_MITIGATION,
+    OB_DETECTION,
+    OB_MITIGATION,
+    PROTECTION_MANAGER,
+):
+    if not required_path.exists():
+        raise SystemExit(f"Phase 1.5 performance owner is missing: {required_path.name}")
+
+runtime_init_code = RUNTIME_INIT.read_text(encoding="utf-8")
+heartbeat_code = PANEL_HEARTBEAT.read_text(encoding="utf-8")
+supervisor_code = SAFETY_SUPERVISOR.read_text(encoding="utf-8")
+mtf_code = MTF_CONTEXT_BUILDER.read_text(encoding="utf-8")
+m1_code = M1_CLOSED_STAGE.read_text(encoding="utf-8")
+regime_code = M5_REGIME_ANALYZER.read_text(encoding="utf-8")
+regime_cache_code = M5_REGIME_CACHE.read_text(encoding="utf-8")
+fvg_detection_code = FVG_DETECTION.read_text(encoding="utf-8")
+fvg_mitigation_code = FVG_MITIGATION.read_text(encoding="utf-8")
+ob_detection_code = OB_DETECTION.read_text(encoding="utf-8")
+ob_mitigation_code = OB_MITIGATION.read_text(encoding="utf-8")
+protection_code = PROTECTION_MANAGER.read_text(encoding="utf-8")
+
+if "GetBarsAsync(" not in runtime_init_code:
+    raise SystemExit("Startup must use asynchronous Bars acquisition")
+if "_initializationPendingDataLoads" not in runtime_init_code:
+    raise SystemExit("Async startup must track pending data loads")
+if "StartAsyncBarsInitialization(" not in runtime_init_code:
+    raise SystemExit("Async startup coordinator is missing")
+
+if "RunRuntimeSafetySupervisor(" not in heartbeat_code:
+    raise SystemExit("Timer heartbeat must invoke the safety supervisor")
+for required_step in (
+    "SynchronizeLiveBrokerState(",
+    "RecoverManagedLivePlan(",
+    "ProtectBrokerPositions(",
+    "CheckEndOfDayAlert(",
+):
+    if required_step not in supervisor_code:
+        raise SystemExit(f"Safety supervisor step missing: {required_step}")
+if "RunSafetySupervisorStep(" not in supervisor_code:
+    raise SystemExit("Safety supervisor must isolate each safety step")
+
+if "_mtfClosedContextCache.TryGet(" not in mtf_code or    "_mtfClosedContextCache.Set(" not in mtf_code:
+    raise SystemExit("Closed MTF context cache is not wired into the builder")
+
+if "cachedM1Frame" not in m1_code or "ReferenceEquals(" not in m1_code:
+    raise SystemExit("Closed M1 frame reuse guard is missing")
+
+if "GetM5RegimeCoreSnapshot(" not in regime_code:
+    raise SystemExit("M5 regime analysis must use the recent core snapshot cache")
+if "M5RegimeCoreCache" not in regime_cache_code:
+    raise SystemExit("M5 regime core cache owner is missing")
+
+if "effectiveLookback" not in fvg_detection_code or "MaximumZoneAgeBars" not in fvg_detection_code:
+    raise SystemExit("FVG scan must be bounded by effective zone age")
+if "createdIndex +" not in fvg_mitigation_code or "MaximumZoneAgeBars" not in fvg_mitigation_code:
+    raise SystemExit("FVG mitigation must be bounded by zone age")
+
+if "effectiveLookback" not in ob_detection_code or "MaximumZoneAgeBars" not in ob_detection_code:
+    raise SystemExit("Order-block scan must be bounded by effective zone age")
+if "createdIndex +" not in ob_mitigation_code or "MaximumZoneAgeBars" not in ob_mitigation_code:
+    raise SystemExit("Order-block mitigation must be bounded by zone age")
+
+if "double atr =" not in protection_code or "_m5Frame.Atr" not in protection_code:
+    raise SystemExit("Protection hot path must reuse cached M5 ATR when available")
+
 # Signal/execution synchronization gates.
 PLAN_RENDER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 PLAN_LABEL_RENDER = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
