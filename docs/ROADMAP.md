@@ -710,3 +710,28 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: complete the repository-wide responsibility/dead-code sweep, including remaining near-ceiling lifecycle/execution files and duplicated helper patterns, then prepare the final cTrader hands-on validation checklist.
+
+
+## Phase 24 — Execution-zone decomposition
+
+Status: complete.
+
+Goal: separate execution-zone candidate discovery from quality enrichment while preserving the existing priority hierarchy and entry-zone semantics.
+
+Completed:
+
+- Reduced ExecutionZoneBuilder.cs to orchestration.
+- Isolated M5/M15 FVG and Order Block candidate discovery, overlap selection and swing fallback.
+- Isolated retest, premium/discount and MTF directional quality adjustments.
+- Removed duplicate terminal assignments of tolerance and triggerBuffer.
+- Preserved source labels, base qualities, MTF bonus, swing fallback, ideal midpoint, tolerance and breakout buffer semantics.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- Execution-zone construction has explicit candidate and quality owners.
+- ExecutionModelBuilder remains the sole execution-model materializer.
+- No alternate entry engine is introduced.
+- No production file exceeds 20 KiB.
+
+Next: audit FVG lifecycle/detection and structural-stop candidate selection, then perform the final duplicate/dead-code sweep.
