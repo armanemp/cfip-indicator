@@ -93,33 +93,35 @@ namespace cAlgo
                                     int bearish = 0;
                                     int available = 0;
 
-                                    Frame[] frames =
-                                    {
+                                    CountFrameDirection(
                                         _m5Frame,
+                                        ref bullish,
+                                        ref bearish,
+                                        ref available);
+
+                                    CountFrameDirection(
                                         _m15Frame,
+                                        ref bullish,
+                                        ref bearish,
+                                        ref available);
+
+                                    CountFrameDirection(
                                         _m30Frame,
+                                        ref bullish,
+                                        ref bearish,
+                                        ref available);
+
+                                    CountFrameDirection(
                                         _h1Frame,
-                                        _h4Frame
-                                    };
+                                        ref bullish,
+                                        ref bearish,
+                                        ref available);
 
-                                    for (int i = 0;
-                                         i < frames.Length;
-                                         i++)
-                                    {
-                                        Frame frame =
-                                            frames[i];
-
-                                        if (frame == null)
-                                            continue;
-
-                                        if (frame.Direction == 1)
-                                            bullish++;
-                                        else if (frame.Direction == -1)
-                                            bearish++;
-
-                                        if (frame.Direction != 0)
-                                            available++;
-                                    }
+                                    CountFrameDirection(
+                                        _h4Frame,
+                                        ref bullish,
+                                        ref bearish,
+                                        ref available);
 
                                     string alignment =
                                         available == 0
@@ -146,20 +148,38 @@ namespace cAlgo
                                         "  •  REF " +
                                         _lastMtfClosedContext.Reference.ToString(
                                             "HH:mm:ss") +
-                                        "  •  CLOSED " +
+                                        "  •  M5 " +
                                         _lastMtfClosedContext.M5 +
-                                        "/" +
+                                        " M15 " +
                                         _lastMtfClosedContext.M15 +
-                                        "/" +
+                                        " M30 " +
                                         _lastMtfClosedContext.M30 +
-                                        "/" +
+                                        " H1 " +
                                         _lastMtfClosedContext.H1 +
-                                        "/" +
+                                        " H4 " +
                                         _lastMtfClosedContext.H4 +
                                         "  •  NOW " +
                                         now.ToString(
                                             "HH:mm:ss") +
                                         " UTC";
+                                }
+
+        private void CountFrameDirection(
+                                    Frame frame,
+                                    ref int bullish,
+                                    ref int bearish,
+                                    ref int available)
+                                {
+                                    if (frame == null ||
+                                        frame.Direction == 0)
+                                        return;
+
+                                    available++;
+
+                                    if (frame.Direction == 1)
+                                        bullish++;
+                                    else if (frame.Direction == -1)
+                                        bearish++;
                                 }
         
         private string ConfluenceText(
