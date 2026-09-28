@@ -13,6 +13,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" Link="Core/Math/NumericGuards.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" Link="Core/Models/Decision.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvidenceSnapshot.cs" Link="Decision/DecisionEvidenceSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/IndependentEvidenceFusionCalculator.cs" Link="Decision/IndependentEvidenceFusionCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusSnapshot.cs" Link="Decision/DecisionConsensusSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusCalculator.cs" Link="Decision/DecisionConsensusCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionQualityCalculator.cs" Link="Decision/DecisionQualityCalculator.cs" />
