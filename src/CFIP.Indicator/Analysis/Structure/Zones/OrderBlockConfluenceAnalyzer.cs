@@ -72,11 +72,14 @@ namespace cAlgo
                                     List<Zone> candidates,
                                     double atr,
                                     double zoneLow,
-                                    double zoneHigh)
+                                    double zoneHigh,
+                                    int minimumAge,
+                                    int maximumAge)
                                 {
                                     if (!UseFvg ||
                                         candidates == null ||
-                                        atr <= 0)
+                                        atr <= 0 ||
+                                        minimumAge > maximumAge)
                                         return false;
 
                                     for (int i = 0;
@@ -86,7 +89,9 @@ namespace cAlgo
                                         Zone managed =
                                             candidates[i];
 
-                                        if (managed == null)
+                                        if (managed == null ||
+                                            managed.Age < minimumAge ||
+                                            managed.Age > maximumAge)
                                             continue;
 
                                         if (managed.High >=
@@ -116,35 +121,39 @@ namespace cAlgo
                                         startIndex >= endIndex)
                                         return false;
 
-                                    List<Zone> cached =
-                                        GetCachedFvgCandidates(
-                                            bars,
-                                            endIndex,
-                                            direction,
-                                            atr);
+                                    ZoneCandidateCache active =
+                                        _activeZoneCandidateCache;
 
-                                    if (cached != null)
+                                    if (active != null &&
+                                        ReferenceEquals(
+                                            active.Bars,
+                                            bars))
                                     {
-                                        for (int i = 0;
-                                             i < cached.Count;
-                                             i++)
-                                        {
-                                            Zone managed =
-                                                cached[i];
+                                        List<Zone> activeFvgs =
+                                            direction == 1
+                                                ? active.BullFvgs
+                                                : active.BearFvgs;
 
-                                            if (managed == null)
-                                                continue;
+                                        int minimumAge =
+                                            Math.Max(
+                                                0,
+                                                active.Index -
+                                                endIndex);
 
-                                            if (managed.High >=
-                                                    zoneLow -
-                                                    atr * 0.05 &&
-                                                managed.Low <=
-                                                    zoneHigh +
-                                                    atr * 0.05)
-                                                return true;
-                                        }
+                                        int maximumAge =
+                                            Math.Max(
+                                                0,
+                                                active.Index -
+                                                (startIndex + 1));
 
-                                        return false;
+                                        return
+                                            HasOrderBlockFvgConfluenceFromCandidates(
+                                                activeFvgs,
+                                                atr,
+                                                zoneLow,
+                                                zoneHigh,
+                                                minimumAge,
+                                                maximumAge);
                                     }
 
                                     int first =
