@@ -396,6 +396,36 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# FVG lifecycle ownership.
+FVG_LIFECYCLE = ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs"
+FVG_LIFECYCLE_CODE = FVG_LIFECYCLE.read_text(encoding="utf-8")
+if FVG_LIFECYCLE.stat().st_size > 8192:
+    raise SystemExit("FvgLifecycleAnalyzer.cs must remain an orchestration boundary")
+for token in (
+    "TryApplyFvgMitigation(",
+    "CalculateFvgQuality(",
+):
+    if token not in FVG_LIFECYCLE_CODE:
+        raise SystemExit(f"FVG lifecycle orchestration call missing: {token}")
+for declaration in (
+    "private bool TryApplyFvgMitigation(",
+    "private int CalculateFvgQuality(",
+):
+    if declaration in FVG_LIFECYCLE_CODE:
+        raise SystemExit(f"FvgLifecycleAnalyzer retains extracted responsibility: {declaration}")
+for path, token in (
+    (
+        ROOT / "Analysis" / "Structure" / "Zones" / "FvgMitigationEvaluator.cs",
+        "TryApplyFvgMitigation("
+    ),
+    (
+        ROOT / "Analysis" / "Structure" / "Zones" / "FvgZoneQualityCalculator.cs",
+        "CalculateFvgQuality("
+    ),
+):
+    if not path.exists() or token not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"FVG lifecycle owner missing: {path}")
+
 # Execution-zone planning ownership.
 EXECUTION_ZONE = ROOT / "Planning" / "Execution" / "ExecutionZoneBuilder.cs"
 EXECUTION_ZONE_CODE = EXECUTION_ZONE.read_text(encoding="utf-8")
