@@ -197,6 +197,10 @@ namespace cAlgo
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
                 private MtfClosedContext _lastMtfClosedContext;
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+                private DateTime _initializationStartedUtc = DateTime.MinValue;
+                private int _initializationPendingDataLoads;
+                private bool _initializationDataRequested;
+                private bool _initializationDataReady;
                 private DateTime _lastPanelRenderUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
                 private int _lastReactionM5 = -1;
