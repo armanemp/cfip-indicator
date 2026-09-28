@@ -11,7 +11,8 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private void ApplyPanelRestoreButtonLayout(
-                                                    int borderAlpha)
+                                                    int borderAlpha,
+                                                    int border)
                                                 {
                                                     if (_panelRestoreButton != null)
                                                     {
