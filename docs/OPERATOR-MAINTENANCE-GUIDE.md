@@ -42,6 +42,10 @@ Pending orders become live positions only after broker-confirmed pending-fill st
 
 Partial closes remain pending until broker confirmation. Break-even protection after a confirmed partial close has its own rejection/recovery path.
 
+An automatic market or aggressive entry whose broker protection mutation fails is shown as `RECOVERY` in the auto-trading state; execution success is not presented as fully protected execution.
+
+Aggressive fills outside the accepted execution envelope request closure. A close rejection leaves the position in explicit recovery rather than silently accepting the mismatched fill.
+
 ## Lifecycle and recovery
 
 The lifecycle model explicitly separates:
