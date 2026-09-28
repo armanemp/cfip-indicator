@@ -36,9 +36,6 @@ namespace cAlgo
                                                         contentWidth);
                                                 }
                                     
-                                                _panelMtfAlignmentRow =
-                                                    slot;
-
                                                 AddPanelRow(
                                                     ref slot,
                                                     "MTF ALIGNMENT",
