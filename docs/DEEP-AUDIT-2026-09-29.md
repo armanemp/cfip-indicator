@@ -67,6 +67,7 @@ This gives the system enough semantic separation to unify visuals and execution 
 
 - Plan rendering removes prediction/watch objects when an active plan exists.
 - Pending rendering uses broker pending-order levels.
+- Confirmed pending-order reporting is isolated in `PendingOrderConfirmationReporter.cs` so placement owners remain small orchestration boundaries.
 - Active SL/TP accessors distinguish broker-confirmed live protection from desired plan values.
 - Signal arrows have an authoritative-direction resolver rather than being driven by a separate trade engine.
 
@@ -158,6 +159,6 @@ Those need their dedicated tests and acceptance criteria before production behav
 
 The current architecture is strong enough to continue refinement without rebuilding the core.
 
-The immediate safety-critical issues found in this audit are addressed in Phase 1.4. The next structural improvement is the Safety Supervisor (Phase 1.5), followed by unified execution retry semantics and the canonical signal visual snapshot.
+The immediate safety-critical issues found in this audit are addressed in Phase 1.4, and the implementation has passed repository verification gates. The next structural improvement is the Safety Supervisor (Phase 1.5), followed by unified execution retry semantics and the canonical signal visual snapshot.
 
 This document is a continuity record and should be read alongside `ROADMAP.md`, `ARCHITECTURE.md`, `WORKFLOW.md`, `DEVELOPMENT-LOG.md` and `ACCEPTANCE-MATRIX.md`.

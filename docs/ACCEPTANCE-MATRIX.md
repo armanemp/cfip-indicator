@@ -70,12 +70,12 @@ The automated state-machine contract proves deterministic transitions and the no
 
 | Contract | Automated controlled check | Live cTrader |
 |---|---:|---:|
-| Repeated closed-bar failures are bounded | Required | Required |
-| Closed-bar retry uses timestamp/backoff/circuit | Required | Required |
-| Recoverable analysis fault does not starve management | Required | Required |
-| Pre-trade SL uses authoritative plan value | Required | Required |
-| Live SL/TP reporting uses broker-confirmed values | Required | Required |
-| Pending order reporting uses broker-confirmed values | Required | Required |
-| Missing pending decision/reaction dependency is handled explicitly | Required | Required |
+| Repeated closed-bar failures are bounded | PASS | Required |
+| Closed-bar retry uses timestamp/backoff/circuit | PASS | Required |
+| Recoverable analysis fault does not starve management | PASS | Required |
+| Pre-trade SL uses authoritative plan value | PASS | Required |
+| Live SL/TP reporting uses broker-confirmed values | PASS | Required |
+| Pending order reporting uses broker-confirmed values | PASS | Required |
+| Missing pending decision/reaction dependency is handled explicitly | PASS | Required |
 
 The repository contracts cover deterministic retry state, stage continuation and source synchronization. Target-terminal tests remain required for live event timing, broker normalization and reconnect behavior.

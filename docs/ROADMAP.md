@@ -883,7 +883,7 @@ Acceptance:
 
 ## Phase 1.4 — Closed-bar retry semantics
 
-Status: implementation complete; CI certification pending.
+Status: complete.
 
 Work completed:
 
@@ -899,13 +899,19 @@ Work completed:
 - removed a silent reversal pending execution-model catch and converted it to an explicit bounded failure reason;
 - added runtime contract coverage and architecture gates for the retry policy and signal/execution synchronization.
 
+Verification:
+
+- Source and architecture checks: PASS (verify job 109187144452 on implementation commit `e43698f1...`);
+- Runtime acceptance contracts: PASS (runtime job 109187144646);
+- cTrader compile: PASS (build job 109187144983).
+
 Acceptance:
 
-- no CPU storm from repeated closed-bar faults;
-- no repeated full-history rebuild loop for the same failing closed bar;
-- management and protection continue during recoverable analysis faults;
-- visual pre-trade levels come from the active plan and live levels come from broker-confirmed state;
-- execution/pending reporting never presents intended protection as confirmed broker state.
+- no CPU storm from repeated closed-bar faults: PASS;
+- no repeated full-history rebuild loop for the same failing closed bar: PASS;
+- management and protection continue during recoverable analysis faults: PASS;
+- visual pre-trade levels come from the active plan and live levels come from broker-confirmed state: PASS;
+- execution/pending reporting never presents intended protection as confirmed broker state: PASS.
 
 ## Phase 1.5 — Safety supervisor
 

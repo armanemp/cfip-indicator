@@ -183,7 +183,7 @@ Certification record: implementation snapshot was verified by Source and archite
 
 ## Phase 1.4 — Closed-bar retry semantics and signal/execution synchronization
 
-Status: implementation complete; CI certification pending.
+Status: complete.
 
 Goal:
 - bound repeated closed-bar analysis faults;
@@ -211,9 +211,12 @@ Deep audit findings:
 - the UI already separates prediction/watch, confirmed signal and active plan conceptually, but a single immutable visual-state snapshot remains the planned Track 5.4 refinement.
 
 Verification:
-- pending until the phase branch CI completes Source/Architecture, Runtime Acceptance Contracts and cTrader Compile.
+- Source and architecture checks: PASS (job 109187144452);
+- Runtime acceptance contracts: PASS (job 109187144646);
+- cTrader compile: PASS (job 109187144983).
 
 Result:
+- Phase 1.4 complete;
 - next phase: **Phase 1.5 — Safety supervisor**;
 - operator pull: required at the completed phase boundary after final verified documentation merge.
 
