@@ -55,15 +55,17 @@ namespace cAlgo
                                     if (_m5Frame.VwapBear)
                                         sell += 1;
                         
-                                    p.Direction =
-                                        buy >= sell
-                                            ? 1
-                                            : -1;
-                        
                                     double total =
                                         Math.Max(
                                             1,
                                             buy + sell);
+                        
+                                    int candidateDirection =
+                                        buy > sell
+                                            ? 1
+                                            : sell > buy
+                                                ? -1
+                                                : 0;
                         
                                     p.Confidence =
                                         ClampInt(
@@ -76,11 +78,23 @@ namespace cAlgo
                                             0,
                                             100);
                         
-                                    if (p.Confidence <
+                                    if (candidateDirection == 0 ||
+                                        p.Confidence <
                                         Math.Max(
                                             MinimumEarlyConfidence,
                                             EarlySetupConfidence))
+                                    {
+                                        p.Direction = 0;
+                                        p.Reason =
+                                            candidateDirection == 0
+                                                ? "NEUTRAL EARLY"
+                                                : "EARLY WATCH | CONF " +
+                                                  p.Confidence;
                                         return p;
+                                    }
+                        
+                                    p.Direction =
+                                        candidateDirection;
                         
                                     double atr =
                                         Atr(
