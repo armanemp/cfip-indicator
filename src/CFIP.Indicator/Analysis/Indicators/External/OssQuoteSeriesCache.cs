@@ -24,10 +24,15 @@ namespace cAlgo
                 _ossQuoteCaches.Find(
                     entry => ReferenceEquals(entry.Bars, bars));
 
+            // Current OSS indicators use short lookbacks. Keep enough warm-up
+            // history for stable values without rebuilding 800 quotes per snapshot.
+            const int ossLookbackBars = 160;
+
             int firstIndex =
                 Math.Max(
                     0,
-                    closedIndex - 800);
+                    closedIndex -
+                    ossLookbackBars);
 
             bool stale =
                 cache == null ||
