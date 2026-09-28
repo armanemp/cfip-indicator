@@ -396,6 +396,33 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Reward-path validation boundary.
+REWARD_PATH_FILES = (
+    ROOT / "Trading" / "Validation" / "RewardPathZoneObstacleScanner.cs",
+    ROOT / "Trading" / "Validation" / "RewardPathGeometryRule.cs",
+    ROOT / "Trading" / "Validation" / "TargetObstacleValidator.cs",
+    ROOT / "Trading" / "Validation" / "HigherTfRewardPathValidator.cs",
+    ROOT / "Trading" / "Validation" / "HtfTargetPresenceValidator.cs",
+)
+for required_path in REWARD_PATH_FILES:
+    if not required_path.exists():
+        raise SystemExit(f"Reward-path owner missing: {required_path}")
+if (ROOT / "Trading" / "Validation" / "RewardPathValidation.cs").exists():
+    raise SystemExit("Obsolete RewardPathValidation.cs must not return")
+for path, declarations in {
+    REWARD_PATH_FILES[0]: ("private bool HasOpposingZonePathObstacle(",),
+    REWARD_PATH_FILES[1]: ("private bool ZoneBlocksRewardPath(",),
+    REWARD_PATH_FILES[2]: ("private bool HasTargetObstacle(",),
+    REWARD_PATH_FILES[3]: ("private bool HasHigherTfZonePathObstacle(",),
+    REWARD_PATH_FILES[4]: ("private bool HasAnyHtfTargetLevel(",),
+}.items():
+    code = path.read_text(encoding="utf-8")
+    for declaration in declarations:
+        if declaration not in code:
+            raise SystemExit(f"Reward-path owner declaration missing: {declaration}")
+    if path.stat().st_size > 8192:
+        raise SystemExit(f"Reward-path owner is too large: {path}")
+
 # Market-frame analysis boundary.
 MARKET_FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
 MARKET_FRAME_ANALYZER_CODE = MARKET_FRAME_ANALYZER.read_text(encoding="utf-8")
