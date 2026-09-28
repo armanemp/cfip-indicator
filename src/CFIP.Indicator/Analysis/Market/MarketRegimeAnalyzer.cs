@@ -289,6 +289,34 @@ namespace cAlgo
                     break;
             }
 
+            int stability = 1;
+
+            if (index > 40)
+            {
+                MarketRegimeSnapshot previous =
+                    AnalyzeMarketRegime(
+                        bars,
+                        index - 1);
+
+                if (previous != null &&
+                    previous.Regime == regime)
+                {
+                    stability++;
+
+                    if (index > 41)
+                    {
+                        MarketRegimeSnapshot beforePrevious =
+                            AnalyzeMarketRegime(
+                                bars,
+                                index - 2);
+
+                        if (beforePrevious != null &&
+                            beforePrevious.Regime == regime)
+                            stability++;
+                    }
+                }
+            }
+
             snapshot.Regime = regime;
             snapshot.Quality =
                 Math.Max(
@@ -296,6 +324,12 @@ namespace cAlgo
                     Math.Min(
                         100,
                         quality));
+            snapshot.Stability =
+                Math.Max(
+                    1,
+                    Math.Min(
+                        3,
+                        stability));
             snapshot.Direction = direction;
             snapshot.Choppiness = choppiness;
             snapshot.AtrRatio = atrRatio;
