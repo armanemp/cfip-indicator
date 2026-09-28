@@ -249,27 +249,31 @@ Acceptance:
 
 ## Phase 7 — OSS research, adapters and benchmarks
 
-Goal: use strong OSS where it materially improves numerical analysis without importing a second trading engine.
+Status: complete.
 
-Rules:
+Goal: use strong OSS where it materially improves numerical analysis without
+importing a second trading engine.
 
-- All OSS stays under `oss/` or an explicitly named adapter/benchmark boundary.
-- Direct runtime dependencies must be compatible with the target cTrader/.NET runtime.
-- Incompatible projects are benchmark/reference-only.
-- No OSS trading engine becomes the execution authority.
-- License and attribution are documented before adoption.
-- Numerical parity and performance are measured before promotion.
+Completed in this phase:
 
-Priority candidates:
-
-- Technical indicator libraries for numerical cross-checking.
-- Lightweight statistical/time-series components that are compatible with the target runtime.
-- Research-only algorithmic trading engines for architectural benchmarking, never as a second live execution engine.
+- Formalized Skender.Stock.Indicators 2.7.3 as the current production OSS numerical dependency because its .NET Standard 2.0 asset is compatible with the net6.0 cTrader target.
+- Kept FacioQuo.Stock.Indicators 3.0.1 in an isolated .NET 8 benchmark project because the current v3 package line cannot be consumed by the net6.0 production target.
+- Added deterministic v2/v3 numerical parity checks for RSI, MACD histogram, Bollinger %B, MFI, Stochastic K/D and SuperTrend.
+- Added complete-series coverage checks for all 10 OSS indicators used by the production confluence adapter.
+- Added batch-performance measurements to the OSS benchmark.
+- Added a source-bar-aware OSS snapshot cache so repeated calculations for an unchanged bar reuse the complete confluence result instead of recalculating the indicator suite.
+- Removed the redundant symmetric flag from the OSS directional-vote helper.
+- Updated the OSS boundary, package register and benchmark documentation so production/research dependency status is explicit.
+- Added verifier checks preventing the research-only v3 package from leaking into production source and requiring both package pins in the benchmark project.
 
 Acceptance:
 
-- Every adopted component has an upstream source, license, compatibility result, benchmark result, and isolated adapter owner.
-- Production cTrader build remains dependency-minimal.
+- Every current production OSS component has an upstream source, exact package version, license/attribution, target-runtime compatibility evidence and an isolated adapter owner.
+- Deterministic numerical parity and extended coverage are enforced by the OSS benchmark.
+- Performance is measured by the benchmark.
+- No OSS trading engine becomes a second decision, risk or execution authority.
+- Production cTrader build remains dependency-minimal and net6-compatible.
+- v3 migration remains blocked until a maintained package line can target the actual production runtime.
 
 ## Phase 8 — Static verification and contract testing
 
