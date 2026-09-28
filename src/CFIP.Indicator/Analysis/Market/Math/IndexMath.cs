@@ -25,42 +25,37 @@ namespace cAlgo
                     reference);
 
             if (probe < 0)
-                probe = bars.Count - 1;
-
-            probe =
-                Math.Max(
-                    0,
-                    Math.Min(
-                        probe,
-                        bars.Count - 1));
-
-            for (int i = probe;
-                 i >= 0;
-                 i--)
             {
-                TimeSpan span;
+                int left = 0;
+                int right =
+                    bars.Count - 1;
 
-                if (i + 1 < bars.Count)
-                    span =
-                        bars.OpenTimes[i + 1] -
-                        bars.OpenTimes[i];
-                else if (i > 0)
-                    span =
-                        bars.OpenTimes[i] -
-                        bars.OpenTimes[i - 1];
-                else
-                    span =
-                        TimeSpan.FromMinutes(1);
+                // Find the last bar whose open time is <= reference.
+                while (left <= right)
+                {
+                    int mid =
+                        left +
+                        ((right - left) / 2);
 
-                if (span <= TimeSpan.Zero)
-                    span =
-                        TimeSpan.FromMinutes(1);
+                    if (bars.OpenTimes[mid] <=
+                        reference)
+                        left = mid + 1;
+                    else
+                        right = mid - 1;
+                }
 
-                if (bars.OpenTimes[i] + span <= reference)
-                    return i;
+                probe = right;
             }
 
-            return -1;
+            // The bar containing reference is still forming. The previous
+            // bar is therefore the latest fully closed bar. This uses ordering
+            // rather than inferred bar duration, so weekend/holiday gaps cannot
+            // make the resolver skip an otherwise closed candle.
+            return Math.Max(
+                -1,
+                Math.Min(
+                    bars.Count - 2,
+                    probe - (bars.OpenTimes[probe] == reference ? 1 : 0)));
         }
 
         internal static double Highest(
