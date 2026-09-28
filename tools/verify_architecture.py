@@ -396,6 +396,33 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Live target progression boundary.
+TARGET_PROGRESSION = ROOT / "Trading" / "LiveManagement" / "TargetProgression.cs"
+TARGET_PROGRESSION_CODE = TARGET_PROGRESSION.read_text(encoding="utf-8")
+if TARGET_PROGRESSION.stat().st_size > 8192:
+    raise SystemExit("TargetProgression.cs must remain a live target orchestration owner")
+for token in (
+    "BuildTargetLevels(",
+    "FindImprovedLiveTarget(",
+    "RecalculatePlanRR(",
+):
+    if token not in TARGET_PROGRESSION_CODE:
+        raise SystemExit(f"TargetProgression orchestration call missing: {token}")
+for declaration in (
+    "private double FindImprovedLiveTarget(",
+    "private bool IsEligibleLiveTarget(",
+    "private bool IsImprovedLiveTarget(",
+    "private double CalculateLiveTargetScore(",
+):
+    if declaration in TARGET_PROGRESSION_CODE:
+        raise SystemExit(f"TargetProgression retains extracted evaluation: {declaration}")
+for required_path in (
+    ROOT / "Trading" / "LiveManagement" / "LiveTargetCandidateEvaluator.cs",
+    ROOT / "Trading" / "LiveManagement" / "PlanRiskRewardRecalculator.cs",
+):
+    if not required_path.exists():
+        raise SystemExit(f"Live target progression owner missing: {required_path}")
+
 # Reward-path validation boundary.
 REWARD_PATH_FILES = (
     ROOT / "Trading" / "Validation" / "RewardPathZoneObstacleScanner.cs",
