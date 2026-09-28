@@ -220,3 +220,13 @@ Result:
 - next phase: **Phase 1.5 — Safety supervisor**;
 - operator pull: required at the completed phase boundary after final verified documentation merge.
 
+
+## Phase 1.5 — Async startup, performance optimization and safety supervision
+
+Status: implementation complete; CI certification pending.
+
+Implemented asynchronous Bars loading, bounded startup finalization/timeout, MTF context caching, closed-M1 frame reuse, recent M5 regime-core caching, age-bounded FVG/Order Block traversal, single-ATR reuse in protection, and a timer-driven safety supervisor that avoids full analysis on the heartbeat.
+
+Uploaded indicator archive audit is recorded in docs/PERFORMANCE-ARCHITECTURE-2026-09-29.md.
+
+Validation is pending on the phase branch after Source/Architecture, Runtime Acceptance Contracts and cTrader Compile complete.
