@@ -573,3 +573,31 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: audit aggressive execution and pending placement for the same preparation/mutation/recovery boundary, then perform the final cross-path execution consistency review.
+
+
+## Phase 19 — Aggressive execution decomposition
+
+Status: complete.
+
+Goal: separate aggressive-entry eligibility, execution parameter construction and accepted-fill handling without changing aggressive-specific execution semantics.
+
+Completed:
+
+- Reduced AggressivePreTradePreparation.cs to orchestration.
+- Isolated aggressive eligibility, capacity, pending-order, confidence, smart-agreement and suitability gates.
+- Isolated aggressive entry/ATR/structural-stop/target/volume preparation.
+- Isolated accepted-fill envelope validation, post-fill rebuild, managed-plan adoption and live target enrichment.
+- Preserved the original pre-submit ExecutionIntent for actual-fill validation.
+- Kept market-order mutation in BrokerMarketOrderMutation.cs and broker protection in the existing protection owner.
+- Preserved aggressive fill-mismatch close/recovery handling.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- Aggressive pre-trade and execution concerns have explicit owners.
+- Actual-fill validation consumes the original submission intent.
+- Broker-confirmed state remains authoritative.
+- Existing aggressive protection/recovery state remains intact.
+- No production file exceeds 20 KiB.
+
+Next: decompose pending-order continuation-stop and reversal-limit placement, then compare all automatic execution paths for shared invariants and accidental divergence.
