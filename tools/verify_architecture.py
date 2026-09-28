@@ -246,8 +246,8 @@ if "ShouldClearStaleLivePlan" not in LIVE_RECOVERY_RULE_CODE:
 
 CAPACITY_GUARD = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
-if "MaximumOpenPositions > 1" not in CAPACITY_CODE:
-    raise SystemExit("Single-plan execution capacity guard missing")
+if "ExecutionCapacityRule.IsSupportedSinglePlanCapacity" not in CAPACITY_CODE:
+    raise SystemExit("Single-plan execution capacity guard must delegate to the pure rule")
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketTradeExecution.cs",
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs",
