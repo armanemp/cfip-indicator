@@ -9,7 +9,8 @@ namespace cAlgo
     {
         private bool ValidateConfiguredPositionCapacity(out string reason)
         {
-            if (MaximumOpenPositions > 1)
+            if (!ExecutionCapacityRule.IsSupportedSinglePlanCapacity(
+                    MaximumOpenPositions))
             {
                 reason =
                     "MULTI-POSITION DISABLED • ACTIVE PLAN IS SINGLE-POSITION";
