@@ -11,13 +11,10 @@ namespace cAlgo
             double entry,
             double target,
             double volume,
-            double stopPips,
-            double targetPips,
-            out ExecutionIntent marketIntent,
             out string reason)
         {
-            marketIntent = null;
             reason = "";
+            ExecutionIntent marketIntent;
 
             if (!EnsureTradingPermission())
             {
