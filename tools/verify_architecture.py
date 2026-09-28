@@ -389,7 +389,7 @@ for required_step in (
 if "RunSafetySupervisorStep(" not in supervisor_code:
     raise SystemExit("Safety supervisor must isolate each safety step")
 
-if "_mtfClosedContextCache.TryGetCached(" not in mtf_code or    "_mtfClosedContextCache.Store(" not in mtf_code:
+if "_mtfClosedContextCache.TryGetStableContext(" not in mtf_code or    "_mtfClosedContextCache.StoreStableContext(" not in mtf_code:
     raise SystemExit("Closed MTF context cache is not wired into the builder")
 
 if "cachedM1Frame" not in m1_code or "ReferenceEquals(" not in m1_code:
