@@ -234,6 +234,16 @@ if "BROKER STATE • BOUND POSITION NOT FOUND" not in BROKER_STATE_CODE:
 if "GetManagedLivePositionForPlan()" not in BROKER_STATE_CODE:
     raise SystemExit("Broker state sync must resolve the authoritative bound position")
 
+CAPACITY_RULE = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
+CAPACITY_RULE_CODE = CAPACITY_RULE.read_text(encoding="utf-8")
+if "IsSupportedSinglePlanCapacity" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Pure execution capacity rule missing")
+
+LIVE_RECOVERY_RULE = ROOT / "Core" / "Math" / "LivePlanRecoveryRule.cs"
+LIVE_RECOVERY_RULE_CODE = LIVE_RECOVERY_RULE.read_text(encoding="utf-8")
+if "ShouldClearStaleLivePlan" not in LIVE_RECOVERY_RULE_CODE:
+    raise SystemExit("Pure stale live-plan recovery rule missing")
+
 CAPACITY_GUARD = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
 if "MaximumOpenPositions > 1" not in CAPACITY_CODE:
