@@ -25,16 +25,47 @@ namespace cAlgo
                                     Position position =
                                         args.Position;
                         
+                                    int direction =
+                                        position.TradeType == TradeType.Buy
+                                            ? 1
+                                            : -1;
+
+                                    double market =
+                                        direction == 1
+                                            ? Symbol.Bid
+                                            : Symbol.Ask;
+
+                                    bool brokerStopValid =
+                                        position.StopLoss.HasValue &&
+                                        IsFinitePositive(
+                                            position.StopLoss.Value) &&
+                                        IsValidManagedStop(
+                                            direction,
+                                            position.EntryPrice,
+                                            market,
+                                            position.StopLoss.Value);
+
+                                    bool brokerTargetValid =
+                                        position.TakeProfit.HasValue &&
+                                        IsFinitePositive(
+                                            position.TakeProfit.Value) &&
+                                        IsValidTarget(
+                                            direction,
+                                            position.EntryPrice,
+                                            position.TakeProfit.Value);
+
                                     _activeBrokerStop =
-                                        position.StopLoss.HasValue
-                                            ? NormalizePrice(position.StopLoss.Value)
+                                        brokerStopValid
+                                            ? NormalizePrice(
+                                                position.StopLoss.Value)
                                             : 0;
-                        
+
                                     _activeBrokerTarget =
-                                        position.TakeProfit.HasValue
-                                            ? NormalizePrice(position.TakeProfit.Value)
+                                        brokerTargetValid
+                                            ? NormalizePrice(
+                                                position.TakeProfit.Value)
                                             : 0;
-                        
+
                                     if (_plan != null &&
                                         _plan.IsLivePosition &&
                                         _plan.PositionId == position.Id &&
@@ -42,15 +73,16 @@ namespace cAlgo
                                             LifecycleState.ExitRequested)
                                     {
                                         _brokerProtectionRecoveryRequired =
-                                            !position.StopLoss.HasValue ||
-                                            !position.TakeProfit.HasValue;
+                                            !brokerStopValid ||
+                                            (SyncBrokerTakeProfit &&
+                                             !brokerTargetValid);
                         
                                         SetLifecycleState(
                                             _brokerProtectionRecoveryRequired
                                                 ? LifecycleState.RecoveryRequired
                                                 : LifecycleState.LivePosition,
                                             _brokerProtectionRecoveryRequired
-                                                ? "BROKER POSITION MODIFIED • PROTECTION MISSING"
+                                                ? "BROKER POSITION MODIFIED • PROTECTION MISSING OR INVALID"
                                                 : "BROKER POSITION MODIFIED");
                                     }
                                 }
