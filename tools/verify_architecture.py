@@ -396,6 +396,28 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Broker protection state ownership.
+BROKER_PROTECTION_STATE = ROOT / "Trading" / "Lifecycle" / "BrokerProtectionStateEvaluator.cs"
+BROKER_PROTECTION_STATE_CODE = BROKER_PROTECTION_STATE.read_text(encoding="utf-8")
+if "EvaluateBrokerProtection(" not in BROKER_PROTECTION_STATE_CODE:
+    raise SystemExit("Broker protection state evaluator missing")
+for consumer_name in (
+    "BrokerStateSnapshot.cs",
+    "PositionOpenedHandler.cs",
+    "PositionModifiedHandler.cs",
+):
+    consumer = ROOT / "Trading" / "Lifecycle" / consumer_name
+    code = consumer.read_text(encoding="utf-8")
+    if "EvaluateBrokerProtection(" not in code:
+        raise SystemExit(f"Broker protection state must use shared evaluator: {consumer_name}")
+    for declaration in (
+        "bool brokerStopValid =",
+        "bool brokerTargetValid =",
+        "bool protectionMissing =",
+    ):
+        if declaration in code:
+            raise SystemExit(f"Broker protection validation duplicated in {consumer_name}: {declaration}")
+
 # Cross-path automatic execution consistency.
 CROSS_PATH_CONTRACTS = {
     "AutomaticMarketBrokerExecution.cs": (
