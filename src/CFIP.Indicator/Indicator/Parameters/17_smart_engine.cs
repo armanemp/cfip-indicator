@@ -49,6 +49,9 @@ namespace cAlgo
         [Parameter("Range Choppiness Threshold", Group = "17 · Smart Engine", DefaultValue = 58, MinValue = 45, MaxValue = 80)]
         public int RangeChoppinessThreshold { get; set; }
 
+        [Parameter("Range Efficiency Threshold", Group = "17 · Smart Engine", DefaultValue = 0.30, MinValue = 0.10, MaxValue = 0.60, Step = 0.01)]
+        public double RangeEfficiencyThreshold { get; set; }
+
         [Parameter("Compression ATR Ratio", Group = "17 · Smart Engine", DefaultValue = 0.78, MinValue = 0.50, MaxValue = 1.0, Step = 0.01)]
         public double CompressionAtrRatio { get; set; }
 
