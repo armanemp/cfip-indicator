@@ -227,6 +227,13 @@ SCORING = ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs"
 if len(re.findall(r"\bprivate void AddScore\s*\(", SCORING.read_text(encoding="utf-8"))) != 2:
     raise SystemExit("MarketFrameScoring must own both AddScore overloads")
 
+BROKER_STATE_SNAPSHOT = ROOT / "Trading" / "Lifecycle" / "BrokerStateSnapshot.cs"
+BROKER_STATE_CODE = BROKER_STATE_SNAPSHOT.read_text(encoding="utf-8")
+if "BROKER STATE • BOUND POSITION NOT FOUND" not in BROKER_STATE_CODE:
+    raise SystemExit("Broker state sync must clear stale live plans when bound position disappears")
+if "GetManagedLivePositionForPlan()" not in BROKER_STATE_CODE:
+    raise SystemExit("Broker state sync must resolve the authoritative bound position")
+
 CAPACITY_GUARD = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
 if "MaximumOpenPositions > 1" not in CAPACITY_CODE:
