@@ -396,6 +396,49 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Automatic-market execution boundary.
+AUTO_MARKET_PRETRADE = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTrade.cs"
+AUTO_MARKET_PRETRADE_CODE = AUTO_MARKET_PRETRADE.read_text(encoding="utf-8")
+for token in (
+    "PassAutomaticMarketPreTradeEligibility(",
+    "TryPrepareAutomaticMarketExecution(",
+):
+    if token not in AUTO_MARKET_PRETRADE_CODE:
+        raise SystemExit(f"Automatic-market orchestration call missing: {token}")
+if AUTO_MARKET_PRETRADE.stat().st_size > 4096:
+    raise SystemExit("AutomaticMarketPreTrade.cs must remain an orchestration boundary")
+
+AUTO_MARKET_ELIGIBILITY = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs"
+AUTO_MARKET_PREPARATION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketExecutionPreparation.cs"
+for path, token in (
+    (AUTO_MARKET_ELIGIBILITY, "ValidateConfiguredPositionCapacity("),
+    (AUTO_MARKET_PREPARATION, "TryPrepareExecutablePlan("),
+):
+    if not path.exists() or token not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"Automatic-market owner missing or incomplete: {path}")
+
+AUTO_MARKET_RUNTIME = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
+AUTO_MARKET_RUNTIME_CODE = AUTO_MARKET_RUNTIME.read_text(encoding="utf-8")
+if AUTO_MARKET_RUNTIME.stat().st_size > 8192:
+    raise SystemExit("AutomaticMarketBrokerExecution.cs must remain an execution orchestration boundary")
+for token in (
+    "TryValidateAutomaticMarketSubmission(",
+    "TryExecuteMarketOrder(",
+    "BrokerConfirmationPolicy.CanAdoptPosition(",
+    "TryAcceptAutomaticMarketFill(",
+    "TryResolveAutomaticPostFillTarget(",
+    "EnsureBrokerProtectionForPosition(",
+):
+    if token not in AUTO_MARKET_RUNTIME_CODE:
+        raise SystemExit(f"Automatic-market execution boundary missing: {token}")
+for required_path in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs",
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs",
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs",
+):
+    if not required_path.exists():
+        raise SystemExit(f"Automatic-market execution owner missing: {required_path}")
+
 # Live target progression boundary.
 TARGET_PROGRESSION = ROOT / "Trading" / "LiveManagement" / "TargetProgression.cs"
 TARGET_PROGRESSION_CODE = TARGET_PROGRESSION.read_text(encoding="utf-8")
