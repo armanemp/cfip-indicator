@@ -50,6 +50,104 @@ namespace cAlgo
                 MinimumProxyExpectedValue)
                 return new DecisionFilterResult(false, "EXPECTED VALUE");
 
+            if (UseStrictRegimeQualityGate &&
+                _m5Frame != null)
+            {
+                bool directionBull =
+                    decision.Direction == 1;
+                bool directionBear =
+                    decision.Direction == -1;
+
+                bool displacement =
+                    directionBull
+                        ? _m5Frame.DisplacementBull
+                        : directionBear &&
+                          _m5Frame.DisplacementBear;
+
+                bool liquidity =
+                    directionBull
+                        ? _m5Frame.LiquidityBull
+                        : directionBear &&
+                          _m5Frame.LiquidityBear;
+
+                bool volume =
+                    directionBull
+                        ? _m5Frame.VolumeBull
+                        : directionBear &&
+                          _m5Frame.VolumeBear;
+
+                bool trend =
+                    directionBull
+                        ? _m5Frame.TrendBull
+                        : directionBear &&
+                          _m5Frame.TrendBear;
+
+                bool structure =
+                    directionBull
+                        ? (_m5Frame.StructureBull ||
+                           _m5Frame.MssBull ||
+                           _m5Frame.ChochBull)
+                        : directionBear &&
+                          (_m5Frame.StructureBear ||
+                           _m5Frame.MssBear ||
+                           _m5Frame.ChochBear);
+
+                MarketRegimeSnapshot regime =
+                    GetActiveM5Regime(
+                        closedM5);
+
+                if (regime != null &&
+                    regime.Regime == "TREND" &&
+                    (!trend ||
+                     !structure ||
+                     decision.TimeframeAgreement <
+                     Math.Max(
+                         SmartMinimumTimeframeAgreement,
+                         MinimumTimeframeAgreement) ||
+                     decision.StructuralConfirmations <
+                     Math.Max(
+                         MinimumStructuralConfirmations,
+                         MinimumStructuralSequence)))
+                {
+                    return new DecisionFilterResult(
+                        false,
+                        "TREND EVIDENCE");
+                }
+
+                if (regime != null &&
+                    regime.Regime == "EXPANSION" &&
+                    !(displacement &&
+                      (volume ||
+                       liquidity ||
+                       structure)))
+                {
+                    return new DecisionFilterResult(
+                        false,
+                        "EXPANSION EVIDENCE");
+                }
+
+                if (regime != null &&
+                    regime.Regime == "HIGH_VOLATILITY")
+                {
+                    int expansionEvidence =
+                        (displacement ? 1 : 0) +
+                        (volume ? 1 : 0) +
+                        (liquidity ? 1 : 0) +
+                        (structure ? 1 : 0);
+
+                    if (expansionEvidence < 3 ||
+                        decision.Edge <
+                        Math.Max(
+                            SmartStrongSetupEdge,
+                            16))
+                    {
+                        return new DecisionFilterResult(
+                            false,
+                            "HIGH VOL EVIDENCE");
+                    }
+                }
+            }
+
             if (UseStrictRegimeQualityGate)
             {
                 MarketRegimeSnapshot regime =
