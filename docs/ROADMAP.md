@@ -682,3 +682,31 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: audit the large UI panel renderers for responsibility density and complete the repository-wide dead-code / duplicate-owner sweep before final cTrader hands-on validation.
+
+
+## Phase 23 — Panel renderer decomposition
+
+Status: complete.
+
+Goal: reduce large panel row renderers to pure presentation composition and explicit row-section owners.
+
+Completed:
+
+- Reduced PanelOverviewRowsRenderer.cs to composition of state, execution and diagnostic row sections.
+- Isolated overview state/synchronization/session/suitability rows.
+- Isolated overview risk/execution/order/pivot rows.
+- Isolated overview permission/spread/engine diagnostics.
+- Reduced PanelTradePlanRowsRenderer.cs to composition of level and live-position row sections.
+- Isolated entry/SL/TP/reward-model rows.
+- Isolated live RR/position/smart-exit rows.
+- Preserved all existing text, visibility conditions, values and colors.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- UI renderers retain presentation authority only.
+- No decision, risk or broker mutation logic is introduced into row modules.
+- Large row files are reduced to composition boundaries.
+- No production file exceeds 20 KiB.
+
+Next: complete the repository-wide responsibility/dead-code sweep, including remaining near-ceiling lifecycle/execution files and duplicated helper patterns, then prepare the final cTrader hands-on validation checklist.
