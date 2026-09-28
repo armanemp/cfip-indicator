@@ -974,6 +974,43 @@ Next validation:
 - Confirm confirmed `_plan` state renders Entry/Trigger/SL/TP independently of the watch arrow.
 - Measure first-ready latency and live tick CPU/load before further intelligence work.
 
+### Phase 29F — Regime-aware intelligence and signal/execution synchronization
+
+Status: in progress.
+
+Objective:
+Make the analytical, signal, plan, pending-order and chart-presentation layers share one coherent market state, while explicitly suppressing weak setups in low-quality regimes.
+
+Implemented:
+- Deterministic market-regime analyzer using ADX/DMI, ATR regime ratio, EMA spread/slope, Choppiness Index and price-path efficiency.
+- Separate Choppiness Index and Range Efficiency modules.
+- Regime classes: TREND, EXPANSION, RANGE, COMPRESSION, HIGH_VOLATILITY and TRANSITION.
+- Regime quality is now an explicit decision input and is exposed in the panel with ADX, CHOP, ATR ratio and efficiency diagnostics.
+- Strict regime gate blocks RANGE/COMPRESSION and requires materially stronger evidence in TRANSITION/HIGH_VOLATILITY conditions.
+- Frame quality now incorporates regime quality instead of relying mainly on raw directional score.
+- Pre-trade plans are invalidated visually when the authoritative decision changes direction and no broker pending order is holding the old direction.
+- Pending-order direction is treated as authoritative for chart/panel state.
+- Trigger lines are shown only for trigger-based execution modes instead of being displayed beside every pre-trade plan.
+
+Startup/resource work:
+- Panel creation remains before expensive initialization.
+- MTF market-data acquisition and native indicator registration are staged through timer cycles instead of one synchronous startup burst.
+- Calculation remains gated until staged initialization completes.
+
+Research inputs:
+- ADX/DMI for trend-strength and directional movement.
+- ATR for volatility expansion/compression and adaptive levels.
+- Choppiness Index and path efficiency for range/chop detection.
+- Regime-switching research remains a future research/reference path; online HMM/ML is intentionally deferred from the realtime indicator until outcome data and resource budgets justify it.
+
+Next acceptance:
+- Verify fast initial panel paint after both cold and warm cTrader startup.
+- Verify direction flips remove stale pre-trade levels.
+- Verify Trigger/Entry semantics for RetestMarket vs WaitingForTrigger vs BreakoutMarket.
+- Verify RANGE/COMPRESSION produce no actionable plan.
+- Verify EXPANSION produces signals only when directional evidence and quality are sufficient.
+- Capture CPU/memory and first-ready latency on the target machine.
+
 ### Phase 30 — Automatic market execution certification
 
 Status: planned.
