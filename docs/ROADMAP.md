@@ -834,7 +834,11 @@ Acceptance:
 
 ## Phase 1.3 — Runtime fault state machine
 
-Status: planned.
+Status: complete.
+
+Goal:
+
+Make recoverable runtime faults explicit, entry-blocking and recoverable only through a clean management cycle plus an explicit automatic-trading re-arm transition.
 
 States:
 
@@ -846,11 +850,30 @@ RECOVERING
 HEALTHY
 \`\`\`
 
+Implementation:
+
+- introduced the dedicated `RuntimeFaultState` enum and `RuntimeFaultStateMachine` under the calculation runtime boundary;
+- started and completed one explicit fault-state cycle around each eligible `Calculate()` invocation;
+- changed recoverable fault handling from the legacy `ERROR`-only flag mutation to an explicit `DEGRADED` → `ENTRY_BLOCKED` transition;
+- preserved fatal `OutOfMemoryException` and `StackOverflowException` behavior;
+- allowed management, reconciliation and protection to continue after a recoverable analysis-stage fault;
+- transitioned `ENTRY_BLOCKED` → `RECOVERING` only after the pre-analysis management/protection stages complete without a recoverable fault in that cycle;
+- transitioned `RECOVERING` → `HEALTHY` only after the complete cycle finishes without another recoverable fault;
+- kept automatic entry disarmed across recovery; a `false` → `true` `AutoTradingEnabled` transition after reaching `HEALTHY` is required before broker entry can resume;
+- added final entry guards to automatic market, aggressive market, continuation Stop and reversal Limit placement boundaries;
+- kept pending daily-loss cancellation and other management checks available because the state gate is applied at the actual pending placement owner rather than suppressing the whole execution stage;
+- added deterministic runtime contract coverage for all state transitions and the explicit re-arm rule;
+- added source/architecture enforcement for the state machine, cycle lifecycle and automatic-entry guards.
+
+Important design finding:
+
+- `HEALTHY` is a runtime health state, not an automatic re-arm signal. Recovery therefore restores health without restoring broker-entry permission. This prevents a clean cycle from silently reopening automatic execution.
+
 Acceptance:
 
-- recoverable fault blocks entry;
-- management remains available;
-- no blind automatic re-arm.
+- recoverable fault blocks entry: PASS by contract and broker-entry guards;
+- management remains available: PASS by keeping management-first calculation stages active;
+- no blind automatic re-arm: PASS by the latched entry gate and explicit enable transition.
 
 ## Phase 1.4 — Closed-bar retry semantics
 
@@ -2967,9 +2990,9 @@ CFIP is not considered fully complete until all of the following are true:
 
 # 9. Execution queue for continuation
 
-The current research milestone Track 19.1 and the completed safety-first phases through Phase 1.2 are recorded above. The certification sequence continues from the next dependency below.
+The current research milestone Track 19.1 and the completed safety-first phases through Phase 1.3 are recorded above. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 1.3 — Runtime fault state machine**
+**NEXT: Phase 1.4 — Runtime recovery semantics**
 
 Then proceed in dependency order:
 
@@ -3029,7 +3052,7 @@ Then proceed in dependency order:
 Track 19.1 is intentionally recorded as already complete because it was a
 research milestone executed ahead of the main certification queue.
 
-Phases 0.1, 0.2, 1.1 and 1.2 are also intentionally recorded as complete and
+Phases 0.1, 0.2, 1.1, 1.2 and 1.3 are also intentionally recorded as complete and
 must not be restarted unless a regression is demonstrated.
 
 Do not restart completed historical phases unless a regression is demonstrated.
