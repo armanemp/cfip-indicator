@@ -10,6 +10,52 @@ namespace cAlgo
             int index)
         {
             MarketRegimeSnapshot snapshot =
+                AnalyzeMarketRegimeCore(
+                    bars,
+                    index);
+
+            if (snapshot == null ||
+                !ReferenceEquals(bars, _m5Bars) ||
+                index <= 40)
+                return snapshot;
+
+            int stability = 1;
+
+            MarketRegimeSnapshot previous =
+                AnalyzeMarketRegimeCore(
+                    bars,
+                    index - 1);
+
+            if (previous != null &&
+                previous.Regime == snapshot.Regime)
+            {
+                stability++;
+
+                MarketRegimeSnapshot beforePrevious =
+                    AnalyzeMarketRegimeCore(
+                        bars,
+                        index - 2);
+
+                if (beforePrevious != null &&
+                    beforePrevious.Regime == snapshot.Regime)
+                    stability++;
+            }
+
+            snapshot.Stability =
+                Math.Max(
+                    1,
+                    Math.Min(
+                        3,
+                        stability));
+
+            return snapshot;
+        }
+
+        private MarketRegimeSnapshot AnalyzeMarketRegimeCore(
+            Bars bars,
+            int index)
+        {
+            MarketRegimeSnapshot snapshot =
                 new MarketRegimeSnapshot
                 {
                     Regime = "UNKNOWN",
