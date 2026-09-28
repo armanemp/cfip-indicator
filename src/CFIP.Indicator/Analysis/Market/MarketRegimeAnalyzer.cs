@@ -202,33 +202,12 @@ namespace cAlgo
                     regime,
                     classification);
 
+            // Stability is intentionally non-recursive. The previous
+            // implementation walked backward through the entire M5 history
+            // by calling AnalyzeMarketRegime() from itself, which could grow
+            // the call stack by hundreds/thousands of frames and trigger a
+            // process-level stack overflow during startup/live refresh.
             int stability = 1;
-
-            if (ReferenceEquals(bars, _m5Bars) && index > 40)
-            {
-                MarketRegimeSnapshot previous =
-                    AnalyzeMarketRegime(
-                        bars,
-                        index - 1);
-
-                if (previous != null &&
-                    previous.Regime == regime)
-                {
-                    stability++;
-
-                    if (index > 41)
-                    {
-                        MarketRegimeSnapshot beforePrevious =
-                            AnalyzeMarketRegime(
-                                bars,
-                                index - 2);
-
-                        if (beforePrevious != null &&
-                            beforePrevious.Regime == regime)
-                            stability++;
-                    }
-                }
-            }
 
             snapshot.Regime = regime;
             snapshot.Quality =
