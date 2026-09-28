@@ -16,13 +16,12 @@ namespace cAlgo
             out double managedLow,
             out double managedHigh,
             out bool partiallyMitigated,
-            out double originalWidth,
             out double remainingRatio)
         {
             managedLow = zoneLow;
             managedHigh = zoneHigh;
             partiallyMitigated = false;
-            originalWidth =
+            double originalWidth =
                 Math.Max(
                     Symbol.TickSize,
                     zoneHigh -
