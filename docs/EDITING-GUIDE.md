@@ -121,6 +121,13 @@ Edit the smallest authoritative module that owns the behavior.
 | Validation | `Trading/Validation/*.cs` |
 | Chart | `UI/Chart/**/*.cs` |
 | Panel | `UI/Panel/**/*.cs` |
+| Panel overview composition | `UI/Panel/Rows/PanelOverviewRowsRenderer.cs` |
+| Panel overview state rows | `UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs` |
+| Panel overview execution rows | `UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs` |
+| Panel overview diagnostics | `UI/Panel/Rows/PanelOverviewDiagnosticRowsRenderer.cs` |
+| Panel trade-plan composition | `UI/Panel/Rows/PanelTradePlanRowsRenderer.cs` |
+| Panel trade-plan level rows | `UI/Panel/Rows/PanelTradePlanLevelRowsRenderer.cs` |
+| Panel trade-plan live rows | `UI/Panel/Rows/PanelTradePlanLiveRowsRenderer.cs` |
 | Popup | `UI/Popup/**/*.cs` |
 | Historical rendering | `UI/Historical/**/*.cs` |
 | Shared math/text/time utilities | `Core/{Math,Text,Time}/*.cs` |
