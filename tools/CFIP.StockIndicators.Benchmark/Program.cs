@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using FacioQuo.Stock.Indicators;
 using V2Indicator = Skender.Stock.Indicators.Indicator;
 using V2Quote = Skender.Stock.Indicators.Quote;
 using V3Bar = FacioQuo.Stock.Indicators.Bar;
@@ -88,15 +89,13 @@ static List<V3Bar> BuildV3Bars()
         decimal high = Math.Max(open, close) + 0.12m + (i % 3) * 0.02m;
         decimal low = Math.Min(open, close) - 0.10m - (i % 4) * 0.02m;
 
-        bars.Add(new V3Bar
-        {
-            Date = date,
-            Open = open,
-            High = high,
-            Low = low,
-            Close = close,
-            Volume = 1000m + i * 5m
-        });
+        bars.Add(new V3Bar(
+            Timestamp: date,
+            Open: open,
+            High: high,
+            Low: low,
+            Close: close,
+            Volume: 1000m + i * 5m));
     }
 
     return bars;
