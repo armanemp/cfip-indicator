@@ -1,1343 +1,2972 @@
-# CFIP Indicator — Implementation Roadmap
+# CFIP Indicator — Master Implementation, Certification and Release Roadmap
 
-## Working rule
+## 0. Purpose
 
-One implementation response completes exactly one phase. A phase is complete only when its source changes, static verification, documentation, and available CI checks are updated.
+This file is the single master roadmap for the CFIP Indicator project.
 
-When work resumes in a new chat, read this file first, then `docs/ARCHITECTURE.md` and `docs/WORKFLOW.md`. Continue from the first phase marked `next`; do not repeat completed phases.
+It is intentionally self-contained so that development can resume from another
+chat, account or assistant without reconstructing the plan from conversation
+history.
 
-## Behavioral baseline
+This document combines:
 
-The complete historical behavioral reference is the v73 source material used for parity. It is reference material only; no historical source file or versioned production identifier belongs in the production tree.
+- the historical modularization work already completed in the repository;
+- the current runtime/cTrader acceptance state;
+- the unresolved findings from the external/Claude review;
+- the current OSS numerical benchmark work;
+- the complete certification sequence;
+- local production release;
+- cloud cBot portability and validation;
+- post-stability adaptive learning.
 
-Current baseline guarantees:
+The roadmap is a **plan and continuity contract**. It does not authorize a
+production behavior change by itself.
 
-- 513 behavioral configuration parameters are preserved.
-- 311 reference methods are preserved across the modular source tree.
-- One cTrader host.
-- One decision authority.
-- One strategy state.
-- One managed broker identity.
-- One automatic execution authority.
-- Automatic market execution and automatic pending orders are retained.
-- Manual trade-entry controls are absent.
-- Production source files remain below the repository file-size limit.
-- OSS components live under `oss/` and are admitted only through explicit compatibility, license, and benchmark gates.
+---
+
+# 1. Non-negotiable working rules
+
+## 1.1 One phase per implementation response
+
+One implementation response completes exactly one phase.
+
+A phase is complete only when the affected implementation, caller migration,
+static/contract verification, duplicate-path cleanup, available runtime
+validation and roadmap status are updated.
+
+A phase must be small enough to finish without leaving a partially applied
+architectural change.
+
+## 1.2 Implementation order inside each phase
+
+Always use:
+
+1. Contract / invariant
+2. Authoritative implementation
+3. Caller migration
+4. Tests / static checks
+5. Duplicate-path removal
+6. Runtime validation where available
+7. Documentation
+
+## 1.3 Source ownership
+
+Every behavior has one authoritative owner.
+
+Do not add:
+
+- compatibility aliases;
+- duplicate business rules;
+- parallel decision authorities;
+- alternate broker mutation paths;
+- second trading engines;
+- historical/versioned production identities.
+
+## 1.4 Production source hygiene
+
+Production C# remains version-neutral.
+
+Historical versions, source snapshots and migration references may appear only
+in documentation required for continuity.
+
+Production source must not contain historical class names, numbered strategy
+identifiers, release suffixes or versioned trade comments.
+
+## 1.5 Trading safety
+
+The following are permanent invariants:
+
+- broker-confirmed state is authoritative;
+- accepted submission is not fill confirmation;
+- rejection is not success;
+- pending is not a position before confirmed fill;
+- SL changes are protective-only;
+- partial close and close are consumed only after broker confirmation;
+- restart/reconnect reconciliation precedes assumptions about live state;
+- automatic market and pending execution share one managed identity;
+- there is one decision authority and one automatic execution authority;
+- manual BUY/SELL entry controls do not exist.
+
+## 1.6 OSS boundary
+
+OSS libraries are allowed only through an explicit adapter or an isolated
+research/benchmark project.
+
+Before production adoption, record:
+
+- upstream source;
+- exact version/tag/commit;
+- license and attribution;
+- target-runtime compatibility;
+- dependency implications;
+- deterministic fixture results;
+- benchmark evidence;
+- adapter owner;
+- authority boundary.
+
+No OSS trading engine may become a second live CFIP engine.
+
+---
+
+# 2. Current repository baseline
+
+Current branch:
+
+\`main\`
+
+Current commit at roadmap creation:
+
+\`58707ff9168501b148ac0cdb097d752a36ef5b1a\`
+
+Current repository state includes:
+
+- modular cTrader Indicator host;
+- one managed strategy identity;
+- one decision authority;
+- one execution authority;
+- explicit broker mutation owners;
+- modular analysis, planning, risk, lifecycle and UI boundaries;
+- deterministic decision/planning/execution/runtime contracts;
+- cTrader compile and repository acceptance workflows;
+- runtime fault containment;
+- staged startup work;
+- regime-aware analysis;
+- pending Stop and Limit paths;
+- automatic market and aggressive paths;
+- OSS production/research separation;
+- Track 19.1 numerical benchmark completed.
+
+Current production numerical OSS package:
+
+\`Skender.Stock.Indicators 2.7.3\`
+
+Current research-only numerical package:
+
+\`FacioQuo.Stock.Indicators 3.0.1\`
+
+The FacioQuo v3 package remains outside the net6 cTrader production assembly.
+
+Current benchmark milestone already completed:
+
+- Track 19.1 FacioQuo comparison;
+- four deterministic market-shape fixtures;
+- 800 bars per scenario;
+- all 10 production OSS indicator families;
+- 12 numerical metrics;
+- timestamp and output-count validation;
+- warm-up-aware parity;
+- max/mean/RMS error;
+- finite-value coverage;
+- batch timing;
+- allocation measurement;
+- CI report generation.
+
+The benchmark completion does **not** constitute production package promotion.
+
+---
+
+# 3. Acceptance hierarchy
+
+CFIP certification is performed in this order:
+
+\`\`\`
+Repository truth
+    ↓
+Architecture / static gates
+    ↓
+Contract tests
+    ↓
+cTrader compile
+    ↓
+Hands-on cTrader runtime
+    ↓
+Broker lifecycle acceptance
+    ↓
+Deterministic replay
+    ↓
+Historical outcome validation
+    ↓
+Local Release
+    ↓
+Cloud portability
+    ↓
+Cloud cBot validation
+    ↓
+Adaptive Learning
+\`\`\`
+
+A later stage cannot waive a failed earlier invariant.
+
+---
+
+# 4. External review issue map
+
+The external review was treated as a risk inventory rather than as proof of
+runtime failure. Its own limitation was that several findings were static
+review findings and still require compile/runtime/replay evidence.
+
+## A-series runtime/execution risks
+
+| ID | Area | Roadmap coverage |
+| --- | --- | --- |
+| A1 | submission retry/backoff and rejection storms | Tracks 2, 16, 23 |
+| A2 | spread/stop semantics | Track 4 |
+| A3 | daily-loss persistence/day authority | Track 4, 16 |
+| A4 | end-of-day behavior | Track 4, 16 |
+| A5 | identity/label scope | Track 3 |
+| A6 | fault isolation / management starvation | Track 1 |
+| A7 | UI execution safety | Track 5 |
+| A8 | cross-instance duplicate protection | Track 3 |
+| A9 | intrabar policy | Track 6 |
+
+## B-series analytical/runtime quality risks
+
+| ID | Area | Roadmap coverage |
+| --- | --- | --- |
+| B1 | hidden clamps / ignored parameters | Track 7 |
+| B2 | M1 trigger semantics | Track 8 |
+| B3 | evidence duplication | Track 9 |
+| B4 | confidence/calibration semantics | Track 9, Track 25 |
+| B5 | MaximumOpenPositions semantics | Track 7 |
+| B6 | swing plateau/equality semantics | Track 8 |
+| B7 | margin duplication | Track 10 |
+| B8 | alert key/delivery semantics | Track 11 |
+| B9 | partial TP retry/event semantics | Track 12 |
+| B10 | outcome persistence/idempotency | Track 11, Track 17 |
+
+## C-series architectural/runtime quality risks
+
+| ID | Area | Roadmap coverage |
+| --- | --- | --- |
+| C1 | indicator acting as executor | Track 13, Track 27-29 |
+| C2 | cosmetic-only modularization | Track 8, Track 14, Track 24 |
+| C3 | timer/safety supervisor | Track 1, Track 14 |
+| C4 | real performance profiling | Track 14 |
+| C5 | broker trading-day model | Track 4 |
+| C6 | code hygiene/dead paths | Track 0, Track 7, Track 26 |
+
+---
+
+# 5. Historical implementation milestones
+
+These phases describe the work that created the current architecture. They are
+retained for continuity and are not to be repeated unless a regression is found.
 
 ## Phase 1 — Canonical source hygiene and architecture contract
 
-Status: complete in this response.
+Status: complete.
 
-Deliverables completed:
+Completed:
 
-- Remove versioned product/source identifiers from production code.
-- Replace versioned execution comments with a centralized, version-neutral trade metadata owner.
-- Align architecture verification with the canonical managed trade label.
-- Add strict production-source residue detection for version-style identifiers.
-- Keep historical version details restricted to this roadmap/workflow documentation.
-- Preserve the separate `oss/` boundary.
-- Keep the CI source/architecture gate as the first protection against regression.
-
-Acceptance:
-
-- No `v<number>`, `Clean<number>`, versioned CFIP strategy identifier, or numbered trade comment remains in production source.
-- Broker identity label is stable and version-neutral.
-- Architecture verification matches the current source tree.
+- version-neutral production identities;
+- historical residue gate;
+- managed trade-label authority;
+- source/architecture gate;
+- separate OSS boundary.
 
 ## Phase 2 — Atomic indicators and analysis modules
 
 Status: complete.
 
-Goal: every indicator, analyzer, scorer, detector, model, and helper has one clear file owner and one responsibility.
+Completed:
 
-Work:
-
-1. Audit every `Analysis/Indicators` file and keep exactly one indicator implementation per file.
-2. Audit native and optional OSS indicator adapters separately.
-3. Split any remaining multi-concern market analyzers into:
-   - market context;
-   - regime detection;
-   - volatility;
-   - trend;
-   - momentum;
-   - volume;
-   - indicator confluence;
-   - decision inputs.
-4. Split structure into explicit owners for:
-   - swing structure;
-   - BOS;
-   - MSS/CHOCH;
-   - displacement;
-   - liquidity;
-   - equal highs/lows;
-   - FVG;
-   - Order Block;
-   - supply/demand;
-   - mitigation;
-   - zone lookup/selection.
-5. Preserve CFIP-specific semantics and closed-bar MTF behavior exactly.
-6. Remove helper clusters that only exist because of the old monolithic source.
-7. Add deterministic numerical fixtures and symmetry checks for BUY/SELL.
-
-Completed in this phase:
-
-- Split market context behaviors into dedicated analysis owners for volume expansion, MACD bias, VWAP bias, healthy volatility, premium/discount and live bias.
-- Split market-frame scoring from frame construction and moved decision reason formatting into the decision boundary.
-- Split liquidity analysis into liquidity-sweep, swing-point and equal-level owners.
-- Split FVG detection/selection from FVG lifecycle/mitigation behavior.
-- Split Order Block confluence helpers from the primary Order Block analyzer.
-- Removed the obsolete monolithic analyzer files and preserved the same method semantics through partial-host ownership.
-
-Acceptance:
-
-- One artifact/responsibility per file.
-- No analyzer owns unrelated analysis domains.
-- No duplicate indicator or structure logic.
-- All source owners are recorded in the editing guide.
+- atomic native indicators;
+- isolated OSS adapters;
+- market context decomposition;
+- structure/liquidity decomposition;
+- FVG lifecycle separation;
+- Order Block confluence separation;
+- modular editing ownership.
 
 ## Phase 3 — Decision and intelligence services
 
 Status: complete.
 
-Goal: turn analysis outputs into immutable decision inputs and deterministic decision services.
+Completed:
 
-Work:
-
-- Separate evidence collection, weighting, consensus, confidence, edge, regime quality, adaptive thresholds, and decision filtering.
-- Keep prediction separate from confirmed decision.
-- Keep outcome telemetry and calibration as observation services, not decision authorities.
-- Add explicit immutable input/output contracts.
-- Add deterministic fixture tests and contradiction tests.
-
-Completed in this phase:
-
-- Replaced callback-bearing decision inputs with an immutable directional evidence snapshot.
-- Split decision score, consensus/share conversion, quality and confidence calculations into dedicated deterministic services.
-- Isolated empirical confidence calibration and higher-timeframe conflict penalties.
-- Split decision evidence collection into timeframe agreement, independent evidence, structural confirmation and direction acceptance owners.
-- Split decision filtering into threshold, confirmation, smart, structure, market and lifecycle gate owners.
-- Split intelligence helpers into fresh-trigger, structural-sequence, entry-location, expected-value and no-trade-regime owners.
-- Removed the multi-concern decision feature module and duplicate reason-formatting implementation.
-- Added deterministic C# contract fixtures and CI execution for them.
-
-Acceptance:
-
-- One decision authority.
-- Same input snapshot produces the same decision.
-- No UI/broker dependency in pure decision services.
+- immutable decision input snapshots;
+- score/consensus/quality/confidence separation;
+- independent evidence collection;
+- ordered decision gates;
+- intelligence helper ownership;
+- deterministic decision contracts.
 
 ## Phase 4 — Planning and risk
 
 Status: complete.
 
-Goal: isolate trade planning from execution and risk side effects.
+Completed:
 
-Work:
-
-- Entry zone selection.
-- Trigger logic.
-- Execution intent.
-- Structural invalidation.
-- Structural SL.
-- Target source interfaces.
-- Target aggregation.
-- Target classification.
-- Target progression.
-- RR validation.
-- Risk sizing.
-- Margin safety.
-- Daily loss guard.
-- Market suitability.
-- Spread/session/event/volatility guards.
-
-Completed in this phase:
-
-- Split plan construction, plan integrity and target progression into explicit owners.
-- Split structural stop planning and minimum required RR.
-- Split target-level construction, candidate merging, target selection, stage selection, target metadata and HTF source classification.
-- Split closed-bar trigger readiness and bullish/bearish trigger scoring.
-- Split risk controls into daily loss, risk policies, margin safety, volume sizing, position counting and auto-plan validation.
-- Split suitability/session/risk-scaling guards into dedicated owners.
-- Added pure target progression, risk percent, risk amount and margin usage policies.
-- Added deterministic planning/risk contract fixtures to CI.
-- Removed empty legacy planning/risk parent modules.
-
-Acceptance:
-
-- Requested entry, trigger, actual fill, SL, TP and broker protection are distinct values/states.
-- SL is protective-only.
-- Target progression is monotonic and path-safe.
+- plan construction decomposition;
+- target policy/evaluator separation;
+- structural stop planning;
+- target metadata and progression ownership;
+- risk policy, sizing and margin separation;
+- planning/risk contracts.
 
 ## Phase 5 — Automatic trading, pending orders and lifecycle
 
 Status: complete.
 
-Goal: isolate every broker-facing behavior while keeping one mutation boundary.
+Completed:
 
-Work:
-
-- Automatic market execution.
-- Aggressive execution.
-- Continuation stop placement.
-- Reversal limit placement.
-- Broker mutation coordinator.
-- Broker identity.
-- Position/pending reconciliation.
-- Lifecycle handlers.
-- Missing-protection recovery.
-- Partial close.
-- Break-even.
-- Dynamic target progression.
-- Reversal/exhaustion/invalidation handling.
-- Restart/reconnect adoption.
-
-Completed in this phase:
-
-- Centralized market-order, pending-order, stop-loss, take-profit, position-close and protection mutations into explicit broker mutation owners under Trading/Execution.
-- Removed direct broker mutation calls from market execution, aggressive execution, pending placement and lifecycle orchestration callers.
-- Moved executable plan reconstruction out of the broker mutation boundary.
-- Split execution runtime state into auto-trading state, lifecycle state, target-stage state and trade-label formatting owners.
-- Split broker reconciliation and lifecycle recovery helpers into dedicated modules.
-- Split pending-fill plan construction from pending-fill protection recovery and event orchestration.
-- Added deterministic broker confirmation/adoption policy and execution contract fixtures.
-- Added static CI enforcement that broker mutation APIs cannot escape the approved mutation owners.
-
-Acceptance:
-
-- Broker-confirmed state is authoritative.
-- Rejected mutations never become synthetic state.
-- Pending order is never treated as a position before broker confirmation.
-- Exactly one broker mutation boundary exists.
+- market execution mutation boundary;
+- pending Stop/Limit mutation boundaries;
+- broker mutation ownership;
+- broker reconciliation;
+- lifecycle recovery;
+- partial close;
+- break-even;
+- target progression;
+- restart/adoption boundaries.
 
 ## Phase 6 — Presentation and UI
 
 Status: complete.
 
-Goal: presentation becomes a pure consumer of authoritative state.
+Completed:
 
-Work:
-
-- Chart object cleanup.
-- Signal rendering.
-- Plan lines.
-- Plan labels.
-- Prediction rendering.
-- Pending-order rendering.
-- Outcome markers.
-- Historical rendering.
-- Panel layout.
-- Panel semantic sections.
-- Theme/visual settings.
-- Popup.
-- Execution controls.
-
-Completed in this phase:
-
-- Split plan-line rendering into coordinator, line renderer, object clearer/remover owners.
-- Split plan-label rendering into coordinator, anchor calculator, renderer and remover owners.
-- Split popup rendering, expiration cleanup and removal into explicit owners.
-- Moved execution controls under the UI boundary.
-- Kept chart/panel/popup modules free of broker mutation and decision-gate authority.
-- Added static CI enforcement for UI authority boundaries.
-- Preserved the existing semantic panel sections and chart render responsibilities without introducing a second source of trading truth.
-
-Acceptance:
-
-- UI never decides whether a trade should exist.
-- UI never mutates broker state directly.
-- Each renderer has one file owner and one rendering responsibility.
+- chart render ownership;
+- plan lines/labels;
+- popup;
+- panel sections;
+- execution controls;
+- UI authority gate.
 
 ## Phase 7 — OSS research, adapters and benchmarks
 
 Status: complete.
 
-Goal: use strong OSS where it materially improves numerical analysis without
-importing a second trading engine.
+Completed:
 
-Completed in this phase:
-
-- Formalized Skender.Stock.Indicators 2.7.3 as the current production OSS numerical dependency because its .NET Standard 2.0 asset is compatible with the net6.0 cTrader target.
-- Kept FacioQuo.Stock.Indicators 3.0.1 in an isolated .NET 8 benchmark project because the current v3 package line cannot be consumed by the net6.0 production target.
-- Added deterministic v2/v3 numerical parity checks for RSI, MACD histogram, Bollinger %B, MFI, Stochastic K/D and SuperTrend.
-- Added complete-series coverage checks for all 10 OSS indicators used by the production confluence adapter.
-- Added batch-performance measurements to the OSS benchmark.
-- Added a source-bar-aware OSS snapshot cache so repeated calculations for an unchanged bar reuse the complete confluence result instead of recalculating the indicator suite.
-- Removed the redundant symmetric flag from the OSS directional-vote helper.
-- Updated the OSS boundary, package register and benchmark documentation so production/research dependency status is explicit.
-- Added verifier checks preventing the research-only v3 package from leaking into production source and requiring both package pins in the benchmark project.
-
-Acceptance:
-
-- Every current production OSS component has an upstream source, exact package version, license/attribution, target-runtime compatibility evidence and an isolated adapter owner.
-- Deterministic numerical parity and extended coverage are enforced by the OSS benchmark.
-- Performance is measured by the benchmark.
-- No OSS trading engine becomes a second decision, risk or execution authority.
-- Production cTrader build remains dependency-minimal and net6-compatible.
-- v3 migration remains blocked until a maintained package line can target the actual production runtime.
+- Skender 2.7.3 production boundary;
+- FacioQuo 3.0.1 research boundary;
+- OSS snapshot caching;
+- isolated benchmark project;
+- package and license documentation;
+- initial numerical parity and performance measurements.
 
 ## Phase 8 — Static verification and contract testing
 
 Status: complete.
 
-Goal: make architectural and behavioral drift mechanically detectable.
+Completed:
 
-Completed in this phase:
-
-- Extended the architecture verifier with explicit Phase 8 contract-fixture and analysis/planning boundary checks.
-- Added deterministic BUY/SELL consensus symmetry and confidence repeatability checks.
-- Extracted platform-neutral SL/TP directionality and minimum-distance invariants into `PriceProtectionRule` and wired production validation to it.
-- Added lifecycle transition invariants as an explicit policy and executable contract fixture, including safe same-state idempotency and blocked terminal misuse.
-- Added a real one-shot `LifecycleEventIdempotencyGuard` and integrated it into position-open, pending-create, pending-fill, pending-cancel and position-close handlers.
-- Kept legitimately repeatable position/pending modification events outside the one-shot guard.
-- Reused the existing decision/planning/execution contract projects so the invariants run inside the normal cTrader CI workflow.
-
-Acceptance:
-
-- CI rejects architectural regression before cTrader testing.
-- Static checks cover the same boundaries documented in the architecture.
-- BUY/SELL symmetry, SL/TP directionality, lifecycle transitions and duplicate-event behavior are executable contracts.
+- architecture contract gates;
+- BUY/SELL symmetry;
+- confidence repeatability;
+- SL/TP directionality;
+- lifecycle transition invariants;
+- lifecycle event idempotency.
 
 ## Phase 9 — cTrader compile and runtime acceptance
 
-Status: repository acceptance complete; live cTrader validation required.
-
-Goal: prove the finished source on the target cTrader environment.
-
-Repository acceptance completed in this phase:
-
-- Extended the cTrader CI workflow with a dedicated runtime-acceptance contract executable.
-- Added deterministic contracts for MTF context integrity, market/pending broker confirmation, rejection handling, fill-envelope symmetry, initial SL/TP directionality, managed break-even protection, monotonic target progression, lifecycle flows, and lifecycle event idempotency.
-- Separated initial protective-stop validation from post-entry managed-stop validation so break-even/profit-lock stops can move into protected profit while never crossing the current market.
-- Fixed normal automatic-market rejection handling so broker error information is preserved instead of being replaced by a misleading null-result state.
-- Kept broker-confirmed state as the only accepted execution state.
-- Bound partial take-profit mutation to the active plan position instead of an arbitrary managed position.
-- Added explicit break-even rejection recovery after a confirmed partial close; invalid broker distance is not misclassified as a rejection.
-- Made live broker protection validate managed stops against current market price, allowing safe post-entry profit-lock/trailing stops and retrying unresolved protection mutations.
-
-Hands-on cTrader acceptance remains the only open part of this phase and requires the actual target terminal and broker session. Repository CI cannot reproduce the cTrader chart UI, live broker server, order-fill timing, slippage, reconnection, or terminal resource profile. Those checks remain explicitly required before this phase can be marked complete.
-
-Work:
-
-- Compile against the target installed Automate API.
-- Verify all relevant chart timeframes.
-- Verify closed-bar MTF synchronization.
-- Verify chart/panel/popup rendering.
-- Verify automatic market execution.
-- Verify pending orders.
-- Verify rejection/slippage behavior.
-- Verify protection recovery.
-- Verify partial close and break-even.
-- Verify restart/reconnect reconciliation.
-- Verify reversal, invalidation and end-of-day handling.
-- Review runtime memory/allocation behavior.
-
-Acceptance:
-
-- No known compile errors.
-- No known runtime authority violations.
-- All critical trading scenarios pass controlled acceptance.
-
-## Phase 10 — Final hardening
-
-Status: complete in this response.
-
-Goal: freeze the architecture without freezing legitimate future extension.
+Status: repository acceptance complete; hands-on terminal/broker acceptance remains
+required.
 
 Completed:
 
-- Removed the obsolete empty broker mutation coordinator stub.
-- Removed the live SL accessor fallback that could substitute the desired plan stop for missing broker state.
-- Hardened live-plan SL hit detection so a missing or unconfirmed broker SL cannot create a synthetic broker exit.
-- Made broker-state synchronization validate SL against the current market and TP against entry direction before exposing it as authoritative state.
-- Hardened position-open and position-modified lifecycle handlers to classify invalid broker protection as recovery state.
-- Hardened live broker protection reconciliation to inspect actual broker SL/TP validity before clearing recovery.
-- Reduced redundant broker stop/target mutations during protection reconciliation.
-- Added architecture gates that enforce broker-state authority, protection validation, recovery handling and removal of the obsolete stub.
-- Updated the architecture and trading-safety documentation with the hardened broker-state rules.
-- Added the operator/maintenance guide for repository build, cTrader acceptance and maintenance boundaries.
-- Hardened aggressive-entry fill-envelope rejection so an invalid fill requests closure and enters recovery only when the broker close is rejected.
-- Made successful execution with failed broker protection visibly enter an explicit `RECOVERY` auto-trading state instead of presenting a clean `EXECUTED` state.
+- runtime contract workflow;
+- MTF integrity;
+- broker confirmation;
+- rejection handling;
+- fill-envelope validation;
+- protection recovery;
+- partial-close/break-even contracts;
+- lifecycle contracts.
 
-Acceptance:
+Still requires hands-on cTrader/broker validation.
 
-- Repository source, architecture checks and modular ownership remain intact.
-- Current main commit passes the source/architecture, cTrader compile and runtime acceptance workflows.
-- Phase 9 remains explicitly open only for hands-on cTrader terminal/broker validation; Phase 10 repository hardening is complete.
+## Phase 10 — Final hardening
+
+Status: complete.
+
+Completed:
+
+- broker-state authority hardening;
+- missing-SL protection safeguards;
+- live protection validation;
+- aggressive fill-mismatch handling;
+- explicit RECOVERY state.
+
 ## Phase 11 — Deep runtime decomposition and oversized-module audit
 
 Status: complete.
 
-Goal: remove remaining dense runtime orchestration while preserving behavior and enforcing the current production-module ceiling.
-
 Completed:
 
-- Reduced Runtime/Calculation/CalculationCycle.cs to a thin orchestration entrypoint.
-- Isolated calculation preparation and early-exit state handling in CalculationPreparation.cs.
-- Isolated newly-closed-bar MTF analysis, decision construction, prediction refresh and historical-signal synchronization in CalculationClosedBar.cs.
-- Isolated high-confidence, restriction and smart-decision alert state handling in CalculationDecisionAlerts.cs.
-- Isolated tick-level reaction, recovery, automatic-plan retry, execution-model refresh, broker synchronization, execution/lifecycle processing and final presentation in CalculationLiveCycle.cs.
-- Added static ownership checks requiring the thin Calculate() boundary and its extracted runtime modules.
-- Audited all 333 production C# files against the current 20 KiB ceiling; no production file exceeds the limit.
-- Corrected architecture documentation so the documented module ceiling matches the enforced verifier ceiling.
-
-Acceptance:
-
-- Calculation-cycle early-return behavior remains preserved, including the MTF-data early exit.
-- Calculate() owns orchestration only.
-- Extracted calculation owners are explicit and regression-protected by static verification.
-- No production .cs file exceeds 20 KiB.
-
-Next: continue the deep oversized-module audit from the remaining near-ceiling planning, analysis, trading and UI files, prioritizing modules whose single method still carries multiple state transitions or concerns.
-
+- Calculate decomposition;
+- closed-bar/live-cycle extraction;
+- alert-state extraction;
+- production file-size ceiling;
+- ownership gates.
 
 ## Phase 12 — Market-frame decomposition
 
 Status: complete.
 
-Goal: separate market-frame evidence collection from scoring/quality calculation while keeping the market-frame analyzer as a thin composition boundary.
-
 Completed:
 
-- Split market-frame evidence construction from score, direction and quality calculation.
-- Kept the existing indicator, structure, liquidity, zone, market-context and OSS evidence formulas unchanged.
-- Preserved BUY/SELL symmetry and the existing score weights, thresholds and quality formula.
-- Reduced MarketFrameAnalyzer.cs to a thin orchestration owner.
-- Added static ownership checks for the three-part market-frame boundary.
-- Updated the editing guide and architecture contract to reflect the new ownership.
-
-Acceptance:
-
-- Evidence construction and scoring have separate source-file owners.
-- MarketFrameAnalyzer contains orchestration only.
-- Existing score/direction/quality behavior remains in the scoring owner.
-- No production file exceeds the enforced 20 KiB ceiling.
-
-Next: continue with the largest remaining planning/trading modules, prioritizing PlanBuilder and TargetSelector where selection, validation and state construction are still concentrated.
-
+- market-frame evidence construction;
+- frame scoring;
+- quality/direction ownership.
 
 ## Phase 13 — Trade-plan construction decomposition
 
 Status: complete.
 
-Goal: isolate entry/stop/risk preparation, target validation and final Plan materialization without changing trade-plan semantics.
-
 Completed:
 
-- Reduced PlanBuilder.cs to an orchestration owner.
-- Isolated execution/entry validation, structural-stop selection, fallback stop handling and risk bounds in PlanInputPreparation.cs.
-- Isolated fixed TP1..TP4 stage selection, RR validation, HTF reward requirements and TP1 obstacle checks in PlanTargetPreparation.cs.
-- Isolated Plan field construction, RR derivation and target metadata enrichment in PlanMaterialization.cs.
-- Preserved fixed stage-slot alignment and existing target/RR validation semantics.
-- Added static ownership checks for the trade-plan construction boundary.
-- Updated editing ownership documentation.
-
-Acceptance:
-
-- BuildPlan does not directly calculate stops, targets or target metadata.
-- Entry, stop, target selection and materialization have explicit owners.
-- Requested/ideal/actual entry, stop and TP stages remain distinct.
-- No production file exceeds 20 KiB.
-
-Next: audit TargetSelector itself and then the remaining large trading/validation modules, with special attention to duplicated target-obstacle and reward-path rules.
-
+- PlanInputPreparation;
+- PlanTargetPreparation;
+- PlanMaterialization;
+- PlanBuilder orchestration.
 
 ## Phase 14 — Target selection decomposition
 
 Status: complete.
 
-Goal: separate stage orchestration from target-selection policy and candidate eligibility/scoring while preserving fixed TP1..TP4 slot semantics.
-
 Completed:
 
-- Reduced TargetSelector.cs to stage orchestration.
-- Isolated progressive RR requirements, HTF-reward stage policy and previous-stage lookup in TargetSelectionPolicy.cs.
-- Isolated candidate validity, age, HTF quality, RR, extension, spacing, obstacle/path checks and target scoring in TargetCandidateEvaluator.cs.
-- Preserved four fixed target slots with null gaps and stage-index trustworthiness.
-- Preserved existing candidate score, HTF/liquidity/zone bonuses, hit weighting, nearest bias and stage weighting.
-- Added static ownership checks for target selection.
-- Updated editing ownership documentation.
-
-Acceptance:
-
-- TargetSelector owns stage iteration only.
-- Candidate filtering/scoring is owned by one module.
-- Stage policy is owned by one module.
-- No target-selection logic is duplicated in PlanBuilder.
-
-Next: audit the remaining near-ceiling structural/planning module OrderBlockCandidateBuilder, then inspect reward-path validation for overlap with target obstacle logic.
-
+- stage policy;
+- candidate evaluator;
+- fixed TP1..TP4 semantics.
 
 ## Phase 15 — Order-block candidate decomposition
 
 Status: complete.
 
-Goal: separate order-block geometry, impulse/structure evidence, mitigation and quality calculation while preserving candidate semantics.
-
 Completed:
 
-- Reduced OrderBlockCandidateBuilder.cs to candidate orchestration.
-- Isolated displacement and structure-break evidence in OrderBlockEvidenceBuilder.cs.
-- Isolated managed-zone mitigation and remaining-width checks in OrderBlockMitigationGuard.cs.
-- Isolated order-block quality calculation in OrderBlockQualityCalculator.cs.
-- Preserved the caller-supplied ATR for displacement and impulse-quality calculations.
-- Preserved liquidity-sweep and FVG-confluence ownership in OrderBlockConfluenceAnalyzer.cs.
-- Added static ownership checks for order-block construction.
-- Updated editing ownership documentation.
-
-Acceptance:
-
-- Candidate construction has explicit geometry, evidence, mitigation and quality owners.
-- Existing direction, break, mitigation, confluence and quality rules remain unchanged.
-- No production file exceeds 20 KiB.
-
-Next: inspect Trading/Validation/RewardPathValidation.cs together with target obstacle consumers to remove overlapping reward-path rules without changing trade rejection behavior.
-
+- geometry;
+- structure/displacement evidence;
+- mitigation;
+- quality;
+- confluence ownership.
 
 ## Phase 16 — Reward-path validation decomposition
 
 Status: complete.
 
-Goal: separate reward-path geometry, local obstacle scanning, target obstacle checks, higher-timeframe path validation and HTF target presence without changing rejection semantics.
-
 Completed:
 
-- Removed the monolithic RewardPathValidation.cs owner.
-- Isolated opposing-zone reward-path scanning in RewardPathZoneObstacleScanner.cs.
-- Isolated path intersection semantics in RewardPathGeometryRule.cs.
-- Isolated swing/equal-level target obstacle checks in TargetObstacleValidator.cs.
-- Isolated M15/M30/H1/H4 reward-path traversal in HigherTfRewardPathValidator.cs.
-- Isolated HTF-target presence validation in HtfTargetPresenceValidator.cs.
-- Preserved the existing obstacle clearance, FVG, Order Block and equal-high/low rules.
-- Added static ownership checks and updated editing ownership documentation.
-
-Acceptance:
-
-- Reward-path rules have explicit owners with no monolithic implementation file.
-- Target selection consumes the same obstacle authorities rather than duplicating their formulas.
-- Existing trade-rejection behavior remains unchanged.
-- No production file exceeds 20 KiB.
-
-Next: continue the remaining near-ceiling audit, prioritizing Trading/LiveManagement/TargetProgression.cs and the automatic-market pre-trade/execution modules before the final hands-on cTrader validation pass.
-
+- reward-path geometry;
+- zone obstacle scanning;
+- target obstacle validation;
+- HTF reward-path traversal;
+- HTF target presence.
 
 ## Phase 17 — Live target progression decomposition
 
 Status: complete.
 
-Goal: separate live target candidate eligibility/scoring from stage orchestration and isolate plan RR recalculation.
-
 Completed:
 
-- Reduced TargetProgression.cs to live target stage/state orchestration.
-- Isolated live candidate eligibility, spacing, obstacle checks and scoring in LiveTargetCandidateEvaluator.cs.
-- Isolated TP1..TP4 RR recomputation in PlanRiskRewardRecalculator.cs.
-- Preserved unhit-target-only behavior, monotonic spacing, maximum RR, HTF/liquidity filters and obstacle rejection.
-- Preserved target metadata refresh and HTF target counting after successful repricing.
-- Added static ownership checks and updated editing ownership documentation.
-
-Acceptance:
-
-- Live target progression keeps a single orchestration owner.
-- Candidate scoring/filtering has one owner.
-- Plan RR derivation has one owner.
-- No duplicate target progression authority is introduced.
-- No production file exceeds 20 KiB.
-
-Next: audit AutomaticMarketPreTrade.cs and AutomaticMarketBrokerExecution.cs as a single execution chain, preserving broker mutation ownership and rejection/recovery semantics.
-
+- live target candidate evaluator;
+- RR recalculation;
+- live target stage orchestration.
 
 ## Phase 18 — Automatic market execution decomposition
 
 Status: complete.
 
-Goal: separate pre-trade eligibility, execution preparation, submission validation, broker fill adoption and post-fill target resolution while preserving one broker mutation boundary.
-
 Completed:
 
-- Reduced AutomaticMarketPreTrade.cs to orchestration.
-- Isolated auto-trading eligibility gates and position-capacity checks.
-- Isolated market quote, executable-plan preparation, entry-envelope validation and volume sizing.
-- Isolated execution-intent validation before broker submission.
-- Isolated broker-confirmed fill adoption and fill-envelope reconciliation.
-- Isolated post-fill target resolution and invalid-target exit handling.
-- Kept market-order mutation in BrokerMarketOrderMutation.cs and broker protection in BrokerProtectionCoordinator.cs.
-- Preserved explicit RECOVERY state when broker protection cannot be established.
-- Added static ownership checks and updated editing ownership documentation.
-
-Acceptance:
-
-- Pre-trade eligibility, execution preparation and broker execution have explicit owners.
-- Broker-confirmed state remains authoritative.
-- Rejected mutations never become synthetic state.
-- Fill mismatch and post-fill target failure continue to enter the existing recovery/exit paths.
-- No production file exceeds 20 KiB.
-
-Next: audit aggressive execution and pending placement for the same preparation/mutation/recovery boundary, then perform the final cross-path execution consistency review.
-
+- eligibility;
+- execution preparation;
+- submission validation;
+- fill adoption;
+- post-fill target resolution.
 
 ## Phase 19 — Aggressive execution decomposition
 
 Status: complete.
 
-Goal: separate aggressive-entry eligibility, execution parameter construction and accepted-fill handling without changing aggressive-specific execution semantics.
-
 Completed:
 
-- Reduced AggressivePreTradePreparation.cs to orchestration.
-- Isolated aggressive eligibility, capacity, pending-order, confidence, smart-agreement and suitability gates.
-- Isolated aggressive entry/ATR/structural-stop/target/volume preparation.
-- Isolated accepted-fill envelope validation, post-fill rebuild, managed-plan adoption and live target enrichment.
-- Preserved the original pre-submit ExecutionIntent for actual-fill validation.
-- Kept market-order mutation in BrokerMarketOrderMutation.cs and broker protection in the existing protection owner.
-- Preserved aggressive fill-mismatch close/recovery handling.
-- Added static ownership checks and updated editing ownership documentation.
-
-Acceptance:
-
-- Aggressive pre-trade and execution concerns have explicit owners.
-- Actual-fill validation consumes the original submission intent.
-- Broker-confirmed state remains authoritative.
-- Existing aggressive protection/recovery state remains intact.
-- No production file exceeds 20 KiB.
-
-Next: decompose pending-order continuation-stop and reversal-limit placement, then compare all automatic execution paths for shared invariants and accidental divergence.
-
+- aggressive eligibility;
+- entry/SL/TP/volume preparation;
+- accepted-fill validation;
+- managed-plan adoption.
 
 ## Phase 20 — Pending placement decomposition
 
 Status: complete.
 
-Goal: separate pending stop/limit preparation from placement orchestration while keeping shared submission validation and broker confirmation centralized.
-
 Completed:
 
-- Reduced ContinuationStopPlacement.cs to preparation/validation/mutation sequencing.
-- Isolated continuation-stop trigger, structural SL/TP and volume preparation.
-- Reduced ReversalLimitPlacement.cs to preparation/validation/mutation sequencing.
-- Isolated reversal-limit ideal-entry resolution, structural SL/TP and volume preparation.
-- Centralized ExecutionIntent validation, safety guards and pending expiration in PendingSubmissionValidator.cs.
-- Kept broker stop/limit mutations in their explicit broker mutation owners.
-- Preserved broker-confirmed pending-order adoption: rejected results do not create synthetic pending state.
-- Preserved Stop-versus-Limit entry semantics and existing post-success plan cleanup.
-- Added static ownership checks and updated editing ownership documentation.
-
-Acceptance:
-
-- Continuation stop and reversal limit have explicit preparation owners.
-- Shared submission validation has one owner.
-- Pending placement mutation remains inside the broker mutation boundary.
-- Existing lifecycle handlers remain the broker-confirmed source of pending creation/fill/cancellation state.
-- No production file exceeds 20 KiB.
-
-Next: perform a cross-path automatic execution consistency audit across Market, Aggressive and Pending, then finish the remaining near-ceiling UI/Panel and lifecycle modules.
-
+- Continuation Stop preparation;
+- Reversal Limit preparation;
+- shared pending submission validation;
+- broker-confirmed pending adoption.
 
 ## Phase 21 — Cross-path automatic execution consistency
 
 Status: complete.
 
-Goal: enforce common execution invariants across market, aggressive and pending paths without collapsing their distinct setup semantics.
-
 Completed:
 
-- Verified Market and Aggressive paths both build and validate ExecutionIntent before mutation.
-- Verified Market and Aggressive paths both use the broker-confirmation policy before adopting a position.
-- Verified both market paths retain explicit broker-protection handling.
-- Verified pending Stop and Limit paths build/validate pending intents and require broker-confirmed pending-order adoption.
-- Removed duplicate daily-loss and repeated setup-strength evaluation from SmartPendingOrderOrchestrator.cs by caching the existing boolean results.
-- Preserved distinct Stop-versus-Limit and Normal-versus-Aggressive policies.
-- Added static cross-path execution invariant checks.
-
-Acceptance:
-
-- No execution path bypasses its explicit broker mutation owner.
-- Broker rejection cannot create synthetic position/pending state.
-- ExecutionIntent validation precedes broker submission on all automatic entry paths.
-- Protection remains an explicit recovery boundary after accepted fills.
-- No production file exceeds 20 KiB.
-
-Next: continue the remaining near-ceiling lifecycle/UI audit, prioritizing LiveFillReconciliation and the large panel row renderers, then run a final repository-wide responsibility and dead-code sweep.
-
+- common intent validation;
+- common broker confirmation;
+- common protection boundary;
+- Stop/Limit distinction;
+- Market/Aggressive distinction;
+- cross-path invariant gate.
 
 ## Phase 22 — Broker protection state ownership
 
 Status: complete.
 
-Goal: centralize broker SL/TP validity evaluation so lifecycle consumers share one protection-state authority.
-
 Completed:
 
-- Added BrokerProtectionStateEvaluator.cs as the single broker protection validity owner.
-- Updated BrokerStateSnapshot, PositionOpenedHandler and PositionModifiedHandler to consume the shared evaluator.
-- Preserved market-direction and managed-stop validation against actual broker position state.
-- Preserved the configured SyncBrokerTakeProfit semantics.
-- Added static duplication checks for the protection-state boundary.
-- Updated editing ownership documentation.
-
-Acceptance:
-
-- Broker protection validity is calculated in one lifecycle owner.
-- Consumer handlers do not recreate SL/TP validity formulas.
-- Broker state remains authoritative for protection recovery decisions.
-- No production file exceeds 20 KiB.
-
-Next: audit the large UI panel renderers for responsibility density and complete the repository-wide dead-code / duplicate-owner sweep before final cTrader hands-on validation.
-
+- BrokerProtectionStateEvaluator;
+- unified SL/TP validity evaluation;
+- lifecycle consumers migrated.
 
 ## Phase 23 — Panel renderer decomposition
 
 Status: complete.
 
-Goal: reduce large panel row renderers to pure presentation composition and explicit row-section owners.
-
 Completed:
 
-- Reduced PanelOverviewRowsRenderer.cs to composition of state, execution and diagnostic row sections.
-- Isolated overview state/synchronization/session/suitability rows.
-- Isolated overview risk/execution/order/pivot rows.
-- Isolated overview permission/spread/engine diagnostics.
-- Reduced PanelTradePlanRowsRenderer.cs to composition of level and live-position row sections.
-- Isolated entry/SL/TP/reward-model rows.
-- Isolated live RR/position/smart-exit rows.
-- Preserved all existing text, visibility conditions, values and colors.
-- Added static ownership checks and updated editing ownership documentation.
-
-Acceptance:
-
-- UI renderers retain presentation authority only.
-- No decision, risk or broker mutation logic is introduced into row modules.
-- Large row files are reduced to composition boundaries.
-- No production file exceeds 20 KiB.
-
-Next: complete the repository-wide responsibility/dead-code sweep, including remaining near-ceiling lifecycle/execution files and duplicated helper patterns, then prepare the final cTrader hands-on validation checklist.
-
+- overview renderer decomposition;
+- trade-plan renderer decomposition;
+- pure presentation row ownership.
 
 ## Phase 24 — Execution-zone decomposition
 
 Status: complete.
 
-Goal: separate execution-zone candidate discovery from quality enrichment while preserving the existing priority hierarchy and entry-zone semantics.
-
 Completed:
 
-- Reduced ExecutionZoneBuilder.cs to orchestration.
-- Isolated M5/M15 FVG and Order Block candidate discovery, overlap selection and swing fallback.
-- Isolated retest, premium/discount and MTF directional quality adjustments.
-- Removed duplicate terminal assignments of tolerance and triggerBuffer.
-- Preserved source labels, base qualities, MTF bonus, swing fallback, ideal midpoint, tolerance and breakout buffer semantics.
-- Added static ownership checks and updated editing ownership documentation.
+- candidate discovery;
+- overlap selection;
+- retest/premium-discount quality;
+- MTF quality adjustment.
 
-Acceptance:
-
-- Execution-zone construction has explicit candidate and quality owners.
-- ExecutionModelBuilder remains the sole execution-model materializer.
-- No alternate entry engine is introduced.
-- No production file exceeds 20 KiB.
-
-Next: audit FVG lifecycle/detection and structural-stop candidate selection, then perform the final duplicate/dead-code sweep.
-
-
-## Phase 25 — FVG lifecycle decomposition
+## Phase 25 — Additional oversized-module and duplicate-owner cleanup
 
 Status: complete.
 
-Goal: separate FVG mitigation state and quality calculation from lifecycle orchestration without changing zone validity semantics.
-
 Completed:
 
-- Reduced FvgLifecycleAnalyzer.cs to orchestration.
-- Isolated partial/full mitigation behavior and managed range updates.
-- Isolated normalized-gap, remaining-ratio and two-bar quality calculation.
-- Preserved FvgInvalidateOnFullFill and partial-mitigation behavior, including collapsed zero-width exclusion when soft invalidation is configured.
-- Preserved FVG source-kind, age and quality semantics consumed by detection and execution planning.
-- Added static ownership checks and updated editing ownership documentation.
+- remaining near-ceiling modules reduced where required;
+- duplicate helper patterns removed;
+- ownership documentation updated.
 
-Acceptance:
-
-- FVG mitigation has one implementation owner.
-- FVG quality has one implementation owner.
-- Detection continues to consume the same managed-zone API.
-- No production file exceeds 20 KiB.
-
-Next: audit StructuralStopCandidateSelector and remaining validation modules, then perform the repository-wide owner/dead-code sweep.
-
-
-## Phase 26 — Structural stop selection decomposition
+## Phase 26 — Regime-aware intelligence preparation
 
 Status: complete.
 
-Goal: separate structural-stop candidate evaluation from final stop materialization while keeping one SL selection authority.
-
 Completed:
 
-- Reduced StructuralStopCandidateSelector.cs to orchestration.
-- Isolated risk-envelope eligibility, per-timeframe ATR resolution and candidate scoring.
-- Isolated final selected-candidate buffer/materialization.
-- Preserved spread-aware minimum risk, maximum structural risk, minimum quality, HTF bonuses, zone/liquidity bonuses, reward-path penalty and preferred-risk balancing.
-- Preserved timeframe-specific stop-buffer semantics.
-- Added static ownership checks and updated editing ownership documentation.
+- regime classification;
+- regime snapshots;
+- regime-aware decision quality;
+- no-trade gating;
+- pending/plan synchronization;
+- OSS cache improvements.
 
-Acceptance:
-
-- Structural SL selection has one orchestration owner and explicit evaluation/finalization owners.
-- No alternate structural-stop calculation engine is introduced.
-- Existing stop directionality and risk limits remain unchanged.
-- No production file exceeds 20 KiB.
-
-Phase 27 completed the final repository-wide duplicate-owner/dead-code sweep; only hands-on cTrader validation remains.
-
-
-## Phase 27 — Final repository-wide ownership/dead-code sweep
+## Phase 27 — Smart fusion hardening
 
 Status: complete.
 
-Goal: close the remaining architecture loop without introducing another broad refactor cycle.
-
 Completed:
-- Audited the remaining near-ceiling execution, chart, lifecycle and analysis modules and retained modules whose size is explained by one coherent responsibility.
-- Reduced the remaining multi-concern plan-integrity and signal/decision validation modules to explicit single-purpose owners.
-- Preserved the existing structural-stop decomposition instead of re-splitting already-correct ownership.
-- Added verifier coverage for final owner boundaries and explicitly obsolete production paths.
-- Updated the maintenance/editing ownership documentation.
-- GitHub Actions passed on the final PR revision: Source and architecture checks, Runtime acceptance contracts and cTrader compile.
 
-Acceptance boundary:
-- Repository source architecture is complete and regression-gated.
-- No production module exceeds the enforced 20 KiB ceiling.
-- Remaining release work is hands-on cTrader terminal/broker validation required by the acceptance matrix; further code changes should be driven by a concrete runtime finding.
+- evidence caps;
+- BUY/SELL symmetry;
+- quality-weighted frame contributions;
+- deterministic smart-fusion contract;
+- prevention of below-threshold directional retention.
 
-
-## Phase 28 — Local release gate definition and readiness package
+## Phase 28 — Runtime resilience foundation
 
 Status: complete.
 
-Goal: make the local-first release sequence explicit and prevent unfinished execution behavior from being carried into Cloud work.
+Completed:
+
+- calculation fault containment;
+- fail-closed automatic execution after recoverable runtime failure;
+- preservation of fatal process exceptions;
+- diagnostic logging.
+
+## Phase 29A — Startup and panel resilience
+
+Status: superseded/iterated during host compatibility investigation.
+
+The initial bootstrap implementation was removed when terminal behavior showed that
+the added host API surface was not compatible with the installed environment.
+
+## Phase 29B — Accepted cTrader host compatibility restoration
+
+Status: complete.
 
 Completed:
 
-- Added `docs/LOCAL-RELEASE-GATE.md` with a deterministic local acceptance sequence.
-- Defined demo-first and controlled-live safety progression.
-- Defined separate acceptance scenarios for market, aggressive, pending Stop/Limit, protection, lifecycle, reconciliation and recovery.
-- Defined MTF/anti-lookahead, runtime resource and evidence requirements.
-- Defined hard release blockers for synthetic broker state, duplicate execution, protection failures and lifecycle divergence.
-- Explicitly deferred Adaptive Learning from local release.
-- Established Local Release as the prerequisite milestone for all Cloud work.
-- Established Cloud migration as a separate cBot-host milestone because cTrader Cloud execution is for cBots, not custom indicators.
+- minimal known-good Indicator host contract;
+- removal of unverified host diagnostics;
+- preservation of calculation-level containment.
 
-Acceptance:
-
-- One documented local release gate exists.
-- Execution safety blockers are explicit.
-- Adaptive Learning cannot silently enter the local production scope.
-- Cloud work cannot begin until Local Release is complete.
-
-## Remaining implementation phases
-
-### Phase 29 — Hands-on cTrader terminal baseline
+## Phase 29C — Staged startup
 
 Status: in progress.
 
-Runtime smoke test completed:
-- Production `.algo` loads successfully in the target LiteFinance cTrader terminal.
-- CFIP initializes and is visibly running on-chart without the previously observed compile/startup blocker.
-- The local runtime is now ready for controlled functional acceptance.
-
-Remaining acceptance work:
-- Verify M1/M5/M15/M30/H1/H4/D1/W1.
-- Verify MTF boundaries and closed-bar synchronization.
-- Verify panel, popup, chart objects and alerts.
-- Verify auto-trading runtime state and permission behavior.
-- Capture CPU/memory/resource baseline.
-
-Goal: validate the production assembly on the actual target cTrader terminal and broker/demo environment.
-
-Goal: validate the production assembly on the actual target cTrader terminal and broker/demo environment.
-
-Completed in this phase:
-
-- Verified the target LiteFinance cTrader Windows terminal and its local Algo API files.
-- Verified the repository builds successfully against the official cTrader.Automate 1.0.21 SDK.
-- Corrected the production indicator project to consume the pinned cTrader.Automate package instead of an environment-dependent Documents\\cAlgo\\API\\cAlgo.API.dll reference.
-- Kept the CI project aligned with the same SDK and excluded generated bin/obj source artifacts from its compile glob.
-- Confirmed the SDK used by the repository exposes direct trading methods on Indicator, while the separately installed local API DLL exposes a smaller API surface; this remains a runtime compatibility item to validate in the terminal.
-
-Work:
-
-- Compile with the target installed Automate API.
-- Attach to the chart and verify initialization.
-- Verify M1/M5/M15/M30/H1/H4/D1/W1.
-- Verify MTF boundaries and closed-bar synchronization.
-- Verify panel, popup, chart objects and alerts.
-- Verify auto-trading controls and runtime state.
-- Capture CPU/memory/resource baseline.
-
-Acceptance:
-
-- No compile/runtime startup defect.
-- No chart/UI regression that changes trading state.
-- All baseline timeframes operate correctly.
-- Baseline evidence is recorded.
-
-### Phase 29A — Smart analytical fusion refinement
-
-Status: complete.
-
-Goal: improve analytical intelligence and signal quality before execution certification without changing broker authority.
-
 Completed:
-- Quality-weighted timeframe contributions so weak-quality frames cannot dominate consensus solely through raw score magnitude.
-- Correlation-aware independent evidence fusion with diminishing returns across related structure, location, trend/momentum and context/participation evidence families.
-- Smart Quality recalibration to include retest quality and the normalized 0–8 independent-evidence range.
-- Early prediction integrity hardening so ties and below-threshold predictions cannot retain a directional state.
-- Added deterministic contract coverage for evidence caps, BUY/SELL symmetry and quality-weighted frame contributions.
-- Documented the smart-intelligence boundary and empirical-accuracy limitation.
 
-Acceptance:
-- Smart fusion remains deterministic and BUY/SELL symmetric.
-- No broker mutation, risk authority or execution state is modified by this phase.
-- No new user parameter is required for the new fusion rules.
-- Adaptive Learning remains deferred.
-- Higher empirical accuracy remains subject to replay/outcome validation.
+- early panel construction;
+- staged MTF/native initialization;
+- Calculate gating until initialization;
+- runtime timer cleanup.
 
-Next: continue with Phase 30 automatic market execution certification after the local analytical runtime remains stable.
+Remaining:
 
-### Phase 29B — Runtime resilience hardening
+- measure target-terminal cold/warm startup;
+- confirm final live rendering and resource behavior.
 
-Status: complete.
-
-Goal: prevent recoverable calculation faults from silently destroying the live chart state and ensure automatic execution fails closed after a runtime fault.
-
-Completed:
-- Added a dedicated runtime fault boundary for indicator calculation.
-- Captured unhandled indicator exceptions through the cTrader `OnException(Exception)` hook.
-- Logged exception type, message, stack trace, source and chart calculation index.
-- Disabled automatic trading and automatic pending-order execution after a recoverable runtime fault.
-- Preserved broker-confirmed state rather than manufacturing any recovery state from an exception path.
-- Preserved fatal-process exceptions such as out-of-memory and stack-overflow faults so cTrader can apply its documented process-level handling.
-- Added best-effort panel status reporting for the runtime fault.
-
-Acceptance:
-- Recoverable exceptions are contained at the calculation boundary.
-- Runtime faults cannot leave automatic execution logically armed.
-- Diagnostic evidence is retained in the cTrader log.
-- The incident that caused the indicator instance to disappear is now explicitly covered by a resilience boundary.
-
-Operational note:
-- A future runtime-recovery control may re-arm execution only after the fault condition has been inspected; automatic re-arming is intentionally not enabled in this hardening phase.
-
-### Phase 29C — Startup and panel resilience
-
-Status: superseded during host-compatibility investigation.
-
-The initial bootstrap-panel implementation was intentionally removed after terminal testing showed no UI output even though the Indicator remained listed. The removed implementation introduced host-facing API surface that was not present in the previously working terminal baseline.
-
-The stable runtime fault boundary inside `Calculate()` remains active.
-
-### Phase 29D — Accepted cTrader host compatibility restoration
-
-Status: complete.
-
-Goal: restore the last known working cTrader Indicator host contract while retaining calculation-level fault containment.
-
-Completed:
-- Restored the minimal `[Indicator]` host declaration used by the last known working terminal baseline.
-- Removed the synthetic hidden `[Output]` introduced solely for diagnostics.
-- Removed the `ChartStaticText` bootstrap diagnostic type and its chart-static-text dependency.
-- Removed the `OnException(Exception)` override from the Indicator host because the installed LiteFinance runtime exposes an API surface that differs from the repository SDK; generic calculation faults remain contained inside `Calculate()`.
-- Restored the known-good panel construction and initialization order.
-- Kept calculation-level fail-closed runtime handling.
-- Added an architecture gate preventing the unverified host APIs from returning accidentally.
-
-Acceptance:
-- Production cTrader compilation passes.
-- Runtime, decision and architecture CI contracts pass.
-- The Indicator host contract contains no unverified API surface added for diagnostics.
-- Terminal revalidation is required before declaring the on-chart instance operational again.
-
-### Phase 29E — Staged startup and live-render clarification
+## Phase 29D — Regime-aware signal/execution synchronization
 
 Status: in progress.
 
-Goal: remove startup blocking caused by synchronous multi-timeframe/native initialization and keep signal presentation semantically aligned with plan state.
+Completed:
 
-Implemented:
-- Panel construction now occurs before heavy market-data and native-indicator acquisition.
-- Startup work is split into timed stages so the main Indicator lifecycle is released between data-feed/indicator initialization steps.
-- `Calculate()` remains gated until all startup stages are complete.
-- Timer is stopped after successful initialization and during destroy.
-- Existing runtime exception containment remains active.
-- Confirmed that a watch/reaction arrow is a non-plan visual and therefore does not imply that Entry/SL/TP plan lines should exist.
+- regime-aware gating;
+- prediction/watch vs confirmed signal vs active plan separation;
+- pre-trade plan reconciliation;
+- pending-state visual authority;
+- trigger rendering restriction;
+- OSS per-bar caching.
 
-Next validation:
-- Confirm fast panel appearance after attach.
-- Confirm no delayed first-render stall.
-- Confirm confirmed `_plan` state renders Entry/Trigger/SL/TP independently of the watch arrow.
-- Measure first-ready latency and live tick CPU/load before further intelligence work.
+Remaining:
 
-### Phase 29F — Regime-aware intelligence and signal/execution synchronization
+- full runtime validation on the target terminal;
+- replay validation;
+- threshold calibration.
 
-Status: in progress.
+---
 
-Objective:
-Make the analytical, signal, plan, pending-order and chart-presentation layers share one coherent market state, while suppressing low-quality setups before they can become actionable.
+# 6. Forward master execution program
 
-Implemented:
-- Deterministic regime analyzer using ADX/DMI, ATR ratio, EMA spread/slope, Choppiness Index and price-path efficiency.
-- Regime classes: TREND, EXPANSION, RANGE, COMPRESSION, HIGH_VOLATILITY and TRANSITION.
-- M5 regime snapshot caching and short persistence/stability tracking.
-- Strict regime gates: RANGE/COMPRESSION are non-actionable by default; weak TRANSITION/HIGH_VOLATILITY states are rejected; unstable directional regimes require stronger quality.
-- Frame quality now incorporates regime characteristics rather than relying primarily on directional score.
-- Blocked decisions no longer become actionable arrows; prediction/watch is visually separate from confirmed execution state.
-- Pre-trade Plan is reconciled with the current Decision before execution paths run.
-- Active Plan is authoritative for its arrow/levels until invalidated or broker state changes.
-- Pending order state is authoritative and stale pre-trade Plan/Prediction visuals are removed behind it.
-- Trigger rendering is restricted to execution modes where a trigger is actually an activation level; market-entry plans no longer show a misleading second trigger line.
-- Soft plan creation no longer bypasses the authoritative Decision gates.
-- Existing OSS indicator calculation is cached per M5 bar, and quote materialization was reduced from an 800-bar history window to a 160-bar warm-up window.
-- Bollinger Width is retained as non-directional volatility context without adding a redundant directional vote.
+The following tracks are the current refinement/certification program.
 
-Startup/resource work:
-- Panel construction occurs before expensive startup work.
-- MTF series acquisition and native indicator registration are staged through Timer cycles.
-- Calculation remains gated until initialization is complete.
+The numerical order is the intended dependency order unless a track is explicitly
+marked as a research milestone that may be completed early.
 
-Research basis:
-- ADX/DMI: trend-strength and directional-movement context. Reference: https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/DMI
-- ATR: volatility expansion/compression and adaptive levels. Reference: https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/atr
-- Choppiness Index: sideways/choppy versus directional market characterization. Reference: https://www.tradingview.com/support/solutions/43000501980-choppiness-index-chop/
-- Kaufman-style efficiency concepts support using path efficiency as a trend/noise discriminator. Reference: https://www.luxalgo.com/library/concept/kaufman-efficiency-ratio/
-- Regime research supports explicit regime labels, validation and avoiding look-ahead leakage when evaluating regime-conditioned strategies. Reference: https://arxiv.org/abs/2104.03667
+---
 
-Next acceptance:
-- Measure cold/warm startup latency and CPU/memory on the target PC.
-- Verify direction flips invalidate stale pre-trade levels before any new execution.
-- Verify pending Stop/Limit visuals are the sole level authority while pending exists.
-- Verify RANGE/COMPRESSION produce no actionable plan.
-- Verify EXPANSION/TREND require stable, directional evidence rather than isolated indicator votes.
-- Begin walk-forward/replay validation before tuning thresholds further.
+# Track 0 — Baseline and clean-state verification
 
+## Phase 0.1 — Repository truth synchronization
 
-## Track 19 — OSS Numerical Benchmark
+Status: next.
 
-Reference: docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md
+Goal:
 
-### Phase 19.1 — FacioQuo comparison
+Make the repository documentation and machine-enforced facts agree exactly.
+
+Work:
+
+- reconcile parameter counts;
+- reconcile source-file counts;
+- reconcile current status of architecture/runtime gates;
+- synchronize ROADMAP, WORKFLOW and ACCEPTANCE wording;
+- record current next phase;
+- verify no stale claim remains in release-critical documentation.
+
+Acceptance:
+
+- one documented baseline;
+- all counts agree with verifier;
+- status claims are traceable to repository evidence.
+
+## Phase 0.2 — Production-source hygiene
+
+Status: planned.
+
+Work:
+
+- version residue;
+- dead aliases;
+- obsolete identifiers;
+- generated artifacts;
+- empty catches;
+- unused compatibility paths;
+- source formatting consistency.
+
+Acceptance:
+
+- no obsolete production identifiers;
+- no dead compatibility owner;
+- verifier remains green.
+
+---
+
+# Track 1 — Runtime Safety
+
+## Phase 1.1 — Calculate stage isolation
+
+Status: planned.
+
+Goal:
+
+Make runtime stages independently bounded so one failure cannot suppress
+unrelated safety-critical stages.
+
+Target stage model:
+
+\`\`\`
+Broker state
+Protection / management
+Analysis
+Planning
+Execution
+Telemetry
+Presentation
+\`\`\`
+
+Acceptance:
+
+- each stage has one failure boundary;
+- management is not downstream of optional analysis.
+
+## Phase 1.2 — Management-first runtime
+
+Status: planned.
+
+Move safety-critical live management before heavy intelligence.
+
+Order:
+
+\`\`\`
+Protection
+Active-plan exits
+Broker reconciliation
+Recovery
+Analysis
+Planning
+Entry execution
+Telemetry/presentation
+\`\`\`
+
+Acceptance:
+
+- analysis failure cannot starve break-even/trailing/exit/reconciliation.
+
+## Phase 1.3 — Runtime fault state machine
+
+Status: planned.
+
+States:
+
+\`\`\`
+HEALTHY
+DEGRADED
+ENTRY_BLOCKED
+RECOVERING
+HEALTHY
+\`\`\`
+
+Acceptance:
+
+- recoverable fault blocks entry;
+- management remains available;
+- no blind automatic re-arm.
+
+## Phase 1.4 — Closed-bar retry semantics
+
+Status: planned.
+
+Work:
+
+- bounded retries;
+- failure timestamp;
+- retry backoff;
+- stale-analysis detection;
+- retry suppression after repeated fault.
+
+Acceptance:
+
+- no CPU storm;
+- no repeated full-history rebuild loop.
+
+## Phase 1.5 — Safety supervisor
+
+Status: planned.
+
+A lightweight timer is dedicated to:
+
+- broker state;
+- protection recovery;
+- pending expiry;
+- EOD supervision;
+- stale-plan detection.
+
+It must not run the full analysis engine at heartbeat frequency.
+
+Acceptance:
+
+- timer is bounded and low-load;
+- safety work is not coupled to chart repainting.
+
+---
+
+# Track 2 — Execution Safety
+
+## Phase 2.1 — SubmissionGate refinement
+
+Status: planned.
+
+Model:
+
+\`\`\`
+signal key
+attempt key
+execution path
+failure count
+next retry
+circuit state
+\`\`\`
+
+Acceptance:
+
+- one coherent retry policy across automatic paths.
+
+## Phase 2.2 — Automatic market rejection matrix
+
+Status: planned.
+
+Cover:
+
+- null result;
+- broker rejection;
+- permission failure;
+- invalid volume;
+- invalid protection;
+- fill mismatch;
+- exception.
+
+Acceptance:
+
+- each outcome has explicit internal/broker/retry/panel state.
+
+## Phase 2.3 — Aggressive execution rejection matrix
+
+Status: planned.
+
+Same matrix as normal market execution, without merging distinct strategy
+semantics.
+
+Acceptance:
+
+- aggressive rejection paths are bounded and traceable.
+
+## Phase 2.4 — Pending Stop acceptance
+
+Status: planned.
+
+Cover:
+
+- BUY STOP;
+- SELL STOP;
+- preparation;
+- validation;
+- submission;
+- broker confirmation;
+- rejection;
+- expiration.
+
+Acceptance:
+
+- no synthetic pending state.
+
+## Phase 2.5 — Pending Limit acceptance
+
+Status: planned.
+
+Cover:
+
+- BUY LIMIT;
+- SELL LIMIT;
+- preparation;
+- validation;
+- submission;
+- broker confirmation;
+- rejection;
+- expiration.
+
+Acceptance:
+
+- Stop and Limit remain semantically distinct.
+
+---
+
+# Track 3 — Identity and Lifecycle
+
+## Phase 3.1 — Single managed identity
+
+Status: planned.
+
+Authority:
+
+\`\`\`
+AutoTradeLabel
+    ↓
+managed position
+managed pending
+managed plan
+protection
+lifecycle
+\`\`\`
+
+Acceptance:
+
+- one identity contract;
+- no label fallback that changes scope.
+
+## Phase 3.2 — ManagedActionsOnly semantics
+
+Status: planned.
+
+Define exact behavior when off:
+
+- unmanaged positions are ignored;
+- managed positions remain bound to the authoritative identity;
+- no symbol-wide ownership inference.
+
+Acceptance:
+
+- no accidental adoption of unrelated positions.
+
+## Phase 3.3 — Cross-instance identity guard
+
+Status: planned.
+
+Cover multiple CFIP instances on the same account/symbol.
+
+Acceptance:
+
+- no duplicate automatic entry;
+- no double management;
+- no double protection.
+
+## Phase 3.4 — Lifecycle event ordering
+
+Status: planned.
+
+Model exact ordering among:
+
+- Execute return;
+- Position.Opened;
+- Pending.Created;
+- Pending.Filled;
+- Position.Modified;
+- Position.Closed;
+- plan binding;
+- reconciliation.
+
+Acceptance:
+
+- state transitions remain deterministic under callback reordering.
+
+---
+
+# Track 4 — Risk and Session
+
+## Phase 4.1 — Spread/stop semantic finalization
+
+Status: planned.
+
+Ensure the same spread/stop meaning is consumed by:
+
+- validation;
+- sizing;
+- structural-stop logic;
+- trade suitability.
+
+Acceptance:
+
+- one semantic definition;
+- no divergent formulas.
+
+## Phase 4.2 — Daily-loss authority
+
+Status: planned.
+
+Separate:
+
+- trading-day baseline;
+- realized P/L;
+- floating P/L;
+- combined loss;
+- reset semantics.
+
+Define whether the guard blocks:
+
+- new market entries;
+- new pending orders;
+- existing-position management.
+
+Acceptance:
+
+- no ambiguity around what daily loss controls.
+
+## Phase 4.3 — Broker trading-day model
+
+Status: planned.
+
+Create an explicit CFIP trading-day concept supporting broker/session rollover.
+
+Acceptance:
+
+- daily-loss reset matches the accepted broker/session model.
+
+## Phase 4.4 — End-of-day boundary
+
+Status: planned.
+
+Define:
+
+- session end;
+- overnight handling;
+- warning period;
+- close/cancel boundary;
+- late-created position handling.
+
+Acceptance:
+
+- one explicit EOD policy.
+
+## Phase 4.5 — End-of-day execution
+
+Status: planned.
+
+Cover:
+
+- position close;
+- pending cancel;
+- failure/retry;
+- broker confirmation;
+- recovery;
+- operator notification.
+
+Acceptance:
+
+- EOD leaves no ambiguous managed state.
+
+---
+
+# Track 5 — UI Safety
+
+## Phase 5.1 — Live-enable safety
+
+Status: planned.
+
+Automatic trading enablement becomes an explicit state transition.
+
+Acceptance:
+
+- enable/disable has authoritative state;
+- UI cannot bypass safety gates.
+
+## Phase 5.2 — Close/Cancel confirmation
+
+Status: planned.
+
+Define exact scope and confirmation semantics for:
+
+- close positions;
+- cancel pending orders.
+
+Acceptance:
+
+- operator action cannot accidentally target unrelated broker objects.
+
+## Phase 5.3 — Panel authority cleanup
+
+Status: planned.
+
+Separate:
+
+- clock;
+- MTF header;
+- M1;
+- M5;
+- M15;
+- M30;
+- H1;
+- H4;
+- D1;
+- W1.
+
+Acceptance:
+
+- no presentation state doubles as trading state.
+
+## Phase 5.4 — Signal presentation contract
+
+Status: planned.
+
+Three independent visual states:
+
+\`\`\`
+Prediction / Watch
+Confirmed Signal
+Active Plan
+\`\`\`
+
+Acceptance:
+
+- prediction never implies active Entry/SL/TP;
+- active plan remains authoritative until invalidated.
+
+---
+
+# Track 6 — Intrabar and Closed-Bar Semantics
+
+## Phase 6.1 — Decision closed-bar contract
+
+Status: planned.
+
+All confirmed decision inputs must reference closed bars at the defined UTC
+alignment.
+
+Acceptance:
+
+- no future-bar leakage.
+
+## Phase 6.2 — Reaction intrabar contract
+
+Status: planned.
+
+Explicitly define live reaction as intrabar if retained.
+
+Rule:
+
+\`\`\`
+LIVE REACTION     = explicit intrabar feature
+CONFIRMED DECISION = closed-bar feature
+\`\`\`
+
+Acceptance:
+
+- the two semantics cannot be silently merged.
+
+## Phase 6.3 — Aggressive entry policy
+
+Status: planned.
+
+Select one explicit policy:
+
+- closed-bar only; or
+- controlled intrabar with hysteresis and explicit invalidation.
+
+Acceptance:
+
+- no ambiguous mixed-bar policy.
+
+---
+
+# Track 7 — Parameter Semantics
+
+## Phase 7.1 — Hidden-clamp audit
+
+Status: planned.
+
+Audit:
+
+- Math.Max;
+- Math.Min;
+- Clamp;
+- hard-coded floors/ceilings;
+- silently overridden parameters.
+
+Acceptance:
+
+- user-facing parameters are behaviorally meaningful.
+
+## Phase 7.2 — Dead/unused parameter audit
+
+Status: planned.
+
+Find:
+
+- declared but unread parameters;
+- values read but never consumed;
+- settings rendered but not applied.
+
+Acceptance:
+
+- every retained parameter has an explicit runtime owner.
+
+## Phase 7.3 — Semantic duplicate audit
+
+Status: planned.
+
+Compare similar settings such as:
+
+- global confidence;
+- pending confidence;
+- aggressive confidence;
+- quality floors.
+
+Acceptance:
+
+- every retained parameter represents one meaningful concept.
+
+## Phase 7.4 — MaximumOpenPositions semantics
+
+Status: planned.
+
+Decide and encode real semantics:
+
+- single active plan; or
+- real multi-plan support.
+
+Acceptance:
+
+- parameter cannot advertise behavior that architecture does not provide.
+
+---
+
+# Track 8 — Analytical Correctness
+
+## Phase 8.1 — M1 trigger correctness
+
+Status: planned.
+
+Verify that M1 trigger mode uses real M1 evidence and is not merely a reweighted
+M5 signal.
+
+Acceptance:
+
+- real M1 data path;
+- deterministic trigger semantics.
+
+## Phase 8.2 — Swing plateau correctness
+
+Status: planned.
+
+Audit equality behavior for:
+
+- equal highs;
+- equal lows;
+- plateau structures.
+
+Acceptance:
+
+- equality is handled intentionally.
+
+## Phase 8.3 — FVG mathematical audit
+
+Status: planned.
+
+Audit:
+
+- 3-bar definition;
+- imbalance variants;
+- gap size;
+- mitigation;
+- partial fill;
+- full fill;
+- age;
+- quality.
+
+Acceptance:
+
+- one mathematical owner for each concept.
+
+## Phase 8.4 — Order Block mathematical audit
+
+Status: planned.
+
+Audit:
+
+- source candle;
+- displacement;
+- BOS/MSS;
+- liquidity sweep;
+- FVG confluence;
+- mitigation;
+- remaining width;
+- quality.
+
+Acceptance:
+
+- OB evidence and quality remain CFIP-specific and deterministic.
+
+## Phase 8.5 — Zone confluence symmetry
+
+Status: planned.
+
+BUY/SELL mirror validation across:
+
+- FVG;
+- OB;
+- liquidity;
+- structure;
+- reward path.
+
+Acceptance:
+
+- no directional asymmetry without an explicit rule.
+
+---
+
+# Track 9 — Decision Intelligence
+
+## Phase 9.1 — Evidence duplication
+
+Status: planned.
+
+Audit how many times one market fact contributes to score.
+
+Acceptance:
+
+- correlated evidence cannot receive uncontrolled duplicate influence.
+
+## Phase 9.2 — Confidence semantics
+
+Status: planned.
+
+Distinguish:
+
+\`\`\`
+score
+confidence-like score
+probability
+calibrated probability
+\`\`\`
+
+Acceptance:
+
+- UI/documentation never presents an uncalibrated score as a probability.
+
+## Phase 9.3 — Empirical calibration
+
+Status: planned.
+
+Connect calibration to real outcome data.
+
+Acceptance:
+
+- calibration is empirical;
+- evaluation is out-of-sample/walk-forward where applicable.
+
+## Phase 9.4 — Regime-conditioned intelligence
+
+Status: planned.
+
+Define evidence relevance by:
+
+- TREND;
+- EXPANSION;
+- RANGE;
+- COMPRESSION;
+- HIGH_VOLATILITY;
+- TRANSITION.
+
+Acceptance:
+
+- regime modifies relevance without becoming a second decision authority.
+
+## Phase 9.5 — No-trade intelligence
+
+Status: planned.
+
+No-trade reasons must be:
+
+- explicit;
+- traceable;
+- deterministic.
+
+Acceptance:
+
+- operator can identify why a setup did not become actionable.
+
+---
+
+# Track 10 — Risk Engine Quality
+
+## Phase 10.1 — Margin logic consolidation
+
+Status: planned.
+
+Single owner for:
+
+- required margin;
+- margin usage;
+- free margin;
+- safety buffer;
+- volume reduction.
+
+Acceptance:
+
+- no duplicated margin formula.
+
+## Phase 10.2 — Volume semantics
+
+Status: planned.
+
+Validate:
+
+- risk amount;
+- stop distance;
+- pip value;
+- broker volume step;
+- minimum/maximum volume;
+- rounding.
+
+Acceptance:
+
+- deterministic sizing across supported symbols.
+
+## Phase 10.3 — Market suitability cleanup
+
+Status: planned.
+
+Market suitability owns only:
+
+- spread;
+- session;
+- volatility;
+- event suitability;
+- execution environment.
+
+It must not become a hidden decision authority.
+
+Acceptance:
+
+- risk, decision and suitability responsibilities remain separate.
+
+---
+
+# Track 11 — Alert and Telemetry
+
+## Phase 11.1 — Alert key semantics
+
+Status: planned.
+
+Normalize alert identities such as:
+
+- AUTO;
+- AUTO-OFF;
+- AUTO-REACTION;
+- execution/recovery events.
+
+Acceptance:
+
+- exact keys;
+- no prefix collisions.
+
+## Phase 11.2 — Async/throttled alert delivery
+
+Status: planned.
+
+Remove:
+
+- email;
+- sound;
+- popup;
+- heavy formatting
+
+from the hot tick path.
+
+Acceptance:
+
+- notification latency cannot block trading management.
+
+## Phase 11.3 — Outcome telemetry integrity
+
+Status: planned.
+
+Outcome event must be:
+
+- idempotent;
+- bounded;
+- traceable;
+- persistable;
+- associated with decision and execution intent identity.
+
+Acceptance:
+
+- duplicate callbacks cannot duplicate outcomes.
+
+---
+
+# Track 12 — Partial TP and Exit Integrity
+
+## Phase 12.1 — Partial TP retry policy
+
+Status: planned.
+
+A rejected partial close must not create uncontrolled every-tick retries.
+
+Acceptance:
+
+- explicit backoff/circuit state;
+- no repeated broker hammering.
+
+## Phase 12.2 — Partial TP event semantics
+
+Status: planned.
+
+Model:
+
+- volume reduction;
+- Position.Modified;
+- Position.Closed;
+- remaining position;
+- target-stage state.
+
+Acceptance:
+
+- target stage derives from broker-confirmed remaining volume.
+
+## Phase 12.3 — Break-even after partial
+
+Status: planned.
+
+Cover:
+
+- partial success;
+- BE success;
+- BE rejection;
+- invalid broker distance;
+- recovery;
+- retry.
+
+Acceptance:
+
+- no false rejection/recovery classification.
+
+---
+
+# Track 13 — cTrader Runtime Compatibility
+
+## Phase 13.1 — Access/permission certification
+
+Status: planned.
+
+Verify the exact installed target runtime for:
+
+- AccessRights;
+- trading permission request;
+- Indicator trading capability;
+- live broker restrictions.
+
+Acceptance:
+
+- no assumption based only on a different cTrader build.
+
+## Phase 13.2 — Indicator/package compatibility
+
+Status: planned.
+
+Verify:
+
+- cTrader Automate API;
+- external assembly loading;
+- Skender package compatibility;
+- startup behavior;
+- unload/destroy behavior.
+
+Acceptance:
+
+- target terminal loads and runs the production assembly.
+
+## Phase 13.3 — Native indicator parity
+
+Status: planned.
+
+Verify:
+
+- DMI;
+- ADX;
+- DI+;
+- DI-;
+- native vs OSS references where applicable.
+
+Acceptance:
+
+- differences are documented rather than silently mixed.
+
+## Phase 13.4 — Fill semantics
+
+Status: planned.
+
+Verify:
+
+- actual fill;
+- requested entry;
+- execution envelope;
+- SL/TP in pips/price;
+- ProtectionType;
+- slippage;
+- broker normalization.
+
+Acceptance:
+
+- plan, intent and broker fill remain distinct.
+
+## Phase 13.5 — Account model
+
+Status: planned.
+
+Verify:
+
+- hedging/netting behavior;
+- position volume semantics;
+- pending behavior;
+- label scope;
+- position binding.
+
+Acceptance:
+
+- identity and lifecycle are valid for the actual account model.
+
+## Phase 13.6 — Event ordering
+
+Status: planned.
+
+Record actual target-terminal callback timing.
+
+Acceptance:
+
+- lifecycle state machine matches observed cTrader behavior.
+
+---
+
+# Track 14 — Performance
+
+## Phase 14.1 — Startup profiling
+
+Status: planned.
+
+Measure:
+
+- panel appearance;
+- M1 load;
+- M5 load;
+- MTF load;
+- native registration;
+- first-ready latency.
+
+Acceptance:
+
+- cold/warm startup baselines recorded.
+
+## Phase 14.2 — Native registration optimization
+
+Status: planned.
+
+Avoid registering unused timeframes/indicators.
+
+Acceptance:
+
+- only required registrations are retained.
+
+## Phase 14.3 — Tick hot-path audit
+
+Status: planned.
+
+Profile:
+
+- reaction;
+- execution model;
+- FVG;
+- OB;
+- suitability;
+- panel;
+- chart;
+- broker reconciliation.
+
+Acceptance:
+
+- hot path has bounded work.
+
+## Phase 14.4 — Cache correctness
+
+Status: planned.
+
+Every cache must have:
+
+- explicit key;
+- invalidation rule;
+- bounded lifetime/memory;
+- no recursive construction;
+- no stale-bar reuse.
+
+Acceptance:
+
+- cache correctness is proven by tests.
+
+## Phase 14.5 — UI render throttling
+
+Status: planned.
+
+Heavy render only after relevant state change.
+
+Acceptance:
+
+- unchanged state does not trigger repeated heavy rendering.
+
+---
+
+# Track 15 — Real Testability
+
+## Phase 15.1 — Clock abstraction
+
+Status: planned.
+
+Introduce an injectable clock for runtime/replay tests.
+
+Acceptance:
+
+- no test depends on wall-clock timing.
+
+## Phase 15.2 — Market-data abstraction
+
+Status: planned.
+
+Expose a minimal interface for:
+
+- bars;
+- quotes;
+- timeframes;
+- symbol metadata.
+
+Acceptance:
+
+- analysis can be supplied deterministic test data.
+
+## Phase 15.3 — Broker abstraction
+
+Status: planned.
+
+Define operations for:
+
+- submit;
+- modify;
+- close;
+- cancel;
+- query;
+- confirmation.
+
+Acceptance:
+
+- broker side effects are test-replaceable.
+
+## Phase 15.4 — Fake broker
+
+Status: planned.
+
+Must simulate:
+
+- success;
+- rejection;
+- delay;
+- fill mismatch;
+- missing protection;
+- reconnect;
+- stale state.
+
+Acceptance:
+
+- execution state machine is testable without cTrader.
+
+---
+
+# Track 16 — Automated Safety Tests
+
+## Phase 16.1 — A1 rejection-storm tests
+
+Status: planned.
+
+Acceptance:
+
+- bounded retries;
+- exponential/backoff semantics;
+- no duplicate broker calls.
+
+## Phase 16.2 — A3 daily-loss restart tests
+
+Status: planned.
+
+Acceptance:
+
+- reset/persistence semantics survive restart and broker-day rollover.
+
+## Phase 16.3 — A4 EOD tests
+
+Status: planned.
+
+Acceptance:
+
+- position/pending cleanup and confirmation are deterministic.
+
+## Phase 16.4 — A5 identity tests
+
+Status: planned.
+
+Acceptance:
+
+- only the intended managed identity is adopted/managed.
+
+## Phase 16.5 — A6 fault-isolation tests
+
+Status: planned.
+
+Acceptance:
+
+- broken analysis does not starve protection/exit/reconciliation.
+
+## Phase 16.6 — A7 safety-control tests
+
+Status: planned.
+
+Acceptance:
+
+- operator controls cannot bypass managed scope or safety gates.
+
+## Phase 16.7 — A8 cross-instance tests
+
+Status: planned.
+
+Acceptance:
+
+- duplicate entries and double management are prevented.
+
+## Phase 16.8 — A9 intrabar tests
+
+Status: planned.
+
+Acceptance:
+
+- closed-bar decision and intrabar reaction semantics remain distinct.
+
+---
+
+# Track 17 — Deterministic Replay
+
+## Phase 17.1 — Replay data model
+
+Status: planned.
+
+Model:
+
+- bars;
+- timestamps;
+- symbol metadata;
+- session;
+- spread;
+- broker events;
+- decision identity.
+
+Acceptance:
+
+- complete input is serializable and reproducible.
+
+## Phase 17.2 — Bar replay engine
+
+Status: planned.
+
+Support:
+
+\`\`\`
+M1 → M5 → M15 → M30 → H1 → H4 → D1 → W1
+\`\`\`
+
+Acceptance:
+
+- MTF closed-bar alignment is deterministic.
+
+## Phase 17.3 — Decision replay
+
+Status: planned.
+
+Recreate:
+
+- evidence;
+- score;
+- decision;
+- no-trade reasons.
+
+Acceptance:
+
+- same input produces same decision.
+
+## Phase 17.4 — Plan replay
+
+Status: planned.
+
+Recreate:
+
+- entry;
+- trigger;
+- SL;
+- TP1..TP4;
+- reward path;
+- risk sizing.
+
+Acceptance:
+
+- plan is traceable to the originating decision.
+
+## Phase 17.5 — Execution-intent replay
+
+Status: planned.
+
+Recreate:
+
+- submission intent;
+- broker fill;
+- mismatch;
+- rejection;
+- protection.
+
+Acceptance:
+
+- no synthetic fill.
+
+## Phase 17.6 — Outcome replay
+
+Status: planned.
+
+Record:
+
+- MFE;
+- MAE;
+- time-to-outcome;
+- target stage;
+- final outcome.
+
+Acceptance:
+
+- outcome is reproducible and traceable.
+
+---
+
+# Track 18 — Quant and Backtest Fabric
+
+LEAN is reference/research infrastructure only.
+
+## Phase 18.1 — LEAN research boundary
+
+Status: planned.
+
+Create only an adapter/reference boundary.
+
+Acceptance:
+
+- LEAN code never enters the production cTrader assembly.
+
+## Phase 18.2 — Setup classification
+
+Status: planned.
+
+Classify:
+
+- trend;
+- reversal;
+- continuation;
+- breakout;
+- retest;
+- FVG;
+- OB;
+- FVG+OB.
+
+Acceptance:
+
+- classifications are deterministic and stored with outcomes.
+
+## Phase 18.3 — Performance metrics
+
+Status: planned.
+
+Calculate:
+
+- win rate;
+- average R;
+- expectancy;
+- drawdown;
+- MFE;
+- MAE;
+- duration.
+
+Acceptance:
+
+- metrics are calculated consistently from replay/outcome data.
+
+## Phase 18.4 — Threshold validation
+
+Status: planned.
+
+Validate current threshold families empirically instead of by intuition.
+
+Acceptance:
+
+- threshold decisions are supported by replay/outcome evidence.
+
+---
+
+# Track 19 — OSS Numerical Benchmark
+
+## Phase 19.1 — FacioQuo comparison
 
 Status: complete.
 
 Completed:
 
-- Preserved the production/research package boundary: Skender 2.7.3 remains the cTrader production dependency and FacioQuo 3.0.1 remains benchmark-only.
-- Reworked the isolated benchmark around a shared deterministic 800-bar OHLCV source.
-- Added TREND_UP, TREND_DOWN, RANGE and REGIME_SHIFT fixtures.
-- Added complete-series count and timestamp alignment checks.
-- Added post-warm-up numerical comparison with max/mean/RMS error and strict 1e-6 absolute tolerance.
-- Covered all 10 production OSS indicator families, including Bollinger width and Stochastic %K/%D metrics.
-- Added batch timing and per-iteration allocation measurements.
-- Added GitHub Actions job-summary reporting.
-- Added static verifier gates for benchmark structure and package isolation.
+- production/research package boundary preserved;
+- shared deterministic fixture source;
+- 800-bar fixtures;
+- TREND_UP;
+- TREND_DOWN;
+- RANGE;
+- REGIME_SHIFT;
+- output count checks;
+- timestamp checks;
+- warm-up-aware comparison;
+- finite coverage;
+- max/mean/RMS error;
+- strict 1e-6 absolute tolerance;
+- all 10 production OSS indicator families;
+- Bollinger %B and Width;
+- Stochastic %K and %D;
+- batch timing;
+- allocation measurement;
+- Markdown report;
+- GitHub Actions summary;
+- static verifier gates.
 
 Acceptance:
 
-- Deterministic comparison passes across all four scenarios.
-- Production package pins are unchanged.
-- FacioQuo remains absent from production source.
-- Numerical parity does not bypass runtime compatibility or OSS authority gates.
+- v3 remains benchmark-only regardless of parity result.
 
-### Phase 19.2 — TA-Lib.NETCore cross-check
+## Phase 19.2 — TA-Lib.NETCore cross-check
 
 Status: planned.
 
-### Phase 19.3 — QuantConnect LEAN numerical/reference comparison
+Scope:
 
-Status: planned.
-
-### Phase 19.4 — OSS benchmark consolidation
-
-Status: planned.
-
-### Phase 19.5 — OSS admission decision
-
-Status: planned.
-
-### Phase 30 — Automatic market execution certification
-
-Status: planned.
-
-Goal: certify normal and aggressive market execution as one broker-safe path family.
-
-Work:
-
-- BUY and SELL normal execution.
-- BUY and SELL aggressive execution.
-- ExecutionIntent validation.
-- Volume/quote/entry-envelope checks.
-- Slippage/fill-envelope handling.
-- Broker result classification.
-- Broker-confirmed position adoption.
-- Post-fill target resolution.
-- Protection failure → RECOVERY.
-- Rejection and exception handling.
+- benchmark only;
+- overlapping indicators;
+- native/runtime dependency inventory;
+- licensing/distribution review;
+- same deterministic fixtures.
 
 Acceptance:
 
-- No synthetic fill/position state.
-- One managed position per active plan.
-- Original submission intent remains available for actual-fill validation.
-- Protection is never assumed from plan state.
+- numerical evidence reproducible;
+- license gate documented;
+- no production boundary change.
 
-### Phase 31 — Automatic pending-order certification
-
-Status: planned.
-
-Goal: certify Stop and Limit pending execution independently from market execution.
-
-Work:
-
-- BUY STOP / SELL STOP.
-- BUY LIMIT / SELL LIMIT.
-- Pending intent preparation and validation.
-- Expiration.
-- Broker-confirmed pending adoption.
-- Fill transition.
-- Cancellation/rejection handling.
-- Duplicate-event protection.
-
-Acceptance:
-
-- Pending is never treated as a position before confirmed fill.
-- Rejected pending mutation creates no synthetic state.
-- Stop/Limit semantics remain distinct.
-
-### Phase 32 — Protection, lifecycle and recovery certification
+## Phase 19.3 — QuantConnect LEAN numerical/reference comparison
 
 Status: planned.
 
-Goal: prove the live trading state remains safe across protection changes and lifecycle transitions.
+Scope:
 
-Work:
-
-- Initial SL/TP.
-- Break-even.
-- Profit lock.
-- Trailing/structural management.
-- Partial TP.
-- Full close.
-- Missing protection recovery.
-- Restart/reconnect reconciliation.
-- Position/pending idempotency.
+- indicator/reference overlap;
+- formula/output conventions;
+- no trading-engine import.
 
 Acceptance:
 
-- Broker-confirmed state is authoritative.
-- Invalid protection cannot be presented as safe state.
-- Recovery is explicit and retryable.
-- Lifecycle transitions are deterministic and idempotent where required.
+- reference results reproducible;
+- semantic differences documented.
 
-### Phase 33 — Cross-path execution stress and reconciliation
+## Phase 19.4 — OSS benchmark consolidation
 
 Status: planned.
 
-Goal: exercise Market, Aggressive, Stop and Limit under adverse timing/state conditions.
+Scope:
 
-Work:
-
-- Rapid ticks.
-- Duplicate callbacks/events.
-- Broker lag.
-- Reconnect/restart.
-- Rejected mutations.
-- Fill mismatch.
-- Stale plan.
-- Invalidation during execution.
-- Concurrent-looking order events.
+- package;
+- version;
+- metric;
+- fixture;
+- tolerance;
+- timing;
+- machine-readable result.
 
 Acceptance:
 
-- No duplicate entry.
-- No orphan managed state.
-- No lifecycle/broker divergence after reconciliation.
-- All automatic paths obey common safety invariants.
+- one canonical OSS numerical benchmark contract.
 
-### Phase 34 — Analytical accuracy and anti-lookahead certification
+## Phase 19.5 — OSS admission decision
 
 Status: planned.
 
-Goal: establish measurable correctness of the analysis pipeline before outcome learning.
+Promotion requires all:
 
-Work:
-
-- Closed-bar enforcement.
-- MTF timestamp/index verification.
-- Indicator parity fixtures.
-- Structure/FVG/OB/liquidity fixtures.
-- BUY/SELL symmetry.
-- Contradiction handling.
-- Evidence deduplication.
-- Numerical edge-case handling.
+- runtime compatibility;
+- license/distribution review;
+- numerical parity;
+- performance evidence;
+- regression fixtures;
+- explicit adapter owner.
 
 Acceptance:
 
-- No future leakage.
-- No cross-timeframe contamination.
-- Repeated identical input produces identical decision inputs/decision output.
-- Numerical reference tests remain deterministic.
+- each research package has documented admission/rejection status.
 
-### Phase 35 — Local backtest, replay and outcome fabric
+---
+
+# Track 20 — Automatic market execution certification
+
+## Phase 20.1 — Normal BUY/SELL market certification
 
 Status: planned.
 
-Goal: create a reproducible local path from historical data to trade outcome.
-
-Work:
-
-- Historical replay.
-- Simulated broker events.
-- Entry/trigger/fill separation.
-- SL/TP and partial target progression.
-- MFE/MAE.
-- Time-to-outcome.
-- Regime/session/spread context.
-- Prediction vs actual outcome.
-- Outcome persistence.
-
-LEAN remains a research/reference benchmark, not the CFIP production authority.
-
 Acceptance:
 
-- Replays are deterministic.
-- Outcomes can be traced back to their originating decision and execution intent.
-- No future information enters a historical decision.
+- valid intent;
+- valid quote;
+- valid volume;
+- confirmed fill;
+- protection;
+- lifecycle adoption.
 
-### Phase 36 — Confluence calibration and regime/no-trade intelligence
+## Phase 20.2 — Aggressive BUY/SELL certification
 
 Status: planned.
 
-Goal: improve signal quality without adding a second trading authority.
-
-Work:
-
-- Evidence independence/redundancy handling.
-- Evidence quality scoring.
-- Historical contribution tracking.
-- Confidence calibration.
-- Regime-specific relevance.
-- Strong no-trade conditions.
-- Expected-value and setup-quality diagnostics.
-
 Acceptance:
 
-- Confidence is empirically calibratable.
-- Redundant indicators do not receive uncontrolled duplicate influence.
-- No-trade decisions have explicit, traceable reasons.
-- Risk/execution safety gates remain outside learned scoring.
+- original submission intent remains available for fill validation;
+- mismatch follows close/recovery policy.
 
-### Phase 37 — Local production hardening and Local Release
+## Phase 20.3 — Broker-result classification
 
 Status: planned.
 
-Goal: freeze the local product after all previous gates pass.
+Classify:
 
-Work:
-
-- Final performance/memory sweep.
-- Error/recovery logging review.
-- Parameter/default audit.
-- Chart/panel/alert acceptance.
-- Demo-to-controlled-live transition checklist.
-- Final broker compatibility evidence.
-- Release artifacts and rollback procedure.
+- accepted;
+- rejected;
+- exception;
+- incomplete;
+- mismatched.
 
 Acceptance:
 
-- All Local Release Gate scenarios PASS.
-- No unresolved critical execution/lifecycle defect.
-- Production package is reproducible.
-- Local cTrader version is the accepted reference runtime.
+- no result is silently reclassified.
 
-**Milestone: LOCAL PRODUCT COMPLETE.**
-
-### Phase 38 — Cloud portability architecture
-
-Status: planned — after Local Release.
-
-Goal: make the CFIP engine host-portable without changing its decision/risk authority.
-
-Work:
-
-- Separate host-neutral domain/analysis/planning/risk contracts from cTrader UI callbacks.
-- Define a cBot host adapter over the existing CFIP execution contracts.
-- Define broker/event/time abstractions required by the cBot host.
-- Preserve one decision authority and one execution authority.
-- Keep Indicator UI as presentation-only where needed.
-- Define deployment/configuration parity between local and cloud.
-
-Acceptance:
-
-- Cloud architecture reuses CFIP logic instead of forking a second strategy engine.
-- No cloud adapter can bypass risk/protection/identity invariants.
-
-### Phase 39 — Cloud cBot host implementation
+## Phase 20.4 — Market protection certification
 
 Status: planned.
 
-Goal: run the same CFIP strategy logic under a cTrader cBot host suitable for Cloud execution.
-
-Work:
-
-- Implement the cBot host adapter.
-- Map lifecycle callbacks and market data.
-- Map broker confirmation and reconciliation.
-- Preserve managed identity.
-- Preserve protection/recovery semantics.
-- Keep configuration compatibility.
-
 Acceptance:
 
-- cBot host produces the same decision/execution intent for identical inputs.
-- Broker state remains authoritative.
-- Indicator and cBot do not become two independent strategies.
+- protection is validated from broker state;
+- failed protection enters explicit RECOVERY.
 
-### Phase 40 — Cloud validation and operational hardening
+---
+
+# Track 21 — Pending-order certification
+
+## Phase 21.1 — Stop order certification
 
 Status: planned.
 
-Goal: validate the cloud-hosted cBot without weakening the local reference.
+Acceptance:
 
-Work:
+- BUY STOP / SELL STOP;
+- broker-confirmed pending adoption;
+- expiration;
+- rejection handling.
 
-- Demo cloud execution.
-- Restart/continuity behavior.
-- Failure/recovery.
-- Resource/runtime observations.
-- Broker compatibility.
-- Configuration and secret handling.
-- Operational runbook.
+## Phase 21.2 — Limit order certification
+
+Status: planned.
 
 Acceptance:
 
-- Cloud behavior is consistent with the local contract.
-- No unresolved execution or lifecycle divergence exists.
+- BUY LIMIT / SELL LIMIT;
+- broker-confirmed pending adoption;
+- expiration;
+- rejection handling.
 
-### Phase 41 — Adaptive Learning (post-local/post-cloud)
+## Phase 21.3 — Pending-fill transition
 
-Status: deferred by design.
-
-Goal: introduce bounded, evidence-driven adaptation only after stable local/cloud execution and sufficient outcome data exist.
-
-Work:
-
-- Outcome dataset quality gates.
-- Rolling calibration.
-- Evidence reliability updates.
-- Bounded parameter adaptation.
-- Drift detection.
-- Offline training/evaluation.
-- Approval and rollback.
-- Optional lightweight local persistence through cTrader LocalStorage.
+Status: planned.
 
 Acceptance:
 
-- Learning cannot modify safety invariants.
-- Learning cannot create a second decision/execution authority.
-- Changes are bounded, observable, reversible and validated against out-of-sample data.
+- pending becomes position only after confirmed fill;
+- fill identity binds to active plan.
+
+## Phase 21.4 — Pending cancellation/idempotency
+
+Status: planned.
+
+Acceptance:
+
+- cancellation is confirmation-driven;
+- duplicate cancel/fill callbacks are safe.
+
+---
+
+# Track 22 — Protection, lifecycle and recovery certification
+
+## Phase 22.1 — Initial SL/TP
+
+Status: planned.
+
+Acceptance:
+
+- correct side;
+- correct distance;
+- broker-normalized;
+- confirmed.
+
+## Phase 22.2 — Break-even/profit lock
+
+Status: planned.
+
+Acceptance:
+
+- post-entry protection may move into protected profit;
+- current-market validation remains correct.
+
+## Phase 22.3 — Trailing/structural management
+
+Status: planned.
+
+Acceptance:
+
+- no unsafe stop movement;
+- no synthetic broker state.
+
+## Phase 22.4 — Partial/full close
+
+Status: planned.
+
+Acceptance:
+
+- volume changes are broker-confirmed;
+- lifecycle state matches broker state.
+
+## Phase 22.5 — Missing protection recovery
+
+Status: planned.
+
+Acceptance:
+
+- explicit recovery;
+- bounded retry;
+- no false healthy state.
+
+## Phase 22.6 — Restart/reconnect reconciliation
+
+Status: planned.
+
+Acceptance:
+
+- broker state is re-adopted deterministically;
+- stale plans are cleared safely.
+
+---
+
+# Track 23 — Cross-path stress and reconciliation
+
+## Phase 23.1 — Rapid-tick stress
+
+Status: planned.
+
+Acceptance:
+
+- no duplicate entry;
+- no broker-mutation storm;
+- management remains responsive.
+
+## Phase 23.2 — Duplicate callback stress
+
+Status: planned.
+
+Acceptance:
+
+- lifecycle idempotency survives duplicate events.
+
+## Phase 23.3 — Broker lag/reconnect stress
+
+Status: planned.
+
+Acceptance:
+
+- state converges after reconciliation.
+
+## Phase 23.4 — Fill mismatch stress
+
+Status: planned.
+
+Acceptance:
+
+- invalid fills never become permanent synthetic state.
+
+## Phase 23.5 — Stale-plan/invalidation stress
+
+Status: planned.
+
+Acceptance:
+
+- stale plan cannot execute after invalidation.
+
+## Phase 23.6 — Concurrent-looking event stress
+
+Status: planned.
+
+Acceptance:
+
+- deterministic final state despite adversarial event ordering.
+
+---
+
+# Track 24 — Analytical accuracy and anti-lookahead certification
+
+## Phase 24.1 — Closed-bar enforcement
+
+Status: planned.
+
+Acceptance:
+
+- no future bar enters confirmed decision state.
+
+## Phase 24.2 — MTF timestamp/index verification
+
+Status: planned.
+
+Acceptance:
+
+- all MTF evidence maps to the intended closed reference.
+
+## Phase 24.3 — Indicator parity fixtures
+
+Status: planned.
+
+Acceptance:
+
+- native/OSS numerical differences are explicit.
+
+## Phase 24.4 — Structure/FVG/OB/liquidity fixtures
+
+Status: planned.
+
+Acceptance:
+
+- deterministic fixtures cover boundary cases and mirror symmetry.
+
+## Phase 24.5 — Evidence deduplication
+
+Status: planned.
+
+Acceptance:
+
+- independent evidence weight is traceable.
+
+## Phase 24.6 — Numerical edge-case certification
+
+Status: planned.
+
+Cover:
+
+- NaN;
+- Infinity;
+- zero-range;
+- zero-volume;
+- insufficient warmup;
+- flat price;
+- large spread.
+
+Acceptance:
+
+- no invalid numerical value becomes actionable state.
+
+---
+
+# Track 25 — Confluence calibration and no-trade intelligence
+
+## Phase 25.1 — Evidence quality
+
+Status: planned.
+
+Acceptance:
+
+- evidence quality is explicit and deterministic.
+
+## Phase 25.2 — Regime relevance
+
+Status: planned.
+
+Acceptance:
+
+- evidence weights can vary by regime without bypassing risk gates.
+
+## Phase 25.3 — Confidence calibration
+
+Status: planned.
+
+Acceptance:
+
+- calibrated confidence is evaluated against held-out outcomes.
+
+## Phase 25.4 — No-trade model
+
+Status: planned.
+
+Acceptance:
+
+- strong no-trade conditions are explicit and traceable.
+
+## Phase 25.5 — Expected-value diagnostics
+
+Status: planned.
+
+Acceptance:
+
+- diagnostics do not become hidden execution authority.
+
+---
+
+# Track 26 — Local hardening and release
+
+## Phase 26.1 — Final performance/memory sweep
+
+Status: planned.
+
+Measure:
+
+- startup;
+- memory;
+- allocations;
+- tick CPU;
+- panel render cost;
+- cache growth.
+
+Acceptance:
+
+- no unresolved high-impact resource regression.
+
+## Phase 26.2 — Error/recovery logging review
+
+Status: planned.
+
+Acceptance:
+
+- execution/recovery failures are diagnosable;
+- sensitive information is not logged unnecessarily.
+
+## Phase 26.3 — Parameter/default audit
+
+Status: planned.
+
+Acceptance:
+
+- defaults are intentional;
+- hidden behavior is removed;
+- parameter inventory is consistent.
+
+## Phase 26.4 — Chart/panel/alert acceptance
+
+Status: planned.
+
+Acceptance:
+
+- all presentation states render correctly;
+- no stale visual authority.
+
+## Phase 26.5 — Demo-to-controlled-live checklist
+
+Status: planned.
+
+Acceptance:
+
+- explicit operational checklist exists;
+- broker/account/session assumptions are recorded.
+
+## Phase 26.6 — Final local release gate
+
+Status: planned.
+
+Acceptance:
+
+- all required acceptance matrix scenarios PASS;
+- no unresolved critical execution/lifecycle defect;
+- reproducible production source;
+- rollback procedure documented.
+
+Milestone:
+
+**LOCAL PRODUCT COMPLETE**
+
+---
+
+# Track 27 — Cloud portability architecture
+
+Status: planned after Local Product Complete.
+
+## Phase 27.1 — Host-neutral contracts
+
+Separate:
+
+- analysis;
+- planning;
+- risk;
+- lifecycle contracts
+
+from cTrader UI callbacks.
+
+Acceptance:
+
+- core strategy logic can run without Indicator UI.
+
+## Phase 27.2 — cBot host adapter contract
+
+Define:
+
+- market data;
+- clock;
+- broker events;
+- execution;
+- lifecycle.
+
+Acceptance:
+
+- cBot host reuses existing authority chain.
+
+## Phase 27.3 — Broker/event abstraction
+
+Acceptance:
+
+- no cloud adapter bypasses risk/protection/identity.
+
+## Phase 27.4 — Local/cloud configuration parity
+
+Acceptance:
+
+- configuration semantics remain consistent.
+
+---
+
+# Track 28 — Cloud cBot host implementation
+
+## Phase 28.1 — cBot host
+
+Status: planned.
+
+Implement:
+
+- cBot callbacks;
+- market data mapping;
+- runtime lifecycle.
+
+## Phase 28.2 — Broker confirmation/reconciliation
+
+Status: planned.
+
+Acceptance:
+
+- broker-confirmed state remains authoritative.
+
+## Phase 28.3 — Managed identity
+
+Status: planned.
+
+Acceptance:
+
+- Indicator and cBot do not create separate managed identities.
+
+## Phase 28.4 — Protection/recovery parity
+
+Status: planned.
+
+Acceptance:
+
+- recovery semantics match local contracts.
+
+## Phase 28.5 — Decision/execution parity
+
+Status: planned.
+
+Acceptance:
+
+- identical inputs produce equivalent decision/execution intent.
+
+---
+
+# Track 29 — Cloud validation and operational hardening
+
+## Phase 29.1 — Demo cloud execution
+
+Status: planned.
+
+Acceptance:
+
+- normal market path validated in controlled environment.
+
+## Phase 29.2 — Pending cloud execution
+
+Status: planned.
+
+Acceptance:
+
+- Stop/Limit behavior matches local contract.
+
+## Phase 29.3 — Restart/continuity
+
+Status: planned.
+
+Acceptance:
+
+- cloud restart/reconciliation is deterministic.
+
+## Phase 29.4 — Resource/runtime observation
+
+Status: planned.
+
+Acceptance:
+
+- resource use remains controlled.
+
+## Phase 29.5 — Broker compatibility
+
+Status: planned.
+
+Acceptance:
+
+- no broker-specific divergence from local assumptions.
+
+## Phase 29.6 — Secrets/configuration/operations
+
+Status: planned.
+
+Acceptance:
+
+- secrets are not embedded in source;
+- operational runbook is complete.
+
+Milestone:
+
+**CLOUD VALIDATION COMPLETE**
+
+---
+
+# Track 30 — Adaptive Learning, post-stability only
+
+This track is intentionally last.
+
+Learning cannot modify safety invariants, create a second execution authority or
+silently mutate production behavior.
+
+## Phase 30.1 — Outcome dataset quality
+
+Status: deferred.
+
+Acceptance:
+
+- sufficient clean outcome data;
+- provenance;
+- replay traceability.
+
+## Phase 30.2 — Rolling calibration
+
+Status: deferred.
+
+Acceptance:
+
+- calibration evaluated on rolling/out-of-sample data.
+
+## Phase 30.3 — Evidence reliability updates
+
+Status: deferred.
+
+Acceptance:
+
+- adaptation is bounded and observable.
+
+## Phase 30.4 — Bounded parameter adaptation
+
+Status: deferred.
+
+Acceptance:
+
+- safety floors remain immutable;
+- changes are bounded.
+
+## Phase 30.5 — Drift detection
+
+Status: deferred.
+
+Acceptance:
+
+- drift is measurable;
+- adaptation can be frozen on degraded conditions.
+
+## Phase 30.6 — Offline training/evaluation
+
+Status: deferred.
+
+Acceptance:
+
+- training never runs as an uncontrolled live broker authority.
+
+## Phase 30.7 — Approval and rollback
+
+Status: deferred.
+
+Acceptance:
+
+- changes require approval;
+- previous state is restorable.
+
+## Phase 30.8 — Optional local persistence
+
+Status: deferred.
+
+Potential bounded storage:
+
+- cTrader LocalStorage;
+- explicit versioned model metadata;
+- provenance.
+
+Acceptance:
+
+- learning state is durable but cannot bypass safety contracts.
+
+Milestone:
+
+**ADAPTIVE LEARNING ELIGIBLE**
+
+---
+
+# 7. Final project architecture target
+
+The final production flow remains:
+
+\`\`\`
+Market Data
+    ↓
+MTF Closed Context
+    ↓
+Indicators
+    ↓
+Market / Regime / Structure / Zones / Liquidity
+    ↓
+Evidence
+    ↓
+Decision
+    ↓
+Entry / Trigger
+    ↓
+Trade Plan
+    ↓
+Risk
+    ↓
+Execution Intent
+    ↓
+Broker Mutation Boundary
+    ↓
+Broker Confirmation
+    ↓
+Lifecycle
+    ↓
+Live Management / Protection
+    ↓
+Outcome
+    ↓
+Presentation / Telemetry
+\`\`\`
+
+The following are never allowed to become parallel authorities:
+
+\`\`\`
+OSS indicator package
+LEAN
+TA-Lib
+UI
+Telemetry
+Replay engine
+Learning model
+Prediction module
+\`\`\`
+
+They may provide evidence, reference output, simulation or presentation, but
+the CFIP decision/risk/execution authority remains singular.
+
+---
+
+# 8. Final completion criteria
+
+CFIP is not considered fully complete until all of the following are true:
+
+## Architecture
+
+- one decision authority;
+- one risk authority;
+- one automatic execution authority;
+- one managed identity;
+- one broker mutation boundary;
+- no duplicate business rules;
+- no obsolete monolithic owner;
+- no production source above the enforced module ceiling.
+
+## Runtime
+
+- runtime faults are isolated;
+- protection and lifecycle management cannot be starved by optional analysis;
+- retries are bounded;
+- reconnect/restart reconciliation is deterministic;
+- EOD is explicit.
+
+## Analytical correctness
+
+- no look-ahead leakage;
+- MTF timestamps/indexes are correct;
+- BUY/SELL symmetry is tested;
+- FVG/OB/liquidity mathematics are deterministic;
+- evidence duplication is controlled.
+
+## Execution
+
+- no synthetic fills;
+- no synthetic pending state;
+- protection is broker-confirmed;
+- partial close and close are confirmation-driven;
+- rejection/recovery is explicit;
+- fill mismatch is handled deterministically.
+
+## Performance
+
+- startup profile is accepted;
+- tick hot path is bounded;
+- caches are bounded and correct;
+- UI rendering is throttled;
+- memory/allocation profile is documented.
+
+## Testability
+
+- fake broker exists;
+- deterministic replay exists;
+- execution/lifecycle failure tests exist;
+- outcome events are idempotent and traceable.
+
+## OSS
+
+- production OSS packages are minimal;
+- research packages are isolated;
+- numerical benchmark is reproducible;
+- license/compatibility evidence exists;
+- no OSS package is a second trading engine.
+
+## Release
+
+- Local Release Gate PASS;
+- controlled cTrader validation PASS;
+- broker compatibility evidence PASS;
+- rollback procedure exists.
+
+## Cloud
+
+- cloud host reuses local contracts;
+- cBot behavior matches local decision/execution intent;
+- cloud restart/recovery is validated.
+
+## Learning
+
+- sufficient outcome data;
+- calibrated confidence;
+- drift detection;
+- bounded adaptation;
+- approval and rollback;
+- learning cannot bypass safety.
+
+---
+
+# 9. Execution queue for continuation
+
+The current research milestone Track 19.1 is complete, but the certification sequence
+continues from the safety-first program below.
+
+**NEXT: Phase 0.1 — Repository truth synchronization**
+
+Then proceed in dependency order:
+
+\`\`\`
+0.1
+0.2
+↓
+1.1 → 1.2 → 1.3 → 1.4 → 1.5
+↓
+2.x
+↓
+3.x
+↓
+4.x
+↓
+5.x
+↓
+6.x
+↓
+7.x
+↓
+8.x
+↓
+9.x
+↓
+10.x
+↓
+11.x
+↓
+12.x
+↓
+13.x
+↓
+14.x
+↓
+15.x
+↓
+16.x
+↓
+17.x
+↓
+18.x
+↓
+19.2 → 19.3 → 19.4 → 19.5
+↓
+20.x → 21.x → 22.x → 23.x
+↓
+24.x → 25.x
+↓
+26.x
+↓
+27.x → 28.x → 29.x
+↓
+30.x
+\`\`\`
+
+Track 19.1 is intentionally recorded as already complete because it was a
+research milestone executed ahead of the main certification queue.
+
+Do not restart completed historical phases unless a regression is demonstrated.
+
+---
+
+# 10. Cross-chat continuation contract
+
+When a new chat starts:
+
+1. Read this file.
+2. Read \`docs/ARCHITECTURE.md\`.
+3. Read \`docs/WORKFLOW.md\`.
+4. Inspect \`main\`.
+5. Confirm the current commit.
+6. Find the first phase marked \`next\`.
+7. Implement only that phase.
+8. Run the relevant static/contract/CI checks.
+9. Update this file only after the phase is actually complete.
+10. Commit the completed phase directly to GitHub.
+
+The roadmap is authoritative for **what comes next**.
+The architecture is authoritative for **how ownership works**.
+The source and broker-confirmed runtime state are authoritative for **what is
+actually true**.
