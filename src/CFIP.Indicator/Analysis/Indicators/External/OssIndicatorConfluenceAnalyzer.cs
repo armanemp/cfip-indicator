@@ -31,7 +31,6 @@ namespace cAlgo
                 {
                     Rsi = SkenderRsi(bars, index),
                     MacdHistogram = SkenderMacdHistogram(bars, index),
-                    BollingerPercentB = SkenderBollingerPercentB(bars, index),
                     Mfi = SkenderMfi(bars, index),
                     SuperTrend = SkenderSuperTrend(bars, index),
                     AroonOscillator = SkenderAroonOscillator(bars, index),
@@ -39,6 +38,20 @@ namespace cAlgo
                     ObvBias = SkenderObvBias(bars, index),
                     ParabolicSar = SkenderParabolicSar(bars, index)
                 };
+            double bollingerPercentB;
+            double bollingerWidth;
+
+            TryGetSkenderBollingerMetrics(
+                bars,
+                index,
+                out bollingerPercentB,
+                out bollingerWidth);
+
+            snapshot.BollingerPercentB =
+                bollingerPercentB;
+            snapshot.BollingerWidth =
+                bollingerWidth;
+
 
             SkenderStochBias(
                 bars,
