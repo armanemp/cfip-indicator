@@ -339,14 +339,25 @@ Acceptance:
 
 ## Phase 10 — Final hardening
 
+Status: complete in this response.
+
 Goal: freeze the architecture without freezing legitimate future extension.
 
-Work:
+Completed:
 
-- Remove only proven inefficiencies.
-- Remove dead code and duplicate helpers.
-- Freeze module ownership boundaries.
-- Verify OSS licenses and attribution.
-- Ensure production source contains no historical/version residue.
-- Keep historical version details only where required for roadmap/workflow continuity.
-- Produce final operator and maintenance documentation.
+- Removed the obsolete empty broker mutation coordinator stub.
+- Removed the live SL accessor fallback that could substitute the desired plan stop for missing broker state.
+- Hardened live-plan SL hit detection so a missing or unconfirmed broker SL cannot create a synthetic broker exit.
+- Made broker-state synchronization validate SL against the current market and TP against entry direction before exposing it as authoritative state.
+- Hardened position-open and position-modified lifecycle handlers to classify invalid broker protection as recovery state.
+- Hardened live broker protection reconciliation to inspect actual broker SL/TP validity before clearing recovery.
+- Reduced redundant broker stop/target mutations during protection reconciliation.
+- Added architecture gates that enforce broker-state authority, protection validation, recovery handling and removal of the obsolete stub.
+- Updated the architecture and trading-safety documentation with the hardened broker-state rules.
+- Added the operator/maintenance guide for repository build, cTrader acceptance and maintenance boundaries.
+
+Acceptance:
+
+- Repository source, architecture checks and modular ownership remain intact.
+- Current main commit passes the source/architecture, cTrader compile and runtime acceptance workflows.
+- Phase 9 remains explicitly open only for hands-on cTrader terminal/broker validation; Phase 10 repository hardening is complete.
