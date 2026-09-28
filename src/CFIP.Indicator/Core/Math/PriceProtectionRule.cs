@@ -40,7 +40,9 @@ namespace cAlgo
 
         private static bool IsFinitePositivePrice(double value)
         {
-            return IsFinitePrice(value) && value > 0;
+            return !double.IsNaN(value) &&
+                   !double.IsInfinity(value) &&
+                   value > 0;
         }
 
         private static bool IsFiniteDistance(double value)
