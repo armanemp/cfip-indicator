@@ -33,6 +33,16 @@ namespace cAlgo
                                             ? _decision.Direction
                                             : 0;
                         
+                                    PendingOrder pending =
+                                        GetManagedPendingOrder();
+
+                                    if (pending != null &&
+                                        (pending.TradeType == TradeType.Buy ||
+                                         pending.TradeType == TradeType.Sell))
+                                        return pending.TradeType == TradeType.Buy
+                                            ? 1
+                                            : -1;
+
                                     if (_plan != null &&
                                         _plan.IsLivePosition &&
                                         (_plan.Direction == 1 ||
