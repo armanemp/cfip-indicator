@@ -34,6 +34,13 @@ namespace cAlgo
                                         _buttonStack == null ||
                                         _panelRows.Count != PanelRowCount)
                                         return;
+
+                                    DateTime now =
+                                        Server.TimeInUtc;
+
+                                    if (_initializationReady &&
+                                        (now - _lastPanelRenderUtc).TotalMilliseconds < 250)
+                                        return;
                         
                                     if (_panelToggleButton == null)
                                         CreatePanelToggleButton();
@@ -209,6 +216,9 @@ namespace cAlgo
                                         buttonGap);
                         
                                     SyncQuickExecutionControls();
+
+                                    _lastPanelRenderUtc =
+                                        now;
                                 }
     }
 }

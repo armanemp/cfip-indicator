@@ -191,6 +191,13 @@ namespace cAlgo
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
                 private MtfClosedContext _lastMtfClosedContext;
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+                private DateTime _lastPanelRenderUtc = DateTime.MinValue;
+                private DateTime _lastReactionCalcUtc = DateTime.MinValue;
+                private int _lastReactionM5 = -1;
+                private double _lastReactionMarket;
+                private DateTime _lastExecutionModelBuildUtc = DateTime.MinValue;
+                private int _lastExecutionModelM5 = -1;
+                private double _lastExecutionModelMarket;
                 private int _lastPanelM1ClosedIndex = -1;
                 private bool _runtimeTimerBusy;
     }
