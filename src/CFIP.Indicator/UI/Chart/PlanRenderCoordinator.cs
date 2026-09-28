@@ -97,7 +97,9 @@ namespace cAlgo
                                             triggerVisualState);
                         
                                         double displayStop =
-                                            GetActiveBrokerStopPrice();
+                                            _plan.IsLivePosition
+                                                ? GetActiveBrokerStopPrice()
+                                                : _plan.Stop;
                         
                                         DrawPlanLine(
                                             P + "SL",
