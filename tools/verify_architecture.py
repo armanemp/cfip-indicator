@@ -846,10 +846,14 @@ if "brokerTargetValid" not in BOUND_PROTECTION_CODE:
 
 BROKER_STATE = ROOT / "Trading" / "Lifecycle" / "BrokerStateSnapshot.cs"
 BROKER_STATE_CODE = BROKER_STATE.read_text(encoding="utf-8")
-if "IsValidManagedStop(" not in BROKER_STATE_CODE:
-    raise SystemExit("Broker state snapshot must validate SL against current market")
-if "IsValidTarget(" not in BROKER_STATE_CODE:
-    raise SystemExit("Broker state snapshot must validate TP directionality")
+BROKER_PROTECTION_STATE = ROOT / "Trading" / "Lifecycle" / "BrokerProtectionStateEvaluator.cs"
+BROKER_PROTECTION_STATE_CODE = BROKER_PROTECTION_STATE.read_text(encoding="utf-8")
+if "EvaluateBrokerProtection(" not in BROKER_STATE_CODE:
+    raise SystemExit("Broker state snapshot must consume shared protection evaluation")
+if "IsValidManagedStop(" not in BROKER_PROTECTION_STATE_CODE:
+    raise SystemExit("Shared broker protection state must validate SL against current market")
+if "IsValidTarget(" not in BROKER_PROTECTION_STATE_CODE:
+    raise SystemExit("Shared broker protection state must validate TP directionality")
 if "LifecycleState.RecoveryRequired" not in BROKER_STATE_CODE:
     raise SystemExit("Invalid broker protection must enter explicit recovery")
 
@@ -870,10 +874,8 @@ if "IsFinitePositive(liveStop)" not in ACTIVE_PLAN_LEVEL_CODE:
 for handler_name in ("PositionOpenedHandler.cs", "PositionModifiedHandler.cs"):
     handler_path = ROOT / "Trading" / "Lifecycle" / handler_name
     handler_code = handler_path.read_text(encoding="utf-8")
-    if "IsValidManagedStop(" not in handler_code:
-        raise SystemExit(f"{handler_name} must validate broker SL direction and market distance")
-    if "IsValidTarget(" not in handler_code:
-        raise SystemExit(f"{handler_name} must validate broker TP directionality")
+    if "EvaluateBrokerProtection(" not in handler_code:
+        raise SystemExit(f"{handler_name} must consume shared broker protection evaluation")
 
 PROTECTION_COORDINATOR = ROOT / "Trading" / "Execution" / "BrokerProtectionCoordinator.cs"
 PROTECTION_COORDINATOR_CODE = PROTECTION_COORDINATOR.read_text(encoding="utf-8")
