@@ -202,6 +202,11 @@ namespace cAlgo
         private double _lastExecutionModelMarket;
 
         private DateTime _lastPanelRenderUtc = DateTime.MinValue;
+        private MtfClosedContext _lastMtfClosedContext;
+        private bool _runtimeSupervisorBusy;
+        private int _lastSupervisorProcessedM5 = -1;
+        private int _lastSupervisorFailedM5 = -1;
+        private DateTime _lastSupervisorFailureUtc = DateTime.MinValue;
         private DateTime _lastPlanRenderUtc = DateTime.MinValue;
         private DateTime _lastPendingRenderUtc = DateTime.MinValue;
         private DateTime _lastQuickControlSyncUtc = DateTime.MinValue;
