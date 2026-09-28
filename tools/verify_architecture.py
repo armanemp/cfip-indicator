@@ -302,6 +302,54 @@ if "BeginRuntimeFaultCycle(" not in calculation_cycle_code or    "CompleteRuntim
 
 if "MarkRuntimeManagementReadyForRecovery(" not in stage_isolation_code:
     raise SystemExit("Management-first runtime must explicitly enter recovery only after pre-analysis management")
+if "CanAttemptClosedBarAnalysis(" not in runtime_fault_machine_code:
+    raise SystemExit("Closed-bar retry gate is missing")
+if "RecordClosedBarAnalysisFailure(" not in runtime_fault_machine_code:
+    raise SystemExit("Closed-bar retry failure recording is missing")
+if "RecordClosedBarAnalysisSuccess(" not in runtime_fault_machine_code:
+    raise SystemExit("Closed-bar retry success reset is missing")
+if "HasStaleClosedBarFailure(" not in runtime_fault_machine_code:
+    raise SystemExit("Closed-bar stale-failure detection is missing")
+
+if "CanAttemptClosedBarAnalysis(" not in stage_isolation_code:
+    raise SystemExit("Closed-bar analysis stage must honor retry backoff")
+if "RecordClosedBarAnalysisFailure(" not in stage_isolation_code:
+    raise SystemExit("Closed-bar analysis stage must record retry failures")
+
+if 'stageName == "CLOSED-BAR ANALYSIS"' not in stage_isolation_code:
+    raise SystemExit("Closed-bar fault stage boundary is missing")
+
+if "ProcessLiveCalculationStages(" not in calculation_cycle_code:
+    raise SystemExit("Calculate must retain management path after preparation fault")
+
+if "if (newClosedBar &&" in calculation_cycle_code and    "RunClosedBarAnalysisStage(" in calculation_cycle_code:
+    raise SystemExit("Calculate must not return early on closed-bar analysis result")
+
+# Signal/execution synchronization gates.
+PLAN_RENDER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
+PLAN_LABEL_RENDER = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
+for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
+    visual_code = visual_path.read_text(encoding="utf-8")
+    if "_plan.IsLivePosition" not in visual_code or "_plan.Stop" not in visual_code:
+        raise SystemExit(f"Pre-trade plan stop must render from the plan; live stop must use broker-confirmed state: {visual_path.name}")
+
+for broker_path in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs",
+):
+    broker_code = broker_path.read_text(encoding="utf-8")
+    if "GetActiveBrokerStopPrice()" not in broker_code or "GetActiveBrokerTargetPrice()" not in broker_code:
+        raise SystemExit(f"Live trade reporting must use broker-confirmed protection: {broker_path.name}")
+
+for pending_path in (
+    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
+    ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
+):
+    pending_code = pending_path.read_text(encoding="utf-8")
+    if "PendingOrder confirmedOrder = result.PendingOrder;" not in pending_code:
+        raise SystemExit(f"Pending-order reporting must use broker-confirmed order levels: {pending_path.name}")
+    if "confirmedOrder.TargetPrice" not in pending_code or        "confirmedOrder.StopLoss" not in pending_code or        "confirmedOrder.TakeProfit" not in pending_code:
+        raise SystemExit(f"Pending-order reporting is not fully broker-confirmed: {pending_path.name}")
 
 for entry_path in (
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
