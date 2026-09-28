@@ -979,37 +979,43 @@ Next validation:
 Status: in progress.
 
 Objective:
-Make the analytical, signal, plan, pending-order and chart-presentation layers share one coherent market state, while explicitly suppressing weak setups in low-quality regimes.
+Make the analytical, signal, plan, pending-order and chart-presentation layers share one coherent market state, while suppressing low-quality setups before they can become actionable.
 
 Implemented:
-- Deterministic market-regime analyzer using ADX/DMI, ATR regime ratio, EMA spread/slope, Choppiness Index and price-path efficiency.
-- Separate Choppiness Index and Range Efficiency modules.
+- Deterministic regime analyzer using ADX/DMI, ATR ratio, EMA spread/slope, Choppiness Index and price-path efficiency.
 - Regime classes: TREND, EXPANSION, RANGE, COMPRESSION, HIGH_VOLATILITY and TRANSITION.
-- Regime quality is now an explicit decision input and is exposed in the panel with ADX, CHOP, ATR ratio and efficiency diagnostics.
-- Strict regime gate blocks RANGE/COMPRESSION and requires materially stronger evidence in TRANSITION/HIGH_VOLATILITY conditions.
-- Frame quality now incorporates regime quality instead of relying mainly on raw directional score.
-- Pre-trade plans are invalidated visually when the authoritative decision changes direction and no broker pending order is holding the old direction.
-- Pending-order direction is treated as authoritative for chart/panel state.
-- Trigger lines are shown only for trigger-based execution modes instead of being displayed beside every pre-trade plan.
+- M5 regime snapshot caching and short persistence/stability tracking.
+- Strict regime gates: RANGE/COMPRESSION are non-actionable by default; weak TRANSITION/HIGH_VOLATILITY states are rejected; unstable directional regimes require stronger quality.
+- Frame quality now incorporates regime characteristics rather than relying primarily on directional score.
+- Blocked decisions no longer become actionable arrows; prediction/watch is visually separate from confirmed execution state.
+- Pre-trade Plan is reconciled with the current Decision before execution paths run.
+- Active Plan is authoritative for its arrow/levels until invalidated or broker state changes.
+- Pending order state is authoritative and stale pre-trade Plan/Prediction visuals are removed behind it.
+- Trigger rendering is restricted to execution modes where a trigger is actually an activation level; market-entry plans no longer show a misleading second trigger line.
+- Soft plan creation no longer bypasses the authoritative Decision gates.
+- Existing OSS indicator calculation is cached per M5 bar, and quote materialization was reduced from an 800-bar history window to a 160-bar warm-up window.
+- Bollinger Width is retained as non-directional volatility context without adding a redundant directional vote.
 
 Startup/resource work:
-- Panel creation remains before expensive initialization.
-- MTF market-data acquisition and native indicator registration are staged through timer cycles instead of one synchronous startup burst.
-- Calculation remains gated until staged initialization completes.
+- Panel construction occurs before expensive startup work.
+- MTF series acquisition and native indicator registration are staged through Timer cycles.
+- Calculation remains gated until initialization is complete.
 
-Research inputs:
-- ADX/DMI for trend-strength and directional movement.
-- ATR for volatility expansion/compression and adaptive levels.
-- Choppiness Index and path efficiency for range/chop detection.
-- Regime-switching research remains a future research/reference path; online HMM/ML is intentionally deferred from the realtime indicator until outcome data and resource budgets justify it.
+Research basis:
+- ADX/DMI: trend-strength and directional-movement context. citeturn965733search1turn965733search4
+- ATR: volatility expansion/compression and adaptive levels. citeturn965733search0
+- Choppiness Index: sideways/choppy versus directional market characterization. citeturn677293search0
+- Kaufman-style efficiency concepts support using path efficiency as a trend/noise discriminator. citeturn703261search0turn703261search1
+- Recent regime research supports treating regime classification as context rather than as a standalone directional signal and highlights the need for validation and anti-lookahead controls. citeturn677293search10turn965733search3
 
 Next acceptance:
-- Verify fast initial panel paint after both cold and warm cTrader startup.
-- Verify direction flips remove stale pre-trade levels.
-- Verify Trigger/Entry semantics for RetestMarket vs WaitingForTrigger vs BreakoutMarket.
+- Measure cold/warm startup latency and CPU/memory on the target PC.
+- Verify direction flips invalidate stale pre-trade levels before any new execution.
+- Verify pending Stop/Limit visuals are the sole level authority while pending exists.
 - Verify RANGE/COMPRESSION produce no actionable plan.
-- Verify EXPANSION produces signals only when directional evidence and quality are sufficient.
-- Capture CPU/memory and first-ready latency on the target machine.
+- Verify EXPANSION/TREND require stable, directional evidence rather than isolated indicator votes.
+- Begin walk-forward/replay validation before tuning thresholds further.
+
 
 ### Phase 30 — Automatic market execution certification
 
