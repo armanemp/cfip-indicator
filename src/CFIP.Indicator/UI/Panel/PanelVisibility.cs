@@ -37,8 +37,11 @@ namespace cAlgo
                                             Chart.RemoveControl(
                                                 _panel);
                                         }
-                                        catch
+                                        catch (Exception ex)
                                         {
+                                            Print(
+                                                "CFIP panel removal failed: {0}",
+                                                ex.ToString());
                                         }
                                     }
                         
