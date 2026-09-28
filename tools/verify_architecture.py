@@ -308,6 +308,22 @@ print(
     f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
 )
 
+# Accepted terminal host compatibility guard.
+# The production Indicator targets the installed LiteFinance cTrader runtime.
+# Host APIs not verified against that runtime must not be introduced into the
+# Indicator partial host merely because they exist in a newer public SDK.
+HOST_UNVERIFIED_TOKENS = (
+    r"\bOnException\s*\(",
+    r"\bChartStaticText\b",
+)
+for p in files:
+    source_text = strip_for_static_checks(p.read_text(encoding="utf-8"))
+    for token in HOST_UNVERIFIED_TOKENS:
+        if re.search(token, source_text):
+            raise SystemExit(
+                f"Unverified host API leaked into production Indicator: {p}"
+            )
+
 # Trade-plan construction boundary.
 PLAN_BUILDER = ROOT / "Planning" / "TradePlan" / "PlanBuilder.cs"
 PLAN_BUILDER_CODE = PLAN_BUILDER.read_text(encoding="utf-8")
