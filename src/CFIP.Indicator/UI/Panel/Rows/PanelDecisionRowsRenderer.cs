@@ -78,7 +78,9 @@ namespace cAlgo
                                                               Math.Round(regime.AtrRatio, 2) +
                                                               "  •  EFF " +
                                                               Math.Round(regime.RangeEfficiency, 2) +
-                                                              "  •  STAB " +
+                                                              "  •  RANGE " +
+                                                              Math.Round(regime.RangeWidthAtr, 2) +
+                                                              "ATR  •  STAB " +
                                                               regime.Stability;
 
                                                     AddPanelRow(
