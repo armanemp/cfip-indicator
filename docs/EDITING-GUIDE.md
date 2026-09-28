@@ -101,6 +101,7 @@ Edit the smallest authoritative module that owns the behavior.
 | Pending-fill protection | `Trading/Lifecycle/PendingFillProtectionCoordinator.cs` |
 | Broker fill reconciliation | `Trading/Lifecycle/LiveFillReconciliation.cs` |
 | Broker state snapshot | `Trading/Lifecycle/BrokerStateSnapshot.cs` |
+| Broker protection state evaluation | `Trading/Lifecycle/BrokerProtectionStateEvaluator.cs` |
 | Live-plan recovery | `Trading/Lifecycle/ManagedLivePlanRecovery.cs`, `LivePlanFactory.cs` |
 | Live-plan target recovery | `Trading/Lifecycle/LivePlanTargetEnrichment.cs`, `LivePlanFurtherTargetSelector.cs` |
 | Position/pending circuit breakers | `Trading/Lifecycle/PositionCircuitBreaker.cs`, `PendingOrderCircuitBreaker.cs` |
