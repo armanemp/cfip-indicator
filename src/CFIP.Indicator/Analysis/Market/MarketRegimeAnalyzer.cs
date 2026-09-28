@@ -83,13 +83,50 @@ namespace cAlgo
                  previousFast) /
                 atr;
 
+            int regimeLookback =
+                Math.Max(
+                    10,
+                    RegimeLookbackBars);
+
             double efficiency =
                 CalculateRangeEfficiency(
                     bars,
                     index,
+                    regimeLookback);
+
+            int rangeFirst =
+                Math.Max(
+                    0,
+                    index -
+                    regimeLookback +
+                    1);
+
+            double rangeHigh =
+                bars.HighPrices[rangeFirst];
+            double rangeLow =
+                bars.LowPrices[rangeFirst];
+
+            for (int i = rangeFirst + 1;
+                 i <= index;
+                 i++)
+            {
+                rangeHigh =
                     Math.Max(
-                        10,
-                        RegimeLookbackBars));
+                        rangeHigh,
+                        bars.HighPrices[i]);
+                rangeLow =
+                    Math.Min(
+                        rangeLow,
+                        bars.LowPrices[i]);
+            }
+
+            double rangeWidthAtr =
+                atr > 0
+                    ? Math.Max(
+                        0,
+                        rangeHigh - rangeLow) /
+                      atr
+                    : 0;
 
             double choppiness =
                 CalculateChoppinessIndex(
@@ -134,18 +171,41 @@ namespace cAlgo
 
             string regime;
 
-            if (atrRatio <=
+            bool microRange =
+                rangeWidthAtr <=
+                    Math.Max(
+                        1.0,
+                        MicroRangeWidthAtr) &&
+                returnAtr <=
+                    Math.Max(
+                        0.20,
+                        MicroRangeReturnAtr) &&
+                choppiness >=
+                    Math.Max(
+                        55,
+                        RangeChoppinessThreshold);
+
+            if ((atrRatio <=
                     Math.Min(
                         0.95,
                         CompressionAtrRatio) &&
-                choppiness >=
+                 choppiness >=
                     Math.Max(
                         52,
                         RangeChoppinessThreshold) &&
-                efficiency <=
+                 efficiency <=
                     Math.Max(
                         0.35,
-                        RangeEfficiencyThreshold))
+                        RangeEfficiencyThreshold)) ||
+                (microRange &&
+                 adx <
+                    Math.Max(
+                        20,
+                        MinimumTrendAdx) &&
+                 efficiency <=
+                    Math.Max(
+                        0.35,
+                        RangeEfficiencyThreshold)))
             {
                 regime = "COMPRESSION";
             }
@@ -336,6 +396,7 @@ namespace cAlgo
             snapshot.EmaSpreadAtr = emaSpreadAtr;
             snapshot.EmaSlopeAtr = emaSlopeAtr;
             snapshot.RangeEfficiency = efficiency;
+            snapshot.RangeWidthAtr = rangeWidthAtr;
             snapshot.Adx = adx;
             snapshot.DmiBias = dmiBias;
             snapshot.ReturnAtr = returnAtr;
