@@ -29,7 +29,7 @@ namespace cAlgo
                                             -1,
                                             -1);
 
-                                    if (_mtfClosedContextCache.TryGetCached(
+                                    if (_mtfClosedContextCache.TryGetStableContext(
                                             _m1Bars,
                                             _m5Bars,
                                             _m15Bars,
@@ -53,7 +53,7 @@ namespace cAlgo
                                             ClosedIndex(_d1Bars, reference),
                                             ClosedIndex(_w1Bars, reference));
 
-                                    _mtfClosedContextCache.Store(
+                                    _mtfClosedContextCache.StoreStableContext(
                                         _m1Bars,
                                         _m5Bars,
                                         _m15Bars,
