@@ -308,6 +308,36 @@ print(
     f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
 )
 
+# Trade-plan construction boundary.
+PLAN_BUILDER = ROOT / "Planning" / "TradePlan" / "PlanBuilder.cs"
+PLAN_BUILDER_CODE = PLAN_BUILDER.read_text(encoding="utf-8")
+if PLAN_BUILDER.stat().st_size > 4096:
+    raise SystemExit("PlanBuilder.cs must remain a thin orchestration boundary")
+for token in (
+    "TryPreparePlanInputs(",
+    "TryBuildPlanTargets(",
+    "CreatePlanFromInputs(",
+    "EnrichPlanTargetMetadata(",
+):
+    if token not in PLAN_BUILDER_CODE:
+        raise SystemExit(f"PlanBuilder orchestration call missing: {token}")
+for forbidden in (
+    "BuildStructuralStop(",
+    "BuildTargetLevels(",
+    "SelectTarget(",
+    "ApplyTargetMeta(",
+    "HasTargetObstacle(",
+):
+    if forbidden in PLAN_BUILDER_CODE:
+        raise SystemExit(f"PlanBuilder retains extracted responsibility: {forbidden}")
+for required_path in (
+    ROOT / "Planning" / "TradePlan" / "PlanInputPreparation.cs",
+    ROOT / "Planning" / "TradePlan" / "PlanTargetPreparation.cs",
+    ROOT / "Planning" / "TradePlan" / "PlanMaterialization.cs",
+):
+    if not required_path.exists():
+        raise SystemExit(f"Trade-plan construction owner missing: {required_path}")
+
 # Market-frame analysis boundary.
 MARKET_FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
 MARKET_FRAME_ANALYZER_CODE = MARKET_FRAME_ANALYZER.read_text(encoding="utf-8")
