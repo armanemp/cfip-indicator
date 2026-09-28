@@ -5,6 +5,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private readonly OssIndicatorSnapshotCache _ossIndicatorSnapshotCache =
+            new OssIndicatorSnapshotCache();
+
         private OssIndicatorSnapshot BuildOssIndicatorSnapshot(
             Bars bars,
             int index)
@@ -14,6 +17,14 @@ namespace cAlgo
                 index < 0 ||
                 index >= bars.Count)
                 return null;
+
+            if (_ossIndicatorSnapshotCache.TryGet(
+                    bars,
+                    index,
+                    out OssIndicatorSnapshot cachedSnapshot))
+            {
+                return cachedSnapshot;
+            }
 
             OssIndicatorSnapshot snapshot =
                 new OssIndicatorSnapshot
@@ -53,12 +64,12 @@ namespace cAlgo
             bool obvValid = IsFiniteValue(snapshot.ObvBias);
             bool parabolicSarValid = IsFiniteValue(snapshot.ParabolicSar);
 
-            AddDirectionalVote(snapshot.Rsi, 50, true, rsiValid, snapshot);
-            AddDirectionalVote(snapshot.MacdHistogram, 0, true, macdValid, snapshot);
-            AddDirectionalVote(snapshot.BollingerPercentB, 0.5, true, bollingerValid, snapshot);
-            AddDirectionalVote(snapshot.Mfi, 50, true, mfiValid, snapshot);
-            AddDirectionalVote(snapshot.AroonOscillator, 0, true, aroonValid, snapshot);
-            AddDirectionalVote(snapshot.Cci, 0, true, cciValid, snapshot);
+            AddDirectionalVote(snapshot.Rsi, 50, rsiValid, snapshot);
+            AddDirectionalVote(snapshot.MacdHistogram, 0, macdValid, snapshot);
+            AddDirectionalVote(snapshot.BollingerPercentB, 0.5, bollingerValid, snapshot);
+            AddDirectionalVote(snapshot.Mfi, 50, mfiValid, snapshot);
+            AddDirectionalVote(snapshot.AroonOscillator, 0, aroonValid, snapshot);
+            AddDirectionalVote(snapshot.Cci, 0, cciValid, snapshot);
 
             if (stochValid)
             {
@@ -106,22 +117,26 @@ namespace cAlgo
                 (obvValid ? 1 : 0) +
                 (parabolicSarValid ? 1 : 0);
 
+            _ossIndicatorSnapshotCache.Set(
+                bars,
+                index,
+                snapshot);
+
             return snapshot;
         }
 
         private void AddDirectionalVote(
             double value,
             double neutralLevel,
-            bool symmetric,
             bool valid,
             OssIndicatorSnapshot snapshot)
         {
             if (!valid || snapshot == null)
                 return;
 
-            if (symmetric && value > neutralLevel)
+            if (value > neutralLevel)
                 snapshot.BullVotes++;
-            else if (symmetric && value < neutralLevel)
+            else if (value < neutralLevel)
                 snapshot.BearVotes++;
         }
 
