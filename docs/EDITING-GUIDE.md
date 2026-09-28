@@ -51,6 +51,9 @@ Edit the smallest authoritative module that owns the behavior.
 | Plan materialization/target metadata | `Planning/TradePlan/PlanMaterialization.cs` |
 | Plan integrity | `Planning/TradePlan/PlanIntegrityValidator.cs` |
 | Structural stop | `Planning/TradePlan/StructuralStopPlanner.cs` |
+| Structural stop selection orchestration | `Planning/TradePlan/StructuralStopCandidateSelector.cs` |
+| Structural stop candidate evaluation | `Planning/TradePlan/StructuralStopCandidateEvaluator.cs` |
+| Structural stop finalization | `Planning/TradePlan/StructuralStopFinalizer.cs` |
 | Minimum required RR | `Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs` |
 | Target levels | `Planning/TradePlan/TargetLevelBuilder.cs` |
 | Target candidate merging | `Planning/TradePlan/TargetLevelCandidateMerger.cs`, `TargetLevelMerger.cs` |
