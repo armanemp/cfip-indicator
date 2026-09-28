@@ -8,6 +8,102 @@ namespace cAlgo
         private int _runtimeFaultCount;
         private DateTime _lastRuntimeFaultUtc = DateTime.MinValue;
         private string _lastRuntimeFaultMessage = string.Empty;
+        private readonly RuntimeFaultStateMachine _runtimeFaultStateMachine =
+            new RuntimeFaultStateMachine();
+
+        private RuntimeFaultState CurrentRuntimeFaultState
+        {
+            get { return _runtimeFaultStateMachine.State; }
+        }
+
+        private void BeginRuntimeFaultCycle()
+        {
+            _runtimeFaultStateMachine.BeginCycle();
+            _runtimeFaultStateMachine.ObserveAutoTradingSetting(
+                AutoTradingEnabled);
+            ApplyRuntimeFaultState();
+        }
+
+        private void MarkRuntimeManagementReadyForRecovery()
+        {
+            _runtimeFaultStateMachine.MarkManagementReadyForRecovery();
+            ApplyRuntimeFaultState();
+        }
+
+        private void CompleteRuntimeFaultCycle()
+        {
+            _runtimeFaultStateMachine.CompleteCycle();
+            ApplyRuntimeFaultState();
+        }
+
+        private bool CanRunAutomaticEntry()
+        {
+            return _runtimeFaultStateMachine.CanAutomaticEntryProceed;
+        }
+
+        private void ApplyRuntimeEntryGate()
+        {
+            ApplyRuntimeFaultState();
+        }
+
+        private void ApplyRuntimeFaultState()
+        {
+            RuntimeFaultState state =
+                CurrentRuntimeFaultState;
+
+            if (state == RuntimeFaultState.Healthy)
+                return;
+
+            _autoTradingEnabledRuntime = false;
+            _automaticOrdersEnabledRuntime = false;
+
+            if (state == RuntimeFaultState.Recovering)
+            {
+                _autoExecutionBlockReason =
+                    "RUNTIME RECOVERY";
+                _autoOrdersBlockReason =
+                    "RUNTIME RECOVERY";
+
+                SetAutoTradingState(
+                    "RECOVERING",
+                    "RUNTIME RECOVERY");
+                _autoTradingReason =
+                    "RUNTIME RECOVERY";
+                _status =
+                    "RUNTIME RECOVERING";
+                return;
+            }
+
+            if (state == RuntimeFaultState.Degraded)
+            {
+                _autoExecutionBlockReason =
+                    "RUNTIME DEGRADED";
+                _autoOrdersBlockReason =
+                    "RUNTIME DEGRADED";
+
+                SetAutoTradingState(
+                    "DEGRADED",
+                    "RUNTIME DEGRADED");
+                _autoTradingReason =
+                    "RUNTIME DEGRADED";
+                _status =
+                    "RUNTIME DEGRADED";
+                return;
+            }
+
+            _autoExecutionBlockReason =
+                "RUNTIME ENTRY BLOCKED";
+            _autoOrdersBlockReason =
+                "RUNTIME ENTRY BLOCKED";
+
+            SetAutoTradingState(
+                "ENTRY_BLOCKED",
+                "RUNTIME FAULT • EXPLICIT RE-ARM REQUIRED");
+            _autoTradingReason =
+                "RUNTIME FAULT • EXPLICIT RE-ARM REQUIRED";
+            _status =
+                "RUNTIME ENTRY BLOCKED";
+        }
 
         private void HandleRuntimeFault(
             Exception exception,
@@ -17,6 +113,8 @@ namespace cAlgo
             if (exception == null)
                 return;
 
+            _runtimeFaultStateMachine.RecordRecoverableFault();
+            _runtimeFaultStateMachine.BlockAutomaticEntry();
             _runtimeFaultCount++;
             _lastRuntimeFaultUtc = TimeInUtc;
             _lastRuntimeFaultMessage =
@@ -24,17 +122,7 @@ namespace cAlgo
                 ": " +
                 exception.Message;
 
-            // A stage fault must fail closed for automatic order creation while
-            // allowing independent management, protection and reconciliation stages
-            // to continue in the same calculation cycle. Broker-confirmed state
-            // remains authoritative.
-            _autoTradingEnabledRuntime = false;
-            _automaticOrdersEnabledRuntime = false;
-            _autoExecutionBlockReason = "RUNTIME FAULT";
-            _autoOrdersBlockReason = "RUNTIME FAULT";
-            _autoTradingState = "ERROR";
-            _autoTradingReason = "RUNTIME FAULT";
-            _status = "RUNTIME ERROR";
+            ApplyRuntimeFaultState();
 
             Print(
                 "CFIP runtime fault #{0} [{1}] at index {2}: {3}",
