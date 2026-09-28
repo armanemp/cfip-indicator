@@ -178,3 +178,5 @@ Verification:
 
 Result:
 - next phase after CI confirmation: **Phase 1.4 — Runtime recovery semantics**.
+
+Certification record: implementation snapshot was verified by Source and architecture workflow 758, Runtime acceptance workflow 567, and cTrader compile workflow 751 before this documentation-only continuity update.
