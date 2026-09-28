@@ -518,3 +518,29 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: continue the remaining near-ceiling audit, prioritizing Trading/LiveManagement/TargetProgression.cs and the automatic-market pre-trade/execution modules before the final hands-on cTrader validation pass.
+
+
+## Phase 17 — Live target progression decomposition
+
+Status: complete.
+
+Goal: separate live target candidate eligibility/scoring from stage orchestration and isolate plan RR recalculation.
+
+Completed:
+
+- Reduced TargetProgression.cs to live target stage/state orchestration.
+- Isolated live candidate eligibility, spacing, obstacle checks and scoring in LiveTargetCandidateEvaluator.cs.
+- Isolated TP1..TP4 RR recomputation in PlanRiskRewardRecalculator.cs.
+- Preserved unhit-target-only behavior, monotonic spacing, maximum RR, HTF/liquidity filters and obstacle rejection.
+- Preserved target metadata refresh and HTF target counting after successful repricing.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- Live target progression keeps a single orchestration owner.
+- Candidate scoring/filtering has one owner.
+- Plan RR derivation has one owner.
+- No duplicate target progression authority is introduced.
+- No production file exceeds 20 KiB.
+
+Next: audit AutomaticMarketPreTrade.cs and AutomaticMarketBrokerExecution.cs as a single execution chain, preserving broker mutation ownership and rejection/recovery semantics.
