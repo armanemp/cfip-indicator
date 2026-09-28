@@ -94,11 +94,7 @@ namespace cAlgo
                     out quality);
 
             if (!IsFinitePositive(stop))
-            {
-                _autoOrdersBlockReason =
-                    "PENDING LIMIT • INVALID SL";
                 return false;
-            }
 
             target =
                 SelectStructuralAutoTarget(
