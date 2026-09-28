@@ -26,6 +26,8 @@ Edit the smallest authoritative module that owns the behavior.
 | Live execution-gate policy | `Trading/Validation/LiveExecutionGateReasonPolicy.cs` |
 | Adaptive smart thresholds | `Trading/Validation/SmartThresholdPolicy.cs` |
 | Decision reason formatting | `Analysis/Market/Decision/DecisionReasonFormatter.cs` |
+| Decision score normalization | `Analysis/Market/Decision/DecisionFrameContributionCalculator.cs` |
+| Correlation-aware evidence fusion | `Analysis/Market/Decision/IndependentEvidenceFusionCalculator.cs` |
 | Reaction | `Analysis/Reaction/*.cs` |
 | Liquidity sweep | `Analysis/Structure/LiquiditySweepAnalyzer.cs` |
 | Swing points | `Analysis/Structure/SwingPointAnalyzer.cs` |
