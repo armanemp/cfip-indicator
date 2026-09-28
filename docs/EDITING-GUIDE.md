@@ -38,6 +38,10 @@ Edit the smallest authoritative module that owns the behavior.
 | Target stage orchestration | `Planning/TradePlan/TargetSelector.cs` |
 | Target selection policy | `Planning/TradePlan/TargetSelectionPolicy.cs` |
 | Target candidate filtering/scoring | `Planning/TradePlan/TargetCandidateEvaluator.cs` |
+| Order-block candidate orchestration | `Analysis/Structure/Zones/OrderBlockCandidateBuilder.cs` |
+| Order-block impulse/structure evidence | `Analysis/Structure/Zones/OrderBlockEvidenceBuilder.cs` |
+| Order-block mitigation | `Analysis/Structure/Zones/OrderBlockMitigationGuard.cs` |
+| Order-block quality | `Analysis/Structure/Zones/OrderBlockQualityCalculator.cs` |
 | Plan materialization/target metadata | `Planning/TradePlan/PlanMaterialization.cs` |
 | Plan integrity | `Planning/TradePlan/PlanIntegrityValidator.cs` |
 | Structural stop | `Planning/TradePlan/StructuralStopPlanner.cs` |
