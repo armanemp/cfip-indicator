@@ -396,6 +396,53 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Pending placement boundary.
+PENDING_STOP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
+PENDING_STOP_CODE = PENDING_STOP.read_text(encoding="utf-8")
+if PENDING_STOP.stat().st_size > 4096:
+    raise SystemExit("ContinuationStopPlacement.cs must remain a placement orchestration boundary")
+for token in (
+    "TryPrepareContinuationStop(",
+    "ValidatePendingSubmission(",
+    "TryPlaceStopOrder(",
+    "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+):
+    if token not in PENDING_STOP_CODE:
+        raise SystemExit(f"Continuation stop ownership call missing: {token}")
+
+PENDING_STOP_PREP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPreparation.cs"
+if not PENDING_STOP_PREP.exists() or "BuildStructuralStop(" not in PENDING_STOP_PREP.read_text(encoding="utf-8"):
+    raise SystemExit("Continuation stop preparation owner missing")
+
+PENDING_LIMIT = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs"
+PENDING_LIMIT_CODE = PENDING_LIMIT.read_text(encoding="utf-8")
+if PENDING_LIMIT.stat().st_size > 4096:
+    raise SystemExit("ReversalLimitPlacement.cs must remain a placement orchestration boundary")
+for token in (
+    "TryPrepareReversalLimit(",
+    "ValidatePendingSubmission(",
+    "TryPlaceLimitOrder(",
+    "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+):
+    if token not in PENDING_LIMIT_CODE:
+        raise SystemExit(f"Reversal limit ownership call missing: {token}")
+
+PENDING_LIMIT_PREP = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPreparation.cs"
+if not PENDING_LIMIT_PREP.exists() or "BuildExecutionModel(" not in PENDING_LIMIT_PREP.read_text(encoding="utf-8"):
+    raise SystemExit("Reversal limit preparation owner missing")
+
+PENDING_SUBMISSION = ROOT / "Trading" / "Pending" / "Placement" / "PendingSubmissionValidator.cs"
+if not PENDING_SUBMISSION.exists():
+    raise SystemExit("Shared pending submission validator missing")
+PENDING_SUBMISSION_CODE = PENDING_SUBMISSION.read_text(encoding="utf-8")
+for token in (
+    "ValidateExecutionIntent(",
+    "PassesAutoTradeSafetyGuards(",
+    "PendingExpiration(",
+):
+    if token not in PENDING_SUBMISSION_CODE:
+        raise SystemExit(f"Shared pending submission ownership missing: {token}")
+
 # Aggressive execution boundary.
 AGGRESSIVE_PRETRADE = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs"
 AGGRESSIVE_PRETRADE_CODE = AGGRESSIVE_PRETRADE.read_text(encoding="utf-8")
