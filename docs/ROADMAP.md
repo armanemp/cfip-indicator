@@ -439,3 +439,29 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: audit TargetSelector itself and then the remaining large trading/validation modules, with special attention to duplicated target-obstacle and reward-path rules.
+
+
+## Phase 14 — Target selection decomposition
+
+Status: complete.
+
+Goal: separate stage orchestration from target-selection policy and candidate eligibility/scoring while preserving fixed TP1..TP4 slot semantics.
+
+Completed:
+
+- Reduced TargetSelector.cs to stage orchestration.
+- Isolated progressive RR requirements, HTF-reward stage policy and previous-stage lookup in TargetSelectionPolicy.cs.
+- Isolated candidate validity, age, HTF quality, RR, extension, spacing, obstacle/path checks and target scoring in TargetCandidateEvaluator.cs.
+- Preserved four fixed target slots with null gaps and stage-index trustworthiness.
+- Preserved existing candidate score, HTF/liquidity/zone bonuses, hit weighting, nearest bias and stage weighting.
+- Added static ownership checks for target selection.
+- Updated editing ownership documentation.
+
+Acceptance:
+
+- TargetSelector owns stage iteration only.
+- Candidate filtering/scoring is owned by one module.
+- Stage policy is owned by one module.
+- No target-selection logic is duplicated in PlanBuilder.
+
+Next: audit the remaining near-ceiling structural/planning module OrderBlockCandidateBuilder, then inspect reward-path validation for overlap with target obstacle logic.
