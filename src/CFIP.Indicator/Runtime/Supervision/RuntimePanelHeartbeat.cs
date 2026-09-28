@@ -17,17 +17,8 @@ namespace cAlgo
                 DateTime now =
                     Server.TimeInUtc;
 
-                if (_m5Bars != null &&
-                    _m5Bars.Count >= 2)
-                {
-                    _lastMtfClosedContext =
-                        BuildMtfClosedContext(
-                            now);
-
-                    RefreshClosedM1Frame(
-                        _lastMtfClosedContext.M1);
-                }
-
+                // The heartbeat exists for live panel time only.
+                // Market/MTF analysis remains on the normal closed-bar path.
                 _lastPanelHeartbeatUtc =
                     now;
 
@@ -52,7 +43,6 @@ namespace cAlgo
             if (!ShowUnifiedPanel ||
                 _panel == null ||
                 _panelRows.Count == 0 ||
-                _panelMtfAlignmentRow < 0 ||
                 _panelClockRow < 0)
                 return;
 
@@ -66,13 +56,6 @@ namespace cAlgo
                     2 * Math.Max(
                         0,
                         PanelBorderThickness));
-
-            SetPanelRow(
-                _panelMtfAlignmentRow,
-                MtfAlignmentText(),
-                PanelSectionColor,
-                false,
-                width);
 
             SetPanelRow(
                 _panelClockRow,
