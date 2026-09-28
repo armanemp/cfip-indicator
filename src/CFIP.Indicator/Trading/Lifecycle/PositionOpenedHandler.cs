@@ -35,13 +35,17 @@ namespace cAlgo
                                             ? 1
                                             : -1;
                         
-                                    if (_plan != null &&
-                                        position.SymbolName == SymbolName &&
-                                        _plan.Direction == direction)
+                                    bool boundToActivePlan =
+                                        _plan != null &&
+                                        _plan.IsLivePosition &&
+                                        _plan.PositionId > 0 &&
+                                        _plan.PositionId == position.Id;
+
+                                    if (boundToActivePlan)
                                     {
-                                        // The broker event is the authoritative fill boundary. If
-                                        // execution code has not associated the position yet, bind it
-                                        // here using the managed symbol/side and the actual fill.
+                                        // The broker event reconciles the already-bound position.
+                                        // A pre-trade plan is never rebound to an unrelated
+                                        // position sharing the managed label.
                                         _plan.PositionId =
                                             position.Id;
                         
