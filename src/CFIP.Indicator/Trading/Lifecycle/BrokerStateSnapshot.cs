@@ -41,23 +41,53 @@ namespace cAlgo
                 _plan.Entry =
                     NormalizePrice(position.EntryPrice);
 
-            if (position.StopLoss.HasValue &&
+            bool brokerStopValid =
+                position.StopLoss.HasValue &&
                 IsFinitePositive(position.StopLoss.Value) &&
                 IsValidManagedStop(
                     direction,
                     position.EntryPrice,
                     market,
-                    position.StopLoss.Value))
+                    position.StopLoss.Value);
+
+            bool brokerTargetValid =
+                position.TakeProfit.HasValue &&
+                IsFinitePositive(position.TakeProfit.Value) &&
+                IsValidTarget(
+                    direction,
+                    position.EntryPrice,
+                    position.TakeProfit.Value);
+
+            if (brokerStopValid)
             {
                 _activeBrokerStop =
                     NormalizePrice(position.StopLoss.Value);
             }
 
-            if (position.TakeProfit.HasValue &&
-                IsFinitePositive(position.TakeProfit.Value))
+            if (brokerTargetValid)
             {
                 _activeBrokerTarget =
                     NormalizePrice(position.TakeProfit.Value);
+            }
+
+            bool protectionRequired =
+                AutoBrokerProtection ||
+                AutoProtectBrokerPositions;
+
+            bool protectionMissing =
+                !brokerStopValid ||
+                (SyncBrokerTakeProfit &&
+                 !brokerTargetValid);
+
+            if (protectionRequired &&
+                protectionMissing &&
+                _lifecycleState != LifecycleState.ExitRequested)
+            {
+                _brokerProtectionRecoveryRequired = true;
+
+                SetLifecycleState(
+                    LifecycleState.RecoveryRequired,
+                    "BROKER STATE • PROTECTION INVALID");
             }
         }
     }
