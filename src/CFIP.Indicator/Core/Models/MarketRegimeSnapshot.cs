@@ -11,6 +11,7 @@ namespace cAlgo
         public double EmaSpreadAtr { get; set; }
         public double EmaSlopeAtr { get; set; }
         public double RangeEfficiency { get; set; }
+        public double RangeWidthAtr { get; set; }
         public double Adx { get; set; }
         public double DmiBias { get; set; }
         public double ReturnAtr { get; set; }
