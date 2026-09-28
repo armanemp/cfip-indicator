@@ -77,6 +77,7 @@ namespace cAlgo
 
                                     ApplyExecutionMode(
                                         model,
+                                        closedM5,
                                         direction,
                                         market,
                                         low,
