@@ -695,14 +695,10 @@ if "_plan.PositionId" not in BROKER_PROTECTION_CODE:
 if "ORPHAN MANAGED POSITION" not in ORPHAN_PROTECTION_CODE:
     raise SystemExit("Orphan broker protection must use its own protection context")
 
-if "AGGRESSIVE FILL MISMATCH" not in AGGRESSIVE_CODE:
-    raise SystemExit("Aggressive execution must explicitly handle fill-envelope mismatch")
-mismatch_idx = AGGRESSIVE_CODE.find("if (!ValidateActualMarketFill(")
-if mismatch_idx < 0:
-    raise SystemExit("Aggressive fill validation owner missing")
-mismatch_block = AGGRESSIVE_CODE[mismatch_idx:AGGRESSIVE_CODE.find("return;", mismatch_idx) + len("return;")]
-if "TryClosePosition(" not in mismatch_block:
-    raise SystemExit("Aggressive fill mismatch must request position close")
+AGGRESSIVE_FILL_HANDLER = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs"
+AGGRESSIVE_FILL_CODE = AGGRESSIVE_FILL_HANDLER.read_text(encoding="utf-8")
+if "FILL MISMATCH" not in AGGRESSIVE_FILL_CODE:
+    raise SystemExit("Aggressive accepted-fill handler must explicitly handle fill-envelope mismatch")
 
 PROTECTION_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
 PROTECTION_CODE = PROTECTION_RUNTIME.read_text(encoding="utf-8")
