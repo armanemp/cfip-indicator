@@ -16,6 +16,7 @@ namespace cAlgo
     {
         private void ApplyExecutionMode(
                                     ExecutionModel model,
+                                    int closedM5,
                                     int direction,
                                     double market,
                                     double low,
@@ -30,7 +31,7 @@ namespace cAlgo
                                     int retest =
                                         RetestQuality(
                                             _m5Bars,
-                                            0,
+                                            closedM5,
                                             direction);
 
                                     bool inside =
