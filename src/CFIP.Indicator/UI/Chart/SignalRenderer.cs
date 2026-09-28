@@ -133,26 +133,52 @@ namespace cAlgo
                                         ? "CONFIRMED"
                                         : "WATCH";
                 
+                            bool arrowChanged =
+                                !_lastSignalRenderVisible ||
+                                _lastSignalRenderBar != arrowBar ||
+                                _lastSignalRenderDirection != visualDirection ||
+                                !string.Equals(
+                                    _lastSignalRenderState,
+                                    arrowState,
+                                    StringComparison.Ordinal) ||
+                                Chart.FindObject(
+                                    P + "WATCH_ARROW") == null;
+
                             if (ShowSignalArrow)
                             {
-                                DrawIcon(
-                                    P + "WATCH_ARROW",
-                                    visualDirection == 1
-                                        ? ChartIconType.UpArrow
-                                        : ChartIconType.DownArrow,
-                                    arrowBar,
-                                    visualDirection == 1
-                                        ? Bars.LowPrices[arrowBar] - offset
-                                        : Bars.HighPrices[arrowBar] + offset,
-                                    SignalArrowColorFor(
-                                        visualDirection,
-                                        arrowState));
+                                if (arrowChanged)
+                                {
+                                    DrawIcon(
+                                        P + "WATCH_ARROW",
+                                        visualDirection == 1
+                                            ? ChartIconType.UpArrow
+                                            : ChartIconType.DownArrow,
+                                        arrowBar,
+                                        visualDirection == 1
+                                            ? Bars.LowPrices[arrowBar] - offset
+                                            : Bars.HighPrices[arrowBar] + offset,
+                                        SignalArrowColorFor(
+                                            visualDirection,
+                                            arrowState));
+                                }
                             }
                             else
                             {
                                 Chart.RemoveObject(
                                     P + "WATCH_ARROW");
                             }
+
+                            _lastSignalRenderVisible =
+                                ShowSignalArrow;
+
+                            _lastSignalRenderBar =
+                                arrowBar;
+
+                            _lastSignalRenderDirection =
+                                visualDirection;
+
+                            _lastSignalRenderState =
+                                arrowState;
                 
                             if (_executionModel != null &&
                                 _executionModel.Direction == visualDirection &&
