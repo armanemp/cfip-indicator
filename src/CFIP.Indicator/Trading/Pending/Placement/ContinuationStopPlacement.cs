@@ -7,6 +7,12 @@ namespace cAlgo
         private bool PlaceContinuationStop(
             int closedM5)
         {
+            if (!CanRunAutomaticEntry())
+            {
+                ApplyRuntimeEntryGate();
+                return false;
+            }
+
             if (!TryPrepareContinuationStop(closedM5, out int direction, out _, out double trigger, out double stop, out double target, out _, out _, out double volume, out ExecutionIntent pendingIntent))
                 return false;
             string reason;
