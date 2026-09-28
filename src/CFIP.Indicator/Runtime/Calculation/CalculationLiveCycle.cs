@@ -12,6 +12,8 @@ namespace cAlgo
             _reaction =
                 BuildReaction();
 
+            SynchronizePreTradePlanWithDecision();
+
             RecoverManagedLivePlan(
                 closedM5);
 
