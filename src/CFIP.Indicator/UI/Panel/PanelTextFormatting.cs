@@ -76,6 +76,39 @@ namespace cAlgo
                                     return _panelStableHeader;
                                 }
         
+        
+        private string MtfAlignmentText()
+                                {
+                                    if (_lastMtfClosedContext == null)
+                                        return
+                                            "MTF ALIGNMENT  •  WAITING";
+
+                                    MtfClosedContext mtf =
+                                        _lastMtfClosedContext;
+
+                                    string status =
+                                        mtf.HasPrimaryDecisionHistory
+                                            ? "READY"
+                                            : "BUILDING";
+
+                                    return
+                                        "MTF ALIGNMENT  •  REF " +
+                                        mtf.Reference.ToString(
+                                            "HH:mm:ss") +
+                                        " UTC  •  M5 " +
+                                        mtf.M5 +
+                                        "  M15 " +
+                                        mtf.M15 +
+                                        "  M30 " +
+                                        mtf.M30 +
+                                        "  H1 " +
+                                        mtf.H1 +
+                                        "  H4 " +
+                                        mtf.H4 +
+                                        "  • " +
+                                        status;
+                                }
+
         private string ConfluenceText(
                                     Frame frame)
                                 {
