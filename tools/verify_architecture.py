@@ -369,6 +369,33 @@ for declaration in (
     if declaration in TARGET_SELECTOR_CODE:
         raise SystemExit(f"TargetSelector retains extracted responsibility: {declaration}")
 
+# Order-block candidate construction boundary.
+OB_BUILDER = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockCandidateBuilder.cs"
+OB_BUILDER_CODE = OB_BUILDER.read_text(encoding="utf-8")
+if OB_BUILDER.stat().st_size > 4096:
+    raise SystemExit("OrderBlockCandidateBuilder.cs must remain a thin candidate orchestration boundary")
+for token in (
+    "TryBuildOrderBlockImpulseEvidence(",
+    "TryApplyOrderBlockMitigation(",
+    "CalculateOrderBlockQuality(",
+):
+    if token not in OB_BUILDER_CODE:
+        raise SystemExit(f"Order-block orchestration call missing: {token}")
+for declaration in (
+    "private bool TryBuildOrderBlockImpulseEvidence(",
+    "private bool TryApplyOrderBlockMitigation(",
+    "private int CalculateOrderBlockQuality(",
+):
+    if declaration in OB_BUILDER_CODE:
+        raise SystemExit(f"OrderBlockCandidateBuilder retains extracted responsibility: {declaration}")
+for required_path in (
+    ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockEvidenceBuilder.cs",
+    ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockMitigationGuard.cs",
+    ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockQualityCalculator.cs",
+):
+    if not required_path.exists():
+        raise SystemExit(f"Order-block owner missing: {required_path}")
+
 # Market-frame analysis boundary.
 MARKET_FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
 MARKET_FRAME_ANALYZER_CODE = MARKET_FRAME_ANALYZER.read_text(encoding="utf-8")
