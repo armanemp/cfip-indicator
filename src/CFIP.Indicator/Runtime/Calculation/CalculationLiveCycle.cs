@@ -104,6 +104,8 @@ namespace cAlgo
             int index,
             int closedM5)
         {
+            SynchronizeSignalVisualState();
+
             if (_plan != null)
                 RenderPlan();
             else
