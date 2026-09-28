@@ -13,7 +13,8 @@ namespace cAlgo
             if (_decision == null ||
                 _decision.Direction == 0 ||
                 _decision.Direction != _plan.Direction ||
-                !_decision.EntryAllowed)
+                IsHardDecisionBlockReason(
+                    _decision.BlockReason))
             {
                 _plan = null;
                 _executionModel = null;
