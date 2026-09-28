@@ -121,7 +121,15 @@ namespace cAlgo
                                                     Symbol.TickSize,
                                                     Symbol.PipSize * 0.25);
 
-                                            if (materiallyDifferent)
+                                            bool shouldAdvance =
+                                                !brokerStopValid ||
+                                                ProtectionProgressionRule.ShouldAdvanceStop(
+                                                    positionDirection,
+                                                    NormalizePrice(position.StopLoss.Value),
+                                                    normalizedStop);
+
+                                            if (materiallyDifferent &&
+                                                shouldAdvance)
                                             {
                                                 mutationRequired = true;
 
@@ -137,6 +145,12 @@ namespace cAlgo
 
                                                 stopConfirmed =
                                                     stopMutationSucceeded;
+                                            }
+                                            else if (materiallyDifferent)
+                                            {
+                                                // Broker SL is already more protective; do not
+                                                // overwrite authoritative broker state.
+                                                stopConfirmed = true;
                                             }
                                         }
 
@@ -176,18 +190,29 @@ namespace cAlgo
                                                     NormalizePrice(target);
 
                                                 bool materiallyDifferent =
-                                                    move &&
-                                                    (!brokerTargetValid ||
-                                                     Math.Abs(
-                                                         position.TakeProfit.HasValue
+                                                    !brokerTargetValid ||
+                                                    Math.Abs(
+                                                        position.TakeProfit.HasValue
                                                             ? position.TakeProfit.Value -
                                                               normalizedTarget
                                                             : double.MaxValue) >=
-                                                     Math.Max(
-                                                         Symbol.TickSize,
-                                                         Symbol.PipSize * 0.25));
+                                                    Math.Max(
+                                                        Symbol.TickSize,
+                                                        Symbol.PipSize * 0.25);
 
-                                                if (materiallyDifferent)
+                                                bool shouldAdvance =
+                                                    !brokerTargetValid ||
+                                                    ProtectionProgressionRule.ShouldAdvanceTarget(
+                                                        positionDirection,
+                                                        NormalizePrice(
+                                                            position.TakeProfit.HasValue
+                                                                ? position.TakeProfit.Value
+                                                                : 0),
+                                                        normalizedTarget,
+                                                        PreventBrokerTpBackwardMove);
+
+                                                if (materiallyDifferent &&
+                                                    shouldAdvance)
                                                 {
                                                     mutationRequired = true;
 
@@ -203,6 +228,10 @@ namespace cAlgo
 
                                                     targetConfirmed =
                                                         targetMutationSucceeded;
+                                                }
+                                                else if (materiallyDifferent)
+                                                {
+                                                    targetConfirmed = true;
                                                 }
                                             }
                                         }
