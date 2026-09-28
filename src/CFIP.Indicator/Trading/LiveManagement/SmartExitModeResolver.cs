@@ -45,5 +45,4 @@ namespace cAlgo
                                             return "HOLD";
                                         }
     }
-    }
 }
