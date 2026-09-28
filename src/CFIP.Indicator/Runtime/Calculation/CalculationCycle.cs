@@ -16,12 +16,13 @@ namespace cAlgo
                 out MtfClosedContext mtf))
                 return;
 
-            if (newClosedBar)
-                ProcessNewClosedBar(
+            if (newClosedBar &&
+                !ProcessNewClosedBar(
                     index,
                     closedM5,
                     reference,
-                    mtf);
+                    mtf))
+                return;
 
             ProcessLiveCalculation(
                 index,
