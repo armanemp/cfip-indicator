@@ -10,14 +10,14 @@ namespace cAlgo
             double body,
             double strongestBody,
             double remainingRatio,
-            double atr,
             bool displacement,
             bool structureBreak,
             bool liquiditySweep,
             bool fvgConfluence,
             bool partiallyMitigated,
             int createdIndex,
-            int currentIndex)
+            int currentIndex,
+            double atr)
         {
             double bodyRatio =
                 body /
