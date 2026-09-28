@@ -169,6 +169,9 @@ for required_call in (
             f"Calculate stage orchestration missing: {required_call}"
         )
 
+if "TryPrepareCalculationCycle(" in calculation_cycle_code:
+    raise SystemExit("Calculate must not directly own calculation preparation")
+
 if "ProcessNewClosedBar(" in calculation_cycle_code:
     raise SystemExit("Calculate must not directly own closed-bar analysis")
 
