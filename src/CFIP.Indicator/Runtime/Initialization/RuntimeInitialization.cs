@@ -53,9 +53,6 @@ namespace cAlgo
                                         return;
                                     }
                         
-                                    // Parameters are configuration inputs. Runtime quick controls own
-                                    // the live execution state. Only an actual external/configuration
-                                    // change in a parameter is allowed to alter that runtime state.
                                     if (EnableAutoTrading != _lastConfiguredAutoTrading)
                                     {
                                         _lastConfiguredAutoTrading =
@@ -85,23 +82,86 @@ namespace cAlgo
                                                 : "DISABLED";
                                     }
                                 }
+
+        private void SetInitializationFault(Exception exception, string stage)
+                                {
+                                    _initializationReady = false;
+                                    _autoTradingEnabledRuntime = false;
+                                    _automaticOrdersEnabledRuntime = false;
+                                    _autoExecutionBlockReason = "INITIALIZATION FAULT";
+                                    _autoOrdersBlockReason = "INITIALIZATION FAULT";
+                                    _autoTradingState = "ERROR";
+                                    _autoTradingReason = "INITIALIZATION FAULT";
+                                    _status = "INIT ERROR";
+
+                                    Print(
+                                        "CFIP initialization fault [{0}]: {1}",
+                                        stage,
+                                        exception == null
+                                            ? "UNKNOWN"
+                                            : exception.ToString());
+
+                                    try
+                                    {
+                                        if (_panelHeaderTitle != null)
+                                        {
+                                            _panelHeaderTitle.Text =
+                                                "CFIP SMART  •  INIT ERROR  •  " +
+                                                stage;
+                                            _panelHeaderTitle.ForegroundColor =
+                                                PanelWarningColor;
+                                        }
+
+                                        if (_panel != null)
+                                            _panel.IsVisible = true;
+                                    }
+                                    catch (Exception panelException)
+                                    {
+                                        Print(
+                                            "CFIP initialization-fault panel update failed: {0}",
+                                            panelException.ToString());
+                                    }
+                                }
         
         protected override void Initialize()
                                 {
+                                    // Create a visible, correctly sized bootstrap surface before
+                                    // accessing secondary data feeds or native indicators. This makes
+                                    // initialization failures diagnosable instead of leaving an
+                                    // apparently empty indicator instance on the chart.
                                     _native.Clear();
                                     _historicalDrawn.Clear();
                                     _outcomeDrawn.Clear();
-                        
-                                    _m1Bars = MarketData.GetBars(TimeFrame.Minute);
-                                    _m5Bars = MarketData.GetBars(TimeFrame.Minute5);
-                                    _m15Bars = MarketData.GetBars(TimeFrame.Minute15);
-                                    _m30Bars = MarketData.GetBars(TimeFrame.Minute30);
-                                    _h1Bars = MarketData.GetBars(TimeFrame.Hour);
-                                    _h4Bars = MarketData.GetBars(TimeFrame.Hour4);
-                                    _d1Bars = MarketData.GetBars(TimeFrame.Daily);
-                                    _w1Bars = MarketData.GetBars(TimeFrame.Weekly);
-                        
-                                    RegisterAllNative();
+
+                                    _status = "STARTING";
+                                    CreatePanel();
+
+                                    try
+                                    {
+                                        _m1Bars = MarketData.GetBars(TimeFrame.Minute);
+                                        _m5Bars = MarketData.GetBars(TimeFrame.Minute5);
+                                        _m15Bars = MarketData.GetBars(TimeFrame.Minute15);
+                                        _m30Bars = MarketData.GetBars(TimeFrame.Minute30);
+                                        _h1Bars = MarketData.GetBars(TimeFrame.Hour);
+                                        _h4Bars = MarketData.GetBars(TimeFrame.Hour4);
+                                        _d1Bars = MarketData.GetBars(TimeFrame.Daily);
+                                        _w1Bars = MarketData.GetBars(TimeFrame.Weekly);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        SetInitializationFault(ex, "MARKET DATA");
+                                        return;
+                                    }
+
+                                    try
+                                    {
+                                        RegisterAllNative();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        SetInitializationFault(ex, "NATIVE INDICATORS");
+                                        return;
+                                    }
                         
                                     try
                                     {
@@ -115,26 +175,34 @@ namespace cAlgo
                                     }
                                     catch (Exception ex)
                                     {
-                                        Print("CFIP trading event hookup failed: {0}", ex.Message);
+                                        Print("CFIP trading event hookup failed: {0}", ex.ToString());
                                     }
                         
-                                    InitializeExecutionRuntimeState();
-                        
-                                    SetLifecycleState(
-                                        LifecycleState.Flat,
-                                        "READY");
-                        
-                                    CreatePanel();
-                        
-                                    SetAutoTradingState(
-                                        AutoTradingEnabled
-                                            ? "ARMED"
-                                            : "OFF",
-                                        AutoTradingEnabled
-                                            ? "INITIALIZING"
-                                            : "DISABLED");
-                        
-                                    _status = "READY";
+                                    try
+                                    {
+                                        InitializeExecutionRuntimeState();
+
+                                        SetLifecycleState(
+                                            LifecycleState.Flat,
+                                            "READY");
+
+                                        SetAutoTradingState(
+                                            AutoTradingEnabled
+                                                ? "ARMED"
+                                                : "OFF",
+                                            AutoTradingEnabled
+                                                ? "INITIALIZING"
+                                                : "DISABLED");
+
+                                        _status = "READY";
+                                        _initializationReady = true;
+
+                                        RenderPanel();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        SetInitializationFault(ex, "RUNTIME STATE");
+                                    }
                                 }
         
         protected override void OnDestroy()
