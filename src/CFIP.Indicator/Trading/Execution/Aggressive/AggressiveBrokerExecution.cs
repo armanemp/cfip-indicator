@@ -69,20 +69,14 @@ namespace cAlgo
                     return;
                 }
 
-                string submissionKey =
-                    "AGGRESSIVE|" +
-                    closedM5 +
-                    "|" +
-                    (_reaction == null
-                        ? 0
-                        : _reaction.Direction);
-
                 string submissionGateReason;
 
-                if (!_aggressiveSubmissionGate.TryAcquire(
-                        Server.TimeInUtc,
-                        submissionKey,
-                        out submissionGateReason))
+                if (!TryAcquireAggressiveSubmission(
+                        closedM5,
+                        _reaction == null
+                            ? 0
+                            : _reaction.Direction,
+                        out submissionGateReason)
                 {
                     _autoExecutionBlockReason =
                         submissionGateReason;
@@ -111,17 +105,11 @@ namespace cAlgo
                 }
                 catch
                 {
-                    _aggressiveSubmissionGate.Record(
-                        Server.TimeInUtc,
-                        false);
+                    RecordAggressiveSubmissionFailure();
                     throw;
                 }
 
-                _aggressiveSubmissionGate.Record(
-                    Server.TimeInUtc,
-                    result != null &&
-                    result.IsSuccessful &&
-                    result.Position != null);
+                RecordAggressiveSubmission(result);
 
                 if (!BrokerConfirmationPolicy.CanAdoptPosition(
                         result != null,
