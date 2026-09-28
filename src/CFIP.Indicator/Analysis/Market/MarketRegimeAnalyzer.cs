@@ -58,7 +58,7 @@ namespace cAlgo
             if (bars == null || index < 0)
                 return null;
 
-            if (_m5RegimeCoreCache.TryGetCached(
+            if (_m5RegimeCoreCache.TryGetRecentCore(
                     bars,
                     index,
                     out MarketRegimeSnapshot cached))
@@ -69,7 +69,7 @@ namespace cAlgo
                     bars,
                     index);
 
-            _m5RegimeCoreCache.Store(
+            _m5RegimeCoreCache.StoreRecentCore(
                 bars,
                 index,
                 snapshot);
