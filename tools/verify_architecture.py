@@ -264,7 +264,7 @@ if "ExecutionCapacityRule.IsSupportedSinglePlanCapacity" not in CAPACITY_CODE:
     raise SystemExit("Single-plan execution capacity guard must delegate to the pure rule")
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
-    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
     execution_code = execution_path.read_text(encoding="utf-8")
@@ -396,6 +396,51 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
+# Aggressive execution boundary.
+AGGRESSIVE_PRETRADE = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs"
+AGGRESSIVE_PRETRADE_CODE = AGGRESSIVE_PRETRADE.read_text(encoding="utf-8")
+if AGGRESSIVE_PRETRADE.stat().st_size > 4096:
+    raise SystemExit("AggressivePreTradePreparation.cs must remain an orchestration boundary")
+for token in (
+    "PassAggressivePreTradeEligibility(",
+    "TryPrepareAggressiveExecution(",
+):
+    if token not in AGGRESSIVE_PRETRADE_CODE:
+        raise SystemExit(f"Aggressive pre-trade orchestration call missing: {token}")
+
+for path, token in (
+    (
+        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
+        "ValidateConfiguredPositionCapacity("
+    ),
+    (
+        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
+        "BuildStructuralStop("
+    ),
+    (
+        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs",
+        "ValidateActualMarketFill("
+    ),
+):
+    if not path.exists() or token not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"Aggressive execution owner missing or incomplete: {path}")
+
+AGGRESSIVE_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
+AGGRESSIVE_RUNTIME_CODE = AGGRESSIVE_RUNTIME.read_text(encoding="utf-8")
+if AGGRESSIVE_RUNTIME.stat().st_size > 8192:
+    raise SystemExit("AggressiveBrokerExecution.cs must remain an execution orchestration boundary")
+for token in (
+    "EnsureTradingPermission(",
+    "PassesAutoTradeSafetyGuards(",
+    "BuildExecutionIntent(",
+    "TryExecuteMarketOrder(",
+    "BrokerConfirmationPolicy.CanAdoptPosition(",
+    "TryProcessAcceptedAggressiveFill(",
+    "EnsureBrokerProtectionForPosition(",
+    '"RECOVERY"',
+):
+    if token not in AGGRESSIVE_RUNTIME_CODE:
+        raise SystemExit(f"Aggressive execution boundary missing: {token}")
 # Automatic-market execution boundary.
 AUTO_MARKET_PRETRADE = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTrade.cs"
 AUTO_MARKET_PRETRADE_CODE = AUTO_MARKET_PRETRADE.read_text(encoding="utf-8")
