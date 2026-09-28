@@ -491,3 +491,30 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: inspect Trading/Validation/RewardPathValidation.cs together with target obstacle consumers to remove overlapping reward-path rules without changing trade rejection behavior.
+
+
+## Phase 16 — Reward-path validation decomposition
+
+Status: complete.
+
+Goal: separate reward-path geometry, local obstacle scanning, target obstacle checks, higher-timeframe path validation and HTF target presence without changing rejection semantics.
+
+Completed:
+
+- Removed the monolithic RewardPathValidation.cs owner.
+- Isolated opposing-zone reward-path scanning in RewardPathZoneObstacleScanner.cs.
+- Isolated path intersection semantics in RewardPathGeometryRule.cs.
+- Isolated swing/equal-level target obstacle checks in TargetObstacleValidator.cs.
+- Isolated M15/M30/H1/H4 reward-path traversal in HigherTfRewardPathValidator.cs.
+- Isolated HTF-target presence validation in HtfTargetPresenceValidator.cs.
+- Preserved the existing obstacle clearance, FVG, Order Block and equal-high/low rules.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- Reward-path rules have explicit owners with no monolithic implementation file.
+- Target selection consumes the same obstacle authorities rather than duplicating their formulas.
+- Existing trade-rejection behavior remains unchanged.
+- No production file exceeds 20 KiB.
+
+Next: continue the remaining near-ceiling audit, prioritizing Trading/LiveManagement/TargetProgression.cs and the automatic-market pre-trade/execution modules before the final hands-on cTrader validation pass.
