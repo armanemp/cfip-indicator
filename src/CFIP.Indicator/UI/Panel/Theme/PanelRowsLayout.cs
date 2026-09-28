@@ -9,38 +9,42 @@ using cAlgo.API.Internals;
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
-    {
-        private void ApplyPanelRowsLayout(
+    {        private void ApplyPanelRowsLayout(
                                                     int contentWidth)
                                                 {
-                                                    _buttonStack.IsVisible =
-                                                        buttons;
-                                        
                                                     for (int i = 0;
                                                          i < _panelRows.Count;
                                                          i++)
                                                     {
                                                         TextBlock row =
                                                             _panelRows[i];
-                                        
+
                                                         row.Width =
                                                             Math.Max(
                                                                 190,
                                                                 contentWidth);
-                                        
+
                                                         row.FontSize =
                                                             Math.Max(
                                                                 8,
                                                                 PanelFontSize);
-                                        
+
                                                         row.FontFamily =
                                                             string.IsNullOrWhiteSpace(
                                                                 PanelFontFamily)
                                                                 ? "Arial"
                                                                 : PanelFontFamily;
-                                        
+
                                                         row.LineHeight =
                                                             Math.Max(
+                                                                14,
+                                                                PanelFontSize + 3);
+
+                                                        row.BackgroundColor =
+                                                            Color.FromArgb(
+                                                                0,
+                                                                Color.Black);
+                                                    }
                                                 }
     }
 }
