@@ -61,20 +61,42 @@ namespace cAlgo
                             else if (stopOk &&
                                      desiredStopValid)
                             {
+                                double currentStop =
+                                    NormalizePrice(
+                                        position.StopLoss.Value);
+
                                 double normalizedStop =
                                     NormalizePrice(stop);
 
-                                stopOk =
+                                bool materiallyDifferent =
                                     Math.Abs(
-                                        position.StopLoss.Value -
-                                        normalizedStop) <
+                                        currentStop -
+                                        normalizedStop) >=
                                     Math.Max(
                                         Symbol.TickSize,
-                                        Symbol.PipSize * 0.25) ||
-                                    TryModifyStopLoss(
-                                        position,
-                                        normalizedStop,
-                                        context + " • SL");
+                                        Symbol.PipSize * 0.25);
+
+                                if (!materiallyDifferent)
+                                {
+                                    stopOk = true;
+                                }
+                                else if (ProtectionProgressionRule.ShouldAdvanceStop(
+                                             direction,
+                                             currentStop,
+                                             normalizedStop))
+                                {
+                                    stopOk =
+                                        TryModifyStopLoss(
+                                            position,
+                                            normalizedStop,
+                                            context + " • SL");
+                                }
+                                else
+                                {
+                                    // The current broker stop is already more protective.
+                                    // Broker state remains authoritative.
+                                    stopOk = true;
+                                }
                             }
 
                             bool currentTargetValid =
@@ -107,20 +129,43 @@ namespace cAlgo
                             else if (targetOk &&
                                      desiredTargetValid)
                             {
+                                double currentTarget =
+                                    NormalizePrice(
+                                        position.TakeProfit.Value);
+
                                 double normalizedTarget =
                                     NormalizePrice(target);
 
-                                targetOk =
+                                bool materiallyDifferent =
                                     Math.Abs(
-                                        position.TakeProfit.Value -
-                                        normalizedTarget) <
+                                        currentTarget -
+                                        normalizedTarget) >=
                                     Math.Max(
                                         Symbol.TickSize,
-                                        Symbol.PipSize * 0.25) ||
-                                    TryModifyTakeProfit(
-                                        position,
-                                        normalizedTarget,
-                                        context + " • TP");
+                                        Symbol.PipSize * 0.25);
+
+                                if (!materiallyDifferent)
+                                {
+                                    targetOk = true;
+                                }
+                                else if (ProtectionProgressionRule.ShouldAdvanceTarget(
+                                             direction,
+                                             currentTarget,
+                                             normalizedTarget,
+                                             PreventBrokerTpBackwardMove))
+                                {
+                                    targetOk =
+                                        TryModifyTakeProfit(
+                                            position,
+                                            normalizedTarget,
+                                            context + " • TP");
+                                }
+                                else
+                                {
+                                    // The current broker target is already at least as
+                                    // progressive under the configured policy.
+                                    targetOk = true;
+                                }
                             }
 
                             bool protectedOk =
