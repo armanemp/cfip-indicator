@@ -417,16 +417,30 @@ namespace cAlgo
                                         }
                         
                                         EnrichLivePlanTargets(closedM5);
-                        
+
+                                        bool protectionOk = true;
+
                                         if (AutoBrokerProtection)
                                         {
-                                            EnsureBrokerProtectionForPosition(
-                                                result.Position,
-                                                actualStop,
-                                                actualTarget,
-                                                "AGGRESSIVE ENTRY",
-                                                _reaction.Direction);
+                                            protectionOk =
+                                                EnsureBrokerProtectionForPosition(
+                                                    result.Position,
+                                                    actualStop,
+                                                    actualTarget,
+                                                    "AGGRESSIVE ENTRY",
+                                                    _reaction.Direction);
                                         }
+
+                                        SetAutoTradingState(
+                                            protectionOk
+                                                ? "EXECUTED"
+                                                : "RECOVERY",
+                                            protectionOk
+                                                ? "POSITION #" +
+                                                  result.Position.Id
+                                                : "POSITION #" +
+                                                  result.Position.Id +
+                                                  " • BROKER PROTECTION RECOVERY");
                         
                                         SendUnifiedAlert(
                                             "AUTO-REACTION|" +
