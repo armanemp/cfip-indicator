@@ -1,11 +1,13 @@
 using System;
+using cAlgo.API;
+using cAlgo.API.Internals;
 
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
         private Zone BuildManagedFvgZone(
-            cAlgo.API.Internals.Bars bars,
+            Bars bars,
             int createdIndex,
             int currentIndex,
             int direction,
