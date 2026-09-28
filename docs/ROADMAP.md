@@ -901,6 +901,30 @@ Acceptance:
 
 Next: continue with Phase 30 automatic market execution certification after the local analytical runtime remains stable.
 
+### Phase 29B — Runtime resilience hardening
+
+Status: complete.
+
+Goal: prevent recoverable calculation faults from silently destroying the live chart state and ensure automatic execution fails closed after a runtime fault.
+
+Completed:
+- Added a dedicated runtime fault boundary for indicator calculation.
+- Captured unhandled indicator exceptions through the cTrader `OnException(Exception)` hook.
+- Logged exception type, message, stack trace, source and chart calculation index.
+- Disabled automatic trading and automatic pending-order execution after a recoverable runtime fault.
+- Preserved broker-confirmed state rather than manufacturing any recovery state from an exception path.
+- Preserved fatal-process exceptions such as out-of-memory and stack-overflow faults so cTrader can apply its documented process-level handling.
+- Added best-effort panel status reporting for the runtime fault.
+
+Acceptance:
+- Recoverable exceptions are contained at the calculation boundary.
+- Runtime faults cannot leave automatic execution logically armed.
+- Diagnostic evidence is retained in the cTrader log.
+- The incident that caused the indicator instance to disappear is now explicitly covered by a resilience boundary.
+
+Operational note:
+- A future runtime-recovery control may re-arm execution only after the fault condition has been inspected; automatic re-arming is intentionally not enabled in this hardening phase.
+
 ### Phase 30 — Automatic market execution certification
 
 Status: planned.
