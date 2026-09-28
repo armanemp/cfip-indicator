@@ -40,17 +40,17 @@ namespace cAlgo
                                     if (_m5Bars == null ||
                                         closedM5 < 20 ||
                                         (direction != 1 && direction != -1))
-                                        return model;
+                                        return false;
                         
-                                    double atr =
+                                    atr =
                                         Atr(
                                             _m5Bars,
                                             closedM5);
                         
                                     if (atr <= 0)
-                                        return model;
+                                        return false;
                         
-                                    double market =
+                                    market =
                                         NormalizePrice(
                                             direction == 1
                                                 ? Symbol.Ask
