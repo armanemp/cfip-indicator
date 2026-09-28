@@ -151,7 +151,9 @@ namespace cAlgo
                                                         maxHeight,
                                                         backgroundAlpha,
                                                         borderAlpha,
-                                                        headerHeight);
+                                                        headerHeight,
+                                                        scrollHeight,
+                                                        buttonAreaHeight);
 
                                                     ApplyPanelQuickExecutionLayout(
                                                         contentWidth,
@@ -174,7 +176,8 @@ namespace cAlgo
                                                         showSafetyButtons);
 
                                                     ApplyPanelRestoreButtonLayout(
-                                                        borderAlpha);
+                                                        borderAlpha,
+                                                        border);
 
                                                     SetPanelAlignment();
                                                 }
