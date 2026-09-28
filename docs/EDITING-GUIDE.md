@@ -71,6 +71,11 @@ Edit the smallest authoritative module that owns the behavior.
 | Aggressive execution preparation | `Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs` |
 | Aggressive accepted-fill handling | `Trading/Execution/Aggressive/AggressiveAcceptedFillHandler.cs` |
 | Pending orders | `Trading/Pending/**/*.cs` |
+| Pending submission validation | `Trading/Pending/Placement/PendingSubmissionValidator.cs` |
+| Continuation stop orchestration | `Trading/Pending/Placement/ContinuationStopPlacement.cs` |
+| Continuation stop preparation | `Trading/Pending/Placement/ContinuationStopPreparation.cs` |
+| Reversal limit orchestration | `Trading/Pending/Placement/ReversalLimitPlacement.cs` |
+| Reversal limit preparation | `Trading/Pending/Placement/ReversalLimitPreparation.cs` |
 | Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
 | Pending stop-order mutation | `Trading/Execution/BrokerPendingOrderPlacement.cs` |
 | Pending limit-order mutation | `Trading/Execution/BrokerLimitOrderPlacement.cs` |
