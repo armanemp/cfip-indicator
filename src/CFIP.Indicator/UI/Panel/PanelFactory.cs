@@ -208,19 +208,6 @@ namespace cAlgo
                                                         PanelCornerRadius)
                                             };
                         
-                                        _panel.Width =
-                                            Math.Max(
-                                                260,
-                                                PanelWidth);
-                                        _panel.Height = 170;
-                                        _panel.MinWidth = 260;
-                                        _panel.MinHeight = 170;
-                                        _panel.Margin =
-                                            Math.Max(
-                                                0,
-                                                PanelMargin);
-                                        SetPanelAlignment();
-
                                         Chart.AddControl(
                                             _panel);
                         
@@ -230,10 +217,8 @@ namespace cAlgo
                                     {
                                         Print(
                                             "CFIP panel creation failed: {0}",
-                                            ex.ToString());
+                                            ex.Message);
                         
-                                        UpdateRuntimeBootstrapVisual("PANEL ERROR");
-
                                         _panel = null;
                                         _panelStack = null;
                                         _panelHeaderStack = null;
