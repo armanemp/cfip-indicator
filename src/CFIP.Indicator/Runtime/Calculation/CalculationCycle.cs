@@ -7,6 +7,9 @@ namespace cAlgo
     {
         public override void Calculate(int index)
         {
+            if (!_initializationReady)
+                return;
+
             try
             {
                 if (!TryPrepareCalculationCycle(
