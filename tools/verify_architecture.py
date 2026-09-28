@@ -227,6 +227,21 @@ SCORING = ROOT / "Analysis" / "Market" / "MarketFrameScoring.cs"
 if len(re.findall(r"\bprivate void AddScore\s*\(", SCORING.read_text(encoding="utf-8"))) != 2:
     raise SystemExit("MarketFrameScoring must own both AddScore overloads")
 
+AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketTradeExecution.cs"
+AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
+if 'SetAutoTradingState(\n                                            protectionOk\n                                                ? "EXECUTED"\n                                                : "RECOVERY"' not in AUTO_MARKET_CODE:
+    raise SystemExit("Market execution must expose broker protection recovery in auto state")
+
+AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
+AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
+if 'SetAutoTradingState(\n                                            protectionOk\n                                                ? "EXECUTED"\n                                                : "RECOVERY"' not in AGGRESSIVE_CODE:
+    raise SystemExit("Aggressive execution must expose broker protection recovery in auto state")
+
+AUTO_STATE = ROOT / "Trading" / "Execution" / "State" / "AutoTradingStateStore.cs"
+AUTO_STATE_CODE = AUTO_STATE.read_text(encoding="utf-8")
+if '"RECOVERY"' not in AUTO_STATE_CODE or "PanelWarningColor" not in AUTO_STATE_CODE:
+    raise SystemExit("Recovery state must remain visibly distinct in the auto-trading panel")
+
 required_method_files = {
     "BuildExecutionIntent": ROOT / "Planning" / "Execution" / "ExecutionIntentBuilder.cs",
     "ValidateExecutionIntent": ROOT / "Planning" / "Execution" / "ExecutionIntentValidation.cs",
