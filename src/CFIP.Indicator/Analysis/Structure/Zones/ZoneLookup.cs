@@ -15,13 +15,25 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         // Internal FVG engine: standard 3-candle FVG plus optional 2-bar imbalance, with body/wick-aware partial mitigation. No chart objects are created here.
-                                private Zone FindNearestFvgForExecution(
+                                        private Zone FindNearestFvgForExecution(
                                     Bars bars,
                                     int index,
                                     int direction,
                                     double atr,
                                     double market)
                                 {
+                                    Zone cached;
+
+                                    if (TryFindCachedNearestFvg(
+                                            bars,
+                                            index,
+                                            direction,
+                                            atr,
+                                            false,
+                                            market,
+                                            out cached))
+                                        return cached;
+
                                     return FindNearestFvg(
                                         bars,
                                         index,
@@ -31,13 +43,25 @@ namespace cAlgo
                                         market);
                                 }
         
-        private Zone FindNearestOrderBlockForExecution(
+                private Zone FindNearestOrderBlockForExecution(
                                     Bars bars,
                                     int index,
                                     int direction,
                                     double atr,
                                     double market)
                                 {
+                                    Zone cached;
+
+                                    if (TryFindCachedNearestOrderBlock(
+                                            bars,
+                                            index,
+                                            direction,
+                                            atr,
+                                            false,
+                                            market,
+                                            out cached))
+                                        return cached;
+
                                     return FindNearestOrderBlock(
                                         bars,
                                         index,
