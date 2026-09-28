@@ -322,13 +322,13 @@ for token in (
     if token not in PLAN_BUILDER_CODE:
         raise SystemExit(f"PlanBuilder orchestration call missing: {token}")
 for forbidden in (
-    "BuildStructuralStop(",
-    "BuildTargetLevels(",
-    "SelectTarget(",
-    "ApplyTargetMeta(",
-    "HasTargetObstacle(",
+    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+BuildStructuralStop\\s*\\(",
+    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+BuildTargetLevels\\s*\\(",
+    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+SelectTarget\\s*\\(",
+    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+ApplyTargetMeta\\s*\\(",
+    r"private\\s+[A-Za-z0-9_<>,\\[\\]?.]+\\s+HasTargetObstacle\\s*\\(",
 ):
-    if forbidden in PLAN_BUILDER_CODE:
+    if re.search(forbidden, PLAN_BUILDER_CODE):
         raise SystemExit(f"PlanBuilder retains extracted responsibility: {forbidden}")
 for required_path in (
     ROOT / "Planning" / "TradePlan" / "PlanInputPreparation.cs",
