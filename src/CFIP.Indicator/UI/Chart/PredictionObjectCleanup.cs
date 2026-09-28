@@ -62,5 +62,4 @@ namespace cAlgo
                                         P + "PRED_TARGET4_LABEL");
                                 }
     }
-    }
 }
