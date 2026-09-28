@@ -19,6 +19,11 @@ Edit the smallest authoritative module that owns the behavior.
 | Market context: premium/discount | `Analysis/Market/PremiumDiscountAnalyzer.cs` |
 | Market context: live bias | `Analysis/Market/LiveBiasAnalyzer.cs` |
 | Decision | `Analysis/Market/Decision/*.cs` |
+| Signal-plan coordination | `Trading/Validation/SignalPlanCoordinator.cs` |
+| Plan creation eligibility | `Trading/Validation/PlanCreationEligibility.cs` |
+| Decision block-reason policy | `Trading/Validation/DecisionBlockReasonPolicy.cs` |
+| Live execution-gate policy | `Trading/Validation/LiveExecutionGateReasonPolicy.cs` |
+| Adaptive smart thresholds | `Trading/Validation/SmartThresholdPolicy.cs` |
 | Decision reason formatting | `Analysis/Market/Decision/DecisionReasonFormatter.cs` |
 | Reaction | `Analysis/Reaction/*.cs` |
 | Liquidity sweep | `Analysis/Structure/LiquiditySweepAnalyzer.cs` |
@@ -49,7 +54,10 @@ Edit the smallest authoritative module that owns the behavior.
 | Order-block mitigation | `Analysis/Structure/Zones/OrderBlockMitigationGuard.cs` |
 | Order-block quality | `Analysis/Structure/Zones/OrderBlockQualityCalculator.cs` |
 | Plan materialization/target metadata | `Planning/TradePlan/PlanMaterialization.cs` |
-| Plan integrity | `Planning/TradePlan/PlanIntegrityValidator.cs` |
+| Plan integrity orchestration | `Planning/TradePlan/PlanIntegrityValidator.cs` |
+| Plan protection/entry integrity | `Planning/TradePlan/PlanProtectionIntegrityValidator.cs` |
+| Plan reward integrity | `Planning/TradePlan/PlanRewardIntegrityValidator.cs` |
+| Plan market constraints | `Planning/TradePlan/PlanMarketConstraintValidator.cs` |
 | Structural stop | `Planning/TradePlan/StructuralStopPlanner.cs` |
 | Structural stop selection orchestration | `Planning/TradePlan/StructuralStopCandidateSelector.cs` |
 | Structural stop candidate evaluation | `Planning/TradePlan/StructuralStopCandidateEvaluator.cs` |

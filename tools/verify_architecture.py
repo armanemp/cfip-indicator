@@ -456,6 +456,89 @@ for path, token in (
     if not path.exists() or token not in path.read_text(encoding="utf-8"):
         raise SystemExit(f"FVG lifecycle owner missing: {path}")
 
+# Structural-stop planning ownership.
+STRUCTURAL_STOP_SELECTOR = ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateSelector.cs"
+STRUCTURAL_STOP_SELECTOR_CODE = STRUCTURAL_STOP_SELECTOR.read_text(encoding="utf-8")
+if STRUCTURAL_STOP_SELECTOR.stat().st_size > 4096:
+    raise SystemExit("StructuralStopCandidateSelector.cs must remain a thin orchestration boundary")
+for token in (
+    "TrySelectBestStructuralStopCandidate(",
+    "MaterializeStructuralStop(",
+):
+    if token not in STRUCTURAL_STOP_SELECTOR_CODE:
+        raise SystemExit(f"Structural-stop selector orchestration call missing: {token}")
+if "private bool TrySelectBestStructuralStopCandidate(" in STRUCTURAL_STOP_SELECTOR_CODE:
+    raise SystemExit("StructuralStopCandidateSelector retains candidate evaluation")
+if "private double MaterializeStructuralStop(" in STRUCTURAL_STOP_SELECTOR_CODE:
+    raise SystemExit("StructuralStopCandidateSelector retains stop finalization")
+for path, token in {
+    ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateEvaluator.cs": "TrySelectBestStructuralStopCandidate(",
+    ROOT / "Planning" / "TradePlan" / "StructuralStopFinalizer.cs": "MaterializeStructuralStop(",
+}.items():
+    if not path.exists() or token not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"Structural-stop owner missing: {path}")
+
+# Plan-integrity ownership.
+PLAN_INTEGRITY = ROOT / "Planning" / "TradePlan" / "PlanIntegrityValidator.cs"
+PLAN_INTEGRITY_CODE = PLAN_INTEGRITY.read_text(encoding="utf-8")
+if PLAN_INTEGRITY.stat().st_size > 4096:
+    raise SystemExit("PlanIntegrityValidator.cs must remain a thin orchestration boundary")
+for token in (
+    "ValidatePlanProtectionAndEntry(",
+    "ValidatePlanRewardStructure(",
+    "ValidatePlanMarketConstraints(",
+):
+    if token not in PLAN_INTEGRITY_CODE:
+        raise SystemExit(f"Plan-integrity orchestration call missing: {token}")
+for declaration in (
+    "private bool ValidatePlanProtectionAndEntry(",
+    "private bool ValidatePlanRewardStructure(",
+    "private bool ValidatePlanMarketConstraints(",
+):
+    if declaration in PLAN_INTEGRITY_CODE:
+        raise SystemExit(f"PlanIntegrityValidator retains extracted responsibility: {declaration}")
+for path, token in {
+    ROOT / "Planning" / "TradePlan" / "PlanProtectionIntegrityValidator.cs": "ValidatePlanProtectionAndEntry(",
+    ROOT / "Planning" / "TradePlan" / "PlanRewardIntegrityValidator.cs": "ValidatePlanRewardStructure(",
+    ROOT / "Planning" / "TradePlan" / "PlanMarketConstraintValidator.cs": "ValidatePlanMarketConstraints(",
+}.items():
+    if not path.exists() or token not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"Plan-integrity owner missing: {path}")
+
+# Signal/decision validation ownership.
+SIGNAL_OWNER = ROOT / "Trading" / "Validation" / "SignalPlanCoordinator.cs"
+PLAN_ELIGIBILITY = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
+BLOCK_POLICY = ROOT / "Trading" / "Validation" / "DecisionBlockReasonPolicy.cs"
+LIVE_GATE_POLICY = ROOT / "Trading" / "Validation" / "LiveExecutionGateReasonPolicy.cs"
+SMART_POLICY = ROOT / "Trading" / "Validation" / "SmartThresholdPolicy.cs"
+for path, token in {
+    SIGNAL_OWNER: "EnsureSignalPlan(",
+    PLAN_ELIGIBILITY: "ShouldCreatePlan(",
+    BLOCK_POLICY: "IsHardDecisionBlockReason(",
+    LIVE_GATE_POLICY: "IsLiveExecutionGateReason(",
+    SMART_POLICY: "GetAdaptiveSmartThresholds(",
+}.items():
+    if not path.exists() or token not in path.read_text(encoding="utf-8"):
+        raise SystemExit(f"Signal/decision validation owner missing: {path}")
+if "SmartMinimumConsensusFloor(" not in SMART_POLICY.read_text(encoding="utf-8"):
+    raise SystemExit("SmartThresholdPolicy must own the consensus floor")
+for path in (
+    ROOT / "Trading" / "Validation" / "DecisionGateValidation.cs",
+):
+    if path.exists():
+        raise SystemExit(f"Obsolete aggregate validation module must remain removed: {path}")
+
+# Final obsolete/dead-path sweep.
+OBSOLETE_PRODUCTION_PATHS = (
+    ROOT / "Trading" / "Execution" / "BrokerMutationCoordinator.cs",
+    ROOT / "Trading" / "Validation" / "RewardPathValidation.cs",
+    ROOT / "Trading" / "Validation" / "DecisionGateValidation.cs",
+    ROOT / "Trading" / "Intelligence" / "DecisionFeatures.cs",
+)
+for obsolete_path in OBSOLETE_PRODUCTION_PATHS:
+    if obsolete_path.exists():
+        raise SystemExit(f"Obsolete production path detected: {obsolete_path}")
+
 # Execution-zone planning ownership.
 EXECUTION_ZONE = ROOT / "Planning" / "Execution" / "ExecutionZoneBuilder.cs"
 EXECUTION_ZONE_CODE = EXECUTION_ZONE.read_text(encoding="utf-8")
