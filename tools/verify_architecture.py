@@ -263,6 +263,7 @@ for token, path in {
 
 for required_file in (
     ROOT / "Core" / "Math" / "PriceProtectionRule.cs",
+    ROOT / "Core" / "Math" / "ProtectionProgressionRule.cs",
     ROOT / "Trading" / "Lifecycle" / "LifecycleTransitionPolicy.cs",
     ROOT / "Trading" / "Lifecycle" / "LifecycleEventIdempotencyGuard.cs",
     ROOT / "Trading" / "Lifecycle" / "LifecycleEventState.cs",
@@ -300,6 +301,7 @@ for token in (
     "VerifyFillEnvelopeSymmetry",
     "VerifyInitialProtectionDirectionality",
     "VerifyManagedBreakEvenDirectionality",
+    "VerifyProtectionProgression",
     "VerifyTargetProgression",
     "VerifyLifecycleFlows",
     "VerifyLifecycleIdempotency",
@@ -325,6 +327,10 @@ PROTECTION_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProt
 PROTECTION_CODE = PROTECTION_RUNTIME.read_text(encoding="utf-8")
 if "IsValidManagedStop(" not in PROTECTION_CODE:
     raise SystemExit("Live broker protection must validate managed stops against market price")
+if "ProtectionProgressionRule.ShouldAdvanceStop(" not in PROTECTION_CODE:
+    raise SystemExit("Live broker protection must enforce monotonic SL progression")
+if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in PROTECTION_CODE:
+    raise SystemExit("Live broker protection must enforce configured TP progression")
 if "brokerStopValid" not in PROTECTION_CODE:
     raise SystemExit("Live broker protection must inspect actual broker SL validity before clearing recovery")
 if "brokerTargetValid" not in PROTECTION_CODE:
