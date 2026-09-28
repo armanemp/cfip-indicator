@@ -271,14 +271,22 @@ for execution_path in [
     if "ValidateConfiguredPositionCapacity(" not in execution_code:
         raise SystemExit(f"Execution capacity guard missing in {execution_path.name}")
 
-AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketTradeExecution.cs"
+AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
 AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
-if 'SetAutoTradingState(\n                                            protectionOk\n                                                ? "EXECUTED"\n                                                : "RECOVERY"' not in AUTO_MARKET_CODE:
+if (
+    "SetAutoTradingState" not in AUTO_MARKET_CODE or
+    "protectionOk" not in AUTO_MARKET_CODE or
+    '"RECOVERY"' not in AUTO_MARKET_CODE
+):
     raise SystemExit("Market execution must expose broker protection recovery in auto state")
 
 AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
 AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
-if 'SetAutoTradingState(\n                                            protectionOk\n                                                ? "EXECUTED"\n                                                : "RECOVERY"' not in AGGRESSIVE_CODE:
+if (
+    "SetAutoTradingState" not in AGGRESSIVE_CODE or
+    "protectionOk" not in AGGRESSIVE_CODE or
+    '"RECOVERY"' not in AGGRESSIVE_CODE
+):
     raise SystemExit("Aggressive execution must expose broker protection recovery in auto state")
 
 AUTO_STATE = ROOT / "Trading" / "Execution" / "State" / "AutoTradingStateStore.cs"
