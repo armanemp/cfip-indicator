@@ -202,6 +202,7 @@ namespace cAlgo
 
         private DateTime _lastPanelRenderUtc = DateTime.MinValue;
         private DateTime _lastPlanRenderUtc = DateTime.MinValue;
+        private DateTime _lastPendingRenderUtc = DateTime.MinValue;
         private DateTime _lastQuickControlSyncUtc = DateTime.MinValue;
         private int _lastLiveM1FrameIndex = -1;
 
