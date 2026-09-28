@@ -46,25 +46,23 @@ namespace cAlgo
                 (_executionModel == null
                     ? "NONE"
                     : ExecutionModeText(
-                        _executionModel.Mode)) +
-                "  •  ENTRY " +
-                (_executionModel != null &&
-                 IsFinitePositive(
-                     _executionModel.ActualEntry)
-                    ? Price(
-                        _executionModel.ActualEntry)
-                    : "WAIT") +
-                "  •  TRIGGER " +
-                (_executionModel != null
-                    ? Price(
-                        _executionModel.Trigger)
-                    : "-"),
+                        _executionModel.Mode)),
                 _executionModel != null &&
-                _executionModel.Mode ==
-                    ExecutionMode.BreakoutMarket
+                (_executionModel.Mode ==
+                    ExecutionMode.BreakoutMarket ||
+                 _executionModel.Mode ==
+                    ExecutionMode.RetestMarket)
                     ? EntryLineColor
                     : TriggerLineColor,
                 true,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
+                ExecutionLevelSemanticsText(
+                    _executionModel),
+                PanelSecondaryTextColor,
+                false,
                 contentWidth);
 
             if (_executionModel != null &&
