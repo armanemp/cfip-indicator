@@ -68,7 +68,7 @@ namespace cAlgo
                                         minimumDepth;
                                 }
 
-                private bool HasOrderBlockFvgConfluence(
+                private bool HasOrderBlockFvgConfluenceFromCandidates(
                                     List<Zone> candidates,
                                     double atr,
                                     double zoneLow,
