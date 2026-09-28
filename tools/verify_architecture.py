@@ -346,10 +346,18 @@ for pending_path in (
     ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
 ):
     pending_code = pending_path.read_text(encoding="utf-8")
-    if "PendingOrder confirmedOrder = result.PendingOrder;" not in pending_code:
-        raise SystemExit(f"Pending-order reporting must use broker-confirmed order levels: {pending_path.name}")
-    if "confirmedOrder.TargetPrice" not in pending_code or        "confirmedOrder.StopLoss" not in pending_code or        "confirmedOrder.TakeProfit" not in pending_code:
-        raise SystemExit(f"Pending-order reporting is not fully broker-confirmed: {pending_path.name}")
+    if "ReportConfirmedPendingOrderPlacement(" not in pending_code:
+        raise SystemExit(f"Pending-order reporting boundary missing: {pending_path.name}")
+
+PENDING_REPORTER = ROOT / "Trading" / "Pending" / "Placement" / "PendingOrderConfirmationReporter.cs"
+PENDING_REPORTER_CODE = PENDING_REPORTER.read_text(encoding="utf-8")
+for token in (
+    "order.TargetPrice",
+    "order.StopLoss",
+    "order.TakeProfit",
+):
+    if token not in PENDING_REPORTER_CODE:
+        raise SystemExit(f"Broker-confirmed pending reporting field missing: {token}")
 
 for entry_path in (
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
