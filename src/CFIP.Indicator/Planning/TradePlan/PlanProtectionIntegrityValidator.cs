@@ -1,7 +1,9 @@
 // CFIP Indicator — PlanProtectionIntegrityValidator.cs
 // Validate entry quality and protective stop/target integrity.
 
-namespace cAlgo
+namespace cusing cAlgo.API;
+
+lgo
 {
     public partial class CFIPIndicator : Indicator
     {
