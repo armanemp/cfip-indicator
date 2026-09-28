@@ -66,6 +66,7 @@ Edit the smallest authoritative module that owns the behavior.
 | Automatic market submission validation | `Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs` |
 | Automatic market fill reconciliation | `Trading/Execution/AutomaticMarket/AutomaticMarketFillReconciliation.cs` |
 | Automatic market post-fill target resolution | `Trading/Execution/AutomaticMarket/AutomaticMarketPostFillTargetResolver.cs` |
+| Cross-path execution invariants | `tools/verify_architecture.py` — Market / Aggressive / Pending execution contract checks |
 | Aggressive execution | `Trading/Execution/Aggressive/*.cs` |
 | Aggressive pre-trade eligibility | `Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs` |
 | Aggressive execution preparation | `Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs` |
