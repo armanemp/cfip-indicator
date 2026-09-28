@@ -230,6 +230,7 @@ namespace cAlgo
                                     RemoveAllChartObjects();
                                     RemovePanel();
                                     RemovePopup();
+                                    RemoveRuntimeBootstrapVisual();
                                     base.OnDestroy();
                                 }
     }
