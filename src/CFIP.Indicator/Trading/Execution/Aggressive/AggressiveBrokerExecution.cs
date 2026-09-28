@@ -303,6 +303,12 @@ namespace cAlgo
                                             _reaction.Direction,
                                             true);
                                     }
+                                    catch (Exception ex)
+                                    {
+                                        Print(
+                                            "CFIP aggressive auto trade failed: {0}",
+                                            ex.Message);
+                                    }
                                 }
     }
 }
