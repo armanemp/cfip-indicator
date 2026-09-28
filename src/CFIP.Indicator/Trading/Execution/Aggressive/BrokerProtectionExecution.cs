@@ -61,8 +61,15 @@ namespace cAlgo
                                             !byManagedLabel)
                                             continue;
                         
-                                        bool mutationRequired = false;
-                                        bool mutationSucceeded = true;
+                                        int positionDirection =
+                                            position.TradeType == TradeType.Buy
+                                                ? 1
+                                                : -1;
+
+                                        double market =
+                                            positionDirection == 1
+                                                ? Symbol.Bid
+                                                : Symbol.Ask;
 
                                         bool brokerStopValid =
                                             position.StopLoss.HasValue &&
@@ -90,6 +97,9 @@ namespace cAlgo
                                             !SyncBrokerTakeProfit ||
                                             brokerTargetValid;
 
+                                        bool mutationRequired = false;
+                                        bool mutationSucceeded = true;
+
                                         bool desiredStopValid =
                                             IsValidManagedStop(
                                                 positionDirection,
@@ -97,47 +107,20 @@ namespace cAlgo
                                                 market,
                                                 _plan.Stop);
 
-                                        bool desiredTargetValid = true;
-                                        double target = 0;
-
-                                        if (SyncBrokerTakeProfit)
-                                        {
-                                            target =
-                                                AutoTarget(
-                                                    _plan,
-                                                    EffectiveAutoTpStage());
-
-                                            desiredTargetValid =
-                                                IsValidTarget(
-                                                    positionDirection,
-                                                    position.EntryPrice,
-                                                    target);
-                                        }
-
-                                        int positionDirection =
-                                            position.TradeType == TradeType.Buy
-                                                ? 1
-                                                : -1;
-
-                                        double market =
-                                            positionDirection == 1
-                                                ? Symbol.Bid
-                                                : Symbol.Ask;
-
                                         if (desiredStopValid)
                                         {
                                             double normalizedStop =
                                                 NormalizePrice(_plan.Stop);
-                        
+
                                             bool materiallyDifferent =
-                                                !position.StopLoss.HasValue ||
+                                                !brokerStopValid ||
                                                 Math.Abs(
                                                     position.StopLoss.Value -
                                                     normalizedStop) >=
                                                 Math.Max(
                                                     Symbol.TickSize,
                                                     Symbol.PipSize * 0.25);
-                        
+
                                             if (materiallyDifferent)
                                             {
                                                 mutationRequired = true;
@@ -155,43 +138,56 @@ namespace cAlgo
                                                 stopConfirmed =
                                                     stopMutationSucceeded;
                                             }
-                                            else
-                                            {
-                                                stopConfirmed = true;
-                                            }
                                         }
-                        
-                                        if (SyncBrokerTakeProfit &&
-                                            desiredTargetValid)
+
+                                        double target = 0;
+
+                                        if (SyncBrokerTakeProfit)
                                         {
+                                            target =
+                                                AutoTarget(
+                                                    _plan,
+                                                    EffectiveAutoTpStage());
+
+                                            bool desiredTargetValid =
+                                                IsValidTarget(
+                                                    positionDirection,
+                                                    position.EntryPrice,
+                                                    target);
+
+                                            if (desiredTargetValid)
+                                            {
                                                 bool move = true;
-                        
+
                                                 if (PreventBrokerTpBackwardMove &&
-                                                    position.TakeProfit.HasValue)
+                                                    position.TakeProfit.HasValue &&
+                                                    brokerTargetValid)
                                                 {
                                                     double current =
                                                         position.TakeProfit.Value;
-                        
+
                                                     move =
                                                         positionDirection == 1
                                                             ? target >= current
                                                             : target <= current;
                                                 }
-                        
+
                                                 double normalizedTarget =
                                                     NormalizePrice(target);
-                        
+
                                                 bool materiallyDifferent =
                                                     move &&
-                                                    (!position.TakeProfit.HasValue ||
+                                                    (!brokerTargetValid ||
                                                      Math.Abs(
-                                                         position.TakeProfit.Value -
-                                                         normalizedTarget) >=
+                                                         position.TakeProfit.HasValue
+                                                            ? position.TakeProfit.Value -
+                                                              normalizedTarget
+                                                            : double.MaxValue) >=
                                                      Math.Max(
                                                          Symbol.TickSize,
                                                          Symbol.PipSize * 0.25));
-                        
-                                                if (materiallyDifferent)
+
+                                                if (materialiallyDifferent)
                                                 {
                                                     mutationRequired = true;
 
@@ -208,13 +204,9 @@ namespace cAlgo
                                                     targetConfirmed =
                                                         targetMutationSucceeded;
                                                 }
-                                                else
-                                                {
-                                                    targetConfirmed = true;
-                                                }
                                             }
                                         }
-                        
+
                                         if (!stopConfirmed ||
                                             !targetConfirmed)
                                         {
@@ -226,7 +218,8 @@ namespace cAlgo
                                                     ? "BROKER PROTECTION MUTATION REJECTED"
                                                     : "BROKER PROTECTION MISSING OR INVALID");
 
-                                            if (mutationRequired)
+                                            if (mutationRequired &&
+                                                !mutationSucceeded)
                                             {
                                                 SendUnifiedAlert(
                                                     "PROTECTION-SYNC-FAILED|" +
@@ -237,23 +230,9 @@ namespace cAlgo
                                                     true);
                                             }
                                         }
-                                        else if (mutationRequired &&
-                                                 !mutationSucceeded)
+                                        else
                                         {
-                        
-                                            SendUnifiedAlert(
-                                                "PROTECTION-SYNC-FAILED|" +
-                                                position.Id,
-                                                "CFIP BROKER PROTECTION SYNC REJECTED | #" +
-                                                position.Id,
-                                                positionDirection,
-                                                true);
-                                        }
-                                        else if (stopConfirmed &&
-                                                 targetConfirmed)
-                                        {
-                                            _brokerProtectionRecoveryRequired =
-                                                false;
+                                            _brokerProtectionRecoveryRequired = false;
 
                                             SetLifecycleState(
                                                 LifecycleState.LivePosition,
@@ -266,5 +245,6 @@ namespace cAlgo
                                         break;
                                     }
                                 }
+
     }
 }
