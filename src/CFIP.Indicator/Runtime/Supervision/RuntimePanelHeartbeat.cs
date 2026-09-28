@@ -32,7 +32,8 @@ namespace cAlgo
                     now;
 
                 // Display heartbeat only. No decision, plan or broker work.
-                RenderPanel();
+                UpdatePanelHeartbeatRows(
+                    now);
             }
             catch (Exception ex)
             {
@@ -45,5 +46,45 @@ namespace cAlgo
                 _runtimeTimerBusy = false;
             }
         }
+        private void UpdatePanelHeartbeatRows(
+            DateTime now)
+        {
+            if (!ShowUnifiedPanel ||
+                _panel == null ||
+                _panelRows.Count < 6)
+                return;
+
+            int width =
+                Math.Max(
+                    200,
+                    PanelWidth -
+                    2 * Math.Max(
+                        0,
+                        PanelPadding) -
+                    2 * Math.Max(
+                        0,
+                        PanelBorderThickness));
+
+            SetPanelRow(
+                4,
+                MtfAlignmentText(),
+                PanelSectionColor,
+                false,
+                width);
+
+            SetPanelRow(
+                5,
+                SymbolName +
+                "  •  " +
+                Bars.TimeFrame +
+                "  •  " +
+                now.ToString(
+                    "HH:mm:ss") +
+                " UTC",
+                PanelMutedTextColor,
+                false,
+                width);
+        }
+
     }
 }

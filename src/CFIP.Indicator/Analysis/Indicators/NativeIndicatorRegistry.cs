@@ -46,7 +46,11 @@ namespace cAlgo
                                 InitializeAverageTrueRange(set, bars);
                                 InitializeRelativeStrengthIndex(set, bars);
                                 InitializeDirectionalMovementSystem(set, bars);
-                                InitializeMacd(set, bars);
+
+                                if (UseMacdBias)
+                                    InitializeMacd(
+                                        set,
+                                        bars);
                             }
                             catch (Exception ex)
                             {

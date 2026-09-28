@@ -207,14 +207,18 @@ namespace cAlgo
 
                                             case 6:
                                                 _d1Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Daily);
+                                                    SmartWeeklyContext
+                                                        ? MarketData.GetBars(
+                                                            TimeFrame.Daily)
+                                                        : null;
                                                 break;
 
                                             case 7:
                                                 _w1Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Weekly);
+                                                    SmartWeeklyContext
+                                                        ? MarketData.GetBars(
+                                                            TimeFrame.Weekly)
+                                                        : null;
                                                 break;
 
                                             case 8:
@@ -242,11 +246,13 @@ namespace cAlgo
                                                 break;
 
                                             case 14:
-                                                RegisterNative(_d1Bars);
+                                                if (_d1Bars != null)
+                                                    RegisterNative(_d1Bars);
                                                 break;
 
                                             case 15:
-                                                RegisterNative(_w1Bars);
+                                                if (_w1Bars != null)
+                                                    RegisterNative(_w1Bars);
                                                 break;
 
                                             case 16:
