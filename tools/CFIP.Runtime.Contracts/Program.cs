@@ -52,7 +52,7 @@ namespace cAlgo
                 context.M5 == 101 &&
                 context.M1 == 605 &&
                 context.M15 == 41 &&
-                context.M30 == 21 &&
+                context.M30 == 31 &&
                 context.H1 == 31 &&
                 context.H4 == 30 &&
                 context.D1 == 3 &&
