@@ -148,101 +148,81 @@ namespace cAlgo
                                 100);
                         }
         
+        private MarketRegimeSnapshot GetActiveM5Regime(
+                            int index)
+                        {
+                            if (_m5Bars == null ||
+                                index < 0)
+                                return null;
+
+                            if (_m5RegimeSnapshot != null &&
+                                _m5RegimeSnapshotIndex == index)
+                                return _m5RegimeSnapshot;
+
+                            MarketRegimeSnapshot snapshot =
+                                AnalyzeMarketRegime(
+                                    _m5Bars,
+                                    index);
+
+                            _m5RegimeSnapshot =
+                                snapshot;
+
+                            _m5RegimeSnapshotIndex =
+                                index;
+
+                            return snapshot;
+                        }
+
         private string DetectRegime(
                             Bars bars,
                             int index)
                         {
-                            double atr =
-                                Atr(
+                            if (ReferenceEquals(
+                                    bars,
+                                    _m5Bars))
+                            {
+                                MarketRegimeSnapshot active =
+                                    GetActiveM5Regime(
+                                        index);
+
+                                return active == null
+                                    ? "UNKNOWN"
+                                    : active.Regime;
+                            }
+
+                            MarketRegimeSnapshot snapshot =
+                                AnalyzeMarketRegime(
                                     bars,
                                     index);
-                
-                            double oldAtr =
-                                Atr(
-                                    bars,
-                                    Math.Max(
-                                        20,
-                                        index - 10));
-                
-                            if (atr <= 0 ||
-                                oldAtr <= 0)
-                                return "UNKNOWN";
-                
-                            double ratio =
-                                atr /
-                                oldAtr;
-                
-                            double adx =
-                                Adx(
-                                    bars,
-                                    index);
-                
-                            if (ratio >= 1.30)
-                                return "EXPANSION";
-                
-                            if (ratio <= 0.80)
-                                return "COMPRESSION";
-                
-                            if (adx < AdxMinimum)
-                                return "RANGE";
-                
-                            if (Math.Abs(
-                                    Ema(
-                                        bars,
-                                        index,
-                                        true) -
-                                    Ema(
-                                        bars,
-                                        index,
-                                        false)) <=
-                                atr * 0.10)
-                                return "TRANSITION";
-                
-                            return "TREND";
+
+                            return snapshot.Regime;
                         }
-        
+
         private int RegimeQuality(
                             string regime,
                             Bars bars,
                             int index)
                         {
-                            double adx =
-                                Adx(
+                            if (ReferenceEquals(
+                                    bars,
+                                    _m5Bars))
+                            {
+                                MarketRegimeSnapshot active =
+                                    GetActiveM5Regime(
+                                        index);
+
+                                if (active != null)
+                                    return active.Quality;
+                            }
+
+                            MarketRegimeSnapshot snapshot =
+                                AnalyzeMarketRegime(
                                     bars,
                                     index);
-                
-                            if (regime == "TREND")
-                                return ClampInt(
-                                    (int)Math.Round(
-                                        60 +
-                                        Math.Min(
-                                            35,
-                                            adx)),
-                                    0,
-                                    100);
-                
-                            if (regime == "EXPANSION")
-                                return ClampInt(
-                                    (int)Math.Round(
-                                        65 +
-                                        Math.Min(
-                                            30,
-                                            adx * 0.5)),
-                                    0,
-                                    100);
-                
-                            if (regime == "RANGE")
-                                return 52;
-                
-                            if (regime == "COMPRESSION")
-                                return 45;
-                
-                            if (regime == "TRANSITION")
-                                return 48;
-                
-                            return 35;
+
+                            return snapshot.Quality;
                         }
-        
+
         private bool CooldownBlocked(
                             int currentM5)
                         {
