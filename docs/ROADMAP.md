@@ -735,3 +735,28 @@ Acceptance:
 - No production file exceeds 20 KiB.
 
 Next: audit FVG lifecycle/detection and structural-stop candidate selection, then perform the final duplicate/dead-code sweep.
+
+
+## Phase 25 — FVG lifecycle decomposition
+
+Status: complete.
+
+Goal: separate FVG mitigation state and quality calculation from lifecycle orchestration without changing zone validity semantics.
+
+Completed:
+
+- Reduced FvgLifecycleAnalyzer.cs to orchestration.
+- Isolated partial/full mitigation behavior and managed range updates.
+- Isolated normalized-gap, remaining-ratio and two-bar quality calculation.
+- Preserved FvgInvalidateOnFullFill and partial-mitigation behavior, including collapsed zero-width exclusion when soft invalidation is configured.
+- Preserved FVG source-kind, age and quality semantics consumed by detection and execution planning.
+- Added static ownership checks and updated editing ownership documentation.
+
+Acceptance:
+
+- FVG mitigation has one implementation owner.
+- FVG quality has one implementation owner.
+- Detection continues to consume the same managed-zone API.
+- No production file exceeds 20 KiB.
+
+Next: audit StructuralStopCandidateSelector and remaining validation modules, then perform the repository-wide owner/dead-code sweep.
