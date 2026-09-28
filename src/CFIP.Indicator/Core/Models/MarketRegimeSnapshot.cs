@@ -4,6 +4,7 @@ namespace cAlgo
     {
         public string Regime { get; set; }
         public int Quality { get; set; }
+        public int Stability { get; set; }
         public int Direction { get; set; }
         public double Choppiness { get; set; }
         public double AtrRatio { get; set; }
