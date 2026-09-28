@@ -160,7 +160,25 @@ namespace cAlgo
                 new DecisionThresholdFilterEvaluator();
 
             Decision decision =
-                new Decision { Direction = 1 };
+                new Decision
+                {
+                    Direction = 1,
+                    Confidence = 85,
+                    Edge = 30,
+                    SmartQuality = 80,
+                    TimeframeAgreement = 75,
+                    IndependentEvidence = 6,
+                    StructuralConfirmations = 4,
+                    RetestQuality = 75,
+                    BuyShare = 85,
+                    SellShare = 15,
+                    Regime = "EXPANSION",
+                    RegimeQuality = 80,
+                    TriggerReady = true,
+                    EntryAllowed = true,
+                    BlockReason = "",
+                    Reason = "CONTRACT"
+                };
 
             DecisionFilterResult result =
                 evaluator.Evaluate(
