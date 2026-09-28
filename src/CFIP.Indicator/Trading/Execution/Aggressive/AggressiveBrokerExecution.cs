@@ -76,7 +76,7 @@ namespace cAlgo
                         _reaction == null
                             ? 0
                             : _reaction.Direction,
-                        out submissionGateReason)
+                        out submissionGateReason))
                 {
                     _autoExecutionBlockReason =
                         submissionGateReason;
