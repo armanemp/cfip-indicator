@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -12,8 +11,7 @@ namespace cAlgo
             int createdIndex,
             int currentIndex,
             int direction,
-            double atr,
-            List<Zone> precomputedFvgs = null)
+            double atr)
         {
             if (bars == null ||
                 createdIndex < 2 ||
@@ -107,20 +105,14 @@ namespace cAlgo
                     atr);
 
             bool fvgConfluence =
-                precomputedFvgs != null
-                    ? HasOrderBlockFvgConfluenceFromCandidates(
-                        precomputedFvgs,
-                        atr,
-                        managedLow,
-                        managedHigh)
-                    : HasOrderBlockFvgConfluence(
-                        bars,
-                        createdIndex,
-                        impulseEnd,
-                        direction,
-                        atr,
-                        managedLow,
-                        managedHigh);
+                HasOrderBlockFvgConfluence(
+                    bars,
+                    createdIndex,
+                    impulseEnd,
+                    direction,
+                    atr,
+                    managedLow,
+                    managedHigh);
 
             int quality =
                 CalculateOrderBlockQuality(
