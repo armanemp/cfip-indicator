@@ -86,6 +86,11 @@ namespace cAlgo
         private void SetInitializationFault(Exception exception, string stage)
                                 {
                                     _initializationReady = false;
+                                    UpdateRuntimeBootstrapVisual(
+                                        "INIT ERROR  •  " +
+                                        (string.IsNullOrWhiteSpace(stage)
+                                            ? "UNKNOWN"
+                                            : stage));
                                     _autoTradingEnabledRuntime = false;
                                     _automaticOrdersEnabledRuntime = false;
                                     _autoExecutionBlockReason = "INITIALIZATION FAULT";
@@ -134,6 +139,7 @@ namespace cAlgo
                                     _outcomeDrawn.Clear();
 
                                     _status = "STARTING";
+                                    CreateRuntimeBootstrapVisual();
                                     CreatePanel();
 
                                     try
