@@ -8,7 +8,9 @@ Edit the smallest authoritative module that owns the behavior.
 | Domain models | `Core/Models/*.cs` — one type per file |
 | Enums | `Core/Enums/*.cs` — one enum per file |
 | Native indicators | `Analysis/Indicators/*.cs` |
-| Market-frame construction | `Analysis/Market/MarketFrameAnalyzer.cs` |
+| Market-frame orchestration | `Analysis/Market/MarketFrameAnalyzer.cs` |
+| Market-frame evidence | `Analysis/Market/MarketFrameEvidence.cs` |
+| Market-frame scoring / quality | `Analysis/Market/MarketFrameScoringService.cs`, `MarketFrameScoring.cs` |
 | Market-frame scoring | `Analysis/Market/MarketFrameScoring.cs` |
 | Market context: volume | `Analysis/Market/VolumeExpansionAnalyzer.cs` |
 | Market context: MACD | `Analysis/Market/MacdBiasAnalyzer.cs` |
