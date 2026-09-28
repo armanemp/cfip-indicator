@@ -96,7 +96,7 @@ namespace cAlgo
                                              ExecutionMode.BreakoutMarket)
                                         model.Source += "+EXEC";
                         
-                                    return model;
+                                }
                                 }
     }
 }
