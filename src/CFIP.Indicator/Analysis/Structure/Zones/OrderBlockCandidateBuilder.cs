@@ -108,7 +108,7 @@ namespace cAlgo
 
             bool fvgConfluence =
                 precomputedFvgs != null
-                    ? HasOrderBlockFvgConfluence(
+                    ? HasOrderBlockFvgConfluenceFromCandidates(
                         precomputedFvgs,
                         atr,
                         managedLow,
