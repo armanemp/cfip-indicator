@@ -117,15 +117,16 @@ namespace cAlgo
                     (ShowLevelPriceLabels ||
                      ShowSignalLabels))
                 {
+                    int baseLabelBar =
+                        GetCompactPlanLabelAnchorBar(
+                            left);
+
                     int labelBar =
                         Math.Max(
                             left,
                             Math.Min(
                                 right,
-                                left +
-                                Math.Max(
-                                    1,
-                                    LabelLeftOffsetBars) +
+                                baseLabelBar +
                                 i * 8));
 
                     int boxRight =
@@ -134,7 +135,7 @@ namespace cAlgo
                             Math.Min(
                                 right,
                                 labelBar +
-                                6));
+                                CompactPlanLabelWidthBars));
 
                     RenderOpportunityLabel(
                         baseName + "_ENTRY_LABEL",
