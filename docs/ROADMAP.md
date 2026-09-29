@@ -3692,7 +3692,11 @@ Phase 9.8 merge closeout: PR #50 merged into `main` as `37cfd761bbb439d6e1543159
 
 ## Phase 9.9 — Signal / Execution / Protection Coherence — 2026-09-29
 
-Status: implementation complete on `phase/9-9-signal-protection-coherence`; CI verification and merge closeout pending.
+Status: VERIFIED COMPLETE on `98ac6f0844abb1171f70d7d5eaa50e8fdf623134`.
+
+Final automated gates: Runtime Acceptance #1048 PASS; cTrader Compile/Build #1232 PASS; Source/Architecture #1239 PASS.
+
+PR #51 merge closeout remains pending. Target-terminal cTrader replay remains required for empirical behavior and realized trading outcomes.
 
 Scope:
 - canonical live indicator-fusion actionability gate with stale-frame rejection;
