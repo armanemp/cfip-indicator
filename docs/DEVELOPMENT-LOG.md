@@ -284,3 +284,10 @@ Verification for final phase head `a7e8c2cf25256cfd5de098ed7f7660f409aa446d`:
 - Source / Architecture: PASS (run 810).
 - Runtime Acceptance Contracts: PASS (run 619).
 - cTrader Compile: PASS (run 803).
+
+
+Phase 5.5 merge record:
+- PR #13 merged to main as `a357cca1920362975204069af405abf372a3b901` (squash merge).
+- Final phase head before merge: `81bf6811519d29da0d42b78df64d88d76d37c530`.
+- Final gates: Source / Architecture PASS (run 811), Runtime Acceptance PASS (run 620), cTrader Compile PASS (run 804).
+- Main continuation point after the merge: **Phase 6.1 — Decision closed-bar contract**.
