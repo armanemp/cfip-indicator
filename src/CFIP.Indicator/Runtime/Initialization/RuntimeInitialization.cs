@@ -220,8 +220,7 @@ namespace cAlgo
 
         private void FinalizeAsyncInitialization()
         {
-            if (_initializationReady ||
-                !_initializationDataReady)
+            if (_initializationReady)
                 return;
 
             if (!HasEnoughData())
@@ -293,6 +292,8 @@ namespace cAlgo
             Timer.Start(
                 TimeSpan.FromMilliseconds(500));
 
+            RunStartupCalculationSeed();
+
             try
             {
                 RenderPanel();
@@ -317,6 +318,7 @@ namespace cAlgo
             _initializationDataReady = false;
             _initializationPendingDataLoads = 0;
             _initializationStartedUtc = TimeInUtc;
+            _startupCalculationSeedDone = false;
             _status = "STARTING";
 
             CreatePanel();
@@ -370,6 +372,27 @@ namespace cAlgo
                 }
 
                 ScheduleInitializationPoll();
+                return;
+            }
+
+            if (HasEnoughData())
+            {
+                try
+                {
+                    FinalizeAsyncInitialization();
+                }
+                catch (Exception ex)
+                {
+                    Timer.Stop();
+                    SetInitializationFault(
+                        ex,
+                        "FINALIZATION");
+                    return;
+                }
+
+                if (!_initializationReady)
+                    ScheduleInitializationPoll();
+
                 return;
             }
 
