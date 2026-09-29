@@ -720,3 +720,21 @@ Added the runtime UI audit tool and wired it into source CI. README current para
 No strategy, risk, reward, protection or broker-order ownership was intentionally changed. Hands-on cTrader validation remains required.
 
 PR #30 is the implementation vehicle. The next planned strategy phase remains Phase 7.3 — Semantic Duplicate Audit.
+
+
+## Hotfix merge record — Chart Lines and Execution Status UI — 2026-09-29
+
+PR #30 was merged into main as 3c5afe6f37c8852fb6975bbb5d4004bc1ec95ffe.
+
+Final automated gates on the hotfix head were all PASS:
+- Source / Architecture;
+- Runtime Acceptance Contracts;
+- cTrader Compile.
+
+The implementation corrected the compact level geometry so lines terminate at the latest chart candle, removed M5 event-time dependence from line endpoints, removed pending visual dependence on a disposable M5 anchor, and unified label placement with the canonical line geometry.
+
+AUTO TRADE and AUTO ORDERS are now display-only modern switch-style status cards. Their state is synchronized from the canonical configuration/runtime path and the UI no longer owns an independent action or override path.
+
+The dedicated hotfix document records the root causes and validation boundary. Hands-on cTrader visual/control validation remains required and is not claimed by automated CI.
+
+Continuity: the next planned implementation phase remains Phase 7.3 — Semantic Duplicate Audit. Local pull is required after this merge before the next phase is started.
