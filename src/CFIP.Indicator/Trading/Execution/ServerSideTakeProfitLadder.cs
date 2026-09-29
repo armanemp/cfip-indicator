@@ -268,7 +268,7 @@ namespace cAlgo
                     Math.Max(
                         Symbol.PipSize,
                         Math.Max(
-                                Symbol.TickSize,
+                            Symbol.TickSize,
                             atr *
                             Math.Max(
                                 0.05,
