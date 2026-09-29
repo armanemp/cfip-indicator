@@ -105,22 +105,22 @@ namespace cAlgo
                 return 1;
 
             int quality =
-                left.Quality.CompareTo(
-                    right.Quality);
+                right.Quality.CompareTo(
+                    left.Quality);
 
             if (quality != 0)
                 return quality;
 
             int rr =
-                left.Tp1RR.CompareTo(
-                    right.Tp1RR);
+                right.Tp1RR.CompareTo(
+                    left.Tp1RR);
 
             if (rr != 0)
                 return rr;
 
             int lane =
-                LaneRank(left.Lane).CompareTo(
-                    LaneRank(right.Lane));
+                LaneRank(right.Lane).CompareTo(
+                    LaneRank(left.Lane));
 
             if (lane != 0)
                 return lane;
