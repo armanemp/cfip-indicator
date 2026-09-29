@@ -910,3 +910,47 @@ Started branch `phase-8-4-order-block-mathematical-audit` from main `2c916a023f4
 ## Phase 8.4 verification closeout — 2026-09-29
 
 Head `41a578ba72fec2219447ddc1ceff12b96ee353e7` passed Runtime Acceptance, Build and Source/Architecture. Production Order Block logic now uses a single mathematical owner for source candle direction/geometry, source-bar ATR displacement and structure thresholds, directional mitigation and identity. OB/FVG confluence consumes canonical Phase 8.3 FVG mathematics. The user-provided FVG and custom WaveTrend reference sources were inspected from Library archives; WaveTrend remains intentionally outside the decision path until a closed-bar exact adapter is tested. No new public parameters were added and no empirical signal-quality improvement is claimed without cTrader replay.
+
+
+## Phase 8.5 — Zone Confluence Symmetry and Timely M1 Trigger Runtime — 2026-09-29
+
+Status: implementation complete; final verification/merge boundary pending.
+
+Root-cause audit:
+- TriggerReady was updated only during the closed-M5 decision cycle, creating a same-M5 delay after a valid M1 trigger appeared.
+- the automatic plan path was keyed only to the M5 attempt index, so a newly valid M1 trigger could not reliably cause a same-M5 retry;
+- a transient M1-direction mismatch could freeze into the M5 decision through a separate veto;
+- Order Block liquidity-sweep evidence had a parallel rolling-extreme definition instead of the canonical structural swing/reclaim rule;
+- neutral RSI=50 / DMI=0 could contribute directional trigger points;
+- generic zone-overlap semantics were duplicated.
+
+Corrections:
+- added TriggerRuntimeState and M1TriggerRuntimeUpdater;
+- added IsClosedM1InsideM5Window to the platform-neutral M1 trigger rule;
+- inserted M1 trigger runtime evaluation into the live calculation stage before plan synchronization;
+- automatic plan retry now keys on confirmed-M1 revision as well as M5;
+- SignalVisualSnapshot carries trigger runtime status and SignalRenderer draws the exact confirming M1 marker;
+- trigger marker visibility is owned by ShowTrigger rather than ShowSignalArrow;
+- DecisionConfirmationGates no longer converts temporary M1 direction into a frozen decision veto;
+- OB liquidity sweep reuses BullLiquiditySweep/BearLiquiditySweep;
+- Bull/Bear trigger score analyzers require RSI/DMI to be directionally strict rather than neutral-inclusive;
+- ZoneConfluenceRule provides symmetric positive-width overlap semantics for generic execution-zone geometry;
+- FvgRule remains the canonical OB/FVG confluence owner.
+
+CI feedback and fixes:
+- Runtime compile initially failed because ZoneConfluenceRule was not linked into CFIP.Runtime.Contracts; fixed in the contract project;
+- Source/Architecture initially failed because OB/FVG confluence temporarily bypassed FvgRule.IsOverlapInclusive; restored canonical FVG ownership;
+- Runtime contract then caught an overly-inclusive touch-boundary assumption; overlap was changed to positive-width semantics with explicit tolerance.
+
+WaveTrend:
+The exact custom WaveTrend source is not available in the current searchable repository/Library continuation. No guessed formula was introduced. It remains an exact closed-bar confluence integration item.
+
+Verification boundary:
+- automated Runtime Acceptance, Source/Architecture and cTrader Compile/Build must all pass on the final branch head;
+- no empirical performance claim is made from CI;
+- target cTrader replay is required for visual and signal-timing validation.
+
+Continuity:
+- current branch: phase-8-5-zone-confluence-trigger-synchronization;
+- PR #39;
+- operator pull is required only after final merge to main.
