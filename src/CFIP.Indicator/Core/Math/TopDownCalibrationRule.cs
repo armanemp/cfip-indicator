@@ -219,18 +219,5 @@ namespace cAlgo
                         alignment)));
         }
 
-        private readonly struct GroupResult
-        {
-            public int Direction { get; }
-            public int Alignment { get; }
-
-            public GroupResult(
-                int direction,
-                int alignment)
-            {
-                Direction = direction;
-                Alignment = alignment;
-            }
-        }
     }
 }
