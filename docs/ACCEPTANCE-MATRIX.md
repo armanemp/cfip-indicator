@@ -308,17 +308,18 @@ Hands-on cTrader validation remains required for exact visual line endpoints, 40
 
 | Contract | Automated controlled check | cTrader / replay |
 |---|---:|---:|
-| M1 is consumed from the canonical closed M1 context | PASS | Required |
-| M1 bar is inside the exact closed M5 window | PASS | Required |
-| Future / still-open M1 bar is rejected | PASS | Required |
-| BUY/SELL M1 trigger symmetry | PASS | Required |
-| Opposite M1 direction is rejected | PASS | Required |
-| Weak M1 body is rejected | PASS | Required |
-| Poor M1 close location is rejected | PASS | Required |
-| Insufficient M1 trigger score is rejected | PASS | Required |
-| M1 cannot vote directly in directional consensus | Source gate | Required |
-| M1 confirmation is combined with canonical M5 TriggerReady | Source gate | Required |
-| Runtime Acceptance Contracts | Yes | Required |
-| cTrader Compile | Yes | Required |
+| M1 is consumed from the canonical closed M1 context | Pending verification | Required |
+| M1 bar is inside the exact closed M5 window | Pending verification | Required |
+| Future / still-open M1 bar is rejected | Pending verification | Required |
+| BUY/SELL M1 trigger symmetry | Pending verification | Required |
+| Opposite M1 direction is rejected | Pending verification | Required |
+| Weak M1 body is rejected | Pending verification | Required |
+| Poor M1 close location is rejected | Pending verification | Required |
+| Abnormally large M1 range is rejected | Pending verification | Required |
+| Insufficient M1 trigger score is rejected | Pending verification | Required |
+| M1 cannot vote directly in directional consensus | Pending source gate | Required |
+| M1 confirmation is combined with canonical M5 TriggerReady | Pending source gate | Required |
+| Runtime Acceptance Contracts | Pending | Required |
+| cTrader Compile | Pending | Required |
 
-The automated phase contracts establish deterministic source/state semantics. They do not establish an empirical reduction in false signals; that requires deterministic replay or historical outcome validation.
+The implementation is complete, but the phase is not closed until the repository CI gates and required replay/terminal validation are verified. Automated contracts do not establish an empirical reduction in false signals.
