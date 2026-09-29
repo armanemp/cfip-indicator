@@ -168,14 +168,8 @@ namespace cAlgo
                 private Button _cancelButton;
                 private Button _panelRestoreButton;
                 private StackPanel _quickExecutionStack;
-                private Border _autoTradingQuickStatus;
-                private TextBlock _autoTradingQuickStatusText;
-                private Border _autoTradingQuickSwitchTrack;
-                private Border _autoTradingQuickSwitchThumb;
-                private Border _automaticOrdersQuickStatus;
-                private TextBlock _automaticOrdersQuickStatusText;
-                private Border _automaticOrdersQuickSwitchTrack;
-                private Border _automaticOrdersQuickSwitchThumb;
+                private Button _autoTradingQuickStatus;
+                private Button _automaticOrdersQuickStatus;
         
                 private Border _popup;
                 private TextBlock _popupText;
