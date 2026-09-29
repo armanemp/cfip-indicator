@@ -175,6 +175,7 @@ namespace cAlgo
                     closedM5,
                     direction,
                     lane,
+                    _decision == null ? "UNKNOWN" : _decision.Regime,
                     execution,
                     preview);
 
