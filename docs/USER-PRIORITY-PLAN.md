@@ -201,3 +201,10 @@ Live target/protection management:
 Chart semantics:
 
 - persistent alert-mirror labels must identify themselves as ALERT rather than looking like a second independent SIGNAL engine.
+
+
+## N. Phase 9.1 completion note — 2026-09-29
+
+The top-down architecture requirement is now persistent and implemented: H1+ opportunity anchor -> M30/M15 calibration -> M5 setup/location -> M1 closed trigger.
+
+Panel responsiveness and live-management requirements are also persistent and implemented in Phase 9.1. Future phases must preserve lightweight heartbeat behavior, state-change-driven full panel rendering, prompt same-cycle TP target refresh, and monotonic broker-confirmed progression.

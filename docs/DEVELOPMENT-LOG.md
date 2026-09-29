@@ -1002,3 +1002,22 @@ Continuity:
 - PR #40;
 - main baseline before phase 60749410917a4888e2a4c2ad90ce98c8f0916cfa;
 - local pull is required only after merge.
+
+
+## Phase 9.1 verification closeout — 2026-09-29
+
+PR #40 merged to main as `b0e17e93551b3760d50bb38bb4725b9c523afddd`. Final pre-merge head `4530f4043195378f58727db8a395121c43abcd52` passed Runtime Acceptance, cTrader Compile/Build and Source/Architecture.
+
+Implementation closeout:
+- top-down directional anchor is now explicit in the Decision model and actionable gate;
+- middle-frame quantitative alignment is required for ENTRY CALIBRATED;
+- HTF-backed reward is required for TP1 on calibrated setups;
+- heartbeat no longer calls full RenderPanel; live rows refresh directly;
+- full panel render is keyed to canonical presentation state;
+- bounded live structural pulse improves same-M5 protection/target responsiveness without using unclosed M5 OHLC;
+- TP1/TP2 events force same-cycle next-target evaluation;
+- ALERT BUY/SELL clarifies the presentation-only alert mirror.
+
+Known boundary: no exact custom WaveTrend source was available in the current searchable repo/Library continuation, so no guessed formula was enabled. Empirical cTrader replay remains required.
+
+Operator pull requirement: pull main before next local continuation.

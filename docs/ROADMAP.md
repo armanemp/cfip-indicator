@@ -3465,3 +3465,27 @@ Acceptance:
 - no empirical performance claim without target cTrader replay.
 
 Next continuation point remains this phase until final verification and merge close.
+
+
+## Phase 9.1 verification closeout — 2026-09-29
+
+Status: MERGED AND VERIFIED at implementation level.
+
+PR #40 merged into main as `b0e17e93551b3760d50bb38bb4725b9c523afddd` from verified head `4530f4043195378f58727db8a395121c43abcd52`.
+
+Pre-merge gates on the final implementation head: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture PASS.
+
+Core result:
+- H1/H4/D1/W1 provide the directional anchor;
+- M30/M15 calibrate that anchor;
+- M5 is the setup/entry frame;
+- M1 remains closed-bar confirmation only;
+- strong HTF conflict cannot be overridden by lower frames;
+- calibrated setups require an HTF-backed TP1 candidate;
+- panel full rendering is state-change driven while the heartbeat updates lightweight live rows;
+- structural target/protection progression can pulse on already-closed M5 structure and TP1/TP2 hits trigger same-cycle target re-evaluation;
+- the chart alert mirror is explicitly labeled ALERT BUY/SELL.
+
+Empirical boundary: target cTrader replay is still required to measure actual terminal responsiveness, visual placement, signal latency and realized risk/reward behavior. No profitability, win-rate or false-signal reduction claim is inferred from CI.
+
+Operator action: local main is now ahead of the previously verified baseline and must be pulled before the next phase.
