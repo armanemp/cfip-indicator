@@ -4,6 +4,10 @@ namespace cAlgo
     {
         public int ClosedM5;
         public int Direction;
+        public int PlanDirection;
+        public int PendingDirection;
+        public int DecisionDirection;
+        public int ReactionDirection;
         public string Stage;
         public bool DecisionReady;
         public bool ReactionReady;
