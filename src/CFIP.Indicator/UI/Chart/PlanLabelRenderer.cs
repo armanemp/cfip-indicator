@@ -70,7 +70,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    color;
+                    textColor;
                 label.FontSize =
                     Math.Max(
                         8,
@@ -157,10 +157,10 @@ namespace cAlgo
                     Chart.FindObject(boxName)
                     as ChartRectangle;
 
-                Color boxColor =
-                    Color.FromArgb(
-                        72,
-                        color);
+                Color boxColor = color;
+                Color textColor =
+                    GetReadableLabelTextColor(
+                        boxColor);
 
                 if (box == null)
                 {
@@ -222,7 +222,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[labelBar],
                             labelPrice,
-                            color);
+                            textColor);
                 }
 
                 if (label == null)
@@ -258,6 +258,19 @@ namespace cAlgo
                     "CFIP compact plan label failed: {0}",
                     ex.Message);
             }
+        }
+
+        private Color GetReadableLabelTextColor(
+            Color background)
+        {
+            double luminance =
+                0.299 * background.R +
+                0.587 * background.G +
+                0.114 * background.B;
+
+            return luminance >= 160
+                ? Color.Black
+                : Color.White;
         }
 
         private void RemovePlanLabel(
