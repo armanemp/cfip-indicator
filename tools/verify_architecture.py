@@ -842,7 +842,7 @@ for required_token in ("ObserveReactionSample(", "ResetQualification()", "GetQua
     if required_token not in aggressive_policy_code:
         raise SystemExit(f"Aggressive-entry policy state owner missing: {required_token}")
 
-if "AggressiveEntryPolicy" not in aggressive_eligibility_code:
+if "_aggressiveEntryPolicy" not in aggressive_eligibility_code:
     raise SystemExit("Aggressive eligibility must consume the canonical aggressive-entry policy")
 if "_aggressiveEntryPolicy.ObserveReactionSample(" not in aggressive_eligibility_code:
     raise SystemExit("Aggressive eligibility must require policy qualification")
