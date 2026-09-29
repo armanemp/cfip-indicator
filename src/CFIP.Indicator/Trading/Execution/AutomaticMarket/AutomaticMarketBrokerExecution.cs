@@ -43,13 +43,6 @@ namespace cAlgo
             // Market-range is a bounded execution envelope, not permission to
             // chase price. Keep it close to the live spread while allowing a
             // small ATR-scaled tolerance for normal quote movement.
-            double derived =
-                Math.Max(
-                    0.50,
-                    Math.Max(
-                        spreadPips * 1.50,
-                        atrPips * 0.02));
-
             double maximum =
                 atrPips *
                 Math.Max(
@@ -60,11 +53,26 @@ namespace cAlgo
                             0.08,
                             MaximumEntryExtensionAtr * 0.50)));
 
+            if (maximum <= 0)
+                return 0;
+
+            double minimumUsableRange =
+                Math.Max(
+                    0.10,
+                    spreadPips * 1.10);
+
+            double desired =
+                Math.Max(
+                    minimumUsableRange,
+                    atrPips * 0.02);
+
+            // The market-range envelope is always capped by the ATR-derived
+            // maximum; it may never silently exceed the execution extension gate.
             return Math.Max(
-                0.50,
+                0.10,
                 Math.Min(
                     maximum,
-                    derived));
+                    desired));
         }
 
         private void ExecutePreparedAutomaticMarketTrade(
