@@ -212,9 +212,11 @@ namespace cAlgo
                 snapshot.SetupTp4 = _setupPreview.Tp4;
                 snapshot.SetupRisk = _setupPreview.Risk;
                 snapshot.Stage =
-                    decisionReady
-                        ? "CONFIRMED SETUP"
-                        : "SETUP WATCH";
+                    snapshot.TriggerRuntimeReady
+                        ? "TRIGGER READY"
+                        : decisionReady
+                            ? "CONFIRMED SETUP"
+                            : "SETUP WATCH";
             }
             else if (decisionReady)
             {
@@ -284,6 +286,11 @@ namespace cAlgo
             snapshot.TriggerRuntimeReason =
                 _triggerRuntime.Reason ?? "";
 
+            ExecutionMode triggerMode =
+                snapshot.PlanActive
+                    ? snapshot.EntryMode
+                    : snapshot.SetupEntryMode;
+
             snapshot.TriggerVisible =
                 (snapshot.PlanActive ||
                  snapshot.SetupPreviewActive) &&
@@ -292,8 +299,8 @@ namespace cAlgo
                     snapshot.PlanActive
                         ? snapshot.Trigger
                         : snapshot.SetupTrigger) &&
-                (snapshot.EntryMode == ExecutionMode.WaitingForTrigger ||
-                 snapshot.EntryMode == ExecutionMode.ContinuationStop);
+                (triggerMode == ExecutionMode.WaitingForTrigger ||
+                 triggerMode == ExecutionMode.ContinuationStop);
             snapshot.IdealEntryVisible =
                 snapshot.PlanActive &&
                 IsFinitePositive(snapshot.IdealEntry) &&
