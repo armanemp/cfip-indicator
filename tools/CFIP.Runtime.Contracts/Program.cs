@@ -78,6 +78,7 @@ namespace cAlgo
                     2,
                     0.50,
                     0.70,
+                    3.0,
                     4,
                     4),
                 "bullish M1 trigger uses independent closed-bar geometry and score");
@@ -93,6 +94,7 @@ namespace cAlgo
                     2,
                     0.50,
                     0.70,
+                    3.0,
                     4,
                     4),
                 "bearish M1 trigger is directionally symmetric");
@@ -108,6 +110,7 @@ namespace cAlgo
                     2,
                     0.50,
                     0.70,
+                    3.0,
                     4,
                     4),
                 "opposite M1 direction cannot confirm the selected decision");
@@ -123,6 +126,7 @@ namespace cAlgo
                     2,
                     0.50,
                     0.70,
+                    3.0,
                     4,
                     4),
                 "weak M1 body cannot confirm");
@@ -138,6 +142,7 @@ namespace cAlgo
                     1,
                     0.50,
                     0.70,
+                    3.0,
                     4,
                     4),
                 "poor M1 close location cannot confirm");
@@ -156,6 +161,22 @@ namespace cAlgo
                     3,
                     4),
                 "insufficient M1 trigger score cannot confirm");
+
+            Assert(
+                !M1TriggerRule.IsReady(
+                    1,
+                    1,
+                    100,
+                    107,
+                    99,
+                    106,
+                    2,
+                    0.50,
+                    0.70,
+                    3.0,
+                    4,
+                    4),
+                "abnormally large M1 range cannot confirm");
         }
 
         private static void VerifyMtfContextIntegrity()
