@@ -121,7 +121,12 @@ Those remain in the subsequent Track 8 phases.
 
 ## Verification boundary
 
-Automated CI can prove deterministic source contracts, runtime contract scenarios and compilation. Hands-on cTrader replay/live validation remains required to measure actual false-signal reduction and terminal behavior.
+Automated CI has now passed all three required repository gates on verified branch head `929700e154d4b84a5a0b9efeae345b92017834b6`:
+- Runtime Acceptance Contracts — PASS, run 801;
+- cTrader Compile — PASS, run 985;
+- Source / Architecture — PASS, run 992.
+
+Therefore the automated Phase 8.1 boundary is verified and the phase is ready for merge. Hands-on cTrader replay/live validation remains required to measure actual false-signal reduction and terminal behavior.
 
 ## Continuity
 
