@@ -280,6 +280,12 @@ namespace cAlgo
             snapshot.PredictionReady = predictionReady;
             snapshot.SmartQuality =
                 _decision == null ? 0 : _decision.SmartQuality;
+            snapshot.TimeframeAgreement =
+                _decision == null ? 0 : _decision.TimeframeAgreement;
+            snapshot.IndependentEvidence =
+                _decision == null ? 0 : _decision.IndependentEvidence;
+            snapshot.StructuralConfirmations =
+                _decision == null ? 0 : _decision.StructuralConfirmations;
             snapshot.Confidence =
                 _decision == null ? 0 : _decision.Confidence;
             snapshot.DecisionReason =
