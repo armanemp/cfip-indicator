@@ -395,6 +395,7 @@ namespace cAlgo
                         ? "LOADING DATA"
                         : "BUILDING DATA";
 
+                RenderPanel();
                 ScheduleInitializationPoll();
                 return;
             }
