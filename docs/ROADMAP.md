@@ -1385,6 +1385,38 @@ Continuity record: `docs/PHASE-6-3-AGGRESSIVE-ENTRY.md`.
 
 ---
 
+## Phase 6.4 — Compact 40-Bar Plan-Level Visuals
+
+Status: complete.
+
+The chart plan levels now use a fixed compact presentation:
+
+- latest chart candle is the right edge;
+- the level spans 40 bars to the left when sufficient history exists;
+- full-width visible-chart boundaries are not used;
+- level-specific line styles improve visual hierarchy;
+- name + price is rendered in a small left-attached tag using the level's
+  semantic color;
+- visible label objects are reused during refresh instead of unconditional
+  remove/recreate churn;
+- cleanup removes both label text and tag boxes;
+- no public parameter was added and the 535-parameter contract is preserved.
+
+The implementation is presentation/performance scoped. Decision, reaction,
+planning, risk, execution, broker confirmation, protection and lifecycle
+semantics are unchanged.
+
+Acceptance:
+
+- source / architecture: PASS;
+- runtime acceptance contracts: PASS;
+- cTrader compile: PASS;
+- hands-on cTrader visual and responsiveness validation: required.
+
+Continuity record: `docs/PHASE-6-4-COMPACT-PLAN-VISUALS.md`.
+
+---
+
 # Track 7 — Parameter Semantics
 
 ## Phase 7.1 — Hidden-clamp audit
@@ -3110,7 +3142,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 6.3 — Aggressive entry policy**
+**NEXT: Phase 6.4 — Compact 40-Bar Plan-Level Visuals**
 
 Then proceed in dependency order:
 
