@@ -310,8 +310,39 @@ namespace cAlgo
                 DivergenceType =
                     actionability.DivergenceType,
                 ActionabilityReason =
-                    actionability.Reason
+                    actionability.Reason,
+                ScenarioId =
+                    BuildCanonicalScenarioId(
+                        lane,
+                        direction)
             };
+
+            string executionPolicyReason;
+
+            candidate.ExecutionPolicyAllowed =
+                ScenarioExecutionPolicy.IsCanonicalCandidateEligible(
+                    candidate,
+                    _decision,
+                    lane,
+                    out executionPolicyReason);
+
+            candidate.ExecutionPolicyReason =
+                executionPolicyReason;
+
+            return candidate;
+        }
+
+        private string BuildCanonicalScenarioId(
+            OpportunityLane lane,
+            int direction)
+        {
+            return
+                "CANONICAL-" +
+                LaneText(lane) +
+                "-" +
+                (direction == 1
+                    ? "BUY"
+                    : "SELL");
         }
 
         private string BuildOpportunityId(
