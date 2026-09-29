@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -250,27 +249,25 @@ namespace cAlgo
                         "NEWS FEED URI EMPTY");
                 }
 
-                HttpWebRequest request =
-                    WebRequest.CreateHttp(
+                HttpResponse response =
+                    Http.Get(
                         EconomicNewsDataUri);
 
-                request.Method = "GET";
-                request.Timeout = 6000;
-                request.ReadWriteTimeout = 6000;
-                request.UserAgent =
-                    "CFIPIndicator/1.0";
-
-                using (WebResponse response =
-                    request.GetResponse())
-                using (Stream stream =
-                    response.GetResponseStream())
-                using (StreamReader reader =
-                    new StreamReader(
-                        stream ?? Stream.Null,
-                        Encoding.UTF8))
+                if (response == null ||
+                    !response.IsSuccessful)
                 {
-                    string xml =
-                        reader.ReadToEnd();
+                    throw new InvalidOperationException(
+                        "NEWS FEED HTTP FAILURE");
+                }
+
+                string xml =
+                    response.Body ?? "";
+
+                if (string.IsNullOrWhiteSpace(xml))
+                    throw new InvalidOperationException(
+                        "NEWS FEED BODY EMPTY");
+
+                {
 
                     XmlSerializer serializer =
                         new XmlSerializer(
