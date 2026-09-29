@@ -12,9 +12,8 @@ namespace cAlgo
             int closedM5,
             DecisionPolicyMode policy)
         {
-            string capacityReason;
-            if (!ValidateSinglePlanCapacity(
-                    out capacityReason))
+            if (BlockNewSignalWhileActive &&
+                _plan != null)
                 return false;
 
             if (_decision == null ||
