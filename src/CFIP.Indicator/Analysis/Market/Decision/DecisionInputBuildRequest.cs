@@ -37,6 +37,7 @@ namespace cAlgo
 
         public DateTime Reference { get; set; }
         public int ClosedM5 { get; set; }
+        public MtfClosedContext ClosedContext { get; set; }
 
         public DecisionEvidenceSnapshot Evidence { get; set; }
     }
