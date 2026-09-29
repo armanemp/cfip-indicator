@@ -40,26 +40,25 @@ namespace cAlgo
                                     {
                                         bool profitable =
                                             args.Position.NetProfit > 0;
-                        
+
+                                        Plan outcomePlan =
+                                            _plan != null &&
+                                            _plan.IsLivePosition &&
+                                            _plan.PositionId ==
+                                            args.Position.Id
+                                                ? _plan
+                                                : null;
+
                                         if (EnableOutcomeTelemetry)
                                         {
-                                            RegisterOutcome(
-                                                direction,
-                                                profitable);
-
-                                            if (_plan != null &&
-                                                _plan.IsLivePosition &&
-                                                _plan.PositionId ==
-                                                args.Position.Id)
-                                            {
-                                                RegisterCalibratedOutcome(
-                                                    _plan,
-                                                    profitable);
-                                            }
+                                            RecordManagedOutcome(
+                                                outcomePlan,
+                                                args.Position,
+                                                _lastEvaluatedM5);
                                         }
-                        
+
                                         _outcomeRegistered = true;
-                        
+
                                         if (profitable)
                                             _wins++;
                                         else
