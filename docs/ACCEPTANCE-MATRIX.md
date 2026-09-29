@@ -96,9 +96,9 @@ The repository contracts cover deterministic retry state, stage continuation and
 
 | Contract | Automated controlled check | Status |
 |---|---:|---:|
-| One SignalVisualSnapshot owner | Yes | PASS pending final CI |
-| Single direction resolver | Yes | PASS pending final CI |
-| Plan arrow/levels consume snapshot | Yes | PASS pending final CI |
-| Pending entry/SL/TP consume snapshot | Yes | PASS pending final CI |
-| Panel direction/stage consumes snapshot | Yes | PASS pending final CI |
-| Signal renderer has no direct decision/reaction reads | Yes | PASS pending final CI |
+| One SignalVisualSnapshot owner | Yes | PASS |
+| Single direction resolver | Yes | PASS |
+| Plan arrow/levels consume snapshot | Yes | PASS |
+| Pending entry/SL/TP consume snapshot | Yes | PASS |
+| Panel direction/stage consumes snapshot | Yes | PASS |
+| Signal renderer has no direct decision/reaction reads | Yes | PASS |
