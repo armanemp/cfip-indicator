@@ -2660,8 +2660,10 @@ PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "box.IsFilled =" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must render an explicit box fill")
-if "Color.FromArgb(\n                        72,\n                        color)" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan label box must use the semantic level color")
+if "Color boxColor = color" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan label box must inherit the semantic level color")
+if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must choose readable text contrast")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
