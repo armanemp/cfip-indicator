@@ -3568,7 +3568,7 @@ Phase 9.3 does not claim measured trading-performance improvement until target-t
 
 ## Phase 9.5 — Actionable Entry Coherence and Turning-Point Risk — 2026-09-29
 
-Status: implementation in progress on `phase/9-5-actionable-signal-execution-coherence-v2`.
+Status: VERIFIED COMPLETE on `phase/9-5-actionable-signal-execution-coherence-v2`.
 
 This is a corrective strategy-quality continuation of the Phase 9.4 actionability/divergence work already present on `main`.
 
@@ -3596,7 +3596,7 @@ Safety boundary:
 - broker execution remains single-plan/single-managed-identity until plan-scoped lifecycle, protection and broker mutation identities are isolated.
 
 Verification:
-- Runtime Acceptance, cTrader Compile/Build and Source/Architecture workflows are required before merge;
+- Runtime Acceptance, cTrader Compile/Build and Source/Architecture workflows are GREEN on the verified head;
 - target cTrader replay remains required for empirical false-signal, timing and realized RR measurements;
 - no profitability or win-rate claim is inferred from static/contract checks.
 
