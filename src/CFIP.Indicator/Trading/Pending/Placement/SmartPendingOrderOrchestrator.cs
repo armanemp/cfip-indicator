@@ -132,7 +132,8 @@ namespace cAlgo
                                                 if (!PassesMarketSuitability(
                                                         closedM5,
                                                         pendingDirection,
-                                                        out pendingSuitabilityReason))
+                                                        out pendingSuitabilityReason,
+                                                        true))
                                                 {
                                                     _autoOrdersBlockReason =
                                                         "SUITABILITY • " +
