@@ -127,10 +127,42 @@ namespace cAlgo
                       risk
                     : 0;
 
-            double minimumRR =
-                Math.Max(
-                    Tp1MinimumRR,
-                    MinimumRequiredRRForRegime(regime));
+            PlanRewardRiskQualityResult rewardRisk =
+                PlanRewardRiskQualityRule.Evaluate(
+                    direction,
+                    actualEntry,
+                    preview.Stop,
+                    preview.Tp1,
+                    atr,
+                    Math.Max(
+                        0,
+                        Symbol.Ask - Symbol.Bid),
+                    MinimumRequiredRRForRegime(regime),
+                    PreferredStopRiskAtr,
+                    Math.Min(
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumSlAtr),
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumStructuralStopAtr)));
+
+            if (!rewardRisk.Allowed)
+            {
+                return new TradeActionabilityResult(
+                    false,
+                    0,
+                    0,
+                    0,
+                    entryDistanceAtr,
+                    Math.Max(
+                        0,
+                        tp1RR),
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    rewardRisk.Reason);
+            }
 
             int locationQuality =
                 Math.Max(
