@@ -15,6 +15,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeClassificationInput.cs" Link="Core/Models/MarketRegimeClassificationInput.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeSnapshot.cs" Link="Core/Models/MarketRegimeSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/OpportunityLane.cs" Link="Core/Enums/OpportunityLane.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/ConfidenceCalibrationKey.cs" Link="Core/Models/ConfidenceCalibrationKey.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/EmpiricalCalibrationSnapshot.cs" Link="Core/Models/EmpiricalCalibrationSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" Link="Core/Models/Decision.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvidenceSnapshot.cs" Link="Decision/DecisionEvidenceSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/IndependentEvidenceFusionCalculator.cs" Link="Decision/IndependentEvidenceFusionCalculator.cs" />
