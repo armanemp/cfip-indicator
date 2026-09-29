@@ -101,6 +101,8 @@ namespace cAlgo
             _lastAutoM5 =
                 closedM5;
 
+            _aggressiveEntryPolicy.Invalidate();
+
             _autoExecutionBlockReason =
                 "EXECUTED";
 
