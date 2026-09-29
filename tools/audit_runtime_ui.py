@@ -11,6 +11,14 @@ def read(relative: str) -> str:
 line = read("UI/Chart/PlanLineRenderer.cs")
 pending = read("UI/Chart/PendingOrderRenderer.cs")
 labels = read("UI/Chart/PlanLabelRenderCoordinator.cs")
+labels_renderer = read("UI/Chart/PlanLabelRenderer.cs")
+partial = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
+target_progression = read("Trading/LiveManagement/TargetProgression.cs")
+level_hits = read("Trading/LiveManagement/ActivePlanLevelExitHandler.cs")
+server_ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
+market_mutation = read("Trading/Execution/BrokerMarketOrderMutation.cs")
+pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
+limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 state = read("Indicator/State.cs")
 factory = read("UI/Controls/ExecutionControlsFactory.cs")
 sync = read("UI/Controls/ExecutionControlsSynchronizer.cs")
@@ -88,6 +96,33 @@ if "EnableAutoTrading" not in initialization or "EnableAutomaticOrders" not in i
     raise SystemExit("Execution status settings must be sourced from the public cTrader parameters")
 if "EnsureExecutionRuntimeState()" not in initialization:
     raise SystemExit("Execution settings must retain a canonical runtime synchronization boundary")
+
+if "return Color.White" not in labels_renderer:
+    raise SystemExit("All compact plan-level text must be white")
+if "Chart.DrawRectangle(" in labels_renderer:
+    raise SystemExit("Plan label renderer must not create text backgrounds")
+if "Chart.DrawRectangle(" in labels:
+    raise SystemExit("Plan label coordinator must not create text backgrounds")
+if "_serverSideTakeProfitLadderActive" not in partial:
+    raise SystemExit("Local partial-close path must know server TP authority")
+if "_serverSideTakeProfitLadderActive" not in target_progression:
+    raise SystemExit("Target progression must yield to server TP authority")
+if "_serverSideTakeProfitLadderActive" not in level_hits:
+    raise SystemExit("Level-hit handler must yield to server TP authority")
+for token in (
+    "RelativeTakeProfitProtections",
+    "RelativeTakeProfitProtection",
+    "RelativeTakeProfitLastProtection",
+    "AbsoluteTakeProfitProtections",
+):
+    if token not in server_ladder:
+        raise SystemExit(f"Server TP ladder contract missing: {token}")
+if "TryExecuteMarketRangeOrderWithTakeProfitLadder" not in market_mutation:
+    raise SystemExit("Market-range server TP mutation owner missing")
+if "TryPlaceStopOrderWithTakeProfitLadder" not in pending_mutation:
+    raise SystemExit("Pending stop server TP mutation owner missing")
+if "TryPlaceLimitOrderWithTakeProfitLadder" not in limit_mutation:
+    raise SystemExit("Pending limit server TP mutation owner missing")
 
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
