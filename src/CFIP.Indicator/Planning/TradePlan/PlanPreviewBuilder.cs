@@ -111,7 +111,8 @@ namespace cAlgo
                     entry,
                     risk,
                     execution.Direction,
-                    requiredRR[0]);
+                    requiredRR[0],
+                    lane);
 
             preview.Tp2 =
                 SelectTarget(
@@ -120,7 +121,8 @@ namespace cAlgo
                     entry,
                     risk,
                     execution.Direction,
-                    requiredRR[1]);
+                    requiredRR[1],
+                    lane);
 
             preview.Tp3 =
                 SelectTarget(
@@ -129,7 +131,8 @@ namespace cAlgo
                     entry,
                     risk,
                     execution.Direction,
-                    requiredRR[2]);
+                    requiredRR[2],
+                    lane);
 
             preview.Tp4 =
                 SelectTarget(
@@ -138,7 +141,8 @@ namespace cAlgo
                     entry,
                     risk,
                     execution.Direction,
-                    requiredRR[3]);
+                    requiredRR[3],
+                    lane);
 
             return preview;
         }
