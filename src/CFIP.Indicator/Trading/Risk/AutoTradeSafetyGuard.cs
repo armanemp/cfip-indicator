@@ -26,6 +26,20 @@ private bool PassesAutoTradeSafetyGuards(
                                         return false;
                                     }
                         
+                                    if (UseNewsEventGuard)
+                                    {
+                                        string newsReason;
+
+                                        if (NewsBlocked(
+                                                TimeInUtc,
+                                                out newsReason))
+                                        {
+                                            reason =
+                                                "NEWS";
+                                            return false;
+                                        }
+                                    }
+
                                     if (UseMarketHoursGuard)
                                     {
                                         if (!Symbol.IsTradingEnabled)
