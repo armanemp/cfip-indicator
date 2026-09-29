@@ -3166,3 +3166,14 @@ Acceptance:
 - source, runtime and cTrader compile gates are green before merge.
 
 The next strategy-quality phase remains isolated: stronger signal selection, stronger entry/TP/SL level selection, higher RR and smart trailing.
+
+
+## Phase 5.6 — Responsive panel runtime
+
+Status: complete.
+
+The panel now refreshes independently from full analysis through a 500 ms ready-state heartbeat, while broker safety supervision remains one-second bounded. Startup panel construction is lighter through lazy row allocation, duplicate property writes are skipped, one canonical visual snapshot is reused per refresh, and initialization/calculation freshness is observable. This is a runtime/UI optimization only; strategy and execution semantics remain unchanged.
+
+Verification: Source / Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
+
+Next: Phase 6.1 — Decision closed-bar contract.
