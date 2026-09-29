@@ -10,6 +10,17 @@ namespace cAlgo
     {
         private const int MaxSignalEvaluationTraceHistory = 256;
         private const string SignalTraceSchema = "CFIP-SIGNAL-TRACE,1";
+        private const string SignalTraceHeader =
+            "BarOpenTimeUtcTicks,ObservedUtcTicks,ClosedM5,Open,High,Low,Close,Direction," +
+            "BuyShare,SellShare,Edge,BaseConfidence,Confidence,SmartQuality," +
+            "HtfAnchorDirection,HtfAlignment,MidframeDirection,MidframeAlignment,EntryFrameAlignment," +
+            "TopDownEligible,TopDownStage,Lane,M5BullScore,M5BearScore,M5Evidence,M5Quality," +
+            "FvgBullQuality,FvgBearQuality,ObBullQuality,ObBearQuality,FvgObBullConfluence,FvgObBearConfluence," +
+            "LocationEvidenceBull,LocationEvidenceBear,IndicatorConfluenceQuality,IndicatorConflict," +
+            "WaveTrendDirection,WaveTrendQuality,DivergenceDirection,DivergenceQuality," +
+            "EntryAllowed,TriggerReady,ActionableNow,EntryLocationQuality,EntryTimingQuality,EntryPositionQuality," +
+            "EntryDistanceAtr,ActionableTp1RR,EntryMode,Entry,IdealEntry,Stop,Tp1,Tp2,Tp3,Tp4," +
+            "TraceGate,BlockReason,ActionabilityReason,DecisionReason";
 
         private readonly List<SignalEvaluationTrace>
             _signalEvaluationTraces =
@@ -303,6 +314,8 @@ namespace cAlgo
                     File.WriteAllText(
                         path,
                         SignalTraceSchema +
+                        Environment.NewLine +
+                        SignalTraceHeader +
                         Environment.NewLine,
                         Encoding.UTF8);
                 }
