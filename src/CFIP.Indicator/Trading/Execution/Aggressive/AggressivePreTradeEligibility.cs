@@ -46,7 +46,7 @@ namespace cAlgo
 
             string capacityReason;
 
-            if (!ValidateSinglePlanCapacity(
+            if (!ValidateSingleExecutionCapacity(
                     out capacityReason))
             {
                 _autoExecutionBlockReason =
