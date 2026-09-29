@@ -193,6 +193,42 @@ namespace cAlgo
                 index,
                 "EXECUTION CONTROL SYNCHRONIZATION");
 
+            // Predictive pending orders get first execution priority. They must be
+            // evaluated before a market plan is materialized, otherwise a newly-created
+            // market plan can suppress the independent pending-order path.
+            RunCalculationStage(
+                () =>
+                {
+                    UpdateExecutionModel(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "EXECUTION MODEL • PENDING PREFLIGHT");
+
+            RunCalculationStage(
+                () =>
+                {
+                    TrySmartPendingOrders(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "PREDICTIVE PENDING EXECUTION");
+
+            // Aggressive market entry is the direct AUTO TRADE path. Give it first
+            // opportunity after predictive orders; if the intrabar reaction is not
+            // sufficiently qualified, the normal plan/market path can still proceed.
+            RunCalculationStage(
+                () =>
+                {
+                    TryAggressiveAutoTrade(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "AGGRESSIVE AUTO EXECUTION");
+
             RunCalculationStage(
                 () =>
                 {
@@ -218,17 +254,10 @@ namespace cAlgo
                 {
                     TryAutoTrade(
                         closedM5);
-
-                    TryAggressiveAutoTrade(
-                        closedM5);
-
-                    TrySmartPendingOrders(
-                        closedM5);
-
                     return true;
                 },
                 index,
-                "EXECUTION");
+                "AUTOMATIC MARKET EXECUTION");
 
             RunCalculationStage(
                 () =>
