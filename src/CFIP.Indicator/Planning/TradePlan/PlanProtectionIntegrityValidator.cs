@@ -23,7 +23,7 @@ namespace cAlgo
                     plan.Tp1))
                 return false;
 
-            if (plan.Risk <= 0)
+            if (!IsFinitePositive(plan.Risk))
                 return false;
 
             if (RequirePrecisionEntry &&
