@@ -814,6 +814,7 @@ if not RUNTIME_CONTRACT_PROJECT.exists() or "ClosedBarReferenceRule.cs" not in R
 AGGRESSIVE_POLICY = ROOT / "Core" / "Execution" / "AggressiveEntryPolicy.cs"
 AGGRESSIVE_ELIGIBILITY = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs"
 AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
+AGGRESSIVE_BROKER_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
 AGGRESSIVE_FILL = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs"
 AGGRESSIVE_PREP = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs"
 REACTION_ANALYZER = ROOT / "Analysis" / "Reaction" / "ReactionAnalyzer.cs"
@@ -822,6 +823,7 @@ for required_path in (
     AGGRESSIVE_POLICY,
     AGGRESSIVE_ELIGIBILITY,
     AGGRESSIVE_EXECUTION,
+    AGGRESSIVE_BROKER_EXECUTION,
     AGGRESSIVE_FILL,
     AGGRESSIVE_PREP,
     REACTION_ANALYZER,
@@ -832,6 +834,7 @@ for required_path in (
 aggressive_policy_code = AGGRESSIVE_POLICY.read_text(encoding="utf-8")
 aggressive_eligibility_code = AGGRESSIVE_ELIGIBILITY.read_text(encoding="utf-8")
 aggressive_execution_code = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
+aggressive_broker_execution_code = AGGRESSIVE_BROKER_EXECUTION.read_text(encoding="utf-8")
 aggressive_fill_code = AGGRESSIVE_FILL.read_text(encoding="utf-8")
 aggressive_prep_code = AGGRESSIVE_PREP.read_text(encoding="utf-8")
 reaction_code = REACTION_ANALYZER.read_text(encoding="utf-8")
@@ -858,9 +861,9 @@ if "BuildStructuralStop(" not in aggressive_prep_code:
 if "SelectStructuralAutoTarget(" not in aggressive_prep_code:
     raise SystemExit("Aggressive execution must retain structural target authority")
 
-if "ExecutionIntentKind.Market" not in aggressive_execution_code:
+if "ExecutionIntentKind.Market" not in aggressive_broker_execution_code:
     raise SystemExit("Aggressive policy must remain an explicit market execution path")
-if "BrokerConfirmationPolicy.CanAdoptPosition(" not in aggressive_execution_code:
+if "BrokerConfirmationPolicy.CanAdoptPosition(" not in aggressive_broker_execution_code:
     raise SystemExit("Aggressive execution must remain broker-confirmation driven")
 
 if "_aggressiveEntryPolicy.ResetQualification();" not in aggressive_fill_code:
