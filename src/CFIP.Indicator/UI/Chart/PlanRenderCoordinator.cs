@@ -66,11 +66,7 @@ namespace cAlgo
                                             snapshot.TriggerVisible;
                         
                                         bool triggerVisualState =
-                                            !_plan.IsLivePosition &&
-                                            (_plan.EntryMode ==
-                                                ExecutionMode.WaitingForTrigger ||
-                                             _plan.EntryMode ==
-                                                ExecutionMode.ContinuationStop);
+                                            snapshot.TriggerVisible;
 
                                         DrawPlanLine(
                                             P + "TRIGGER",
@@ -147,13 +143,12 @@ namespace cAlgo
                                             snapshot.BrokerTarget;
                         
                                         bool activeBrokerTargetDistinct =
-                                            _plan.IsLivePosition &&
-                                            IsFinitePositive(activeBrokerTarget) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Entry) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp1) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp2) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp3) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp4);
+                                            snapshot.ActiveBrokerTargetVisible &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Entry) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp1) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp2) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp3) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp4);
                         
                                         DrawPlanLine(
                                             P + "ACTIVE_TP",
@@ -168,7 +163,7 @@ namespace cAlgo
                         
                                     if (ShowLevelPriceLabels ||
                                         ShowSignalLabels)
-                                        RenderPlanLabels();
+                                        RenderPlanLabels(snapshot);
                                     else
                                         RemovePlanLabels();
                         
@@ -201,7 +196,7 @@ namespace cAlgo
                                             atr * 0.18);
                         
                                     double y =
-                                        _plan.Direction == 1
+                                        snapshot.Direction == 1
                                             ? Bars.LowPrices[hostBar] -
                                               offset
                                             : Bars.HighPrices[hostBar] +
@@ -209,17 +204,16 @@ namespace cAlgo
                         
                                     DrawIcon(
                                         P + "ARROW",
-                                        _plan.Direction == 1
+                                        snapshot.Direction == 1
                                             ? ChartIconType.UpArrow
                                             : ChartIconType.DownArrow,
                                         hostBar,
                                         y,
                                         SignalArrowColorFor(
-                                            _plan.Direction,
-                                            _plan.IsLivePosition
+                                            snapshot.Direction,
+                                            snapshot.LivePosition
                                                 ? "CONFIRMED"
-                                                : _decision != null &&
-                                                  _decision.SmartQuality >=
+                                                : snapshot.SmartQuality >=
                                                   SmartStrongSetupQuality
                                                     ? "STRONG"
                                                     : "CONFIRMED"));
