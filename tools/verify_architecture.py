@@ -148,6 +148,7 @@ liquidity_sweep = ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs"
 frame_scoring = ROOT / "Analysis" / "Market" / "MarketFrameScoringService.cs"
 independent_evidence = ROOT / "Analysis" / "Market" / "Decision" / "IndependentEvidenceAnalyzer.cs"
 structural_confirmations = ROOT / "Analysis" / "Market" / "Decision" / "StructuralConfirmationAnalyzer.cs"
+structural_rule = ROOT / "Core" / "Math" / "StructuralEvidenceRule.cs"
 
 for required in (
     swing_rule,
@@ -157,6 +158,7 @@ for required in (
     frame_scoring,
     independent_evidence,
     structural_confirmations,
+    structural_rule,
 ):
     if not required.exists():
         raise SystemExit(f"Phase 8.2 structural owner is missing: {required}")
@@ -168,6 +170,7 @@ liquidity_sweep_code = liquidity_sweep.read_text(encoding="utf-8")
 frame_scoring_code = frame_scoring.read_text(encoding="utf-8")
 independent_evidence_code = independent_evidence.read_text(encoding="utf-8")
 structural_confirmations_code = structural_confirmations.read_text(encoding="utf-8")
+structural_rule_code = structural_rule.read_text(encoding="utf-8")
 
 for token in (
     "TryGetHighPlateau(",
@@ -204,6 +207,26 @@ for token in (
 ):
     if token not in liquidity_sweep_code:
         raise SystemExit(f"Liquidity sweep must use established structural levels: {token}")
+
+for token in (
+    "HasCanonicalStructuralEvent(",
+    "IsIndependentTransition(",
+    "CanonicalEventCount(",
+):
+    if token not in structural_rule_code:
+        raise SystemExit(f"Structural evidence rule missing canonical de-dup owner: {token}")
+
+for token in (
+    "StructuralEvidenceRule.IsIndependentTransition(",
+):
+    if token not in independent_evidence_code:
+        raise SystemExit(f"Independent evidence must consume the canonical structural rule: {token}")
+
+for token in (
+    "StructuralEvidenceRule.CanonicalEventCount(",
+):
+    if token not in structural_confirmations_code:
+        raise SystemExit(f"Structural confirmations must consume the canonical structural rule: {token}")
 
 for token in (
     "if (f.StructureBull)",
