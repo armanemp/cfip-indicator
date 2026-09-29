@@ -13,14 +13,16 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ApplyAutoTradingQuickToggleClick()
+        private void ApplyAutoTradingQuickToggleClick(
+            ToggleButtonEventArgs args)
         {
             if (_executionToggleSyncing ||
-                _autoTradingQuickToggle == null)
+                args == null ||
+                args.ToggleButton == null)
                 return;
 
             bool enabled =
-                _autoTradingQuickToggle.IsChecked;
+                args.ToggleButton.IsChecked;
 
             SetAutoTradingRuntimeState(
                 enabled,
@@ -39,14 +41,16 @@ namespace cAlgo
             SyncQuickExecutionControls();
         }
 
-        private void ApplyAutomaticOrdersQuickToggleClick()
+        private void ApplyAutomaticOrdersQuickToggleClick(
+            ToggleButtonEventArgs args)
         {
             if (_executionToggleSyncing ||
-                _automaticOrdersQuickToggle == null)
+                args == null ||
+                args.ToggleButton == null)
                 return;
 
             bool enabled =
-                _automaticOrdersQuickToggle.IsChecked;
+                args.ToggleButton.IsChecked;
 
             SetAutomaticOrdersRuntimeState(
                 enabled,
