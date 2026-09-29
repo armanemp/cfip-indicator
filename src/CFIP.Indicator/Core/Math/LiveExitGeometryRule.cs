@@ -33,11 +33,11 @@ namespace cAlgo
             double minimumForwardDistance)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(entry) ||
-                !IsFinitePositive(market) ||
-                !IsFinitePositive(target) ||
-                !IsFinitePositive(risk) ||
-                !IsFiniteNonNegative(minimumForwardDistance))
+                !IsFiniteLivePrice(entry) ||
+                !IsFiniteLivePrice(market) ||
+                !IsFiniteLivePrice(target) ||
+                !IsFiniteLivePrice(risk) ||
+                !IsFiniteLiveDistance(minimumForwardDistance))
                 return new LiveExitGeometryResult(
                     false,
                     0,
@@ -78,16 +78,16 @@ namespace cAlgo
                 "OK");
         }
 
-        public static bool ShouldAdvanceTarget(
+        public static bool ShouldAdvanceLiveTarget(
             int direction,
             double current,
             double desired,
             double market,
             double minimumForwardDistance)
         {
-            if (!IsFinitePositive(desired) ||
-                !IsFinitePositive(market) ||
-                !IsFiniteNonNegative(minimumForwardDistance))
+            if (!IsFiniteLivePrice(desired) ||
+                !IsFiniteLivePrice(market) ||
+                !IsFiniteLiveDistance(minimumForwardDistance))
                 return false;
 
             bool forward =
@@ -103,7 +103,7 @@ namespace cAlgo
             if (!forward)
                 return false;
 
-            if (!IsFinitePositive(current))
+            if (!IsFiniteLivePrice(current))
                 return true;
 
             return ProtectionProgressionRule.ShouldAdvanceTarget(
@@ -122,8 +122,8 @@ namespace cAlgo
             double tp4)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(entry) ||
-                !IsFinitePositive(tp1))
+                !IsFiniteLivePrice(entry) ||
+                !IsFiniteLivePrice(tp1))
                 return false;
 
             double previous = entry;
@@ -136,7 +136,7 @@ namespace cAlgo
                          tp4
                      })
             {
-                if (!IsFinitePositive(target))
+                if (!IsFiniteLivePrice(target))
                     continue;
 
                 if (!TargetProgressionRule.IsValid(
@@ -159,10 +159,10 @@ namespace cAlgo
             double minimumDistance)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(entry) ||
-                !IsFinitePositive(market) ||
-                !IsFinitePositive(stop) ||
-                !IsFiniteNonNegative(minimumDistance))
+                !IsFiniteLivePrice(entry) ||
+                !IsFiniteLivePrice(market) ||
+                !IsFiniteLivePrice(stop) ||
+                !IsFiniteLiveDistance(minimumDistance))
                 return false;
 
             return direction == 1
@@ -170,7 +170,7 @@ namespace cAlgo
                 : stop > market + minimumDistance;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFiniteLivePrice(double value)
         {
             return
                 !double.IsNaN(value) &&
@@ -178,7 +178,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsFiniteLiveDistance(double value)
         {
             return
                 !double.IsNaN(value) &&
