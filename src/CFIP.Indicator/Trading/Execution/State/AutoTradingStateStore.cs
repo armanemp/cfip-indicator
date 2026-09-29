@@ -82,7 +82,11 @@ namespace cAlgo
                                         "  •  SMART EXEC " +
                                         _marketSuitabilityScore +
                                         "/100  •  " +
-                                        trace;
+                                        trace +
+                                        (ShowNewsRiskStatus
+                                            ? "  •  " +
+                                              NewsRiskPanelLine()
+                                            : "");
                                 }
 
         private Color AutoTradingPanelColor()
