@@ -14,9 +14,90 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 9.0;
-        private const double CompactPlanLabelAtrHeight = 0.055;
 
-        private void RenderPlanLabel(
+        private void DrawPlanLabel(
+            string name,
+            string text,
+            int bar,
+            double price,
+            Color color)
+        {
+            try
+            {
+                if (!IsFinitePositive(price) ||
+                    Bars == null ||
+                    Bars.Count < 2)
+                    return;
+
+                int safeBar =
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            Bars.Count - 1,
+                            bar));
+
+                double labelPrice =
+                    NormalizePrice(price);
+
+                ChartText label =
+                    Chart.FindObject(name)
+                    as ChartText;
+
+                if (label == null)
+                {
+                    ChartObject existing =
+                        Chart.FindObject(name);
+
+                    if (existing != null)
+                        Chart.RemoveObject(name);
+
+                    label =
+                        Chart.DrawText(
+                            name,
+                            text,
+                            Bars.OpenTimes[safeBar],
+                            labelPrice,
+                            color);
+                }
+
+                if (label == null)
+                    return;
+
+                label.Text =
+                    text;
+                label.Time =
+                    Bars.OpenTimes[safeBar];
+                label.Y =
+                    labelPrice;
+                label.Color =
+                    color;
+                label.FontSize =
+                    Math.Max(
+                        8,
+                        PanelFontSize);
+                label.FontFamily =
+                    string.IsNullOrWhiteSpace(
+                        PanelFontFamily)
+                        ? "Arial"
+                        : PanelFontFamily;
+                label.IsBold =
+                    PanelBold;
+                label.HorizontalAlignment =
+                    HorizontalAlignment.Right;
+                label.VerticalAlignment =
+                    VerticalAlignment.Bottom;
+                label.IsInteractive =
+                    false;
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP plan label failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private void RenderCompactPlanLabel(
             string name,
             string text,
             double price,
@@ -36,7 +117,7 @@ namespace cAlgo
                 return;
             }
 
-            DrawPlanLabel(
+            DrawCompactPlanLabel(
                 name,
                 text,
                 price,
@@ -47,7 +128,7 @@ namespace cAlgo
                 boxHalfHeight);
         }
 
-        private void DrawPlanLabel(
+        private void DrawCompactPlanLabel(
             string name,
             string text,
             double price,
@@ -59,14 +140,6 @@ namespace cAlgo
         {
             try
             {
-                if (!IsFinitePositive(price) ||
-                    Bars == null ||
-                    Bars.Count < 2)
-                {
-                    RemovePlanLabel(name);
-                    return;
-                }
-
                 double labelPrice =
                     NormalizePrice(price);
 
@@ -175,7 +248,7 @@ namespace cAlgo
             catch (Exception ex)
             {
                 Print(
-                    "CFIP plan label failed: {0}",
+                    "CFIP compact plan label failed: {0}",
                     ex.Message);
             }
         }
