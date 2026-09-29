@@ -473,7 +473,10 @@ if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
 for p in model_files:
     text = p.read_text(encoding="utf-8")
-    if len(re.findall(r"\bclass\s+[A-Za-z_]\w*", text)) != 1:
+    if len(re.findall(
+        r"\b(?:class|struct|record)\s+[A-Za-z_]\w*",
+        text,
+    )) != 1:
         raise SystemExit(f"Expected one model type in {p}")
 if re.search(r"\b(?:BuildExecutionIntent|ValidateExecutionIntent|ValidateActualMarketFill)\b", "\n".join(p.read_text(encoding="utf-8") for p in model_files)):
     raise SystemExit("Execution logic leaked into model files")
