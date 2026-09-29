@@ -327,7 +327,7 @@ namespace cAlgo
                     Direction = direction,
                     Lane = (OpportunityLane)lane,
                     EntryMode = (ExecutionMode)entryMode,
-                    Regime = Unescape(parts[4]),
+                    Regime = Decode(parts[4]),
                     Confidence = NumericGuards.ClampInt(confidence, 0, 100),
                     ConfidenceBucket = confidenceBucket,
                     CreatedM5 = createdM5,
