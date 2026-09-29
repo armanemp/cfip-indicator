@@ -300,3 +300,39 @@ Status: complete on branch phase-5-6-responsive-panel-runtime.
 Root cause and implementation are recorded in docs/PHASE-5-6-RESPONSIVE-PANEL.md. The phase decouples responsive panel refresh from safety supervision, makes panel refresh independent of Calculate, lazy-creates panel rows, eliminates redundant UI writes, centralizes one visual snapshot per panel refresh, refreshes initialization status, and exposes calculation freshness. No trading decision/risk/RR/trailing/broker semantics were changed.
 
 Final verification on head `696f68513dbeb2b8ef83646201f7ce8734209fab`: Source/Architecture PASS (819), Runtime Acceptance PASS (628), cTrader Compile PASS (812).
+
+
+## Phase 6.1 — Decision closed-bar contract
+
+Status: complete.
+
+Goal:
+- make the temporal boundary of confirmed decisions explicit and deterministic;
+- guarantee that decision frames are aligned to one UTC closed-bar reference;
+- prevent future-bar leakage at the decision-input boundary.
+
+Implementation:
+- added Core/Math/ClosedBarReferenceRule.cs, which resolves the latest fully closed index from actual next-bar open times;
+- replaced the prior ambiguous GetIndexByTime(...) dependency in IndexMath;
+- passed one MtfClosedContext from closed-bar calculation into decision construction;
+- added decision-input validation so required M5/M15/M30/H1/H4 frames and any present M1/D1/W1 frames must match the same canonical closed indices;
+- changed timeframe agreement to consume those exact context indices;
+- added deterministic runtime contract cases for exact boundaries, between-boundary behavior, real time gaps, future-bar rejection and end-of-series bounding;
+- added source/architecture gates enforcing the Phase 6.1 ownership and alignment contract;
+- recorded the phase design in docs/PHASE-6-1-DECISION-CLOSED-BAR.md.
+
+Important finding:
+- the first runtime acceptance test caught an incorrect expectation for a between-boundary reference (12:14): before the actual 12:15 open, the 12:00 bar is the latest fully closed bar. The production resolver was correct; the test expectation was corrected and the final contract passed.
+
+Scope boundary:
+- no score threshold, weight, RR, risk-sizing, trailing or broker-execution policy was changed by this phase.
+
+Verification on final implementation head before documentation commits bed8dddc860083e76c193d4eb0d1dd4ba93962f0:
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
+
+Result:
+- Phase 6.1 complete;
+- next phase: Phase 6.2 — Reaction intrabar contract;
+- operator pull: required at the completed phase boundary after the final verified documentation merge.

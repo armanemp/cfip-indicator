@@ -719,6 +719,80 @@ for entry_path in (
     if "ApplyRuntimeEntryGate()" not in entry_code:
         raise SystemExit(f"Runtime entry block action missing: {entry_path.name}")
 
+# Phase 6.1 closed-bar decision contract.
+CLOSED_BAR_RULE = ROOT / "Core" / "Math" / "ClosedBarReferenceRule.cs"
+CLOSED_BAR_INDEX = ROOT / "Analysis" / "Market" / "Math" / "IndexMath.cs"
+CLOSED_CONTEXT = ROOT / "Runtime" / "Mtf" / "MtfClosedContext.cs"
+DECISION_REQUEST = ROOT / "Analysis" / "Market" / "Decision" / "DecisionInputBuildRequest.cs"
+DECISION_FACTORY = ROOT / "Analysis" / "Market" / "Decision" / "DecisionInputSnapshotFactory.cs"
+DECISION_ORCHESTRATION = ROOT / "Analysis" / "Market" / "Decision" / "DecisionOrchestration.cs"
+DECISION_TIMEFRAME = ROOT / "Analysis" / "Market" / "Decision" / "TimeframeAgreementAnalyzer.cs"
+CLOSED_CALCULATION = ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs"
+RUNTIME_CONTRACT_PROJECT = ROOT.parent.parent / "tools" / "CFIP.Runtime.Contracts" / "CFIP.Runtime.Contracts.csproj"
+
+for required_path in (
+    CLOSED_BAR_RULE,
+    CLOSED_BAR_INDEX,
+    CLOSED_CONTEXT,
+    DECISION_REQUEST,
+    DECISION_FACTORY,
+    DECISION_ORCHESTRATION,
+    DECISION_TIMEFRAME,
+    CLOSED_CALCULATION,
+):
+    if not required_path.exists():
+        raise SystemExit(f"Phase 6.1 closed-bar owner is missing: {required_path.name}")
+
+closed_bar_rule_code = CLOSED_BAR_RULE.read_text(encoding="utf-8")
+closed_bar_index_code = CLOSED_BAR_INDEX.read_text(encoding="utf-8")
+closed_context_code = CLOSED_CONTEXT.read_text(encoding="utf-8")
+decision_request_code = DECISION_REQUEST.read_text(encoding="utf-8")
+decision_factory_code = DECISION_FACTORY.read_text(encoding="utf-8")
+decision_orchestration_code = DECISION_ORCHESTRATION.read_text(encoding="utf-8")
+decision_timeframe_code = DECISION_TIMEFRAME.read_text(encoding="utf-8")
+closed_calculation_code = CLOSED_CALCULATION.read_text(encoding="utf-8")
+
+if "ResolveClosedIndex(" not in closed_bar_rule_code or "IsFullyClosed(" not in closed_bar_rule_code:
+    raise SystemExit("Canonical closed-bar reference rule is incomplete")
+
+if "ClosedBarReferenceRule.ResolveClosedIndex(" not in closed_bar_index_code:
+    raise SystemExit("IndexMath must delegate closed-index ownership to the canonical rule")
+if "GetIndexByTime(" in closed_bar_index_code:
+    raise SystemExit("Closed-index calculation must not depend on ambiguous time-series lookup semantics")
+
+if "public DateTime Reference" not in closed_context_code:
+    raise SystemExit("Closed MTF context must carry the authoritative UTC reference")
+for required_index in ("public int M5", "public int M1", "public int M15", "public int M30", "public int H1", "public int H4", "public int D1", "public int W1"):
+    if required_index not in closed_context_code:
+        raise SystemExit(f"Closed MTF context index missing: {required_index}")
+
+if "public MtfClosedContext ClosedContext" not in decision_request_code:
+    raise SystemExit("Decision input request must carry the canonical closed context")
+if "ValidateClosedBarAlignment(" not in decision_factory_code:
+    raise SystemExit("Decision input factory must validate closed-bar alignment")
+for required_frame in ("M5Frame", "M15Frame", "M30Frame", "H1Frame", "H4Frame"):
+    if f"ValidateRequiredFrame(" not in decision_factory_code or required_frame not in decision_factory_code:
+        raise SystemExit(f"Required closed decision frame validation missing: {required_frame}")
+for optional_frame in ("M1Frame", "D1Frame", "W1Frame"):
+    if "ValidateOptionalFrame(" not in decision_factory_code or optional_frame not in decision_factory_code:
+        raise SystemExit(f"Optional closed decision frame validation missing: {optional_frame}")
+
+if "MtfClosedContext closedContext" not in decision_orchestration_code:
+    raise SystemExit("Decision orchestration must receive the canonical closed context")
+if "ClosedContext = closedContext" not in decision_orchestration_code:
+    raise SystemExit("Decision input request must preserve the canonical closed context")
+if "TimeframeAgreement(1, closedContext)" not in decision_orchestration_code or "TimeframeAgreement(-1, closedContext)" not in decision_orchestration_code:
+    raise SystemExit("Decision timeframe evidence must use the canonical closed context")
+
+if "int[] closedIndices" not in decision_timeframe_code or "closedIndices[i]" not in decision_timeframe_code:
+    raise SystemExit("Timeframe agreement must consume canonical closed indices")
+
+if "BuildDecision(" not in closed_calculation_code or "mtf);" not in closed_calculation_code:
+    raise SystemExit("Closed-bar calculation must pass the canonical MTF context into decision construction")
+
+if not RUNTIME_CONTRACT_PROJECT.exists() or "ClosedBarReferenceRule.cs" not in RUNTIME_CONTRACT_PROJECT.read_text(encoding="utf-8"):
+    raise SystemExit("Runtime acceptance project must compile the closed-bar reference contract")
+
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
     re.compile(r"\b(?:rev|release)[-_ ]?\d+\b", re.I),

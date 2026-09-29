@@ -19,8 +19,17 @@ namespace cAlgo
         private Decision BuildDecision(
             int chartIndex,
             int closedM5,
-            DateTime reference)
+            DateTime reference,
+            MtfClosedContext closedContext)
         {
+            if (closedContext == null ||
+                closedContext.Reference != reference ||
+                closedContext.M5 != closedM5 ||
+                !closedContext.HasPrimaryDecisionHistory)
+            {
+                throw new InvalidOperationException(
+                    "Decision closed-bar context is missing or inconsistent.");
+            }
             int closedChartIndex =
                 MapM5ToClosedChart(
                     closedM5,
@@ -87,11 +96,12 @@ namespace cAlgo
 
                     Reference = reference,
                     ClosedM5 = closedM5,
+                    ClosedContext = closedContext,
 
                     Evidence =
                         new DecisionEvidenceSnapshot(
-                            TimeframeAgreement(1, reference),
-                            TimeframeAgreement(-1, reference),
+                            TimeframeAgreement(1, closedContext),
+                            TimeframeAgreement(-1, closedContext),
                             IndependentEvidence(1),
                             IndependentEvidence(-1),
                             StructuralConfirmations(1),

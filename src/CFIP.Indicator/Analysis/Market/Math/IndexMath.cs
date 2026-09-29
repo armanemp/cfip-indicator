@@ -15,32 +15,13 @@ namespace cAlgo
             Bars bars,
             DateTime reference)
         {
-            if (bars == null ||
-                bars.Count < 2 ||
-                reference < bars.OpenTimes[0])
+            if (bars == null)
                 return -1;
 
-            int probe =
-                bars.OpenTimes.GetIndexByTime(
-                    reference);
-
-            if (probe < 0)
-                probe = bars.Count - 1;
-
-            probe =
-                Math.Max(
-                    0,
-                    Math.Min(
-                        probe,
-                        bars.Count - 1));
-
-            // A fully closed bar is represented by the next bar already
-            // having opened. Do not infer duration from weekend/holiday gaps.
-            return Math.Min(
-                bars.Count - 2,
-                Math.Max(
-                    -1,
-                    probe - 1));
+            return ClosedBarReferenceRule.ResolveClosedIndex(
+                bars.Count,
+                reference,
+                index => bars.OpenTimes[index]);
         }
 
         internal static double Highest(

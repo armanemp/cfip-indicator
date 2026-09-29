@@ -8,6 +8,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyMtfContextIntegrity();
+            VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
             VerifyPendingOrderAcceptance();
             VerifyRejectedMutationHandling();
@@ -88,6 +89,87 @@ namespace cAlgo
             Assert(
                 !incomplete.HasPrimaryDecisionHistory,
                 "insufficient closed history blocked");
+        }
+
+        private static void VerifyClosedBarReferenceContract()
+        {
+            DateTime[] opens =
+            {
+                Utc(12, 0),
+                Utc(12, 5),
+                Utc(12, 15),
+                Utc(12, 20)
+            };
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    opens.Length,
+                    Utc(12, 4),
+                    index => opens[index]) == -1,
+                "no closed bar before first boundary");
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    opens.Length,
+                    Utc(12, 5),
+                    index => opens[index]) == 0,
+                "exact boundary closes prior bar");
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    opens.Length,
+                    Utc(12, 14),
+                    index => opens[index]) == 0,
+                "between boundaries keeps prior bar closed");
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    opens.Length,
+                    Utc(12, 15),
+                    index => opens[index]) == 1,
+                "gap boundary uses next actual open time");
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    opens.Length,
+                    Utc(12, 21),
+                    index => opens[index]) == 2,
+                "latest available fully closed bar");
+
+            Assert(
+                ClosedBarReferenceRule.IsFullyClosed(
+                    opens.Length,
+                    1,
+                    Utc(12, 15),
+                    index => opens[index]),
+                "resolved bar is fully closed at reference");
+
+            Assert(
+                !ClosedBarReferenceRule.IsFullyClosed(
+                    opens.Length,
+                    2,
+                    Utc(12, 19),
+                    index => opens[index]),
+                "future bar cannot be considered closed");
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    opens.Length,
+                    Utc(12, 30),
+                    index => opens[index]) == 2,
+                "reference after last open is bounded to last closed bar");
+        }
+
+        private static DateTime Utc(int hour, int minute)
+        {
+            return new DateTime(
+                2026,
+                1,
+                1,
+                hour,
+                minute,
+                0,
+                DateTimeKind.Utc);
         }
 
         private static void VerifyMarketExecutionAcceptance()

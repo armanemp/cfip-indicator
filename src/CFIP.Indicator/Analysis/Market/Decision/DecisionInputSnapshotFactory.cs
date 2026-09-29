@@ -18,6 +18,9 @@ namespace cAlgo
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
+            ValidateClosedBarAlignment(
+                request);
+
             return new DecisionInputSnapshot(
                 request.M1Frame,
                 request.M5Frame,
@@ -63,6 +66,85 @@ namespace cAlgo
                 request.Reference,
                 request.ClosedM5,
                 request.Evidence);
+        }
+        private static void ValidateClosedBarAlignment(
+            DecisionInputBuildRequest request)
+        {
+            MtfClosedContext context =
+                request.ClosedContext;
+
+            if (context == null ||
+                context.Reference != request.Reference ||
+                context.M5 != request.ClosedM5 ||
+                !context.HasPrimaryDecisionHistory)
+                throw new InvalidOperationException(
+                    "Decision input is not bound to the canonical closed-bar context.");
+
+            ValidateRequiredFrame(
+                "M5",
+                request.M5Frame,
+                context.M5);
+
+            ValidateRequiredFrame(
+                "M15",
+                request.M15Frame,
+                context.M15);
+
+            ValidateRequiredFrame(
+                "M30",
+                request.M30Frame,
+                context.M30);
+
+            ValidateRequiredFrame(
+                "H1",
+                request.H1Frame,
+                context.H1);
+
+            ValidateRequiredFrame(
+                "H4",
+                request.H4Frame,
+                context.H4);
+
+            ValidateOptionalFrame(
+                "M1",
+                request.M1Frame,
+                context.M1);
+
+            ValidateOptionalFrame(
+                "D1",
+                request.D1Frame,
+                context.D1);
+
+            ValidateOptionalFrame(
+                "W1",
+                request.W1Frame,
+                context.W1);
+        }
+
+        private static void ValidateRequiredFrame(
+            string name,
+            Frame frame,
+            int closedIndex)
+        {
+            if (frame == null ||
+                frame.Index != closedIndex)
+                throw new InvalidOperationException(
+                    "Decision input " +
+                    name +
+                    " is not aligned to its closed-bar index.");
+        }
+
+        private static void ValidateOptionalFrame(
+            string name,
+            Frame frame,
+            int closedIndex)
+        {
+            if (frame != null &&
+                frame.Index != closedIndex)
+                throw new InvalidOperationException(
+                    "Decision input " +
+                    name +
+                    " is not aligned to its closed-bar index.");
         }
     }
 }

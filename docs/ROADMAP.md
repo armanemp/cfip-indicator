@@ -1317,14 +1317,28 @@ Verification:
 
 ## Phase 6.1 — Decision closed-bar contract
 
-Status: planned.
+Status: complete.
 
-All confirmed decision inputs must reference closed bars at the defined UTC
-alignment.
+Implemented the canonical UTC closed-bar reference contract. Closed-bar indices
+are resolved from actual next-bar open times rather than ambiguous time-series
+lookup semantics. One MTF closed context is created from the UTC runtime
+reference and carried into the decision-input boundary.
+
+The decision-input factory now rejects inconsistent reference/context identity,
+missing required closed frames and any present optional frame whose index is not
+the canonical closed index. Timeframe agreement consumes the same canonical
+closed indices.
 
 Acceptance:
 
-- no future-bar leakage.
+- no future-bar leakage: PASS;
+- exact-boundary, between-boundary and gap scenarios: PASS;
+- future-bar rejection scenario: PASS;
+- source / architecture gates: PASS;
+- runtime acceptance contracts: PASS;
+- cTrader compile: PASS.
+
+Continuity record: docs/PHASE-6-1-DECISION-CLOSED-BAR.md.
 
 ## Phase 6.2 — Reaction intrabar contract
 
@@ -3083,7 +3097,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 6.1 — Decision closed-bar contract**
+**NEXT: Phase 6.2 — Reaction intrabar contract**
 
 Then proceed in dependency order:
 
