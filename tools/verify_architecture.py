@@ -3002,6 +3002,68 @@ if PRODUCTION_PACKAGE not in benchmark_project:
     raise SystemExit("Production OSS package must also be covered by the benchmark")
 
 
+# Phase 9.2 parallel-opportunity / WaveTrend ownership.
+required_phase_9_2 = (
+    ROOT / "Core" / "Enums" / "OpportunityLane.cs",
+    ROOT / "Core" / "Models" / "TradeOpportunityCandidate.cs",
+    ROOT / "Core" / "Models" / "WaveTrendSnapshot.cs",
+    ROOT / "Core" / "Math" / "WaveTrendEvidenceRule.cs",
+    ROOT / "Core" / "Math" / "TacticalOpportunityRule.cs",
+    ROOT / "Analysis" / "Market" / "WaveTrendEngine.cs",
+    ROOT / "Analysis" / "Market" / "WaveTrendEvidenceAnalyzer.cs",
+    ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs",
+    ROOT / "UI" / "Chart" / "ParallelOpportunityRenderer.cs",
+)
+for required_path in required_phase_9_2:
+    if not required_path.exists():
+        raise SystemExit(
+            f"Phase 9.2 owner is missing: {required_path.as_posix()}"
+        )
+
+lane_code = (ROOT / "Core" / "Enums" / "OpportunityLane.cs").read_text(encoding="utf-8")
+if "Strategic" not in lane_code or "Tactical" not in lane_code or "CounterHtfTactical" not in lane_code:
+    raise SystemExit("Opportunity lane taxonomy is incomplete")
+
+parallel_builder_code = (ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs").read_text(encoding="utf-8")
+parallel_renderer_code = (ROOT / "UI" / "Chart" / "ParallelOpportunityRenderer.cs").read_text(encoding="utf-8")
+if "EvaluateTacticalOpportunityForDirection(" not in parallel_builder_code:
+    raise SystemExit("Parallel opportunity builder must evaluate independent LTF directions")
+if "_lastOpportunityCandidatesM5" not in parallel_builder_code:
+    raise SystemExit("Parallel opportunity builder must cache structural rebuild cadence")
+if "P + \"OPP_\"" not in parallel_renderer_code:
+    raise SystemExit("Parallel opportunities must use an isolated visual namespace")
+if "ShowTacticalOpportunityLabels" not in parallel_renderer_code:
+    raise SystemExit("Parallel opportunity renderer must honor label visibility control")
+
+wt_rule_code = (ROOT / "Core" / "Math" / "WaveTrendEvidenceRule.cs").read_text(encoding="utf-8")
+wt_engine_code = (ROOT / "Analysis" / "Market" / "WaveTrendEngine.cs").read_text(encoding="utf-8")
+wt_analyzer_code = (ROOT / "Analysis" / "Market" / "WaveTrendEvidenceAnalyzer.cs").read_text(encoding="utf-8")
+frame_code = (ROOT / "Analysis" / "Market" / "Models" / "Frame.cs").read_text(encoding="utf-8")
+for expected in (
+    "BullCross",
+    "BearCross",
+    "AboveZero",
+    "BelowZero",
+    "Oversold",
+    "Overbought",
+):
+    if expected not in wt_rule_code or expected not in wt_engine_code:
+        raise SystemExit(f"WaveTrend evidence state missing: {expected}")
+if "ApplyWaveTrendEvidence(" not in wt_analyzer_code or "WaveTrendQuality" not in frame_code:
+    raise SystemExit("WaveTrend evidence must flow into the canonical market frame")
+
+label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
+label_code = label_renderer.read_text(encoding="utf-8")
+if "GetReadableLabelTextColor(" not in label_code:
+    raise SystemExit("Plan labels must calculate contrast text color")
+if "Color boxColor = color" not in label_code or "box.IsFilled" not in label_code:
+    raise SystemExit("Plan price labels must use opaque filled backgrounds matching the line color")
+
+live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
+live_calc_code = live_calc.read_text(encoding="utf-8")
+if "RenderParallelOpportunityCandidates(" not in live_calc_code:
+    raise SystemExit("Parallel opportunity renderer must be in the canonical render cycle")
+
 # Strict type isolation: production behavior files may not hide helper types
 # inside the cTrader partial host. Every helper/model type must have a file owner.
 for p in files:
