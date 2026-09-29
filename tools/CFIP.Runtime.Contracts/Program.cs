@@ -37,6 +37,8 @@ namespace cAlgo
             VerifyVisualAndExecutionControls();
             VerifyResponsivePanelRuntime();
             VerifyAggressiveEntryPolicy();
+            VerifyTradePlanRegistry();
+            VerifyActionabilityAndDivergenceState();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -2260,6 +2262,81 @@ namespace cAlgo
             Assert(
                 writer.Contains("if (row.Text != nextText)"),
                 "panel writer skips duplicate text writes");
+        }
+
+        private static void VerifyTradePlanRegistry()
+        {
+            TradePlanRegistry registry =
+                new TradePlanRegistry();
+
+            TradeOpportunityCandidate buy =
+                new TradeOpportunityCandidate
+                {
+                    Id = "TACTICAL_BUY",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    Quality = 82,
+                    ActionableNow = true
+                };
+
+            TradeOpportunityCandidate sell =
+                new TradeOpportunityCandidate
+                {
+                    Id = "TACTICAL_SELL",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = -1,
+                    Quality = 79,
+                    ActionableNow = false,
+                    ActionabilityReason = "RR BELOW ACTIONABLE FLOOR"
+                };
+
+            registry.Upsert(buy);
+            registry.Upsert(sell);
+
+            TradeOpportunityCandidate actual;
+            Assert(registry.Count == 2, "multi-plan registry retains independent lanes");
+            Assert(registry.Contains("TACTICAL_BUY"), "registry BUY identity");
+            Assert(registry.Contains("TACTICAL_SELL"), "registry SELL identity");
+            Assert(registry.TryGet("TACTICAL_BUY", out actual) &&
+                   actual.ActionableNow,
+                   "registry preserves candidate actionability");
+
+            registry.Remove("TACTICAL_BUY");
+            Assert(registry.Count == 1, "registry removal");
+        }
+
+        private static void VerifyActionabilityAndDivergenceState()
+        {
+            DivergenceResult divergence =
+                new DivergenceResult(
+                    1,
+                    88,
+                    "REGULAR_BULL",
+                    true,
+                    false,
+                    false,
+                    false);
+
+            Assert(
+                divergence.HasSignal &&
+                divergence.Direction == 1 &&
+                divergence.Quality == 88 &&
+                divergence.RegularBull,
+                "strong regular divergence state");
+
+            TradeActionabilityResult blocked =
+                TradeActionabilityResult.Blocked(
+                    "LATE / PRICE EXTENDED",
+                    81,
+                    -1,
+                    "REGULAR_BEAR");
+
+            Assert(
+                !blocked.Actionable &&
+                blocked.Reason == "LATE / PRICE EXTENDED" &&
+                blocked.DivergenceQuality == 81 &&
+                blocked.DivergenceDirection == -1,
+                "actionability block preserves divergence diagnostics");
         }
 
         private static void VerifyAggressiveEntryPolicy()
