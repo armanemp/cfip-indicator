@@ -450,72 +450,12 @@ namespace cAlgo
         private static void VerifyExecutionCapacity()
         {
             Assert(
-                ExecutionCapacityRule.IsSupportedSinglePlanCapacity(1),
-                "single-plan capacity 1 is supported");
+                ExecutionCapacityRule.AllowsNewSinglePlan(false),
+                "new single plan is allowed when no managed position exists");
 
             Assert(
-                !ExecutionCapacityRule.IsSupportedSinglePlanCapacity(2),
-                "multi-position capacity is not supported");
-
-            Assert(
-                ExecutionCapacityRule.AllowsNewSinglePlan(
-                    1,
-                    false,
-                    0,
-                    0),
-                "new single plan is allowed when broker capacity is empty");
-
-            Assert(
-                !ExecutionCapacityRule.AllowsNewSinglePlan(
-                    1,
-                    true,
-                    0,
-                    0),
-                "new plan is blocked while a local plan already exists");
-
-            Assert(
-                !ExecutionCapacityRule.AllowsNewSinglePlan(
-                    1,
-                    false,
-                    1,
-                    0),
-                "new plan is blocked when a managed position exists");
-
-            Assert(
-                !ExecutionCapacityRule.AllowsNewSinglePlan(
-                    1,
-                    false,
-                    0,
-                    1),
-                "new plan is blocked when a managed pending order exists");
-
-            Assert(
-                ExecutionCapacityRule.AllowsNewSingleExecution(
-                    1,
-                    0,
-                    0),
-                "new execution is allowed with empty broker capacity");
-
-            Assert(
-                !ExecutionCapacityRule.AllowsNewSingleExecution(
-                    1,
-                    1,
-                    0),
-                "new execution is blocked by managed position");
-
-            Assert(
-                !ExecutionCapacityRule.AllowsNewSingleExecution(
-                    1,
-                    0,
-                    1),
-                "new execution is blocked by managed pending order");
-
-            Assert(
-                !ExecutionCapacityRule.AllowsNewSingleExecution(
-                    2,
-                    0,
-                    0),
-                "unsupported capacity blocks execution");
+                !ExecutionCapacityRule.AllowsNewSinglePlan(true),
+                "new single plan is blocked when a managed position exists");
         }
 
         private static void VerifyStaleLivePlanRecovery()
