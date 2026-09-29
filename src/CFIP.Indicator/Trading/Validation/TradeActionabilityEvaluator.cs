@@ -35,10 +35,49 @@ namespace cAlgo
                 return TradeActionabilityResult.Blocked(
                     "QUOTE UNAVAILABLE");
 
+            bool insideZone =
+                market >= execution.ZoneLow &&
+                market <= execution.ZoneHigh;
+
+            bool triggerReached =
+                IsTriggerReached(
+                    direction,
+                    market,
+                    execution.Trigger);
+
+            bool continuation =
+                IsContinuationExecutionContext(direction);
+
+            bool qualityReady =
+                !RequirePrecisionEntry ||
+                execution.Quality >=
+                Math.Max(
+                    40,
+                    MinimumEntryQuality);
+
+            ExecutionMode liveMode;
+
+            if (triggerReached &&
+                AllowPrecisionBreakoutEntry)
+            {
+                liveMode = ExecutionMode.BreakoutMarket;
+            }
+            else if (continuation)
+            {
+                liveMode = ExecutionMode.WaitingForTrigger;
+            }
+            else if (insideZone)
+            {
+                liveMode = ExecutionMode.RetestMarket;
+            }
+            else
+            {
+                liveMode = ExecutionMode.None;
+            }
+
             double anchor =
-                execution.Mode == ExecutionMode.BreakoutMarket ||
-                execution.Mode == ExecutionMode.RetestMarket
-                    ? execution.ActualEntry
+                liveMode == ExecutionMode.BreakoutMarket
+                    ? execution.Trigger
                     : execution.IdealEntry;
 
             if (!IsFinitePositive(anchor))
@@ -48,10 +87,6 @@ namespace cAlgo
                 Math.Abs(
                     market - anchor) /
                 atr;
-
-            bool insideZone =
-                market >= execution.ZoneLow &&
-                market <= execution.ZoneHigh;
 
             double distanceFromZone =
                 insideZone
@@ -70,7 +105,7 @@ namespace cAlgo
                     distanceFromZone / atr);
 
             double actualEntry =
-                execution.Mode == ExecutionMode.WaitingForTrigger
+                liveMode == ExecutionMode.WaitingForTrigger
                     ? preview.Entry
                     : market;
 
@@ -111,7 +146,7 @@ namespace cAlgo
             int timingQuality =
                 insideZone
                     ? 95
-                    : execution.Mode ==
+                    : liveMode ==
                       ExecutionMode.BreakoutMarket
                         ? 85 -
                           (int)Math.Round(
@@ -132,7 +167,7 @@ namespace cAlgo
                         entryDistanceAtr * 45));
 
             double triggerExtensionAtr =
-                execution.Mode ==
+                liveMode ==
                     ExecutionMode.BreakoutMarket &&
                 IsFinitePositive(execution.Trigger) &&
                 ((direction == 1 &&
@@ -146,7 +181,7 @@ namespace cAlgo
                     : 0;
 
             bool late =
-                execution.Mode ==
+                liveMode ==
                     ExecutionMode.BreakoutMarket
                     ? triggerExtensionAtr >
                       Math.Max(
@@ -238,7 +273,7 @@ namespace cAlgo
                         timingQuality +
                         divergenceAdjustment));
 
-            if (!execution.Ready)
+            if (!qualityReady)
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
@@ -249,10 +284,33 @@ namespace cAlgo
                     divergence.Quality,
                     divergence.Direction,
                     divergence.Type,
-                    execution.Mode ==
-                        ExecutionMode.WaitingForTrigger
-                        ? "WAITING FOR TRIGGER"
-                        : "EXECUTION NOT READY");
+                    "EXECUTION ZONE QUALITY");
+
+            if (liveMode == ExecutionMode.WaitingForTrigger)
+                return new TradeActionabilityResult(
+                    false,
+                    locationQuality,
+                    timingQuality,
+                    pricePositionQuality,
+                    entryDistanceAtr,
+                    tp1RR,
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    "WAITING FOR TRIGGER");
+
+            if (liveMode == ExecutionMode.None)
+                return new TradeActionabilityResult(
+                    false,
+                    locationQuality,
+                    timingQuality,
+                    pricePositionQuality,
+                    entryDistanceAtr,
+                    tp1RR,
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    "OUTSIDE EXECUTION WINDOW");
 
             if (tp1RR < minimumRR)
                 return new TradeActionabilityResult(
