@@ -792,6 +792,8 @@ namespace cAlgo
                             position,
                             "HIGH IMPACT NEWS PRE-PROTECTION"))
                     {
+                        SynchronizeLiveBrokerState();
+
                         ArchiveEconomicNewsRisk(
                             closedM5,
                             TimeInUtc,
