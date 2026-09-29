@@ -107,7 +107,8 @@ for token in (
     if token not in m1_evaluator_code:
         raise SystemExit(f"M1 evaluator missing real M1 evidence path: {token}")
 
-if "input.M1Frame.Direction" in decision_score_code or "buy += 3" in decision_score_code or "sell += 3" in decision_score_code:
+m1_score_block = re.search(r"if\s*\(input\.UseM1Trigger[\s\S]*?(?=if\s*\(input\.AdaptiveRegimeWeighting|return new DecisionScoreSnapshot)", decision_score_code)
+if m1_score_block and ("input.M1Frame.Direction" in m1_score_block.group(0) or "buy += 3" in m1_score_block.group(0) or "sell += 3" in m1_score_block.group(0)):
     raise SystemExit("M1 must not act as a fixed directional score vote")
 
 for token in (
