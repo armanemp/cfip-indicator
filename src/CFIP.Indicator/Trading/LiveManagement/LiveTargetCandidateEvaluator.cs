@@ -21,9 +21,7 @@ namespace cAlgo
         {
             double step =
                 atr *
-                Math.Max(
-                    0.05,
-                    TargetUpdateStepAtr);
+                TargetUpdateStepAtr;
 
             double spacing =
                 atr *
