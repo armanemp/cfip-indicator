@@ -15,10 +15,22 @@ namespace cAlgo
     {
         private int TimeframeAgreement(
                                     int direction,
-                                    DateTime reference)
+                                    MtfClosedContext context)
                                 {
-                                    if (direction == 0)
+                                    if (direction == 0 ||
+                                        context == null)
                                         return 0;
+
+                                    int[] closedIndices =
+                                    {
+                                        context.M5,
+                                        context.M15,
+                                        context.M30,
+                                        context.H1,
+                                        context.H4,
+                                        context.D1,
+                                        context.W1
+                                    };
                         
                                     Frame[] frames =
                                     {
