@@ -136,7 +136,7 @@ namespace cAlgo
                     atr,
                     Math.Max(
                         FallbackTp1RR,
-                        MinimumRequiredRR));
+                        MinimumRequiredRR()));
 
             if (!IsFinitePositive(candidateTp1))
                 return false;
