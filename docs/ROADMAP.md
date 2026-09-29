@@ -1617,7 +1617,7 @@ Acceptance:
 
 ## Phase 8.4 — Order Block mathematical audit
 
-Status: planned.
+Status: IN PROGRESS — branch `phase-8-4-order-block-mathematical-audit`. Full scope and acceptance criteria: `docs/PHASE-8-4-ORDER-BLOCK-MATHEMATICAL-AUDIT.md`.
 
 Audit:
 
