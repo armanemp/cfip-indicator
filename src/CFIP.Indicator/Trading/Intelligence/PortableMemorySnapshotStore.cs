@@ -10,6 +10,68 @@ namespace cAlgo
         private const string PortableMemorySnapshotSchema =
             "CFIP-PORTABLE-MEMORY,1";
 
+        // The indicator is explicitly registered as CFIPIndicator. With
+        // AccessRights.None, cTrader's designated indicator storage root is
+        // Documents/cAlgo/Data/Indicators/<Indicator Name>. Keep this exact
+        // identity here so the history location is deterministic and easy
+        // to verify from the terminal file system.
+        private const string IndicatorStorageFolderName =
+            "CFIPIndicator";
+
+        private const string HistoryLocationMarkerFileName =
+            "CFIP_HISTORY_LOCATION.txt";
+
+        private string HistoryLocationMarkerPath()
+        {
+            return
+                OutcomeArchiveDirectory +
+                Path.DirectorySeparatorChar +
+                HistoryLocationMarkerFileName;
+        }
+
+        private string HistoryLocationMarkerText()
+        {
+            return
+                "CFIP HISTORY STORAGE" + Environment.NewLine +
+                "IndicatorName=" + IndicatorStorageFolderName + Environment.NewLine +
+                "RelativeHistoryPath=History" + Environment.NewLine +
+                "DesignatedStorageRoot=Documents/cAlgo/Data/Indicators/" +
+                IndicatorStorageFolderName + Environment.NewLine +
+                "DesignatedHistoryPath=Documents/cAlgo/Data/Indicators/" +
+                IndicatorStorageFolderName +
+                Path.DirectorySeparatorChar +
+                "History" + Environment.NewLine +
+                "CreatedUtcTicks=" +
+                Server.TimeInUtc.Ticks.ToString(CultureInfo.InvariantCulture) +
+                Environment.NewLine;
+        }
+
+        private void EnsureHistoryLocationMarker()
+        {
+            try
+            {
+                Directory.CreateDirectory(
+                    OutcomeArchiveDirectory);
+
+                string marker =
+                    HistoryLocationMarkerPath();
+
+                if (!File.Exists(marker))
+                {
+                    File.WriteAllText(
+                        marker,
+                        HistoryLocationMarkerText(),
+                        Encoding.UTF8);
+                }
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP history location marker failed: {0}",
+                    ex.Message);
+            }
+        }
+
         private string PortableMemorySnapshotPath()
         {
             string symbol =
@@ -215,6 +277,12 @@ namespace cAlgo
             {
                 Directory.CreateDirectory(
                     OutcomeArchiveDirectory);
+
+                EnsureHistoryLocationMarker();
+
+                Print(
+                    "CFIP history storage ready: Documents/cAlgo/Data/Indicators/{0}/History",
+                    IndicatorStorageFolderName);
 
                 string path =
                     PortableMemorySnapshotPath();

@@ -43,3 +43,13 @@ Additional event type:
 - `NEWS_RISK`: scheduled/blocked economic-event context, event identity and protective action.
 
 For incident analysis, correlate `NEWS_RISK` with the preceding `DECISION`, `SCENARIO` and `EXECUTION` records on the same symbol/configuration and UTC window.
+
+## Exact cTrader storage location
+
+The indicator is explicitly registered as `CFIPIndicator`. Therefore the project's designated filesystem root is the cTrader indicator folder for that name, with the archive directory at:
+
+`Documents/cAlgo/Data/Indicators/CFIPIndicator/History/`
+
+On first startup the indicator creates `History/CFIP_HISTORY_LOCATION.txt`. The marker is useful when the terminal uses a non-obvious Windows Documents location.
+
+The panel also exposes `AUTO TRADE BLOCK` and `AUTO ORDER BLOCK` while the corresponding automatic mode is enabled and blocked. These reasons should be correlated with the runtime log before changing any execution threshold.

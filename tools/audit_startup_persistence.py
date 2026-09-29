@@ -8,6 +8,10 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 INIT = ROOT / "src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs"
 STARTUP_HELPERS = ROOT / "src/CFIP.Indicator/Runtime/Initialization/StartupDataHelpers.cs"
+CSPROJ = ROOT / "src/CFIP.Indicator/CFIP.Indicator.csproj"
+LIVE_CYCLE = ROOT / "src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs"
+LABEL_RENDERER = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs"
+PORTABLE = ROOT / "src/CFIP.Indicator/Trading/Intelligence/PortableMemorySnapshotStore.cs"
 MTF = ROOT / "src/CFIP.Indicator/Runtime/Mtf/MtfContextBuilder.cs"
 ARCHIVE = ROOT / "src/CFIP.Indicator/Trading/Intelligence/OutcomeHistoryArchiveStore.cs"
 OUTCOME = ROOT / "src/CFIP.Indicator/Trading/Intelligence/OutcomeTelemetryEngine.cs"
@@ -95,6 +99,45 @@ require(
     "live outcome archive + learning hook",
 )
 
+require(
+    HOST,
+    r'\[Indicator\(\s*"CFIPIndicator"',
+    "explicit cTrader indicator display name",
+)
+require(
+    CSPROJ,
+    r"<AssemblyName>CFIPIndicator</AssemblyName>",
+    "assembly name aligned with indicator identity",
+)
+require(
+    LIVE_CYCLE,
+    r"private void TryEnsureAutomaticPlan\([\s\S]*?EnsureSignalPlan\([\s\S]*?DecisionPolicyMode",
+    "same-bar automatic plan retry path",
+)
+live_cycle_text = LIVE_CYCLE.read_text(encoding="utf-8")
+plan_method = re.search(
+    r"private void TryEnsureAutomaticPlan\([\s\S]*?(?=\n\s*private |\n\s*public |\Z)",
+    live_cycle_text,
+)
+if plan_method and "_lastAutoPlanAttemptM5 == closedM5" in plan_method.group(0):
+    errors.append("automatic plan creation must not latch to one same-bar attempt")
+
+require(
+    LABEL_RENDERER,
+    r"double\s+verticalGap\s*=\s*Math\.Max\([\s\S]*?price\s*\+\s*verticalGap",
+    "vertical label separation from level line",
+)
+require(
+    PORTABLE,
+    r'HistoryLocationMarkerFileName\s*=\s*"CFIP_HISTORY_LOCATION\.txt"',
+    "history location marker",
+)
+require(
+    PORTABLE,
+    r"EnsureHistoryLocationMarker\(\)[\s\S]*?Print\([\s\S]*?history storage ready",
+    "history storage diagnostic",
+)
+
 archive_text = ARCHIVE.read_text(encoding="utf-8")
 if "File.Delete" in archive_text or "Directory.Delete" in archive_text:
     errors.append("portable outcome archive must not delete historical files")
@@ -106,6 +149,10 @@ if "AccessRights.FullAccess" in host_text:
 init_text = INIT.read_text(encoding="utf-8")
 if "RequestBars(\n                TimeFrame.Daily" in init_text or "RequestBars(\n                    TimeFrame.Weekly" in init_text:
     errors.append("D1/W1 must not block mandatory startup pending-load count")
+
+host_text = HOST.read_text(encoding="utf-8")
+if host_text.count('"CFIPIndicator"') != 1:
+    errors.append("indicator display identity must have exactly one literal registration")
 
 if errors:
     print("Phase 9.15 startup/persistence audit FAILED")

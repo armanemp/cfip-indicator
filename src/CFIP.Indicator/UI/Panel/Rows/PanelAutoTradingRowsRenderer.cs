@@ -21,6 +21,42 @@ namespace cAlgo
                                                     GetAutoTradingPanelColor(),
                                                     true,
                                                     contentWidth);
+
+                                                if (AutoTradingEnabled &&
+                                                    !string.IsNullOrWhiteSpace(_autoExecutionBlockReason) &&
+                                                    !string.Equals(
+                                                        _autoExecutionBlockReason,
+                                                        "NOT EVALUATED",
+                                                        StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "AUTO TRADE BLOCK  •  " +
+                                                        CompactText(
+                                                            _autoExecutionBlockReason,
+                                                            100),
+                                                        PanelWarningColor,
+                                                        true,
+                                                        contentWidth);
+                                                }
+
+                                                if (AutomaticOrdersEnabled &&
+                                                    !string.IsNullOrWhiteSpace(_autoOrdersBlockReason) &&
+                                                    !string.Equals(
+                                                        _autoOrdersBlockReason,
+                                                        "NOT EVALUATED",
+                                                        StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "AUTO ORDER BLOCK  •  " +
+                                                        CompactText(
+                                                            _autoOrdersBlockReason,
+                                                            100),
+                                                        PanelWarningColor,
+                                                        true,
+                                                        contentWidth);
+                                                }
                                     
                                                 PendingOrder managedPending =
                                                     GetManagedPendingOrder();

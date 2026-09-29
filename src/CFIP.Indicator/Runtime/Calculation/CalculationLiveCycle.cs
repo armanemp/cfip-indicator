@@ -81,24 +81,18 @@ namespace cAlgo
             RefreshLiveDecisionActionability(
                 closedM5);
 
-            bool triggerRevisionChanged =
-                _lastAutoPlanTriggerM1 !=
-                _triggerRuntime.ConfirmedM1;
-
             if (!AutoTradingEnabled ||
                 _plan != null ||
                 _decision == null ||
-                _decision.Direction == 0 ||
-                (_lastAutoPlanAttemptM5 == closedM5 &&
-                 !triggerRevisionChanged))
+                _decision.Direction == 0)
                 return;
 
-            _lastAutoPlanAttemptM5 =
-                closedM5;
-
-            _lastAutoPlanTriggerM1 =
-                _triggerRuntime.ConfirmedM1;
-
+            // Do not latch plan creation to a single M5 attempt. Actionability
+            // is quote-sensitive and may become true later in the same closed
+            // M5 bar (for example when price enters a retest zone or reaches
+            // a breakout trigger). EnsureSignalPlan is idempotent and owns the
+            // actual creation gates, so it is safe to retry here on each live
+            // calculation until a plan is created.
             EnsureSignalPlan(
                 closedM5,
                 ConfirmedSignalsOnly
