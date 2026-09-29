@@ -65,7 +65,7 @@ namespace cAlgo
 
             SubmissionGateState state;
 
-            if (!_states.TryGetValue(identity, out state))
+            if (!_states.TryGetValue(identity.CanonicalKey, out state))
             {
                 state = new SubmissionGateState();
                 _states[identity.CanonicalKey] = state;
@@ -103,7 +103,7 @@ namespace cAlgo
                 return;
 
             List<string> removable =
-                new List<SubmissionAttemptIdentity>();
+                new List<string>();
 
             foreach (KeyValuePair<string, SubmissionGateState> entry in _states)
             {
