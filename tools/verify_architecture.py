@@ -2360,9 +2360,11 @@ for required in (
             f"Visual alert state missing: {required}"
         )
 
-if "RenderLatestAlertSignalMarker(" not in signal_renderer_code:
+ALERT_SIGNAL_RENDERER = ROOT / "UI" / "Chart" / "AlertSignalRenderer.cs"
+alert_signal_renderer_code = ALERT_SIGNAL_RENDERER.read_text(encoding="utf-8")
+if "RenderLatestAlertSignalMarker(" not in alert_signal_renderer_code:
     raise SystemExit(
-        "Signal renderer must own persistent alert markers"
+        "Alert signal renderer must own persistent alert markers"
     )
 
 cleanup_code = (
