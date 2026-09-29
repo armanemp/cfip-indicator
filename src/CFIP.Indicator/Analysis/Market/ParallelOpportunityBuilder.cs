@@ -9,6 +9,12 @@ namespace cAlgo
         private void RefreshParallelOpportunityCandidates(
             int closedM5)
         {
+            if (_lastOpportunityCandidatesM5 == closedM5)
+                return;
+
+            _lastOpportunityCandidatesM5 =
+                closedM5;
+
             _opportunityCandidates.Clear();
 
             if (!EnableParallelOpportunities ||
