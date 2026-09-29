@@ -234,6 +234,12 @@ namespace cAlgo
 
             snapshot.DecisionReady = decisionReady;
             snapshot.ReactionReady = reactionReady;
+            snapshot.ReactionIntrabar = reactionReady;
+            snapshot.ReactionM5Index =
+                reactionReady &&
+                _m5Bars != null
+                    ? _m5Bars.Count - 1
+                    : -1;
             snapshot.PredictionReady = predictionReady;
             snapshot.SmartQuality =
                 _decision == null ? 0 : _decision.SmartQuality;
