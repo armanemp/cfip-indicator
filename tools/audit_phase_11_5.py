@@ -82,7 +82,7 @@ for path, label in (
 for token in (
     "ScenarioId { get; }",
     "CanonicalKey",
-    "ScenarioId;",
+    "ScenarioId =",
 ):
     if token not in submission_id:
         ERRORS.append("submission identity missing scenario scope: " + token)
