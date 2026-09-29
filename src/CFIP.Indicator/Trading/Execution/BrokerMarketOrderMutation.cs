@@ -83,6 +83,7 @@ namespace cAlgo
             string label,
             double stopPips,
             RelativeTakeProfitProtections takeProfits,
+            StopLossBreakEven stopLossBreakEven,
             string comment,
             bool hasTrailingStop,
             string context)
@@ -99,7 +100,9 @@ namespace cAlgo
                     new RelativeStopLossProtection(stopPips),
                     takeProfits,
                     comment,
-                    hasTrailingStop);
+                    hasTrailingStop,
+                    StopTriggerMethod.Trade,
+                    stopLossBreakEven);
             }
             catch (Exception ex)
             {
