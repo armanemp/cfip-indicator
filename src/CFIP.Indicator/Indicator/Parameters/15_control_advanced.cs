@@ -124,9 +124,6 @@ namespace cAlgo
         [Parameter("Smart Trail Minimum RR", Group = "15 · CONTROL — ADVANCED", DefaultValue = 1.00, MinValue = 0.5, MaxValue = 10)]
         public double SmartTrailMinimumRR { get; set; }
 
-        [Parameter("Smart Use Closed-Bar Decision (Safety-Enforced)", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
-        public bool SmartUseClosedBarDecision { get; set; }
-
         [Parameter("Smart Target Nearest Bias", Group = "15 · CONTROL — ADVANCED", DefaultValue = 0.65, MinValue = 0.20, MaxValue = 1.0, Step = 0.05)]
         public double SmartTargetNearestBias { get; set; }
 
