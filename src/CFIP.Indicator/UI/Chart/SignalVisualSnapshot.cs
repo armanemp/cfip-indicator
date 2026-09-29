@@ -15,13 +15,16 @@ namespace cAlgo
         public bool PlanActive;
         public bool LivePosition;
         public bool PendingOrder;
+        public bool SetupPreviewActive;
         public bool TriggerVisible;
         public int ArrowM5Index;
         public bool IdealEntryVisible;
         public bool ActiveBrokerTargetVisible;
 
         public ExecutionMode EntryMode;
+        public ExecutionMode SetupEntryMode;
         public int CreatedM5;
+        public int SetupCreatedM5;
         public long PositionId;
         public long PendingOrderId;
         public string PendingOrderType;
@@ -37,6 +40,18 @@ namespace cAlgo
         public double Tp3;
         public double Tp4;
         public double BrokerTarget;
+
+        public double SetupEntry;
+        public double SetupIdealEntry;
+        public double SetupTrigger;
+        public double SetupInvalidation;
+        public double SetupStop;
+        public double SetupTp1;
+        public double SetupTp2;
+        public double SetupTp3;
+        public double SetupTp4;
+        public double SetupRisk;
+
         public double PendingEntry;
         public double PendingStop;
         public double PendingTarget;
