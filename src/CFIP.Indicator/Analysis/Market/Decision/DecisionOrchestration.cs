@@ -189,9 +189,14 @@ namespace cAlgo
             decision.TacticalOpportunityRR =
                 tactical.RiskReward;
 
+            OpportunityLane decisionLane =
+                ResolveSignalTraceLane(
+                    decision,
+                    tactical.Lane);
+
             ApplyEmpiricalCalibration(
                 decision,
-                tactical.Lane);
+                decisionLane);
 
             decision.EntryAllowed =
                 PassesDecisionFilters(
@@ -228,13 +233,7 @@ namespace cAlgo
                 decision.Direction != 0)
             {
                 OpportunityLane lane =
-                    decision.TopDownEligible &&
-                    string.Equals(
-                        decision.TopDownStage,
-                        "ENTRY CALIBRATED",
-                        StringComparison.OrdinalIgnoreCase)
-                        ? OpportunityLane.Strategic
-                        : decision.TacticalOpportunityLane;
+                    decisionLane;
 
                 if (lane == OpportunityLane.Strategic ||
                     lane == OpportunityLane.Tactical ||
@@ -304,6 +303,11 @@ namespace cAlgo
             decision.Reason =
                 _decisionReasonBuilder.Build(
                     decision);
+
+            RecordSignalEvaluationTrace(
+                decision,
+                decisionLane,
+                closedM5);
 
             return decision;
         }
