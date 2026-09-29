@@ -21,6 +21,12 @@ namespace cAlgo
                     ApplyRuntimeEntryGate();
                     return;
                 }
+                if (!EnsureTradingPermission())
+                {
+                    _autoExecutionBlockReason = "AGG PERMISSION";
+                    SetAutoTradingState("BLOCKED", "AGG PERMISSION");
+                    return;
+                }
                 if (!TryValidateAggressiveFinalExecution(
                         closedM5,
                         type,
@@ -180,28 +186,13 @@ namespace cAlgo
                     GetActiveBrokerStopPrice();
                 double confirmedTarget =
                     GetActiveBrokerTargetPrice();
-                SendUnifiedAlert(
-                    "AUTO-REACTION|" +
+                SendAggressiveConfirmationAlert(
                     closedM5,
-                    "CFIP AUTO REACTION " +
-                    (_reaction.Direction == 1
-                        ? "BUY"
-                        : "SELL") +
-                    " EXECUTED | #" +
-                    result.Position.Id +
-                    " | ENTRY " +
-                    Price(
-                        result.Position.EntryPrice) +
-                    " | BROKER SL " +
-                    (IsFinitePositive(confirmedStop)
-                        ? Price(confirmedStop)
-                        : "RECOVERY") +
-                    " | BROKER TP " +
-                    (IsFinitePositive(confirmedTarget)
-                        ? Price(confirmedTarget)
-                        : "RECOVERY"),
                     _reaction.Direction,
-                    true);
+                    result.Position.Id,
+                    result.Position.EntryPrice,
+                    confirmedStop,
+                    confirmedTarget);
             }
             catch (Exception ex)
             {
