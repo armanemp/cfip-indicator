@@ -303,7 +303,7 @@ namespace cAlgo
                     reason = "PLAN / DECISION DIRECTION MISMATCH";
                 }
                 else if (_plan.EntryMode !=
-                         _executionModel.Mode)
+                         actionExecution.Mode)
                 {
                     actionable = false;
                     reason = "PLAN / EXECUTION MODE MISMATCH";
