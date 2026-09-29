@@ -71,24 +71,11 @@ namespace cAlgo
                                     _lastVisualAlertDirection,
                                     state);
 
-                            if (ShowSignalArrow)
-                            {
-                                DrawIcon(
-                                    P + "ALERT_SIGNAL",
-                                    _lastVisualAlertDirection == 1
-                                        ? ChartIconType.UpArrow
-                                        : ChartIconType.DownArrow,
-                                    alertBar,
-                                    _lastVisualAlertDirection == 1
-                                        ? Bars.LowPrices[alertBar] - offset
-                                        : Bars.HighPrices[alertBar] + offset,
-                                    color);
-                            }
-                            else
-                            {
-                                Chart.RemoveObject(
-                                    P + "ALERT_SIGNAL");
-                            }
+                            // Alerts are event/state annotations, not a second
+                            // directional visual authority. The canonical arrow is
+                            // rendered by SignalRenderer from ActionableNow.
+                            Chart.RemoveObject(
+                                P + "ALERT_SIGNAL");
 
                             if (ShowSignalLabels)
                             {
