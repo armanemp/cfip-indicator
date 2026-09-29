@@ -797,28 +797,28 @@ Operator action: local pull is required after this merge/documentation boundary.
 Status: implementation complete; verification/merge boundary follows.
 
 Implementation:
-- Removed the public `MaximumOpenPositions` setting because the architecture has one managed active plan/position, not configurable multi-plan execution.
-- Replaced the numeric capacity rule with one semantic `ExecutionCapacityRule.AllowsNewSinglePlan(...)` owner.
-- Renamed the shared guard to `ValidateSinglePlanCapacity(...)`.
-- Aligned automatic market, aggressive pre-trade and predictive-pending execution paths to the same guard.
-- Removed late-path numeric comparisons against the deleted setting.
-- Kept broker authority, single managed identity, closed-bar decision safety and plan/execution ownership unchanged.
+- Kept `MaximumOpenPositions` as a public parameter for preset/API compatibility, but constrained it to the only supported architecture: DefaultValue=1, MinValue=1, MaxValue=1.
+- Removed `BlockNewSignalWhileActive` because the single-active-plan boundary is mandatory and cannot be disabled without introducing unsupported multi-plan semantics.
+- Reworked `ExecutionCapacityRule` into the platform-neutral owner for single-plan capacity, with separate semantics for new plan creation and new broker execution.
+- Centralized cTrader state-to-rule translation in `ExecutionCapacityGuard`.
+- Migrated plan creation, automatic market execution, aggressive execution and predictive-pending placement to the canonical capacity guard.
+- Removed duplicate late-path position-capacity formulas.
+- Added deterministic runtime contracts for empty capacity, existing plan, managed position, managed pending order and unsupported capacity cases.
+- Extended architecture/integrity/semantic parameter audits so this contract cannot silently regress.
 
-Deep coordination audit findings:
-- Decision construction remains bound to the canonical closed M5 context.
-- Trigger readiness remains distinct from directional decision state.
-- Plan creation remains gated by `EntryAllowed` and `TriggerReady`.
-- Capacity is now a single shared execution invariant rather than a configurable number interpreted differently by different execution paths.
-- No new indicator or threshold was added to mask false signals.
-- The deeper signal-quality problem reported by the operator remains explicitly tracked for Track 8 analytical correctness and Track 9 decision intelligence; the phase does not claim improved win rate without outcome evidence.
+Deep signal/trade coordination audit:
+- The decision path is correctly bound to the canonical closed-M5 context and trigger readiness remains distinct from directional state.
+- The user-reported false-signal problem is not solved by this capacity phase and is not being hidden behind higher thresholds.
+- Concrete remaining analytical risks recorded for Track 8/9: M1 direction currently contributes to decision score while canonical TriggerReady is still M5 closed-bar based; structural/liquidity evidence can be consumed in both score and downstream gates; and structural confirmations can overlap across M5/M15/H1/H4.
+- These are now explicitly queued for mathematical/causal correction beginning in Phase 8.1, with Phase 8.4 reserved for the deep Order Block audit.
 
 Verification target:
-- 532 public parameters total = 529 baseline + 3 OSS.
-- no production references to `MaximumOpenPositions`;
-- one semantic single-plan capacity rule;
-- automatic market, aggressive and predictive-pending paths use `ValidateSinglePlanCapacity`;
-- full-project integrity and semantic parameter audits remain green;
-- cTrader compile and runtime acceptance remain required.
+- 532 public parameters = 529 baseline + 3 OSS extension;
+- MaximumOpenPositions is constrained to 1;
+- BlockNewSignalWhileActive is absent;
+- one platform-neutral capacity rule and one cTrader capacity guard;
+- plan creation plus all automatic execution paths use the same capacity owner;
+- full-project, semantic-parameter, runtime UI, runtime acceptance and cTrader compile gates all green before merge.
 
 Next phase: Phase 8.1 — M1 trigger correctness.
 Operator pull requirement: required after the final verified Phase 7.4 merge; intermediate branch commits do not require a local pull.
