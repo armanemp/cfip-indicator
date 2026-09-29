@@ -185,3 +185,19 @@ measure:
 - missed continuation opportunities after TP1/TP2.
 
 Only then should default exit thresholds be changed.
+
+## Automated verification closeout — 2026-09-29
+
+Phase 9.17 automated verification is complete:
+- Runtime Acceptance #1193: PASS
+- cTrader Compile/Build #1377: PASS
+- Source/Architecture + accumulated audits #1384: PASS
+- Decision Contracts: PASS within cTrader Compile/Build
+- Phase 9.16 signal measurement audit: PASS
+- Phase 9.17 exit geometry audit: PASS
+
+Verified code head:
+`c027a983081102ace0353d064219a5aad739ed94`
+
+Target-terminal replay remains required before claiming empirical elimination of the reported
+TP rollback or any improvement in realized R, exit efficiency, false exits or continuation capture.
