@@ -516,13 +516,7 @@ namespace cAlgo
                                             ex.ToString());
                                     }
 
-                                    try
-                                    {
-                                        PersistOutcomeHistory();
-                                    }
-                                    catch
-                                    {
-                                    }
+                                    PersistOutcomeHistory();
 
                                     RemoveAllChartObjects();
                                     RemovePanel();
