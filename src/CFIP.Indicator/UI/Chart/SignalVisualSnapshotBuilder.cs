@@ -288,6 +288,26 @@ namespace cAlgo
                 _decision == null ? 0 : _decision.StructuralConfirmations;
             snapshot.Confidence =
                 _decision == null ? 0 : _decision.Confidence;
+            snapshot.BaseConfidence =
+                _decision == null ? 0 : _decision.BaseConfidence;
+            snapshot.CalibratedConfidence =
+                _decision == null ? 0 : _decision.CalibratedConfidence;
+            snapshot.EmpiricalCalibrationAdjustment =
+                _decision == null ? 0 : _decision.EmpiricalCalibrationAdjustment;
+            snapshot.EmpiricalCalibrationSamples =
+                _decision == null ? 0 : _decision.EmpiricalCalibrationSamples;
+            snapshot.EmpiricalCalibrationWins =
+                _decision == null ? 0 : _decision.EmpiricalCalibrationWins;
+            snapshot.EmpiricalCalibrationBucket =
+                _decision == null ? 0 : _decision.EmpiricalCalibrationBucket;
+            snapshot.EmpiricalCalibrationObservedWinRate =
+                _decision == null
+                    ? 0.5
+                    : _decision.EmpiricalCalibrationObservedWinRate;
+            snapshot.EmpiricalCalibrationSource =
+                _decision == null
+                    ? "NONE"
+                    : _decision.EmpiricalCalibrationSource;
             snapshot.DecisionReason =
                 _decision == null ? "" : _decision.Reason;
             snapshot.ReactionReason =
