@@ -24,12 +24,9 @@ namespace cAlgo
                 TargetUpdateStepAtr;
 
             double spacing =
-                Math.Max(
-                    MinimumTakeProfitDistancePrice(),
-                    atr *
-                    Math.Max(
-                        0.05,
-                        MinimumTpSpacingAtr));
+                MinimumLiveTargetDistancePrice(
+                    _plan.Direction,
+                    atr);
 
             double best = current;
             double bestScore = double.MinValue;
@@ -88,6 +85,9 @@ namespace cAlgo
             double minimumForwardDistance)
         {
             if (level == null ||
+                !IsFinitePositive(level.Price) ||
+                !IsFinitePositive(_plan.Entry) ||
+                !IsFinitePositive(_plan.Risk) ||
                 level.Score < SmartTargetQuality)
                 return false;
 
@@ -126,6 +126,7 @@ namespace cAlgo
                     _plan.Risk);
 
             return
+                IsFinitePositive(rr) &&
                 rr <=
                 Math.Max(
                     0,

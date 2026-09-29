@@ -28,22 +28,16 @@ namespace cAlgo
                                     : Symbol.Ask;
 
                             double minimumForwardDistance =
-                                Math.Max(
-                                    Symbol.PipSize,
-                                    atr > 0
-                                        ? atr *
-                                          Math.Max(
-                                              0.05,
-                                              MinimumTpSpacingAtr)
-                                        : Symbol.TickSize);
-
-                            if (IsFinitePositive(requestedTarget) &&
-                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                                MinimumLiveTargetDistancePrice(
                                     direction,
-                                    0,
-                                    requestedTarget,
+                                    atr);
+
+                            if (IsLiveTargetBrokerSafe(
+                                    direction,
+                                    position.EntryPrice,
                                     market,
-                                    minimumForwardDistance))
+                                    requestedTarget,
+                                    atr))
                                 return NormalizePrice(requestedTarget);
 
                             return FurthestForwardPlanTarget(
@@ -163,48 +157,32 @@ namespace cAlgo
 
                             bool currentTargetValid =
                                 position.TakeProfit.HasValue &&
-                                IsFinitePositive(
-                                    position.TakeProfit.Value) &&
-                                IsValidTarget(
+                                IsLiveTargetBrokerSafe(
                                     direction,
                                     position.EntryPrice,
-                                    position.TakeProfit.Value) &&
-                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                                    direction,
-                                    0,
-                                    position.TakeProfit.Value,
                                     market,
-                                    Math.Max(
-                                        Symbol.PipSize,
-                                        atr > 0
-                                            ? atr *
-                                              Math.Max(
-                                                  0.05,
-                                                  MinimumTpSpacingAtr)
-                                            : Symbol.TickSize));
+                                    position.TakeProfit.Value,
+                                    atr);
 
                             bool desiredTargetValid =
-                                IsFinitePositive(effectiveTarget) &&
-                                IsValidTarget(
+                                IsLiveTargetBrokerSafe(
                                     direction,
                                     position.EntryPrice,
-                                    effectiveTarget) &&
-                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                                    direction,
-                                    0,
-                                    effectiveTarget,
                                     market,
-                                    Math.Max(
-                                        Symbol.PipSize,
-                                        atr > 0
-                                            ? atr *
-                                              Math.Max(
-                                                  0.05,
-                                                  MinimumTpSpacingAtr)
-                                            : Symbol.TickSize));
+                                    effectiveTarget,
+                                    atr);
+
+                            bool serverLadderTargetValid =
+                                _serverSideTakeProfitLadderActive &&
+                                IsLiveTargetBrokerSafe(
+                                    direction,
+                                    position.EntryPrice,
+                                    market,
+                                    _activeBrokerTarget,
+                                    atr);
 
                             bool targetOk =
-                                _serverSideTakeProfitLadderActive ||
+                                serverLadderTargetValid ||
                                 currentTargetValid;
 
                             if (!_serverSideTakeProfitLadderActive &&
@@ -245,14 +223,9 @@ namespace cAlgo
                                              currentTarget,
                                              normalizedTarget,
                                              market,
-                                             Math.Max(
-                                                 Symbol.PipSize,
-                                                 atr > 0
-                                                     ? atr *
-                                                       Math.Max(
-                                                           0.05,
-                                                           MinimumTpSpacingAtr)
-                                                     : Symbol.TickSize)))
+                                             MinimumLiveTargetDistancePrice(
+                                                 direction,
+                                                 atr)))
                                 {
                                     targetOk =
                                         TryModifyTakeProfit(

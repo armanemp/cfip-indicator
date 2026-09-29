@@ -648,6 +648,27 @@ Target-terminal/replay remains required for actual startup latency, archive crea
 Target-terminal replay remains required for empirical missed-opportunity/false-signal measurement, actual startup latency, chart lifecycle and broker execution/protection.
 
 
+## Phase 9.17 corrective numerical hardening — 2026-09-29
+
+| Contract | Automated controlled check | cTrader / replay |
+| --- | ---: | ---: |
+| Live TP uses one centralized broker/ATR minimum-forward-distance calculation | PASS | Required |
+| BUY percentage distance uses Bid and SELL percentage distance uses Ask | PASS | Required |
+| Server-ladder internal target adopts broker LastTakeProfit.Price | PASS | Required |
+| Every server-side TP stage is revalidated against live market before mutation | PASS | Required |
+| Post-fill structural SL compares prior stop versus new structural stop before ratchet | PASS | Required |
+| Recovery fallback cannot exceed configured MaximumRewardRR | PASS | Required |
+| RR progression is recomputed from current target/entry/risk geometry | PASS | Required |
+| NaN/Infinity in risk, TP stages and Smart Break-Even fails closed | PASS | Required |
+| Stale server ladder cannot alone mark broker protection synchronized | PASS | Required |
+| No new public parameters or second authority introduced | PASS | Required |
+
+Automated verification:
+- Runtime Acceptance #1196: PASS
+- cTrader Compile/Build #1380: PASS
+- Source/Architecture + accumulated audits #1387: PASS
+- Phase 9.17 exit geometry audit: PASS
+
 ## Phase 9.17 — Exit Geometry, TP Progression & Protection Integrity
 
 | Contract | Automated controlled check | cTrader / replay |
@@ -678,13 +699,13 @@ does not recur on the target symbol/timeframe.
 
 ## Phase 9.17 verification evidence
 
-- Runtime Acceptance #1193: PASS
-- cTrader Compile/Build #1377: PASS
-- Source/Architecture + accumulated audits #1384: PASS
+- Runtime Acceptance #1196: PASS
+- cTrader Compile/Build #1380: PASS
+- Source/Architecture + accumulated audits #1387: PASS
 - Decision Contracts: PASS within Build
 - Phase 9.16 signal measurement audit: PASS
 - Phase 9.17 exit geometry audit: PASS
-- Verified head: `c027a983081102ace0353d064219a5aad739ed94`
+- Verified automated head at closeout: `8e1f12ee56970420554bd4df6447d255c71efd7b`
 
 Target-terminal replay remains required for empirical confirmation of the reported TP rollback fix,
 live timing, broker/server-side protection behavior, slippage, realized exit R and continuation behavior.

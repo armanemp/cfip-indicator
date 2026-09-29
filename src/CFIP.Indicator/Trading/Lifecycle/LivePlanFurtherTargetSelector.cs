@@ -41,17 +41,20 @@ namespace cAlgo
                                         : level.Price < previous - Symbol.PipSize;
 
                                 if (!farther ||
+                                    !IsLiveTargetBrokerSafe(
+                                        _plan.Direction,
+                                        _plan.Entry,
+                                        market,
+                                        level.Price,
+                                        atr) ||
                                     !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                         _plan.Direction,
                                         current,
                                         level.Price,
                                         market,
-                                        Math.Max(
-                                            Symbol.PipSize,
-                                            atr *
-                                            Math.Max(
-                                                0.05,
-                                                MinimumTpSpacingAtr))))
+                                        MinimumLiveTargetDistancePrice(
+                                            _plan.Direction,
+                                            atr)))
                                     continue;
                 
                                 double rr =

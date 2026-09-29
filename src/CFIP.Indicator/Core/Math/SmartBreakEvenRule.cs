@@ -33,8 +33,17 @@ namespace cAlgo
             double riskFreeLockPips,
             bool spreadAware)
         {
-            if (riskPips <= 0 || tp1Pips <= 0)
-                return new SmartBreakEvenResult(false, 0, 0, "RISK/TP UNAVAILABLE");
+            if (!IsFinitePositive(riskPips) ||
+                !IsFinitePositive(tp1Pips) ||
+                !IsFiniteNonNegative(spreadPips) ||
+                !IsFiniteNonNegative(triggerRR) ||
+                !IsFiniteNonNegative(bufferPips) ||
+                !IsFiniteNonNegative(riskFreeLockPips))
+                return new SmartBreakEvenResult(
+                    false,
+                    0,
+                    0,
+                    "RISK/TP NUMERIC INVALID");
 
             double baseTrigger =
                 riskPips *
@@ -96,7 +105,8 @@ namespace cAlgo
                     offset,
                     riskPips * 0.50);
 
-            if (trigger <= 0 || offset < 0)
+            if (!IsFinitePositive(trigger) ||
+                !IsFiniteNonNegative(offset))
                 return new SmartBreakEvenResult(
                     false,
                     0,
@@ -108,6 +118,24 @@ namespace cAlgo
                 trigger,
                 offset,
                 "SMART SERVER BREAK-EVEN");
+        }
+
+        private static bool IsFinitePositive(
+            double value)
+        {
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                value > 0;
+        }
+
+        private static bool IsFiniteNonNegative(
+            double value)
+        {
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                value >= 0;
         }
     }
 }

@@ -181,3 +181,27 @@ The performance architecture and exact adoption decisions are recorded in docs/P
 ## 2026-09-29 Track 5.4 certification
 
 Canonical SignalVisualSnapshot is fully implemented. The branch passed Source / Architecture, Runtime Acceptance Contracts and cTrader Compile after the final cleanup of direct renderer state reads. Live Plan, Pending, pre-trade Plan, Confirmed, Reaction and Prediction states remain explicitly ordered and broker-confirmed live levels remain distinct from intended plan levels.
+
+## 2026-09-29 Phase 9.17 corrective exit/risk calculation audit
+
+A second-pass review was performed after the initial Phase 9.17 implementation, focused on hidden
+numeric inconsistencies and state desynchronization rather than feature expansion.
+
+### Findings closed
+
+- TP forward distance is now centralized and combines broker minimum TP distance with ATR/pip/tick spacing.
+- Percentage broker-distance conversion uses the executable-side quote for the trade direction.
+- Server-side ladder adoption reads the broker-owned LastTakeProfit.Price instead of rebuilding internal state from plan levels.
+- Live TP mutation paths reject already-passed or wrong-side targets and require monotonic progression.
+- Fill reconciliation now distinguishes the existing SL from the structural candidate before applying stop ratcheting.
+- Recovery fallback target construction is capped by MaximumRewardRR and revalidated against live quote geometry.
+- RR progression for later targets is derived from current prices rather than cached RR fields.
+- NaN/Infinity is fail-closed in live exit geometry, plan RR validation and Smart Break-Even.
+- A server-side ladder object without a valid live broker target no longer counts as synchronized protection.
+
+### Verification boundary
+
+Automated verification passed for cTrader compile/build, Decision/Planning/Execution contracts,
+runtime acceptance and the accumulated source/architecture audits including the dedicated exit-geometry audit.
+Target-terminal replay is still required for actual cTrader runtime timing, server-side advanced-protection
+behavior, slippage and empirical confirmation of the reported TP rollback.

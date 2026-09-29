@@ -1679,3 +1679,29 @@ Routine closeout:
 
 Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
 Operator pull: after PR #60 merge, pull main at the verified merge commit.
+
+
+## Phase 9.17 corrective numerical hardening — 2026-09-29
+
+Status: VERIFIED COMPLETE at source/contract level; target-terminal replay remains required.
+
+Second-pass findings and fixes:
+- centralized live TP minimum-forward distance across broker and lifecycle paths;
+- made percentage broker distance quote-direction aware;
+- made server-side ladder adoption trust broker LastTakeProfit.Price;
+- enforced live quote geometry on every server-ladder target before mutation;
+- fixed post-fill SL ratchet to compare prior stop against structural candidate;
+- capped recovery target fallback by MaximumRewardRR;
+- recomputed later-stage RR from current geometry instead of cached stage RR;
+- fail-closed on NaN/Infinity for exit/risk calculations;
+- prevented stale server-ladder state from alone satisfying protection synchronization.
+
+Verification on the latest automated head:
+- Runtime Acceptance #1196: PASS;
+- cTrader Compile/Build #1380: PASS;
+- Source/Architecture + accumulated audits #1387: PASS;
+- Decision Contracts: PASS within cTrader Compile/Build;
+- Phase 9.17 exit geometry audit: PASS.
+
+The local container could not reach github.com for an independent local build, so verification is based on the repository's GitHub Actions runs above. Target-terminal replay is still required for actual broker/server-side behavior, timing, slippage and empirical confirmation of the reported TP rollback.
+

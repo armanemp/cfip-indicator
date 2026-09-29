@@ -18,7 +18,7 @@ namespace cAlgo
                 (direction != 1 &&
                  direction != -1) ||
                 !IsFinitePositive(referenceEntry) ||
-                atr <= 0)
+                !IsFinitePositive(atr))
                 return false;
 
             if (!ValidatePlanProtectionAndEntry(

@@ -4,10 +4,10 @@ Date: 2026-09-29
 
 ## Status
 
-Implementation complete pending CI and target-terminal replay.
+Source/contract implementation complete and automated CI verified; target-terminal replay remains required.
 
 Branch:
-`phase/9-17-exit-geometry-progression`
+`phase/9-17-exit-geometry-progression-mainline`
 
 ## Problem addressed
 
@@ -15,11 +15,14 @@ The reported TP regression had a concrete architectural cause rather than one ba
 parameter.
 
 A live target was previously allowed to be "better than the previous target" without also
-being required to remain ahead of the current market quote. In addition, live target
-progression stopped while the server-side TP ladder was active, and post-fill/recovery
-paths could rebuild targets from stale plan geometry.
+being required to remain ahead of the current executable market quote. In addition, the
+server-ladder adoption path could reconstruct internal target state from the plan instead
+of the broker-owned last target, and post-fill/recovery paths could reuse stale exit geometry.
 
-That combination could produce a visible TP that had already been crossed by price.
+A separate stop-side defect was also found: post-fill structural stop repricing compared the
+new structural stop with itself in one branch, so a valid tighter stop could never advance.
+These were fixed together so entry, SL, TP, broker protection and lifecycle state use one
+consistent live geometry contract.
 
 ## Canonical exit geometry
 
@@ -133,6 +136,27 @@ ownership where available and updates the ladder only through confirmed broker m
 The indicator never invents a broker fill or synthetic TP hit. It observes the broker-owned
 position/volume state and then reconciles its internal lifecycle.
 
+## Corrective numerical hardening — 2026-09-29
+
+The deep review after the initial 9.17 implementation closed several additional calculation
+and synchronization gaps:
+
+- live TP spacing is centralized in MinimumLiveTargetDistancePrice(direction, atr) and
+  combines broker minimum TP distance, tick/pip granularity and ATR spacing;
+- percentage-based broker distances are quote-direction aware: BUY uses Bid and SELL uses Ask;
+- server-side ladder adoption trusts AbsoluteTakeProfitProtections.LastTakeProfit.Price
+  as the broker-authoritative final target instead of reconstructing it from _plan;
+- server-ladder progression validates every active TP against the live Bid/Ask before mutation;
+- actual-fill reconciliation now compares the prior SL against the new structural SL before
+  applying ProtectionProgressionRule.ShouldAdvanceStop;
+- recovery no longer accepts a fallback target that exceeds MaximumRewardRR;
+- plan RR progression is recomputed from current entry/target geometry instead of stale cached RR;
+- NaN/Infinity is fail-closed for risk, TP ladder stages and Smart Break-Even calculations;
+- stale broker protection is no longer considered synchronized merely because the server ladder
+  object exists.
+
+No new public parameter or second decision/execution authority was introduced.
+
 ## Verification
 
 Decision Contracts include deterministic BUY/SELL live exit tests for:
@@ -188,16 +212,16 @@ Only then should default exit thresholds be changed.
 
 ## Automated verification closeout — 2026-09-29
 
-Phase 9.17 automated verification is complete:
-- Runtime Acceptance #1193: PASS
-- cTrader Compile/Build #1377: PASS
-- Source/Architecture + accumulated audits #1384: PASS
+Phase 9.17 automated source/contract verification is complete:
+- Runtime Acceptance #1196: PASS
+- cTrader Compile/Build #1380: PASS
+- Source/Architecture + accumulated audits #1387: PASS
 - Decision Contracts: PASS within cTrader Compile/Build
 - Phase 9.16 signal measurement audit: PASS
 - Phase 9.17 exit geometry audit: PASS
 
-Verified code head:
-`c027a983081102ace0353d064219a5aad739ed94`
+Verified automated head at this closeout:
+`8e1f12ee56970420554bd4df6447d255c71efd7b`
 
 Target-terminal replay remains required before claiming empirical elimination of the reported
 TP rollback or any improvement in realized R, exit efficiency, false exits or continuation capture.

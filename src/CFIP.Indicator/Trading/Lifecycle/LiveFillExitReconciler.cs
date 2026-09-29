@@ -51,24 +51,33 @@ namespace cAlgo
 
             double candidateStop = oldStop;
 
-            if (!IsValidStop(
+            bool oldStopManaged =
+                IsValidManagedStop(
                     direction,
                     actualEntry,
-                    candidateStop))
+                    market,
+                    oldStop);
+
+            bool structuralStopManaged =
+                IsValidManagedStop(
+                    direction,
+                    actualEntry,
+                    market,
+                    stopCandidate);
+
+            if (!oldStopManaged)
             {
-                if (IsValidStop(
-                        direction,
-                        actualEntry,
-                        stopCandidate))
+                if (structuralStopManaged)
                 {
                     candidateStop = NormalizePrice(stopCandidate);
                     stopSource = structuralStopSource ?? "LIVE / STRUCTURAL";
                     stopQuality = Math.Max(60, structuralStopQuality);
                 }
                 else if (position.StopLoss.HasValue &&
-                         IsValidStop(
+                         IsValidManagedStop(
                              direction,
                              actualEntry,
+                             market,
                              position.StopLoss.Value))
                 {
                     candidateStop =
@@ -77,10 +86,7 @@ namespace cAlgo
                     stopQuality = 100;
                 }
             }
-            else if (IsValidStop(
-                         direction,
-                         actualEntry,
-                         stopCandidate) &&
+            else if (structuralStopManaged &&
                      ProtectionProgressionRule.ShouldAdvanceStop(
                          direction,
                          candidateStop,
@@ -94,9 +100,10 @@ namespace cAlgo
                     structuralStopQuality);
             }
 
-            if (!IsValidStop(
+            if (!IsValidManagedStop(
                     direction,
                     actualEntry,
+                    market,
                     candidateStop))
                 return false;
 
@@ -198,7 +205,34 @@ namespace cAlgo
                     candidateTp1,
                     candidateTp2,
                     candidateTp3,
-                    candidateTp4))
+                    candidateTp4) ||
+                !IsLiveTargetBrokerSafe(
+                    direction,
+                    actualEntry,
+                    market,
+                    candidateTp1,
+                    atr) ||
+                (candidateTp2 > 0 &&
+                 !IsLiveTargetBrokerSafe(
+                     direction,
+                     actualEntry,
+                     market,
+                     candidateTp2,
+                     atr)) ||
+                (candidateTp3 > 0 &&
+                 !IsLiveTargetBrokerSafe(
+                     direction,
+                     actualEntry,
+                     market,
+                     candidateTp3,
+                     atr)) ||
+                (candidateTp4 > 0 &&
+                 !IsLiveTargetBrokerSafe(
+                     direction,
+                     actualEntry,
+                     market,
+                     candidateTp4,
+                     atr)))
                 return false;
 
             _plan.Entry = actualEntry;
@@ -273,14 +307,9 @@ namespace cAlgo
             double previousTarget = 0)
         {
             double spacing =
-                Math.Max(
-                    MinimumTakeProfitDistancePrice(),
-                    Math.Max(
-                        Symbol.PipSize,
-                        atr *
-                        Math.Max(
-                            0.05,
-                            MinimumTpSpacingAtr)));
+                MinimumLiveTargetDistancePrice(
+                    direction,
+                    atr);
 
             double previous =
                 previousTarget > 0
@@ -288,6 +317,12 @@ namespace cAlgo
                     : entry;
 
             if (IsFinitePositive(existing) &&
+                IsLiveTargetBrokerSafe(
+                    direction,
+                    entry,
+                    market,
+                    existing,
+                    atr) &&
                 LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     direction,
                     0,
@@ -311,6 +346,12 @@ namespace cAlgo
 
                 if (candidate != null &&
                     IsFinitePositive(candidate.Price) &&
+                    IsLiveTargetBrokerSafe(
+                        direction,
+                        entry,
+                        market,
+                        candidate.Price,
+                        atr) &&
                     LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         direction,
                         existing,
@@ -336,7 +377,13 @@ namespace cAlgo
                         ? entry + risk * fallbackRR
                         : entry - risk * fallbackRR;
 
-                if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                if (IsLiveTargetBrokerSafe(
+                        direction,
+                        entry,
+                        market,
+                        synthetic,
+                        atr) &&
+                    LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         direction,
                         existing,
                         synthetic,

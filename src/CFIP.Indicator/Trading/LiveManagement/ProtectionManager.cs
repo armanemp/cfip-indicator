@@ -20,7 +20,10 @@ namespace cAlgo
             int closedM5,
             bool structuralUpdate)
         {
-            if (_plan == null)
+            if (_plan == null ||
+                !IsFinitePositive(market) ||
+                double.IsNaN(peakRR) ||
+                double.IsInfinity(peakRR))
                 return 0;
 
             double candidate =
@@ -218,7 +221,8 @@ namespace cAlgo
                     candidate,
                     Math.Max(
                         Symbol.TickSize,
-                        MinimumProtectionDistancePrice())))
+                        MinimumProtectionDistancePrice(
+                            _plan.Direction)))
                 return _plan.Stop;
 
             // Never derive a new stop merely because the market moved. If a
@@ -229,7 +233,13 @@ namespace cAlgo
                 _plan.Entry,
                 market,
                 candidate))
-                return _plan.Stop;
+                return IsValidManagedStop(
+                    _plan.Direction,
+                    _plan.Entry,
+                    market,
+                    _plan.Stop)
+                    ? _plan.Stop
+                    : 0;
 
             double atrValue = atr;
 
