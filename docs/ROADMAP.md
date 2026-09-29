@@ -3270,3 +3270,18 @@ The panel now refreshes independently from full analysis through a 500 ms ready-
 Verification: Source / Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
 
 Next: Phase 6.1 — Decision closed-bar contract.
+
+## Runtime UI / protection correction — 2026-09-29
+
+Status: hotfix in validation.
+
+User-reported runtime defects being corrected before Phase 7.2:
+- AUTO TRADE and AUTO ORDERS panel controls are bound directly to operator clicks and canonical runtime flags;
+- setup-preview Entry/Ideal/Trigger/SL/TP levels render compact left-side name/price boxes;
+- structural trailing no longer derives a new stop from raw market-price distance between structural events;
+- further trailing progression is evaluated on closed-M5 structural events and remains protective-only;
+- existing pending Stop/Limit paths remain separate from aggressive market entry.
+
+Deep smart-pending reversal-point forecasting is intentionally kept as a later dedicated planning/execution-quality improvement: it will rank future reversal levels from MTF structure, FVG, OB, liquidity, zone confluence and indicator evidence without creating a second decision authority.
+
+No new parameters are introduced. The existing 535-parameter contract remains mandatory.
