@@ -26,6 +26,12 @@ namespace cAlgo
                                 Math.Abs(
                                     entry -
                                     stop);
+
+                            if (!IsFinitePositive(entry) ||
+                                !IsFinitePositive(stop) ||
+                                !IsFinitePositive(target) ||
+                                !IsFinitePositive(risk))
+                                return null;
                 
                             return new Plan
                             {
