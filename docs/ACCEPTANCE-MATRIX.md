@@ -633,3 +633,33 @@ Target-terminal/replay remains required for actual startup latency, archive crea
 | Source / Architecture + accumulated audits | Required | Required |
 | Target-terminal replay identifies actual missed setups and false signals | Required | Required |
 | Target-terminal broker execution/protection behavior | Required | Required |
+
+
+
+## Phase 9.17 — Exit Geometry, TP Progression & Protection Integrity
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Live TP must remain beyond current market | PASS | Required |
+| Live TP cannot regress from current target | PASS | Required |
+| BUY/SELL target geometry symmetry | PASS | Required |
+| BUY/SELL protective SL geometry symmetry | PASS | Required |
+| Progressive TP1→TP2→TP3→TP4 ladder | PASS | Required |
+| Actual-fill exit reconciliation is live-aware | PASS | Required |
+| Failed fill reconciliation cannot fall back to stale ladder rebuild | PASS | Required |
+| Server TP ladder can progress after TP1 | PASS | Required |
+| Final target can continue after TP2 | PASS | Required |
+| Broker TP mutations are monotonic independent of legacy tuning | PASS | Required |
+| Broker minimum TP distance participates in live spacing | PASS | Required |
+| Final live SL geometry is broker-distance aware | PASS | Required |
+| No second decision/execution authority | PASS | Required |
+| No new public parameters | PASS | Required |
+| Decision Contracts | Required | Required |
+| Runtime Acceptance | Required | Required |
+| cTrader Compile/Build | Required | Required |
+| Source / Architecture + accumulated audits | Required | Required |
+| Target-terminal replay of TP rollback and exit behavior | Required | Required |
+
+Phase 9.17 target-terminal replay remains required for actual live timing, broker/server-side
+protection behavior, slippage, realized exit R and confirmation that the reported TP rollback
+does not recur on the target symbol/timeframe.
