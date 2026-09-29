@@ -70,7 +70,7 @@ namespace cAlgo
                 new SignalVisualSnapshot
                 {
                     ClosedM5 = closedM5,
-                    Direction = 0,
+                    AuthoritativeDirection = 0,
                     Stage = "WAIT",
                     CreatedM5 = -1,
                     PositionId = 0,
@@ -137,7 +137,7 @@ namespace cAlgo
             {
                 snapshot.PlanActive = true;
                 snapshot.LivePosition = true;
-                snapshot.Direction = _plan.Direction;
+                snapshot.AuthoritativeDirection = _plan.Direction;
                 snapshot.Stage = "ACTIVE";
                 snapshot.EntryMode = _plan.EntryMode;
                 snapshot.CreatedM5 = _plan.CreatedM5;
@@ -224,6 +224,9 @@ namespace cAlgo
             {
                 snapshot.Direction = visualDirection;
             }
+
+            snapshot.AuthoritativeDirection =
+                visualDirection;
 
             snapshot.DecisionReady = decisionReady;
             snapshot.ReactionReady = reactionReady;
