@@ -428,3 +428,35 @@ Restoration:
 The existing responsive-panel runtime remains the production UI path. The
 next implementation phase is **Phase 6.3 — Aggressive entry policy**, to start
 only after this correction is verified on the local cTrader instance.
+
+
+## Startup/core-readiness correction — 2026-09-29
+
+User validation after the previous runtime rollback still reported slow/partial startup and cases where calculation did not reach the panel.
+
+Root cause isolated from source inspection:
+
+- StartAsyncBarsInitialization requested primary M5/M15/M30/H1/H4 data together with M1 and optional D1/W1 data;
+- _initializationDataReady only became true after every requested async callback completed;
+- FinalizeAsyncInitialization previously waited on _initializationDataReady, even though HasEnoughData() only requires M5/M15/M30/H1/H4;
+- after async initialization became ready, cTrader can have already completed its historical Calculate callback sequence, so _initializationReady could become true without any subsequent completed calculation cycle;
+- the result was a valid-looking panel startup state without guaranteed decision / reaction / presentation state.
+
+Correction implemented:
+
+- initialization finalization now keys off HasEnoughData() for the required decision frames instead of waiting for optional M1/D1/W1 callbacks;
+- optional frames continue to arrive asynchronously and remain available to the existing lazy/native/context paths;
+- added CalculationStartupSeed.cs with a single lightweight post-readiness seed;
+- the seed builds the canonical MTF closed context, runs closed-bar analysis, updates live reaction and execution-model presentation state, then renders the normal visual/panel path;
+- the seed explicitly does not call market execution, aggressive execution, pending execution or the full live management pipeline;
+- normal Calculate(int index) remains the recurring live calculation authority;
+- no public parameter was added or changed; production parameter count remains 535;
+- no decision threshold, score, weight, RR, risk, trailing or broker-confirmation rule was changed.
+
+Validation target:
+
+- source / architecture gate;
+- runtime acceptance contracts;
+- cTrader compile.
+
+This is a corrective hotfix only. Phase 6.3 remains the next strategy phase and is not mixed into this correction response.

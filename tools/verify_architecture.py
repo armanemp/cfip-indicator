@@ -635,6 +635,23 @@ if "_initializationPendingDataLoads" not in runtime_init_code:
     raise SystemExit("Async startup must track pending data loads")
 if "StartAsyncBarsInitialization(" not in runtime_init_code:
     raise SystemExit("Async startup coordinator is missing")
+if "if (HasEnoughData())" not in runtime_init_code:
+    raise SystemExit("Startup must finalize as soon as core MTF data is ready")
+if "RunStartupCalculationSeed();" not in runtime_init_code:
+    raise SystemExit("Startup must request one lightweight calculation seed after readiness")
+
+CALC_STARTUP_SEED = ROOT / "Runtime" / "Calculation" / "CalculationStartupSeed.cs"
+if not CALC_STARTUP_SEED.exists():
+    raise SystemExit("Lightweight startup calculation seed owner is missing")
+startup_seed_code = CALC_STARTUP_SEED.read_text(encoding="utf-8")
+for forbidden in (
+    "TryAutoTrade(",
+    "TryAggressiveAutoTrade(",
+    "TrySmartPendingOrders(",
+    "ProcessLiveCalculationStages(",
+):
+    if forbidden in startup_seed_code:
+        raise SystemExit(f"Startup calculation seed must not own live execution path: {forbidden}")
 
 if "RunRuntimeSafetySupervisor(" not in heartbeat_code:
     raise SystemExit("Timer heartbeat must invoke the safety supervisor")
