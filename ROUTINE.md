@@ -110,6 +110,9 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 6. auto-trading و auto-order اگر scenarioهای موازی را مصرف می‌کنند باید execution authority، capacity، duplicate prevention، broker confirmation و lifecycle را به‌صورت deterministic حفظ کنند.
 7. تغییر threshold به‌عنوان tuning محسوب می‌شود و بدون runtime log/replay/outcome evidence مجاز نیست؛ اصلاح contract mismatch از tuning جدا گزارش شود.
 
+8. signal trace باید Risk ATR، Effective TP1 RR و Required TP1 RR را برای مسیرهای قابل محاسبه ثبت کند؛ schema قدیمی باید همچنان قابل خواندن باشد.
+9. بهینه‌سازی performance فقط از طریق cacheهای deterministic با key کامل و بدون اشتراک mutable business state مجاز است.
+
 ## 13. گزارش اجباری کیفیت سیگنال
 
 در گزارش هر فاز باید مشخص شود:
