@@ -202,6 +202,7 @@ namespace cAlgo
                     closedM5,
                     _decision.Direction,
                     lane,
+                    _decision.Regime,
                     _executionModel,
                     _setupPreview);
 
