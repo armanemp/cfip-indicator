@@ -92,6 +92,12 @@ namespace cAlgo
                 }
             }
 
+            // Re-evaluate the final market-entry state immediately before
+            // any market execution gate. This prevents a stale closed-bar
+            // ActionableNow value from authorizing a moved quote/plan.
+            RefreshLiveDecisionActionability(
+                closedM5);
+
             if (_decision == null ||
                 _decision.Direction == 0)
             {

@@ -1142,3 +1142,46 @@ Verification:
 
 Operator pull:
 - pull local `main` immediately after PR #45 is merged; the phase is ready for local replay.
+
+
+## Phase 9.5 verification closeout — 2026-09-29
+
+PR #45 merged into `main` as `46d7f40f685b96405eae8309141d5ef2ab557f76`.
+
+Final verified head before merge: `347adabb0ae383c1e918d67996a858533625ef6c`.
+
+Required gates on the final Phase 9.5 head:
+- Runtime Acceptance PASS;
+- cTrader Compile/Build PASS;
+- Source/Architecture PASS.
+
+The final Phase 9.5 implementation includes the canonical `ACTION|` alert path, ActionableNow-gated directional arrow, non-directional M1 trigger marker, turning-point/adverse-momentum/divergence protection, deterministic opportunity registry ordering, and shared market pre-trade actionability gate.
+
+## Phase 9.5.1 corrective live-actionability coherence — 2026-09-29
+
+Branch: `phase-9-5-1-live-actionability-coherence`
+PR: #46
+
+Corrective findings addressed after Phase 9.5 merge:
+- `ActionableNow` and entry-quality fields could remain stale when the live execution model became unavailable or the decision was blocked;
+- a pre-trade plan needed to remain aligned with the current decision direction and execution mode;
+- a pending stop/limit-style plan must not be presented as a current market ACTION BUY/SELL state;
+- live divergence quality should be refreshed from the current actionability evaluation rather than retained from an older state;
+- the `ACTION` alert kind needed confirmed presentation semantics.
+
+Implementation:
+- live actionability now resets explicitly on blocked/unavailable state;
+- existing pre-trade plans are re-evaluated from their own immutable setup geometry when the structural execution model is intentionally cleared;
+- plan direction and execution mode must agree with the current actionability state;
+- current market actionability is refreshed immediately before automatic market pre-trade eligibility;
+- pending-style plans cannot produce current-market directional alert/arrow state;
+- `ACTION` is classified as confirmed in the presentation mirror.
+
+Verification status:
+- PR #46 final code head currently has Runtime Acceptance PASS;
+- cTrader Compile/Build PASS;
+- Source/Architecture PASS.
+- target cTrader replay remains required for empirical signal timing, false-signal behavior, terminal rendering and realized RR.
+
+Operator pull:
+- local `main` must be pulled after PR #46 is merged.
