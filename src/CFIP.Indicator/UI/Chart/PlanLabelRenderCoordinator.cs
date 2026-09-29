@@ -61,7 +61,7 @@ namespace cAlgo
 
             if (ShowEntry)
             {
-                RenderPlanLabel(
+                RenderCompactPlanLabel(
                     P + "ENTRY_LABEL",
                     "ENTRY " +
                     Price(snapshot.Entry),
@@ -81,7 +81,7 @@ namespace cAlgo
             bool idealDistinct =
                 snapshot.IdealEntryVisible;
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "IDEAL_ENTRY_LABEL",
                 (snapshot.EntryMode ==
                     ExecutionMode.BreakoutMarket
@@ -106,7 +106,7 @@ namespace cAlgo
                      snapshot.Trigger,
                      snapshot.IdealEntry));
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "TRIGGER_LABEL",
                 "TRIGGER " +
                 Price(snapshot.Trigger),
@@ -123,7 +123,7 @@ namespace cAlgo
             double displayStop =
                 snapshot.Stop;
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "SL_LABEL",
                 "SL " +
                 Price(displayStop),
@@ -144,7 +144,7 @@ namespace cAlgo
                     snapshot.Tp1,
                     snapshot.Trigger);
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "TP1_LABEL",
                 "TP1 " +
                 Price(snapshot.Tp1),
@@ -170,7 +170,7 @@ namespace cAlgo
                     snapshot.Tp2,
                     snapshot.Trigger);
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "TP2_LABEL",
                 "TP2 " +
                 Price(snapshot.Tp2),
@@ -196,7 +196,7 @@ namespace cAlgo
                     snapshot.Tp3,
                     snapshot.Trigger);
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "TP3_LABEL",
                 "TP3 " +
                 Price(snapshot.Tp3),
@@ -222,7 +222,7 @@ namespace cAlgo
                     snapshot.Tp4,
                     snapshot.Trigger);
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "TP4_LABEL",
                 "TP4 " +
                 Price(snapshot.Tp4),
@@ -256,7 +256,7 @@ namespace cAlgo
                     activeBrokerTarget,
                     snapshot.Tp4);
 
-            RenderPlanLabel(
+            RenderCompactPlanLabel(
                 P + "ACTIVE_TP_LABEL",
                 "ACTIVE TP " +
                 Price(activeBrokerTarget),
