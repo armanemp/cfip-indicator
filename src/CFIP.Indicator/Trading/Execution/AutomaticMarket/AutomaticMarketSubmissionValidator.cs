@@ -16,6 +16,25 @@ namespace cAlgo
             reason = "";
             ExecutionIntent marketIntent;
 
+            // Final quote-sensitive recheck immediately before broker mutation.
+            // This is intentionally later than plan construction so the current
+            // executable price cannot be authorized by stale ActionableNow state.
+            RefreshLiveDecisionActionability(
+                closedM5);
+
+            if (_decision == null ||
+                !_decision.ActionableNow)
+            {
+                reason =
+                    _decision == null
+                        ? "NO DECISION"
+                        : string.IsNullOrWhiteSpace(
+                            _decision.ActionabilityReason)
+                            ? "ENTRY NOT ACTIONABLE"
+                            : _decision.ActionabilityReason;
+                return false;
+            }
+
             if (!EnsureTradingPermission())
             {
                 reason =
