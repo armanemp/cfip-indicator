@@ -67,7 +67,11 @@ namespace cAlgo
                     Price(snapshot.Entry),
                     snapshot.Entry,
                     EntryLineColor,
-                    true);
+                    true,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
             }
             else
             {
@@ -86,7 +90,11 @@ namespace cAlgo
                 Price(snapshot.IdealEntry),
                 snapshot.IdealEntry,
                 PanelAccentColor,
-                ShowEntry && idealDistinct);
+                ShowEntry && idealDistinct,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
 
             bool triggerDistinct =
                 IsFinitePositive(snapshot.Trigger) &&
@@ -106,7 +114,11 @@ namespace cAlgo
                 TriggerLineColor,
                 ShowTrigger &&
                 triggerDistinct &&
-                !snapshot.LivePosition);
+                !snapshot.LivePosition,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
 
             double displayStop =
                 snapshot.Stop;
@@ -117,7 +129,11 @@ namespace cAlgo
                 Price(displayStop),
                 displayStop,
                 SlLineColor,
-                ShowSL);
+                ShowSL,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
 
             bool tp1Distinct =
                 IsFinitePositive(snapshot.Tp1) &&
@@ -135,7 +151,11 @@ namespace cAlgo
                 snapshot.Tp1,
                 TpLineColor,
                 ShowTP1 &&
-                tp1Distinct);
+                tp1Distinct,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
 
             bool tp2Distinct =
                 IsFinitePositive(snapshot.Tp2) &&
@@ -157,7 +177,11 @@ namespace cAlgo
                 snapshot.Tp2,
                 Tp2LineColor,
                 ShowTP2 &&
-                tp2Distinct);
+                tp2Distinct,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
 
             bool tp3Distinct =
                 IsFinitePositive(snapshot.Tp3) &&
@@ -179,7 +203,11 @@ namespace cAlgo
                 snapshot.Tp3,
                 Tp3LineColor,
                 ShowTP3 &&
-                tp3Distinct);
+                tp3Distinct,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
 
             bool tp4Distinct =
                 IsFinitePositive(snapshot.Tp4) &&
@@ -201,7 +229,11 @@ namespace cAlgo
                 snapshot.Tp4,
                 Tp4LineColor,
                 ShowTP4 &&
-                tp4Distinct);
+                tp4Distinct,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
 
             double activeBrokerTarget =
                 snapshot.BrokerTarget;
@@ -234,7 +266,11 @@ namespace cAlgo
                  ShowTP2 ||
                  ShowTP3 ||
                  ShowTP4) &&
-                activeBrokerTargetDistinct);
+                activeBrokerTargetDistinct,
+                    lineLeft,
+                    labelBar,
+                    boxRightBar,
+                    boxHalfHeight);
         }
     }
 }
