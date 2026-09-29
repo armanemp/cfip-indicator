@@ -1001,18 +1001,26 @@ if "GetPlanLineLeftBar" not in visual_line_code:
 if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
     raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
 
-if "CreateExecutionStatus(" not in control_factory_code:
-    raise SystemExit("Execution controls must be status-only presentation surfaces")
-if ".Click +=" in control_factory_code or ".Checked +=" in control_factory_code or ".Unchecked +=" in control_factory_code:
-    raise SystemExit("Execution status surfaces must not own operator event handlers")
-for forbidden_action in (
+if "CreateExecutionToggle(" not in control_factory_code:
+    raise SystemExit("Execution controls must use interactive ToggleButton presentation")
+for required_event in (
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
+):
+    if required_event not in control_factory_code:
+        raise SystemExit(f"Execution toggle operator event missing: {required_event}")
+for required_action in (
     "ApplyAutoTradingQuickToggleClick",
     "ApplyAutomaticOrdersQuickToggleClick",
+):
+    if required_action not in control_handlers_code:
+        raise SystemExit(f"Execution toggle handler missing: {required_action}")
+for required_setter in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
-    if forbidden_action in control_handlers_code:
-        raise SystemExit(f"Execution UI must not mutate runtime authority: {forbidden_action}")
+    if required_setter not in control_handlers_code:
+        raise SystemExit(f"Execution toggle handler must use canonical runtime setter: {required_setter}")
 # Phase 1.5 performance/supervision gates.
 RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
@@ -2600,20 +2608,14 @@ if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
 # Runtime UI, execution-priority and protection hotfix contracts.
 EXECUTION_CONTROLS_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 EXECUTION_CONTROLS_FACTORY_CODE = EXECUTION_CONTROLS_FACTORY.read_text(encoding="utf-8")
-if "CreateExecutionStatus(" not in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel execution controls must be status-only surfaces")
-if any(
-    token in EXECUTION_CONTROLS_FACTORY_CODE
-    for token in (
-        "_autoTradingQuickToggle.Click +=",
-        "_automaticOrdersQuickToggle.Click +=",
-        "_autoTradingQuickToggle.Checked +=",
-        "_automaticOrdersQuickToggle.Checked +=",
-        "_autoTradingQuickToggle.Unchecked +=",
-        "_automaticOrdersQuickToggle.Unchecked +=",
-    )
+if "CreateExecutionToggle(" not in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution controls must use interactive ToggleButton surfaces")
+for token in (
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
 ):
-    raise SystemExit("Panel execution status surfaces must not own operator events")
+    if token not in EXECUTION_CONTROLS_FACTORY_CODE:
+        raise SystemExit(f"Panel execution toggle event missing: {token}")
 
 EXECUTION_TOGGLE_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
 EXECUTION_TOGGLE_HANDLERS_CODE = EXECUTION_TOGGLE_HANDLERS.read_text(encoding="utf-8")
@@ -2623,8 +2625,13 @@ for token in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
-    if token in EXECUTION_TOGGLE_HANDLERS_CODE:
-        raise SystemExit(f"Execution UI must not mutate runtime authority: {token}")
+    if token not in EXECUTION_TOGGLE_HANDLERS_CODE:
+        raise SystemExit(f"Execution toggle runtime binding missing: {token}")
+
+EXECUTION_CONTROLS_SYNC = ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs"
+EXECUTION_CONTROLS_SYNC_CODE = EXECUTION_CONTROLS_SYNC.read_text(encoding="utf-8")
+if "_executionToggleSyncing = true" not in EXECUTION_CONTROLS_SYNC_CODE:
+    raise SystemExit("Execution toggle visual synchronization must be guarded")
 
 CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
 CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")
