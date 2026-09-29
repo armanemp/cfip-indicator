@@ -499,8 +499,14 @@ Target-terminal replay remains required for exact signal timing, stale-object re
 | Shared automatic market/aggressive/pending submission and protection gates remain intact | PASS | Required |
 | Public parameter count remains unchanged at 552 | PASS | Required |
 | Recent outcome calibration contract | PASS | Required |
-| Runtime Acceptance | Pending | Required |
-| cTrader Compile/Build | Pending | Required |
-| Source / Architecture + accumulated audit | Pending | Required |
+| Runtime Acceptance | PASS | Required |
+| cTrader Compile/Build | PASS | Required |
+| Source / Architecture + accumulated audit | PASS | Required |
 
 Target-terminal replay remains required for broker event ordering, realized R accuracy, lifecycle duration, chart timing, recent calibration behavior and actual signal-quality outcomes.
+
+
+Verification evidence:
+- Runtime Acceptance #1096 PASS
+- cTrader Compile/Build #1280 PASS
+- Source/Architecture #1287 PASS
