@@ -3288,15 +3288,24 @@ Next: Phase 6.1 — Decision closed-bar contract.
 
 ## Runtime UI / protection correction — 2026-09-29
 
-Status: hotfix in validation.
+Status: Phase 7.2 corrective implementation in validation.
 
-User-reported runtime defects being corrected before Phase 7.2:
-- AUTO TRADE and AUTO ORDERS panel controls are bound directly to operator clicks and canonical runtime flags;
-- setup-preview Entry/Ideal/Trigger/SL/TP levels render compact left-side name/price boxes;
-- structural trailing no longer derives a new stop from raw market-price distance between structural events;
-- further trailing progression is evaluated on closed-M5 structural events and remains protective-only;
-- existing pending Stop/Limit paths remain separate from aggressive market entry.
+User-reported runtime defects addressed in the current corrective PR:
+- AUTO TRADE and AUTO ORDERS panel controls use a single direct-click operator boundary tied to canonical runtime flags;
+- setup-preview Entry/Ideal/Trigger/SL/TP levels use compact semantic name/price boxes;
+- setup execution geometry no longer reprices on raw quote movement;
+- structural trailing no longer constructs protection as a raw market-price +/- distance;
+- audible signal alerts are mirrored by non-authoritative on-chart signal markers;
+- prediction objects are rendered from the live presentation path when not superseded by a plan/pending/setup-preview state;
+- reversal LIMIT pending orders select materially future structural levels rather than the current market price, using M5/M15 FVG, order blocks, swing/equal-liquidity structure, MTF context and indicator/OSS confluence;
+- predictive confluence is source-deduplicated and remains behind the existing smart-quality and broker-confirmation gates.
 
-Deep smart-pending reversal-point forecasting is intentionally kept as a later dedicated planning/execution-quality improvement: it will rank future reversal levels from MTF structure, FVG, OB, liquidity, zone confluence and indicator evidence without creating a second decision authority.
+No new public parameters are introduced. The existing 535-parameter contract remains mandatory.
 
-No new parameters are introduced. The existing 535-parameter contract remains mandatory.
+Acceptance state:
+- source/architecture verification: pending on current PR head;
+- runtime acceptance: pending on current PR head;
+- cTrader compile: pending on current PR head;
+- hands-on cTrader chart/broker validation: still required after merge;
+- local pull is required only after the PR is merged into `main`.
+
