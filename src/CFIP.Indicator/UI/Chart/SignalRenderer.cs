@@ -86,23 +86,10 @@ namespace cAlgo
                                         ArrowOffsetAtr));
                 
                             string arrowState =
-                                reactionReady &&
-                                visualDirection == snapshot.ReactionDirection
-                                    ? (snapshot.ReactionConfidence >=
-                                       Math.Max(
-                                           LiveReactionThreshold,
-                                           LiveReactionStrongThreshold)
-                                        ? "STRONG"
-                                        : "REACTION")
-                                    : decisionReady
-                                        ? "CONFIRMED"
-                                        : "WATCH";
+                                "STRONG";
                 
                             bool showCurrentStateArrow =
-                                reactionReady ||
-                                decisionReady
-                                    ? ShowSignalArrow
-                                    : ShowEarlyArrow;
+                                ShowSignalArrow;
 
                             if (showCurrentStateArrow)
                             {
