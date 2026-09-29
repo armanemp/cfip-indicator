@@ -98,6 +98,11 @@ namespace cAlgo
                 
                             _lastAlertUtc =
                                 now;
+
+                            RememberVisualSignalAlert(
+                                key,
+                                direction,
+                                now);
                 
                             if (EnableSoundAlerts)
                             {
@@ -161,6 +166,90 @@ namespace cAlgo
                                 ShowPopup(
                                     message);
                             }
+                        }
+
+        private bool IsVisualSignalAlertKey(
+                            string key)
+                        {
+                            if (string.IsNullOrWhiteSpace(key))
+                                return false;
+
+                            return
+                                key.StartsWith("HIGH|", StringComparison.OrdinalIgnoreCase) ||
+                                key.StartsWith("SMART|", StringComparison.OrdinalIgnoreCase) ||
+                                key.StartsWith("SIGNAL|", StringComparison.OrdinalIgnoreCase) ||
+                                key.StartsWith("EARLY|", StringComparison.OrdinalIgnoreCase) ||
+                                key.StartsWith("REACTION|", StringComparison.OrdinalIgnoreCase) ||
+                                key.StartsWith("REVERSAL|", StringComparison.OrdinalIgnoreCase);
+                        }
+
+        private void RememberVisualSignalAlert(
+                            string key,
+                            int direction,
+                            DateTime now)
+                        {
+                            if (!IsVisualSignalAlertKey(key) ||
+                                direction == 0)
+                                return;
+
+                            int alertM5 =
+                                ExtractVisualAlertM5(
+                                    key,
+                                    _lastEvaluatedM5);
+
+                            if (alertM5 < 0)
+                                return;
+
+                            int separator =
+                                key.IndexOf('|');
+
+                            _lastVisualAlertKind =
+                                separator > 0
+                                    ? key.Substring(
+                                        0,
+                                        separator)
+                                    : "SIGNAL";
+
+                            _lastVisualAlertM5 =
+                                alertM5;
+                            _lastVisualAlertDirection =
+                                direction;
+                            _lastVisualAlertUtc =
+                                now;
+                        }
+
+        private int ExtractVisualAlertM5(
+                            string key,
+                            int fallback)
+                        {
+                            if (string.IsNullOrWhiteSpace(key))
+                                return fallback;
+
+                            string[] parts =
+                                key.Split('|');
+
+                            for (int i = 1;
+                                 i < parts.Length;
+                                 i++)
+                            {
+                                int value;
+
+                                if (!int.TryParse(
+                                        parts[i],
+                                        NumberStyles.Integer,
+                                        CultureInfo.InvariantCulture,
+                                        out value))
+                                    continue;
+
+                                if (value < 0)
+                                    continue;
+
+                                if (_m5Bars == null ||
+                                    value < _m5Bars.Count)
+                                    return value;
+                            }
+
+                            return fallback;
                         }
 
         private SoundType ResolveAlertSoundType(
