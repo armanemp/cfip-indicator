@@ -8,7 +8,7 @@ PARAM_ROOT = ROOT / "Indicator" / "Parameters"
 PARAM_RE = re.compile(
     r'\[Parameter\s*\(([^\]]*)\]\s*'
     r'public\s+([A-Za-z_][\w<>\[\],.?]*)\s+'
-    r'([A-Za-z_]\\w*)\s*\{\s*get;\s*set;\s*\}',
+    r'([A-Za-z_]\w*)\s*\{\s*get;\s*set;\s*\}',
     re.S,
 )
 
