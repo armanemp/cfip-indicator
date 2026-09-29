@@ -121,6 +121,7 @@ def is_positive(value: float) -> bool:
 def config_key(path: Path) -> str:
     name = path.name
     name = re.sub(r"^CFIP_RuntimeLog_v2_", "", name)
+    name = re.sub(r"^CFIP_SignalTrace_v2_", "", name)
     name = re.sub(r"^CFIP_SignalTrace_", "", name)
     name = re.sub(r"_\d{8}_\d{8}\.csv$", "", name)
     return name
