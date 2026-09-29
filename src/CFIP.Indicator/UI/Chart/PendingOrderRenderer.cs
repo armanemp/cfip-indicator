@@ -46,7 +46,10 @@ private void RenderManagedPendingOrder(
                                 P + "PENDING_ENTRY",
                                 snapshot.PendingEntry,
                                 TriggerLineColor,
-                                ShowTrigger);
+                                ShowTrigger,
+                                Math.Max(
+                                    1,
+                                    snapshot.ClosedM5));
                 
                             if (ShowSL &&
                                 IsFinitePositive(snapshot.PendingStop))
@@ -55,7 +58,10 @@ private void RenderManagedPendingOrder(
                                     P + "PENDING_SL",
                                     snapshot.PendingStop,
                                     SlLineColor,
-                                    ShowSL);
+                                    ShowSL,
+                                    Math.Max(
+                                        1,
+                                        snapshot.ClosedM5));
                             }
                 
                             if (ShowTP1 &&
@@ -65,7 +71,10 @@ private void RenderManagedPendingOrder(
                                     P + "PENDING_TP",
                                     snapshot.PendingTarget,
                                     TpLineColor,
-                                    ShowTP1);
+                                    ShowTP1,
+                                    Math.Max(
+                                        1,
+                                        snapshot.ClosedM5));
                             }
                 
                             if (!ShowLevelPriceLabels &&
