@@ -258,7 +258,6 @@ namespace cAlgo
                 private int _initializationPendingDataLoads;
                 private bool _initializationDataRequested;
                 private bool _initializationDataReady;
-                private bool _initializationOptionalDataRequested;
                 private DateTime _lastPanelRenderUtc = DateTime.MinValue;
                 private DateTime _lastCalculationCompletedUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
