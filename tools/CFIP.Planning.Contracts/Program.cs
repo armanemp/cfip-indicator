@@ -14,6 +14,7 @@ namespace cAlgo
 
             VerifyStopTargetProtection();
             VerifyLifecycleTransitions();
+            VerifyMultiPlanRegistry();
             Console.WriteLine("Planning contracts OK");
         }
 
@@ -192,6 +193,96 @@ namespace cAlgo
         }
 
 
+
+        private static void VerifyMultiPlanRegistry()
+        {
+            TradeOpportunityRegistry registry =
+                new TradeOpportunityRegistry();
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "HTF_BUY",
+                    Lane = OpportunityLane.Strategic,
+                    Direction = 1,
+                    Quality = 88,
+                    Risk = 1,
+                    Tp1RR = 2.8
+                },
+                0.10);
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "TACTICAL_BUY",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    Quality = 72,
+                    Risk = 1,
+                    Tp1RR = 2.1
+                },
+                0.10);
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "MICRO_SELL",
+                    Lane = OpportunityLane.MicroReaction,
+                    Direction = -1,
+                    Quality = 78,
+                    Risk = 1,
+                    Tp1RR = 2.4
+                },
+                0.10);
+
+            Assert(
+                registry.Count == 3,
+                "parallel directions coexist");
+
+            Assert(
+                registry[0].Id == "HTF_BUY",
+                "highest-quality lane first");
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "TACTICAL_BUY",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    Quality = 91,
+                    Risk = 1,
+                    Tp1RR = 2.0
+                },
+                0.10);
+
+            Assert(
+                registry.Count == 3 &&
+                registry[0].Id == "TACTICAL_BUY",
+                "same-id replacement is authoritative");
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "NEAR_DUPLICATE",
+                    Lane = OpportunityLane.MicroReaction,
+                    Direction = 1,
+                    Quality = 40,
+                    Risk = 1,
+                    Tp1RR = 1.5
+                },
+                0.10);
+
+            Assert(
+                registry.Count == 3,
+                "near duplicate suppressed");
+
+            registry.Limit(2);
+
+            Assert(
+                registry.Count == 2 &&
+                registry[0].Quality >= registry[1].Quality,
+                "registry limit preserves best candidates");
+        }
 
         private static void Assert(bool condition, string name)
         {
