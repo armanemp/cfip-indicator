@@ -162,7 +162,8 @@ namespace cAlgo
         {
             if (bars == null ||
                 zone == null ||
-                index < 0 ||
+                zone.CreatedIndex < 0 ||
+                index <= zone.CreatedIndex ||
                 index >= bars.Count ||
                 atr <= 0)
                 return false;
