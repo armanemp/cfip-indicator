@@ -34,7 +34,7 @@ namespace cAlgo
                 !entryAllowed ||
                 sampleUtc == DateTime.MinValue)
             {
-                Invalidate();
+                ResetQualification();
                 return false;
             }
 
