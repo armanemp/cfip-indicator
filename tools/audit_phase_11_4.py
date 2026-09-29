@@ -84,9 +84,9 @@ for path, label in (
 
 for token in (
     "effective RR",
-    "stop width",
+    "stop",
     "Tactical",
-    "parallel",
+    "scenario",
     "market",
     "aggressive",
     "pending",
