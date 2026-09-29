@@ -61,7 +61,7 @@ if "ExecutionPolicyAllowed =" not in candidates:
 
 if (
     not re.search(
-        r"ExecutionPolicyAllowed\\s*=\\s*false",
+        r"ExecutionPolicyAllowed\s*=\s*false",
         tf_scenarios,
     ) or
     "INDEPENDENT TIMEFRAME • OBSERVE ONLY" not in tf_scenarios
