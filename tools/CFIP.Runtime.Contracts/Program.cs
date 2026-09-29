@@ -1981,6 +1981,7 @@ namespace cAlgo
             string reversalLimitPath = Path.Combine("src", "CFIP.Indicator", "Trading", "Pending", "Placement", "ReversalLimitPreparation.cs");
             string controlFactoryPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsFactory.cs");
             string controlHandlersPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionToggleHandlers.cs");
+            string controlSyncPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsSynchronizer.cs");
 
             Assert(
                 File.Exists(snapshotPath) &&
@@ -1998,7 +1999,8 @@ namespace cAlgo
                 File.Exists(predictiveScorerPath) &&
                 File.Exists(reversalLimitPath) &&
                 File.Exists(controlFactoryPath) &&
-                File.Exists(controlHandlersPath),
+                File.Exists(controlHandlersPath) &&
+                File.Exists(controlSyncPath),
                 "visual/control sources exist");
 
             string snapshot = File.ReadAllText(snapshotPath);
@@ -2017,6 +2019,7 @@ namespace cAlgo
             string reversalLimit = File.ReadAllText(reversalLimitPath);
             string controlFactory = File.ReadAllText(controlFactoryPath);
             string controlHandlers = File.ReadAllText(controlHandlersPath);
+            string controlSync = File.ReadAllText(controlSyncPath);
 
             Assert(
                 snapshot.Contains("SetupPreviewActive") &&
