@@ -74,6 +74,7 @@ namespace cAlgo
                 private int _tp3Hit;
                 private int _tp4Hit;
                 private bool _serverSideTakeProfitLadderActive;
+                private bool _serverSideBreakEvenActive;
                 private bool _slHit;
                 private double _peakPrice;
                 private double _lastMarket;
