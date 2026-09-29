@@ -123,3 +123,21 @@ The repository contracts cover deterministic retry state, stage continuation and
 | Failure isolation across signals | Yes | PASS |
 | Failure isolation across execution paths | Yes | PASS |
 | Successful retry-state reset | Yes | PASS |
+
+## Phase 6.1 — Decision closed-bar contract
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Canonical closed-bar index resolution uses actual next-bar open time | Yes | PASS |
+| Exact bar-open boundary selects only the preceding fully closed bar | Yes | PASS |
+| Between-boundary and gap semantics are deterministic | Yes | PASS |
+| Future bar cannot be accepted as closed | Yes | PASS |
+| Decision request carries one canonical MTF closed context | Yes | PASS |
+| Required decision frames match canonical closed indices | Yes | PASS |
+| Present optional M1/D1/W1 frames match canonical closed indices | Yes | PASS |
+| Timeframe agreement reuses canonical closed indices | Yes | PASS |
+| Source / architecture gates | Yes | PASS |
+| Runtime acceptance contracts | Yes | PASS |
+| cTrader compile | Yes | PASS |
+
+The phase changes temporal and ownership guarantees only; decision thresholds, weights, RR, risk, trailing and broker execution semantics are intentionally unchanged.
