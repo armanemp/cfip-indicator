@@ -64,6 +64,24 @@ namespace cAlgo
                 identity,
                 result,
                 confirmed);
+
+            RecordExecutionTelemetryHistory(
+                identity.Path.ToString(),
+                ParseTelemetryM5(identity.AttemptKey),
+                confirmed
+                    ? "CONFIRMED"
+                    : result == null
+                        ? "NULL RESULT"
+                        : result.IsSuccessful
+                            ? "UNCONFIRMED"
+                            : "REJECTED",
+                result == null
+                    ? "BROKER RETURNED NULL"
+                    : result.Error.HasValue
+                        ? result.Error.Value.ToString()
+                        : result.IsSuccessful
+                            ? "BROKER ACCEPTED"
+                            : "BROKER REJECTED");
         }
 
         private void RecordSubmissionFailure(
@@ -76,6 +94,12 @@ namespace cAlgo
 
             RecordExecutionTelemetryFailure(
                 identity,
+                "EXCEPTION / SUBMISSION FAILED");
+
+            RecordExecutionTelemetryHistory(
+                identity.Path.ToString(),
+                ParseTelemetryM5(identity.AttemptKey),
+                "FAILED",
                 "EXCEPTION / SUBMISSION FAILED");
         }
 
