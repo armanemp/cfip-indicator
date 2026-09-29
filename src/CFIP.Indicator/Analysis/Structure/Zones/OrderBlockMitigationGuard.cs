@@ -44,56 +44,40 @@ namespace cAlgo
                      j++)
                 {
                     double probe =
-                        direction == 1
-                            ? (ObBreakByWicks
-                                ? bars.LowPrices[j]
-                                : Math.Min(
-                                    bars.OpenPrices[j],
-                                    bars.ClosePrices[j]))
-                            : (ObBreakByWicks
-                                ? bars.HighPrices[j]
-                                : Math.Max(
-                                    bars.OpenPrices[j],
-                                    bars.ClosePrices[j]));
+                        OrderBlockRule.GetMitigationProbe(
+                            direction,
+                            bars.OpenPrices[j],
+                            bars.ClosePrices[j],
+                            bars.HighPrices[j],
+                            bars.LowPrices[j],
+                            ObBreakByWicks);
 
-                    if (direction == 1)
-                    {
-                        if (probe <=
-                            zoneLow)
-                            return false;
+                    double nextLow;
+                    double nextHigh;
+                    bool changed;
+                    double nextRatio;
 
-                        if (probe <
-                            managedHigh)
-                        {
-                            managedHigh =
-                                Math.Max(
-                                    managedLow,
-                                    probe);
-                            partiallyMitigated = true;
-                        }
-                    }
-                    else
-                    {
-                        if (probe >=
-                            zoneHigh)
-                            return false;
-
-                        if (probe >
-                            managedLow)
-                        {
-                            managedLow =
-                                Math.Min(
-                                    managedHigh,
-                                    probe);
-                            partiallyMitigated = true;
-                        }
-                    }
-
-                    if (managedHigh -
-                        managedLow <=
-                        Symbol.TickSize)
+                    if (!OrderBlockRule.TryApplyPartialMitigation(
+                            direction,
+                            managedLow,
+                            managedHigh,
+                            probe,
+                            Symbol.TickSize,
+                            out nextLow,
+                            out nextHigh,
+                            out changed,
+                            out nextRatio))
                         return false;
-                }
+
+                    managedLow = nextLow;
+                    managedHigh = nextHigh;
+                    partiallyMitigated =
+                        partiallyMitigated ||
+                        changed;
+
+                    if (nextRatio <= 0.05)
+                        return false;
+
             }
 
             remainingRatio =
@@ -101,7 +85,9 @@ namespace cAlgo
                  managedLow) /
                 originalWidth;
 
-            return remainingRatio > 0.05;
+            return
+                managedHigh > managedLow &&
+                remainingRatio > 0.05;
         }
     }
 }
