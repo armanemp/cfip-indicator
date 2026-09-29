@@ -18,6 +18,7 @@ namespace cAlgo
             VerifyCorrelationAwareEvidence();
             VerifyQualityWeightedFrameContribution();
             VerifyMarketRegimeClassification();
+            VerifySignalActionability();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -636,6 +637,123 @@ namespace cAlgo
                     range) <
                 50,
                 "compression quality is low");
+        }
+
+        private static void VerifySignalActionability()
+        {
+            SignalActionabilityResult accepted =
+                SignalActionabilityRule.Evaluate(
+                    1, 2.50, 2.00,
+                    80, 45,
+                    1, 70,
+                    false, 4, 1,
+                    true, false,
+                    101, 99, 102, 1);
+
+            Assert(
+                accepted.Allowed &&
+                accepted.Reason == "ACTIONABLE",
+                "actionable setup accepted");
+
+            SignalActionabilityResult lowRr =
+                SignalActionabilityRule.Evaluate(
+                    1, 1.20, 2.00,
+                    80, 45,
+                    1, 70,
+                    false, 4, 1,
+                    true, false,
+                    101, 99, 102, 1);
+
+            Assert(
+                !lowRr.Allowed &&
+                lowRr.Reason == "RR BELOW MINIMUM",
+                "low RR blocked");
+
+            SignalActionabilityResult lateBuy =
+                SignalActionabilityRule.Evaluate(
+                    1, 2.50, 2.00,
+                    80, 45,
+                    1, 70,
+                    false, 4, 1,
+                    true, false,
+                    105, 99, 102, 1);
+
+            Assert(
+                !lateBuy.Allowed &&
+                lateBuy.Reason == "PRICE ABOVE ENTRY ZONE • LATE",
+                "late BUY blocked");
+
+            SignalActionabilityResult lateSell =
+                SignalActionabilityRule.Evaluate(
+                    -1, 2.50, 2.00,
+                    80, 45,
+                    -1, 70,
+                    false, 4, 1,
+                    true, false,
+                    95, 98, 101, 1);
+
+            Assert(
+                !lateSell.Allowed &&
+                lateSell.Reason == "PRICE BELOW ENTRY ZONE • LATE",
+                "late SELL blocked");
+
+            SignalActionabilityResult opposingDivergence =
+                SignalActionabilityRule.Evaluate(
+                    1, 2.50, 2.00,
+                    80, 45,
+                    -1, 80,
+                    true, 4, 1,
+                    true, false,
+                    101, 99, 102, 1);
+
+            Assert(
+                !opposingDivergence.Allowed &&
+                opposingDivergence.Reason ==
+                    "OPPOSING REGULAR DIVERGENCE",
+                "opposing divergence blocked");
+
+            SignalActionabilityResult strongOpposingDivergence =
+                SignalActionabilityRule.Evaluate(
+                    1, 2.50, 2.00,
+                    80, 45,
+                    -1, 90,
+                    false, 4, 1,
+                    true, false,
+                    101, 99, 102, 1);
+
+            Assert(
+                !strongOpposingDivergence.Allowed &&
+                strongOpposingDivergence.Reason ==
+                    "STRONG OPPOSING DIVERGENCE",
+                "strong opposing divergence blocked");
+
+            SignalActionabilityResult stale =
+                SignalActionabilityRule.Evaluate(
+                    1, 2.50, 2.00,
+                    80, 45,
+                    1, 70,
+                    false, 4, 3,
+                    true, false,
+                    101, 99, 102, 1);
+
+            Assert(
+                !stale.Allowed &&
+                stale.Reason == "SIGNAL LATE",
+                "aged signal blocked");
+
+            SignalActionabilityResult pending =
+                SignalActionabilityRule.Evaluate(
+                    1, 2.50, 2.00,
+                    80, 45,
+                    1, 70,
+                    false, 4, 1,
+                    true, true,
+                    101, 99, 102, 1);
+
+            Assert(
+                !pending.Allowed &&
+                pending.Reason == "PENDING ORDER EXISTS",
+                "pending duplicate blocked");
         }
 
         private static void Assert(bool condition, string name)
