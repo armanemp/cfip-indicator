@@ -29,6 +29,11 @@ namespace cAlgo
             f.EmaFast = Ema(bars, index, true);
             f.EmaSlow = Ema(bars, index, false);
 
+            ApplyWaveTrendEvidence(
+                f,
+                bars,
+                index);
+
             if (ReferenceEquals(
                     bars,
                     _m5Bars))
