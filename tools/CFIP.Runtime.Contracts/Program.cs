@@ -24,6 +24,7 @@ namespace cAlgo
             VerifyRuntimeFaultStateMachine();
             VerifyClosedBarRetryPolicy();
             VerifyUnifiedSubmissionGate();
+            VerifyVisualAndExecutionControls();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -962,6 +963,71 @@ namespace cAlgo
                 otherPath.CanonicalKey,
                 "submission identities remain distinct");
         }
+        private static void VerifyVisualAndExecutionControls()
+        {
+            string snapshotPath = Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "SignalVisualSnapshot.cs");
+            string previewPath = Path.Combine("src", "CFIP.Indicator", "Core", "Models", "TradeSetupPreview.cs");
+            string previewBuilderPath = Path.Combine("src", "CFIP.Indicator", "Planning", "TradePlan", "PlanPreviewBuilder.cs");
+            string calculationPath = Path.Combine("src", "CFIP.Indicator", "Runtime", "Calculation", "CalculationLiveCycle.cs");
+            string rendererPath = Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanRenderCoordinator.cs");
+            string controlFactoryPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsFactory.cs");
+            string controlHandlersPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionToggleHandlers.cs");
+
+            Assert(
+                File.Exists(snapshotPath) &&
+                File.Exists(previewPath) &&
+                File.Exists(previewBuilderPath) &&
+                File.Exists(calculationPath) &&
+                File.Exists(rendererPath) &&
+                File.Exists(controlFactoryPath) &&
+                File.Exists(controlHandlersPath),
+                "visual/control sources exist");
+
+            string snapshot = File.ReadAllText(snapshotPath);
+            string preview = File.ReadAllText(previewPath);
+            string previewBuilder = File.ReadAllText(previewBuilderPath);
+            string calculation = File.ReadAllText(calculationPath);
+            string renderer = File.ReadAllText(rendererPath);
+            string controlFactory = File.ReadAllText(controlFactoryPath);
+            string controlHandlers = File.ReadAllText(controlHandlersPath);
+
+            Assert(
+                snapshot.Contains("SetupPreviewActive") &&
+                snapshot.Contains("SetupEntry") &&
+                snapshot.Contains("SetupStop") &&
+                snapshot.Contains("SetupTp1"),
+                "canonical snapshot carries setup levels");
+
+            Assert(
+                preview.Contains("never consumed by broker submission"),
+                "visual preview is non-executable");
+
+            Assert(
+                previewBuilder.Contains("BuildStructuralStop(") &&
+                previewBuilder.Contains("BuildTargetLevels(") &&
+                previewBuilder.Contains("SelectTargets("),
+                "visual preview reuses planning authorities");
+
+            Assert(
+                calculation.Contains("RenderSetupPreview("),
+                "calculation renders setup preview");
+
+            Assert(
+                renderer.Contains("RenderLevelLines("),
+                "plan renderer owns shared level rendering");
+
+            Assert(
+                controlFactory.Contains(".Checked +=") &&
+                controlFactory.Contains(".Unchecked +=") &&
+                !controlFactory.Contains(".Click +="),
+                "execution toggles use state-specific events");
+
+            Assert(
+                controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
+                controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
+                "toggle handlers use runtime state authority");
+        }
+
         private static void Assert(bool condition, string name)
         {
             if (!condition)
