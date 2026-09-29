@@ -32,8 +32,17 @@ namespace cAlgo
         private bool RequiresHtfRewardForTargetStage(
             int stage)
         {
+            bool topDownCalibrated =
+                _decision != null &&
+                _decision.TopDownEligible &&
+                string.Equals(
+                    _decision.TopDownStage,
+                    "ENTRY CALIBRATED",
+                    StringComparison.OrdinalIgnoreCase);
+
             return stage == 0
-                ? RequireHtfRewardForTp1
+                ? RequireHtfRewardForTp1 ||
+                  topDownCalibrated
                 : RequireHtfRewardForTp2Plus;
         }
 
