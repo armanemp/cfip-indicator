@@ -60,7 +60,10 @@ if "ExecutionPolicyAllowed =" not in candidates:
     ERRORS.append("canonical candidate execution-policy state is not attached")
 
 if (
-    "ExecutionPolicyAllowed = false" not in tf_scenarios or
+    not re.search(
+        r"ExecutionPolicyAllowed\\s*=\\s*false",
+        tf_scenarios,
+    ) or
     "INDEPENDENT TIMEFRAME • OBSERVE ONLY" not in tf_scenarios
 ):
     ERRORS.append("independent timeframe scenarios must remain observe-only")
