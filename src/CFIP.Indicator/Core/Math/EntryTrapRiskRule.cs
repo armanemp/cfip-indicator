@@ -116,6 +116,13 @@ namespace cAlgo
             if (supportiveHiddenDivergence)
                 risk -= 10;
 
+            bool strongAdverseMomentum =
+                m5 >= 0.45 ||
+                m1 >= 0.40;
+
+            if (strongAdverseMomentum)
+                risk = Math.Max(risk, 75);
+
             risk =
                 NumericGuards.ClampInt(
                     risk,
@@ -124,8 +131,13 @@ namespace cAlgo
 
             string reason;
 
-            if (divergence >= 78 &&
-                extreme)
+            if (strongAdverseMomentum)
+            {
+                reason =
+                    "ADVERSE MOMENTUM";
+            }
+            else if (divergence >= 78 &&
+                     extreme)
             {
                 reason =
                     "EXTREME LOCATION + OPPOSING DIVERGENCE";
