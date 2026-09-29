@@ -8,7 +8,8 @@ namespace cAlgo
         private SubmissionAttemptIdentity BuildSubmissionAttemptIdentity(
             int closedM5,
             int direction,
-            ExecutionSubmissionPath path)
+            ExecutionSubmissionPath path,
+            string scenarioId)
         {
             string signalKey =
                 SymbolName + "|" +
@@ -18,12 +19,28 @@ namespace cAlgo
             string attemptKey =
                 path.ToString() + "|" +
                 closedM5 + "|" +
-                direction;
+                direction + "|" +
+                (string.IsNullOrWhiteSpace(scenarioId)
+                    ? "UNSCOPED"
+                    : scenarioId.Trim().Replace("|", "/"));
 
             return new SubmissionAttemptIdentity(
                 signalKey,
                 attemptKey,
-                path);
+                path,
+                scenarioId);
+        }
+
+        private SubmissionAttemptIdentity BuildSubmissionAttemptIdentity(
+            int closedM5,
+            int direction,
+            ExecutionSubmissionPath path)
+        {
+            return BuildSubmissionAttemptIdentity(
+                closedM5,
+                direction,
+                path,
+                "UNSCOPED");
         }
 
         private bool TryAcquireSubmission(
@@ -33,15 +50,85 @@ namespace cAlgo
             out SubmissionAttemptIdentity identity,
             out string reason)
         {
+            return TryAcquireSubmission(
+                closedM5,
+                direction,
+                path,
+                "UNSCOPED",
+                out identity,
+                out reason);
+        }
+
+        private bool TryAcquireSubmission(
+            int closedM5,
+            int direction,
+            ExecutionSubmissionPath path,
+            string scenarioId,
+            out SubmissionAttemptIdentity identity,
+            out string reason)
+        {
             identity = BuildSubmissionAttemptIdentity(
                 closedM5,
                 direction,
-                path);
+                path,
+                scenarioId);
 
             return _submissionGate.TryAcquire(
                 identity,
                 Server.TimeInUtc,
                 out reason);
+        }
+
+        private string ResolvePlanExecutionScenarioId(
+            int closedM5)
+        {
+            if (_plan == null)
+                return "CANONICAL-NONE";
+
+            TradeOpportunityCandidate selected;
+            string reason;
+
+            if (ScenarioExecutionPolicy.TryResolvePlanScenario(
+                    _tradePlanRegistry.Snapshot(),
+                    _plan,
+                    _decision,
+                    Math.Max(
+                        Symbol.TickSize * 2,
+                        Symbol.PipSize * 0.10),
+                    out selected,
+                    out reason) &&
+                selected != null &&
+                !string.IsNullOrWhiteSpace(
+                    selected.ScenarioId))
+            {
+                return selected.ScenarioId;
+            }
+
+            return
+                ScenarioExecutionPolicy.CanonicalScenarioId(
+                    _plan);
+        }
+
+        private string ResolveDirectionExecutionScenarioId(
+            int direction)
+        {
+            TradeOpportunityCandidate selected;
+
+            if (ScenarioExecutionPolicy.TryResolveDirectionScenario(
+                    _tradePlanRegistry.Snapshot(),
+                    _decision,
+                    direction,
+                    out selected) &&
+                selected != null &&
+                !string.IsNullOrWhiteSpace(
+                    selected.ScenarioId))
+            {
+                return selected.ScenarioId;
+            }
+
+            return
+                "CANONICAL-DIRECTION-" +
+                (direction == 1 ? "BUY" : "SELL");
         }
 
         private void RecordSubmission(
