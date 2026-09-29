@@ -1189,7 +1189,7 @@ namespace cAlgo
                     DateTimeKind.Utc);
 
             Assert(
-                !policy.Observe(200, 1, true, t),
+                !policy.ObserveReactionSample(200, 1, true, t),
                 "first intrabar qualification sample does not arm");
 
             Assert(
@@ -1216,7 +1216,7 @@ namespace cAlgo
 
             Assert(
                 policy.IsQualified &&
-                policy.StateText() == "ARMED",
+                policy.GetQualificationStateText() == "ARMED",
                 "policy reaches armed state");
 
             Assert(
