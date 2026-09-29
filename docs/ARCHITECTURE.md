@@ -37,6 +37,7 @@ The presentation layer consumes authoritative state and never decides whether a 
 - Broker state is authoritative after mutations.
 - Automatic market execution and automatic pending orders share one strategy identity.
 - Execution capacity is explicitly single-plan: a managed open position blocks creation of another managed plan.
+- Execution capacity is explicitly single-plan: `ExecutionCapacityRule` is the semantic owner and `ExecutionCapacityGuard` maps broker state to that rule.
 - No configurable multi-position mode is advertised while the execution architecture remains single-plan.
 - Manual BUY/SELL/order-entry controls do not exist.
 - SL changes are protective-only.
