@@ -55,7 +55,7 @@ namespace cAlgo
             if (row.Width != nextWidth)
                 row.Width = nextWidth;
 
-            if (row.ForegroundColor != nextColor)
+            if (!Equals(row.ForegroundColor, nextColor))
                 row.ForegroundColor = nextColor;
 
             if (row.TextAlignment != TextAlignment.Left)
