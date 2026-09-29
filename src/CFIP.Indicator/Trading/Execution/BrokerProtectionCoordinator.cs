@@ -8,6 +8,49 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private double ResolveLiveProtectionTarget(
+                            Position position,
+                            double requestedTarget,
+                            double atr)
+                        {
+                            if (position == null ||
+                                _plan == null)
+                                return 0;
+
+                            int direction =
+                                position.TradeType == TradeType.Buy
+                                    ? 1
+                                    : -1;
+
+                            double market =
+                                direction == 1
+                                    ? Symbol.Bid
+                                    : Symbol.Ask;
+
+                            double minimumForwardDistance =
+                                Math.Max(
+                                    Symbol.PipSize,
+                                    atr > 0
+                                        ? atr *
+                                          Math.Max(
+                                              0.05,
+                                              MinimumTpSpacingAtr)
+                                        : Symbol.TickSize);
+
+                            if (IsFinitePositive(requestedTarget) &&
+                                LiveExitGeometryRule.ShouldAdvanceTarget(
+                                    direction,
+                                    0,
+                                    requestedTarget,
+                                    market,
+                                    minimumForwardDistance))
+                                return NormalizePrice(requestedTarget);
+
+                            return FurthestForwardPlanTarget(
+                                market,
+                                minimumForwardDistance);
+                        }
+
         private bool EnsureBrokerProtectionForPosition(
                             Position position,
                             double stop,
@@ -32,6 +75,17 @@ namespace cAlgo
 
                             AdoptServerSideTakeProfitLadder(
                                 position);
+
+                            double atr =
+                                _m5Bars == null
+                                    ? 0
+                                    : Atr(
+                                        _m5Bars,
+                                        Math.Max(
+                                            1,
+                                            Math.Min(
+                                                _m5Bars.Count - 2,
+                                                _lastEvaluatedM5)));
 
                             bool currentStopValid =
                                 position.StopLoss.HasValue &&
@@ -103,6 +157,12 @@ namespace cAlgo
                                 }
                             }
 
+                            double effectiveTarget =
+                                ResolveLiveProtectionTarget(
+                                    position,
+                                    target,
+                                    atr);
+
                             bool currentTargetValid =
                                 position.TakeProfit.HasValue &&
                                 IsFinitePositive(
@@ -110,13 +170,40 @@ namespace cAlgo
                                 IsValidTarget(
                                     direction,
                                     position.EntryPrice,
-                                    position.TakeProfit.Value);
+                                    position.TakeProfit.Value) &&
+                                LiveExitGeometryRule.ShouldAdvanceTarget(
+                                    direction,
+                                    0,
+                                    position.TakeProfit.Value,
+                                    market,
+                                    Math.Max(
+                                        Symbol.PipSize,
+                                        atr > 0
+                                            ? atr *
+                                              Math.Max(
+                                                  0.05,
+                                                  MinimumTpSpacingAtr)
+                                            : Symbol.TickSize));
 
                             bool desiredTargetValid =
+                                IsFinitePositive(effectiveTarget) &&
                                 IsValidTarget(
                                     direction,
                                     position.EntryPrice,
-                                    target);
+                                    effectiveTarget) &&
+                                LiveExitGeometryRule.ShouldAdvanceTarget(
+                                    direction,
+                                    0,
+                                    effectiveTarget,
+                                    market,
+                                    Math.Max(
+                                        Symbol.PipSize,
+                                        atr > 0
+                                            ? atr *
+                                              Math.Max(
+                                                  0.05,
+                                                  MinimumTpSpacingAtr)
+                                            : Symbol.TickSize));
 
                             bool targetOk =
                                 _serverSideTakeProfitLadderActive ||
