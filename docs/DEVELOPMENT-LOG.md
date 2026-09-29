@@ -1520,3 +1520,35 @@ Verification:
 
 Next phase: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
 Operator pull: required now; pull main to the latest closeout commit.
+
+
+## Phase 9.15 — Startup Responsiveness & Portable Long-Term History — 2026-09-29
+
+Status: IMPLEMENTED; awaiting documentation-inclusive verification.
+
+Finding:
+Startup could remain in LOADING DATA because the critical readiness check required deep history and D1/W1 were allowed to contribute to the blocking async load count.
+
+Implementation:
+- lowered internal core readiness to M5 60, M15 50, M30 45, H1 40 and H4 36;
+- made D1/W1 optional startup data;
+- invalidated MTF context cache when optional data arrives;
+- added explicit startup progress text;
+- added append-only 90-day CSV outcome archives in the designated cTrader indicator folder;
+- deferred archive import until after the first usable calculation seed;
+- connected full archive aggregates to long-term contextual calibration;
+- kept recent history as the first calibration source;
+- added a dedicated startup/persistence audit to CI;
+- recorded a permanent requirement that every future phase audit and optimize the complete Analysis -> Decision -> Signal -> Alert -> Execution -> Broker -> Protection -> Outcome -> Learning chain.
+
+Safety:
+- AccessRights remains None;
+- no FullAccess;
+- no history-delete path;
+- no second signal or execution authority;
+- no new public parameters.
+
+Detailed record: docs/PHASE-9-15-STARTUP-PERSISTENT-HISTORY.md.
+
+Next phase: Phase 9.16 — replay/measurement instrumentation and evidence-driven signal refinement.
+Operator pull: after Phase 9.15 verification and merge.
