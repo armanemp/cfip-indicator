@@ -242,16 +242,8 @@ for token in (
     if token not in frame_scoring_code:
         raise SystemExit(f"Market-frame structural scoring must de-duplicate one causal break: {token}")
 
-for token in (
-    "_m5Frame.StructureBull ||",
-    "_m5Frame.MssBull ||",
-    "_m5Frame.ChochBull",
-    "_m5Frame.StructureBear ||",
-    "_m5Frame.MssBear ||",
-    "_m5Frame.ChochBear",
-):
-    if token not in structural_confirmations_code:
-        raise SystemExit(f"Structural confirmation must collapse M5 break labels: {token}")
+if "StructuralEvidenceRule.CanonicalEventCount(" not in structural_confirmations_code:
+    raise SystemExit("Structural confirmation must collapse M5 break labels through the canonical event rule")
 
 capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 capacity_guard = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
