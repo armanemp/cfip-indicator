@@ -3939,3 +3939,19 @@ slippage, realized R and confirmation of the reported TP regression fix.
 
 Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
 Operator pull: required after final verified closeout.
+
+## Phase 9.17 verification closeout — 2026-09-29
+
+Status: VERIFIED COMPLETE; target-terminal replay still required.
+
+Verification:
+- Runtime Acceptance #1193 PASS
+- cTrader Compile/Build #1377 PASS
+- Source/Architecture + accumulated audits #1384 PASS
+- Decision Contracts PASS within Build
+- Phase 9.16 signal measurement audit PASS
+- Phase 9.17 exit geometry audit PASS
+- Verified head: `c027a983081102ace0353d064219a5aad739ed94`
+
+Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
+Operator action: merge PR #60, then pull local main to the verified merge commit.
