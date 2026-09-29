@@ -468,6 +468,8 @@ expected_models = {
     "PredictivePendingCandidate",
     "OssIndicatorSnapshot", "MarketRegimeSnapshot", "MarketRegimeClassificationInput",
     "TradeOpportunityCandidate", "WaveTrendSnapshot",
+    "DivergenceResult", "DivergenceCandidate",
+    "TradeActionabilityResult",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
