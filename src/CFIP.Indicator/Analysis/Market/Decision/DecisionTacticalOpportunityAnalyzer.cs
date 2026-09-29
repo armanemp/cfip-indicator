@@ -29,11 +29,24 @@ namespace cAlgo
                 _m5Bars == null ||
                 closedM5 < 30 ||
                 (direction != 1 &&
-                 direction != -1) ||
-                _m5Frame.Direction != direction)
+                 direction != -1))
                 return new TacticalOpportunityResult(
                     false,
                     OpportunityLane.Tactical,
+                    0,
+                    0);
+
+            int directionalScore =
+                direction == 1
+                    ? _m5Frame.BullScore
+                    : _m5Frame.BearScore;
+
+            if (directionalScore < 35)
+                return new TacticalOpportunityResult(
+                    false,
+                    direction == _m5Frame.Direction
+                        ? OpportunityLane.Tactical
+                        : OpportunityLane.CounterHtfTactical,
                     0,
                     0);
 
@@ -155,7 +168,11 @@ namespace cAlgo
 
             int quality =
                 (int)Math.Round(
-                    _m5Frame.Quality * 0.45 +
+                    Math.Min(
+                        100,
+                        Math.Max(
+                            50,
+                            directionalScore * 1.6)) * 0.45 +
                     zoneQuality * 0.15 +
                     _m5Frame.WaveTrendQuality * 0.20 +
                     IndependentEvidence(direction) * 5.0 +
