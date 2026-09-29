@@ -94,6 +94,9 @@ namespace cAlgo
             }
             finally
             {
+                if (_initializationReady)
+                    _lastCalculationCompletedUtc = TimeInUtc;
+
                 _calculationBusy = false;
             }
         }

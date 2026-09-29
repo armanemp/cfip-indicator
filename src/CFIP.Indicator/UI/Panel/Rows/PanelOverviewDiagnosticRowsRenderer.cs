@@ -68,15 +68,42 @@ namespace cAlgo
                 AddPanelRow(
                     ref slot,
                     "ENGINE  " +
-                    _status,
-                    _status.IndexOf(
-                        "WAIT",
-                        StringComparison.OrdinalIgnoreCase) >= 0
+                    _status +
+                    "  •  " +
+                    CalculationAgeText(),
+                    CalculationAgeIsStale()
                         ? PanelWarningColor
                         : PanelMutedTextColor,
                     false,
                     contentWidth);
             }
+        }
+
+        private bool CalculationAgeIsStale()
+        {
+            if (_lastCalculationCompletedUtc == DateTime.MinValue)
+                return true;
+
+            return
+                (Server.TimeInUtc -
+                 _lastCalculationCompletedUtc).TotalSeconds > 3;
+        }
+
+        private string CalculationAgeText()
+        {
+            if (_lastCalculationCompletedUtc == DateTime.MinValue)
+                return "CALC NO CYCLE";
+
+            double age =
+                Math.Max(
+                    0,
+                    (Server.TimeInUtc -
+                     _lastCalculationCompletedUtc).TotalSeconds);
+
+            return
+                "CALC " +
+                age.ToString("F1") +
+                "s AGO";
         }
     }
 }

@@ -26,6 +26,9 @@ namespace cAlgo
                                     if (_panelRestoreButton != null)
                                         _panelRestoreButton.IsVisible =
                                             _panelHidden;
+
+                                    if (!_panelHidden)
+                                        RenderPanel();
                                 }
         
         private void RemovePanel()

@@ -5,6 +5,18 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private bool ShouldRunSafetySupervisor(DateTime nowUtc)
+        {
+            if (_lastSafetySupervisorUtc == DateTime.MinValue ||
+                (nowUtc - _lastSafetySupervisorUtc).TotalMilliseconds >= 1000)
+            {
+                _lastSafetySupervisorUtc = nowUtc;
+                return true;
+            }
+
+            return false;
+        }
+
         private void HandleRuntimeHeartbeat()
         {
             if (_runtimeTimerBusy)
@@ -18,16 +30,19 @@ namespace cAlgo
                     Server.TimeInUtc;
 
                 // The heartbeat deliberately avoids full analysis. It supervises
-                // broker/live safety state and EOD boundaries, then refreshes only
-                // the lightweight panel clock.
+                // broker/live safety state on its independent cadence and keeps
+                // the complete panel view responsive without recalculating analysis.
                 _lastPanelHeartbeatUtc =
                     now;
 
-                RunRuntimeSafetySupervisor(
-                    now);
+                if (ShouldRunSafetySupervisor(now))
+                    RunRuntimeSafetySupervisor(
+                        now);
 
                 UpdatePanelHeartbeatRows(
                     now);
+
+                RenderPanel();
             }
             catch (Exception ex)
             {

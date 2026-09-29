@@ -127,7 +127,7 @@ namespace cAlgo
         {
             Timer.Stop();
             Timer.Start(
-                TimeSpan.FromMilliseconds(100));
+                TimeSpan.FromMilliseconds(250));
         }
 
         private void StartAsyncBarsInitialization()
@@ -287,10 +287,11 @@ namespace cAlgo
 
             _status = "READY";
             _initializationReady = true;
+            _lastPanelRenderUtc = DateTime.MinValue;
 
             Timer.Stop();
             Timer.Start(
-                TimeSpan.FromSeconds(1));
+                TimeSpan.FromMilliseconds(500));
 
             try
             {
@@ -395,6 +396,7 @@ namespace cAlgo
                         ? "LOADING DATA"
                         : "BUILDING DATA";
 
+                RenderPanel();
                 ScheduleInitializationPoll();
                 return;
             }

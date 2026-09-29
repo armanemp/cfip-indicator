@@ -291,3 +291,12 @@ Phase 5.5 merge record:
 - Final phase head before merge: `81bf6811519d29da0d42b78df64d88d76d37c530`.
 - Final gates: Source / Architecture PASS (run 811), Runtime Acceptance PASS (run 620), cTrader Compile PASS (run 804).
 - Main continuation point after the merge: **Phase 6.1 — Decision closed-bar contract**.
+
+
+## Phase 5.6 — Responsive panel runtime
+
+Status: complete on branch phase-5-6-responsive-panel-runtime.
+
+Root cause and implementation are recorded in docs/PHASE-5-6-RESPONSIVE-PANEL.md. The phase decouples responsive panel refresh from safety supervision, makes panel refresh independent of Calculate, lazy-creates panel rows, eliminates redundant UI writes, centralizes one visual snapshot per panel refresh, refreshes initialization status, and exposes calculation freshness. No trading decision/risk/RR/trailing/broker semantics were changed.
+
+Final verification on head `696f68513dbeb2b8ef83646201f7ce8734209fab`: Source/Architecture PASS (819), Runtime Acceptance PASS (628), cTrader Compile PASS (812).

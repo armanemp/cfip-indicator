@@ -18,45 +18,68 @@ namespace cAlgo
             int width)
         {
             if (index < 0 ||
-                index >= _panelRows.Count)
+                index >= PanelRowCount)
+                return;
+
+            EnsurePanelRow(index);
+
+            if (index >= _panelRows.Count)
                 return;
 
             TextBlock row =
                 _panelRows[index];
 
-            row.Text =
+            string nextText =
                 text ?? "";
 
-            row.Width =
+            int nextWidth =
                 Math.Max(
                     190,
                     width);
 
-            row.ForegroundColor =
+            Color nextColor =
                 color;
 
-            row.TextAlignment =
-                TextAlignment.Left;
-
-            row.TextWrapping =
-                TextWrapping.Wrap;
-
-            row.TextTrimming =
-                TextTrimming.None;
-
-            row.LineHeight =
-                Math.Max(
-                    14,
-                    PanelFontSize + 3);
-
-            row.FontWeight =
+            FontWeight nextWeight =
                 bold || PanelBold
                     ? FontWeight.Bold
                     : FontWeight.Normal;
 
-            row.IsVisible =
+            bool nextVisible =
                 !string.IsNullOrWhiteSpace(
-                    text);
+                    nextText);
+
+            if (row.Text != nextText)
+                row.Text = nextText;
+
+            if (row.Width != nextWidth)
+                row.Width = nextWidth;
+
+            if (!Equals(row.ForegroundColor, nextColor))
+                row.ForegroundColor = nextColor;
+
+            if (row.TextAlignment != TextAlignment.Left)
+                row.TextAlignment = TextAlignment.Left;
+
+            if (row.TextWrapping != TextWrapping.Wrap)
+                row.TextWrapping = TextWrapping.Wrap;
+
+            if (row.TextTrimming != TextTrimming.None)
+                row.TextTrimming = TextTrimming.None;
+
+            int lineHeight =
+                Math.Max(
+                    14,
+                    PanelFontSize + 3);
+
+            if (row.LineHeight != lineHeight)
+                row.LineHeight = lineHeight;
+
+            if (row.FontWeight != nextWeight)
+                row.FontWeight = nextWeight;
+
+            if (row.IsVisible != nextVisible)
+                row.IsVisible = nextVisible;
         }
 
         private void AddPanelRow(
@@ -66,8 +89,10 @@ namespace cAlgo
             bool bold,
             int width)
         {
-            if (slot >= _panelRows.Count)
+            if (slot >= PanelRowCount)
                 return;
+
+            EnsurePanelRow(slot);
 
             SetPanelRow(
                 slot,
