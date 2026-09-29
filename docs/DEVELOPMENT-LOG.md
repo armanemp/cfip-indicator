@@ -1313,7 +1313,12 @@ Additional implementation pass on `phase/9-9-signal-protection-coherence`:
 - suppressed decision/reaction alert layers when a managed pending order or live position is authoritative;
 - extended `tools/audit_runtime_ui.py` with regression checks for the server-ladder API shape, white/background-free labels, and execution-state signal-layer suppression.
 
-Latest code head after these corrections: `3f7ba0b42ddf141d8d206f077e867dd904d3f326`.
+Final verified code/documentation head: `98ac6f0844abb1171f70d7d5eaa50e8fdf623134`.
 
-Verification remains pending until Runtime Acceptance, cTrader Compile/Build and Source/Architecture all pass on the final documentation-inclusive head.
+Final automated verification:
+- Runtime Acceptance #1048 PASS;
+- cTrader Compile/Build #1232 PASS;
+- Source/Architecture #1239 PASS.
+
+Target-terminal cTrader replay remains required for empirical signal timing, visual rendering, broker event behavior, partial-fill observation, duplicate-alert observation, protection recovery and realized trading outcomes.
 
