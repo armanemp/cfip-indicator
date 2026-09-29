@@ -25,6 +25,13 @@ target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 partial_tp = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
 line = read("UI/Chart/PlanLineRenderer.cs")
 labels = read("UI/Chart/PlanLabelRenderer.cs")
+prediction_line = read("UI/Chart/PredictionLineRenderer.cs")
+alert_renderer = read("UI/Chart/AlertSignalRenderer.cs")
+alert_engine = read("Trading/Alerts/AlertEngine.cs")
+visual_snapshot = read("UI/Chart/SignalVisualSnapshotBuilder.cs")
+visual_lifecycle = read("Core/Math/SignalVisualLifecycleRule.cs")
+popup_core = read("Indicator/Parameters/12_alerts_core.cs")
+popup_advanced = read("Indicator/Parameters/12_alerts_advanced.cs")
 
 execution_paths = {
     "automatic-market": auto_market,
@@ -85,6 +92,32 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
 
 if "return Color.White" not in labels:
     raise SystemExit("level labels must use white text")
+if "Math.Min(1" not in line:
+    raise SystemExit("plan signal line thickness must be fixed at one")
+if "line.Thickness =
+                                            1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
+    raise SystemExit("prediction signal line thickness must be fixed at one")
+if "ALERT_SIGNAL_LABEL" in alert_renderer:
+    raise SystemExit("legacy ALERT BUY/SELL label surface remains")
+if '"ALERT "' in alert_renderer:
+    raise SystemExit("alert BUY/SELL chart text remains")
+if "message.StartsWith(" not in alert_engine or "CFIP ENTRY BLOCKED" not in alert_engine:
+    raise SystemExit("blocked alerts must be silently discarded")
+if "SignalVisualLifecycleRule.IsPreTradePlanVisible(" not in visual_snapshot:
+    raise SystemExit("visual snapshot must consume signal lifecycle expiry rule")
+if "CurrentM5 - input.CreatedM5" not in visual_lifecycle:
+    raise SystemExit("visual lifecycle must enforce bounded pre-trade age")
+if "DefaultValue = true)]
+        public bool ShowPopupAlerts" not in popup_core:
+    raise SystemExit("popup alerts should be enabled by default")
+if "DefaultValue = false)]
+        public bool PopupCriticalOnly" not in popup_core:
+    raise SystemExit("popup must not be critical-only by default")
+if "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
+    raise SystemExit("popup default position must be bottom-left")
+if "DefaultValue = true)]
+        public bool PopupBold" not in popup_core:
+    raise SystemExit("popup text should be bold by default")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must not create backgrounds")
 
