@@ -3154,7 +3154,7 @@ actually true**.
 
 ## Phase 5.5 — Visual setup levels and execution controls
 
-Status: implementation complete on the phase branch; CI verification pending.
+Status: complete.
 
 This phase closes the semantic gap where a signal/watch arrow can be visible while Entry/Trigger/SL/TP levels are absent, without turning presentation state into an executable Plan. It also fixes Auto Trading / Auto Orders quick controls through explicit ToggleButton Checked/Unchecked events and the existing runtime authority.
 
