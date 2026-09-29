@@ -53,13 +53,13 @@ namespace cAlgo
                 "PIPELINE " +
                 direction +
                 "  • D " +
-                YesNo(decisionAllowed) +
+                SignalPipelineYesNo(decisionAllowed) +
                 "  • T " +
-                YesNo(triggerReady) +
+                SignalPipelineYesNo(triggerReady) +
                 "  • A " +
-                YesNo(actionable) +
+                SignalPipelineYesNo(actionable) +
                 "  • P " +
-                YesNo(planActive);
+                SignalPipelineYesNo(planActive);
 
             AddPanelRow(
                 ref slot,
@@ -108,7 +108,7 @@ namespace cAlgo
                 contentWidth);
         }
 
-        private string YesNo(bool value)
+        private string SignalPipelineYesNo(bool value)
         {
             return value ? "Y" : "N";
         }
