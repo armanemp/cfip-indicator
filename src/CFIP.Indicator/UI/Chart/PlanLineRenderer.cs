@@ -145,36 +145,7 @@ namespace cAlgo
         private LineStyle ResolvePlanLineStyle(
             string name)
         {
-            if (name != null &&
-                name.EndsWith(
-                    "TRIGGER",
-                    StringComparison.OrdinalIgnoreCase))
-                return LineStyle.Dots;
-
-            if (name != null &&
-                name.EndsWith(
-                    "SL",
-                    StringComparison.OrdinalIgnoreCase))
-                return LineStyle.DotsRare;
-
-            if (name != null &&
-                name.EndsWith(
-                    "TP2",
-                    StringComparison.OrdinalIgnoreCase))
-                return LineStyle.Lines;
-
-            if (name != null &&
-                name.EndsWith(
-                    "TP3",
-                    StringComparison.OrdinalIgnoreCase))
-                return LineStyle.Lines;
-
-            if (name != null &&
-                name.EndsWith(
-                    "TP4",
-                    StringComparison.OrdinalIgnoreCase))
-                return LineStyle.LinesDots;
-
+            // All signal/plan level lines intentionally use one solid style.
             return LineStyle.Solid;
         }
 
@@ -188,6 +159,20 @@ namespace cAlgo
 
             if (name != null &&
                 name.EndsWith(
+                    "TRIGGER",
+                    StringComparison.OrdinalIgnoreCase))
+                return Math.Max(
+                    3,
+                    configured);
+
+            if (name != null &&
+                name.EndsWith(
+                    "SL",
+                    StringComparison.OrdinalIgnoreCase))
+                return 1;
+
+            if (name != null &&
+                name.EndsWith(
                     "ENTRY",
                     StringComparison.OrdinalIgnoreCase))
                 return Math.Max(
@@ -197,6 +182,5 @@ namespace cAlgo
             return Math.Min(
                 2,
                 configured);
-        }
-    }
+        }    }
 }

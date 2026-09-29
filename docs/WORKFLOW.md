@@ -108,3 +108,23 @@ A phase is not considered complete until:
 - the operator is explicitly told whether a local pull is required.
 
 This rule is intentionally persistent across chats. The repository documentation is the continuity source; do not rely on conversational memory alone for phase state or audit obligations.
+
+
+## Permanent auto-trade / auto-order hardening rule
+
+Every implementation phase must make a concrete improvement to the automatic trading and/or automatic pending-order pipeline, even when the primary phase topic is analysis, UI or protection.
+
+The standing checklist is:
+
+- refresh the current decision/actionability state immediately before automatic market, aggressive and pending submission;
+- preserve one submission identity/gate and one managed strategy authority;
+- validate capacity, market suitability, spread/risk, volume and SL/TP geometry before broker mutation;
+- prefer broker/server-owned advanced protection whenever the current cTrader API can express the intended protection safely;
+- ensure smart structural SL, TP selection, break-even and target progression never create competing mutation authorities;
+- keep server-confirmed state authoritative after submission/fill;
+- audit duplicate orders, duplicate alerts, duplicate TP/SL mutations, stale decision state and direction conflicts;
+- record the accumulated findings and fixes in the phase log and acceptance matrix.
+
+## Permanent signal-line presentation rule
+
+All signal/plan level lines must use `LineStyle.Solid`. This is a standing UI contract and must be checked by the phase audits; line text remains white and background-free unless a future phase explicitly changes the documented contract.

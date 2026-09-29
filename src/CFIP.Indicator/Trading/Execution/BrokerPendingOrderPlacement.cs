@@ -16,6 +16,7 @@ namespace cAlgo
             string label,
             double stopPips,
             RelativeTakeProfitProtections takeProfits,
+            StopLossBreakEven stopLossBreakEven,
             ProtectionType protectionType,
             DateTime? expiration,
             string comment,
@@ -32,7 +33,12 @@ namespace cAlgo
                     label,
                     new RelativeStopLossProtection(stopPips),
                     takeProfits,
-                    expiration);
+                    expiration,
+                    comment,
+                    hasTrailingStop,
+                    StopTriggerMethod.Trade,
+                    StopTriggerMethod.Trade,
+                    stopLossBreakEven);
             }
             catch (Exception ex)
             {

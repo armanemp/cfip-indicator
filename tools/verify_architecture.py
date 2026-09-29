@@ -1336,8 +1336,12 @@ if 'RemovePlanLabel(P + "ENTRY_LABEL")' not in plan_label_remover_code:
     raise SystemExit("Plan label remover must clean the compact label entry")
 if 'RemovePlanLabel(P + "ACTIVE_TP_LABEL")' not in plan_label_remover_code:
     raise SystemExit("Plan label remover must clean the compact active-target label")
-if "LineStyle.Dots" not in visual_line_code or "LineStyle.DotsRare" not in visual_line_code:
-    raise SystemExit("Compact level styles must distinguish trigger and SL visually")
+if "return LineStyle.Solid" not in visual_line_code:
+    raise SystemExit("All compact signal/plan level lines must use Solid style")
+if '"TRIGGER"' not in visual_line_code or '"SL"' not in visual_line_code:
+    raise SystemExit("Solid compact level styles must distinguish trigger and SL by thickness")
+if "return Math.Max(" not in visual_line_code or "return 1;" not in visual_line_code:
+    raise SystemExit("Trigger/SL thickness distinction is missing")
 
 # Runtime UI responsiveness hotfix contract.
 PANEL_VISIBILITY = ROOT / "UI" / "Panel" / "PanelVisibility.cs"

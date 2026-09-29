@@ -9,9 +9,11 @@ namespace cAlgo
             double executionEntry,
             double finalTarget,
             double originalVolume,
-            out RelativeTakeProfitProtections takeProfits)
+            out RelativeTakeProfitProtections takeProfits,
+            out StopLossBreakEven stopLossBreakEven)
         {
             takeProfits = null;
+            stopLossBreakEven = null;
 
             if (!EnablePartialTakeProfit ||
                 _plan == null ||
@@ -102,6 +104,36 @@ namespace cAlgo
                 dFinal - d2 < minimumSpacingPrice)
                 return false;
 
+            double riskPips =
+                Math.Abs(
+                    executionEntry -
+                    _plan.Stop) /
+                Math.Max(
+                    Symbol.PipSize,
+                    1e-9);
+
+            double tp1Pips =
+                d1 /
+                Symbol.PipSize;
+
+            double spreadPips =
+                Math.Max(
+                    0,
+                    (Symbol.Ask - Symbol.Bid) /
+                    Math.Max(
+                        Symbol.PipSize,
+                        1e-9));
+
+            SmartBreakEvenResult smartBreakEven =
+                SmartBreakEvenRule.Evaluate(
+                    riskPips,
+                    tp1Pips,
+                    spreadPips,
+                    BreakEvenTriggerRR,
+                    BreakEvenBufferPips,
+                    RiskFreeLockPips,
+                    UseSpreadAwareBreakEven);
+
             try
             {
                 takeProfits =
@@ -116,6 +148,15 @@ namespace cAlgo
                             dFinal /
                             Symbol.PipSize));
 
+                if (smartBreakEven.Allowed &&
+                    MoveSlToBreakEven)
+                {
+                    stopLossBreakEven =
+                        new StopLossBreakEven(
+                            smartBreakEven.TriggerPips,
+                            smartBreakEven.OffsetPips);
+                }
+
                 return takeProfits != null;
             }
             catch (Exception ex)
@@ -124,6 +165,7 @@ namespace cAlgo
                     "CFIP server TP ladder build failed: {0}",
                     ex.Message);
                 takeProfits = null;
+                stopLossBreakEven = null;
                 return false;
             }
         }
@@ -132,6 +174,8 @@ namespace cAlgo
             Position position)
         {
             _serverSideTakeProfitLadderActive =
+                false;
+            _serverSideBreakEvenActive =
                 false;
 
             if (position == null)
@@ -147,6 +191,10 @@ namespace cAlgo
                     protections.FirstTakeProfit != null &&
                     protections.SecondTakeProfit != null &&
                     protections.LastTakeProfit != null;
+
+                _serverSideBreakEvenActive =
+                    _serverSideTakeProfitLadderActive &&
+                    position.StopLossBreakEven != null;
 
                 return _serverSideTakeProfitLadderActive;
             }
