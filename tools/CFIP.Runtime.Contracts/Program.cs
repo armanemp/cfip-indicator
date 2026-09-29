@@ -1199,7 +1199,7 @@ namespace cAlgo
                 "first qualifying sample is tracked");
 
             Assert(
-                !policy.Observe(200, 1, true, t),
+                !policy.ObserveReactionSample(200, 1, true, t),
                 "duplicate reaction sample does not count twice");
 
             Assert(
@@ -1207,7 +1207,7 @@ namespace cAlgo
                 "duplicate sample count remains stable");
 
             Assert(
-                policy.Observe(
+                policy.ObserveReactionSample(
                     200,
                     1,
                     true,
@@ -1220,7 +1220,7 @@ namespace cAlgo
                 "policy reaches armed state");
 
             Assert(
-                !policy.Observe(
+                !policy.ObserveReactionSample(
                     200,
                     -1,
                     true,
@@ -1231,7 +1231,7 @@ namespace cAlgo
                 "direction change invalidates prior qualification");
 
             Assert(
-                !policy.Observe(
+                !policy.ObserveReactionSample(
                     200,
                     -1,
                     false,
@@ -1241,7 +1241,7 @@ namespace cAlgo
                 "lost reaction qualification invalidates immediately");
 
             Assert(
-                !policy.Observe(
+                !policy.ObserveReactionSample(
                     201,
                     1,
                     true,
