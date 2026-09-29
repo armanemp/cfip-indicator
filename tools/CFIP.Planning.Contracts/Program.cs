@@ -16,6 +16,7 @@ namespace cAlgo
             VerifyStopTargetProtection();
             VerifyLifecycleTransitions();
             VerifyTradePlanRegistryOrdering();
+            VerifyPlanRewardRiskQuality();
             Console.WriteLine("Planning contracts OK");
         }
 
@@ -271,6 +272,99 @@ namespace cAlgo
                 registry.TryGetBest(out best) &&
                 best.Quality == 95,
                 "stable identity replacement");
+        }
+
+
+        private static void VerifyPlanRewardRiskQuality()
+        {
+            PlanRewardRiskQualityResult weakReward =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100,
+                    98,
+                    101.5,
+                    2.0,
+                    0.05,
+                    2.0,
+                    1.0,
+                    2.0);
+
+            Assert(
+                !weakReward.Allowed &&
+                weakReward.Reason.Contains(
+                    "REWARD TOO LOW FOR STOP"),
+                "weak TP1 reward blocked");
+
+            PlanRewardRiskQualityResult wideStop =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100,
+                    94,
+                    113,
+                    3.0,
+                    0.05,
+                    2.0,
+                    1.0,
+                    1.8);
+
+            Assert(
+                !wideStop.Allowed &&
+                wideStop.Reason.Contains(
+                    "STOP RISK TOO HIGH"),
+                "oversized stop blocked");
+
+            PlanRewardRiskQualityResult spreadHeavy =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100,
+                    98,
+                    104,
+                    2.0,
+                    0.30,
+                    2.0,
+                    1.0,
+                    2.0);
+
+            Assert(
+                !spreadHeavy.Allowed &&
+                spreadHeavy.Reason.Contains(
+                    "RR TOO LOW AFTER SPREAD"),
+                "spread-adjusted RR blocked");
+
+            PlanRewardRiskQualityResult valid =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100,
+                    98.5,
+                    105,
+                    3.0,
+                    0.05,
+                    2.0,
+                    1.0,
+                    2.0);
+
+            Assert(
+                valid.Allowed &&
+                valid.NominalRR > 3 &&
+                valid.EffectiveRR > 2,
+                "healthy reward-risk accepted");
+
+            PlanRewardRiskQualityResult sell =
+                PlanRewardRiskQualityRule.Evaluate(
+                    -1,
+                    100,
+                    102,
+                    95,
+                    3.0,
+                    0.05,
+                    2.0,
+                    1.0,
+                    2.0);
+
+            Assert(
+                sell.Allowed &&
+                sell.NominalRR > 3,
+                "SELL reward-risk symmetry");
         }
 
         private static void Assert(bool condition, string name)
