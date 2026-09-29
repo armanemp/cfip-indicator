@@ -7,6 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private int ResolveCanonicalVisualDirection(
+            int closedM5,
             int pendingDirection,
             bool livePlan,
             bool decisionReady,
@@ -43,21 +44,7 @@ namespace cAlgo
 
             MarketRegimeSnapshot activeRegime =
                 GetActiveM5Regime(
-                    _decision == null
-                        ? Math.Max(
-                            0,
-                            _m5Bars == null
-                                ? 0
-                                : _m5Bars.Count - 2)
-                        : _decision.Direction == 0
-                            ? Math.Max(
-                                0,
-                                _m5Bars.Count - 2)
-                            : _decision.EmpiricalCalibrationSamples >= 0
-                                ? Math.Max(
-                                    0,
-                                    _m5Bars.Count - 2)
-                                : 0);
+                    closedM5);
 
             if (activeRegime != null &&
                 (activeRegime.Regime == "RANGE" ||
@@ -224,6 +211,7 @@ namespace cAlgo
 
             int visualDirection =
                 ResolveCanonicalVisualDirection(
+                    closedM5,
                     pendingValid
                         ? (pending.TradeType == TradeType.Buy ? 1 : -1)
                         : 0,
