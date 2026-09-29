@@ -132,7 +132,8 @@ namespace cAlgo
                                         NormalizePrice(target),
                                         context + " • TP");
                             }
-                            else if (targetOk &&
+                            else if (!_serverSideTakeProfitLadderActive &&
+                                     targetOk &&
                                      desiredTargetValid)
                             {
                                 double currentTarget =
