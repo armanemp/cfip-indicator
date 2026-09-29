@@ -51,10 +51,10 @@ namespace cAlgo
                             // Runtime synchronization is kept separate and guarded by
                             // _executionToggleSyncing, so programmatic refresh cannot toggle state.
                             _autoTradingQuickToggle.Click +=
-                                ApplyAutoTradingQuickToggleClick
+                                ApplyAutoTradingQuickToggleClick;
 
                             _automaticOrdersQuickToggle.Click +=
-                                ApplyAutomaticOrdersQuickToggleClick
+                                ApplyAutomaticOrdersQuickToggleClick;
                 
                             _quickExecutionStack.AddChild(
                                 _autoTradingQuickToggle);
