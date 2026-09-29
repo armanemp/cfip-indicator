@@ -17,7 +17,7 @@ namespace cAlgo
                 !_reaction.EntryAllowed ||
                 _reaction.Direction == 0)
             {
-                _aggressiveEntryPolicy.Invalidate();
+                _aggressiveEntryPolicy.ResetQualification();
                 return false;
             }
 
@@ -27,7 +27,7 @@ namespace cAlgo
                     : _m5Bars.Count - 1;
 
             bool intrabarQualified =
-                _aggressiveEntryPolicy.Observe(
+                _aggressiveEntryPolicy.ObserveReactionSample(
                     reactionM5,
                     _reaction.Direction,
                     _reaction.EntryAllowed,
@@ -37,7 +37,7 @@ namespace cAlgo
             {
                 _autoExecutionBlockReason =
                     "AGGRESSIVE • " +
-                    _aggressiveEntryPolicy.StateText();
+                    _aggressiveEntryPolicy.GetQualificationStateText();
                 return false;
             }
 
