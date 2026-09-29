@@ -11,7 +11,8 @@ namespace cAlgo
             double market,
             bool forceStructuralUpdate = false)
         {
-            if (_plan == null)
+            if (_plan == null ||
+                _serverSideTakeProfitLadderActive)
                 return;
 
             if (StructuralTargetUpdatesOnly &&
