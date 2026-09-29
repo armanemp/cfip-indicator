@@ -42,12 +42,12 @@ namespace cAlgo
             double maximumStopRiskAtr)
         {
             if ((direction != 1 && direction != -1) ||
-                !FinitePositive(entry) ||
-                !FinitePositive(stop) ||
-                !FinitePositive(tp1) ||
-                !FinitePositive(atr))
+                !IsFinitePositiveRewardRisk(entry) ||
+                !IsFinitePositiveRewardRisk(stop) ||
+                !IsFinitePositiveRewardRisk(tp1) ||
+                !IsFinitePositiveRewardRisk(atr))
             {
-                return Blocked("INVALID REWARD/RISK GEOMETRY");
+                return CreateRewardRiskBlocked("INVALID REWARD/RISK GEOMETRY");
             }
 
             bool validStop =
@@ -61,23 +61,23 @@ namespace cAlgo
                     : tp1 < entry;
 
             if (!validStop)
-                return Blocked("STOP SIDE INVALID");
+                return CreateRewardRiskBlocked("STOP SIDE INVALID");
 
             if (!validTarget)
-                return Blocked("TP1 SIDE INVALID");
+                return CreateRewardRiskBlocked("TP1 SIDE INVALID");
 
             double risk = Math.Abs(entry - stop);
             double reward = Math.Abs(tp1 - entry);
 
-            if (!FinitePositive(risk) ||
-                !FinitePositive(reward))
-                return Blocked("EMPTY REWARD/RISK");
+            if (!IsFinitePositiveRewardRisk(risk) ||
+                !IsFinitePositiveRewardRisk(reward))
+                return CreateRewardRiskBlocked("EMPTY REWARD/RISK");
 
             double riskAtr =
                 risk / Math.Max(SymbolTickFloor(), atr);
 
-            if (!FinitePositive(riskAtr))
-                return Blocked("RISK ATR INVALID");
+            if (!IsFinitePositiveRewardRisk(riskAtr))
+                return CreateRewardRiskBlocked("RISK ATR INVALID");
 
             double boundedBase =
                 Math.Max(0.50, baseMinimumRR);
@@ -126,9 +126,9 @@ namespace cAlgo
                 reward /
                 Math.Max(SymbolTickFloor(), effectiveRisk);
 
-            if (!FinitePositive(nominalRR) ||
-                !FinitePositive(effectiveRR))
-                return Blocked("RR INVALID");
+            if (!IsFinitePositiveRewardRisk(nominalRR) ||
+                !IsFinitePositiveRewardRisk(effectiveRR))
+                return CreateRewardRiskBlocked("RR INVALID");
 
             if (nominalRR < adaptiveRequired)
             {
@@ -186,7 +186,7 @@ namespace cAlgo
                 0);
         }
 
-        private static bool FinitePositive(
+        private static bool IsFinitePositiveRewardRisk(
             double value)
         {
             return value > 0 &&
