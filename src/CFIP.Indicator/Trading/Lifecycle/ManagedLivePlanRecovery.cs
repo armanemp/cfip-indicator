@@ -77,7 +77,7 @@ namespace cAlgo
 
                 double target =
                     position.TakeProfit.HasValue &&
-                    LiveExitGeometryRule.ShouldAdvanceTarget(
+                    LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         direction,
                         0,
                         position.TakeProfit.Value,
@@ -137,7 +137,7 @@ namespace cAlgo
                             atr,
                             EffectiveAutoTpStage());
 
-                    if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+                    if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                             direction,
                             0,
                             target,
@@ -229,7 +229,7 @@ namespace cAlgo
                         _plan,
                         EffectiveAutoTpStage());
 
-                if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+                if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         direction,
                         0,
                         protectionTarget,
