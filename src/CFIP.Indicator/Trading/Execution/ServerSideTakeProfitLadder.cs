@@ -244,19 +244,29 @@ namespace cAlgo
                             ? Symbol.Bid
                             : Symbol.Ask;
 
-                    double forwardDistance =
-                        Math.Max(
-                            Symbol.PipSize,
-                            Symbol.TickSize);
+                    double brokerFinalTarget =
+                        protections.LastTakeProfit != null
+                            ? protections.LastTakeProfit.Price
+                            : 0;
 
-                    double planTarget =
-                        FurthestForwardPlanTarget(
+                    if (IsLiveTargetBrokerSafe(
+                            position.TradeType == TradeType.Buy
+                                ? 1
+                                : -1,
+                            position.EntryPrice,
                             market,
-                            forwardDistance);
-
-                    if (IsFinitePositive(planTarget))
+                            brokerFinalTarget,
+                            0))
+                    {
+                        // The broker's actual last protection is authoritative.
+                        // Never reconstruct it from the indicator's structural plan.
                         _activeBrokerTarget =
-                            NormalizePrice(planTarget);
+                            NormalizePrice(brokerFinalTarget);
+                    }
+                    else
+                    {
+                        _activeBrokerTarget = 0;
+                    }
                 }
 
                 return _serverSideTakeProfitLadderActive;
