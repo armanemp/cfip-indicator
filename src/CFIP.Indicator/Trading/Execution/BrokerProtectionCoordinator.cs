@@ -240,11 +240,19 @@ namespace cAlgo
                                 {
                                     targetOk = true;
                                 }
-                                else if (ProtectionProgressionRule.ShouldAdvanceTarget(
+                                else if (LiveExitGeometryRule.ShouldAdvanceTarget(
                                              direction,
                                              currentTarget,
                                              normalizedTarget,
-                                             PreventBrokerTpBackwardMove))
+                                             market,
+                                             Math.Max(
+                                                 Symbol.PipSize,
+                                                 atr > 0
+                                                     ? atr *
+                                                       Math.Max(
+                                                           0.05,
+                                                           MinimumTpSpacingAtr)
+                                                     : Symbol.TickSize)))
                                 {
                                     targetOk =
                                         TryModifyTakeProfit(
