@@ -95,6 +95,7 @@ namespace cAlgo
                 _plan != null)
             {
                 _executionModel = null;
+                _setupPreview = null;
                 _lastExecutionModelM5 = -1;
                 _lastExecutionModelMarket = 0;
                 return;
@@ -159,6 +160,11 @@ namespace cAlgo
 
             _lastExecutionModelMarket =
                 market;
+
+            _setupPreview =
+                BuildTradeSetupPreview(
+                    closedM5,
+                    _executionModel);
         }
 
         private void RenderCalculationState(
@@ -174,13 +180,20 @@ namespace cAlgo
                 if (_renderSignalVisualSnapshot != null &&
                     _renderSignalVisualSnapshot.PlanActive &&
                     !_renderSignalVisualSnapshot.PendingOrder)
+                {
                     RenderPlan(
                         _renderSignalVisualSnapshot);
+                }
                 else
+                {
+                    RenderSetupPreview(
+                        _renderSignalVisualSnapshot);
+
                     RenderWatchAndReaction(
                         index,
                         closedM5,
                         _renderSignalVisualSnapshot);
+                }
 
                 RenderManagedPendingOrder(
                     _renderSignalVisualSnapshot);
