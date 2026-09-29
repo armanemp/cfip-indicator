@@ -1705,3 +1705,38 @@ Verification on the latest automated head:
 
 The local container could not reach github.com for an independent local build, so verification is based on the repository's GitHub Actions runs above. Target-terminal replay is still required for actual broker/server-side behavior, timing, slippage and empirical confirmation of the reported TP rollback.
 
+
+
+## Phase 10 — MTF Scenario Identity, Level Presentation, Runtime Logging & Routine — 2026-09-29
+
+Status: IMPLEMENTED on phase branch; CI verification required before merge.
+
+Findings:
+- Phase 9.17.1 is already merged and its exit/risk hardening passed source/contract verification.
+- The previous parallel-opportunity layer supported multiple lanes, but did not have first-class source-timeframe identity and its same-direction proximity deduplication could collapse distinct timeframe opportunities.
+- Main plan labels did not explicitly communicate that the canonical signal is MTF, and SL/TP labels did not show pip distance from Entry.
+
+Implemented:
+- added ScenarioId and SourceTimeframe to TradeOpportunityCandidate;
+- added independent closed-frame scenario generation for M5/M15/M30/H1/H4/D1/W1;
+- preserved same-direction scenarios from different source timeframes;
+- deterministic priority/capping for visible scenarios;
+- added shared scenario label formatting and (MTF) main-plan tags;
+- added Entry-relative SL/TP pip distances to labels;
+- increased minimum horizontal line-to-label gap and aligned the parameter default/minimum to that contract;
+- expanded visible opportunity capacity to default 6 / maximum 8;
+- added unified CFIP_RuntimeLog_*.csv for decision, prediction, scenario, execution and meaningful auto-state events;
+- added tools/analyze_runtime_log.py for basic forensic analysis and geometry anomaly detection;
+- added persistent ROUTINE.md;
+- documented the phase in docs/PHASE-10-MTF-SCENARIOS-ROUTINE-LOGGING.md.
+
+Safety boundary:
+Independent timeframe scenarios remain opportunity information. They do not independently authorize automatic orders. Automatic market and pending execution continue through the canonical decision/plan and existing safety gates.
+
+Prediction boundary:
+Prediction is now explicitly captured in runtime logs and covered by the recurring routine. No accuracy claim is made until replay/outcome data is available.
+
+Verification boundary:
+Source/architecture, runtime acceptance, parameter-use, UI cleanup, scenario coexistence and runtime-log smoke verification must pass on the phase branch. Terminal replay remains required for actual broker behavior and empirical prediction/exit measurements.
+
+Operator action after merge: pull local main and run terminal-level scenario/label, market-order, pending-order and exit-management replay tests.
