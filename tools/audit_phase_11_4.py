@@ -13,6 +13,8 @@ PLAN = ROOT / "src/CFIP.Indicator/Planning/TradePlan/PlanIntegrityValidator.cs"
 ACTION = ROOT / "src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs"
 PARALLEL = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
 SCENARIOS = ROOT / "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
+PLANNING_CONTRACT = ROOT / "tools/CFIP.Planning.Contracts/Program.cs"
+PLANNING_PROJECT = ROOT / "tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj"
 MARKET = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs"
 AGG = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs"
 PENDING = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs"
@@ -33,6 +35,8 @@ plan = read(PLAN)
 action = read(ACTION)
 parallel = read(PARALLEL)
 scenarios = read(SCENARIOS)
+planning_contract = read(PLANNING_CONTRACT)
+planning_project = read(PLANNING_PROJECT)
 market = read(MARKET)
 agg = read(AGG)
 pending = read(PENDING)
@@ -73,6 +77,12 @@ if "ScenarioIdentity(" not in parallel or "Different timeframe/lane scenarios ar
 
 if "ScenarioCoverageKey(" not in scenarios:
     errors.append("scenario coverage-preserving trim missing")
+
+if "VerifyPlanRewardRiskQuality()" not in planning_contract:
+    errors.append("planning contract does not execute reward-risk regression cases")
+
+if "PlanRewardRiskQualityRule.cs" not in planning_project:
+    errors.append("planning contract project does not include reward-risk rule")
 
 for path, label in (
     (market, "automatic-market"),
