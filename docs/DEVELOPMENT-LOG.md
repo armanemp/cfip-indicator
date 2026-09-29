@@ -1885,3 +1885,59 @@ replay remains required for broker behavior and empirical signal-quality/outcome
 Next phase:
 Formal scenario execution policy design driven by observed runtime telemetry, without
 promoting independent timeframe broker mutation or multi-position capacity until separately certified.
+
+
+## Architecture Gate — Local cBot Separation Roadmap — 2026-09-30
+
+Status: **DOCUMENTED / IMPLEMENTATION NOT STARTED**
+
+Repository baseline audited for this decision: `4eed8aa29759e372b02a0726b18ac7020bdb349a`.
+
+Decision:
+
+- The current Indicator remains the analysis/decision/scenario/trade-plan authority.
+- A dedicated local cBot becomes the sole broker execution and live account/lifecycle authority.
+- Only execution capabilities that require broker/account mutation are separated.
+- Mixed source modules are split by responsibility instead of copied wholesale.
+- No Cloud infrastructure is introduced now.
+- A small platform-neutral contract boundary is introduced only where required for Indicator → cBot communication and later portability.
+- The existing single-position capacity and one execution authority invariant remain unchanged.
+- Independent timeframe scenarios remain observe-only until separately certified.
+
+Audited execution owners include:
+
+- `Trading/Execution/BrokerMarketOrderMutation.cs`;
+- broker pending/order placement and cancellation owners;
+- `BrokerPositionCloseMutation.cs`;
+- `BrokerStopLossMutation.cs`;
+- `BrokerTakeProfitMutation.cs`;
+- `BrokerProtectionCoordinator.cs`;
+- broker identity/managed-position ownership;
+- `SubmissionAttemptIdentity` / `SubmissionGate`;
+- broker-confirmed lifecycle/recovery paths;
+- account-dependent execution risk and capacity.
+
+Important non-transfer boundary:
+
+- `Planning/Execution/ExecutionPlanPreparation.cs` remains analytical/executable-plan preparation and does not become a cBot analysis engine.
+- `ScenarioExecutionPolicy.cs` remains the Indicator's scenario eligibility/materialization authority.
+- Analysis, Planning, UI, alerts and learning remain Indicator-owned.
+
+New authoritative document: `docs/CBOT-SEPARATION-ROADMAP.md`.
+
+Implementation order:
+
+`CBOT-0 → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7`
+
+No source code behavior was changed in this roadmap-only planning step.
+
+Verification for this documentation gate:
+
+- repository source inventory reviewed from GitHub;
+- execution/planning/identity/risk/lifecycle ownership reviewed;
+- Phase 11.4 and 11.5 boundaries reconciled;
+- no production C# modified by this step.
+
+Next phase: **CBOT-0 — Boundary inventory and execution-authority freeze**.
+
+Operator pull: **required after the roadmap merge** before beginning CBOT-0, so the local checkout contains the authoritative roadmap.

@@ -272,7 +272,7 @@ review findings and still require compile/runtime/replay evidence.
 
 | ID | Area | Roadmap coverage |
 | --- | --- | --- |
-| C1 | indicator acting as executor | Track 13, Track 27-29 |
+| C1 | indicator acting as executor | **Track 12A (mandatory local cBot separation)**, Track 27-29 |
 | C2 | cosmetic-only modularization | Track 8, Track 14, Track 24 |
 | C3 | timer/safety supervisor | Track 1, Track 14 |
 | C4 | real performance profiling | Track 14 |
@@ -1878,6 +1878,99 @@ Cover:
 Acceptance:
 
 - no false rejection/recovery classification.
+
+---
+
+# Track 12A — Mandatory Local cBot Separation
+
+Status: **BLOCKING NEXT ARCHITECTURAL GATE**
+
+Canonical document: `docs/CBOT-SEPARATION-ROADMAP.md`
+
+Purpose:
+
+Separate the current broker-execution authority from `CFIP.Indicator` into a
+dedicated local cBot while preserving the Indicator as the sole analysis,
+decision, scenario and trade-plan authority.
+
+This track is intentionally local. It introduces no Cloud service, HTTP API,
+socket, database, broker service, or multi-position capability.
+
+## Scope
+
+Move/extract only the capabilities that must be owned by a broker-executing
+cBot:
+
+- broker market/aggressive/pending submission;
+- pending cancellation;
+- broker position close/partial close;
+- broker SL/TP mutation and protection;
+- broker confirmation/fill reconciliation;
+- managed broker identity;
+- account-dependent execution risk;
+- execution capacity;
+- restart/reconnect reconciliation;
+- submission idempotency/retry/backoff/circuit state;
+- broker execution telemetry.
+
+Keep the analytical brain inside the Indicator:
+
+- Analysis;
+- Decision;
+- Entry/Trigger;
+- Planning;
+- analytical RR/reward-path;
+- scenario generation/materialization;
+- UI;
+- alerts;
+- learning/calibration.
+
+Mixed modules are to be **split by responsibility**, not copied wholesale.
+
+## Mandatory phases
+
+`CBOT-0` Boundary inventory and freeze
+
+`CBOT-1` Platform-neutral local contracts
+
+`CBOT-2` Indicator read-only signal provider surface
+
+`CBOT-3` cBot host + shadow execution
+
+`CBOT-4` Broker execution extraction
+
+`CBOT-5` Protection/lifecycle/recovery extraction
+
+`CBOT-6` Account/execution risk ownership
+
+`CBOT-7` Indicator execution-authority removal and final cutover
+
+## Blocking rule
+
+No new live broker-execution feature may be added to the Indicator after Phase
+11.5 until Track 12A is complete.
+
+The existing Phase 11.5 scenario policy remains valid, but any future promotion
+from scenario/opportunity data to broker mutation must be implemented through the
+cBot boundary.
+
+## Required final acceptance
+
+- `CFIP.Contracts` is platform-neutral.
+- `CFIP.cBot` is the sole broker mutation authority.
+- Indicator exposes read-only structured execution intent/plan data.
+- Scenario identity survives Indicator → cBot → broker telemetry.
+- Broker-confirmed state remains authoritative.
+- Single managed position/capacity remains unchanged.
+- Indicator contains no duplicate broker executor.
+- Source/Architecture, Runtime Acceptance and cTrader Compile/Build are green.
+- Target-terminal local execution replay passes the mandatory market, aggressive,
+  pending, protection, close, recovery, restart/reconnect and duplicate-suppression matrix.
+
+## Cloud boundary
+
+Cloud portability remains a future track. Only the contracts are made
+platform-neutral now; no Cloud implementation is created as part of Track 12A.
 
 ---
 
@@ -4081,7 +4174,8 @@ Implementation:
 Important boundary:
 No public trading threshold was blindly tuned and no second broker-execution authority was introduced. Independent timeframe scenarios remain signal/opportunity objects unless a separately tested scenario execution policy is promoted.
 
-Next phase after verification: scenario-aware execution materialization and deeper automatic-order/multi-scenario broker policy, driven by the Phase 11.3/11.4 telemetry rather than guesswork.
+Next phase after verification: **Track 12A — Mandatory Local cBot Separation**, followed by
+scenario-aware broker policy only through the dedicated cBot execution authority.
 
 
 ## Phase 11.5 — Scenario-Aware Execution Materialization & Submission Isolation — 2026-09-30
