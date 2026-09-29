@@ -450,3 +450,30 @@ Hands-on target-terminal replay remains required for observed partial fills, tar
 Final automated verification for Phase 9.10: Runtime Acceptance #1070 PASS; cTrader Compile/Build #1254 PASS; Source/Architecture #1261 PASS, including the accumulated audit.
 
 Target-terminal replay remains required for actual broker/server timing, partial fills, protection activation, live rendering and realized outcomes.
+
+
+## Phase 9.11 — Signal Lifecycle, Quality Recovery & Alert Execution Coherence
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Expired pre-trade Plan visuals stop rendering after bounded lifecycle | PASS | Required |
+| Setup-preview visuals stop rendering after bounded lifecycle | PASS | Required |
+| Stale pre-trade Plan direction cannot become canonical visual direction | PASS | Required |
+| Strong one-dimension location/timing/price-position recovery is deterministic | PASS | Required |
+| Multiple deficiencies and hard blockers remain rejected | PASS | Required |
+| Legacy ALERT BUY/SELL chart label is absent | PASS | Required |
+| Blocked/restricted candidates cause no sound, popup, email or visual-alert side effect | PASS | Required |
+| Alert popup defaults to bottom-left and readable presentation | PASS | Required |
+| Plan and prediction signal lines are fixed to thickness 1 and Solid | PASS | Required |
+| Broker submission confirmation/rejection/null-result telemetry is recorded through one gate | PASS | Required |
+| Server SL/TP ladder rejects wrong-side structural stop geometry | PASS | Required |
+| Existing server TP/BE ownership and local-mutation yield remain intact | PASS | Required |
+| Automatic market/aggressive/pending paths retain shared submission/protection gates | PASS | Required |
+| Public parameter count remains unchanged at 552 | PASS | Required |
+| Full-project / accumulated audit | Pending | Required |
+| Decision Contracts | Pending | Required |
+| Runtime Acceptance | Pending | Required |
+| cTrader Compile/Build | Pending | Required |
+| Source / Architecture | Pending | Required |
+
+Target-terminal replay remains required for exact signal timing, stale-object removal, popup rendering, broker submission timing, server protection activation, realized SL/TP and false-signal measurements.
