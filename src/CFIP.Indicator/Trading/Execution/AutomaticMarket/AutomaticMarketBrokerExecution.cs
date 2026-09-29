@@ -5,7 +5,69 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ExecutePreparedAutomaticMarketTrade(
+        private double CalculateAutomaticMarketRangePips(
+            int closedM5,
+            double basePrice)
+        {
+            if (_m5Bars == null ||
+                closedM5 < 1 ||
+                !IsFinitePositive(basePrice) ||
+                !IsFinitePositive(Symbol.PipSize))
+                return 0;
+
+            double atr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            if (!IsFinitePositive(atr))
+                return 0;
+
+            double spread =
+                Math.Max(
+                    0,
+                    Symbol.Ask - Symbol.Bid);
+
+            double spreadPips =
+                spread /
+                Math.Max(
+                    Symbol.PipSize,
+                    1e-9);
+
+            double atrPips =
+                atr /
+                Math.Max(
+                    Symbol.PipSize,
+                    1e-9);
+
+            // Market-range is a bounded execution envelope, not permission to
+            // chase price. Keep it close to the live spread while allowing a
+            // small ATR-scaled tolerance for normal quote movement.
+            double derived =
+                Math.Max(
+                    0.50,
+                    Math.Max(
+                        spreadPips * 1.50,
+                        atrPips * 0.02));
+
+            double maximum =
+                atrPips *
+                Math.Max(
+                    0.08,
+                    Math.Min(
+                        0.20,
+                        Math.Max(
+                            0.08,
+                            MaximumEntryExtensionAtr * 0.50)));
+
+            return Math.Max(
+                0.50,
+                Math.Min(
+                    maximum,
+                    derived));
+        }
+
+        }        private void ExecutePreparedAutomaticMarketTrade(
             int closedM5,
             TradeType type,
             double entry,
@@ -61,21 +123,39 @@ namespace cAlgo
                     return;
                 }
 
+                double marketRangePips =
+                    CalculateAutomaticMarketRangePips(
+                        closedM5,
+                        entry);
+
+                if (marketRangePips <= 0)
+                {
+                    _autoExecutionBlockReason =
+                        "MARKET RANGE UNAVAILABLE";
+
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        _autoExecutionBlockReason);
+                    return;
+                }
+
                 TradeResult result;
 
                 try
                 {
                     result =
-                        TryExecuteMarketOrder(
+                        TryExecuteMarketRangeOrder(
                             type,
                             SymbolName,
                             volume,
+                            marketRangePips,
+                            entry,
                             NormalizeLabel(),
                             stopPips,
                             targetPips,
                             TradeExecutionMetadata.DefaultExecutionComment,
                             false,
-                            "AUTOMATIC MARKET");
+                            "AUTOMATIC MARKET RANGE");
                 }
                 catch
                 {
