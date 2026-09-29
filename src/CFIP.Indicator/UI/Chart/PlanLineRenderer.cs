@@ -19,7 +19,8 @@ namespace cAlgo
             string name,
             double price,
             Color color,
-            bool visible)
+            bool visible,
+            int anchorM5)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -41,9 +42,22 @@ namespace cAlgo
             try
             {
                 int right =
-                    Math.Max(
-                        0,
-                        Bars.Count - 1);
+                    Bars.Count - 1;
+
+                if (anchorM5 >= 0)
+                {
+                    right =
+                        MapM5ToChart(
+                            anchorM5,
+                            right);
+
+                    right =
+                        Math.Max(
+                            0,
+                            Math.Min(
+                                Bars.Count - 1,
+                                right));
+                }
 
                 int left =
                     Math.Max(
