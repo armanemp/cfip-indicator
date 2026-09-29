@@ -35,33 +35,56 @@ namespace cAlgo
                             int visualDirection =
                                 snapshot.AuthoritativeDirection;
 
-                            if (snapshot.PendingOrder ||
-                                !snapshot.ActionableNow)
-                            {
-                                Chart.RemoveObject(P + "WATCH_ARROW");
-                                Chart.RemoveObject(P + "REACTION_ARROW");
-                                return;
-                            }
-                
-                            if (visualDirection == 0)
-                            {
-                                Chart.RemoveObject(P + "WATCH_ARROW");
-                                Chart.RemoveObject(P + "REACTION_ARROW");
-                                return;
-                            }
-                
                             int hostBar =
                                 MapM5ToChart(
                                     closedM5,
                                     chartIndex);
-                
+
                             hostBar =
                                 Math.Max(
                                     0,
                                     Math.Min(
                                         Bars.Count - 1,
                                         hostBar));
-                
+
+                            if (snapshot.PendingOrder)
+                            {
+                                Chart.RemoveObject(P + "WATCH_ARROW");
+                                Chart.RemoveObject(P + "REACTION_ARROW");
+                                return;
+                            }
+
+                            if (!snapshot.ActionableNow)
+                            {
+                                Chart.RemoveObject(
+                                    P + "REACTION_ARROW");
+
+                                if (ShowEarlyArrow &&
+                                    visualDirection != 0)
+                                {
+                                    DrawIcon(
+                                        P + "WATCH_ARROW",
+                                        ChartIconType.Diamond,
+                                        hostBar,
+                                        Bars.ClosePrices[hostBar],
+                                        PanelSecondaryTextColor);
+                                }
+                                else
+                                {
+                                    Chart.RemoveObject(
+                                        P + "WATCH_ARROW");
+                                }
+
+                                return;
+                            }
+
+                            if (visualDirection == 0)
+                            {
+                                Chart.RemoveObject(P + "WATCH_ARROW");
+                                Chart.RemoveObject(P + "REACTION_ARROW");
+                                return;
+                            }
+
                             int arrowBar =
                                 hostBar;
                 
