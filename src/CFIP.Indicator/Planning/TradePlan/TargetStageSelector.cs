@@ -19,7 +19,8 @@ private double SelectTarget(
                                             double entry,
                                             double risk,
                                             int direction,
-                                            double alternateRR)
+                                            double alternateRR,
+                                            OpportunityLane lane = OpportunityLane.Strategic)
                                         {
                                             if (selected != null &&
                                                 position < selected.Count &&
@@ -27,9 +28,9 @@ private double SelectTarget(
                                                 return selected[position].Price;
                                 
                                             bool requireHtf =
-                                                position == 0
-                                                    ? RequireHtfRewardForTp1
-                                                    : RequireHtfRewardForTp2Plus;
+                                                RequiresHtfRewardForTargetStage(
+                                                    position,
+                                                    lane);
                                 
                                             double minimumRR =
                                                 Math.Max(
