@@ -124,6 +124,30 @@ namespace cAlgo
                        (_m5Frame.WaveTrendOverbought &&
                         _m5Frame.WaveTrendDelta < 0));
 
+            double priorWidth =
+                priorRangeHigh -
+                priorRangeLow;
+
+            double close =
+                _m5Bars.ClosePrices[index];
+
+            double atr =
+                Atr(
+                    _m5Bars,
+                    index);
+
+            bool breakout =
+                priorWidth > 0 &&
+                atr > 0 &&
+                (direction == 1
+                    ? close >
+                      priorRangeHigh +
+                      atr * 0.10
+                    : direction == -1 &&
+                      close <
+                      priorRangeLow -
+                      atr * 0.10);
+
             RangeSignalQualityInput input =
                 new RangeSignalQualityInput(
                     direction,
@@ -136,6 +160,7 @@ namespace cAlgo
                     displacement,
                     waveTrendAligned,
                     waveTrendReversal,
+                    breakout,
                     _m5Frame.WaveTrendQuality,
                     independentEvidence,
                     structuralConfirmations,
