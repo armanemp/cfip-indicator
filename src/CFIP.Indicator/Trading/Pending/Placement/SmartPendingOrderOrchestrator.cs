@@ -93,6 +93,28 @@ namespace cAlgo
                                 
                                             if (pendingDirection != 0)
                                             {
+                                                if (_decision != null &&
+                                                    _decision.DivergenceDirection ==
+                                                        -pendingDirection &&
+                                                    _decision.DivergenceRegular &&
+                                                    _decision.DivergenceQuality >= 82 &&
+                                                    _decision.DivergenceAgeBars <= 18)
+                                                {
+                                                    _autoOrdersBlockReason =
+                                                        "OPPOSING REGULAR DIVERGENCE";
+                                                    return;
+                                                }
+
+                                                if (EntryLocationQuality(
+                                                        _m5Bars,
+                                                        closedM5,
+                                                        pendingDirection) < 45)
+                                                {
+                                                    _autoOrdersBlockReason =
+                                                        "EXTREME ENTRY LOCATION";
+                                                    return;
+                                                }
+
                                                 string pendingSuitabilityReason;
                                 
                                                 if (!PassesMarketSuitability(
