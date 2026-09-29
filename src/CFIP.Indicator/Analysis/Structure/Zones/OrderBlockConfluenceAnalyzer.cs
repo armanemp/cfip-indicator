@@ -21,25 +21,48 @@ namespace cAlgo
                                 {
                                     if (!UseLiquiditySweep ||
                                         bars == null ||
+                                        index < 6 ||
                                         atr <= 0 ||
                                         (direction != 1 &&
                                          direction != -1))
                                         return false;
 
-                                    // OB confluence must consume the same causal
-                                    // liquidity definition as the main structural
-                                    // engine: confirmed swing level, directional
-                                    // penetration and reclaim. No parallel raw
-                                    // rolling-extreme sweep is allowed.
-                                    return direction == 1
-                                        ? BullLiquiditySweep(
-                                            bars,
-                                            index,
-                                            atr)
-                                        : BearLiquiditySweep(
-                                            bars,
-                                            index,
-                                            atr);
+                                    // An OB source candle is not itself the sweep
+                                    // event: for a directional OB it is normally the
+                                    // opposing source candle. Search only earlier
+                                    // fully-closed bars and consume the same canonical
+                                    // swing penetration + reclaim definition used by
+                                    // the main structural engine.
+                                    int start =
+                                        Math.Max(
+                                            5,
+                                            index -
+                                            Math.Max(
+                                                5,
+                                                Math.Min(
+                                                    LiquidityLookback,
+                                                    20)));
+
+                                    for (int i = start;
+                                         i < index;
+                                         i++)
+                                    {
+                                        bool swept =
+                                            direction == 1
+                                                ? BullLiquiditySweep(
+                                                    bars,
+                                                    i,
+                                                    atr)
+                                                : BearLiquiditySweep(
+                                                    bars,
+                                                    i,
+                                                    atr);
+
+                                        if (swept)
+                                            return true;
+                                    }
+
+                                    return false;
                                 }
 
         private bool HasOrderBlockFvgConfluence(
