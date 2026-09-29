@@ -19,6 +19,11 @@ namespace cAlgo
         public bool PendingOrder;
         public bool SetupPreviewActive;
         public bool TriggerVisible;
+        public bool TriggerRuntimeReady;
+        public int TriggerM1Index;
+        public int TriggerRuntimeScore;
+        public int TriggerRuntimeRequired;
+        public string TriggerRuntimeReason;
         public int ArrowM5Index;
         public bool IdealEntryVisible;
         public bool ActiveBrokerTargetVisible;
