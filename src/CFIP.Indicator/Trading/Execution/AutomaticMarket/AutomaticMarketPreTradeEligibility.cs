@@ -211,6 +211,19 @@ namespace cAlgo
                 return false;
             }
 
+            string actionabilityReason;
+            if (!IsCurrentSignalActionable(
+                    closedM5,
+                    out actionabilityReason))
+            {
+                _autoExecutionBlockReason =
+                    actionabilityReason;
+                SetAutoTradingState(
+                    "BLOCKED",
+                    actionabilityReason);
+                return false;
+            }
+
             return true;
         }
     }
