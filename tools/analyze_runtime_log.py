@@ -46,6 +46,7 @@ def main():
         paths = Counter()
         tfs = Counter()
         scenarios = Counter()
+        news_risk = Counter()
         anomalies = []
 
         rows = 0
@@ -103,6 +104,7 @@ def main():
         ("paths", paths),
         ("source timeframes", tfs),
         ("top scenarios", scenarios),
+        ("news risk states", news_risk),
     ):
         print(f"{title}:")
         for key, value in counter.most_common(20):
