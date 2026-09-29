@@ -23,12 +23,22 @@ namespace cAlgo
             int bear = 0;
             int evidence = 0;
 
-            AddScore(f.StructureBull, 16, ref bull, ref evidence);
-            AddScore(f.StructureBear, 16, ref bear, ref evidence);
-            AddScore(f.MssBull, 12, ref bull, ref evidence);
-            AddScore(f.MssBear, 12, ref bear, ref evidence);
-            AddScore(f.ChochBull, 9, ref bull, ref evidence);
-            AddScore(f.ChochBear, 9, ref bear, ref evidence);
+            // Structure, MSS and CHOCH can describe the same causal break.
+            // Count one structural event only, preserving the strongest applicable
+            // label instead of stacking correlated points.
+            if (f.StructureBull)
+                AddScore(true, 16, ref bull, ref evidence);
+            else if (f.MssBull)
+                AddScore(true, 12, ref bull, ref evidence);
+            else if (f.ChochBull)
+                AddScore(true, 9, ref bull, ref evidence);
+
+            if (f.StructureBear)
+                AddScore(true, 16, ref bear, ref evidence);
+            else if (f.MssBear)
+                AddScore(true, 12, ref bear, ref evidence);
+            else if (f.ChochBear)
+                AddScore(true, 9, ref bear, ref evidence);
             AddScore(f.DisplacementBull, 10, ref bull, ref evidence);
             AddScore(f.DisplacementBear, 10, ref bear, ref evidence);
             AddScore(f.LiquidityBull, 10, ref bull, ref evidence);
