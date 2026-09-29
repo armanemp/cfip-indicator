@@ -194,6 +194,8 @@ namespace cAlgo
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
                 private MtfClosedContext _lastMtfClosedContext;
                 private readonly MtfClosedContextCache _mtfClosedContextCache = new MtfClosedContextCache();
+                private readonly AggressiveEntryPolicy _aggressiveEntryPolicy =
+                    new AggressiveEntryPolicy();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
                 private DateTime _lastSafetySupervisorUtc = DateTime.MinValue;
                 private SignalVisualSnapshot _renderSignalVisualSnapshot;

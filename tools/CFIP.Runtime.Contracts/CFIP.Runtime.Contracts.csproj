@@ -31,5 +31,6 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionAttemptIdentity.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionGateState.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionGate.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Execution/AggressiveEntryPolicy.cs" />
   </ItemGroup>
 </Project>
