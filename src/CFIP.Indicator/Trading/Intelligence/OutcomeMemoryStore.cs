@@ -9,7 +9,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator
     {
-        private const string OutcomeMemoryVersion = "V2";
+        private const string OutcomeMemorySchema = "CFIP-OUTCOME";
         private const int OutcomeMemoryMaxAgeDays = 90;
 
         private string OutcomeMemoryKey()
@@ -39,7 +39,7 @@ namespace cAlgo
 
             key.Append('.');
             key.Append(MemoryConfigurationFingerprint());
-            key.Append(".V2");
+            key.Append(".MEM");
             return key.ToString();
         }
 
@@ -132,12 +132,12 @@ namespace cAlgo
         {
             if (_outcomeHistory == null ||
                 _outcomeHistory.Count == 0)
-                return OutcomeMemoryVersion + "\n";
+                return OutcomeMemorySchema + "\n";
 
             StringBuilder text =
                 new StringBuilder();
 
-            text.Append(OutcomeMemoryVersion);
+            text.Append(OutcomeMemorySchema);
             text.Append('\n');
 
             int start =
@@ -217,7 +217,7 @@ namespace cAlgo
                 if (lines.Length == 0 ||
                     !string.Equals(
                         lines[0].Trim(),
-                        OutcomeMemoryVersion,
+                        OutcomeMemorySchema,
                         StringComparison.Ordinal))
                     return false;
 
