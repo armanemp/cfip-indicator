@@ -3077,6 +3077,119 @@ live_calc_code = live_calc.read_text(encoding="utf-8")
 if "RenderParallelOpportunityCandidates(" not in live_calc_code:
     raise SystemExit("Parallel opportunity renderer must be in the canonical render cycle")
 
+# Phase 9.4 — actionability, divergence, multi-plan registry and visual signal authority.
+divergence_model = ROOT / "Core" / "Models" / "DivergenceResult.cs"
+divergence_analyzer = ROOT / "Analysis" / "Market" / "DivergenceAnalyzer.cs"
+actionability_model = ROOT / "Core" / "Models" / "TradeActionabilityResult.cs"
+actionability_evaluator = ROOT / "Trading" / "Validation" / "TradeActionabilityEvaluator.cs"
+plan_registry = ROOT / "Trading" / "Intelligence" / "TradePlanRegistry.cs"
+parallel_builder = ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs"
+decision_model = ROOT / "Core" / "Models" / "Decision.cs"
+visual_builder = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
+alert_calc = ROOT / "Runtime" / "Calculation" / "CalculationDecisionAlerts.cs"
+plan_eligibility = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
+
+for required_path in (
+    divergence_model,
+    divergence_analyzer,
+    actionability_model,
+    actionability_evaluator,
+    plan_registry,
+):
+    if not required_path.exists():
+        raise SystemExit(f"Phase 9.4 owner is missing: {required_path}")
+
+div_code = divergence_analyzer.read_text(encoding="utf-8")
+frame_code = (ROOT / "Analysis" / "Market" / "Models" / "Frame.cs").read_text(encoding="utf-8")
+market_evidence_code = (ROOT / "Analysis" / "Market" / "MarketFrameEvidence.cs").read_text(encoding="utf-8")
+for token in (
+    "TryFindLastTwoSwingLows(",
+    "TryFindLastTwoSwingHighs(",
+    "Regular",
+    "Hidden",
+    "GetWaveTrendSnapshot(",
+    "Rsi(",
+):
+    if token not in div_code:
+        raise SystemExit(f"Divergence engine missing canonical component: {token}")
+for token in (
+    "DivergenceDirection",
+    "DivergenceQuality",
+    "DivergenceType",
+):
+    if token not in frame_code or token not in market_evidence_code:
+        raise SystemExit(f"Divergence evidence is not flowing through Frame: {token}")
+
+act_code = actionability_evaluator.read_text(encoding="utf-8")
+decision_code = decision_model.read_text(encoding="utf-8")
+for token in (
+    "IsTriggerReached(",
+    "MaximumEntryExtensionAtr",
+    "MaximumEntryDistanceAtr",
+    "Tp1MinimumRR",
+    "MinimumRequiredRR()",
+    "microConflict",
+    "OPPOSING REGULAR DIVERGENCE",
+    "RR BELOW ACTIONABLE FLOOR",
+    "LATE / PRICE EXTENDED",
+):
+    if token not in act_code:
+        raise SystemExit(f"Actionability gate missing deterministic execution condition: {token}")
+for token in (
+    "ActionableNow",
+    "EntryDistanceAtr",
+    "ActionableTp1RR",
+    "DivergenceQuality",
+):
+    if token not in decision_code:
+        raise SystemExit(f"Decision model missing Phase 9.4 field: {token}")
+
+if "_decision.ActionableNow" not in plan_eligibility.read_text(encoding="utf-8"):
+    raise SystemExit("Plan creation must consume ActionableNow")
+
+registry_code = plan_registry.read_text(encoding="utf-8")
+parallel_code = parallel_builder.read_text(encoding="utf-8")
+for token in ("Dictionary<string, TradeOpportunityCandidate>", "Upsert(", "Snapshot()"):
+    if token not in registry_code:
+        raise SystemExit(f"Multi-plan registry contract missing: {token}")
+if "_tradePlanRegistry.Upsert(" not in parallel_code:
+    raise SystemExit("Parallel opportunity builder must register every materialized candidate")
+
+visual_code = visual_builder.read_text(encoding="utf-8")
+alert_code = alert_calc.read_text(encoding="utf-8")
+if "&&
+                _decision.ActionableNow" not in visual_code and "_decision.ActionableNow" not in visual_code:
+    raise SystemExit("Visual signal authority must require ActionableNow")
+for token in ("!_decision.ActionableNow", "GetManagedPendingOrder() != null"):
+    if token not in alert_code:
+        raise SystemExit(f"Entry alert gate missing Phase 9.4 hierarchy condition: {token}")
+
+execution_state = (ROOT / "Indicator" / "State.cs").read_text(encoding="utf-8")
+execution_factory = (ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs").read_text(encoding="utf-8")
+execution_handlers = (ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs").read_text(encoding="utf-8")
+execution_sync = (ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs").read_text(encoding="utf-8")
+for token in (
+    "ToggleButton _autoTradingQuickToggle",
+    "ToggleButton _automaticOrdersQuickToggle",
+    "_executionToggleSyncing",
+):
+    if token not in execution_state:
+        raise SystemExit(f"Functional execution control state missing: {token}")
+for token in (
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
+):
+    if token not in execution_factory:
+        raise SystemExit(f"Execution toggle click owner missing: {token}")
+for token in (
+    "SetAutoTradingRuntimeState(",
+    "SetAutomaticOrdersRuntimeState(",
+):
+    if token not in execution_handlers:
+        raise SystemExit(f"Execution toggle handler must call canonical runtime setter: {token}")
+if "_executionToggleSyncing = true" not in execution_sync:
+    raise SystemExit("Execution toggle synchronizer must guard programmatic state changes")
+
 # Strict type isolation: production behavior files may not hide helper types
 # inside the cTrader partial host. Every helper/model type must have a file owner.
 for p in files:
