@@ -1,6 +1,5 @@
 using System;
 using cAlgo.API;
-using cAlgo.API.Internals;
 
 namespace cAlgo
 {
@@ -107,14 +106,16 @@ namespace cAlgo
             {
                 takeProfits =
                     new RelativeTakeProfitProtections(
-                        new RelativeTakeProfitProtection(
-                            new OrderVolume(tp1Volume),
-                            d1 /
-                            Symbol.PipSize),
-                        new RelativeTakeProfitProtection(
-                            new OrderVolume(tp2Volume),
-                            d2 /
-                            Symbol.PipSize),
+                        new RelativeTakeProfitProtection
+                        {
+                            Volume = tp1Volume,
+                            Distance = d1 / Symbol.PipSize
+                        },
+                        new RelativeTakeProfitProtection
+                        {
+                            Volume = tp2Volume,
+                            Distance = d2 / Symbol.PipSize
+                        },
                         new RelativeTakeProfitLastProtection(
                             dFinal /
                             Symbol.PipSize));
