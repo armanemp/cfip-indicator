@@ -470,10 +470,10 @@ Target-terminal replay remains required for actual broker/server timing, partial
 | Existing server TP/BE ownership and local-mutation yield remain intact | PASS | Required |
 | Automatic market/aggressive/pending paths retain shared submission/protection gates | PASS | Required |
 | Public parameter count remains unchanged at 552 | PASS | Required |
-| Full-project / accumulated audit | Pending | Required |
-| Decision Contracts | Pending | Required |
-| Runtime Acceptance | Pending | Required |
-| cTrader Compile/Build | Pending | Required |
-| Source / Architecture | Pending | Required |
+| Full-project / accumulated audit | PASS | Required |
+| Decision Contracts | PASS | Required |
+| Runtime Acceptance | PASS | Required |
+| cTrader Compile/Build | PASS | Required |
+| Source / Architecture | PASS | Required |
 
 Target-terminal replay remains required for exact signal timing, stale-object removal, popup rendering, broker submission timing, server protection activation, realized SL/TP and false-signal measurements.
