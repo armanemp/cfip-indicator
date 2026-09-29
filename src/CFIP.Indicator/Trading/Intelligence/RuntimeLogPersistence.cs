@@ -32,7 +32,7 @@ namespace cAlgo
                         : Bars.TimeFrame.ToString());
 
             return
-                "CFIP_RuntimeLog_" +
+                "CFIP_RuntimeLog_v2_" +
                 symbol +
                 "_" +
                 timeframe +
