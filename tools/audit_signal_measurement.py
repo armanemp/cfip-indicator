@@ -75,9 +75,21 @@ require_text(
     "ActionabilityReason",
     "DecisionReason",
 )
+recorder_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs"
+
 require_text(
     trace_store_path,
     "MaxSignalEvaluationTraceHistory = 256",
+)
+require_text(
+    recorder_path,
+    "RecordSignalEvaluationTrace(",
+    "ArchiveSignalTrace(trace);",
+    "BarOpenTimeUtcTicks",
+    "DECISION-FILTER",
+    "TRIGGER",
+    "ACTIONABILITY",
+    "ACTIONABLE",
 )
 require_text(
     signal_trace_persistence_path,
@@ -85,12 +97,7 @@ require_text(
     "OutcomeArchivePeriodStart(",
     "start.AddDays(90)",
     "File.AppendAllText(",
-    "ArchiveSignalTrace(trace);",
     "BarOpenTimeUtcTicks",
-    "DECISION-FILTER",
-    "TRIGGER",
-    "ACTIONABILITY",
-    "ACTIONABLE",
 )
 require_text(
     panel_path,
@@ -103,8 +110,16 @@ require_text(
     "CFIP-PORTABLE-MEMORY,1",
     "TryRestorePortableMemorySnapshot",
     "PersistPortableMemorySnapshot",
-    "LocalStorageScope.Type",
     "OutcomePayloadBase64",
+)
+
+memory_store_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/OutcomeMemoryStore.cs"
+
+require_text(
+    memory_store_path,
+    "LocalStorageScope.Type",
+    "TryRestorePortableMemorySnapshot",
+    "LocalStorage.SetString(",
 )
 
 require_text(
