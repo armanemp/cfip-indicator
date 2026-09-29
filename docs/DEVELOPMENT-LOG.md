@@ -1487,7 +1487,8 @@ Operator pull: required now; pull `main` to the current closeout commit.
 
 ## Phase 9.14 — Signal Evidence Integrity & Consensus Calibration — 2026-09-29
 
-Status: IMPLEMENTED; awaiting documentation-inclusive CI verification.
+Status: VERIFIED COMPLETE; merged into main as PR #56.
+Merge commit: 16e788f6b196afcfe2580908cbdb4dabc46cb5b.
 
 Finding:
 The canonical frame contribution path used relative bull/bear percentages without sufficiently preserving absolute frame strength and evidence coverage. This can inflate directional consensus from weak but dominant frames.
@@ -1511,5 +1512,11 @@ This phase addresses a concrete consensus-calibration defect, but improved profi
 
 Detailed record: docs/PHASE-9-14-SIGNAL-EVIDENCE-CALIBRATION.md.
 
-Next phase after verification: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
-Operator pull: after Phase 9.14 verification and merge.
+Verification:
+- Runtime Acceptance: PASS;
+- cTrader Compile/Build: PASS;
+- Source/Architecture + accumulated audit: PASS;
+- Decision Contracts: PASS within build.
+
+Next phase: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
+Operator pull: required now; pull main to the latest closeout commit.
