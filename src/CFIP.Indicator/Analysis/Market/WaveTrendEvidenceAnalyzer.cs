@@ -55,8 +55,6 @@ namespace cAlgo
             WaveTrendEvidenceResult result =
                 WaveTrendEvidenceRule.Evaluate(
                     snapshot,
-                    WaveTrendOs1,
-                    WaveTrendOb1,
                     MinimumWaveTrendQuality);
 
             frame.WaveTrend =
