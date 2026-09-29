@@ -194,8 +194,6 @@ namespace cAlgo
                                     snapshot.ArrowM5Index;
                             }
                 
-                            RenderTriggerRuntimeMarker(
-                                snapshot);
 
                             _lastVisualDirection =
                                 visualDirection;
