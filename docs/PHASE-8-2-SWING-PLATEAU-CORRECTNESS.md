@@ -2,7 +2,7 @@
 
 Date: 2026-09-29
 Base: main at `3dbbeed5b703f0e5be13f5a1aabc6c87fd13f3b7`
-Status: analysis/contract design in progress; no behavioral code changes merged.
+Status: implementation in progress; canonical plateau and structural evidence de-duplication are now integrated on the phase branch.
 
 ## Problem statement
 
@@ -12,11 +12,11 @@ Structure, MSS and CHOCH are also computed as separate booleans. This phase must
 
 ## Scope
 
-1. Define deterministic, symmetric plateau handling for swing highs and lows without look-ahead beyond the selected closed-bar index.
+1. Define deterministic, symmetric plateau handling for swing highs and lows without look-ahead beyond the selected closed-bar index. **Implemented.**
 2. Give a contiguous/equivalent plateau one canonical level identity and a deterministic representative/confirmation time.
-3. Make equal-level clustering avoid chaining: every member must be within tolerance of a fixed cluster anchor/representative, not merely the previous member.
-4. Require a sweep to reference a previously established level and a closed-bar penetration/reclaim sequence, not an undifferentiated rolling extreme alone.
-5. Audit BOS/MSS/CHOCH consumers so a single causal break event cannot be counted as several independent confirmations.
+3. Make equal-level clustering avoid chaining: every member must be within tolerance of a fixed cluster anchor/representative, not merely the previous member. **Implemented.**
+4. Require a sweep to reference a previously established level and a closed-bar penetration/reclaim sequence, not an undifferentiated rolling extreme alone. **Implemented.**
+5. Audit BOS/MSS/CHOCH consumers so a single causal break event cannot be counted as several independent confirmations. **Implemented at scoring/evidence consumers.**
 6. Preserve parameter contract, closed-bar ownership, BUY/SELL symmetry, and all execution/risk ownership.
 7. Add platform-neutral deterministic contracts and source gates before changing production behavior.
 
