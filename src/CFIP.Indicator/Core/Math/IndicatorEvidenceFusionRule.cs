@@ -38,6 +38,7 @@ namespace cAlgo
         public int OssBullVotes { get; }
         public int OssBearVotes { get; }
         public int OssIndicatorCount { get; }
+        public int OssConfluenceWeight { get; }
         public int MinimumOssAgreement { get; }
 
         public IndicatorEvidenceFusionInput(
@@ -75,6 +76,7 @@ namespace cAlgo
             int ossBullVotes,
             int ossBearVotes,
             int ossIndicatorCount,
+            int ossConfluenceWeight,
             int minimumOssAgreement)
         {
             Regime = regime ?? "UNKNOWN";
@@ -111,6 +113,7 @@ namespace cAlgo
             OssBullVotes = Math.Max(0, ossBullVotes);
             OssBearVotes = Math.Max(0, ossBearVotes);
             OssIndicatorCount = Math.Max(0, ossIndicatorCount);
+            OssConfluenceWeight = Math.Max(1, ossConfluenceWeight);
             MinimumOssAgreement = Math.Max(1, minimumOssAgreement);
         }
     }
@@ -253,12 +256,21 @@ namespace cAlgo
 
                 if (purity >= 0.60)
                 {
+                    double ossScale =
+                        Math.Max(
+                            0.50,
+                            Math.Min(
+                                1.50,
+                                input.OssConfluenceWeight /
+                                4.0));
+
                     double ossBonus =
                         Math.Min(
                             3.0,
                             (maxVotes -
                              input.MinimumOssAgreement +
-                             1) * 0.75);
+                             1) * 0.75) *
+                        ossScale;
 
                     if (input.OssBullVotes > input.OssBearVotes)
                         contextBull += ossBonus;
