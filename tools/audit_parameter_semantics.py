@@ -40,8 +40,11 @@ for path in sorted(PARAM_ROOT.glob("*.cs")):
             "default": default_match.group(1).strip() if default_match else "",
         }
 
-if len(parameter_defs) != 552:
-    raise SystemExit(f"Expected 552 parameters during Phase 9.2, found {len(parameter_defs)}")
+EXPECTED_CURRENT_PARAMETERS = 566
+if len(parameter_defs) != EXPECTED_CURRENT_PARAMETERS:
+    raise SystemExit(
+        f"Expected {EXPECTED_CURRENT_PARAMETERS} current parameters, found {len(parameter_defs)}"
+    )
 
 sources = {
     path: strip_non_code(path.read_text(encoding="utf-8"))

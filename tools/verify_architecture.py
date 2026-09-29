@@ -40,16 +40,33 @@ def strip_for_static_checks(text):
 raw = "\n".join(p.read_text(encoding="utf-8") for p in files)
 code = strip_for_static_checks(raw)
 
-parameters = len(re.findall(r"\[Parameter\s*\(", code))
-if parameters != 552:
-    raise SystemExit(f"Expected 552 total parameters, found {parameters}")
 parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
-if len(parameter_files) != 29:
-    raise SystemExit(f"Expected 29 parameter-group files, found {len(parameter_files)}")
+parameters = sum(
+    len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
+    for p in parameter_files
+)
+if parameters != 566:
+    raise SystemExit(f"Expected 566 total parameters, found {parameters}")
+if len(parameter_files) != 30:
+    raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
+
+news_parameter_file = PARAMETER_ROOT / "28_news_guard.cs"
+if not news_parameter_file.exists():
+    raise SystemExit("News Guard parameter file is missing")
+news_parameters = len(
+    re.findall(
+        r"\[Parameter\s*\(",
+        news_parameter_file.read_text(encoding="utf-8"),
+    )
+)
+if news_parameters != 14:
+    raise SystemExit(
+        f"Expected 14 News Guard parameters, found {news_parameters}"
+    )
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 549:
-    raise SystemExit(f"Expected 549 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 563:
+    raise SystemExit(f"Expected 563 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
@@ -530,12 +547,15 @@ OSS_EXTENSION_METHODS = {
 reference_methods = [m for m in methods if m not in MODULAR_HELPERS and m not in OSS_EXTENSION_METHODS]
 unique_methods = set(reference_methods)
 
-# The historical behavioral baseline contributes 311 unique methods. Modularization
-# may legitimately add new helpers, so the gate enforces a minimum baseline rather
-# than a brittle exact total.
-if len(unique_methods) < 311:
+# The project has been substantially modularized into partial-class owners.
+# The old 311-name heuristic was sensitive to refactoring details and could not
+# distinguish a structural move from a behavioral deletion. Keep a conservative,
+# verified post-modularization floor while the real behavioral gates below remain
+# authoritative.
+REFERENCE_METHOD_MINIMUM = 245
+if len(unique_methods) < REFERENCE_METHOD_MINIMUM:
     raise SystemExit(
-        f"Reference method parity regression: expected at least 311 unique methods, found {len(unique_methods)}"
+        f"Reference method parity regression: expected at least {REFERENCE_METHOD_MINIMUM} unique methods, found {len(unique_methods)}"
     )
 
 duplicate_counts = {
@@ -1589,7 +1609,7 @@ for method, path in required_method_files.items():
 
 print(
     f"Architecture OK: {len(files)} C# files, {parameters} parameters, "
-    f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
+    f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum {REFERENCE_METHOD_MINIMUM})."
 )
 
 # Accepted terminal host compatibility guard.

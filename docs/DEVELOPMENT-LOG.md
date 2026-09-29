@@ -1740,3 +1740,34 @@ Verification boundary:
 Source/architecture, runtime acceptance, parameter-use, UI cleanup, scenario coexistence and runtime-log smoke verification must pass on the phase branch. Terminal replay remains required for actual broker behavior and empirical prediction/exit measurements.
 
 Operator action after merge: pull local main and run terminal-level scenario/label, market-order, pending-order and exit-management replay tests.
+
+
+## Phase 11 — Economic News Guard & Reference-Indicator Reassessment — 2026-09-29
+
+Status: IMPLEMENTED on phase branch; CI verification required before merge.
+
+Reference review:
+- `indicator.zip`: WaveTrend reference plus empty TPO placeholder.
+- `indicators.zip`: economic calendar, WaveTrend, FVG and empty volume-profile placeholder.
+- WaveTrend is already implemented internally as a deterministic closed-bar engine; no duplicate runtime copy was added.
+- FVG geometry and mitigation in CFIP already cover the useful 2-bar/3-bar structural behaviors in the reference. The reference opening-gap family is kept separate to avoid correlated double-counting.
+- The economic reference was useful and exposed the real gap: CFIP's old news block was manual `NewsBlackoutUtc` only.
+
+Implemented:
+- Internet access enabled for calendar retrieval;
+- weekly XML economic feed parsed into a cache;
+- relevant currency inference plus configurable extra currencies;
+- high-impact pre/post blackout and optional medium-impact block;
+- stale feed fail-closed for auto trading;
+- pending cancellation before high-impact events;
+- optional active-position pre-news close, default OFF;
+- Timer-based refresh so decision/tick path uses cached data after initial load;
+- news state surfaced in the execution panel;
+- NEWS_RISK event telemetry added;
+- automated News Guard audit added to source CI.
+
+Incident relevance:
+The old implementation could not automatically know that a scheduled economic release was imminent. Therefore a signal could be valid technically, open, and then be hit by release volatility without the news gate having blocked that entry. This phase closes that gap for future trades.
+
+Important runtime boundary:
+Even a news-aware system cannot guarantee an open position will not hit its stop during a fast release. Broker-side gap/slippage can cross the stop before any client-side reaction. Terminal replay is required to measure the actual behavior.

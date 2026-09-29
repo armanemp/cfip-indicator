@@ -132,6 +132,16 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
+                    ApplyEconomicNewsRiskProtection(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "NEWS RISK PROTECTION");
+
+            RunCalculationStage(
+                () =>
+                {
                     EvaluateActivePlan(
                         closedM5);
                     return true;

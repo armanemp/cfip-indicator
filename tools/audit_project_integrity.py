@@ -39,13 +39,28 @@ if duplicates:
         print(f"DUPLICATE PARAMETER: {name} -> {owners}")
     fail(f"Found {len(duplicates)} duplicate public parameter names")
 
-if len(param_decls) != 552:
-    fail(f"Project integrity expects 552 public parameters, found {len(param_decls)}")
+EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES = 554
+if len(param_decls) != EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES:
+    fail(
+        f"Project integrity public-property match count changed: "
+        f"expected {EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES}, found {len(param_decls)}"
+    )
 
 # Phase 7.4 — truthful execution-capacity semantics.
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in sorted(PARAM_ROOT.glob("*.cs"))
 )
+declared_parameter_count = len(
+    re.findall(
+        r"\[Parameter\s*\(",
+        parameter_source,
+    )
+)
+if declared_parameter_count != 566:
+    fail(
+        f"Project integrity expects 566 parameter declarations, "
+        f"found {declared_parameter_count}"
+    )
 if not re.search(
     r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
     parameter_source,

@@ -1,7 +1,7 @@
 # CFIP Runtime Log — Operator Guide
 
 ## Generated files
-`History/CFIP_RuntimeLog_<symbol>_<chart-timeframe>_<configuration-fingerprint>_<90-day-start>_<90-day-end>.csv`
+`History/CFIP_RuntimeLog_v2_<symbol>_<chart-timeframe>_<configuration-fingerprint>_<90-day-start>_<90-day-end>.csv`
 
 The runtime log is append-only within its rolling 90-day bucket. The configuration fingerprint keeps materially different indicator configurations separated.
 
@@ -28,3 +28,18 @@ The runtime log is append-only within its rolling 90-day bucket. The configurati
 
 ## Important limitation
 A runtime log can expose internal calculation and lifecycle failures, but it cannot by itself prove profitability or prediction accuracy. Empirical claims require enough historical outcomes or replay data and should be reported with the relevant sample size and measurement window.
+
+## Phase 11 additions
+
+Runtime-log schema is now v2. Additional fields include:
+- ScenarioEvidence
+- LocationQuality
+- WaveTrendQuality
+- PolicyAllowed
+- PolicyReason
+- ForecastHorizonBars
+
+Additional event type:
+- `NEWS_RISK`: scheduled/blocked economic-event context, event identity and protective action.
+
+For incident analysis, correlate `NEWS_RISK` with the preceding `DECISION`, `SCENARIO` and `EXECUTION` records on the same symbol/configuration and UTC window.

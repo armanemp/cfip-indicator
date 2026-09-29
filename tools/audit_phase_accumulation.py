@@ -152,7 +152,8 @@ if "Chart.DrawRectangle(" in labels:
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
 )
-if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != 552:
+EXPECTED_CURRENT_PARAMETERS = 566
+if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit("public parameter contract changed unexpectedly")
 
 print("Phase 9.10 accumulated auto-trade/protection audit PASS")
@@ -161,5 +162,5 @@ print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("All level label text: White / background-free")
-print("Public parameter contract: 552")
+print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")

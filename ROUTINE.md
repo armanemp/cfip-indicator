@@ -73,3 +73,10 @@
 - commit/PR و وضعیت merge
 
 این فایل جایگزین تست واقعی نیست؛ فقط مانع فراموش شدن روتین پروژه می‌شود.
+
+## 10. روتین بررسی اندیکاتورهای مرجع
+1. ZIPهای مرجع قبلی را دوباره بررسی کن و قبل از کپی‌کردن هر کد، parity و همپوشانی با موتورهای داخلی CFIP را مشخص کن.
+2. WaveTrend و FVG مرجع فقط وقتی وارد runtime شوند که parity ریاضی، closed-bar semantics و double-counting audit آن‌ها روشن باشد.
+3. Economic News feed باید از مسیر cache/Timer به decision و execution برسد؛ شبکه نباید روی هر tick فراخوانی شود.
+4. قبل از هر automatic market/pending entry، news guard نهایی دوباره ارزیابی شود.
+5. در صورت خبر مهم نزدیک، pending قابل لغو باشد و در صورت فعال‌بودن policy، active position با telemetry ثبت و مدیریت شود.

@@ -43,19 +43,19 @@ if "public bool" in memory or re.search(r"\[Parameter\s*\(", memory):
 if "RiskPercentEquity" not in risk_owner or "SuitabilityRiskMultiplier()" not in risk_owner:
     raise SystemExit("Adaptive outcome risk must remain downstream of canonical suitability risk")
 
-print("Optimization readiness audit PASS")
-print("Persistent outcome memory: LocalStorage / 90-day bound / 128-record bound / configuration scoped")
-print("Adaptive risk: minimum 8 observations / latest 12 outcomes / hard penalty cap")
-print("Canonical risk authority: preserved")
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8")
     for p in sorted((ROOT / "Indicator" / "Parameters").glob("*.cs"))
 )
 parameter_count = len(re.findall(r"\[Parameter\s*\(", parameter_source))
-if parameter_count != 552:
+if parameter_count != 566:
     raise SystemExit(f"Public parameter count changed: {parameter_count}")
 
 if "AccessRights.FullAccess" in read("Indicator/CFIPIndicator.cs"):
     raise SystemExit("Indicator must not request FullAccess")
 
+print("Optimization readiness audit PASS")
+print("Persistent outcome memory: LocalStorage / 90-day bound / 128-record bound / configuration scoped")
+print("Adaptive risk: minimum 8 observations / latest 12 outcomes / hard penalty cap")
+print("Canonical risk authority: preserved")
 print(f"Public parameters scanned: {parameter_count}")

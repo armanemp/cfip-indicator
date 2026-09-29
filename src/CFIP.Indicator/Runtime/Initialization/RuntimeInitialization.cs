@@ -287,6 +287,10 @@ namespace cAlgo
                     ? "INITIALIZING"
                     : "DISABLED");
 
+            if (EnableEconomicNewsCalendar)
+                RefreshEconomicNewsIfNeeded(
+                    TimeInUtc);
+
             _status = "READY";
             _initializationReady = true;
             _lastPanelRenderUtc = DateTime.MinValue;
