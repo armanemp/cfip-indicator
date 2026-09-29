@@ -4,7 +4,7 @@ Date: 2026-09-29
 
 ## Status
 
-IMPLEMENTATION COMPLETE on `phase/9-12-outcome-recovery-calibration`; final CI verification and merge are the remaining phase gates.
+VERIFIED COMPLETE on `phase/9-12-outcome-recovery-calibration`.
 
 ## Why this phase was required
 
@@ -101,3 +101,15 @@ The history is still runtime in-memory. Restarting the indicator clears it. Targ
 ## Next phase
 
 Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
+
+
+## Final verification
+
+- Runtime Acceptance #1096: PASS
+- cTrader Compile/Build #1280: PASS
+- Source/Architecture + accumulated audits #1287: PASS
+- Decision Contracts within cTrader Compile/Build: PASS
+- Public parameter count: 552
+- Final verified branch head: `626618e7100b2e2cecf8a172d67ed49aee43345b`
+
+The phase is complete for source/contract/build verification. Target-terminal replay remains the empirical acceptance boundary.
