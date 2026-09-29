@@ -128,7 +128,8 @@ namespace cAlgo
                 _decision != null &&
                 _decision.Direction != 0 &&
                 _triggerRuntime.Direction == _decision.Direction &&
-                _triggerRuntime.DecisionM5 == closedM5;
+                _triggerRuntime.DecisionM5 == closedM5 &&
+                _decision.EntryAllowed;
 
             int visualDirection =
                 ResolveCanonicalVisualDirection(
