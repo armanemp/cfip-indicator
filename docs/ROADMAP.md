@@ -3564,3 +3564,40 @@ Operator action:
 | 9.5 No-trade intelligence | NEXT | Explainable no-trade state synthesis remains a separate phase. |
 
 Phase 9.3 does not claim measured trading-performance improvement until target-terminal replay/historical evaluation is completed.
+
+
+## Phase 9.5 — Actionable Entry Coherence and Turning-Point Risk — 2026-09-29
+
+Status: VERIFIED COMPLETE on `phase/9-5-actionable-signal-execution-coherence-v2`.
+
+This is a corrective strategy-quality continuation of the Phase 9.4 actionability/divergence work already present on `main`.
+
+Scope:
+- one canonical actionable entry alert for Confirmed/High/Smart thresholds;
+- no independent entry alert when a Plan is merely activated;
+- directional entry arrow only when `ActionableNow` is true;
+- M1 trigger marker is non-directional so it cannot be mistaken for a second entry;
+- final market entry gate explicitly consumes the same `ActionableNow` state used by Plan creation and alerts;
+- turning-point risk from recent M5 range position and adverse M5/M1 momentum;
+- strong opposing regular divergence remains an immediate entry blocker;
+- deterministic ranked `TradePlanRegistry` snapshot and best-candidate selection;
+- panel visibility for final entry-gate state, reason, quality, RR and divergence;
+- regression contracts for turning-point risk and registry ordering.
+
+Behavioral intent:
+- BUY near a recent range high is treated as a potential late/chasing setup;
+- SELL near a recent range low is treated symmetrically;
+- a directional decision while lower-timeframe pressure is materially against the entry is blocked unless the setup is genuinely in the intended execution window;
+- insufficient RR and late/extended price remain hard blockers;
+- informational WATCH/REACTION states do not create directional entry arrows.
+
+Safety boundary:
+- `TradePlanRegistry` supports parallel analysis/presentation;
+- broker execution remains single-plan/single-managed-identity until plan-scoped lifecycle, protection and broker mutation identities are isolated.
+
+Verification:
+- Runtime Acceptance, cTrader Compile/Build and Source/Architecture workflows are GREEN on the verified head;
+- target cTrader replay remains required for empirical false-signal, timing and realized RR measurements;
+- no profitability or win-rate claim is inferred from static/contract checks.
+
+Next dependency after verified completion: continue Track 9 intelligence/no-trade work without reopening completed historical phases.

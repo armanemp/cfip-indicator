@@ -175,9 +175,9 @@ namespace cAlgo
                                 return false;
 
                             return
+                                key.StartsWith("ACTION|", StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith("HIGH|", StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith("SMART|", StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith("SIGNAL|", StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith("EARLY|", StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith("REACTION|", StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith("REVERSAL|", StringComparison.OrdinalIgnoreCase);
@@ -280,7 +280,7 @@ namespace cAlgo
                                     "AUTO",
                                     StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith(
-                                    "SIGNAL|",
+                                    "ACTION|",
                                     StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith(
                                     "HIGH|",

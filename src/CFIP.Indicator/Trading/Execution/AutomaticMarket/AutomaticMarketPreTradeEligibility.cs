@@ -211,6 +211,27 @@ namespace cAlgo
                 return false;
             }
 
+            if (_decision == null ||
+                !_decision.ActionableNow)
+            {
+                string reason =
+                    _decision == null
+                        ? "NO DECISION"
+                        : string.IsNullOrWhiteSpace(
+                            _decision.ActionabilityReason)
+                            ? "ENTRY NOT ACTIONABLE"
+                            : _decision.ActionabilityReason;
+
+                _autoExecutionBlockReason =
+                    reason;
+
+                SetAutoTradingState(
+                    "BLOCKED",
+                    reason);
+
+                return false;
+            }
+
             return true;
         }
     }

@@ -59,6 +59,49 @@ namespace cAlgo
                                    
                                                     AddPanelRow(
                                                         ref slot,
+                                                        "ENTRY GATE  " +
+                                                        (_decision.ActionableNow
+                                                            ? "ACTIONABLE"
+                                                            : "BLOCKED") +
+                                                        "  •  " +
+                                                        (_decision.ActionabilityReason ??
+                                                         "NOT EVALUATED") +
+                                                        "  •  LOC " +
+                                                        _decision.EntryLocationQuality +
+                                                        "  •  TIMING " +
+                                                        _decision.EntryTimingQuality +
+                                                        "  •  RR " +
+                                                        _decision.ActionableTp1RR.ToString("F2"),
+                                                        _decision.ActionableNow
+                                                            ? TpLineColor
+                                                            : PanelWarningColor,
+                                                        true,
+                                                        contentWidth);
+
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "DIVERGENCE  " +
+                                                        (_decision.DivergenceType ?? "NONE") +
+                                                        "  •  Q" +
+                                                        _decision.DivergenceQuality +
+                                                        "  •  DIR " +
+                                                        (_decision.DivergenceDirection == 1
+                                                            ? "BUY"
+                                                            : _decision.DivergenceDirection == -1
+                                                                ? "SELL"
+                                                                : "NONE"),
+                                                        _decision.DivergenceDirection == -direction &&
+                                                        _decision.DivergenceQuality >= 70
+                                                            ? SlLineColor
+                                                            : _decision.DivergenceDirection == direction &&
+                                                              _decision.DivergenceQuality >= 70
+                                                                ? TpLineColor
+                                                                : PanelSecondaryTextColor,
+                                                        false,
+                                                        contentWidth);
+
+                                                    AddPanelRow(
+                                                        ref slot,
                                                         "MTF " +
                                                         _decision.TimeframeAgreement +
                                                         "  •  EVID " +
@@ -198,14 +241,13 @@ AddPanelRow(
                                                     {
                                                         AddPanelRow(
                                                             ref slot,
-                                                            "EARLY ANALYSIS  •  " +
+                                                            "EARLY WATCH  •  " +
                                                             (_prediction.Direction == 1
                                                                 ? "BUY"
                                                                 : "SELL") +
                                                             "  •  CONF " +
                                                             _prediction.Confidence,
-                                                            PanelDirectionColor(
-                                                                _prediction.Direction),
+                                                            PanelSecondaryTextColor,
                                                             true,
                                                             contentWidth);
                                     

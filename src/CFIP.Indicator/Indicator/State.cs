@@ -67,7 +67,8 @@ namespace cAlgo
                 private bool _outcomeRegistered;
                 private int _lastAutoM5 = -1;
                 private int _lastEarlyAlertM5 = -1;
-                private int _lastHighConfidenceM5 = -1;
+                private int _lastActionableEntryAlertM5 = -1;
+                private int _lastActionableEntryAlertDirection = 0;
                 private int _tp1Hit;
                 private int _tp2Hit;
                 private int _tp3Hit;
@@ -206,7 +207,6 @@ namespace cAlgo
         
                 private DateTime _lastBrokerModifyUtc = DateTime.MinValue;
                 private int _lastRestrictionM5 = -1;
-                private int _lastSmartDecisionAlertM5 = -1;
                 private int _lastHistoricalHostBar = -1;
                 private int _lastAutoPlanAttemptM5 = -1;
                 private int _lastAutoPlanTriggerM1 = -1;

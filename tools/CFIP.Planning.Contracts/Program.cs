@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 
 namespace cAlgo
@@ -14,6 +15,7 @@ namespace cAlgo
 
             VerifyStopTargetProtection();
             VerifyLifecycleTransitions();
+            VerifyTradePlanRegistryOrdering();
             Console.WriteLine("Planning contracts OK");
         }
 
@@ -192,6 +194,84 @@ namespace cAlgo
         }
 
 
+
+        private static void VerifyTradePlanRegistryOrdering()
+        {
+            TradePlanRegistry registry =
+                new TradePlanRegistry();
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "BUY_TACTICAL",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    Quality = 80,
+                    Tp1RR = 2.0,
+                    ActionableNow = false,
+                    CreatedM5 = 100
+                });
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "SELL_STRATEGIC",
+                    Lane = OpportunityLane.Strategic,
+                    Direction = -1,
+                    Quality = 74,
+                    Tp1RR = 2.6,
+                    ActionableNow = true,
+                    CreatedM5 = 101
+                });
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "BUY_STRONG",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    Quality = 91,
+                    Tp1RR = 2.2,
+                    ActionableNow = true,
+                    CreatedM5 = 101
+                });
+
+            IReadOnlyList<TradeOpportunityCandidate> snapshot =
+                registry.Snapshot();
+
+            Assert(
+                snapshot.Count == 3,
+                "registry snapshot count");
+
+            Assert(
+                snapshot[0].Id == "BUY_STRONG",
+                "actionable quality ordering");
+
+            TradeOpportunityCandidate best;
+            Assert(
+                registry.TryGetBest(out best) &&
+                best != null &&
+                best.Id == "BUY_STRONG",
+                "registry best candidate");
+
+            registry.Upsert(
+                new TradeOpportunityCandidate
+                {
+                    Id = "BUY_STRONG",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    Quality = 95,
+                    Tp1RR = 1.8,
+                    ActionableNow = true,
+                    CreatedM5 = 102
+                });
+
+            Assert(
+                registry.Count == 3 &&
+                registry.TryGetBest(out best) &&
+                best.Quality == 95,
+                "stable identity replacement");
+        }
 
         private static void Assert(bool condition, string name)
         {

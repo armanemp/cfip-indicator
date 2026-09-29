@@ -72,47 +72,8 @@ namespace cAlgo
                         
                                     ClearWatchObjects();
                         
-                                    string message =
-                                        "CFIP " +
-                                        (plan.Direction == 1
-                                            ? "BUY"
-                                            : "SELL") +
-                                        " | CONF " +
-                                        (_decision == null
-                                            ? 0
-                                            : _decision.Confidence) +
-                                        " | SMART " +
-                                        (_decision == null
-                                            ? 0
-                                            : _decision.SmartQuality) +
-                                        " | MODE " +
-                                        ExecutionModeText(plan.EntryMode) +
-                                        " | ENTRY " +
-                                        Price(plan.Entry) +
-                                        " | TRIGGER " +
-                                        Price(plan.EntryTrigger) +
-                                        " | IDEAL " +
-                                        Price(plan.IdealEntry) +
-                                        " | ENTRY Q " +
-                                        plan.EntryQuality +
-                                        " | HTF TP " +
-                                        plan.HtfTargetCount +
-                                        " | SL " +
-                                        Price(plan.Stop) +
-                                        " | TP1 " +
-                                        Price(plan.Tp1) +
-                                        " | RR " +
-                                        plan.Tp1RR.ToString("F2");
-                        
-                                    if (AlertOnConfirmedSignal)
-                                    {
-                                        SendUnifiedAlert(
-                                            "SIGNAL|" +
-                                            plan.CreatedM5,
-                                            message,
-                                            plan.Direction,
-                                            true);
-                                    }
+                                    // Plan activation changes lifecycle state only.
+                                    // Canonical entry alerts are emitted by the actionable gate.
                                 }
     }
 }
