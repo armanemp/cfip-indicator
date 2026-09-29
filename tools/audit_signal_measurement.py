@@ -86,10 +86,6 @@ require_text(
     "RecordSignalEvaluationTrace(",
     "ArchiveSignalTrace(trace);",
     "BarOpenTimeUtcTicks",
-    "DECISION-FILTER",
-    "TRIGGER",
-    "ACTIONABILITY",
-    "ACTIONABLE",
 )
 require_text(
     signal_trace_persistence_path,
@@ -98,6 +94,14 @@ require_text(
     "start.AddDays(90)",
     "File.AppendAllText(",
     "BarOpenTimeUtcTicks",
+)
+require_text(
+    trace_store_path,
+    "ResolveSignalTraceGate(",
+    "DECISION-FILTER",
+    "TRIGGER",
+    "ACTIONABILITY",
+    "ACTIONABLE",
 )
 require_text(
     panel_path,
