@@ -901,6 +901,21 @@ if 'RemovePlanLabel(P + "ACTIVE_TP_LABEL")' not in plan_label_remover_code:
 if "LineStyle.Dots" not in visual_line_code or "LineStyle.DotsRare" not in visual_line_code:
     raise SystemExit("Compact level styles must distinguish trigger and SL visually")
 
+# Runtime UI responsiveness hotfix contract.
+PANEL_VISIBILITY = ROOT / "UI" / "Panel" / "PanelVisibility.cs"
+panel_visibility_code = PANEL_VISIBILITY.read_text(encoding="utf-8")
+toggle_start = panel_visibility_code.find("private void TogglePanel()")
+toggle_end = panel_visibility_code.find("private void RemovePanel()", toggle_start)
+toggle_code = (
+    panel_visibility_code[toggle_start:toggle_end]
+    if toggle_start >= 0 and toggle_end > toggle_start
+    else ""
+)
+if "RenderPanel();" in toggle_code:
+    raise SystemExit("Panel Hide/Show toggle must not synchronously invoke full RenderPanel()")
+if "_panel.IsVisible" not in toggle_code or "_panelRestoreButton" not in toggle_code:
+    raise SystemExit("Panel toggle must remain an immediate visibility-only mutation")
+
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
     re.compile(r"\b(?:rev|release)[-_ ]?\d+\b", re.I),
