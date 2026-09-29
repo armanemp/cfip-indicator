@@ -3564,3 +3564,31 @@ Operator action:
 | 9.5 No-trade intelligence | NEXT | Explainable no-trade state synthesis remains a separate phase. |
 
 Phase 9.3 does not claim measured trading-performance improvement until target-terminal replay/historical evaluation is completed.
+
+
+## Phase 9.5 — Actionable signal / trade coherence, divergence and execution controls — 2026-09-29
+
+Status: implementation in progress on branch `phase/9-5-actionable-signal-execution-coherence`.
+
+Scope:
+- make the executable/actionable gate the single contract for entry alerts, entry arrows and automatic market execution;
+- suppress duplicate entry arrows from alert mirrors and M1 trigger markers; keep structural BOS markers visually distinct;
+- reject late entries, weak entry locations and insufficient TP1 RR before actionable alerts or market auto-entry;
+- add closed-bar RSI + CUSTOMWAVETREND regular/hidden divergence as directional evidence and an opposing-divergence blocker;
+- make chart AUTO TRADE / AUTO ORDERS controls interactive and route them into the same runtime execution authority used by settings;
+- add an authoritative multi-plan opportunity registry for independent strategic/tactical lanes without enabling unsafe simultaneous execution through the singleton live-plan state;
+- expose divergence and final entry-gate state in the panel;
+- add regression contracts for actionability and multi-plan registry behavior.
+
+Engineering boundary:
+- parallel candidates are registry-backed and can coexist for analysis/presentation;
+- simultaneous multi-position broker execution is still disabled by architecture until per-plan lifecycle/protection/broker identities are isolated in a later phase.
+
+Empirical boundary:
+- target cTrader replay remains required for real-chart visual behavior, alert timing, realized entry quality and empirical false-signal / RR measurements;
+- no profitability or win-rate improvement is inferred from code or contract tests.
+
+Verification requirement:
+- Decision contracts, Planning contracts, Runtime Acceptance, cTrader Compile/Build and Source/Architecture must pass before merge.
+- Operator pull is required after this phase is merged.
+
