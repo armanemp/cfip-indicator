@@ -102,3 +102,24 @@ The repository contracts cover deterministic retry state, stage continuation and
 | Pending entry/SL/TP consume snapshot | Yes | PASS |
 | Panel direction/stage consumes snapshot | Yes | PASS |
 | Signal renderer has no direct decision/reaction reads | Yes | PASS |
+## Phase 2.1 — Unified execution submission retry
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| One submission gate owner | Yes | PASS |
+| Signal / attempt / path identity | Yes | PASS |
+| Per-identity backoff | Yes | PASS |
+| Circuit isolation | Yes | PASS |
+| Successful reset | Yes | PASS |
+| Pending/market/aggressive paths share one policy | Yes | PASS |
+
+## Phase 2.1 — Unified submission retry
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| One submission gate owner | Yes | PASS |
+| Signal/attempt/path identity | Yes | PASS |
+| Per-identity backoff/circuit | Yes | PASS |
+| Failure isolation across signals | Yes | PASS |
+| Failure isolation across execution paths | Yes | PASS |
+| Successful retry-state reset | Yes | PASS |

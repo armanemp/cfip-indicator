@@ -32,11 +32,7 @@ namespace cAlgo
                 private Frame _w1Frame;
         
                 private readonly List<Native> _native = new List<Native>();
-                private readonly SubmissionGate _normalSubmissionGate =
-                    new SubmissionGate();
-                private readonly SubmissionGate _aggressiveSubmissionGate =
-                    new SubmissionGate();
-                private readonly SubmissionGate _pendingSubmissionGate =
+                private readonly SubmissionGate _submissionGate =
                     new SubmissionGate();
                 private readonly HashSet<string> _historicalDrawn = new HashSet<string>();
                 private readonly HashSet<string> _outcomeDrawn = new HashSet<string>();

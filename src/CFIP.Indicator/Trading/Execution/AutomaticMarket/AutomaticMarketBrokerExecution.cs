@@ -41,12 +41,15 @@ namespace cAlgo
                 }
 
                 string submissionGateReason;
+                SubmissionAttemptIdentity submissionIdentity;
 
-                if (!TryAcquireNormalSubmission(
+                if (!TryAcquireSubmission(
                         closedM5,
                         _plan == null
                             ? 0
                             : _plan.Direction,
+                        ExecutionSubmissionPath.AutomaticMarket,
+                        out submissionIdentity,
                         out submissionGateReason))
                 {
                     _autoExecutionBlockReason =
@@ -76,11 +79,11 @@ namespace cAlgo
                 }
                 catch
                 {
-                    RecordNormalSubmissionFailure();
+                    RecordSubmissionFailure(submissionIdentity);
                     throw;
                 }
 
-                RecordNormalSubmission(result);
+                RecordSubmission(submissionIdentity, result);
 
                 if (result == null)
                 {

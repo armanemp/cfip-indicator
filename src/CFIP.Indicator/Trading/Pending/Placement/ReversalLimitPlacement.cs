@@ -32,20 +32,20 @@ namespace cAlgo
           }
           try
           {
-              string submissionKey =
-                  "LIMIT|" +
-                  closedM5 +
-                  "|" +
-                  direction;
               string submissionGateReason;
-              if (!_pendingSubmissionGate.TryAcquire(
-                      Server.TimeInUtc,
-                      submissionKey,
+              SubmissionAttemptIdentity submissionIdentity;
+
+              if (!TryAcquireSubmission(
+                      closedM5,
+                      direction,
+                      ExecutionSubmissionPath.PendingLimit,
+                      out submissionIdentity,
                       out submissionGateReason))
               {
                   _autoOrdersBlockReason = submissionGateReason;
                   return false;
               }
+
               TradeResult result;
               try
               {
@@ -68,16 +68,13 @@ namespace cAlgo
               }
               catch
               {
-                  _pendingSubmissionGate.Record(
-                      Server.TimeInUtc,
-                      false);
+                  RecordSubmissionFailure(
+                      submissionIdentity);
                   throw;
               }
-              _pendingSubmissionGate.Record(
-                  Server.TimeInUtc,
-                  result != null &&
-                  result.IsSuccessful &&
-                  result.PendingOrder != null);
+              RecordSubmission(
+                  submissionIdentity,
+                  result);
               if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(result != null, result?.IsSuccessful == true, result?.PendingOrder != null))
               {
                   _autoOrdersBlockReason =

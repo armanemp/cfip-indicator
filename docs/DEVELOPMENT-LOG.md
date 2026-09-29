@@ -244,3 +244,21 @@ Verification:
 - Source / Architecture: PASS (job 109194019581);
 - Runtime Acceptance Contracts: PASS (job 109194019509);
 - cTrader Compile: PASS (job 109194019411).
+## Phase 2.1 — Unified execution submission retry policy
+
+Status: complete.
+
+Refactored the prior three submission-gate instances into one canonical keyed SubmissionGate. The policy now distinguishes signal key, attempt key and execution path, keeps failure/backoff/circuit state per identity, bounds retained failure state, and exposes one coordinator API to market, aggressive and pending execution paths.
+
+Verification:
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
+
+Next: Phase 2.2 — Automatic market rejection matrix.
+
+## Phase 2.1 — Unified submission retry policy
+
+Status: complete.
+
+Replaced three duplicate submission gates with one keyed policy using SubmissionAttemptIdentity and ExecutionSubmissionPath. Added runtime coverage for failure isolation, circuit behavior and reset. Uploaded ZIP audit: WaveTrend retained only as a future composite momentum candidate; TPO Profile file is empty.
