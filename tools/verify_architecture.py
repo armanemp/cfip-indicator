@@ -467,6 +467,7 @@ expected_models = {
     "Prediction", "Decision", "Plan", "TradeSetupPreview",
     "PredictivePendingCandidate",
     "OssIndicatorSnapshot", "MarketRegimeSnapshot", "MarketRegimeClassificationInput",
+    "TradeOpportunityCandidate", "WaveTrendSnapshot",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
@@ -478,11 +479,12 @@ if re.search(r"\b(?:BuildExecutionIntent|ValidateExecutionIntent|ValidateActualM
     raise SystemExit("Execution logic leaked into model files")
 
 enum_files = sorted(ENUM_ROOT.glob("*.cs"))
-if len(enum_files) != 9:
-    raise SystemExit(f"Expected 9 enum files, found {len(enum_files)}")
+if len(enum_files) != 10:
+    raise SystemExit(f"Expected 10 enum files, found {len(enum_files)}")
 if {p.stem for p in enum_files} != {
     "PanelCorner", "SizingMode", "TargetStage", "PendingOrderMode",
-    "ExecutionMode", "DecisionPolicyMode", "ExecutionIntentKind", "LifecycleState", "ExecutionSubmissionPath"
+    "ExecutionMode", "DecisionPolicyMode", "ExecutionIntentKind", "LifecycleState", "ExecutionSubmissionPath",
+    "OpportunityLane"
 }:
     raise SystemExit("Enum file isolation failed")
 
