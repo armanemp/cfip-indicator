@@ -84,5 +84,12 @@ namespace cAlgo
                         public bool WaveTrendBelowZero;
                         public bool WaveTrendOversold;
                         public bool WaveTrendOverbought;
+                        public int DivergenceDirection;
+                        public int DivergenceQuality;
+                        public string DivergenceType;
+                        public bool RegularDivergenceBull;
+                        public bool RegularDivergenceBear;
+                        public bool HiddenDivergenceBull;
+                        public bool HiddenDivergenceBear;
                     }
 }
