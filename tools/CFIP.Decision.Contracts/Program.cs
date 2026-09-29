@@ -993,6 +993,18 @@ namespace cAlgo
                     "INDICATOR FUSION • QUALITY",
                 "weak trend indicator quality blocks");
 
+            IndicatorActionabilityResult unavailable =
+                IndicatorActionabilityRule.Evaluate(
+                    "TREND",
+                    0,
+                    0);
+
+            Assert(
+                !unavailable.Allowed &&
+                unavailable.Reason ==
+                    "INDICATOR FUSION • QUALITY",
+                "unavailable indicator fusion fails closed");
+
             IndicatorActionabilityResult conflicted =
                 IndicatorActionabilityRule.Evaluate(
                     "TREND",
