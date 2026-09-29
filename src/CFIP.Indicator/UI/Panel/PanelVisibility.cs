@@ -65,6 +65,8 @@ namespace cAlgo
                                     _panelStack = null;
                                     _panelHeaderStack = null;
                                     _panelHeaderTitle = null;
+                                    _processingLamp = null;
+                                    _processingLampPulseIndex = 0;
                                     _panelRowsStack = null;
                                     _panelScroll = null;
                                     _quickExecutionStack = null;
