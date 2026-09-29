@@ -460,3 +460,32 @@ Validation target:
 - cTrader compile.
 
 This is a corrective hotfix only. Phase 6.3 remains the next strategy phase and is not mixed into this correction response.
+
+
+## Phase 6.3 — Controlled intrabar aggressive entry policy — 2026-09-29
+
+Status: complete.
+
+User clarified that the pre-Phase-6 baseline calculated and rendered normally; therefore this phase preserves the established decision, planning, visual and execution owners and only resolves the temporal ambiguity of the already-existing aggressive reaction path.
+
+Finding:
+- the aggressive path consumed `_reaction`, which is explicitly evaluated on the current open M5 bar;
+- the same path also received `closedM5` for structural SL/TP and execution context;
+- without an explicit bridge, aggressive entry semantics were mixed-bar and could not state exactly how a transient reaction became executable.
+
+Implementation:
+- added `AggressiveEntryPolicy` as the single qualification owner;
+- requires two distinct qualifying reaction observations on the same open M5 bar;
+- repeated observations with the same reaction timestamp do not increment qualification;
+- direction changes, `EntryAllowed` loss and M5 rollover invalidate the latch immediately;
+- a confirmed aggressive fill consumes the latch so one qualifying reaction cannot be reused indefinitely;
+- existing risk, structural SL/TP, market execution, submission-gate and broker-confirmation paths remain unchanged;
+- no public parameter was added; the production parameter contract remains 535.
+
+Validation:
+- deterministic runtime contracts cover first sample, duplicate sample, second sample arming, direction invalidation, qualification loss and new-bar reset;
+- source/architecture gate enforces the dedicated policy owner and execution boundaries;
+- cTrader compile remains required before merge.
+
+Scope boundary:
+- no decision thresholds, general weights, RR, risk formulas, trailing rules or broker mutation semantics were changed.
