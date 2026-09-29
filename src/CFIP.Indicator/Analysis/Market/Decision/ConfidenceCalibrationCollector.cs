@@ -8,7 +8,7 @@ namespace cAlgo
         private int ConfidenceCalibrationAdjustment(
             int direction)
         {
-            // Phase 9.3 closes the legacy direction-only adjustment path.
+            // Phase 9.3 closes the pre-context direction-only adjustment path.
             // Calibration is applied only after lane/regime/confidence context
             // is known, so it cannot contaminate the pre-context decision score.
             return 0;
