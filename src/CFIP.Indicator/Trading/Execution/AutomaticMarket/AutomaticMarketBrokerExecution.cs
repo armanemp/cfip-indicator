@@ -75,6 +75,27 @@ namespace cAlgo
                     desired));
         }
 
+        private TradeResult TryExecuteAutomaticMarketOrderFallback(
+            TradeType type,
+            double volume,
+            double stopPips,
+            double targetPips)
+        {
+            // Kept as the architectural cross-path compatibility boundary. The
+            // normal Phase 9.7 path uses Market Range; this fallback is not used
+            // while a valid bounded market-range envelope is available.
+            return TryExecuteMarketOrder(
+                type,
+                SymbolName,
+                volume,
+                NormalizeLabel(),
+                stopPips,
+                targetPips,
+                TradeExecutionMetadata.DefaultExecutionComment,
+                false,
+                "AUTOMATIC MARKET FALLBACK");
+        }
+
         private void ExecutePreparedAutomaticMarketTrade(
             int closedM5,
             TradeType type,
