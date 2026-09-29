@@ -18,6 +18,7 @@ PANEL_PIPE = ROOT / "src/CFIP.Indicator/UI/Panel/Rows/PanelSignalPipelineRowsRen
 PANEL_ROWS = ROOT / "src/CFIP.Indicator/UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs"
 LAMP = ROOT / "src/CFIP.Indicator/UI/Panel/ProcessingHeartbeatLamp.cs"
 AGG = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveTradeExecution.cs"
+AGG_FINAL = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs"
 MARKET = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs"
 PENDING = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs"
 
