@@ -39,7 +39,7 @@ namespace cAlgo
             if (indicatorConfluenceQuality <= 0 &&
                 indicatorConflict <= 0)
             {
-                int compatibilityQuality =
+                int baselineQuality =
                     (int)Math.Round(
                         NumericGuards.ClampInt(strongestShare, 0, 100) * 0.25 +
                         NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.20 +
@@ -49,7 +49,7 @@ namespace cAlgo
                         effectiveRetestQuality * 0.10);
 
                 return NumericGuards.ClampInt(
-                    compatibilityQuality,
+                    baselineQuality,
                     0,
                     100);
             }
