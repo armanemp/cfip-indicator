@@ -1649,3 +1649,33 @@ Detailed record: docs/PHASE-9-17-EXIT-GEOMETRY-PROGRESSION.md.
 
 Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
 Operator pull: required after final verified closeout.
+
+## Phase 9.17 automated verification closeout — 2026-09-29
+
+Status: VERIFIED COMPLETE at source/contract level; target-terminal replay still required.
+
+Verification:
+- Runtime Acceptance #1193: PASS
+- cTrader Compile/Build #1377: PASS
+- Source/Architecture + accumulated audits #1384: PASS
+- Decision Contracts: PASS within Build
+- Phase 9.15 startup/persistence audit: PASS
+- Phase 9.16 signal measurement audit: PASS
+- Phase 9.17 exit geometry audit: PASS
+- Verified head: `c027a983081102ace0353d064219a5aad739ed94`
+
+Key engineering result:
+The TP rollback was traced to stale/non-live-aware target reuse plus a progression path that stopped
+when server-side TP protection was active. The new live geometry layer requires TP to remain beyond
+the executable quote and forbids target regression; the SL side has the matching protective geometry
+rule.
+
+Routine closeout:
+- phase docs updated;
+- acceptance matrix updated;
+- user-priority and workflow invariants updated;
+- no public parameter increase;
+- no second decision/execution authority introduced.
+
+Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
+Operator pull: after PR #60 merge, pull main at the verified merge commit.
