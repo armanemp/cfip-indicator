@@ -35,7 +35,7 @@ namespace cAlgo
                         ? _w1Frame.Quality
                         : 0
                 },
-                new[]
+                new double[]
                 {
                     Math.Max(0, H1Weight),
                     Math.Max(0, H4Weight),
@@ -54,7 +54,7 @@ namespace cAlgo
                     _m30Frame == null ? 0 : _m30Frame.Quality,
                     _m15Frame == null ? 0 : _m15Frame.Quality
                 },
-                new[]
+                new double[]
                 {
                     Math.Max(0, M30Weight),
                     Math.Max(0, M15Weight)
