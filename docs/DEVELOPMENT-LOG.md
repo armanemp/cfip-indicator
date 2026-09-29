@@ -847,7 +847,12 @@ Operator action: local pull is required after this merge/documentation boundary.
 
 ## Phase 8.1 — M1 trigger correctness — 2026-09-29
 
-Status: implementation complete; verification pending before merge.
+Status: implementation verified and ready to merge.
+
+Verification closeout on verified branch head `929700e154d4b84a5a0b9efeae345b92017834b6`:
+- Runtime Acceptance Contracts: PASS — workflow run 801;
+- cTrader Compile: PASS — workflow run 985;
+- Source / Architecture: PASS — workflow run 992.
 
 Findings and corrections:
 - Audited the full Decision → Trigger → Plan → Execution chain and confirmed that UseM1Trigger previously added a fixed +3 directional vote from M1Frame.Direction while DecisionEvaluator still derived TriggerReady from M5-only ClosedBarTriggerReady.
