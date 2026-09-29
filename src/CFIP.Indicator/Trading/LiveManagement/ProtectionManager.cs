@@ -35,7 +35,8 @@ namespace cAlgo
                         _m5Bars,
                         closedM5);
 
-            if (MoveSlToBreakEven &&
+            if (!_serverSideBreakEvenActive &&
+                MoveSlToBreakEven &&
                 peakRR >= BreakEvenTriggerRR)
             {
                 double be =
@@ -53,7 +54,8 @@ namespace cAlgo
                         : Math.Min(candidate, be);
             }
 
-            if (UseSpreadAwareBreakEven &&
+            if (!_serverSideBreakEvenActive &&
+                UseSpreadAwareBreakEven &&
                 MoveSlToBreakEven &&
                 peakRR >= Math.Max(0.50, BreakEvenTriggerRR))
             {
