@@ -12,6 +12,12 @@ namespace cAlgo
             Plan plan,
             int direction)
         {
+            if (plan == null ||
+                !IsFinitePositive(plan.Entry) ||
+                !IsFinitePositive(plan.Risk) ||
+                !IsFinitePositive(plan.Tp1))
+                return false;
+
             double minimumRR =
                 Math.Max(
                     Tp1MinimumRR,
@@ -28,7 +34,8 @@ namespace cAlgo
                     plan.Entry) /
                 plan.Risk;
 
-            if (tp1RR < minimumRR ||
+            if (!IsFinitePositive(tp1RR) ||
+                tp1RR < minimumRR ||
                 tp1RR > maximumRR)
                 return false;
 
@@ -40,7 +47,8 @@ namespace cAlgo
                         plan.Entry) /
                     plan.Risk;
 
-                if (rr <
+                if (!IsFinitePositive(rr) ||
+                    rr <
                         Math.Max(
                             Tp2MinimumRR,
                             tp1RR +
@@ -73,7 +81,9 @@ namespace cAlgo
                         ? plan.Tp2RR
                         : tp1RR;
 
-                if (rr <
+                if (!IsFinitePositive(rr) ||
+                    !IsFinitePositive(previousRR) ||
+                    rr <
                         Math.Max(
                             Tp3MinimumRR,
                             previousRR +
@@ -104,7 +114,9 @@ namespace cAlgo
                             ? plan.Tp2RR
                             : tp1RR;
 
-                if (rr <
+                if (!IsFinitePositive(rr) ||
+                    !IsFinitePositive(previousRR) ||
+                    rr <
                         Math.Max(
                             Tp4MinimumRR,
                             previousRR +
