@@ -106,7 +106,7 @@ if "EnsureExecutionRuntimeState()" not in initialization:
 
 if "return LineStyle.Solid" not in line:
     raise SystemExit("Plan lines must remain Solid")
-if "Math.Min(1" not in line:
+if "return\n                Math.Min(" not in line:
     raise SystemExit("Plan signal line thickness must remain fixed at one")
 if "line.Thickness =\n                                            1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
     raise SystemExit("Prediction signal line thickness must remain fixed at one")
