@@ -197,7 +197,7 @@ namespace cAlgo
                         ? PanelAccentColor
                         : PanelWarningColor;
 
-                ChartStaticText guide =
+                var guide =
                     Chart.DrawStaticText(
                         AnalysisGuideObjectName,
                         guideText,
