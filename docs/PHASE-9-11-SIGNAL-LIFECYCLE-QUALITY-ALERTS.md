@@ -4,7 +4,11 @@ Date: 2026-09-29
 
 ## Status
 
-Implementation complete on `phase-9-11-signal-lifecycle`; CI verification and merge are the remaining phase gates.
+VERIFIED COMPLETE. PR #53 merged into `main` as `43101635e24ad15b77374472fc676a8c6fe591d6`.
+
+Verified phase head: `20ba01d4daa145f1118d3795277ed4d6f6a3bed3`.
+
+Automated verification: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture + accumulated audit PASS.
 
 ## User-facing problems addressed
 
@@ -91,4 +95,4 @@ Target-terminal cTrader replay remains required for empirical signal timing, fal
 
 ## Continuation
 
-Next phase after verification: Phase 9.12 — deepen broker outcome/recovery telemetry and historical signal lifecycle calibration without introducing a second decision authority.
+Next phase: Phase 9.12 — deepen broker outcome/recovery telemetry and historical signal lifecycle calibration without introducing a second decision authority.
