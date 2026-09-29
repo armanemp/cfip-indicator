@@ -11,7 +11,7 @@ namespace cAlgo
         private void RenderAnalysisGuide()
         {
             if (Bars == null ||
-                Bars.Count < 2)
+                Bars.Count < 1)
             {
                 RemoveAnalysisGuide();
                 return;
@@ -19,52 +19,6 @@ namespace cAlgo
 
             try
             {
-                int first =
-                    Math.Max(
-                        0,
-                        Chart.FirstVisibleBarIndex);
-
-                int last =
-                    Math.Max(
-                        first,
-                        Math.Min(
-                            Bars.Count - 1,
-                            Chart.LastVisibleBarIndex));
-
-                int anchor =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            first));
-
-                double visibleHigh =
-                    Highest(
-                        Bars,
-                        first,
-                        last);
-
-                double atr =
-                    Atr(
-                        Bars,
-                        Math.Max(
-                            1,
-                            Math.Min(
-                                Bars.Count - 1,
-                                last)));
-
-                double referencePrice =
-                    visibleHigh > 0
-                        ? visibleHigh
-                        : Bars.ClosePrices[anchor];
-
-                double offset =
-                    Math.Max(
-                        Symbol.PipSize * 8,
-                        atr > 0
-                            ? atr * 0.45
-                            : Symbol.PipSize * 8);
-
                 SignalVisualSnapshot snapshot =
                     _initializationReady
                         ? BuildSignalVisualSnapshot(
@@ -162,12 +116,28 @@ namespace cAlgo
                         ? "NO CYCLE"
                         : CalculationAgeText();
 
+                string dataDetail =
+                    "M5=" +
+                    GuideBarsCount(_m5Bars) +
+                    " M15=" +
+                    GuideBarsCount(_m15Bars) +
+                    " M30=" +
+                    GuideBarsCount(_m30Bars) +
+                    " H1=" +
+                    GuideBarsCount(_h1Bars) +
+                    " H4=" +
+                    GuideBarsCount(_h4Bars);
+
                 string guideText =
                     "CFIP ANALYSIS" +
                     "\nENGINE   " +
                     _status +
                     "\nDATA     " +
                     dataState +
+                    " • PENDING " +
+                    _initializationPendingDataLoads +
+                    "\nDATASET  " +
+                    dataDetail +
                     "\nCALC     " +
                     calculationState +
                     "\nDECISION " +
@@ -204,20 +174,35 @@ namespace cAlgo
                         CurrentRuntimeFaultState;
                 }
 
+                if (_initializationStartedUtc !=
+                    DateTime.MinValue &&
+                    !_initializationReady)
+                {
+                    TimeSpan elapsed =
+                        TimeInUtc -
+                        _initializationStartedUtc;
+
+                    guideText +=
+                        "\nINIT AGE " +
+                        Math.Max(
+                            0,
+                            elapsed.TotalSeconds)
+                            .ToString("F1") +
+                        "s";
+                }
+
                 Color color =
                     _runtimeFaultStateMachine.State ==
                     RuntimeFaultState.Healthy
                         ? PanelAccentColor
                         : PanelWarningColor;
 
-                ChartText guide =
-                    Chart.DrawText(
+                ChartStaticText guide =
+                    Chart.DrawStaticText(
                         AnalysisGuideObjectName,
                         guideText,
-                        Bars.OpenTimes[anchor],
-                        NormalizePrice(
-                            referencePrice +
-                            offset),
+                        VerticalAlignment.Top,
+                        HorizontalAlignment.Right,
                         color);
 
                 guide.FontSize =
@@ -234,11 +219,6 @@ namespace cAlgo
                         : PanelFontFamily;
 
                 guide.IsBold = true;
-                guide.HorizontalAlignment =
-                    HorizontalAlignment.Left;
-                guide.VerticalAlignment =
-                    VerticalAlignment.Top;
-                guide.IsInteractive = false;
             }
             catch (Exception ex)
             {
@@ -246,6 +226,14 @@ namespace cAlgo
                     "CFIP analysis guide render failed: {0}",
                     ex.ToString());
             }
+        }
+
+        private string GuideBarsCount(
+            Bars bars)
+        {
+            return bars == null
+                ? "--"
+                : bars.Count.ToString();
         }
 
         private string GuideFrameDirection(
