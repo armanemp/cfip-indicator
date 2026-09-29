@@ -57,7 +57,7 @@ namespace cAlgo
                     bool changed;
                     double nextRatio;
 
-                    if (!OrderBlockRule.TryApplyPartialMitigation(
+                    if (!OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                             direction,
                             managedLow,
                             managedHigh,
