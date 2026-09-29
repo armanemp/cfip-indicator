@@ -21,7 +21,7 @@ namespace cAlgo
                     : reason;
         }
 
-        public static EntryTrapRiskResult None()
+        public static EntryTrapRiskResult CreateNone()
         {
             return new EntryTrapRiskResult(
                 0,
@@ -42,7 +42,7 @@ namespace cAlgo
         {
             if (direction != 1 &&
                 direction != -1)
-                return EntryTrapRiskResult.None();
+                return EntryTrapRiskResult.CreateNone();
 
             if (double.IsNaN(rangePosition) ||
                 double.IsInfinity(rangePosition))
@@ -56,7 +56,7 @@ namespace cAlgo
                         rangePosition));
 
             double m5 =
-                IsFiniteNonNegative(adverseM5Atr)
+                IsValidAdverseAtrValue(adverseM5Atr)
                     ? adverseM5Atr
                     : 0;
 
