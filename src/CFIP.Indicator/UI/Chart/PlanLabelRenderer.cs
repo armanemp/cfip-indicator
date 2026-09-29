@@ -305,14 +305,9 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color background)
         {
-            double luminance =
-                0.299 * background.R +
-                0.587 * background.G +
-                0.114 * background.B;
-
-            return luminance >= 160
-                ? Color.Black
-                : Color.White;
+            // Level annotations intentionally use white text only.
+            // The semantic level color remains available to other chart objects.
+            return Color.White;
         }
 
         private void RemovePlanLabel(
