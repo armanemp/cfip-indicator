@@ -14,17 +14,14 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 9.0;
+        private const double CompactPlanLabelAtrHeight = 0.055;
 
         private void RenderPlanLabel(
             string name,
             string text,
             double price,
             Color color,
-            bool visible,
-            int lineLeft,
-            int labelBar,
-            int boxRightBar,
-            double boxHalfHeight)
+            bool visible)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -39,22 +36,14 @@ namespace cAlgo
                 name,
                 text,
                 price,
-                color,
-                lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                color);
         }
 
         private void DrawPlanLabel(
             string name,
             string text,
             double price,
-            Color color,
-            int lineLeft,
-            int labelBar,
-            int boxRightBar,
-            double boxHalfHeight)
+            Color color)
         {
             try
             {
@@ -65,6 +54,35 @@ namespace cAlgo
                     RemovePlanLabel(name);
                     return;
                 }
+
+                int lineLeft =
+                    GetCompactPlanLineLeftBar();
+
+                int labelBar =
+                    GetCompactPlanLabelAnchorBar(
+                        lineLeft);
+
+                int boxRightBar =
+                    GetLabelBoxRightBar(
+                        lineLeft);
+
+                double atr =
+                    Bars.Count >= 3
+                        ? Atr(
+                            Bars,
+                            Math.Max(
+                                1,
+                                Math.Min(
+                                    Bars.Count - 2,
+                                    labelBar)))
+                        : 0;
+
+                double boxHalfHeight =
+                    Math.Max(
+                        Symbol.PipSize * 3,
+                        atr > 0
+                            ? atr * CompactPlanLabelAtrHeight
+                            : Symbol.PipSize * 4);
 
                 double labelPrice =
                     NormalizePrice(price);
