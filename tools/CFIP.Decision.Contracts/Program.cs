@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyQualityWeightedFrameContribution();
             VerifyMarketRegimeClassification();
             VerifyEntryTrapRisk();
+            VerifyActionableSignalQuality();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -725,6 +726,76 @@ namespace cAlgo
                 !hiddenSupport.Block &&
                 hiddenSupport.Risk < 20,
                 "supportive hidden divergence reduces trap risk");
+        }
+
+        private static void VerifyActionableSignalQuality()
+        {
+            ActionableSignalQualityInput strong =
+                new ActionableSignalQualityInput(
+                    85, 80, 85, 6, 6,
+                    80, 82, 80, 2.10,
+                    76, 73, 75, 5, 5,
+                    70, 75, 70, 1.50);
+
+            ActionableSignalQualityResult accepted =
+                ActionableSignalQualityRule.Evaluate(
+                    strong);
+
+            Assert(
+                accepted.Allowed &&
+                string.IsNullOrEmpty(accepted.Reason),
+                "strong actionable signal accepted");
+
+            ActionableSignalQualityResult weakTiming =
+                ActionableSignalQualityRule.Evaluate(
+                    new ActionableSignalQualityInput(
+                        85, 80, 85, 6, 6,
+                        80, 74, 80, 2.10,
+                        76, 73, 75, 5, 5,
+                        70, 75, 70, 1.50));
+
+            Assert(
+                !weakTiming.Allowed &&
+                weakTiming.Reason ==
+                    "SIGNAL QUALITY • TIMING",
+                "weak timing rejected");
+
+            ActionableSignalQualityResult weakEvidence =
+                ActionableSignalQualityRule.Evaluate(
+                    new ActionableSignalQualityInput(
+                        85, 80, 85, 4, 6,
+                        80, 82, 80, 2.10,
+                        76, 73, 75, 5, 5,
+                        70, 75, 70, 1.50));
+
+            Assert(
+                !weakEvidence.Allowed &&
+                weakEvidence.Reason ==
+                    "SIGNAL QUALITY • INDEPENDENT EVIDENCE",
+                "weak independent evidence rejected");
+
+            ActionableSignalQualityResult weakRiskReward =
+                ActionableSignalQualityRule.Evaluate(
+                    new ActionableSignalQualityInput(
+                        85, 80, 85, 6, 6,
+                        80, 82, 80, 1.40,
+                        76, 73, 75, 5, 5,
+                        70, 75, 70, 1.50));
+
+            Assert(
+                !weakRiskReward.Allowed &&
+                weakRiskReward.Reason ==
+                    "SIGNAL QUALITY • RR",
+                "weak RR rejected");
+
+            ActionableSignalQualityResult repeat =
+                ActionableSignalQualityRule.Evaluate(
+                    strong);
+
+            Assert(
+                repeat.Allowed == accepted.Allowed &&
+                repeat.Reason == accepted.Reason,
+                "actionable quality deterministic");
         }
 
         private static void Assert(bool condition, string name)
