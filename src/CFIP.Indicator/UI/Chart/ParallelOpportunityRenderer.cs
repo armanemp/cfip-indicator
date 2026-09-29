@@ -42,7 +42,7 @@ namespace cAlgo
             HashSetCurrentOpportunityVisuals();
 
             for (int i = 0;
-                 i < _opportunityCandidates.Count;
+                 i < _opportunityRegistry.Count;
                  i++)
             {
                 TradeOpportunityCandidate candidate =
@@ -360,7 +360,7 @@ namespace cAlgo
                 new HashSet<string>();
 
             for (int i = 0;
-                 i < _opportunityCandidates.Count;
+                 i < _opportunityRegistry.Count;
                  i++)
             {
                 TradeOpportunityCandidate candidate =
