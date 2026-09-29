@@ -19,6 +19,27 @@ private List<Level> BuildTargetLevels(
                                             double entry,
                                             double atr)
                                         {
+                                            if (_targetLevelCache != null &&
+                                                _targetLevelCacheM5 == closedM5 &&
+                                                _targetLevelCacheDirection == direction &&
+                                                Math.Abs(
+                                                    _targetLevelCacheEntry -
+                                                    entry) <=
+                                                Math.Max(
+                                                    Symbol.TickSize,
+                                                    Symbol.PipSize * 0.25) &&
+                                                Math.Abs(
+                                                    _targetLevelCacheAtr -
+                                                    atr) <=
+                                                Math.Max(
+                                                    Symbol.TickSize,
+                                                    atr * 0.0001))
+                                            {
+                                                return
+                                                    new List<Level>(
+                                                        _targetLevelCache);
+                                            }
+
                                             List<Level> levels =
                                                 new List<Level>();
                                 
@@ -134,7 +155,7 @@ private List<Level> BuildTargetLevels(
                                                 entry,
                                                 atr);
                                 
-                                            return
+                                            List<Level> mergedLevels =
                                                 MergeLevels(
                                                     levels
                                                         .Where(
@@ -151,6 +172,18 @@ private List<Level> BuildTargetLevels(
                                                                 SmartTargetMaxCandidates))
                                                         .ToList(),
                                                     atr);
+
+                                            _targetLevelCacheM5 = closedM5;
+                                            _targetLevelCacheDirection = direction;
+                                            _targetLevelCacheEntry = entry;
+                                            _targetLevelCacheAtr = atr;
+                                            _targetLevelCache =
+                                                mergedLevels == null
+                                                    ? null
+                                                    : new List<Level>(
+                                                        mergedLevels);
+
+                                            return mergedLevels;
                                         }
     }
 }
