@@ -106,16 +106,12 @@ namespace cAlgo
             {
                 takeProfits =
                     new RelativeTakeProfitProtections(
-                        new RelativeTakeProfitProtection
-                        {
-                            Volume = tp1Volume,
-                            Distance = d1 / Symbol.PipSize
-                        },
-                        new RelativeTakeProfitProtection
-                        {
-                            Volume = tp2Volume,
-                            Distance = d2 / Symbol.PipSize
-                        },
+                        new RelativeTakeProfitProtection(
+                            tp1Volume,
+                            d1 / Symbol.PipSize),
+                        new RelativeTakeProfitProtection(
+                            tp2Volume,
+                            d2 / Symbol.PipSize),
                         new RelativeTakeProfitLastProtection(
                             dFinal /
                             Symbol.PipSize));
