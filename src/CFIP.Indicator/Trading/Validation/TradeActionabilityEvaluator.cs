@@ -137,7 +137,9 @@ namespace cAlgo
                     Math.Max(
                         0,
                         Symbol.Ask - Symbol.Bid),
-                    MinimumRequiredRRForRegime(regime),
+                    Math.Max(
+                        Tp1MinimumRR,
+                        MinimumRequiredRRForRegime(regime)),
                     PreferredStopRiskAtr,
                     Math.Min(
                         Math.Max(
