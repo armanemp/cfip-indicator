@@ -244,7 +244,7 @@ namespace cAlgo
                 IsFinitePositive(snapshot.BrokerTarget);
             snapshot.ArrowM5Index =
                 reactionReady &&
-                snapshot.Direction == _reaction.Direction &&
+                snapshot.AuthoritativeDirection == _reaction.Direction &&
                 _m5Bars != null
                     ? _m5Bars.Count - 1
                     : closedM5;
