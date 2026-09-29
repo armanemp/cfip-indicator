@@ -36,6 +36,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs" Link="Core/Math/IndicatorEvidenceFusionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LocationEvidenceRule.cs" Link="Core/Math/LocationEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionPlanGeometryRule.cs" Link="Core/Math/ExecutionPlanGeometryRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveExitGeometryRule.cs" Link="Core/Math/LiveExitGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs" Link="Core/Math/EntryTrapRiskRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorActionabilityRule.cs" Link="Core/Math/IndicatorActionabilityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SmartBreakEvenRule.cs" Link="Core/Math/SmartBreakEvenRule.cs" />
