@@ -11,39 +11,111 @@ namespace cAlgo
             if (_decision == null)
                 return;
 
-            ProcessHighConfidenceAlert(
-                closedM5);
-
             ProcessRestrictionAlert(
                 closedM5);
 
-            ProcessSmartDecisionAlert(
+            ProcessCanonicalActionableSignalAlert(
                 closedM5);
         }
 
-        private void ProcessHighConfidenceAlert(
+        private void ProcessLiveActionableSignalAlert(
             int closedM5)
         {
-            if (!AlertOnHighConfidenceEntry ||
-                _decision.Confidence <
-                HighConfidenceThreshold ||
-                _lastHighConfidenceM5 ==
+            if (_decision == null)
+                return;
+
+            ProcessCanonicalActionableSignalAlert(
+                closedM5);
+        }
+
+        private void ProcessCanonicalActionableSignalAlert(
+            int closedM5)
+        {
+            if (_lastActionableAlertM5 ==
                 closedM5)
                 return;
 
-            SendUnifiedAlert(
-                "HIGH|" +
-                closedM5,
-                "CFIP HIGH CONFIDENCE | " +
-                (_decision.Direction == 1
+            bool confirmedRequested =
+                AlertOnConfirmedSignal;
+
+            bool highRequested =
+                AlertOnHighConfidenceEntry &&
+                _decision.Confidence >=
+                    HighConfidenceThreshold;
+
+            bool smartRequested =
+                AlertOnSmartDecision &&
+                _decision.EntryAllowed &&
+                _decision.SmartQuality >=
+                    SmartStrongSetupQuality &&
+                _decision.Edge >=
+                    SmartStrongSetupEdge;
+
+            if (!confirmedRequested &&
+                !highRequested &&
+                !smartRequested)
+                return;
+
+            string reason;
+            if (!IsCurrentSignalActionable(
+                    closedM5,
+                    out reason))
+                return;
+
+            string source =
+                smartRequested
+                    ? "SMART"
+                    : highRequested
+                        ? "HIGH"
+                        : "CONFIRMED";
+
+            int locationQuality =
+                EntryLocationQuality(
+                    _m5Bars,
+                    closedM5,
+                    _plan.Direction);
+
+            DivergenceResult divergence =
+                AnalyzeDivergence(
+                    _m5Bars,
+                    closedM5);
+
+            string message =
+                "CFIP ACTIONABLE " +
+                (_plan.Direction == 1
                     ? "BUY"
                     : "SELL") +
-                " | CONF " +
-                _decision.Confidence,
-                _decision.Direction,
+                " | " +
+                source +
+                " | ENTRY " +
+                Price(_plan.Entry) +
+                " | IDEAL " +
+                Price(_plan.IdealEntry) +
+                " | TRIGGER " +
+                Price(_plan.EntryTrigger) +
+                " | SL " +
+                Price(_plan.Stop) +
+                " | TP1 " +
+                Price(_plan.Tp1) +
+                " | RR " +
+                _plan.Tp1RR.ToString("F2") +
+                " | LOC " +
+                locationQuality +
+                " | DIV " +
+                (divergence.Type ?? "NONE") +
+                " Q" +
+                divergence.Quality;
+
+            SendUnifiedAlert(
+                "ACTION|" +
+                closedM5 +
+                "|" +
+                _plan.Direction,
+                message,
+                _plan.Direction,
                 true);
 
-            _lastHighConfidenceM5 =
+            _lastActionableAlertM5 =
                 closedM5;
         }
 
@@ -97,37 +169,6 @@ namespace cAlgo
                 _lastRestrictionM5 =
                     -1;
             }
-        }
-
-        private void ProcessSmartDecisionAlert(
-            int closedM5)
-        {
-            if (!AlertOnSmartDecision ||
-                !_decision.EntryAllowed ||
-                _decision.SmartQuality <
-                SmartStrongSetupQuality ||
-                _decision.Edge <
-                SmartStrongSetupEdge ||
-                _lastSmartDecisionAlertM5 ==
-                closedM5)
-                return;
-
-            SendUnifiedAlert(
-                "SMART|" +
-                closedM5,
-                "CFIP SMART DECISION | " +
-                (_decision.Direction == 1
-                    ? "BUY"
-                    : "SELL") +
-                " | Q " +
-                _decision.SmartQuality +
-                " | CONF " +
-                _decision.Confidence,
-                _decision.Direction,
-                true);
-
-            _lastSmartDecisionAlertM5 =
-                closedM5;
         }
     }
 }
