@@ -838,17 +838,17 @@ reaction_code = REACTION_ANALYZER.read_text(encoding="utf-8")
 
 if "RequiredQualifyingSamples = 2" not in aggressive_policy_code:
     raise SystemExit("Aggressive-entry policy must require two qualifying intrabar samples")
-for required_token in ("Observe(", "Invalidate()", "StateText()"):
+for required_token in ("ObserveReactionSample(", "ResetQualification()", "GetQualificationStateText()"):
     if required_token not in aggressive_policy_code:
         raise SystemExit(f"Aggressive-entry policy state owner missing: {required_token}")
 
 if "AggressiveEntryPolicy" not in aggressive_eligibility_code:
     raise SystemExit("Aggressive eligibility must consume the canonical aggressive-entry policy")
-if "_aggressiveEntryPolicy.Observe(" not in aggressive_eligibility_code:
+if "_aggressiveEntryPolicy.ObserveReactionSample(" not in aggressive_eligibility_code:
     raise SystemExit("Aggressive eligibility must require policy qualification")
 if '"AGGRESSIVE • INTRABAR ARMED"' not in aggressive_eligibility_code:
     raise SystemExit("Aggressive eligibility must expose explicit intrabar armed state")
-if "_aggressiveEntryPolicy.Invalidate();" not in aggressive_eligibility_code:
+if "_aggressiveEntryPolicy.ResetQualification();" not in aggressive_eligibility_code:
     raise SystemExit("Aggressive eligibility must invalidate failed reaction state")
 
 if "_reaction.Direction" not in aggressive_prep_code:
@@ -863,7 +863,7 @@ if "ExecutionIntentKind.Market" not in aggressive_execution_code:
 if "BrokerConfirmationPolicy.CanAdoptPosition(" not in aggressive_execution_code:
     raise SystemExit("Aggressive execution must remain broker-confirmation driven")
 
-if "_aggressiveEntryPolicy.Invalidate();" not in aggressive_fill_code:
+if "_aggressiveEntryPolicy.ResetQualification();" not in aggressive_fill_code:
     raise SystemExit("Confirmed aggressive fill must consume the intrabar qualification latch")
 
 if "_m5Bars.Count - 1" not in reaction_code:
