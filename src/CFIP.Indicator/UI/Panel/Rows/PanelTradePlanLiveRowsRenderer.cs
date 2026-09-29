@@ -9,6 +9,10 @@ namespace cAlgo
             ref int slot,
             int contentWidth)
         {
+            _panelLiveRow = slot;
+            _panelPositionRow = -1;
+            _panelExitRow = -1;
+
             double liveRR =
                 _plan.Risk > 0
                     ? (_plan.Direction == 1
@@ -47,6 +51,7 @@ namespace cAlgo
 
             if (managedPosition != null)
             {
+                _panelPositionRow = slot;
                 AddPanelRow(
                     ref slot,
                     "POSITION  •  " +
@@ -81,6 +86,8 @@ namespace cAlgo
                     true,
                     contentWidth);
             }
+
+            _panelExitRow = slot;
 
             AddPanelRow(
                 ref slot,
