@@ -7,12 +7,17 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private double[] BuildTargetSelectionRequiredRR(
-            double rrStep)
+            double rrStep,
+            OpportunityLane lane = OpportunityLane.Strategic)
         {
             double adaptiveTp1RR =
-                Math.Max(
-                    Tp1MinimumRR,
-                    MinimumRequiredRR());
+                lane == OpportunityLane.Tactical ||
+                lane == OpportunityLane.CounterHtfTactical ||
+                lane == OpportunityLane.MicroReaction
+                    ? MinimumPlanRiskReward(lane)
+                    : Math.Max(
+                        Tp1MinimumRR,
+                        MinimumRequiredRR());
 
             return new[]
             {
@@ -29,8 +34,24 @@ namespace cAlgo
             };
         }
 
+        private double MinimumPlanRiskReward(
+            OpportunityLane lane)
+        {
+            if (lane == OpportunityLane.Tactical ||
+                lane == OpportunityLane.CounterHtfTactical ||
+                lane == OpportunityLane.MicroReaction)
+                return Math.Max(
+                    1.0,
+                    TacticalOpportunityMinimumRR);
+
+            return Math.Max(
+                MinimumTradeRR,
+                MinimumRequiredRR());
+        }
+
         private bool RequiresHtfRewardForTargetStage(
-            int stage)
+            int stage,
+            OpportunityLane lane = OpportunityLane.Strategic)
         {
             bool topDownCalibrated =
                 _decision != null &&
@@ -39,6 +60,15 @@ namespace cAlgo
                     _decision.TopDownStage,
                     "ENTRY CALIBRATED",
                     StringComparison.OrdinalIgnoreCase);
+
+            if (lane == OpportunityLane.Tactical ||
+                lane == OpportunityLane.CounterHtfTactical ||
+                lane == OpportunityLane.MicroReaction)
+            {
+                return stage == 0
+                    ? RequireHtfRewardForTp1
+                    : RequireHtfRewardForTp2Plus;
+            }
 
             return stage == 0
                 ? RequireHtfRewardForTp1 ||

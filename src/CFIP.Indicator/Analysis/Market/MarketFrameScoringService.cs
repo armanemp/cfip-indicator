@@ -113,6 +113,41 @@ namespace cAlgo
             AddScore(f.RejectionBull, 6, ref bull, ref evidence);
             AddScore(f.RejectionBear, 6, ref bear, ref evidence);
 
+            if (UseWaveTrendEvidence &&
+                f.WaveTrendQuality >=
+                MinimumWaveTrendQuality)
+            {
+                AddScore(
+                    f.WaveTrendBull,
+                    Math.Max(
+                        1,
+                        WaveTrendEvidenceWeight),
+                    ref bull,
+                    ref evidence);
+
+                AddScore(
+                    f.WaveTrendBear,
+                    Math.Max(
+                        1,
+                        WaveTrendEvidenceWeight),
+                    ref bear,
+                    ref evidence);
+
+                if (f.WaveTrendBullCross)
+                    bull += Math.Min(
+                        3,
+                        Math.Max(
+                            1,
+                            WaveTrendEvidenceWeight / 3));
+
+                if (f.WaveTrendBearCross)
+                    bear += Math.Min(
+                        3,
+                        Math.Max(
+                            1,
+                            WaveTrendEvidenceWeight / 3));
+            }
+
             AddScore(
                 f.VolumeBull,
                 3,

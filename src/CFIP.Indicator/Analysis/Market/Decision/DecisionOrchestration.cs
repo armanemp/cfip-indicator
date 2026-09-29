@@ -175,6 +175,20 @@ namespace cAlgo
             decision.TopDownStage =
                 topDown.Stage;
 
+            TacticalOpportunityResult tactical =
+                EvaluateTacticalOpportunity(
+                    decision,
+                    closedM5);
+
+            decision.TacticalOpportunityAllowed =
+                tactical.Allowed;
+            decision.TacticalOpportunityLane =
+                tactical.Lane;
+            decision.TacticalOpportunityQuality =
+                tactical.Quality;
+            decision.TacticalOpportunityRR =
+                tactical.RiskReward;
+
             decision.EntryAllowed =
                 PassesDecisionFilters(
                     closedM5,

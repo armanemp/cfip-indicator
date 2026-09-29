@@ -1021,3 +1021,46 @@ Implementation closeout:
 Known boundary: no exact custom WaveTrend source was available in the current searchable repo/Library continuation, so no guessed formula was enabled. Empirical cTrader replay remains required.
 
 Operator pull requirement: pull main before next local continuation.
+
+
+## Phase 9.2 kickoff — 2026-09-29
+
+User clarification: top-down must discover/calibrate strong higher-timeframe setups without discarding worthwhile lower-timeframe opportunities. The system should consider both paths simultaneously and retain low-risk/high-reward setups. The chart must support multiple visible opportunities without visual collisions. Price/position-style labels must have solid same-color backgrounds and readable contrast text, while existing line length geometry must remain unchanged.
+
+Source recovery:
+- the latest library ZIP was located as /indicator.zip;
+- it contains wave-trend.txt with the user's CUSTOMWAVETREND source;
+- the source uses RSI/MFI/RMI length 10, RMI momentum 5, exponential RMI up/down smoothing, average of RSI/MFI/RMI, EMA(4) smoothing, SMA(5) signal, -30/-40 OS and +30/+40 OB levels, then plots WAVE/SIGNAL shifted by -50.
+
+Architecture decisions:
+- OpportunityLane.Strategic = Phase 9.1 top-down calibrated opportunity.
+- OpportunityLane.Tactical = LTF opportunity that passes its own quality/RR path.
+- OpportunityLane.CounterHtfTactical = LTF opportunity against a strong HTF anchor, allowed only with stricter quality/RR.
+- OpportunityLane.MicroReaction = reserved for strong live reaction opportunities.
+- BUY and SELL tactical directions are assessed independently from M5 directional scores.
+- Strategic candidate precedence is preserved when same-direction candidates are effectively colocated.
+- Parallel visual objects use P + OPP + candidate ID namespaces and are removed deterministically when stale.
+
+WaveTrend:
+- WaveTrendEngine reimplements the recovered source cascade as a stateful per-Bars engine.
+- WaveTrend evidence is attached to Frame and given bounded score influence.
+- Exact source parity is treated as replay-validation until cTrader's built-in MFI numerical behavior is compared on the target terminal.
+
+Execution boundary:
+- Existing ExecutionCapacityRule still supports only one live executable plan.
+- This phase intentionally supports parallel detection/presentation, not unsafe multi-position execution through the existing singleton _plan state.
+- Phase 9.3 should create isolated plan contexts/registry, per-position protection state and independent broker mutation identities before allowing simultaneous auto execution of multiple lanes.
+
+Panel/labels:
+- parallel lane summary and WaveTrend state are visible in panel;
+- compact chart labels now use opaque line-color boxes and automatic black/white text contrast;
+- level line left/right calculation is untouched.
+
+Evidence boundary:
+- no win-rate/false-signal/realized-RR claim is made from code or CI;
+- no guessed WaveTrend formula is introduced; the recovered source is the reference.
+
+Continuity:
+- branch phase-9-2-parallel-opportunities-wavetrend-visual-lanes;
+- main base 02e0bb81b12af079935804a61d9d5ee3cb076e4e;
+- local pull only after merge.

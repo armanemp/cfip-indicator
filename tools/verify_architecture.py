@@ -41,15 +41,15 @@ raw = "\n".join(p.read_text(encoding="utf-8") for p in files)
 code = strip_for_static_checks(raw)
 
 parameters = len(re.findall(r"\[Parameter\s*\(", code))
-if parameters != 532:
-    raise SystemExit(f"Expected 532 total parameters, found {parameters}")
+if parameters != 552:
+    raise SystemExit(f"Expected 552 total parameters, found {parameters}")
 parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
-if len(parameter_files) != 27:
-    raise SystemExit(f"Expected 27 parameter-group files, found {len(parameter_files)}")
+if len(parameter_files) != 29:
+    raise SystemExit(f"Expected 29 parameter-group files, found {len(parameter_files)}")
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 529:
-    raise SystemExit(f"Expected 529 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 549:
+    raise SystemExit(f"Expected 549 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
@@ -467,22 +467,27 @@ expected_models = {
     "Prediction", "Decision", "Plan", "TradeSetupPreview",
     "PredictivePendingCandidate",
     "OssIndicatorSnapshot", "MarketRegimeSnapshot", "MarketRegimeClassificationInput",
+    "TradeOpportunityCandidate", "WaveTrendSnapshot",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
 for p in model_files:
     text = p.read_text(encoding="utf-8")
-    if len(re.findall(r"\bclass\s+[A-Za-z_]\w*", text)) != 1:
+    if len(re.findall(
+        r"\b(?:class|struct|record)\s+[A-Za-z_]\w*",
+        text,
+    )) != 1:
         raise SystemExit(f"Expected one model type in {p}")
 if re.search(r"\b(?:BuildExecutionIntent|ValidateExecutionIntent|ValidateActualMarketFill)\b", "\n".join(p.read_text(encoding="utf-8") for p in model_files)):
     raise SystemExit("Execution logic leaked into model files")
 
 enum_files = sorted(ENUM_ROOT.glob("*.cs"))
-if len(enum_files) != 9:
-    raise SystemExit(f"Expected 9 enum files, found {len(enum_files)}")
+if len(enum_files) != 10:
+    raise SystemExit(f"Expected 10 enum files, found {len(enum_files)}")
 if {p.stem for p in enum_files} != {
     "PanelCorner", "SizingMode", "TargetStage", "PendingOrderMode",
-    "ExecutionMode", "DecisionPolicyMode", "ExecutionIntentKind", "LifecycleState", "ExecutionSubmissionPath"
+    "ExecutionMode", "DecisionPolicyMode", "ExecutionIntentKind", "LifecycleState", "ExecutionSubmissionPath",
+    "OpportunityLane"
 }:
     raise SystemExit("Enum file isolation failed")
 
@@ -2655,8 +2660,10 @@ PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "box.IsFilled =" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must render an explicit box fill")
-if "Color.FromArgb(\n                        72,\n                        color)" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan label box must use the semantic level color")
+if "Color boxColor = color" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan label box must inherit the semantic level color")
+if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must choose readable text contrast")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
@@ -3001,6 +3008,74 @@ if "docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md" not in Path("docs/ROADMAP.md").rea
 if PRODUCTION_PACKAGE not in benchmark_project:
     raise SystemExit("Production OSS package must also be covered by the benchmark")
 
+
+# Phase 9.2 parallel-opportunity / WaveTrend ownership.
+required_phase_9_2 = (
+    ROOT / "Core" / "Enums" / "OpportunityLane.cs",
+    ROOT / "Core" / "Models" / "TradeOpportunityCandidate.cs",
+    ROOT / "Core" / "Models" / "WaveTrendSnapshot.cs",
+    ROOT / "Core" / "Math" / "WaveTrendEvidenceRule.cs",
+    ROOT / "Core" / "Math" / "TacticalOpportunityRule.cs",
+    ROOT / "Analysis" / "Market" / "WaveTrendEngine.cs",
+    ROOT / "Analysis" / "Market" / "WaveTrendEvidenceAnalyzer.cs",
+    ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs",
+    ROOT / "UI" / "Chart" / "ParallelOpportunityRenderer.cs",
+)
+for required_path in required_phase_9_2:
+    if not required_path.exists():
+        raise SystemExit(
+            f"Phase 9.2 owner is missing: {required_path.as_posix()}"
+        )
+
+lane_code = (ROOT / "Core" / "Enums" / "OpportunityLane.cs").read_text(encoding="utf-8")
+if "Strategic" not in lane_code or "Tactical" not in lane_code or "CounterHtfTactical" not in lane_code:
+    raise SystemExit("Opportunity lane taxonomy is incomplete")
+
+parallel_builder_code = (ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs").read_text(encoding="utf-8")
+parallel_renderer_code = (ROOT / "UI" / "Chart" / "ParallelOpportunityRenderer.cs").read_text(encoding="utf-8")
+if "EvaluateTacticalOpportunityForDirection(" not in parallel_builder_code:
+    raise SystemExit("Parallel opportunity builder must evaluate independent LTF directions")
+if "_lastOpportunityCandidatesM5" not in parallel_builder_code:
+    raise SystemExit("Parallel opportunity builder must cache structural rebuild cadence")
+if (
+    'string baseName =' not in parallel_renderer_code or
+    '"OPP_"' not in parallel_renderer_code
+):
+    raise SystemExit("Parallel opportunities must use an isolated visual namespace")
+if "ShowTacticalOpportunityLabels" not in parallel_renderer_code:
+    raise SystemExit("Parallel opportunity renderer must honor label visibility control")
+
+wt_rule_code = (ROOT / "Core" / "Math" / "WaveTrendEvidenceRule.cs").read_text(encoding="utf-8")
+wt_snapshot_code = (ROOT / "Core" / "Models" / "WaveTrendSnapshot.cs").read_text(encoding="utf-8")
+wt_engine_code = (ROOT / "Analysis" / "Market" / "WaveTrendEngine.cs").read_text(encoding="utf-8")
+wt_analyzer_code = (ROOT / "Analysis" / "Market" / "WaveTrendEvidenceAnalyzer.cs").read_text(encoding="utf-8")
+frame_code = (ROOT / "Analysis" / "Market" / "Models" / "Frame.cs").read_text(encoding="utf-8")
+for expected in (
+    "BullCross",
+    "BearCross",
+    "AboveZero",
+    "BelowZero",
+    "Oversold",
+    "Overbought",
+):
+    if expected not in wt_snapshot_code or expected not in wt_rule_code:
+        raise SystemExit(f"WaveTrend evidence state contract missing: {expected}")
+if "new WaveTrendSnapshot(" not in wt_engine_code:
+    raise SystemExit("WaveTrend engine must materialize the canonical snapshot")
+if "ApplyWaveTrendEvidence(" not in wt_analyzer_code or "WaveTrendQuality" not in frame_code:
+    raise SystemExit("WaveTrend evidence must flow into the canonical market frame")
+
+label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
+label_code = label_renderer.read_text(encoding="utf-8")
+if "GetReadableLabelTextColor(" not in label_code:
+    raise SystemExit("Plan labels must calculate contrast text color")
+if "Color boxColor = color" not in label_code or "box.IsFilled" not in label_code:
+    raise SystemExit("Plan price labels must use opaque filled backgrounds matching the line color")
+
+live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
+live_calc_code = live_calc.read_text(encoding="utf-8")
+if "RenderParallelOpportunityCandidates(" not in live_calc_code:
+    raise SystemExit("Parallel opportunity renderer must be in the canonical render cycle")
 
 # Strict type isolation: production behavior files may not hide helper types
 # inside the cTrader partial host. Every helper/model type must have a file owner.

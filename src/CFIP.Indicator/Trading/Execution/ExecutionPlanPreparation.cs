@@ -85,9 +85,11 @@ namespace cAlgo
                                                 Tp4MinimumRR);
                 
                             bool requiresHtf =
-                                stageIndex == 0
-                                    ? RequireHtfRewardForTp1
-                                    : RequireHtfRewardForTp2Plus;
+                                RequiresHtfRewardForTargetStage(
+                                    stageIndex,
+                                    _plan == null
+                                        ? OpportunityLane.Strategic
+                                        : _plan.Lane);
                 
                             if (AllowSyntheticTargetFallback &&
                                 !requiresHtf &&
@@ -162,11 +164,17 @@ namespace cAlgo
                                 executionEntry,
                                 risk,
                                 direction,
-                                atr);
+                                atr,
+                                _plan == null
+                                    ? OpportunityLane.Strategic
+                                    : _plan.Lane);
                 
                             double tp1 = SelectTarget(
                                 selected, 0, executionEntry, risk, direction,
-                                Math.Max(FallbackTp1RR, MinimumRequiredRR()));
+                                Math.Max(FallbackTp1RR, MinimumRequiredRR()),
+                                _plan == null
+                                    ? OpportunityLane.Strategic
+                                    : _plan.Lane);
                             double tp2 = SelectTarget(
                                 selected, 1, executionEntry, risk, direction,
                                 Math.Max(FallbackTp2RR, Tp2MinimumRR));

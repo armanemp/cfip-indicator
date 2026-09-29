@@ -3,6 +3,7 @@ namespace cAlgo
     internal sealed class Plan
                     {
                         public int Direction;
+                        public OpportunityLane Lane;
                         public ExecutionMode EntryMode;
                         public double Entry;
                         public double IdealEntry;

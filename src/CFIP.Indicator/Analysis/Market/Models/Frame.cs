@@ -68,5 +68,21 @@ namespace cAlgo
                         public int OssIndicatorCount;
                         public bool OssBull;
                         public bool OssBear;
+                        public double WaveTrend;
+                        public double WaveTrendSignal;
+                        public double WaveTrendHistogram;
+                        public double WaveTrendPrevious;
+                        public double WaveTrendSignalPrevious;
+                        public double WaveTrendDelta;
+                        public int WaveTrendQuality;
+                        public int WaveTrendDirection;
+                        public bool WaveTrendBull;
+                        public bool WaveTrendBear;
+                        public bool WaveTrendBullCross;
+                        public bool WaveTrendBearCross;
+                        public bool WaveTrendAboveZero;
+                        public bool WaveTrendBelowZero;
+                        public bool WaveTrendOversold;
+                        public bool WaveTrendOverbought;
                     }
 }

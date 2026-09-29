@@ -15,6 +15,7 @@ namespace cAlgo
             double risk,
             int direction,
             double atr,
+            OpportunityLane lane,
             out double tp1,
             out double tp2,
             out double tp3,
@@ -39,6 +40,13 @@ namespace cAlgo
                     MinimumTargetsForPlan))
                 return false;
 
+            double[] requiredRR =
+                BuildTargetSelectionRequiredRR(
+                    Math.Max(
+                        0.10,
+                        StructuralTpRrStep),
+                    lane);
+
             tp1 =
                 SelectTarget(
                     selected,
@@ -46,9 +54,8 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp1RR,
-                        MinimumRequiredRR()));
+                    requiredRR[0],
+                    lane);
 
             tp2 =
                 SelectTarget(
@@ -57,9 +64,8 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp2RR,
-                        Tp2MinimumRR));
+                    requiredRR[1],
+                    lane);
 
             tp3 =
                 SelectTarget(
@@ -68,9 +74,8 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp3RR,
-                        Tp3MinimumRR));
+                    requiredRR[2],
+                    lane);
 
             tp4 =
                 SelectTarget(
@@ -79,9 +84,8 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp4RR,
-                        Tp4MinimumRR));
+                    requiredRR[3],
+                    lane);
 
             if (!IsValidTarget(
                     direction,
@@ -96,9 +100,8 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize,
                     risk) <
-                Math.Max(
-                    MinimumTradeRR,
-                    MinimumRequiredRR()))
+                MinimumPlanRiskReward(
+                    lane))
                 return false;
 
             if (RequireHtfTargets &&
@@ -106,7 +109,17 @@ namespace cAlgo
                     candidates))
                 return false;
 
-            if (RequireHtfRewardForTp2Plus)
+            bool requireHtfTp2Plus =
+                RequiresHtfRewardForTargetStage(
+                    1,
+                    lane);
+
+            bool requireHtfTp1 =
+                RequiresHtfRewardForTargetStage(
+                    0,
+                    lane);
+
+            if (requireHtfTp2Plus)
             {
                 if (tp2 > 0 &&
                     !IsHtfSourceForReward(
@@ -127,7 +140,7 @@ namespace cAlgo
                     return false;
             }
 
-            if (RequireHtfRewardForTp1 &&
+            if (requireHtfTp1 &&
                 !IsHtfSourceForReward(
                     selected,
                     tp1))

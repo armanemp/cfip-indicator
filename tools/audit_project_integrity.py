@@ -39,8 +39,8 @@ if duplicates:
         print(f"DUPLICATE PARAMETER: {name} -> {owners}")
     fail(f"Found {len(duplicates)} duplicate public parameter names")
 
-if len(param_decls) != 532:
-    fail(f"Project integrity expects 532 public parameters, found {len(param_decls)}")
+if len(param_decls) != 552:
+    fail(f"Project integrity expects 552 public parameters, found {len(param_decls)}")
 
 # Phase 7.4 — truthful execution-capacity semantics.
 parameter_source = "\n".join(

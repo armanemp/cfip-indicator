@@ -29,6 +29,16 @@ namespace cAlgo
                     entry,
                     atr);
 
+            OpportunityLane lane =
+                _decision != null &&
+                _decision.TopDownEligible &&
+                string.Equals(
+                    _decision.TopDownStage,
+                    "ENTRY CALIBRATED",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? OpportunityLane.Strategic
+                    : OpportunityLane.Tactical;
+
             List<Level> selected =
                 SelectTargets(
                     candidates,
@@ -36,7 +46,8 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    atr);
+                    atr,
+                    lane);
 
             if (!TryBuildPlanTargets(
                 candidates,
@@ -46,6 +57,7 @@ namespace cAlgo
                 risk,
                 direction,
                 atr,
+                lane,
                 out double tp1,
                 out double tp2,
                 out double tp3,
@@ -66,6 +78,7 @@ namespace cAlgo
                     tp3,
                     tp4);
 
+            p.Lane = lane;
             EnrichPlanTargetMetadata(
                 p,
                 candidates,
