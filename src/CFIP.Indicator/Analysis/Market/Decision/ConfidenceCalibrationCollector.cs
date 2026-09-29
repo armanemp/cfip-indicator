@@ -46,6 +46,60 @@ namespace cAlgo
                     CalibrationMaxConfidenceAdjustment);
         }
 
+        private void BindPlanCalibrationContext(
+            Plan plan,
+            Decision decision,
+            int direction,
+            OpportunityLane lane)
+        {
+            if (plan == null ||
+                decision == null ||
+                !EnableOutcomeTelemetry ||
+                !UseEmpiricalCalibration ||
+                !EnableConfidenceCalibration ||
+                (direction != 1 && direction != -1))
+                return;
+
+            plan.CalibrationEligible = true;
+            plan.CalibrationDirection = direction;
+            plan.CalibrationLane = lane;
+            plan.CalibrationRegime =
+                string.IsNullOrWhiteSpace(decision.Regime)
+                    ? "UNKNOWN"
+                    : decision.Regime.Trim().ToUpperInvariant();
+            plan.CalibrationConfidence =
+                NumericGuards.ClampInt(
+                    decision.BaseConfidence,
+                    0,
+                    100);
+            plan.CalibrationBucket =
+                EmpiricalConfidenceCalibrator.ConfidenceBucket(
+                    plan.CalibrationConfidence);
+        }
+
+        private void CopyPlanCalibrationContext(
+            Plan source,
+            Plan target)
+        {
+            if (source == null ||
+                target == null ||
+                !source.CalibrationEligible)
+                return;
+
+            target.CalibrationEligible =
+                source.CalibrationEligible;
+            target.CalibrationDirection =
+                source.CalibrationDirection;
+            target.CalibrationLane =
+                source.CalibrationLane;
+            target.CalibrationRegime =
+                source.CalibrationRegime;
+            target.CalibrationConfidence =
+                source.CalibrationConfidence;
+            target.CalibrationBucket =
+                source.CalibrationBucket;
+        }
+
         private void ApplyEmpiricalCalibration(
             Decision decision,
             OpportunityLane tacticalLane)
