@@ -15,6 +15,7 @@ namespace cAlgo
     {
         private const int CompactPlanLabelWidthBars = 8;
         private const int CompactPlanLabelMinimumGapBars = 3;
+        private const int CompactPlanLabelMinimumGapBars = 3;
 
         private int GetCompactPlanLabelAnchorBar(
             int lineLeft)
