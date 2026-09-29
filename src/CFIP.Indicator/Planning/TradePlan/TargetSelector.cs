@@ -12,7 +12,8 @@ namespace cAlgo
             double entry,
             double risk,
             int direction,
-            double atr)
+            double atr,
+            OpportunityLane lane = OpportunityLane.Strategic)
         {
             List<Level> selected =
                 new List<Level>
@@ -56,7 +57,8 @@ namespace cAlgo
 
                 bool requireHtf =
                     RequiresHtfRewardForTargetStage(
-                        stage);
+                        stage,
+                        lane);
 
                 Level best = null;
                 double bestScore =
