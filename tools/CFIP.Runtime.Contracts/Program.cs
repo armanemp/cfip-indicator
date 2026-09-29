@@ -1069,6 +1069,15 @@ namespace cAlgo
                 "ready timer uses responsive panel cadence");
 
             Assert(
+                init.Contains("TimeSpan.FromMilliseconds(250)"),
+                "initialization polling avoids 100ms timer churn");
+
+            Assert(
+                init.Contains("_status =") &&
+                init.Contains("RenderPanel();"),
+                "initialization status reaches the panel");
+
+            Assert(
                 panel.Contains("BuildSignalVisualSnapshot("),
                 "panel builds at most one canonical visual snapshot per refresh path");
 
