@@ -189,8 +189,15 @@ namespace cAlgo
                 snapshot.Tp4 = _plan.Tp4;
             }
             else if (_setupPreview != null &&
-                     _setupPreview.Direction == visualDirection)
+                     _setupPreview.Direction != 0 &&
+                     (_decision == null ||
+                      _decision.Direction == 0 ||
+                      _setupPreview.Direction == _decision.Direction))
             {
+                // The setup preview is the pre-trigger structural forecast. It must
+                // remain visible while the decision is directional but not yet
+                // TriggerReady; otherwise the chart only shows the trigger level
+                // after price has already crossed it.
                 snapshot.SetupPreviewActive = true;
                 snapshot.SetupEntryMode = _setupPreview.EntryMode;
                 snapshot.SetupCreatedM5 = _setupPreview.CreatedM5;

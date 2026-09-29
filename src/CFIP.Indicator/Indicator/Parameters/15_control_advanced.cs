@@ -97,9 +97,6 @@ namespace cAlgo
         [Parameter("Show Historical Arrows", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
         public bool ShowHistoricalArrows { get; set; }
 
-        [Parameter("Enable Dynamic Structural Stop Alias", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
-        public bool EnableDynamicSlTrail { get; set; }
-
         [Parameter("Structural Stop Breathing ATR", Group = "15 · CONTROL — ADVANCED", DefaultValue = 0.85, MinValue = 0.20, MaxValue = 5)]
         public double TrailDistanceAtr { get; set; }
 

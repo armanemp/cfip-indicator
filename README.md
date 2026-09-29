@@ -4,7 +4,7 @@ Clean, modular cTrader indicator with a single execution authority.
 
 ## Current state
 
-- 534 configuration parameters are currently exposed (531 baseline + 3 OSS extension parameters).
+- 533 configuration parameters are currently exposed (530 baseline + 3 OSS extension parameters).
 - Strategy behavior decomposed into responsibility-isolated source modules.
 - Automatic market execution and automatic pending orders retained.
 - Manual BUY/SELL/order-entry controls are absent.

@@ -1123,6 +1123,38 @@ namespace cAlgo
                 calculation.Contains("RenderSetupPreview("),
                 "calculation renders setup preview");
 
+            string visualSnapshotBuilderPath =
+                Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "SignalVisualSnapshotBuilder.cs");
+            string visualSnapshotBuilder =
+                File.ReadAllText(visualSnapshotBuilderPath);
+
+            Assert(
+                visualSnapshotBuilder.Contains("_setupPreview.Direction != 0") &&
+                visualSnapshotBuilder.Contains("The setup preview is the pre-trigger structural forecast") &&
+                !visualSnapshotBuilder.Contains("_setupPreview.Direction == visualDirection"),
+                "setup preview remains visible before TriggerReady and does not wait for post-trigger visual direction");
+
+            string planEligibilityPath =
+                Path.Combine("src", "CFIP.Indicator", "Trading", "Validation", "PlanCreationEligibility.cs");
+            string planEligibility =
+                File.ReadAllText(planEligibilityPath);
+
+            Assert(
+                planEligibility.Contains("if (!_decision.TriggerReady)") &&
+                planEligibility.Contains("return false;"),
+                "execution plan creation remains TriggerReady-gated even while preview is visible");
+
+            Assert(
+                !File.ReadAllText(
+                    Path.Combine(
+                        "src",
+                        "CFIP.Indicator",
+                        "Indicator",
+                        "Parameters",
+                        "15_control_advanced.cs"))
+                    .Contains("EnableDynamicSlTrail"),
+                "semantic duplicate structural-stop alias is removed");
+
             Assert(
                 renderer.Contains("RenderLevelLines("),
                 "plan renderer owns shared level rendering");

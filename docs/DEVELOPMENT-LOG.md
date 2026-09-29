@@ -738,3 +738,40 @@ AUTO TRADE and AUTO ORDERS are now display-only modern switch-style status cards
 The dedicated hotfix document records the root causes and validation boundary. Hands-on cTrader visual/control validation remains required and is not claimed by automated CI.
 
 Continuity: the next planned implementation phase remains Phase 7.3 — Semantic Duplicate Audit. Local pull is required after this merge before the next phase is started.
+
+
+## Phase 7.3 — Semantic duplicate audit and visual synchronization — 2026-09-29
+
+Status: implementation complete; automated verification is being finalized.
+
+Findings and corrections:
+- removed the proven redundant structural-stop parameter EnableDynamicSlTrail; EnableStructuralSlRepricing remains the single owner;
+- found and removed the redundant DecisionEngine facade; DecisionOrchestration now calls DecisionEvaluator directly, leaving one concrete Evaluate(DecisionInputSnapshot) implementation;
+- preserved stage-specific confidence, quality, RR, cooldown and trail parameters where their runtime roles are distinct;
+- fixed the visual synchronization defect where setup levels could remain hidden until TriggerReady, causing the chart to show levels only after price crossed the trigger;
+- setup preview now appears for an aligned directional structural forecast before trigger confirmation, while actual plan creation remains TriggerReady-gated;
+- added permanent semantic-parameter and whole-project integrity audits to CI;
+- updated workflow documentation so whole-project auditing is mandatory for every future phase.
+
+Current parameter surface: 533 = 530 baseline + 3 OSS extension.
+
+Next planned phase after green verification: Phase 7.4 — MaximumOpenPositions semantics.
+Track 8 remains the analytical correctness track, including the dedicated Order Block mathematical audit.
+
+
+## Phase 7.3 verification closure — 2026-09-29
+
+Final branch implementation was verified before merge:
+- Source / Architecture: PASS;
+- dead/unused parameter audit: PASS, 533/533 read with 0 unread;
+- runtime UI audit: PASS;
+- semantic parameter audit: PASS;
+- full project integrity audit: PASS across 419 production C# files with 0 exact duplicate method signatures;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
+
+The full-project audit is now a permanent CI gate. It explicitly scans source ownership, parameter declarations, duplicate methods, visual synchronization, execution UI authority, safety boundaries and documentation continuity on every phase.
+
+Historical roadmap/log coverage gaps are reported by the audit as informational because the roadmap contains older umbrella/subphase records created before the current log discipline. Current development phases must have explicit implementation, findings, verification and pull-state records.
+
+Phase 7.3 can be considered complete on the implementation branch; merge is the next boundary. Next planned phase: Phase 7.4 — MaximumOpenPositions semantics.

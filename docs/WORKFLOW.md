@@ -91,3 +91,20 @@ Record every completed phase in `docs/DEVELOPMENT-LOG.md`, including:
 - operator pull requirement.
 
 The operator should normally pull once at a completed phase boundary, after the final verified commit for that phase. Intermediate implementation commits do not require a pull unless the operator needs them locally.
+
+
+## Permanent full-project audit rule
+
+Every implementation phase must be accompanied by a whole-project audit, not only a local change review. The standing audit covers the production source tree, public parameter declarations and consumers, exact duplicate method/parameter signatures, module ownership, decision/execution authority boundaries, signal/level/presentation synchronization, BUY/SELL symmetry, safety invariants, and roadmap/development-log continuity.
+
+The permanent machine gate is `tools/audit_project_integrity.py`. It is wired into Source / Architecture CI and must remain green for every phase. Specialized audits such as parameter semantics and runtime UI audits remain layered on top of it.
+
+A phase is not considered complete until:
+- the implementation and callers are synchronized;
+- the full-project audit is green;
+- the phase-specific audits/contracts are green;
+- cTrader compile is green;
+- documentation records the findings, decisions, verification and next phase;
+- the operator is explicitly told whether a local pull is required.
+
+This rule is intentionally persistent across chats. The repository documentation is the continuity source; do not rely on conversational memory alone for phase state or audit obligations.
