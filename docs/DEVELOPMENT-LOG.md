@@ -1187,3 +1187,32 @@ Verification closeout:
 
 Operator pull:
 - pull local `main` now; this is the current continuation baseline.
+
+
+## Phase 9.6 — Signal Quality & Visual Coherence — 2026-09-29
+
+Status: implementation complete on `phase/9-6-signal-quality-visual-coherence`; automated verification and merge closeout pending.
+
+Scope completed:
+- added one final deterministic actionable-quality gate and applied it at both closed-bar decision creation and live-quote actionability refresh, preventing live refresh from reopening a marginal signal;
+- tightened directional WATCH presentation to strong evidence only;
+- tightened reaction/prediction presentation thresholds;
+- tightened parallel opportunity presentation quality without introducing a second decision authority;
+- changed the directional chart marker path to explicit UpArrow/DownArrow;
+- changed the non-directional M1 trigger marker from Diamond to Circle;
+- anchored compact label backgrounds to the label point, bounded their width/height, reduced compact font size to 8.5pt, and reused the canonical anchor for parallel opportunities;
+- added deterministic decision-contract coverage for the final actionability quality rule.
+
+Architecture/safety boundary:
+- no new public parameters;
+- no second decision/signal authority;
+- no broker mutation ownership changes;
+- singleton executable-plan model remains unchanged.
+
+Acceptance boundary:
+- Runtime Acceptance / Decision Contracts;
+- cTrader Compile/Build;
+- Source/Architecture;
+- target cTrader replay remains required for empirical visual and signal-quality measurement.
+
+Detailed phase record: `docs/PHASE-9-6-SIGNAL-QUALITY-VISUAL-COHERENCE.md`.
