@@ -154,6 +154,13 @@ namespace cAlgo
                         f.VolumeBear,
                         f.VolatilityBull,
                         f.VolatilityBear,
+                        UseVolumeExpansionEvidence,
+                        UseMacdEvidence,
+                        UseVwapEvidence,
+                        UseHealthyVolatilityEvidence,
+                        WaveTrendEvidenceWeight,
+                        f.Adx,
+                        AdxMinimum,
                         f.Rsi,
                         DmiBias(
                             bars,
