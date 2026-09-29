@@ -343,3 +343,21 @@ The automated phase boundary is closed. Hands-on cTrader replay/live validation 
 | cTrader Compile | PASS | Required |
 
 CI evidence on verified head `5df5931828719fb635ec67fa59d57b519d4e70e7`. No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
+## Phase 8.3 — FVG Mathematical Audit
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Canonical bullish/bearish 3-bar gap formula | Pending | Required |
+| Explicit 2-bar imbalance formula | Pending | Required |
+| Minimum gap uses creation-bar ATR | Pending | Required |
+| Valid zone geometry and overlap semantics | Pending | Required |
+| Symmetric partial mitigation boundary movement | Pending | Required |
+| Full-fill invalidation semantics | Pending | Required |
+| Stable FVG identity by source/direction/variant | Pending | Required |
+| Current-bar retest requires range interaction/proximity contract | Pending | Required |
+| Runtime Acceptance Contracts | Pending | Required |
+| Source / Architecture | Pending | Required |
+| cTrader Build | Pending | Required |
+
+No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
+
