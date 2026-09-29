@@ -597,3 +597,13 @@ Phase 9.14 automated verification evidence:
 | Source / Architecture + accumulated audits | Required | Required |
 
 Target-terminal/replay remains required for actual startup latency, archive creation/rotation, migration/restore, signal timing and end-to-end trading outcomes.
+
+
+## Phase 9.15 verification evidence
+
+- Runtime Acceptance: PASS
+- cTrader Compile/Build: PASS
+- Source/Architecture + accumulated audits: PASS
+- Startup/persistence audit: PASS
+- Decision Contracts: PASS within Build
+- Target-terminal validation: Required for observed startup latency, archive restore/rotation and end-to-end trading outcomes.
