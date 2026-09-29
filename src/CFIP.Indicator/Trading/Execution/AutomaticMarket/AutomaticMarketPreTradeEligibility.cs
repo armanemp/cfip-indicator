@@ -179,6 +179,38 @@ namespace cAlgo
                 return false;
             }
 
+            if (_m5Frame != null)
+            {
+                if (_m5Frame.IndicatorConfluenceQuality < 60)
+                {
+                    string reason =
+                        "INDICATOR Q " +
+                        _m5Frame.IndicatorConfluenceQuality +
+                        " < 60";
+
+                    _autoExecutionBlockReason =
+                        reason;
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        reason);
+                    return false;
+                }
+
+                if (_m5Frame.IndicatorConflict > 52)
+                {
+                    string reason =
+                        "INDICATOR CONFLICT " +
+                        _m5Frame.IndicatorConflict;
+
+                    _autoExecutionBlockReason =
+                        reason;
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        reason);
+                    return false;
+                }
+            }
+
             string suitabilityReason;
 
             if (!PassesMarketSuitability(

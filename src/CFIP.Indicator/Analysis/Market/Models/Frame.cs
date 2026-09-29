@@ -59,6 +59,8 @@ namespace cAlgo
                         public bool VolatilityBear;
                         public bool Choppy;
                         public double Choppiness;
+                        public int IndicatorConfluenceQuality;
+                        public int IndicatorConflict;
                         public double AtrRatio;
                         public double EmaSpreadAtr;
                         public double EmaSlopeAtr;

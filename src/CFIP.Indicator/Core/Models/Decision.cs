@@ -41,6 +41,8 @@ namespace cAlgo
                         public int EntryLocationQuality;
                         public int EntryTimingQuality;
                         public int EntryPositionQuality;
+                        public int IndicatorConfluenceQuality;
+                        public int IndicatorConflict;
                         public double EntryDistanceAtr;
                         public double ActionableTp1RR;
                         public int DivergenceDirection;

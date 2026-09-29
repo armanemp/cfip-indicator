@@ -7,6 +7,26 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private string ResolveFrameRegime(
+            Frame frame)
+        {
+            if (frame == null)
+                return "UNKNOWN";
+
+            if (ReferenceEquals(frame.Bars, _m5Bars))
+            {
+                MarketRegimeSnapshot regime =
+                    GetActiveM5Regime(
+                        frame.Index);
+
+                return regime == null
+                    ? "UNKNOWN"
+                    : regime.Regime;
+            }
+
+            return "UNKNOWN";
+        }
+
         private Frame ScoreMarketFrame(
             Frame f)
         {
@@ -106,104 +126,6 @@ namespace cAlgo
                     f.FvgBearQuality,
                     f.ObBearQuality) >= 75)
                 bear += 4;
-            AddScore(f.TrendBull, 10, ref bull, ref evidence);
-            AddScore(f.TrendBear, 10, ref bear, ref evidence);
-            AddScore(f.MomentumBull, 8, ref bull, ref evidence);
-            AddScore(f.MomentumBear, 8, ref bear, ref evidence);
-            AddScore(f.RejectionBull, 6, ref bull, ref evidence);
-            AddScore(f.RejectionBear, 6, ref bear, ref evidence);
-
-            if (UseWaveTrendEvidence &&
-                f.WaveTrendQuality >=
-                MinimumWaveTrendQuality)
-            {
-                AddScore(
-                    f.WaveTrendBull,
-                    Math.Max(
-                        1,
-                        WaveTrendEvidenceWeight),
-                    ref bull,
-                    ref evidence);
-
-                AddScore(
-                    f.WaveTrendBear,
-                    Math.Max(
-                        1,
-                        WaveTrendEvidenceWeight),
-                    ref bear,
-                    ref evidence);
-
-                if (f.WaveTrendBullCross)
-                    bull += Math.Min(
-                        3,
-                        Math.Max(
-                            1,
-                            WaveTrendEvidenceWeight / 3));
-
-                if (f.WaveTrendBearCross)
-                    bear += Math.Min(
-                        3,
-                        Math.Max(
-                            1,
-                            WaveTrendEvidenceWeight / 3));
-            }
-
-            AddScore(
-                f.VolumeBull,
-                3,
-                ref bull,
-                ref evidence,
-                UseVolumeExpansionEvidence);
-
-            AddScore(
-                f.VolumeBear,
-                3,
-                ref bear,
-                ref evidence,
-                UseVolumeExpansionEvidence);
-
-            AddScore(
-                f.MacdBull,
-                3,
-                ref bull,
-                ref evidence,
-                UseMacdEvidence);
-
-            AddScore(
-                f.MacdBear,
-                3,
-                ref bear,
-                ref evidence,
-                UseMacdEvidence);
-
-            AddScore(
-                f.VwapBull,
-                2,
-                ref bull,
-                ref evidence,
-                UseVwapEvidence);
-
-            AddScore(
-                f.VwapBear,
-                2,
-                ref bear,
-                ref evidence,
-                UseVwapEvidence);
-
-            AddScore(
-                f.VolatilityBull,
-                2,
-                ref bull,
-                ref evidence,
-                UseHealthyVolatilityEvidence);
-
-            AddScore(
-                f.VolatilityBear,
-                2,
-                ref bear,
-                ref evidence,
-                UseHealthyVolatilityEvidence);
-
             AddScore(
                 f.EqualLow,
                 5,
@@ -216,59 +138,78 @@ namespace cAlgo
                 ref bear,
                 ref evidence);
 
-            if (UseOssExtendedIndicatorConfluence &&
-                f.OssIndicatorCount > 0)
+            IndicatorEvidenceFusionResult indicatorFusion =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        ResolveFrameRegime(f),
+                        f.TrendBull,
+                        f.TrendBear,
+                        f.MomentumBull,
+                        f.MomentumBear,
+                        f.MacdBull,
+                        f.MacdBear,
+                        f.VwapBull,
+                        f.VwapBear,
+                        f.VolumeBull,
+                        f.VolumeBear,
+                        f.VolatilityBull,
+                        f.VolatilityBear,
+                        UseVolumeExpansionEvidence,
+                        UseMacdEvidence,
+                        UseVwapEvidence,
+                        UseHealthyVolatilityEvidence,
+                        WaveTrendEvidenceWeight,
+                        f.Adx,
+                        AdxMinimum,
+                        f.Rsi,
+                        DmiBias(
+                            bars,
+                            index),
+                        UseEmaSlope
+                            ? f.EmaSlopeAtr
+                            : 0,
+                        f.WaveTrendDirection,
+                        f.WaveTrendQuality,
+                        f.DivergenceDirection,
+                        f.DivergenceQuality,
+                        f.WaveTrendBullCross,
+                        f.WaveTrendBearCross,
+                        f.WaveTrendOversold,
+                        f.WaveTrendOverbought,
+                        f.OssBullVotes,
+                        f.OssBearVotes,
+                        f.OssIndicatorCount,
+                        OssConfluenceWeight,
+                        MinimumOssIndicatorAgreement));
+
+            bull +=
+                indicatorFusion.BullBonus;
+            bear +=
+                indicatorFusion.BearBonus;
+
+            f.IndicatorConfluenceQuality =
+                indicatorFusion.Quality;
+            f.IndicatorConflict =
+                indicatorFusion.Conflict;
+
+            if (indicatorFusion.Conflict >= 45)
             {
-                AddScore(
-                    f.OssBull,
-                    Math.Max(
-                        1,
-                        OssConfluenceWeight),
-                    ref bull,
-                    ref evidence,
-                    true);
-
-                AddScore(
-                    f.OssBear,
-                    Math.Max(
-                        1,
-                        OssConfluenceWeight),
-                    ref bear,
-                    ref evidence,
-                    true);
-            }
-
-            if (f.Rsi > 50)
-                bull += 3;
-            else if (f.Rsi < 50)
-                bear += 3;
-
-            if (f.Adx >= AdxMinimum)
-            {
-                double dmi =
-                    DmiBias(
-                        bars,
-                        index);
-
-                if (dmi > 0)
-                    bull += 4;
-                else if (dmi < 0)
-                    bear += 4;
-            }
-
-            if (UseEmaSlope &&
-                index > 2)
-            {
-                double previous =
-                    Ema(
-                        bars,
-                        index - 2,
-                        true);
-
-                if (f.EmaFast > previous)
-                    bull += 3;
-                else if (f.EmaFast < previous)
-                    bear += 3;
+                if (bull >= bear)
+                    bull =
+                        Math.Max(
+                            0,
+                            bull -
+                            Math.Min(
+                                6,
+                                (indicatorFusion.Conflict - 40) / 10));
+                else
+                    bear =
+                        Math.Max(
+                            0,
+                            bear -
+                            Math.Min(
+                                6,
+                                (indicatorFusion.Conflict - 40) / 10));
             }
 
             if (AvoidRsiExhaustion)
@@ -340,14 +281,20 @@ namespace cAlgo
             f.Quality =
                 ClampInt(
                     (int)Math.Round(
-                        strongest * 0.45 +
+                        strongest * 0.40 +
                         Math.Min(
                             100,
-                            f.Adx * 1.45) * 0.15 +
+                            f.Adx * 1.45) * 0.13 +
                         Math.Min(
                             100,
-                            evidence * 5) * 0.23 +
-                        regimeContribution * 0.17),
+                            evidence * 5) * 0.20 +
+                        regimeContribution * 0.15 +
+                        f.IndicatorConfluenceQuality * 0.12) -
+                    Math.Min(
+                        10,
+                        Math.Max(
+                            0,
+                            f.IndicatorConflict - 35) / 6),
                     0,
                     100);
 

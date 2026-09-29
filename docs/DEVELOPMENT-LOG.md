@@ -1253,3 +1253,27 @@ External execution research:
 - server-side SL/TP remains part of the execution safety design.
 
 Detailed phase record: `docs/PHASE-9-7-REGIME-AUTO-EXECUTION-HARDENING.md`.
+
+
+## Phase 9.8 — Indicator Fusion & Trade Quality — 2026-09-29
+
+Status: VERIFIED COMPLETE on `ae7abf3f169d0743e56be85f59f0d9ffa5081069`.
+
+Final pre-merge gates: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture and project audits PASS.
+
+Merge closeout pending.
+
+Changes:
+- added deterministic regime-aware indicator evidence fusion across trend, momentum and context groups;
+- capped OSS consensus so raw indicator count does not become an artificial edge source;
+- added directional conflict measurement and strong-divergence suppression inside indicator fusion;
+- connected M5 indicator fusion quality/conflict to canonical Decision and Smart Quality;
+- removed duplicate raw regime votes from DecisionScoreCalculator;
+- added stronger auto-market and pending execution quality floors;
+- exposed indicator fusion quality/conflict in the panel and decision reason;
+- removed compact plan-label backgrounds completely and forced level-label text to white.
+
+Research:
+- current cTrader Algo documentation supports multi-timeframe bar retrieval through MarketData.GetBars, bounded Market Range execution through ExecuteMarketRangeOrder, volume normalization via Symbol.NormalizeVolumeInUnits, and server-side position protections.
+
+Detailed phase record: `docs/PHASE-9-8-INDICATOR-FUSION-TRADE-QUALITY.md`.

@@ -39,6 +39,9 @@ namespace cAlgo
                 double labelPrice =
                     NormalizePrice(price);
 
+                Color whiteTextColor =
+                    Color.White;
+
                 ChartText label =
                     Chart.FindObject(name)
                     as ChartText;
@@ -57,7 +60,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[safeBar],
                             labelPrice,
-                            color);
+                            whiteTextColor);
                 }
 
                 if (label == null)
@@ -70,7 +73,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    color;
+                    whiteTextColor;
                 label.FontSize =
                     Math.Max(
                         8,
@@ -132,7 +135,7 @@ namespace cAlgo
             string name,
             string text,
             double price,
-            Color color,
+            Color semanticColor,
             int lineLeft,
             int labelBar,
             int boxRightBar,
@@ -145,106 +148,25 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                double labelPrice =
-                    NormalizePrice(price);
-
-                int safeLineLeft =
+                int safeLabelBar =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
-                            lineLeft));
-
-                int safeLabelBar =
-                    Math.Max(
-                        safeLineLeft,
-                        Math.Min(
-                            Bars.Count - 1,
                             labelBar));
 
-                int safeBoxLeft =
-                    Math.Max(
-                        safeLineLeft,
-                        safeLabelBar - 1);
+                double labelPrice =
+                    NormalizePrice(price);
 
-                int safeBoxRight =
-                    Math.Max(
-                        safeBoxLeft,
-                        Math.Min(
-                            Bars.Count - 1,
-                            boxRightBar));
-
-                double effectiveHalfHeight =
-                    Math.Max(
-                        Symbol.PipSize * 1.5,
-                        Math.Min(
-                            Symbol.PipSize * 4.0,
-                            Math.Abs(boxHalfHeight)));
-
-                string boxName =
-                    name + "_BOX";
-
-                // Draw/update the box first so the label text remains visually
-                // above it regardless of chart-object paint order.
-                ChartRectangle box =
-                    Chart.FindObject(boxName)
-                    as ChartRectangle;
-
-                // Preserve the semantic level color while forcing the
-                // rectangle fill itself to be fully opaque.
-                Color boxColor = color;
-                Color opaqueBoxColor =
-                    Color.FromArgb(
-                        255,
-                        boxColor);
-
-                Color textColor =
+                // Level text is deliberately background-free and always white.
+                // The semantic color remains owned by the corresponding line.
+                Color whiteTextColor =
                     GetReadableLabelTextColor(
-                        boxColor);
+                        semanticColor);
 
-                if (box == null)
-                {
-                    ChartObject existingBox =
-                        Chart.FindObject(boxName);
-
-                    if (existingBox != null)
-                        Chart.RemoveObject(boxName);
-
-                    box =
-                        Chart.DrawRectangle(
-                            boxName,
-                            safeBoxLeft,
-                            price + effectiveHalfHeight,
-                            safeBoxRight,
-                            price - effectiveHalfHeight,
-                            color,
-                            1,
-                            LineStyle.Solid);
-                }
-
-                if (box != null)
-                {
-                    box.Time1 =
-                        Bars.OpenTimes[safeBoxLeft];
-                    box.Y1 =
-                        NormalizePrice(
-                            price + effectiveHalfHeight);
-                    box.Time2 =
-                        Bars.OpenTimes[safeBoxRight];
-                    box.Y2 =
-                        NormalizePrice(
-                            price - effectiveHalfHeight);
-                    box.Color =
-                        opaqueBoxColor;
-                    box.Thickness =
-                        1;
-                    box.LineStyle =
-                        LineStyle.Solid;
-                    box.IsFilled =
-                        true;
-                    box.IsInteractive =
-                        false;
-                }
+                // Remove any legacy rectangle left by pre-9.8 versions.
+                Chart.RemoveObject(
+                    name + "_BOX");
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -262,9 +184,9 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            Bars.OpenTimes[labelBar],
+                            Bars.OpenTimes[safeLabelBar],
                             labelPrice,
-                            textColor);
+                            whiteTextColor);
                 }
 
                 if (label == null)
@@ -277,7 +199,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    textColor;
+                    whiteTextColor;
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
@@ -305,14 +227,8 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color background)
         {
-            double luminance =
-                0.299 * background.R +
-                0.587 * background.G +
-                0.114 * background.B;
-
-            return luminance >= 160
-                ? Color.Black
-                : Color.White;
+            // Level annotations intentionally use white text only.
+            return Color.White;
         }
 
         private void RemovePlanLabel(

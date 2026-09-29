@@ -25,6 +25,16 @@ namespace cAlgo
                     decision.ActionabilityReason;
             }
 
+            if (decision.SmartQuality > 0 &&
+                decision.IndicatorConfluenceQuality > 0)
+            {
+                reason +=
+                    " • IND Q" +
+                    decision.IndicatorConfluenceQuality +
+                    " C" +
+                    decision.IndicatorConflict;
+            }
+
             if (decision.DivergenceQuality >= 70 &&
                 !string.Equals(
                     decision.DivergenceType,

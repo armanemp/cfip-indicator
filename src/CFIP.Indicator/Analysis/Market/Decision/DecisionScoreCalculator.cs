@@ -52,37 +52,49 @@ namespace cAlgo
             if (input.AdaptiveRegimeWeighting &&
                 input.M5Frame != null)
             {
-                if (string.Equals(input.Regime, "EXPANSION", StringComparison.OrdinalIgnoreCase))
+                // Frame scoring already contains the canonical regime-aware
+                // indicator fusion. Do not re-add the same raw signals here.
+                int fusionQuality =
+                    NumericGuards.ClampInt(
+                        input.M5Frame.IndicatorConfluenceQuality,
+                        0,
+                        100);
+
+                int conflict =
+                    NumericGuards.ClampInt(
+                        input.M5Frame.IndicatorConflict,
+                        0,
+                        100);
+
+                if (fusionQuality >= 72 &&
+                    conflict < 38 &&
+                    input.M5Frame.Direction != 0)
                 {
-                    if (input.M5Frame.DisplacementBull)
-                        buy += 4;
-                    if (input.M5Frame.DisplacementBear)
-                        sell += 4;
-                    if (input.M5Frame.VolumeBull)
-                        buy += 2;
-                    if (input.M5Frame.VolumeBear)
-                        sell += 2;
+                    double bonus =
+                        Math.Min(
+                            3.0,
+                            (fusionQuality - 70) / 8.0);
+
+                    if (input.M5Frame.Direction == 1)
+                        buy += bonus;
+                    else
+                        sell += bonus;
                 }
-                else if (string.Equals(input.Regime, "RANGE", StringComparison.OrdinalIgnoreCase) ||
-                         string.Equals(input.Regime, "TRANSITION", StringComparison.OrdinalIgnoreCase))
+
+                if (conflict >= 50)
                 {
-                    if (input.M5Frame.LiquidityBull)
-                        buy += 3;
-                    if (input.M5Frame.LiquidityBear)
-                        sell += 3;
-                    if (input.M5Frame.FvgBull)
-                        buy += 2;
-                    if (input.M5Frame.FvgBear)
-                        sell += 2;
-                    if (input.M5Frame.ObBull)
-                        buy += 2;
-                    if (input.M5Frame.ObBear)
-                        sell += 2;
-                }
-                else if (string.Equals(input.Regime, "COMPRESSION", StringComparison.OrdinalIgnoreCase))
-                {
-                    buy *= 0.95;
-                    sell *= 0.95;
+                    // Strong cross-indicator conflict reduces directional
+                    // certainty instead of creating a false extra vote.
+                    if (buy >= sell)
+                        buy -=
+                            Math.Min(
+                                3.0,
+                                (conflict - 45) / 15.0);
+                    else
+                        sell -=
+                            Math.Min(
+                                3.0,
+                                (conflict - 45) / 15.0);
                 }
             }
 

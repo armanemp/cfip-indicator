@@ -34,7 +34,11 @@ namespace cAlgo
                                         _decision.SmartQuality >=
                                         PendingMinimumSmartQuality &&
                                         _decision.TimeframeAgreement >=
-                                        PendingMinimumTrendQuality;
+                                        PendingMinimumTrendQuality &&
+                                        _m5Frame.IndicatorConfluenceQuality >=
+                                        62 &&
+                                        _m5Frame.IndicatorConflict <=
+                                        48;
                                 }
         
         private bool ReversalSetupStrong()
@@ -77,7 +81,11 @@ namespace cAlgo
                                             StructuralConfirmations(
                                                 _reaction.Direction));
 
-                                    return rangeQuality.Allowed;
+                                    return rangeQuality.Allowed &&
+                                        _m5Frame.IndicatorConfluenceQuality >=
+                                        62 &&
+                                        _m5Frame.IndicatorConflict <=
+                                        50;
                                 }
         
         private bool PendingModeAllowsStop()
