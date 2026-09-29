@@ -3707,3 +3707,24 @@ Scope:
 - no new public parameters and no second decision/execution authority.
 
 Detailed record: `docs/PHASE-9-9-SIGNAL-PROTECTION-COHERENCE.md`.
+
+
+## Phase 9.10 — Smart Auto-Trade / Auto-Order Protection & Accumulated Audit — 2026-09-29
+
+Status: IN PROGRESS on `phase/9-10-smart-auto-trade-protection-audit`.
+
+Mandatory per-phase improvements:
+- automatic market, aggressive and pending-order paths must receive a concrete hardening change;
+- smart structural SL / TP and broker protection must be audited and kept under one authority;
+- accumulated duplicate/stale/direction-conflict issues must be checked each phase;
+- all signal/plan level lines use Solid;
+- level text remains white and background-free.
+
+Current implementation:
+- deterministic `SmartBreakEvenRule`;
+- broker/server break-even transport on eligible advanced protection;
+- local break-even yields to broker-owned server break-even;
+- accumulated auto-trade/protection audit added to CI;
+- all signal/plan level lines forced to Solid.
+
+Verification and merge are pending until all gates pass.
