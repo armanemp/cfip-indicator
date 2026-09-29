@@ -52,19 +52,6 @@ namespace cAlgo
                 return false;
             }
 
-            string safetyReason;
-
-            if (!PassesAutoTradeSafetyGuards(
-                    tradeType,
-                    volume,
-                    out safetyReason))
-            {
-                reason =
-                    "AGGRESSIVE • " +
-                    safetyReason;
-                return false;
-            }
-
             string suitabilityReason;
 
             if (!PassesMarketSuitability(
