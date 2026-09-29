@@ -3,6 +3,118 @@ using System.Collections.Generic;
 
 namespace cAlgo
 {
+    internal readonly struct ConfidenceCalibrationKey :
+        IEquatable<ConfidenceCalibrationKey>
+    {
+        public int Direction { get; }
+        public OpportunityLane Lane { get; }
+        public string Regime { get; }
+        public int ConfidenceBucket { get; }
+
+        public ConfidenceCalibrationKey(
+            int direction,
+            OpportunityLane lane,
+            string regime,
+            int confidenceBucket)
+        {
+            Direction = direction;
+            Lane = lane;
+            Regime =
+                string.IsNullOrWhiteSpace(regime)
+                    ? "UNKNOWN"
+                    : regime.Trim().ToUpperInvariant();
+            ConfidenceBucket = confidenceBucket;
+        }
+
+        public bool Equals(
+            ConfidenceCalibrationKey other)
+        {
+            return
+                Direction == other.Direction &&
+                Lane == other.Lane &&
+                ConfidenceBucket == other.ConfidenceBucket &&
+                string.Equals(
+                    Regime,
+                    other.Regime,
+                    StringComparison.Ordinal);
+        }
+
+        public override bool Equals(
+            object obj)
+        {
+            return
+                obj is ConfidenceCalibrationKey other &&
+                Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + Direction;
+                hash = hash * 31 + (int)Lane;
+                hash = hash * 31 + ConfidenceBucket;
+                hash = hash * 31 +
+                    StringComparer.Ordinal.GetHashCode(Regime);
+                return hash;
+            }
+        }
+    }
+
+    internal readonly struct EmpiricalCalibrationSnapshot
+    {
+        public bool Available { get; }
+        public int Adjustment { get; }
+        public int Samples { get; }
+        public int Wins { get; }
+        public int ConfidenceBucket { get; }
+        public double ObservedWinRate { get; }
+        public string Source { get; }
+
+        public EmpiricalCalibrationSnapshot(
+            bool available,
+            int adjustment,
+            int samples,
+            int wins,
+            int confidenceBucket,
+            double observedWinRate,
+            string source)
+        {
+            Available = available;
+            Adjustment = NumericGuards.ClampInt(
+                adjustment,
+                -100,
+                100);
+            Samples = Math.Max(0, samples);
+            Wins = Math.Max(0, wins);
+            ConfidenceBucket = confidenceBucket;
+            ObservedWinRate =
+                NumericGuards.Clamp(
+                    observedWinRate,
+                    0,
+                    1);
+            Source =
+                string.IsNullOrWhiteSpace(source)
+                    ? "NONE"
+                    : source;
+        }
+
+        public static EmpiricalCalibrationSnapshot None(
+            int confidenceBucket)
+        {
+            return new EmpiricalCalibrationSnapshot(
+                false,
+                0,
+                0,
+                0,
+                confidenceBucket,
+                0.5,
+                "NONE");
+        }
+    }
+
+{
     internal sealed class EmpiricalConfidenceCalibrator
     {
         private const int DefaultPriorStrength = 8;
