@@ -165,6 +165,7 @@ namespace cAlgo
             return new EntryTrapRiskResult(
                 risk,
                 extreme ||
+                divergence >= 78 ||
                 risk >= 75 ||
                 m5 >= 0.30 ||
                 m1 >= 0.45,
