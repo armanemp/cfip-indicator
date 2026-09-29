@@ -20,7 +20,7 @@ namespace cAlgo
             }
 
             string capacityReason;
-            if (!ValidateConfiguredPositionCapacity(
+            if (!ValidateSingleExecutionCapacity(
                     out capacityReason))
             {
                 _autoExecutionBlockReason =
@@ -208,19 +208,6 @@ namespace cAlgo
                 SetAutoTradingState(
                     "BLOCKED",
                     reason);
-                return false;
-            }
-
-            if (ManagedPositionCount() >=
-                Math.Max(
-                    1,
-                    MaximumOpenPositions))
-            {
-                _autoExecutionBlockReason =
-                    "MAX OPEN POSITIONS";
-                SetAutoTradingState(
-                    "BLOCKED",
-                    "MAX OPEN POSITIONS");
                 return false;
             }
 

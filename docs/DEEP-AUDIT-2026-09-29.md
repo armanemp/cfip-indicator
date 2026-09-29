@@ -113,9 +113,13 @@ Before calling the M1 path a real precision trigger, define one explicit model: 
 
 ### G. Track 7 — Parameter truth
 
-`MaximumOpenPositions` currently exposes a range above 1 while the execution-capacity owner supports only exactly one active plan.
+Resolved in Phase 7.2 and Phase 7.4:
+- dead/unused public settings were audited;
+- semantic aliases were audited;
+- `MaximumOpenPositions` is retained only as a compatibility setting constrained to 1 because the current execution architecture supports one active managed plan only;
+- automatic market, aggressive and predictive-pending execution now share one semantic single-plan capacity guard; `BlockNewSignalWhileActive` was removed because the single-plan boundary is mandatory;
 
-Also audit hidden clamps, dead settings and semantically duplicated thresholds.
+Remaining parameter work is limited to future changes where the underlying capability is actually expanded; no numeric setting should advertise multi-plan behavior until a real multi-plan architecture exists.
 
 ### H. Track 8 — Mathematical correctness
 

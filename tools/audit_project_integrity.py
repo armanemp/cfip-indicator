@@ -39,8 +39,38 @@ if duplicates:
         print(f"DUPLICATE PARAMETER: {name} -> {owners}")
     fail(f"Found {len(duplicates)} duplicate public parameter names")
 
-if len(param_decls) != 533:
-    fail(f"Project integrity expects 533 public parameters, found {len(param_decls)}")
+if len(param_decls) != 532:
+    fail(f"Project integrity expects 532 public parameters, found {len(param_decls)}")
+
+# Phase 7.4 — truthful execution-capacity semantics.
+parameter_source = "\n".join(
+    p.read_text(encoding="utf-8") for p in sorted(PARAM_ROOT.glob("*.cs"))
+)
+if not re.search(
+    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
+    parameter_source,
+):
+    fail("MaximumOpenPositions must advertise only single-plan capacity")
+if "BlockNewSignalWhileActive" in parameter_source:
+    fail("Unsupported BlockNewSignalWhileActive parameter remains")
+
+capacity_rule = (ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs").read_text(encoding="utf-8")
+capacity_guard = (ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs").read_text(encoding="utf-8")
+for token in ("IsSupportedSinglePlanCapacity(", "AllowsNewSinglePlan(", "AllowsNewSingleExecution("):
+    if token not in capacity_rule:
+        fail(f"Execution capacity rule missing: {token}")
+for token in ("ValidateSinglePlanCapacity(", "ValidateSingleExecutionCapacity("):
+    if token not in capacity_guard:
+        fail(f"Execution capacity guard missing: {token}")
+
+for relative, token in (
+    ("Trading/Validation/PlanCreationEligibility.cs", "ValidateSinglePlanCapacity("),
+    ("Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs", "ValidateSingleExecutionCapacity("),
+    ("Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs", "ValidateSingleExecutionCapacity("),
+    ("Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs", "ValidateSingleExecutionCapacity("),
+):
+    if token not in texts[ROOT / relative]:
+        fail(f"Canonical capacity guard missing from {relative}")
 
 # 2) Exact duplicate method signatures across partial production files.
 method_re = re.compile(
@@ -161,10 +191,10 @@ if historical_unlogged:
         + (" ..." if len(historical_unlogged) > 12 else "")
     )
 
-if "Phase 7.3 — Semantic duplicate audit" not in roadmap:
-    fail("Roadmap does not expose Phase 7.3 continuity")
-if "Phase 7.3 — Semantic duplicate audit" not in devlog:
-    fail("Current Phase 7.3 must be recorded in the development log")
+if "Phase 7.4 — MaximumOpenPositions semantics" not in roadmap:
+    fail("Roadmap does not expose Phase 7.4 continuity")
+if "Phase 7.4 — MaximumOpenPositions semantics" not in devlog:
+    fail("Current Phase 7.4 must be recorded in the development log")
 
 print("Full project integrity audit PASS")
 print(f"Production C# files scanned: {len(files)}")

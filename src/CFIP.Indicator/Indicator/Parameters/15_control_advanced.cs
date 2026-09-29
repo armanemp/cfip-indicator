@@ -73,9 +73,6 @@ namespace cAlgo
         [Parameter("HTF Stop Buffer ATR", Group = "15 · CONTROL — ADVANCED", DefaultValue = 0.15, MinValue = 0.01, MaxValue = 1.0)]
         public double HtfStopBufferAtr { get; set; }
 
-        [Parameter("Block New Signal While Active", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
-        public bool BlockNewSignalWhileActive { get; set; }
-
         [Parameter("Cooldown Bars", Group = "15 · CONTROL — ADVANCED", DefaultValue = 3, MinValue = 0, MaxValue = 50)]
         public int CooldownBars { get; set; }
 

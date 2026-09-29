@@ -7,18 +7,67 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool ValidateConfiguredPositionCapacity(out string reason)
+        private bool ValidateSinglePlanCapacity(
+            out string reason)
         {
-            if (!ExecutionCapacityRule.IsSupportedSinglePlanCapacity(
-                    MaximumOpenPositions))
+            if (!ExecutionCapacityRule.AllowsNewSinglePlan(
+                    MaximumOpenPositions,
+                    _plan != null,
+                    ManagedPositionCount(),
+                    ManagedPendingOrderCount()))
             {
                 reason =
-                    "MULTI-POSITION DISABLED • ACTIVE PLAN IS SINGLE-POSITION";
+                    ResolveCapacityBlockReason(
+                        includeActivePlan: true);
                 return false;
             }
 
             reason = string.Empty;
             return true;
+        }
+
+        private bool ValidateSingleExecutionCapacity(
+            out string reason)
+        {
+            if (!ExecutionCapacityRule.AllowsNewSingleExecution(
+                    MaximumOpenPositions,
+                    ManagedPositionCount(),
+                    ManagedPendingOrderCount()))
+            {
+                reason =
+                    ResolveCapacityBlockReason(
+                        includeActivePlan: false);
+                return false;
+            }
+
+            reason = string.Empty;
+            return true;
+        }
+
+        private string ResolveCapacityBlockReason(
+            bool includeActivePlan)
+        {
+            if (!ExecutionCapacityRule.IsSupportedSinglePlanCapacity(
+                    MaximumOpenPositions))
+                return
+                    "UNSUPPORTED CAPACITY • SINGLE PLAN ONLY";
+
+            if (includeActivePlan &&
+                _plan != null)
+                return
+                    "SINGLE ACTIVE PLAN EXISTS";
+
+            if (ManagedPositionCount() >=
+                ExecutionCapacityRule.SupportedMaximumOpenPositions)
+                return
+                    "MANAGED POSITION CAPACITY REACHED";
+
+            if (ManagedPendingOrderCount() > 0)
+                return
+                    "MANAGED PENDING CAPACITY REACHED";
+
+            return
+                "EXECUTION CAPACITY BLOCKED";
         }
     }
 }

@@ -41,18 +41,74 @@ raw = "\n".join(p.read_text(encoding="utf-8") for p in files)
 code = strip_for_static_checks(raw)
 
 parameters = len(re.findall(r"\[Parameter\s*\(", code))
-if parameters != 533:
-    raise SystemExit(f"Expected 533 total parameters, found {parameters}")
+if parameters != 532:
+    raise SystemExit(f"Expected 532 total parameters, found {parameters}")
 parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
 if len(parameter_files) != 27:
     raise SystemExit(f"Expected 27 parameter-group files, found {len(parameter_files)}")
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 530:
-    raise SystemExit(f"Expected 530 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 529:
+    raise SystemExit(f"Expected 529 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
+
+# Phase 7.4 — execution capacity truthfulness.
+parameter_source = "\n".join(
+    p.read_text(encoding="utf-8")
+    for p in parameter_files
+)
+if not re.search(
+    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
+    parameter_source,
+):
+    raise SystemExit(
+        "MaximumOpenPositions must advertise only the supported single-plan capacity (1)"
+    )
+if "BlockNewSignalWhileActive" in parameter_source:
+    raise SystemExit(
+        "BlockNewSignalWhileActive is an unsupported optional duplicate of single-plan capacity"
+    )
+
+capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
+capacity_guard = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
+if not capacity_rule.exists() or not capacity_guard.exists():
+    raise SystemExit("Canonical execution-capacity owner is missing")
+capacity_rule_code = capacity_rule.read_text(encoding="utf-8")
+capacity_guard_code = capacity_guard.read_text(encoding="utf-8")
+for token in (
+    "IsSupportedSinglePlanCapacity(",
+    "AllowsNewSinglePlan(",
+    "AllowsNewSingleExecution(",
+    "SupportedMaximumOpenPositions",
+):
+    if token not in capacity_rule_code:
+        raise SystemExit(f"Execution capacity rule missing: {token}")
+for token in (
+    "ValidateSinglePlanCapacity(",
+    "ValidateSingleExecutionCapacity(",
+    "ManagedPositionCount()",
+    "ManagedPendingOrderCount()",
+):
+    if token not in capacity_guard_code:
+        raise SystemExit(f"Execution capacity guard missing: {token}")
+
+plan_eligibility = (ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs").read_text(encoding="utf-8")
+market_execution = (ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs").read_text(encoding="utf-8")
+aggressive_execution = (ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs").read_text(encoding="utf-8")
+pending_execution = (ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs").read_text(encoding="utf-8")
+if "ValidateSinglePlanCapacity(" not in plan_eligibility:
+    raise SystemExit("Plan creation must use the canonical capacity guard")
+for module_text, name in (
+    (market_execution, "automatic market"),
+    (aggressive_execution, "aggressive"),
+    (pending_execution, "predictive pending"),
+):
+    if "ValidateSingleExecutionCapacity(" not in module_text:
+        raise SystemExit(f"{name} execution must use the canonical execution-capacity guard")
+    if "ManagedPositionCount() >=" in module_text:
+        raise SystemExit(f"{name} execution retains a duplicate numeric capacity check")
 
 for p in parameter_files:
     groups = set(re.findall(r'\bGroup\s*=\s*"([^"]+)"', p.read_text(encoding="utf-8")))
@@ -1088,8 +1144,16 @@ if "GetManagedLivePositionForPlan()" not in BROKER_STATE_CODE:
 
 CAPACITY_RULE = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 CAPACITY_RULE_CODE = CAPACITY_RULE.read_text(encoding="utf-8")
-if "IsSupportedSinglePlanCapacity" not in CAPACITY_RULE_CODE:
-    raise SystemExit("Pure execution capacity rule missing")
+if "AllowsNewSinglePlan(" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Pure single-plan capacity rule missing")
+if "AllowsNewSingleExecution(" not in CAPACITY_RULE_CODE:
+    raise SystemExit("New-execution capacity rule missing")
+if "!hasActivePlan" not in CAPACITY_RULE_CODE:
+    raise SystemExit("New-plan capacity rule must reject an active local plan")
+if "managedPositionCount <" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Single-plan capacity rule must cap managed positions")
+if "managedPendingOrderCount == 0" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Single-plan capacity rule must reject an existing managed pending order")
 
 LIVE_RECOVERY_RULE = ROOT / "Core" / "Math" / "LivePlanRecoveryRule.cs"
 LIVE_RECOVERY_RULE_CODE = LIVE_RECOVERY_RULE.read_text(encoding="utf-8")
@@ -1098,16 +1162,27 @@ if "ShouldClearStaleLivePlan" not in LIVE_RECOVERY_RULE_CODE:
 
 CAPACITY_GUARD = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
-if "ExecutionCapacityRule.IsSupportedSinglePlanCapacity" not in CAPACITY_CODE:
-    raise SystemExit("Single-plan execution capacity guard must delegate to the pure rule")
+if "ExecutionCapacityRule.AllowsNewSinglePlan(" not in CAPACITY_CODE:
+    raise SystemExit("Plan capacity guard must delegate to the pure rule")
+if "ExecutionCapacityRule.AllowsNewSingleExecution(" not in CAPACITY_CODE:
+    raise SystemExit("Execution capacity guard must delegate to the pure execution rule")
+if "ValidateSinglePlanCapacity(" not in CAPACITY_CODE:
+    raise SystemExit("Shared single-plan capacity guard missing")
+if "ValidateSingleExecutionCapacity(" not in CAPACITY_CODE:
+    raise SystemExit("Shared execution capacity guard missing")
+plan_execution_path = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
+if "ValidateSinglePlanCapacity(" not in plan_execution_path.read_text(encoding="utf-8"):
+    raise SystemExit("Plan creation must use the single-plan capacity guard")
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
     execution_code = execution_path.read_text(encoding="utf-8")
-    if "ValidateConfiguredPositionCapacity(" not in execution_code:
-        raise SystemExit(f"Execution capacity guard missing in {execution_path.name}")
+    if "ValidateSingleExecutionCapacity(" not in execution_code:
+        raise SystemExit(f"Shared execution capacity guard missing in {execution_path.name}")
+    if "ManagedPositionCount() >=" in execution_code:
+        raise SystemExit(f"Duplicate position-capacity calculation remains in {execution_path.name}")
 
 AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
 AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
@@ -1599,7 +1674,7 @@ for token in (
 for path, token in (
     (
         ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-        "ValidateConfiguredPositionCapacity("
+        "ValidateSingleExecutionCapacity("
     ),
     (
         ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
@@ -1644,7 +1719,7 @@ if AUTO_MARKET_PRETRADE.stat().st_size > 4096:
 AUTO_MARKET_ELIGIBILITY = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs"
 AUTO_MARKET_PREPARATION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketExecutionPreparation.cs"
 for path, token in (
-    (AUTO_MARKET_ELIGIBILITY, "ValidateConfiguredPositionCapacity("),
+    (AUTO_MARKET_ELIGIBILITY, "ValidateSingleExecutionCapacity("),
     (AUTO_MARKET_PREPARATION, "TryPrepareExecutablePlan("),
 ):
     if not path.exists() or token not in path.read_text(encoding="utf-8"):
