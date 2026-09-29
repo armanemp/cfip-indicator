@@ -1606,3 +1606,39 @@ Detailed record: `docs/PHASE-9-16-SIGNAL-MEASUREMENT-LOCATION-FUSION.md`.
 
 Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
 Operator pull: required only after final main closeout.
+
+
+## Phase 9.17 — Exit Geometry, TP Progression & Protection Integrity — 2026-09-29
+
+Status: IMPLEMENTATION COMPLETE; CI verification pending.
+
+Finding:
+The reported TP rollback had multiple interacting causes: live target selection did not require the target to remain beyond the current market, target progression was disabled while the server TP ladder was active, and actual-fill/recovery flows could reconstruct stale exit geometry.
+
+Implementation:
+- canonical LiveExitGeometryRule;
+- forward-only live TP candidate selection;
+- monotonic live TP2/TP3/TP4 enrichment;
+- transactional actual-fill exit reconciliation;
+- no unsafe legacy fallback after fill reconciliation failure;
+- server ladder progression before TP1, after TP1, and final-target continuation after TP2;
+- mandatory monotonic broker TP mutation;
+- canonical protective-stop geometry check;
+- broker minimum TP-distance included in live target spacing;
+- Decision Contracts and dedicated exit-geometry audit.
+
+Safety:
+- no new public parameters;
+- no second decision authority;
+- no backwards live TP mutation;
+- no less-protective SL mutation;
+- broker-confirmed state remains authoritative;
+- raw history archives remain non-destructive.
+
+Empirical boundary:
+Target-terminal/replay remains required to confirm the user's observed rollback is eliminated in practice and to measure realized exits, slippage, protection rejection, and continuation behavior.
+
+Detailed record: docs/PHASE-9-17-EXIT-GEOMETRY-PROGRESSION.md.
+
+Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
+Operator pull: required after final verified closeout.
