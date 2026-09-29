@@ -43,5 +43,9 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionGateState.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionGate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/AggressiveEntryPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/DivergenceResult.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeActionabilityResult.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/TradePlanRegistry.cs" />
   </ItemGroup>
 </Project>

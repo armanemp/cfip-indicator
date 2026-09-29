@@ -14,82 +14,66 @@ namespace cAlgo
         {
             EnsureExecutionRuntimeState();
 
-            SyncExecutionStatus(
-                _autoTradingQuickStatus,
-                _autoTradingQuickStatusText,
-                _autoTradingQuickSwitchTrack,
-                _autoTradingQuickSwitchThumb,
-                "AUTO TRADE",
-                AutoTradingEnabled,
-                TpLineColor);
+            _executionToggleSyncing = true;
 
-            SyncExecutionStatus(
-                _automaticOrdersQuickStatus,
-                _automaticOrdersQuickStatusText,
-                _automaticOrdersQuickSwitchTrack,
-                _automaticOrdersQuickSwitchThumb,
-                "AUTO ORDERS",
-                AutomaticOrdersEnabled,
-                TriggerLineColor);
-        }
+            try
+            {
+                if (_autoTradingQuickToggle != null)
+                {
+                    _autoTradingQuickToggle.IsChecked =
+                        AutoTradingEnabled;
 
-        private void SyncExecutionStatus(
-            Border status,
-            TextBlock statusText,
-            Border switchTrack,
-            Border switchThumb,
-            string caption,
-            bool enabled,
-            Color accentColor)
-        {
-            if (status == null ||
-                statusText == null ||
-                switchTrack == null ||
-                switchThumb == null)
-                return;
+                    _autoTradingQuickToggle.Text =
+                        AutoTradingEnabled
+                            ? "AUTO TRADE • ON"
+                            : "AUTO TRADE • OFF";
 
-            statusText.Text =
-                caption +
-                "  " +
-                (enabled ? "ON" : "OFF");
+                    _autoTradingQuickToggle.BackgroundColor =
+                        Color.FromArgb(
+                            105,
+                            AutoTradingEnabled
+                                ? TpLineColor
+                                : Color.Black);
 
-            statusText.ForegroundColor =
-                PanelTextColor;
+                    _autoTradingQuickToggle.BorderColor =
+                        AutoTradingEnabled
+                            ? TpLineColor
+                            : PanelBorder;
 
-            status.BackgroundColor =
-                enabled
-                    ? Color.FromArgb(
-                        42,
-                        accentColor)
-                    : Color.FromArgb(
-                        32,
-                        Color.Black);
+                    _autoTradingQuickToggle.ForegroundColor =
+                        PanelTextColor;
+                }
 
-            status.BorderColor =
-                enabled
-                    ? Color.FromArgb(
-                        170,
-                        accentColor)
-                    : PanelBorder;
+                if (_automaticOrdersQuickToggle != null)
+                {
+                    _automaticOrdersQuickToggle.IsChecked =
+                        AutomaticOrdersEnabled;
 
-            switchTrack.BackgroundColor =
-                enabled
-                    ? Color.FromArgb(
-                        180,
-                        accentColor)
-                    : Color.FromArgb(
-                        110,
-                        Color.Black);
+                    _automaticOrdersQuickToggle.Text =
+                        AutomaticOrdersEnabled
+                            ? "AUTO ORDERS • ON"
+                            : "AUTO ORDERS • OFF";
 
-            switchTrack.BorderColor =
-                enabled
-                    ? accentColor
-                    : PanelBorder;
+                    _automaticOrdersQuickToggle.BackgroundColor =
+                        Color.FromArgb(
+                            105,
+                            AutomaticOrdersEnabled
+                                ? TriggerLineColor
+                                : Color.Black);
 
-            switchThumb.HorizontalAlignment =
-                enabled
-                    ? HorizontalAlignment.Right
-                    : HorizontalAlignment.Left;
+                    _automaticOrdersQuickToggle.BorderColor =
+                        AutomaticOrdersEnabled
+                            ? TriggerLineColor
+                            : PanelBorder;
+
+                    _automaticOrdersQuickToggle.ForegroundColor =
+                        PanelTextColor;
+                }
+            }
+            finally
+            {
+                _executionToggleSyncing = false;
+            }
         }
     }
 }

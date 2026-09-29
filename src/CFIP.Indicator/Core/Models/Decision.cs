@@ -37,5 +37,15 @@ namespace cAlgo
                         public OpportunityLane TacticalOpportunityLane;
                         public int TacticalOpportunityQuality;
                         public double TacticalOpportunityRR;
+                        public bool ActionableNow;
+                        public int EntryLocationQuality;
+                        public int EntryTimingQuality;
+                        public int EntryPositionQuality;
+                        public double EntryDistanceAtr;
+                        public double ActionableTp1RR;
+                        public int DivergenceDirection;
+                        public int DivergenceQuality;
+                        public string DivergenceType;
+                        public string ActionabilityReason;
                     }
 }

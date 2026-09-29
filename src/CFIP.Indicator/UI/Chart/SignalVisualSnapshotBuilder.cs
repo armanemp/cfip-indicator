@@ -96,6 +96,7 @@ namespace cAlgo
             bool decisionReady =
                 _decision != null &&
                 _decision.EntryAllowed &&
+                _decision.ActionableNow &&
                 _decision.Direction != 0;
 
             bool reactionReady =
@@ -129,7 +130,8 @@ namespace cAlgo
                 _decision.Direction != 0 &&
                 _triggerRuntime.Direction == _decision.Direction &&
                 _triggerRuntime.DecisionM5 == closedM5 &&
-                _decision.EntryAllowed;
+                _decision.EntryAllowed &&
+                _decision.ActionableNow;
 
             int visualDirection =
                 ResolveCanonicalVisualDirection(
@@ -270,6 +272,9 @@ namespace cAlgo
                     : _decision.TopDownStage ?? "HTF SEARCH";
 
             snapshot.DecisionReady = decisionReady;
+            snapshot.ActionableNow =
+                _decision != null &&
+                _decision.ActionableNow;
             snapshot.ReactionReady = reactionReady;
             snapshot.ReactionIntrabar = reactionReady;
             snapshot.ReactionM5Index =
@@ -288,6 +293,28 @@ namespace cAlgo
                 _decision == null ? 0 : _decision.StructuralConfirmations;
             snapshot.Confidence =
                 _decision == null ? 0 : _decision.Confidence;
+            snapshot.EntryLocationQuality =
+                _decision == null ? 0 : _decision.EntryLocationQuality;
+            snapshot.EntryTimingQuality =
+                _decision == null ? 0 : _decision.EntryTimingQuality;
+            snapshot.EntryPositionQuality =
+                _decision == null ? 0 : _decision.EntryPositionQuality;
+            snapshot.EntryDistanceAtr =
+                _decision == null ? 0 : _decision.EntryDistanceAtr;
+            snapshot.ActionableTp1RR =
+                _decision == null ? 0 : _decision.ActionableTp1RR;
+            snapshot.DivergenceDirection =
+                _decision == null ? 0 : _decision.DivergenceDirection;
+            snapshot.DivergenceQuality =
+                _decision == null ? 0 : _decision.DivergenceQuality;
+            snapshot.DivergenceType =
+                _decision == null
+                    ? "NONE"
+                    : _decision.DivergenceType ?? "NONE";
+            snapshot.ActionabilityReason =
+                _decision == null
+                    ? "NO DECISION"
+                    : _decision.ActionabilityReason ?? "NOT EVALUATED";
             snapshot.BaseConfidence =
                 _decision == null ? 0 : _decision.BaseConfidence;
             snapshot.CalibratedConfidence =

@@ -200,6 +200,92 @@ namespace cAlgo
                     decision,
                     out decision.BlockReason);
 
+            if (_m5Frame != null)
+            {
+                decision.DivergenceDirection =
+                    _m5Frame.DivergenceDirection;
+                decision.DivergenceQuality =
+                    _m5Frame.DivergenceQuality;
+                decision.DivergenceType =
+                    _m5Frame.DivergenceType ?? "NONE";
+            }
+
+            decision.ActionableNow = false;
+            decision.EntryLocationQuality = 0;
+            decision.EntryTimingQuality = 0;
+            decision.EntryPositionQuality = 0;
+            decision.EntryDistanceAtr = 0;
+            decision.ActionableTp1RR = 0;
+            decision.ActionabilityReason =
+                decision.EntryAllowed
+                    ? "NOT EVALUATED"
+                    : string.IsNullOrWhiteSpace(
+                        decision.BlockReason)
+                        ? "DECISION FILTER"
+                        : decision.BlockReason;
+
+            if (decision.EntryAllowed &&
+                decision.Direction != 0)
+            {
+                OpportunityLane lane =
+                    decision.TopDownEligible &&
+                    string.Equals(
+                        decision.TopDownStage,
+                        "ENTRY CALIBRATED",
+                        StringComparison.OrdinalIgnoreCase)
+                        ? OpportunityLane.Strategic
+                        : decision.TacticalOpportunityLane;
+
+                if (lane == OpportunityLane.Strategic ||
+                    lane == OpportunityLane.Tactical ||
+                    lane == OpportunityLane.CounterHtfTactical ||
+                    lane == OpportunityLane.MicroReaction)
+                {
+                    ExecutionModel actionExecution =
+                        BuildExecutionModel(
+                            closedM5,
+                            decision.Direction);
+
+                    TradeSetupPreview actionPreview =
+                        BuildTradeSetupPreview(
+                            closedM5,
+                            actionExecution,
+                            lane);
+
+                    TradeActionabilityResult actionability =
+                        EvaluateTradeActionability(
+                            closedM5,
+                            decision.Direction,
+                            lane,
+                            decision.Regime,
+                            actionExecution,
+                            actionPreview);
+
+                    decision.ActionableNow =
+                        actionability.Actionable;
+                    decision.EntryLocationQuality =
+                        actionability.LocationQuality;
+                    decision.EntryTimingQuality =
+                        actionability.TimingQuality;
+                    decision.EntryPositionQuality =
+                        actionability.PricePositionQuality;
+                    decision.EntryDistanceAtr =
+                        actionability.EntryDistanceAtr;
+                    decision.ActionableTp1RR =
+                        actionability.Tp1RR;
+                    decision.DivergenceQuality =
+                        Math.Max(
+                            decision.DivergenceQuality,
+                            actionability.DivergenceQuality);
+                    decision.DivergenceDirection =
+                        actionability.DivergenceDirection;
+                    decision.DivergenceType =
+                        actionability.DivergenceType;
+                    decision.ActionabilityReason =
+                        actionability.Reason;
+                }
+            }
+
             decision.Reason =
                 _decisionReasonBuilder.Build(
                     decision);

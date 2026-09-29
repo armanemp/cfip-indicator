@@ -37,6 +37,8 @@ namespace cAlgo
             VerifyVisualAndExecutionControls();
             VerifyResponsivePanelRuntime();
             VerifyAggressiveEntryPolicy();
+            VerifyTradePlanRegistry();
+            VerifyActionabilityAndDivergenceState();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -1979,6 +1981,7 @@ namespace cAlgo
             string reversalLimitPath = Path.Combine("src", "CFIP.Indicator", "Trading", "Pending", "Placement", "ReversalLimitPreparation.cs");
             string controlFactoryPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsFactory.cs");
             string controlHandlersPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionToggleHandlers.cs");
+            string controlSyncPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsSynchronizer.cs");
 
             Assert(
                 File.Exists(snapshotPath) &&
@@ -1996,7 +1999,8 @@ namespace cAlgo
                 File.Exists(predictiveScorerPath) &&
                 File.Exists(reversalLimitPath) &&
                 File.Exists(controlFactoryPath) &&
-                File.Exists(controlHandlersPath),
+                File.Exists(controlHandlersPath) &&
+                File.Exists(controlSyncPath),
                 "visual/control sources exist");
 
             string snapshot = File.ReadAllText(snapshotPath);
@@ -2015,6 +2019,7 @@ namespace cAlgo
             string reversalLimit = File.ReadAllText(reversalLimitPath);
             string controlFactory = File.ReadAllText(controlFactoryPath);
             string controlHandlers = File.ReadAllText(controlHandlersPath);
+            string controlSync = File.ReadAllText(controlSyncPath);
 
             Assert(
                 snapshot.Contains("SetupPreviewActive") &&
@@ -2096,21 +2101,21 @@ namespace cAlgo
                 "plan labels reuse the canonical line left edge");
 
             Assert(
-                controlFactory.Contains("CreateExecutionStatus(") &&
-                !controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
-                !controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
-                !controlFactory.Contains("_autoTradingQuickToggle.Checked +=") &&
-                !controlFactory.Contains("_automaticOrdersQuickToggle.Checked +=") &&
-                !controlFactory.Contains("_autoTradingQuickToggle.Unchecked +=") &&
-                !controlFactory.Contains("_automaticOrdersQuickToggle.Unchecked +="),
-                "execution controls are non-interactive status surfaces");
+                controlFactory.Contains("CreateExecutionToggle(") &&
+                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Click +="),
+                "execution controls are interactive canonical toggle surfaces");
 
             Assert(
-                !controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
-                !controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
-                !controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
-                !controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
-                "execution UI has no runtime state mutation authority");
+                controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
+                controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
+                controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
+                controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
+                "execution UI controls are bound to canonical runtime setters");
+
+            Assert(
+                controlSync.Contains("_executionToggleSyncing = true"),
+                "execution control synchronization is guarded against operator-event recursion");
 
             int pendingExecution =
                 calculationStage.IndexOf(
@@ -2260,6 +2265,81 @@ namespace cAlgo
             Assert(
                 writer.Contains("if (row.Text != nextText)"),
                 "panel writer skips duplicate text writes");
+        }
+
+        private static void VerifyTradePlanRegistry()
+        {
+            TradePlanRegistry registry =
+                new TradePlanRegistry();
+
+            TradeOpportunityCandidate buy =
+                new TradeOpportunityCandidate
+                {
+                    Id = "TACTICAL_BUY",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    Quality = 82,
+                    ActionableNow = true
+                };
+
+            TradeOpportunityCandidate sell =
+                new TradeOpportunityCandidate
+                {
+                    Id = "TACTICAL_SELL",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = -1,
+                    Quality = 79,
+                    ActionableNow = false,
+                    ActionabilityReason = "RR BELOW ACTIONABLE FLOOR"
+                };
+
+            registry.Upsert(buy);
+            registry.Upsert(sell);
+
+            TradeOpportunityCandidate actual;
+            Assert(registry.Count == 2, "multi-plan registry retains independent lanes");
+            Assert(registry.Contains("TACTICAL_BUY"), "registry BUY identity");
+            Assert(registry.Contains("TACTICAL_SELL"), "registry SELL identity");
+            Assert(registry.TryGetCandidate("TACTICAL_BUY", out actual) &&
+                   actual.ActionableNow,
+                   "registry preserves candidate actionability");
+
+            registry.Remove("TACTICAL_BUY");
+            Assert(registry.Count == 1, "registry removal");
+        }
+
+        private static void VerifyActionabilityAndDivergenceState()
+        {
+            DivergenceResult divergence =
+                new DivergenceResult(
+                    1,
+                    88,
+                    "REGULAR_BULL",
+                    true,
+                    false,
+                    false,
+                    false);
+
+            Assert(
+                divergence.HasSignal &&
+                divergence.Direction == 1 &&
+                divergence.Quality == 88 &&
+                divergence.RegularBull,
+                "strong regular divergence state");
+
+            TradeActionabilityResult blocked =
+                TradeActionabilityResult.Blocked(
+                    "LATE / PRICE EXTENDED",
+                    81,
+                    -1,
+                    "REGULAR_BEAR");
+
+            Assert(
+                !blocked.Actionable &&
+                blocked.Reason == "LATE / PRICE EXTENDED" &&
+                blocked.DivergenceQuality == 81 &&
+                blocked.DivergenceDirection == -1,
+                "actionability block preserves divergence diagnostics");
         }
 
         private static void VerifyAggressiveEntryPolicy()

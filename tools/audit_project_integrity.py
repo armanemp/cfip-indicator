@@ -135,29 +135,35 @@ if "MapM5ToChart(" in line or "anchorM5" in line:
 factory = texts[ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"]
 sync = texts[ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs"]
 handlers = texts[ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"]
-for token in ("CreateExecutionStatus(", "IsHitTestVisible = false"):
+for token in (
+    "CreateExecutionToggle(",
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
+):
     if token not in factory:
-        fail(f"Execution status surface invariant missing: {token}")
-if any(token in factory for token in (".Click +=", ".Checked +=", ".Unchecked +=")):
-    fail("Execution status UI contains an operator event handler")
-if any(token in handlers for token in (
+        fail(f"Functional execution toggle invariant missing: {token}")
+for token in (
     "ApplyAutoTradingQuickToggleClick",
     "ApplyAutomaticOrdersQuickToggleClick",
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
-)):
-    fail("Execution status UI still owns runtime mutation handlers")
-if "SyncExecutionStatus(" not in sync or "EnsureExecutionRuntimeState();" not in sync:
-    fail("Execution status synchronization boundary is incomplete")
+):
+    if token not in handlers:
+        fail(f"Execution toggle runtime binding missing: {token}")
+if "SyncQuickExecutionControls(" not in sync or "_executionToggleSyncing = true" not in sync:
+    fail("Execution toggle synchronization boundary is incomplete")
+if "EnsureExecutionRuntimeState();" not in sync:
+    fail("Execution toggle synchronization must consume canonical runtime/settings state")
 
-# 6) Architecture-wide forbidden legacy interactive control symbols.
+# 6) Architecture-wide forbidden legacy status-only control symbols.
 all_production = "\n".join(texts.values())
 for legacy in (
-    "_autoTradingQuickToggle",
-    "_automaticOrdersQuickToggle",
+    "_autoTradingQuickStatus",
+    "_automaticOrdersQuickStatus",
+    "CreateExecutionStatus(",
 ):
     if legacy in all_production:
-        fail(f"Legacy interactive execution control remains: {legacy}")
+        fail(f"Legacy status-only execution control remains: {legacy}")
 
 # 7) Continuity audit: current/future phase discipline is mandatory.
 roadmap = (DOCS / "ROADMAP.md").read_text(encoding="utf-8")

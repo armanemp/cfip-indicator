@@ -26,5 +26,10 @@ namespace cAlgo
         public string Source;
         public string Stage;
         public string LabelPrefix;
+        public bool ActionableNow;
+        public double EntryDistanceAtr;
+        public int DivergenceQuality;
+        public string DivergenceType;
+        public string ActionabilityReason;
     }
 }

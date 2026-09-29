@@ -17,6 +17,7 @@ namespace cAlgo
         public int ReactionDirection;
         public string Stage;
         public bool DecisionReady;
+        public bool ActionableNow;
         public bool ReactionReady;
         public bool ReactionIntrabar;
         public int ReactionM5Index;
@@ -75,6 +76,15 @@ namespace cAlgo
         public int IndependentEvidence;
         public int StructuralConfirmations;
         public int Confidence;
+        public int EntryLocationQuality;
+        public int EntryTimingQuality;
+        public int EntryPositionQuality;
+        public double EntryDistanceAtr;
+        public double ActionableTp1RR;
+        public int DivergenceDirection;
+        public int DivergenceQuality;
+        public string DivergenceType;
+        public string ActionabilityReason;
         public int BaseConfidence;
         public int CalibratedConfidence;
         public int EmpiricalCalibrationAdjustment;

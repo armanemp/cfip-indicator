@@ -10,10 +10,35 @@ namespace cAlgo
             if (decision == null)
                 return string.Empty;
 
-            return _formatter.Format(
-                decision,
-                decision.BuyShare,
-                decision.SellShare);
+            string reason =
+                _formatter.Format(
+                    decision,
+                    decision.BuyShare,
+                    decision.SellShare);
+
+            if (!decision.ActionableNow &&
+                !string.IsNullOrWhiteSpace(
+                    decision.ActionabilityReason))
+            {
+                reason +=
+                    " • " +
+                    decision.ActionabilityReason;
+            }
+
+            if (decision.DivergenceQuality >= 70 &&
+                !string.Equals(
+                    decision.DivergenceType,
+                    "NONE",
+                    System.StringComparison.OrdinalIgnoreCase))
+            {
+                reason +=
+                    " • DIV " +
+                    decision.DivergenceType +
+                    " Q" +
+                    decision.DivergenceQuality;
+            }
+
+            return reason;
         }
     }
 }

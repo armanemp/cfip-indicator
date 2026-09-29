@@ -42,13 +42,13 @@ namespace cAlgo
                                                         _quickExecutionStack.Height =
                                                             QuickExecutionRowHeight;
                                         
-                                                        if (_autoTradingQuickStatus != null)
+                                                        if (_autoTradingQuickToggle != null)
                                                         {
-                                                            _autoTradingQuickStatus.Width =
+                                                            _autoTradingQuickToggle.Width =
                                                                 quickWidth;
-                                                            _autoTradingQuickStatus.Height =
+                                                            _autoTradingQuickToggle.Height =
                                                                 QuickExecutionButtonHeight;
-                                                            _autoTradingQuickStatus.Margin =
+                                                            _autoTradingQuickToggle.Margin =
                                                                 new Thickness(
                                                                     0,
                                                                     QuickExecutionVerticalMargin,
@@ -56,13 +56,13 @@ namespace cAlgo
                                                                     QuickExecutionVerticalMargin);
                                                         }
                                         
-                                                        if (_automaticOrdersQuickStatus != null)
+                                                        if (_automaticOrdersQuickToggle != null)
                                                         {
-                                                            _automaticOrdersQuickStatus.Width =
+                                                            _automaticOrdersQuickToggle.Width =
                                                                 quickWidth;
-                                                            _automaticOrdersQuickStatus.Height =
+                                                            _automaticOrdersQuickToggle.Height =
                                                                 QuickExecutionButtonHeight;
-                                                            _automaticOrdersQuickStatus.Margin =
+                                                            _automaticOrdersQuickToggle.Margin =
                                                                 new Thickness(
                                                                     quickLeftMargin,
                                                                     QuickExecutionVerticalMargin,

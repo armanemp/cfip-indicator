@@ -34,6 +34,26 @@ namespace cAlgo
                 bars,
                 index);
 
+            DivergenceResult divergence =
+                AnalyzeDivergence(
+                    bars,
+                    index);
+
+            f.DivergenceDirection =
+                divergence.Direction;
+            f.DivergenceQuality =
+                divergence.Quality;
+            f.DivergenceType =
+                divergence.Type;
+            f.RegularDivergenceBull =
+                divergence.RegularBull;
+            f.RegularDivergenceBear =
+                divergence.RegularBear;
+            f.HiddenDivergenceBull =
+                divergence.HiddenBull;
+            f.HiddenDivergenceBear =
+                divergence.HiddenBear;
+
             if (ReferenceEquals(
                     bars,
                     _m5Bars))

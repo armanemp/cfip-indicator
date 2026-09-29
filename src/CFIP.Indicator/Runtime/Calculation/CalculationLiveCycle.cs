@@ -78,6 +78,9 @@ namespace cAlgo
                 return;
             }
 
+            RefreshLiveDecisionActionability(
+                closedM5);
+
             bool triggerRevisionChanged =
                 _lastAutoPlanTriggerM1 !=
                 _triggerRuntime.ConfirmedM1;
@@ -174,6 +177,57 @@ namespace cAlgo
 
             RefreshParallelOpportunityCandidates(
                 closedM5);
+        }
+
+        private void RefreshLiveDecisionActionability(
+            int closedM5)
+        {
+            if (_decision == null ||
+                _decision.Direction == 0 ||
+                !_decision.EntryAllowed ||
+                _executionModel == null)
+                return;
+
+            OpportunityLane lane =
+                _decision.TopDownEligible &&
+                string.Equals(
+                    _decision.TopDownStage,
+                    "ENTRY CALIBRATED",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? OpportunityLane.Strategic
+                    : _decision.TacticalOpportunityLane;
+
+            TradeActionabilityResult result =
+                EvaluateTradeActionability(
+                    closedM5,
+                    _decision.Direction,
+                    lane,
+                    _decision.Regime,
+                    _executionModel,
+                    _setupPreview);
+
+            _decision.ActionableNow =
+                result.Actionable;
+            _decision.EntryLocationQuality =
+                result.LocationQuality;
+            _decision.EntryTimingQuality =
+                result.TimingQuality;
+            _decision.EntryPositionQuality =
+                result.PricePositionQuality;
+            _decision.EntryDistanceAtr =
+                result.EntryDistanceAtr;
+            _decision.ActionableTp1RR =
+                result.Tp1RR;
+            _decision.DivergenceQuality =
+                Math.Max(
+                    _decision.DivergenceQuality,
+                    result.DivergenceQuality);
+            _decision.DivergenceDirection =
+                result.DivergenceDirection;
+            _decision.DivergenceType =
+                result.DivergenceType;
+            _decision.ActionabilityReason =
+                result.Reason;
         }
 
         private void RenderCalculationState(

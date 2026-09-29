@@ -18,69 +18,56 @@ namespace cAlgo
             _quickExecutionStack =
                 new StackPanel
                 {
-                    Orientation =
-                        Orientation.Horizontal,
-                    HorizontalAlignment =
-                        HorizontalAlignment.Stretch,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    BackgroundColor =
-                        Color.FromArgb(
-                            0,
-                            Color.Black),
-                    Height =
-                        QuickExecutionRowHeight
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    BackgroundColor = Color.FromArgb(0, Color.Black),
+                    Height = QuickExecutionRowHeight
                 };
 
-            _autoTradingQuickStatus =
-                CreateExecutionStatus(
-                    "AUTO TRADE",
+            _autoTradingQuickToggle =
+                CreateExecutionToggle(
                     AutoTradingEnabled,
-                    TpLineColor,
-                    out _autoTradingQuickStatusText,
-                    out _autoTradingQuickSwitchTrack,
-                    out _autoTradingQuickSwitchThumb);
+                    "AUTO TRADE",
+                    TpLineColor);
 
-            _automaticOrdersQuickStatus =
-                CreateExecutionStatus(
-                    "AUTO ORDERS",
+            _automaticOrdersQuickToggle =
+                CreateExecutionToggle(
                     AutomaticOrdersEnabled,
-                    TriggerLineColor,
-                    out _automaticOrdersQuickStatusText,
-                    out _automaticOrdersQuickSwitchTrack,
-                    out _automaticOrdersQuickSwitchThumb);
+                    "AUTO ORDERS",
+                    TriggerLineColor);
+
+            // ToggleButton state is the operator event boundary. The handler
+            // changes only the canonical runtime authority; synchronizer refreshes
+            // the visual control under _executionToggleSyncing guard.
+            _autoTradingQuickToggle.Click +=
+                ApplyAutoTradingQuickToggleClick;
+
+            _automaticOrdersQuickToggle.Click +=
+                ApplyAutomaticOrdersQuickToggleClick;
 
             _quickExecutionStack.AddChild(
-                _autoTradingQuickStatus);
+                _autoTradingQuickToggle);
 
             _quickExecutionStack.AddChild(
-                _automaticOrdersQuickStatus);
+                _automaticOrdersQuickToggle);
         }
 
-        private Border CreateExecutionStatus(
+        private ToggleButton CreateExecutionToggle(
+            bool isChecked,
             string caption,
-            bool enabled,
-            Color accentColor,
-            out TextBlock statusText,
-            out Border switchTrack,
-            out Border switchThumb)
+            Color accentColor)
         {
-            statusText =
-                new TextBlock
+            return
+                new ToggleButton
                 {
                     Text =
-                        caption +
-                        "  " +
-                        (enabled ? "ON" : "OFF"),
-                    Width = 122,
-                    HorizontalAlignment =
-                        HorizontalAlignment.Left,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    TextAlignment =
-                        TextAlignment.Left,
-                    TextWrapping =
-                        TextWrapping.NoWrap,
+                        isChecked
+                            ? caption + "  •  ON"
+                            : caption + "  •  OFF",
+                    Width = 170,
+                    Height = QuickExecutionButtonHeight,
+                    IsChecked = isChecked,
                     FontFamily =
                         string.IsNullOrWhiteSpace(
                             PanelFontFamily)
@@ -90,116 +77,26 @@ namespace cAlgo
                         Math.Max(
                             8,
                             PanelFontSize - 1),
-                    FontWeight =
-                        FontWeight.Bold,
+                    BackgroundColor =
+                        Color.FromArgb(
+                            105,
+                            isChecked
+                                ? accentColor
+                                : Color.Black),
                     ForegroundColor =
                         PanelTextColor,
-                    BackgroundColor =
-                        Color.FromArgb(
-                            0,
-                            Color.Black)
-                };
-
-            switchThumb =
-                new Border
-                {
-                    Width = 12,
-                    Height = 12,
-                    CornerRadius = 6,
-                    BackgroundColor =
-                        Color.FromArgb(
-                            240,
-                            Color.White),
                     BorderColor =
-                        Color.FromArgb(
-                            220,
-                            Color.White),
-                    BorderThickness = 1,
-                    HorizontalAlignment =
-                        enabled
-                            ? HorizontalAlignment.Right
-                            : HorizontalAlignment.Left,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    IsHitTestVisible = false
-                };
-
-            switchTrack =
-                new Border
-                {
-                    Child = switchThumb,
-                    Width = 34,
-                    Height = 18,
-                    Padding = 2,
-                    CornerRadius = 9,
-                    BackgroundColor =
-                        enabled
-                            ? Color.FromArgb(
-                                180,
-                                accentColor)
-                            : Color.FromArgb(
-                                110,
-                                Color.Black),
-                    BorderColor =
-                        enabled
+                        isChecked
                             ? accentColor
-                            : PanelBorder,
-                    BorderThickness = 1,
-                    HorizontalAlignment =
-                        HorizontalAlignment.Right,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    IsHitTestVisible = false
-                };
-
-            StackPanel row =
-                new StackPanel
-                {
-                    Orientation =
-                        Orientation.Horizontal,
-                    HorizontalAlignment =
-                        HorizontalAlignment.Stretch,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    BackgroundColor =
-                        Color.FromArgb(
-                            0,
-                            Color.Black)
-                };
-
-            row.AddChild(statusText);
-            row.AddChild(switchTrack);
-
-            return
-                new Border
-                {
-                    Child = row,
-                    Width = 170,
-                    Height = QuickExecutionButtonHeight,
-                    Padding = 5,
-                    Margin = 2,
-                    BackgroundColor =
-                        enabled
-                            ? Color.FromArgb(
-                                42,
-                                accentColor)
-                            : Color.FromArgb(
-                                32,
-                                Color.Black),
-                    BorderColor =
-                        enabled
-                            ? Color.FromArgb(
-                                170,
-                                accentColor)
                             : PanelBorder,
                     BorderThickness = 1,
                     CornerRadius =
                         Math.Min(
                             10,
                             Math.Max(
-                                6,
+                                5,
                                 PanelCornerRadius)),
-                    IsHitTestVisible = false
+                    IsEnabled = true
                 };
         }
     }

@@ -468,6 +468,8 @@ expected_models = {
     "PredictivePendingCandidate",
     "OssIndicatorSnapshot", "MarketRegimeSnapshot", "MarketRegimeClassificationInput",
     "TradeOpportunityCandidate", "WaveTrendSnapshot",
+    "DivergenceResult", "DivergenceCandidate",
+    "TradeActionabilityResult",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
@@ -1001,18 +1003,26 @@ if "GetPlanLineLeftBar" not in visual_line_code:
 if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
     raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
 
-if "CreateExecutionStatus(" not in control_factory_code:
-    raise SystemExit("Execution controls must be status-only presentation surfaces")
-if ".Click +=" in control_factory_code or ".Checked +=" in control_factory_code or ".Unchecked +=" in control_factory_code:
-    raise SystemExit("Execution status surfaces must not own operator event handlers")
-for forbidden_action in (
+if "CreateExecutionToggle(" not in control_factory_code:
+    raise SystemExit("Execution controls must use interactive ToggleButton presentation")
+for required_event in (
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
+):
+    if required_event not in control_factory_code:
+        raise SystemExit(f"Execution toggle operator event missing: {required_event}")
+for required_action in (
     "ApplyAutoTradingQuickToggleClick",
     "ApplyAutomaticOrdersQuickToggleClick",
+):
+    if required_action not in control_handlers_code:
+        raise SystemExit(f"Execution toggle handler missing: {required_action}")
+for required_setter in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
-    if forbidden_action in control_handlers_code:
-        raise SystemExit(f"Execution UI must not mutate runtime authority: {forbidden_action}")
+    if required_setter not in control_handlers_code:
+        raise SystemExit(f"Execution toggle handler must use canonical runtime setter: {required_setter}")
 # Phase 1.5 performance/supervision gates.
 RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
@@ -2600,20 +2610,14 @@ if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
 # Runtime UI, execution-priority and protection hotfix contracts.
 EXECUTION_CONTROLS_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 EXECUTION_CONTROLS_FACTORY_CODE = EXECUTION_CONTROLS_FACTORY.read_text(encoding="utf-8")
-if "CreateExecutionStatus(" not in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel execution controls must be status-only surfaces")
-if any(
-    token in EXECUTION_CONTROLS_FACTORY_CODE
-    for token in (
-        "_autoTradingQuickToggle.Click +=",
-        "_automaticOrdersQuickToggle.Click +=",
-        "_autoTradingQuickToggle.Checked +=",
-        "_automaticOrdersQuickToggle.Checked +=",
-        "_autoTradingQuickToggle.Unchecked +=",
-        "_automaticOrdersQuickToggle.Unchecked +=",
-    )
+if "CreateExecutionToggle(" not in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution controls must use interactive ToggleButton surfaces")
+for token in (
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
 ):
-    raise SystemExit("Panel execution status surfaces must not own operator events")
+    if token not in EXECUTION_CONTROLS_FACTORY_CODE:
+        raise SystemExit(f"Panel execution toggle event missing: {token}")
 
 EXECUTION_TOGGLE_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
 EXECUTION_TOGGLE_HANDLERS_CODE = EXECUTION_TOGGLE_HANDLERS.read_text(encoding="utf-8")
@@ -2623,8 +2627,13 @@ for token in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
-    if token in EXECUTION_TOGGLE_HANDLERS_CODE:
-        raise SystemExit(f"Execution UI must not mutate runtime authority: {token}")
+    if token not in EXECUTION_TOGGLE_HANDLERS_CODE:
+        raise SystemExit(f"Execution toggle runtime binding missing: {token}")
+
+EXECUTION_CONTROLS_SYNC = ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs"
+EXECUTION_CONTROLS_SYNC_CODE = EXECUTION_CONTROLS_SYNC.read_text(encoding="utf-8")
+if "_executionToggleSyncing = true" not in EXECUTION_CONTROLS_SYNC_CODE:
+    raise SystemExit("Execution toggle visual synchronization must be guarded")
 
 CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
 CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")
@@ -3076,6 +3085,118 @@ live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 live_calc_code = live_calc.read_text(encoding="utf-8")
 if "RenderParallelOpportunityCandidates(" not in live_calc_code:
     raise SystemExit("Parallel opportunity renderer must be in the canonical render cycle")
+
+# Phase 9.4 — actionability, divergence, multi-plan registry and visual signal authority.
+divergence_model = ROOT / "Core" / "Models" / "DivergenceResult.cs"
+divergence_analyzer = ROOT / "Analysis" / "Market" / "DivergenceAnalyzer.cs"
+actionability_model = ROOT / "Core" / "Models" / "TradeActionabilityResult.cs"
+actionability_evaluator = ROOT / "Trading" / "Validation" / "TradeActionabilityEvaluator.cs"
+plan_registry = ROOT / "Trading" / "Intelligence" / "TradePlanRegistry.cs"
+parallel_builder = ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs"
+decision_model = ROOT / "Core" / "Models" / "Decision.cs"
+visual_builder = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
+alert_calc = ROOT / "Runtime" / "Calculation" / "CalculationDecisionAlerts.cs"
+plan_eligibility = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
+
+for required_path in (
+    divergence_model,
+    divergence_analyzer,
+    actionability_model,
+    actionability_evaluator,
+    plan_registry,
+):
+    if not required_path.exists():
+        raise SystemExit(f"Phase 9.4 owner is missing: {required_path}")
+
+div_code = divergence_analyzer.read_text(encoding="utf-8")
+frame_code = (ROOT / "Analysis" / "Market" / "Models" / "Frame.cs").read_text(encoding="utf-8")
+market_evidence_code = (ROOT / "Analysis" / "Market" / "MarketFrameEvidence.cs").read_text(encoding="utf-8")
+for token in (
+    "TryFindLastTwoSwingLows(",
+    "TryFindLastTwoSwingHighs(",
+    "Regular",
+    "Hidden",
+    "GetWaveTrendSnapshot(",
+    "Rsi(",
+):
+    if token not in div_code:
+        raise SystemExit(f"Divergence engine missing canonical component: {token}")
+for token in (
+    "DivergenceDirection",
+    "DivergenceQuality",
+    "DivergenceType",
+):
+    if token not in frame_code or token not in market_evidence_code:
+        raise SystemExit(f"Divergence evidence is not flowing through Frame: {token}")
+
+act_code = actionability_evaluator.read_text(encoding="utf-8")
+decision_code = decision_model.read_text(encoding="utf-8")
+for token in (
+    "IsTriggerReached(",
+    "MaximumEntryExtensionAtr",
+    "MaximumEntryDistanceAtr",
+    "Tp1MinimumRR",
+    "MinimumRequiredRRForRegime(",
+    "microConflict",
+    "OPPOSING REGULAR DIVERGENCE",
+    "RR BELOW ACTIONABLE FLOOR",
+    "LATE / PRICE EXTENDED",
+):
+    if token not in act_code:
+        raise SystemExit(f"Actionability gate missing deterministic execution condition: {token}")
+for token in (
+    "ActionableNow",
+    "EntryDistanceAtr",
+    "ActionableTp1RR",
+    "DivergenceQuality",
+):
+    if token not in decision_code:
+        raise SystemExit(f"Decision model missing Phase 9.4 field: {token}")
+
+if "_decision.ActionableNow" not in plan_eligibility.read_text(encoding="utf-8"):
+    raise SystemExit("Plan creation must consume ActionableNow")
+
+registry_code = plan_registry.read_text(encoding="utf-8")
+parallel_code = parallel_builder.read_text(encoding="utf-8")
+for token in ("Dictionary<string, TradeOpportunityCandidate>", "Upsert(", "Snapshot()"):
+    if token not in registry_code:
+        raise SystemExit(f"Multi-plan registry contract missing: {token}")
+if "_tradePlanRegistry.Upsert(" not in parallel_code:
+    raise SystemExit("Parallel opportunity builder must register every materialized candidate")
+
+visual_code = visual_builder.read_text(encoding="utf-8")
+alert_code = alert_calc.read_text(encoding="utf-8")
+if "_decision.ActionableNow" not in visual_code:
+    raise SystemExit("Visual signal authority must require ActionableNow")
+for token in ("!_decision.ActionableNow", "GetManagedPendingOrder() != null"):
+    if token not in alert_code:
+        raise SystemExit(f"Entry alert gate missing Phase 9.4 hierarchy condition: {token}")
+
+execution_state = (ROOT / "Indicator" / "State.cs").read_text(encoding="utf-8")
+execution_factory = (ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs").read_text(encoding="utf-8")
+execution_handlers = (ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs").read_text(encoding="utf-8")
+execution_sync = (ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs").read_text(encoding="utf-8")
+for token in (
+    "ToggleButton _autoTradingQuickToggle",
+    "ToggleButton _automaticOrdersQuickToggle",
+    "_executionToggleSyncing",
+):
+    if token not in execution_state:
+        raise SystemExit(f"Functional execution control state missing: {token}")
+for token in (
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
+):
+    if token not in execution_factory:
+        raise SystemExit(f"Execution toggle click owner missing: {token}")
+for token in (
+    "SetAutoTradingRuntimeState(",
+    "SetAutomaticOrdersRuntimeState(",
+):
+    if token not in execution_handlers:
+        raise SystemExit(f"Execution toggle handler must call canonical runtime setter: {token}")
+if "_executionToggleSyncing = true" not in execution_sync:
+    raise SystemExit("Execution toggle synchronizer must guard programmatic state changes")
 
 # Strict type isolation: production behavior files may not hide helper types
 # inside the cTrader partial host. Every helper/model type must have a file owner.

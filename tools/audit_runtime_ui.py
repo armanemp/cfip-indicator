@@ -22,14 +22,14 @@ production_source = "\n".join(
     for path in ROOT.rglob("*.cs")
 )
 
-for legacy in (
+for required in (
     "_autoTradingQuickToggle",
     "_automaticOrdersQuickToggle",
     "ApplyAutoTradingQuickToggleClick",
     "ApplyAutomaticOrdersQuickToggleClick",
 ):
-    if legacy in production_source:
-        raise SystemExit(f"Legacy interactive execution-control symbol remains: {legacy}")
+    if required not in production_source:
+        raise SystemExit(f"Functional execution-control owner missing: {required}")
 
 if "CompactPlanLineLengthBars = 40" not in line:
     raise SystemExit("Plan line span must remain 40 bars")
@@ -47,35 +47,42 @@ if "GetCompactPlanLineLeftBar(" in labels:
     raise SystemExit("Legacy compact-line anchor helper must not remain")
 
 for field in (
-    "private Border _autoTradingQuickStatus;",
-    "private Border _automaticOrdersQuickStatus;",
-    "private Border _autoTradingQuickSwitchTrack;",
-    "private Border _automaticOrdersQuickSwitchTrack;",
+    "private ToggleButton _autoTradingQuickToggle;",
+    "private ToggleButton _automaticOrdersQuickToggle;",
+    "private bool _executionToggleSyncing;",
 ):
     if field not in state:
-        raise SystemExit(f"Execution status field missing: {field}")
+        raise SystemExit(f"Functional execution-control field missing: {field}")
 
-if "CreateExecutionStatus(" not in factory:
-    raise SystemExit("Execution controls must be status-only surfaces")
-for token in (".Click +=", ".Checked +=", ".Unchecked +="):
-    if token in factory:
-        raise SystemExit("Execution status surfaces must not own operator events")
-if "IsHitTestVisible = false" not in factory:
-    raise SystemExit("Execution status surfaces must be non-interactive")
+if "CreateExecutionToggle(" not in factory:
+    raise SystemExit("Execution controls must be real operator ToggleButton surfaces")
+for token in (
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
+):
+    if token not in factory:
+        raise SystemExit(f"Execution toggle event owner missing: {token}")
+if "_executionToggleSyncing = true" not in sync:
+    raise SystemExit("Execution controls must guard programmatic visual synchronization")
 
 if "EnsureExecutionRuntimeState();" not in sync:
     raise SystemExit("Execution status synchronization must consume canonical runtime/settings state")
-if "SyncExecutionStatus(" not in sync:
-    raise SystemExit("Execution status surfaces must have a dedicated synchronizer")
+if "SyncQuickExecutionControls(" not in sync:
+    raise SystemExit("Execution controls must have a dedicated synchronization boundary")
 
-for forbidden in (
+for required in (
     "ApplyAutoTradingQuickToggleClick",
     "ApplyAutomaticOrdersQuickToggleClick",
+):
+    if required not in handlers:
+        raise SystemExit(f"Execution UI click handler missing: {required}")
+
+for required_setter in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
-    if forbidden in handlers:
-        raise SystemExit(f"Execution UI handler mutation remains: {forbidden}")
+    if required_setter not in handlers:
+        raise SystemExit(f"Execution UI handler must call canonical runtime setter: {required_setter}")
 
 if "EnableAutoTrading" not in initialization or "EnableAutomaticOrders" not in initialization:
     raise SystemExit("Execution status settings must be sourced from the public cTrader parameters")
@@ -85,5 +92,5 @@ if "EnsureExecutionRuntimeState()" not in initialization:
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
 print("Pending lines: no M5 mapping dependency")
-print("AUTO TRADE/AUTO ORDERS: non-interactive modern switch status surfaces")
+print("AUTO TRADE/AUTO ORDERS: interactive runtime controls bound to canonical execution state")
 print("Execution status: synchronized from canonical settings/runtime state")
