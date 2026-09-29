@@ -9,71 +9,52 @@ using cAlgo.API.Internals;
 // CFIP Indicator — PlanLabelAnchorCalculator.cs
 // Single-responsibility plan-label renderer.
 
-
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private int GetLabelAnchorBar(
-                                    string name,
-                                    int referenceBar)
-                                {
-                                    if (Bars == null ||
-                                        Bars.Count < 2)
-                                        return 0;
-                        
-                                    bool prediction =
-                                        name != null &&
-                                        name.IndexOf(
-                                            "PRED_",
-                                            StringComparison.OrdinalIgnoreCase) >= 0;
-                        
-                                    int left;
-                        
-                                    if (!prediction &&
-                                        FullWidthLevelLines)
-                                    {
-                                        try
-                                        {
-                                            left =
-                                                Chart.FirstVisibleBarIndex;
-                                        }
-                                        catch
-                                        {
-                                            left =
-                                                referenceBar -
-                                                Math.Max(
-                                                    1,
-                                                    LineLengthBars);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        left =
-                                            referenceBar -
-                                            Math.Max(
-                                                1,
-                                                LineLengthBars);
-                                    }
-                        
-                                    left =
-                                        Math.Max(
-                                            0,
-                                            Math.Min(
-                                                Bars.Count - 1,
-                                                left));
-                        
-                                    int offset =
-                                        Math.Max(
-                                            1,
-                                            LabelLeftOffsetBars);
-                        
-                                    return
-                                        Math.Max(
-                                            0,
-                                            Math.Min(
-                                                Bars.Count - 1,
-                                                left + offset));
-                                }
+        private const int CompactPlanLabelWidthBars = 7;
+
+        private int GetCompactPlanLineLeftBar()
+        {
+            if (Bars == null ||
+                Bars.Count < 2)
+                return 0;
+
+            return Math.Max(
+                0,
+                Bars.Count -
+                1 -
+                CompactPlanLineLengthBars);
+        }
+
+        private int GetCompactPlanLabelAnchorBar(
+            int lineLeft)
+        {
+            if (Bars == null ||
+                Bars.Count < 2)
+                return 0;
+
+            return Math.Max(
+                0,
+                Math.Min(
+                    Bars.Count - 1,
+                    lineLeft + 1));
+        }
+
+        private int GetLabelBoxRightBar(
+            int lineLeft)
+        {
+            if (Bars == null ||
+                Bars.Count < 2)
+                return 0;
+
+            return Math.Max(
+                lineLeft,
+                Math.Min(
+                    Bars.Count - 1,
+                    lineLeft +
+                    CompactPlanLabelWidthBars));
+        }
     }
 }
