@@ -85,8 +85,12 @@ namespace cAlgo
                         m5Fvg.High,
                         m5Ob.High);
 
-                if (overlapHigh >=
-                    overlapLow)
+                if (ZoneConfluenceRule.HasOverlap(
+                        m5Fvg.Low,
+                        m5Fvg.High,
+                        m5Ob.Low,
+                        m5Ob.High,
+                        0))
                 {
                     low = overlapLow;
                     high = overlapHigh;
@@ -127,8 +131,12 @@ namespace cAlgo
                         m15Fvg.High,
                         m15Ob.High);
 
-                if (overlapHigh >=
-                    overlapLow)
+                if (ZoneConfluenceRule.HasOverlap(
+                        m15Fvg.Low,
+                        m15Fvg.High,
+                        m15Ob.Low,
+                        m15Ob.High,
+                        0))
                 {
                     low = overlapLow;
                     high = overlapHigh;

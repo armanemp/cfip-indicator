@@ -78,16 +78,23 @@ namespace cAlgo
                 return;
             }
 
+            bool triggerRevisionChanged =
+                _lastAutoPlanTriggerM1 !=
+                _triggerRuntime.ConfirmedM1;
+
             if (!AutoTradingEnabled ||
                 _plan != null ||
                 _decision == null ||
                 _decision.Direction == 0 ||
-                _lastAutoPlanAttemptM5 ==
-                closedM5)
+                (_lastAutoPlanAttemptM5 == closedM5 &&
+                 !triggerRevisionChanged))
                 return;
 
             _lastAutoPlanAttemptM5 =
                 closedM5;
+
+            _lastAutoPlanTriggerM1 =
+                _triggerRuntime.ConfirmedM1;
 
             EnsureSignalPlan(
                 closedM5,

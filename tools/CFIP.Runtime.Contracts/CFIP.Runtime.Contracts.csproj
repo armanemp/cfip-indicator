@@ -20,6 +20,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SwingPlateauRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ZoneConfluenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OrderBlockRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LivePlanRecoveryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionFillAcceptanceRule.cs" />

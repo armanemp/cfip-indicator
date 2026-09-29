@@ -44,6 +44,7 @@ namespace cAlgo
                 private Prediction _prediction;
                 private ExecutionModel _executionModel;
                 private TradeSetupPreview _setupPreview;
+                private readonly TriggerRuntimeState _triggerRuntime = new TriggerRuntimeState();
         
                 private int _lastStructuralStopUpdateM5 = -1;
                 private int _lastTargetRepriceM5 = -1;
@@ -197,6 +198,7 @@ namespace cAlgo
                 private int _lastSmartDecisionAlertM5 = -1;
                 private int _lastHistoricalHostBar = -1;
                 private int _lastAutoPlanAttemptM5 = -1;
+                private int _lastAutoPlanTriggerM1 = -1;
                 private DateTime _lastTradingPermissionRequestUtc = DateTime.MinValue;
         
                 private int _marketSuitabilityM5 = -1;

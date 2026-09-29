@@ -11,6 +11,7 @@ namespace cAlgo
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
             VerifyOrderBlockMathematics();
+            VerifyZoneConfluenceSymmetry();
             VerifyMtfContextIntegrity();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
@@ -423,6 +424,72 @@ namespace cAlgo
                     false,
                     0),
                 "abnormally large M1 range cannot confirm");
+        }
+
+        private static void VerifyZoneConfluenceSymmetry()
+        {
+            DateTime liveM5Open = Utc(12, 5);
+            DateTime liveM5NextOpen = Utc(12, 10);
+            DateTime closedM1Open = Utc(12, 6);
+            DateTime closedM1NextOpen = Utc(12, 7);
+
+            Assert(
+                M1TriggerRule.IsClosedM1InsideM5Window(
+                    closedM1Open,
+                    closedM1NextOpen,
+                    liveM5Open,
+                    liveM5NextOpen,
+                    Utc(12, 7)),
+                "closed M1 can confirm inside the currently forming M5 window");
+
+            Assert(
+                !M1TriggerRule.IsClosedM1InsideM5Window(
+                    closedM1Open,
+                    Utc(12, 8),
+                    liveM5Open,
+                    liveM5NextOpen,
+                    Utc(12, 7)),
+                "M1 trigger runtime rejects an M1 bar that is not closed yet");
+
+            Assert(
+                ZoneConfluenceRule.HasOverlap(
+                    100,
+                    105,
+                    104,
+                    110,
+                    0) &&
+                ZoneConfluenceRule.HasOverlap(
+                    104,
+                    110,
+                    100,
+                    105,
+                    0),
+                "zone overlap is BUY/SELL independent and argument-order symmetric");
+
+            Assert(
+                !ZoneConfluenceRule.HasOverlap(
+                    100,
+                    102,
+                    102,
+                    104,
+                    0),
+                "touch-only zone boundaries are not treated as positive-width confluence");
+
+            Assert(
+                ZoneConfluenceRule.HasOverlap(
+                    100,
+                    102,
+                    102.05,
+                    104,
+                    0.10),
+                "explicit confluence tolerance is symmetric");
+
+            Assert(
+                ZoneConfluenceRule.IsDirectionalMatch(1, 1) &&
+                ZoneConfluenceRule.IsDirectionalMatch(-1, -1) &&
+                !ZoneConfluenceRule.IsDirectionalMatch(1, -1) &&
+                !ZoneConfluenceRule.IsDirectionalMatch(-1, 1),
+                "zone direction matching is explicitly mirrored");
         }
 
         private static void VerifyOrderBlockMathematics()

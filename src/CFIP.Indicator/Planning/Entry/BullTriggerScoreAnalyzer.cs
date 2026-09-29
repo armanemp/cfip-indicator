@@ -48,10 +48,10 @@ private int BullTriggerScore(
                                 Ema(bars, index, true))
                                 score++;
                 
-                            if (Rsi(bars, index) >= 50)
+                            if (Rsi(bars, index) > 50)
                                 score++;
                 
-                            if (DmiBias(bars, index) >= 0)
+                            if (DmiBias(bars, index) > 0)
                                 score++;
                 
                             if (UseDisplacement &&

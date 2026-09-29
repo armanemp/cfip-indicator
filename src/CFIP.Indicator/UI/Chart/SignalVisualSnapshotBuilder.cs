@@ -123,6 +123,14 @@ namespace cAlgo
                     MinimumEarlyConfidence,
                     EarlySetupConfidence);
 
+            bool triggerRuntimeReady =
+                _triggerRuntime.Latched &&
+                _decision != null &&
+                _decision.Direction != 0 &&
+                _triggerRuntime.Direction == _decision.Direction &&
+                _triggerRuntime.DecisionM5 == closedM5 &&
+                _decision.EntryAllowed;
+
             int visualDirection =
                 ResolveCanonicalVisualDirection(
                     pendingValid
@@ -212,13 +220,18 @@ namespace cAlgo
                 snapshot.SetupTp4 = _setupPreview.Tp4;
                 snapshot.SetupRisk = _setupPreview.Risk;
                 snapshot.Stage =
-                    decisionReady
-                        ? "CONFIRMED SETUP"
-                        : "SETUP WATCH";
+                    triggerRuntimeReady
+                        ? "TRIGGER READY"
+                        : decisionReady
+                            ? "CONFIRMED SETUP"
+                            : "SETUP WATCH";
             }
             else if (decisionReady)
             {
-                snapshot.Stage = "CONFIRMED";
+                snapshot.Stage =
+                    triggerRuntimeReady
+                        ? "TRIGGER READY"
+                        : "CONFIRMED";
             }
             else if (reactionReady)
             {
@@ -263,12 +276,38 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : _decision.Regime;
 
+            snapshot.TriggerRuntimeReady =
+                triggerRuntimeReady;
+
+            snapshot.TriggerM1Index =
+                snapshot.TriggerRuntimeReady
+                    ? _triggerRuntime.ConfirmedM1
+                    : -1;
+
+            snapshot.TriggerRuntimeScore =
+                _triggerRuntime.Score;
+
+            snapshot.TriggerRuntimeRequired =
+                _triggerRuntime.RequiredScore;
+
+            snapshot.TriggerRuntimeReason =
+                _triggerRuntime.Reason ?? "";
+
+            ExecutionMode triggerMode =
+                snapshot.PlanActive
+                    ? snapshot.EntryMode
+                    : snapshot.SetupEntryMode;
+
             snapshot.TriggerVisible =
-                snapshot.PlanActive &&
+                (snapshot.PlanActive ||
+                 snapshot.SetupPreviewActive) &&
                 !snapshot.LivePosition &&
-                IsFinitePositive(snapshot.Trigger) &&
-                (snapshot.EntryMode == ExecutionMode.WaitingForTrigger ||
-                 snapshot.EntryMode == ExecutionMode.ContinuationStop);
+                IsFinitePositive(
+                    snapshot.PlanActive
+                        ? snapshot.Trigger
+                        : snapshot.SetupTrigger) &&
+                (triggerMode == ExecutionMode.WaitingForTrigger ||
+                 triggerMode == ExecutionMode.ContinuationStop);
             snapshot.IdealEntryVisible =
                 snapshot.PlanActive &&
                 IsFinitePositive(snapshot.IdealEntry) &&
