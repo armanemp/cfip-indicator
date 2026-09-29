@@ -1177,11 +1177,13 @@ Implementation:
 - pending-style plans cannot produce current-market directional alert/arrow state;
 - `ACTION` is classified as confirmed in the presentation mirror.
 
-Verification status:
-- PR #46 final code head currently has Runtime Acceptance PASS;
+Verification closeout:
+- PR #46 merged into `main` as `573f12ac380a8beace61db780082d5071db2defb`;
+- final verified PR head before merge: `91b2a128e39bffff145fb84b2371e37057cc95b9`;
+- Runtime Acceptance PASS;
 - cTrader Compile/Build PASS;
 - Source/Architecture PASS.
 - target cTrader replay remains required for empirical signal timing, false-signal behavior, terminal rendering and realized RR.
 
 Operator pull:
-- local `main` must be pulled after PR #46 is merged.
+- pull local `main` now; this is the current continuation baseline.
