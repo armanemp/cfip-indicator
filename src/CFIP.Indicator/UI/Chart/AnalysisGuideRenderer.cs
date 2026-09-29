@@ -31,7 +31,7 @@ namespace cAlgo
                     _initializationReady
                         ? "READY"
                         : _initializationDataReady
-                            ? "FINALIZING"
+                            ? "BUILDING"
                             : _initializationPendingDataLoads > 0
                                 ? "LOADING"
                                 : "WAITING";
