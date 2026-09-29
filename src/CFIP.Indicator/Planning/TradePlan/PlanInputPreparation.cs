@@ -34,7 +34,7 @@ namespace cAlgo
                     _m5Bars,
                     closedM5);
 
-            if (atr <= 0)
+            if (!IsFinitePositive(atr))
                 return false;
 
             execution =
@@ -127,6 +127,9 @@ namespace cAlgo
                 Math.Abs(
                     entry -
                     stop);
+
+            if (!IsFinitePositive(risk))
+                return false;
 
             double spread =
                 Math.Max(
