@@ -19,5 +19,6 @@ namespace cAlgo
         public bool CalibrationEligible;
         public bool ProtectionRecoveryAtClose;
         public bool ServerSideTakeProfitLadderActive;
+        public long ObservedUtcTicks;
     }
 }
