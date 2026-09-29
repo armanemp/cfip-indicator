@@ -1101,10 +1101,11 @@ namespace cAlgo
                 "plan renderer owns shared level rendering");
 
             Assert(
-                controlFactory.Contains(".Checked +=") &&
-                controlFactory.Contains(".Unchecked +=") &&
-                !controlFactory.Contains(".Click +="),
-                "execution toggles use state-specific events");
+                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
+                !controlFactory.Contains(".Checked +=") &&
+                !controlFactory.Contains(".Unchecked +="),
+                "execution toggles use direct operator click events");
 
             Assert(
                 controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
