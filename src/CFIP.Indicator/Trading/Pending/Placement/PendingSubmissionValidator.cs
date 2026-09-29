@@ -60,6 +60,51 @@ namespace cAlgo
                 return false;
             }
 
+            if (_m5Bars != null &&
+                intent != null)
+            {
+                double atr =
+                    Atr(
+                        _m5Bars,
+                        Math.Max(
+                            0,
+                            Math.Min(
+                                intent.CreatedM5,
+                                _m5Bars.Count - 1)));
+
+                PlanRewardRiskQualityResult rewardRisk =
+                    PlanRewardRiskQualityRule.Evaluate(
+                        intent.Direction,
+                        intent.RequestedEntry,
+                        intent.Stop,
+                        intent.Target,
+                        atr,
+                        Math.Max(
+                            0,
+                            Symbol.Ask - Symbol.Bid),
+                        MinimumRequiredRRForRegime(
+                            _decision == null
+                                ? "UNKNOWN"
+                                : _decision.Regime),
+                        PreferredStopRiskAtr,
+                        Math.Min(
+                            Math.Max(
+                                MinimumSlAtr,
+                                MaximumSlAtr),
+                            Math.Max(
+                                MinimumSlAtr,
+                                MaximumStructuralStopAtr)));
+
+                if (!rewardRisk.Allowed)
+                {
+                    reason =
+                        prefix +
+                        "REWARD/RISK " +
+                        rewardRisk.Reason;
+                    return false;
+                }
+            }
+
             if (_m5Frame != null)
             {
                 if (_m5Frame.IndicatorConfluenceQuality < 58)
