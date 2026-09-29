@@ -121,6 +121,24 @@ for token in (
 if "M1TriggerReady(" not in decision_orchestration_code:
     raise SystemExit("Decision orchestration must capture M1 trigger evidence")
 
+for token in (
+    "priorMicroHigh",
+    "priorMicroLow",
+    "StructureBreakAtr",
+    "UseDisplacement",
+    "DisplacementAtr",
+):
+    if token not in m1_evaluator_code:
+        raise SystemExit(f"M1 evaluator missing causal trigger evidence: {token}")
+
+for token in (
+    "microStructureBreak",
+    "displacement",
+    "if (!microStructureBreak &&",
+):
+    if token not in m1_rule_code:
+        raise SystemExit(f"M1 trigger rule missing causal evidence gate: {token}")
+
 capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 capacity_guard = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 if not capacity_rule.exists() or not capacity_guard.exists():
