@@ -127,11 +127,12 @@ namespace cAlgo
                                                     creationAtr);
 
                                             if (managed != null &&
-                                                FvgRule.IsOverlapInclusive(
+                                                ZoneConfluenceRule.HasOverlap(
                                                     managed.Low,
                                                     managed.High,
                                                     zoneLow - atr * 0.05,
-                                                    zoneHigh + atr * 0.05))
+                                                    zoneHigh + atr * 0.05,
+                                                    0))
                                                 return true;
                                         }
 
@@ -164,11 +165,12 @@ namespace cAlgo
                                                     creationAtr);
 
                                             if (managedTwoBar != null &&
-                                                FvgRule.IsOverlapInclusive(
+                                                ZoneConfluenceRule.HasOverlap(
                                                     managedTwoBar.Low,
                                                     managedTwoBar.High,
                                                     zoneLow - atr * 0.05,
-                                                    zoneHigh + atr * 0.05))
+                                                    zoneHigh + atr * 0.05,
+                                                    0))
                                                 return true;
                                         }
                                     }
