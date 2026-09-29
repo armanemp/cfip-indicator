@@ -17,9 +17,9 @@ This corrective hotfix addresses runtime behavior reported after the previous UI
 
 ### 1. Execution controls
 
-The two cTrader `ToggleButton` controls now use the official `Checked` / `Unchecked` events as the single operator-action boundary.
+The two cTrader `ToggleButton` controls now use one direct `Click` action as the single operator-action boundary. The handler toggles the canonical runtime flag and then synchronizes the visual control state.
 
-Programmatic synchronization remains guarded by `_executionToggleSyncing`, so a refresh cannot become an operator command.
+Programmatic synchronization remains guarded by `_executionToggleSyncing`, so a refresh cannot become an operator command. The runtime properties remain the sole execution authority.
 
 The controls are explicitly enabled.
 
@@ -47,6 +47,43 @@ The previous raw-market final distance clamp remains removed.
 
 Further trailing progression is still accepted only from structurally-derived candidates and closed-M5 structural updates, while broker state remains authoritative.
 
+### 5. Predictive reversal pending levels
+
+Reversal LIMIT preparation no longer derives its entry from the current quote or
+from the execution-model ideal entry. It now asks a dedicated predictive selector
+for a future structural level.
+
+The selector combines:
+
+- M5 and M15 FVG / two-bar imbalance zones;
+- M5 order blocks;
+- swing structure;
+- equal highs/lows used as liquidity references;
+- MTF direction/structure;
+- MSS / CHOCH, liquidity, volume, MACD, VWAP, volatility and OSS votes;
+- bounded price-distance and source-deduplicated confluence scoring.
+
+A candidate must remain materially beyond the current market price in the intended
+entry direction, must satisfy the configured smart-quality floor, and is then
+passed through the existing structural SL/TP and broker-confirmation path.
+
+### 6. Visual signal parity
+
+When an audible signal alert is accepted by the alert engine, the same event updates
+a non-authoritative visual alert state. The chart presentation path renders an
+arrow at the alerted closed bar and can also render a compact semantic signal box.
+
+Prediction objects are explicitly rendered in the live presentation path whenever
+there is no plan/pending/setup-preview state hiding them.
+
+### 7. Setup geometry and trailing stability
+
+Setup execution geometry is no longer rebuilt merely because the live quote moved.
+It is rebuilt on a newly closed M5 bar or a direction change, so preview Entry/SL/TP
+levels do not chase the market tick-by-tick.
+
+Smart trailing remains structurally derived. Exit-pressure now tightens the
+structural trail room rather than constructing a new stop from the live market price.
 ## Parameters
 
 No public parameter was added or removed.
