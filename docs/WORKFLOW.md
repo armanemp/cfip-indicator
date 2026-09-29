@@ -183,3 +183,12 @@ and offline forward-window analysis may be used to form potential-missed cohorts
 
 Trace data is observational and cannot become a second directional or execution authority.
 Any change to live thresholds/defaults must be supported by replay/out-of-sample evidence.
+
+
+## Permanent exit-geometry rule
+
+Live exit management must use the actual executable market side as its geometric reference:
+BUY uses Bid for TP/SL progression checks; SELL uses Ask. A target that has already been
+passed by market cannot be restored, and a stop cannot become less protective. Server-side
+advanced protection is broker-owned, but its ladder must be reconciled to the same monotonic
+plan geometry after partial realization.
