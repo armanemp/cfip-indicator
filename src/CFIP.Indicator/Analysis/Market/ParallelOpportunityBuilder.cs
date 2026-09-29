@@ -239,11 +239,9 @@ namespace cAlgo
                     preview.Entry,
                     preview.Stop,
                     preview.Tp1,
-                    Math.Max(
-                        Symbol.PipSize,
-                        Math.Abs(
-                            preview.Entry -
-                            preview.Stop)),
+                    Atr(
+                        _m5Bars,
+                        closedM5),
                     Math.Max(
                         0,
                         Symbol.Ask - Symbol.Bid),
