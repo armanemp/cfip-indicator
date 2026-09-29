@@ -477,3 +477,30 @@ Target-terminal replay remains required for actual broker/server timing, partial
 | Source / Architecture | PASS | Required |
 
 Target-terminal replay remains required for exact signal timing, stale-object removal, popup rendering, broker submission timing, server protection activation, realized SL/TP and false-signal measurements.
+
+
+
+## Phase 9.12 — Broker Outcome / Recovery Telemetry & Recent Lifecycle Calibration
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Managed broker closes are recorded once by position id | PASS | Required |
+| Outcome history is bounded to 128 observations | PASS | Required |
+| Outcome observation retains plan lane/regime/confidence context when calibration-eligible | PASS | Required |
+| Realized R is calculated from broker-close Pips and plan risk when finite | PASS | Required |
+| Recovery-only reconstructed plans remain non-calibratable | PASS | Required |
+| Recent 128 eligible outcomes are preferred when sample gates are satisfied | PASS | Required |
+| Recent calibration preserves exact/context/directional fallback order | PASS | Required |
+| Older observations are excluded when recent exact context is sufficiently populated | PASS | Required |
+| Submission history retains confirmed/rejected/unconfirmed/null-result/failed events | PASS | Required |
+| Execution telemetry history is bounded to 64 records | PASS | Required |
+| RecoveryRequired and recovery-resolution transitions are observable | PASS | Required |
+| Panel exposes recent outcome and broker-trace diagnostics | PASS | Required |
+| Shared automatic market/aggressive/pending submission and protection gates remain intact | PASS | Required |
+| Public parameter count remains unchanged at 552 | PASS | Required |
+| Recent outcome calibration contract | PASS | Required |
+| Runtime Acceptance | Pending | Required |
+| cTrader Compile/Build | Pending | Required |
+| Source / Architecture + accumulated audit | Pending | Required |
+
+Target-terminal replay remains required for broker event ordering, realized R accuracy, lifecycle duration, chart timing, recent calibration behavior and actual signal-quality outcomes.
