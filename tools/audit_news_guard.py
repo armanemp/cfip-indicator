@@ -38,7 +38,7 @@ required = {
         ["RefreshEconomicNewsIfNeeded("],
     "src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs":
         ["ApplyEconomicNewsRiskProtection("],
-    "src/CFIP.Indicator/Trading/Intelligence/RuntimeLogPersistence.cs":
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsProtection.cs":
         ['"NEWS_RISK"'],
 }
 
