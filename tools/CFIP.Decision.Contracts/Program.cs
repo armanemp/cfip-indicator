@@ -909,7 +909,7 @@ namespace cAlgo
                         0, 0,
                         true, false,
                         false, false,
-                        5, 1, 8, 3));
+                        5, 1, 8, 4, 3));
 
             Assert(
                 trendAligned.BullBonus >
@@ -935,7 +935,7 @@ namespace cAlgo
                         0, 0,
                         false, false,
                         false, false,
-                        4, 4, 8, 3));
+                        4, 4, 8, 4, 3));
 
             Assert(
                 conflicted.Conflict >= 45 &&
@@ -959,7 +959,7 @@ namespace cAlgo
                         0, 0,
                         true, false,
                         true, false,
-                        6, 1, 8, 3));
+                        6, 1, 8, 4, 3));
 
             Assert(
                 rangeReversal.BullBonus >
