@@ -84,7 +84,7 @@ require_text(
     "OutcomeArchivePeriodStart(",
     "start.AddDays(90)",
     "File.AppendAllText(",
-    "EnableOutcomeTelemetry",
+    "ArchiveSignalTrace(trace);",
     "BarOpenTimeUtcTicks",
     "DECISION-FILTER",
     "TRIGGER",
@@ -95,6 +95,17 @@ require_text(
     panel_path,
     "SignalTracePanelText()",
 )
+portable_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/PortableMemorySnapshotStore.cs"
+
+require_text(
+    portable_path,
+    "CFIP-PORTABLE-MEMORY,1",
+    "TryRestorePortableMemorySnapshot",
+    "PersistPortableMemorySnapshot",
+    "LocalStorageScope.Type",
+    "OutcomePayloadBase64",
+)
+
 require_text(
     analyzer_path,
     "argparse",
