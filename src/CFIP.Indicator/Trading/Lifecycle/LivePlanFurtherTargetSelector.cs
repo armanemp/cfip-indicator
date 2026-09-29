@@ -41,7 +41,7 @@ namespace cAlgo
                                         : level.Price < previous - Symbol.PipSize;
 
                                 if (!farther ||
-                                    !LiveExitGeometryRule.ShouldAdvanceTarget(
+                                    !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                         _plan.Direction,
                                         current,
                                         level.Price,
