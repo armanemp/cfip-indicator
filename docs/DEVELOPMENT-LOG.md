@@ -1231,7 +1231,9 @@ Status: VERIFIED COMPLETE on `469f66bd2d461016c9283e0e4243ca429c694aa3`.
 
 Pre-merge gates: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture PASS.
 
-Final merge closeout pending.
+Phase 9.7 merge closeout: PR #49 merged into `main` as `954e5021648e43a11d0de08f35b7fc7aaa8d2125`.
+
+Operator pull requirement: local `main` must be pulled before the next continuation.
 
 Scope:
 - introduced a single canonical RANGE/COMPRESSION quality rule;
