@@ -3914,3 +3914,44 @@ CI: Runtime Acceptance #1172 PASS; cTrader Compile/Build #1356 PASS; Source/Arch
 
 Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
 Operator action: pull `main` now.
+
+
+## Phase 9.17 — Exit Geometry, TP Progression & Protection Integrity — 2026-09-29
+
+Status: IMPLEMENTED; CI verification pending.
+
+Completed scope:
+- canonical live exit geometry with forward-only TP and protective SL validation;
+- live TP progression prevented from regressing behind the current market;
+- live target enrichment made monotonic;
+- actual-fill exit reconciliation made live-aware and transactional;
+- unsafe post-fill fallback removed;
+- server-side TP progression restored before and after partial realization;
+- post-TP2 final-target continuation enabled;
+- broker TP mutation hardened against backwards movement;
+- broker-distance-aware target spacing and final SL geometry validation added;
+- deterministic exit Decision Contracts and dedicated exit audit added.
+
+Detailed record: docs/PHASE-9-17-EXIT-GEOMETRY-PROGRESSION.md.
+
+Target-terminal validation remains required for live timing, broker/server-side protection,
+slippage, realized R and confirmation of the reported TP regression fix.
+
+Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
+Operator pull: required after final verified closeout.
+
+## Phase 9.17 verification closeout — 2026-09-29
+
+Status: VERIFIED COMPLETE; target-terminal replay still required.
+
+Verification:
+- Runtime Acceptance #1193 PASS
+- cTrader Compile/Build #1377 PASS
+- Source/Architecture + accumulated audits #1384 PASS
+- Decision Contracts PASS within Build
+- Phase 9.16 signal measurement audit PASS
+- Phase 9.17 exit geometry audit PASS
+- Verified head: `c027a983081102ace0353d064219a5aad739ed94`
+
+Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
+Operator action: merge PR #60, then pull local main to the verified merge commit.

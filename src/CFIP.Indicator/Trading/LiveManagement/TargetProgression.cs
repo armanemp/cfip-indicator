@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using cAlgo.API;
+using cAlgo.API.Internals;
 
 namespace cAlgo
 {
@@ -11,8 +12,7 @@ namespace cAlgo
             double market,
             bool forceStructuralUpdate = false)
         {
-            if (_plan == null ||
-                _serverSideTakeProfitLadderActive)
+            if (_plan == null)
                 return;
 
             if (StructuralTargetUpdatesOnly &&
@@ -162,6 +162,17 @@ namespace cAlgo
             }
 
             RecalculatePlanRR();
+
+            if (_serverSideTakeProfitLadderActive)
+            {
+                Position position =
+                    GetManagedLivePositionForPlan();
+
+                if (position != null)
+                    TryAdvanceServerSideTakeProfitLadder(
+                        position,
+                        market);
+            }
         }
     }
 }

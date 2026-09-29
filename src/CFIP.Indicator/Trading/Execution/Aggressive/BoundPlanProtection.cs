@@ -40,6 +40,31 @@ namespace cAlgo
                                                 market,
                                                 planPosition.StopLoss.Value);
 
+                                        double atr =
+                                            _m5Bars == null || _m5Bars.Count < 3
+                                                ? 0
+                                                : Atr(
+                                                    _m5Bars,
+                                                    _m5Bars.Count - 2);
+
+                                        double liveTarget =
+                                            ResolveLiveProtectionTarget(
+                                                planPosition,
+                                                AutoTarget(
+                                                    _plan,
+                                                    EffectiveAutoTpStage()),
+                                                atr);
+
+                                        double minimumForwardDistance =
+                                            Math.Max(
+                                                Symbol.PipSize,
+                                                atr > 0
+                                                    ? atr *
+                                                      Math.Max(
+                                                          0.05,
+                                                          MinimumTpSpacingAtr)
+                                                    : Symbol.TickSize);
+
                                         bool brokerTargetValid =
                                             planPosition.TakeProfit.HasValue &&
                                             IsFinitePositive(
@@ -47,7 +72,13 @@ namespace cAlgo
                                             IsValidTarget(
                                                 direction,
                                                 planPosition.EntryPrice,
-                                                planPosition.TakeProfit.Value);
+                                                planPosition.TakeProfit.Value) &&
+                                            LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                                                direction,
+                                                0,
+                                                planPosition.TakeProfit.Value,
+                                                market,
+                                                minimumForwardDistance);
 
                                         bool stopConfirmed =
                                             brokerStopValid;
@@ -113,14 +144,18 @@ namespace cAlgo
                                             !_serverSideTakeProfitLadderActive)
                                         {
                                             double target =
-                                                AutoTarget(
-                                                    _plan,
-                                                    EffectiveAutoTpStage());
+                                                liveTarget;
 
                                             if (IsValidTarget(
                                                     direction,
                                                     planPosition.EntryPrice,
-                                                    target))
+                                                    target) &&
+                                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                                                    direction,
+                                                    0,
+                                                    target,
+                                                    market,
+                                                    minimumForwardDistance))
                                             {
                                                 double normalizedTarget =
                                                     NormalizePrice(target);
@@ -136,14 +171,25 @@ namespace cAlgo
                                                         Symbol.TickSize,
                                                         Symbol.PipSize * 0.25);
 
+                                                bool configuredTpProgression =
+                                                    !PreventBrokerTpBackwardMove ||
+                                                    ProtectionProgressionRule.ShouldAdvanceTarget(
+                                                        direction,
+                                                        NormalizePrice(
+                                                            planPosition.TakeProfit.Value),
+                                                        normalizedTarget,
+                                                        true);
+
                                                 if (materiallyDifferent &&
                                                     (!brokerTargetValid ||
-                                                     ProtectionProgressionRule.ShouldAdvanceTarget(
-                                                         direction,
-                                                         NormalizePrice(
-                                                             planPosition.TakeProfit.Value),
-                                                         normalizedTarget,
-                                                         PreventBrokerTpBackwardMove)))
+                                                     (configuredTpProgression &&
+                                                      LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                                                          direction,
+                                                          NormalizePrice(
+                                                              planPosition.TakeProfit.Value),
+                                                          normalizedTarget,
+                                                          market,
+                                                          minimumForwardDistance))))
                                                 {
                                                     mutationRequired = true;
 

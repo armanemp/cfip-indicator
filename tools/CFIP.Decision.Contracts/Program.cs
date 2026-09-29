@@ -21,6 +21,7 @@ namespace cAlgo
             VerifyQualityWeightedFrameContribution();
             VerifyLocationEvidenceHierarchy();
             VerifyExecutionPlanGeometry();
+            VerifyLiveExitGeometry();
             VerifyMarketRegimeClassification();
             VerifyEntryTrapRisk();
             VerifyActionableSignalQuality();
@@ -1001,6 +1002,166 @@ namespace cAlgo
                     buy.RiskReward -
                     mirrored.RiskReward) < 0.0001,
                 "BUY/SELL reward geometry symmetry");
+        }
+
+
+        private static void VerifyLiveExitGeometry()
+        {
+            LiveExitGeometryResult buyForward =
+                LiveExitGeometryRule.ValidateLiveTarget(
+                    1,
+                    100,
+                    115,
+                    130,
+                    10,
+                    1);
+
+            Assert(
+                buyForward.Allowed &&
+                buyForward.Distance > 0 &&
+                Math.Abs(buyForward.RiskReward - 3.0) < 0.0001,
+                "BUY forward target geometry");
+
+            LiveExitGeometryResult buyBehind =
+                LiveExitGeometryRule.ValidateLiveTarget(
+                    1,
+                    100,
+                    115,
+                    110,
+                    10,
+                    1);
+
+            Assert(
+                !buyBehind.Allowed &&
+                buyBehind.Reason == "TARGET BEHIND MARKET",
+                "BUY target behind market rejected");
+
+            LiveExitGeometryResult sellForward =
+                LiveExitGeometryRule.ValidateLiveTarget(
+                    -1,
+                    100,
+                    85,
+                    70,
+                    10,
+                    1);
+
+            Assert(
+                sellForward.Allowed &&
+                Math.Abs(sellForward.RiskReward - 3.0) < 0.0001,
+                "SELL forward target geometry");
+
+            LiveExitGeometryResult sellBehind =
+                LiveExitGeometryRule.ValidateLiveTarget(
+                    -1,
+                    100,
+                    85,
+                    90,
+                    10,
+                    1);
+
+            Assert(
+                !sellBehind.Allowed &&
+                sellBehind.Reason == "TARGET BEHIND MARKET",
+                "SELL target behind market rejected");
+
+            Assert(
+                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    1,
+                    120,
+                    132,
+                    118,
+                    1),
+                "BUY target advances only forward");
+
+            Assert(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    1,
+                    120,
+                    119,
+                    118,
+                    1),
+                "BUY target backward move rejected");
+
+            Assert(
+                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    -1,
+                    80,
+                    68,
+                    82,
+                    1),
+                "SELL target advances only forward");
+
+            Assert(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    -1,
+                    80,
+                    81,
+                    82,
+                    1),
+                "SELL target backward move rejected");
+
+            Assert(
+                LiveExitGeometryRule.IsProgressiveTargetLadder(
+                    1,
+                    100,
+                    115,
+                    130,
+                    150,
+                    175),
+                "BUY progressive TP ladder");
+
+            Assert(
+                LiveExitGeometryRule.IsProgressiveTargetLadder(
+                    -1,
+                    100,
+                    85,
+                    70,
+                    50,
+                    30),
+                "SELL progressive TP ladder");
+
+            Assert(
+                !LiveExitGeometryRule.IsProgressiveTargetLadder(
+                    1,
+                    100,
+                    115,
+                    110,
+                    150,
+                    175),
+                "BUY regressive TP ladder rejected");
+
+            Assert(
+                !LiveExitGeometryRule.IsProtectiveStop(
+                    1,
+                    100,
+                    110,
+                    120,
+                    1),
+                "BUY stop wrong side rejected");
+
+            Assert(
+                !LiveExitGeometryRule.IsProtectiveStop(
+                    -1,
+                    100,
+                    90,
+                    80,
+                    1),
+                "SELL stop wrong side rejected");
+
+            Assert(
+                LiveExitGeometryRule.IsProtectiveStop(
+                    1,
+                    100,
+                    115,
+                    108,
+                    1) &&
+                LiveExitGeometryRule.IsProtectiveStop(
+                    -1,
+                    100,
+                    85,
+                    92,
+                    1),
+                "BUY/SELL protective stop symmetry");
         }
 
         private static void VerifyMarketRegimeClassification()

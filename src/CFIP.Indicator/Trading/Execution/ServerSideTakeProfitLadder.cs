@@ -205,6 +205,28 @@ namespace cAlgo
                     _serverSideTakeProfitLadderActive &&
                     position.StopLossBreakEven != null;
 
+                if (_serverSideTakeProfitLadderActive)
+                {
+                    double market =
+                        position.TradeType == TradeType.Buy
+                            ? Symbol.Bid
+                            : Symbol.Ask;
+
+                    double forwardDistance =
+                        Math.Max(
+                            Symbol.PipSize,
+                            Symbol.TickSize);
+
+                    double planTarget =
+                        FurthestForwardPlanTarget(
+                            market,
+                            forwardDistance);
+
+                    if (IsFinitePositive(planTarget))
+                        _activeBrokerTarget =
+                            NormalizePrice(planTarget);
+                }
+
                 return _serverSideTakeProfitLadderActive;
             }
             catch (Exception ex)
@@ -216,8 +238,11 @@ namespace cAlgo
             }
         }
 
+
         private void ObserveServerSidePartialTakeProfits(
-            Position position)
+            Position position,
+            int closedM5,
+            double market)
         {
             if (!_serverSideTakeProfitLadderActive ||
                 position == null ||
@@ -268,6 +293,17 @@ namespace cAlgo
             {
                 _tp1Hit = 1;
 
+                if (UpdateUnhitTargets)
+                    UpdateUnhitTargetsLive(
+                        closedM5,
+                        market,
+                        true);
+
+                TryAdvanceServerSideTakeProfitLadderAfterTp1(
+                    position,
+                    closedM5,
+                    market);
+
                 if (EnableLevelHitAlerts &&
                     AlertOnLevelHit &&
                     AlertOnTp1)
@@ -288,6 +324,9 @@ namespace cAlgo
                 afterTp2 + tolerance)
             {
                 _tp2Hit = 1;
+
+                TryCollapseServerSideTakeProfitLadderToFinal(
+                    position);
 
                 if (EnableLevelHitAlerts &&
                     AlertOnLevelHit &&

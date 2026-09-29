@@ -198,3 +198,11 @@ PortableMemorySnapshotStore already restores the bounded recent outcome cache fr
 
 Next phase:
 Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
+
+
+## Phase 9.16 remediation carried into Phase 9.17 — 2026-09-29
+
+The final Phase 9.16 implementation kept closed-M5 signal traces observational and independent
+of outcome telemetry, preserved non-destructive long-term History archives, and added the
+portable bounded LocalStorage snapshot/restore path. Phase 9.17 builds on that verified mainline
+state rather than replacing it.
