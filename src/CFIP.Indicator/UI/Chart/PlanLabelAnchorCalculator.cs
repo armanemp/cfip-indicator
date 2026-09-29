@@ -13,7 +13,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int CompactPlanLabelWidthBars = 7;
+        private const int CompactPlanLabelWidthBars = 8;
 
         private int GetCompactPlanLabelAnchorBar(
             int lineLeft)
@@ -25,8 +25,13 @@ namespace cAlgo
             int offset =
                 Math.Max(
                     1,
-                    LabelLeftOffsetBars);
+                    Math.Min(
+                        2,
+                        LabelLeftOffsetBars));
 
+            // Compact labels must stay attached to the line endpoint; large
+            // configured offsets are intentionally capped to prevent the
+            // background from drifting away from the level line.
             return Math.Max(
                 0,
                 Math.Min(
@@ -41,19 +46,16 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            int configuredWidth =
-                Math.Max(
-                    CompactPlanLabelWidthBars,
-                    Math.Max(
-                        1,
-                        LabelLeftOffsetBars) + 4);
+            int labelBar =
+                GetCompactPlanLabelAnchorBar(
+                    lineLeft);
 
             return Math.Max(
-                lineLeft,
+                labelBar,
                 Math.Min(
                     Bars.Count - 1,
-                    lineLeft +
-                    configuredWidth));
+                    labelBar +
+                    CompactPlanLabelWidthBars));
         }
     }
 }
