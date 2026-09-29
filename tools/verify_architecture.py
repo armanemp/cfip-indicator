@@ -140,6 +140,84 @@ for token in (
     if token not in m1_rule_code:
         raise SystemExit(f"M1 trigger rule missing causal evidence gate: {token}")
 
+# Phase 8.4 — canonical Order Block mathematics and lifecycle ownership.
+ob_rule = ROOT / "Core" / "Math" / "OrderBlockRule.cs"
+ob_analyzer = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockAnalyzer.cs"
+ob_builder = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockCandidateBuilder.cs"
+ob_evidence = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockEvidenceBuilder.cs"
+ob_mitigation = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockMitigationGuard.cs"
+ob_confluence = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockConfluenceAnalyzer.cs"
+
+for required in (
+    ob_rule,
+    ob_analyzer,
+    ob_builder,
+    ob_evidence,
+    ob_mitigation,
+    ob_confluence,
+):
+    if not required.exists():
+        raise SystemExit(f"Phase 8.4 Order Block owner is missing: {required}")
+
+ob_rule_code = ob_rule.read_text(encoding="utf-8")
+ob_analyzer_code = ob_analyzer.read_text(encoding="utf-8")
+ob_builder_code = ob_builder.read_text(encoding="utf-8")
+ob_evidence_code = ob_evidence.read_text(encoding="utf-8")
+ob_mitigation_code = ob_mitigation.read_text(encoding="utf-8")
+ob_confluence_code = ob_confluence.read_text(encoding="utf-8")
+
+for token in (
+    "IsOppositeSourceCandle(",
+    "TryGetZone(",
+    "MeetsDisplacement(",
+    "BreaksStructure(",
+    "GetMitigationProbe(",
+    "IsFullyMitigated(",
+    "TryApplyPartialMitigation(",
+    "Identity(",
+    "low < high",
+):
+    if token not in ob_rule_code:
+        raise SystemExit(f"Order Block mathematical rule missing deterministic owner: {token}")
+
+for token in (
+    "Atr(",
+    "createdIndex",
+    "TryBuildOrderBlockImpulseEvidence(",
+    "TryApplyOrderBlockMitigation(",
+    "OrderBlockRule.TryGetZone(",
+    "OrderBlockRule.Identity(",
+):
+    if token not in ob_builder_code:
+        raise SystemExit(f"Order Block builder missing canonical source/lifecycle usage: {token}")
+
+for token in (
+    "OrderBlockRule.MeetsDisplacement(",
+    "OrderBlockRule.BreaksStructure(",
+):
+    if token not in ob_evidence_code:
+        raise SystemExit(f"Order Block evidence must consume canonical qualification math: {token}")
+
+for token in (
+    "OrderBlockRule.GetMitigationProbe(",
+    "OrderBlockRule.TryApplyPartialMitigation(",
+    "remainingRatio",
+):
+    if token not in ob_mitigation_code:
+        raise SystemExit(f"Order Block mitigation must consume canonical boundary math: {token}")
+
+for token in (
+    "FvgRule.TryGetThreeBarGap(",
+    "FvgRule.TryGetTwoBarGap(",
+    "FvgRule.MeetsMinimumGap(",
+    "FvgRule.IsOverlapInclusive(",
+):
+    if token not in ob_confluence_code:
+        raise SystemExit(f"Order Block FVG confluence must consume Phase 8.3 canonical FVG rule: {token}")
+
+if "OrderBlockRule.Identity(" not in ob_builder_code:
+    raise SystemExit("Managed Order Blocks must retain deterministic source identity")
+
 # Phase 8.3 — canonical FVG mathematics and lifecycle ownership.
 fvg_rule = ROOT / "Core" / "Math" / "FvgRule.cs"
 fvg_detection = ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs"
