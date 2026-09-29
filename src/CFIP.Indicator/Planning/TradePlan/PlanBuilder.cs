@@ -29,6 +29,16 @@ namespace cAlgo
                     entry,
                     atr);
 
+            OpportunityLane lane =
+                _decision != null &&
+                _decision.TopDownEligible &&
+                string.Equals(
+                    _decision.TopDownStage,
+                    "ENTRY CALIBRATED",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? OpportunityLane.Strategic
+                    : OpportunityLane.Tactical;
+
             List<Level> selected =
                 SelectTargets(
                     candidates,
@@ -36,7 +46,8 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    atr);
+                    atr,
+                    lane);
 
             if (!TryBuildPlanTargets(
                 candidates,
@@ -51,16 +62,6 @@ namespace cAlgo
                 out double tp3,
                 out double tp4))
                 return null;
-
-            OpportunityLane lane =
-                _decision != null &&
-                _decision.TopDownEligible &&
-                string.Equals(
-                    _decision.TopDownStage,
-                    "ENTRY CALIBRATED",
-                    StringComparison.OrdinalIgnoreCase)
-                    ? OpportunityLane.Strategic
-                    : OpportunityLane.Tactical;
 
             Plan p =
                 CreatePlanFromInputs(
