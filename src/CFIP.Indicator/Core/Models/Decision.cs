@@ -25,6 +25,12 @@ namespace cAlgo
                         public int IndependentEvidence;
                         public int StructuralConfirmations;
                         public int RetestQuality;
+                        public int DivergenceDirection;
+                        public int DivergenceQuality;
+                        public string DivergenceType;
+                        public int DivergenceAgeBars;
+                        public bool DivergenceRegular;
+                        public bool DivergenceHidden;
                         public int BuyShare;
                         public int SellShare;
                         public string Regime;
