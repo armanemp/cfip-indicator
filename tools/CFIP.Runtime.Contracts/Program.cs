@@ -2036,8 +2036,10 @@ namespace cAlgo
             string writer = File.ReadAllText(writerPath);
 
             Assert(
-                heartbeat.Contains("RenderPanel();"),
-                "heartbeat refreshes full panel");
+                !heartbeat.Contains("RenderPanel();") &&
+                heartbeat.Contains("UpdatePanelHeartbeatRows(") &&
+                heartbeat.Contains("UpdatePanelHeartbeatLiveRows("),
+                "heartbeat stays lightweight and refreshes live rows without full panel layout");
 
             Assert(
                 heartbeat.Contains("TotalMilliseconds >= 1000"),
@@ -2057,8 +2059,10 @@ namespace cAlgo
                 "initialization status reaches the panel");
 
             Assert(
-                panel.Contains("BuildSignalVisualSnapshot("),
-                "panel builds at most one canonical visual snapshot per refresh path");
+                panel.Contains("BuildSignalVisualSnapshot(") &&
+                panel.Contains("ShouldRenderFullPanel(") &&
+                panel.Contains("_lastPanelPresentationKey"),
+                "panel uses one canonical snapshot and state-change-driven full render");
 
             Assert(
                 rows.Contains("EnsurePanelRow("),
