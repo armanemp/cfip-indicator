@@ -68,21 +68,18 @@ namespace cAlgo
                         : 0;
 
                 double minimumForwardDistance =
-                    Math.Max(
-                        Symbol.PipSize,
-                        atr *
-                        Math.Max(
-                            0.05,
-                            MinimumTpSpacingAtr));
+                    MinimumLiveTargetDistancePrice(
+                        direction,
+                        atr);
 
                 double target =
                     position.TakeProfit.HasValue &&
-                    LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    IsLiveTargetBrokerSafe(
                         direction,
-                        0,
-                        position.TakeProfit.Value,
+                        entry,
                         market,
-                        minimumForwardDistance)
+                        position.TakeProfit.Value,
+                        atr)
                         ? NormalizePrice(
                             position.TakeProfit.Value)
                         : 0;
@@ -137,18 +134,20 @@ namespace cAlgo
                             atr,
                             EffectiveAutoTpStage());
 
-                    if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    if (!IsLiveTargetBrokerSafe(
                             direction,
-                            0,
-                            target,
+                            entry,
                             market,
-                            minimumForwardDistance))
+                            target,
+                            atr))
                         target = 0;
 
-                    if (!IsValidTarget(
-                        direction,
-                        entry,
-                        target))
+                    if (!IsLiveTargetBrokerSafe(
+                            direction,
+                            entry,
+                            market,
+                            target,
+                            atr))
                     {
                         double risk =
                             Math.Max(
@@ -157,11 +156,24 @@ namespace cAlgo
                                     entry -
                                     stop));
 
-                        double distance =
-                            risk *
+                        double fallbackRR =
                             Math.Max(
                                 1.0,
                                 MinimumRequiredRR());
+
+                        double maximumRR =
+                            Math.Max(
+                                fallbackRR,
+                                MaximumRewardRR);
+
+                        fallbackRR =
+                            Math.Min(
+                                fallbackRR,
+                                maximumRR);
+
+                        double distance =
+                            risk *
+                            fallbackRR;
 
                         target =
                             direction == 1
@@ -170,6 +182,14 @@ namespace cAlgo
 
                         target =
                             NormalizePrice(target);
+
+                        if (!IsLiveTargetBrokerSafe(
+                                direction,
+                                entry,
+                                market,
+                                target,
+                                atr))
+                            target = 0;
                     }
                 }
 
@@ -255,8 +275,22 @@ namespace cAlgo
 
                     if (protectionOk)
                     {
-                        _activeBrokerStop = stop;
-                        _activeBrokerTarget = target;
+                        _activeBrokerStop =
+                            position.StopLoss.HasValue
+                                ? NormalizePrice(position.StopLoss.Value)
+                                : 0;
+
+                        AdoptServerSideTakeProfitLadder(position);
+
+                        if (!_serverSideTakeProfitLadderActive)
+                        {
+                            _activeBrokerTarget =
+                                position.TakeProfit.HasValue &&
+                                IsFinitePositive(position.TakeProfit.Value)
+                                    ? NormalizePrice(position.TakeProfit.Value)
+                                    : 0;
+                        }
+
                         _brokerProtectionRecoveryRequired = false;
 
                         SetLifecycleState(
