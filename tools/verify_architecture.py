@@ -232,10 +232,12 @@ for token in (
     "StructuralEvidenceRule.HasCanonicalStructuralEvent(",
     "if (f.StructureBull)",
     "else if (f.MssBull)",
-    "else if (f.ChochBull)",
+    "else",
+    "AddScore(true, 9, ref bull, ref evidence);",
     "if (f.StructureBear)",
     "else if (f.MssBear)",
-    "else if (f.ChochBear)",
+    "else",
+    "AddScore(true, 9, ref bear, ref evidence);"
 ):
     if token not in frame_scoring_code:
         raise SystemExit(f"Market-frame structural scoring must de-duplicate one causal break: {token}")
