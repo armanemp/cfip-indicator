@@ -36,8 +36,8 @@ namespace cAlgo
                     execution.Direction,
                     entry,
                     atr,
-                    out string stopSource,
-                    out int stopQuality);
+                    out _,
+                    out _);
 
             if (!IsValidStop(execution.Direction, entry, stop))
             {
@@ -89,14 +89,49 @@ namespace cAlgo
                     Risk = risk
                 };
 
-            preview.Tp1 = SelectTarget(selected, 0, entry, risk, execution.Direction,
-                Math.Max(FallbackTp1RR, MinimumRequiredRR()));
-            preview.Tp2 = SelectTarget(selected, 1, entry, risk, execution.Direction,
-                Math.Max(FallbackTp2RR, Tp2MinimumRR));
-            preview.Tp3 = SelectTarget(selected, 2, entry, risk, execution.Direction,
-                Math.Max(FallbackTp3RR, Tp3MinimumRR));
-            preview.Tp4 = SelectTarget(selected, 3, entry, risk, execution.Direction,
-                Math.Max(FallbackTp4RR, Tp4MinimumRR));
+            double rrStep =
+                Math.Max(
+                    0.10,
+                    StructuralTpRrStep);
+
+            double[] requiredRR =
+                BuildTargetSelectionRequiredRR(rrStep);
+
+            preview.Tp1 =
+                SelectTarget(
+                    selected,
+                    0,
+                    entry,
+                    risk,
+                    execution.Direction,
+                    requiredRR[0]);
+
+            preview.Tp2 =
+                SelectTarget(
+                    selected,
+                    1,
+                    entry,
+                    risk,
+                    execution.Direction,
+                    requiredRR[1]);
+
+            preview.Tp3 =
+                SelectTarget(
+                    selected,
+                    2,
+                    entry,
+                    risk,
+                    execution.Direction,
+                    requiredRR[2]);
+
+            preview.Tp4 =
+                SelectTarget(
+                    selected,
+                    3,
+                    entry,
+                    risk,
+                    execution.Direction,
+                    requiredRR[3]);
 
             return preview;
         }
