@@ -186,12 +186,25 @@ if unexpected:
         ", ".join(unexpected)
     )
 
-# A standard broker TP mutation must not be able to regress in live paths.
+# Broker TP mutation must preserve both contracts:
+# (1) the existing configurable progression policy remains consumed;
+# (2) the new hard live geometry rule prevents any backwards/passed target.
 for path in (BROKER_PROTECTION, BOUND_PROTECTION):
     source = read(path)
-    if "ProtectionProgressionRule.ShouldAdvanceTarget(" in source:
+
+    if path == BOUND_PROTECTION:
+        if "PreventBrokerTpBackwardMove" not in source:
+            ERRORS.append(
+                f"{path.name} must retain the configured TP progression switch"
+            )
+        if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in source:
+            ERRORS.append(
+                f"{path.name} must enforce configured TP progression"
+            )
+
+    if "LiveExitGeometryRule.ShouldAdvanceLiveTarget(" not in source:
         ERRORS.append(
-            f"{path.name} still uses the legacy configurable backward-TP rule"
+            f"{path.name} must enforce hard live forward-only TP geometry"
         )
 
 # Server-side ladder must not be treated as immutable after TP1.
