@@ -19,8 +19,7 @@ namespace cAlgo
             string name,
             double price,
             Color color,
-            bool visible,
-            int anchorM5)
+            bool visible)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -42,42 +41,15 @@ namespace cAlgo
             try
             {
                 int right =
-                    Bars.Count - 1;
+                    GetPlanLineRightBar();
 
-                int left;
+                int left =
+                    GetPlanLineLeftBar();
 
-                if (FullWidthLevelLines)
-                {
-                    // Explicit compatibility mode: use the entire visible series.
-                    // Default remains compact 40-bar presentation.
-                    left = 0;
-                    right =
-                        Math.Max(
-                            0,
-                            Bars.Count - 1);
-                }
-                else
-                {
-                    if (anchorM5 >= 0)
-                    {
-                        right =
-                            MapM5ToChart(
-                                anchorM5,
-                                right);
-
-                        right =
-                            Math.Max(
-                                0,
-                                Math.Min(
-                                    Bars.Count - 1,
-                                    right));
-                    }
-
-                    left =
-                        Math.Max(
-                            0,
-                            right - CompactPlanLineLengthBars);
-                }
+                // Plan levels are chart geometry, not M5-event markers.
+                // The right edge must always reach the latest chart candle.
+                // This prevents M1/M15/H1/etc. charts from ending the line at
+                // the exact M5 open-time mapping and appearing visually truncated.
 
                 if (right <= left)
                 {
@@ -144,6 +116,30 @@ namespace cAlgo
                     name,
                     ex.Message);
             }
+        }
+
+        private int GetPlanLineRightBar()
+        {
+            if (Bars == null ||
+                Bars.Count < 2)
+                return 0;
+
+            return Bars.Count - 1;
+        }
+
+        private int GetPlanLineLeftBar()
+        {
+            if (Bars == null ||
+                Bars.Count < 2)
+                return 0;
+
+            if (FullWidthLevelLines)
+                return 0;
+
+            return Math.Max(
+                0,
+                GetPlanLineRightBar() -
+                CompactPlanLineLengthBars);
         }
 
         private LineStyle ResolvePlanLineStyle(
