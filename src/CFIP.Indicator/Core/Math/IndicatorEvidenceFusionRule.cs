@@ -17,6 +17,13 @@ namespace cAlgo
         public bool VolumeBear { get; }
         public bool VolatilityBull { get; }
         public bool VolatilityBear { get; }
+        public bool UseVolume { get; }
+        public bool UseMacd { get; }
+        public bool UseVwap { get; }
+        public bool UseHealthyVolatility { get; }
+        public int WaveTrendEvidenceWeight { get; }
+        public double Adx { get; }
+        public int AdxMinimum { get; }
         public double Rsi { get; }
         public double DmiBias { get; }
         public double EmaSlopeAtr { get; }
@@ -47,6 +54,13 @@ namespace cAlgo
             bool volumeBear,
             bool volatilityBull,
             bool volatilityBear,
+            bool useVolume,
+            bool useMacd,
+            bool useVwap,
+            bool useHealthyVolatility,
+            int waveTrendEvidenceWeight,
+            double adx,
+            int adxMinimum,
             double rsi,
             double dmiBias,
             double emaSlopeAtr,
@@ -76,6 +90,13 @@ namespace cAlgo
             VolumeBear = volumeBear;
             VolatilityBull = volatilityBull;
             VolatilityBear = volatilityBear;
+            UseVolume = useVolume;
+            UseMacd = useMacd;
+            UseVwap = useVwap;
+            UseHealthyVolatility = useHealthyVolatility;
+            WaveTrendEvidenceWeight = Math.Max(1, waveTrendEvidenceWeight);
+            Adx = adx;
+            AdxMinimum = Math.Max(1, adxMinimum);
             Rsi = rsi;
             DmiBias = dmiBias;
             EmaSlopeAtr = emaSlopeAtr;
@@ -129,26 +150,38 @@ namespace cAlgo
             if (input.TrendBull) trendBull += 2.0;
             if (input.TrendBear) trendBear += 2.0;
 
-            if (input.DmiBias > 0) trendBull += 1.5;
-            else if (input.DmiBias < 0) trendBear += 1.5;
+            if (input.Adx >= input.AdxMinimum)
+            {
+                if (input.DmiBias > 0) trendBull += 1.5;
+                else if (input.DmiBias < 0) trendBear += 1.5;
+            }
 
             if (input.EmaSlopeAtr >= 0.08) trendBull += 1.25;
             else if (input.EmaSlopeAtr <= -0.08) trendBear += 1.25;
 
             if (input.MomentumBull) momentumBull += 1.5;
             if (input.MomentumBear) momentumBear += 1.5;
-            if (input.MacdBull) momentumBull += 1.25;
-            if (input.MacdBear) momentumBear += 1.25;
+            if (input.UseMacd)
+            {
+                if (input.MacdBull) momentumBull += 1.25;
+                if (input.MacdBear) momentumBear += 1.25;
+            }
 
             if (input.Rsi >= 55) momentumBull += 0.75;
             else if (input.Rsi <= 45) momentumBear += 0.75;
 
             if (input.WaveTrendQuality >= 58)
             {
+                double waveWeight =
+                    Math.Min(
+                        2.75,
+                        1.75 +
+                        input.WaveTrendEvidenceWeight * 0.125);
+
                 if (input.WaveTrendDirection == 1)
-                    momentumBull += 2.25;
+                    momentumBull += waveWeight;
                 else if (input.WaveTrendDirection == -1)
-                    momentumBear += 2.25;
+                    momentumBear += waveWeight;
 
                 if (input.WaveTrendBullCross)
                     momentumBull += 1.0;
@@ -164,12 +197,23 @@ namespace cAlgo
                     momentumBear += 1.25;
             }
 
-            if (input.VwapBull) contextBull += 1.0;
-            if (input.VwapBear) contextBear += 1.0;
-            if (input.VolumeBull) contextBull += 1.25;
-            if (input.VolumeBear) contextBear += 1.25;
-            if (input.VolatilityBull) contextBull += 0.75;
-            if (input.VolatilityBear) contextBear += 0.75;
+            if (input.UseVwap)
+            {
+                if (input.VwapBull) contextBull += 1.0;
+                if (input.VwapBear) contextBear += 1.0;
+            }
+
+            if (input.UseVolume)
+            {
+                if (input.VolumeBull) contextBull += 1.25;
+                if (input.VolumeBear) contextBear += 1.25;
+            }
+
+            if (input.UseHealthyVolatility)
+            {
+                if (input.VolatilityBull) contextBull += 0.75;
+                if (input.VolatilityBear) contextBear += 0.75;
+            }
 
             ApplyRegimeWeights(
                 input.Regime,
