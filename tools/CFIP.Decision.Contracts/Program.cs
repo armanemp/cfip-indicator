@@ -12,6 +12,7 @@ namespace cAlgo
             VerifyQualityBoundaries();
             VerifyConfidenceCalibration();
             VerifyContextualConfidenceCalibration();
+            VerifyRecentOutcomeCalibration();
             VerifyThresholdReasons();
             VerifySmartConsensusReasons();
             VerifyConfidenceDeterminism();
