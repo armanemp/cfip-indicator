@@ -77,6 +77,9 @@ require_text(
 require_text(
     trace_store_path,
     "MaxSignalEvaluationTraceHistory = 256",
+)
+require_text(
+    trace_persistence_path,
     "SignalTraceSchema =",
     "OutcomeArchivePeriodStart(",
     "start.AddDays(90)",
@@ -95,9 +98,9 @@ require_text(
 require_text(
     analyzer_path,
     "argparse",
-    "ActionableNow",
-    "max_favorable_r",
-    "max_adverse_r",
+    "gate == \"ACTIONABLE\"",
+    "max_favorable",
+    "max_adverse",
     "future_rows",
 )
 require_text(
@@ -125,7 +128,7 @@ require_text(
     "ExecutionPlanGeometryRule.cs",
 )
 
-trace_text = read(trace_store_path)
+trace_text = read(trace_store_path) + read(trace_persistence_path)
 if "File.Delete" in trace_text or "Directory.Delete" in trace_text:
     errors.append("signal trace archive must not delete historical files")
 
