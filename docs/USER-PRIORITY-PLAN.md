@@ -235,3 +235,12 @@ A strong HTF conflict should tighten the LTF candidate's quality/RR requirements
 The chart must support multiple isolated candidate setups without changing established line lengths/geometry. Compact level labels must be solid, use the line color as their background, and automatically choose readable text contrast.
 
 The user's CUSTOMWAVETREND source from the latest ZIP is part of the evidence stack. Its numerical parity still requires target-terminal replay.
+
+
+## Phase 9.3 completion record — 2026-09-29
+
+The next accuracy refinement is now implemented as contextual empirical calibration rather than another static threshold layer. Historical outcomes are keyed by direction, opportunity lane, M5 regime and confidence bucket, with exact/context/directional fallback and shrinkage toward a 50% prior. Calibration is applied only after lane resolution, so Strategic calibration cannot erase independently qualified Tactical or Counter-HTF opportunities.
+
+Only broker-closed managed plans carrying a valid calibration context contribute observations. The canonical visual snapshot and panel expose the adjustment and observed historical win rate without presenting the rate as a probability.
+
+PR #42 contains the implementation and deterministic contract coverage. cTrader/live replay remains the authority for measuring whether false-signal rate and realized risk/reward improve.
