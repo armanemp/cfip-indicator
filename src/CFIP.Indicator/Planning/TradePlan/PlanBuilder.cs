@@ -52,6 +52,16 @@ namespace cAlgo
                 out double tp4))
                 return null;
 
+            OpportunityLane lane =
+                _decision != null &&
+                _decision.TopDownEligible &&
+                string.Equals(
+                    _decision.TopDownStage,
+                    "ENTRY CALIBRATED",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? OpportunityLane.Strategic
+                    : OpportunityLane.Tactical;
+
             Plan p =
                 CreatePlanFromInputs(
                     execution,
@@ -66,6 +76,7 @@ namespace cAlgo
                     tp3,
                     tp4);
 
+            p.Lane = lane;
             EnrichPlanTargetMetadata(
                 p,
                 candidates,
