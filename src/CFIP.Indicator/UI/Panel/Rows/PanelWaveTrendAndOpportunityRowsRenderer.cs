@@ -47,7 +47,7 @@ namespace cAlgo
                      oi++)
                 {
                     TradeOpportunityCandidate opportunity =
-                        _opportunityCandidates[oi];
+                        _opportunityRegistry[oi];
 
                     if (opportunity == null)
                         continue;
