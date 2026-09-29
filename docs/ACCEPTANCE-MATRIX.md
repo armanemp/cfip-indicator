@@ -693,9 +693,9 @@ Automated verification:
 | Source / Architecture + accumulated audits | Required | Required |
 | Target-terminal replay of TP rollback and exit behavior | Required | Required |
 
-Phase 9.17 target-terminal replay remains required for actual live timing, broker/server-side
-protection behavior, slippage, realized exit R and confirmation that the reported TP rollback
-does not recur on the target symbol/timeframe.
+Phase 9.17 corrective hardening is merged into `main` via PR #61. Target-terminal replay
+remains required for actual live timing, broker/server-side protection behavior, slippage,
+realized exit R and confirmation that the reported TP rollback does not recur on the target symbol/timeframe.
 
 ## Phase 9.17 verification evidence
 
@@ -705,7 +705,7 @@ does not recur on the target symbol/timeframe.
 - Decision Contracts: PASS within Build
 - Phase 9.16 signal measurement audit: PASS
 - Phase 9.17 exit geometry audit: PASS
-- Verified automated head at closeout: `8e1f12ee56970420554bd4df6447d255c71efd7b`
+- Phase 9.17 corrective-hardened merge commit: `af4ef4edb5ce032c4a71feaf2cc0be1203f4992b`
 
 Target-terminal replay remains required for empirical confirmation of the reported TP rollback fix,
 live timing, broker/server-side protection behavior, slippage, realized exit R and continuation behavior.
