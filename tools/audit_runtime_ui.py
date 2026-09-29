@@ -110,7 +110,7 @@ if "return\n                Math.Min(" not in line:
     raise SystemExit("Plan signal line thickness must remain fixed at one")
 if "line.Thickness =\n                                            1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
     raise SystemExit("Prediction signal line thickness must remain fixed at one")
-if "ALERT_SIGNAL_LABEL" in alert_renderer or '"ALERT "' in alert_renderer:
+if "RenderCompactPlanLabel(" in alert_renderer or '"ALERT "' in alert_renderer:
     raise SystemExit("Alert BUY/SELL chart label must remain absent")
 if "CFIP ENTRY BLOCKED" not in alert_engine or "message.StartsWith(" not in alert_engine:
     raise SystemExit("Blocked alerts must remain silent")
