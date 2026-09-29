@@ -71,6 +71,9 @@ namespace cAlgo
         public double PendingTarget;
 
         public int SmartQuality;
+        public int TimeframeAgreement;
+        public int IndependentEvidence;
+        public int StructuralConfirmations;
         public int Confidence;
         public string DecisionReason;
         public string ReactionReason;
