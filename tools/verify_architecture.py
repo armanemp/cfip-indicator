@@ -3046,6 +3046,7 @@ if "ShowTacticalOpportunityLabels" not in parallel_renderer_code:
     raise SystemExit("Parallel opportunity renderer must honor label visibility control")
 
 wt_rule_code = (ROOT / "Core" / "Math" / "WaveTrendEvidenceRule.cs").read_text(encoding="utf-8")
+wt_snapshot_code = (ROOT / "Core" / "Models" / "WaveTrendSnapshot.cs").read_text(encoding="utf-8")
 wt_engine_code = (ROOT / "Analysis" / "Market" / "WaveTrendEngine.cs").read_text(encoding="utf-8")
 wt_analyzer_code = (ROOT / "Analysis" / "Market" / "WaveTrendEvidenceAnalyzer.cs").read_text(encoding="utf-8")
 frame_code = (ROOT / "Analysis" / "Market" / "Models" / "Frame.cs").read_text(encoding="utf-8")
@@ -3057,8 +3058,10 @@ for expected in (
     "Oversold",
     "Overbought",
 ):
-    if expected not in wt_rule_code or expected not in wt_engine_code:
-        raise SystemExit(f"WaveTrend evidence state missing: {expected}")
+    if expected not in wt_snapshot_code or expected not in wt_rule_code:
+        raise SystemExit(f"WaveTrend evidence state contract missing: {expected}")
+if "new WaveTrendSnapshot(" not in wt_engine_code:
+    raise SystemExit("WaveTrend engine must materialize the canonical snapshot")
 if "ApplyWaveTrendEvidence(" not in wt_analyzer_code or "WaveTrendQuality" not in frame_code:
     raise SystemExit("WaveTrend evidence must flow into the canonical market frame")
 
