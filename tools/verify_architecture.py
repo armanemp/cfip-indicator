@@ -2146,26 +2146,48 @@ if re.search(
 if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
     raise SystemExit("Phase 7.1: target update step must consume TargetUpdateStepAtr directly")
 
-# Runtime UI and protection hotfix contracts.
+# Runtime UI, execution-priority and protection hotfix contracts.
 EXECUTION_CONTROLS_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 EXECUTION_CONTROLS_FACTORY_CODE = EXECUTION_CONTROLS_FACTORY.read_text(encoding="utf-8")
-if "_autoTradingQuickToggle.Click +=" not in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel auto-trading toggle must use a direct click action")
-if "_automaticOrdersQuickToggle.Click +=" not in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel automatic-orders toggle must use a direct click action")
-if ".Checked +=" in EXECUTION_CONTROLS_FACTORY_CODE or ".Unchecked +=" in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel execution toggles must not retain duplicate Checked/Unchecked action owners")
+for token in (
+    "_autoTradingQuickToggle.Checked +=",
+    "_autoTradingQuickToggle.Unchecked +=",
+    "_automaticOrdersQuickToggle.Checked +=",
+    "_automaticOrdersQuickToggle.Unchecked +=",
+):
+    if token not in EXECUTION_CONTROLS_FACTORY_CODE:
+        raise SystemExit(f"Panel execution toggle state binding missing: {token}")
+if "_autoTradingQuickToggle.Click +=" in EXECUTION_CONTROLS_FACTORY_CODE or "_automaticOrdersQuickToggle.Click +=" in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution toggles must not retain a second Click action owner")
 
 EXECUTION_TOGGLE_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
 EXECUTION_TOGGLE_HANDLERS_CODE = EXECUTION_TOGGLE_HANDLERS.read_text(encoding="utf-8")
 for token in (
-    "ApplyAutoTradingQuickToggleClick",
-    "ApplyAutomaticOrdersQuickToggleClick",
+    "OnAutoTradingQuickToggleChecked",
+    "OnAutoTradingQuickToggleUnchecked",
+    "OnAutomaticOrdersQuickToggleChecked",
+    "OnAutomaticOrdersQuickToggleUnchecked",
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
     if token not in EXECUTION_TOGGLE_HANDLERS_CODE:
         raise SystemExit(f"Execution toggle runtime binding missing: {token}")
+
+CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
+CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")
+pending_idx = CALC_STAGE_CODE.find('"PREDICTIVE PENDING EXECUTION"')
+aggressive_idx = CALC_STAGE_CODE.find('"AGGRESSIVE AUTO EXECUTION"')
+plan_idx = CALC_STAGE_CODE.find('"PLAN CREATION"')
+market_idx = CALC_STAGE_CODE.find('"AUTOMATIC MARKET EXECUTION"')
+if min(pending_idx, aggressive_idx, plan_idx, market_idx) < 0 or not (
+    pending_idx < aggressive_idx < plan_idx < market_idx
+):
+    raise SystemExit("Execution priority must be pending -> aggressive -> plan -> market")
+
+LIVE_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
+LIVE_CYCLE_CODE = LIVE_CYCLE.read_text(encoding="utf-8")
+if "GetManagedPendingOrder() != null" not in LIVE_CYCLE_CODE:
+    raise SystemExit("Automatic plan creation must defer while a managed pending order exists")
 
 PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 PLAN_RENDERER_CODE = PLAN_RENDERER.read_text(encoding="utf-8")
