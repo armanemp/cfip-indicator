@@ -22,6 +22,8 @@ namespace cAlgo
         public double EmaSlopeAtr { get; }
         public int WaveTrendDirection { get; }
         public int WaveTrendQuality { get; }
+        public int DivergenceDirection { get; }
+        public int DivergenceQuality { get; }
         public bool WaveTrendBullCross { get; }
         public bool WaveTrendBearCross { get; }
         public bool WaveTrendOversold { get; }
@@ -50,6 +52,8 @@ namespace cAlgo
             double emaSlopeAtr,
             int waveTrendDirection,
             int waveTrendQuality,
+            int divergenceDirection,
+            int divergenceQuality,
             bool waveTrendBullCross,
             bool waveTrendBearCross,
             bool waveTrendOversold,
@@ -77,6 +81,8 @@ namespace cAlgo
             EmaSlopeAtr = emaSlopeAtr;
             WaveTrendDirection = waveTrendDirection;
             WaveTrendQuality = waveTrendQuality;
+            DivergenceDirection = divergenceDirection;
+            DivergenceQuality = Math.Max(0, divergenceQuality);
             WaveTrendBullCross = waveTrendBullCross;
             WaveTrendBearCross = waveTrendBearCross;
             WaveTrendOversold = waveTrendOversold;
@@ -173,6 +179,20 @@ namespace cAlgo
                 ref momentumBear,
                 ref contextBull,
                 ref contextBear);
+
+            if (input.DivergenceQuality >= 70)
+            {
+                if (input.DivergenceDirection == -1)
+                    momentumBull =
+                        Math.Max(
+                            0,
+                            momentumBull - 2.0);
+                else if (input.DivergenceDirection == 1)
+                    momentumBear =
+                        Math.Max(
+                            0,
+                            momentumBear - 2.0);
+            }
 
             if (input.OssIndicatorCount >= input.MinimumOssAgreement)
             {
