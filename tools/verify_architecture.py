@@ -2249,6 +2249,7 @@ if not REVERSAL_LIMIT_PREP.exists():
 predictive_selector_code = PREDICTIVE_PENDING_SELECTOR.read_text(encoding="utf-8")
 reversal_limit_code = REVERSAL_LIMIT_PREP.read_text(encoding="utf-8")
 setup_preview_code = SETUP_PREVIEW.read_text(encoding="utf-8")
+
 for token in (
     "TrySelectPredictivePendingLevel(",
     "CollectPredictiveZoneCandidates(",
@@ -2259,53 +2260,96 @@ for token in (
     "PredictivePendingContextQuality(",
 ):
     if token not in predictive_selector_code:
-        raise SystemExit(f"Predictive pending intelligence contract missing: {token}")
-if "TrySelectPredictivePendingLevel(" not in reversal_limit_code:
-    raise SystemExit("Reversal pending path must consume the predictive level selector")
-if "reversalModel.IdealEntry" in reversal_limit_code or "Symbol.Bid - atr * 0.25" in reversal_limit_code or "Symbol.Ask + atr * 0.25" in reversal_limit_code:
-    raise SystemExit("Reversal pending path must not fall back to a current-price-derived entry")
-if "candidate.Source" not in reversal_limit_code or "candidate.DistanceAtr" not in reversal_limit_code:
-    raise SystemExit("Reversal pending intent must retain predictive candidate diagnostics")
+        raise SystemExit(
+            f"Predictive pending intelligence contract missing: {token}"
+        )
 
-preview_entry = re.search(
-    r"double entrys*=([sS]{0,700}?)if (!IsFinitePositive(entry)",
-    setup_preview_code,
+if "TrySelectPredictivePendingLevel(" not in reversal_limit_code:
+    raise SystemExit(
+        "Reversal pending path must consume the predictive level selector"
+    )
+
+if (
+    "reversalModel.IdealEntry" in reversal_limit_code or
+    "Symbol.Bid - atr * 0.25" in reversal_limit_code or
+    "Symbol.Ask + atr * 0.25" in reversal_limit_code
+):
+    raise SystemExit(
+        "Reversal pending path must not fall back to a current-price-derived entry"
+    )
+
+if (
+    "candidate.Source" not in reversal_limit_code or
+    "candidate.DistanceAtr" not in reversal_limit_code
+):
+    raise SystemExit(
+        "Reversal pending intent must retain predictive candidate diagnostics"
+    )
+
+preview_start = setup_preview_code.find("double entry")
+preview_end = setup_preview_code.find(
+    "if (!IsFinitePositive(entry)",
+    preview_start,
 )
-if not preview_entry or "execution.IdealEntry" not in preview_entry.group(1):
-    raise SystemExit("Setup preview entry must prefer structural IdealEntry over live ActualEntry")
+if (
+    preview_start < 0 or
+    preview_end < 0 or
+    "execution.IdealEntry" not in
+    setup_preview_code[preview_start:preview_end]
+):
+    raise SystemExit(
+        "Setup preview entry must prefer structural IdealEntry over live ActualEntry"
+    )
 
 CALC_LIVE = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 calc_live_text = CALC_LIVE.read_text(encoding="utf-8")
-update_execution_model = re.search(
-    r"private void UpdateExecutionModels*([sS]*?
-s*}
-s*private void RenderCalculationState",
-    calc_live_text,
-)
-if not update_execution_model:
+execution_start = calc_live_text.find("private void UpdateExecutionModel(")
+render_start = calc_live_text.find("private void RenderCalculationState(", execution_start)
+if execution_start < 0 or render_start < 0:
     raise SystemExit("UpdateExecutionModel ownership block not found")
-update_execution_code = update_execution_model.group(0)
+update_execution_code = calc_live_text[execution_start:render_start]
+
 if "priceMoved" in update_execution_code or "intervalElapsed" in update_execution_code:
-    raise SystemExit("Execution-model geometry must not rebuild from raw quote movement")
-if "if (!m5Changed &&" not in update_execution_code or "if (!m5Changed &&
-                !directionChanged)" not in update_execution_code:
-    raise SystemExit("Execution-model rebuild must be closed-M5/direction gated")
+    raise SystemExit(
+        "Execution-model geometry must not rebuild from raw quote movement"
+    )
+
+if (
+    "if (!m5Changed &&" not in update_execution_code or
+    "if (!m5Changed &&\n                !directionChanged)" not in update_execution_code
+):
+    raise SystemExit(
+        "Execution-model rebuild must be closed-M5/direction gated"
+    )
+
 if "RenderPredictionObjects(" not in calc_live_text:
-    raise SystemExit("Prediction visuals must be part of the calculation presentation path")
+    raise SystemExit(
+        "Prediction visuals must be part of the calculation presentation path"
+    )
+
 if "RenderLatestAlertSignalMarker(" not in calc_live_text:
-    raise SystemExit("Audible signal alerts must be mirrored by an on-chart marker")
+    raise SystemExit(
+        "Audible signal alerts must be mirrored by an on-chart marker"
+    )
 
 PENDING_RENDERER = ROOT / "UI" / "Chart" / "PendingOrderRenderer.cs"
 pending_code = PENDING_RENDERER.read_text(encoding="utf-8")
 if "RenderCompactPlanLabel(" not in pending_code:
-    raise SystemExit("Pending order levels must use the compact boxed label renderer")
+    raise SystemExit(
+        "Pending order levels must use the compact boxed label renderer"
+    )
 if "RemovePlanLabel(" not in pending_code:
-    raise SystemExit("Pending order label cleanup must remove boxed label objects")
+    raise SystemExit(
+        "Pending order label cleanup must remove boxed label objects"
+    )
 
 ALERT_ENGINE = ROOT / "Trading" / "Alerts" / "AlertEngine.cs"
 alert_engine_code = ALERT_ENGINE.read_text(encoding="utf-8")
 if "RememberVisualSignalAlert(" not in alert_engine_code:
-    raise SystemExit("Alert delivery must update the visual signal marker state")
+    raise SystemExit(
+        "Alert delivery must update the visual signal marker state"
+    )
+
 STATE_CODE = INDICATOR_STATE.read_text(encoding="utf-8")
 for required in (
     "_lastVisualAlertM5",
@@ -2314,17 +2358,34 @@ for required in (
     "_lastVisualAlertUtc",
 ):
     if required not in STATE_CODE:
-        raise SystemExit(f"Visual alert state missing: {required}")
+        raise SystemExit(
+            f"Visual alert state missing: {required}"
+        )
+
 if "RenderLatestAlertSignalMarker(" not in signal_renderer_code:
-    raise SystemExit("Signal renderer must own persistent alert markers")
-if "Chart.RemoveObject(
-                                P + \"ALERT_SIGNAL\"" not in (ROOT / "UI" / "Chart" / "ChartObjectCleanup.cs").read_text(encoding="utf-8"):
+    raise SystemExit(
+        "Signal renderer must own persistent alert markers"
+    )
+
+cleanup_code = (
+    ROOT / "UI" / "Chart" / "ChartObjectCleanup.cs"
+).read_text(encoding="utf-8")
+if "ALERT_SIGNAL" not in cleanup_code or "ALERT_SIGNAL_LABEL" not in cleanup_code:
     raise SystemExit("Alert signal marker cleanup is missing")
 
-if "pressureStop" in PROTECTION_MANAGER_CODE or "market - tightRoom" in PROTECTION_MANAGER_CODE or "market + tightRoom" in PROTECTION_MANAGER_CODE:
-    raise SystemExit("Smart trailing must not construct stops as a raw market +/- distance")
+if (
+    "pressureStop" in PROTECTION_MANAGER_CODE or
+    "market - tightRoom" in PROTECTION_MANAGER_CODE or
+    "market + tightRoom" in PROTECTION_MANAGER_CODE
+):
+    raise SystemExit(
+        "Smart trailing must not construct stops as a raw market +/- distance"
+    )
+
 if "pressureTighten" not in PROTECTION_MANAGER_CODE:
-    raise SystemExit("Exit-pressure tightening must be applied to structural trailing room, not raw market distance")
+    raise SystemExit(
+        "Exit-pressure tightening must be applied to structural trailing room, not raw market distance"
+    )
 
 # Planning/risk ownership checks.
 PLANNING_ROOT = ROOT / "Planning"
