@@ -175,11 +175,20 @@ namespace cAlgo
                     closedM5,
                     _prediction.Direction,
                     _prediction.Confidence,
-                    _prediction.Confidence,
-                    _decision == null ? 0 : _decision.Edge,
-                    _prediction == null ? 0 : _prediction.IndependentEvidence,
-                    StructuralConfirmations(
-                        _prediction.Direction));
+                    _decision == null
+                        ? _prediction.Confidence
+                        : _decision.SmartQuality,
+                    _decision == null
+                        ? 0
+                        : _decision.Edge,
+                    _decision == null
+                        ? IndependentEvidence(
+                            _prediction.Direction)
+                        : _decision.IndependentEvidence,
+                    _decision == null
+                        ? StructuralConfirmations(
+                            _prediction.Direction)
+                        : _decision.StructuralConfirmations);
 
             bool triggerRuntimeReady =
                 _triggerRuntime.Latched &&
