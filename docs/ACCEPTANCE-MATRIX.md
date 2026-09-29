@@ -531,8 +531,14 @@ Verification evidence:
 | Optimization-readiness audit is part of Source/Architecture CI | PASS | Required |
 | Public parameter count remains unchanged at 552 | PASS | Required |
 | Shared automatic market/aggressive/pending gates remain intact | PASS | Required |
-| Runtime Acceptance | Pending | Required |
-| cTrader Compile/Build | Pending | Required |
-| Source / Architecture + accumulated audit | Pending | Required |
+| Runtime Acceptance | PASS | Required |
+| cTrader Compile/Build | PASS | Required |
+| Source / Architecture + accumulated audit | PASS | Required |
 
 Target-terminal replay remains required to measure restart persistence, observed signal timing, false-signal frequency, realized R and the empirical effect of recent calibration/risk scaling.
+
+ 
+Verification evidence:
+- Runtime Acceptance #1107 PASS
+- cTrader Compile/Build #1291 PASS
+- Source/Architecture #1298 PASS
