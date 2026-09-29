@@ -46,7 +46,7 @@ namespace cAlgo
 
             string capacityReason;
 
-            if (!ValidateConfiguredPositionCapacity(
+            if (!ValidateSinglePlanCapacity(
                     out capacityReason))
             {
                 _autoExecutionBlockReason =
@@ -102,12 +102,6 @@ namespace cAlgo
                     suitabilityReason);
                 return false;
             }
-
-            if (ManagedPositionCount() >=
-                Math.Max(
-                    1,
-                    MaximumOpenPositions))
-                return false;
 
             return true;
         }
