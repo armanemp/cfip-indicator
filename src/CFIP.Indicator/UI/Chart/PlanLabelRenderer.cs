@@ -155,8 +155,19 @@ namespace cAlgo
                             Bars.Count - 1,
                             labelBar));
 
+                // Keep the annotation visibly separated from the
+                // horizontal level. The gap is derived from the same bounded
+                // vertical envelope calculated by the label coordinator.
+                double verticalGap =
+                    Math.Max(
+                        Symbol.PipSize * 2.5,
+                        boxHalfHeight > 0
+                            ? boxHalfHeight
+                            : Symbol.PipSize * 3);
+
                 double labelPrice =
-                    NormalizePrice(price);
+                    NormalizePrice(
+                        price + verticalGap);
 
                 // Level text is deliberately background-free and always white.
                 // The semantic color remains owned by the corresponding line.
