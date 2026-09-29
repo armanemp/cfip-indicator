@@ -158,9 +158,13 @@ namespace cAlgo
                         _decision != null && _decision.ActionableNow,
                         _decision != null && _decision.TriggerReady));
 
+            bool hasSetupPreview =
+                _setupPreview != null &&
+                _setupPreview.Direction != 0;
+
             bool setupPreviewVisible =
                 SignalVisualLifecycleRule.IsSetupPreviewVisible(
-                    _setupPreview != null,
+                    hasSetupPreview,
                     _setupPreview == null ? -1 : _setupPreview.CreatedM5,
                     closedM5,
                     _setupPreview == null ? 0 : _setupPreview.Direction,
