@@ -19,53 +19,27 @@ namespace cAlgo
                                     int direction,
                                     double atr)
                                 {
-                                    if (bars == null ||
-                                        index < 5 ||
-                                        atr <= 0)
+                                    if (!UseLiquiditySweep ||
+                                        bars == null ||
+                                        atr <= 0 ||
+                                        (direction != 1 &&
+                                         direction != -1))
                                         return false;
-                        
-                                    int start =
-                                        Math.Max(
-                                            1,
-                                            index -
-                                            Math.Max(
-                                                5,
-                                                Math.Min(
-                                                    LiquidityLookback,
-                                                    20)));
-                        
-                                    double minimumDepth =
-                                        Math.Max(
-                                            Symbol.PipSize * 2,
-                                            atr *
-                                            LiquiditySweepMinimumDepthAtr);
-                        
-                                    if (direction == 1)
-                                    {
-                                        double priorLow =
-                                            Lowest(
-                                                bars,
-                                                start,
-                                                index - 1);
-                        
-                                        return
-                                            priorLow > 0 &&
-                                            priorLow -
-                                            bars.LowPrices[index] >=
-                                            minimumDepth;
-                                    }
-                        
-                                    double priorHigh =
-                                        Highest(
+
+                                    // OB confluence must consume the same causal
+                                    // liquidity definition as the main structural
+                                    // engine: confirmed swing level, directional
+                                    // penetration and reclaim. No parallel raw
+                                    // rolling-extreme sweep is allowed.
+                                    return direction == 1
+                                        ? BullLiquiditySweep(
                                             bars,
-                                            start,
-                                            index - 1);
-                        
-                                    return
-                                        priorHigh > 0 &&
-                                        bars.HighPrices[index] -
-                                        priorHigh >=
-                                        minimumDepth;
+                                            index,
+                                            atr)
+                                        : BearLiquiditySweep(
+                                            bars,
+                                            index,
+                                            atr);
                                 }
 
         private bool HasOrderBlockFvgConfluence(
