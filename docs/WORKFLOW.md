@@ -140,3 +140,19 @@ Broker-confirmed managed closes are the authoritative source for outcome observa
 Empirical calibration may prefer a bounded recent lifecycle window only after the existing sample gates are satisfied. Recovery-only reconstructed plans must remain non-calibratable because their original decision context is unavailable.
 
 Submission and recovery telemetry is observational: it may retain bounded history and expose diagnostics, but it must not create a second execution authority or alter broker-confirmed state.
+
+
+
+## Permanent optimization routine
+
+Every implementation phase must include an optimization-readiness review.
+
+The review must separate:
+- predictive quality: false-signal rate, calibration error, realized R distribution;
+- risk quality: drawdown, loss clusters, adverse excursion and risk-of-ruin proxies;
+- execution quality: rejection/null-result rate, slippage, entry extension and broker protection integrity;
+- computational quality: repeated heavy loops, unbounded history, unnecessary recalculation and state churn.
+
+Parameter optimization must be multi-objective and must not be judged by raw win rate alone. Candidate parameter changes require replay/out-of-sample evidence before default values are changed.
+
+Persistent memory may inform calibration and conservative risk scaling only through bounded, configuration-scoped, broker-confirmed outcomes. It must never become a second directional decision engine or a broker mutation authority.

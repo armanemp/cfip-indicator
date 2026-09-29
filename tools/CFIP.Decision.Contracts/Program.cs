@@ -13,6 +13,7 @@ namespace cAlgo
             VerifyConfidenceCalibration();
             VerifyContextualConfidenceCalibration();
             VerifyRecentOutcomeCalibration();
+            VerifyAdaptiveOutcomeRisk();
             VerifyThresholdReasons();
             VerifySmartConsensusReasons();
             VerifyConfidenceDeterminism();
@@ -437,6 +438,103 @@ namespace cAlgo
                 repeat.Wins == changed.Wins &&
                 repeat.Adjustment == changed.Adjustment,
                 "recent calibration deterministic");
+        }
+
+        private static void VerifyAdaptiveOutcomeRisk()
+        {
+            List<OutcomeObservation> weak =
+                new List<OutcomeObservation>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                weak.Add(
+                    new OutcomeObservation
+                    {
+                        PositionId = i + 1,
+                        Direction = i % 2 == 0 ? 1 : -1,
+                        Lane = OpportunityLane.Strategic,
+                        EntryMode = ExecutionMode.RetestMarket,
+                        Regime = "TREND",
+                        Profitable = false,
+                        RealizedR = -0.75,
+                        CalibrationEligible = true
+                    });
+            }
+
+            double reduced =
+                AdaptiveOutcomeRiskPolicy.Calculate(
+                    weak,
+                    1.0);
+
+            Assert(
+                reduced < 1.0 &&
+                reduced >= 0.25,
+                "weak recent outcomes reduce risk without breaching floor");
+
+            List<OutcomeObservation> mixed =
+                new List<OutcomeObservation>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                mixed.Add(
+                    new OutcomeObservation
+                    {
+                        PositionId = 100 + i,
+                        Direction = 1,
+                        Lane = OpportunityLane.Strategic,
+                        EntryMode = ExecutionMode.RetestMarket,
+                        Regime = "TREND",
+                        Profitable = i < 6,
+                        RealizedR = i < 6 ? 0.8 : -0.25,
+                        CalibrationEligible = true
+                    });
+            }
+
+            double mixedRisk =
+                AdaptiveOutcomeRiskPolicy.Calculate(
+                    mixed,
+                    0.75);
+
+            Assert(
+                mixedRisk == 0.75,
+                "mixed stable outcomes do not add an unnecessary penalty");
+
+            Assert(
+                AdaptiveOutcomeRiskPolicy.Calculate(
+                    weak,
+                    0.25) == 0.25,
+                "adaptive risk never goes below hard suitability floor");
+
+            double repeat =
+                AdaptiveOutcomeRiskPolicy.Calculate(
+                    weak,
+                    1.0);
+
+            Assert(
+                repeat == reduced,
+                "adaptive outcome risk deterministic");
+
+            List<OutcomeObservation> tooShort =
+                new List<OutcomeObservation>();
+
+            for (int i = 0; i < 7; i++)
+                tooShort.Add(
+                    new OutcomeObservation
+                    {
+                        PositionId = 200 + i,
+                        Direction = 1,
+                        Lane = OpportunityLane.Strategic,
+                        EntryMode = ExecutionMode.RetestMarket,
+                        Regime = "TREND",
+                        Profitable = false,
+                        RealizedR = -1.0
+                    });
+
+            Assert(
+                AdaptiveOutcomeRiskPolicy.Calculate(
+                    tooShort,
+                    1.0) == 1.0,
+                "insufficient outcome history is neutral");
         }
 
         private static void VerifyThresholdReasons()

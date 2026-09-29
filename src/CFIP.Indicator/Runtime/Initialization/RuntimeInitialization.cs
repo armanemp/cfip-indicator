@@ -313,6 +313,17 @@ namespace cAlgo
             _historicalDrawn.Clear();
             _outcomeDrawn.Clear();
 
+            try
+            {
+                RestoreOutcomeHistory();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP outcome memory initialization failed: {0}",
+                    ex.Message);
+            }
+
             _initializationReady = false;
             _initializationDataRequested = false;
             _initializationDataReady = false;
@@ -504,6 +515,8 @@ namespace cAlgo
                                             "CFIP OnDestroy event unsubscription failed: {0}",
                                             ex.ToString());
                                     }
+
+                                    PersistOutcomeHistory();
 
                                     RemoveAllChartObjects();
                                     RemovePanel();

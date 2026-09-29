@@ -13,9 +13,11 @@ namespace cAlgo
                 ref slot,
                 "SMART RISK  " +
                 EffectiveAutoRiskPercent().ToString("F2") +
-                "%  •  " +
+                "%  •  SUIT " +
                 SuitabilityRiskMultiplier().ToString("F2") +
-                "x BASE",
+                "x  •  OUTCOME " +
+                OutcomeRiskMultiplier().ToString("F2") +
+                "x",
                 PanelSecondaryTextColor,
                 false,
                 contentWidth);

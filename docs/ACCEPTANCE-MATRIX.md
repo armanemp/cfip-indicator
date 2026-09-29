@@ -510,3 +510,35 @@ Verification evidence:
 - Runtime Acceptance #1096 PASS
 - cTrader Compile/Build #1280 PASS
 - Source/Architecture #1287 PASS
+
+
+
+## Phase 9.13 — Persistent Outcome Memory, Adaptive Risk & Optimization Routine
+
+| Contract | Automated controlled check | cTrader / replay |
+| --- | ---: | ---: |
+| Outcome memory persists through cTrader LocalStorage without FullAccess | PASS | Required |
+| Memory is scoped by symbol/timeframe/configuration fingerprint | PASS | Required |
+| Persisted memory rejects malformed/invalid records | PASS | Required |
+| Restored memory is bounded to 128 outcomes | PASS | Required |
+| Restored outcomes older than 90 days are ignored | PASS | Required |
+| Broker-confirmed close remains the only outcome source | PASS | Required |
+| Recent outcome evidence feeds existing contextual calibration | PASS | Required |
+| Adaptive outcome risk requires a minimum sample and uses latest-12 window | PASS | Required |
+| Adaptive outcome risk can only reduce suitability-derived risk | PASS | Required |
+| Adaptive risk cannot fall below the existing 0.25 hard multiplier floor | PASS | Required |
+| Disabling outcome telemetry disables outcome-driven risk adaptation | PASS | Required |
+| Optimization-readiness audit is part of Source/Architecture CI | PASS | Required |
+| Public parameter count remains unchanged at 552 | PASS | Required |
+| Shared automatic market/aggressive/pending gates remain intact | PASS | Required |
+| Runtime Acceptance | PASS | Required |
+| cTrader Compile/Build | PASS | Required |
+| Source / Architecture + accumulated audit | PASS | Required |
+
+Target-terminal replay remains required to measure restart persistence, observed signal timing, false-signal frequency, realized R and the empirical effect of recent calibration/risk scaling.
+
+ 
+Verification evidence:
+- Runtime Acceptance #1107 PASS
+- cTrader Compile/Build #1291 PASS
+- Source/Architecture #1298 PASS
