@@ -1423,19 +1423,32 @@ Post-merge gate record for Phase 6.4 (2026-09-29): PR #23 merge commit `9cc35d7b
 
 ## Phase 7.1 — Hidden-clamp audit
 
-Status: planned.
+Status: complete.
 
-Audit:
+Completed:
 
-- Math.Max;
-- Math.Min;
-- Clamp;
-- hard-coded floors/ceilings;
-- silently overridden parameters.
+- audited user-facing parameter consumers for hard-coded floors/ceilings and
+  silent overrides;
+- removed the hidden `Math.Max(4, requiredTrigger)` floor so Live Trigger Score
+  values 1–3 and Precision Trigger Score values below 4 are no longer silently
+  ignored;
+- removed the hidden 0.05 ATR floor from `TargetUpdateStepAtr`, restoring the
+  declared 0.02–2.0 parameter range;
+- verified inspected remaining clamps are either aligned with their declared
+  parameter minima/maxima or protect internal indexing, numeric validity or
+  bounded internal score contribution;
+- added source/architecture regression checks for the corrected parameter
+  semantics;
+- recorded the audit in `docs/PHASE-7-1-HIDDEN-CLAMP-AUDIT.md`;
+- preserved the 535-parameter production contract and added no new parameters.
 
 Acceptance:
 
-- user-facing parameters are behaviorally meaningful.
+- user-facing parameters audited for hidden overrides;
+- materially hidden user-setting bounds corrected;
+- regression checks enforce the corrected semantics;
+- no decision authority, broker mutation path, RR/risk policy or trailing rule
+  was introduced or duplicated.
 
 ## Phase 7.2 — Dead/unused parameter audit
 
@@ -3144,7 +3157,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 7.1 — Hidden-clamp audit**
+**NEXT: Phase 7.2 — Dead/unused parameter audit**
 
 Then proceed in dependency order:
 

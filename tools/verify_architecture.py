@@ -2105,6 +2105,47 @@ if any(re.search(pattern, strip_for_static_checks(EXECUTION_PLAN.read_text(encod
        for pattern in BROKER_MUTATION_PATTERNS):
     raise SystemExit("Broker mutation leaked into execution plan preparation")
 
+# Phase 7.1 — hidden-clamp parameter semantics.
+# These checks protect user-facing parameters from being silently overridden by
+# tighter hard-coded bounds than their declared cTrader MinValue/MaxValue.
+TRIGGER_PARAMETER_FILE = PARAMETER_ROOT / "15_control_advanced.cs"
+TRIGGER_PARAMETER_CODE = TRIGGER_PARAMETER_FILE.read_text(encoding="utf-8")
+TARGET_UPDATE_PARAMETER = PARAMETER_ROOT / "15_control_advanced.cs"
+
+if not re.search(
+    r'\[Parameter\("Live Trigger Score"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*6',
+    TRIGGER_PARAMETER_CODE,
+):
+    raise SystemExit("Phase 7.1: Live Trigger Score parameter bounds changed unexpectedly")
+
+if not re.search(
+    r'\[Parameter\("Target Update Step ATR"[^\n]*MinValue\s*=\s*0\.02[^\n]*MaxValue\s*=\s*2',
+    TRIGGER_PARAMETER_CODE,
+):
+    raise SystemExit("Phase 7.1: Target Update Step ATR parameter bounds changed unexpectedly")
+
+TRIGGER_READY = ROOT / "Planning" / "Entry" / "ClosedBarTriggerReadyEvaluator.cs"
+TRIGGER_READY_CODE = TRIGGER_READY.read_text(encoding="utf-8")
+if re.search(
+    r'Math\.Max\(\s*4\s*,\s*requiredTrigger\s*\)',
+    TRIGGER_READY_CODE,
+    re.DOTALL,
+):
+    raise SystemExit("Phase 7.1: Live/precision trigger threshold is hidden behind a hard floor of 4")
+if "trigger >=\n                                requiredTrigger" not in TRIGGER_READY_CODE:
+    raise SystemExit("Phase 7.1: trigger threshold must consume the effective user-facing requiredTrigger")
+
+LIVE_TARGET = ROOT / "Trading" / "LiveManagement" / "LiveTargetCandidateEvaluator.cs"
+LIVE_TARGET_CODE = LIVE_TARGET.read_text(encoding="utf-8")
+if re.search(
+    r'Math\.Max\(\s*0\.05\s*,\s*TargetUpdateStepAtr\s*\)',
+    LIVE_TARGET_CODE,
+    re.DOTALL,
+):
+    raise SystemExit("Phase 7.1: TargetUpdateStepAtr is hidden behind a hard floor of 0.05 ATR")
+if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
+    raise SystemExit("Phase 7.1: target update step must consume TargetUpdateStepAtr directly")
+
 # Planning/risk ownership checks.
 PLANNING_ROOT = ROOT / "Planning"
 RISK_ROOT = ROOT / "Trading" / "Risk"

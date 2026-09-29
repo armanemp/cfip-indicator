@@ -232,3 +232,21 @@ behavior, absence of flicker, startup latency and device-specific performance.
 | 535-parameter contract remains unchanged | Source gate | PASS |
 | cTrader Compile | Required | Pending |
 | Hands-on Hide/Show responsiveness | Required | Pending |
+
+## Phase 7.1 — Hidden-clamp audit
+
+| Contract | Automated controlled check | cTrader |
+|---|---:|---:|
+| Live Trigger Score user range is not hidden behind a hard floor of 4 | PASS | Required |
+| Precision Trigger Score contributes through the effective user-facing threshold | PASS | Required |
+| Target Update Step ATR declared 0.02 minimum is behaviorally reachable | PASS | Required |
+| Remaining inspected bounds are either parameter-aligned or internal safety bounds | PASS | Required |
+| No new public parameter introduced | PASS | Required |
+| Source / Architecture | PASS | Required |
+| Runtime Acceptance Contracts | PASS | Required |
+| cTrader Compile | PASS | Required |
+
+The phase restores parameter semantics only. It does not claim that signal quality,
+Entry/SL/TP intelligence or live trailing has been fully improved; those remain
+separate implementation owners.
+
