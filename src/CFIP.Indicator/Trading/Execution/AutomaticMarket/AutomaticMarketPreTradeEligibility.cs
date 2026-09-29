@@ -184,7 +184,8 @@ namespace cAlgo
             if (!PassesMarketSuitability(
                     closedM5,
                     _plan.Direction,
-                    out suitabilityReason))
+                    out suitabilityReason,
+                    true))
             {
                 _autoExecutionBlockReason =
                     "SUITABILITY • " +
