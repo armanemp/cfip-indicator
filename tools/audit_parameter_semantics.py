@@ -7,7 +7,7 @@ PARAM_ROOT = ROOT / "Indicator" / "Parameters"
 
 PARAM_RE = re.compile(
     r'\[Parameter\s*\(([^\]]*)\]\s*'
-    r'public\s+([A-Za-z_][\\w<>\[\],.?]*)\s+'
+    r'public\s+([A-Za-z_][\w<>\[\],.?]*)\s+'
     r'([A-Za-z_]\\w*)\s*\{\s*get;\s*set;\s*\}',
     re.S,
 )
@@ -41,7 +41,7 @@ for path in sorted(PARAM_ROOT.glob("*.cs")):
         }
 
 if len(parameter_defs) != 533:
-    raise SystemExit(f"Expected 534 parameters during Phase 7.3, found {len(parameter_defs)}")
+    raise SystemExit(f"Expected 533 parameters during Phase 7.3, found {len(parameter_defs)}")
 
 sources = {
     path: strip_non_code(path.read_text(encoding="utf-8"))
