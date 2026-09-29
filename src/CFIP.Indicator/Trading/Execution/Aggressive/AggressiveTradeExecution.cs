@@ -17,6 +17,12 @@ namespace cAlgo
         private void TryAggressiveAutoTrade(
                                     int closedM5)
                                 {
+                                    // Refresh live decision/actionability immediately before
+                                    // aggressive preparation so a stale quote cannot be reused
+                                    // as the basis for a broker mutation.
+                                    RefreshLiveDecisionActionability(
+                                        closedM5);
+
                                     TradeType type;
                                     double entry;
                                     double atr;
