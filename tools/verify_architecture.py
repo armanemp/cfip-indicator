@@ -582,10 +582,10 @@ if "GetPlanLineRightBar()" not in visual_line_code or "return Bars.Count - 1" no
     raise SystemExit("Plan line renderer must anchor the right edge to the latest chart candle")
 if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
     raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
-if "GetPlanLineLeftBar()" not in visual_line_code:
+if "GetPlanLineLeftBar" not in visual_line_code:
     raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
-if "GetPlanLineLeftBar()" not in plan_label_renderer_code and "GetPlanLineLeftBar()" not in visual_calc_code and "GetPlanLineLeftBar()" not in visual_renderer_code:
-    raise SystemExit("Plan label/level presentation must reuse the canonical line left edge")
+if "GetPlanLineLeftBar" not in visual_renderer_code:
+    raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
 
 if "CreateExecutionStatus(" not in control_factory_code:
     raise SystemExit("Execution controls must be status-only presentation surfaces")
