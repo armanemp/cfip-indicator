@@ -193,6 +193,50 @@ namespace cAlgo
                 decision,
                 tactical.Lane);
 
+            DivergenceResult divergence =
+                AnalyzeDivergence(
+                    _m5Bars,
+                    closedM5);
+
+            decision.DivergenceDirection =
+                divergence.Direction;
+            decision.DivergenceQuality =
+                divergence.Quality;
+            decision.DivergenceType =
+                divergence.Type;
+            decision.DivergenceAgeBars =
+                divergence.AgeBars;
+            decision.DivergenceRegular =
+                divergence.IsRegular;
+            decision.DivergenceHidden =
+                divergence.IsHidden;
+
+            if (divergence.Direction == -decision.Direction &&
+                divergence.IsRegular &&
+                divergence.Quality >= 70)
+            {
+                decision.Confidence =
+                    Math.Max(
+                        0,
+                        decision.Confidence -
+                        Math.Min(
+                            18,
+                            8 +
+                            (divergence.Quality - 70) / 4));
+            }
+            else if (divergence.Direction == decision.Direction &&
+                     divergence.Quality >= 78)
+            {
+                decision.Confidence =
+                    Math.Min(
+                        99,
+                        decision.Confidence +
+                        Math.Min(
+                            6,
+                            2 +
+                            (divergence.Quality - 78) / 5));
+            }
+
             decision.EntryAllowed =
                 PassesDecisionFilters(
                     closedM5,
