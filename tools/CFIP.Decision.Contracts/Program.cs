@@ -903,6 +903,26 @@ namespace cAlgo
             Assert(
                 !SignalVisualLifecycleRule.IsPreTradePlanVisible(live),
                 "live position does not use pre-trade visual state");
+
+            Assert(
+                SignalVisualLifecycleRule.IsSetupPreviewVisible(
+                    true,
+                    100,
+                    102,
+                    1,
+                    1,
+                    true),
+                "fresh setup preview is visible");
+
+            Assert(
+                !SignalVisualLifecycleRule.IsSetupPreviewVisible(
+                    true,
+                    100,
+                    103,
+                    1,
+                    1,
+                    true),
+                "expired setup preview is hidden");
         }
 
         private static void VerifyRangeSignalQuality()
