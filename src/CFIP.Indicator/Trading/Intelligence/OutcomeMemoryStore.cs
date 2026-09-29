@@ -207,6 +207,34 @@ namespace cAlgo
                         LocalStorageScope.Type);
 
                 if (string.IsNullOrWhiteSpace(stored))
+                {
+                    string portablePayload;
+
+                    if (TryRestorePortableMemorySnapshot(
+                            out portablePayload))
+                    {
+                        stored = portablePayload;
+
+                        try
+                        {
+                            LocalStorage.SetString(
+                                OutcomeMemoryKey(),
+                                stored,
+                                LocalStorageScope.Type);
+
+                            LocalStorage.Flush(
+                                LocalStorageScope.Type);
+                        }
+                        catch (Exception persistException)
+                        {
+                            Print(
+                                "CFIP restored portable memory could not be copied into LocalStorage: {0}",
+                                persistException.Message);
+                        }
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(stored))
                     return false;
 
                 string[] lines =
