@@ -26,7 +26,6 @@ namespace cAlgo
                 !_decision.EntryAllowed ||
                 !_decision.ActionableNow ||
                 GetManagedPendingOrder() != null ||
-                _plan != null ||
                 _decision.Direction == 0 ||
                 _plan == null ||
                 _plan.IsLivePosition)
@@ -97,7 +96,7 @@ namespace cAlgo
                 "ACTION|" +
                 closedM5 +
                 "|" +
-                _decision.Direction,
+                direction,
                 message,
                 direction,
                 true);
