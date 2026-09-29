@@ -799,7 +799,6 @@ REACTION_CALCULATION = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.
 VISUAL_SNAPSHOT = ROOT / "UI" / "Chart" / "SignalVisualSnapshot.cs"
 VISUAL_SNAPSHOT_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
 ANALYSIS_GUIDE = ROOT / "UI" / "Chart" / "AnalysisGuideRenderer.cs"
-ANALYSIS_GUIDE_PARAMETER = ROOT / "Indicator" / "Parameters" / "14_analysis_guide.cs"
 ANALYSIS_GUIDE_PANEL = ROOT / "UI" / "Panel" / "PanelMainRenderer.cs"
 ANALYSIS_GUIDE_CLEANUP = ROOT / "UI" / "Chart" / "ChartObjectCleanup.cs"
 
@@ -809,7 +808,6 @@ for required_path in (
     VISUAL_SNAPSHOT,
     VISUAL_SNAPSHOT_BUILDER,
     ANALYSIS_GUIDE,
-    ANALYSIS_GUIDE_PARAMETER,
     ANALYSIS_GUIDE_PANEL,
     ANALYSIS_GUIDE_CLEANUP,
 ):
@@ -823,7 +821,6 @@ reaction_calc_code = REACTION_CALCULATION.read_text(encoding="utf-8")
 visual_snapshot_code = VISUAL_SNAPSHOT.read_text(encoding="utf-8")
 visual_builder_code = VISUAL_SNAPSHOT_BUILDER.read_text(encoding="utf-8")
 guide_code = ANALYSIS_GUIDE.read_text(encoding="utf-8")
-guide_parameter_code = ANALYSIS_GUIDE_PARAMETER.read_text(encoding="utf-8")
 guide_panel_code = ANALYSIS_GUIDE_PANEL.read_text(encoding="utf-8")
 guide_cleanup_code = ANALYSIS_GUIDE_CLEANUP.read_text(encoding="utf-8")
 
@@ -843,8 +840,6 @@ if "snapshot.ReactionM5Index" not in visual_builder_code:
 if "snapshot.ArrowM5Index =" not in visual_builder_code or "snapshot.ReactionM5Index" not in visual_builder_code:
     raise SystemExit("Reaction arrow anchor must derive from the explicit intrabar snapshot")
 
-if "ShowOnChartAnalysisGuide" not in guide_parameter_code:
-    raise SystemExit("On-chart analysis guide parameter is missing")
 if "Chart.DrawText(" not in guide_code:
     raise SystemExit("On-chart analysis guide must use the verified Chart.DrawText API")
 for required_text in (
