@@ -1415,6 +1415,8 @@ Acceptance:
 
 Continuity record: `docs/PHASE-6-4-COMPACT-PLAN-VISUALS.md`.
 
+
+Post-merge gate record for Phase 6.4 (2026-09-29): PR #23 merge commit `9cc35d7bef7e9bd80d6f1d54b3cbf92601e5d0a2`; Source / Architecture PASS, Runtime Acceptance PASS, cTrader Compile PASS on the verified PR head. Hands-on cTrader visual/performance acceptance remains required.
 ---
 
 # Track 7 — Parameter Semantics
@@ -3142,7 +3144,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 6.4 — Compact 40-Bar Plan-Level Visuals**
+**NEXT: Phase 7.1 — Hidden-clamp audit**
 
 Then proceed in dependency order:
 
