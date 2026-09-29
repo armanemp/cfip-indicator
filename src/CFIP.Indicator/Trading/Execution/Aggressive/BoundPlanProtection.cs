@@ -54,7 +54,7 @@ namespace cAlgo
 
                                         bool targetConfirmed =
                                             _serverSideTakeProfitLadderActive
-                                                ? brokerTargetValid
+                                                ? true
                                                 : !SyncBrokerTakeProfit ||
                                                   brokerTargetValid;
 
