@@ -47,9 +47,15 @@ namespace cAlgo
                                                 direction,
                                                 profitable);
 
-                                            RegisterCalibratedOutcome(
-                                                _plan,
-                                                profitable);
+                                            if (_plan != null &&
+                                                _plan.IsLivePosition &&
+                                                _plan.PositionId ==
+                                                args.Position.Id)
+                                            {
+                                                RegisterCalibratedOutcome(
+                                                    _plan,
+                                                    profitable);
+                                            }
                                         }
                         
                                         _outcomeRegistered = true;
