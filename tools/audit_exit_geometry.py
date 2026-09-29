@@ -41,10 +41,10 @@ DECISION_PROJECT = ROOT / "tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts
 
 require(
     LIVE_GEOMETRY,
-    "ValidateTarget(",
+    "ValidateLiveTarget(",
     "TARGET BEHIND MARKET",
     "TARGET WRONG SIDE",
-    "ShouldAdvanceTarget(",
+    "ShouldAdvanceLiveTarget(",
     "IsProgressiveTargetLadder(",
     "IsProtectiveStop(",
 )
@@ -82,13 +82,13 @@ if re.search(
 
 require(
     TARGET_EVALUATOR,
-    "LiveExitGeometryRule.ShouldAdvanceTarget(",
+    "LiveExitGeometryRule.ShouldAdvanceLiveTarget(",
     "market",
 )
 
 require(
     FURTHER_TARGET,
-    "LiveExitGeometryRule.ShouldAdvanceTarget(",
+    "LiveExitGeometryRule.ShouldAdvanceLiveTarget(",
     "current",
     "market",
 )
@@ -98,7 +98,7 @@ require(
     "existingTp2",
     "existingTp3",
     "existingTp4",
-    "LiveExitGeometryRule.ShouldAdvanceTarget(",
+    "LiveExitGeometryRule.ShouldAdvanceLiveTarget(",
     "market",
 )
 
@@ -128,13 +128,13 @@ require(
 require(
     BROKER_PROTECTION,
     "ResolveLiveProtectionTarget(",
-    "LiveExitGeometryRule.ShouldAdvanceTarget(",
+    "LiveExitGeometryRule.ShouldAdvanceLiveTarget(",
     "NormalizePrice(effectiveTarget)",
 )
 require(
     BOUND_PROTECTION,
     "ResolveLiveProtectionTarget(",
-    "LiveExitGeometryRule.ShouldAdvanceTarget(",
+    "LiveExitGeometryRule.ShouldAdvanceLiveTarget(",
     "liveTarget",
 )
 require(
