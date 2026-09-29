@@ -292,8 +292,6 @@ namespace cAlgo
             Timer.Start(
                 TimeSpan.FromMilliseconds(500));
 
-            RunStartupCalculationSeed();
-
             try
             {
                 RenderPanel();
@@ -305,6 +303,8 @@ namespace cAlgo
                     -1,
                     "INITIALIZATION RENDER");
             }
+
+            QueueStartupCalculationSeed();
         }
 
         protected override void Initialize()
@@ -319,6 +319,7 @@ namespace cAlgo
             _initializationPendingDataLoads = 0;
             _initializationStartedUtc = TimeInUtc;
             _startupCalculationSeedDone = false;
+            _startupCalculationSeedQueued = false;
             _status = "STARTING";
 
             CreatePanel();
@@ -440,6 +441,38 @@ namespace cAlgo
                 if (!_initializationReady)
                     ScheduleInitializationPoll();
             }
+        }
+
+        private void QueueStartupCalculationSeed()
+        {
+            if (_startupCalculationSeedDone ||
+                _startupCalculationSeedQueued ||
+                !_initializationReady)
+                return;
+
+            _startupCalculationSeedQueued = true;
+
+            BeginInvokeOnMainThread(
+                () =>
+                {
+                    _startupCalculationSeedQueued = false;
+
+                    if (!_initializationReady ||
+                        _startupCalculationSeedDone)
+                        return;
+
+                    try
+                    {
+                        RunStartupCalculationSeed();
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleRuntimeFault(
+                            ex,
+                            -1,
+                            "STARTUP CALCULATION SEED");
+                    }
+                });
         }
 
         protected override void OnDestroy()

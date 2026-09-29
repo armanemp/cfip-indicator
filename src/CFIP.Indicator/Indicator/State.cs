@@ -216,6 +216,7 @@ namespace cAlgo
                 private bool _runtimeTimerBusy;
                 private bool _calculationBusy;
                 private bool _startupCalculationSeedDone;
+                private bool _startupCalculationSeedQueued;
                 private bool _panelRenderBusy;
     }
 }

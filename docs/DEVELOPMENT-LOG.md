@@ -489,3 +489,20 @@ Validation:
 
 Scope boundary:
 - no decision thresholds, general weights, RR, risk formulas, trailing rules or broker mutation semantics were changed.
+
+
+## Startup responsiveness correction — 2026-09-29
+
+User validation still reported global sluggishness after the core-readiness correction.
+
+Baseline comparison against the known-good `696f685...` runtime showed that the persistent calculation/panel hot path is materially unchanged by Phases 6.1 and 6.2 after the chart-guide rollback. The remaining newly introduced heavy operation was the startup calculation seed being executed synchronously from `FinalizeAsyncInitialization()`.
+
+Correction:
+- the first READY panel is rendered first;
+- the one-shot startup calculation seed is queued with cTrader's `BeginInvokeOnMainThread()` rather than executed inline inside initialization finalization;
+- duplicate queueing is prevented with `_startupCalculationSeedQueued`;
+- the seed remains one-shot and normal `Calculate()` remains the recurring calculation authority;
+- no decision, risk, RR, trailing, broker-confirmation or signal-rendering semantics are changed;
+- no public parameter is added; 535 remains unchanged.
+
+This correction is deliberately limited to startup responsiveness and must pass all three project gates before merge.
