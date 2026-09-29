@@ -9,12 +9,13 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const string RuntimeLogSchema =
-            "CFIP-RUNTIME-LOG,1";
+            "CFIP-RUNTIME-LOG,2";
 
         private const string RuntimeLogHeader =
             "ObservedUtcTicks,EventType,M5,Path,State,Reason,ScenarioId,SourceTimeframe," +
             "Direction,Entry,Stop,Tp1,Tp2,Tp3,Tp4,Confidence,SmartQuality,ActionableNow," +
-            "PositionId,PendingOrderId";
+            "PositionId,PendingOrderId,ScenarioEvidence,LocationQuality,WaveTrendQuality," +
+            "PolicyAllowed,PolicyReason,ForecastHorizonBars";
 
         private string RuntimeLogPrefix()
         {
@@ -96,7 +97,13 @@ namespace cAlgo
             bool actionableNow,
             long positionId,
             long pendingOrderId,
-            DateTime? observedUtc = null)
+            DateTime? observedUtc = null,
+            int scenarioEvidence = 0,
+            int locationQuality = 0,
+            int waveTrendQuality = 0,
+            bool policyAllowed = false,
+            string policyReason = "",
+            int forecastHorizonBars = 0)
         {
             try
             {
@@ -168,6 +175,18 @@ namespace cAlgo
                 row.Append(positionId);
                 row.Append(',');
                 row.Append(pendingOrderId);
+                row.Append(',');
+                row.Append(scenarioEvidence);
+                row.Append(',');
+                row.Append(locationQuality);
+                row.Append(',');
+                row.Append(waveTrendQuality);
+                row.Append(',');
+                row.Append(policyAllowed ? "1" : "0");
+                row.Append(',');
+                row.Append(Encode(policyReason ?? ""));
+                row.Append(',');
+                row.Append(forecastHorizonBars);
 
                 File.AppendAllText(
                     target,
@@ -257,7 +276,15 @@ namespace cAlgo
                 prediction != null &&
                 direction != 0,
                 0,
-                0);
+                0,
+                null,
+                0,
+                0,
+                false,
+                "",
+                Math.Max(
+                    0,
+                    PredictionLookaheadBars));
         }
 
         private void ArchiveRuntimeScenario(
@@ -285,6 +312,12 @@ namespace cAlgo
                 candidate.Quality,
                 candidate.ActionableNow,
                 0,
+                0,
+                candidate.IndependentEvidenceScore,
+                candidate.LocationConfluenceScore,
+                candidate.WaveTrendQuality,
+                candidate.ExecutionPolicyAllowed,
+                candidate.ExecutionPolicyReason,
                 0);
         }
 
