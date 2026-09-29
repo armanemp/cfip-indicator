@@ -30,6 +30,7 @@ namespace cAlgo
             double atr,
             double minimumBodyAtr,
             double minimumCloseLocation,
+            double maximumRangeAtr,
             int triggerScore,
             int requiredTrigger)
         {
@@ -44,7 +45,8 @@ namespace cAlgo
             double range = high - low;
             double body = Math.Abs(close - open);
 
-            if (body < atr * minimumBodyAtr)
+            if (body < atr * minimumBodyAtr ||
+                range > atr * maximumRangeAtr)
                 return false;
 
             bool candleAligned =
