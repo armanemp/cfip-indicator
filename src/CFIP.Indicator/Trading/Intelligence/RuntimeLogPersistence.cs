@@ -219,6 +219,46 @@ namespace cAlgo
                     : (DateTime?)null);
         }
 
+        private void ArchiveRuntimePrediction(
+            Prediction prediction,
+            int closedM5)
+        {
+            if (!EnableEarlyPrediction)
+                return;
+
+            int direction =
+                prediction == null
+                    ? 0
+                    : prediction.Direction;
+
+            ArchiveRuntimeEvent(
+                "PREDICTION",
+                closedM5,
+                "EARLY",
+                prediction == null ||
+                direction == 0
+                    ? "WATCH"
+                    : "FORECAST",
+                prediction == null
+                    ? "NO PREDICTION"
+                    : prediction.Reason,
+                "PREDICTION-M5-M15",
+                "M5/M15",
+                direction,
+                prediction == null ? 0 : prediction.Entry,
+                prediction == null ? 0 : prediction.StopLoss,
+                prediction == null ? 0 : prediction.Target1,
+                prediction == null ? 0 : prediction.Target2,
+                prediction == null ? 0 : prediction.Target3,
+                prediction == null ? 0 : prediction.Target4,
+                prediction == null ? 0 : prediction.Confidence,
+                prediction == null ? 0 : prediction.Confidence,
+                prediction != null &&
+                direction != 0,
+                0,
+                0);
+        }
+
         private void ArchiveRuntimeScenario(
             TradeOpportunityCandidate candidate)
         {
