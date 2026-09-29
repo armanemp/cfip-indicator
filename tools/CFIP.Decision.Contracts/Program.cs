@@ -1037,7 +1037,7 @@ namespace cAlgo
                 "BUY target behind market rejected");
 
             LiveExitGeometryResult sellForward =
-                LiveExitGeometryRule.ValidateTarget(
+                LiveExitGeometryRule.ValidateLiveTarget(
                     -1,
                     100,
                     85,
@@ -1051,7 +1051,7 @@ namespace cAlgo
                 "SELL forward target geometry");
 
             LiveExitGeometryResult sellBehind =
-                LiveExitGeometryRule.ValidateTarget(
+                LiveExitGeometryRule.ValidateLiveTarget(
                     -1,
                     100,
                     85,
