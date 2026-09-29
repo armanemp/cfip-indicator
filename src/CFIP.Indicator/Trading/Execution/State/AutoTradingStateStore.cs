@@ -14,6 +14,12 @@ namespace cAlgo
                                     string state,
                                     string reason)
                                 {
+                                    string previousState =
+                                        _autoTradingState;
+
+                                    string previousReason =
+                                        _autoTradingReason;
+
                                     _autoTradingState =
                                         string.IsNullOrWhiteSpace(state)
                                             ? "WAIT"
@@ -23,6 +29,24 @@ namespace cAlgo
                                         string.IsNullOrWhiteSpace(reason)
                                             ? ""
                                             : reason.Trim();
+
+                                    if (!string.Equals(
+                                            previousState,
+                                            _autoTradingState,
+                                            StringComparison.OrdinalIgnoreCase) ||
+                                        !string.Equals(
+                                            previousReason,
+                                            _autoTradingReason,
+                                            StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        ArchiveRuntimeExecution(
+                                            "AUTO_STATE",
+                                            Math.Max(
+                                                -1,
+                                                _lastEvaluatedM5),
+                                            _autoTradingState,
+                                            _autoTradingReason);
+                                    }
                                 }
 
         private string AutoTradingPanelLine()

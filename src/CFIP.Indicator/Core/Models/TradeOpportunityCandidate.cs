@@ -3,6 +3,8 @@ namespace cAlgo
     internal sealed class TradeOpportunityCandidate
     {
         public string Id;
+        public string ScenarioId;
+        public string SourceTimeframe;
         public OpportunityLane Lane;
         public int Direction;
         public int CreatedM5;

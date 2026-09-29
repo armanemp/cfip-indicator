@@ -174,6 +174,7 @@ namespace cAlgo
             _signalTraceMemoryKeys.Add(key);
 
             ArchiveSignalTrace(trace);
+            ArchiveRuntimeDecisionTrace(trace);
         }
 
         private static string ResolveSignalTraceGate(

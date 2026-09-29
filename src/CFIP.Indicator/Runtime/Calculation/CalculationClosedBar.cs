@@ -114,6 +114,10 @@ namespace cAlgo
                 BuildEarlyPrediction(
                     closedM5);
 
+            ArchiveRuntimePrediction(
+                _prediction,
+                closedM5);
+
             RenderPredictionObjects(
                 _prediction,
                 closedM5);

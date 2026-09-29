@@ -106,8 +106,11 @@ namespace cAlgo
             {
                 RenderCompactPlanLabel(
                     P + "ENTRY_LABEL",
-                    "ENTRY " +
-                    Price(entry),
+                    BuildPlanLevelLabel(
+                        "ENTRY",
+                        entry,
+                        entry,
+                        false),
                     entry,
                     EntryLineColor,
                     true,
@@ -126,11 +129,18 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "IDEAL_ENTRY_LABEL",
-                (snapshot.EntryMode ==
+                snapshot.EntryMode ==
                     ExecutionMode.BreakoutMarket
-                    ? "ZONE MID "
-                    : "IDEAL ") +
-                Price(idealEntry),
+                    ? BuildPlanLevelLabel(
+                        "ZONE MID",
+                        idealEntry,
+                        entry,
+                        false)
+                    : BuildPlanLevelLabel(
+                        "IDEAL",
+                        idealEntry,
+                        entry,
+                        false),
                 idealEntry,
                 PanelAccentColor,
                 ShowEntry && idealDistinct,
@@ -151,8 +161,11 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "TRIGGER_LABEL",
-                "TRIGGER " +
-                Price(trigger),
+                BuildPlanLevelLabel(
+                    "TRIGGER",
+                    trigger,
+                    entry,
+                    false),
                 trigger,
                 TriggerLineColor,
                 ShowTrigger &&
@@ -167,8 +180,11 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "SL_LABEL",
-                "SL " +
-                Price(displayStop),
+                BuildPlanLevelLabel(
+                "SL",
+                displayStop,
+                entry,
+                true),
                 displayStop,
                 SlLineColor,
                 ShowSL,
@@ -188,8 +204,11 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "TP1_LABEL",
-                "TP1 " +
-                Price(tp1),
+                BuildPlanLevelLabel(
+                "TP1",
+                tp1,
+                entry,
+                true),
                 tp1,
                 TpLineColor,
                 ShowTP1 &&
@@ -214,8 +233,11 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "TP2_LABEL",
-                "TP2 " +
-                Price(tp2),
+                BuildPlanLevelLabel(
+                "TP2",
+                tp2,
+                entry,
+                true),
                 tp2,
                 Tp2LineColor,
                 ShowTP2 &&
@@ -240,8 +262,11 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "TP3_LABEL",
-                "TP3 " +
-                Price(tp3),
+                BuildPlanLevelLabel(
+                "TP3",
+                tp3,
+                entry,
+                true),
                 tp3,
                 Tp3LineColor,
                 ShowTP3 &&
@@ -266,8 +291,11 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "TP4_LABEL",
-                "TP4 " +
-                Price(tp4),
+                BuildPlanLevelLabel(
+                "TP4",
+                tp4,
+                entry,
+                true),
                 tp4,
                 Tp4LineColor,
                 ShowTP4 &&
@@ -300,8 +328,11 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "ACTIVE_TP_LABEL",
-                "ACTIVE TP " +
-                Price(activeBrokerTarget),
+                BuildPlanLevelLabel(
+                "ACTIVE TP",
+                activeBrokerTarget,
+                snapshot.Entry,
+                true),
                 activeBrokerTarget,
                 PanelAccentColor,
                 (ShowTP1 ||

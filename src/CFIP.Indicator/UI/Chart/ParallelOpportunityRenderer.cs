@@ -139,10 +139,13 @@ namespace cAlgo
 
                     RenderOpportunityLabel(
                         baseName + "_ENTRY_LABEL",
-                        LaneLabel(
-                            candidate) +
-                        " ENTRY " +
-                        Price(candidate.Entry),
+                        BuildScenarioLevelLabel(
+                            candidate,
+                            "ENTRY",
+                            candidate.Entry,
+                            false,
+                            false,
+                            0),
                         candidate.Entry,
                         EntryLineColor,
                         left,
@@ -152,10 +155,13 @@ namespace cAlgo
 
                     RenderOpportunityLabel(
                         baseName + "_SL_LABEL",
-                        LaneLabel(
-                            candidate) +
-                        " SL " +
-                        Price(candidate.Stop),
+                        BuildScenarioLevelLabel(
+                            candidate,
+                            "SL",
+                            candidate.Stop,
+                            true,
+                            false,
+                            0),
                         candidate.Stop,
                         SlLineColor,
                         left,
@@ -165,13 +171,13 @@ namespace cAlgo
 
                     RenderOpportunityLabel(
                         baseName + "_TP1_LABEL",
-                        LaneLabel(
-                            candidate) +
-                        " TP1 " +
-                        Price(candidate.Tp1) +
-                        " • " +
-                        candidate.Tp1RR.ToString("F2") +
-                        "R",
+                        BuildScenarioLevelLabel(
+                            candidate,
+                            "TP1",
+                            candidate.Tp1,
+                            true,
+                            true,
+                            candidate.Tp1RR),
                         candidate.Tp1,
                         TpLineColor,
                         left,
@@ -181,13 +187,13 @@ namespace cAlgo
 
                     RenderOpportunityLabel(
                         baseName + "_TP2_LABEL",
-                        LaneLabel(
-                            candidate) +
-                        " TP2 " +
-                        Price(candidate.Tp2) +
-                        " • " +
-                        candidate.Tp2RR.ToString("F2") +
-                        "R",
+                        BuildScenarioLevelLabel(
+                            candidate,
+                            "TP2",
+                            candidate.Tp2,
+                            true,
+                            true,
+                            candidate.Tp2RR),
                         candidate.Tp2,
                         Tp2LineColor,
                         left,
@@ -197,13 +203,13 @@ namespace cAlgo
 
                     RenderOpportunityLabel(
                         baseName + "_TP3_LABEL",
-                        LaneLabel(
-                            candidate) +
-                        " TP3 " +
-                        Price(candidate.Tp3) +
-                        " • " +
-                        candidate.Tp3RR.ToString("F2") +
-                        "R",
+                        BuildScenarioLevelLabel(
+                            candidate,
+                            "TP3",
+                            candidate.Tp3,
+                            true,
+                            true,
+                            candidate.Tp3RR),
                         candidate.Tp3,
                         Tp3LineColor,
                         left,
@@ -213,13 +219,13 @@ namespace cAlgo
 
                     RenderOpportunityLabel(
                         baseName + "_TP4_LABEL",
-                        LaneLabel(
-                            candidate) +
-                        " TP4 " +
-                        Price(candidate.Tp4) +
-                        " • " +
-                        candidate.Tp4RR.ToString("F2") +
-                        "R",
+                        BuildScenarioLevelLabel(
+                            candidate,
+                            "TP4",
+                            candidate.Tp4,
+                            true,
+                            true,
+                            candidate.Tp4RR),
                         candidate.Tp4,
                         Tp4LineColor,
                         left,
@@ -280,6 +286,12 @@ namespace cAlgo
                 candidate.Direction == 1
                     ? "BUY"
                     : "SELL";
+
+            if (!string.IsNullOrWhiteSpace(
+                    candidate.SourceTimeframe))
+                return
+                    ScenarioLabelPrefix(
+                        candidate);
 
             return
                 candidate.LabelPrefix +

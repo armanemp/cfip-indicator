@@ -24,6 +24,9 @@ namespace cAlgo
                 closedM5 < 30)
                 return;
 
+            AddTimeframeScenarioCandidates(
+                closedM5);
+
             TradeOpportunityCandidate strategic =
                 BuildLaneCandidate(
                     closedM5,
@@ -92,12 +95,7 @@ namespace cAlgo
                     AddOpportunityCandidate(reaction);
             }
 
-            while (_opportunityCandidates.Count >
-                   Math.Max(
-                       1,
-                       MaximumVisibleOpportunities))
-                _opportunityCandidates.RemoveAt(
-                    _opportunityCandidates.Count - 1);
+            TrimOpportunityCandidates();
 
             for (int i = 0;
                  i < _opportunityCandidates.Count;
@@ -330,6 +328,19 @@ namespace cAlgo
                 if (existing.Direction != candidate.Direction)
                     continue;
 
+                bool hasSourceTimeframe =
+                    !string.IsNullOrWhiteSpace(
+                        existing.SourceTimeframe) ||
+                    !string.IsNullOrWhiteSpace(
+                        candidate.SourceTimeframe);
+
+                if (hasSourceTimeframe &&
+                    !string.Equals(
+                        existing.SourceTimeframe,
+                        candidate.SourceTimeframe,
+                        StringComparison.OrdinalIgnoreCase))
+                    continue;
+
                 double distance =
                     Math.Abs(
                         existing.Entry -
@@ -369,12 +380,6 @@ namespace cAlgo
 
             _opportunityCandidates.Add(candidate);
 
-            while (_opportunityCandidates.Count >
-                   Math.Max(
-                       1,
-                       MaximumVisibleOpportunities))
-                _opportunityCandidates.RemoveAt(
-                    _opportunityCandidates.Count - 1);
         }
     }
 }

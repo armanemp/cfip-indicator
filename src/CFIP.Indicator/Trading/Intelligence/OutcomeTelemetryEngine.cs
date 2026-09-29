@@ -246,6 +246,12 @@
                              while (_executionTelemetryHistory.Count >
                                     MaxExecutionTelemetryHistory)
                                  _executionTelemetryHistory.RemoveAt(0);
+
+                             ArchiveRuntimeExecution(
+                                 path,
+                                 m5,
+                                 state,
+                                 reason);
                          }
  
          private void RecordLifecycleTelemetry(
