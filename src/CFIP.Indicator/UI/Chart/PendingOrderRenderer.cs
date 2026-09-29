@@ -44,7 +44,7 @@ private void RenderManagedPendingOrder(
                 
                             DrawPlanLine(
                                 P + "PENDING_ENTRY",
-                                pending.TargetPrice,
+                                snapshot.PendingEntry,
                                 TriggerLineColor,
                                 ShowTrigger);
                 
@@ -89,9 +89,7 @@ private void RenderManagedPendingOrder(
                                     TriggerLineColor);
                             }
                 
-                            if (pending.StopLoss.HasValue &&
-                                IsFinitePositive(
-                                    pending.StopLoss.Value))
+                            if (IsFinitePositive(snapshot.PendingStop))
                             {
                                 DrawPlanLabel(
                                     P + "PENDING_SL_LABEL",
@@ -99,13 +97,11 @@ private void RenderManagedPendingOrder(
                                     Price(
                                         snapshot.PendingStop),
                                     anchorBar,
-                                    pending.StopLoss.Value,
+                                    snapshot.PendingStop,
                                     SlLineColor);
                             }
                 
-                            if (pending.TakeProfit.HasValue &&
-                                IsFinitePositive(
-                                    pending.TakeProfit.Value))
+                            if (IsFinitePositive(snapshot.PendingTarget))
                             {
                                 DrawPlanLabel(
                                     P + "PENDING_TP_LABEL",
@@ -113,7 +109,7 @@ private void RenderManagedPendingOrder(
                                     Price(
                                         snapshot.PendingTarget),
                                     anchorBar,
-                                    pending.TakeProfit.Value,
+                                    snapshot.PendingTarget,
                                     TpLineColor);
                             }
                         }
