@@ -36,18 +36,18 @@ namespace cAlgo
         {
             if (direction != 1 &&
                 direction != -1)
-                return Blocked("DIRECTION INVALID");
+                return CreateBlocked("DIRECTION INVALID");
 
-            if (!IsFinitePositive(entry) ||
-                !IsFinitePositive(stop) ||
-                !IsFinitePositive(tp1))
-                return Blocked("LEVEL GEOMETRY INVALID");
+            if (!IsPositiveFinite(entry) ||
+                !IsPositiveFinite(stop) ||
+                !IsPositiveFinite(tp1))
+                return CreateBlocked("LEVEL GEOMETRY INVALID");
 
             double risk =
                 Math.Abs(entry - stop);
 
-            if (!IsFinitePositive(risk))
-                return Blocked("RISK INVALID");
+            if (!IsPositiveFinite(risk))
+                return CreateBlocked("RISK INVALID");
 
             bool protectiveStop =
                 direction == 1
@@ -60,10 +60,10 @@ namespace cAlgo
                     : tp1 < entry;
 
             if (!protectiveStop)
-                return Blocked("STOP WRONG SIDE");
+                return CreateBlocked("STOP WRONG SIDE");
 
             if (!progressiveTarget)
-                return Blocked("TP1 WRONG SIDE");
+                return CreateBlocked("TP1 WRONG SIDE");
 
             double reward =
                 Math.Abs(tp1 - entry);
@@ -71,8 +71,8 @@ namespace cAlgo
             double rr =
                 reward / risk;
 
-            if (!IsFinitePositive(rr))
-                return Blocked("RR INVALID");
+            if (!IsPositiveFinite(rr))
+                return CreateBlocked("RR INVALID");
 
             if (rr + 1e-9 <
                 Math.Max(0.10, minimumRR))
@@ -91,7 +91,7 @@ namespace cAlgo
                 "OK");
         }
 
-        private static bool IsFinitePositive(
+        private static bool IsPositiveFinite(
             double value)
         {
             return
@@ -100,7 +100,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static ExecutionPlanGeometryResult Blocked(
+        private static ExecutionPlanGeometryResult CreateBlocked(
             string reason)
         {
             return new ExecutionPlanGeometryResult(
