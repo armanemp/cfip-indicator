@@ -3959,7 +3959,10 @@ Operator action: merge PR #60, then pull local main to the verified merge commit
 
 ## Phase 10 — MTF Scenarios, Clear Level Labels, Runtime Logs & Development Routine — 2026-09-29
 
-Status: IMPLEMENTED on phase branch; verification and merge pending.
+Status: VERIFIED and MERGED to main.
+
+Merge commit: `fd29b955c557df680e40d8fe4151955600160408`.
+Final code commit verified before merge: `cef178da5f0359ef2c0800376b5b9beddf295424`.
 
 Scope:
 - give each simultaneous timeframe opportunity a stable ScenarioId and SourceTimeframe;
@@ -4098,11 +4101,11 @@ The phase does not introduce a second decision authority, a second execution eng
 or multi-position broker mutation. Independent timeframe scenarios remain opportunities
 until a separately tested execution policy is certified.
 
-Verification:
-- Phase 11.5 audit;
-- accumulated Source/Architecture;
-- Runtime Acceptance;
-- cTrader Compile/Build;
+Verification completed before merge:
+- Phase 11.5 audit: PASS;
+- accumulated Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile/Build: PASS;
 - target-terminal replay for broker semantics and empirical outcomes.
 
 Next phase:
