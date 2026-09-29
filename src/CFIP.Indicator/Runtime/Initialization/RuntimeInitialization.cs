@@ -287,6 +287,7 @@ namespace cAlgo
 
             _status = "READY";
             _initializationReady = true;
+            _lastPanelRenderUtc = DateTime.MinValue;
 
             Timer.Stop();
             Timer.Start(
