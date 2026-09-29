@@ -3077,9 +3077,15 @@ if "ApplyWaveTrendEvidence(" not in wt_analyzer_code or "WaveTrendQuality" not i
 label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
-    raise SystemExit("Plan labels must calculate contrast text color")
-if "Color boxColor = color" not in label_code or "box.IsFilled" not in label_code:
-    raise SystemExit("Plan price labels must use opaque filled backgrounds matching the line color")
+    raise SystemExit("Plan labels must use the canonical text-color resolver")
+if "return Color.White;" not in label_code:
+    raise SystemExit("Plan labels must use white text")
+compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
+compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
+if "Chart.DrawRectangle(" in compact_label_code:
+    raise SystemExit("Plan price labels must remain background-free")
+if "Chart.DrawText(" not in compact_label_code:
+    raise SystemExit("Plan price labels must own their text object")
 
 live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 live_calc_code = live_calc.read_text(encoding="utf-8")
