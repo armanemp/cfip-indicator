@@ -33,7 +33,7 @@ namespace cAlgo
             HiddenBear = hiddenBear;
         }
 
-        public static DivergenceResult None()
+        public static DivergenceResult CreateNone()
         {
             return new DivergenceResult(
                 0,
