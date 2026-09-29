@@ -180,6 +180,25 @@ The verifier reported 398 production C# files, 535 parameters, 500 method declar
 
 ---
 
+# 2.1 User-priority implementation overlay
+
+Persistent user priorities are recorded in
+`docs/USER-PRIORITY-PLAN.md` and are mandatory inputs to future phase planning.
+
+Priority order:
+1. responsive/accurate panel startup and live refresh;
+2. clean, readable panel and reliable Auto Trading / Auto Orders controls;
+3. stronger signal quality without indiscriminate over-filtering;
+4. technically strong Entry / SL / TP levels;
+5. structurally valid higher RR;
+6. safer automatic market/pending execution and rejection handling;
+7. smart trailing / profit-lock / target progression for better profit capture;
+8. whole-system performance optimization and measurable validation.
+
+The overlay never overrides architectural dependencies. Each item is implemented
+under its correct existing owner and is validated through source, runtime, compile,
+replay or outcome evidence appropriate to the claim.
+
 # 3. Acceptance hierarchy
 
 CFIP certification is performed in this order:
