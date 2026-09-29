@@ -174,7 +174,7 @@ namespace cAlgo
                 adaptiveRequired);
         }
 
-        private static PlanRewardRiskQualityResult Blocked(
+        private static PlanRewardRiskQualityResult CreateRewardRiskBlocked(
             string reason)
         {
             return new PlanRewardRiskQualityResult(
