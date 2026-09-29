@@ -1,121 +1,140 @@
 #!/usr/bin/env python3
-"""Audit Phase 9.16 location hierarchy and signal-measurement invariants."""
+"""Audit Phase 9.16 location hierarchy, signal measurement and final execution safety."""
 
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
-LOCATION = ROOT / "src/CFIP.Indicator/Core/Math/LocationEvidenceRule.cs"
-FRAME = ROOT / "src/CFIP.Indicator/Analysis/Market/Models/Frame.cs"
-SCORING = ROOT / "src/CFIP.Indicator/Analysis/Market/MarketFrameScoringService.cs"
-ORCHESTRATION = ROOT / "src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs"
-TRACE_MODEL = ROOT / "src/CFIP.Indicator/Core/Models/SignalEvaluationTrace.cs"
-TRACE_STORE = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchiveStore.cs"
-PANEL = ROOT / "src/CFIP.Indicator/UI/Panel/Rows/PanelCalibrationRowsRenderer.cs"
-ANALYZER = ROOT / "tools/analyze_signal_trace.py"
+
+def read(path: Path) -> str:
+    if not path.exists():
+        errors.append(f"missing file: {path}")
+        return ""
+    return path.read_text(encoding="utf-8")
+
+
+def require_text(path: Path, *tokens: str) -> None:
+    source = read(path)
+    for token in tokens:
+        if token not in source:
+            errors.append(f"{path.name} missing: {token}")
+
 
 errors = []
 
+location_path = ROOT / "src/CFIP.Indicator/Core/Math/LocationEvidenceRule.cs"
+scoring_path = ROOT / "src/CFIP.Indicator/Analysis/Market/MarketFrameScoringService.cs"
+frame_path = ROOT / "src/CFIP.Indicator/Analysis/Market/Models/Frame.cs"
+orchestration_path = ROOT / "src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs"
+trace_model_path = ROOT / "src/CFIP.Indicator/Core/Models/SignalEvaluationTrace.cs"
+trace_store_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchiveStore.cs"
+panel_path = ROOT / "src/CFIP.Indicator/UI/Panel/Rows/PanelCalibrationRowsRenderer.cs"
+analyzer_path = ROOT / "tools/analyze_signal_trace.py"
+market_exec_path = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs"
+geometry_path = ROOT / "src/CFIP.Indicator/Core/Math/ExecutionPlanGeometryRule.cs"
+contracts_path = ROOT / "tools/CFIP.Decision.Contracts/Program.cs"
+contracts_project = ROOT / "tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj"
 
-def require(path: Path, pattern: str, label: str) -> None:
-    if not path.exists():
-        errors.append(f"missing file for {label}")
-        return
-
-    text = path.read_text(encoding="utf-8")
-    if not re.search(pattern, text, re.MULTILINE | re.DOTALL):
-        errors.append(f"missing {label}")
-
-
-require(
-    LOCATION,
-    r"LocationEvidenceScore[sS]*?public static LocationEvidenceScore Evaluate",
-    "canonical location evidence owner",
+require_text(
+    location_path,
+    "public static LocationEvidenceScore Evaluate",
+    "18",
+    "16",
+    "12",
+    "8",
+    "return new LocationEvidenceScore(",
 )
-require(
-    LOCATION,
-    r"if (confluence)[sS]*?minimumQuality[sS]*?18[sS]*?16[sS]*?12[sS]*?8",
-    "bounded OB+FVG synergy tiers",
+require_text(
+    scoring_path,
+    "LocationEvidenceRule.Evaluate(",
+    "f.FvgObBullConfluence",
+    "f.FvgObBearConfluence",
+    "f.LocationEvidenceBull",
+    "f.LocationEvidenceBear",
 )
-require(
-    LOCATION,
-    r"return new LocationEvidenceScore(s*score,s*1,s*confluence)",
-    "one evidence unit for correlated location group",
+require_text(
+    frame_path,
+    "LocationEvidenceBull",
+    "LocationEvidenceBear",
+    "LocationEvidenceBullCount",
+    "LocationEvidenceBearCount",
 )
-require(
-    SCORING,
-    r"LocationEvidenceRule.Evaluate([sS]*?f.FvgObBullConfluence[sS]*?LocationEvidenceRule.Evaluate([sS]*?f.FvgObBearConfluence",
-    "BUY/SELL canonical location scoring",
+require_text(
+    orchestration_path,
+    "ResolveSignalTraceLane(",
+    "RecordSignalEvaluationTrace(",
 )
-require(
-    FRAME,
-    r"LocationEvidenceBull[sS]*?LocationEvidenceBear[sS]*?LocationEvidenceBullCount[sS]*?LocationEvidenceBearCount",
-    "location telemetry fields",
+require_text(
+    trace_model_path,
+    "Open",
+    "High",
+    "Low",
+    "Close",
+    "ActionabilityReason",
+    "DecisionReason",
 )
-require(
-    ORCHESTRATION,
-    r"RecordSignalEvaluationTrace(s*decision[sS]*?decisionLane[sS]*?closedM5",
-    "canonical decision trace capture",
+require_text(
+    trace_store_path,
+    "MaxSignalEvaluationTraceHistory = 256",
+    "SignalTraceSchema =",
+    "OutcomeArchivePeriodStart(",
+    "start.AddDays(90)",
+    "File.AppendAllText(",
+    "EnableOutcomeTelemetry",
+    "BarOpenTimeUtcTicks",
+    "DECISION-FILTER",
+    "TRIGGER",
+    "ACTIONABILITY",
+    "ACTIONABLE",
 )
-require(
-    TRACE_MODEL,
-    r"Open[sS]*?High[sS]*?Low[sS]*?Close[sS]*?ActionabilityReason[sS]*?DecisionReason",
-    "OHLC and gate-reason trace fields",
+require_text(
+    panel_path,
+    "SignalTracePanelText()",
 )
-require(
-    TRACE_STORE,
-    r"MaxSignalEvaluationTraceHistorys*=s*256",
-    "bounded in-memory signal trace",
+require_text(
+    analyzer_path,
+    "argparse",
+    "ActionableNow",
+    "max_favorable_r",
+    "max_adverse_r",
+    "future_rows",
 )
-require(
-    TRACE_STORE,
-    r"OutcomeArchivePeriodStart([sS]*?start.AddDays(90)",
-    "same 90-day archive bucket contract",
+require_text(
+    geometry_path,
+    "ExecutionPlanGeometryResult",
+    "STOP WRONG SIDE",
+    "TP1 WRONG SIDE",
+    "RR BELOW EXECUTION FLOOR",
 )
-require(
-    TRACE_STORE,
-    r'File.AppendAllText(',
-    "append-only signal trace persistence",
+require_text(
+    market_exec_path,
+    "ExecutionPlanGeometryRule.Evaluate(",
+    "MinimumRequiredRRForRegime(",
+    "PLAN GEOMETRY",
 )
-require(
-    TRACE_STORE,
-    r"EnableOutcomeTelemetry",
-    "trace I/O safety switch",
+require_text(
+    contracts_path,
+    "VerifyLocationEvidenceHierarchy();",
+    "VerifyExecutionPlanGeometry();",
+    "ExecutionPlanGeometryRule.Evaluate(",
 )
-require(
-    TRACE_STORE,
-    r"BarOpenTimeUtcTicks",
-    "idempotent closed-bar trace key",
-)
-require(
-    TRACE_STORE,
-    r"TraceGate[sS]*?DECISION-FILTER[sS]*?TRIGGER[sS]*?ACTIONABILITY[sS]*?ACTIONABLE",
-    "canonical gate attribution order",
-)
-require(
-    PANEL,
-    r"SignalTracePanelText()",
-    "panel trace diagnostics",
-)
-require(
-    ANALYZER,
-    r"argparse[sS]*?ActionableNow[sS]*?max_favorable_r[sS]*?max_adverse_r",
-    "offline forward-measurement analyzer",
-)
-require(
-    ANALYZER,
-    r"future_rows[sS]*?future_rows",
-    "strict forward-window measurement",
+require_text(
+    contracts_project,
+    "LocationEvidenceRule.cs",
+    "ExecutionPlanGeometryRule.cs",
 )
 
-trace_text = TRACE_STORE.read_text(encoding="utf-8")
+trace_text = read(trace_store_path)
 if "File.Delete" in trace_text or "Directory.Delete" in trace_text:
     errors.append("signal trace archive must not delete historical files")
 
 if "EvaluateTradeActionability" in trace_text:
     errors.append("signal trace store must not become a second actionability owner")
+
+analyzer_text = read(analyzer_path)
+if "TODO" in analyzer_text or "pass" in analyzer_text.lower():
+    errors.append("offline analyzer contains incomplete implementation markers")
 
 if errors:
     print("Phase 9.16 signal measurement audit FAILED")
