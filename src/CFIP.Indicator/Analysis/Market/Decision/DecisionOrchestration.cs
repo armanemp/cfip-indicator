@@ -99,8 +99,8 @@ namespace cAlgo
 
                     Evidence =
                         new DecisionEvidenceSnapshot(
-                            TimeframeAgreement(1, reference),
-                            TimeframeAgreement(-1, reference),
+                            TimeframeAgreement(1, closedContext),
+                            TimeframeAgreement(-1, closedContext),
                             IndependentEvidence(1),
                             IndependentEvidence(-1),
                             StructuralConfirmations(1),
