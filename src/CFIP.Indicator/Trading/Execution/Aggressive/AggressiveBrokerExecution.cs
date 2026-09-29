@@ -109,7 +109,7 @@ namespace cAlgo
                                 serverBreakEven,
                                 TradeExecutionMetadata.DefaultExecutionComment,
                                 false,
-                                "AGGRESSIVE MARKET • SERVER TP LADDER")
+                                "AGG • SERVER TP LADDER")
                             : TryExecuteMarketOrder(
                                 type,
                                 SymbolName,
@@ -209,7 +209,7 @@ namespace cAlgo
             catch (Exception ex)
             {
                 Print(
-                    "CFIP aggressive auto trade failed: {0}",
+                    "CFIP aggressive trade failed: {0}",
                     ex.Message);
             }
         }
