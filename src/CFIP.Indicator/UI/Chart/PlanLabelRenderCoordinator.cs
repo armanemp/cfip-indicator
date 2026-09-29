@@ -81,7 +81,7 @@ namespace cAlgo
                         
                                     if (ShowTrigger &&
                                         triggerDistinct &&
-                                        !_plan.IsLivePosition)
+                                        !snapshot.LivePosition)
                                     {
                                         DrawPlanLabel(
                                             P + "TRIGGER_LABEL",
