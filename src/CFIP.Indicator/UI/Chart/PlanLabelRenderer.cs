@@ -14,14 +14,17 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 9.0;
-        private const double CompactPlanLabelAtrHeight = 0.055;
 
         private void RenderPlanLabel(
             string name,
             string text,
             double price,
             Color color,
-            bool visible)
+            bool visible,
+            int lineLeft,
+            int labelBar,
+            int boxRightBar,
+            double boxHalfHeight)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -36,14 +39,22 @@ namespace cAlgo
                 name,
                 text,
                 price,
-                color);
+                color,
+                lineLeft,
+                labelBar,
+                boxRightBar,
+                boxHalfHeight);
         }
 
         private void DrawPlanLabel(
             string name,
             string text,
             double price,
-            Color color)
+            Color color,
+            int lineLeft,
+            int labelBar,
+            int boxRightBar,
+            double boxHalfHeight)
         {
             try
             {
@@ -54,32 +65,6 @@ namespace cAlgo
                     RemovePlanLabel(name);
                     return;
                 }
-
-                int labelBar =
-                    GetLabelAnchorBar(
-                        name,
-                        GetCompactPlanLineLeftBar());
-
-                int boxRightBar =
-                    GetLabelBoxRightBar();
-
-                double atr =
-                    Bars.Count >= 3
-                        ? Atr(
-                            Bars,
-                            Math.Max(
-                                1,
-                                Math.Min(
-                                    Bars.Count - 2,
-                                    labelBar)))
-                        : 0;
-
-                double boxHalfHeight =
-                    Math.Max(
-                        Symbol.PipSize * 3,
-                        atr > 0
-                            ? atr * CompactPlanLabelAtrHeight
-                            : Symbol.PipSize * 4);
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -139,6 +124,11 @@ namespace cAlgo
                     Chart.FindObject(boxName)
                     as ChartRectangle;
 
+                Color boxColor =
+                    Color.FromArgb(
+                        175,
+                        color);
+
                 if (box == null)
                 {
                     ChartObject existingBox =
@@ -150,13 +140,11 @@ namespace cAlgo
                     box =
                         Chart.DrawRectangle(
                             boxName,
-                            GetCompactPlanLineLeftBar(),
+                            lineLeft,
                             price + boxHalfHeight,
                             boxRightBar,
                             price - boxHalfHeight,
-                            Color.FromArgb(
-                                175,
-                                color),
+                            boxColor,
                             1,
                             LineStyle.Solid);
                 }
@@ -164,8 +152,7 @@ namespace cAlgo
                 if (box != null)
                 {
                     box.Time1 =
-                        Bars.OpenTimes[
-                            GetCompactPlanLineLeftBar()];
+                        Bars.OpenTimes[lineLeft];
                     box.Y1 =
                         price + boxHalfHeight;
                     box.Time2 =
@@ -173,9 +160,7 @@ namespace cAlgo
                     box.Y2 =
                         price - boxHalfHeight;
                     box.Color =
-                        Color.FromArgb(
-                            175,
-                            color);
+                        boxColor;
                     box.Thickness =
                         1;
                     box.LineStyle =
