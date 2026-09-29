@@ -91,7 +91,7 @@ namespace cAlgo
                 level.Score < SmartTargetQuality)
                 return false;
 
-            if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     0,
                     level.Price,
@@ -141,7 +141,7 @@ namespace cAlgo
             double step,
             double spacing)
         {
-            if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     current,
                     price,
