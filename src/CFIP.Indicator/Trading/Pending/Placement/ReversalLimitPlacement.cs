@@ -27,12 +27,13 @@ namespace cAlgo
                 { _autoOrdersBlockReason = submissionGateReason; return false; }
 
                 RelativeTakeProfitProtections serverTakeProfits;
-                bool useServerTakeProfitLadder = TryBuildServerSideTakeProfitLadder(targetEntry, target, volume, out serverTakeProfits);
+                StopLossBreakEven serverBreakEven;
+                bool useServerTakeProfitLadder = TryBuildServerSideTakeProfitLadder(targetEntry, target, volume, out serverTakeProfits, out serverBreakEven);
                 TradeResult result;
                 try
                 {
                     result = useServerTakeProfitLadder
-                        ? TryPlaceLimitOrderWithTakeProfitLadder(type, SymbolName, volume, targetEntry, PendingOrderLabel(), pendingIntent.StopPips, serverTakeProfits, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "REVERSAL LIMIT • SERVER TP LADDER")
+                        ? TryPlaceLimitOrderWithTakeProfitLadder(type, SymbolName, volume, targetEntry, PendingOrderLabel(), pendingIntent.StopPips, serverTakeProfits, serverBreakEven, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "REVERSAL LIMIT • SERVER TP LADDER")
                         : TryPlaceLimitOrder(type, SymbolName, volume, targetEntry, PendingOrderLabel(), pendingIntent.StopPips, pendingIntent.TargetPips, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "REVERSAL LIMIT");
                 }
                 catch { RecordSubmissionFailure(submissionIdentity); throw; }
