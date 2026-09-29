@@ -1940,4 +1940,9 @@ Verification for this documentation gate:
 
 Next phase: **CBOT-0 — Boundary inventory and execution-authority freeze**.
 
-Operator pull: **required after the roadmap merge** before beginning CBOT-0, so the local checkout contains the authoritative roadmap.
+Documentation merge: PR #69 was squash-merged to `main` as `161f1972513e83685ea2364070d081af823fa7c6`.
+
+Roadmap continuation correction: `docs/ROADMAP.md` was aligned in follow-up commit
+`b92cc367083b0830278d799f49e29d21b83d1779` so the master continuation points to CBOT-0.
+
+Operator pull: **required** before beginning CBOT-0, so the local checkout contains the authoritative roadmap.
