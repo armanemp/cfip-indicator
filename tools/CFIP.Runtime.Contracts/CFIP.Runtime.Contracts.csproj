@@ -18,6 +18,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionCapacityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/M1TriggerRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SwingPlateauRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LivePlanRecoveryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionFillAcceptanceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" />
