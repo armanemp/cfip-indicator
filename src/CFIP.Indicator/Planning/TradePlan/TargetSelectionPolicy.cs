@@ -30,7 +30,8 @@ namespace cAlgo
         }
 
         private bool RequiresHtfRewardForTargetStage(
-            int stage)
+            int stage,
+            OpportunityLane lane = OpportunityLane.Strategic)
         {
             bool topDownCalibrated =
                 _decision != null &&
@@ -39,6 +40,15 @@ namespace cAlgo
                     _decision.TopDownStage,
                     "ENTRY CALIBRATED",
                     StringComparison.OrdinalIgnoreCase);
+
+            if (lane == OpportunityLane.Tactical ||
+                lane == OpportunityLane.CounterHtfTactical ||
+                lane == OpportunityLane.MicroReaction)
+            {
+                return stage == 0
+                    ? RequireHtfRewardForTp1
+                    : RequireHtfRewardForTp2Plus;
+            }
 
             return stage == 0
                 ? RequireHtfRewardForTp1 ||
