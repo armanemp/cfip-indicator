@@ -32,13 +32,12 @@ namespace cAlgo
                                     direction,
                                     atr);
 
-                            if (IsFinitePositive(requestedTarget) &&
-                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                            if (IsLiveTargetBrokerSafe(
                                     direction,
-                                    0,
-                                    requestedTarget,
+                                    position.EntryPrice,
                                     market,
-                                    minimumForwardDistance))
+                                    requestedTarget,
+                                    atr))
                                 return NormalizePrice(requestedTarget);
 
                             return FurthestForwardPlanTarget(
@@ -158,35 +157,20 @@ namespace cAlgo
 
                             bool currentTargetValid =
                                 position.TakeProfit.HasValue &&
-                                IsFinitePositive(
-                                    position.TakeProfit.Value) &&
-                                IsValidTarget(
+                                IsLiveTargetBrokerSafe(
                                     direction,
                                     position.EntryPrice,
-                                    position.TakeProfit.Value) &&
-                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                                    direction,
-                                    0,
-                                    position.TakeProfit.Value,
                                     market,
-                                    MinimumLiveTargetDistancePrice(
-                                        direction,
-                                        atr));
+                                    position.TakeProfit.Value,
+                                    atr);
 
                             bool desiredTargetValid =
-                                IsFinitePositive(effectiveTarget) &&
-                                IsValidTarget(
+                                IsLiveTargetBrokerSafe(
                                     direction,
                                     position.EntryPrice,
-                                    effectiveTarget) &&
-                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                                    direction,
-                                    0,
-                                    effectiveTarget,
                                     market,
-                                    MinimumLiveTargetDistancePrice(
-                                        direction,
-                                        atr));
+                                    effectiveTarget,
+                                    atr);
 
                             bool serverLadderTargetValid =
                                 _serverSideTakeProfitLadderActive &&
@@ -239,14 +223,9 @@ namespace cAlgo
                                              currentTarget,
                                              normalizedTarget,
                                              market,
-                                             Math.Max(
-                                                 Symbol.PipSize,
-                                                 atr > 0
-                                                     ? atr *
-                                                       Math.Max(
-                                                           0.05,
-                                                           MinimumTpSpacingAtr)
-                                                     : Symbol.TickSize)))
+                                             MinimumLiveTargetDistancePrice(
+                                                 direction,
+                                                 atr)))
                                 {
                                     targetOk =
                                         TryModifyTakeProfit(
