@@ -163,6 +163,8 @@ namespace cAlgo
                             : 0,
                         f.WaveTrendDirection,
                         f.WaveTrendQuality,
+                        f.DivergenceDirection,
+                        f.DivergenceQuality,
                         f.WaveTrendBullCross,
                         f.WaveTrendBearCross,
                         f.WaveTrendOversold,
