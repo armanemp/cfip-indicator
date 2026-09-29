@@ -15,12 +15,13 @@ namespace cAlgo
             Bars bars,
             DateTime reference)
         {
+            if (bars == null)
+                return -1;
+
             return ClosedBarReferenceRule.ResolveClosedIndex(
-                bars == null ? 0 : bars.Count,
+                bars.Count,
                 reference,
-                bars == null
-                    ? null
-                    : (int index) => bars.OpenTimes[index]);
+                index => bars.OpenTimes[index]);
         }
 
         internal static double Highest(
