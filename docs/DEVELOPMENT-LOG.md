@@ -658,3 +658,32 @@ User runtime feedback identified that the chart AUTO TRADE / AUTO ORDERS control
 - no public parameters were added or removed; production parameter count remains 535.
 
 This hotfix is corrective and does not close the planned Track 7.2 parameter audit. Broader signal-strengthening, level intelligence, target/stop refinement and full trailing certification remain owned by their roadmap phases.
+
+
+## Phase 7.2 — Dead/Unused Public Parameter Audit — 2026-09-29
+
+Status: complete.
+
+Implementation:
+- Added `tools/audit_parameters.py` and connected it to Source / Architecture CI.
+- The first machine audit of 535 parameters found four unread candidates: FullWidthLevelLines, LabelLeftOffsetBars, ShowEarlyArrow and SmartUseClosedBarDecision.
+- FullWidthLevelLines was retained and activated in PlanLineRenderer; compact 40-bar presentation remains the default by changing its default to false.
+- LabelLeftOffsetBars was activated in PlanLabelAnchorCalculator; label-box width now accommodates the configured offset.
+- ShowEarlyArrow was activated as an independent early/watch arrow visibility control; confirmed/reaction arrow visibility remains governed by ShowSignalArrow.
+- SmartUseClosedBarDecision was removed because confirmed decision logic is safety-enforced closed-bar behavior and must not be user-disableable.
+- Current public parameter surface is 534: 531 baseline + 3 OSS extension parameters.
+
+Findings:
+- Final audit: 534 parameter declarations, 534 read-by-code candidates, 0 unused/unread candidates.
+- No trading authority, risk authority, broker mutation path or second decision/execution engine was introduced.
+
+Verification:
+- Source / Architecture: PASS
+- Runtime Acceptance Contracts: PASS
+- cTrader Compile: PASS
+
+Continuity:
+- Phase 7.2 continuity document: `docs/PHASE-7-2-DEAD-PARAMETER-AUDIT.md`.
+- Persistent user strategy priorities updated: important levels, deeper Order Block analysis, higher-quality signals and smarter cross-analyzer coordination.
+- Next phase: Phase 7.3 — Semantic duplicate audit.
+- Operator pull requirement: required after Phase 7.2 merge; intermediate branch commits do not require a local pull.
