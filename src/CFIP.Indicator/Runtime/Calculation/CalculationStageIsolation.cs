@@ -163,6 +163,17 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
+                    UpdateM1TriggerRuntime(
+                        closedM5,
+                        TimeInUtc);
+                    return true;
+                },
+                index,
+                "M1 TRIGGER RUNTIME");
+
+            RunCalculationStage(
+                () =>
+                {
                     SynchronizePreTradePlanWithDecision();
                     return true;
                 },
