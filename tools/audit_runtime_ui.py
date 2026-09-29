@@ -101,6 +101,16 @@ if "return Color.White" not in labels_renderer:
     raise SystemExit("All compact plan-level text must be white")
 if "Chart.DrawRectangle(" in labels_renderer:
     raise SystemExit("Plan label renderer must not create text backgrounds")
+if "OrderVolume(" in server_ladder:
+    raise SystemExit("Server TP ladder must use the current relative protection volume API")
+if "new RelativeTakeProfitProtection(" not in server_ladder:
+    raise SystemExit("Server TP ladder must construct relative partial protections")
+signal_snapshot = read("UI/Chart/SignalVisualSnapshotBuilder.cs")
+signal_renderer = read("UI/Chart/SignalRenderer.cs")
+if "!pendingValid" not in signal_snapshot or "!livePlan" not in signal_snapshot:
+    raise SystemExit("Signal snapshot must suppress lower-priority signal layers during execution state")
+if "!snapshot.PendingOrder" not in signal_renderer or "!snapshot.LivePosition" not in signal_renderer:
+    raise SystemExit("Signal alerts must yield while pending/live execution is authoritative")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("Plan label coordinator must not create text backgrounds")
 if "_serverSideTakeProfitLadderActive" not in partial:
