@@ -81,13 +81,6 @@ namespace cAlgo
                             : "CONFIRMED"));
             }
 
-            if (ShowTrigger &&
-                Bars != null &&
-                Bars.Count >= 2)
-            {
-                RenderTriggerRuntimeMarker(
-                    snapshot);
-            }
         }
 
         private void RenderSetupPreview(
@@ -111,13 +104,6 @@ namespace cAlgo
                 RemovePlanLabels();
             Chart.RemoveObject(P + "ARROW");
 
-            if (ShowTrigger &&
-                Bars != null &&
-                Bars.Count >= 2)
-            {
-                RenderTriggerRuntimeMarker(
-                    snapshot);
-            }
         }
 
         private void RenderLevelLines(
