@@ -25,31 +25,11 @@ namespace cAlgo
             if (!ShowLevelLines)
                 return;
 
-            int anchorBar =
-                Bars == null ||
-                Bars.Count < 2
-                    ? -1
-                    : Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            MapM5ToChart(
-                                Math.Max(
-                                    1,
-                                    snapshot.ClosedM5),
-                                Bars.Count - 1)));
-
-            if (anchorBar < 0)
-                return;
-
             DrawPlanLine(
                 P + "PENDING_ENTRY",
                 snapshot.PendingEntry,
                 TriggerLineColor,
-                ShowTrigger,
-                Math.Max(
-                    1,
-                    snapshot.ClosedM5));
+                ShowTrigger);
 
             if (ShowSL &&
                 IsFinitePositive(snapshot.PendingStop))
@@ -58,10 +38,7 @@ namespace cAlgo
                     P + "PENDING_SL",
                     snapshot.PendingStop,
                     SlLineColor,
-                    ShowSL,
-                    Math.Max(
-                        1,
-                        snapshot.ClosedM5));
+                    ShowSL);
             }
 
             if (ShowTP1 &&
@@ -71,10 +48,7 @@ namespace cAlgo
                     P + "PENDING_TP",
                     snapshot.PendingTarget,
                     TpLineColor,
-                    ShowTP1,
-                    Math.Max(
-                        1,
-                        snapshot.ClosedM5));
+                    ShowTP1);
             }
 
             if (!ShowLevelPriceLabels &&
