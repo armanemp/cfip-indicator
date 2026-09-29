@@ -268,11 +268,11 @@ namespace cAlgo
                     Math.Max(
                         Symbol.PipSize,
                         Math.Max(
-                            Symbol.TickSize,
-                        atr *
-                        Math.Max(
-                            0.05,
-                            MinimumTpSpacingAtr)));
+                                Symbol.TickSize,
+                            atr *
+                            Math.Max(
+                                0.05,
+                                MinimumTpSpacingAtr))));
 
             if (!IsFinitePositive(market) ||
                 !IsFinitePositive(position.EntryPrice))
@@ -286,7 +286,7 @@ namespace cAlgo
                     market,
                     minimumForwardDistance);
 
-            if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     0,
                     tp2,
@@ -294,7 +294,7 @@ namespace cAlgo
                     minimumForwardDistance))
                 return false;
 
-            if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     tp2,
                     finalTarget,
@@ -408,7 +408,7 @@ namespace cAlgo
                 return false;
 
             if (_activeBrokerTarget > 0 &&
-                !LiveExitGeometryRule.ShouldAdvanceTarget(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     _activeBrokerTarget,
                     finalTarget,
@@ -422,19 +422,19 @@ namespace cAlgo
             double tp2 =
                 _plan.Tp2;
 
-            if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     0,
                     tp1,
                     market,
                     minimumForwardDistance) ||
-                !LiveExitGeometryRule.ShouldAdvanceTarget(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     tp1,
                     tp2,
                     market,
                     minimumForwardDistance) ||
-                !LiveExitGeometryRule.ShouldAdvanceTarget(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     tp2,
                     finalTarget,
@@ -536,7 +536,7 @@ namespace cAlgo
                 if (!IsFinitePositive(target))
                     continue;
 
-                if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+                if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         _plan.Direction,
                         0,
                         target,
@@ -589,7 +589,7 @@ namespace cAlgo
                     minimumForwardDistance);
 
             if (!IsFinitePositive(finalTarget) ||
-                !LiveExitGeometryRule.ShouldAdvanceTarget(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     _plan.Direction,
                     0,
                     finalTarget,
