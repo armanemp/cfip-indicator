@@ -3711,7 +3711,7 @@ Detailed record: `docs/PHASE-9-9-SIGNAL-PROTECTION-COHERENCE.md`.
 
 ## Phase 9.10 — Smart Auto-Trade / Auto-Order Protection & Accumulated Audit — 2026-09-29
 
-Status: IN PROGRESS on `phase/9-10-smart-auto-trade-protection-audit`.
+Status: IMPLEMENTATION COMPLETE; final documentation-inclusive CI and merge closeout pending.
 
 Mandatory per-phase improvements:
 - automatic market, aggressive and pending-order paths must receive a concrete hardening change;
@@ -3727,4 +3727,20 @@ Current implementation:
 - accumulated auto-trade/protection audit added to CI;
 - all signal/plan level lines forced to Solid.
 
-Verification and merge are pending until all gates pass.
+Verification evidence on the code-equivalent head is green; the final documentation-inclusive head is pending one fresh CI cycle.
+
+
+## Phase 9.11 — Automatic Execution Telemetry & Deeper SL/TP Coherence — 2026-09-29
+
+Status: NEXT.
+
+Mandatory inherited controls:
+- every phase makes a concrete improvement to automatic market/aggressive/pending execution;
+- every phase performs accumulated auto-trade, auto-order, SL/TP, duplicate, stale-state and direction-conflict audit;
+- all signal/plan level lines remain Solid;
+- level text remains white and background-free.
+
+Scope direction:
+- record broker submission/rejection/fallback reasons in a deterministic execution telemetry path;
+- audit realized-vs-planned SL/TP outcomes and protection recovery states;
+- tighten duplicate submission and duplicate mutation diagnostics without adding a second execution authority.
