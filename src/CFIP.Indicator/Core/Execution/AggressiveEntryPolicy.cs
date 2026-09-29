@@ -23,7 +23,7 @@ namespace cAlgo
         public int Direction =>
             _direction;
 
-        public bool Observe(
+        public bool ObserveReactionSample(
             int reactionM5,
             int direction,
             bool entryAllowed,
@@ -59,7 +59,7 @@ namespace cAlgo
             return IsQualified;
         }
 
-        public void Invalidate()
+        public void ResetQualification()
         {
             _reactionM5 = -1;
             _direction = 0;
@@ -67,7 +67,7 @@ namespace cAlgo
             _qualifyingSamples = 0;
         }
 
-        public string StateText()
+        public string GetQualificationStateText()
         {
             if (IsQualified)
                 return "ARMED";
