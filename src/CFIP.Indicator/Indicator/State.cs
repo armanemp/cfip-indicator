@@ -45,6 +45,13 @@ namespace cAlgo
                 private ExecutionModel _executionModel;
                 private TradeSetupPreview _setupPreview;
                 private readonly TriggerRuntimeState _triggerRuntime = new TriggerRuntimeState();
+                private readonly Dictionary<Bars, WaveTrendEngine> _waveTrendEngines =
+                    new Dictionary<Bars, WaveTrendEngine>();
+                private readonly List<TradeOpportunityCandidate> _opportunityCandidates =
+                    new List<TradeOpportunityCandidate>();
+                private readonly HashSet<string> _opportunityVisualIds =
+                    new HashSet<string>();
+
         
                 private int _lastStructuralStopUpdateM5 = -1;
                 private int _lastTargetRepriceM5 = -1;
