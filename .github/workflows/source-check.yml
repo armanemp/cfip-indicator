@@ -16,3 +16,5 @@ jobs:
       - run: python tools/verify_architecture.py
       - run: python tools/audit_parameters.py
       - run: python tools/audit_runtime_ui.py
+      - run: python tools/audit_parameter_semantics.py
+      - run: python tools/audit_project_integrity.py
