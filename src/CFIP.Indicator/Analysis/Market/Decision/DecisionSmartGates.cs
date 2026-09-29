@@ -50,6 +50,21 @@ namespace cAlgo
                 MinimumProxyExpectedValue)
                 return new DecisionFilterResult(false, "EXPECTED VALUE");
 
+            RangeSignalQualityResult rangeQuality =
+                EvaluateRangeSignalQuality(
+                    closedM5,
+                    decision.Direction,
+                    decision.Confidence,
+                    decision.SmartQuality,
+                    decision.Edge,
+                    decision.IndependentEvidence,
+                    decision.StructuralConfirmations);
+
+            if (!rangeQuality.Allowed)
+                return new DecisionFilterResult(
+                    false,
+                    rangeQuality.Reason);
+
             if (UseStrictRegimeQualityGate &&
                 _m5Frame != null)
             {
