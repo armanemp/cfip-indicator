@@ -826,7 +826,7 @@ Operator pull requirement: required after the final verified Phase 7.4 merge; in
 
 ## Phase 8.1 — M1 trigger correctness — 2026-09-29
 
-Status: implementation complete; verification/merge boundary follows.
+Status: implementation complete; verification pending before merge.
 
 Findings and corrections:
 - Audited the full Decision → Trigger → Plan → Execution chain and confirmed that UseM1Trigger previously added a fixed +3 directional vote from M1Frame.Direction while DecisionEvaluator still derived TriggerReady from M5-only ClosedBarTriggerReady.
