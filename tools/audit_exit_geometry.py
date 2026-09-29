@@ -200,7 +200,9 @@ if unexpected:
         ", ".join(unexpected)
     )
 
-# Broker TP mutation must be controlled by the hard live-geometry contract.
+# Broker TP mutation must preserve both contracts:
+# (1) the existing configurable progression policy remains a tightening filter;
+# (2) the hard live geometry rule can never be disabled by that tuning switch.
 for path in (BROKER_PROTECTION, BOUND_PROTECTION):
     source = read(path)
 
@@ -214,9 +216,14 @@ for path in (BROKER_PROTECTION, BOUND_PROTECTION):
             f"{path.name} must use the centralized live target distance"
         )
 
-if "ProtectionProgressionRule.ShouldAdvanceTarget(" in read(BOUND_PROTECTION):
+bound_source = read(BOUND_PROTECTION)
+if "PreventBrokerTpBackwardMove" not in bound_source:
     ERRORS.append(
-        "BoundPlanProtection must not use the legacy configurable backward-TP progression rule"
+        "BoundPlanProtection must retain the configured TP progression switch"
+    )
+if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in bound_source:
+    ERRORS.append(
+        "BoundPlanProtection must enforce configured TP progression"
     )
 
 if "protections.LastTakeProfit.Price" not in server_text:
