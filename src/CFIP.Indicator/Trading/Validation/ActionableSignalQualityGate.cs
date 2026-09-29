@@ -10,7 +10,6 @@ namespace cAlgo
             TradeActionabilityResult actionability)
         {
             if (decision == null ||
-                actionability == null ||
                 !actionability.Actionable)
                 return new ActionableSignalQualityResult(
                     true,
