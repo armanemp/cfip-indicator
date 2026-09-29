@@ -16,6 +16,29 @@ namespace cAlgo
             bool enabled =
                 !AutoTradingEnabled;
 
+            if (enabled &&
+                EnableAutoTrading)
+            {
+                // Quick enable is an explicit operator re-arm request, but it
+                // may only clear a previously recovered block. An active
+                // EntryBlocked state remains fail-closed.
+                _runtimeFaultStateMachine.ObserveAutoTradingSetting(false);
+                _runtimeFaultStateMachine.ObserveAutoTradingSetting(true);
+
+                if (!_runtimeFaultStateMachine.CanAutomaticEntryProceed)
+                {
+                    SetAutoTradingRuntimeState(
+                        false,
+                        "RUNTIME ENTRY BLOCKED • RECOVERY / EXPLICIT RE-ARM");
+                    ApplyRuntimeEntryGate();
+                    SetAutoTradingState(
+                        "ENTRY_BLOCKED",
+                        "RUNTIME FAULT • EXPLICIT RE-ARM REQUIRED");
+                    SyncQuickExecutionControls();
+                    return;
+                }
+            }
+
             SetAutoTradingRuntimeState(
                 enabled,
                 enabled
