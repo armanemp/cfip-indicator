@@ -73,7 +73,7 @@ require(
     "TryAdvanceServerSideTakeProfitLadder(",
 )
 if re.search(
-    r"UpdateUnhitTargetsLives*([sS]*?_serverSideTakeProfitLadderActive[sS]*?return;",
+    r"UpdateUnhitTargetsLive\s*\([\s\S]*?_serverSideTakeProfitLadderActive[\s\S]*?return;",
     read(TARGET_PROGRESS),
 ):
     ERRORS.append(
@@ -111,8 +111,6 @@ require(
     "TryModifyTakeProfitLadder(",
 )
 server_text = read(SERVER_LADDER)
-if "_tp1Hit != 0" in server_text and "TryAdvanceServerSideTakeProfitLadder(" in server_text:
-    pass
 if "position.VolumeInUnits" not in server_text:
     ERRORS.append(
         "server TP ladder progression must account for remaining broker position volume"
