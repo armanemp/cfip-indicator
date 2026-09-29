@@ -46,7 +46,8 @@ OB+FVG confluence, indicator-fusion quality/conflict, WaveTrend, divergence, MTF
 state, confidence, RR, entry mode and the exact block/actionability reasons.
 
 Trace recording is observational. It never feeds the live directional decision and it
-cannot submit, cancel or modify broker orders.
+cannot submit, cancel or modify broker orders. It is captured for each canonical
+closed-M5 decision independently of the outcome-telemetry switch.
 
 ## OB/FVG location hierarchy
 
@@ -108,9 +109,9 @@ does not replace broker confirmation or protection ownership.
 
 ## Performance
 
-Signal traces are bounded in memory at 256 closed-M5 observations and written only when
-outcome telemetry is enabled. Each 90-day trace file is append-only and deduplicated by
-closed-bar open-time.
+Signal traces are bounded in memory at 256 closed-M5 observations. Each 90-day trace
+file is append-only and deduplicated by closed-bar open-time. The file archive is not
+trimmed by the indicator.
 
 No new public parameters were introduced.
 
