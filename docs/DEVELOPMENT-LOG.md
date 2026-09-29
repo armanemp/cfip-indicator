@@ -611,4 +611,27 @@ Acceptance:
 - Runtime Acceptance Contracts: required;
 - cTrader Compile: required;
 - hands-on cTrader validation remains required for actual runtime behavior.
+## Runtime UI and smart protection hotfix — 2026-09-29
 
+User validation reported three concrete live/runtime issues remaining after the Phase 7.1 merge:
+- panel AUTO TRADE and AUTO ORDERS quick toggles did not visibly/operationally act as reliable operator controls;
+- compact name/price boxes were still absent from setup-preview levels;
+- SL behavior could follow raw market price instead of waiting for meaningful structural progression.
+
+Corrections:
+- switched the two quick execution toggles to direct ToggleButton Click actions;
+- click handlers now update the canonical private runtime flags and immediately resynchronize the controls;
+- preserved the execution-toggle synchronization guard so programmatic refresh cannot act like an operator click;
+- setup previews now render compact plan labels instead of deleting them;
+- compact label rectangles are created before text, use the level semantic color with translucent fill, and are reused;
+- removed the final market-distance stop clamp from ProtectionManager so SL is no longer derived from raw price movement;
+- further trailing progression is structurally gated to closed-M5 events and swing-derived candidates;
+- momentum alignment only changes structural breathing distance; it does not create a price-chasing stop;
+- pressure-based tightening is also closed-M5 gated;
+- existing break-even/protection validation and monotonic broker progression remain unchanged.
+
+Auto Orders note:
+- existing pending execution already uses future Stop/Limit prices and validates that pending prices are away from market;
+- deeper reversal-point forecasting across MTF structure/FVG/OB/liquidity/indicator confluence remains a dedicated smart-pending improvement and is not mixed into this UI/protection correction.
+
+No public parameter was added. Production parameter count remains 535.
