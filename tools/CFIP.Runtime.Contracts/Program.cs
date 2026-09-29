@@ -1182,10 +1182,10 @@ namespace cAlgo
             Assert(
                 predictiveSelector.Contains("TrySelectPredictivePendingLevel(") &&
                 predictiveSelector.Contains("CollectPredictiveZoneCandidates(") &&
+                predictiveSelector.Contains("FindEqualLow(") &&
+                predictiveSelector.Contains("FindEqualHigh(") &&
                 predictiveCollector.Contains("BuildManagedFvgZone(") &&
                 predictiveCollector.Contains("BuildOrderBlockCandidate(") &&
-                predictiveCollector.Contains("FindEqualLow(") &&
-                predictiveCollector.Contains("FindEqualHigh(") &&
                 predictiveScorer.Contains("PredictivePendingContextQuality(") &&
                 predictiveScorer.Contains("PredictivePendingSourceKey("),
                 "predictive pending selector combines structural level sources");
