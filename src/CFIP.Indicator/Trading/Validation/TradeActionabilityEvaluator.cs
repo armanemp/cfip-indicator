@@ -333,8 +333,7 @@ namespace cAlgo
                     indicatorGateReason =
                         "INDICATOR FUSION • STALE";
                 }
-                else if (_m5Frame.IndicatorConfluenceQuality > 0 ||
-                         _m5Frame.IndicatorConflict > 0)
+                else
                 {
                     IndicatorActionabilityResult indicatorGate =
                         IndicatorActionabilityRule.Evaluate(
