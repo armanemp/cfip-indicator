@@ -15,7 +15,7 @@ namespace cAlgo
             _lastOpportunityCandidatesM5 =
                 closedM5;
 
-            _opportunityCandidates.Clear();
+            _opportunityRegistry.Clear();
 
             if (!EnableParallelOpportunities ||
                 _m5Bars == null ||
