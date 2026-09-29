@@ -129,7 +129,7 @@ namespace cAlgo
             double minimumRR =
                 Math.Max(
                     Tp1MinimumRR,
-                    MinimumPlanRiskReward(lane));
+                    MinimumRequiredRR());
 
             int locationQuality =
                 Math.Max(
