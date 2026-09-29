@@ -10,6 +10,25 @@ namespace cAlgo
             int closedM5,
             Decision decision)
         {
+            if (decision.DivergenceDirection == -decision.Direction &&
+                decision.DivergenceRegular &&
+                decision.DivergenceQuality >= 78 &&
+                decision.DivergenceAgeBars <= 18)
+                return new DecisionFilterResult(
+                    false,
+                    "OPPOSING REGULAR DIVERGENCE");
+
+            int locationQuality =
+                EntryLocationQuality(
+                    _m5Bars,
+                    closedM5,
+                    decision.Direction);
+
+            if (locationQuality < 45)
+                return new DecisionFilterResult(
+                    false,
+                    "EXTREME ENTRY LOCATION");
+
             if (UseStructuralSequenceGate &&
                 StructuralSequence(
                     _m5Bars,
