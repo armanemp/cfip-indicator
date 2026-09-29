@@ -121,9 +121,6 @@ namespace cAlgo
             EmitContextAlerts(
                 closedM5);
 
-            ProcessDecisionAlerts(
-                closedM5);
-
             ReconcilePreTradePlanDirection(
                 closedM5);
 
@@ -133,6 +130,11 @@ namespace cAlgo
                 !ConfirmedSignalsOnly
                     ? DecisionPolicyMode.Soft
                     : DecisionPolicyMode.Confirmed);
+
+            // Alerting reads the exact Plan created by the authoritative
+            // actionability gate, eliminating Decision-vs-Plan price drift.
+            ProcessDecisionAlerts(
+                closedM5);
 
             _lastEvaluatedM5 =
                 closedM5;
