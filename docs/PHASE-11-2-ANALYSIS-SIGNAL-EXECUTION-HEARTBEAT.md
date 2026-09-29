@@ -15,11 +15,7 @@ Local Release build completed with zero errors but two warnings.
 
 The previous fix was incomplete because compact labels could still share the line's right endpoint and use right alignment, while prediction labels used a separate renderer.
 
-This phase applies two layers of separation:
-- horizontal: plan level lines reserve deterministic right-side space; compact labels anchor after the actual line endpoint and use left alignment;
-- vertical: compact and prediction labels receive a bounded pip/tick/ATR-based price offset.
-
-This keeps the level line and its text visually distinct without introducing a background box.
+This phase preserves the canonical latest-candle line endpoint. Separation is now enforced in price space for both compact and prediction labels with a bounded pip/tick/ATR-based offset, while text remains background-free. Horizontal text alignment is left-aligned so the annotation does not pull its visible text back across the anchor.
 
 ### Signal pipeline diagnostics
 
