@@ -86,7 +86,7 @@ namespace cAlgo
                                                     _lastEvaluatedM5));
 
                                     int direction =
-                                        snapshot.Direction;
+                                        snapshot.AuthoritativeDirection;
 
                                     bool aligned =
                                         direction == 0 ||
