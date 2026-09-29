@@ -1023,7 +1023,7 @@ namespace cAlgo
                 "BUY forward target geometry");
 
             LiveExitGeometryResult buyBehind =
-                LiveExitGeometryRule.ValidateTarget(
+                LiveExitGeometryRule.ValidateLiveTarget(
                     1,
                     100,
                     115,
