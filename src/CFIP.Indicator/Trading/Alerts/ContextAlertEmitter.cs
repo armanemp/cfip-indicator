@@ -38,9 +38,7 @@ namespace cAlgo
                 
                                     DrawIcon(
                                         P + "BOS_MARKER",
-                                        _m5Frame.StructureBull
-                                            ? ChartIconType.UpArrow
-                                            : ChartIconType.DownArrow,
+                                        ChartIconType.Diamond,
                                         bar,
                                         _m5Frame.StructureBull
                                             ? Bars.LowPrices[bar]
