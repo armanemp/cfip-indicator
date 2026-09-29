@@ -36,6 +36,8 @@ The presentation layer consumes authoritative state and never decides whether a 
 - Entry, trigger, requested entry and actual fill remain distinct.
 - Broker state is authoritative after mutations.
 - Automatic market execution and automatic pending orders share one strategy identity.
+- M1 trigger evidence is confirmation-only and cannot create directional consensus.
+- When enabled, M1 TriggerReady is evaluated from a fully closed M1 bar inside the exact selected closed M5 window and is combined with the canonical M5 trigger.
 - Execution capacity is explicitly single-plan: a managed open position blocks creation of another managed plan.
 - Execution capacity is explicitly single-plan: `ExecutionCapacityRule` is the semantic owner and `ExecutionCapacityGuard` maps broker state to that rule.
 - No configurable multi-position mode is advertised while the execution architecture remains single-plan.
