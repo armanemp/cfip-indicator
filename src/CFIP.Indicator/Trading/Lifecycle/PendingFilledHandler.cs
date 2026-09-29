@@ -83,6 +83,32 @@ namespace cAlgo
             AdoptServerSideTakeProfitLadder(
                 args.Position);
 
+            bool brokerStopMissing =
+                !args.Position.StopLoss.HasValue ||
+                !IsFinitePositive(
+                    args.Position.StopLoss.Value) ||
+                !IsValidManagedStop(
+                    direction,
+                    args.Position.EntryPrice,
+                    Symbol.Bid > 0 && direction == 1
+                        ? Symbol.Bid
+                        : Symbol.Ask,
+                    args.Position.StopLoss.Value);
+
+            bool brokerTargetMissing =
+                !_serverSideTakeProfitLadderActive &&
+                (!args.Position.TakeProfit.HasValue ||
+                 !IsFinitePositive(
+                    args.Position.TakeProfit.Value) ||
+                 !IsValidTarget(
+                    direction,
+                    args.Position.EntryPrice,
+                    args.Position.TakeProfit.Value));
+
+            protectionMissing =
+                brokerStopMissing ||
+                brokerTargetMissing;
+
             if (priorPlan != null &&
                 priorPlan.CalibrationEligible)
             {
