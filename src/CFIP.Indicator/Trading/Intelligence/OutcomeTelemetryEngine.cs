@@ -176,6 +176,8 @@
                              _outcomeHistory.Add(observation);
                              TrimOutcomeHistory();
                              PersistOutcomeHistory();
+                             ArchiveOutcomeObservation(observation);
+                             RegisterArchiveLearningObservation(observation);
  
                              RegisterOutcome(
                                  direction,
