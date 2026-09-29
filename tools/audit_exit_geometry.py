@@ -32,6 +32,7 @@ TARGET_EVALUATOR = ROOT / "src/CFIP.Indicator/Trading/LiveManagement/LiveTargetC
 FURTHER_TARGET = ROOT / "src/CFIP.Indicator/Trading/Lifecycle/LivePlanFurtherTargetSelector.cs"
 TARGET_ENRICH = ROOT / "src/CFIP.Indicator/Trading/Lifecycle/LivePlanTargetEnrichment.cs"
 SERVER_LADDER = ROOT / "src/CFIP.Indicator/Trading/Execution/ServerSideTakeProfitLadder.cs"
+SERVER_LADDER_PROGRESS = ROOT / "src/CFIP.Indicator/Trading/Execution/ServerSideTakeProfitLadderProgression.cs"
 LEVEL_HITS = ROOT / "src/CFIP.Indicator/Trading/LiveManagement/ActivePlanLevelExitHandler.cs"
 BROKER_PROTECTION = ROOT / "src/CFIP.Indicator/Trading/Execution/BrokerProtectionCoordinator.cs"
 BOUND_PROTECTION = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/BoundPlanProtection.cs"
@@ -104,6 +105,12 @@ require(
 
 require(
     SERVER_LADDER,
+    "TryBuildServerSideTakeProfitLadder(",
+    "AdoptServerSideTakeProfitLadder(",
+    "ObserveServerSidePartialTakeProfits(",
+)
+require(
+    SERVER_LADDER_PROGRESS,
     "TryAdvanceServerSideTakeProfitLadderAfterTp1(",
     "TryAdvanceServerSideTakeProfitLadder(",
     "TryCollapseServerSideTakeProfitLadderToFinal(",
@@ -165,7 +172,14 @@ allowed = {
     "Trading/Execution/Aggressive/BoundPlanProtection.cs",
     "Trading/Execution/ServerSideTakeProfitLadder.cs",
 }
-unexpected = sorted(set(direct_tp_mutations) - allowed)
+unexpected = sorted(
+    path
+    for path in set(direct_tp_mutations)
+    if not any(
+        path.endswith(allowed_path)
+        for allowed_path in allowed
+    )
+)
 if unexpected:
     ERRORS.append(
         "Unexpected direct TP mutation call sites: " +
