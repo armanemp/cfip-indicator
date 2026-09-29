@@ -705,3 +705,18 @@ descriptions where they differ.
 
 Operator action:
 - local pull is required after the Phase 7.2 merge.
+
+
+## Corrective UI and chart hotfix — 2026-09-29
+
+User validation found two remaining problems: chart level lines could stop before the latest chart candle, and the Auto Trade / Auto Orders controls were not guaranteed to represent the configured cTrader settings.
+
+Chart correction: PlanLineRenderer now owns one canonical chart span. Compact mode uses 40 chart bars ending at Bars.Count - 1. FullWidthLevelLines remains supported. M5 event-time mapping is no longer used to choose the line endpoint. Pending level rendering no longer depends on a temporary M5 anchor. Label placement reuses the same canonical left-edge calculation.
+
+Control correction: Auto Trade and Auto Orders are now display-only switch-style status cards. They show ON/OFF from the normal settings/runtime synchronization path. They do not register click or toggle events and they cannot create an independent UI override.
+
+Added the runtime UI audit tool and wired it into source CI. README current parameter count is 534. Roadmap and acceptance documentation were updated. A dedicated hotfix note was added in docs/HOTFIX-CHART-LINES-EXECUTION-STATUS-2026-09-29.md.
+
+No strategy, risk, reward, protection or broker-order ownership was intentionally changed. Hands-on cTrader validation remains required.
+
+PR #30 is the implementation vehicle. The next planned strategy phase remains Phase 7.3 — Semantic Duplicate Audit.
