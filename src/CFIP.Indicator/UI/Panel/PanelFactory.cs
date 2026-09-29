@@ -157,6 +157,12 @@ namespace cAlgo
                         
                                         _panelHeaderStack.AddChild(
                                             _panelHeaderTitle);
+
+                                        CreateProcessingHeartbeatLamp();
+
+                                        if (_processingLamp != null)
+                                            _panelHeaderStack.AddChild(
+                                                _processingLamp);
                         
                                         CreatePanelRows();
                         

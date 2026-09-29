@@ -3991,7 +3991,7 @@ Phase 10.1 — evidence-driven multi-timeframe scenario geometry, per-scenario e
 
 ## Phase 11 — Economic News Guard, Reference Reassessment & Calibration — 2026-09-29
 
-Status: IMPLEMENTED on phase branch; verification/merge pending.
+Status: VERIFIED COMPLETE; merged into main as `43f9bf606fedffa7f712734e00248e161bef42d7`.
 
 Scope:
 - promote the useful weekly economic XML feed from the user-provided reference indicator into CFIP;
@@ -4004,4 +4004,36 @@ Scope:
 - automate News Guard source auditing.
 
 Next after closeout:
-Phase 11.1 — event-aware live management and empirical calibration using actual runtime logs/outcomes, followed by audited per-scenario execution policy design.
+Phase 11.1 — Auto Execution, Indicator Identity, Level Presentation & History Discoverability.
+
+
+## Phase 11.1 — Auto Execution, Indicator Identity, Level Presentation & History Discoverability — 2026-09-29
+
+Status: VERIFIED COMPLETE; merged into main as `8be58c289566711f8b80caa741012edc94b8a523`.
+
+Completed:
+- explicit CFIPIndicator cTrader identity and aligned assembly name;
+- removed same-M5 automatic-plan actionability latch;
+- history location marker and startup diagnostic;
+- automatic trade/order block-reason visibility;
+- initial plan label separation hardening.
+
+Detailed record: `docs/PHASE-11-1-AUTO-EXECUTION-HISTORY-PRESENTATION-HARDENING.md`.
+
+Next phase: Phase 11.2 — Analysis / Signal / Execution Freshness & Panel Heartbeat.
+
+## Phase 11.2 — Analysis / Signal / Execution Freshness & Panel Heartbeat — 2026-09-29
+
+Status: IMPLEMENTED on phase branch; verification pending.
+
+Focus:
+- remove obsolete/dead compile warnings;
+- harden horizontal and vertical line/text separation;
+- expose canonical Decision/Trigger/Actionability/Plan pipeline state;
+- refresh quote-sensitive actionability immediately before automatic execution;
+- add lightweight pulsing processing lamp to the panel;
+- make deep analysis/signal/auto-trade/auto-order review permanent in ROUTINE.md.
+
+Detailed record: `docs/PHASE-11-2-ANALYSIS-SIGNAL-EXECUTION-HEARTBEAT.md`.
+
+Next after closeout: Phase 11.3 — execution rejection forensics, missed-actionable cohorts and evidence-driven threshold refinement.

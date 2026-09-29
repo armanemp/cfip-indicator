@@ -44,6 +44,8 @@ namespace cAlgo
                 
                                                     DateTime now =
                                                         Server.TimeInUtc;
+
+                                                    UpdateProcessingHeartbeatLamp();
                                         
                                                     ownsVisualSnapshot =
                                                         _renderSignalVisualSnapshot == null;

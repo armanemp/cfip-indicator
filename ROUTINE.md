@@ -2,6 +2,23 @@
 
 این فایل حافظه عملیاتی ثابت پروژه است و در شروع هر نوبت باید با وضعیت واقعی ریپو تطبیق داده شود.
 
+## 11. روتین اجباری هر فاز — تمرکز عمیق تحلیل، سیگنال و اجرای خودکار
+هر فاز، حتی اگر موضوع اصلی آن UI، startup، performance یا history باشد، باید در همان فاز یک بررسی کامل از زنجیره زیر انجام دهد:
+
+Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> Protection/Lifecycle -> Outcome -> Learning
+
+در هر فاز حتماً:
+1. تحلیل MTF و top-down، structure/liquidity، OB/FVG به‌خصوص OB+FVG، WaveTrend، divergence، indicator fusion، regime و evidence attribution دوباره بررسی شوند؛ تغییر threshold بدون measurement/replay مجاز نیست.
+2. false-positive، false-negative، missed-actionable، stale decision، trigger/actionability mismatch و duplicate/conflicting signals بررسی شوند.
+3. Entry/Ideal Entry/Trigger، SL، TP1..TP4، reward path، RR و BUY/SELL symmetry دوباره بررسی شوند و هیچ target/stop regressions پذیرفته نشود.
+4. Auto Trading و Auto Orders هر دو مسیر market/aggressive/pending را از تصمیم تازه، suitability، permission، capacity، spread/risk، volume، geometry، submission gate و broker confirmation تا lifecycle بررسی کنند.
+5. قبل از broker mutation، current quote و actionability دوباره refresh شوند؛ safety gate برای رفع missed signal حذف یا دور زده نشود.
+6. هر compile warning جدید مانند error تلقی شود؛ warning مربوط به API obsolete، member unused، dead path یا compatibility residue باید در همان فاز رفع یا علت آن مستند و gate شود.
+7. panel/visual فقط presentation authority است؛ چراغ heartbeat، pipeline diagnostics و text/line spacing نباید هیچ business rule یا execution authority جدید ایجاد کنند.
+8. history/runtime logs، rejection reason، recovery، outcome و calibration برای شواهد بعدی ثبت و با auditهای موجود correlate شوند.
+
+این بخش دائمی است و در هر فاز باید در گزارش پایانی صریحاً اعلام شود که تحلیل، سیگنال، auto-trade، auto-order، SL/TP، history و verification بررسی شده‌اند.
+
 ## 1. شروع هر نوبت
 1. وضعیت main، آخرین commit، شاخه فعال و PRهای باز را بررسی کن.
 2. DEVELOPMENT-LOG.md، ROADMAP.md و این فایل را با وضعیت واقعی کد تطبیق بده.

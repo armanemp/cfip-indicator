@@ -1771,3 +1771,43 @@ The old implementation could not automatically know that a scheduled economic re
 
 Important runtime boundary:
 Even a news-aware system cannot guarantee an open position will not hit its stop during a fast release. Broker-side gap/slippage can cross the stop before any client-side reaction. Terminal replay is required to measure the actual behavior.
+
+
+## Phase 11.1 — Auto Execution, Indicator Identity, Level Presentation & History Discoverability — 2026-09-29
+
+Status: VERIFIED COMPLETE; merged into main as `8be58c289566711f8b80caa741012edc94b8a523`.
+
+Implementation:
+- explicit CFIPIndicator identity;
+- same-M5 auto-plan actionability latch removal;
+- History location marker and startup diagnostic;
+- automatic execution block diagnostics;
+- plan label separation hardening.
+
+Verification:
+- Source/Architecture: PASS
+- Runtime Acceptance: PASS
+- cTrader Compile: PASS
+
+Next phase: Phase 11.2 — Analysis / Signal / Execution Freshness & Panel Heartbeat.
+Operator pull: required at phase boundary.
+
+
+## Phase 11.2 — Analysis / Signal / Execution Freshness & Panel Heartbeat — 2026-09-29
+
+Status: IMPLEMENTED on branch; verification pending.
+
+Implementation:
+- obsolete IndicatorAttribute constructor removed;
+- dead `_lastAutoPlanTriggerM1` removed;
+- final market, aggressive and pending freshness refreshes added;
+- horizontal and vertical plan-label separation hardened;
+- canonical signal-pipeline panel diagnostics added;
+- lightweight pulsing processing lamp added;
+- permanent deep phase routine added to ROUTINE.md;
+- phase-specific audit added to CI.
+
+Detailed record: `docs/PHASE-11-2-ANALYSIS-SIGNAL-EXECUTION-HEARTBEAT.md`.
+
+Next phase: Phase 11.3 — execution rejection forensics, missed-actionable cohorts and evidence-driven threshold refinement.
+Operator pull: required after final verified phase merge.

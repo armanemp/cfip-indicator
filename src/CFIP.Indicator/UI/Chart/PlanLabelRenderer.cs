@@ -36,8 +36,25 @@ namespace cAlgo
                             Bars.Count - 1,
                             bar));
 
+                double labelAtr =
+                    safeBar >= 2
+                        ? Atr(
+                            Bars,
+                            Math.Max(
+                                1,
+                                safeBar - 1))
+                        : 0;
+
+                double verticalGap =
+                    Math.Max(
+                        Symbol.PipSize * 5,
+                        labelAtr > 0
+                            ? labelAtr * 0.04
+                            : Symbol.PipSize * 6);
+
                 double labelPrice =
-                    NormalizePrice(price);
+                    NormalizePrice(
+                        price + verticalGap);
 
                 Color whiteTextColor =
                     Color.White;
@@ -86,7 +103,7 @@ namespace cAlgo
                 label.IsBold =
                     PanelBold;
                 label.HorizontalAlignment =
-                    HorizontalAlignment.Right;
+                    HorizontalAlignment.Left;
                 label.VerticalAlignment =
                     VerticalAlignment.Bottom;
                 label.IsInteractive =
@@ -160,10 +177,12 @@ namespace cAlgo
                 // vertical envelope calculated by the label coordinator.
                 double verticalGap =
                     Math.Max(
-                        Symbol.PipSize * 2.5,
-                        boxHalfHeight > 0
-                            ? boxHalfHeight
-                            : Symbol.PipSize * 3);
+                        Symbol.PipSize * 5,
+                        Math.Max(
+                            Symbol.TickSize * 6,
+                            boxHalfHeight > 0
+                                ? boxHalfHeight * 1.35
+                                : Symbol.PipSize * 6));
 
                 double labelPrice =
                     NormalizePrice(

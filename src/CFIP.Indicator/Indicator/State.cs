@@ -233,7 +233,6 @@ namespace cAlgo
                 private int _lastRestrictionM5 = -1;
                 private int _lastHistoricalHostBar = -1;
                 private int _lastAutoPlanAttemptM5 = -1;
-                private int _lastAutoPlanTriggerM1 = -1;
                 private DateTime _lastTradingPermissionRequestUtc = DateTime.MinValue;
         
                 private int _marketSuitabilityM5 = -1;

@@ -18,6 +18,8 @@ namespace cAlgo
                 _reaction.Direction == 0)
             {
                 _aggressiveEntryPolicy.ResetQualification();
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • SETUP NOT ELIGIBLE";
                 return false;
             }
 
@@ -68,18 +70,33 @@ namespace cAlgo
 
             if (DailyLossLimitHit(
                     TimeInUtc))
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • DAILY LOSS LIMIT";
                 return false;
+            }
 
             if (OneOrderPerSignal &&
                 _lastAutoM5 ==
                 closedM5)
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • ALREADY TRADED THIS M5";
                 return false;
+            }
 
             if (_reaction.Confidence <
                     AggressiveMinimumConfidence ||
                 _reaction.IndependentEvidence <
                     AggressiveMinimumEvidence)
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • CONF " +
+                    _reaction.Confidence +
+                    " / EVID " +
+                    _reaction.IndependentEvidence;
                 return false;
+            }
 
             if (AggressiveRequireSmartAgreement &&
                 (_decision == null ||
@@ -87,7 +104,11 @@ namespace cAlgo
                  _reaction.Direction ||
                  _decision.SmartQuality <
                  AggressiveMinimumSmartQuality))
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • SMART AGREEMENT";
                 return false;
+            }
 
             string suitabilityReason;
 
@@ -96,10 +117,12 @@ namespace cAlgo
                     _reaction.Direction,
                     out suitabilityReason))
             {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • " +
+                    suitabilityReason;
                 SetAutoTradingState(
                     "BLOCKED",
-                    "AGGRESSIVE • " +
-                    suitabilityReason);
+                    _autoExecutionBlockReason);
                 return false;
             }
 

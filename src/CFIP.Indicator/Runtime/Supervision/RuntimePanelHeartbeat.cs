@@ -45,6 +45,8 @@ namespace cAlgo
                     RunRuntimeSafetySupervisor(
                         now);
 
+                UpdateProcessingHeartbeatLamp();
+
                 UpdatePanelHeartbeatRows(
                     now);
 

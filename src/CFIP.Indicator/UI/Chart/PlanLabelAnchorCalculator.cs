@@ -30,9 +30,9 @@ namespace cAlgo
                         6,
                         LabelLeftOffsetBars));
 
-            // Compact labels must stay attached to the line endpoint; large
-            // configured offsets are intentionally capped to prevent the
-            // background from drifting away from the level line.
+            // Compact labels stay attached to the line geometry. Their visible
+            // separation from the level is handled in price space by the label
+            // renderer; the line endpoint itself remains unchanged.
             return Math.Max(
                 0,
                 Math.Min(

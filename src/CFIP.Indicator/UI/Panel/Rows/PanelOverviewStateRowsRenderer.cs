@@ -67,6 +67,10 @@ namespace cAlgo
                 true,
                 contentWidth);
 
+            RenderPanelSignalPipelineRows(
+                ref slot,
+                contentWidth);
+
             _panelClockRow =
                 slot;
 
