@@ -56,6 +56,9 @@ namespace cAlgo
         public int EntryPositionQuality;
         public double EntryDistanceAtr;
         public double ActionableTp1RR;
+        public double PlanRiskAtr;
+        public double EffectiveTp1RR;
+        public double RequiredTp1RR;
 
         public ExecutionMode EntryMode;
         public double Entry;
