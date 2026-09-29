@@ -187,34 +187,26 @@ namespace cAlgo
 
             if (_decision.Direction == 0)
             {
-                _decision.ActionableNow = false;
-                _decision.ActionabilityReason =
-                    "NO DIRECTION";
+                ResetLiveActionability(
+                    "NO DIRECTION");
                 return;
             }
 
             if (!_decision.EntryAllowed)
             {
-                _decision.ActionableNow = false;
-                _decision.ActionabilityReason =
+                ResetLiveActionability(
                     string.IsNullOrWhiteSpace(
                         _decision.BlockReason)
                         ? "DECISION FILTER"
-                        : _decision.BlockReason;
+                        : _decision.BlockReason);
                 return;
             }
 
             if (_executionModel == null ||
                 _setupPreview == null)
             {
-                _decision.ActionableNow = false;
-                _decision.EntryLocationQuality = 0;
-                _decision.EntryTimingQuality = 0;
-                _decision.EntryPositionQuality = 0;
-                _decision.EntryDistanceAtr = 0;
-                _decision.ActionableTp1RR = 0;
-                _decision.ActionabilityReason =
-                    "EXECUTION MODEL UNAVAILABLE";
+                ResetLiveActionability(
+                    "EXECUTION MODEL UNAVAILABLE");
                 return;
             }
 
@@ -292,6 +284,24 @@ namespace cAlgo
                 result.DivergenceType;
             _decision.ActionabilityReason =
                 reason;
+        }
+
+        private void ResetLiveActionability(
+            string reason)
+        {
+            _decision.ActionableNow = false;
+            _decision.EntryLocationQuality = 0;
+            _decision.EntryTimingQuality = 0;
+            _decision.EntryPositionQuality = 0;
+            _decision.EntryDistanceAtr = 0;
+            _decision.ActionableTp1RR = 0;
+            _decision.DivergenceQuality = 0;
+            _decision.DivergenceDirection = 0;
+            _decision.DivergenceType = "NONE";
+            _decision.ActionabilityReason =
+                string.IsNullOrWhiteSpace(reason)
+                    ? "NOT ACTIONABLE"
+                    : reason;
         }
 
         private void RenderCalculationState(
