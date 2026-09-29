@@ -28,23 +28,52 @@ namespace cAlgo
                     EmpiricalConfidenceCalibrator.ConfidenceBucket(
                         confidence));
 
-            return new EmpiricalConfidenceCalibrator()
-                .CalculateContextual(
-                    true,
-                    true,
-                    direction,
-                    lane,
-                    regime,
-                    confidence,
-                    _calibrationSamples,
-                    _calibrationWins,
-                    Math.Max(
-                        1,
-                        CalibrationMinimumSamples),
-                    Math.Max(
-                        2,
-                        CalibrationDirectionalMinimumSamples),
-                    CalibrationMaxConfidenceAdjustment);
+            EmpiricalConfidenceCalibrator calibrator =
+                new EmpiricalConfidenceCalibrator();
+
+            int minimumDirectionalSamples =
+                Math.Max(
+                    2,
+                    CalibrationDirectionalMinimumSamples);
+
+            if (_outcomeHistory != null &&
+                _outcomeHistory.Count >=
+                    minimumDirectionalSamples)
+            {
+                EmpiricalCalibrationSnapshot recent =
+                    calibrator.CalculateRecentContextual(
+                        true,
+                        true,
+                        direction,
+                        lane,
+                        regime,
+                        confidence,
+                        _outcomeHistory,
+                        128,
+                        Math.Max(
+                            1,
+                            CalibrationMinimumSamples),
+                        minimumDirectionalSamples,
+                        CalibrationMaxConfidenceAdjustment);
+
+                if (recent.Available)
+                    return recent;
+            }
+
+            return calibrator.CalculateContextual(
+                true,
+                true,
+                direction,
+                lane,
+                regime,
+                confidence,
+                _calibrationSamples,
+                _calibrationWins,
+                Math.Max(
+                    1,
+                    CalibrationMinimumSamples),
+                minimumDirectionalSamples,
+                CalibrationMaxConfidenceAdjustment);
         }
 
         private void BindPlanCalibrationContext(

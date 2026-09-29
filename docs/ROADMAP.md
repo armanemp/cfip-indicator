@@ -3751,3 +3751,40 @@ Completed scope:
 Detailed record: `docs/PHASE-9-11-SIGNAL-LIFECYCLE-QUALITY-ALERTS.md`.
 
 Next phase after verification: Phase 9.12 — broker outcome/recovery telemetry and historical signal lifecycle calibration.
+
+
+
+## Phase 9.12 — Broker Outcome / Recovery Telemetry & Recent Lifecycle Calibration — 2026-09-29
+
+Status: VERIFIED COMPLETE on `phase/9-12-outcome-recovery-calibration`.
+
+Completed scope:
+- bounded 128-observation broker-confirmed outcome history;
+- centralized/idempotent close-outcome recording with lane/regime/confidence context;
+- realized-R and lifecycle-duration telemetry;
+- recent-first contextual empirical calibration with exact/context/directional fallback;
+- bounded 64-record submission/recovery telemetry history;
+- explicit RecoveryRequired/resolution telemetry transitions;
+- compact panel diagnostics for recent outcomes and broker trace state;
+- Decision Contract coverage and accumulated-audit enforcement;
+- no public parameter changes and no second decision/execution authority.
+
+Known boundary:
+- recent history remains in-memory and is cleared on indicator restart;
+- target cTrader replay is still required for empirical signal timing, lifecycle duration, realized R, broker event ordering and actual signal-quality validation.
+
+Detailed record: `docs/PHASE-9-12-OUTCOME-RECOVERY-TELEMETRY-CALIBRATION.md`.
+
+Next phase after verification: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
+Operator action: local main should not be advanced from this branch until the phase is verified and merged.
+
+
+Verification:
+- Runtime Acceptance #1096 PASS
+- cTrader Compile/Build #1280 PASS
+- Source/Architecture + accumulated audit #1287 PASS
+- Decision Contracts PASS within the compile workflow
+- final verified branch head `626618e7100b2e2cecf8a172d67ed49aee43345b`
+
+Next phase after merge: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
+Operator action: pull local `main` after PR #54 merge.

@@ -12,6 +12,7 @@ namespace cAlgo
             VerifyQualityBoundaries();
             VerifyConfidenceCalibration();
             VerifyContextualConfidenceCalibration();
+            VerifyRecentOutcomeCalibration();
             VerifyThresholdReasons();
             VerifySmartConsensusReasons();
             VerifyConfidenceDeterminism();
@@ -328,6 +329,114 @@ namespace cAlgo
                 direction.ObservedWinRate >= 0.49 &&
                 direction.ObservedWinRate <= 0.51,
                 "directional fallback uses observed outcomes without directional asymmetry bias");
+        }
+
+        private static void VerifyRecentOutcomeCalibration()
+        {
+            EmpiricalConfidenceCalibrator calibrator =
+                new EmpiricalConfidenceCalibrator();
+
+            List<OutcomeObservation> outcomes =
+                new List<OutcomeObservation>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                outcomes.Add(
+                    new OutcomeObservation
+                    {
+                        PositionId = i + 1,
+                        Direction = 1,
+                        Lane = OpportunityLane.Strategic,
+                        EntryMode = ExecutionMode.BreakoutMarket,
+                        Regime = "EXPANSION",
+                        Confidence = 85,
+                        Profitable = false,
+                        CalibrationEligible = true
+                    });
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                outcomes.Add(
+                    new OutcomeObservation
+                    {
+                        PositionId = 100 + i,
+                        Direction = 1,
+                        Lane = OpportunityLane.Strategic,
+                        EntryMode = ExecutionMode.RetestMarket,
+                        Regime = "EXPANSION",
+                        Confidence = 85,
+                        Profitable = true,
+                        CalibrationEligible = true
+                    });
+            }
+
+            EmpiricalCalibrationSnapshot recent =
+                calibrator.CalculateRecentContextual(
+                    true,
+                    true,
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    85,
+                    outcomes,
+                    4,
+                    4,
+                    4,
+                    8);
+
+            Assert(
+                recent.Available &&
+                recent.Source == "EXACT-RECENT" &&
+                recent.Samples == 4 &&
+                recent.Wins == 4 &&
+                recent.ObservedWinRate == 1.0 &&
+                recent.Adjustment > 0,
+                "recent exact calibration prefers current lifecycle window");
+
+            outcomes[11].Profitable = false;
+
+            EmpiricalCalibrationSnapshot changed =
+                calibrator.CalculateRecentContextual(
+                    true,
+                    true,
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    85,
+                    outcomes,
+                    4,
+                    4,
+                    4,
+                    8);
+
+            Assert(
+                changed.Samples == 4 &&
+                changed.Wins == 3 &&
+                changed.Adjustment < recent.Adjustment,
+                "recent calibration reacts to newest outcome only");
+
+            EmpiricalCalibrationSnapshot repeat =
+                calibrator.CalculateRecentContextual(
+                    true,
+                    true,
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    85,
+                    outcomes,
+                    4,
+                    4,
+                    4,
+                    8);
+
+            Assert(
+                repeat.Available &&
+                repeat.Source == changed.Source &&
+                repeat.Samples == changed.Samples &&
+                repeat.Wins == changed.Wins &&
+                repeat.Adjustment == changed.Adjustment,
+                "recent calibration deterministic");
         }
 
         private static void VerifyThresholdReasons()

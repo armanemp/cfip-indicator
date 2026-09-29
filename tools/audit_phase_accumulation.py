@@ -80,12 +80,32 @@ if "_serverSideTakeProfitLadderActive" not in partial_tp:
 quality_rule = read("Core/Math/ActionableSignalQualityRule.cs")
 evaluator = read("Trading/Validation/TradeActionabilityEvaluator.cs")
 telemetry = read("Trading/Execution/SubmissionGateCoordinator.cs")
+outcome_telemetry = read("Trading/Intelligence/OutcomeTelemetryEngine.cs")
+outcome_model = read("Trading/Intelligence/OutcomeObservation.cs")
+
 if "AllowsQualityRecovery(" not in quality_rule:
     raise SystemExit("high-quality signal recovery gate is missing")
 if "locationQuality <" not in evaluator or "timingQuality < 64" not in evaluator:
     raise SystemExit("actionability staging recovery boundary is missing")
 if "RecordExecutionTelemetry(" not in telemetry or "RecordExecutionTelemetryFailure(" not in telemetry:
     raise SystemExit("broker submission telemetry owner is missing")
+if "RecordExecutionTelemetryHistory(" not in telemetry:
+    raise SystemExit("bounded execution telemetry history owner is missing")
+if "RecordManagedOutcome(" not in outcome_telemetry:
+    raise SystemExit("managed outcome recorder is missing")
+if "_outcomeHistory" not in read("Indicator/State.cs"):
+    raise SystemExit("bounded outcome history state is missing")
+if "_executionTelemetryHistory" not in read("Indicator/State.cs"):
+    raise SystemExit("bounded execution telemetry history state is missing")
+if "CalculateRecentContextual(" not in read("Analysis/Market/Decision/EmpiricalConfidenceCalibrator.cs"):
+    raise SystemExit("recent contextual calibration owner is missing")
+if "CalculateRecentContextual(" not in read("Analysis/Market/Decision/ConfidenceCalibrationCollector.cs"):
+    raise SystemExit("collector does not consume recent calibration")
+if "RecordLifecycleTelemetry(" not in read("Trading/Execution/State/LifecycleStateStore.cs"):
+    raise SystemExit("recovery lifecycle telemetry owner is missing")
+if "RecordManagedOutcome(" not in read("Trading/Lifecycle/PositionClosedHandler.cs"):
+    raise SystemExit("broker-close outcome path is not centralized")
+
 if "stopDistance" not in ladder:
     raise SystemExit("server SL/TP geometry freshness guard is missing")
 
@@ -142,4 +162,4 @@ print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("All level label text: White / background-free")
 print("Public parameter contract: 552")
-print("Signal lifecycle / quality recovery / broker telemetry: PASS")
+print("Signal lifecycle / recent calibration / broker telemetry: PASS")

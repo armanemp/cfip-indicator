@@ -42,6 +42,20 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
+                OutcomeHistoryPanelText(),
+                PanelSecondaryTextColor,
+                false,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
+                ExecutionTelemetryPanelText(),
+                PanelSecondaryTextColor,
+                false,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
                 "EXEC MODE  " +
                 (_executionModel == null
                     ? "NONE"

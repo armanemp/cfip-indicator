@@ -246,6 +246,99 @@ namespace cAlgo
                 source);
         }
 
+        public EmpiricalCalibrationSnapshot CalculateRecentContextual(
+            bool calibrationEnabled,
+            bool telemetryEnabled,
+            int direction,
+            OpportunityLane lane,
+            string regime,
+            int confidence,
+            IList<OutcomeObservation> outcomes,
+            int recentMaximum,
+            int minimumSamples,
+            int minimumDirectionalSamples,
+            int maximumAdjustment)
+        {
+            int bucket = ConfidenceBucket(confidence);
+
+            if (!calibrationEnabled ||
+                !telemetryEnabled ||
+                (direction != 1 && direction != -1) ||
+                outcomes == null ||
+                outcomes.Count == 0 ||
+                recentMaximum <= 0)
+                return EmpiricalCalibrationSnapshot.None(bucket);
+
+            Dictionary<ConfidenceCalibrationKey, int> samples =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+            Dictionary<ConfidenceCalibrationKey, int> wins =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+
+            int start =
+                Math.Max(
+                    0,
+                    outcomes.Count -
+                    Math.Max(1, recentMaximum));
+
+            for (int i = start; i < outcomes.Count; i++)
+            {
+                OutcomeObservation observation = outcomes[i];
+
+                if (observation == null ||
+                    !observation.CalibrationEligible ||
+                    (observation.Direction != 1 &&
+                     observation.Direction != -1))
+                    continue;
+
+                ConfidenceCalibrationKey key =
+                    new ConfidenceCalibrationKey(
+                        observation.Direction,
+                        observation.Lane,
+                        observation.Regime,
+                        ConfidenceBucket(
+                            observation.Confidence));
+
+                int sampleCount =
+                    Get(samples, key);
+
+                int winCount =
+                    Get(wins, key);
+
+                samples[key] = sampleCount + 1;
+
+                if (observation.Profitable)
+                    wins[key] = winCount + 1;
+                else if (!wins.ContainsKey(key))
+                    wins[key] = 0;
+            }
+
+            EmpiricalCalibrationSnapshot snapshot =
+                CalculateContextual(
+                    calibrationEnabled,
+                    telemetryEnabled,
+                    direction,
+                    lane,
+                    regime,
+                    confidence,
+                    samples,
+                    wins,
+                    minimumSamples,
+                    minimumDirectionalSamples,
+                    maximumAdjustment);
+
+            if (!snapshot.Available)
+                return snapshot;
+
+            return new EmpiricalCalibrationSnapshot(
+                true,
+                snapshot.Adjustment,
+                snapshot.Samples,
+                snapshot.Wins,
+                snapshot.ConfidenceBucket,
+                snapshot.ObservedWinRate,
+                snapshot.Source + "-RECENT");
+        }
+
         public int CalculateAdjustment(
             bool calibrationEnabled,
             bool telemetryEnabled,

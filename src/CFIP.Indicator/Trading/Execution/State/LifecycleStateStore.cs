@@ -14,11 +14,26 @@ namespace cAlgo
                                     LifecycleState state,
                                     string reason)
                                 {
+                                    LifecycleState previous =
+                                        _lifecycleState;
+
                                     _lifecycleState = state;
                                     _lifecycleReason =
                                         string.IsNullOrWhiteSpace(reason)
                                             ? state.ToString().ToUpperInvariant()
                                             : reason;
+
+                                    if (previous != state &&
+                                        (state == LifecycleState.RecoveryRequired ||
+                                         (previous == LifecycleState.RecoveryRequired &&
+                                          (state == LifecycleState.LivePosition ||
+                                           state == LifecycleState.Closed ||
+                                           state == LifecycleState.PlanReady))))
+                                    {
+                                        RecordLifecycleTelemetry(
+                                            state,
+                                            _lifecycleReason);
+                                    }
                                 }
     }
 }
