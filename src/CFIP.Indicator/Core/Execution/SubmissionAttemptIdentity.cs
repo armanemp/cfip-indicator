@@ -7,16 +7,22 @@ namespace cAlgo
         public SubmissionAttemptIdentity(
             string signalKey,
             string attemptKey,
-            ExecutionSubmissionPath path)
+            ExecutionSubmissionPath path,
+            string scenarioId = "")
         {
             SignalKey = signalKey ?? string.Empty;
             AttemptKey = attemptKey ?? string.Empty;
             Path = path;
+            ScenarioId =
+                string.IsNullOrWhiteSpace(scenarioId)
+                    ? "UNSCOPED"
+                    : scenarioId.Trim().Replace("|", "/");
         }
 
         public string SignalKey { get; }
         public string AttemptKey { get; }
         public ExecutionSubmissionPath Path { get; }
+        public string ScenarioId { get; }
 
         public string CanonicalKey
         {
@@ -24,7 +30,8 @@ namespace cAlgo
             {
                 return SignalKey + "|" +
                        AttemptKey + "|" +
-                       ((int)Path).ToString();
+                       ((int)Path).ToString() + "|" +
+                       ScenarioId;
             }
         }
     }
