@@ -991,8 +991,8 @@ namespace cAlgo
                 ExecutionPlanGeometryRule.Evaluate(
                     -1,
                     100,
-                    110,
-                    80,
+                    105,
+                    90,
                     2.0);
 
             Assert(
