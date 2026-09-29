@@ -88,7 +88,7 @@ namespace cAlgo
                                     market,
                                     atr);
 
-                            if (LiveExitGeometryRule.ShouldAdvanceTarget(
+                            if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     _plan.Direction,
                                     existingTp2,
                                     candidateTp2,
@@ -111,7 +111,7 @@ namespace cAlgo
                                     market,
                                     atr);
 
-                            if (LiveExitGeometryRule.ShouldAdvanceTarget(
+                            if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     _plan.Direction,
                                     existingTp3,
                                     candidateTp3,
@@ -134,7 +134,7 @@ namespace cAlgo
                                     market,
                                     atr);
 
-                            if (LiveExitGeometryRule.ShouldAdvanceTarget(
+                            if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     _plan.Direction,
                                     existingTp4,
                                     candidateTp4,
