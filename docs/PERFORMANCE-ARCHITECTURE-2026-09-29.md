@@ -88,3 +88,7 @@ Do not add a new indicator merely because it produces another number. A new feat
 - or improve an existing feature's accuracy/robustness without creating a second decision authority.
 
 This rule is now part of the project continuity record.
+
+## Phase 2.1 execution-retry addendum
+
+Submission retry is now owned by one keyed gate partitioned by signal identity, attempt identity and execution path. This prevents cross-signal contamination of retry suppression while keeping one consistent backoff/circuit policy.
