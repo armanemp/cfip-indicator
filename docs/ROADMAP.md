@@ -3827,3 +3827,28 @@ Next phase after merge: Phase 9.14 — target-terminal replay, calibration/optim
 Operator action: pull `main` after PR #55 merge.
 
 Merge commit: `6246782125718af184568eb9339965e3f228c9a7`.
+
+
+## Phase 9.14 — Signal Evidence Integrity & Consensus Calibration — 2026-09-29
+
+Status: IMPLEMENTED; automated verification pending on the documentation-inclusive head.
+
+Completed scope:
+- directional frame contribution now accounts for absolute bull+bear strength and canonical evidence coverage;
+- weak concentrated frames are softened toward neutral instead of becoming full-strength votes;
+- strong evidence retains high directional influence;
+- BUY/SELL symmetry and deterministic behavior are covered by Decision Contracts;
+- no global thresholds were blindly raised;
+- no execution/risk/trade-plan authority was duplicated;
+- public parameter count remains 552.
+
+Key finding:
+The prior contribution model could turn relative directional dominance from a low-evidence frame into an overly strong MTF vote. The correction preserves direction while making evidence strength part of directional influence.
+
+Detailed record: docs/PHASE-9-14-SIGNAL-EVIDENCE-CALIBRATION.md.
+
+Known boundary:
+Target-terminal/replay measurement is still required to establish empirical changes in false-signal frequency, missed opportunities, realized R and execution behavior.
+
+Next phase after verification: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
+Operator pull: required after Phase 9.14 is verified and merged.

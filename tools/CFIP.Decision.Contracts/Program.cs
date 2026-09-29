@@ -743,6 +743,75 @@ namespace cAlgo
                 Math.Abs(contribution.Bull - mirrored.Bear) < 0.0001 &&
                 Math.Abs(contribution.Bear - mirrored.Bull) < 0.0001,
                 "BUY/SELL contribution symmetry");
+
+            DecisionFrameContribution weakConcentrated =
+                calculator.Calculate(
+                    35,
+                    0,
+                    80,
+                    10,
+                    1);
+
+            Assert(
+                weakConcentrated.Bull < contribution.Bull &&
+                weakConcentrated.Bull > weakConcentrated.Bear,
+                "weak concentrated frame cannot dominate as a strong frame");
+
+            DecisionFrameContribution weakBalanced =
+                calculator.Calculate(
+                    20,
+                    20,
+                    80,
+                    10,
+                    1);
+
+            Assert(
+                weakBalanced.Bull > 0 &&
+                weakBalanced.Bear > 0 &&
+                Math.Abs(
+                    weakBalanced.Bull -
+                    weakBalanced.Bear) <
+                Math.Abs(
+                    weakConcentrated.Bull -
+                    weakConcentrated.Bear),
+                "weak balanced frame stays near neutral");
+
+            DecisionFrameContribution strong =
+                calculator.Calculate(
+                    70,
+                    10,
+                    80,
+                    10,
+                    3);
+
+            Assert(
+                strong.Bull > weakConcentrated.Bull &&
+                strong.Bull > strong.Bear,
+                "absolute evidence strength restores influence for strong frame");
+
+            DecisionFrameContribution mirroredWeak =
+                calculator.Calculate(
+                    0,
+                    35,
+                    80,
+                    10,
+                    1);
+
+            Assert(
+                Math.Abs(weakConcentrated.Bull - mirroredWeak.Bear) < 0.0001 &&
+                Math.Abs(weakConcentrated.Bear - mirroredWeak.Bull) < 0.0001,
+                "weak BUY/SELL contribution symmetry");
+
+            DecisionFrameContribution legacy =
+                calculator.Calculate(
+                    35,
+                    0,
+                    80,
+                    10);
+
+            Assert(
+                legacy.Bull > weakConcentrated.Bull,
+                "compatibility overload treats isolated inputs as strong evidence");
         }
 
         private static void VerifyMarketRegimeClassification()
