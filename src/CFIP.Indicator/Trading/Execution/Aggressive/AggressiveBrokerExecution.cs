@@ -103,7 +103,7 @@ namespace cAlgo
                                 serverBreakEven,
                                 TradeExecutionMetadata.DefaultExecutionComment,
                                 false,
-                                "AGG • SERVER TP LADDER")
+                                "AGG • TP LADDER")
                             : TryExecuteMarketOrder(
                                 type,
                                 SymbolName,
