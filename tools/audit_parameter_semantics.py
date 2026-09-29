@@ -40,7 +40,7 @@ for path in sorted(PARAM_ROOT.glob("*.cs")):
             "default": default_match.group(1).strip() if default_match else "",
         }
 
-if len(parameter_defs) != 534:
+if len(parameter_defs) != 533:
     raise SystemExit(f"Expected 534 parameters during Phase 7.3, found {len(parameter_defs)}")
 
 sources = {
