@@ -205,6 +205,28 @@ namespace cAlgo
                     _serverSideTakeProfitLadderActive &&
                     position.StopLossBreakEven != null;
 
+                if (_serverSideTakeProfitLadderActive)
+                {
+                    double market =
+                        position.TradeType == TradeType.Buy
+                            ? Symbol.Bid
+                            : Symbol.Ask;
+
+                    double forwardDistance =
+                        Math.Max(
+                            Symbol.PipSize,
+                            Symbol.TickSize);
+
+                    double planTarget =
+                        FurthestForwardPlanTarget(
+                            market,
+                            forwardDistance);
+
+                    if (IsFinitePositive(planTarget))
+                        _activeBrokerTarget =
+                            NormalizePrice(planTarget);
+                }
+
                 return _serverSideTakeProfitLadderActive;
             }
             catch (Exception ex)
