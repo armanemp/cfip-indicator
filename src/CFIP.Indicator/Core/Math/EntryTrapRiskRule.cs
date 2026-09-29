@@ -42,7 +42,7 @@ namespace cAlgo
         {
             if (direction != 1 &&
                 direction != -1)
-                return EntryTrapRiskResult.CreateNone();
+                return EntryTrapRiskResult.CreateNoTrapRisk();
 
             if (double.IsNaN(rangePosition) ||
                 double.IsInfinity(rangePosition))
