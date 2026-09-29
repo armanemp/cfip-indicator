@@ -6,10 +6,24 @@ namespace cAlgo
     {
         private double EffectiveAutoRiskPercent()
         {
+            double suitability =
+                SuitabilityRiskMultiplier();
+
+            double outcome =
+                AdaptiveOutcomeRiskPolicy.Calculate(
+                    _outcomeHistory,
+                    suitability);
+
             return RiskPercentPolicy.Calculate(
                 RiskPercentEquity,
                 UseSmartRiskScaling,
-                SuitabilityRiskMultiplier());
+                outcome);
+        }
+        private double OutcomeRiskMultiplier()
+        {
+            return AdaptiveOutcomeRiskPolicy.Calculate(
+                _outcomeHistory,
+                1.0);
         }
     }
 }
