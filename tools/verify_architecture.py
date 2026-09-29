@@ -140,6 +140,96 @@ for token in (
     if token not in m1_rule_code:
         raise SystemExit(f"M1 trigger rule missing causal evidence gate: {token}")
 
+# Phase 8.2 — canonical swing plateau and structural evidence ownership.
+swing_rule = ROOT / "Core" / "Math" / "SwingPlateauRule.cs"
+swing_analyzer = ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs"
+equal_level = ROOT / "Analysis" / "Structure" / "EqualLevelAnalyzer.cs"
+liquidity_sweep = ROOT / "Analysis" / "Structure" / "LiquiditySweepAnalyzer.cs"
+frame_scoring = ROOT / "Analysis" / "Market" / "MarketFrameScoringService.cs"
+independent_evidence = ROOT / "Analysis" / "Market" / "Decision" / "IndependentEvidenceAnalyzer.cs"
+structural_confirmations = ROOT / "Analysis" / "Market" / "Decision" / "StructuralConfirmationAnalyzer.cs"
+
+for required in (
+    swing_rule,
+    swing_analyzer,
+    equal_level,
+    liquidity_sweep,
+    frame_scoring,
+    independent_evidence,
+    structural_confirmations,
+):
+    if not required.exists():
+        raise SystemExit(f"Phase 8.2 structural owner is missing: {required}")
+
+swing_rule_code = swing_rule.read_text(encoding="utf-8")
+swing_analyzer_code = swing_analyzer.read_text(encoding="utf-8")
+equal_level_code = equal_level.read_text(encoding="utf-8")
+liquidity_sweep_code = liquidity_sweep.read_text(encoding="utf-8")
+frame_scoring_code = frame_scoring.read_text(encoding="utf-8")
+independent_evidence_code = independent_evidence.read_text(encoding="utf-8")
+structural_confirmations_code = structural_confirmations.read_text(encoding="utf-8")
+
+for token in (
+    "TryGetHighPlateau(",
+    "TryGetLowPlateau(",
+    "candidateIndex != left",
+    "right + strength > closedIndex",
+    "IsWithinAnchor(",
+    "BreakIdentity(",
+):
+    if token not in swing_rule_code:
+        raise SystemExit(f"Swing plateau rule missing deterministic ownership condition: {token}")
+
+for token in (
+    "SwingPlateauRule.TryGetHighPlateau(",
+    "SwingPlateauRule.TryGetLowPlateau(",
+    "IsCanonicalSwingHigh(",
+    "IsCanonicalSwingLow(",
+):
+    if token not in swing_analyzer_code:
+        raise SystemExit(f"Swing analyzer missing canonical plateau consumption: {token}")
+
+for token in (
+    "IsCanonicalSwingHigh(",
+    "IsCanonicalSwingLow(",
+    "SwingPlateauRule.IsWithinAnchor(",
+):
+    if token not in equal_level_code:
+        raise SystemExit(f"Equal-level analyzer must use canonical swing identities: {token}")
+
+for token in (
+    "FindSwingLow(",
+    "FindSwingHigh(",
+    "causally established structural",
+):
+    if token not in liquidity_sweep_code:
+        raise SystemExit(f"Liquidity sweep must use established structural levels: {token}")
+
+for token in (
+    "if (f.StructureBull)",
+    "else if (f.MssBull)",
+    "else if (f.ChochBull)",
+    "if (f.StructureBear)",
+    "else if (f.MssBear)",
+    "else if (f.ChochBear)",
+):
+    if token not in frame_scoring_code:
+        raise SystemExit(f"Market-frame structural scoring must de-duplicate one causal break: {token}")
+
+if "&&
+                !structure" not in independent_evidence_code:
+    raise SystemExit("Independent evidence must not stack transition with the same structural event")
+for token in (
+    "_m5Frame.StructureBull ||",
+    "_m5Frame.MssBull ||",
+    "_m5Frame.ChochBull",
+    "_m5Frame.StructureBear ||",
+    "_m5Frame.MssBear ||",
+    "_m5Frame.ChochBear",
+):
+    if token not in structural_confirmations_code:
+        raise SystemExit(f"Structural confirmation must collapse M5 break labels: {token}")
+
 capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 capacity_guard = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 if not capacity_rule.exists() or not capacity_guard.exists():
