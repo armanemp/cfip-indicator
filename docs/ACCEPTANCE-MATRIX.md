@@ -188,3 +188,15 @@ The phase changes temporal and ownership guarantees only; decision thresholds, w
 | cTrader compile | Yes | PASS |
 
 The phase chooses controlled intrabar entry explicitly. The closed-bar decision remains the structural context; the live reaction is the trigger source. No new public parameter is introduced.
+
+
+## Startup responsiveness correction — 2026-09-29
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Initial panel render is completed before startup calculation seed execution | Source gate | PASS |
+| Startup calculation seed is queued asynchronously on the indicator main thread | Source gate | PASS |
+| Synchronous full calculation is not executed inside async initialization finalization | Source gate | PASS |
+| Startup seed remains one-shot and cannot recur | Source/runtime contract | PASS |
+| Normal Calculate remains the recurring live calculation owner | Source/runtime contract | PASS |
+| cTrader main-thread dispatch uses the documented BeginInvokeOnMainThread API | cTrader API contract | PASS |
