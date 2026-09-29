@@ -3064,7 +3064,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 1.5 — Safety supervisor**
+**NEXT: Phase 5.5 — Visual setup levels and execution controls**
 
 Then proceed in dependency order:
 
@@ -3150,3 +3150,19 @@ The roadmap is authoritative for **what comes next**.
 The architecture is authoritative for **how ownership works**.
 The source and broker-confirmed runtime state are authoritative for **what is
 actually true**.
+
+
+## Phase 5.5 — Visual setup levels and execution controls
+
+Status: complete.
+
+This phase closes the semantic gap where a signal/watch arrow can be visible while Entry/Trigger/SL/TP levels are absent, without turning presentation state into an executable Plan. It also fixes Auto Trading / Auto Orders quick controls through explicit ToggleButton Checked/Unchecked events and the existing runtime authority.
+
+Acceptance:
+- setup levels use one shared renderer with executable plan levels;
+- setup preview cannot submit orders;
+- quick execution controls mutate only the canonical runtime flags;
+- no second gate, trading engine or decision authority is introduced;
+- source, runtime and cTrader compile gates are green before merge.
+
+The next strategy-quality phase remains isolated: stronger signal selection, stronger entry/TP/SL level selection, higher RR and smart trailing.

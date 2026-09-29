@@ -69,7 +69,8 @@ if not label or label.group(1) != "CFIP-SMART":
 model_files = sorted(MODEL_ROOT.glob("*.cs"))
 expected_models = {
     "Level", "Zone", "ExecutionIntent", "ExecutionModel",
-    "Prediction", "Decision", "Plan", "OssIndicatorSnapshot", "MarketRegimeSnapshot", "MarketRegimeClassificationInput",
+    "Prediction", "Decision", "Plan", "TradeSetupPreview",
+    "OssIndicatorSnapshot", "MarketRegimeSnapshot", "MarketRegimeClassificationInput",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
@@ -477,6 +478,65 @@ for forbidden in (
     if forbidden in signal_renderer_code:
         raise SystemExit(f"Signal renderer bypasses canonical visual snapshot: {forbidden}")
 
+# Phase 5.5 visual setup projection and execution controls.
+VISUAL_PREVIEW_MODEL = MODEL_ROOT / "TradeSetupPreview.cs"
+VISUAL_PREVIEW_BUILDER = ROOT / "Planning" / "TradePlan" / "PlanPreviewBuilder.cs"
+VISUAL_STATE = ROOT / "UI" / "Chart" / "SignalVisualSnapshot.cs"
+VISUAL_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
+VISUAL_CALC = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
+VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
+VISUAL_LINE_RENDERER = ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"
+CONTROL_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
+CONTROL_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
+
+for required_path in (
+    VISUAL_PREVIEW_MODEL,
+    VISUAL_PREVIEW_BUILDER,
+    VISUAL_STATE,
+    VISUAL_BUILDER,
+    VISUAL_CALC,
+    VISUAL_PLAN_RENDERER,
+    VISUAL_LINE_RENDERER,
+    CONTROL_FACTORY,
+    CONTROL_HANDLERS,
+):
+    if not required_path.exists():
+        raise SystemExit(f"Phase 5.5 visual/control owner is missing: {required_path.name}")
+
+preview_model_code = VISUAL_PREVIEW_MODEL.read_text(encoding="utf-8")
+preview_builder_code = VISUAL_PREVIEW_BUILDER.read_text(encoding="utf-8")
+visual_state_code = VISUAL_STATE.read_text(encoding="utf-8")
+visual_builder_code = VISUAL_BUILDER.read_text(encoding="utf-8")
+visual_calc_code = VISUAL_CALC.read_text(encoding="utf-8")
+visual_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
+visual_line_code = VISUAL_LINE_RENDERER.read_text(encoding="utf-8")
+control_factory_code = CONTROL_FACTORY.read_text(encoding="utf-8")
+control_handlers_code = CONTROL_HANDLERS.read_text(encoding="utf-8")
+
+if "class TradeSetupPreview" not in preview_model_code:
+    raise SystemExit("Visual setup preview model is missing")
+if "BuildTradeSetupPreview(" not in preview_builder_code:
+    raise SystemExit("Visual setup preview builder is missing")
+if "BuildStructuralStop(" not in preview_builder_code or "BuildTargetLevels(" not in preview_builder_code:
+    raise SystemExit("Visual preview must reuse structural stop and target authorities")
+if "SetupPreviewActive" not in visual_state_code or "SetupEntry" not in visual_state_code:
+    raise SystemExit("Visual setup preview fields are missing")
+if "_setupPreview" not in visual_builder_code and "_setupPreview" not in visual_calc_code:
+    raise SystemExit("Visual setup preview cache is not wired")
+if "RenderSetupPreview(" not in visual_calc_code or "RenderLevelLines(" not in visual_renderer_code:
+    raise SystemExit("Visual setup levels must render through the shared level renderer")
+if "anchorM5" not in visual_line_code:
+    raise SystemExit("Level renderer must receive its canonical anchor explicitly")
+if ".Checked +=" not in control_factory_code or ".Unchecked +=" not in control_factory_code:
+    raise SystemExit("Execution toggles must bind state-specific events")
+if ".Click +=" in control_factory_code:
+    raise SystemExit("Execution toggles must not rely on Click for state mutation")
+for required_call in (
+    "SetAutoTradingRuntimeState(",
+    "SetAutomaticOrdersRuntimeState(",
+):
+    if required_call not in control_handlers_code:
+        raise SystemExit(f"Execution control state mutation missing: {required_call}")
 # Phase 1.5 performance/supervision gates.
 RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"

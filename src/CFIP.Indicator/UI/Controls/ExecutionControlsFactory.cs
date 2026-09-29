@@ -47,11 +47,17 @@ namespace cAlgo
                                     "AUTO ORDERS",
                                     TriggerLineColor);
                 
-                            _autoTradingQuickToggle.Click +=
-                                OnAutoTradingQuickToggleClicked;
+                            _autoTradingQuickToggle.Checked +=
+                                OnAutoTradingQuickToggleChecked;
                 
-                            _automaticOrdersQuickToggle.Click +=
-                                OnAutomaticOrdersQuickToggleClicked;
+                            _autoTradingQuickToggle.Unchecked +=
+                                OnAutoTradingQuickToggleUnchecked;
+                
+                            _automaticOrdersQuickToggle.Checked +=
+                                OnAutomaticOrdersQuickToggleChecked;
+                
+                            _automaticOrdersQuickToggle.Unchecked +=
+                                OnAutomaticOrdersQuickToggleUnchecked;
                 
                             _quickExecutionStack.AddChild(
                                 _autoTradingQuickToggle);
