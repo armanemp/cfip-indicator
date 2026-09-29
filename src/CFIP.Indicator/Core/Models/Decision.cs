@@ -25,5 +25,9 @@ namespace cAlgo
                         public bool EntryAllowed;
                         public string BlockReason;
                         public string Reason;
+                        public bool TacticalOpportunityAllowed;
+                        public OpportunityLane TacticalOpportunityLane;
+                        public int TacticalOpportunityQuality;
+                        public double TacticalOpportunityRR;
                     }
 }
