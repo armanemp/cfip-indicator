@@ -3905,3 +3905,30 @@ false-signal rate, entry timing, realized R or trading outcomes are made.
 
 Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
 Operator pull: required after the final verified Phase 9.16 main closeout.
+
+
+## Phase 9.17 — Exit Geometry, TP Progression & Protection Integrity — 2026-09-29
+
+Status: IMPLEMENTED; CI verification pending.
+
+Scope completed:
+- added canonical live exit geometry for forward-only TP and protective SL validation;
+- stopped live target regression behind the current market;
+- made live target enrichment monotonic instead of blindly overwriting TP2/TP3/TP4;
+- made actual-fill exit reconciliation live-aware and transactional;
+- removed the unsafe non-live-aware post-fill rebuild fallback;
+- restored dynamic progression while server-side TP protection is active;
+- added TP1 follow-up ladder progression and post-TP2 final-target continuation;
+- hardened broker protection so live TP mutation remains monotonic regardless of legacy tuning;
+- added broker-distance-aware TP spacing and final SL geometry checks;
+- added deterministic Decision Contracts and a dedicated Phase 9.17 exit-geometry audit.
+
+Root cause found:
+A target could be farther than its previous structural target while already being behind the live quote. Server-side ladder state also stopped dynamic progression, while post-fill/recovery paths could reintroduce stale target geometry.
+
+Detailed record: docs/PHASE-9-17-EXIT-GEOMETRY-PROGRESSION.md.
+
+Target-terminal validation remains required for actual live/replay timing, broker behavior, server-side advanced protection behavior, and realized exit outcomes.
+
+Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
+Operator pull: required after final verified closeout.
