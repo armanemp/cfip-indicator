@@ -35,6 +35,12 @@ namespace cAlgo
                 _lastPanelHeartbeatUtc =
                     now;
 
+                // Economic calendar refresh runs on the timer, not on every
+                // market tick, so external feed latency cannot stall decisions.
+                if (EnableEconomicNewsCalendar)
+                    RefreshEconomicNewsIfNeeded(
+                        now);
+
                 if (ShouldRunSafetySupervisor(now))
                     RunRuntimeSafetySupervisor(
                         now);
