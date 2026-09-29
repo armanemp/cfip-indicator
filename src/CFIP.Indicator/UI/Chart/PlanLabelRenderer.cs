@@ -190,10 +190,17 @@ namespace cAlgo
                     Chart.FindObject(boxName)
                     as ChartRectangle;
 
-                Color boxColor = color;
+                // Force a visible, fully opaque background. Some cTrader
+                // color parameters may carry transparency; using the raw line
+                // color here made the label box visually disappear.
+                Color boxColor =
+                    Color.FromArgb(
+                        255,
+                        color);
+
                 Color textColor =
                     GetReadableLabelTextColor(
-                        boxColor);
+                        color);
 
                 if (box == null)
                 {
@@ -228,7 +235,9 @@ namespace cAlgo
                         NormalizePrice(
                             price - effectiveHalfHeight);
                     box.Color =
-                        boxColor;
+                        Color.FromArgb(
+                            255,
+                            boxColor);
                     box.Thickness =
                         1;
                     box.LineStyle =
