@@ -151,6 +151,16 @@ namespace cAlgo
                         ? _m5Frame.MomentumBull && _m5Frame.StructureBull
                         : _m5Frame.MomentumBear && _m5Frame.StructureBear);
 
+                double pressureTighten =
+                    pressure >=
+                    SmartExitPressureThreshold
+                        ? Math.Min(
+                            0.20,
+                            Math.Max(
+                                0,
+                                SlRepriceBreathingAtr))
+                        : 0;
+
                 double room =
                     atr *
                     Math.Max(
@@ -158,7 +168,8 @@ namespace cAlgo
                         TrailDistanceAtr -
                         (momentumAligned
                             ? SmartTrailMomentumBonusAtr
-                            : 0));
+                            : 0) -
+                        pressureTighten);
 
                 double structural =
                     _plan.Direction == 1
@@ -193,38 +204,6 @@ namespace cAlgo
                                 ? Math.Max(candidate, structural)
                                 : Math.Min(candidate, structural);
                     }
-                }
-            }
-
-            if (structuralUpdate &&
-                !StructuralStopManagementOnly &&
-                pressure >= SmartExitPressureThreshold &&
-                peakRR >= SmartTrailMinimumRR &&
-                atr > 0)
-            {
-                double tightRoom =
-                    atr *
-                    Math.Min(
-                        0.45,
-                        Math.Max(
-                            0.10,
-                            SlRepriceBreathingAtr));
-
-                double pressureStop =
-                    _plan.Direction == 1
-                        ? market - tightRoom
-                        : market + tightRoom;
-
-                if (IsValidManagedStop(
-                    _plan.Direction,
-                    _plan.Entry,
-                    market,
-                    pressureStop))
-                {
-                    candidate =
-                        _plan.Direction == 1
-                            ? Math.Max(candidate, pressureStop)
-                            : Math.Min(candidate, pressureStop);
                 }
             }
 
