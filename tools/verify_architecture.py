@@ -325,6 +325,74 @@ if "ProcessLiveCalculationStages(" not in calculation_cycle_code:
 if "if (newClosedBar &&" in calculation_cycle_code and    "RunClosedBarAnalysisStage(" in calculation_cycle_code:
     raise SystemExit("Calculate must not return early on closed-bar analysis result")
 
+# Phase 2.1 unified submission retry gates.
+SUBMISSION_GATE = ROOT / "Core" / "Execution" / "SubmissionGate.cs"
+SUBMISSION_GATE_STATE = ROOT / "Core" / "Execution" / "SubmissionGateState.cs"
+SUBMISSION_IDENTITY = ROOT / "Core" / "Execution" / "SubmissionAttemptIdentity.cs"
+SUBMISSION_PATH = ROOT / "Core" / "Enums" / "ExecutionSubmissionPath.cs"
+SUBMISSION_COORDINATOR = ROOT / "Trading" / "Execution" / "SubmissionGateCoordinator.cs"
+INDICATOR_STATE = ROOT / "Indicator" / "State.cs"
+
+for required_path in (
+    SUBMISSION_GATE,
+    SUBMISSION_GATE_STATE,
+    SUBMISSION_IDENTITY,
+    SUBMISSION_PATH,
+    SUBMISSION_COORDINATOR,
+    INDICATOR_STATE,
+):
+    if not required_path.exists():
+        raise SystemExit(f"Unified submission owner is missing: {required_path.name}")
+
+submission_gate_code = SUBMISSION_GATE.read_text(encoding="utf-8")
+submission_identity_code = SUBMISSION_IDENTITY.read_text(encoding="utf-8")
+submission_path_code = SUBMISSION_PATH.read_text(encoding="utf-8")
+submission_coordinator_code = SUBMISSION_COORDINATOR.read_text(encoding="utf-8")
+indicator_state_code = INDICATOR_STATE.read_text(encoding="utf-8")
+
+for required_member in (
+    "TryAcquire(",
+    "Record(",
+    "PruneInactiveStates(",
+):
+    if required_member not in submission_gate_code:
+        raise SystemExit(f"Unified submission policy member missing: {required_member}")
+
+for required_member in (
+    "SignalKey",
+    "AttemptKey",
+    "CanonicalKey",
+):
+    if required_member not in submission_identity_code:
+        raise SystemExit(f"Submission identity contract missing: {required_member}")
+
+for required_path_name in (
+    "AutomaticMarket",
+    "AggressiveMarket",
+    "PendingStop",
+    "PendingLimit",
+):
+    if required_path_name not in submission_path_code:
+        raise SystemExit(f"Submission path missing: {required_path_name}")
+
+if "BuildSubmissionAttemptIdentity(" not in submission_coordinator_code or    "TryAcquireSubmission(" not in submission_coordinator_code or    "RecordSubmission(" not in submission_coordinator_code:
+    raise SystemExit("Submission identity/policy coordinator is incomplete")
+
+if indicator_state_code.count("new SubmissionGate()") != 1:
+    raise SystemExit("Execution architecture must have exactly one submission gate instance")
+
+for obsolete in (
+    "_normalSubmissionGate",
+    "_aggressiveSubmissionGate",
+    "_pendingSubmissionGate",
+    "TryAcquireNormalSubmission(",
+    "TryAcquireAggressiveSubmission(",
+    "RecordNormalSubmission(",
+    "RecordAggressiveSubmission(",
+):
+    if obsolete in indicator_state_code or obsolete in submission_coordinator_code:
+        raise SystemExit(f"Obsolete duplicate submission gate remains: {obsolete}")
+
 # Phase 5.4 canonical visual-state gates.
 VISUAL_SNAPSHOT = ROOT / "UI" / "Chart" / "SignalVisualSnapshot.cs"
 VISUAL_SNAPSHOT_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
