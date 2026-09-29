@@ -927,7 +927,7 @@ namespace cAlgo
                         true, true,
                         true, true,
                         50, 0, 0,
-                        1, 58,
+                        0, 0,
                         0, 0,
                         false, false,
                         false, false,
