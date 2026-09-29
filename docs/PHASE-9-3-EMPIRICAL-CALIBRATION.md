@@ -4,7 +4,9 @@ Date: 2026-09-29
 
 Base: main @ 2ff94691cc465d8a2e776c737c1d61a9f5dcecd1 (Phase 9.2 close)
 
-PR: #42
+PR: #42 — merged to main at 445f2b77c5f60e3899937a923ac86f2db4f582b3
+
+CI verification on the final pre-merge head: build PASS, verify PASS, runtime PASS.
 
 ## Objective
 
@@ -83,7 +85,7 @@ Deterministic decision contracts cover:
 - bounded positive/negative symmetry,
 - observed-rate reporting.
 
-Repository verification remains mandatory:
+Repository verification completed on the merged implementation:
 
 - cTrader compile,
 - Decision contracts,
