@@ -193,37 +193,112 @@ namespace cAlgo
                           0.05,
                           MaximumEntryDistanceAtr);
 
-            bool microConflict =
-                _m1Frame != null &&
-                _m1Frame.Index >= 1 &&
+            double adverseM5Atr = 0;
+
+            if (closedM5 >= 2)
+            {
+                double m5Move =
+                    _m5Bars.ClosePrices[closedM5] -
+                    _m5Bars.ClosePrices[closedM5 - 2];
+
+                adverseM5Atr =
+                    direction == 1
+                        ? Math.Max(0, -m5Move) /
+                          Math.Max(Symbol.PipSize, atr)
+                        : Math.Max(0, m5Move) /
+                          Math.Max(Symbol.PipSize, atr);
+            }
+
+            double adverseM1Atr = 0;
+            bool m1DirectionConflict = false;
+
+            if (_m1Frame != null &&
+                _m1Frame.Index >= 2 &&
                 _m1Bars != null &&
-                _m1Frame.Index < _m1Bars.Count &&
-                ((direction == 1 &&
-                  (_m1Frame.Direction == -1 ||
-                   _m1Bars.ClosePrices[_m1Frame.Index] <
-                   _m1Bars.ClosePrices[
-                       Math.Max(
-                           0,
-                           _m1Frame.Index - 1)] -
-                   Math.Max(
-                       Symbol.PipSize,
-                       Atr(
-                           _m1Bars,
-                           _m1Frame.Index) *
-                       0.15))) ||
-                 (direction == -1 &&
-                  (_m1Frame.Direction == 1 ||
-                   _m1Bars.ClosePrices[_m1Frame.Index] >
-                   _m1Bars.ClosePrices[
-                       Math.Max(
-                           0,
-                           _m1Frame.Index - 1)] +
-                   Math.Max(
-                       Symbol.PipSize,
-                       Atr(
-                           _m1Bars,
-                           _m1Frame.Index) *
-                       0.15))));
+                _m1Frame.Index < _m1Bars.Count)
+            {
+                int m1 = _m1Frame.Index;
+                double m1Atr =
+                    Atr(
+                        _m1Bars,
+                        m1);
+
+                double m1Move =
+                    _m1Bars.ClosePrices[m1] -
+                    _m1Bars.ClosePrices[m1 - 2];
+
+                if (IsFinitePositive(m1Atr))
+                {
+                    adverseM1Atr =
+                        direction == 1
+                            ? Math.Max(0, -m1Move) /
+                              Math.Max(Symbol.PipSize, m1Atr)
+                            : Math.Max(0, m1Move) /
+                              Math.Max(Symbol.PipSize, m1Atr);
+                }
+
+                m1DirectionConflict =
+                    (direction == 1 &&
+                     _m1Frame.Direction == -1) ||
+                    (direction == -1 &&
+                     _m1Frame.Direction == 1);
+            }
+
+            double rangeHigh = double.MinValue;
+            double rangeLow = double.MaxValue;
+
+            int rangeStart =
+                Math.Max(
+                    0,
+                    closedM5 -
+                    Math.Min(
+                        40,
+                        Math.Max(
+                            20,
+                            StructureLookback)));
+
+            for (int ri = rangeStart;
+                 ri <= closedM5;
+                 ri++)
+            {
+                rangeHigh =
+                    Math.Max(
+                        rangeHigh,
+                        _m5Bars.HighPrices[ri]);
+
+                rangeLow =
+                    Math.Min(
+                        rangeLow,
+                        _m5Bars.LowPrices[ri]);
+            }
+
+            double rangeWidth =
+                rangeHigh -
+                rangeLow;
+
+            double rangePosition =
+                IsFinitePositive(rangeWidth)
+                    ? (market - rangeLow) /
+                      rangeWidth
+                    : 0.50;
+
+
+
+            EntryTrapRiskResult trapRisk =
+                EntryTrapRiskRule.Evaluate(
+                    direction,
+                    rangePosition,
+                    adverseM5Atr,
+                    adverseM1Atr,
+                    opposingRegularDivergence
+                        ? divergence.Quality
+                        : 0,
+                    supportiveHiddenDivergence);
+
+            bool microConflict =
+                m1DirectionConflict &&
+                (adverseM1Atr >= 0.25 ||
+                 entryDistanceAtr >= 0.10);
 
             DivergenceResult divergence =
                 _m5Frame == null
@@ -264,7 +339,9 @@ namespace cAlgo
                     Math.Min(
                         100,
                         locationQuality +
-                        divergenceAdjustment));
+                        divergenceAdjustment -
+                        (int)Math.Round(
+                            trapRisk.Risk * 0.22)));
 
             timingQuality =
                 Math.Max(
@@ -272,7 +349,9 @@ namespace cAlgo
                     Math.Min(
                         100,
                         timingQuality +
-                        divergenceAdjustment));
+                        divergenceAdjustment -
+                        (int)Math.Round(
+                            trapRisk.Risk * 0.18)));
 
             if (!qualityReady)
                 return new TradeActionabilityResult(
@@ -339,8 +418,7 @@ namespace cAlgo
                     divergence.Type,
                     "LATE / PRICE EXTENDED");
 
-            if (microConflict &&
-                !insideZone)
+            if (microConflict)
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
@@ -354,11 +432,7 @@ namespace cAlgo
                     "ENTRY MOMENTUM CONFLICT");
 
             if (opposingRegularDivergence &&
-                (!insideZone ||
-                 entryDistanceAtr >
-                 Math.Max(
-                     0.10,
-                     MaximumEntryDistanceAtr * 0.60)))
+                divergence.Quality >= 78)
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
@@ -370,6 +444,20 @@ namespace cAlgo
                     divergence.Direction,
                     divergence.Type,
                     "OPPOSING REGULAR DIVERGENCE");
+
+            if (trapRisk.Block &&
+                liveMode != ExecutionMode.BreakoutMarket)
+                return new TradeActionabilityResult(
+                    false,
+                    locationQuality,
+                    timingQuality,
+                    pricePositionQuality,
+                    entryDistanceAtr,
+                    tp1RR,
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    trapRisk.Reason);
 
             if (locationQuality <
                 Math.Max(
