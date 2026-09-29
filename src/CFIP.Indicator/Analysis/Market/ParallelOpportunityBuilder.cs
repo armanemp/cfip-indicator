@@ -263,7 +263,8 @@ namespace cAlgo
             if (!rewardRisk.Allowed)
                 return null;
 
-            return new TradeOpportunityCandidate
+            TradeOpportunityCandidate candidate =
+                new TradeOpportunityCandidate
             {
                 Id =
                     BuildOpportunityId(
