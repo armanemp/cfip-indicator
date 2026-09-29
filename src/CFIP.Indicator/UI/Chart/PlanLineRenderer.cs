@@ -163,5 +163,6 @@ namespace cAlgo
                 Math.Min(
                     1,
                     configured);
-                }    }
+        }
+    }
 }
