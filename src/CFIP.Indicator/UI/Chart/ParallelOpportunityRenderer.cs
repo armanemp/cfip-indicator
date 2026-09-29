@@ -46,7 +46,7 @@ namespace cAlgo
                  i++)
             {
                 TradeOpportunityCandidate candidate =
-                    _opportunityCandidates[i];
+                    _opportunityRegistry[i];
 
                 if (candidate == null ||
                     IsSameAsLivePlan(candidate))
@@ -364,7 +364,7 @@ namespace cAlgo
                  i++)
             {
                 TradeOpportunityCandidate candidate =
-                    _opportunityCandidates[i];
+                    _opportunityRegistry[i];
 
                 if (candidate == null ||
                     IsSameAsLivePlan(candidate))
