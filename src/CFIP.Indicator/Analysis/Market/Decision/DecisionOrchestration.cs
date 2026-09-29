@@ -30,6 +30,7 @@ namespace cAlgo
                 throw new InvalidOperationException(
                     "Decision closed-bar context is missing or inconsistent.");
             }
+
             int closedChartIndex =
                 MapM5ToClosedChart(
                     closedM5,
@@ -125,6 +126,20 @@ namespace cAlgo
                             ClosedBarTriggerReady(
                                 _m5Bars,
                                 closedM5,
+                                -1),
+                            M1TriggerReady(
+                                _m1Bars,
+                                _m5Bars,
+                                closedContext.M1,
+                                closedM5,
+                                reference,
+                                1),
+                            M1TriggerReady(
+                                _m1Bars,
+                                _m5Bars,
+                                closedContext.M1,
+                                closedM5,
+                                reference,
                                 -1),
                             ConfidenceCalibrationAdjustment(1),
                             ConfidenceCalibrationAdjustment(-1),
