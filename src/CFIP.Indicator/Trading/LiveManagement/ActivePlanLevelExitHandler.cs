@@ -25,7 +25,9 @@ namespace cAlgo
                                         managedPosition != null)
                                     {
                                         ObserveServerSidePartialTakeProfits(
-                                            managedPosition);
+                                            managedPosition,
+                                            closedM5,
+                                            market);
                                     }
 
                                     double liveStop =

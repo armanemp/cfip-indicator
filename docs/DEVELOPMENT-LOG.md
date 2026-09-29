@@ -1564,7 +1564,7 @@ Operator pull: required now; pull main to the latest closeout commit.
 
 ## Phase 9.16 — Signal Measurement, OB/FVG Location Fusion & Execution Safety — 2026-09-29
 
-Status: VERIFIED COMPLETE; merged into main as PR #58.
+Status: IMPLEMENTATION COMPLETE; final CI verification pending.
 
 Branch: `phase/9-16-signal-measurement-location-fusion`
 PR: #58
@@ -1605,9 +1605,4 @@ signals, missed opportunities, broker behavior and realized outcomes.
 Detailed record: `docs/PHASE-9-16-SIGNAL-MEASUREMENT-LOCATION-FUSION.md`.
 
 Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
-Operator pull: required now; pull `main` to the verified Phase 9.16 closeout.
-
-
-### Phase 9.16 closeout clarification — persistent memory path
-
-The existing portable-memory bridge restores the bounded recent outcome cache from the matching History snapshot into Type-scoped LocalStorage when the LocalStorage key is missing. Long-term raw outcome/signal traces remain in History files and are intentionally not duplicated without bound into LocalStorage.
+Operator pull: required only after final main closeout.

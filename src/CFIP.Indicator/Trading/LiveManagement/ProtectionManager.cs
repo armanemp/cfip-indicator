@@ -211,6 +211,16 @@ namespace cAlgo
             candidate =
                 NormalizePrice(candidate);
 
+            if (!LiveExitGeometryRule.IsProtectiveStop(
+                    _plan.Direction,
+                    _plan.Entry,
+                    market,
+                    candidate,
+                    Math.Max(
+                        Symbol.TickSize,
+                        MinimumProtectionDistancePrice())))
+                return _plan.Stop;
+
             // Never derive a new stop merely because the market moved. If a
             // structural candidate is temporarily invalid against broker price
             // constraints, keep the last protected level unchanged.

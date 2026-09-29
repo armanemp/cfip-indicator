@@ -3887,7 +3887,7 @@ Operator pull: required now; pull main to the latest closeout commit.
 
 ## Phase 9.16 — Signal Measurement, OB/FVG Location Fusion & Execution Safety — 2026-09-29
 
-Status: VERIFIED COMPLETE; merged into `main` as PR #58.
+Status: IMPLEMENTED; final CI verification pending on PR #58.
 
 Phase 9.16 adds evidence attribution before further signal tuning:
 - canonical closed-M5 gate tracing for CONSENSUS -> DECISION-FILTER -> TRIGGER -> ACTIONABILITY -> ACTIONABLE;
@@ -3905,12 +3905,3 @@ false-signal rate, entry timing, realized R or trading outcomes are made.
 
 Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
 Operator pull: required after the final verified Phase 9.16 main closeout.
-
-
-## Phase 9.16 verification closeout — 2026-09-29
-
-Verified merge commit: `fd6f43594ac1a50a67ccd3007c661a2ba059374f`.
-CI: Runtime Acceptance #1172 PASS; cTrader Compile/Build #1356 PASS; Source/Architecture + accumulated audits #1363 PASS.
-
-Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
-Operator action: pull `main` now.

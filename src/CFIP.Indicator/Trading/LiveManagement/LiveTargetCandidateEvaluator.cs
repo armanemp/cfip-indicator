@@ -24,10 +24,12 @@ namespace cAlgo
                 TargetUpdateStepAtr;
 
             double spacing =
-                atr *
                 Math.Max(
-                    0.05,
-                    MinimumTpSpacingAtr);
+                    MinimumTakeProfitDistancePrice(),
+                    atr *
+                    Math.Max(
+                        0.05,
+                        MinimumTpSpacingAtr));
 
             double best = current;
             double bestScore = double.MinValue;
@@ -40,7 +42,9 @@ namespace cAlgo
 
                 if (!IsEligibleLiveTarget(
                         level,
-                        requireHtf))
+                        requireHtf,
+                        market,
+                        spacing))
                     continue;
 
                 if (!IsImprovedLiveTarget(
@@ -48,6 +52,7 @@ namespace cAlgo
                         current,
                         previousTarget,
                         nextTarget,
+                        market,
                         step,
                         spacing))
                     continue;
@@ -78,10 +83,20 @@ namespace cAlgo
 
         private bool IsEligibleLiveTarget(
             Level level,
-            bool requireHtf)
+            bool requireHtf,
+            double market,
+            double minimumForwardDistance)
         {
             if (level == null ||
                 level.Score < SmartTargetQuality)
+                return false;
+
+            if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+                    _plan.Direction,
+                    0,
+                    level.Price,
+                    market,
+                    minimumForwardDistance))
                 return false;
 
             bool htf =
@@ -122,15 +137,16 @@ namespace cAlgo
             double current,
             double previousTarget,
             double nextTarget,
+            double market,
             double step,
             double spacing)
         {
-            bool improves =
-                _plan.Direction == 1
-                    ? price > current + step
-                    : price < current - step;
-
-            if (!improves)
+            if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+                    _plan.Direction,
+                    current,
+                    price,
+                    market,
+                    Math.Max(spacing, step)))
                 return false;
 
             bool keepsPreviousSpacing =

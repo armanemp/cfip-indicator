@@ -67,12 +67,22 @@ namespace cAlgo
                             position.StopLoss.Value)
                         : 0;
 
+                double minimumForwardDistance =
+                    Math.Max(
+                        Symbol.PipSize,
+                        atr *
+                        Math.Max(
+                            0.05,
+                            MinimumTpSpacingAtr));
+
                 double target =
                     position.TakeProfit.HasValue &&
-                    IsValidTarget(
+                    LiveExitGeometryRule.ShouldAdvanceTarget(
                         direction,
-                        entry,
-                        position.TakeProfit.Value)
+                        0,
+                        position.TakeProfit.Value,
+                        market,
+                        minimumForwardDistance)
                         ? NormalizePrice(
                             position.TakeProfit.Value)
                         : 0;
@@ -126,6 +136,14 @@ namespace cAlgo
                             stop,
                             atr,
                             EffectiveAutoTpStage());
+
+                    if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+                            direction,
+                            0,
+                            target,
+                            market,
+                            minimumForwardDistance))
+                        target = 0;
 
                     if (!IsValidTarget(
                         direction,
@@ -206,6 +224,24 @@ namespace cAlgo
 
                 EnrichLivePlanTargets(closedM5);
 
+                double protectionTarget =
+                    AutoTarget(
+                        _plan,
+                        EffectiveAutoTpStage());
+
+                if (!LiveExitGeometryRule.ShouldAdvanceTarget(
+                        direction,
+                        0,
+                        protectionTarget,
+                        market,
+                        minimumForwardDistance))
+                {
+                    protectionTarget =
+                        FurthestForwardPlanTarget(
+                            market,
+                            minimumForwardDistance);
+                }
+
                 if (AutoProtectBrokerPositions ||
                     AutoBrokerProtection)
                 {
@@ -213,7 +249,7 @@ namespace cAlgo
                         EnsureBrokerProtectionForPosition(
                             position,
                             stop,
-                            target,
+                            protectionTarget,
                             "STARTUP RECOVERY",
                             direction);
 

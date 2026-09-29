@@ -16,6 +16,8 @@ namespace cAlgo
                             List<Level> selected,
                             int index,
                             double previous,
+                            double current,
+                            double market,
                             double atr)
                         {
                             if (selected == null ||
@@ -37,8 +39,19 @@ namespace cAlgo
                                     _plan.Direction == 1
                                         ? level.Price > previous + Symbol.PipSize
                                         : level.Price < previous - Symbol.PipSize;
-                
-                                if (!farther)
+
+                                if (!farther ||
+                                    !LiveExitGeometryRule.ShouldAdvanceTarget(
+                                        _plan.Direction,
+                                        current,
+                                        level.Price,
+                                        market,
+                                        Math.Max(
+                                            Symbol.PipSize,
+                                            atr *
+                                            Math.Max(
+                                                0.05,
+                                                MinimumTpSpacingAtr))))
                                     continue;
                 
                                 double rr =

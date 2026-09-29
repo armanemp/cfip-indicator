@@ -177,24 +177,3 @@ Phase 9.17:
 Target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement. The
 next refinement must use measured rejection cohorts rather than adding blind global
 thresholds.
-
-
-## Final verification closeout — 2026-09-29
-
-Verified merge commit: `fd6f43594ac1a50a67ccd3007c661a2ba059374f`.
-
-CI:
-- Runtime Acceptance #1172: PASS.
-- cTrader Compile/Build #1356: PASS.
-- Source/Architecture + accumulated audits #1363: PASS.
-- Decision Contracts: PASS within cTrader Compile/Build.
-- Phase 9.15 startup/persistence audit: PASS.
-- Phase 9.16 signal measurement audit: PASS.
-
-Public parameter count remains 552.
-
-Portable-memory clarification:
-PortableMemorySnapshotStore already restores the bounded recent outcome cache from the matching History snapshot into Type-scoped LocalStorage when that LocalStorage key is absent. It is intentionally not a full raw-history mirror. The raw 90-day files remain the canonical long-term record; LocalStorage is the compact recent cache. This avoids duplicating unlimited raw data into the finite LocalStorage quota.
-
-Next phase:
-Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
