@@ -18,7 +18,8 @@ namespace cAlgo
                                     string name,
                                     double price,
                                     Color color,
-                                    bool visible)
+                                    bool visible,
+                                    int anchorM5)
                                 {
                                     if (!visible ||
                                         !IsFinitePositive(price) ||
@@ -41,9 +42,9 @@ namespace cAlgo
                                     try
                                     {
                                         int anchor =
-                                            _plan != null
+                                            anchorM5 >= 0
                                                 ? MapM5ToChart(
-                                                    _plan.CreatedM5,
+                                                    anchorM5,
                                                     Bars.Count - 1)
                                                 : Bars.Count - 1;
                         
