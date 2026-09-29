@@ -34,7 +34,7 @@ namespace cAlgo
             }
 
             int lineLeft =
-                GetCompactPlanLineLeftBar();
+                GetPlanLineLeftBar();
 
             int labelBar =
                 GetCompactPlanLabelAnchorBar(
