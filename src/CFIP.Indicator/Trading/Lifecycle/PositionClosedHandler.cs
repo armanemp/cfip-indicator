@@ -46,6 +46,10 @@ namespace cAlgo
                                             RegisterOutcome(
                                                 direction,
                                                 profitable);
+
+                                            RegisterCalibratedOutcome(
+                                                _plan,
+                                                profitable);
                                         }
                         
                                         _outcomeRegistered = true;
