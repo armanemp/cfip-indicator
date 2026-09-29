@@ -2098,21 +2098,21 @@ namespace cAlgo
                 "plan labels reuse the canonical line left edge");
 
             Assert(
-                controlFactory.Contains("CreateExecutionStatus(") &&
-                !controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
-                !controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
-                !controlFactory.Contains("_autoTradingQuickToggle.Checked +=") &&
-                !controlFactory.Contains("_automaticOrdersQuickToggle.Checked +=") &&
-                !controlFactory.Contains("_autoTradingQuickToggle.Unchecked +=") &&
-                !controlFactory.Contains("_automaticOrdersQuickToggle.Unchecked +="),
-                "execution controls are non-interactive status surfaces");
+                controlFactory.Contains("CreateExecutionToggle(") &&
+                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Click +="),
+                "execution controls are interactive canonical toggle surfaces");
 
             Assert(
-                !controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
-                !controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
-                !controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
-                !controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
-                "execution UI has no runtime state mutation authority");
+                controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
+                controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
+                controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
+                controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
+                "execution UI controls are bound to canonical runtime setters");
+
+            Assert(
+                controlSync.Contains("_executionToggleSyncing = true"),
+                "execution control synchronization is guarded against operator-event recursion");
 
             int pendingExecution =
                 calculationStage.IndexOf(
