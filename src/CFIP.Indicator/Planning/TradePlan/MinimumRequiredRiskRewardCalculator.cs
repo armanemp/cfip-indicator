@@ -15,27 +15,41 @@ namespace cAlgo
     {
 private double MinimumRequiredRR()
                         {
-                            if (!AdaptiveStructuralRR ||
-                                _decision == null)
+                            return MinimumRequiredRR(
+                                _decision == null
+                                    ? "UNKNOWN"
+                                    : _decision.Regime);
+                        }
+
+                        private double MinimumRequiredRR(
+                            string regime)
+                        {
+                            if (!AdaptiveStructuralRR)
                                 return Tp1MinimumRR;
-                
+
                             double step =
                                 Math.Max(
                                     0.05,
                                     StructuralTpRrStep);
-                
-                            if (_decision.Regime == "EXPANSION")
+
+                            if (string.Equals(
+                                    regime,
+                                    "EXPANSION",
+                                    StringComparison.OrdinalIgnoreCase))
                                 return Math.Max(
                                     2.10,
                                     Tp1MinimumRR + step);
-                
-                            if (_decision.Regime == "RANGE")
+
+                            if (string.Equals(
+                                    regime,
+                                    "RANGE",
+                                    StringComparison.OrdinalIgnoreCase))
                                 return Math.Max(
                                     1.75,
                                     Tp1MinimumRR -
                                     step * 0.50);
-                
+
                             return Tp1MinimumRR;
-                        }
+                        }                        }
     }
 }
