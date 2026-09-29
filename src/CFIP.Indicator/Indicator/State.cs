@@ -58,6 +58,8 @@ namespace cAlgo
                 // result and return a shallow copy to protect callers from mutation.
                 private int _targetLevelCacheM5 = -1;
                 private int _targetLevelCacheDirection = 0;
+                private double _targetLevelCacheEntry = 0;
+                private double _targetLevelCacheAtr = 0;
                 private List<Level> _targetLevelCache;
 
                 private readonly HashSet<string> _opportunityVisualIds =
