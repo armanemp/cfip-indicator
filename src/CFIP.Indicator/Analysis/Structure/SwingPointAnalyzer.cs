@@ -222,6 +222,7 @@ namespace cAlgo
                         bars,
                         i,
                         index,
+                        SwingStrength,
                         out plateauStart,
                         out plateauEnd,
                         out level))
@@ -273,6 +274,7 @@ namespace cAlgo
                         bars,
                         i,
                         index,
+                        SwingStrength,
                         out plateauStart,
                         out plateauEnd,
                         out level))
