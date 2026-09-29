@@ -409,6 +409,8 @@ CI evidence on head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime PASS; Bu
 | Contract | Automated controlled check | cTrader / replay |
 |---|---:|---:|
 | Live ActionableNow consumes the current closed-M5 indicator-fusion snapshot | Source | Required |
+| Present-but-unavailable M5 indicator fusion fails closed | Decision contract / Source | Required |
+| Pending/live execution suppresses lower-priority WATCH/REACTION presentation and alerts | Source / Runtime | Required |
 | Stale M5 indicator-fusion state cannot reopen actionability | Decision/runtime contract | Required |
 | Compression remains a hard indicator-actionability block | Decision contract | Required |
 | Server TP ladder uses relative SL + partial TP1 + partial TP2 + final TP | Source / compile | Required |
