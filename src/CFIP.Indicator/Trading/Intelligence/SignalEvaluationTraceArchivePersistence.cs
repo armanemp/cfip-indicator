@@ -18,7 +18,7 @@ namespace cAlgo
             "LocationEvidenceBull,LocationEvidenceBear,IndicatorConfluenceQuality,IndicatorConflict," +
             "WaveTrendDirection,WaveTrendQuality,DivergenceDirection,DivergenceQuality," +
             "EntryAllowed,TriggerReady,ActionableNow,EntryLocationQuality,EntryTimingQuality,EntryPositionQuality," +
-            "EntryDistanceAtr,ActionableTp1RR,PlanRiskAtr,EffectiveTp1RR,RequiredTp1RR,EntryMode,Entry,IdealEntry,Stop,Tp1,Tp2,Tp3,Tp4,"
+            "EntryDistanceAtr,ActionableTp1RR,PlanRiskAtr,EffectiveTp1RR,RequiredTp1RR,EntryMode,Entry,IdealEntry,Stop,Tp1,Tp2,Tp3,Tp4," +
             "TraceGate,BlockReason,ActionabilityReason,DecisionReason";
 
         private HashSet<long> _signalTraceArchiveKeys;
