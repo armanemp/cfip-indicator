@@ -97,7 +97,7 @@ namespace cAlgo
             _context = context;
         }
 
-        public void Clear()
+        public void Invalidate()
         {
             _m1 = null;
             _m5 = null;
