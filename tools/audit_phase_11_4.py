@@ -15,6 +15,10 @@ PARALLEL = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder
 SCENARIOS = ROOT / "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
 PLANNING_CONTRACT = ROOT / "tools/CFIP.Planning.Contracts/Program.cs"
 PLANNING_PROJECT = ROOT / "tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj"
+TRACE_MODEL = ROOT / "src/CFIP.Indicator/Core/Models/SignalEvaluationTrace.cs"
+TRACE_RECORDER = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs"
+TRACE_ARCHIVE = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchivePersistence.cs"
+ANALYZER = ROOT / "tools/analyze_phase_11_3.py"
 MARKET = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs"
 AGG = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs"
 PENDING = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs"
@@ -37,6 +41,10 @@ parallel = read(PARALLEL)
 scenarios = read(SCENARIOS)
 planning_contract = read(PLANNING_CONTRACT)
 planning_project = read(PLANNING_PROJECT)
+trace_model = read(TRACE_MODEL)
+trace_recorder = read(TRACE_RECORDER)
+trace_archive = read(TRACE_ARCHIVE)
+analyzer = read(ANALYZER)
 market = read(MARKET)
 agg = read(AGG)
 pending = read(PENDING)
@@ -83,6 +91,20 @@ if "VerifyPlanRewardRiskQuality()" not in planning_contract:
 
 if "PlanRewardRiskQualityRule.cs" not in planning_project:
     errors.append("planning contract project does not include reward-risk rule")
+
+for token in (
+    "PlanRiskAtr",
+    "EffectiveTp1RR",
+    "RequiredTp1RR",
+):
+    if token not in trace_model or token not in trace_recorder or token not in trace_archive:
+        errors.append("signal trace reward-risk field missing: " + token)
+
+if "CFIP-SIGNAL-TRACE,2" not in trace_archive:
+    errors.append("signal trace schema v2 missing")
+
+if '"CFIP-SIGNAL-TRACE,2"' not in analyzer or '"CFIP-SIGNAL-TRACE,1"' not in analyzer:
+    errors.append("forensic analyzer must remain backward-compatible with signal trace v1/v2")
 
 for path, label in (
     (market, "automatic-market"),
