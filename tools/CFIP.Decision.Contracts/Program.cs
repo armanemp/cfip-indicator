@@ -20,6 +20,7 @@ namespace cAlgo
             VerifyCorrelationAwareEvidence();
             VerifyQualityWeightedFrameContribution();
             VerifyLocationEvidenceHierarchy();
+            VerifyExecutionPlanGeometry();
             VerifyMarketRegimeClassification();
             VerifyEntryTrapRisk();
             VerifyActionableSignalQuality();
@@ -915,6 +916,91 @@ namespace cAlgo
                 buyCombo.Score == sellCombo.Score &&
                 buyCombo.Evidence == sellCombo.Evidence,
                 "OB/FVG combo symmetry");
+        }
+
+        private static void VerifyExecutionPlanGeometry()
+        {
+            ExecutionPlanGeometryResult buy =
+                ExecutionPlanGeometryRule.Evaluate(
+                    1,
+                    100,
+                    95,
+                    110,
+                    1.5);
+
+            Assert(
+                buy.Allowed &&
+                buy.Risk > 0 &&
+                buy.Reward > 0 &&
+                buy.RiskReward > 1.5,
+                "valid BUY execution geometry");
+
+            ExecutionPlanGeometryResult sell =
+                ExecutionPlanGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    105,
+                    90,
+                    1.5);
+
+            Assert(
+                sell.Allowed &&
+                sell.RiskReward > 1.5,
+                "valid SELL execution geometry symmetry");
+
+            ExecutionPlanGeometryResult wrongBuyStop =
+                ExecutionPlanGeometryRule.Evaluate(
+                    1,
+                    100,
+                    105,
+                    120,
+                    1.5);
+
+            Assert(
+                !wrongBuyStop.Allowed &&
+                wrongBuyStop.Reason == "STOP WRONG SIDE",
+                "BUY protective stop validation");
+
+            ExecutionPlanGeometryResult wrongSellStop =
+                ExecutionPlanGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    95,
+                    80,
+                    1.5);
+
+            Assert(
+                !wrongSellStop.Allowed &&
+                wrongSellStop.Reason == "STOP WRONG SIDE",
+                "SELL protective stop validation");
+
+            ExecutionPlanGeometryResult weakRR =
+                ExecutionPlanGeometryRule.Evaluate(
+                    1,
+                    100,
+                    90,
+                    105,
+                    2.0);
+
+            Assert(
+                !weakRR.Allowed &&
+                weakRR.Reason == "RR BELOW EXECUTION FLOOR",
+                "execution reward path floor");
+
+            ExecutionPlanGeometryResult mirrored =
+                ExecutionPlanGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    110,
+                    85,
+                    2.0);
+
+            Assert(
+                mirrored.Allowed &&
+                Math.Abs(
+                    buy.RiskReward -
+                    mirrored.RiskReward) < 0.0001,
+                "BUY/SELL reward geometry symmetry");
         }
 
         private static void VerifyMarketRegimeClassification()
