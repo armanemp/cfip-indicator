@@ -44,8 +44,8 @@ namespace cAlgo
                                         _reaction.Direction == 0 ||
                                         _decision.Direction == 0)
                                         return false;
-                        
-                                    return
+
+                                    bool strongBase =
                                         _reaction.Direction != _decision.Direction &&
                                         _reaction.EntryAllowed &&
                                         _reaction.Confidence >=
@@ -56,6 +56,28 @@ namespace cAlgo
                                         Math.Max(
                                             2,
                                             ReversalCloseMinimumEvidence);
+
+                                    if (!strongBase)
+                                        return false;
+
+                                    RangeSignalQualityResult rangeQuality =
+                                        EvaluateRangeSignalQuality(
+                                            Math.Max(
+                                                0,
+                                                _m5Bars == null
+                                                    ? 0
+                                                    : _m5Bars.Count - 2),
+                                            _reaction.Direction,
+                                            _reaction.Confidence,
+                                            _reaction.SmartQuality,
+                                            Math.Max(
+                                                0,
+                                                _decision.Edge),
+                                            _reaction.IndependentEvidence,
+                                            StructuralConfirmations(
+                                                _reaction.Direction));
+
+                                    return rangeQuality.Allowed;
                                 }
         
         private bool PendingModeAllowsStop()
