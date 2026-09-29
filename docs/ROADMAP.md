@@ -3601,3 +3601,24 @@ Verification:
 - no profitability or win-rate claim is inferred from static/contract checks.
 
 Next dependency after verified completion: continue Track 9 intelligence/no-trade work without reopening completed historical phases.
+
+
+## Phase 9.5.1 — Live Actionability Coherence — 2026-09-29
+
+Status: implementation verified; merge pending in PR #46.
+
+Scope:
+- eliminate stale ActionableNow state when decision/execution inputs become unavailable;
+- reuse the existing pre-trade plan geometry for live re-evaluation when the structural execution model is intentionally cleared;
+- require plan direction and execution mode to agree with the current actionability state;
+- prevent pending stop/limit-style plans from being exposed as current market ACTION BUY/SELL opportunities;
+- refresh the same actionability state immediately before automatic market submission;
+- classify ACTION alert presentation consistently as a confirmed event.
+
+Acceptance:
+- current quote changes can invalidate market actionability without waiting for a new M5 decision;
+- a pending plan cannot coexist with a current-market actionable arrow/alert for the same pre-trade state;
+- automatic market execution uses the refreshed actionability state;
+- Runtime Acceptance, cTrader Compile/Build and Source/Architecture all pass.
+
+Empirical boundary: target-terminal replay is still required for exact chart timing, visual behavior and realized risk/reward measurement.
