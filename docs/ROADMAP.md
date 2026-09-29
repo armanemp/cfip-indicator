@@ -958,23 +958,32 @@ Acceptance:
 
 ## Phase 2.1 — SubmissionGate refinement
 
-Status: planned.
+Status: complete.
 
-Model:
+Implemented:
 
-\`\`\`
-signal key
-attempt key
-execution path
-failure count
-next retry
-circuit state
-\`\`\`
+- one canonical SubmissionGate replaces the previous separate normal/aggressive/pending gate instances;
+- explicit ExecutionSubmissionPath models AutomaticMarket, AggressiveMarket, PendingStop and PendingLimit;
+- explicit SubmissionAttemptIdentity carries signal key, attempt key and execution path;
+- retry/backoff/circuit state is isolated per canonical submission identity;
+- successful submission clears only its own retry state;
+- unrelated signals and execution paths remain independently eligible;
+- retained retry-state memory is bounded with inactive-state pruning;
+- runtime contracts cover first-attempt success, backoff, cross-signal isolation, cross-path isolation, circuit opening and reset;
+- architecture verification enforces exactly one submission gate instance and rejects obsolete duplicate gate APIs.
 
 Acceptance:
 
-- one coherent retry policy across automatic paths.
+- one coherent retry policy across automatic paths;
+- no failure state leaks from one signal/path into another;
+- no duplicate SubmissionGate owner;
+- no strategy score or entry-threshold changes introduced by the refactor.
 
+Verification:
+
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS;
 ## Phase 2.2 — Automatic market rejection matrix
 
 Status: planned.
