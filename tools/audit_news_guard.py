@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 required = {
     "src/CFIP.Indicator/Indicator/CFIPIndicator.cs":
-        ["AccessRights.Internet"],
+        ["AccessRights.None"],
     "src/CFIP.Indicator/Indicator/Parameters/28_news_guard.cs":
         [
             "EnableEconomicNewsCalendar",
