@@ -435,16 +435,18 @@ Hands-on target-terminal replay remains required for observed partial fills, tar
 
 | Contract | Automated controlled check | cTrader / replay |
 |---|---:|---:|
-| Automatic market path consumes smart server protection when eligible | Required | Required |
-| Aggressive market path consumes smart server protection when eligible | Required | Required |
-| Continuation stop / reversal limit consume the same server protection contract | Required | Required |
-| Smart break-even uses structural risk, TP1 geometry and spread-aware inputs | PASS when Decision Contracts pass | Required |
-| Local break-even yields to confirmed broker-owned break-even | Source | Required |
-| Server-owned TP ladder remains protected from local TP mutation | Source | Required |
-| Structural SL remains monotonic/protective-only | Source | Required |
-| Accumulated auto-trade/protection audit runs in Source/Architecture CI | Source | Required |
-| All signal/plan level lines are Solid | Source | Required |
-| Level text is white and background-free | Source | Required |
-| Public parameter contract remains 552 | Source | Required |
+| Automatic market path consumes smart server protection when eligible | PASS | Required |
+| Aggressive market path consumes smart server protection when eligible | PASS | Required |
+| Continuation stop / reversal limit consume the same server protection contract | PASS | Required |
+| Smart break-even uses structural risk, TP1 geometry and spread-aware inputs | PASS | Required |
+| Local break-even yields to confirmed broker-owned break-even | PASS | Required |
+| Server-owned TP ladder remains protected from local TP mutation | PASS | Required |
+| Structural SL remains monotonic/protective-only | PASS | Required |
+| Accumulated auto-trade/protection audit runs in Source/Architecture CI | PASS | Required |
+| All signal/plan level lines are Solid | PASS | Required |
+| Level text is white and background-free | PASS | Required |
+| Public parameter contract remains 552 | PASS | Required |
 
-Target-terminal replay remains required for actual broker/server timing, partial fills, protection activation and realized outcomes.
+Final automated verification for Phase 9.10: Runtime Acceptance #1070 PASS; cTrader Compile/Build #1254 PASS; Source/Architecture #1261 PASS, including the accumulated audit.
+
+Target-terminal replay remains required for actual broker/server timing, partial fills, protection activation, live rendering and realized outcomes.
