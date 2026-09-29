@@ -3,7 +3,7 @@ namespace cAlgo
     internal sealed class SignalVisualSnapshot
     {
         public int ClosedM5;
-        public int Direction;
+        public int AuthoritativeDirection;
         public int PlanDirection;
         public int PendingDirection;
         public int DecisionDirection;
