@@ -16,6 +16,7 @@ namespace cAlgo
                 closedM5;
 
             _opportunityCandidates.Clear();
+            _tradePlanRegistry.Clear();
 
             if (!EnableParallelOpportunities ||
                 _m5Bars == null ||
@@ -83,6 +84,21 @@ namespace cAlgo
 
                 if (reaction != null)
                     AddOpportunityCandidate(reaction);
+            }
+
+            while (_opportunityCandidates.Count >
+                   Math.Max(
+                       1,
+                       MaximumVisibleOpportunities))
+                _opportunityCandidates.RemoveAt(
+                    _opportunityCandidates.Count - 1);
+
+            for (int i = 0;
+                 i < _opportunityCandidates.Count;
+                 i++)
+            {
+                _tradePlanRegistry.Upsert(
+                    _opportunityCandidates[i]);
             }
         }
 
@@ -154,6 +170,14 @@ namespace cAlgo
                         preview.Risk)
                     : 0;
 
+            TradeActionabilityResult actionability =
+                EvaluateTradeActionability(
+                    closedM5,
+                    direction,
+                    lane,
+                    execution,
+                    preview);
+
             return new TradeOpportunityCandidate
             {
                 Id =
@@ -186,11 +210,22 @@ namespace cAlgo
                 Tp4 = preview.Tp4,
                 Source = execution.Source,
                 Stage =
-                    execution.Ready
+                    actionability.Actionable
                         ? "READY"
-                        : "WATCH",
+                        : "WATCH • " +
+                          actionability.Reason,
                 LabelPrefix =
-                    LaneText(lane)
+                    LaneText(lane),
+                ActionableNow =
+                    actionability.Actionable,
+                EntryDistanceAtr =
+                    actionability.EntryDistanceAtr,
+                DivergenceQuality =
+                    actionability.DivergenceQuality,
+                DivergenceType =
+                    actionability.DivergenceType,
+                ActionabilityReason =
+                    actionability.Reason
             };
         }
 
