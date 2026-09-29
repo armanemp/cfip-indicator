@@ -156,9 +156,7 @@ namespace cAlgo
                                                     right,
                                                     normalized,
                                                     PredictionLineColor(name),
-                                                    Math.Max(
-                                                        1,
-                                                        LevelLineThickness),
+                                                    1,
                                                     lineStyle);
                                         }
                         
@@ -176,9 +174,7 @@ namespace cAlgo
                                         line.Color =
                                             PredictionLineColor(name);
                                         line.Thickness =
-                                            Math.Max(
-                                                1,
-                                                LevelLineThickness);
+                                            1;
                                         line.LineStyle =
                                             lineStyle;
                                         line.ExtendToInfinity =
