@@ -86,7 +86,7 @@ namespace cAlgo
                                         ArrowOffsetAtr));
                 
                             string arrowState =
-                                "STRONG";
+                                "CONFIRMED";
                 
                             bool showCurrentStateArrow =
                                 ShowSignalArrow;
