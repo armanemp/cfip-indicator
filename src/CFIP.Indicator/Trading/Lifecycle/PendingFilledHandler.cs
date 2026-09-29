@@ -80,6 +80,9 @@ namespace cAlgo
             _plan.PositionId =
                 args.Position.Id;
 
+            AdoptServerSideTakeProfitLadder(
+                args.Position);
+
             if (priorPlan != null &&
                 priorPlan.CalibrationEligible)
             {
