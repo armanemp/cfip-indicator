@@ -21,6 +21,7 @@ AGG = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveBrokerEx
 AGG_FINAL = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs"
 MARKET = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs"
 PENDING = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs"
+PENDING_FINAL = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs"
 
 def require(path: Path, pattern: str, label: str) -> None:
     text = path.read_text(encoding="utf-8")
@@ -83,6 +84,15 @@ require(
     r"RefreshLiveDecisionActionability\(\s*closedM5\s*\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true",
     "aggressive final freshness and suitability guard",
 )
-require(PENDING, r"CanRunAutomaticEntry\(\)[\s\S]*?EnsureTradingPermission\(\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true", "pending final runtime, permission and suitability gates")
+require(
+    PENDING,
+    r"RefreshLiveDecisionActionability\(\s*closedM5\s*\)",
+    "pending live decision refresh",
+)
+require(
+    PENDING_FINAL,
+    r"CanRunAutomaticEntry\(\)[\s\S]*?EnsureTradingPermission\(\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true",
+    "pending final runtime, permission and suitability gates",
+)
 
 print("Phase 11.2 contract audit OK")
