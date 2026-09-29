@@ -637,8 +637,10 @@ if "StartAsyncBarsInitialization(" not in runtime_init_code:
     raise SystemExit("Async startup coordinator is missing")
 if "if (HasEnoughData())" not in runtime_init_code:
     raise SystemExit("Startup must finalize as soon as core MTF data is ready")
-if "RunStartupCalculationSeed();" not in runtime_init_code:
-    raise SystemExit("Startup must request one lightweight calculation seed after readiness")
+if "QueueStartupCalculationSeed();" not in runtime_init_code:
+    raise SystemExit("Startup must queue one lightweight calculation seed after the initial panel render")
+if "RunStartupCalculationSeed();" in runtime_init_code:
+    raise SystemExit("Startup seed must not execute synchronously inside initialization")
 
 CALC_STARTUP_SEED = ROOT / "Runtime" / "Calculation" / "CalculationStartupSeed.cs"
 if not CALC_STARTUP_SEED.exists():
