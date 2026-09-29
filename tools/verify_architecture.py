@@ -579,10 +579,10 @@ if "RenderSetupPreview(" not in visual_calc_code or "RenderLevelLines(" not in v
     raise SystemExit("Visual setup levels must render through the shared level renderer")
 if "anchorM5" not in visual_line_code:
     raise SystemExit("Level renderer must receive its canonical anchor explicitly")
-if ".Checked +=" not in control_factory_code or ".Unchecked +=" not in control_factory_code:
-    raise SystemExit("Execution toggles must bind state-specific events")
-if ".Click +=" in control_factory_code:
-    raise SystemExit("Execution toggles must not rely on Click for state mutation")
+if "_autoTradingQuickToggle.Click +=" not in control_factory_code or "_automaticOrdersQuickToggle.Click +=" not in control_factory_code:
+    raise SystemExit("Execution toggles must bind direct operator click events")
+if ".Checked +=" in control_factory_code or ".Unchecked +=" in control_factory_code:
+    raise SystemExit("Execution toggles must not retain duplicate state-event owners")
 for required_call in (
     "SetAutoTradingRuntimeState(",
     "SetAutomaticOrdersRuntimeState(",
