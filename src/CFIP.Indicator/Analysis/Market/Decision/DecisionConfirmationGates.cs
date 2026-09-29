@@ -58,12 +58,9 @@ namespace cAlgo
                     return new DecisionFilterResult(false, "M5 TRIGGER");
             }
 
-            if (UseM1Trigger &&
-                _m1Frame != null &&
-                _m1Frame.Direction != 0 &&
-                _m1Frame.Direction != decision.Direction)
-                return new DecisionFilterResult(false, "M1 MISALIGNMENT");
-
+            // M1 direction is a live closed-bar trigger input, not a frozen
+            // decision-direction veto. TriggerRuntime evaluates each newly closed
+            // M1 inside the active M5 window and latches only a causal confirmation.
             return new DecisionFilterResult(true, string.Empty);
         }
     }
