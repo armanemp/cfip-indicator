@@ -1342,20 +1342,20 @@ Continuity record: docs/PHASE-6-1-DECISION-CLOSED-BAR.md.
 
 ## Phase 6.2 — Reaction intrabar contract
 
-Status: planned.
+Status: complete.
 
-Explicitly define live reaction as intrabar if retained.
+Implemented and verified:
 
-Rule:
+- live reaction is explicitly intrabar on the current open M5 bar;
+- confirmed decision remains closed-bar under the canonical Phase 6.1 context;
+- visual state carries explicit reaction identity;
+- unified panel remains the operator-facing presentation surface;
+- no thresholds, weights, RR, risk or broker execution semantics were changed.
 
-\`\`\`
-LIVE REACTION     = explicit intrabar feature
-CONFIRMED DECISION = closed-bar feature
-\`\`\`
-
-Acceptance:
-
-- the two semantics cannot be silently merged.
+Post-phase runtime correction is recorded in the development log and acceptance
+matrix. The correction ensures optional M1/D1/W1 async loading cannot delay runtime
+readiness after required M5/M15/M30/H1/H4 data is sufficient and guarantees one
+lightweight analysis/presentation seed after readiness.
 
 ## Phase 6.3 — Aggressive entry policy
 
