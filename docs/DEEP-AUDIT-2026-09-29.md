@@ -116,8 +116,8 @@ Before calling the M1 path a real precision trigger, define one explicit model: 
 Resolved in Phase 7.2 and Phase 7.4:
 - dead/unused public settings were audited;
 - semantic aliases were audited;
-- `MaximumOpenPositions` was removed because the current execution architecture supports one active managed plan only;
-- automatic market, aggressive and predictive-pending execution now share one semantic single-plan capacity guard.
+- `MaximumOpenPositions` is retained only as a compatibility setting constrained to 1 because the current execution architecture supports one active managed plan only;
+- automatic market, aggressive and predictive-pending execution now share one semantic single-plan capacity guard; `BlockNewSignalWhileActive` was removed because the single-plan boundary is mandatory;
 
 Remaining parameter work is limited to future changes where the underlying capability is actually expanded; no numeric setting should advertise multi-plan behavior until a real multi-plan architecture exists.
 
