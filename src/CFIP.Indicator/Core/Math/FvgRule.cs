@@ -137,13 +137,12 @@ namespace cAlgo
                   fillPrice >= zoneHigh;
         }
 
-        public static bool TryApplyMitigationBoundary(
+        public static bool TryApplyPartialMitigation(
             int direction,
             double zoneLow,
             double zoneHigh,
             double fillPrice,
             double tickSize,
-            bool invalidateOnFullFill,
             out double managedLow,
             out double managedHigh)
         {
@@ -155,17 +154,13 @@ namespace cAlgo
                     zoneHigh,
                     zoneHigh - zoneLow) ||
                 !FinitePositive(fillPrice) ||
-                !FinitePositive(tickSize))
-                return false;
-
-            if (IsFullyFilled(
+                !FinitePositive(tickSize) ||
+                IsFullyFilled(
                     direction,
-                    managedLow,
-                    managedHigh,
+                    zoneLow,
+                    zoneHigh,
                     fillPrice))
-            {
-                return !invalidateOnFullFill;
-            }
+                return false;
 
             if (direction == 1 &&
                 fillPrice < managedHigh)
@@ -184,10 +179,8 @@ namespace cAlgo
                         fillPrice);
             }
 
-            if (managedHigh - managedLow <= tickSize)
-                return !invalidateOnFullFill;
-
-            return managedLow < managedHigh;
+            return managedLow < managedHigh &&
+                   managedHigh - managedLow > tickSize;
         }
 
         public static string Identity(
