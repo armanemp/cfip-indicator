@@ -1055,6 +1055,12 @@ namespace cAlgo
             string calculationPath = Path.Combine("src", "CFIP.Indicator", "Runtime", "Calculation", "CalculationLiveCycle.cs");
             string calculationStagePath = Path.Combine("src", "CFIP.Indicator", "Runtime", "Calculation", "CalculationStageIsolation.cs");
             string rendererPath = Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanRenderCoordinator.cs");
+            string pendingRendererPath = Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PendingOrderRenderer.cs");
+            string alertRendererPath = Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "AlertSignalRenderer.cs");
+            string alertEnginePath = Path.Combine("src", "CFIP.Indicator", "Trading", "Alerts", "AlertEngine.cs");
+            string statePath = Path.Combine("src", "CFIP.Indicator", "Indicator", "State.cs");
+            string predictiveSelectorPath = Path.Combine("src", "CFIP.Indicator", "Planning", "Execution", "PredictivePendingLevelSelector.cs");
+            string reversalLimitPath = Path.Combine("src", "CFIP.Indicator", "Trading", "Pending", "Placement", "ReversalLimitPreparation.cs");
             string controlFactoryPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsFactory.cs");
             string controlHandlersPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionToggleHandlers.cs");
 
@@ -1065,6 +1071,12 @@ namespace cAlgo
                 File.Exists(calculationPath) &&
                 File.Exists(calculationStagePath) &&
                 File.Exists(rendererPath) &&
+                File.Exists(pendingRendererPath) &&
+                File.Exists(alertRendererPath) &&
+                File.Exists(alertEnginePath) &&
+                File.Exists(statePath) &&
+                File.Exists(predictiveSelectorPath) &&
+                File.Exists(reversalLimitPath) &&
                 File.Exists(controlFactoryPath) &&
                 File.Exists(controlHandlersPath),
                 "visual/control sources exist");
@@ -1075,6 +1087,12 @@ namespace cAlgo
             string calculation = File.ReadAllText(calculationPath);
             string calculationStage = File.ReadAllText(calculationStagePath);
             string renderer = File.ReadAllText(rendererPath);
+            string pendingRenderer = File.ReadAllText(pendingRendererPath);
+            string alertRenderer = File.ReadAllText(alertRendererPath);
+            string alertEngine = File.ReadAllText(alertEnginePath);
+            string state = File.ReadAllText(statePath);
+            string predictiveSelector = File.ReadAllText(predictiveSelectorPath);
+            string reversalLimit = File.ReadAllText(reversalLimitPath);
             string controlFactory = File.ReadAllText(controlFactoryPath);
             string controlHandlers = File.ReadAllText(controlHandlersPath);
 
@@ -1104,19 +1122,17 @@ namespace cAlgo
                 "plan renderer owns shared level rendering");
 
             Assert(
-                controlFactory.Contains("_autoTradingQuickToggle.Checked +=") &&
-                controlFactory.Contains("_autoTradingQuickToggle.Unchecked +=") &&
-                controlFactory.Contains("_automaticOrdersQuickToggle.Checked +=") &&
-                controlFactory.Contains("_automaticOrdersQuickToggle.Unchecked +=") &&
-                !controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
-                !controlFactory.Contains("_automaticOrdersQuickToggle.Click +="),
-                "execution toggles use authoritative checked/unchecked events");
+                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
+                !controlFactory.Contains("_autoTradingQuickToggle.Checked +=") &&
+                !controlFactory.Contains("_automaticOrdersQuickToggle.Checked +=") &&
+                !controlFactory.Contains("_autoTradingQuickToggle.Unchecked +=") &&
+                !controlFactory.Contains("_automaticOrdersQuickToggle.Unchecked +="),
+                "execution toggles use direct click authority");
 
             Assert(
-                controlHandlers.Contains("OnAutoTradingQuickToggleChecked(") &&
-                controlHandlers.Contains("OnAutoTradingQuickToggleUnchecked(") &&
-                controlHandlers.Contains("OnAutomaticOrdersQuickToggleChecked(") &&
-                controlHandlers.Contains("OnAutomaticOrdersQuickToggleUnchecked(") &&
+                controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
+                controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
                 controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
                 controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
                 "toggle handlers use runtime state authority");
@@ -1152,8 +1168,46 @@ namespace cAlgo
                 "all automatic execution paths remain connected");
 
             Assert(
-                calculation.Contains("TryEnsureAutomaticPlan("),
-                "live cycle retains automatic plan orchestration");
+                calculation.Contains("TryEnsureAutomaticPlan(") &&
+                calculation.Contains("RenderPredictionObjects(") &&
+                calculation.Contains("RenderLatestAlertSignalMarker("),
+                "live cycle retains plan plus prediction/alert presentation orchestration");
+
+            Assert(
+                predictiveSelector.Contains("TrySelectPredictivePendingLevel(") &&
+                predictiveSelector.Contains("BuildManagedFvgZone(") &&
+                predictiveSelector.Contains("BuildOrderBlockCandidate(") &&
+                predictiveSelector.Contains("FindEqualLow(") &&
+                predictiveSelector.Contains("FindEqualHigh("),
+                "predictive pending selector combines structural level sources");
+
+            Assert(
+                reversalLimit.Contains("TrySelectPredictivePendingLevel(") &&
+                reversalLimit.Contains("candidate.Source") &&
+                reversalLimit.Contains("candidate.DistanceAtr"),
+                "reversal limit consumes predictive candidate evidence");
+
+            Assert(
+                pendingRenderer.Contains("RenderCompactPlanLabel(") &&
+                pendingRenderer.Contains("RemovePlanLabel("),
+                "pending levels render through compact semantic boxes");
+
+            Assert(
+                alertEngine.Contains("RememberVisualSignalAlert(") &&
+                state.Contains("_lastVisualAlertM5") &&
+                state.Contains("_lastVisualAlertDirection") &&
+                alertRenderer.Contains("RenderLatestAlertSignalMarker("),
+                "audible signal alert has a non-authoritative visual presentation path");
+
+            string protectionPath = Path.Combine(
+                "src", "CFIP.Indicator", "Trading", "LiveManagement", "ProtectionManager.cs");
+            string protection = File.ReadAllText(protectionPath);
+            Assert(
+                !protection.Contains("pressureStop") &&
+                !protection.Contains("market - tightRoom") &&
+                !protection.Contains("market + tightRoom") &&
+                protection.Contains("pressureTighten"),
+                "smart trailing remains structural under exit pressure");
         }
 
         private static void VerifyResponsivePanelRuntime()
