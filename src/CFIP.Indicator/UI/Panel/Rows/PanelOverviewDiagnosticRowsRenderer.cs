@@ -105,6 +105,5 @@ namespace cAlgo
                 age.ToString("F1") +
                 "s AGO";
         }
-        }
     }
 }
