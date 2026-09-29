@@ -24,7 +24,7 @@ namespace cAlgo
 
     internal static class LiveExitGeometryRule
     {
-        public static LiveExitGeometryResult ValidateTarget(
+        public static LiveExitGeometryResult ValidateLiveTarget(
             int direction,
             double entry,
             double market,
