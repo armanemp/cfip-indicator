@@ -54,3 +54,14 @@ changing decision thresholds.
 
 No decision thresholds, evidence weights, RR policy, risk sizing, trailing or
 broker execution mutation policy is changed by this phase.
+
+## Post-phase runtime stabilization
+
+A user runtime check after the Phase 6.2 merge exposed two observability/runtime gaps that are now hardened without changing the strategy policy:
+
+- the guide was bound to price/bar coordinates and could render outside the visible price viewport;
+- asynchronous initialization could complete after the host's last initial calculation callback, leaving a ready instance with no completed calculation until a later market tick.
+
+The guide now uses cTrader's fixed-position Chart.DrawStaticText surface at the top-right of the chart and reports loaded dataset counts. After async initialization becomes ready, exactly one startup catch-up cycle runs through the same centralized calculation-cycle owner used by the normal Calculate(int index) path. No new parameter was introduced, and the 535-parameter contract remains unchanged.
+
+The startup catch-up is one-shot: the existing _lastCalculationCompletedUtc guard prevents the heartbeat from turning into a full-analysis timer loop.
