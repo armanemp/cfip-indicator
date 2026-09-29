@@ -49,6 +49,8 @@ namespace cAlgo
                     new Dictionary<Bars, WaveTrendEngine>();
                 private readonly List<TradeOpportunityCandidate> _opportunityCandidates =
                     new List<TradeOpportunityCandidate>();
+                private readonly TradePlanRegistry _tradePlanRegistry =
+                    new TradePlanRegistry();
                 private int _lastOpportunityCandidatesM5 = -1;
                 private readonly HashSet<string> _opportunityVisualIds =
                     new HashSet<string>();
@@ -87,6 +89,7 @@ namespace cAlgo
                 private bool _autoTradingEnabledRuntime;
                 private bool _automaticOrdersEnabledRuntime;
                 private bool _executionRuntimeInitialized;
+                private bool _executionToggleSyncing;
                 private bool _lastConfiguredAutoTrading;
                 private bool _lastConfiguredAutomaticOrders;
                 private bool _outcomeTelemetryTimedOut;
@@ -168,14 +171,8 @@ namespace cAlgo
                 private Button _cancelButton;
                 private Button _panelRestoreButton;
                 private StackPanel _quickExecutionStack;
-                private Border _autoTradingQuickStatus;
-                private TextBlock _autoTradingQuickStatusText;
-                private Border _autoTradingQuickSwitchTrack;
-                private Border _autoTradingQuickSwitchThumb;
-                private Border _automaticOrdersQuickStatus;
-                private TextBlock _automaticOrdersQuickStatusText;
-                private Border _automaticOrdersQuickSwitchTrack;
-                private Border _automaticOrdersQuickSwitchThumb;
+                private ToggleButton _autoTradingQuickToggle;
+                private ToggleButton _automaticOrdersQuickToggle;
         
                 private Border _popup;
                 private TextBlock _popupText;
