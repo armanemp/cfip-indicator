@@ -1,3 +1,5 @@
+# SUPERSEDED — Runtime Startup and Chart Observability Hotfix
+
 # CFIP — Runtime Startup and Chart Observability Hotfix
 
 ## Problem
@@ -31,3 +33,8 @@ No new parameter was introduced; the enforced production parameter count remains
 ## Verification
 
 The branch must pass Source / Architecture, Runtime Acceptance Contracts, and cTrader Compile. The fixed-position guide also follows the current cTrader Algo Chart.DrawStaticText API contract.
+
+
+## Current status
+
+This hotfix was deliberately reverted after live validation showed that its persistent chart guide and timer-driven startup catch-up reduced runtime responsiveness and duplicated the existing panel. It is retained only as historical continuity; the production runtime no longer contains these additions.
