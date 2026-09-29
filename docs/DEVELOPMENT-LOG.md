@@ -1837,7 +1837,7 @@ Next phase: evidence-backed refinement of the specific owner/gate identified by 
 
 ## Phase 11.4 — Plan Reward/Risk Quality, Multi-Scenario Coverage & Execution Hardening — 2026-09-30
 
-Status: IMPLEMENTED on phase branch; verification pending.
+Status: VERIFIED COMPLETE; merged into main as `5886989c001ebeac58cde63486f519262b942559`.
 
 Implementation:
 - added one shared PlanRewardRiskQualityRule for nominal/effective TP1 RR, stop-risk ATR and spread-aware reward/risk validation;
