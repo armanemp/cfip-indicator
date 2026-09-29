@@ -97,23 +97,44 @@ namespace cAlgo
                     return;
                 }
 
+                RelativeTakeProfitProtections serverTakeProfits;
+                bool useServerTakeProfitLadder =
+                    TryBuildServerSideTakeProfitLadder(
+                        entry,
+                        target,
+                        volume,
+                        out serverTakeProfits);
+
                 TradeResult result;
 
                 try
                 {
                     result =
-                        TryExecuteMarketRangeOrder(
-                            type,
-                            SymbolName,
-                            volume,
-                            marketRangePips,
-                            entry,
-                            NormalizeLabel(),
-                            stopPips,
-                            targetPips,
-                            TradeExecutionMetadata.DefaultExecutionComment,
-                            false,
-                            "AUTOMATIC MARKET RANGE");
+                        useServerTakeProfitLadder
+                            ? TryExecuteMarketRangeOrderWithTakeProfitLadder(
+                                type,
+                                SymbolName,
+                                volume,
+                                marketRangePips,
+                                entry,
+                                NormalizeLabel(),
+                                stopPips,
+                                serverTakeProfits,
+                                TradeExecutionMetadata.DefaultExecutionComment,
+                                false,
+                                "AUTOMATIC MARKET RANGE • SERVER TP LADDER")
+                            : TryExecuteMarketRangeOrder(
+                                type,
+                                SymbolName,
+                                volume,
+                                marketRangePips,
+                                entry,
+                                NormalizeLabel(),
+                                stopPips,
+                                targetPips,
+                                TradeExecutionMetadata.DefaultExecutionComment,
+                                false,
+                                "AUTOMATIC MARKET RANGE");
                 }
                 catch
                 {
@@ -153,6 +174,9 @@ namespace cAlgo
                         closedM5,
                         result))
                     return;
+
+                AdoptServerSideTakeProfitLadder(
+                    result.Position);
 
                 if (!TryResolveAutomaticPostFillTarget(
                         closedM5,
