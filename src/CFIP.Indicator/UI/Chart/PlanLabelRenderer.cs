@@ -70,7 +70,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    textColor;
+                    color;
                 label.FontSize =
                     Math.Max(
                         8,
@@ -235,7 +235,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    color;
+                    textColor;
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
