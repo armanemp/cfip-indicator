@@ -302,3 +302,23 @@ Manual cTrader validation remains required for actual button interaction, observ
 | cTrader Compile | Required | Required |
 
 Hands-on cTrader validation remains required for exact visual line endpoints, 40-bar appearance on target chart timeframes, status-switch rendering, settings synchronization and non-interactivity.
+
+
+## Phase 8.1 — M1 trigger correctness
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| M1 is consumed from the canonical closed M1 context | PASS | Required |
+| M1 bar is inside the exact closed M5 window | PASS | Required |
+| Future / still-open M1 bar is rejected | PASS | Required |
+| BUY/SELL M1 trigger symmetry | PASS | Required |
+| Opposite M1 direction is rejected | PASS | Required |
+| Weak M1 body is rejected | PASS | Required |
+| Poor M1 close location is rejected | PASS | Required |
+| Insufficient M1 trigger score is rejected | PASS | Required |
+| M1 cannot vote directly in directional consensus | Source gate | Required |
+| M1 confirmation is combined with canonical M5 TriggerReady | Source gate | Required |
+| Runtime Acceptance Contracts | Yes | Required |
+| cTrader Compile | Yes | Required |
+
+The automated phase contracts establish deterministic source/state semantics. They do not establish an empirical reduction in false signals; that requires deterministic replay or historical outcome validation.
