@@ -104,15 +104,9 @@ namespace cAlgo
                                         " | RR " +
                                         plan.Tp1RR.ToString("F2");
                         
-                                    if (AlertOnConfirmedSignal)
-                                    {
-                                        SendUnifiedAlert(
-                                            "SIGNAL|" +
-                                            plan.CreatedM5,
-                                            message,
-                                            plan.Direction,
-                                            true);
-                                    }
+                                    // Entry alerts are emitted only by the canonical
+                                    // actionability gate after the plan is synchronized.
+                                    // Plan creation itself is not an entry signal.
                                 }
     }
 }
