@@ -38,12 +38,12 @@ namespace cAlgo
             }
 
             if (EnableParallelOpportunities &&
-                _opportunityCandidates.Count > 0)
+                _opportunityRegistry.Count > 0)
             {
                 string laneSummary = "";
 
                 for (int oi = 0;
-                     oi < _opportunityCandidates.Count;
+                     oi < _opportunityRegistry.Count;
                      oi++)
                 {
                     TradeOpportunityCandidate opportunity =
