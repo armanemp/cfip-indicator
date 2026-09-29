@@ -478,6 +478,50 @@ for forbidden in (
     if forbidden in signal_renderer_code:
         raise SystemExit(f"Signal renderer bypasses canonical visual snapshot: {forbidden}")
 
+# Phase 5.6 responsive panel/runtime gates.
+PANEL_MAIN = ROOT / "UI" / "Panel" / "PanelMainRenderer.cs"
+PANEL_FACTORY = ROOT / "UI" / "Panel" / "PanelRowsFactory.cs"
+PANEL_WRITER = ROOT / "UI" / "Panel" / "PanelRowWriter.cs"
+PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
+INIT_RUNTIME = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
+CALC_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
+PANEL_DIAGNOSTIC = ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewDiagnosticRowsRenderer.cs"
+
+for required_path in (
+    PANEL_MAIN, PANEL_FACTORY, PANEL_WRITER, PANEL_HEARTBEAT,
+    INIT_RUNTIME, CALC_CYCLE, PANEL_DIAGNOSTIC
+):
+    if not required_path.exists():
+        raise SystemExit(f"Phase 5.6 panel/runtime owner is missing: {required_path.name}")
+
+panel_main_code = PANEL_MAIN.read_text(encoding="utf-8")
+panel_factory_code = PANEL_FACTORY.read_text(encoding="utf-8")
+panel_writer_code = PANEL_WRITER.read_text(encoding="utf-8")
+panel_heartbeat_code = PANEL_HEARTBEAT.read_text(encoding="utf-8")
+init_runtime_code = INIT_RUNTIME.read_text(encoding="utf-8")
+calc_cycle_code = CALC_CYCLE.read_text(encoding="utf-8")
+panel_diagnostic_code = PANEL_DIAGNOSTIC.read_text(encoding="utf-8")
+
+if "RenderPanel();" not in panel_heartbeat_code:
+    raise SystemExit("Panel heartbeat must request full panel refresh")
+if "ShouldRunSafetySupervisor(" not in panel_heartbeat_code:
+    raise SystemExit("Panel heartbeat must decouple safety cadence")
+if "TotalMilliseconds >= 1000" not in panel_heartbeat_code:
+    raise SystemExit("Safety supervisor cadence must remain bounded at one second")
+if "TimeSpan.FromMilliseconds(500)" not in init_runtime_code:
+    raise SystemExit("Ready runtime timer must provide responsive 500ms panel cadence")
+if "_panelRows.Count != PanelRowCount" in panel_main_code:
+    raise SystemExit("Panel renderer must not require eager fixed-row allocation")
+if "EnsurePanelRow(" not in panel_factory_code or "slot >= PanelRowCount" not in panel_writer_code:
+    raise SystemExit("Panel rows must be lazily allocated under the fixed capacity")
+if "if (row.Text != nextText)" not in panel_writer_code or "if (row.ForegroundColor != nextColor)" not in panel_writer_code:
+    raise SystemExit("Panel writer must avoid redundant UI property writes")
+if "_renderSignalVisualSnapshot =" not in panel_main_code or "BuildSignalVisualSnapshot(" not in panel_main_code:
+    raise SystemExit("Panel render must reuse one canonical visual snapshot")
+if "_lastCalculationCompletedUtc" not in calc_cycle_code:
+    raise SystemExit("Calculation completion timestamp must be exposed for diagnostics")
+if "CalculationAgeText(" not in panel_diagnostic_code:
+    raise SystemExit("Panel must expose calculation freshness diagnostics")
 # Phase 5.5 visual setup projection and execution controls.
 VISUAL_PREVIEW_MODEL = MODEL_ROOT / "TradeSetupPreview.cs"
 VISUAL_PREVIEW_BUILDER = ROOT / "Planning" / "TradePlan" / "PlanPreviewBuilder.cs"
