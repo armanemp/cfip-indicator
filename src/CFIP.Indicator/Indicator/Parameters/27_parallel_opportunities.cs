@@ -7,7 +7,7 @@ namespace cAlgo
         [Parameter("Enable Parallel Opportunities", Group = "27 · PARALLEL OPPORTUNITIES", DefaultValue = true)]
         public bool EnableParallelOpportunities { get; set; }
 
-        [Parameter("Maximum Visible Opportunities", Group = "27 · PARALLEL OPPORTUNITIES", DefaultValue = 4, MinValue = 2, MaxValue = 6)]
+        [Parameter("Maximum Visible Opportunities", Group = "27 · PARALLEL OPPORTUNITIES", DefaultValue = 6, MinValue = 2, MaxValue = 8)]
         public int MaximumVisibleOpportunities { get; set; }
 
         [Parameter("Tactical Opportunity Minimum Quality", Group = "27 · PARALLEL OPPORTUNITIES", DefaultValue = 70, MinValue = 50, MaxValue = 95)]
