@@ -23,7 +23,12 @@ namespace cAlgo
             try
             {
                 SubmissionAttemptIdentity submissionIdentity; string submissionGateReason;
-                if (!TryAcquireSubmission(closedM5, direction, ExecutionSubmissionPath.PendingLimit, out submissionIdentity, out submissionGateReason))
+                string executionScenarioId =
+                    "PENDING-LIMIT-" +
+                    (direction == 1 ? "BUY" : "SELL");
+                _activeExecutionScenarioId =
+                    executionScenarioId;
+                if (!TryAcquireSubmission(closedM5, direction, ExecutionSubmissionPath.PendingLimit, executionScenarioId, out submissionIdentity, out submissionGateReason))
                 { _autoOrdersBlockReason = submissionGateReason; return false; }
 
                 RelativeTakeProfitProtections serverTakeProfits;
