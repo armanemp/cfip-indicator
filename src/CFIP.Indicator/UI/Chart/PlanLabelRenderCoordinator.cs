@@ -70,13 +70,13 @@ namespace cAlgo
                                     }
                         
                                     bool triggerDistinct =
-                                        IsFinitePositive(snapshot.EntryTrigger) &&
+                                        IsFinitePositive(snapshot.Trigger) &&
                                         !SamePrice(
-                                            snapshot.EntryTrigger,
+                                            snapshot.Trigger,
                                             snapshot.Entry) &&
                                         (!idealDistinct ||
                                          !SamePrice(
-                                             snapshot.EntryTrigger,
+                                             snapshot.Trigger,
                                              snapshot.IdealEntry));
                         
                                     if (ShowTrigger &&
@@ -87,9 +87,9 @@ namespace cAlgo
                                             P + "TRIGGER_LABEL",
                                             "TRIGGER " +
                                             Price(
-                                                snapshot.EntryTrigger),
+                                                snapshot.Trigger),
                                             bar,
-                                            snapshot.EntryTrigger,
+                                            snapshot.Trigger,
                                             TriggerLineColor);
                                     }
                         
@@ -111,7 +111,7 @@ namespace cAlgo
                                     bool tp1Distinct =
                                         IsFinitePositive(snapshot.Tp1) &&
                                         !SamePrice(snapshot.Tp1, snapshot.Entry) &&
-                                        !SamePrice(snapshot.Tp1, snapshot.EntryTrigger);
+                                        !SamePrice(snapshot.Tp1, snapshot.Trigger);
                         
                                     if (ShowTP1 &&
                                         tp1Distinct)
@@ -131,7 +131,7 @@ namespace cAlgo
                                         (!tp1Distinct ||
                                          !SamePrice(snapshot.Tp2, snapshot.Tp1)) &&
                                         !SamePrice(snapshot.Tp2, snapshot.Entry) &&
-                                        !SamePrice(snapshot.Tp2, snapshot.EntryTrigger);
+                                        !SamePrice(snapshot.Tp2, snapshot.Trigger);
                         
                                     if (ShowTP2 &&
                                         tp2Distinct)
@@ -151,7 +151,7 @@ namespace cAlgo
                                         (!tp2Distinct ||
                                          !SamePrice(snapshot.Tp3, snapshot.Tp2)) &&
                                         !SamePrice(snapshot.Tp3, snapshot.Entry) &&
-                                        !SamePrice(snapshot.Tp3, snapshot.EntryTrigger);
+                                        !SamePrice(snapshot.Tp3, snapshot.Trigger);
                         
                                     if (ShowTP3 &&
                                         tp3Distinct)
@@ -171,7 +171,7 @@ namespace cAlgo
                                         (!tp3Distinct ||
                                          !SamePrice(snapshot.Tp4, snapshot.Tp3)) &&
                                         !SamePrice(snapshot.Tp4, snapshot.Entry) &&
-                                        !SamePrice(snapshot.Tp4, snapshot.EntryTrigger);
+                                        !SamePrice(snapshot.Tp4, snapshot.Trigger);
                         
                                     if (ShowTP4 &&
                                         tp4Distinct)
