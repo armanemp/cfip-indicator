@@ -3559,7 +3559,7 @@ Operator action:
 | --- | --- | --- |
 | 9.1 Evidence duplication | COMPLETE | Evidence ownership/correlation controls are in main. |
 | 9.2 Confidence semantics + parallel opportunities + WaveTrend evidence | COMPLETE | Multi-lane detection/presentation and exact WaveTrend evidence are in main. |
-| 9.3 Empirical calibration | IMPLEMENTED IN PR #42 | Contextual prequential calibration is implemented; merge and CI gates remain required before main is advanced. |
+| 9.3 Empirical calibration | COMPLETE | Contextual prequential calibration is merged in PR #42; CI passed on the final implementation head. |
 | 9.4 Regime-conditioned intelligence | NEXT | Context-specific weighting remains a separate phase. |
 | 9.5 No-trade intelligence | NEXT | Explainable no-trade state synthesis remains a separate phase. |
 
