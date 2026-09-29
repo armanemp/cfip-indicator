@@ -22,7 +22,7 @@ namespace cAlgo
             _entries[candidate.Id] = candidate;
         }
 
-        public bool TryGet(
+        public bool TryGetCandidate(
             string id,
             out TradeOpportunityCandidate candidate)
         {
