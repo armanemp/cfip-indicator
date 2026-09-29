@@ -27,7 +27,12 @@ namespace cAlgo
             tp4 = 0;
 
             if (candidates == null ||
-                selected == null)
+                selected == null ||
+                !IsFinitePositive(entry) ||
+                !IsFinitePositive(risk) ||
+                !IsFinitePositive(atr) ||
+                (direction != 1 &&
+                 direction != -1))
                 return false;
 
             int filledTargetSlots =
