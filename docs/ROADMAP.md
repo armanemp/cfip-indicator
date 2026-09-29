@@ -1550,7 +1550,7 @@ Next implementation phase: Phase 8.1 — M1 trigger correctness.
 
 ## Phase 8.1 — M1 trigger correctness
 
-Status: complete.
+Status: implementation complete; verification pending.
 
 Implementation:
 
