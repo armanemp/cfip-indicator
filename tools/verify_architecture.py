@@ -40,12 +40,29 @@ def strip_for_static_checks(text):
 raw = "\n".join(p.read_text(encoding="utf-8") for p in files)
 code = strip_for_static_checks(raw)
 
-parameters = len(re.findall(r"\[Parameter\s*\(", code))
+parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
+parameters = sum(
+    len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
+    for p in parameter_files
+)
 if parameters != 566:
     raise SystemExit(f"Expected 566 total parameters, found {parameters}")
-parameter_files = sorted(PARAMETER_ROOT.glob("*.cs"))
 if len(parameter_files) != 30:
     raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
+
+news_parameter_file = PARAMETER_ROOT / "28_news_guard.cs"
+if not news_parameter_file.exists():
+    raise SystemExit("News Guard parameter file is missing")
+news_parameters = len(
+    re.findall(
+        r"\[Parameter\s*\(",
+        news_parameter_file.read_text(encoding="utf-8"),
+    )
+)
+if news_parameters != 14:
+    raise SystemExit(
+        f"Expected 14 News Guard parameters, found {news_parameters}"
+    )
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
 if baseline_parameters != 563:
