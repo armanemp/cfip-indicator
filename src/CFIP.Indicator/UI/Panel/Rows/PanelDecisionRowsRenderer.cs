@@ -52,32 +52,11 @@ namespace cAlgo
                                                         true,
                                                         contentWidth);
 
-                                                    if (_decision.EmpiricalCalibrationSamples > 0)
-                                                    {
-                                                        string adjustmentText =
-                                                            _decision.EmpiricalCalibrationAdjustment > 0
-                                                                ? "+" + _decision.EmpiricalCalibrationAdjustment
-                                                                : _decision.EmpiricalCalibrationAdjustment.ToString();
+                                                    RenderPanelCalibrationRows(
+                                                        ref slot,
+                                                        contentWidth);
 
-                                                        AddPanelRow(
-                                                            ref slot,
-                                                            "CAL " +
-                                                            _decision.Confidence +
-                                                            "  •  BASE " +
-                                                            _decision.BaseConfidence +
-                                                            "  •  ADJ " +
-                                                            adjustmentText +
-                                                            "  •  OBS WIN " +
-                                                            (_decision.EmpiricalCalibrationObservedWinRate * 100.0).ToString("F0") +
-                                                            "%  •  N" +
-                                                            _decision.EmpiricalCalibrationSamples +
-                                                            "  •  " +
-                                                            _decision.EmpiricalCalibrationSource,
-                                                            PanelAccentColor,
-                                                            false,
-                                                            contentWidth);
-                                                    }
-                                    
+                                   
                                                     AddPanelRow(
                                                         ref slot,
                                                         "MTF " +
