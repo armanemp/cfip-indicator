@@ -129,7 +129,7 @@ namespace cAlgo
                     false,
                     "SIGNAL QUALITY • PRICE POSITION");
 
-            if (!IsFinitePositive(input.Tp1RR) ||
+            if (!IsFinitePositiveValue(input.Tp1RR) ||
                 input.Tp1RR < input.MinimumTp1RR)
                 return new ActionableSignalQualityResult(
                     false,
@@ -140,7 +140,7 @@ namespace cAlgo
                 string.Empty);
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveValue(double value)
         {
             return
                 !double.IsNaN(value) &&
