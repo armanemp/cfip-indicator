@@ -144,16 +144,25 @@ namespace cAlgo
                  i <= end;
                  i++)
             {
-                if (direction == 1)
-                {
-                    if (bars.LowPrices[i] <= low)
-                        return true;
-                }
-                else if (direction == -1)
-                {
-                    if (bars.HighPrices[i] >= high)
-                        return true;
-                }
+                double fillPrice =
+                    direction == 1
+                        ? (FvgBreakByWicks
+                            ? bars.LowPrices[i]
+                            : Math.Min(
+                                bars.OpenPrices[i],
+                                bars.ClosePrices[i]))
+                        : (FvgBreakByWicks
+                            ? bars.HighPrices[i]
+                            : Math.Max(
+                                bars.OpenPrices[i],
+                                bars.ClosePrices[i]));
+
+                if (FvgRule.IsFullyFilled(
+                        direction,
+                        low,
+                        high,
+                        fillPrice))
+                    return true;
             }
 
             return false;
