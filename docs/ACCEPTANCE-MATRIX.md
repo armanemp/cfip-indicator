@@ -535,6 +535,8 @@ Verification evidence:
 | cTrader Compile/Build | PASS | Required |
 | Source / Architecture + accumulated audit | PASS | Required |
 
+Verification evidence: Runtime Acceptance #1110 PASS; cTrader Compile/Build #1294 PASS; Source/Architecture #1301 PASS.
+
 Target-terminal replay remains required to measure restart persistence, observed signal timing, false-signal frequency, realized R and the empirical effect of recent calibration/risk scaling.
 
  
