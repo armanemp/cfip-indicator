@@ -252,6 +252,23 @@ namespace cAlgo
             snapshot.AuthoritativeDirection =
                 visualDirection;
 
+            snapshot.HtfAnchorDirection =
+                _decision == null ? 0 : _decision.HtfAnchorDirection;
+            snapshot.HtfAlignment =
+                _decision == null ? 0 : _decision.HtfAlignment;
+            snapshot.MidframeDirection =
+                _decision == null ? 0 : _decision.MidframeDirection;
+            snapshot.MidframeAlignment =
+                _decision == null ? 0 : _decision.MidframeAlignment;
+            snapshot.EntryFrameAlignment =
+                _decision == null ? 0 : _decision.EntryFrameAlignment;
+            snapshot.TopDownEligible =
+                _decision != null && _decision.TopDownEligible;
+            snapshot.TopDownStage =
+                _decision == null
+                    ? "HTF SEARCH"
+                    : _decision.TopDownStage ?? "HTF SEARCH";
+
             snapshot.DecisionReady = decisionReady;
             snapshot.ReactionReady = reactionReady;
             snapshot.ReactionIntrabar = reactionReady;
