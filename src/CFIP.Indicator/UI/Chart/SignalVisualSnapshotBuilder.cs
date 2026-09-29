@@ -107,6 +107,17 @@ namespace cAlgo
                 _reaction.EntryAllowed &&
                 _reaction.Direction != 0;
 
+            snapshot.PlanDirection =
+                _plan == null ? 0 : _plan.Direction;
+            snapshot.PendingDirection =
+                pendingValid
+                    ? (pending.TradeType == TradeType.Buy ? 1 : -1)
+                    : 0;
+            snapshot.DecisionDirection =
+                _decision == null ? 0 : _decision.Direction;
+            snapshot.ReactionDirection =
+                _reaction == null ? 0 : _reaction.Direction;
+
             bool predictionReady =
                 _prediction != null &&
                 _prediction.Direction != 0 &&
