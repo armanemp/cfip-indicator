@@ -131,6 +131,9 @@ namespace cAlgo
                     ? DecisionPolicyMode.Soft
                     : DecisionPolicyMode.Confirmed);
 
+            ProcessDecisionAlerts(
+                closedM5);
+
             _lastEvaluatedM5 =
                 closedM5;
 
