@@ -1227,7 +1227,11 @@ Detailed phase record: `docs/PHASE-9-6-SIGNAL-QUALITY-VISUAL-COHERENCE.md`.
 
 ## Phase 9.7 — Regime-Aware No-Trade & Auto-Execution Hardening — 2026-09-29
 
-Status: implementation in progress on `phase/9-7-regime-auto-execution-hardening`; verification pending.
+Status: VERIFIED COMPLETE on `469f66bd2d461016c9283e0e4243ca429c694aa3`.
+
+Pre-merge gates: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture PASS.
+
+Final merge closeout pending.
 
 Scope:
 - introduced a single canonical RANGE/COMPRESSION quality rule;
