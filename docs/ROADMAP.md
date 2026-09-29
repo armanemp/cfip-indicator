@@ -3428,3 +3428,14 @@ Acceptance boundary:
 - target cTrader replay remains required for empirical signal-quality and visual-timing validation.
 
 Next phase is not advanced until Phase 8.5 final CI and merge verification close.
+
+
+## Phase 8.5 verification closeout — 2026-09-29
+
+Phase 8.5 merged as PR #39 into `main` at merge commit `cbda7910ad3b30fbd74cc526676e6372cb098cd7`.
+
+Pre-merge head `3e77b974cc00c82e9f134bfd0057493ea47c29e7` passed Runtime Acceptance, cTrader Compile/Build and Source/Architecture. Post-merge verification on `cbda7910ad3b30fbd74cc526676e6372cb098cd7` also passed all three gates.
+
+The exact custom WaveTrend source remains unavailable in the current searchable repo/Library continuation, so no guessed WaveTrend formula was introduced. Target cTrader replay remains required for empirical signal-quality and chart-timing validation.
+
+Next strategy-quality work must start from the verified Phase 8.5 main commit. Operator pull requirement: local `main` is now advanced to `cbda7910ad3b30fbd74cc526676e6372cb098cd7`; pull locally before continuing.

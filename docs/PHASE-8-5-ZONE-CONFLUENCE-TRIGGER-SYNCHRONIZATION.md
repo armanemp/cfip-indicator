@@ -138,3 +138,12 @@ No empirical win-rate, false-signal reduction or profitability claim is made fro
 ## Operator action
 
 A local pull is required only after PR #39 is merged into `main`. Intermediate branch commits do not require a local pull.
+
+
+## Final verification — 2026-09-29
+
+Status: **MERGED AND VERIFIED**.
+
+PR #39 merged to `main` as `cbda7910ad3b30fbd74cc526676e6372cb098cd7`. Pre-merge head `3e77b974cc00c82e9f134bfd0057493ea47c29e7`: Runtime PASS, Build PASS, Source/Architecture PASS. Post-merge merge commit `cbda7910ad3b30fbd74cc526676e6372cb098cd7`: Runtime PASS, Build PASS, Source/Architecture PASS.
+
+The verified main branch is now the continuation baseline. Local pull is required before beginning the next phase.

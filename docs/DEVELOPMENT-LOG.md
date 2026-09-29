@@ -954,3 +954,14 @@ Continuity:
 - current branch: phase-8-5-zone-confluence-trigger-synchronization;
 - PR #39;
 - operator pull is required only after final merge to main.
+
+
+## Phase 8.5 verification closeout — 2026-09-29
+
+PR #39 was merged to `main` as `cbda7910ad3b30fbd74cc526676e6372cb098cd7`. Pre-merge head `3e77b974cc00c82e9f134bfd0057493ea47c29e7`: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture PASS. Post-merge verification on `cbda7910ad3b30fbd74cc526676e6372cb098cd7`: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture PASS.
+
+Current engineering result: closed M1 confirmation can unlock a valid M5 direction inside the current forming M5 window without using unclosed M5 OHLC as trigger evidence; same-M5 plan retry occurs on new M1 confirmation; trigger readiness and exact M1 confirmation are represented in the canonical visual snapshot; FVG remains owned by FvgRule; OB/FVG confluence retains canonical FVG semantics; OB liquidity sweep searches earlier closed canonical sweep events; neutral RSI=50/DMI=0 are not directional votes.
+
+WaveTrend exact-parity integration remains explicitly pending because the exact supplied source is not accessible in the current repo/Library continuation; no formula was guessed. The stale Phase 8.1 PR #35 was closed as superseded.
+
+Operator pull requirement: pull `main` now before local continuation.
