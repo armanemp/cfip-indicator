@@ -12,7 +12,7 @@ namespace cAlgo
             double brokerDistance =
                 Math.Max(
                     Symbol.TickSize,
-                    MinimumTakeProfitDistancePrice(
+                    MinimumTakeProfitDistancePriceForDirection(
                         direction));
 
             double volatilityDistance =
