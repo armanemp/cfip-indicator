@@ -1857,7 +1857,10 @@ Next phase after verification: scenario-aware execution materialization and deep
 
 ## Phase 11.5 — Scenario-Aware Execution Materialization & Submission Isolation — 2026-09-30
 
-Status: IMPLEMENTED on phase branch; verification pending.
+Status: VERIFIED and MERGED to main.
+
+Merge commit: `fd29b955c557df680e40d8fe4151955600160408`.
+Final code commit verified before merge: `cef178da5f0359ef2c0800376b5b9beddf295424`.
 
 Implementation:
 - added canonical ScenarioExecutionPolicy separating candidate eligibility from broker execution authorization;
