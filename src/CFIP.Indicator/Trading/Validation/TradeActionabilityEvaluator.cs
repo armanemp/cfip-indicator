@@ -227,7 +227,7 @@ namespace cAlgo
 
             DivergenceResult divergence =
                 _m5Frame == null
-                    ? DivergenceResult.None()
+                    ? DivergenceResult.CreateNone()
                     : new DivergenceResult(
                         _m5Frame.DivergenceDirection,
                         _m5Frame.DivergenceQuality,
