@@ -119,7 +119,7 @@ namespace cAlgo
                 ClosedBarReferenceRule.ResolveClosedIndex(
                     opens.Length,
                     Utc(12, 14),
-                    index => opens[index]) == 1,
+                    index => opens[index]) == 0,
                 "between boundaries keeps prior bar closed");
 
             Assert(
