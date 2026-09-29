@@ -86,6 +86,13 @@ namespace cAlgo
             if (!decision.TriggerReady)
                 return new DecisionFilterResult(false, "TRIGGER");
 
+            if (decision.DivergenceDirection == -decision.Direction &&
+                decision.DivergenceQuality >= 86 &&
+                decision.DivergenceAgeBars <= 8)
+                return new DecisionFilterResult(
+                    false,
+                    "STRONG OPPOSING DIVERGENCE");
+
             return new DecisionFilterResult(true, string.Empty);
         }
     }
