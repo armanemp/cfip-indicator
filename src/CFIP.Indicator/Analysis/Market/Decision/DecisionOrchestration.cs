@@ -5,8 +5,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private readonly DecisionEngine _decisionEngine =
-            new DecisionEngine();
+        private readonly DecisionEvaluator _decisionEvaluator =
+            new DecisionEvaluator();
 
         private readonly DecisionInputSnapshotFactory
             _decisionInputSnapshotFactory =
@@ -133,7 +133,7 @@ namespace cAlgo
                 };
 
             Decision decision =
-                _decisionEngine.Evaluate(
+                _decisionEvaluator.Evaluate(
                     _decisionInputSnapshotFactory.Create(
                         request));
 
