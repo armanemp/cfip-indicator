@@ -33,7 +33,7 @@ namespace cAlgo
                                             }
 
                                             string capacityReason;
-                                            if (!ValidateConfiguredPositionCapacity(
+                                            if (!ValidateSinglePlanCapacity(
                                                     out capacityReason))
                                             {
                                                 _autoOrdersBlockReason =
