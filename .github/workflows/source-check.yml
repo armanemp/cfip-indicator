@@ -22,3 +22,4 @@ jobs:
       - run: python tools/audit_phase_accumulation.py
       - run: python tools/audit_optimization_readiness.py
       - run: python tools/audit_startup_persistence.py
+      - run: python tools/audit_signal_measurement.py
