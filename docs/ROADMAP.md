@@ -3670,7 +3670,11 @@ Detailed record: `docs/PHASE-9-7-REGIME-AUTO-EXECUTION-HARDENING.md`.
 
 ## Phase 9.8 — Indicator Fusion & Trade Quality
 
-Status: implementation in progress on `phase/9-8-indicator-fusion-trade-quality`; final verification pending.
+Status: VERIFIED COMPLETE on `ae7abf3f169d0743e56be85f59f0d9ffa5081069`.
+
+Final pre-merge gates: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture and project audits PASS.
+
+Merge closeout pending.
 
 Focus:
 - regime-aware fusion rather than raw indicator vote stacking;
