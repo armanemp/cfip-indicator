@@ -1432,3 +1432,52 @@ Detailed record: `docs/PHASE-9-12-OUTCOME-RECOVERY-TELEMETRY-CALIBRATION.md`.
 
 Next phase after verification: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
 Operator pull: required now; pull `main` to the merge commit and subsequent documentation closeout.
+
+
+
+## Phase 9.13 — Persistent Outcome Memory, Adaptive Risk & Optimization Routine — 2026-09-29
+
+Status: IMPLEMENTATION COMPLETE; CI verification pending.
+Branch: `phase/9-13-persistent-memory-safe-optimization`
+
+Implementation:
+- added persistent outcome memory using cTrader LocalStorage under `AccessRights.None`;
+- scoped memory by symbol, chart timeframe and a deterministic fingerprint of key decision/risk configuration;
+- retained at most 128 observations and rejected records older than 90 days on restore;
+- hardened outcome serialization using invariant numerics and Base64 text fields;
+- restored historical outcome aggregates before startup calculation;
+- connected recent outcome history to the existing contextual calibration engine;
+- added conservative recent-performance risk scaling using the latest 12 outcomes with an 8-observation minimum;
+- ensured outcome-aware risk can only reduce the canonical suitability-derived risk and never increase it;
+- exposed outcome risk scaling in the panel;
+- added `tools/audit_optimization_readiness.py` to the permanent Source/Architecture routine;
+- added Decision Contracts for adaptive-risk floor, minimum-sample, determinism and non-escalation behavior;
+- no new public parameters and no second decision/execution authority.
+
+Important design finding:
+Persistent memory is useful only because the restored history is actually consumed. In this phase it directly affects recent contextual calibration and conservative risk scaling after restarts. Memory is evidence continuity, not predictive power by itself.
+
+External-memory decision:
+Current cTrader/.NET 6 supports safe local file operations in a designated algorithm folder and also provides LocalStorage for persistent cBot/indicator data. CFIP uses LocalStorage as the default safe persistence boundary, avoiding unrestricted FullAccess. A human-readable export file can be added later for offline analysis.
+
+Optimization policy:
+Every phase now includes an optimization-readiness audit. Actual parameter optimisation must be measured against out-of-sample/replay data and multi-objective risk metrics rather than a single win-rate target.
+
+Safety:
+- outcome history does not choose direction;
+- outcome history does not submit/cancel/modify broker orders;
+- recent wins never increase automatic risk above the suitability-derived baseline;
+- telemetry off means outcome history cannot affect automatic risk;
+- memory is configuration-scoped to avoid cross-version calibration contamination.
+
+Verification:
+- Decision Contracts: pending;
+- Runtime Acceptance: pending;
+- cTrader Compile/Build: pending;
+- Source/Architecture + accumulated audit: pending;
+- target cTrader replay remains required for empirical validation.
+
+Detailed record: `docs/PHASE-9-13-PERSISTENT-MEMORY-SAFE-OPTIMIZATION.md`.
+
+Next phase after verification: Phase 9.14 — target-terminal replay, calibration/optimization measurement and evidence-driven parameter refinement.
+Operator pull: only after Phase 9.13 is fully verified and merged.
