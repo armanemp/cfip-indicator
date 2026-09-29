@@ -159,6 +159,20 @@ namespace cAlgo
 
             if (name != null &&
                 name.EndsWith(
+                    "TRIGGER",
+                    StringComparison.OrdinalIgnoreCase))
+                return Math.Max(
+                    3,
+                    configured);
+
+            if (name != null &&
+                name.EndsWith(
+                    "SL",
+                    StringComparison.OrdinalIgnoreCase))
+                return 1;
+
+            if (name != null &&
+                name.EndsWith(
                     "ENTRY",
                     StringComparison.OrdinalIgnoreCase))
                 return Math.Max(
@@ -168,6 +182,5 @@ namespace cAlgo
             return Math.Min(
                 2,
                 configured);
-        }
-    }
+        }    }
 }
