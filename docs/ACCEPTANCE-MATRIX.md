@@ -429,3 +429,22 @@ CI evidence on head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime PASS; Bu
 | Source / Architecture | Required | Required |
 
 Hands-on target-terminal replay remains required for observed partial fills, target-server behavior, duplicate suppression, terminal rendering, broker protection state and realized trading outcomes.
+
+
+## Phase 9.10 — Smart Auto-Trade / Auto-Order Protection & Accumulated Audit
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Automatic market path consumes smart server protection when eligible | Required | Required |
+| Aggressive market path consumes smart server protection when eligible | Required | Required |
+| Continuation stop / reversal limit consume the same server protection contract | Required | Required |
+| Smart break-even uses structural risk, TP1 geometry and spread-aware inputs | PASS when Decision Contracts pass | Required |
+| Local break-even yields to confirmed broker-owned break-even | Source | Required |
+| Server-owned TP ladder remains protected from local TP mutation | Source | Required |
+| Structural SL remains monotonic/protective-only | Source | Required |
+| Accumulated auto-trade/protection audit runs in Source/Architecture CI | Source | Required |
+| All signal/plan level lines are Solid | Source | Required |
+| Level text is white and background-free | Source | Required |
+| Public parameter contract remains 552 | Source | Required |
+
+Target-terminal replay remains required for actual broker/server timing, partial fills, protection activation and realized outcomes.
