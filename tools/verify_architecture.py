@@ -2249,6 +2249,14 @@ if not REVERSAL_LIMIT_PREP.exists():
     raise SystemExit("Reversal limit preparation is missing")
 
 predictive_selector_code = PREDICTIVE_PENDING_SELECTOR.read_text(encoding="utf-8")
+predictive_collector_code = (
+    (ROOT / "Planning" / "Execution" / "PredictivePendingZoneCollector.cs")
+    .read_text(encoding="utf-8")
+)
+predictive_scorer_code = (
+    (ROOT / "Planning" / "Execution" / "PredictivePendingCandidateScorer.cs")
+    .read_text(encoding="utf-8")
+)
 reversal_limit_code = REVERSAL_LIMIT_PREP.read_text(encoding="utf-8")
 setup_preview_code = SETUP_PREVIEW.read_text(encoding="utf-8")
 
@@ -2257,13 +2265,29 @@ for token in (
     "CollectPredictiveZoneCandidates(",
     "FindEqualLow(",
     "FindEqualHigh(",
-    "BuildOrderBlockCandidate(",
-    "BuildManagedFvgZone(",
-    "PredictivePendingContextQuality(",
 ):
     if token not in predictive_selector_code:
         raise SystemExit(
-            f"Predictive pending intelligence contract missing: {token}"
+            f"Predictive pending selector contract missing: {token}"
+        )
+
+for token in (
+    "BuildOrderBlockCandidate(",
+    "BuildManagedFvgZone(",
+    "HasZoneRetest(",
+):
+    if token not in predictive_collector_code:
+        raise SystemExit(
+            f"Predictive pending collector contract missing: {token}"
+        )
+
+for token in (
+    "PredictivePendingContextQuality(",
+    "PredictivePendingSourceKey(",
+):
+    if token not in predictive_scorer_code:
+        raise SystemExit(
+            f"Predictive pending scorer contract missing: {token}"
         )
 
 if "TrySelectPredictivePendingLevel(" not in reversal_limit_code:
