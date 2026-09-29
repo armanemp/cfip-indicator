@@ -16,6 +16,7 @@ namespace cAlgo
     {
         private void RenderPanel()
                                 {
+            bool ownsVisualSnapshot = false;
             if (_panelRenderBusy)
                 return;
 
@@ -38,8 +39,7 @@ namespace cAlgo
                                                         _panelHeaderTitle == null ||
                                                         _panelRowsStack == null ||
                                                         _panelScroll == null ||
-                                                        _buttonStack == null ||
-                                                        _panelRows.Count != PanelRowCount)
+                                                        _buttonStack == null)
                                                         return;
                 
                                                     DateTime now =
@@ -49,6 +49,16 @@ namespace cAlgo
                                                         (now - _lastPanelRenderUtc).TotalMilliseconds < 250)
                                                         return;
                                         
+                                                    ownsVisualSnapshot =
+                                                        _renderSignalVisualSnapshot == null;
+
+                                                    if (ownsVisualSnapshot)
+                                                        _renderSignalVisualSnapshot =
+                                                            BuildSignalVisualSnapshot(
+                                                                Math.Max(
+                                                                    1,
+                                                                    _lastEvaluatedM5));
+
                                                     if (_panelToggleButton == null)
                                                         CreatePanelToggleButton();
                                         
@@ -230,6 +240,9 @@ namespace cAlgo
             }
             finally
             {
+                if (ownsVisualSnapshot)
+                    _renderSignalVisualSnapshot = null;
+
                 _panelRenderBusy = false;
             }
 }
