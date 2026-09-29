@@ -222,7 +222,7 @@ namespace cAlgo
                     Math.Max(
                         Symbol.TickSize,
                         MinimumProtectionDistancePriceForDirection(
-                            _plan.Direction)))
+                            _plan.Direction))))
                 return _plan.Stop;
 
             // Never derive a new stop merely because the market moved. If a
