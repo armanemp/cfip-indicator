@@ -13,26 +13,14 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void OnAutoTradingQuickToggleChecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutoTradingQuickToggleState(args, true);
-        }
-
-        private void OnAutoTradingQuickToggleUnchecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutoTradingQuickToggleState(args, false);
-        }
-
-        private void ApplyAutoTradingQuickToggleState(
-            ToggleButtonEventArgs args,
-            bool enabled)
+        private void ApplyAutoTradingQuickToggleClick()
         {
             if (_executionToggleSyncing ||
-                args == null ||
-                args.ToggleButton == null)
+                _autoTradingQuickToggle == null)
                 return;
+
+            bool enabled =
+                _autoTradingQuickToggle.IsChecked;
 
             SetAutoTradingRuntimeState(
                 enabled,
@@ -47,34 +35,26 @@ namespace cAlgo
                 enabled
                     ? "QUICK ENABLED"
                     : "QUICK DISABLED");
+
+            SyncQuickExecutionControls();
         }
 
-        private void OnAutomaticOrdersQuickToggleChecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutomaticOrdersQuickToggleState(args, true);
-        }
-
-        private void OnAutomaticOrdersQuickToggleUnchecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutomaticOrdersQuickToggleState(args, false);
-        }
-
-        private void ApplyAutomaticOrdersQuickToggleState(
-            ToggleButtonEventArgs args,
-            bool enabled)
+        private void ApplyAutomaticOrdersQuickToggleClick()
         {
             if (_executionToggleSyncing ||
-                args == null ||
-                args.ToggleButton == null)
+                _automaticOrdersQuickToggle == null)
                 return;
+
+            bool enabled =
+                _automaticOrdersQuickToggle.IsChecked;
 
             SetAutomaticOrdersRuntimeState(
                 enabled,
                 enabled
                     ? "AWAITING ORDER SETUP"
                     : "DISABLED");
+
+            SyncQuickExecutionControls();
         }
     }
 }
