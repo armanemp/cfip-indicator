@@ -1483,3 +1483,33 @@ Detailed record: `docs/PHASE-9-13-PERSISTENT-MEMORY-SAFE-OPTIMIZATION.md`.
 
 Next phase after verification: Phase 9.14 — target-terminal replay, calibration/optimization measurement and evidence-driven parameter refinement.
 Operator pull: required now; pull `main` to the current closeout commit.
+
+
+## Phase 9.14 — Signal Evidence Integrity & Consensus Calibration — 2026-09-29
+
+Status: IMPLEMENTED; awaiting documentation-inclusive CI verification.
+
+Finding:
+The canonical frame contribution path used relative bull/bear percentages without sufficiently preserving absolute frame strength and evidence coverage. This can inflate directional consensus from weak but dominant frames.
+
+Implementation:
+- added bounded absolute-strength modulation;
+- added bounded evidence-coverage modulation;
+- shrank weak directional shares toward 50/50;
+- propagated the existing frame evidence count through the canonical adapter;
+- added regression contracts for weak-frame suppression, strong-frame recovery, symmetry and determinism.
+
+Safety:
+- no direction authority moved;
+- no broker mutation path changed;
+- no hard trigger/RR/trap blocker was removed;
+- no public parameters were added;
+- public parameter count remains 552.
+
+Empirical boundary:
+This phase addresses a concrete consensus-calibration defect, but improved profitability, drawdown or win rate must not be claimed until target-terminal/replay evidence is collected.
+
+Detailed record: docs/PHASE-9-14-SIGNAL-EVIDENCE-CALIBRATION.md.
+
+Next phase after verification: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
+Operator pull: after Phase 9.14 verification and merge.
