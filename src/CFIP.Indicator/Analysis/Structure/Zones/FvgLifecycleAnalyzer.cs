@@ -69,5 +69,43 @@ namespace cAlgo
             return z;
         }
 
+        private bool HasZoneRetest(
+            Bars bars,
+            int createdIndex,
+            int currentIndex,
+            double low,
+            double high)
+        {
+            if (bars == null ||
+                createdIndex < 0 ||
+                currentIndex <= createdIndex ||
+                low >= high)
+                return false;
+
+            int start =
+                Math.Max(
+                    0,
+                    createdIndex + 1);
+
+            int end =
+                Math.Min(
+                    bars.Count - 1,
+                    currentIndex);
+
+            for (int i = start;
+                 i <= end;
+                 i++)
+            {
+                if (FvgRule.IsOverlapInclusive(
+                        low,
+                        high,
+                        bars.LowPrices[i],
+                        bars.HighPrices[i]))
+                    return true;
+            }
+
+            return false;
+        }
+
     }
 }
