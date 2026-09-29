@@ -34,6 +34,21 @@ Phase 5.6 completed responsive panel refresh, lazy rows, render optimization and
 calculation-freshness diagnostics. Full target-terminal interaction validation
 remains part of runtime certification.
 
+## C.1 User strategy-quality overlay — 2026-09-29
+
+These requirements are permanent inputs to future strategy-quality phases:
+
+- important market levels must remain a first-class part of analysis and execution planning;
+- Order Block analysis should be developed as deeply as the existing architecture safely allows, including geometry, displacement, structure, mitigation/retest, freshness, liquidity context, MTF alignment and confluence rather than a simplistic candle label;
+- signal quality should be improved through better evidence quality, independence, regime relevance and structural confirmation, not by indiscriminately raising thresholds;
+- indicator/analyzer coordination should become more coherent and "smart" through one shared decision/relevance framework;
+- Entry, SL and TP should continue to be derived from meaningful structure, liquidity and reward-path geometry, with important levels considered before execution;
+- improvements must preserve BUY/SELL symmetry, closed-bar safety, broker authority and the single decision/execution ownership model.
+
+This overlay is persistent. Future phases should explicitly check whether important
+levels, Order Block quality, signal quality and cross-analyzer coordination are
+being improved without creating duplicate authorities.
+
 ## C. Signal-quality priority
 Goal: stronger, cleaner signals with weak setups rejected, without blindly making
 filters so strict that good setups disappear.

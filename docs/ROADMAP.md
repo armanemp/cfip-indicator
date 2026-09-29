@@ -166,7 +166,7 @@ The benchmark completion does **not** constitute production package promotion.
 Machine-enforced baseline facts for the Phase 0.1 verification commit:
 
 - 398 production C# source files;
-- 535 public configuration parameters (532 baseline + 3 OSS extension parameters);
+- 534 public configuration parameters (531 baseline + 3 OSS extension parameters);
 - 27 parameter-group source files;
 - 500 method declarations / 467 unique baseline methods.
 
@@ -176,7 +176,7 @@ Automated gate snapshot for the Phase 0.1 verification commit:
 - runtime acceptance contracts: PASS (workflow run 536);
 - source and architecture checks: PASS (workflow run 727).
 
-The verifier reported 398 production C# files, 535 parameters, 500 method declarations and 467 unique baseline methods.
+The original Phase 0.1 baseline reported 398 production C# files, 535 parameters, 500 method declarations and 467 unique baseline methods. The current audited parameter surface is 534.
 
 ---
 
@@ -1463,21 +1463,36 @@ Completed in this correction:
 - structural stop progression remains protected from raw market-price chasing;
 - no public parameter count change; baseline remains 535.
 
-The next roadmap phase remains **Phase 7.2 — Dead/unused parameter audit** after this hotfix is merged and its gates pass.
+The corrective hotfix is merged and verified. Phase 7.2 — Dead/unused parameter audit is complete; the next roadmap phase is Phase 7.3 — Semantic duplicate audit.
 
 ## Phase 7.2 — Dead/unused parameter audit
 
-Status: planned.
+Status: complete.
 
-Find:
+Completed:
 
-- declared but unread parameters;
-- values read but never consumed;
-- settings rendered but not applied.
+- added a machine audit covering all public parameters;
+- initial audit found four unread candidates;
+- activated FullWidthLevelLines through the canonical line renderer and changed its default to compact mode;
+- activated LabelLeftOffsetBars through the canonical label-anchor/box owner;
+- activated ShowEarlyArrow as an independent early-watch arrow visibility control;
+- removed SmartUseClosedBarDecision because confirmed decision closed-bar behavior is safety-enforced and must not be user-disableable;
+- reduced the current public parameter surface from 535 to 534 while preserving 531 baseline + 3 OSS extension parameters;
+- added the parameter audit to Source / Architecture CI;
+- documented the phase in docs/PHASE-7-2-DEAD-PARAMETER-AUDIT.md.
+
+Final audit:
+
+- 534 declarations;
+- 534 read-by-code candidates;
+- 0 unused/unread candidates.
 
 Acceptance:
 
-- every retained parameter has an explicit runtime owner.
+- every retained public parameter has an explicit runtime consumer;
+- no duplicate decision/execution authority was introduced;
+- closed-bar safety remains enforced;
+- all three repository gates passed.
 
 ## Phase 7.3 — Semantic duplicate audit
 

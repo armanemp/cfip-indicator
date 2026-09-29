@@ -44,25 +44,40 @@ namespace cAlgo
                 int right =
                     Bars.Count - 1;
 
-                if (anchorM5 >= 0)
-                {
-                    right =
-                        MapM5ToChart(
-                            anchorM5,
-                            right);
+                int left;
 
+                if (FullWidthLevelLines)
+                {
+                    // Explicit compatibility mode: use the entire visible series.
+                    // Default remains compact 40-bar presentation.
+                    left = 0;
                     right =
                         Math.Max(
                             0,
-                            Math.Min(
-                                Bars.Count - 1,
-                                right));
+                            Bars.Count - 1);
                 }
+                else
+                {
+                    if (anchorM5 >= 0)
+                    {
+                        right =
+                            MapM5ToChart(
+                                anchorM5,
+                                right);
 
-                int left =
-                    Math.Max(
-                        0,
-                        right - CompactPlanLineLengthBars);
+                        right =
+                            Math.Max(
+                                0,
+                                Math.Min(
+                                    Bars.Count - 1,
+                                    right));
+                    }
+
+                    left =
+                        Math.Max(
+                            0,
+                            right - CompactPlanLineLengthBars);
+                }
 
                 if (right <= left)
                 {

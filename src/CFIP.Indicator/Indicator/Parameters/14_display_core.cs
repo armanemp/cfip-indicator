@@ -7,7 +7,7 @@ namespace cAlgo
         [Parameter("Show Level Lines", Group = "14 · DISPLAY — CORE", DefaultValue = true)]
         public bool ShowLevelLines { get; set; }
 
-        [Parameter("Full Width Level Lines", Group = "14 · DISPLAY — CORE", DefaultValue = true)]
+        [Parameter("Full Width Level Lines", Group = "14 · DISPLAY — CORE", DefaultValue = false)]
         public bool FullWidthLevelLines { get; set; }
 
         [Parameter("Level Line Thickness", Group = "14 · DISPLAY — CORE", DefaultValue = 1, MinValue = 1, MaxValue = 3)]
