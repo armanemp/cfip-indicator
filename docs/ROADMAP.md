@@ -3666,3 +3666,19 @@ This continuation concentrates strategy quality and automatic execution on one s
 No new public parameters, second decision authority, or multi-position broker authority were introduced.
 
 Detailed record: `docs/PHASE-9-7-REGIME-AUTO-EXECUTION-HARDENING.md`.
+
+
+## Phase 9.8 — Indicator Fusion & Trade Quality
+
+Status: implementation in progress on `phase/9-8-indicator-fusion-trade-quality`; final verification pending.
+
+Focus:
+- regime-aware fusion rather than raw indicator vote stacking;
+- conflict-aware Smart Quality;
+- canonical propagation of indicator quality into Decision and automatic execution;
+- stronger auto-entry rejection when indicator evidence is weak/conflicted;
+- white, background-free level labels.
+
+The next hardening opportunity after this phase is server-side advanced protection migration and deeper target-terminal replay/calibration, subject to the project's cTrader API version and empirical verification.
+
+Detailed record: `docs/PHASE-9-8-INDICATOR-FUSION-TRADE-QUALITY.md`.
