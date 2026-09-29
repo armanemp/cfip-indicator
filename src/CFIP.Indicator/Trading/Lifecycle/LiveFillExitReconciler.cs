@@ -35,184 +35,194 @@ namespace cAlgo
             double oldTp3 = _plan.Tp3;
             double oldTp4 = _plan.Tp4;
 
+            string stopSource =
+                _plan.StopSource ?? "";
+            int stopQuality =
+                _plan.StopQuality;
+
             double stopCandidate =
                 BuildStructuralStop(
                     closedM5,
                     direction,
                     actualEntry,
                     atr,
-                    out string stopSource,
-                    out int stopQuality);
+                    out string structuralStopSource,
+                    out int structuralStopQuality);
 
-            double selectedStop = oldStop;
+            double candidateStop = oldStop;
 
             if (!IsValidStop(
                     direction,
                     actualEntry,
-                    selectedStop))
+                    candidateStop))
             {
-                selectedStop = stopCandidate;
-                stopSource = string.IsNullOrWhiteSpace(stopSource)
-                    ? "LIVE / STRUCTURAL"
-                    : stopSource;
-                stopQuality = Math.Max(60, stopQuality);
-
-                if (position.StopLoss.HasValue &&
-                    IsValidStop(
+                if (IsValidStop(
                         direction,
                         actualEntry,
-                        position.StopLoss.Value) &&
-                    (!IsFinitePositive(selectedStop) ||
-                     !ProtectionProgressionRule.ShouldAdvanceStop(
-                         direction,
-                         selectedStop,
-                         position.StopLoss.Value)))
+                        stopCandidate))
                 {
-                    selectedStop =
-                        NormalizePrice(
-                            position.StopLoss.Value);
+                    candidateStop = NormalizePrice(stopCandidate);
+                    stopSource = structuralStopSource ?? "LIVE / STRUCTURAL";
+                    stopQuality = Math.Max(60, structuralStopQuality);
+                }
+                else if (position.StopLoss.HasValue &&
+                         IsValidStop(
+                             direction,
+                             actualEntry,
+                             position.StopLoss.Value))
+                {
+                    candidateStop =
+                        NormalizePrice(position.StopLoss.Value);
                     stopSource = "BROKER FILL PROTECTION";
                     stopQuality = 100;
                 }
             }
-            else if (IsFinitePositive(stopCandidate) &&
-                     IsValidStop(
+            else if (IsValidStop(
                          direction,
                          actualEntry,
                          stopCandidate) &&
                      ProtectionProgressionRule.ShouldAdvanceStop(
                          direction,
-                         selectedStop,
+                         candidateStop,
                          stopCandidate))
             {
-                selectedStop =
+                candidateStop =
                     NormalizePrice(stopCandidate);
+                stopSource = structuralStopSource ?? stopSource;
+                stopQuality = Math.Max(
+                    stopQuality,
+                    structuralStopQuality);
             }
 
             if (!IsValidStop(
                     direction,
                     actualEntry,
-                    selectedStop))
+                    candidateStop))
                 return false;
 
-            _plan.Entry =
-                actualEntry;
-
-            _plan.Stop =
-                NormalizePrice(selectedStop);
-
-            _plan.StopSource =
-                stopSource ??
-                _plan.StopSource ??
-                "LIVE / STRUCTURAL";
-
-            _plan.StopQuality =
-                Math.Max(
-                    0,
-                    Math.Min(
-                        100,
-                        stopQuality));
-
-            _plan.Risk =
+            double candidateRisk =
                 Math.Max(
                     Symbol.PipSize,
                     Math.Abs(
-                        _plan.Entry -
-                        _plan.Stop));
+                        actualEntry -
+                        candidateStop));
 
             List<Level> levels =
                 BuildTargetLevels(
                     closedM5,
                     direction,
-                    _plan.Entry,
+                    actualEntry,
                     atr);
 
             List<Level> selected =
                 SelectTargets(
                     levels,
                     closedM5,
-                    _plan.Entry,
-                    _plan.Risk,
+                    actualEntry,
+                    candidateRisk,
                     direction,
                     atr,
                     _plan.Lane);
 
-            _plan.Tp1 =
+            double candidateTp1 =
                 SelectLiveFillTarget(
                     selected,
                     0,
                     oldTp1,
-                    _plan.Entry,
+                    actualEntry,
                     market,
                     direction,
-                    _plan.Risk,
+                    candidateRisk,
                     atr,
                     Math.Max(
                         FallbackTp1RR,
                         MinimumRequiredRR));
 
-            if (!IsFinitePositive(_plan.Tp1))
+            if (!IsFinitePositive(candidateTp1))
                 return false;
 
-            _plan.Tp2 =
+            double candidateTp2 =
                 SelectLiveFillTarget(
                     selected,
                     1,
                     oldTp2,
-                    _plan.Entry,
+                    actualEntry,
                     market,
                     direction,
-                    _plan.Risk,
+                    candidateRisk,
                     atr,
                     Math.Max(
                         FallbackTp2RR,
                         Tp2MinimumRR),
-                    _plan.Tp1);
+                    candidateTp1);
 
-            _plan.Tp3 =
+            double candidateTp3 =
                 SelectLiveFillTarget(
                     selected,
                     2,
                     oldTp3,
-                    _plan.Entry,
+                    actualEntry,
                     market,
                     direction,
-                    _plan.Risk,
+                    candidateRisk,
                     atr,
                     Math.Max(
                         FallbackTp3RR,
                         Tp3MinimumRR),
-                    _plan.Tp2 > 0
-                        ? _plan.Tp2
-                        : _plan.Tp1);
+                    candidateTp2 > 0
+                        ? candidateTp2
+                        : candidateTp1);
 
-            _plan.Tp4 =
+            double candidateTp4 =
                 SelectLiveFillTarget(
                     selected,
                     3,
                     oldTp4,
-                    _plan.Entry,
+                    actualEntry,
                     market,
                     direction,
-                    _plan.Risk,
+                    candidateRisk,
                     atr,
                     Math.Max(
                         FallbackTp4RR,
                         Tp4MinimumRR),
-                    _plan.Tp3 > 0
-                        ? _plan.Tp3
-                        : _plan.Tp2 > 0
-                            ? _plan.Tp2
-                            : _plan.Tp1);
+                    candidateTp3 > 0
+                        ? candidateTp3
+                        : candidateTp2 > 0
+                            ? candidateTp2
+                            : candidateTp1);
 
             if (!LiveExitGeometryRule.IsProgressiveTargetLadder(
                     direction,
-                    _plan.Entry,
-                    _plan.Tp1,
-                    _plan.Tp2,
-                    _plan.Tp3,
-                    _plan.Tp4))
+                    actualEntry,
+                    candidateTp1,
+                    candidateTp2,
+                    candidateTp3,
+                    candidateTp4))
                 return false;
+
+            _plan.Entry = actualEntry;
+            _plan.Stop = NormalizePrice(candidateStop);
+            _plan.StopSource = string.IsNullOrWhiteSpace(stopSource)
+                ? "LIVE / STRUCTURAL"
+                : stopSource;
+            _plan.StopQuality = Math.Max(
+                0,
+                Math.Min(
+                    100,
+                    stopQuality));
+            _plan.Risk = candidateRisk;
+
+            _plan.Tp1 = NormalizePrice(candidateTp1);
+            _plan.Tp2 = candidateTp2 > 0
+                ? NormalizePrice(candidateTp2)
+                : 0;
+            _plan.Tp3 = candidateTp3 > 0
+                ? NormalizePrice(candidateTp3)
+                : 0;
+            _plan.Tp4 = candidateTp4 > 0
+                ? NormalizePrice(candidateTp4)
+                : 0;
 
             ApplyTargetMeta(
                 levels,
