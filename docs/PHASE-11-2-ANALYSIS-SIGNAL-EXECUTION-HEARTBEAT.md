@@ -76,4 +76,4 @@ Automated verification proves source/contract/compile correctness. Target-termin
 
 ## Next phase
 
-Phase 11.3 — execution rejection forensics, missed-actionable cohorts and evidence-driven threshold refinement using accumulated runtime logs and outcomes.
+Next: Phase 11.3 — execution rejection forensics, missed-actionable cohorts and evidence-driven threshold refinement using accumulated runtime logs and outcomes.
