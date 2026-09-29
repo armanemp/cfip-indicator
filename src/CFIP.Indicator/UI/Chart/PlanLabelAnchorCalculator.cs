@@ -14,6 +14,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const int CompactPlanLabelWidthBars = 8;
+        private const int CompactPlanLabelMinimumGapBars = 3;
 
         private int GetCompactPlanLabelAnchorBar(
             int lineLeft)
@@ -24,9 +25,9 @@ namespace cAlgo
 
             int offset =
                 Math.Max(
-                    1,
+                    CompactPlanLabelMinimumGapBars,
                     Math.Min(
-                        2,
+                        6,
                         LabelLeftOffsetBars));
 
             // Compact labels must stay attached to the line endpoint; large
