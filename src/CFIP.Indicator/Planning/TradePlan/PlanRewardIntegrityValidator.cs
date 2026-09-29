@@ -28,6 +28,10 @@ namespace cAlgo
                     minimumRR,
                     MaximumRewardRR);
 
+            if (!IsFinitePositive(minimumRR) ||
+                !IsFinitePositive(maximumRR))
+                return false;
+
             double tp1RR =
                 Math.Abs(
                     plan.Tp1 -
@@ -78,7 +82,10 @@ namespace cAlgo
 
                 double previousRR =
                     plan.Tp2 > 0
-                        ? plan.Tp2RR
+                        ? Math.Abs(
+                            plan.Tp2 -
+                            plan.Entry) /
+                          plan.Risk
                         : tp1RR;
 
                 if (!IsFinitePositive(rr) ||
@@ -109,9 +116,15 @@ namespace cAlgo
 
                 double previousRR =
                     plan.Tp3 > 0
-                        ? plan.Tp3RR
+                        ? Math.Abs(
+                            plan.Tp3 -
+                            plan.Entry) /
+                          plan.Risk
                         : plan.Tp2 > 0
-                            ? plan.Tp2RR
+                            ? Math.Abs(
+                                plan.Tp2 -
+                                plan.Entry) /
+                              plan.Risk
                             : tp1RR;
 
                 if (!IsFinitePositive(rr) ||
