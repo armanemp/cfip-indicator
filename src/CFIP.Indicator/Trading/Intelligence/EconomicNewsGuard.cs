@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using cAlgo.API;
+using cAlgo.API.Internals;
 
 namespace cAlgo
 {
@@ -249,7 +251,7 @@ namespace cAlgo
                         "NEWS FEED URI EMPTY");
                 }
 
-                HttpResponse response =
+                var response =
                     Http.Get(
                         EconomicNewsDataUri);
 
@@ -268,7 +270,6 @@ namespace cAlgo
                         "NEWS FEED BODY EMPTY");
 
                 {
-
                     XmlSerializer serializer =
                         new XmlSerializer(
                             typeof(CfipEconomicCalendar));
