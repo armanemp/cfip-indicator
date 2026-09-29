@@ -2,6 +2,11 @@
 
 Date: 2026-09-30
 
+Status: VERIFIED and MERGED to main.
+
+Merge commit: `fd29b955c557df680e40d8fe4151955600160408`.
+Final code commit verified before merge: `cef178da5f0359ef2c0800376b5b9beddf295424`.
+
 ## Scope
 
 This phase turns the existing multi-scenario opportunity registry into an explicit, deterministic execution-selection layer without creating a second decision engine or silently changing the certified single-position broker capacity.
@@ -99,14 +104,14 @@ The existing ownership was preserved for:
 
 No threshold was tuned from source inspection alone.
 
-## Verification boundary
+## Verification
 
 Automated verification required for merge:
 
-- Phase 11.5 source audit;
-- accumulated source/architecture audits;
-- runtime acceptance contracts;
-- cTrader Compile/Build;
+- Phase 11.5 source audit: PASS;
+- accumulated Source/Architecture audits: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile/Build: PASS;
 - phase-specific regression coverage.
 
 Target-terminal validation remains required for:
