@@ -157,8 +157,6 @@ namespace cAlgo
             else if (pendingValid)
             {
                 snapshot.PendingOrder = true;
-                snapshot.Direction =
-                    pending.TradeType == TradeType.Buy ? 1 : -1;
                 snapshot.Stage = "PENDING";
                 snapshot.PendingOrderId = pending.Id;
                 snapshot.PendingOrderType =
@@ -177,7 +175,6 @@ namespace cAlgo
                      (_plan.Direction == 1 || _plan.Direction == -1))
             {
                 snapshot.PlanActive = true;
-                snapshot.Direction = _plan.Direction;
                 snapshot.Stage = "PLAN";
                 snapshot.EntryMode = _plan.EntryMode;
                 snapshot.CreatedM5 = _plan.CreatedM5;
@@ -193,36 +190,22 @@ namespace cAlgo
             }
             else if (decisionReady)
             {
-                snapshot.Direction = _decision.Direction;
                 snapshot.Stage = "CONFIRMED";
             }
             else if (reactionReady)
             {
-                snapshot.Direction = _reaction.Direction;
                 snapshot.Stage = "REACTION";
             }
             else if (predictionReady)
             {
-                snapshot.Direction = _prediction.Direction;
                 snapshot.Stage = "PREDICTION";
             }
             else
             {
-                snapshot.Direction =
-                    visualDirection;
-                snapshot.Stage = snapshot.Direction == 0
-                    ? "WAIT" : "WATCH";
-            }
-
-            if (snapshot.Direction == 0 &&
-                (snapshot.Stage == "ACTIVE" ||
-                 snapshot.Stage == "PENDING" ||
-                 snapshot.Stage == "PLAN" ||
-                 snapshot.Stage == "CONFIRMED" ||
-                 snapshot.Stage == "REACTION" ||
-                 snapshot.Stage == "PREDICTION"))
-            {
-                snapshot.Direction = visualDirection;
+                snapshot.Stage =
+                    visualDirection == 0
+                        ? "WAIT"
+                        : "WATCH";
             }
 
             snapshot.AuthoritativeDirection =
