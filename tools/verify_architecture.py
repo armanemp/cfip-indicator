@@ -2536,6 +2536,60 @@ RESEARCH_PACKAGE = "PackageReference Include=\"FacioQuo.Stock.Indicators\" Versi
 
 if PRODUCTION_PACKAGE not in PRODUCTION_CSPROJ.read_text(encoding="utf-8"):
     raise SystemExit("Production OSS package pin is missing or changed")
+# Phase 7.4 — execution capacity truthfulness.
+maximum_capacity = re.search(
+    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
+    raw,
+)
+if not maximum_capacity:
+    raise SystemExit(
+        "MaximumOpenPositions must remain exposed only as the supported single-plan capacity (1)"
+    )
+if "BlockNewSignalWhileActive" in raw:
+    raise SystemExit(
+        "BlockNewSignalWhileActive is an unsupported duplicate of the mandatory single-plan capacity boundary"
+    )
+
+capacity_guard = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
+capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
+if not capacity_guard.exists() or not capacity_rule.exists():
+    raise SystemExit("Canonical execution-capacity owner is missing")
+capacity_guard_code = capacity_guard.read_text(encoding="utf-8")
+capacity_rule_code = capacity_rule.read_text(encoding="utf-8")
+for token in (
+    "ValidateSinglePlanCapacity(",
+    "ValidateSingleExecutionCapacity(",
+    "MaximumOpenPositions",
+    "ManagedPositionCount()",
+    "ManagedPendingOrderCount()",
+):
+    if token not in capacity_guard_code:
+        raise SystemExit(f"Execution capacity owner missing: {token}")
+for token in (
+    "IsSupportedSinglePlanCapacity(",
+    "AllowsNewSinglePlan(",
+    "AllowsNewSingleExecution(",
+    "SupportedMaximumOpenPositions",
+):
+    if token not in capacity_rule_code:
+        raise SystemExit(f"Execution capacity rule missing: {token}")
+
+plan_eligibility = (ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs").read_text(encoding="utf-8")
+market_capacity = (ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs").read_text(encoding="utf-8")
+aggressive_capacity = (ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs").read_text(encoding="utf-8")
+pending_capacity = (ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs").read_text(encoding="utf-8")
+if "ValidateSinglePlanCapacity(" not in plan_eligibility:
+    raise SystemExit("Plan creation must consume the canonical single-plan capacity guard")
+for module_text, module_name in (
+    (market_capacity, "automatic market"),
+    (aggressive_capacity, "aggressive"),
+    (pending_capacity, "pending"),
+):
+    if "ValidateSingleExecutionCapacity(" not in module_text:
+        raise SystemExit(f"{module_name} execution must consume the canonical capacity guard")
+    if "ManagedPositionCount() >=" in module_text:
+        raise SystemExit(f"{module_name} execution contains a duplicate position-capacity formula")
+
 if "FacioQuo.Stock.Indicators" in raw:
     raise SystemExit("Research-only FacioQuo.Stock.Indicators leaked into production source")
 if not BENCHMARK_CSPROJ.exists():
