@@ -173,8 +173,8 @@ for token in (
     "BreaksStructure(",
     "GetMitigationProbe(",
     "IsFullyMitigated(",
-    "TryApplyPartialMitigation(",
-    "Identity(",
+    "TryApplyOrderBlockPartialMitigation(",
+    "OrderBlockIdentity(",
     "low < high",
 ):
     if token not in ob_rule_code:
