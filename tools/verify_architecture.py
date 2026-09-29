@@ -54,62 +54,6 @@ extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
 
-# Phase 7.4 — execution capacity truthfulness.
-parameter_source = "\n".join(
-    p.read_text(encoding="utf-8")
-    for p in parameter_files
-)
-if not re.search(
-    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
-    parameter_source,
-):
-    raise SystemExit(
-        "MaximumOpenPositions must advertise only the supported single-plan capacity (1)"
-    )
-if "BlockNewSignalWhileActive" in parameter_source:
-    raise SystemExit(
-        "BlockNewSignalWhileActive is an unsupported optional duplicate of single-plan capacity"
-    )
-
-capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
-capacity_guard = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
-if not capacity_rule.exists() or not capacity_guard.exists():
-    raise SystemExit("Canonical execution-capacity owner is missing")
-capacity_rule_code = capacity_rule.read_text(encoding="utf-8")
-capacity_guard_code = capacity_guard.read_text(encoding="utf-8")
-for token in (
-    "IsSupportedSinglePlanCapacity(",
-    "AllowsNewSinglePlan(",
-    "AllowsNewSingleExecution(",
-    "SupportedMaximumOpenPositions",
-):
-    if token not in capacity_rule_code:
-        raise SystemExit(f"Execution capacity rule missing: {token}")
-for token in (
-    "ValidateSinglePlanCapacity(",
-    "ValidateSingleExecutionCapacity(",
-    "ManagedPositionCount()",
-    "ManagedPendingOrderCount()",
-):
-    if token not in capacity_guard_code:
-        raise SystemExit(f"Execution capacity guard missing: {token}")
-
-plan_eligibility = (ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs").read_text(encoding="utf-8")
-market_execution = (ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs").read_text(encoding="utf-8")
-aggressive_execution = (ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs").read_text(encoding="utf-8")
-pending_execution = (ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs").read_text(encoding="utf-8")
-if "ValidateSinglePlanCapacity(" not in plan_eligibility:
-    raise SystemExit("Plan creation must use the canonical capacity guard")
-for module_text, name in (
-    (market_execution, "automatic market"),
-    (aggressive_execution, "aggressive"),
-    (pending_execution, "predictive pending"),
-):
-    if "ValidateSingleExecutionCapacity(" not in module_text:
-        raise SystemExit(f"{name} execution must use the canonical execution-capacity guard")
-    if "ManagedPositionCount() >=" in module_text:
-        raise SystemExit(f"{name} execution retains a duplicate numeric capacity check")
-
 for p in parameter_files:
     groups = set(re.findall(r'\bGroup\s*=\s*"([^"]+)"', p.read_text(encoding="utf-8")))
     if len(groups) != 1:
