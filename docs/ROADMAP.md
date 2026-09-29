@@ -3633,7 +3633,9 @@ Empirical boundary: target-terminal replay is still required for exact chart tim
 
 ## Phase 9.6 — Signal Quality & Visual Coherence
 
-Status: implementation complete on `phase/9-6-signal-quality-visual-coherence`; verification pending.
+Status: VERIFIED COMPLETE on `phase/9-6-signal-quality-visual-coherence`.
+
+Pre-merge verification on head `9e001449ee852289676aa29d1907174b96ce1b44`: Runtime Acceptance PASS, cTrader Compile/Build PASS, Source/Architecture PASS. Target cTrader replay remains required for empirical visual/signal-quality validation.
 
 The phase hardens the final actionable state without creating a parallel signal authority. The same stricter quality rule is applied during closed-bar decision construction and during live quote re-evaluation.
 
