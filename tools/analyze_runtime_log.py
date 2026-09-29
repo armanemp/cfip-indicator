@@ -37,8 +37,8 @@ def main():
 
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         schema = handle.readline().strip()
-        if schema != "CFIP-RUNTIME-LOG,1":
-            print("invalid schema: expected CFIP-RUNTIME-LOG,1")
+        if schema not in ("CFIP-RUNTIME-LOG,1", "CFIP-RUNTIME-LOG,2"):
+            print("invalid schema: expected CFIP-RUNTIME-LOG,1 or 2")
             return 3
 
         events = Counter()
@@ -68,6 +68,11 @@ def main():
 
             if row.get("ActionableNow") == "1":
                 actionable += 1
+
+            if row.get("PolicyAllowed") == "0" and row.get("ScenarioId"):
+                # Observe-only scenarios are expected in the current policy;
+                # keep the count for later policy calibration.
+                pass
 
             values = {}
             for field in ("Entry", "Stop", "Tp1", "Tp2", "Tp3", "Tp4"):
