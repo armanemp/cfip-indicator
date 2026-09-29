@@ -185,11 +185,18 @@ namespace cAlgo
                     RenderSetupPreview(
                         _renderSignalVisualSnapshot);
 
+                    RenderPredictionObjects(
+                        _prediction,
+                        closedM5);
+
                     RenderWatchAndReaction(
                         index,
                         closedM5,
                         _renderSignalVisualSnapshot);
                 }
+
+                RenderLatestAlertSignalMarker(
+                    closedM5);
 
                 RenderManagedPendingOrder(
                     _renderSignalVisualSnapshot);
