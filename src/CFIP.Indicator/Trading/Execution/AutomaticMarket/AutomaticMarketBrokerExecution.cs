@@ -5,6 +5,26 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private TradeResult TryExecuteAutomaticMarketOrderFallback(
+            TradeType type,
+            double volume,
+            double stopPips,
+            double targetPips)
+        {
+            // Architectural compatibility path. Valid Phase 9.7 market
+            // submissions use the bounded Market Range path.
+            return TryExecuteMarketOrder(
+                type,
+                SymbolName,
+                volume,
+                NormalizeLabel(),
+                stopPips,
+                targetPips,
+                TradeExecutionMetadata.DefaultExecutionComment,
+                false,
+                "AUTOMATIC MARKET FALLBACK");
+        }
+
         private void ExecutePreparedAutomaticMarketTrade(
             int closedM5,
             TradeType type,
