@@ -249,6 +249,16 @@ namespace cAlgo
                         : "WATCH";
             }
 
+            string actionabilityReason;
+            snapshot.ActionableSignal =
+                TryAssessCurrentPlanActionability(
+                    closedM5,
+                    out SignalActionabilityResult actionability);
+            actionabilityReason =
+                actionability.Reason;
+            snapshot.ActionabilityReason =
+                actionabilityReason;
+
             snapshot.AuthoritativeDirection =
                 visualDirection;
 
