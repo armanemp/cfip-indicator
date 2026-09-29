@@ -256,3 +256,9 @@ Verification:
 - cTrader Compile: PASS.
 
 Next: Phase 2.2 — Automatic market rejection matrix.
+
+## Phase 2.1 — Unified submission retry policy
+
+Status: complete.
+
+Replaced three duplicate submission gates with one keyed policy using SubmissionAttemptIdentity and ExecutionSubmissionPath. Added runtime coverage for failure isolation, circuit behavior and reset. Uploaded ZIP audit: WaveTrend retained only as a future composite momentum candidate; TPO Profile file is empty.
