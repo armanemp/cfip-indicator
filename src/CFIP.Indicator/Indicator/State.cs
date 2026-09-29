@@ -195,6 +195,7 @@ namespace cAlgo
                 private MtfClosedContext _lastMtfClosedContext;
                 private readonly MtfClosedContextCache _mtfClosedContextCache = new MtfClosedContextCache();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+                private DateTime _lastSafetySupervisorUtc = DateTime.MinValue;
                 private SignalVisualSnapshot _renderSignalVisualSnapshot;
                 private DateTime _initializationStartedUtc = DateTime.MinValue;
                 private int _initializationPendingDataLoads;
