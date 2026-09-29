@@ -1,4 +1,5 @@
 using System;
+using System;
 using System.Collections.Generic;
 
 namespace cAlgo
@@ -92,7 +93,6 @@ namespace cAlgo
         }
     }
 
-{
     internal sealed class EmpiricalConfidenceCalibrator
     {
         private const int DefaultPriorStrength = 8;
