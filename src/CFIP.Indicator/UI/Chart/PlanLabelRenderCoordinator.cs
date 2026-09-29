@@ -14,11 +14,14 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private void RenderPlanLabels(
-            SignalVisualSnapshot snapshot)
+            SignalVisualSnapshot snapshot,
+            bool preview)
         {
-            if (_plan == null ||
+            if ((!preview && _plan == null) ||
                 snapshot == null ||
-                !snapshot.PlanActive ||
+                (preview
+                    ? !snapshot.SetupPreviewActive
+                    : !snapshot.PlanActive) ||
                 snapshot.PendingOrder ||
                 !ShowLevelLines ||
                 (!ShowLevelPriceLabels &&
@@ -59,13 +62,53 @@ namespace cAlgo
                         ? atr * 0.055
                         : Symbol.PipSize * 4);
 
+            double entry =
+                preview
+                    ? snapshot.SetupEntry
+                    : snapshot.Entry;
+
+            double idealEntry =
+                preview
+                    ? snapshot.SetupIdealEntry
+                    : snapshot.IdealEntry;
+
+            double trigger =
+                preview
+                    ? snapshot.SetupTrigger
+                    : snapshot.Trigger;
+
+            double stop =
+                preview
+                    ? snapshot.SetupStop
+                    : snapshot.Stop;
+
+            double tp1 =
+                preview
+                    ? snapshot.SetupTp1
+                    : snapshot.Tp1;
+
+            double tp2 =
+                preview
+                    ? snapshot.SetupTp2
+                    : snapshot.Tp2;
+
+            double tp3 =
+                preview
+                    ? snapshot.SetupTp3
+                    : snapshot.Tp3;
+
+            double tp4 =
+                preview
+                    ? snapshot.SetupTp4
+                    : snapshot.Tp4;
+
             if (ShowEntry)
             {
                 RenderCompactPlanLabel(
                     P + "ENTRY_LABEL",
                     "ENTRY " +
-                    Price(snapshot.Entry),
-                    snapshot.Entry,
+                    Price(entry),
+                    entry,
                     EntryLineColor,
                     true,
                     lineLeft,
@@ -79,7 +122,7 @@ namespace cAlgo
             }
 
             bool idealDistinct =
-                snapshot.IdealEntryVisible;
+                (preview ? IsFinitePositive(idealEntry) && !SamePrice(idealEntry, entry) : snapshot.IdealEntryVisible);
 
             RenderCompactPlanLabel(
                 P + "IDEAL_ENTRY_LABEL",
@@ -87,8 +130,8 @@ namespace cAlgo
                     ExecutionMode.BreakoutMarket
                     ? "ZONE MID "
                     : "IDEAL ") +
-                Price(snapshot.IdealEntry),
-                snapshot.IdealEntry,
+                Price(idealEntry),
+                idealEntry,
                 PanelAccentColor,
                 ShowEntry && idealDistinct,
                     lineLeft,
@@ -97,20 +140,20 @@ namespace cAlgo
                     boxHalfHeight);
 
             bool triggerDistinct =
-                IsFinitePositive(snapshot.Trigger) &&
+                IsFinitePositive(trigger) &&
                 !SamePrice(
-                    snapshot.Trigger,
-                    snapshot.Entry) &&
+                    trigger,
+                    entry) &&
                 (!idealDistinct ||
                  !SamePrice(
-                     snapshot.Trigger,
-                     snapshot.IdealEntry));
+                     trigger,
+                     idealEntry));
 
             RenderCompactPlanLabel(
                 P + "TRIGGER_LABEL",
                 "TRIGGER " +
-                Price(snapshot.Trigger),
-                snapshot.Trigger,
+                Price(trigger),
+                trigger,
                 TriggerLineColor,
                 ShowTrigger &&
                 triggerDistinct &&
@@ -120,8 +163,7 @@ namespace cAlgo
                     boxRightBar,
                     boxHalfHeight);
 
-            double displayStop =
-                snapshot.Stop;
+            double displayStop = stop;
 
             RenderCompactPlanLabel(
                 P + "SL_LABEL",
@@ -136,19 +178,19 @@ namespace cAlgo
                     boxHalfHeight);
 
             bool tp1Distinct =
-                IsFinitePositive(snapshot.Tp1) &&
+                IsFinitePositive(tp1) &&
                 !SamePrice(
-                    snapshot.Tp1,
-                    snapshot.Entry) &&
+                    tp1,
+                    entry) &&
                 !SamePrice(
-                    snapshot.Tp1,
-                    snapshot.Trigger);
+                    tp1,
+                    trigger);
 
             RenderCompactPlanLabel(
                 P + "TP1_LABEL",
                 "TP1 " +
-                Price(snapshot.Tp1),
-                snapshot.Tp1,
+                Price(tp1),
+                tp1,
                 TpLineColor,
                 ShowTP1 &&
                 tp1Distinct,
@@ -158,23 +200,23 @@ namespace cAlgo
                     boxHalfHeight);
 
             bool tp2Distinct =
-                IsFinitePositive(snapshot.Tp2) &&
+                IsFinitePositive(tp2) &&
                 (!tp1Distinct ||
                  !SamePrice(
-                     snapshot.Tp2,
+                     tp2,
                      snapshot.Tp1)) &&
                 !SamePrice(
-                    snapshot.Tp2,
-                    snapshot.Entry) &&
+                    tp2,
+                    entry) &&
                 !SamePrice(
-                    snapshot.Tp2,
-                    snapshot.Trigger);
+                    tp2,
+                    trigger);
 
             RenderCompactPlanLabel(
                 P + "TP2_LABEL",
                 "TP2 " +
-                Price(snapshot.Tp2),
-                snapshot.Tp2,
+                Price(tp2),
+                tp2,
                 Tp2LineColor,
                 ShowTP2 &&
                 tp2Distinct,
@@ -184,23 +226,23 @@ namespace cAlgo
                     boxHalfHeight);
 
             bool tp3Distinct =
-                IsFinitePositive(snapshot.Tp3) &&
+                IsFinitePositive(tp3) &&
                 (!tp2Distinct ||
                  !SamePrice(
-                     snapshot.Tp3,
+                     tp3,
                      snapshot.Tp2)) &&
                 !SamePrice(
-                    snapshot.Tp3,
-                    snapshot.Entry) &&
+                    tp3,
+                    entry) &&
                 !SamePrice(
-                    snapshot.Tp3,
-                    snapshot.Trigger);
+                    tp3,
+                    trigger);
 
             RenderCompactPlanLabel(
                 P + "TP3_LABEL",
                 "TP3 " +
-                Price(snapshot.Tp3),
-                snapshot.Tp3,
+                Price(tp3),
+                tp3,
                 Tp3LineColor,
                 ShowTP3 &&
                 tp3Distinct,
@@ -210,23 +252,23 @@ namespace cAlgo
                     boxHalfHeight);
 
             bool tp4Distinct =
-                IsFinitePositive(snapshot.Tp4) &&
+                IsFinitePositive(tp4) &&
                 (!tp3Distinct ||
                  !SamePrice(
-                     snapshot.Tp4,
+                     tp4,
                      snapshot.Tp3)) &&
                 !SamePrice(
-                    snapshot.Tp4,
-                    snapshot.Entry) &&
+                    tp4,
+                    entry) &&
                 !SamePrice(
-                    snapshot.Tp4,
-                    snapshot.Trigger);
+                    tp4,
+                    trigger);
 
             RenderCompactPlanLabel(
                 P + "TP4_LABEL",
                 "TP4 " +
-                Price(snapshot.Tp4),
-                snapshot.Tp4,
+                Price(tp4),
+                tp4,
                 Tp4LineColor,
                 ShowTP4 &&
                 tp4Distinct,
