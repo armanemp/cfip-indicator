@@ -21,8 +21,8 @@ namespace cAlgo
                     tolerance);
 
             return
-                leftLow <= rightHigh + t &&
-                rightLow <= leftHigh + t;
+                leftLow < rightHigh + t &&
+                rightLow < leftHigh + t;
         }
 
         internal static bool IsDirectionalMatch(
