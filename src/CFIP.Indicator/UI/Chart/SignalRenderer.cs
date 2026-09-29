@@ -35,7 +35,8 @@ namespace cAlgo
                             int visualDirection =
                                 snapshot.AuthoritativeDirection;
 
-                            if (snapshot.PendingOrder)
+                            if (snapshot.PendingOrder ||
+                                !snapshot.ActionableSignal)
                             {
                                 Chart.RemoveObject(P + "WATCH_ARROW");
                                 Chart.RemoveObject(P + "REACTION_ARROW");
