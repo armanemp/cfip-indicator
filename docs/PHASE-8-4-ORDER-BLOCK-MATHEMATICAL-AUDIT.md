@@ -1,6 +1,6 @@
 # Phase 8.4 — Order Block Mathematical Audit
 
-Status: implementation in progress.
+Status: implementation verified and ready to merge.
 
 ## Scope
 
@@ -25,8 +25,12 @@ Audit and normalize the production Order Block chain without adding public param
 8. Current ATR remains allowed only for present-market selection/context, not historical source-event qualification.
 9. User-supplied WaveTrend source is not currently present in accessible conversation/Library/repository content; therefore no claim of exact WaveTrend reproduction is made. The phase keeps external indicator integration behind explicit confluence inputs rather than inventing a formula.
 
+## Reference-indicator integration notes
+
+The user-provided FVG source was inspected from the Library archive. Its 2-bar and 3-bar zone formulas match the canonical FVG geometry already owned by `FvgRule`; its wick/body zone-break and partial-shrink lifecycle also aligns with the mitigation direction used here. The custom `CUSTOMWAVETREND` source was inspected separately: it combines RSI on typical price, MFI and an RMI-like momentum oscillator, then applies smoothing and a signal line. It is deliberately not turned into a standalone trigger in Phase 8.4; a closed-bar adapter with exact reference semantics is reserved for the dedicated confluence phase.
+
 ## Verification
 
 Automated acceptance will cover source direction, geometry, creation-ATR displacement/break thresholds, mitigation symmetry, stable identity, FVG confluence consumption, Runtime, Build and Source/Architecture.
 
-Target cTrader replay remains required for empirical signal-quality measurement.
+Head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime Acceptance PASS; Build PASS; Source/Architecture PASS. Target cTrader replay remains required for empirical signal-quality measurement. No empirical false-signal or win-rate improvement is claimed from CI alone.
