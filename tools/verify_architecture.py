@@ -1146,8 +1146,12 @@ CAPACITY_RULE = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 CAPACITY_RULE_CODE = CAPACITY_RULE.read_text(encoding="utf-8")
 if "AllowsNewSinglePlan(" not in CAPACITY_RULE_CODE:
     raise SystemExit("Pure single-plan execution capacity rule missing")
-if "return !hasManagedOpenPosition;" not in CAPACITY_RULE_CODE:
-    raise SystemExit("Single-plan execution capacity rule must fail closed when a managed position exists")
+if "!hasActivePlan" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Single-plan execution capacity rule must reject an active plan")
+if "managedPositionCount <" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Single-plan execution capacity rule must cap managed positions")
+if "managedPendingOrderCount == 0" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Single-plan execution capacity rule must reject an existing managed pending order")
 
 LIVE_RECOVERY_RULE = ROOT / "Core" / "Math" / "LivePlanRecoveryRule.cs"
 LIVE_RECOVERY_RULE_CODE = LIVE_RECOVERY_RULE.read_text(encoding="utf-8")
