@@ -75,6 +75,14 @@ namespace cAlgo
         public int IndependentEvidence;
         public int StructuralConfirmations;
         public int Confidence;
+        public int BaseConfidence;
+        public int CalibratedConfidence;
+        public int EmpiricalCalibrationAdjustment;
+        public int EmpiricalCalibrationSamples;
+        public int EmpiricalCalibrationWins;
+        public int EmpiricalCalibrationBucket;
+        public double EmpiricalCalibrationObservedWinRate;
+        public string EmpiricalCalibrationSource;
         public string DecisionReason;
         public string ReactionReason;
         public int ReactionConfidence;

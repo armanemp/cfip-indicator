@@ -145,8 +145,8 @@ namespace cAlgo
                                     reference,
                                     -1)
                                 : false,
-                            ConfidenceCalibrationAdjustment(1),
-                            ConfidenceCalibrationAdjustment(-1),
+                            0,
+                            0,
                             HigherTimeframeConfidencePenalty(1),
                             HigherTimeframeConfidencePenalty(-1))
                 };
@@ -188,6 +188,10 @@ namespace cAlgo
                 tactical.Quality;
             decision.TacticalOpportunityRR =
                 tactical.RiskReward;
+
+            ApplyEmpiricalCalibration(
+                decision,
+                tactical.Lane);
 
             decision.EntryAllowed =
                 PassesDecisionFilters(

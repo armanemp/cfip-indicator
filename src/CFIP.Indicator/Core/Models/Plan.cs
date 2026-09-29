@@ -36,6 +36,14 @@ namespace cAlgo
                         public int HtfTargetCount;
                         public int CreatedM5;
                         public double OriginalVolume;
+
+                        public bool CalibrationEligible;
+                        public int CalibrationDirection;
+                        public OpportunityLane CalibrationLane;
+                        public string CalibrationRegime;
+                        public int CalibrationConfidence;
+                        public int CalibrationBucket;
+
                         public bool IsLivePosition;
                         public long PositionId;
                     }

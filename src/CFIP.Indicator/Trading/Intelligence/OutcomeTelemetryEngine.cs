@@ -20,19 +20,50 @@ namespace cAlgo
                         {
                             if (!EnableOutcomeTelemetry)
                                 return;
-                
+
                             if (!_directionSamples.ContainsKey(
                                     direction))
                                 _directionSamples[direction] = 0;
-                
+
                             if (!_directionWins.ContainsKey(
                                     direction))
                                 _directionWins[direction] = 0;
-                
+
                             _directionSamples[direction]++;
-                
+
                             if (win)
                                 _directionWins[direction]++;
+                        }
+
+        private void RegisterCalibratedOutcome(
+                            Plan plan,
+                            bool win)
+                        {
+                            if (!EnableOutcomeTelemetry ||
+                                plan == null ||
+                                !plan.CalibrationEligible ||
+                                (plan.CalibrationDirection != 1 &&
+                                 plan.CalibrationDirection != -1))
+                                return;
+
+                            ConfidenceCalibrationKey key =
+                                new ConfidenceCalibrationKey(
+                                    plan.CalibrationDirection,
+                                    plan.CalibrationLane,
+                                    plan.CalibrationRegime,
+                                    EmpiricalConfidenceCalibrator.ConfidenceBucket(
+                                        plan.CalibrationConfidence));
+
+                            if (!_calibrationSamples.ContainsKey(key))
+                                _calibrationSamples[key] = 0;
+
+                            if (!_calibrationWins.ContainsKey(key))
+                                _calibrationWins[key] = 0;
+
+                            _calibrationSamples[key]++;
+
+                            if (win)
+                                _calibrationWins[key]++;
                         }
         
         private string CalibrationText()

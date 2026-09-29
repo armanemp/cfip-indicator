@@ -52,6 +52,9 @@ namespace cAlgo
                             Symbol.Bid) * 10);
             }
 
+            Plan priorPlan =
+                _plan;
+
             double stop;
             double target;
             bool protectionMissing;
@@ -76,6 +79,14 @@ namespace cAlgo
 
             _plan.PositionId =
                 args.Position.Id;
+
+            if (priorPlan != null &&
+                priorPlan.CalibrationEligible)
+            {
+                CopyPlanCalibrationContext(
+                    priorPlan,
+                    _plan);
+            }
 
             _plan.IsLivePosition = true;
 

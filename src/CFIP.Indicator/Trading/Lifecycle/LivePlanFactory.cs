@@ -53,6 +53,7 @@ namespace cAlgo
                                 Tp1Quality = 100,
                                 CreatedM5 = createdM5,
                                 OriginalVolume = volume,
+                                CalibrationEligible = false,
                                 IsLivePosition = true
                             };
                         }

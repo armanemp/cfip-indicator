@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace cAlgo
 {
@@ -10,6 +11,7 @@ namespace cAlgo
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
             VerifyConfidenceCalibration();
+            VerifyContextualConfidenceCalibration();
             VerifyThresholdReasons();
             VerifySmartConsensusReasons();
             VerifyConfidenceDeterminism();
@@ -155,6 +157,170 @@ namespace cAlgo
                     80, 70, 75, -5, 0);
 
             Assert(up > down, "calibration affects confidence");
+        }
+
+        private static void VerifyContextualConfidenceCalibration()
+        {
+            EmpiricalConfidenceCalibrator calibrator =
+                new EmpiricalConfidenceCalibrator();
+
+            Dictionary<ConfidenceCalibrationKey, int> samples =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+
+            Dictionary<ConfidenceCalibrationKey, int> wins =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+
+            ConfidenceCalibrationKey exactKey =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    EmpiricalConfidenceCalibrator.ConfidenceBucket(85));
+
+            samples[exactKey] = 20;
+            wins[exactKey] = 17;
+
+            EmpiricalCalibrationSnapshot exact =
+                calibrator.CalculateContextual(
+                    true,
+                    true,
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    85,
+                    samples,
+                    wins,
+                    5,
+                    6,
+                    8);
+
+            Assert(
+                exact.Available &&
+                exact.Source == "EXACT" &&
+                exact.Samples == 20 &&
+                exact.Wins == 17 &&
+                exact.ConfidenceBucket == 3 &&
+                exact.ObservedWinRate > 0.84 &&
+                exact.ObservedWinRate < 0.86 &&
+                exact.Adjustment > 0 &&
+                exact.Adjustment <= 8,
+                "exact contextual calibration");
+
+            ConfidenceCalibrationKey adjacent =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    EmpiricalConfidenceCalibrator.ConfidenceBucket(75));
+
+            samples[adjacent] = 10;
+            wins[adjacent] = 4;
+
+            samples[exactKey] = 4;
+            wins[exactKey] = 1;
+
+            EmpiricalCalibrationSnapshot context =
+                calibrator.CalculateContextual(
+                    true,
+                    true,
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    85,
+                    samples,
+                    wins,
+                    5,
+                    6,
+                    8);
+
+            Assert(
+                context.Available &&
+                context.Source == "LANE+REGIME" &&
+                context.Samples == 14 &&
+                context.Wins == 5,
+                "low-sample exact bucket falls back to lane/regime context");
+
+            Dictionary<ConfidenceCalibrationKey, int> directionSamples =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+
+            Dictionary<ConfidenceCalibrationKey, int> directionWins =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+
+            ConfidenceCalibrationKey tacticalA =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Tactical,
+                    "TREND",
+                    EmpiricalConfidenceCalibrator.ConfidenceBucket(75));
+
+            ConfidenceCalibrationKey tacticalB =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Tactical,
+                    "RANGE",
+                    EmpiricalConfidenceCalibrator.ConfidenceBucket(75));
+
+            directionSamples[tacticalA] = 4;
+            directionWins[tacticalA] = 3;
+            directionSamples[tacticalB] = 4;
+            directionWins[tacticalB] = 1;
+
+            ConfidenceCalibrationKey directionalExtra =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Tactical,
+                    "RANGE",
+                    EmpiricalConfidenceCalibrator.ConfidenceBucket(85));
+
+            directionSamples[directionalExtra] = 4;
+            directionWins[directionalExtra] = 2;
+
+            EmpiricalCalibrationSnapshot direction =
+                calibrator.CalculateContextual(
+                    true,
+                    true,
+                    1,
+                    OpportunityLane.CounterHtfTactical,
+                    "UNKNOWN",
+                    75,
+                    directionSamples,
+                    directionWins,
+                    5,
+                    6,
+                    8);
+
+            Assert(
+                direction.Available &&
+                direction.Source == "DIRECTION" &&
+                direction.Samples == 12 &&
+                direction.Wins == 6,
+                "insufficient context falls back to directional history");
+
+            EmpiricalCalibrationSnapshot sparse =
+                calibrator.CalculateContextual(
+                    true,
+                    true,
+                    -1,
+                    OpportunityLane.MicroReaction,
+                    "COMPRESSION",
+                    55,
+                    samples,
+                    wins,
+                    5,
+                    6,
+                    8);
+
+            Assert(
+                !sparse.Available &&
+                sparse.Adjustment == 0,
+                "insufficient observations cannot calibrate");
+
+            Assert(
+                direction.Samples == 12 &&
+                direction.Wins == 6 &&
+                direction.ObservedWinRate >= 0.49 &&
+                direction.ObservedWinRate <= 0.51,
+                "directional fallback uses observed outcomes without directional asymmetry bias");
         }
 
         private static void VerifyThresholdReasons()
