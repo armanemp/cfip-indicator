@@ -24,9 +24,11 @@ namespace cAlgo
                         
                                     if (direction == 1)
                                     {
-                                        if (_m5Frame.StructureBull ||
-                                            _m5Frame.MssBull ||
-                                            _m5Frame.ChochBull) count++;
+                                        count +=
+                                            StructuralEvidenceRule.CanonicalEventCount(
+                                                _m5Frame.StructureBull,
+                                                _m5Frame.MssBull,
+                                                _m5Frame.ChochBull);
                                         if (_m5Frame.DisplacementBull) count++;
                                         if (_m15Frame != null &&
                                             _m15Frame.StructureBull) count++;
@@ -37,9 +39,11 @@ namespace cAlgo
                                     }
                                     else
                                     {
-                                        if (_m5Frame.StructureBear ||
-                                            _m5Frame.MssBear ||
-                                            _m5Frame.ChochBear) count++;
+                                        count +=
+                                            StructuralEvidenceRule.CanonicalEventCount(
+                                                _m5Frame.StructureBear,
+                                                _m5Frame.MssBear,
+                                                _m5Frame.ChochBear);
                                         if (_m5Frame.DisplacementBear) count++;
                                         if (_m15Frame != null &&
                                             _m15Frame.StructureBear) count++;
