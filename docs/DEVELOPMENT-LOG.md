@@ -885,3 +885,8 @@ Operator pull requirement: after final verified Phase 8.1 merge.
 ## Phase 8.2 kickoff — 2026-09-29
 
 Phase 8.1 post-merge gates on main `3dbbeed5b703f0e5be13f5a1aabc6c87fd13f3b7`: Source/Architecture PASS, Build PASS, Runtime PASS. Created `phase-8-2-swing-plateau-correctness` from verified main. Initial audit: strict-neighbor swing extrema, raw-price equal-level bucketing, and rolling-extreme sweep semantics are independently represented. Scope: canonical plateau/level identity, bounded non-chaining equal-level clusters, causal sweep establishment, and de-duplication of one structural break across BOS/MSS/CHOCH. No win-rate/false-signal improvement claim; no public parameter or execution/risk changes without explicit justification.
+
+
+## Phase 8.2 implementation closeout — 2026-09-29
+
+The production structural chain now consumes the canonical plateau semantics introduced by `SwingPlateauRule`. Swing highs/lows are represented once per contiguous plateau; Equal High/Low compares canonical swing levels instead of arbitrary raw-bar pairs and uses fixed-anchor tolerance; liquidity sweeps require a previously confirmed structural swing level. `StructuralEvidenceRule` prevents Structure plus MSS/CHOCH from stacking as multiple independent events on the same timeframe. Runtime contracts cover plateau symmetry, closed-index confirmation, non-chaining tolerance and structural-event de-duplication. The pre-documentation head `5df5931828719fb635ec67fa59d57b519d4e70e7` passed Runtime, Build and Source/Architecture; documentation closeout changes are now on the latest branch head and require their own final CI pass.
