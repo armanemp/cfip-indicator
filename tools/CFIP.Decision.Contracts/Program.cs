@@ -21,6 +21,7 @@ namespace cAlgo
             VerifyEntryTrapRisk();
             VerifyActionableSignalQuality();
             VerifyRangeSignalQuality();
+            VerifyIndicatorEvidenceFusion();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -887,6 +888,75 @@ namespace cAlgo
                 compression.Reason ==
                     "COMPRESSION NO-TRADE",
                 "compression hard no-trade");
+        }
+
+        private static void VerifyIndicatorEvidenceFusion()
+        {
+            IndicatorEvidenceFusionResult trendAligned =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "TREND",
+                        true, false,
+                        true, false,
+                        true, false,
+                        true, false,
+                        true, false,
+                        true, false,
+                        61, 1.25, 0.20,
+                        1, 74,
+                        true, false,
+                        false, false,
+                        5, 1, 8, 3));
+
+            Assert(
+                trendAligned.BullBonus >
+                    trendAligned.BearBonus &&
+                trendAligned.Quality >= 60 &&
+                trendAligned.Conflict < 35,
+                "trend indicator fusion");
+
+            IndicatorEvidenceFusionResult conflicted =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "TRANSITION",
+                        true, true,
+                        true, true,
+                        true, true,
+                        true, true,
+                        true, true,
+                        true, true,
+                        50, 0, 0,
+                        1, 58,
+                        false, false,
+                        false, false,
+                        4, 4, 8, 3));
+
+            Assert(
+                conflicted.Conflict >= 45 &&
+                conflicted.Quality < 65,
+                "indicator conflict penalty");
+
+            IndicatorEvidenceFusionResult rangeReversal =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "RANGE",
+                        true, false,
+                        true, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        36, -0.30, -0.05,
+                        1, 76,
+                        true, false,
+                        true, false,
+                        6, 1, 8, 3));
+
+            Assert(
+                rangeReversal.BullBonus >
+                    rangeReversal.BearBonus &&
+                rangeReversal.Quality >= 60,
+                "range reversal indicator fusion");
         }
 
         private static void Assert(bool condition, string name)
