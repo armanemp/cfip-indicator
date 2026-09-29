@@ -12,6 +12,7 @@ namespace cAlgo
         public bool LivePosition;
         public bool PendingOrder;
         public bool TriggerVisible;
+        public int ArrowM5Index;
         public bool IdealEntryVisible;
         public bool ActiveBrokerTargetVisible;
 
@@ -39,6 +40,8 @@ namespace cAlgo
         public int SmartQuality;
         public int Confidence;
         public string DecisionReason;
+        public string ReactionReason;
+        public int ReactionConfidence;
         public string Regime;
     }
 }
