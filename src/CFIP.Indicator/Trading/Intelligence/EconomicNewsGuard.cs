@@ -550,11 +550,10 @@ namespace cAlgo
             if (_economicNewsLastAttemptUtc ==
                 DateTime.MinValue)
             {
-                // One initial synchronous load prevents a brief startup window
-                // with no calendar cache at all. Subsequent refreshes happen on Timer.
+                // Network refresh is owned by startup/Timer. Do not block a
+                // decision tick on an external feed request.
                 healthy =
-                    RefreshEconomicNewsIfNeeded(
-                        utc);
+                    _economicNewsFetchHealthy;
             }
             else
             {
