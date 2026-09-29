@@ -1350,3 +1350,39 @@ The latest audit-only refinement strengthens Solid-only checking across all char
 
 Next phase: Phase 9.11 — Automatic Execution Telemetry & Deeper SL/TP Coherence.
 Operator pull: required after PR #52 is merged.
+
+
+## Phase 9.11 — Signal Lifecycle, Quality Recovery & Alert Execution Coherence — 2026-09-29
+
+Status: IMPLEMENTATION COMPLETE; CI verification pending.
+Branch: `phase-9-11-signal-lifecycle`
+
+Implementation:
+- bounded two-M5 lifecycle for stale pre-trade Plans and setup previews;
+- stale pre-trade direction removed from canonical visual-direction resolution;
+- deterministic one-dimension high-quality actionability recovery;
+- legacy ALERT BUY/SELL chart mirror disabled and cleaned;
+- blocked/restricted alerts made completely silent;
+- popup defaults aligned to bottom-left, readable, bold presentation;
+- all plan/prediction signal lines fixed to thickness 1 and Solid;
+- broker submission confirmation/rejection/null-result telemetry added to the shared submission gate and exposed in auto-trade status;
+- server SL/TP ladder now rejects wrong-side structural stops before broker-owned protection is created;
+- accumulated audit extended for signal lifecycle, quality recovery, alerts, popup defaults, line thickness and execution telemetry.
+
+Important finding:
+The stale chart issue was caused by the pre-trade `_plan` branch in the visual snapshot builder treating any residual directional Plan as active. The blocked-alert sound was caused by `RESTRICT|` events entering the unified alert side-effect path.
+
+Quality decision:
+Recovery is intentionally narrow: only one near-threshold location/timing/price-position deficiency can recover, and only with stronger confidence, Smart Quality, MTF, evidence, structure and RR. Hard blockers remain unchanged.
+
+Detailed record: `docs/PHASE-9-11-SIGNAL-LIFECYCLE-QUALITY-ALERTS.md`.
+
+Verification:
+- Decision Contracts: pending;
+- Runtime Acceptance: pending;
+- cTrader Compile/Build: pending;
+- Source/Architecture + accumulated audit: pending;
+- target-terminal cTrader replay: still required for empirical signal timing, false-signal behavior, popup rendering, and realized SL/TP outcomes.
+
+Next phase: Phase 9.12 — broker outcome/recovery telemetry and historical signal lifecycle calibration.
+Operator pull: only after Phase 9.11 is fully verified and merged.

@@ -10,6 +10,7 @@ namespace cAlgo
             int closedM5,
             int pendingDirection,
             bool livePlan,
+            bool preTradePlanVisible,
             bool decisionReady,
             bool reactionReady,
             bool predictionReady)
@@ -29,7 +30,8 @@ namespace cAlgo
             if (pendingDirection != 0)
                 return pendingDirection;
 
-            if (_plan != null &&
+            if (preTradePlanVisible &&
+                _plan != null &&
                 (_plan.Direction == 1 ||
                  _plan.Direction == -1))
                 return _plan.Direction;
@@ -142,6 +144,33 @@ namespace cAlgo
                 _decision.ActionableNow &&
                 _decision.Direction != 0;
 
+            bool preTradePlanVisible =
+                SignalVisualLifecycleRule.IsPreTradePlanVisible(
+                    new SignalVisualLifecycleInput(
+                        livePlan,
+                        pendingValid,
+                        _plan != null,
+                        _plan == null ? -1 : _plan.CreatedM5,
+                        closedM5,
+                        _plan == null ? 0 : _plan.Direction,
+                        _decision == null ? 0 : _decision.Direction,
+                        _decision != null && _decision.EntryAllowed,
+                        _decision != null && _decision.ActionableNow,
+                        _decision != null && _decision.TriggerReady));
+
+            bool hasSetupPreview =
+                _setupPreview != null &&
+                _setupPreview.Direction != 0;
+
+            bool setupPreviewVisible =
+                SignalVisualLifecycleRule.IsSetupPreviewVisible(
+                    hasSetupPreview,
+                    _setupPreview == null ? -1 : _setupPreview.CreatedM5,
+                    closedM5,
+                    _setupPreview == null ? 0 : _setupPreview.Direction,
+                    _decision == null ? 0 : _decision.Direction,
+                    _decision != null && _decision.EntryAllowed);
+
             bool reactionReady =
                 !pendingValid &&
                 !livePlan &&
@@ -226,6 +255,7 @@ namespace cAlgo
                         ? (pending.TradeType == TradeType.Buy ? 1 : -1)
                         : 0,
                     livePlan,
+                    preTradePlanVisible,
                     decisionReady,
                     reactionReady,
                     predictionReady);
@@ -268,8 +298,7 @@ namespace cAlgo
                 snapshot.PendingTarget = pending.TakeProfit.HasValue
                     ? pending.TakeProfit.Value : 0;
             }
-            else if (_plan != null &&
-                     (_plan.Direction == 1 || _plan.Direction == -1))
+            else if (preTradePlanVisible)
             {
                 snapshot.PlanActive = true;
                 snapshot.Stage = "PLAN";
@@ -285,11 +314,7 @@ namespace cAlgo
                 snapshot.Tp3 = _plan.Tp3;
                 snapshot.Tp4 = _plan.Tp4;
             }
-            else if (_setupPreview != null &&
-                     _setupPreview.Direction != 0 &&
-                     (_decision == null ||
-                      _decision.Direction == 0 ||
-                      _setupPreview.Direction == _decision.Direction))
+            else if (setupPreviewVisible)
             {
                 // The setup preview is the pre-trigger structural forecast. It must
                 // remain visible while the decision is directional but not yet

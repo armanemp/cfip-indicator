@@ -39,6 +39,15 @@ namespace cAlgo
                                             ? "ARMED"
                                             : _autoTradingState;
                         
+                                    string trace =
+                                        string.IsNullOrWhiteSpace(
+                                            _lastExecutionTelemetryPath)
+                                            ? "TRACE IDLE"
+                                            : "TRACE " +
+                                              _lastExecutionTelemetryState +
+                                              " • " +
+                                              _lastExecutionTelemetryPath;
+
                                     return
                                         "AUTO TRADING  •  ON  •  " +
                                         state +
@@ -48,7 +57,8 @@ namespace cAlgo
                                         (AutomaticOrdersEnabled ? "ORDERS ON" : "ORDERS OFF") +
                                         "  •  SMART EXEC " +
                                         _marketSuitabilityScore +
-                                        "/100";
+                                        "/100  •  " +
+                                        trace;
                                 }
 
         private Color AutoTradingPanelColor()

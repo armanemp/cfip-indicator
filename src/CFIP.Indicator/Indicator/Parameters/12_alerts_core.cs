@@ -7,10 +7,10 @@ namespace cAlgo
         [Parameter("Enable Sound Alerts", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool EnableSoundAlerts { get; set; }
 
-        [Parameter("Show Popup Alerts", Group = "12 · ALERTS — CORE", DefaultValue = false)]
+        [Parameter("Show Popup Alerts", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool ShowPopupAlerts { get; set; }
 
-        [Parameter("Popup Critical Only", Group = "12 · ALERTS — CORE", DefaultValue = true)]
+        [Parameter("Popup Critical Only", Group = "12 · ALERTS — CORE", DefaultValue = false)]
         public bool PopupCriticalOnly { get; set; }
 
         [Parameter("Popup Duration Seconds", Group = "12 · ALERTS — CORE", DefaultValue = 6, MinValue = 1, MaxValue = 60)]
@@ -31,7 +31,7 @@ namespace cAlgo
         [Parameter("Popup Border Alpha", Group = "12 · ALERTS — CORE", DefaultValue = 235, MinValue = 0, MaxValue = 255)]
         public int PopupBorderAlpha { get; set; }
 
-        [Parameter("Popup Bold", Group = "12 · ALERTS — CORE", DefaultValue = false)]
+        [Parameter("Popup Bold", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool PopupBold { get; set; }
 
         [Parameter("Popup Font Family", Group = "12 · ALERTS — CORE", DefaultValue = "Arial")]

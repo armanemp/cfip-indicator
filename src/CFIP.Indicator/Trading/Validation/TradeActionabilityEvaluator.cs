@@ -501,7 +501,7 @@ namespace cAlgo
             if (locationQuality <
                 Math.Max(
                     MinimumEntryQuality,
-                    70))
+                    64))
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
@@ -514,7 +514,7 @@ namespace cAlgo
                     divergence.Type,
                     "ENTRY LOCATION QUALITY");
 
-            if (timingQuality < 70)
+            if (timingQuality < 64)
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,

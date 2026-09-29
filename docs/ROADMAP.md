@@ -3732,15 +3732,20 @@ Final documentation-inclusive verification is green: Runtime Acceptance #1070 PA
 
 ## Phase 9.11 — Automatic Execution Telemetry & Deeper SL/TP Coherence — 2026-09-29
 
-Status: NEXT.
+Status: IMPLEMENTATION COMPLETE on `phase-9-11-signal-lifecycle`; verification pending.
 
-Mandatory inherited controls:
-- every phase makes a concrete improvement to automatic market/aggressive/pending execution;
-- every phase performs accumulated auto-trade, auto-order, SL/TP, duplicate, stale-state and direction-conflict audit;
-- all signal/plan level lines remain Solid;
-- level text remains white and background-free.
+Completed scope:
+- deterministic bounded visual lifecycle for pre-trade plans and setup previews;
+- high-quality one-dimension actionability recovery without weakening hard conflict/RR/trap blockers;
+- legacy `ALERT BUY/SELL` chart mirror removed;
+- blocked/restricted signal delivery is silent before sound/popup/email/visual side effects;
+- alert popup defaults moved to a readable bottom-left presentation;
+- all plan/prediction signal lines fixed to thickness 1 and remain Solid;
+- broker submission confirmation/rejection/null-result telemetry exposed in the auto-trade panel;
+- server-side SL/TP protection ladder rejects structurally invalid stop-side geometry before adoption;
+- accumulated audit extended across lifecycle, alert, popup, line-thickness and telemetry contracts;
+- no new public parameters.
 
-Scope direction:
-- record broker submission/rejection/fallback reasons in a deterministic execution telemetry path;
-- audit realized-vs-planned SL/TP outcomes and protection recovery states;
-- tighten duplicate submission and duplicate mutation diagnostics without adding a second execution authority.
+Detailed record: `docs/PHASE-9-11-SIGNAL-LIFECYCLE-QUALITY-ALERTS.md`.
+
+Next phase after verification: Phase 9.12 — broker outcome/recovery telemetry and historical signal lifecycle calibration.

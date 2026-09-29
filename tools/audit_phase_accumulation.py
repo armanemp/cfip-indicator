@@ -25,6 +25,13 @@ target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 partial_tp = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
 line = read("UI/Chart/PlanLineRenderer.cs")
 labels = read("UI/Chart/PlanLabelRenderer.cs")
+prediction_line = read("UI/Chart/PredictionLineRenderer.cs")
+alert_renderer = read("UI/Chart/AlertSignalRenderer.cs")
+alert_engine = read("Trading/Alerts/AlertEngine.cs")
+visual_snapshot = read("UI/Chart/SignalVisualSnapshotBuilder.cs")
+visual_lifecycle = read("Core/Math/SignalVisualLifecycleRule.cs")
+popup_core = read("Indicator/Parameters/12_alerts_core.cs")
+popup_advanced = read("Indicator/Parameters/12_alerts_advanced.cs")
 
 execution_paths = {
     "automatic-market": auto_market,
@@ -70,6 +77,18 @@ if "_serverSideTakeProfitLadderActive" not in target_progression:
 if "_serverSideTakeProfitLadderActive" not in partial_tp:
     raise SystemExit("partial TP mutation must yield to server-owned TP ladder")
 
+quality_rule = read("Core/Math/ActionableSignalQualityRule.cs")
+evaluator = read("Trading/Validation/TradeActionabilityEvaluator.cs")
+telemetry = read("Trading/Execution/SubmissionGateCoordinator.cs")
+if "AllowsQualityRecovery(" not in quality_rule:
+    raise SystemExit("high-quality signal recovery gate is missing")
+if "locationQuality <" not in evaluator or "timingQuality < 64" not in evaluator:
+    raise SystemExit("actionability staging recovery boundary is missing")
+if "RecordExecutionTelemetry(" not in telemetry or "RecordExecutionTelemetryFailure(" not in telemetry:
+    raise SystemExit("broker submission telemetry owner is missing")
+if "stopDistance" not in ladder:
+    raise SystemExit("server SL/TP geometry freshness guard is missing")
+
 if "return LineStyle.Solid" not in line:
     raise SystemExit("all plan level lines must be Solid")
 if "LineStyle.Dots" in line or "LineStyle.DotsRare" in line or "LineStyle.LinesDots" in line:
@@ -85,6 +104,28 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
 
 if "return Color.White" not in labels:
     raise SystemExit("level labels must use white text")
+if "return\n                Math.Min(" not in line:
+    raise SystemExit("plan signal line thickness must be fixed at one")
+if "line.Thickness" not in prediction_line or "1;" not in prediction_line:
+    raise SystemExit("prediction signal line thickness must be fixed at one")
+if "RenderCompactPlanLabel(" in alert_renderer:
+    raise SystemExit("legacy alert chart-label rendering remains")
+if '"ALERT "' in alert_renderer:
+    raise SystemExit("alert BUY/SELL chart text remains")
+if "message.StartsWith(" not in alert_engine or "CFIP ENTRY BLOCKED" not in alert_engine:
+    raise SystemExit("blocked alerts must be silently discarded")
+if "SignalVisualLifecycleRule.IsPreTradePlanVisible(" not in visual_snapshot:
+    raise SystemExit("visual snapshot must consume signal lifecycle expiry rule")
+if "CurrentM5 - input.CreatedM5" not in visual_lifecycle:
+    raise SystemExit("visual lifecycle must enforce bounded pre-trade age")
+if "public bool ShowPopupAlerts" not in popup_core or "DefaultValue = true" not in popup_core:
+    raise SystemExit("popup alerts should be enabled by default")
+if "public bool PopupCriticalOnly" not in popup_core or "DefaultValue = false" not in popup_core:
+    raise SystemExit("popup must not be critical-only by default")
+if "public PanelCorner PopupPosition" not in popup_advanced or "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
+    raise SystemExit("popup default position must be bottom-left")
+if "public bool PopupBold" not in popup_core or "DefaultValue = true" not in popup_core:
+    raise SystemExit("popup text should be bold by default")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must not create backgrounds")
 
@@ -101,3 +142,4 @@ print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("All level label text: White / background-free")
 print("Public parameter contract: 552")
+print("Signal lifecycle / quality recovery / broker telemetry: PASS")

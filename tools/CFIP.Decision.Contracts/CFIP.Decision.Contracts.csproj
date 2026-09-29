@@ -36,5 +36,6 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs" Link="Core/Math/EntryTrapRiskRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorActionabilityRule.cs" Link="Core/Math/IndicatorActionabilityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SmartBreakEvenRule.cs" Link="Core/Math/SmartBreakEvenRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalVisualLifecycleRule.cs" Link="Core/Math/SignalVisualLifecycleRule.cs" />
   </ItemGroup>
 </Project>

@@ -23,6 +23,17 @@ namespace cAlgo
                             if (string.IsNullOrWhiteSpace(
                                     message))
                                 return;
+
+                            // Blocked candidates are deliberately silent. A rejected
+                            // signal must behave as though it never existed: no sound,
+                            // popup, email or visual-alert side effect.
+                            if (key.StartsWith(
+                                    "RESTRICT|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                message.StartsWith(
+                                    "CFIP ENTRY BLOCKED",
+                                    StringComparison.OrdinalIgnoreCase))
+                                return;
                 
                             DateTime now =
                                 TimeInUtc;

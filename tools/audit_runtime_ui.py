@@ -12,6 +12,13 @@ line = read("UI/Chart/PlanLineRenderer.cs")
 pending = read("UI/Chart/PendingOrderRenderer.cs")
 labels = read("UI/Chart/PlanLabelRenderCoordinator.cs")
 labels_renderer = read("UI/Chart/PlanLabelRenderer.cs")
+prediction_line = read("UI/Chart/PredictionLineRenderer.cs")
+alert_renderer = read("UI/Chart/AlertSignalRenderer.cs")
+alert_engine = read("Trading/Alerts/AlertEngine.cs")
+visual_snapshot = read("UI/Chart/SignalVisualSnapshotBuilder.cs")
+visual_lifecycle = read("Core/Math/SignalVisualLifecycleRule.cs")
+popup_core = read("Indicator/Parameters/12_alerts_core.cs")
+popup_advanced = read("Indicator/Parameters/12_alerts_advanced.cs")
 partial = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 level_hits = read("Trading/LiveManagement/ActivePlanLevelExitHandler.cs")
@@ -96,6 +103,27 @@ if "EnableAutoTrading" not in initialization or "EnableAutomaticOrders" not in i
     raise SystemExit("Execution status settings must be sourced from the public cTrader parameters")
 if "EnsureExecutionRuntimeState()" not in initialization:
     raise SystemExit("Execution settings must retain a canonical runtime synchronization boundary")
+
+if "return LineStyle.Solid" not in line:
+    raise SystemExit("Plan lines must remain Solid")
+if "return\n                Math.Min(" not in line:
+    raise SystemExit("Plan signal line thickness must remain fixed at one")
+if "line.Thickness =\n                                            1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
+    raise SystemExit("Prediction signal line thickness must remain fixed at one")
+if "RenderCompactPlanLabel(" in alert_renderer or '"ALERT "' in alert_renderer:
+    raise SystemExit("Alert BUY/SELL chart label must remain absent")
+if "CFIP ENTRY BLOCKED" not in alert_engine or "message.StartsWith(" not in alert_engine:
+    raise SystemExit("Blocked alerts must remain silent")
+if "SignalVisualLifecycleRule.IsPreTradePlanVisible(" not in visual_snapshot:
+    raise SystemExit("Signal visuals must consume the lifecycle expiry rule")
+if "CurrentM5 - input.CreatedM5" not in visual_lifecycle:
+    raise SystemExit("Signal lifecycle must enforce bounded age")
+if "DefaultValue = true)]\n        public bool ShowPopupAlerts" not in popup_core:
+    raise SystemExit("Popup alerts must default to enabled")
+if "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
+    raise SystemExit("Popup must default to bottom-left")
+if "DefaultValue = false)]\n        public bool PopupCriticalOnly" not in popup_core:
+    raise SystemExit("Popup must default to show valid alerts, not critical-only")
 
 if "return Color.White" not in labels_renderer:
     raise SystemExit("All compact plan-level text must be white")
