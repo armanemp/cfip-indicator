@@ -196,6 +196,46 @@ namespace cAlgo
                 return false;
             }
 
+            if (_m5Bars != null &&
+                _plan != null)
+            {
+                double liveEntry =
+                    NormalizePrice(
+                        _plan.Direction == 1
+                            ? Symbol.Ask
+                            : Symbol.Bid);
+
+                double stopRisk =
+                    Math.Abs(
+                        liveEntry -
+                        _plan.Stop);
+
+                double spread =
+                    Math.Max(
+                        0,
+                        Symbol.Ask -
+                        Symbol.Bid);
+
+                double spreadRiskRatio =
+                    stopRisk > 0
+                        ? spread / stopRisk
+                        : double.MaxValue;
+
+                if (spreadRiskRatio >
+                    Math.Max(
+                        0.02,
+                        MaximumSpreadToStopRiskRatio))
+                {
+                    _autoExecutionBlockReason =
+                        "SPREAD / STOP RISK";
+
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        _autoExecutionBlockReason);
+                    return false;
+                }
+            }
+
             int levelQuality =
                 Math.Min(
                     _plan.StopQuality,
