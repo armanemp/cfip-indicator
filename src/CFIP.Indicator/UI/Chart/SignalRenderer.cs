@@ -112,7 +112,13 @@ namespace cAlgo
                                         ? "CONFIRMED"
                                         : "WATCH";
                 
-                            if (ShowSignalArrow)
+                            bool showCurrentStateArrow =
+                                reactionReady ||
+                                decisionReady
+                                    ? ShowSignalArrow
+                                    : ShowEarlyArrow;
+
+                            if (showCurrentStateArrow)
                             {
                                 DrawIcon(
                                     P + "WATCH_ARROW",
