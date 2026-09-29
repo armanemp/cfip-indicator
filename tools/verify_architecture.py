@@ -840,8 +840,12 @@ if "snapshot.ReactionM5Index" not in visual_builder_code:
 if "snapshot.ArrowM5Index =" not in visual_builder_code or "snapshot.ReactionM5Index" not in visual_builder_code:
     raise SystemExit("Reaction arrow anchor must derive from the explicit intrabar snapshot")
 
-if "Chart.DrawText(" not in guide_code:
-    raise SystemExit("On-chart analysis guide must use the verified Chart.DrawText API")
+if "Chart.DrawStaticText(" not in guide_code:
+    raise SystemExit("On-chart analysis guide must use the verified Chart.DrawStaticText API")
+if "VerticalAlignment.Top" not in guide_code or "HorizontalAlignment.Right" not in guide_code:
+    raise SystemExit("On-chart analysis guide must use fixed chart-edge positioning")
+if "GuideBarsCount(" not in guide_code:
+    raise SystemExit("On-chart analysis guide must expose loaded dataset counts")
 for required_text in (
     "CFIP ANALYSIS",
     "ENGINE",
@@ -859,6 +863,24 @@ if "RenderAnalysisGuide();" not in guide_panel_code:
     raise SystemExit("Panel refresh path must also refresh the independent on-chart analysis guide")
 if "RemoveAnalysisGuide();" not in guide_cleanup_code:
     raise SystemExit("Chart cleanup must remove the on-chart analysis guide")
+
+# Startup runtime catch-up must centralize the calculation cycle so async
+# initialization cannot leave a ready instance with no completed calculation
+# until an unrelated market tick happens.
+INITIALIZATION_RUNTIME = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
+CALCULATION_RUNTIME = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
+INITIALIZATION_RUNTIME_CODE = INITIALIZATION_RUNTIME.read_text(encoding="utf-8")
+CALCULATION_RUNTIME_CODE = CALCULATION_RUNTIME.read_text(encoding="utf-8")
+if "RunStartupCalculationCatchUp();" not in INITIALIZATION_RUNTIME_CODE:
+    raise SystemExit("Initialization must trigger the bounded startup calculation catch-up")
+if "RunCalculationCycle(" not in INITIALIZATION_RUNTIME_CODE:
+    raise SystemExit("Startup catch-up must delegate to the shared calculation cycle")
+if "public override void Calculate(int index)" not in CALCULATION_RUNTIME_CODE:
+    raise SystemExit("Indicator Calculate entry point is missing")
+if "RunCalculationCycle(index);" not in CALCULATION_RUNTIME_CODE:
+    raise SystemExit("Calculate must delegate to the shared calculation cycle")
+if "private void RunCalculationCycle(int index)" not in CALCULATION_RUNTIME_CODE:
+    raise SystemExit("Shared calculation-cycle owner is missing")
 
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
