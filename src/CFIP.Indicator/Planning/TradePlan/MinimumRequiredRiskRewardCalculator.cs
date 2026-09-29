@@ -15,13 +15,13 @@ namespace cAlgo
     {
 private double MinimumRequiredRR()
                         {
-                            return MinimumRequiredRR(
+                            return MinimumRequiredRRForRegime(
                                 _decision == null
                                     ? "UNKNOWN"
                                     : _decision.Regime);
                         }
 
-                        private double MinimumRequiredRR(
+                        private double MinimumRequiredRRForRegime(
                             string regime)
                         {
                             if (!AdaptiveStructuralRR)
