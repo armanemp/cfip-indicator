@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Reflection;
 using cAlgo.API;
 
 namespace cAlgo
@@ -44,22 +45,76 @@ namespace cAlgo
 
         private string MemoryConfigurationFingerprint()
         {
-            string raw =
-                string.Concat(
-                    MinimumConfidence, "|",
-                    SmartQualityThreshold, "|",
-                    MinimumEntryLocationQuality, "|",
-                    MinimumTradeRR.ToString("F2", CultureInfo.InvariantCulture), "|",
-                    Tp1MinimumRR.ToString("F2", CultureInfo.InvariantCulture), "|",
-                    RequireFreshM5Trigger ? "1" : "0", "|",
-                    UseSmartEntryQualityFilter ? "1" : "0", "|",
-                    AdaptiveSmartThresholds ? "1" : "0", "|",
-                    AdaptiveRegimeWeighting ? "1" : "0", "|",
-                    UseProxyExpectedValueGate ? "1" : "0");
+            PropertyInfo[] properties =
+                GetType().GetProperties(
+                    BindingFlags.Instance |
+                    BindingFlags.Public);
+
+            Array.Sort(
+                properties,
+                delegate(PropertyInfo left, PropertyInfo right)
+                {
+                    return string.CompareOrdinal(
+                        left.Name,
+                        right.Name);
+                });
+
+            StringBuilder raw =
+                new StringBuilder();
+
+            int parameterCount = 0;
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.GetCustomAttributes(
+                        typeof(ParameterAttribute),
+                        true).Length == 0)
+                    continue;
+
+                object value;
+
+                try
+                {
+                    value = property.GetValue(this, null);
+                }
+                catch
+                {
+                    value = null;
+                }
+
+                string formatted;
+
+                IFormattable formattable =
+                    value as IFormattable;
+
+                if (formattable != null)
+                {
+                    formatted =
+                        formattable.ToString(
+                            null,
+                            CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    formatted =
+                        value == null
+                            ? ""
+                            : value.ToString();
+                }
+
+                raw.Append(property.Name);
+                raw.Append('=');
+                raw.Append(formatted);
+                raw.Append(';');
+                parameterCount++;
+            }
 
             unchecked
             {
                 uint hash = 2166136261;
+
+                hash ^= (uint)parameterCount;
+                hash *= 16777619;
 
                 for (int i = 0; i < raw.Length; i++)
                 {
