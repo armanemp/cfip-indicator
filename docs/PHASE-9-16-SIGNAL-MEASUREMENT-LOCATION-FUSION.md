@@ -156,6 +156,20 @@ Empirical target-terminal validation still remains required for:
 
 No profitability or win-rate improvement is claimed from source/contract verification.
 
+
+## Remediation closeout — 2026-09-29
+
+The first CI pass exposed two deterministic engineering defects; both are corrected:
+- the BUY/SELL geometry regression fixture used non-mirrored risk/reward levels and is now symmetric;
+- the signal-trace recorder exceeded the production-module size budget and is now isolated from the archive-store state.
+
+Persistent-memory behavior is also now explicit:
+- closed-M5 signal traces are no longer gated by the outcome-telemetry switch;
+- the `History/` directory is created during indicator initialization;
+- a visible `CFIP_PortableMemory_<symbol>_<timeframe>_<fingerprint>.txt` snapshot is created at startup;
+- when the matching Type-scoped LocalStorage key is absent, the snapshot can restore the bounded recent outcome cache into LocalStorage;
+- raw outcome archives and raw signal-trace archives remain the long-term file-of-record and are never deleted by CFIP.
+
 ## Next phase
 
 Phase 9.17:
