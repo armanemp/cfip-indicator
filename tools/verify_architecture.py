@@ -90,6 +90,7 @@ for token in (
     "IsReady(",
     "m1Direction != direction",
     "body < atr * minimumBodyAtr",
+    "range > atr * maximumRangeAtr",
     "location < minimumCloseLocation",
     "triggerScore >= requiredTrigger",
 ):
