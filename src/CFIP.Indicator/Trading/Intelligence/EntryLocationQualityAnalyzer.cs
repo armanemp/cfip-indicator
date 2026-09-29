@@ -30,7 +30,55 @@ namespace cAlgo
                             if (atr <= 0)
                                 return 0;
                 
-                            int quality = 40;
+                            int quality = 55;
+
+                            double rangeHigh =
+                                Highest(
+                                    bars,
+                                    Math.Max(
+                                        0,
+                                        index -
+                                        Math.Min(
+                                            StructureLookback,
+                                            40)),
+                                    index);
+                            double rangeLow =
+                                Lowest(
+                                    bars,
+                                    Math.Max(
+                                        0,
+                                        index -
+                                        Math.Min(
+                                            StructureLookback,
+                                            40)),
+                                    index);
+
+                            double range =
+                                rangeHigh -
+                                rangeLow;
+
+                            if (range > 0)
+                            {
+                                double position =
+                                    (bars.ClosePrices[index] -
+                                     rangeLow) /
+                                    range;
+
+                                if (direction == 1)
+                                {
+                                    if (position >= 0.86)
+                                        quality -= 35;
+                                    else if (position >= 0.74)
+                                        quality -= 18;
+                                }
+                                else if (direction == -1)
+                                {
+                                    if (position <= 0.14)
+                                        quality -= 35;
+                                    else if (position <= 0.26)
+                                        quality -= 18;
+                                }
+                            }
                 
                             Zone zone =
                                 FindNearestOpposingZone(
