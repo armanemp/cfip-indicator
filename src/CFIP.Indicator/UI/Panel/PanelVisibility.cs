@@ -68,8 +68,14 @@ namespace cAlgo
                                     _panelRowsStack = null;
                                     _panelScroll = null;
                                     _quickExecutionStack = null;
-                                    _autoTradingQuickToggle = null;
-                                    _automaticOrdersQuickToggle = null;
+                                    _autoTradingQuickStatus = null;
+                                    _autoTradingQuickStatusText = null;
+                                    _autoTradingQuickSwitchTrack = null;
+                                    _autoTradingQuickSwitchThumb = null;
+                                    _automaticOrdersQuickStatus = null;
+                                    _automaticOrdersQuickStatusText = null;
+                                    _automaticOrdersQuickSwitchTrack = null;
+                                    _automaticOrdersQuickSwitchThumb = null;
                                     _panelRows.Clear();
                                     _buttonStack = null;
                                     _closeButton = null;
