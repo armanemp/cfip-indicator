@@ -25,6 +25,7 @@ namespace cAlgo
             VerifyClosedBarRetryPolicy();
             VerifyUnifiedSubmissionGate();
             VerifyVisualAndExecutionControls();
+            VerifyResponsivePanelRuntime();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -1026,6 +1027,58 @@ namespace cAlgo
                 controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
                 controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
                 "toggle handlers use runtime state authority");
+        }
+
+        private static void VerifyResponsivePanelRuntime()
+        {
+            string heartbeatPath = Path.Combine(
+                "src", "CFIP.Indicator", "Runtime", "Supervision", "RuntimePanelHeartbeat.cs");
+            string initPath = Path.Combine(
+                "src", "CFIP.Indicator", "Runtime", "Initialization", "RuntimeInitialization.cs");
+            string panelPath = Path.Combine(
+                "src", "CFIP.Indicator", "UI", "Panel", "PanelMainRenderer.cs");
+            string rowsPath = Path.Combine(
+                "src", "CFIP.Indicator", "UI", "Panel", "PanelRowsFactory.cs");
+            string writerPath = Path.Combine(
+                "src", "CFIP.Indicator", "UI", "Panel", "PanelRowWriter.cs");
+
+            Assert(
+                File.Exists(heartbeatPath) &&
+                File.Exists(initPath) &&
+                File.Exists(panelPath) &&
+                File.Exists(rowsPath) &&
+                File.Exists(writerPath),
+                "responsive panel sources exist");
+
+            string heartbeat = File.ReadAllText(heartbeatPath);
+            string init = File.ReadAllText(initPath);
+            string panel = File.ReadAllText(panelPath);
+            string rows = File.ReadAllText(rowsPath);
+            string writer = File.ReadAllText(writerPath);
+
+            Assert(
+                heartbeat.Contains("RenderPanel();"),
+                "heartbeat refreshes full panel");
+
+            Assert(
+                heartbeat.Contains("TotalMilliseconds >= 1000"),
+                "safety supervisor remains one-second bounded");
+
+            Assert(
+                init.Contains("TimeSpan.FromMilliseconds(500)"),
+                "ready timer uses responsive panel cadence");
+
+            Assert(
+                panel.Contains("BuildSignalVisualSnapshot("),
+                "panel builds at most one canonical visual snapshot per refresh path");
+
+            Assert(
+                rows.Contains("EnsurePanelRow("),
+                "panel row allocation is lazy");
+
+            Assert(
+                writer.Contains("if (row.Text != nextText)"),
+                "panel writer skips duplicate text writes");
         }
 
         private static void Assert(bool condition, string name)
