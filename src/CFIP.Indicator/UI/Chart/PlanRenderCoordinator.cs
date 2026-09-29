@@ -204,7 +204,7 @@ namespace cAlgo
                         
                                     DrawIcon(
                                         P + "ARROW",
-                                        snapshot.Direction == 1
+                                        snapshot.PlanDirection == 1
                                             ? ChartIconType.UpArrow
                                             : ChartIconType.DownArrow,
                                         hostBar,
