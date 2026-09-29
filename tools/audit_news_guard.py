@@ -16,13 +16,19 @@ required = {
             "CancelPendingBeforeHighImpactNews",
             "CloseActiveBeforeHighImpactNews",
         ],
-    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsGuard.cs":
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarClient.cs":
         [
             "RefreshEconomicNewsIfNeeded",
+        ],
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
+        [
             "FindBlockingNewsEvent",
+            "NewsBlocked",
+        ],
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsProtection.cs":
+        [
             "ArchiveEconomicNewsRisk",
             "ApplyEconomicNewsRiskProtection",
-            "NewsBlocked",
         ],
     "src/CFIP.Indicator/Analysis/Market/Decision/DecisionMarketGates.cs":
         ["NewsBlocked("],
