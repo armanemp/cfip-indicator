@@ -224,6 +224,9 @@ namespace cAlgo
                 RenderManagedPendingOrder(
                     _renderSignalVisualSnapshot);
 
+                RenderParallelOpportunityCandidates(
+                    closedM5);
+
                 RenderPanel();
             }
             finally
