@@ -54,7 +54,7 @@ namespace cAlgo
                         out aggressiveIntentReason))
                 {
                     _autoExecutionBlockReason =
-                        "AGGRESSIVE • " +
+                        "AGGRESSIVE - " +
                         aggressiveIntentReason;
                     SetAutoTradingState(
                         "BLOCKED",
@@ -103,7 +103,7 @@ namespace cAlgo
                                 serverBreakEven,
                                 TradeExecutionMetadata.DefaultExecutionComment,
                                 false,
-                                "AGG • TP LADDER")
+                                "AGG - TP LADDER")
                             : TryExecuteMarketOrder(
                                 type,
                                 SymbolName,
@@ -134,7 +134,7 @@ namespace cAlgo
                     _autoExecutionBlockReason =
                         result != null &&
                         result.Error.HasValue
-                            ? "AGGRESSIVE • " +
+                            ? "AGGRESSIVE - " +
                               result.Error.Value.ToString()
                             : "AGG REJ";
                     SetAutoTradingState(
@@ -175,7 +175,7 @@ namespace cAlgo
                           result.Position.Id
                         : "POSITION #" +
                           result.Position.Id +
-                          " • BROKER PROTECTION RECOVERY");
+                          " - BROKER PROTECTION RECOVERY");
                 double confirmedStop =
                     GetActiveBrokerStopPrice();
                 double confirmedTarget =
@@ -206,7 +206,7 @@ namespace cAlgo
             catch (Exception ex)
             {
                 _autoExecutionBlockReason =
-                    "AGG • EXCEPTION • " +
+                    "AGG - EXCEPTION - " +
                     ex.Message;
                 Print(
                     "CFIP aggressive trade failed: {0}",
