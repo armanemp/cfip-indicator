@@ -79,6 +79,7 @@ namespace cAlgo
                 atr,
                 MinimumTriggerBodyAtr,
                 MinimumCloseLocation,
+                MaximumTriggerRangeAtr,
                 trigger,
                 requiredTrigger);
         }
