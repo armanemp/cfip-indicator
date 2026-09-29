@@ -343,7 +343,7 @@ namespace cAlgo
                     _decision.ActionableNow;
             }
 
-            PendingOrder pending =
+            var pending =
                 GetManagedPendingOrder();
 
             if (pending != null)
