@@ -687,3 +687,21 @@ Continuity:
 - Persistent user strategy priorities updated: important levels, deeper Order Block analysis, higher-quality signals and smarter cross-analyzer coordination.
 - Next phase: Phase 7.3 — Semantic duplicate audit.
 - Operator pull requirement: required after Phase 7.2 merge; intermediate branch commits do not require a local pull.
+
+## Phase 7.2 merge record — 2026-09-29
+
+PR #29 was merged into main as `861f15dda5af4599c92acb64bb6793ed2dfc296e`.
+
+Final verified state:
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS;
+- 534 public parameters remain, with 0 declared-but-unread candidates;
+- next implementation phase: Phase 7.3 — Semantic duplicate audit.
+
+The earlier corrective-hotfix notes in this log describe intermediate states; the
+final Phase 7.2 implementation and parameter audit supersede those interim
+descriptions where they differ.
+
+Operator action:
+- local pull is required after the Phase 7.2 merge.
