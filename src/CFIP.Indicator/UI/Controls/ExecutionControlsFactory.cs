@@ -111,7 +111,8 @@ namespace cAlgo
                                             10,
                                             Math.Max(
                                                 5,
-                                                PanelCornerRadius))
+                                                PanelCornerRadius)),
+                                    IsEnabled = true
                                 };
                         }
     }
