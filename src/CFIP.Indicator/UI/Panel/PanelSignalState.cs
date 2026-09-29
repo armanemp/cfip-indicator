@@ -40,49 +40,41 @@ namespace cAlgo
         private string GetAuthoritativeState(
                                     int direction)
                                 {
-                                    if (_plan != null &&
-                                        _plan.IsLivePosition)
-                                        return direction == 1
-                                            ? "BUY ACTIVE"
-                                            : direction == -1
-                                                ? "SELL ACTIVE"
-                                                : "ACTIVE";
-                        
-                                    if (_reaction != null &&
-                                        _reaction.EntryAllowed &&
-                                        _reaction.Confidence >=
-                                        Math.Max(
-                                            LiveReactionThreshold,
-                                            LiveReactionStrongThreshold))
-                                        return direction == 1
-                                            ? "BUY REACTION"
-                                            : direction == -1
-                                                ? "SELL REACTION"
-                                                : "REACTION";
-                        
-                                    if (_decision != null &&
-                                        _decision.EntryAllowed)
-                                        return direction == 1
-                                            ? "BUY READY"
-                                            : direction == -1
-                                                ? "SELL READY"
-                                                : "READY";
-                        
-                                    if (_prediction != null &&
-                                        _prediction.Direction != 0)
-                                        return direction == 1
-                                            ? "BUY PREDICTION"
-                                            : direction == -1
-                                                ? "SELL PREDICTION"
-                                                : "PREDICTION";
-                        
-                                    return direction == 1
-                                        ? "BUY WATCH"
-                                        : direction == -1
-                                            ? "SELL WATCH"
-                                            : "WAITING";
+                                    SignalVisualSnapshot snapshot =
+                                        _renderSignalVisualSnapshot != null
+                                            ? _renderSignalVisualSnapshot
+                                            : BuildSignalVisualSnapshot(
+                                                Math.Max(
+                                                    1,
+                                                    _lastEvaluatedM5));
+
+                                    if (direction == 0)
+                                        return "WAITING";
+
+                                    string prefix =
+                                        direction == 1
+                                            ? "BUY "
+                                            : "SELL ";
+
+                                    switch (snapshot.Stage)
+                                    {
+                                        case "ACTIVE":
+                                            return prefix + "ACTIVE";
+                                        case "PENDING":
+                                            return prefix + "PENDING";
+                                        case "PLAN":
+                                            return prefix + "PLAN";
+                                        case "CONFIRMED":
+                                            return prefix + "READY";
+                                        case "REACTION":
+                                            return prefix + "REACTION";
+                                        case "PREDICTION":
+                                            return prefix + "PREDICTION";
+                                        default:
+                                            return prefix + "WATCH";
+                                    }
                                 }
-        
+
         private string GetSignalSynchronizationText()
                                 {
                                     SignalVisualSnapshot snapshot =
