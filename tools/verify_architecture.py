@@ -898,8 +898,10 @@ init_runtime_code = INIT_RUNTIME.read_text(encoding="utf-8")
 calc_cycle_code = CALC_CYCLE.read_text(encoding="utf-8")
 panel_diagnostic_code = PANEL_DIAGNOSTIC.read_text(encoding="utf-8")
 
-if "RenderPanel();" not in panel_heartbeat_code:
-    raise SystemExit("Panel heartbeat must request full panel refresh")
+if "RenderPanel();" in panel_heartbeat_code:
+    raise SystemExit("Panel heartbeat must not invoke the full panel renderer")
+if "UpdatePanelHeartbeatRows(" not in panel_heartbeat_code or "UpdatePanelHeartbeatLiveRows(" not in panel_heartbeat_code:
+    raise SystemExit("Panel heartbeat must refresh lightweight live state directly")
 if "ShouldRunSafetySupervisor(" not in panel_heartbeat_code:
     raise SystemExit("Panel heartbeat must decouple safety cadence")
 if "TotalMilliseconds >= 1000" not in panel_heartbeat_code:
@@ -908,8 +910,12 @@ if "TimeSpan.FromMilliseconds(500)" not in init_runtime_code:
     raise SystemExit("Ready runtime timer must provide responsive 500ms panel cadence")
 if "TimeSpan.FromMilliseconds(250)" not in init_runtime_code:
     raise SystemExit("Initialization poll cadence must remain bounded without 100ms timer churn")
-if init_runtime_code.count("RenderPanel();") < 3:
-    raise SystemExit("Panel must refresh during initialization, finalization and heartbeat paths")
+if init_runtime_code.count("RenderPanel();") < 2:
+    raise SystemExit("Panel must refresh during required initialization/finalization paths")
+if "ShouldRenderFullPanel(" not in panel_main_code or "_lastPanelPresentationKey" not in state:
+    raise SystemExit("Panel full rendering must be state-change driven")
+if "_lastPanelPresentationKey" not in panel_main_code:
+    raise SystemExit("Panel renderer must consume the canonical presentation-state key")
 if "_panelRows.Count != PanelRowCount" in panel_main_code:
     raise SystemExit("Panel renderer must not require eager fixed-row allocation")
 if "EnsurePanelRow(" not in panel_factory_code or "slot >= PanelRowCount" not in panel_writer_code:
