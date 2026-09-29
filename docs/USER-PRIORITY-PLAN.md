@@ -223,3 +223,15 @@ The chart must be able to display several candidate setups simultaneously with i
 Price-level labels must use solid backgrounds matching the associated line color and automatically choose readable text contrast.
 
 WaveTrend from the user's latest source ZIP is part of the evidence stack, but it remains confirmation evidence and not an independent signal authority.
+
+
+## P. Phase 9.2 completion note — 2026-09-29
+
+The persistent project contract now includes parallel opportunity preservation:
+Strategic top-down opportunities and worthwhile Tactical LTF opportunities must coexist.
+
+A strong HTF conflict should tighten the LTF candidate's quality/RR requirements rather than automatically erase it.
+
+The chart must support multiple isolated candidate setups without changing established line lengths/geometry. Compact level labels must be solid, use the line color as their background, and automatically choose readable text contrast.
+
+The user's CUSTOMWAVETREND source from the latest ZIP is part of the evidence stack. Its numerical parity still requires target-terminal replay.

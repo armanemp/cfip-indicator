@@ -3515,3 +3515,39 @@ Acceptance:
 - numerical WaveTrend parity and empirical signal-quality improvement remain replay-validation items.
 
 Next continuation point: finish verification and merge Phase 9.2, then pull main before Phase 9.3.
+
+
+## Phase 9.2 verification closeout — 2026-09-29
+
+Status: MERGED AND VERIFIED at implementation level.
+
+PR #41 merged into main as `aedceba3f6d9e3791328f41c9e1fb01e2a474067`.
+
+Final verified PR head before merge: `c29608de510ebeb675c10c0438ede0cfcfbf59e5`.
+
+Pre-merge gates on the final code head:
+- Runtime Acceptance PASS;
+- cTrader Compile/Build PASS;
+- Source/Architecture PASS.
+
+Implemented:
+- Strategic HTF opportunity lane remains intact;
+- Tactical LTF opportunities are evaluated independently for BUY and SELL;
+- strong HTF conflict does not erase every LTF setup; Counter-HTF Tactical uses stricter quality/RR;
+- parallel chart candidates use isolated namespaces and separated label anchors;
+- existing line-length geometry is reused unchanged;
+- compact labels use solid semantic line-color backgrounds with automatic black/white contrast text;
+- recovered CUSTOMWAVETREND source is implemented as bounded evidence;
+- panel exposes WaveTrend/lane state while Phase 9.1 responsive heartbeat behavior remains intact.
+
+Execution boundary:
+- current engine still has a singleton executable plan/protection context;
+- Phase 9.2 therefore supports parallel detection/presentation, not simultaneous multi-position auto execution;
+- Phase 9.3 is reserved for isolated plan registry, position-scoped protection state, and independent broker mutation identities before multi-position automation.
+
+Empirical boundary:
+- numerical WaveTrend parity against the target cTrader terminal and real-world chart readability/overlap still require target-terminal replay;
+- no empirical win-rate, false-signal or realized-RR improvement is claimed from CI.
+
+Operator action:
+- local main must be pulled before the next continuation.
