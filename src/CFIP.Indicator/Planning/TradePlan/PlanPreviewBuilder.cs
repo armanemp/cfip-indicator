@@ -8,7 +8,8 @@ namespace cAlgo
     {
         private TradeSetupPreview BuildTradeSetupPreview(
             int closedM5,
-            ExecutionModel execution)
+            ExecutionModel execution,
+            OpportunityLane lane = OpportunityLane.Strategic)
         {
             if (_m5Bars == null ||
                 execution == null ||
@@ -76,7 +77,8 @@ namespace cAlgo
                     entry,
                     risk,
                     execution.Direction,
-                    atr);
+                    atr,
+                    lane);
 
             TradeSetupPreview preview =
                 new TradeSetupPreview
