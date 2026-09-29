@@ -102,6 +102,12 @@ Production parameter count remains 535.
 
 ## Validation
 
-Source/architecture, runtime acceptance and cTrader compile gates must all pass on the hotfix PR head before merge.
+The corrective PR (#28) passed all three repository gates before merge:
 
-Hands-on cTrader validation is still required for actual touch behavior of chart controls, visual label placement and observed broker/runtime execution behavior.
+- Source / architecture: PASS
+- Runtime acceptance contracts: PASS
+- cTrader compile: PASS
+
+Merged into `main` as commit `c8fd3db7761d45b094986105e585a49b72645ba5`.
+
+Hands-on cTrader validation is still required for actual chart-control touch behavior, visual label placement and observed broker/runtime execution behavior.
