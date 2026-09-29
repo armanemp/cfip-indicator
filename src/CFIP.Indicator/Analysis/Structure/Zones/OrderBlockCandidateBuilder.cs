@@ -141,7 +141,7 @@ namespace cAlgo
                 Direction = direction,
                 Kind = "ORDER_BLOCK",
                 Id =
-                    OrderBlockRule.Identity(
+                    OrderBlockRule.OrderBlockIdentity(
                         direction,
                         createdIndex,
                         ObUseBodyForZone),
