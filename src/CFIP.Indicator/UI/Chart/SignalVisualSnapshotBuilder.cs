@@ -188,6 +188,27 @@ namespace cAlgo
                 snapshot.Tp3 = _plan.Tp3;
                 snapshot.Tp4 = _plan.Tp4;
             }
+            else if (_setupPreview != null &&
+                     _setupPreview.Direction == visualDirection)
+            {
+                snapshot.SetupPreviewActive = true;
+                snapshot.SetupEntryMode = _setupPreview.EntryMode;
+                snapshot.SetupCreatedM5 = _setupPreview.CreatedM5;
+                snapshot.SetupEntry = _setupPreview.Entry;
+                snapshot.SetupIdealEntry = _setupPreview.IdealEntry;
+                snapshot.SetupTrigger = _setupPreview.Trigger;
+                snapshot.SetupInvalidation = _setupPreview.Invalidation;
+                snapshot.SetupStop = _setupPreview.Stop;
+                snapshot.SetupTp1 = _setupPreview.Tp1;
+                snapshot.SetupTp2 = _setupPreview.Tp2;
+                snapshot.SetupTp3 = _setupPreview.Tp3;
+                snapshot.SetupTp4 = _setupPreview.Tp4;
+                snapshot.SetupRisk = _setupPreview.Risk;
+                snapshot.Stage =
+                    decisionReady
+                        ? "CONFIRMED SETUP"
+                        : "SETUP WATCH";
+            }
             else if (decisionReady)
             {
                 snapshot.Stage = "CONFIRMED";
