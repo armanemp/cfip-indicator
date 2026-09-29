@@ -100,9 +100,8 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize,
                     risk) <
-                Math.Max(
-                    MinimumTradeRR,
-                    MinimumRequiredRR()))
+                MinimumPlanRiskReward(
+                    lane))
                 return false;
 
             if (RequireHtfTargets &&
