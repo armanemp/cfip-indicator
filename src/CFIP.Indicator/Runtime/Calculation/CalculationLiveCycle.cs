@@ -202,8 +202,62 @@ namespace cAlgo
                 return;
             }
 
-            if (_executionModel == null ||
-                _setupPreview == null)
+            ExecutionModel actionExecution =
+                _executionModel;
+
+            TradeSetupPreview actionPreview =
+                _setupPreview;
+
+            if ((actionExecution == null ||
+                 actionPreview == null) &&
+                _plan != null &&
+                !_plan.IsLivePosition)
+            {
+                actionExecution =
+                    new ExecutionModel
+                    {
+                        Direction = _plan.Direction,
+                        Mode = _plan.EntryMode,
+                        IdealEntry = _plan.IdealEntry,
+                        ActualEntry = _plan.Entry,
+                        ZoneLow = _plan.EntryZoneLow,
+                        ZoneHigh = _plan.EntryZoneHigh,
+                        Trigger = _plan.EntryTrigger,
+                        Invalidation = _plan.EntryInvalidation,
+                        Quality = _plan.EntryQuality,
+                        Ready = true,
+                        Source = _plan.EntrySource
+                    };
+
+                actionPreview =
+                    new TradeSetupPreview
+                    {
+                        Direction = _plan.Direction,
+                        EntryMode = _plan.EntryMode,
+                        CreatedM5 = _plan.CreatedM5,
+                        Entry = _plan.Entry,
+                        IdealEntry = _plan.IdealEntry,
+                        Trigger = _plan.EntryTrigger,
+                        Invalidation = _plan.EntryInvalidation,
+                        Stop = _plan.Stop,
+                        Tp1 = _plan.Tp1,
+                        Tp2 = _plan.Tp2,
+                        Tp3 = _plan.Tp3,
+                        Tp4 = _plan.Tp4,
+                        Risk = _plan.Risk
+                    };
+            }
+
+            if (_plan != null &&
+                _plan.IsLivePosition)
+            {
+                ResetLiveActionability(
+                    "LIVE POSITION ACTIVE");
+                return;
+            }
+
+            if (actionExecution == null ||
+                actionPreview == null)
             {
                 ResetLiveActionability(
                     "EXECUTION MODEL UNAVAILABLE");
@@ -225,8 +279,8 @@ namespace cAlgo
                     _decision.Direction,
                     lane,
                     _decision.Regime,
-                    _executionModel,
-                    _setupPreview);
+                    actionExecution,
+                    actionPreview);
 
             bool actionable =
                 result.Actionable;
@@ -295,9 +349,6 @@ namespace cAlgo
             _decision.EntryPositionQuality = 0;
             _decision.EntryDistanceAtr = 0;
             _decision.ActionableTp1RR = 0;
-            _decision.DivergenceQuality = 0;
-            _decision.DivergenceDirection = 0;
-            _decision.DivergenceType = "NONE";
             _decision.ActionabilityReason =
                 string.IsNullOrWhiteSpace(reason)
                     ? "NOT ACTIONABLE"
