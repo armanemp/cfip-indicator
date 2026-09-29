@@ -112,19 +112,22 @@ namespace cAlgo
                     "SIGNAL QUALITY • STRUCTURE");
 
             if (input.EntryLocationQuality <
-                input.MinimumEntryLocationQuality)
+                input.MinimumEntryLocationQuality &&
+                !AllowsQualityRecovery(input))
                 return new ActionableSignalQualityResult(
                     false,
                     "SIGNAL QUALITY • LOCATION");
 
             if (input.EntryTimingQuality <
-                input.MinimumEntryTimingQuality)
+                input.MinimumEntryTimingQuality &&
+                !AllowsQualityRecovery(input))
                 return new ActionableSignalQualityResult(
                     false,
                     "SIGNAL QUALITY • TIMING");
 
             if (input.EntryPositionQuality <
-                input.MinimumEntryPositionQuality)
+                input.MinimumEntryPositionQuality &&
+                !AllowsQualityRecovery(input))
                 return new ActionableSignalQualityResult(
                     false,
                     "SIGNAL QUALITY • PRICE POSITION");
@@ -137,7 +140,77 @@ namespace cAlgo
 
             return new ActionableSignalQualityResult(
                 true,
-                string.Empty);
+                AllowsQualityRecovery(input) &&
+                (input.EntryLocationQuality < input.MinimumEntryLocationQuality ||
+                 input.EntryTimingQuality < input.MinimumEntryTimingQuality ||
+                 input.EntryPositionQuality < input.MinimumEntryPositionQuality)
+                    ? "ACTIONABLE • QUALITY RECOVERY"
+                    : string.Empty);
+        }
+
+        private static bool AllowsQualityRecovery(
+            ActionableSignalQualityInput input)
+        {
+            int deficientDimensions = 0;
+
+            if (input.EntryLocationQuality < input.MinimumEntryLocationQuality)
+                deficientDimensions++;
+            if (input.EntryTimingQuality < input.MinimumEntryTimingQuality)
+                deficientDimensions++;
+            if (input.EntryPositionQuality < input.MinimumEntryPositionQuality)
+                deficientDimensions++;
+
+            if (deficientDimensions != 1)
+                return false;
+
+            int minimumDeficientQuality =
+                Math.Min(
+                    input.MinimumEntryLocationQuality,
+                    Math.Min(
+                        input.MinimumEntryTimingQuality,
+                        input.MinimumEntryPositionQuality)) - 8;
+
+            int deficientQuality =
+                Math.Min(
+                    input.EntryLocationQuality,
+                    Math.Min(
+                        input.EntryTimingQuality,
+                        input.EntryPositionQuality));
+
+            int confidenceFloor =
+                Math.Min(
+                    99,
+                    input.MinimumConfidence + 5);
+            int smartFloor =
+                Math.Min(
+                    100,
+                    input.MinimumSmartQuality + 5);
+            int timeframeFloor =
+                Math.Min(
+                    100,
+                    input.MinimumTimeframeAgreement + 3);
+            int evidenceFloor =
+                Math.Min(
+                    8,
+                    input.MinimumIndependentEvidence + 1);
+            int structureFloor =
+                Math.Min(
+                    8,
+                    input.MinimumStructuralConfirmations + 1);
+            double rrFloor =
+                input.MinimumTp1RR + 0.35;
+
+            return
+                deficientQuality >= minimumDeficientQuality &&
+                input.Confidence >= confidenceFloor &&
+                input.SmartQuality >= smartFloor &&
+                input.TimeframeAgreement >= timeframeFloor &&
+                input.IndependentEvidence >= evidenceFloor &&
+                input.StructuralConfirmations >= structureFloor &&
+                input.EntryPositionQuality >=
+                    input.MinimumEntryPositionQuality &&
+                IsFinitePositiveValue(input.Tp1RR) &&
+                input.Tp1RR >= rrFloor;
         }
 
         private static bool IsFinitePositiveValue(double value)
