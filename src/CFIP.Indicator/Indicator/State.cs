@@ -20,6 +20,7 @@ namespace cAlgo
         
                 private MarketRegimeSnapshot _m5RegimeSnapshot;
                 private int _m5RegimeSnapshotIndex = -1;
+                private readonly M5RegimeCoreCache _m5RegimeCoreCache = new M5RegimeCoreCache();
 
                 private Frame _m1Frame;
                 private Frame _m5Frame;
@@ -196,7 +197,12 @@ namespace cAlgo
                 private string _marketSuitabilityReason = "NOT EVALUATED";
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
                 private MtfClosedContext _lastMtfClosedContext;
+                private readonly MtfClosedContextCache _mtfClosedContextCache = new MtfClosedContextCache();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+                private DateTime _initializationStartedUtc = DateTime.MinValue;
+                private int _initializationPendingDataLoads;
+                private bool _initializationDataRequested;
+                private bool _initializationDataReady;
                 private DateTime _lastPanelRenderUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
                 private int _lastReactionM5 = -1;

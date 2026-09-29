@@ -915,22 +915,42 @@ Acceptance:
 
 ## Phase 1.5 — Safety supervisor
 
-Status: planned.
+Status: complete.
 
-A lightweight timer is dedicated to:
+Work completed:
 
-- broker state;
-- protection recovery;
-- pending expiry;
-- EOD supervision;
-- stale-plan detection.
+- replaced the serial 18-step market-data startup pipeline with asynchronous MarketData.GetBarsAsync(...) acquisition for required M1/M5/M15/M30/H1/H4 data and optional D1/W1 data;
+- kept final native-indicator registration and event hookup behind a bounded startup finalization boundary;
+- added a bounded initialization timeout so incomplete async loading cannot leave the instance silently waiting forever;
+- added a closed MTF context cache keyed by participating Bars identity/count, avoiding repeated stable GetIndexByTime mapping on every tick while invalidating when a timeframe advances;
+- removed duplicate closed-M1 frame analysis between preparation and closed-bar processing;
+- added a three-entry M5 regime-core cache so stability checks reuse recent regime calculations;
+- bounded FVG and Order Block candidate/mitigation traversal by effective zone age;
+- reused the cached current closed-M5 ATR across the active protection calculation;
+- added a timer-driven safety supervisor for broker reconciliation, managed-live recovery, broker protection and EOD supervision;
+- kept the safety timer separate from full analysis and skipped the supervisor while the main calculation cycle is busy;
+- recorded a detailed audit of the uploaded four-indicator archive and adopted only compatible optimization/architecture ideas.
 
-It must not run the full analysis engine at heartbeat frequency.
+ZIP audit result:
+
+- fvg.txt: existing production FVG engine remains authoritative; only bounded-work ideas were retained;
+- wavetrend.txt: retained as a future composite momentum candidate, not added as correlated independent votes;
+- economic.txt: not imported into the execution core because of blocking external-network startup/runtime coupling;
+- volume-profile.txt: empty.
+
+Verification:
+
+- Source / Architecture: PASS
+- Runtime Acceptance Contracts: PASS
+- cTrader compile: PASS.
 
 Acceptance:
 
-- timer is bounded and low-load;
-- safety work is not coupled to chart repainting.
+- startup data acquisition is asynchronous and bounded;
+- timer supervision does not run the full analysis engine;
+- stable closed-bar data is reused instead of recomputed;
+- zone searches do not traverse history beyond the configured active lifetime;
+- no strategy-score change is introduced solely for performance.
 
 ---
 

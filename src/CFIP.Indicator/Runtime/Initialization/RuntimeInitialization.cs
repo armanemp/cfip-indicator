@@ -123,214 +123,309 @@ namespace cAlgo
                                     }
                                 }
 
-        private void ScheduleNextInitializationStage()
-                                {
-                                    Timer.Stop();
-                                    Timer.Start(
-                                        TimeSpan.FromMilliseconds(100));
-                                }
+        private void ScheduleInitializationPoll()
+        {
+            Timer.Stop();
+            Timer.Start(
+                TimeSpan.FromMilliseconds(100));
+        }
+
+        private void StartAsyncBarsInitialization()
+        {
+            if (_initializationDataRequested)
+                return;
+
+            _initializationDataRequested = true;
+            _initializationDataReady = false;
+            _initializationPendingDataLoads = 0;
+            _initializationStartedUtc = TimeInUtc;
+            _initializationStage = 0;
+
+            RequestBars(
+                TimeFrame.Minute5,
+                bars => _m5Bars = bars);
+
+            RequestBars(
+                TimeFrame.Minute15,
+                bars => _m15Bars = bars);
+
+            RequestBars(
+                TimeFrame.Minute30,
+                bars => _m30Bars = bars);
+
+            RequestBars(
+                TimeFrame.Hour,
+                bars => _h1Bars = bars);
+
+            RequestBars(
+                TimeFrame.Hour4,
+                bars => _h4Bars = bars);
+
+            RequestBars(
+                TimeFrame.Minute,
+                bars => _m1Bars = bars);
+
+            if (SmartWeeklyContext)
+            {
+                RequestBars(
+                    TimeFrame.Daily,
+                    bars => _d1Bars = bars);
+
+                RequestBars(
+                    TimeFrame.Weekly,
+                    bars => _w1Bars = bars);
+            }
+
+            if (_initializationPendingDataLoads == 0)
+                _initializationDataReady = true;
+        }
+
+        private void RequestBars(
+            TimeFrame timeFrame,
+            Action<Bars> assign)
+        {
+            _initializationPendingDataLoads++;
+
+            try
+            {
+                MarketData.GetBarsAsync(
+                    timeFrame,
+                    bars =>
+                    {
+                        try
+                        {
+                            if (bars != null && assign != null)
+                                assign(bars);
+                        }
+                        finally
+                        {
+                            _initializationPendingDataLoads =
+                                Math.Max(
+                                    0,
+                                    _initializationPendingDataLoads - 1);
+
+                            if (_initializationPendingDataLoads == 0)
+                                _initializationDataReady = true;
+                        }
+                    });
+            }
+            catch
+            {
+                _initializationPendingDataLoads =
+                    Math.Max(
+                        0,
+                        _initializationPendingDataLoads - 1);
+                throw;
+            }
+        }
+
+        private void FinalizeAsyncInitialization()
+        {
+            if (_initializationReady ||
+                !_initializationDataReady)
+                return;
+
+            if (!HasEnoughData())
+            {
+                _status = "BUILDING DATA";
+                return;
+            }
+
+            _initializationStage = 1;
+
+            RegisterNative(_m5Bars);
+            RegisterNative(_m15Bars);
+            RegisterNative(_m30Bars);
+            RegisterNative(_h1Bars);
+            RegisterNative(_h4Bars);
+            _initializationStage = 2;
+
+            RegisterNative(_m1Bars);
+
+            if (_d1Bars != null)
+                RegisterNative(_d1Bars);
+
+            if (_w1Bars != null)
+                RegisterNative(_w1Bars);
+
+            _initializationStage = 3;
+
+            try
+            {
+                Positions.Opened += OnPositionOpened;
+                Positions.Closed += OnPositionClosed;
+                Positions.Modified += OnPositionModified;
+                PendingOrders.Created += OnPendingOrderCreated;
+                PendingOrders.Modified += OnPendingOrderModified;
+                PendingOrders.Filled += OnPendingOrderFilled;
+                PendingOrders.Cancelled += OnPendingOrderCancelled;
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP trading event hookup failed: {0}",
+                    ex.ToString());
+            }
+
+            _initializationStage = 4;
+
+            InitializeExecutionRuntimeState();
+
+            if (!ValidateTradeIdentityConfiguration())
+            {
+                _autoTradingEnabledRuntime = false;
+                _automaticOrdersEnabledRuntime = false;
+                _autoExecutionBlockReason =
+                    "IDENTITY CONFIGURATION";
+                _autoOrdersBlockReason =
+                    "IDENTITY CONFIGURATION";
+            }
+
+            SetLifecycleState(
+                LifecycleState.Flat,
+                "READY");
+
+            SetAutoTradingState(
+                AutoTradingEnabled
+                    ? "ARMED"
+                    : "OFF",
+                AutoTradingEnabled
+                    ? "INITIALIZING"
+                    : "DISABLED");
+
+            _status = "READY";
+            _initializationReady = true;
+            _initializationStage = 5;
+
+            Timer.Stop();
+            Timer.Start(
+                TimeSpan.FromSeconds(1));
+
+            try
+            {
+                RenderPanel();
+            }
+            catch (Exception ex)
+            {
+                HandleRuntimeFault(
+                    ex,
+                    -1,
+                    "INITIALIZATION RENDER");
+            }
+        }
 
         protected override void Initialize()
-                                {
-                                    _native.Clear();
-                                    _historicalDrawn.Clear();
-                                    _outcomeDrawn.Clear();
+        {
+            _native.Clear();
+            _historicalDrawn.Clear();
+            _outcomeDrawn.Clear();
 
-                                    _initializationReady = false;
-                                    _initializationStage = 0;
-                                    _status = "STARTING";
+            _initializationReady = false;
+            _initializationStage = 0;
+            _initializationDataRequested = false;
+            _initializationDataReady = false;
+            _initializationPendingDataLoads = 0;
+            _initializationStartedUtc = TimeInUtc;
+            _status = "STARTING";
 
-                                    // Register the panel before any expensive data acquisition.
-                                    CreatePanel();
+            CreatePanel();
 
-                                    try
-                                    {
-                                        RenderPanel();
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Print(
-                                            "CFIP startup panel render failed: {0}",
-                                            ex.ToString());
-                                    }
+            try
+            {
+                RenderPanel();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP startup panel render failed: {0}",
+                    ex.ToString());
+            }
 
-                                    ScheduleNextInitializationStage();
-                                }
+            try
+            {
+                StartAsyncBarsInitialization();
+                ScheduleInitializationPoll();
+            }
+            catch (Exception ex)
+            {
+                Timer.Stop();
+                SetInitializationFault(
+                    ex,
+                    "ASYNC DATA REQUEST");
+            }
+        }
 
         protected override void OnTimer()
-                                {
-                                    if (_initializationReady)
-                                    {
-                                        HandleRuntimeHeartbeat();
-                                        return;
-                                    }
+        {
+            if (_initializationReady)
+            {
+                HandleRuntimeHeartbeat();
+                return;
+            }
 
-                                    try
-                                    {
-                                        switch (_initializationStage)
-                                        {
-                                            case 0:
-                                                _m1Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Minute);
-                                                break;
+            if (!_initializationDataRequested)
+            {
+                try
+                {
+                    StartAsyncBarsInitialization();
+                }
+                catch (Exception ex)
+                {
+                    Timer.Stop();
+                    SetInitializationFault(
+                        ex,
+                        "ASYNC DATA REQUEST");
+                    return;
+                }
 
-                                            case 1:
-                                                _m5Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Minute5);
-                                                break;
+                ScheduleInitializationPoll();
+                return;
+            }
 
-                                            case 2:
-                                                _m15Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Minute15);
-                                                break;
+            if (!_initializationDataReady)
+            {
+                TimeSpan elapsed =
+                    TimeInUtc -
+                    _initializationStartedUtc;
 
-                                            case 3:
-                                                _m30Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Minute30);
-                                                break;
+                if (elapsed.TotalSeconds >=
+                    30)
+                {
+                    Timer.Stop();
 
-                                            case 4:
-                                                _h1Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Hour);
-                                                break;
+                    SetInitializationFault(
+                        new TimeoutException(
+                            "ASYNC MARKET DATA INITIALIZATION TIMEOUT"),
+                        "DATA LOAD");
+                    return;
+                }
 
-                                            case 5:
-                                                _h4Bars =
-                                                    MarketData.GetBars(
-                                                        TimeFrame.Hour4);
-                                                break;
+                _status =
+                    _initializationPendingDataLoads > 0
+                        ? "LOADING DATA"
+                        : "BUILDING DATA";
 
-                                            case 6:
-                                                _d1Bars =
-                                                    SmartWeeklyContext
-                                                        ? MarketData.GetBars(
-                                                            TimeFrame.Daily)
-                                                        : null;
-                                                break;
+                ScheduleInitializationPoll();
+                return;
+            }
 
-                                            case 7:
-                                                _w1Bars =
-                                                    SmartWeeklyContext
-                                                        ? MarketData.GetBars(
-                                                            TimeFrame.Weekly)
-                                                        : null;
-                                                break;
-
-                                            case 8:
-                                                RegisterNative(_m1Bars);
-                                                break;
-
-                                            case 9:
-                                                RegisterNative(_m5Bars);
-                                                break;
-
-                                            case 10:
-                                                RegisterNative(_m15Bars);
-                                                break;
-
-                                            case 11:
-                                                RegisterNative(_m30Bars);
-                                                break;
-
-                                            case 12:
-                                                RegisterNative(_h1Bars);
-                                                break;
-
-                                            case 13:
-                                                RegisterNative(_h4Bars);
-                                                break;
-
-                                            case 14:
-                                                if (_d1Bars != null)
-                                                    RegisterNative(_d1Bars);
-                                                break;
-
-                                            case 15:
-                                                if (_w1Bars != null)
-                                                    RegisterNative(_w1Bars);
-                                                break;
-
-                                            case 16:
-                                                try
-                                                {
-                                                    Positions.Opened += OnPositionOpened;
-                                                    Positions.Closed += OnPositionClosed;
-                                                    Positions.Modified += OnPositionModified;
-                                                    PendingOrders.Created += OnPendingOrderCreated;
-                                                    PendingOrders.Modified += OnPendingOrderModified;
-                                                    PendingOrders.Filled += OnPendingOrderFilled;
-                                                    PendingOrders.Cancelled += OnPendingOrderCancelled;
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    Print(
-                                                        "CFIP trading event hookup failed: {0}",
-                                                        ex.ToString());
-                                                }
-                                                break;
-
-                                            case 17:
-                                                InitializeExecutionRuntimeState();
-
-                                                if (!ValidateTradeIdentityConfiguration())
-                                                {
-                                                    _autoTradingEnabledRuntime = false;
-                                                    _automaticOrdersEnabledRuntime = false;
-                                                    _autoExecutionBlockReason =
-                                                        "IDENTITY CONFIGURATION";
-                                                    _autoOrdersBlockReason =
-                                                        "IDENTITY CONFIGURATION";
-                                                }
-
-                                                SetLifecycleState(
-                                                    LifecycleState.Flat,
-                                                    "READY");
-
-                                                SetAutoTradingState(
-                                                    AutoTradingEnabled
-                                                        ? "ARMED"
-                                                        : "OFF",
-                                                    AutoTradingEnabled
-                                                        ? "INITIALIZING"
-                                                        : "DISABLED");
-
-                                                _status = "READY";
-                                                _initializationReady = true;
-                                                Timer.Stop();
-                                                Timer.Start(
-                                                    TimeSpan.FromSeconds(1));
-
-                                                try
-                                                {
-                                                    RenderPanel();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    HandleRuntimeFault(
-                                                        ex,
-                                                        -1,
-                                                        "INITIALIZATION RENDER");
-                                                }
-                                                return;
-                                        }
-
-                                        _initializationStage++;
-                                        ScheduleNextInitializationStage();
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Timer.Stop();
-                                        SetInitializationFault(
-                                            ex,
-                                            "STAGE " +
-                                            _initializationStage);
-                                    }
-                                }
+            try
+            {
+                FinalizeAsyncInitialization();
+            }
+            catch (Exception ex)
+            {
+                Timer.Stop();
+                SetInitializationFault(
+                    ex,
+                    "FINALIZATION");
+            }
+            finally
+            {
+                if (!_initializationReady)
+                    ScheduleInitializationPoll();
+            }
+        }
 
         protected override void OnDestroy()
                                 {

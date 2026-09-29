@@ -81,9 +81,13 @@ namespace cAlgo
                                     }
                         
                                     double updateAtr =
-                                        Atr(
-                                            _m5Bars,
-                                            closedM5);
+                                        _m5Frame != null &&
+                                        _m5Frame.Index == closedM5 &&
+                                        _m5Frame.Atr > 0
+                                            ? _m5Frame.Atr
+                                            : Atr(
+                                                _m5Bars,
+                                                closedM5);
                         
                                     bool changed =
                                         Math.Abs(

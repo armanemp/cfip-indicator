@@ -162,3 +162,8 @@ The current architecture is strong enough to continue refinement without rebuild
 The immediate safety-critical issues found in this audit are addressed in Phase 1.4, and the implementation has passed repository verification gates. The next structural improvement is the Safety Supervisor (Phase 1.5), followed by unified execution retry semantics and the canonical signal visual snapshot.
 
 This document is a continuity record and should be read alongside `ROADMAP.md`, `ARCHITECTURE.md`, `WORKFLOW.md`, `DEVELOPMENT-LOG.md` and `ACCEPTANCE-MATRIX.md`.
+## 2026-09-29 Performance and ZIP audit addendum
+
+The uploaded four-indicator archive was reviewed. The production FVG engine remains the authoritative implementation; the archive's useful bounded-work idea was applied without importing its chart-side ownership. WaveTrend was assessed as a correlated momentum composite and intentionally not added as multiple independent decision votes. The economic-calendar implementation was not imported because its blocking external network fetch is inappropriate for the execution core. Volume Profile was empty.
+
+The performance architecture and exact adoption decisions are recorded in docs/PERFORMANCE-ARCHITECTURE-2026-09-29.md.

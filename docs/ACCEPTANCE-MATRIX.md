@@ -79,3 +79,16 @@ The automated state-machine contract proves deterministic transitions and the no
 | Missing pending decision/reaction dependency is handled explicitly | PASS | Required |
 
 The repository contracts cover deterministic retry state, stage continuation and source synchronization. Target-terminal tests remain required for live event timing, broker normalization and reconnect behavior.
+
+## Phase 1.5 — Performance, startup and safety supervisor
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Asynchronous bounded startup | Yes | PASS |
+| Timer safety supervisor without full analysis | Yes | PASS |
+| Closed MTF context reuse | Yes | PASS |
+| Closed M1 frame reuse | Yes | PASS |
+| M5 regime core reuse | Yes | PASS |
+| FVG/OB scan and mitigation bounded by zone age | Yes | PASS |
+| Single ATR reuse in active protection | Yes | PASS |
+| ZIP audit decisions recorded | Documentation | PASS |

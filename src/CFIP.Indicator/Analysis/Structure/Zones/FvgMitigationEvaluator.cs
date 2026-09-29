@@ -23,9 +23,17 @@ namespace cAlgo
                 UseZoneMitigationGuard &&
                 currentIndex > createdIndex)
             {
+                int end =
+                    Math.Min(
+                        currentIndex,
+                        createdIndex +
+                        Math.Max(
+                            1,
+                            MaximumZoneAgeBars));
+
                 for (int i =
                          createdIndex + 1;
-                     i <= currentIndex;
+                     i <= end;
                      i++)
                 {
                     double breaker =
@@ -130,7 +138,12 @@ namespace cAlgo
             int end =
                 Math.Min(
                     bars.Count - 1,
-                    currentIndex);
+                    Math.Min(
+                        currentIndex,
+                        createdIndex +
+                        Math.Max(
+                            1,
+                            MaximumZoneAgeBars)));
 
             for (int i = start;
                  i <= end;

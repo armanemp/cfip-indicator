@@ -30,9 +30,17 @@ namespace cAlgo
 
             if (UseZoneMitigationGuard)
             {
+                int end =
+                    Math.Min(
+                        currentIndex,
+                        createdIndex +
+                        Math.Max(
+                            1,
+                            MaximumZoneAgeBars));
+
                 for (int j =
                          createdIndex + 1;
-                     j <= currentIndex;
+                     j <= end;
                      j++)
                 {
                     double probe =

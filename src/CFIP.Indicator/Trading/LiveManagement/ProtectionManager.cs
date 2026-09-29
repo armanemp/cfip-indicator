@@ -26,6 +26,15 @@ namespace cAlgo
             double candidate =
                 _plan.Stop;
 
+            double atr =
+                _m5Frame != null &&
+                _m5Frame.Index == closedM5 &&
+                _m5Frame.Atr > 0
+                    ? _m5Frame.Atr
+                    : Atr(
+                        _m5Bars,
+                        closedM5);
+
             if (MoveSlToBreakEven &&
                 peakRR >= BreakEvenTriggerRR)
             {
@@ -87,11 +96,6 @@ namespace cAlgo
                     SmartTrailMinimumRR) &&
                 UseSwingStructureInTrail)
             {
-                double atr =
-                    Atr(
-                        _m5Bars,
-                        closedM5);
-
                 if (atr > 0)
                 {
                     double structural =
@@ -132,8 +136,7 @@ namespace cAlgo
 
             if (peakRR >= Math.Max(1.0, SmartTrailTightenAtRR))
             {
-                double trailAtr =
-                    Atr(_m5Bars, closedM5);
+                double trailAtr = atr;
 
                 bool momentumAligned =
                     _m5Frame != null &&
@@ -174,11 +177,6 @@ namespace cAlgo
                 pressure >= SmartExitPressureThreshold &&
                 peakRR >= SmartTrailMinimumRR)
             {
-                double atr =
-                    Atr(
-                        _m5Bars,
-                        closedM5);
-
                 if (atr > 0)
                 {
                     double tightRoom =
@@ -236,10 +234,7 @@ namespace cAlgo
                 candidate))
                 return _plan.Stop;
 
-            double atrValue =
-                Atr(
-                    _m5Bars,
-                    closedM5);
+            double atrValue = atr;
 
             double step =
                 atrValue *

@@ -28,17 +28,43 @@ namespace cAlgo
                                             -1,
                                             -1,
                                             -1);
-                        
-                                    return new MtfClosedContext(
-                                        reference,
-                                        ClosedIndex(_m5Bars, reference),
-                                        ClosedIndex(_m1Bars, reference),
-                                        ClosedIndex(_m15Bars, reference),
-                                        ClosedIndex(_m30Bars, reference),
-                                        ClosedIndex(_h1Bars, reference),
-                                        ClosedIndex(_h4Bars, reference),
-                                        ClosedIndex(_d1Bars, reference),
-                                        ClosedIndex(_w1Bars, reference));
+
+                                    if (_mtfClosedContextCache.TryGetStableContext(
+                                            _m1Bars,
+                                            _m5Bars,
+                                            _m15Bars,
+                                            _m30Bars,
+                                            _h1Bars,
+                                            _h4Bars,
+                                            _d1Bars,
+                                            _w1Bars,
+                                            out MtfClosedContext cached))
+                                        return cached;
+
+                                    MtfClosedContext context =
+                                        new MtfClosedContext(
+                                            reference,
+                                            ClosedIndex(_m5Bars, reference),
+                                            ClosedIndex(_m1Bars, reference),
+                                            ClosedIndex(_m15Bars, reference),
+                                            ClosedIndex(_m30Bars, reference),
+                                            ClosedIndex(_h1Bars, reference),
+                                            ClosedIndex(_h4Bars, reference),
+                                            ClosedIndex(_d1Bars, reference),
+                                            ClosedIndex(_w1Bars, reference));
+
+                                    _mtfClosedContextCache.StoreStableContext(
+                                        _m1Bars,
+                                        _m5Bars,
+                                        _m15Bars,
+                                        _m30Bars,
+                                        _h1Bars,
+                                        _h4Bars,
+                                        _d1Bars,
+                                        _w1Bars,
+                                        context);
+
+                                    return context;
                                 }
         
         private bool HasEnoughData()
