@@ -153,18 +153,18 @@ namespace cAlgo
                                     "WATCH|" +
                                     closedM5 +
                                     "|" +
-                                    _decision.Direction,
+                                    snapshot.DecisionDirection,
                                     "CFIP " +
-                                    (_decision.Direction == 1
+                                    (snapshot.DecisionDirection == 1
                                         ? "BUY"
                                         : "SELL") +
                                     " WATCH | CONF " +
-                                    _decision.Confidence +
+                                    snapshot.Confidence +
                                     " | SMART " +
-                                    _decision.SmartQuality +
+                                    snapshot.SmartQuality +
                                     " | " +
-                                    _decision.Reason,
-                                    _decision.Direction,
+                                    snapshot.DecisionReason,
+                                    snapshot.DecisionDirection,
                                     false);
                 
                                 _lastEarlyAlertM5 =
@@ -179,13 +179,13 @@ namespace cAlgo
                             {
                                 SendUnifiedAlert(
                                     "REACTION|" +
-                                    _m5Bars.Count,
-                                    _reaction.Reason,
-                                    _reaction.Direction,
+                                    snapshot.ArrowM5Index,
+                                    snapshot.ReactionReason,
+                                    snapshot.ReactionDirection,
                                     false);
                 
                                 _lastReactionAlertBar =
-                                    _m5Bars.Count - 1;
+                                    snapshot.ArrowM5Index;
                             }
                 
                             _lastVisualDirection =
