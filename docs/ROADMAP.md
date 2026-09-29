@@ -1248,21 +1248,35 @@ Acceptance:
 
 ## Phase 5.4 — Signal presentation contract
 
-Status: planned.
+Status: implementation complete; CI certification pending.
 
 Three independent visual states:
 
-\`\`\`
+```
 Prediction / Watch
 Confirmed Signal
 Active Plan
-\`\`\`
+```
+
+Implemented:
+
+- added one canonical SignalVisualSnapshot for chart/panel signal state;
+- centralized authoritative direction resolution with explicit Live Plan → Pending → Pre-trade Plan → Confirmed → Reaction → Prediction precedence;
+- routed plan entry, ideal entry, trigger, SL, TP1..TP4 and broker-confirmed live target through the same snapshot;
+- routed pending entry/SL/TP display through the same snapshot;
+- routed panel direction/stage and synchronization status through the same snapshot;
+- removed direct decision/reaction/plan reads from the signal and plan visual renderers;
+- kept planned levels and broker-confirmed live protection semantically distinct;
+- constructed and released one snapshot per calculation presentation pass instead of letting each renderer recompute signal state.
 
 Acceptance:
 
 - prediction never implies active Entry/SL/TP;
-- active plan remains authoritative until invalidated.
-
+- active live plan remains authoritative over pending display in anomalous overlap;
+- pre-trade plan remains the source of intended levels;
+- live SL/TP display uses broker-confirmed values;
+- arrow, trigger, entry, TP, SL, pending and panel state share one visual-state contract;
+- no visual renderer owns independent decision logic.
 ---
 
 # Track 6 — Intrabar and Closed-Bar Semantics
