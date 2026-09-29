@@ -1,6 +1,5 @@
 using System;
 using cAlgo.API;
-
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
@@ -23,7 +22,6 @@ namespace cAlgo
                     ApplyRuntimeEntryGate();
                     return;
                 }
-
                 if (!EnsureTradingPermission())
                 {
                     _autoExecutionBlockReason =
@@ -33,9 +31,7 @@ namespace cAlgo
                         "TRADING PERMISSION NOT GRANTED");
                     return;
                 }
-
                 string guardReason;
-
                 if (!PassesAutoTradeSafetyGuards(
                         type,
                         volume,
@@ -46,7 +42,6 @@ namespace cAlgo
                         guardReason);
                     return;
                 }
-
                 ExecutionIntent aggressiveIntent =
                     BuildExecutionIntent(
                         _reaction.Direction,
@@ -61,9 +56,7 @@ namespace cAlgo
                         volume,
                         closedM5,
                         "AGGRESSIVE MARKET");
-
                 string aggressiveIntentReason;
-
                 if (!ValidateExecutionIntent(
                         aggressiveIntent,
                         entry,
@@ -74,10 +67,8 @@ namespace cAlgo
                         aggressiveIntentReason);
                     return;
                 }
-
                 string submissionGateReason;
                 SubmissionAttemptIdentity submissionIdentity;
-
                 if (!TryAcquireSubmission(
                         closedM5,
                         _reaction == null
@@ -89,13 +80,11 @@ namespace cAlgo
                 {
                     _autoExecutionBlockReason =
                         submissionGateReason;
-
                     SetAutoTradingState(
                         "BLOCKED",
                         submissionGateReason);
                     return;
                 }
-
                 RelativeTakeProfitProtections serverTakeProfits;
                 StopLossBreakEven serverBreakEven;
                 bool useServerTakeProfitLadder =
@@ -105,9 +94,7 @@ namespace cAlgo
                         volume,
                         out serverTakeProfits,
                         out serverBreakEven);
-
                 TradeResult result;
-
                 try
                 {
                     result =
@@ -139,9 +126,7 @@ namespace cAlgo
                     RecordSubmissionFailure(submissionIdentity);
                     throw;
                 }
-
                 RecordSubmission(submissionIdentity, result);
-
                 if (!BrokerConfirmationPolicy.CanAdoptPosition(
                         result != null,
                         result != null &&
@@ -160,7 +145,6 @@ namespace cAlgo
                         _autoExecutionBlockReason);
                     return;
                 }
-
                 if (!TryProcessAcceptedAggressiveFill(
                         closedM5,
                         entry,
@@ -172,12 +156,9 @@ namespace cAlgo
                         out double actualStop,
                         out double actualTarget))
                     return;
-
                 AdoptServerSideTakeProfitLadder(
                     result.Position);
-
                 bool protectionOk = true;
-
                 if (AutoBrokerProtection)
                 {
                     protectionOk =
@@ -188,7 +169,6 @@ namespace cAlgo
                             "AGGRESSIVE ENTRY",
                             _reaction.Direction);
                 }
-
                 SetAutoTradingState(
                     protectionOk
                         ? "EXECUTED"
@@ -199,13 +179,10 @@ namespace cAlgo
                         : "POSITION #" +
                           result.Position.Id +
                           " • BROKER PROTECTION RECOVERY");
-
                 double confirmedStop =
                     GetActiveBrokerStopPrice();
-
                 double confirmedTarget =
                     GetActiveBrokerTargetPrice();
-
                 SendUnifiedAlert(
                     "AUTO-REACTION|" +
                     closedM5,
