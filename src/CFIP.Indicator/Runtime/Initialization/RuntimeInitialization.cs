@@ -139,7 +139,6 @@ namespace cAlgo
             _initializationDataReady = false;
             _initializationPendingDataLoads = 0;
             _initializationStartedUtc = TimeInUtc;
-            _initializationStage = 0;
 
             RequestBars(
                 TimeFrame.Minute5,
@@ -231,14 +230,11 @@ namespace cAlgo
                 return;
             }
 
-            _initializationStage = 1;
-
             RegisterNative(_m5Bars);
             RegisterNative(_m15Bars);
             RegisterNative(_m30Bars);
             RegisterNative(_h1Bars);
             RegisterNative(_h4Bars);
-            _initializationStage = 2;
 
             RegisterNative(_m1Bars);
 
@@ -247,8 +243,6 @@ namespace cAlgo
 
             if (_w1Bars != null)
                 RegisterNative(_w1Bars);
-
-            _initializationStage = 3;
 
             try
             {
@@ -266,8 +260,6 @@ namespace cAlgo
                     "CFIP trading event hookup failed: {0}",
                     ex.ToString());
             }
-
-            _initializationStage = 4;
 
             InitializeExecutionRuntimeState();
 
@@ -295,7 +287,6 @@ namespace cAlgo
 
             _status = "READY";
             _initializationReady = true;
-            _initializationStage = 5;
 
             Timer.Stop();
             Timer.Start(
@@ -321,7 +312,6 @@ namespace cAlgo
             _outcomeDrawn.Clear();
 
             _initializationReady = false;
-            _initializationStage = 0;
             _initializationDataRequested = false;
             _initializationDataReady = false;
             _initializationPendingDataLoads = 0;
