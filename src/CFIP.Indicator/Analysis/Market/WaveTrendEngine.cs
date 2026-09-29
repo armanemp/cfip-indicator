@@ -19,6 +19,8 @@ namespace cAlgo
 
         private double[] _typical;
         private double[] _rsi;
+        private double[] _rsiAvgGain;
+        private double[] _rsiAvgLoss;
         private double[] _mfi;
         private double[] _rmi;
         private double[] _rmiUpRaw;
@@ -204,9 +206,6 @@ namespace cAlgo
             if (i < _length)
                 return 50.0;
 
-            double gain;
-            double loss;
-
             if (i == _length)
             {
                 double totalGain = 0;
@@ -224,73 +223,45 @@ namespace cAlgo
                         totalLoss -= change;
                 }
 
-                gain =
+                _rsiAvgGain[i] =
                     totalGain /
                     _length;
-                loss =
+                _rsiAvgLoss[i] =
                     totalLoss /
                     _length;
             }
             else
             {
-                double previous =
-                    _typical[i - 1];
-
                 double change =
                     _typical[i] -
-                    previous;
+                    _typical[i - 1];
 
-                double previousRsi =
-                    _rsi[i - 1];
+                double gain =
+                    Math.Max(
+                        change,
+                        0);
 
-                // Recover Wilder averages from RSI when possible only creates
-                // ambiguity, so keep explicit rolling averages below.
-                return CalculateRsiFromRolling(i, change, previousRsi);
+                double loss =
+                    Math.Max(
+                        -change,
+                        0);
+
+                _rsiAvgGain[i] =
+                    (_rsiAvgGain[i - 1] *
+                     (_length - 1) +
+                     gain) /
+                    _length;
+
+                _rsiAvgLoss[i] =
+                    (_rsiAvgLoss[i - 1] *
+                     (_length - 1) +
+                     loss) /
+                    _length;
             }
 
             return RatioToPercent(
-                gain,
-                loss);
-        }
-
-        private double CalculateRsiFromRolling(
-            int i,
-            double change,
-            double previousRsi)
-        {
-            // The exact source delegates RSI to cTrader's Wilder RSI. A private
-            // rolling gain/loss cache is therefore maintained through auxiliary
-            // arrays encoded in the unused MFI slots is not acceptable.
-            // Reconstruct with a direct Wilder window at the requested index;
-            // this path is only used once per new bar per timeframe.
-            double avgGain = 0;
-            double avgLoss = 0;
-
-            int start =
-                Math.Max(
-                    1,
-                    i - _length + 1);
-
-            for (int j = start; j <= i; j++)
-            {
-                double d =
-                    _typical[j] -
-                    _typical[j - 1];
-
-                if (d > 0)
-                    avgGain += d;
-                else
-                    avgLoss -= d;
-            }
-
-            int count =
-                Math.Max(
-                    1,
-                    i - start + 1);
-
-            return RatioToPercent(
-                avgGain / count,
-                avgLoss / count);
+                _rsiAvgGain[i],
+                _rsiAvgLoss[i]);
         }
 
         private double CalculateMfi(int i)
@@ -452,6 +423,8 @@ namespace cAlgo
 
             Array.Resize(ref _typical, target);
             Array.Resize(ref _rsi, target);
+            Array.Resize(ref _rsiAvgGain, target);
+            Array.Resize(ref _rsiAvgLoss, target);
             Array.Resize(ref _mfi, target);
             Array.Resize(ref _rmi, target);
             Array.Resize(ref _rmiUpRaw, target);
