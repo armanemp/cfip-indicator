@@ -1450,6 +1450,21 @@ Acceptance:
 - no decision authority, broker mutation path, RR/risk policy or trailing rule
   was introduced or duplicated.
 
+## Corrective hotfix — execution priority / controls / structural lock
+
+Status: corrective hotfix in progress on a dedicated branch; this does not change the roadmap owner order.
+
+Completed in this correction:
+
+- execution toggles moved to official Checked/Unchecked state events;
+- predictive pending execution is prioritized before plan creation;
+- qualified aggressive AUTO TRADE is prioritized before normal market-plan creation;
+- market-plan creation defers while a managed pending order exists;
+- structural stop progression remains protected from raw market-price chasing;
+- no public parameter count change; baseline remains 535.
+
+The next roadmap phase remains **Phase 7.2 — Dead/unused parameter audit** after this hotfix is merged and its gates pass.
+
 ## Phase 7.2 — Dead/unused parameter audit
 
 Status: planned.

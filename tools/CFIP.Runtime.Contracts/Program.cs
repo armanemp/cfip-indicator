@@ -1053,6 +1053,7 @@ namespace cAlgo
             string previewPath = Path.Combine("src", "CFIP.Indicator", "Core", "Models", "TradeSetupPreview.cs");
             string previewBuilderPath = Path.Combine("src", "CFIP.Indicator", "Planning", "TradePlan", "PlanPreviewBuilder.cs");
             string calculationPath = Path.Combine("src", "CFIP.Indicator", "Runtime", "Calculation", "CalculationLiveCycle.cs");
+            string calculationStagePath = Path.Combine("src", "CFIP.Indicator", "Runtime", "Calculation", "CalculationStageIsolation.cs");
             string rendererPath = Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanRenderCoordinator.cs");
             string controlFactoryPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsFactory.cs");
             string controlHandlersPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionToggleHandlers.cs");
@@ -1062,6 +1063,7 @@ namespace cAlgo
                 File.Exists(previewPath) &&
                 File.Exists(previewBuilderPath) &&
                 File.Exists(calculationPath) &&
+                File.Exists(calculationStagePath) &&
                 File.Exists(rendererPath) &&
                 File.Exists(controlFactoryPath) &&
                 File.Exists(controlHandlersPath),
@@ -1071,6 +1073,7 @@ namespace cAlgo
             string preview = File.ReadAllText(previewPath);
             string previewBuilder = File.ReadAllText(previewBuilderPath);
             string calculation = File.ReadAllText(calculationPath);
+            string calculationStage = File.ReadAllText(calculationStagePath);
             string renderer = File.ReadAllText(rendererPath);
             string controlFactory = File.ReadAllText(controlFactoryPath);
             string controlHandlers = File.ReadAllText(controlHandlersPath);
@@ -1101,16 +1104,56 @@ namespace cAlgo
                 "plan renderer owns shared level rendering");
 
             Assert(
-                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
-                controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
-                !controlFactory.Contains(".Checked +=") &&
-                !controlFactory.Contains(".Unchecked +="),
-                "execution toggles use direct operator click events");
+                controlFactory.Contains("_autoTradingQuickToggle.Checked +=") &&
+                controlFactory.Contains("_autoTradingQuickToggle.Unchecked +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Checked +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Unchecked +=") &&
+                !controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                !controlFactory.Contains("_automaticOrdersQuickToggle.Click +="),
+                "execution toggles use authoritative checked/unchecked events");
 
             Assert(
+                controlHandlers.Contains("OnAutoTradingQuickToggleChecked(") &&
+                controlHandlers.Contains("OnAutoTradingQuickToggleUnchecked(") &&
+                controlHandlers.Contains("OnAutomaticOrdersQuickToggleChecked(") &&
+                controlHandlers.Contains("OnAutomaticOrdersQuickToggleUnchecked(") &&
                 controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
                 controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
                 "toggle handlers use runtime state authority");
+
+            int pendingExecution =
+                calculationStage.IndexOf(
+                    "PREDICTIVE PENDING EXECUTION",
+                    StringComparison.Ordinal);
+            int aggressiveExecution =
+                calculationStage.IndexOf(
+                    "AGGRESSIVE AUTO EXECUTION",
+                    StringComparison.Ordinal);
+            int planCreation =
+                calculationStage.IndexOf(
+                    "PLAN CREATION",
+                    StringComparison.Ordinal);
+            int marketExecution =
+                calculationStage.IndexOf(
+                    "AUTOMATIC MARKET EXECUTION",
+                    StringComparison.Ordinal);
+
+            Assert(
+                pendingExecution >= 0 &&
+                aggressiveExecution > pendingExecution &&
+                planCreation > aggressiveExecution &&
+                marketExecution > planCreation,
+                "execution priority is predictive pending -> aggressive -> plan -> market");
+
+            Assert(
+                calculationStage.Contains("TrySmartPendingOrders(") &&
+                calculationStage.Contains("TryAggressiveAutoTrade(") &&
+                calculationStage.Contains("TryAutoTrade("),
+                "all automatic execution paths remain connected");
+
+            Assert(
+                calculation.Contains("TryEnsureAutomaticPlan("),
+                "live cycle retains automatic plan orchestration");
         }
 
         private static void VerifyResponsivePanelRuntime()

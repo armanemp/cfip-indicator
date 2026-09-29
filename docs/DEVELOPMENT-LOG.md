@@ -640,3 +640,21 @@ No public parameter was added. Production parameter count remains 535.
 The first hotfix CI attempt exposed stale test contracts that still required ToggleButton Checked/Unchecked handlers. Since cTrader's current ToggleButton API explicitly supports Click events, the UI action boundary was intentionally moved to direct Click handling. The source verifier and Runtime Acceptance contract were updated to enforce the new single action boundary and reject duplicate Checked/Unchecked owners.
 
 The first failed Source/Runtime runs were therefore contract mismatches in the test harness; cTrader compile for that hotfix head already passed.
+
+
+## Corrective hotfix — execution priority, toggle state events and structural lock — 2026-09-29
+
+User runtime feedback identified that the chart AUTO TRADE / AUTO ORDERS controls still required a stronger cTrader event binding, while predictive pending execution could be starved by early market-plan creation. The same feedback also required aggressive entry to receive priority when its intrabar qualification is satisfied.
+
+- switched the two quick execution toggles to the official cTrader `Checked` / `Unchecked` state events as their single operator-action owner;
+- kept `_executionToggleSyncing` as the guard against programmatic synchronization becoming an operator action;
+- explicitly kept both execution toggles enabled;
+- reordered the live execution path to predictive pending -> aggressive auto -> plan creation -> normal market execution;
+- deferred automatic plan creation while a managed pending order exists, preventing a confirmed predictive order from being hidden by a recreated market plan;
+- preserved the existing structural pending entry, SL/TP, submission-gate and broker-confirmation policies;
+- preserved structural-only stop progression and removed raw market-price chasing from the protection manager;
+- retained compact chart label rendering, with semantic level color used by each label box;
+- added `docs/HOTFIX-EXECUTION-PRIORITY-STRUCTURAL-LOCK.md` and updated source/runtime acceptance contracts;
+- no public parameters were added or removed; production parameter count remains 535.
+
+This hotfix is corrective and does not close the planned Track 7.2 parameter audit. Broader signal-strengthening, level intelligence, target/stop refinement and full trailing certification remain owned by their roadmap phases.

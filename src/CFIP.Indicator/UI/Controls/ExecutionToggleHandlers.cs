@@ -1,5 +1,5 @@
 // CFIP Indicator — ExecutionToggleHandlers.cs
- // Single-responsibility execution UI module.
+// Single-responsibility execution UI module.
 
 using System;
 using System.Collections.Generic;
@@ -13,16 +13,23 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ApplyAutoTradingQuickToggleClick(
+        private void OnAutoTradingQuickToggleChecked(
             ToggleButtonEventArgs args)
         {
-            if (_executionToggleSyncing ||
-                args == null ||
-                args.ToggleButton == null)
-                return;
+            ApplyAutoTradingQuickToggleState(true);
+        }
 
-            bool enabled =
-                args.ToggleButton.IsChecked;
+        private void OnAutoTradingQuickToggleUnchecked(
+            ToggleButtonEventArgs args)
+        {
+            ApplyAutoTradingQuickToggleState(false);
+        }
+
+        private void ApplyAutoTradingQuickToggleState(
+            bool enabled)
+        {
+            if (_executionToggleSyncing)
+                return;
 
             SetAutoTradingRuntimeState(
                 enabled,
@@ -41,16 +48,23 @@ namespace cAlgo
             SyncQuickExecutionControls();
         }
 
-        private void ApplyAutomaticOrdersQuickToggleClick(
+        private void OnAutomaticOrdersQuickToggleChecked(
             ToggleButtonEventArgs args)
         {
-            if (_executionToggleSyncing ||
-                args == null ||
-                args.ToggleButton == null)
-                return;
+            ApplyAutomaticOrdersQuickToggleState(true);
+        }
 
-            bool enabled =
-                args.ToggleButton.IsChecked;
+        private void OnAutomaticOrdersQuickToggleUnchecked(
+            ToggleButtonEventArgs args)
+        {
+            ApplyAutomaticOrdersQuickToggleState(false);
+        }
+
+        private void ApplyAutomaticOrdersQuickToggleState(
+            bool enabled)
+        {
+            if (_executionToggleSyncing)
+                return;
 
             SetAutomaticOrdersRuntimeState(
                 enabled,
