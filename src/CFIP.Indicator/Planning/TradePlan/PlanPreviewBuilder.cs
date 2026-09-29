@@ -100,7 +100,9 @@ namespace cAlgo
                     StructuralTpRrStep);
 
             double[] requiredRR =
-                BuildTargetSelectionRequiredRR(rrStep);
+                BuildTargetSelectionRequiredRR(
+                    rrStep,
+                    lane);
 
             preview.Tp1 =
                 SelectTarget(
