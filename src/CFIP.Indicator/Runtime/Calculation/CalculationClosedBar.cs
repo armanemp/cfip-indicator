@@ -100,7 +100,8 @@ namespace cAlgo
                 BuildDecision(
                     decisionChartIndex,
                     closedM5,
-                    reference);
+                    reference,
+                    mtf);
 
             RefreshMarketSuitability(
                 closedM5,
