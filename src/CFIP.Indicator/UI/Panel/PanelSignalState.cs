@@ -29,12 +29,12 @@ namespace cAlgo
         private int GetAuthoritativeDirection()
                                 {
                                     if (_renderSignalVisualSnapshot != null)
-                                        return _renderSignalVisualSnapshot.Direction;
+                                        return _renderSignalVisualSnapshot.AuthoritativeDirection;
 
                                     return BuildSignalVisualSnapshot(
                                         Math.Max(
                                             1,
-                                            _lastEvaluatedM5)).Direction;
+                                            _lastEvaluatedM5)).AuthoritativeDirection;
                                 }
 
         private string GetAuthoritativeState(
