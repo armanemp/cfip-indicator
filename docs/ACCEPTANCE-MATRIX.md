@@ -332,14 +332,14 @@ The automated phase boundary is closed. Hands-on cTrader replay/live validation 
 
 | Contract | Automated controlled check | cTrader / replay |
 |---|---:|---:|
-| Deterministic symmetric plateau high/low canonicalization | Pending | Required |
-| Closed-bar-only pivot confirmation; no future bars | Pending | Required |
-| One canonical swing identity per plateau | Pending | Required |
-| Equal-level cluster uses fixed anchor; no tolerance chaining | Pending | Required |
-| Liquidity sweep references an established prior level | Pending | Required |
-| One causal break cannot be counted independently as BOS/MSS/CHOCH multiple times | Pending | Required |
-| Runtime Acceptance Contracts | Pending | Required |
-| Source / Architecture | Pending | Required |
-| cTrader Compile | Pending | Required |
+| Deterministic symmetric plateau high/low canonicalization | PASS | Required |
+| Closed-bar-only pivot confirmation; no future bars | PASS | Required |
+| One canonical swing identity per plateau | PASS | Required |
+| Equal-level cluster uses fixed anchor; no tolerance chaining | PASS | Required |
+| Liquidity sweep references an established prior level | PASS | Required |
+| One causal break cannot be counted independently as BOS/MSS/CHOCH multiple times | PASS | Required |
+| Runtime Acceptance Contracts | PASS | Required |
+| Source / Architecture | PASS | Required |
+| cTrader Compile | PASS | Required |
 
-No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
+CI evidence on verified head `5df5931828719fb635ec67fa59d57b519d4e70e7`. No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
