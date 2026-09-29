@@ -33,12 +33,12 @@ namespace cAlgo
             double riskFreeLockPips,
             bool spreadAware)
         {
-            if (!IsFinitePositive(riskPips) ||
-                !IsFinitePositive(tp1Pips) ||
-                !IsFiniteNonNegative(spreadPips) ||
-                !IsFiniteNonNegative(triggerRR) ||
-                !IsFiniteNonNegative(bufferPips) ||
-                !IsFiniteNonNegative(riskFreeLockPips))
+            if (!IsFiniteSbPositive(riskPips) ||
+                !IsFiniteSbPositive(tp1Pips) ||
+                !IsFiniteSbNonNegative(spreadPips) ||
+                !IsFiniteSbNonNegative(triggerRR) ||
+                !IsFiniteSbNonNegative(bufferPips) ||
+                !IsFiniteSbNonNegative(riskFreeLockPips))
                 return new SmartBreakEvenResult(
                     false,
                     0,
@@ -105,8 +105,8 @@ namespace cAlgo
                     offset,
                     riskPips * 0.50);
 
-            if (!IsFinitePositive(trigger) ||
-                !IsFiniteNonNegative(offset))
+            if (!IsFiniteSbPositive(trigger) ||
+                !IsFiniteSbNonNegative(offset))
                 return new SmartBreakEvenResult(
                     false,
                     0,
@@ -120,7 +120,7 @@ namespace cAlgo
                 "SMART SERVER BREAK-EVEN");
         }
 
-        private static bool IsFinitePositive(
+        private static bool IsFiniteSbPositive(
             double value)
         {
             return
@@ -129,7 +129,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static bool IsFiniteNonNegative(
+        private static bool IsFiniteSbNonNegative(
             double value)
         {
             return
