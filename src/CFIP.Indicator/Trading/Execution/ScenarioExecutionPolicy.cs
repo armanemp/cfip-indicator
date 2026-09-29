@@ -50,16 +50,6 @@ namespace cAlgo
                 return false;
             }
 
-            if (!candidate.ExecutionPolicyAllowed)
-            {
-                reason =
-                    string.IsNullOrWhiteSpace(
-                        candidate.ExecutionPolicyReason)
-                        ? "SCENARIO EXECUTION POLICY BLOCKED"
-                        : candidate.ExecutionPolicyReason;
-                return false;
-            }
-
             if (!candidate.ActionableNow)
             {
                 reason =
@@ -67,6 +57,32 @@ namespace cAlgo
                         candidate.ActionabilityReason)
                         ? "SCENARIO NOT ACTIONABLE"
                         : candidate.ActionabilityReason;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsExecutionAuthorizedCandidate(
+            TradeOpportunityCandidate candidate,
+            Decision decision,
+            OpportunityLane lane,
+            out string reason)
+        {
+            if (!IsCanonicalCandidateEligible(
+                    candidate,
+                    decision,
+                    lane,
+                    out reason))
+                return false;
+
+            if (!candidate.ExecutionPolicyAllowed)
+            {
+                reason =
+                    string.IsNullOrWhiteSpace(
+                        candidate.ExecutionPolicyReason)
+                        ? "SCENARIO EXECUTION POLICY BLOCKED"
+                        : candidate.ExecutionPolicyReason;
                 return false;
             }
 
@@ -103,7 +119,7 @@ namespace cAlgo
                 TradeOpportunityCandidate candidate =
                     candidates[i];
 
-                if (!IsCanonicalCandidateEligible(
+                if (!IsExecutionAuthorizedCandidate(
                         candidate,
                         decision,
                         plan.Lane,
@@ -172,7 +188,7 @@ namespace cAlgo
 
                 string reason;
 
-                if (!IsCanonicalCandidateEligible(
+                if (!IsExecutionAuthorizedCandidate(
                         candidate,
                         decision,
                         candidate == null
