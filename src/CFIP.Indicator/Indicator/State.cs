@@ -211,6 +211,12 @@ namespace cAlgo
 
                 private readonly Dictionary<ConfidenceCalibrationKey, int> _calibrationWins =
                     new Dictionary<ConfidenceCalibrationKey, int>();
+
+                private readonly List<OutcomeObservation> _outcomeHistory =
+                    new List<OutcomeObservation>();
+
+                private readonly List<ExecutionTelemetryRecord> _executionTelemetryHistory =
+                    new List<ExecutionTelemetryRecord>();
         
                 private DateTime _lastBrokerModifyUtc = DateTime.MinValue;
                 private int _lastRestrictionM5 = -1;
