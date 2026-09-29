@@ -1146,9 +1146,9 @@ namespace cAlgo
                 "execution priority is predictive pending -> aggressive -> plan -> market");
 
             Assert(
-                calculation.Contains("TrySmartPendingOrders(") &&
-                calculation.Contains("TryAggressiveAutoTrade(") &&
-                calculation.Contains("TryAutoTrade("),
+                calculationStage.Contains("TrySmartPendingOrders(") &&
+                calculationStage.Contains("TryAggressiveAutoTrade(") &&
+                calculationStage.Contains("TryAutoTrade("),
                 "all automatic execution paths remain connected");
 
             Assert(
