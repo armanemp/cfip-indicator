@@ -43,18 +43,24 @@ namespace cAlgo
                     StringComparison.OrdinalIgnoreCase))
                 AddOpportunityCandidate(strategic);
 
-            TacticalOpportunityResult tacticalAssessment =
-                EvaluateTacticalOpportunity(
-                    _decision,
-                    closedM5);
-
-            if (tacticalAssessment.Allowed)
+            for (int candidateDirection = 1;
+                 candidateDirection >= -1;
+                 candidateDirection -= 2)
             {
+                TacticalOpportunityResult tacticalAssessment =
+                    EvaluateTacticalOpportunityForDirection(
+                        _decision,
+                        closedM5,
+                        candidateDirection);
+
+                if (!tacticalAssessment.Allowed)
+                    continue;
+
                 TradeOpportunityCandidate tactical =
                     BuildLaneCandidate(
                         closedM5,
                         tacticalAssessment.Lane,
-                        _m5Frame.Direction,
+                        candidateDirection,
                         tacticalAssessment.Quality);
 
                 if (tactical != null)
@@ -242,10 +248,28 @@ namespace cAlgo
                         Symbol.PipSize * 2,
                         candidate.Risk * 0.10))
                 {
-                    if (candidate.Quality >
-                        existing.Quality)
+                    bool existingStrategic =
+                        existing.Lane ==
+                        OpportunityLane.Strategic;
+
+                    bool candidateStrategic =
+                        candidate.Lane ==
+                        OpportunityLane.Strategic;
+
+                    if (candidateStrategic &&
+                        !existingStrategic)
+                    {
                         _opportunityCandidates[i] =
                             candidate;
+                    }
+                    else if (!existingStrategic &&
+                             !candidateStrategic &&
+                             candidate.Quality >
+                             existing.Quality)
+                    {
+                        _opportunityCandidates[i] =
+                            candidate;
+                    }
 
                     return;
                 }
