@@ -282,24 +282,6 @@ namespace cAlgo
                       rangeWidth
                     : 0.50;
 
-
-
-            EntryTrapRiskResult trapRisk =
-                EntryTrapRiskRule.Evaluate(
-                    direction,
-                    rangePosition,
-                    adverseM5Atr,
-                    adverseM1Atr,
-                    opposingRegularDivergence
-                        ? divergence.Quality
-                        : 0,
-                    supportiveHiddenDivergence);
-
-            bool microConflict =
-                m1DirectionConflict &&
-                (adverseM1Atr >= 0.25 ||
-                 entryDistanceAtr >= 0.10);
-
             DivergenceResult divergence =
                 _m5Frame == null
                     ? DivergenceResult.CreateNone()
@@ -325,6 +307,22 @@ namespace cAlgo
                   divergence.HiddenBull) ||
                  (direction == -1 &&
                   divergence.HiddenBear));
+
+            EntryTrapRiskResult trapRisk =
+                EntryTrapRiskRule.Evaluate(
+                    direction,
+                    rangePosition,
+                    adverseM5Atr,
+                    adverseM1Atr,
+                    opposingRegularDivergence
+                        ? divergence.Quality
+                        : 0,
+                    supportiveHiddenDivergence);
+
+            bool microConflict =
+                m1DirectionConflict &&
+                (adverseM1Atr >= 0.25 ||
+                 entryDistanceAtr >= 0.10);
 
             int divergenceAdjustment =
                 opposingRegularDivergence
