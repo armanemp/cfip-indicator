@@ -126,6 +126,18 @@ namespace cAlgo
                     f.FvgBearQuality,
                     f.ObBearQuality) >= 75)
                 bear += 4;
+            AddScore(
+                f.EqualLow,
+                5,
+                ref bull,
+                ref evidence);
+
+            AddScore(
+                f.EqualHigh,
+                5,
+                ref bear,
+                ref evidence);
+
             IndicatorEvidenceFusionResult indicatorFusion =
                 IndicatorEvidenceFusionRule.Evaluate(
                     new IndicatorEvidenceFusionInput(
