@@ -2187,7 +2187,13 @@ if "box.IsFilled =" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must render an explicit box fill")
 if "Color.FromArgb(\n                        72,\n                        color)" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan label box must use the semantic level color")
-if PLAN_LABEL_RENDERER_CODE.find('string boxName') > PLAN_LABEL_RENDERER_CODE.find('ChartText label'):
+compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
+compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
+if compact_label_start < 0:
+    raise SystemExit("Compact plan label renderer method is missing")
+if compact_label_code.find("string boxName") < 0 or compact_label_code.find("ChartText label") < 0:
+    raise SystemExit("Compact plan label must own both box and text objects")
+if compact_label_code.find("string boxName") > compact_label_code.find("ChartText label"):
     raise SystemExit("Compact label box must be prepared before the text object")
 
 PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
