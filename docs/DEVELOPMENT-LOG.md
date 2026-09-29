@@ -1104,3 +1104,41 @@ Implemented contextual empirical confidence calibration:
 - added decision-contract coverage.
 
 No new public parameter was introduced. No simultaneous execution path was added. Live cTrader replay remains required for empirical performance measurement.
+
+
+## 2026-09-29 — Phase 9.5 corrective strategy-quality pass
+
+Branch: `phase/9-5-actionable-signal-execution-coherence-v2`
+
+Implementation is based on current `main` baseline `d245eec40749813a20b642fbd6e1ff0154fdaeca`.
+
+Findings addressed:
+- an independent Plan-activation alert path could diverge from the final actionable entry state;
+- the chart had a directional M1 trigger marker in addition to the canonical entry arrow;
+- ActionableNow protected plan creation but was not an explicit final market pre-trade gate;
+- actionability did not sufficiently penalize range-extreme entries and materially adverse M5/M1 pressure;
+- the multi-plan registry exposed candidates but its snapshot was not deterministically ranked.
+
+Implemented:
+- canonical `ACTION|` alert emitted once per closed M5 when the authoritative Decision is actionable; source priority is SMART → HIGH → CONFIRMED;
+- Plan activation is lifecycle-only and no longer emits a second independent entry alert;
+- directional entry arrow requires `ActionableNow` and is anchored to the current actionable M5 bar;
+- M1 trigger visualization is a non-directional diamond;
+- added pure `EntryTrapRiskRule` for range-extreme, M5/M1 adverse-momentum and opposing-divergence risk;
+- automatic market pre-trade explicitly requires the same `ActionableNow` state used by plan creation and alerts;
+- `TradePlanRegistry` now ranks snapshots by actionability, quality, RR, lane and recency and exposes `TryGetBest`;
+- panel exposes final Entry Gate and Divergence state, while Early Analysis is explicitly labeled WATCH;
+- Decision/Planning contract coverage added for entry-trap risk and registry ordering.
+
+Safety boundary:
+- parallel opportunity detection/presentation is supported;
+- simultaneous broker execution remains single-plan/single-managed-identity until plan-scoped lifecycle/protection/broker mutation identities are isolated.
+
+Verification:
+- PR #45 was opened against the current `main`;
+- Runtime Acceptance, cTrader Compile/Build and Source/Architecture workflows were triggered for the implementation head;
+- merge is held until all required gates pass;
+- target cTrader replay remains required for empirical signal timing, false-signal behavior and realized RR.
+
+Operator pull:
+- do not pull yet; local pull is required only after PR #45 is merged.
