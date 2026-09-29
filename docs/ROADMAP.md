@@ -3393,3 +3393,8 @@ No decision, signal, risk, RR, SL/TP, broker-mutation, predictive-pending or lif
 Verification: Source / Architecture PASS; Runtime Acceptance Contracts PASS; cTrader Compile PASS. Hands-on cTrader validation remains required.
 
 Next planned strategy phase after this corrective hotfix: Phase 7.3 — Semantic Duplicate Audit.
+
+
+## Phase 8.2 — Swing Plateau Correctness and Structural Evidence Identity (2026-09-29)
+
+**Status: IN PROGRESS.** Branch: `phase-8-2-swing-plateau-correctness`, based on verified main `3dbbeed5b703f0e5be13f5a1aabc6c87fd13f3b7`. Scope, constraints and acceptance criteria: `docs/PHASE-8-2-SWING-PLATEAU-CORRECTNESS.md`. Focus: canonical plateau identity, non-chaining equal-level clusters, causally established sweep levels, and preventing one structural break from being counted as multiple independent BOS/MSS/CHOCH evidence.
