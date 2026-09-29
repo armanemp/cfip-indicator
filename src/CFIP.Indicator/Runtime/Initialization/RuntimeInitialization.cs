@@ -234,7 +234,12 @@ namespace cAlgo
                         try
                         {
                             if (bars != null && assign != null)
+                            {
                                 assign(bars);
+
+                                if (_initializationReady)
+                                    RegisterNative(bars);
+                            }
 
                             _mtfClosedContextCache.Clear();
                         }
