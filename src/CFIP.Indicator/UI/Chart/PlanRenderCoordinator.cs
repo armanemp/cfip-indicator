@@ -32,7 +32,7 @@ namespace cAlgo
 
             if (ShowLevelPriceLabels ||
                 ShowSignalLabels)
-                RenderPlanLabels(snapshot);
+                RenderPlanLabels(snapshot, false);
             else
                 RemovePlanLabels();
 
@@ -94,7 +94,12 @@ namespace cAlgo
 
             RemovePredictionObjects();
             RenderLevelLines(snapshot, true);
-            RemovePlanLabels();
+
+            if (ShowLevelPriceLabels ||
+                ShowSignalLabels)
+                RenderPlanLabels(snapshot, true);
+            else
+                RemovePlanLabels();
             Chart.RemoveObject(P + "ARROW");
         }
 
