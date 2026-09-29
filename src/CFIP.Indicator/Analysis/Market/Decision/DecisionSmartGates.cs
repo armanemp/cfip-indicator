@@ -171,17 +171,16 @@ namespace cAlgo
 
                 if (regime != null)
                 {
-                    if (regime.Regime == "COMPRESSION" ||
-                        regime.Regime == "RANGE")
+                    if (regime.Regime == "COMPRESSION")
                         return new DecisionFilterResult(
                             false,
-                            "REGIME " +
-                            regime.Regime);
+                            "REGIME COMPRESSION");
 
                     if (regime.Quality <
                         Math.Max(
                             MinimumDirectionalRegimeQuality,
-                            adaptiveQualityThreshold))
+                            adaptiveQualityThreshold) &&
+                        regime.Regime != "RANGE")
                     {
                         return new DecisionFilterResult(
                             false,
@@ -202,7 +201,8 @@ namespace cAlgo
                             "REGIME TRANSITION");
                     }
 
-                    if (decision.Direction != 0 &&
+                    if (regime.Regime != "RANGE" &&
+                        decision.Direction != 0 &&
                         regime.Direction != 0 &&
                         regime.Direction != decision.Direction &&
                         regime.Quality <
