@@ -233,6 +233,36 @@ namespace cAlgo
                     execution,
                     preview);
 
+            PlanRewardRiskQualityResult rewardRisk =
+                PlanRewardRiskQualityRule.Evaluate(
+                    direction,
+                    preview.Entry,
+                    preview.Stop,
+                    preview.Tp1,
+                    Math.Max(
+                        Symbol.PipSize,
+                        Math.Abs(
+                            preview.Entry -
+                            preview.Stop)),
+                    Math.Max(
+                        0,
+                        Symbol.Ask - Symbol.Bid),
+                    MinimumRequiredRRForRegime(
+                        _decision == null
+                            ? "UNKNOWN"
+                            : _decision.Regime),
+                    PreferredStopRiskAtr,
+                    Math.Min(
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumSlAtr),
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumStructuralStopAtr)));
+
+            if (!rewardRisk.Allowed)
+                return null;
+
             return new TradeOpportunityCandidate
             {
                 Id =
