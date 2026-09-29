@@ -27,8 +27,13 @@ namespace cAlgo
                 !_decision.ActionableNow ||
                 GetManagedPendingOrder() != null ||
                 _plan != null ||
-                _decision.Direction == 0)
+                _decision.Direction == 0 ||
+                _plan == null ||
+                _plan.IsLivePosition)
                 return;
+
+            int direction =
+                _plan.Direction;
 
             string source = "CONFIRMED";
 
@@ -51,28 +56,36 @@ namespace cAlgo
                 return;
             }
 
-            string direction =
-                _decision.Direction == 1
+            string directionText =
+                direction == 1
                     ? "BUY"
                     : "SELL";
 
             string message =
                 "CFIP ACTIONABLE " +
-                direction +
+                directionText +
                 " | " +
                 source +
+                " | ENTRY " +
+                Price(_plan.Entry) +
+                " | IDEAL " +
+                Price(_plan.IdealEntry) +
+                " | TRIGGER " +
+                Price(_plan.EntryTrigger) +
+                " | SL " +
+                Price(_plan.Stop) +
+                " | TP1 " +
+                Price(_plan.Tp1) +
+                " | RR " +
+                _plan.Tp1RR.ToString("F2") +
                 " | CONF " +
                 _decision.Confidence +
-                " | SMART " +
-                _decision.SmartQuality +
                 " | LOC " +
                 _decision.EntryLocationQuality +
                 " | TIMING " +
                 _decision.EntryTimingQuality +
                 " | POS " +
                 _decision.EntryPositionQuality +
-                " | RR " +
-                _decision.ActionableTp1RR.ToString("F2") +
                 " | DIV " +
                 (_decision.DivergenceType ?? "NONE") +
                 " Q" +
@@ -86,7 +99,7 @@ namespace cAlgo
                 "|" +
                 _decision.Direction,
                 message,
-                _decision.Direction,
+                direction,
                 true);
 
             _lastActionableEntryAlertM5 =
