@@ -1,19 +1,75 @@
-// CFIP Indicator — ExecutionToggleHandlers.cs
-// Deliberately empty after the execution-control reliability correction.
-//
-// AUTO TRADE and AUTO ORDERS are status-only chart indicators.
-// Their authoritative enable/disable inputs are the public cTrader settings:
-// EnableAutoTrading and EnableAutomaticOrders. The chart surface is non-interactive
-// so it cannot drift into a runtime override that differs from the settings.
-//
-// Keep this module as the documented ownership boundary: UI execution controls
-// expose state only; they never mutate execution authority.
-
+using System;
 using cAlgo.API;
 
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private void WireExecutionToggleHandlers()
+        {
+            if (_autoTradingQuickStatus != null)
+                _autoTradingQuickStatus.Click +=
+                    args => ToggleAutoTradingFromPanel();
+
+            if (_automaticOrdersQuickStatus != null)
+                _automaticOrdersQuickStatus.Click +=
+                    args => ToggleAutomaticOrdersFromPanel();
+        }
+
+        private void ToggleAutoTradingFromPanel()
+        {
+            try
+            {
+                EnsureExecutionRuntimeState();
+
+                bool enabled =
+                    !AutoTradingEnabled;
+
+                SetAutoTradingRuntimeState(
+                    enabled,
+                    enabled
+                        ? "PANEL ENABLED"
+                        : "PANEL DISABLED");
+
+                SetAutoTradingState(
+                    enabled ? "ARMED" : "OFF",
+                    enabled
+                        ? "PANEL ENABLED"
+                        : "PANEL DISABLED");
+
+                RenderPanel();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP AUTO TRADE panel toggle failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private void ToggleAutomaticOrdersFromPanel()
+        {
+            try
+            {
+                EnsureExecutionRuntimeState();
+
+                bool enabled =
+                    !AutomaticOrdersEnabled;
+
+                SetAutomaticOrdersRuntimeState(
+                    enabled,
+                    enabled
+                        ? "PANEL ENABLED"
+                        : "PANEL DISABLED");
+
+                RenderPanel();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP AUTO ORDERS panel toggle failed: {0}",
+                    ex.Message);
+            }
+        }
     }
 }
