@@ -123,7 +123,9 @@ namespace cAlgo
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");
                 
-                            if (snapshot.DecisionDirection != 0 &&
+                            if (!snapshot.PendingOrder &&
+                                !snapshot.LivePosition &&
+                                snapshot.DecisionDirection != 0 &&
                                 !decisionReady &&
                                 ShowEarlyWatch &&
                                 AlertOnEarlyWatch &&
@@ -160,7 +162,9 @@ namespace cAlgo
                                     closedM5;
                             }
                 
-                            if (reactionReady &&
+                            if (!snapshot.PendingOrder &&
+                                !snapshot.LivePosition &&
+                                reactionReady &&
                                 AlertOnReaction &&
                                 AlertOnLiveReaction &&
                                 _lastReactionAlertBar !=
