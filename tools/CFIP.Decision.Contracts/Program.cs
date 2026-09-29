@@ -240,6 +240,12 @@ namespace cAlgo
                 context.Wins == 5,
                 "low-sample exact bucket falls back to lane/regime context");
 
+            Dictionary<ConfidenceCalibrationKey, int> directionSamples =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+
+            Dictionary<ConfidenceCalibrationKey, int> directionWins =
+                new Dictionary<ConfidenceCalibrationKey, int>();
+
             ConfidenceCalibrationKey tacticalA =
                 new ConfidenceCalibrationKey(
                     1,
@@ -254,10 +260,20 @@ namespace cAlgo
                     "RANGE",
                     EmpiricalConfidenceCalibrator.ConfidenceBucket(75));
 
-            samples[tacticalA] = 4;
-            wins[tacticalA] = 3;
-            samples[tacticalB] = 4;
-            wins[tacticalB] = 1;
+            directionSamples[tacticalA] = 4;
+            directionWins[tacticalA] = 3;
+            directionSamples[tacticalB] = 4;
+            directionWins[tacticalB] = 1;
+
+            ConfidenceCalibrationKey directionalExtra =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Tactical,
+                    "RANGE",
+                    EmpiricalConfidenceCalibrator.ConfidenceBucket(85));
+
+            directionSamples[directionalExtra] = 4;
+            directionWins[directionalExtra] = 2;
 
             EmpiricalCalibrationSnapshot direction =
                 calibrator.CalculateContextual(
@@ -267,8 +283,8 @@ namespace cAlgo
                     OpportunityLane.CounterHtfTactical,
                     "UNKNOWN",
                     75,
-                    samples,
-                    wins,
+                    directionSamples,
+                    directionWins,
                     5,
                     6,
                     8);
@@ -300,6 +316,8 @@ namespace cAlgo
                 "insufficient observations cannot calibrate");
 
             Assert(
+                direction.Samples == 12 &&
+                direction.Wins == 6 &&
                 direction.ObservedWinRate >= 0.49 &&
                 direction.ObservedWinRate <= 0.51,
                 "directional fallback uses observed outcomes without directional asymmetry bias");
