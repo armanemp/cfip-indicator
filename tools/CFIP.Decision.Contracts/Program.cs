@@ -904,6 +904,7 @@ namespace cAlgo
                         true, false,
                         61, 1.25, 0.20,
                         1, 74,
+                        0, 0,
                         true, false,
                         false, false,
                         5, 1, 8, 3));
@@ -927,6 +928,7 @@ namespace cAlgo
                         true, true,
                         50, 0, 0,
                         1, 58,
+                        0, 0,
                         false, false,
                         false, false,
                         4, 4, 8, 3));
@@ -948,6 +950,7 @@ namespace cAlgo
                         false, false,
                         36, -0.30, -0.05,
                         1, 76,
+                        0, 0,
                         true, false,
                         true, false,
                         6, 1, 8, 3));
