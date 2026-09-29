@@ -23,6 +23,7 @@ namespace cAlgo
             VerifyRuntimeStageIsolation();
             VerifyRuntimeFaultStateMachine();
             VerifyClosedBarRetryPolicy();
+            VerifyUnifiedSubmissionGate();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -845,6 +846,122 @@ namespace cAlgo
                 "successful retry clears failure timestamp");
         }
 
+        private static void VerifyUnifiedSubmissionGate()
+        {
+            SubmissionGate gate =
+                new SubmissionGate();
+
+            DateTime t =
+                new DateTime(
+                    2026,
+                    1,
+                    1,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            SubmissionAttemptIdentity firstSignal =
+                new SubmissionAttemptIdentity(
+                    "EURUSD|100|1",
+                    "AutomaticMarket|100|1",
+                    ExecutionSubmissionPath.AutomaticMarket);
+
+            SubmissionAttemptIdentity secondSignal =
+                new SubmissionAttemptIdentity(
+                    "EURUSD|101|1",
+                    "AutomaticMarket|101|1",
+                    ExecutionSubmissionPath.AutomaticMarket);
+
+            SubmissionAttemptIdentity otherPath =
+                new SubmissionAttemptIdentity(
+                    "EURUSD|100|1",
+                    "PendingStop|100|1",
+                    ExecutionSubmissionPath.PendingStop);
+
+            string reason;
+
+            Assert(
+                gate.TryAcquire(
+                    firstSignal,
+                    t,
+                    out reason),
+                "first submission attempt allowed");
+
+            gate.Record(
+                firstSignal,
+                t,
+                false);
+
+            Assert(
+                !gate.TryAcquire(
+                    firstSignal,
+                    t.AddMilliseconds(500),
+                    out reason),
+                "failed signal enters backoff");
+
+            Assert(
+                gate.TryAcquire(
+                    secondSignal,
+                    t.AddMilliseconds(500),
+                    out reason),
+                "different signal remains independently eligible");
+
+            Assert(
+                gate.TryAcquire(
+                    otherPath,
+                    t.AddMilliseconds(500),
+                    out reason),
+                "different execution path remains independently eligible");
+
+            Assert(
+                gate.TryAcquire(
+                    firstSignal,
+                    t.AddSeconds(1),
+                    out reason),
+                "first retry becomes eligible after backoff");
+
+            for (int i = 0; i < 3; i++)
+            {
+                gate.Record(
+                    firstSignal,
+                    t.AddSeconds(2 + i * 2),
+                    false);
+            }
+
+            Assert(
+                !gate.TryAcquire(
+                    firstSignal,
+                    t.AddSeconds(10),
+                    out reason),
+                "repeated same-attempt failures open circuit");
+
+            Assert(
+                gate.TryAcquire(
+                    secondSignal,
+                    t.AddSeconds(10),
+                    out reason),
+                "open circuit is isolated to the failing attempt");
+
+            gate.Record(
+                firstSignal,
+                t.AddSeconds(70),
+                true);
+
+            Assert(
+                gate.TryAcquire(
+                    firstSignal,
+                    t.AddSeconds(70),
+                    out reason),
+                "successful submission clears retry state");
+
+            Assert(
+                firstSignal.CanonicalKey !=
+                secondSignal.CanonicalKey &&
+                firstSignal.CanonicalKey !=
+                otherPath.CanonicalKey,
+                "submission identities remain distinct");
+        }
         private static void Assert(bool condition, string name)
         {
             if (!condition)
