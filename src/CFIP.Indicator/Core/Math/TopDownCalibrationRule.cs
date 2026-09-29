@@ -53,12 +53,12 @@ namespace cAlgo
             int minimumStrongAlignment,
             int selectedDirection)
         {
-            GroupResult htf = EvaluateGroup(
+            TopDownCalibrationGroupResult htf = EvaluateGroup(
                 htfDirections,
                 htfQualities,
                 htfWeights);
 
-            GroupResult mid = EvaluateGroup(
+            TopDownCalibrationGroupResult mid = EvaluateGroup(
                 midDirections,
                 midQualities,
                 midWeights);
@@ -149,7 +149,7 @@ namespace cAlgo
                 stage);
         }
 
-        private static GroupResult EvaluateGroup(
+        private static TopDownCalibrationGroupResult EvaluateGroup(
             int[] directions,
             int[] qualities,
             double[] weights)
@@ -195,7 +195,7 @@ namespace cAlgo
                 bull + bear;
 
             if (total <= 0)
-                return new GroupResult(0, 0);
+                return new TopDownCalibrationGroupResult(0, 0);
 
             int direction =
                 bull == bear
@@ -210,7 +210,7 @@ namespace cAlgo
                     Math.Max(bull, bear) /
                     total);
 
-            return new GroupResult(
+            return new TopDownCalibrationGroupResult(
                 direction,
                 Math.Max(
                     0,
