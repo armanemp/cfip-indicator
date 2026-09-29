@@ -58,7 +58,7 @@ namespace cAlgo
                         : Bars.TimeFrame.ToString());
 
             return
-                "CFIP_SignalTrace_" +
+                "CFIP_SignalTrace_v2_" +
                 symbol +
                 "_" +
                 timeframe +
