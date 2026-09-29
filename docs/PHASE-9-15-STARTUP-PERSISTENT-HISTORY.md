@@ -98,3 +98,19 @@ signals, missed opportunities, realized R and end-to-end execution quality.
 Phase 9.16 should use the persistent archive and startup diagnostics to produce
 a replay/measurement report by signal stage, block reason, lane and regime before
 any production defaults are changed.
+
+## Final verification
+
+Phase 9.15 is verified and merged into main.
+
+- Runtime Acceptance: PASS
+- cTrader Compile/Build: PASS
+- Source/Architecture + accumulated audits: PASS
+- Startup/persistence audit: PASS
+- Decision Contracts: PASS within the build workflow
+- PR #57: merged
+- Merge commit: 365abb790a49e85ad58c87aa5a92f49d37b7f77c
+
+The source gates validate the implementation and architecture. Actual startup
+latency and live/replay trading behavior still require observation on the target
+cTrader terminal.
