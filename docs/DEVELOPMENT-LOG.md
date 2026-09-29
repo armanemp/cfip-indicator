@@ -370,3 +370,30 @@ Result:
 - Phase 6.2 complete;
 - next phase: **Phase 6.3 — Aggressive entry policy**;
 - operator pull: **required at the completed phase boundary after the final verified documentation merge**.
+
+
+## Post-Phase 6.2 runtime stabilization — 2026-09-29
+
+User runtime validation after the Phase 6.2 merge reported that the indicator could remain visually blank for roughly 30 seconds, with no reliable indication of whether initialization or calculation had actually progressed.
+
+Re-audit found two concrete issues:
+
+1. AnalysisGuideRenderer used Chart.DrawText anchored above the visible high. A valid object could therefore be outside the visible price range.
+2. Async market-data initialization can finish after the host's initial calculation callback sequence. The indicator then becomes _initializationReady without guaranteeing that one completed calculation cycle has executed.
+
+Stabilization changes:
+
+- replaced the chart guide with fixed-position Chart.DrawStaticText at the top-right;
+- added per-timeframe dataset counts and initialization age to the guide;
+- centralized the full calculation body under RunCalculationCycle(int index);
+- kept Calculate(int index) as the host entry point delegating to that owner;
+- added a one-shot startup catch-up from OnTimer immediately after readiness;
+- kept the catch-up bounded by _lastCalculationCompletedUtc, so normal 500 ms heartbeat supervision does not become a full analysis loop;
+- preserved the existing broker reconciliation, protection, execution, decision, risk, and closed-bar contracts;
+- introduced no parameter, preserving the 535-parameter gate.
+
+Verification gates required before merging:
+
+- Source / Architecture;
+- Runtime Acceptance Contracts;
+- cTrader Compile.

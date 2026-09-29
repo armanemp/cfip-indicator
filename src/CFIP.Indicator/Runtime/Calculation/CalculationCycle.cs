@@ -7,6 +7,11 @@ namespace cAlgo
     {
         public override void Calculate(int index)
         {
+            RunCalculationCycle(index);
+        }
+
+        private void RunCalculationCycle(int index)
+        {
             if (_calculationBusy)
                 return;
 
@@ -37,9 +42,6 @@ namespace cAlgo
                     if (!_runtimeFaultStateMachine.CycleFaulted)
                         return;
 
-                    // A preparation fault must not starve management. Reuse the
-                    // last known closed context while the fault state keeps
-                    // automatic entry blocked.
                     closedM5 =
                         Math.Max(
                             1,
@@ -55,9 +57,6 @@ namespace cAlgo
 
                 if (newClosedBar)
                 {
-                    // Closed-bar analysis may fail, or be in retry backoff. In
-                    // either case management/protection must still run on the
-                    // already-known broker state.
                     RunClosedBarAnalysisStage(
                         index,
                         closedM5,

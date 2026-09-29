@@ -158,3 +158,16 @@ The phase changes temporal and ownership guarantees only; decision thresholds, w
 | Source / architecture gates | Yes | PASS |
 | Runtime acceptance contracts | Yes | PASS |
 | cTrader compile | Yes | PASS |
+
+
+## Phase 6.2 post-phase runtime stabilization
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Analysis guide is fixed-position on the chart and cannot leave the price viewport | Source gate | PASS |
+| Analysis guide reports loaded MTF dataset counts | Source gate | PASS |
+| Async initialization triggers one bounded startup calculation catch-up | Source gate | PASS |
+| Normal Calculate and startup catch-up share one calculation-cycle owner | Source gate | PASS |
+| Startup catch-up cannot become a recurring full-analysis heartbeat | Source gate | PASS |
+| 535-parameter contract remains unchanged | Source gate | PASS |
+| cTrader static-text API contract | Current cTrader API documentation | PASS |
