@@ -43,6 +43,28 @@ namespace cAlgo
                 return false;
             }
 
+            if (_m5Frame != null)
+            {
+                if (_m5Frame.IndicatorConfluenceQuality < 58)
+                {
+                    reason =
+                        prefix +
+                        "INDICATOR Q " +
+                        _m5Frame.IndicatorConfluenceQuality +
+                        " < 58";
+                    return false;
+                }
+
+                if (_m5Frame.IndicatorConflict > 55)
+                {
+                    reason =
+                        prefix +
+                        "INDICATOR CONFLICT " +
+                        _m5Frame.IndicatorConflict;
+                    return false;
+                }
+            }
+
             string safetyReason;
 
             if (!PassesAutoTradeSafetyGuards(
