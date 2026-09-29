@@ -68,13 +68,6 @@ namespace cAlgo
                                                 return;
                                             }
                                 
-                                            if (ManagedPositionCount() >=
-                                                Math.Max(1, MaximumOpenPositions))
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "MAX OPEN POSITIONS";
-                                                return;
-                                            }
                                 
                                             if (ManagedPendingOrderCount() > 0)
                                             {
