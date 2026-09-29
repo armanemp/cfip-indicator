@@ -123,10 +123,19 @@ namespace cAlgo
                     calibrationAdjustment,
                     higherTimeframePenalty);
 
-            decision.TriggerReady =
+            bool closedM5TriggerReady =
                 decision.Direction == 1
                     ? evidence.BullClosedBarTriggerReady
                     : evidence.BearClosedBarTriggerReady;
+
+            bool m1TriggerReady =
+                decision.Direction == 1
+                    ? evidence.BullM1TriggerReady
+                    : evidence.BearM1TriggerReady;
+
+            decision.TriggerReady =
+                closedM5TriggerReady &&
+                (!input.UseM1Trigger || m1TriggerReady);
 
             return decision;
         }
