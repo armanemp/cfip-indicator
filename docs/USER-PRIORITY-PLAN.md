@@ -244,3 +244,26 @@ The next accuracy refinement is now implemented as contextual empirical calibrat
 Only broker-closed managed plans carrying a valid calibration context contribute observations. The canonical visual snapshot and panel expose the adjustment and observed historical win rate without presenting the rate as a probability.
 
 PR #42 contains the implementation and deterministic contract coverage. cTrader/live replay remains the authority for measuring whether false-signal rate and realized risk/reward improve.
+
+
+## Q. Permanent phase discipline — 2026-09-29
+
+Every subsequent implementation phase must explicitly include and document all
+of the following as one continuous system, not isolated feature work:
+
+- complete source/architecture audit and accumulated regression audit;
+- whole-system performance optimization where safe;
+- analytical quality review across indicators, structure, liquidity, FVG,
+  Order Block, WaveTrend, MTF and regime coordination;
+- signal-quality review covering false signals and missed valid opportunities;
+- Decision -> Signal -> Alert coherence;
+- Entry/SL/TP and reward-path integrity;
+- automatic execution/order-placement safety, broker confirmation and lifecycle
+  protection;
+- outcome/history learning and deterministic verification;
+- explicit evidence of what is automated versus what still requires target-terminal
+  replay or live validation.
+
+No phase may optimize one isolated metric while allowing another stage of the
+Analysis -> Decision -> Signal -> Alert -> Execution -> Broker -> Protection ->
+Outcome -> Learning chain to regress.
