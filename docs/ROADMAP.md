@@ -3398,3 +3398,33 @@ Next planned strategy phase after this corrective hotfix: Phase 7.3 — Semantic
 ## Phase 8.2 — Swing Plateau Correctness and Structural Evidence Identity (2026-09-29)
 
 **Status: MERGED AND VERIFIED.** Phase branch `phase-8-2-swing-plateau-correctness` was merged into `main` as `a9c63bb3e563126753206c49b070763108919b74`. Scope completed: canonical plateau identity, non-chaining equal-level clusters, causally established sweep levels, and one-event structural BOS/MSS/CHOCH evidence. Pre-merge gates on head `5df5931828719fb635ec67fa59d57b519d4e70e7`: Runtime PASS; cTrader Compile PASS; Source/Architecture PASS. Post-merge main gates on `a9c63bb3e563126753206c49b070763108919b74`: Runtime PASS; Build PASS; Source/Architecture PASS. Target cTrader replay remains required for empirical signal-quality measurement. Next phase: Phase 8.3 — FVG mathematical audit.
+
+
+## Phase 8.5 — Zone Confluence Symmetry and Timely M1 Trigger Runtime — 2026-09-29
+
+Status: implementation complete on branch; final automated verification pending.
+
+Scope completed:
+- introduced a live closed-M1 TriggerRuntimeState tied to the canonical closed-M5 decision;
+- allowed a fully closed M1 confirmation to unlock the selected M5 decision inside the currently-forming M5 window without using unclosed M5 OHLC as evidence;
+- removed the frozen transient M1-direction veto from DecisionConfirmationGates;
+- allowed automatic plan creation to retry on a new M1 confirmation revision within the same M5;
+- synchronized exact M1 trigger confirmation into the canonical SignalVisualSnapshot and chart marker;
+- made Trigger marker visibility independent from the general signal arrow through ShowTrigger;
+- centralized generic zone overlap semantics in ZoneConfluenceRule while preserving FvgRule as the canonical FVG/OB confluence owner;
+- aligned OB liquidity-sweep evidence with the canonical confirmed-swing penetration/reclaim liquidity engine;
+- removed neutral RSI=50 / DMI=0 from directional trigger scoring;
+- added deterministic runtime contracts for live M1/M5 timing and symmetric zone confluence.
+
+Reference-indicator boundary:
+- audited FVG logic continues to use canonical FvgRule;
+- exact custom WaveTrend source is not available in the current repo/Library continuation, so no guessed formula is enabled;
+- future WaveTrend integration remains an exact closed-bar confluence adapter with parity tests.
+
+Acceptance boundary:
+- no public parameters intentionally added;
+- no second decision authority;
+- no new broker mutation ownership;
+- target cTrader replay remains required for empirical signal-quality and visual-timing validation.
+
+Next phase is not advanced until Phase 8.5 final CI and merge verification close.
