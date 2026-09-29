@@ -117,3 +117,8 @@ Phase 9.14 — target-terminal replay, calibration/optimization measurement and 
 - Decision Contracts including adaptive-risk checks: PASS
 - Production parameter count: 552
 - Final verified code head: `b742aae2dd1f94452f41743ad749374433dbc763`
+
+
+## Merge closeout
+
+PR #55 merged into `main` as `6246782125718af184568eb9339965e3f228c9a7`.
