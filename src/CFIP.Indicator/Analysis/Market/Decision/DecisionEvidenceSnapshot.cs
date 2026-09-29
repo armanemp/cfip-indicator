@@ -15,6 +15,8 @@ namespace cAlgo
         public int BearRetestQuality { get; }
         public bool BullClosedBarTriggerReady { get; }
         public bool BearClosedBarTriggerReady { get; }
+        public bool BullM1TriggerReady { get; }
+        public bool BearM1TriggerReady { get; }
         public int BullConfidenceAdjustment { get; }
         public int BearConfidenceAdjustment { get; }
         public int BullHigherTimeframePenalty { get; }
@@ -32,6 +34,8 @@ namespace cAlgo
             int bearRetestQuality,
             bool bullClosedBarTriggerReady,
             bool bearClosedBarTriggerReady,
+            bool bullM1TriggerReady,
+            bool bearM1TriggerReady,
             int bullConfidenceAdjustment,
             int bearConfidenceAdjustment,
             int bullHigherTimeframePenalty,
@@ -48,6 +52,8 @@ namespace cAlgo
             BearRetestQuality = NumericGuards.ClampInt(bearRetestQuality, 0, 100);
             BullClosedBarTriggerReady = bullClosedBarTriggerReady;
             BearClosedBarTriggerReady = bearClosedBarTriggerReady;
+            BullM1TriggerReady = bullM1TriggerReady;
+            BearM1TriggerReady = bearM1TriggerReady;
             BullConfidenceAdjustment = NumericGuards.ClampInt(bullConfidenceAdjustment, -100, 100);
             BearConfidenceAdjustment = NumericGuards.ClampInt(bearConfidenceAdjustment, -100, 100);
             BullHigherTimeframePenalty = Math.Max(0, bullHigherTimeframePenalty);

@@ -302,3 +302,27 @@ Manual cTrader validation remains required for actual button interaction, observ
 | cTrader Compile | Required | Required |
 
 Hands-on cTrader validation remains required for exact visual line endpoints, 40-bar appearance on target chart timeframes, status-switch rendering, settings synchronization and non-interactivity.
+
+
+## Phase 8.1 — M1 trigger correctness
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| M1 is consumed from the canonical closed M1 context | PASS | Required |
+| M1 bar is inside the exact closed M5 window | PASS | Required |
+| Future / still-open M1 bar is rejected | PASS | Required |
+| BUY/SELL M1 trigger symmetry | PASS | Required |
+| Opposite M1 direction is rejected | PASS | Required |
+| Weak M1 body is rejected | PASS | Required |
+| Poor M1 close location is rejected | PASS | Required |
+| Abnormally large M1 range is rejected | PASS | Required |
+| Insufficient M1 trigger score is rejected | PASS | Required |
+| M1 cannot vote directly in directional consensus | PASS | Required |
+| M1 confirmation is combined with canonical M5 TriggerReady | PASS | Required |
+| Runtime Acceptance Contracts | PASS | Required |
+| cTrader Compile | PASS | Required |
+| Source / Architecture | PASS | Required |
+
+CI evidence on branch head `929700e154d4b84a5a0b9efeae345b92017834b6`: Runtime Acceptance run 801 PASS; cTrader Compile run 985 PASS; Source / Architecture run 992 PASS.
+
+The automated phase boundary is closed. Hands-on cTrader replay/live validation remains required to measure actual false-signal reduction and terminal behavior; CI does not establish an empirical win-rate or false-signal improvement.

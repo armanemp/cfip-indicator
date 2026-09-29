@@ -107,9 +107,14 @@ This removes the remaining risk of each renderer interpreting state independentl
 
 ### F. Track 6 — Explicit intrabar policy
 
-Current confirmed trigger readiness is M5 closed-bar based. M1 evidence affects score when enabled, but the confirmed trigger function remains `ClosedBarTriggerReady` over M5 data.
+Resolved by Phase 8.1 — M1 trigger correctness:
+- M1 no longer contributes a fixed directional vote to decision consensus.
+- When `UseM1Trigger` is enabled, M1 is a confirmation layer evaluated from the canonical closed M1 index.
+- The selected M1 bar must be fully closed, belong to the exact selected closed M5 window, match the selected direction, satisfy body/range/close-location constraints and meet the configured trigger score.
+- Confirmed TriggerReady becomes `ClosedM5TriggerReady AND M1TriggerReady` when M1 confirmation is enabled; otherwise it remains the canonical M5 trigger.
+- The M1 path is deliberately closed-bar based, not an uncontrolled intrabar trigger.
 
-Before calling the M1 path a real precision trigger, define one explicit model: closed-bar-only; or controlled intrabar with hysteresis and invalidation.
+The empirical effect on false-signal rate remains unverified until deterministic replay or historical outcome validation is completed.
 
 ### G. Track 7 — Parameter truth
 

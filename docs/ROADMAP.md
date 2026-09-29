@@ -1550,15 +1550,37 @@ Next implementation phase: Phase 8.1 — M1 trigger correctness.
 
 ## Phase 8.1 — M1 trigger correctness
 
-Status: planned.
+Status: implementation verified and ready to merge.
 
-Verify that M1 trigger mode uses real M1 evidence and is not merely a reweighted
-M5 signal.
+Verification closeout on branch head `929700e154d4b84a5a0b9efeae345b92017834b6`:
+- Runtime Acceptance Contracts: PASS (workflow run 801);
+- cTrader Compile: PASS (workflow run 985);
+- Source / Architecture: PASS (workflow run 992).
+
+The automated verification boundary is closed. Target-terminal replay/live validation remains required for empirical signal-quality measurement.
+
+Implementation:
+
+- removed the fixed M1 +3/-3 directional score vote;
+- introduced one platform-neutral M1 trigger rule;
+- bound the rule to the canonical closed M1 index and the exact closed M5 time window;
+- required M1 direction, candle geometry, close location and trigger score to agree with the selected MTF direction;
+- made M1 confirmation downstream of M5 closed-bar trigger readiness;
+- kept direction ownership in the MTF decision and plan creation downstream of TriggerReady;
+- added runtime deterministic contracts and permanent source/architecture ownership checks.
 
 Acceptance:
 
-- real M1 data path;
-- deterministic trigger semantics.
+- real M1 OHLC/ATR/trigger-score data path;
+- deterministic BUY/SELL-symmetric M1 confirmation semantics;
+- M1 cannot independently change decision direction;
+- M1 confirmation cannot accept a future, stale, misaligned or weak bar;
+- plan creation remains TriggerReady-gated.
+
+Signal-quality continuation:
+
+- This phase fixes the temporal/causal mismatch where M1 could affect direction while TriggerReady was based only on M5.
+- It does not claim a measured win-rate improvement; that requires replay/historical outcome evidence.
 
 ## Phase 8.2 — Swing plateau correctness
 

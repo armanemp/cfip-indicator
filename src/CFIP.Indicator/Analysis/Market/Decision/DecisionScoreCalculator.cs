@@ -45,14 +45,9 @@ namespace cAlgo
                     sell += 6;
             }
 
-            if (input.UseM1Trigger &&
-                input.M1Frame != null)
-            {
-                if (input.M1Frame.Direction == 1)
-                    buy += 3;
-                else if (input.M1Frame.Direction == -1)
-                    sell += 3;
-            }
+            // M1 is a trigger confirmation, not an independent directional vote.
+            // Its closed-bar evidence is consumed by DecisionEvaluator after
+            // the higher-timeframe directional consensus has been established.
 
             if (input.AdaptiveRegimeWeighting &&
                 input.M5Frame != null)

@@ -843,3 +843,40 @@ Phase 7.4 leaves MaximumOpenPositions exposed only at the supported value 1, rem
 Next planned phase: Phase 8.1 — M1 trigger correctness, with the operator-reported false-signal problem as a primary analytical focus.
 
 Operator action: local pull is required after this merge/documentation boundary.
+
+
+## Phase 8.1 — M1 trigger correctness — 2026-09-29
+
+Status: implementation verified and ready to merge.
+
+Verification closeout on verified branch head `929700e154d4b84a5a0b9efeae345b92017834b6`:
+- Runtime Acceptance Contracts: PASS — workflow run 801;
+- cTrader Compile: PASS — workflow run 985;
+- Source / Architecture: PASS — workflow run 992.
+
+Findings and corrections:
+- Audited the full Decision → Trigger → Plan → Execution chain and confirmed that UseM1Trigger previously added a fixed +3 directional vote from M1Frame.Direction while DecisionEvaluator still derived TriggerReady from M5-only ClosedBarTriggerReady.
+- Removed the fixed M1 score vote so M1 no longer creates an independent directional authority.
+- Added Core/Math/M1TriggerRule.cs as the single platform-neutral owner of deterministic M1 confirmation semantics.
+- Added Planning/Entry/M1TriggerReadyEvaluator.cs to consume the real closed M1 bar, verify exact containment inside the selected closed M5 candle, and evaluate M1 OHLC/ATR/candle direction/close location/trigger score.
+- Extended DecisionEvidenceSnapshot and DecisionEvaluator so M1 is an optional confirmation gate after M5 TriggerReady, preserving the existing MTF decision direction.
+- Added runtime acceptance scenarios for exact M1/M5 boundaries, future-bar rejection, direction symmetry, weak-body rejection, close-location rejection and insufficient trigger score.
+- Extended Source / Architecture verification to enforce one M1 rule owner, real M1 evidence consumption, absence of the fixed +3/-3 vote and downstream M1 trigger gating.
+
+Coordination invariant after Phase 8.1:
+- UseM1Trigger=false → TriggerReady = ClosedM5TriggerReady.
+- UseM1Trigger=true → TriggerReady = ClosedM5TriggerReady AND selected-direction M1TriggerReady.
+- Decision direction remains owned by higher-timeframe consensus; M1 cannot vote the direction.
+- Plan creation and all execution paths remain downstream of TriggerReady/capacity/risk ownership.
+
+Remaining signal-quality work is intentionally not hidden in this phase: structural/liquidity evidence de-duplication, swing plateau semantics, FVG mathematics, Order Block mathematics and confidence calibration remain subsequent Track 8 work.
+
+Verification target:
+- deterministic runtime M1 trigger contracts;
+- source/architecture M1 ownership gate;
+- Runtime Acceptance Contracts;
+- cTrader Compile;
+- whole-project integrity remains green.
+
+Next phase: Phase 8.2 — Swing plateau correctness.
+Operator pull requirement: after final verified Phase 8.1 merge.

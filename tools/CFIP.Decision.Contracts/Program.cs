@@ -51,6 +51,7 @@ namespace cAlgo
                     70,
                     90, 10,
                     true, false,
+                    true, false,
                     0, 0,
                     0, 10);
 
@@ -89,6 +90,7 @@ namespace cAlgo
                     4, 3,
                     75,
                     65, 55,
+                    true, false,
                     true, false,
                     4, -4,
                     0, 5);
