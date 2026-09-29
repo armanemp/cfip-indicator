@@ -55,7 +55,7 @@ namespace cAlgo
                         target,
                         volume,
                         closedM5,
-                        "AGGRESSIVE MARKET");
+                        "AGG MARKET");
                 string aggressiveIntentReason;
                 if (!ValidateExecutionIntent(
                         aggressiveIntent,
@@ -119,7 +119,7 @@ namespace cAlgo
                                 tpPips,
                                 TradeExecutionMetadata.DefaultExecutionComment,
                                 false,
-                                "AGGRESSIVE MARKET");
+                                "AGG MARKET");
                 }
                 catch
                 {
@@ -166,7 +166,7 @@ namespace cAlgo
                             result.Position,
                             actualStop,
                             actualTarget,
-                            "AGGRESSIVE ENTRY",
+                            "AGG ENTRY",
                             _reaction.Direction);
                 }
                 SetAutoTradingState(
