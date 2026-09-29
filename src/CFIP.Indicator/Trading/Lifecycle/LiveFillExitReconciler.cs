@@ -274,11 +274,13 @@ namespace cAlgo
         {
             double spacing =
                 Math.Max(
-                    Symbol.PipSize,
-                    atr *
+                    MinimumTakeProfitDistancePrice(),
                     Math.Max(
-                        0.05,
-                        MinimumTpSpacingAtr));
+                        Symbol.PipSize,
+                        atr *
+                        Math.Max(
+                            0.05,
+                            MinimumTpSpacingAtr)));
 
             double previous =
                 previousTarget > 0
