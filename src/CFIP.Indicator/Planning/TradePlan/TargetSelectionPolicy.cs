@@ -37,16 +37,28 @@ namespace cAlgo
         private double MinimumPlanRiskReward(
             OpportunityLane lane)
         {
+            double canonicalMinimum =
+                MinimumRequiredRR();
+
             if (lane == OpportunityLane.Tactical ||
                 lane == OpportunityLane.CounterHtfTactical ||
                 lane == OpportunityLane.MicroReaction)
+            {
+                // Parallel lanes must not bypass the canonical TP1 reward
+                // contract. Their lane-specific RR is allowed to be stricter,
+                // never weaker, than the main plan floor.
                 return Math.Max(
-                    1.0,
-                    TacticalOpportunityMinimumRR);
+                    Math.Max(
+                        Tp1MinimumRR,
+                        canonicalMinimum),
+                    Math.Max(
+                        1.0,
+                        TacticalOpportunityMinimumRR));
+            }
 
             return Math.Max(
                 MinimumTradeRR,
-                MinimumRequiredRR());
+                canonicalMinimum);
         }
 
         private bool RequiresHtfRewardForTargetStage(
