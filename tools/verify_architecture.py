@@ -396,7 +396,7 @@ for visual_code, expected_call in (
     if expected_call not in visual_code:
         raise SystemExit("Chart renderer must consume canonical SignalVisualSnapshot")
 
-if "return _renderSignalVisualSnapshot.Direction;" not in panel_code or    "BuildSignalVisualSnapshot(" not in panel_code:
+if "return _renderSignalVisualSnapshot.AuthoritativeDirection;" not in panel_code or    "BuildSignalVisualSnapshot(" not in panel_code:
     raise SystemExit("Panel signal state must consume the canonical visual snapshot")
 
 for forbidden in (
