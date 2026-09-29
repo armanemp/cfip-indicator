@@ -36,8 +36,41 @@ namespace cAlgo
                 key.Append(
                     char.IsLetterOrDigit(ch) ? ch : '_');
 
+            key.Append('.');
+            key.Append(MemoryConfigurationFingerprint());
             key.Append(".V2");
             return key.ToString();
+        }
+
+        private string MemoryConfigurationFingerprint()
+        {
+            string raw =
+                string.Concat(
+                    MinimumConfidence, "|",
+                    SmartQualityThreshold, "|",
+                    MinimumEntryLocationQuality, "|",
+                    MinimumTradeRR.ToString("F2", CultureInfo.InvariantCulture), "|",
+                    Tp1MinimumRR.ToString("F2", CultureInfo.InvariantCulture), "|",
+                    RequireFreshM5Trigger ? "1" : "0", "|",
+                    UseSmartEntryQualityFilter ? "1" : "0", "|",
+                    AdaptiveSmartThresholds ? "1" : "0", "|",
+                    AdaptiveRegimeWeighting ? "1" : "0", "|",
+                    UseProxyExpectedValueGate ? "1" : "0");
+
+            unchecked
+            {
+                uint hash = 2166136261;
+
+                for (int i = 0; i < raw.Length; i++)
+                {
+                    hash ^= raw[i];
+                    hash *= 16777619;
+                }
+
+                return hash.ToString(
+                    "X8",
+                    CultureInfo.InvariantCulture);
+            }
         }
 
         private string SerializeOutcomeHistory()
