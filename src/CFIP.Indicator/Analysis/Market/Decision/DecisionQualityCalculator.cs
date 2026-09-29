@@ -38,12 +38,12 @@ namespace cAlgo
 
             return NumericGuards.ClampInt(
                 (int)Math.Round(
-                    NumericGuards.ClampInt(strongestShare, 0, 100) * 0.25 +
-                    NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.20 +
-                    normalizedIndependentEvidence * 0.20 +
+                    NumericGuards.ClampInt(strongestShare, 0, 100) * 0.22 +
+                    NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.18 +
+                    normalizedIndependentEvidence * 0.18 +
                     normalizedStructural * 0.15 +
                     NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.10 +
-                    effectiveRetestQuality * 0.08 +
+                    effectiveRetestQuality * 0.07 +
                     NumericGuards.ClampInt(indicatorConfluenceQuality, 0, 100) * 0.10) -
                 Math.Min(
                     12,
