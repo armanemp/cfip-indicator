@@ -94,6 +94,16 @@ namespace cAlgo
                     p.Entry -
                     p.Stop);
 
+            if (!IsFinitePositive(p.Risk))
+            {
+                p.Risk = 0;
+                p.Tp1RR = 0;
+                p.Tp2RR = 0;
+                p.Tp3RR = 0;
+                p.Tp4RR = 0;
+                return p;
+            }
+
             p.Tp1RR =
                 p.Tp1 > 0
                     ? Math.Abs(
