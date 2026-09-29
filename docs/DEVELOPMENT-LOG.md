@@ -1141,4 +1141,4 @@ Verification:
 - target cTrader replay remains required for empirical signal timing, false-signal behavior and realized RR.
 
 Operator pull:
-- do not pull yet; local pull is required only after PR #45 is merged.
+- pull local `main` immediately after PR #45 is merged; the phase is ready for local replay.
