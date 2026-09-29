@@ -21,6 +21,11 @@ namespace cAlgo
         private void ProcessCanonicalActionableEntryAlert(
             int closedM5)
         {
+            // Alerts must consume the same current-quote actionability state as
+            // automatic market execution; never rely on a stale M5-only snapshot.
+            RefreshLiveDecisionActionability(
+                closedM5);
+
             if (_lastActionableEntryAlertM5 ==
                 closedM5 ||
                 !_decision.EntryAllowed ||
