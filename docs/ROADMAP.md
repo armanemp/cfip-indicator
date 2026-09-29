@@ -3605,7 +3605,7 @@ Next dependency after verified completion: continue Track 9 intelligence/no-trad
 
 ## Phase 9.5.1 — Live Actionability Coherence — 2026-09-29
 
-Status: implementation verified; merge pending in PR #46.
+Status: MERGED AND VERIFIED.
 
 Scope:
 - eliminate stale ActionableNow state when decision/execution inputs become unavailable;
@@ -3620,5 +3620,12 @@ Acceptance:
 - a pending plan cannot coexist with a current-market actionable arrow/alert for the same pre-trade state;
 - automatic market execution uses the refreshed actionability state;
 - Runtime Acceptance, cTrader Compile/Build and Source/Architecture all pass.
+
+Verification closeout:
+- PR #46 merged into `main` as `573f12ac380a8beace61db780082d5071db2defb`;
+- final verified PR head before merge: `91b2a128e39bffff145fb84b2371e37057cc95b9`;
+- Runtime Acceptance PASS;
+- cTrader Compile/Build PASS;
+- Source/Architecture PASS.
 
 Empirical boundary: target-terminal replay is still required for exact chart timing, visual behavior and realized risk/reward measurement.
