@@ -204,6 +204,7 @@ namespace cAlgo
                 private DateTime _lastBrokerModifyUtc = DateTime.MinValue;
                 private int _lastRestrictionM5 = -1;
                 private int _lastSmartDecisionAlertM5 = -1;
+                private int _lastActionableAlertM5 = -1;
                 private int _lastHistoricalHostBar = -1;
                 private int _lastAutoPlanAttemptM5 = -1;
                 private int _lastAutoPlanTriggerM1 = -1;
