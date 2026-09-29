@@ -179,6 +179,7 @@ namespace cAlgo
                         f.OssBullVotes,
                         f.OssBearVotes,
                         f.OssIndicatorCount,
+                        OssConfluenceWeight,
                         MinimumOssIndicatorAgreement));
 
             bull +=
