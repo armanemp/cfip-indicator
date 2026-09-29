@@ -127,7 +127,7 @@ namespace cAlgo
         {
             Timer.Stop();
             Timer.Start(
-                TimeSpan.FromMilliseconds(100));
+                TimeSpan.FromMilliseconds(250));
         }
 
         private void StartAsyncBarsInitialization()
