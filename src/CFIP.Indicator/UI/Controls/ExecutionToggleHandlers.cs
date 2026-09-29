@@ -13,26 +13,16 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void OnAutoTradingQuickToggleChecked(
+        private void ApplyAutoTradingQuickToggleClick(
             ToggleButtonEventArgs args)
-        {
-            ApplyAutoTradingQuickToggleState(args, true);
-        }
-
-        private void OnAutoTradingQuickToggleUnchecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutoTradingQuickToggleState(args, false);
-        }
-
-        private void ApplyAutoTradingQuickToggleState(
-            ToggleButtonEventArgs args,
-            bool enabled)
         {
             if (_executionToggleSyncing ||
                 args == null ||
                 args.ToggleButton == null)
                 return;
+
+            bool enabled =
+                args.ToggleButton.IsChecked;
 
             SetAutoTradingRuntimeState(
                 enabled,
@@ -47,34 +37,28 @@ namespace cAlgo
                 enabled
                     ? "QUICK ENABLED"
                     : "QUICK DISABLED");
+
+            SyncQuickExecutionControls();
         }
 
-        private void OnAutomaticOrdersQuickToggleChecked(
+        private void ApplyAutomaticOrdersQuickToggleClick(
             ToggleButtonEventArgs args)
-        {
-            ApplyAutomaticOrdersQuickToggleState(args, true);
-        }
-
-        private void OnAutomaticOrdersQuickToggleUnchecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutomaticOrdersQuickToggleState(args, false);
-        }
-
-        private void ApplyAutomaticOrdersQuickToggleState(
-            ToggleButtonEventArgs args,
-            bool enabled)
         {
             if (_executionToggleSyncing ||
                 args == null ||
                 args.ToggleButton == null)
                 return;
 
+            bool enabled =
+                args.ToggleButton.IsChecked;
+
             SetAutomaticOrdersRuntimeState(
                 enabled,
                 enabled
                     ? "AWAITING ORDER SETUP"
                     : "DISABLED");
+
+            SyncQuickExecutionControls();
         }
     }
 }

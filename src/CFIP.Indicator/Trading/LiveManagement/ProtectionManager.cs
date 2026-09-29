@@ -134,99 +134,106 @@ namespace cAlgo
                     market,
                     peakRR);
 
-            if (peakRR >= Math.Max(1.0, SmartTrailTightenAtRR))
+            // Smart trailing is structural rather than a raw market-price chase.
+            // Once break-even is secured, further progression is evaluated only on a
+            // newly closed M5 bar and from a structural swing candidate.
+            if (structuralUpdate &&
+                peakRR >=
+                Math.Max(
+                    1.0,
+                    SmartTrailTightenAtRR) &&
+                UseSwingStructureInTrail &&
+                atr > 0)
             {
-                double trailAtr = atr;
-
                 bool momentumAligned =
                     _m5Frame != null &&
                     (_plan.Direction == 1
                         ? _m5Frame.MomentumBull && _m5Frame.StructureBull
                         : _m5Frame.MomentumBear && _m5Frame.StructureBear);
 
-                if (trailAtr > 0 &&
-                    momentumAligned)
+                double room =
+                    atr *
+                    Math.Max(
+                        0.10,
+                        TrailDistanceAtr -
+                        (momentumAligned
+                            ? SmartTrailMomentumBonusAtr
+                            : 0));
+
+                double structural =
+                    _plan.Direction == 1
+                        ? FindSwingLowBelow(
+                            _m5Bars,
+                            closedM5,
+                            market)
+                        : FindSwingHighAbove(
+                            _m5Bars,
+                            closedM5,
+                            market);
+
+                if (IsFinitePositive(structural))
                 {
-                    double room =
-                        trailAtr *
-                        Math.Max(
-                            0.08,
-                            TrailDistanceAtr -
-                            SmartTrailMomentumBonusAtr);
-
-                    double tightened =
+                    bool enoughRoom =
                         _plan.Direction == 1
-                            ? market - room
-                            : market + room;
+                            ? structural <= market - room
+                            : structural >= market + room;
 
-                    if (IsValidManagedStop(
-                        _plan.Direction,
-                        _plan.Entry,
-                        market,
-                        tightened))
+                    bool valid =
+                        enoughRoom &&
+                        IsValidManagedStop(
+                            _plan.Direction,
+                            _plan.Entry,
+                            market,
+                            structural);
+
+                    if (valid)
                     {
                         candidate =
                             _plan.Direction == 1
-                                ? Math.Max(candidate, tightened)
-                                : Math.Min(candidate, tightened);
+                                ? Math.Max(candidate, structural)
+                                : Math.Min(candidate, structural);
                     }
                 }
             }
 
-            if (!StructuralStopManagementOnly &&
+            if (structuralUpdate &&
+                !StructuralStopManagementOnly &&
                 pressure >= SmartExitPressureThreshold &&
-                peakRR >= SmartTrailMinimumRR)
+                peakRR >= SmartTrailMinimumRR &&
+                atr > 0)
             {
-                if (atr > 0)
+                double tightRoom =
+                    atr *
+                    Math.Min(
+                        0.45,
+                        Math.Max(
+                            0.10,
+                            SlRepriceBreathingAtr));
+
+                double pressureStop =
+                    _plan.Direction == 1
+                        ? market - tightRoom
+                        : market + tightRoom;
+
+                if (IsValidManagedStop(
+                    _plan.Direction,
+                    _plan.Entry,
+                    market,
+                    pressureStop))
                 {
-                    double tightRoom =
-                        atr *
-                        Math.Min(
-                            0.45,
-                            Math.Max(
-                                0.10,
-                                SlRepriceBreathingAtr));
-
-                    double tightened =
+                    candidate =
                         _plan.Direction == 1
-                            ? market - tightRoom
-                            : market + tightRoom;
-
-                    if (IsValidManagedStop(
-                        _plan.Direction,
-                        _plan.Entry,
-                        market,
-                        tightened))
-                    {
-                        candidate =
-                            _plan.Direction == 1
-                                ? Math.Max(
-                                    candidate,
-                                    tightened)
-                                : Math.Min(
-                                    candidate,
-                                    tightened);
-                    }
+                            ? Math.Max(candidate, pressureStop)
+                            : Math.Min(candidate, pressureStop);
                 }
             }
-
-            double minimumDistance =
-                Math.Max(
-                    Symbol.PipSize * 2,
-                    Symbol.Ask - Symbol.Bid);
-
-            candidate =
-                _plan.Direction == 1
-                    ? Math.Min(
-                        candidate,
-                        market - minimumDistance)
-                    : Math.Max(
-                        candidate,
-                        market + minimumDistance);
 
             candidate =
                 NormalizePrice(candidate);
 
+            // Never derive a new stop merely because the market moved. If a
+            // structural candidate is temporarily invalid against broker price
+            // constraints, keep the last protected level unchanged.
             if (!IsValidManagedStop(
                 _plan.Direction,
                 _plan.Entry,

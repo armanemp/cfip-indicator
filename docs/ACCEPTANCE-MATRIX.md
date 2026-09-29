@@ -249,4 +249,20 @@ behavior, absence of flicker, startup latency and device-specific performance.
 The phase restores parameter semantics only. It does not claim that signal quality,
 Entry/SL/TP intelligence or live trailing has been fully improved; those remain
 separate implementation owners.
+## Runtime UI and smart protection hotfix — 2026-09-29
 
+| Contract | Automated controlled check | cTrader |
+|---|---:|---:|
+| AUTO TRADE quick control uses a direct operator click action | PASS | Required |
+| AUTO ORDERS quick control uses a direct operator click action | PASS | Required |
+| Programmatic toggle synchronization cannot execute operator actions | PASS | Required |
+| Setup preview renders Entry/Trigger/SL/TP compact labels | PASS | Required |
+| Compact level tag has a visible semantic-color box | PASS | Required |
+| Structural trailing cannot chase raw market price through final distance clamping | PASS | Required |
+| Structural trailing progression is closed-M5 gated | PASS | Required |
+| No new public parameter introduced | PASS | Required |
+| Source / Architecture | Required | Required |
+| Runtime Acceptance Contracts | Required | Required |
+| cTrader Compile | Required | Required |
+
+Hands-on cTrader validation remains required for actual toggle behavior, visible labels and observed live trailing stability.

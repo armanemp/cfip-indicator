@@ -140,8 +140,69 @@ namespace cAlgo
         {
             try
             {
+                if (Bars == null ||
+                    Bars.Count < 2 ||
+                    !IsFinitePositive(price))
+                    return;
+
                 double labelPrice =
                     NormalizePrice(price);
+
+                string boxName =
+                    name + "_BOX";
+
+                // Draw/update the box first so the label text remains visually
+                // above it regardless of chart-object paint order.
+                ChartRectangle box =
+                    Chart.FindObject(boxName)
+                    as ChartRectangle;
+
+                Color boxColor =
+                    Color.FromArgb(
+                        72,
+                        color);
+
+                if (box == null)
+                {
+                    ChartObject existingBox =
+                        Chart.FindObject(boxName);
+
+                    if (existingBox != null)
+                        Chart.RemoveObject(boxName);
+
+                    box =
+                        Chart.DrawRectangle(
+                            boxName,
+                            lineLeft,
+                            price + boxHalfHeight,
+                            boxRightBar,
+                            price - boxHalfHeight,
+                            color,
+                            1,
+                            LineStyle.Solid);
+                }
+
+                if (box != null)
+                {
+                    box.Time1 =
+                        Bars.OpenTimes[lineLeft];
+                    box.Y1 =
+                        price + boxHalfHeight;
+                    box.Time2 =
+                        Bars.OpenTimes[boxRightBar];
+                    box.Y2 =
+                        price - boxHalfHeight;
+                    box.Color =
+                        boxColor;
+                    box.Thickness =
+                        1;
+                    box.LineStyle =
+                        LineStyle.Solid;
+                    box.IsFilled =
+                        true;
+                    box.IsInteractive =
+                        false;
+                }
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -190,60 +251,6 @@ namespace cAlgo
                     VerticalAlignment.Center;
                 label.IsInteractive =
                     false;
-
-                string boxName =
-                    name + "_BOX";
-
-                ChartRectangle box =
-                    Chart.FindObject(boxName)
-                    as ChartRectangle;
-
-                Color boxColor =
-                    Color.FromArgb(
-                        175,
-                        color);
-
-                if (box == null)
-                {
-                    ChartObject existingBox =
-                        Chart.FindObject(boxName);
-
-                    if (existingBox != null)
-                        Chart.RemoveObject(boxName);
-
-                    box =
-                        Chart.DrawRectangle(
-                            boxName,
-                            lineLeft,
-                            price + boxHalfHeight,
-                            boxRightBar,
-                            price - boxHalfHeight,
-                            boxColor,
-                            1,
-                            LineStyle.Solid);
-                }
-
-                if (box != null)
-                {
-                    box.Time1 =
-                        Bars.OpenTimes[lineLeft];
-                    box.Y1 =
-                        price + boxHalfHeight;
-                    box.Time2 =
-                        Bars.OpenTimes[boxRightBar];
-                    box.Y2 =
-                        price - boxHalfHeight;
-                    box.Color =
-                        boxColor;
-                    box.Thickness =
-                        1;
-                    box.LineStyle =
-                        LineStyle.Solid;
-                    box.IsFilled =
-                        false;
-                    box.IsInteractive =
-                        false;
-                }
             }
             catch (Exception ex)
             {
