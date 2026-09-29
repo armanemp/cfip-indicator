@@ -23,9 +23,6 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            int lineRight =
-                GetPlanLineRightBar();
-
             int offset =
                 Math.Max(
                     CompactPlanLabelMinimumGapBars,
@@ -33,14 +30,14 @@ namespace cAlgo
                         6,
                         LabelLeftOffsetBars));
 
-            // Labels are anchored immediately after the reserved line endpoint.
-            // The label renderer uses left alignment so its text grows away from
-            // the line rather than back across it.
+            // Compact labels stay attached to the line geometry. Their visible
+            // separation from the level is handled in price space by the label
+            // renderer; the line endpoint itself remains unchanged.
             return Math.Max(
                 0,
                 Math.Min(
                     Bars.Count - 1,
-                    lineRight + offset));
+                    lineLeft + offset));
         }
 
         private int GetLabelBoxRightBar(
