@@ -1104,3 +1104,37 @@ Implemented contextual empirical confidence calibration:
 - added decision-contract coverage.
 
 No new public parameter was introduced. No simultaneous execution path was added. Live cTrader replay remains required for empirical performance measurement.
+
+
+## 2026-09-29 — Phase 9.5 implementation
+
+Branch: `phase/9-5-actionable-signal-execution-coherence`
+
+User-driven engineering focus:
+- entry alerts, chart arrows and trade execution must share one actionable trade contract;
+- a directional alert is not considered an entry merely because the analysis direction is correct; current price, entry location, trigger state, RR and timing must also be executable.
+
+Implemented:
+- restored and strengthened closed-bar RSI + CUSTOMWAVETREND divergence analysis using canonical swing pairs, regular/hidden divergence, recency and oscillator-confluence scoring;
+- added opposing-divergence and extreme-entry-location blockers;
+- added `SignalActionabilityRule` covering execution readiness, TP1 RR floor, location quality, pending duplication, signal age and market displacement beyond the entry zone;
+- changed decision alerts so actionable alerts are emitted only after the trade plan is synchronized;
+- collapsed entry-arrow ownership to the canonical signal renderer; alert mirrors and M1 trigger markers no longer create duplicate entry arrows;
+- changed BOS chart events to a non-entry diamond marker;
+- added actionable state/reason diagnostics to the panel;
+- wired AUTO TRADE and AUTO ORDERS chart controls to the shared execution runtime authority, while preserving cTrader parameter synchronization;
+- added `TradeOpportunityRegistry` as the authoritative registry for parallel opportunity candidates and deterministic quality/RR ordering;
+- applied actionability/location/divergence gates to automatic market, aggressive and predictive pending execution paths;
+- added Decision and Planning regression-contract coverage for actionability and multi-plan registry behavior.
+
+Safety boundary:
+- registry-backed parallel opportunities do not yet enable simultaneous broker execution. The existing singleton live-plan/protection context remains intentionally protected until per-plan lifecycle/protection and broker mutation identities are isolated.
+
+Verification status:
+- implementation and contract wiring completed on the phase branch;
+- target-terminal replay is still required for empirical visual timing, alert latency, realized RR and false-signal measurements;
+- CI/merge verification remains the final gate before calling the phase complete.
+
+Continuity:
+- branch: `phase/9-5-actionable-signal-execution-coherence`;
+- pull local `main` only after merge.
