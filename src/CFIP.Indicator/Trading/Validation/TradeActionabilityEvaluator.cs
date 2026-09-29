@@ -463,7 +463,7 @@ namespace cAlgo
                     divergence.Type,
                     "OUTSIDE EXECUTION WINDOW");
 
-            if (tp1RR < minimumRR)
+            if (tp1RR < rewardRisk.RequiredRR)
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
