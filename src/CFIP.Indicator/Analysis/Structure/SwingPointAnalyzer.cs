@@ -35,6 +35,7 @@ namespace cAlgo
             Bars bars,
             int candidateIndex,
             int closedIndex,
+            int strength,
             out int plateauStart,
             out int plateauEnd,
             out double level)
@@ -42,7 +43,7 @@ namespace cAlgo
             return SwingPlateauRule.TryGetHighPlateau(
                 bars == null ? 0 : bars.Count,
                 candidateIndex,
-                SwingStrength,
+                strength,
                 closedIndex,
                 SwingPlateauTolerance(bars, closedIndex),
                 i => bars.HighPrices[i],
@@ -55,6 +56,7 @@ namespace cAlgo
             Bars bars,
             int candidateIndex,
             int closedIndex,
+            int strength,
             out int plateauStart,
             out int plateauEnd,
             out double level)
@@ -62,7 +64,7 @@ namespace cAlgo
             return SwingPlateauRule.TryGetLowPlateau(
                 bars == null ? 0 : bars.Count,
                 candidateIndex,
-                SwingStrength,
+                strength,
                 closedIndex,
                 SwingPlateauTolerance(bars, closedIndex),
                 i => bars.LowPrices[i],
@@ -109,6 +111,7 @@ namespace cAlgo
                         bars,
                         i,
                         index,
+                        strength,
                         out plateauStart,
                         out plateauEnd,
                         out level))
@@ -164,6 +167,7 @@ namespace cAlgo
                         bars,
                         i,
                         index,
+                        strength,
                         out plateauStart,
                         out plateauEnd,
                         out level))
