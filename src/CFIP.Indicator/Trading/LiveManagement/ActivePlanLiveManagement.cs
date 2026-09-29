@@ -43,13 +43,21 @@ namespace cAlgo
                                         bool structuralBarChanged =
                                             closedM5 !=
                                             _lastStructuralStopUpdateM5;
+
+                                        bool structuralPulse =
+                                            ShouldRunLiveStructuralPulse(
+                                                TimeInUtc);
+
+                                        bool structuralUpdate =
+                                            structuralBarChanged ||
+                                            structuralPulse;
                         
                                         double protectedStop =
                                             CalculateProtectedStop(
                                                 market,
                                                 peakRR,
                                                 closedM5,
-                                                structuralBarChanged);
+                                                structuralUpdate);
                         
                                         if (BetterStop(
                                                 _plan.Direction,
@@ -67,12 +75,12 @@ namespace cAlgo
                                             peakRR >=
                                             TargetUpdateTriggerRR &&
                                             (!StructuralTargetUpdatesOnly ||
-                                             closedM5 !=
-                                             _lastTargetRepriceM5))
+                                             structuralUpdate))
                                         {
                                             UpdateUnhitTargetsLive(
                                                 closedM5,
-                                                market);
+                                                market,
+                                                structuralUpdate);
                                         }
                         
                                         if (structuralBarChanged)
