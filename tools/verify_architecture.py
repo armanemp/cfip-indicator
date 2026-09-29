@@ -916,9 +916,11 @@ if "TimeSpan.FromMilliseconds(250)" not in init_runtime_code:
     raise SystemExit("Initialization poll cadence must remain bounded without 100ms timer churn")
 if init_runtime_code.count("RenderPanel();") < 2:
     raise SystemExit("Panel must refresh during required initialization/finalization paths")
-if "ShouldRenderFullPanel(" not in panel_main_code or
-   "BuildPanelPresentationKey(" not in panel_optimization_code or
-   "_lastPanelPresentationKey" not in state_code:
+if (
+    "ShouldRenderFullPanel(" not in panel_main_code or
+    "BuildPanelPresentationKey(" not in panel_optimization_code or
+    "_lastPanelPresentationKey" not in state_code
+):
     raise SystemExit("Panel full rendering must be state-change driven through its canonical state owner")
 if "_panelRows.Count != PanelRowCount" in panel_main_code:
     raise SystemExit("Panel renderer must not require eager fixed-row allocation")
