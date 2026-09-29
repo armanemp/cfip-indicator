@@ -1674,7 +1674,7 @@ for token in (
 for path, token in (
     (
         ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-        "ValidateSinglePlanCapacity("
+        "ValidateSingleExecutionCapacity("
     ),
     (
         ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
@@ -1719,7 +1719,7 @@ if AUTO_MARKET_PRETRADE.stat().st_size > 4096:
 AUTO_MARKET_ELIGIBILITY = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs"
 AUTO_MARKET_PREPARATION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketExecutionPreparation.cs"
 for path, token in (
-    (AUTO_MARKET_ELIGIBILITY, "ValidateSinglePlanCapacity("),
+    (AUTO_MARKET_ELIGIBILITY, "ValidateSingleExecutionCapacity("),
     (AUTO_MARKET_PREPARATION, "TryPrepareExecutablePlan("),
 ):
     if not path.exists() or token not in path.read_text(encoding="utf-8"):
