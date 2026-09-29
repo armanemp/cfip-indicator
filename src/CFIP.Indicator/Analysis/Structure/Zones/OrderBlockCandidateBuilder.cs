@@ -1,7 +1,6 @@
 using System;
 using cAlgo.API;
 using cAlgo.API.Internals;
-
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
@@ -18,72 +17,55 @@ namespace cAlgo
                 currentIndex <= createdIndex ||
                 atr <= 0)
                 return null;
-
+            double creationAtr =
+                Atr(
+                    bars,
+                    createdIndex);
+            if (creationAtr <= 0)
+                return null;
             double open =
                 bars.OpenPrices[
                     createdIndex];
-
             double close =
                 bars.ClosePrices[
                     createdIndex];
-
             double high =
                 bars.HighPrices[
                     createdIndex];
-
             double low =
                 bars.LowPrices[
                     createdIndex];
-
-            double bodyLow =
-                Math.Min(
+            if (!OrderBlockRule.TryGetZone(
+                    direction,
+                    ObUseBodyForZone,
                     open,
-                    close);
-
-            double bodyHigh =
-                Math.Max(
-                    open,
-                    close);
-
-            double zoneLow =
-                ObUseBodyForZone
-                    ? bodyLow
-                    : low;
-
-            double zoneHigh =
-                ObUseBodyForZone
-                    ? bodyHigh
-                    : high;
-
-            if (zoneLow >=
-                zoneHigh)
+                    close,
+                    high,
+                    low,
+                    out double zoneLow,
+                    out double zoneHigh))
                 return null;
-
             double range =
                 high -
                 low;
-
             double body =
                 Math.Abs(
                     close -
                     open);
-
             if (range <= 0 ||
                 body <= 0)
                 return null;
-
             if (!TryBuildOrderBlockImpulseEvidence(
                     bars,
                     createdIndex,
                     currentIndex,
                     direction,
-                    atr,
+                    creationAtr,
                     out int impulseEnd,
                     out bool displacement,
                     out double strongestBody,
                     out bool structureBreak))
                 return null;
-
             if (!TryApplyOrderBlockMitigation(
                     bars,
                     createdIndex,
@@ -96,24 +78,21 @@ namespace cAlgo
                     out bool partiallyMitigated,
                     out double remainingRatio))
                 return null;
-
             bool liquiditySweep =
                 HasOrderBlockLiquiditySweep(
                     bars,
                     createdIndex,
                     direction,
-                    atr);
-
+                    creationAtr);
             bool fvgConfluence =
                 HasOrderBlockFvgConfluence(
                     bars,
                     createdIndex,
                     impulseEnd,
                     direction,
-                    atr,
+                    creationAtr,
                     managedLow,
                     managedHigh);
-
             int quality =
                 CalculateOrderBlockQuality(
                     range,
@@ -127,14 +106,20 @@ namespace cAlgo
                     partiallyMitigated,
                     createdIndex,
                     currentIndex,
-                    atr);
-
+                    creationAtr);
             return new Zone
             {
                 Low = managedLow,
                 High = managedHigh,
                 Direction = direction,
                 Kind = "ORDER_BLOCK",
+                Id =
+                    OrderBlockRule.OrderBlockIdentity(
+                        direction,
+                        createdIndex,
+                        ObUseBodyForZone),
+                CreatedIndex =
+                    createdIndex,
                 Age = currentIndex -
                     createdIndex,
                 Quality = quality

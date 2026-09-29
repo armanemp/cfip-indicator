@@ -902,3 +902,11 @@ Started branch `phase-8-3-fvg-mathematical-audit` from verified main `9ffeeb22fe
 ## Phase 8.3 verification closeout — 2026-09-29
 
 Automated gates on implementation head `89919e7363d374e2cf3a362ec553b1fdac464919` all passed: Runtime Acceptance, Build and Source/Architecture. Production and predictive-pending FVG paths now consume `FvgRule`; historical FVG sizing uses creation-bar ATR; retest requires a later bar; mitigation/full-fill semantics are centralized; managed zones retain source identity. Public parameters, risk, execution and lifecycle contracts were not expanded. No empirical false-signal or win-rate improvement is claimed without target cTrader replay.
+
+## Phase 8.4 kickoff — 2026-09-29
+
+Started branch `phase-8-4-order-block-mathematical-audit` from main `2c916a023f46940ff9df40c5f96066a493d0ddf9`. Audit target: centralize Order Block source-candle geometry, displacement/structure evidence using source-bar ATR, mitigation and identity; reuse canonical Phase 8.3 FVG mathematics for OB/FVG confluence. User-supplied WaveTrend source is not currently accessible in repository or searchable conversation/Library content, so no exact reproduction claim is made and no guessed WaveTrend formula is introduced.
+
+## Phase 8.4 verification closeout — 2026-09-29
+
+Head `41a578ba72fec2219447ddc1ceff12b96ee353e7` passed Runtime Acceptance, Build and Source/Architecture. Production Order Block logic now uses a single mathematical owner for source candle direction/geometry, source-bar ATR displacement and structure thresholds, directional mitigation and identity. OB/FVG confluence consumes canonical Phase 8.3 FVG mathematics. The user-provided FVG and custom WaveTrend reference sources were inspected from Library archives; WaveTrend remains intentionally outside the decision path until a closed-bar exact adapter is tested. No new public parameters were added and no empirical signal-quality improvement is claimed without cTrader replay.

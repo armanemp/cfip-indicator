@@ -92,99 +92,86 @@ namespace cAlgo
                                          i <= endIndex;
                                          i++)
                                     {
-                                        double gap =
-                                            direction == 1
-                                                ? bars.LowPrices[i] -
-                                                  bars.HighPrices[i - 2]
-                                                : bars.LowPrices[i - 2] -
-                                                  bars.HighPrices[i];
-                        
-                                        if (gap <
-                                            atr *
-                                            MinimumFvgAtr)
-                                            continue;
-                        
-                                        double low =
-                                            direction == 1
-                                                ? bars.HighPrices[i - 2]
-                                                : bars.HighPrices[i];
-                        
-                                        double high =
-                                            direction == 1
-                                                ? bars.LowPrices[i]
-                                                : bars.LowPrices[i - 2];
-                        
-                                        Zone managed =
-                                            BuildManagedFvgZone(
+                                        double creationAtr =
+                                            Atr(
                                                 bars,
-                                                i,
-                                                endIndex,
-                                                direction,
-                                                low,
-                                                high,
-                                                gap,
-                                                false,
-                                                atr);
-                        
-                                        if (managed == null)
+                                                i);
+
+                                        if (creationAtr <= 0)
                                             continue;
-                        
-                                        if (managed.High >=
-                                                zoneLow -
-                                                atr * 0.05 &&
-                                            managed.Low <=
-                                                zoneHigh +
-                                                atr * 0.05)
-                                            return true;
-                        
-                                        if (UseTwoBarImbalanceFvg &&
-                                            i >= startIndex + 2)
+
+                                        if (FvgRule.TryGetThreeBarGap(
+                                                direction,
+                                                bars.HighPrices[i - 2],
+                                                bars.LowPrices[i - 2],
+                                                bars.HighPrices[i],
+                                                bars.LowPrices[i],
+                                                out double low,
+                                                out double high,
+                                                out double gap) &&
+                                            FvgRule.MeetsMinimumGap(
+                                                gap,
+                                                creationAtr,
+                                                MinimumFvgAtr))
                                         {
-                                            double twoBarGap =
-                                                direction == 1
-                                                    ? bars.LowPrices[i] -
-                                                      bars.HighPrices[i - 1]
-                                                    : bars.LowPrices[i - 1] -
-                                                      bars.HighPrices[i];
-                        
-                                            if (twoBarGap >=
-                                                atr *
-                                                MinimumFvgAtr)
-                                            {
-                                                double twoLow =
-                                                    direction == 1
-                                                        ? bars.HighPrices[i - 1]
-                                                        : bars.HighPrices[i];
-                        
-                                                double twoHigh =
-                                                    direction == 1
-                                                        ? bars.LowPrices[i]
-                                                        : bars.LowPrices[i - 1];
-                        
-                                                Zone managedTwoBar =
-                                                    BuildManagedFvgZone(
-                                                        bars,
-                                                        i,
-                                                        endIndex,
-                                                        direction,
-                                                        twoLow,
-                                                        twoHigh,
-                                                        twoBarGap,
-                                                        true,
-                                                        atr);
-                        
-                                                if (managedTwoBar != null &&
-                                                    managedTwoBar.High >=
-                                                        zoneLow -
-                                                        atr * 0.05 &&
-                                                    managedTwoBar.Low <=
-                                                        zoneHigh +
-                                                        atr * 0.05)
-                                                    return true;
-                                            }
+                                            Zone managed =
+                                                BuildManagedFvgZone(
+                                                    bars,
+                                                    i,
+                                                    endIndex,
+                                                    direction,
+                                                    low,
+                                                    high,
+                                                    gap,
+                                                    false,
+                                                    creationAtr);
+
+                                            if (managed != null &&
+                                                FvgRule.IsOverlapInclusive(
+                                                    managed.Low,
+                                                    managed.High,
+                                                    zoneLow - atr * 0.05,
+                                                    zoneHigh + atr * 0.05))
+                                                return true;
+                                        }
+
+                                        if (UseTwoBarImbalanceFvg &&
+                                            i >= startIndex + 1 &&
+                                            FvgRule.TryGetTwoBarGap(
+                                                direction,
+                                                bars.HighPrices[i - 1],
+                                                bars.LowPrices[i - 1],
+                                                bars.HighPrices[i],
+                                                bars.LowPrices[i],
+                                                out low,
+                                                out high,
+                                                out gap) &&
+                                            FvgRule.MeetsMinimumGap(
+                                                gap,
+                                                creationAtr,
+                                                MinimumFvgAtr))
+                                        {
+                                            Zone managedTwoBar =
+                                                BuildManagedFvgZone(
+                                                    bars,
+                                                    i,
+                                                    endIndex,
+                                                    direction,
+                                                    low,
+                                                    high,
+                                                    gap,
+                                                    true,
+                                                    creationAtr);
+
+                                            if (managedTwoBar != null &&
+                                                FvgRule.IsOverlapInclusive(
+                                                    managedTwoBar.Low,
+                                                    managedTwoBar.High,
+                                                    zoneLow - atr * 0.05,
+                                                    zoneHigh + atr * 0.05))
+                                                return true;
                                         }
                                     }
-                        
                                     return false;
                                 }
     }

@@ -1617,7 +1617,7 @@ Acceptance:
 
 ## Phase 8.4 — Order Block mathematical audit
 
-Status: planned.
+Status: IMPLEMENTATION VERIFIED — READY TO MERGE. Branch `phase-8-4-order-block-mathematical-audit`. Production Order Block source geometry, creation-ATR qualification, mitigation, identity and canonical FVG confluence are centralized and verified. User reference FVG was audited; custom WaveTrend is documented as a future closed-bar confluence adapter rather than a standalone trigger. CI head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime PASS; Build PASS; Source/Architecture PASS. Target cTrader replay remains required for empirical signal-quality measurement.
 
 Audit:
 

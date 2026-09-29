@@ -46,9 +46,12 @@ namespace cAlgo
                           bars.OpenPrices[j];
 
                 if (directional &&
-                    nextBody >=
-                    atr *
-                    ObDisplacementAtr)
+                    OrderBlockRule.MeetsDisplacement(
+                        direction,
+                        bars.OpenPrices[j],
+                        bars.ClosePrices[j],
+                        atr,
+                        ObDisplacementAtr))
                 {
                     displacement = true;
                     strongestBody =
@@ -83,10 +86,12 @@ namespace cAlgo
                      j <= impulseEnd;
                      j++)
                 {
-                    if (bars.ClosePrices[j] >
-                        priorHigh +
-                        atr *
-                        StructureBreakAtr)
+                    if (OrderBlockRule.BreaksStructure(
+                            direction,
+                            bars.ClosePrices[j],
+                            priorHigh,
+                            atr,
+                            StructureBreakAtr))
                     {
                         structureBreak = true;
                         break;
@@ -106,10 +111,12 @@ namespace cAlgo
                      j <= impulseEnd;
                      j++)
                 {
-                    if (bars.ClosePrices[j] <
-                        priorLow -
-                        atr *
-                        StructureBreakAtr)
+                    if (OrderBlockRule.BreaksStructure(
+                            direction,
+                            bars.ClosePrices[j],
+                            priorLow,
+                            atr,
+                            StructureBreakAtr))
                     {
                         structureBreak = true;
                         break;
