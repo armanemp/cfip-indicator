@@ -57,6 +57,7 @@ namespace cAlgo
                 risk,
                 direction,
                 atr,
+                lane,
                 out double tp1,
                 out double tp2,
                 out double tp3,
