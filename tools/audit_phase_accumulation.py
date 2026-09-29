@@ -71,9 +71,17 @@ if "_serverSideTakeProfitLadderActive" not in partial_tp:
     raise SystemExit("partial TP mutation must yield to server-owned TP ladder")
 
 if "return LineStyle.Solid" not in line:
-    raise SystemExit("all signal/plan lines must be Solid")
+    raise SystemExit("all plan level lines must be Solid")
 if "LineStyle.Dots" in line or "LineStyle.DotsRare" in line or "LineStyle.LinesDots" in line:
-    raise SystemExit("non-solid signal line styles remain")
+    raise SystemExit("non-solid plan line styles remain")
+
+for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
+    chart_source = chart_path.read_text(encoding="utf-8")
+    if "LineStyle." in chart_source and "LineStyle.Solid" not in chart_source:
+        raise SystemExit(f"{chart_path.name}: chart line style is not Solid-only")
+    for forbidden in ("LineStyle.Dots", "LineStyle.DotsRare", "LineStyle.LinesDots"):
+        if forbidden in chart_source:
+            raise SystemExit(f"{chart_path.name}: forbidden non-solid line style {forbidden}")
 
 if "return Color.White" not in labels:
     raise SystemExit("level labels must use white text")
