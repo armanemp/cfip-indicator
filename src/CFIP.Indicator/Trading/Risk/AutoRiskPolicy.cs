@@ -10,9 +10,11 @@ namespace cAlgo
                 SuitabilityRiskMultiplier();
 
             double outcome =
-                AdaptiveOutcomeRiskPolicy.Calculate(
-                    _outcomeHistory,
-                    suitability);
+                EnableOutcomeTelemetry
+                    ? AdaptiveOutcomeRiskPolicy.Calculate(
+                        _outcomeHistory,
+                        suitability)
+                    : suitability;
 
             return RiskPercentPolicy.Calculate(
                 RiskPercentEquity,
@@ -21,9 +23,11 @@ namespace cAlgo
         }
         private double OutcomeRiskMultiplier()
         {
-            return AdaptiveOutcomeRiskPolicy.Calculate(
-                _outcomeHistory,
-                1.0);
+            return EnableOutcomeTelemetry
+                ? AdaptiveOutcomeRiskPolicy.Calculate(
+                    _outcomeHistory,
+                    1.0)
+                : 1.0;
         }
     }
 }
