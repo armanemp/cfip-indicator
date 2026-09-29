@@ -62,6 +62,11 @@ namespace cAlgo
                 !SwingPlateauRule.IsWithinAnchor(100, 100.19, 0.1),
                 "equal-level membership is bounded by fixed anchor, not chained neighbors");
             Assert(
+                SwingPlateauRule.IsWithinAnchor(100, 100.08, 0.1) &&
+                SwingPlateauRule.IsWithinAnchor(100.08, 100.16, 0.1) &&
+                !SwingPlateauRule.IsWithinAnchor(100, 100.16, 0.1),
+                "transitive tolerance chain cannot manufacture one equal-level cluster");
+            Assert(
                 SwingPlateauRule.BreakIdentity(1, 12, 20) ==
                 SwingPlateauRule.BreakIdentity(1, 12, 20) &&
                 SwingPlateauRule.BreakIdentity(1, 12, 20) !=
