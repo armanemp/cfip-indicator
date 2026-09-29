@@ -14,15 +14,19 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void RenderPlanLabels()
+        private void RenderPlanLabels(
+            SignalVisualSnapshot snapshot)
                                 {
                                     if (_plan == null ||
+                                        snapshot == null ||
+                                        !snapshot.PlanActive ||
+                                        snapshot.PendingOrder ||
                                         (!ShowLevelPriceLabels &&
                                          !ShowSignalLabels) ||
                                         Bars == null ||
                                         Bars.Count < 2)
                                         return;
-                        
+
                                     RemovePlanLabels();
                         
                                     int bar =
@@ -31,7 +35,7 @@ namespace cAlgo
                                             Math.Min(
                                                 Bars.Count - 1,
                                                 MapM5ToChart(
-                                                    _plan.CreatedM5,
+                                                    snapshot.CreatedM5,
                                                     Bars.Count - 1)));
                         
                                     if (ShowEntry)
@@ -40,43 +44,40 @@ namespace cAlgo
                                             P + "ENTRY_LABEL",
                                             "ENTRY " +
                                             Price(
-                                                _plan.Entry),
+                                                snapshot.Entry),
                                             bar,
-                                            _plan.Entry,
+                                            snapshot.Entry,
                                             EntryLineColor);
                                     }
                         
                                     bool idealDistinct =
-                                        IsFinitePositive(_plan.IdealEntry) &&
-                                        !SamePrice(
-                                            _plan.IdealEntry,
-                                            _plan.Entry);
+                                        snapshot.IdealEntryVisible;
                         
                                     if (ShowEntry &&
                                         idealDistinct)
                                     {
                                         DrawPlanLabel(
                                             P + "IDEAL_ENTRY_LABEL",
-                                            (_plan.EntryMode ==
+                                            (snapshot.EntryMode ==
                                                 ExecutionMode.BreakoutMarket
                                                 ? "ZONE MID "
                                                 : "IDEAL ") +
                                             Price(
-                                                _plan.IdealEntry),
+                                                snapshot.IdealEntry),
                                             bar,
-                                            _plan.IdealEntry,
+                                            snapshot.IdealEntry,
                                             PanelAccentColor);
                                     }
                         
                                     bool triggerDistinct =
-                                        IsFinitePositive(_plan.EntryTrigger) &&
+                                        IsFinitePositive(snapshot.EntryTrigger) &&
                                         !SamePrice(
-                                            _plan.EntryTrigger,
-                                            _plan.Entry) &&
+                                            snapshot.EntryTrigger,
+                                            snapshot.Entry) &&
                                         (!idealDistinct ||
                                          !SamePrice(
-                                             _plan.EntryTrigger,
-                                             _plan.IdealEntry));
+                                             snapshot.EntryTrigger,
+                                             snapshot.IdealEntry));
                         
                                     if (ShowTrigger &&
                                         triggerDistinct &&
@@ -86,16 +87,14 @@ namespace cAlgo
                                             P + "TRIGGER_LABEL",
                                             "TRIGGER " +
                                             Price(
-                                                _plan.EntryTrigger),
+                                                snapshot.EntryTrigger),
                                             bar,
-                                            _plan.EntryTrigger,
+                                            snapshot.EntryTrigger,
                                             TriggerLineColor);
                                     }
                         
                                     double displayStop =
-                                        _plan.IsLivePosition
-                                            ? GetActiveBrokerStopPrice()
-                                            : _plan.Stop;
+                                        snapshot.Stop;
                         
                                     if (ShowSL &&
                                         IsFinitePositive(displayStop))
@@ -110,9 +109,9 @@ namespace cAlgo
                                     }
                         
                                     bool tp1Distinct =
-                                        IsFinitePositive(_plan.Tp1) &&
-                                        !SamePrice(_plan.Tp1, _plan.Entry) &&
-                                        !SamePrice(_plan.Tp1, _plan.EntryTrigger);
+                                        IsFinitePositive(snapshot.Tp1) &&
+                                        !SamePrice(snapshot.Tp1, snapshot.Entry) &&
+                                        !SamePrice(snapshot.Tp1, snapshot.EntryTrigger);
                         
                                     if (ShowTP1 &&
                                         tp1Distinct)
@@ -121,18 +120,18 @@ namespace cAlgo
                                             P + "TP1_LABEL",
                                             "TP1 " +
                                             Price(
-                                                _plan.Tp1),
+                                                snapshot.Tp1),
                                             bar,
-                                            _plan.Tp1,
+                                            snapshot.Tp1,
                                             TpLineColor);
                                     }
                         
                                     bool tp2Distinct =
-                                        IsFinitePositive(_plan.Tp2) &&
+                                        IsFinitePositive(snapshot.Tp2) &&
                                         (!tp1Distinct ||
-                                         !SamePrice(_plan.Tp2, _plan.Tp1)) &&
-                                        !SamePrice(_plan.Tp2, _plan.Entry) &&
-                                        !SamePrice(_plan.Tp2, _plan.EntryTrigger);
+                                         !SamePrice(snapshot.Tp2, snapshot.Tp1)) &&
+                                        !SamePrice(snapshot.Tp2, snapshot.Entry) &&
+                                        !SamePrice(snapshot.Tp2, snapshot.EntryTrigger);
                         
                                     if (ShowTP2 &&
                                         tp2Distinct)
@@ -141,18 +140,18 @@ namespace cAlgo
                                             P + "TP2_LABEL",
                                             "TP2 " +
                                             Price(
-                                                _plan.Tp2),
+                                                snapshot.Tp2),
                                             bar,
-                                            _plan.Tp2,
+                                            snapshot.Tp2,
                                             Tp2LineColor);
                                     }
                         
                                     bool tp3Distinct =
-                                        IsFinitePositive(_plan.Tp3) &&
+                                        IsFinitePositive(snapshot.Tp3) &&
                                         (!tp2Distinct ||
-                                         !SamePrice(_plan.Tp3, _plan.Tp2)) &&
-                                        !SamePrice(_plan.Tp3, _plan.Entry) &&
-                                        !SamePrice(_plan.Tp3, _plan.EntryTrigger);
+                                         !SamePrice(snapshot.Tp3, snapshot.Tp2)) &&
+                                        !SamePrice(snapshot.Tp3, snapshot.Entry) &&
+                                        !SamePrice(snapshot.Tp3, snapshot.EntryTrigger);
                         
                                     if (ShowTP3 &&
                                         tp3Distinct)
@@ -161,18 +160,18 @@ namespace cAlgo
                                             P + "TP3_LABEL",
                                             "TP3 " +
                                             Price(
-                                                _plan.Tp3),
+                                                snapshot.Tp3),
                                             bar,
-                                            _plan.Tp3,
+                                            snapshot.Tp3,
                                             Tp3LineColor);
                                     }
                         
                                     bool tp4Distinct =
-                                        IsFinitePositive(_plan.Tp4) &&
+                                        IsFinitePositive(snapshot.Tp4) &&
                                         (!tp3Distinct ||
-                                         !SamePrice(_plan.Tp4, _plan.Tp3)) &&
-                                        !SamePrice(_plan.Tp4, _plan.Entry) &&
-                                        !SamePrice(_plan.Tp4, _plan.EntryTrigger);
+                                         !SamePrice(snapshot.Tp4, snapshot.Tp3)) &&
+                                        !SamePrice(snapshot.Tp4, snapshot.Entry) &&
+                                        !SamePrice(snapshot.Tp4, snapshot.EntryTrigger);
                         
                                     if (ShowTP4 &&
                                         tp4Distinct)
@@ -181,23 +180,22 @@ namespace cAlgo
                                             P + "TP4_LABEL",
                                             "TP4 " +
                                             Price(
-                                                _plan.Tp4),
+                                                snapshot.Tp4),
                                             bar,
-                                            _plan.Tp4,
+                                            snapshot.Tp4,
                                             Tp4LineColor);
                                     }
                         
                                     double activeBrokerTarget =
-                                        GetActiveBrokerTargetPrice();
+                                        snapshot.BrokerTarget;
                         
                                     bool activeBrokerTargetDistinct =
-                                        _plan.IsLivePosition &&
-                                        IsFinitePositive(activeBrokerTarget) &&
-                                        !SamePrice(activeBrokerTarget, _plan.Entry) &&
-                                        !SamePrice(activeBrokerTarget, _plan.Tp1) &&
-                                        !SamePrice(activeBrokerTarget, _plan.Tp2) &&
-                                        !SamePrice(activeBrokerTarget, _plan.Tp3) &&
-                                        !SamePrice(activeBrokerTarget, _plan.Tp4);
+                                        snapshot.ActiveBrokerTargetVisible &&
+                                        !SamePrice(activeBrokerTarget, snapshot.Entry) &&
+                                        !SamePrice(activeBrokerTarget, snapshot.Tp1) &&
+                                        !SamePrice(activeBrokerTarget, snapshot.Tp2) &&
+                                        !SamePrice(activeBrokerTarget, snapshot.Tp3) &&
+                                        !SamePrice(activeBrokerTarget, snapshot.Tp4);
                         
                                     if ((ShowTP1 ||
                                          ShowTP2 ||
