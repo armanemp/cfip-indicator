@@ -37,9 +37,28 @@ namespace cAlgo
                        volume,
                        out guardReason))
                {
+                   _autoExecutionBlockReason =
+                       "AGGRESSIVE • " +
+                       guardReason;
                    SetAutoTradingState(
                        "BLOCKED",
-                       guardReason);
+                       _autoExecutionBlockReason);
+                   return;
+               }
+
+               string finalSuitabilityReason;
+               if (!PassesMarketSuitability(
+                       closedM5,
+                       _reaction.Direction,
+                       out finalSuitabilityReason,
+                       true))
+               {
+                   _autoExecutionBlockReason =
+                       "AGGRESSIVE • SUITABILITY • " +
+                       finalSuitabilityReason;
+                   SetAutoTradingState(
+                       "BLOCKED",
+                       _autoExecutionBlockReason);
                    return;
                }
                ExecutionIntent aggressiveIntent =
@@ -208,6 +227,9 @@ namespace cAlgo
            }
            catch (Exception ex)
            {
+               _autoExecutionBlockReason =
+                   "AGGRESSIVE • EXCEPTION • " +
+                   ex.Message;
                Print(
                    "CFIP aggressive trade failed: {0}",
                    ex.Message);
