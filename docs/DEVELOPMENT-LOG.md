@@ -1303,3 +1303,17 @@ Safety boundary:
 Detailed phase record: `docs/PHASE-9-9-SIGNAL-PROTECTION-COHERENCE.md`.
 
 CI and target-terminal replay are required before the phase is considered verified complete.
+
+### Phase 9.9 corrective hardening — 2026-09-29
+
+Additional implementation pass on `phase/9-9-signal-protection-coherence`:
+
+- corrected cTrader advanced-protection partial TP construction to the current documented `RelativeTakeProfitProtection(double volume, double distance)` API;
+- changed live M5 indicator-fusion actionability to fail closed when the current fusion snapshot is present but unavailable/zero-quality;
+- suppressed decision/reaction alert layers when a managed pending order or live position is authoritative;
+- extended `tools/audit_runtime_ui.py` with regression checks for the server-ladder API shape, white/background-free labels, and execution-state signal-layer suppression.
+
+Latest code head after these corrections: `3f7ba0b42ddf141d8d206f077e867dd904d3f326`.
+
+Verification remains pending until Runtime Acceptance, cTrader Compile/Build and Source/Architecture all pass on the final documentation-inclusive head.
+
