@@ -215,6 +215,17 @@ namespace cAlgo
                 private readonly List<OutcomeObservation> _outcomeHistory =
                     new List<OutcomeObservation>();
 
+                // Long-term learning aggregates are populated from the immutable
+                // 90-day archive files. They are intentionally separate from the
+                // bounded recent window used for fast contextual calibration.
+                private readonly Dictionary<ConfidenceCalibrationKey, int> _archiveCalibrationSamples =
+                    new Dictionary<ConfidenceCalibrationKey, int>();
+                private readonly Dictionary<ConfidenceCalibrationKey, int> _archiveCalibrationWins =
+                    new Dictionary<ConfidenceCalibrationKey, int>();
+                private int _archiveLearningOutcomeCount;
+                private bool _outcomeArchiveImportQueued;
+                private bool _outcomeArchiveImported;
+
                 private readonly List<ExecutionTelemetryRecord> _executionTelemetryHistory =
                     new List<ExecutionTelemetryRecord>();
         
@@ -247,6 +258,7 @@ namespace cAlgo
                 private int _initializationPendingDataLoads;
                 private bool _initializationDataRequested;
                 private bool _initializationDataReady;
+                private bool _initializationOptionalDataRequested;
                 private DateTime _lastPanelRenderUtc = DateTime.MinValue;
                 private DateTime _lastCalculationCompletedUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
