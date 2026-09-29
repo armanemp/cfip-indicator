@@ -24,8 +24,8 @@ namespace cAlgo
                         
                                     if (direction == 1)
                                     {
-                                        if (_m5Frame.StructureBull) count++;
-                                        if (_m5Frame.MssBull ||
+                                        if (_m5Frame.StructureBull ||
+                                            _m5Frame.MssBull ||
                                             _m5Frame.ChochBull) count++;
                                         if (_m5Frame.DisplacementBull) count++;
                                         if (_m15Frame != null &&
@@ -37,8 +37,8 @@ namespace cAlgo
                                     }
                                     else
                                     {
-                                        if (_m5Frame.StructureBear) count++;
-                                        if (_m5Frame.MssBear ||
+                                        if (_m5Frame.StructureBear ||
+                                            _m5Frame.MssBear ||
                                             _m5Frame.ChochBear) count++;
                                         if (_m5Frame.DisplacementBear) count++;
                                         if (_m15Frame != null &&
