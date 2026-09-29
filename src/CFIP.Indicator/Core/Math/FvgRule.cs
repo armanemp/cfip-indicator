@@ -21,10 +21,10 @@ namespace cAlgo
             low = high = gap = 0;
 
             if ((direction != 1 && direction != -1) ||
-                !FinitePositive(olderHigh) ||
-                !FinitePositive(olderLow) ||
-                !FinitePositive(currentHigh) ||
-                !FinitePositive(currentLow) ||
+                !FinitePositiveFvgValue(olderHigh) ||
+                !FinitePositiveFvgValue(olderLow) ||
+                !FinitePositiveFvgValue(currentHigh) ||
+                !FinitePositiveFvgValue(currentLow) ||
                 olderLow > olderHigh ||
                 currentLow > currentHigh)
                 return false;
@@ -63,10 +63,10 @@ namespace cAlgo
             low = high = gap = 0;
 
             if ((direction != 1 && direction != -1) ||
-                !FinitePositive(previousHigh) ||
-                !FinitePositive(previousLow) ||
-                !FinitePositive(currentHigh) ||
-                !FinitePositive(currentLow) ||
+                !FinitePositiveFvgValue(previousHigh) ||
+                !FinitePositiveFvgValue(previousLow) ||
+                !FinitePositiveFvgValue(currentHigh) ||
+                !FinitePositiveFvgValue(currentLow) ||
                 previousLow > previousHigh ||
                 currentLow > currentHigh)
                 return false;
@@ -97,9 +97,9 @@ namespace cAlgo
             double creationAtr,
             double minimumAtr)
         {
-            return FinitePositive(gap) &&
-                   FinitePositive(creationAtr) &&
-                   FinitePositive(minimumAtr) &&
+            return FinitePositiveFvgValue(gap) &&
+                   FinitePositiveFvgValue(creationAtr) &&
+                   FinitePositiveFvgValue(minimumAtr) &&
                    gap >= creationAtr * minimumAtr;
         }
 
@@ -128,7 +128,7 @@ namespace cAlgo
                     zoneLow,
                     zoneHigh,
                     zoneHigh - zoneLow) ||
-                !FinitePositive(fillPrice))
+                !FinitePositiveFvgValue(fillPrice))
                 return false;
 
             return direction == 1
@@ -153,8 +153,8 @@ namespace cAlgo
                     zoneLow,
                     zoneHigh,
                     zoneHigh - zoneLow) ||
-                !FinitePositive(fillPrice) ||
-                !FinitePositive(tickSize) ||
+                !FinitePositiveFvgValue(fillPrice) ||
+                !FinitePositiveFvgValue(tickSize) ||
                 IsFullyFilled(
                     direction,
                     zoneLow,
@@ -204,13 +204,13 @@ namespace cAlgo
             double high,
             double gap)
         {
-            return FinitePositive(low) &&
-                   FinitePositive(high) &&
-                   FinitePositive(gap) &&
+            return FinitePositiveFvgValue(low) &&
+                   FinitePositiveFvgValue(high) &&
+                   FinitePositiveFvgValue(gap) &&
                    low < high;
         }
 
-        private static bool FinitePositive(double value)
+        private static bool FinitePositiveFvgValue(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
