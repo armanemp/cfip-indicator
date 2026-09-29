@@ -55,7 +55,22 @@ Different source timeframes, directions or lanes are kept distinct even when the
 
 When the visible-candidate cap is reached, selection first preserves distinct (SourceTimeframe, Lane, Direction) coverage and then fills remaining slots by display priority.
 
-### 5. Final automatic execution gates
+### 5. Execution-path diagnostics
+
+Signal trace schema v2 now records PlanRiskAtr, EffectiveTp1RR and RequiredTp1RR.
+This makes weak-plan rejection measurable instead of only textual. Older schema v1
+traces remain readable by the forensic analyzer.
+
+### 6. Deterministic target-level cache
+
+Repeated same-input target-level construction across multi-scenario evaluation is now
+cached by closed M5, direction, entry and ATR. Callers receive a shallow copy so the
+cache cannot become mutable shared decision state.
+
+This optimization targets CPU/runtime cost without changing signal authority or live
+quote semantics.
+
+### 7. Final automatic execution gates
 
 The same reward-risk contract is checked again immediately before:
 
