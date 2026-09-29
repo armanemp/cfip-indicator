@@ -10,8 +10,7 @@ namespace cAlgo
 
         private void RenderAnalysisGuide()
         {
-            if (!ShowOnChartAnalysisGuide ||
-                Bars == null ||
+            if (Bars == null ||
                 Bars.Count < 2)
             {
                 RemoveAnalysisGuide();
