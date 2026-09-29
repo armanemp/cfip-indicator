@@ -206,7 +206,7 @@ namespace cAlgo
             catch (Exception ex)
             {
                 _autoExecutionBlockReason =
-                    "AGGRESSIVE • EXCEPTION • " +
+                    "AGG • EXCEPTION • " +
                     ex.Message;
                 Print(
                     "CFIP aggressive trade failed: {0}",
