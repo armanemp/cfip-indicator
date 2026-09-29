@@ -3288,9 +3288,9 @@ Next: Phase 6.1 — Decision closed-bar contract.
 
 ## Runtime UI / protection correction — 2026-09-29
 
-Status: Phase 7.2 corrective implementation in validation.
+Status: complete (corrective hotfix merged 2026-09-29).
 
-User-reported runtime defects addressed in the current corrective PR:
+User-reported runtime defects addressed:
 - AUTO TRADE and AUTO ORDERS panel controls use a single direct-click operator boundary tied to canonical runtime flags;
 - setup-preview Entry/Ideal/Trigger/SL/TP levels use compact semantic name/price boxes;
 - setup execution geometry no longer reprices on raw quote movement;
@@ -3300,12 +3300,13 @@ User-reported runtime defects addressed in the current corrective PR:
 - reversal LIMIT pending orders select materially future structural levels rather than the current market price, using M5/M15 FVG, order blocks, swing/equal-liquidity structure, MTF context and indicator/OSS confluence;
 - predictive confluence is source-deduplicated and remains behind the existing smart-quality and broker-confirmation gates.
 
-No new public parameters are introduced. The existing 535-parameter contract remains mandatory.
+No new public parameters were introduced. The existing 535-parameter contract remains intact.
 
-Acceptance state:
-- source/architecture verification: pending on current PR head;
-- runtime acceptance: pending on current PR head;
-- cTrader compile: pending on current PR head;
-- hands-on cTrader chart/broker validation: still required after merge;
-- local pull is required only after the PR is merged into `main`.
+Acceptance:
+- source/architecture verification: PASS;
+- runtime acceptance contracts: PASS;
+- cTrader compile: PASS;
+- PR #28 merged into `main` as `c8fd3db7761d45b094986105e585a49b72645ba5`;
+- hands-on cTrader chart/broker validation: still required;
+- local pull is required now because `main` has advanced.
 
