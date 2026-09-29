@@ -5,7 +5,7 @@ namespace cAlgo
     [Indicator(
         IsOverlay = true,
         TimeZone = TimeZones.UTC,
-        AccessRights = AccessRights.None)]
+        AccessRights = AccessRights.Internet)]
     public partial class CFIPIndicator : Indicator
     {
     }
