@@ -18,5 +18,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/LifecycleState.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PriceProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleTransitionPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Enums/OpportunityLane.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/TradePlanRegistry.cs" />
   </ItemGroup>
 </Project>
