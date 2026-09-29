@@ -10,7 +10,9 @@ namespace cAlgo
             int independentEvidence,
             int structuralConfirmations,
             int regimeQuality,
-            int retestQuality)
+            int retestQuality,
+            int indicatorConfluenceQuality,
+            int indicatorConflict)
         {
             double normalizedIndependentEvidence =
                 Math.Min(
@@ -41,7 +43,13 @@ namespace cAlgo
                     normalizedIndependentEvidence * 0.20 +
                     normalizedStructural * 0.15 +
                     NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.10 +
-                    effectiveRetestQuality * 0.10),
+                    effectiveRetestQuality * 0.08 +
+                    NumericGuards.ClampInt(indicatorConfluenceQuality, 0, 100) * 0.10) -
+                Math.Min(
+                    12,
+                    Math.Max(
+                        0,
+                        indicatorConflict - 35) / 5),
                 0,
                 100);
         }
