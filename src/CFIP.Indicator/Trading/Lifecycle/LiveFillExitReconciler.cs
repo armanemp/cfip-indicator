@@ -288,7 +288,7 @@ namespace cAlgo
                     : entry;
 
             if (IsFinitePositive(existing) &&
-                LiveExitGeometryRule.ShouldAdvanceTarget(
+                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     direction,
                     0,
                     existing,
@@ -311,7 +311,7 @@ namespace cAlgo
 
                 if (candidate != null &&
                     IsFinitePositive(candidate.Price) &&
-                    LiveExitGeometryRule.ShouldAdvanceTarget(
+                    LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         direction,
                         existing,
                         candidate.Price,
@@ -336,7 +336,7 @@ namespace cAlgo
                         ? entry + risk * fallbackRR
                         : entry - risk * fallbackRR;
 
-                if (LiveExitGeometryRule.ShouldAdvanceTarget(
+                if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         direction,
                         existing,
                         synthetic,
