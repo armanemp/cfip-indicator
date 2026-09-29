@@ -366,7 +366,6 @@ namespace cAlgo
             _initializationDataRequested = false;
             _initializationDataReady = false;
             _initializationPendingDataLoads = 0;
-            _initializationOptionalDataRequested = false;
             _initializationStartedUtc = TimeInUtc;
             _startupCalculationSeedDone = false;
             _startupCalculationSeedQueued = false;
