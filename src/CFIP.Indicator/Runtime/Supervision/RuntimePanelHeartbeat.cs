@@ -23,11 +23,14 @@ namespace cAlgo
                 _lastPanelHeartbeatUtc =
                     now;
 
-                RunRuntimeSafetySupervisor(
-                    now);
+                if (ShouldRunSafetySupervisor(now))
+                    RunRuntimeSafetySupervisor(
+                        now);
 
                 UpdatePanelHeartbeatRows(
                     now);
+
+                RenderPanel();
             }
             catch (Exception ex)
             {
