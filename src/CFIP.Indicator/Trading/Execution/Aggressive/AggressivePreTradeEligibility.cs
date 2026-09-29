@@ -16,7 +16,33 @@ namespace cAlgo
                 _reaction == null ||
                 !_reaction.EntryAllowed ||
                 _reaction.Direction == 0)
+            {
+                _aggressiveEntryPolicy.Invalidate();
                 return false;
+            }
+
+            int reactionM5 =
+                _m5Bars == null
+                    ? -1
+                    : _m5Bars.Count - 1;
+
+            bool intrabarQualified =
+                _aggressiveEntryPolicy.Observe(
+                    reactionM5,
+                    _reaction.Direction,
+                    _reaction.EntryAllowed,
+                    _lastReactionCalcUtc);
+
+            if (!intrabarQualified)
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • " +
+                    _aggressiveEntryPolicy.StateText();
+                return false;
+            }
+
+            _autoExecutionBlockReason =
+                "AGGRESSIVE • INTRABAR ARMED";
 
             string capacityReason;
 
