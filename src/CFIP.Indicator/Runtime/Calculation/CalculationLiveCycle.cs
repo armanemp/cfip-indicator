@@ -114,6 +114,9 @@ namespace cAlgo
                 _setupPreview = null;
                 _lastExecutionModelM5 = -1;
                 _lastExecutionModelMarket = 0;
+
+                RefreshParallelOpportunityCandidates(
+                    closedM5);
                 return;
             }
 
@@ -168,6 +171,9 @@ namespace cAlgo
                 BuildTradeSetupPreview(
                     closedM5,
                     _executionModel);
+
+            RefreshParallelOpportunityCandidates(
+                closedM5);
         }
 
         private void RenderCalculationState(
