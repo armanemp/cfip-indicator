@@ -8,7 +8,6 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 INIT = ROOT / "src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs"
 STARTUP_HELPERS = ROOT / "src/CFIP.Indicator/Runtime/Initialization/StartupDataHelpers.cs"
-HOST = ROOT / "src/CFIP.Indicator/Indicator/CFIPIndicator.cs"
 CSPROJ = ROOT / "src/CFIP.Indicator/CFIP.Indicator.csproj"
 LIVE_CYCLE = ROOT / "src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs"
 LABEL_RENDERER = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs"
