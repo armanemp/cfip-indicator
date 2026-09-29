@@ -164,7 +164,7 @@ namespace cAlgo
             double probe)
         {
             if (!IsValidDirection(direction) ||
-                !IsValidGeometry(
+                !IsValidOrderBlockGeometry(
                     zoneLow,
                     zoneHigh) ||
                 !Finite(probe))
@@ -192,7 +192,7 @@ namespace cAlgo
             remainingRatio = 0;
 
             if (!IsValidDirection(direction) ||
-                !IsValidGeometry(
+                !IsValidOrderBlockGeometry(
                     zoneLow,
                     zoneHigh) ||
                 !Finite(probe) ||
@@ -265,7 +265,7 @@ namespace cAlgo
                     : "WICK");
         }
 
-        private static bool IsValidGeometry(
+        private static bool IsValidOrderBlockGeometry(
             double low,
             double high)
         {
