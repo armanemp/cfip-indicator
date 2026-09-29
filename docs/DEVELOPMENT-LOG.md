@@ -262,3 +262,20 @@ Next: Phase 2.2 — Automatic market rejection matrix.
 Status: complete.
 
 Replaced three duplicate submission gates with one keyed policy using SubmissionAttemptIdentity and ExecutionSubmissionPath. Added runtime coverage for failure isolation, circuit behavior and reset. Uploaded ZIP audit: WaveTrend retained only as a future composite momentum candidate; TPO Profile file is empty.
+
+
+## Phase 5.5 — Visual setup levels and execution controls
+
+Status: implementation complete on the phase branch; CI verification pending.
+
+Implemented:
+- added the read-only TradeSetupPreview projection and builder, reusing the existing structural-stop and target-selection authorities;
+- extended SignalVisualSnapshot with setup-preview levels;
+- rendered Entry / Ideal Entry / Trigger / SL / TP1..TP4 through one shared level-line renderer before executable Plan activation;
+- made the chart-level anchor explicit instead of reading the live Plan from the line renderer;
+- replaced ToggleButton Click mutation with explicit Checked/Unchecked handlers using the existing runtime state owner;
+- added architecture and runtime acceptance contracts for the visual/control boundaries.
+
+Invariant: the setup preview is presentation-only and cannot authorize broker submission or create an executable Plan.
+
+Strategy signal thresholds, RR policy, risk sizing, trailing and broker execution rules are intentionally unchanged in this phase.
