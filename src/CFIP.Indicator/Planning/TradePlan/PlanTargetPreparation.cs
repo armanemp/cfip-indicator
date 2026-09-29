@@ -15,6 +15,7 @@ namespace cAlgo
             double risk,
             int direction,
             double atr,
+            OpportunityLane lane,
             out double tp1,
             out double tp2,
             out double tp3,
@@ -48,7 +49,8 @@ namespace cAlgo
                     direction,
                     Math.Max(
                         FallbackTp1RR,
-                        MinimumRequiredRR()));
+                        MinimumRequiredRR()),
+                    lane);
 
             tp2 =
                 SelectTarget(
@@ -59,7 +61,8 @@ namespace cAlgo
                     direction,
                     Math.Max(
                         FallbackTp2RR,
-                        Tp2MinimumRR));
+                        Tp2MinimumRR),
+                    lane);
 
             tp3 =
                 SelectTarget(
@@ -70,7 +73,8 @@ namespace cAlgo
                     direction,
                     Math.Max(
                         FallbackTp3RR,
-                        Tp3MinimumRR));
+                        Tp3MinimumRR),
+                    lane);
 
             tp4 =
                 SelectTarget(
@@ -81,7 +85,8 @@ namespace cAlgo
                     direction,
                     Math.Max(
                         FallbackTp4RR,
-                        Tp4MinimumRR));
+                        Tp4MinimumRR),
+                    lane);
 
             if (!IsValidTarget(
                     direction,
@@ -106,7 +111,17 @@ namespace cAlgo
                     candidates))
                 return false;
 
-            if (RequireHtfRewardForTp2Plus)
+            bool requireHtfTp2Plus =
+                RequiresHtfRewardForTargetStage(
+                    1,
+                    lane);
+
+            bool requireHtfTp1 =
+                RequiresHtfRewardForTargetStage(
+                    0,
+                    lane);
+
+            if (requireHtfTp2Plus)
             {
                 if (tp2 > 0 &&
                     !IsHtfSourceForReward(
@@ -127,7 +142,7 @@ namespace cAlgo
                     return false;
             }
 
-            if (RequireHtfRewardForTp1 &&
+            if (requireHtfTp1 &&
                 !IsHtfSourceForReward(
                     selected,
                     tp1))
