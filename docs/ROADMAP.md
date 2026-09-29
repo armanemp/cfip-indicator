@@ -1598,7 +1598,7 @@ Acceptance:
 
 ## Phase 8.3 — FVG mathematical audit
 
-Status: planned.
+Status: IN PROGRESS — branch `phase-8-3-fvg-mathematical-audit`. Full scope and acceptance criteria: `docs/PHASE-8-3-FVG-MATHEMATICAL-AUDIT.md`.
 
 Audit:
 
