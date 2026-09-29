@@ -19,37 +19,23 @@ namespace cAlgo
             out int plateauEnd,
             out double level)
         {
-            plateauStart = plateauEnd = -1;
-            level = 0;
-            if (highs == null || strength < 1 || candidateIndex < 0 ||
-                closedIndex >= highs.Length || closedIndex < candidateIndex + strength ||
-                candidateIndex >= highs.Length || equalityTolerance < 0 ||
-                !FinitePositive(highs[candidateIndex]))
+            if (highs == null)
+            {
+                plateauStart = plateauEnd = -1;
+                level = 0;
                 return false;
+            }
 
-            int left = candidateIndex;
-            int right = candidateIndex;
-            while (left > 0 && Math.Abs(highs[left - 1] - highs[candidateIndex]) <= equalityTolerance)
-                left--;
-            while (right + 1 <= closedIndex && Math.Abs(highs[right + 1] - highs[candidateIndex]) <= equalityTolerance)
-                right++;
-
-            // Canonical representative is the leftmost bar of the contiguous plateau.
-            if (candidateIndex != left || left < strength || right + strength > closedIndex)
-                return false;
-
-            double pivot = highs[left];
-            for (int i = left - strength; i < left; i++)
-                if (!FinitePositive(highs[i]) || highs[i] >= pivot - equalityTolerance)
-                    return false;
-            for (int i = right + 1; i <= right + strength; i++)
-                if (!FinitePositive(highs[i]) || highs[i] > pivot + equalityTolerance)
-                    return false;
-
-            plateauStart = left;
-            plateauEnd = right;
-            level = pivot;
-            return true;
+            return TryGetHighPlateau(
+                highs.Length,
+                candidateIndex,
+                strength,
+                closedIndex,
+                equalityTolerance,
+                i => highs[i],
+                out plateauStart,
+                out plateauEnd,
+                out level);
         }
 
         public static bool TryGetLowPlateau(
@@ -62,31 +48,91 @@ namespace cAlgo
             out int plateauEnd,
             out double level)
         {
+            if (lows == null)
+            {
+                plateauStart = plateauEnd = -1;
+                level = 0;
+                return false;
+            }
+
+            return TryGetLowPlateau(
+                lows.Length,
+                candidateIndex,
+                strength,
+                closedIndex,
+                equalityTolerance,
+                i => lows[i],
+                out plateauStart,
+                out plateauEnd,
+                out level);
+        }
+
+        public static bool TryGetHighPlateau(
+            int length,
+            int candidateIndex,
+            int strength,
+            int closedIndex,
+            double equalityTolerance,
+            Func<int, double> valueAt,
+            out int plateauStart,
+            out int plateauEnd,
+            out double level)
+        {
             plateauStart = plateauEnd = -1;
             level = 0;
-            if (lows == null || strength < 1 || candidateIndex < 0 ||
-                closedIndex >= lows.Length || closedIndex < candidateIndex + strength ||
-                candidateIndex >= lows.Length || equalityTolerance < 0 ||
-                !FinitePositive(lows[candidateIndex]))
+
+            if (!ValidWindow(
+                    length,
+                    candidateIndex,
+                    strength,
+                    closedIndex,
+                    equalityTolerance,
+                    valueAt))
+                return false;
+
+            double candidate = valueAt(candidateIndex);
+            if (!FinitePositive(candidate))
                 return false;
 
             int left = candidateIndex;
             int right = candidateIndex;
-            while (left > 0 && Math.Abs(lows[left - 1] - lows[candidateIndex]) <= equalityTolerance)
+
+            while (left > 0 &&
+                   IsWithinAnchor(
+                       candidate,
+                       valueAt(left - 1),
+                       equalityTolerance))
                 left--;
-            while (right + 1 <= closedIndex && Math.Abs(lows[right + 1] - lows[candidateIndex]) <= equalityTolerance)
+
+            while (right + 1 <= closedIndex &&
+                   IsWithinAnchor(
+                       candidate,
+                       valueAt(right + 1),
+                       equalityTolerance))
                 right++;
 
-            if (candidateIndex != left || left < strength || right + strength > closedIndex)
+            // One plateau has exactly one canonical representative: its
+            // leftmost member. This makes occurrence scans deterministic.
+            if (candidateIndex != left ||
+                left < strength ||
+                right + strength > closedIndex)
                 return false;
 
-            double pivot = lows[left];
+            double pivot = valueAt(left);
+
             for (int i = left - strength; i < left; i++)
-                if (!FinitePositive(lows[i]) || lows[i] <= pivot + equalityTolerance)
+            {
+                if (!FinitePositive(valueAt(i)) ||
+                    valueAt(i) >= pivot - equalityTolerance)
                     return false;
+            }
+
             for (int i = right + 1; i <= right + strength; i++)
-                if (!FinitePositive(lows[i]) || lows[i] < pivot - equalityTolerance)
+            {
+                if (!FinitePositive(valueAt(i)) ||
+                    valueAt(i) > pivot + equalityTolerance)
                     return false;
+            }
 
             plateauStart = left;
             plateauEnd = right;
@@ -94,27 +140,130 @@ namespace cAlgo
             return true;
         }
 
-        // A candidate joins a cluster only if it is within tolerance of the
-        // fixed anchor. This prevents transitive tolerance chaining.
-        public static bool IsWithinAnchor(double anchor, double candidate, double tolerance)
+        public static bool TryGetLowPlateau(
+            int length,
+            int candidateIndex,
+            int strength,
+            int closedIndex,
+            double equalityTolerance,
+            Func<int, double> valueAt,
+            out int plateauStart,
+            out int plateauEnd,
+            out double level)
         {
-            return FinitePositive(anchor) && FinitePositive(candidate) &&
-                   tolerance >= 0 && Math.Abs(candidate - anchor) <= tolerance;
+            plateauStart = plateauEnd = -1;
+            level = 0;
+
+            if (!ValidWindow(
+                    length,
+                    candidateIndex,
+                    strength,
+                    closedIndex,
+                    equalityTolerance,
+                    valueAt))
+                return false;
+
+            double candidate = valueAt(candidateIndex);
+            if (!FinitePositive(candidate))
+                return false;
+
+            int left = candidateIndex;
+            int right = candidateIndex;
+
+            while (left > 0 &&
+                   IsWithinAnchor(
+                       candidate,
+                       valueAt(left - 1),
+                       equalityTolerance))
+                left--;
+
+            while (right + 1 <= closedIndex &&
+                   IsWithinAnchor(
+                       candidate,
+                       valueAt(right + 1),
+                       equalityTolerance))
+                right++;
+
+            if (candidateIndex != left ||
+                left < strength ||
+                right + strength > closedIndex)
+                return false;
+
+            double pivot = valueAt(left);
+
+            for (int i = left - strength; i < left; i++)
+            {
+                if (!FinitePositive(valueAt(i)) ||
+                    valueAt(i) <= pivot + equalityTolerance)
+                    return false;
+            }
+
+            for (int i = right + 1; i <= right + strength; i++)
+            {
+                if (!FinitePositive(valueAt(i)) ||
+                    valueAt(i) < pivot - equalityTolerance)
+                    return false;
+            }
+
+            plateauStart = left;
+            plateauEnd = right;
+            level = pivot;
+            return true;
         }
 
-        // A structural event identity is the direction + canonical level
-        // identity + closed-bar index; consumers can use this key to deduplicate
-        // BOS/MSS/CHOCH labels for the same break.
-        public static string BreakIdentity(int direction, int levelStartIndex, int closedBreakIndex)
+        // Equal-level membership always compares to a fixed anchor. A chain
+        // such as A~B and B~C does not make C a member unless A~C too.
+        public static bool IsWithinAnchor(
+            double anchor,
+            double candidate,
+            double tolerance)
         {
-            if ((direction != 1 && direction != -1) || levelStartIndex < 0 || closedBreakIndex <= levelStartIndex)
+            return FinitePositive(anchor) &&
+                   FinitePositive(candidate) &&
+                   tolerance >= 0 &&
+                   Math.Abs(candidate - anchor) <= tolerance;
+        }
+
+        // Stable identity for a single causal structural break event.
+        public static string BreakIdentity(
+            int direction,
+            int levelStartIndex,
+            int closedBreakIndex)
+        {
+            if ((direction != 1 && direction != -1) ||
+                levelStartIndex < 0 ||
+                closedBreakIndex <= levelStartIndex)
                 return string.Empty;
-            return direction.ToString() + ":" + levelStartIndex.ToString() + ":" + closedBreakIndex.ToString();
+
+            return direction.ToString() + ":" +
+                   levelStartIndex.ToString() + ":" +
+                   closedBreakIndex.ToString();
+        }
+
+        private static bool ValidWindow(
+            int length,
+            int candidateIndex,
+            int strength,
+            int closedIndex,
+            double equalityTolerance,
+            Func<int, double> valueAt)
+        {
+            return length > 0 &&
+                   candidateIndex >= 0 &&
+                   candidateIndex < length &&
+                   strength >= 1 &&
+                   closedIndex >= 0 &&
+                   closedIndex < length &&
+                   candidateIndex + strength <= closedIndex &&
+                   equalityTolerance >= 0 &&
+                   valueAt != null;
         }
 
         private static bool FinitePositive(double value)
         {
-            return value > 0 && !double.IsNaN(value) && !double.IsInfinity(value);
+            return value > 0 &&
+                   !double.IsNaN(value) &&
+                   !double.IsInfinity(value);
         }
     }
 }
