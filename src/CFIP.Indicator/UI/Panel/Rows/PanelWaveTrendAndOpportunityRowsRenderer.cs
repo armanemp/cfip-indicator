@@ -37,6 +37,22 @@ namespace cAlgo
                     contentWidth);
             }
 
+            if (_m5Frame != null)
+            {
+                AddPanelRow(
+                    ref slot,
+                    "INDICATOR FUSION  Q " +
+                    _m5Frame.IndicatorConfluenceQuality +
+                    "  •  CONFLICT " +
+                    _m5Frame.IndicatorConflict,
+                    _m5Frame.IndicatorConfluenceQuality >= 60 &&
+                    _m5Frame.IndicatorConflict <= 45
+                        ? PanelAccentColor
+                        : PanelSecondaryTextColor,
+                    false,
+                    contentWidth);
+            }
+
             if (EnableParallelOpportunities &&
                 _opportunityCandidates.Count > 0)
             {
