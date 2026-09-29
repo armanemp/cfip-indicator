@@ -175,7 +175,7 @@ namespace cAlgo
                 : probe >= zoneHigh;
         }
 
-        public static bool TryApplyPartialMitigation(
+        public static bool TryApplyOrderBlockPartialMitigation(
             int direction,
             double zoneLow,
             double zoneHigh,
