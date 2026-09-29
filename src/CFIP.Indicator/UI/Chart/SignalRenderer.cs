@@ -179,58 +179,6 @@ namespace cAlgo
                         {
                             Chart.RemoveObject(
                                 P + "M1_TRIGGER");
-
-                            if (snapshot == null ||
-                                !snapshot.TriggerRuntimeReady ||
-                                !ShowTrigger ||
-                                snapshot.TriggerM1Index < 0 ||
-                                (snapshot.DecisionDirection != 1 &&
-                                 snapshot.DecisionDirection != -1) ||
-                                Bars == null ||
-                                Bars.Count < 2)
-                                return;
-
-                            int triggerBar =
-                                MapM1ToChart(
-                                    snapshot.TriggerM1Index,
-                                    Bars.Count - 1);
-
-                            triggerBar =
-                                Math.Max(
-                                    0,
-                                    Math.Min(
-                                        Bars.Count - 1,
-                                        triggerBar));
-
-                            double atr =
-                                triggerBar >= 1
-                                    ? Atr(
-                                        Bars,
-                                        triggerBar)
-                                    : 0;
-
-                            double offset =
-                                Math.Max(
-                                    Symbol.PipSize * 1.5,
-                                    atr > 0
-                                        ? atr * 0.12
-                                        : Symbol.PipSize * 2);
-
-                            double price =
-                                snapshot.DecisionDirection == 1
-                                    ? Bars.LowPrices[triggerBar] - offset
-                                    : Bars.HighPrices[triggerBar] + offset;
-
-                            DrawIcon(
-                                P + "M1_TRIGGER",
-                                snapshot.DecisionDirection == 1
-                                    ? ChartIconType.UpArrow
-                                    : ChartIconType.DownArrow,
-                                triggerBar,
-                                price,
-                                SignalArrowColorFor(
-                                    snapshot.DecisionDirection,
-                                    "STRONG"));
                         }
 
         private int MapM1ToChart(
