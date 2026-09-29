@@ -191,34 +191,6 @@ namespace cAlgo
                                                             maxHeight -
                                                             fixedHeight);
                                         
-                                                    for (int i = 0;
-                                                         i < _panelRows.Count;
-                                                         i++)
-                                                    {
-                                                        TextBlock row =
-                                                            _panelRows[i];
-                                        
-                                                        row.Margin =
-                                                            new Thickness(
-                                                                Math.Max(
-                                                                    0,
-                                                                    PanelRowPadding),
-                                                                i == 0
-                                                                    ? 0
-                                                                    : Math.Max(
-                                                                        1,
-                                                                        PanelRowGap),
-                                                                Math.Max(
-                                                                    0,
-                                                                    PanelRowPadding),
-                                                                Math.Max(
-                                                                    0,
-                                                                    PanelRowPadding));
-                                        
-                                                        row.IsVisible =
-                                                            false;
-                                                    }
-                                        
                                                     RenderPanelRows(
                                                         contentWidth);
                                         
