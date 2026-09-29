@@ -46,25 +46,49 @@ namespace cAlgo
                   return false;
               }
 
+              RelativeTakeProfitProtections serverTakeProfits;
+              bool useServerTakeProfitLadder =
+                  TryBuildServerSideTakeProfitLadder(
+                      targetEntry,
+                      target,
+                      volume,
+                      out serverTakeProfits);
+
               TradeResult result;
               try
               {
                   result =
-                      TryPlaceLimitOrder(
-                          direction == 1
-                              ? TradeType.Buy
-                              : TradeType.Sell,
-                          SymbolName,
-                          volume,
-                          targetEntry,
-                          PendingOrderLabel(),
-                          pendingIntent.StopPips,
-                          pendingIntent.TargetPips,
-                          ProtectionType.Relative,
-                          PendingExpiration(),
-                          TradeExecutionMetadata.DefaultExecutionComment,
-                          false,
-                          "REVERSAL LIMIT");
+                      useServerTakeProfitLadder
+                          ? TryPlaceLimitOrderWithTakeProfitLadder(
+                              direction == 1
+                                  ? TradeType.Buy
+                                  : TradeType.Sell,
+                              SymbolName,
+                              volume,
+                              targetEntry,
+                              PendingOrderLabel(),
+                              pendingIntent.StopPips,
+                              serverTakeProfits,
+                              ProtectionType.Relative,
+                              PendingExpiration(),
+                              TradeExecutionMetadata.DefaultExecutionComment,
+                              false,
+                              "REVERSAL LIMIT • SERVER TP LADDER")
+                          : TryPlaceLimitOrder(
+                              direction == 1
+                                  ? TradeType.Buy
+                                  : TradeType.Sell,
+                              SymbolName,
+                              volume,
+                              targetEntry,
+                              PendingOrderLabel(),
+                              pendingIntent.StopPips,
+                              pendingIntent.TargetPips,
+                              ProtectionType.Relative,
+                              PendingExpiration(),
+                              TradeExecutionMetadata.DefaultExecutionComment,
+                              false,
+                              "REVERSAL LIMIT");
               }
               catch
               {
