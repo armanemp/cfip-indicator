@@ -36,19 +36,15 @@ namespace cAlgo
                 CreateExecutionStatus(
                     "AUTO TRADE",
                     AutoTradingEnabled,
-                    TpLineColor,
-                    out _autoTradingQuickStatusText,
-                    out _autoTradingQuickSwitchTrack,
-                    out _autoTradingQuickSwitchThumb);
+                    TpLineColor);
 
             _automaticOrdersQuickStatus =
                 CreateExecutionStatus(
                     "AUTO ORDERS",
                     AutomaticOrdersEnabled,
-                    TriggerLineColor,
-                    out _automaticOrdersQuickStatusText,
-                    out _automaticOrdersQuickSwitchTrack,
-                    out _automaticOrdersQuickSwitchThumb);
+                    TriggerLineColor);
+
+            WireExecutionToggleHandlers();
 
             _quickExecutionStack.AddChild(
                 _autoTradingQuickStatus);
