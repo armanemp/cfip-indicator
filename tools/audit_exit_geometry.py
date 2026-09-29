@@ -37,6 +37,7 @@ LEVEL_HITS = ROOT / "src/CFIP.Indicator/Trading/LiveManagement/ActivePlanLevelEx
 BROKER_PROTECTION = ROOT / "src/CFIP.Indicator/Trading/Execution/BrokerProtectionCoordinator.cs"
 BOUND_PROTECTION = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/BoundPlanProtection.cs"
 PROTECTION = ROOT / "src/CFIP.Indicator/Trading/LiveManagement/ProtectionManager.cs"
+LIVE_DISTANCE = ROOT / "src/CFIP.Indicator/Trading/Validation/LiveProtectionDistanceResolver.cs"
 DECISION_CONTRACTS = ROOT / "tools/CFIP.Decision.Contracts/Program.cs"
 DECISION_PROJECT = ROOT / "tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj"
 
@@ -146,6 +147,14 @@ require(
     PROTECTION,
     "LiveExitGeometryRule.IsProtectiveStop(",
     "IsValidManagedStop(",
+    "MinimumProtectionDistancePriceForDirection(",
+)
+
+require(
+    LIVE_DISTANCE,
+    "MinimumLiveTargetDistancePrice(",
+    "IsLiveTargetBrokerSafe(",
+    "LiveExitGeometryRule.ValidateLiveTarget(",
 )
 
 require(
@@ -154,6 +163,11 @@ require(
     "BUY target behind market rejected",
     "SELL target behind market rejected",
     "BUY/SELL protective stop symmetry",
+    "BUY target at minimum-forward boundary rejected",
+    "SELL target touching forward boundary rejected",
+    "BUY target below entry rejected even when forward of market",
+    "non-finite live target rejected",
+    "non-finite protective stop rejected",
 )
 require(
     DECISION_PROJECT,
@@ -187,25 +201,41 @@ if unexpected:
     )
 
 # Broker TP mutation must preserve both contracts:
-# (1) the existing configurable progression policy remains consumed;
-# (2) the new hard live geometry rule prevents any backwards/passed target.
+# (1) the existing configurable progression policy remains a tightening filter;
+# (2) the hard live geometry rule can never be disabled by that tuning switch.
 for path in (BROKER_PROTECTION, BOUND_PROTECTION):
     source = read(path)
-
-    if path == BOUND_PROTECTION:
-        if "PreventBrokerTpBackwardMove" not in source:
-            ERRORS.append(
-                f"{path.name} must retain the configured TP progression switch"
-            )
-        if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in source:
-            ERRORS.append(
-                f"{path.name} must enforce configured TP progression"
-            )
 
     if "LiveExitGeometryRule.ShouldAdvanceLiveTarget(" not in source:
         ERRORS.append(
             f"{path.name} must enforce hard live forward-only TP geometry"
         )
+
+    if "MinimumLiveTargetDistancePrice(" not in source:
+        ERRORS.append(
+            f"{path.name} must use the centralized live target distance"
+        )
+
+bound_source = read(BOUND_PROTECTION)
+if "PreventBrokerTpBackwardMove" not in bound_source:
+    ERRORS.append(
+        "BoundPlanProtection must retain the configured TP progression switch"
+    )
+if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in bound_source:
+    ERRORS.append(
+        "BoundPlanProtection must enforce configured TP progression"
+    )
+
+if "protections.LastTakeProfit.Price" not in server_text:
+    ERRORS.append(
+        "server ladder adoption must trust broker LastTakeProfit.Price"
+    )
+
+reconciler_text = read(FILL_RECONCILER)
+if "structuralStopManaged" not in reconciler_text:
+    ERRORS.append(
+        "fill reconciliation must distinguish existing and structural live stop geometry"
+    )
 
 # Server-side ladder must not be treated as immutable after TP1.
 if (

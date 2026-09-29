@@ -30,16 +30,9 @@ namespace cAlgo
                         _m5Bars.Count - 2));
 
             double minimumForwardDistance =
-                Math.Max(
-                    MinimumTakeProfitDistancePrice(),
-                    Math.Max(
-                        Symbol.PipSize,
-                        Math.Max(
-                            Symbol.TickSize,
-                            atr *
-                            Math.Max(
-                                0.05,
-                                MinimumTpSpacingAtr))));
+                MinimumLiveTargetDistancePrice(
+                    _plan.Direction,
+                    atr);
 
             if (!IsFinitePositive(market) ||
                 !IsFinitePositive(position.EntryPrice))
@@ -53,20 +46,22 @@ namespace cAlgo
                     market,
                     minimumForwardDistance);
 
-            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+            if (!IsLiveTargetBrokerSafe(
                     _plan.Direction,
-                    0,
-                    tp2,
+                    position.EntryPrice,
                     market,
-                    minimumForwardDistance))
-                return false;
-
-            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                    _plan.Direction,
                     tp2,
+                    atr) ||
+                !IsLiveTargetBrokerSafe(
+                    _plan.Direction,
+                    position.EntryPrice,
+                    market,
                     finalTarget,
-                    market,
-                    minimumForwardDistance))
+                    atr) ||
+                !TargetProgressionRule.IsValid(
+                    _plan.Direction,
+                    tp2,
+                    finalTarget))
                 return false;
 
             double tp2Volume =
@@ -148,19 +143,17 @@ namespace cAlgo
                 _tp2Hit != 0)
                 return false;
 
-            double minimumForwardDistance =
-                Math.Max(
-                    Symbol.PipSize,
+            double atr =
+                Atr(
+                    _m5Bars,
                     Math.Max(
-                        Symbol.TickSize,
-                        (Atr(
-                            _m5Bars,
-                            Math.Max(
-                                1,
-                                _m5Bars.Count - 2)) *
-                         Math.Max(
-                             0.05,
-                             MinimumTpSpacingAtr))));
+                        1,
+                        _m5Bars.Count - 2));
+
+            double minimumForwardDistance =
+                MinimumLiveTargetDistancePrice(
+                    _plan.Direction,
+                    atr);
 
             if (!IsFinitePositive(market) ||
                 !IsFinitePositive(position.EntryPrice))
@@ -189,24 +182,32 @@ namespace cAlgo
             double tp2 =
                 _plan.Tp2;
 
-            if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+            if (!IsLiveTargetBrokerSafe(
                     _plan.Direction,
-                    0,
-                    tp1,
+                    position.EntryPrice,
                     market,
-                    minimumForwardDistance) ||
-                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                    _plan.Direction,
                     tp1,
-                    tp2,
-                    market,
-                    minimumForwardDistance) ||
-                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    atr) ||
+                !IsLiveTargetBrokerSafe(
                     _plan.Direction,
+                    position.EntryPrice,
+                    market,
                     tp2,
+                    atr) ||
+                !IsLiveTargetBrokerSafe(
+                    _plan.Direction,
+                    position.EntryPrice,
+                    market,
                     finalTarget,
-                    market,
-                    minimumForwardDistance))
+                    atr) ||
+                !TargetProgressionRule.IsValid(
+                    _plan.Direction,
+                    tp1,
+                    tp2) ||
+                !TargetProgressionRule.IsValid(
+                    _plan.Direction,
+                    tp2,
+                    finalTarget))
                 return false;
 
             double tp1Volume =
@@ -303,7 +304,11 @@ namespace cAlgo
                 if (!IsFinitePositive(target))
                     continue;
 
-                if (!LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                if (!IsValidTarget(
+                        _plan.Direction,
+                        _plan.Entry,
+                        target) ||
+                    !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                         _plan.Direction,
                         0,
                         target,
@@ -336,19 +341,17 @@ namespace cAlgo
                     ? Symbol.Bid
                     : Symbol.Ask;
 
-            double minimumForwardDistance =
-                Math.Max(
-                    Symbol.PipSize,
+            double atr =
+                Atr(
+                    _m5Bars,
                     Math.Max(
-                        Symbol.TickSize,
-                        Atr(
-                            _m5Bars,
-                            Math.Max(
-                                1,
-                                _m5Bars.Count - 2)) *
-                        Math.Max(
-                            0.05,
-                            MinimumTpSpacingAtr)));
+                        1,
+                        _m5Bars.Count - 2));
+
+            double minimumForwardDistance =
+                MinimumLiveTargetDistancePrice(
+                    _plan.Direction,
+                    atr);
 
             double finalTarget =
                 FurthestForwardPlanTarget(
@@ -356,12 +359,12 @@ namespace cAlgo
                     minimumForwardDistance);
 
             if (!IsFinitePositive(finalTarget) ||
-                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                !IsLiveTargetBrokerSafe(
                     _plan.Direction,
-                    0,
-                    finalTarget,
+                    position.EntryPrice,
                     market,
-                    minimumForwardDistance))
+                    finalTarget,
+                    atr))
                 return false;
 
             double targetPips =

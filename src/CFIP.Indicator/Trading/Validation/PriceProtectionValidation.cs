@@ -16,6 +16,12 @@ namespace cAlgo
     {
         private double MinimumTakeProfitDistancePrice()
         {
+            return MinimumTakeProfitDistancePriceForDirection(0);
+        }
+
+        private double MinimumTakeProfitDistancePriceForDirection(
+            int direction)
+        {
             try
             {
                 double distance =
@@ -35,7 +41,22 @@ namespace cAlgo
                             Symbol.PipSize,
                             Symbol.TickSize);
 
-                return Symbol.Bid * distance / 100.0;
+                double referencePrice =
+                    direction == -1
+                        ? Symbol.Ask
+                        : Symbol.Bid;
+
+                if (!IsFinitePositive(referencePrice))
+                    referencePrice = Symbol.Bid;
+
+                if (!IsFinitePositive(referencePrice))
+                    return Math.Max(
+                        Symbol.TickSize,
+                        Symbol.PipSize);
+
+                return referencePrice *
+                    distance /
+                    100.0;
             }
             catch
             {
@@ -57,7 +78,8 @@ namespace cAlgo
             double minimumDistance =
                 Math.Max(
                     Symbol.TickSize,
-                    MinimumTakeProfitDistancePrice());
+                    MinimumTakeProfitDistancePriceForDirection(
+                        direction));
 
             return PriceProtectionRule.ValidateTarget(
                 direction,
@@ -67,6 +89,12 @@ namespace cAlgo
         }
 
         private double MinimumProtectionDistancePrice()
+        {
+            return MinimumProtectionDistancePriceForDirection(0);
+        }
+
+        private double MinimumProtectionDistancePriceForDirection(
+            int direction)
         {
             try
             {
@@ -87,7 +115,22 @@ namespace cAlgo
                             Symbol.PipSize,
                             Symbol.TickSize);
 
-                return Symbol.Bid * distance / 100.0;
+                double referencePrice =
+                    direction == -1
+                        ? Symbol.Ask
+                        : Symbol.Bid;
+
+                if (!IsFinitePositive(referencePrice))
+                    referencePrice = Symbol.Bid;
+
+                if (!IsFinitePositive(referencePrice))
+                    return Math.Max(
+                        Symbol.TickSize,
+                        Symbol.PipSize);
+
+                return referencePrice *
+                    distance /
+                    100.0;
             }
             catch
             {
@@ -109,7 +152,8 @@ namespace cAlgo
             double minimumDistance =
                 Math.Max(
                     Symbol.TickSize,
-                    MinimumProtectionDistancePrice());
+                    MinimumProtectionDistancePriceForDirection(
+                        direction));
 
             return PriceProtectionRule.ValidateStop(
                 direction,

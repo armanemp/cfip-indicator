@@ -27,7 +27,12 @@ namespace cAlgo
             tp4 = 0;
 
             if (candidates == null ||
-                selected == null)
+                selected == null ||
+                !IsFinitePositive(entry) ||
+                !IsFinitePositive(risk) ||
+                !IsFinitePositive(atr) ||
+                (direction != 1 &&
+                 direction != -1))
                 return false;
 
             int filledTargetSlots =
@@ -93,16 +98,25 @@ namespace cAlgo
                     tp1))
                 return false;
 
-            if (UseRRFilter &&
-                Math.Abs(
-                    tp1 -
-                    entry) /
-                Math.Max(
-                    Symbol.PipSize,
-                    risk) <
-                MinimumPlanRiskReward(
-                    lane))
-                return false;
+            if (UseRRFilter)
+            {
+                double tp1RR =
+                    Math.Abs(
+                        tp1 -
+                        entry) /
+                    Math.Max(
+                        Symbol.PipSize,
+                        risk);
+
+                double minimumPlanRR =
+                    MinimumPlanRiskReward(
+                        lane);
+
+                if (!IsFinitePositive(tp1RR) ||
+                    !IsFinitePositive(minimumPlanRR) ||
+                    tp1RR < minimumPlanRR)
+                    return false;
+            }
 
             if (RequireHtfTargets &&
                 !HasAnyHtfTargetLevel(

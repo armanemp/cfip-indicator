@@ -136,7 +136,12 @@ namespace cAlgo
                          tp4
                      })
             {
-                if (!IsFiniteLivePrice(target))
+                if (double.IsNaN(target) ||
+                    double.IsInfinity(target) ||
+                    target < 0)
+                    return false;
+
+                if (target == 0)
                     continue;
 
                 if (!TargetProgressionRule.IsValid(

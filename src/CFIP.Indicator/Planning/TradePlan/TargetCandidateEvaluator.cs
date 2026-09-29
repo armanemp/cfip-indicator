@@ -26,6 +26,9 @@ namespace cAlgo
             score = double.MinValue;
 
             if (candidate == null ||
+                !IsFinitePositive(entry) ||
+                !IsFinitePositive(risk) ||
+                !IsFinitePositive(atr) ||
                 !IsValidTarget(
                     direction,
                     entry,
@@ -56,6 +59,9 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize,
                     risk);
+
+            if (!IsFinitePositive(rr))
+                return false;
 
             double minimumCandidateRR =
                 requiredStageRR;
