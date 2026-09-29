@@ -186,7 +186,7 @@ for token in (
     "TryBuildOrderBlockImpulseEvidence(",
     "TryApplyOrderBlockMitigation(",
     "OrderBlockRule.TryGetZone(",
-    "OrderBlockRule.Identity(",
+    "OrderBlockRule.OrderBlockIdentity(",
 ):
     if token not in ob_builder_code:
         raise SystemExit(f"Order Block builder missing canonical source/lifecycle usage: {token}")
@@ -200,7 +200,7 @@ for token in (
 
 for token in (
     "OrderBlockRule.GetMitigationProbe(",
-    "OrderBlockRule.TryApplyPartialMitigation(",
+    "OrderBlockRule.TryApplyOrderBlockPartialMitigation(",
     "remainingRatio",
 ):
     if token not in ob_mitigation_code:
