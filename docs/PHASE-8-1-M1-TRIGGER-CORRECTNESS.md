@@ -44,7 +44,8 @@ A qualifying M1 confirmation requires:
 - candle range does not exceed the configured ATR maximum;
 - candle body direction matches the selected direction;
 - close location meets the configured minimum;
-- M1 trigger score meets the same selected trigger threshold policy.
+- M1 trigger score meets the same selected trigger threshold policy;
+- at least one causal catalyst exists: a buffered micro-structure break, or configured displacement of at least DisplacementAtr.
 
 The BUY and SELL rules are mirrored.
 
@@ -58,7 +59,11 @@ Planning/Entry/M1TriggerReadyEvaluator.cs binds the pure rule to the actual M1/M
 - computes BullTriggerScore / BearTriggerScore from M1 bars;
 - rejects stale/misaligned M1 evidence.
 
-### 4. Keep execution causally gated
+### 4. Causal trigger evaluation
+
+The micro-structure window is derived from the existing SwingStrength setting and bounded to 3–8 prior M1 bars. The canonical StructureBreakAtr buffer is applied symmetrically. Displacement uses the existing DisplacementAtr policy; no new parameter or alternate trigger authority is introduced.
+
+### 5. Keep execution causally gated
 
 When UseM1Trigger is enabled:
 
@@ -74,7 +79,7 @@ Direction remains the MTF decision result. Plan creation remains downstream of T
 
 The M1 path can no longer vote a direction and then disappear from the actual trigger test.
 
-A directional decision must first pass the established M5 closed-bar trigger. When M1 confirmation is enabled, the same selected direction must also be confirmed by a real, fully closed M1 bar inside that exact M5 candle.
+A directional decision must first pass the established M5 closed-bar trigger. When M1 confirmation is enabled, the same selected direction must also be confirmed by a real, fully closed M1 bar inside that exact M5 candle, with causal micro-structure or displacement evidence rather than indicator-only agreement.
 
 This reduces temporal mismatch without introducing a second decision authority or indiscriminately changing global confidence thresholds.
 
@@ -95,6 +100,8 @@ Source/architecture verification additionally enforces:
 
 - one M1 trigger rule owner;
 - real M1 OHLC/ATR/trigger-score consumption;
+- recent M1 micro-structure and canonical displacement policy consumption;
+- causal catalyst gate is enforced before TriggerReady can become true;
 - no fixed M1 +3/-3 score vote;
 - M1 trigger evidence is consumed by DecisionEvaluator;
 - decision orchestration captures M1 trigger evidence.
