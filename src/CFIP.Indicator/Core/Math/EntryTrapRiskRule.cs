@@ -61,7 +61,7 @@ namespace cAlgo
                     : 0;
 
             double m1 =
-                IsFiniteNonNegative(adverseM1Atr)
+                IsValidAdverseAtrValue(adverseM1Atr)
                     ? adverseM1Atr
                     : 0;
 
@@ -168,7 +168,7 @@ namespace cAlgo
                 reason);
         }
 
-        private static bool IsFiniteNonNegative(
+        private static bool IsValidAdverseAtrValue(
             double value)
         {
             return
