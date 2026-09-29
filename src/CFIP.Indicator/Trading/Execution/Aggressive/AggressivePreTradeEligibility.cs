@@ -103,6 +103,31 @@ namespace cAlgo
                 return false;
             }
 
+            int locationQuality =
+                EntryLocationQuality(
+                    _m5Bars,
+                    closedM5,
+                    _reaction.Direction);
+
+            if (locationQuality < 45)
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • EXTREME ENTRY LOCATION";
+                return false;
+            }
+
+            if (_decision != null &&
+                _decision.DivergenceDirection ==
+                    -_reaction.Direction &&
+                _decision.DivergenceRegular &&
+                _decision.DivergenceQuality >= 78 &&
+                _decision.DivergenceAgeBars <= 18)
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • OPPOSING REGULAR DIVERGENCE";
+                return false;
+            }
+
             return true;
         }
     }
