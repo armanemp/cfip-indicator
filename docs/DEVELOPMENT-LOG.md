@@ -822,3 +822,24 @@ Verification target:
 
 Next phase: Phase 8.1 — M1 trigger correctness.
 Operator pull requirement: required after the final verified Phase 7.4 merge; intermediate branch commits do not require a local pull.
+
+
+## Phase 7.4 merge record — 2026-09-29
+
+PR #32 was merged into main as 29881e1a89eb0c8d92f2465234a6c3a44671154a.
+
+Final pre-merge verification:
+- Source / Architecture: PASS;
+- dead/unused parameter audit: PASS, 532/532 read with 0 unread;
+- runtime UI audit: PASS;
+- semantic parameter audit: PASS;
+- full project integrity audit: PASS across 419 production C# files with 0 exact duplicate method signatures;
+- execution-capacity semantics audit: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
+
+Phase 7.4 leaves MaximumOpenPositions exposed only at the supported value 1, removes the optional BlockNewSignalWhileActive control, and centralizes single-plan semantics across plan creation, automatic market, aggressive and predictive-pending execution.
+
+Next planned phase: Phase 8.1 — M1 trigger correctness, with the operator-reported false-signal problem as a primary analytical focus.
+
+Operator action: local pull is required after this merge/documentation boundary.
