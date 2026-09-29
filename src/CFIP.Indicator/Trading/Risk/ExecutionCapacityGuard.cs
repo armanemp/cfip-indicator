@@ -11,15 +11,59 @@ namespace cAlgo
             out string reason)
         {
             if (!ExecutionCapacityRule.AllowsNewSinglePlan(
-                    HasManagedOpenPosition()))
+                    MaximumOpenPositions,
+                    _plan != null,
+                    ManagedPositionCount(),
+                    ManagedPendingOrderCount()))
             {
                 reason =
-                    "SINGLE ACTIVE PLAN EXISTS";
+                    ResolveCapacityBlockReason();
                 return false;
             }
 
             reason = string.Empty;
             return true;
+        }
+
+        private bool ValidateSingleExecutionCapacity(
+            out string reason)
+        {
+            if (!ExecutionCapacityRule.AllowsNewSingleExecution(
+                    MaximumOpenPositions,
+                    ManagedPositionCount(),
+                    ManagedPendingOrderCount()))
+            {
+                reason =
+                    ResolveCapacityBlockReason();
+                return false;
+            }
+
+            reason = string.Empty;
+            return true;
+        }
+
+        private string ResolveCapacityBlockReason()
+        {
+            if (!ExecutionCapacityRule.IsSupportedSinglePlanCapacity(
+                    MaximumOpenPositions))
+                return
+                    "UNSUPPORTED CAPACITY • SINGLE PLAN ONLY";
+
+            if (_plan != null)
+                return
+                    "SINGLE ACTIVE PLAN EXISTS";
+
+            if (ManagedPositionCount() >=
+                ExecutionCapacityRule.SupportedMaximumOpenPositions)
+                return
+                    "MANAGED POSITION CAPACITY REACHED";
+
+            if (ManagedPendingOrderCount() > 0)
+                return
+                    "MANAGED PENDING CAPACITY REACHED";
+
+            return
+                "EXECUTION CAPACITY BLOCKED";
         }
     }
 }
