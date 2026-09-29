@@ -175,12 +175,7 @@ namespace cAlgo
                                 return false;
 
                             return
-                                key.StartsWith("HIGH|", StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith("SMART|", StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith("SIGNAL|", StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith("EARLY|", StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith("REACTION|", StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith("REVERSAL|", StringComparison.OrdinalIgnoreCase);
+                                key.StartsWith("ACTION|", StringComparison.OrdinalIgnoreCase);
                         }
 
         private void RememberVisualSignalAlert(
