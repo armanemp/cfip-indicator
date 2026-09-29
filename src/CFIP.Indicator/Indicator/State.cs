@@ -43,6 +43,7 @@ namespace cAlgo
                 private Decision _reaction;
                 private Prediction _prediction;
                 private ExecutionModel _executionModel;
+                private TradeSetupPreview _setupPreview;
         
                 private int _lastStructuralStopUpdateM5 = -1;
                 private int _lastTargetRepriceM5 = -1;
