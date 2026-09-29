@@ -93,7 +93,7 @@ namespace cAlgo
                             if (ShowSignalLabels)
                             {
                                 int lineLeft =
-                                    GetCompactPlanLineLeftBar();
+                                    GetPlanLineLeftBar();
 
                                 int labelBar =
                                     GetCompactPlanLabelAnchorBar(
