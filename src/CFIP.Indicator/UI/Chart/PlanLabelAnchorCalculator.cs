@@ -28,8 +28,10 @@ namespace cAlgo
 
             int offset =
                 Math.Max(
-                    1,
-                    CompactPlanLabelMinimumGapBars);
+                    CompactPlanLabelMinimumGapBars,
+                    Math.Min(
+                        6,
+                        LabelLeftOffsetBars));
 
             // Labels are anchored immediately after the reserved line endpoint.
             // The label renderer uses left alignment so its text grows away from
