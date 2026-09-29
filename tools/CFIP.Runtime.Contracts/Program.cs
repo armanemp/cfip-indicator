@@ -7,6 +7,7 @@ namespace cAlgo
     {
         private static void Main()
         {
+            VerifyM1TriggerSemantics();
             VerifyMtfContextIntegrity();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
@@ -30,6 +31,131 @@ namespace cAlgo
             VerifyAggressiveEntryPolicy();
 
             Console.WriteLine("Runtime acceptance contracts OK");
+        }
+
+        private static void VerifyM1TriggerSemantics()
+        {
+            DateTime m5Open = Utc(12, 0);
+            DateTime m5NextOpen = Utc(12, 5);
+            DateTime m1Open = Utc(12, 4);
+            DateTime m1NextOpen = Utc(12, 5);
+
+            Assert(
+                M1TriggerRule.IsClosedInsideM5Window(
+                    m1Open,
+                    m1NextOpen,
+                    m5Open,
+                    m5NextOpen,
+                    Utc(12, 5)),
+                "closed M1 bar belongs to the closed M5 window");
+
+            Assert(
+                !M1TriggerRule.IsClosedInsideM5Window(
+                    Utc(12, 5),
+                    Utc(12, 6),
+                    m5Open,
+                    m5NextOpen,
+                    Utc(12, 5)),
+                "M1 bar outside the M5 window is rejected");
+
+            Assert(
+                !M1TriggerRule.IsClosedInsideM5Window(
+                    m1Open,
+                    m1NextOpen,
+                    m5Open,
+                    m5NextOpen,
+                    Utc(12, 4)),
+                "M1 bar still open at the reference is rejected");
+
+            Assert(
+                M1TriggerRule.IsReady(
+                    1,
+                    1,
+                    100,
+                    103,
+                    99,
+                    102,
+                    2,
+                    0.50,
+                    0.70,
+                    4,
+                    4),
+                "bullish M1 trigger uses independent closed-bar geometry and score");
+
+            Assert(
+                M1TriggerRule.IsReady(
+                    -1,
+                    -1,
+                    100,
+                    101,
+                    97,
+                    98,
+                    2,
+                    0.50,
+                    0.70,
+                    4,
+                    4),
+                "bearish M1 trigger is directionally symmetric");
+
+            Assert(
+                !M1TriggerRule.IsReady(
+                    1,
+                    -1,
+                    100,
+                    103,
+                    99,
+                    102,
+                    2,
+                    0.50,
+                    0.70,
+                    4,
+                    4),
+                "opposite M1 direction cannot confirm the selected decision");
+
+            Assert(
+                !M1TriggerRule.IsReady(
+                    1,
+                    1,
+                    100,
+                    101,
+                    99,
+                    100.5,
+                    2,
+                    0.50,
+                    0.70,
+                    4,
+                    4),
+                "weak M1 body cannot confirm");
+
+            Assert(
+                !M1TriggerRule.IsReady(
+                    1,
+                    1,
+                    100,
+                    102,
+                    99,
+                    100.5,
+                    1,
+                    0.50,
+                    0.70,
+                    4,
+                    4),
+                "poor M1 close location cannot confirm");
+
+            Assert(
+                !M1TriggerRule.IsReady(
+                    1,
+                    1,
+                    100,
+                    103,
+                    99,
+                    102,
+                    2,
+                    0.50,
+                    0.70,
+                    3,
+                    4),
+                "insufficient M1 trigger score cannot confirm");
         }
 
         private static void VerifyMtfContextIntegrity()
