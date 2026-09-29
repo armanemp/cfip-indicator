@@ -41,6 +41,7 @@ A qualifying M1 confirmation requires:
 - the M1 bar is fully closed and belongs to the same closed M5 window;
 - a non-zero ATR/range;
 - candle body meets the configured ATR minimum;
+- candle range does not exceed the configured ATR maximum;
 - candle body direction matches the selected direction;
 - close location meets the configured minimum;
 - M1 trigger score meets the same selected trigger threshold policy.
