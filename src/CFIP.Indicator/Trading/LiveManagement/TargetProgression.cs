@@ -66,9 +66,9 @@ namespace cAlgo
                     continue;
 
                 bool requireHtf =
-                    stage == 0
-                        ? RequireHtfRewardForTp1
-                        : RequireHtfRewardForTp2Plus;
+                    RequiresHtfRewardForTargetStage(
+                        stage,
+                        _plan.Lane);
 
                 double previousTarget =
                     stage == 0
