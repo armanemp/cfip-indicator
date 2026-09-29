@@ -2667,20 +2667,20 @@ if "snapshot.SetupEntry" not in PLAN_LABEL_COORDINATOR_CODE:
 
 PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
-if "box.IsFilled =" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must render an explicit box fill")
-if "Color boxColor = color" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan label box must inherit the semantic level color")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must choose readable text contrast")
+    raise SystemExit("Compact plan labels must resolve a canonical text color")
+if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must use white text")
+if "Chart.DrawRectangle(" in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must remain background-free")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
     raise SystemExit("Compact plan label renderer method is missing")
-if compact_label_code.find("string boxName") < 0 or compact_label_code.find("ChartText label") < 0:
-    raise SystemExit("Compact plan label must own both box and text objects")
-if compact_label_code.find("string boxName") > compact_label_code.find("ChartText label"):
-    raise SystemExit("Compact label box must be prepared before the text object")
+if "Chart.DrawText(" not in compact_label_code:
+    raise SystemExit("Compact plan label must own its text object")
+if "Chart.RemoveObject(" not in compact_label_code:
+    raise SystemExit("Compact plan label must clean legacy chart objects")
 
 PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
 PROTECTION_MANAGER_CODE = PROTECTION_MANAGER.read_text(encoding="utf-8")
