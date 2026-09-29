@@ -8,138 +8,48 @@ namespace cAlgo
         private bool PlaceContinuationStop(int closedM5)
         {
             if (!CanRunAutomaticEntry())
-            {
-                ApplyRuntimeEntryGate();
-                return false;
-            }
+            { ApplyRuntimeEntryGate(); return false; }
 
-            int direction;
-            double trigger, stop, target, volume;
-            ExecutionIntent pendingIntent;
-
-            if (!TryPrepareContinuationStop(
-                    closedM5,
-                    out direction,
-                    out _,
-                    out trigger,
-                    out stop,
-                    out target,
-                    out _,
-                    out _,
-                    out volume,
-                    out pendingIntent))
+            int direction; double trigger, stop, target, volume; ExecutionIntent pendingIntent;
+            if (!TryPrepareContinuationStop(closedM5, out direction, out _, out trigger, out stop, out target, out _, out _, out volume, out pendingIntent))
                 return false;
 
-            TradeType tradeType = direction == 1 ? TradeType.Buy : TradeType.Sell;
-            double entryPrice = direction == 1 ? Symbol.Ask : Symbol.Bid;
+            TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
+            double entry = direction == 1 ? Symbol.Ask : Symbol.Bid;
             string reason;
-
-            if (!ValidatePendingSubmission(
-                    pendingIntent,
-                    tradeType,
-                    entryPrice,
-                    volume,
-                    "PENDING STOP • ",
-                    out reason))
-            {
-                _autoOrdersBlockReason = reason;
-                return false;
-            }
+            if (!ValidatePendingSubmission(pendingIntent, type, entry, volume, "PENDING STOP • ", out reason))
+            { _autoOrdersBlockReason = reason; return false; }
 
             try
             {
-                SubmissionAttemptIdentity submissionIdentity;
-                string submissionGateReason;
-
-                if (!TryAcquireSubmission(
-                        closedM5,
-                        direction,
-                        ExecutionSubmissionPath.PendingStop,
-                        out submissionIdentity,
-                        out submissionGateReason))
-                {
-                    _autoOrdersBlockReason = submissionGateReason;
-                    return false;
-                }
+                SubmissionAttemptIdentity submissionIdentity; string submissionGateReason;
+                if (!TryAcquireSubmission(closedM5, direction, ExecutionSubmissionPath.PendingStop, out submissionIdentity, out submissionGateReason))
+                { _autoOrdersBlockReason = submissionGateReason; return false; }
 
                 RelativeTakeProfitProtections serverTakeProfits;
-                bool useServerTakeProfitLadder =
-                    TryBuildServerSideTakeProfitLadder(
-                        trigger,
-                        target,
-                        volume,
-                        out serverTakeProfits);
-
+                bool useServerTakeProfitLadder = TryBuildServerSideTakeProfitLadder(trigger, target, volume, out serverTakeProfits);
                 TradeResult result;
-
                 try
                 {
                     result = useServerTakeProfitLadder
-                        ? TryPlaceStopOrderWithTakeProfitLadder(
-                            tradeType,
-                            SymbolName,
-                            volume,
-                            trigger,
-                            PendingOrderLabel(),
-                            pendingIntent.StopPips,
-                            serverTakeProfits,
-                            ProtectionType.Relative,
-                            PendingExpiration(),
-                            TradeExecutionMetadata.DefaultExecutionComment,
-                            false,
-                            "CONTINUATION STOP • SERVER TP LADDER")
-                        : TryPlaceStopOrder(
-                            tradeType,
-                            SymbolName,
-                            volume,
-                            trigger,
-                            PendingOrderLabel(),
-                            pendingIntent.StopPips,
-                            pendingIntent.TargetPips,
-                            ProtectionType.Relative,
-                            PendingExpiration(),
-                            TradeExecutionMetadata.DefaultExecutionComment,
-                            false,
-                            "CONTINUATION STOP");
+                        ? TryPlaceStopOrderWithTakeProfitLadder(type, SymbolName, volume, trigger, PendingOrderLabel(), pendingIntent.StopPips, serverTakeProfits, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "CONTINUATION STOP • SERVER TP LADDER")
+                        : TryPlaceStopOrder(type, SymbolName, volume, trigger, PendingOrderLabel(), pendingIntent.StopPips, pendingIntent.TargetPips, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "CONTINUATION STOP");
                 }
-                catch
-                {
-                    RecordSubmissionFailure(submissionIdentity);
-                    throw;
-                }
+                catch { RecordSubmissionFailure(submissionIdentity); throw; }
 
                 RecordSubmission(submissionIdentity, result);
-
-                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(
-                        result != null,
-                        result != null && result.IsSuccessful,
-                        result != null && result.PendingOrder != null))
+                if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(result != null, result != null && result.IsSuccessful, result != null && result.PendingOrder != null))
                 {
-                    _autoOrdersBlockReason =
-                        result != null && result.Error.HasValue
-                            ? result.Error.Value.ToString()
-                            : "PENDING STOP REJECTED";
+                    _autoOrdersBlockReason = result != null && result.Error.HasValue ? result.Error.Value.ToString() : "PENDING STOP REJECTED";
                     return false;
                 }
 
-                _lastPendingSignalM5 = closedM5;
-                _plan = null;
-                _executionModel = null;
-                RemovePlanObjects();
-
-                ReportConfirmedPendingOrderPlacement(
-                    result.PendingOrder,
-                    direction,
-                    closedM5,
-                    "STOP");
-
+                _lastPendingSignalM5 = closedM5; _plan = null; _executionModel = null; RemovePlanObjects();
+                ReportConfirmedPendingOrderPlacement(result.PendingOrder, direction, closedM5, "STOP");
                 return true;
             }
             catch (Exception ex)
-            {
-                _autoOrdersBlockReason = "PENDING STOP • " + ex.Message;
-                return false;
-            }
+            { _autoOrdersBlockReason = "PENDING STOP • " + ex.Message; return false; }
         }
     }
 }
