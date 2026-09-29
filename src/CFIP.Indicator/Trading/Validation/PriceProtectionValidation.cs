@@ -16,10 +16,10 @@ namespace cAlgo
     {
         private double MinimumTakeProfitDistancePrice()
         {
-            return MinimumTakeProfitDistancePrice(0);
+            return MinimumTakeProfitDistancePriceForDirection(0);
         }
 
-        private double MinimumTakeProfitDistancePrice(
+        private double MinimumTakeProfitDistancePriceForDirection(
             int direction)
         {
             try
@@ -78,7 +78,7 @@ namespace cAlgo
             double minimumDistance =
                 Math.Max(
                     Symbol.TickSize,
-                    MinimumTakeProfitDistancePrice(
+                    MinimumTakeProfitDistancePriceForDirection(
                         direction));
 
             return PriceProtectionRule.ValidateTarget(
@@ -90,10 +90,10 @@ namespace cAlgo
 
         private double MinimumProtectionDistancePrice()
         {
-            return MinimumProtectionDistancePrice(0);
+            return MinimumProtectionDistancePriceForDirection(0);
         }
 
-        private double MinimumProtectionDistancePrice(
+        private double MinimumProtectionDistancePriceForDirection(
             int direction)
         {
             try
@@ -152,7 +152,7 @@ namespace cAlgo
             double minimumDistance =
                 Math.Max(
                     Symbol.TickSize,
-                    MinimumProtectionDistancePrice(
+                    MinimumProtectionDistancePriceForDirection(
                         direction));
 
             return PriceProtectionRule.ValidateStop(
