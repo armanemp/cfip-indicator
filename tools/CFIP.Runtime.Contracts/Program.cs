@@ -1129,12 +1129,12 @@ namespace cAlgo
 
             string lineRendererPath =
                 Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanLineRenderer.cs");
-            string labelAnchorPath =
-                Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanLabelAnchorCalculator.cs");
+            string labelCoordinatorPath =
+                Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanLabelRenderCoordinator.cs");
             string lineRenderer =
                 File.ReadAllText(lineRendererPath);
-            string labelAnchor =
-                File.ReadAllText(labelAnchorPath);
+            string labelCoordinator =
+                File.ReadAllText(labelCoordinatorPath);
 
             Assert(
                 lineRenderer.Contains("GetPlanLineRightBar()") &&
@@ -1145,8 +1145,8 @@ namespace cAlgo
                 "plan levels terminate at the latest chart candle without stale M5 anchoring");
 
             Assert(
-                labelAnchor.Contains("GetPlanLineLeftBar()") &&
-                !labelAnchor.Contains("GetCompactPlanLineLeftBar()"),
+                labelCoordinator.Contains("GetPlanLineLeftBar(") &&
+                !labelCoordinator.Contains("GetCompactPlanLineLeftBar("),
                 "plan labels reuse the canonical line left edge");
 
             Assert(
