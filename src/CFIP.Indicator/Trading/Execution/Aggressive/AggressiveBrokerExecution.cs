@@ -166,7 +166,7 @@ namespace cAlgo
                             result.Position,
                             actualStop,
                             actualTarget,
-                            "AGG ENTRY",
+                            "AG ENTRY",
                             _reaction.Direction);
                 }
                 SetAutoTradingState(
