@@ -49,7 +49,13 @@ namespace cAlgo
             if (activeRegime != null &&
                 (activeRegime.Regime == "RANGE" ||
                  activeRegime.Regime == "COMPRESSION"))
+            {
+                if (predictionReady &&
+                    _prediction != null)
+                    return _prediction.Direction;
+
                 return 0;
+            }
 
             if (_m5Frame != null &&
                 (_m5Frame.Direction == 1 ||
