@@ -3655,7 +3655,11 @@ Detailed record: `docs/PHASE-9-6-SIGNAL-QUALITY-VISUAL-COHERENCE.md`.
 
 ## Phase 9.7 — Regime-Aware No-Trade & Auto-Execution Hardening
 
-Status: implementation in progress on `phase/9-7-regime-auto-execution-hardening`; verification pending.
+Status: VERIFIED COMPLETE on `469f66bd2d461016c9283e0e4243ca429c694aa3`.
+
+Pre-merge gates: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture PASS.
+
+Final merge closeout pending.
 
 This continuation concentrates strategy quality and automatic execution on one shared pipeline. RANGE/COMPRESSION now receive a canonical specialist no-trade rule; automatic market orders use bounded Market Range submission; live suitability and spread-to-stop-risk are rechecked immediately before broker mutation; pending orders are revalidated/cleaned when the regime invalidates them; compact level labels now use explicitly opaque backgrounds.
 
