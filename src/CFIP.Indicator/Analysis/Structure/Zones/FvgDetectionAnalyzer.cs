@@ -67,20 +67,31 @@ namespace cAlgo
                         creationAtr,
                         MinimumFvgAtr))
                 {
-                    best =
-                        SelectNearestFvg(
-                            nearestPrice,
-                            best,
-                            BuildManagedFvgZone(
-                                bars,
-                                i,
-                                index,
-                                direction,
-                                low,
-                                high,
-                                gap,
-                                false,
-                                creationAtr));
+                    Zone candidate =
+                        BuildManagedFvgZone(
+                            bars,
+                            i,
+                            index,
+                            direction,
+                            low,
+                            high,
+                            gap,
+                            false,
+                            creationAtr);
+
+                    if (!requireCurrentRetest ||
+                        PassesCurrentFvgRetest(
+                            bars,
+                            index,
+                            candidate,
+                            atr))
+                    {
+                        best =
+                            SelectNearestFvg(
+                                nearestPrice,
+                                best,
+                                candidate);
+                    }
                 }
 
                 if (UseTwoBarImbalanceFvg &&
@@ -98,20 +109,31 @@ namespace cAlgo
                         creationAtr,
                         MinimumFvgAtr))
                 {
-                    best =
-                        SelectNearestFvg(
-                            nearestPrice,
-                            best,
-                            BuildManagedFvgZone(
-                                bars,
-                                i,
-                                index,
-                                direction,
-                                low,
-                                high,
-                                gap,
-                                true,
-                                creationAtr));
+                    Zone candidate =
+                        BuildManagedFvgZone(
+                            bars,
+                            i,
+                            index,
+                            direction,
+                            low,
+                            high,
+                            gap,
+                            true,
+                            creationAtr);
+
+                    if (!requireCurrentRetest ||
+                        PassesCurrentFvgRetest(
+                            bars,
+                            index,
+                            candidate,
+                            atr))
+                    {
+                        best =
+                            SelectNearestFvg(
+                                nearestPrice,
+                                best,
+                                candidate);
+                    }
                 }
             }
 
@@ -121,27 +143,41 @@ namespace cAlgo
                 return null;
 
             if (requireCurrentRetest &&
-                RequireFvgRetest)
-            {
-                double price =
-                    bars.ClosePrices[index];
-
-                double tolerance =
-                    atr *
-                    (RequireRetestQuality
-                        ? RetestZoneToleranceAtr
-                        : ZoneProximityAtr);
-
-                if (price <
-                    best.Low -
-                    tolerance ||
-                    price >
-                    best.High +
-                    tolerance)
-                    return null;
-            }
+                RequireFvgRetest &&
+                !PassesCurrentFvgRetest(
+                    bars,
+                    index,
+                    best,
+                    atr))
+                return null;
 
             return best;
+        }
+
+        private bool PassesCurrentFvgRetest(
+            Bars bars,
+            int index,
+            Zone zone,
+            double atr)
+        {
+            if (bars == null ||
+                zone == null ||
+                index < 0 ||
+                index >= bars.Count ||
+                atr <= 0)
+                return false;
+
+            double tolerance =
+                atr *
+                (RequireRetestQuality
+                    ? RetestZoneToleranceAtr
+                    : ZoneProximityAtr);
+
+            return FvgRule.IsOverlapInclusive(
+                bars.LowPrices[index] - tolerance,
+                bars.HighPrices[index] + tolerance,
+                zone.Low,
+                zone.High);
         }
 
         private Zone SelectNearestFvg(
