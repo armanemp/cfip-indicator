@@ -3955,3 +3955,35 @@ Verification:
 
 Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
 Operator action: merge PR #60, then pull local main to the verified merge commit.
+
+
+## Phase 10 — MTF Scenarios, Clear Level Labels, Runtime Logs & Development Routine — 2026-09-29
+
+Status: IMPLEMENTED on phase branch; verification and merge pending.
+
+Scope:
+- give each simultaneous timeframe opportunity a stable ScenarioId and SourceTimeframe;
+- allow M5/M15/M30/H1/H4/D1/W1 opportunities to coexist without cross-timeframe same-direction collapsing;
+- identify each scenario consistently across ENTRY/SL/TP objects;
+- show main plan as (MTF);
+- show absolute SL/TP distance from Entry in pips;
+- keep a visible horizontal gap between line endpoint and label;
+- add unified runtime CSV logging for decisions, predictions, scenarios and execution/state transitions;
+- add an offline runtime-log analyzer;
+- add ROUTINE.md so recurring engineering and reporting tasks are not forgotten.
+
+Design boundary:
+The source timeframe controls scenario provenance and directional/quality evidence. Execution geometry continues to use the tested M5 execution model in this phase; this avoids introducing an untested second broker-execution authority. Independent scenarios remain non-authoritative for auto-trading.
+
+Verification gates:
+- source/architecture checks;
+- cTrader compile/build and runtime acceptance;
+- parameter usage audit;
+- scenario coexistence/deduplication audit;
+- UI object ownership/cleanup audit;
+- runtime log schema smoke test;
+- terminal replay for broker-side behavior;
+- outcome/replay study before any empirical accuracy or expectancy claim.
+
+Next phase after closeout:
+Phase 10.1 — evidence-driven multi-timeframe scenario geometry, per-scenario execution policy design subject to audit, and deeper log/outcome analytics.
