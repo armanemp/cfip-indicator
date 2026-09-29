@@ -130,3 +130,13 @@ The standing checklist is:
 All signal/plan level lines must use `LineStyle.Solid` and fixed thickness 1. This is a standing UI contract and must be checked by the phase audits; line text remains white and background-free unless a future phase explicitly changes the documented contract.
 
 Alert mirror text such as `ALERT BUY/SELL` is not a signal authority and must remain absent from chart level presentation. Expired/stale pre-trade visuals must be removed by a bounded lifecycle owner, and blocked/restricted candidates must produce no sound, popup, email or visual-alert side effect.
+
+
+
+## Permanent outcome / recovery telemetry rule
+
+Broker-confirmed managed closes are the authoritative source for outcome observations. Outcome history must remain bounded, position-id idempotent, and separate from broker mutation authority.
+
+Empirical calibration may prefer a bounded recent lifecycle window only after the existing sample gates are satisfied. Recovery-only reconstructed plans must remain non-calibratable because their original decision context is unavailable.
+
+Submission and recovery telemetry is observational: it may retain bounded history and expose diagnostics, but it must not create a second execution authority or alter broker-confirmed state.
