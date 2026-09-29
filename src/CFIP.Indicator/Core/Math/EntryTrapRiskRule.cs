@@ -164,7 +164,7 @@ namespace cAlgo
 
             return new EntryTrapRiskResult(
                 risk,
-                risk >= 75,
+                extreme || risk >= 75,
                 reason);
         }
 
