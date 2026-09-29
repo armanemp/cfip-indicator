@@ -241,7 +241,7 @@ namespace cAlgo
                                     RegisterNative(bars);
                             }
 
-                            _mtfClosedContextCache.Clear();
+                            _mtfClosedContextCache.Invalidate();
                         }
                         catch (Exception ex)
                         {
