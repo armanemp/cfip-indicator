@@ -11,7 +11,9 @@ Final pre-merge gates on the implementation head:
 - cTrader Compile/Build: PASS
 - Source/Architecture and project audits: PASS
 
-Merge closeout pending.
+Merge closeout: PR #50 merged into `main` as `37cfd761bbb439d6e154315995664721b6c31740`.
+
+Operator pull requirement: local `main` must be pulled before the next continuation.
 
 ## User-requested direction
 
@@ -111,3 +113,6 @@ The implementation uses current cTrader Algo capabilities for multi-timeframe ba
 - current cTrader Algo documentation describes server-side protection and newer advanced protection APIs.
 
 The phase does not introduce asynchronous execution merely for speed; correctness, bounded price acceptance and confirmed broker state remain the authority.
+
+
+Final merge baseline: `37cfd761bbb439d6e154315995664721b6c31740`.
