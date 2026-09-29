@@ -24,10 +24,12 @@ namespace cAlgo
                 TargetUpdateStepAtr;
 
             double spacing =
-                atr *
                 Math.Max(
-                    0.05,
-                    MinimumTpSpacingAtr);
+                    MinimumTakeProfitDistancePrice(),
+                    atr *
+                    Math.Max(
+                        0.05,
+                        MinimumTpSpacingAtr));
 
             double best = current;
             double bestScore = double.MinValue;
