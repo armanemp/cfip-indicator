@@ -41,6 +41,29 @@ namespace cAlgo
                 _reaction != null)
                 return _reaction.Direction;
 
+            MarketRegimeSnapshot activeRegime =
+                GetActiveM5Regime(
+                    _decision == null
+                        ? Math.Max(
+                            0,
+                            _m5Bars == null
+                                ? 0
+                                : _m5Bars.Count - 2)
+                        : _decision.Direction == 0
+                            ? Math.Max(
+                                0,
+                                _m5Bars.Count - 2)
+                            : _decision.EmpiricalCalibrationSamples >= 0
+                                ? Math.Max(
+                                    0,
+                                    _m5Bars.Count - 2)
+                                : 0);
+
+            if (activeRegime != null &&
+                (activeRegime.Regime == "RANGE" ||
+                 activeRegime.Regime == "COMPRESSION"))
+                return 0;
+
             if (_m5Frame != null &&
                 (_m5Frame.Direction == 1 ||
                  _m5Frame.Direction == -1) &&
