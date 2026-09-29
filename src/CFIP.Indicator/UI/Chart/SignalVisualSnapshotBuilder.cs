@@ -63,6 +63,31 @@ namespace cAlgo
             return 0;
         }
 
+        private bool IsRangeSignalVisualAllowed(
+            int closedM5,
+            int direction,
+            int confidence,
+            int smartQuality,
+            int edge,
+            int independentEvidence,
+            int structuralConfirmations)
+        {
+            if (_m5Frame == null)
+                return true;
+
+            RangeSignalQualityResult result =
+                EvaluateRangeSignalQuality(
+                    closedM5,
+                    direction,
+                    confidence,
+                    smartQuality,
+                    edge,
+                    independentEvidence,
+                    structuralConfirmations);
+
+            return result.Allowed;
+        }
+
         private SignalVisualSnapshot BuildSignalVisualSnapshot(
             int closedM5)
         {
@@ -110,7 +135,16 @@ namespace cAlgo
                 _reaction.IndependentEvidence >=
                     Math.Max(
                         2,
-                        MinimumLiveReactionEvidence);
+                        MinimumLiveReactionEvidence) &&
+                IsRangeSignalVisualAllowed(
+                    closedM5,
+                    _reaction.Direction,
+                    _reaction.Confidence,
+                    _reaction.SmartQuality,
+                    _reaction.Edge,
+                    _reaction.IndependentEvidence,
+                    StructuralConfirmations(
+                        _reaction.Direction));
 
             snapshot.PlanDirection =
                 _plan == null ? 0 : _plan.Direction;
@@ -136,7 +170,16 @@ namespace cAlgo
                 _prediction != null &&
                 _prediction.Direction != 0 &&
                 _prediction.Confidence >=
-                    strongPredictionConfidence;
+                    strongPredictionConfidence &&
+                IsRangeSignalVisualAllowed(
+                    closedM5,
+                    _prediction.Direction,
+                    _prediction.Confidence,
+                    _prediction.Confidence,
+                    _decision == null ? 0 : _decision.Edge,
+                    _prediction == null ? 0 : _prediction.IndependentEvidence,
+                    StructuralConfirmations(
+                        _prediction.Direction));
 
             bool triggerRuntimeReady =
                 _triggerRuntime.Latched &&
