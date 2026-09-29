@@ -49,6 +49,7 @@ namespace cAlgo
                     new Dictionary<Bars, WaveTrendEngine>();
                 private readonly List<TradeOpportunityCandidate> _opportunityCandidates =
                     new List<TradeOpportunityCandidate>();
+                private int _lastOpportunityCandidatesM5 = -1;
                 private readonly HashSet<string> _opportunityVisualIds =
                     new HashSet<string>();
 
