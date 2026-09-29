@@ -46,25 +46,49 @@ namespace cAlgo
                   return false;
               }
 
+              RelativeTakeProfitProtections serverTakeProfits;
+              bool useServerTakeProfitLadder =
+                  TryBuildServerSideTakeProfitLadder(
+                      trigger,
+                      target,
+                      volume,
+                      out serverTakeProfits);
+
               TradeResult result;
               try
               {
                   result =
-                      TryPlaceStopOrder(
-                          direction == 1
-                              ? TradeType.Buy
-                              : TradeType.Sell,
-                          SymbolName,
-                          volume,
-                          trigger,
-                          PendingOrderLabel(),
-                          pendingIntent.StopPips,
-                          pendingIntent.TargetPips,
-                          ProtectionType.Relative,
-                          PendingExpiration(),
-                          TradeExecutionMetadata.DefaultExecutionComment,
-                          false,
-                          "CONTINUATION STOP");
+                      useServerTakeProfitLadder
+                          ? TryPlaceStopOrderWithTakeProfitLadder(
+                              direction == 1
+                                  ? TradeType.Buy
+                                  : TradeType.Sell,
+                              SymbolName,
+                              volume,
+                              trigger,
+                              PendingOrderLabel(),
+                              pendingIntent.StopPips,
+                              serverTakeProfits,
+                              ProtectionType.Relative,
+                              PendingExpiration(),
+                              TradeExecutionMetadata.DefaultExecutionComment,
+                              false,
+                              "CONTINUATION STOP • SERVER TP LADDER")
+                          : TryPlaceStopOrder(
+                              direction == 1
+                                  ? TradeType.Buy
+                                  : TradeType.Sell,
+                              SymbolName,
+                              volume,
+                              trigger,
+                              PendingOrderLabel(),
+                              pendingIntent.StopPips,
+                              pendingIntent.TargetPips,
+                              ProtectionType.Relative,
+                              PendingExpiration(),
+                              TradeExecutionMetadata.DefaultExecutionComment,
+                              false,
+                              "CONTINUATION STOP");
               }
               catch
               {
