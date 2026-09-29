@@ -79,6 +79,13 @@ namespace cAlgo
                     tp4);
 
             p.Lane = lane;
+
+            BindPlanCalibrationContext(
+                p,
+                _decision,
+                direction,
+                lane);
+
             EnrichPlanTargetMetadata(
                 p,
                 candidates,
