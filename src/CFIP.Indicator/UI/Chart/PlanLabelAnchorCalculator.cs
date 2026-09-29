@@ -35,11 +35,16 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
+            int offset =
+                Math.Max(
+                    1,
+                    LabelLeftOffsetBars);
+
             return Math.Max(
                 0,
                 Math.Min(
                     Bars.Count - 1,
-                    lineLeft + 1));
+                    lineLeft + offset));
         }
 
         private int GetLabelBoxRightBar(
@@ -49,12 +54,19 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
+            int configuredWidth =
+                Math.Max(
+                    CompactPlanLabelWidthBars,
+                    Math.Max(
+                        1,
+                        LabelLeftOffsetBars) + 4);
+
             return Math.Max(
                 lineLeft,
                 Math.Min(
                     Bars.Count - 1,
                     lineLeft +
-                    CompactPlanLabelWidthBars));
+                    configuredWidth));
         }
     }
 }
