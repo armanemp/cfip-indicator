@@ -36,6 +36,7 @@ namespace cAlgo
                 Print("CFIP market mutation failed ({0}): {1}", context, ex.Message);
                 return null;
             }
+        }
 
         private TradeResult TryExecuteMarketRangeOrder(
             TradeType tradeType,
@@ -72,7 +73,6 @@ namespace cAlgo
                     ex.Message);
                 return null;
             }
-        }
         }
     }
 }
