@@ -11,7 +11,9 @@ Pre-merge gates on the final implementation head:
 - cTrader Compile/Build: PASS
 - Source/Architecture: PASS
 
-Merge closeout pending.
+Merge closeout: PR #49 merged into `main` as `954e5021648e43a11d0de08f35b7fc7aaa8d2125`.
+
+Local operator action: pull `main` before the next continuation.
 
 ## User-reported issues addressed
 
