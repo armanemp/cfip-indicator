@@ -130,7 +130,7 @@ namespace cAlgo
             double minimumRR =
                 Math.Max(
                     Tp1MinimumRR,
-                    MinimumRequiredRR(regime));
+                    MinimumRequiredRRForRegime(regime));
 
             int locationQuality =
                 Math.Max(
