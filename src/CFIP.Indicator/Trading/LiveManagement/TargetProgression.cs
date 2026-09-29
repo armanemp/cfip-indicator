@@ -8,12 +8,14 @@ namespace cAlgo
     {
         private void UpdateUnhitTargetsLive(
             int closedM5,
-            double market)
+            double market,
+            bool forceStructuralUpdate = false)
         {
             if (_plan == null)
                 return;
 
             if (StructuralTargetUpdatesOnly &&
+                !forceStructuralUpdate &&
                 _lastTargetRepriceM5 ==
                 closedM5)
                 return;
