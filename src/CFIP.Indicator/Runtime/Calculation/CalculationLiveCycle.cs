@@ -165,17 +165,32 @@ namespace cAlgo
             int index,
             int closedM5)
         {
-            SynchronizeSignalVisualState();
-
-            if (_plan != null)
-                RenderPlan();
-            else
-                RenderWatchAndReaction(
-                    index,
+            _renderSignalVisualSnapshot =
+                BuildSignalVisualSnapshot(
                     closedM5);
 
-            RenderManagedPendingOrder();
-            RenderPanel();
+            try
+            {
+                if (_renderSignalVisualSnapshot != null &&
+                    _renderSignalVisualSnapshot.PlanActive &&
+                    !_renderSignalVisualSnapshot.PendingOrder)
+                    RenderPlan(
+                        _renderSignalVisualSnapshot);
+                else
+                    RenderWatchAndReaction(
+                        index,
+                        closedM5,
+                        _renderSignalVisualSnapshot);
+
+                RenderManagedPendingOrder(
+                    _renderSignalVisualSnapshot);
+
+                RenderPanel();
+            }
+            finally
+            {
+                _renderSignalVisualSnapshot = null;
+            }
         }
     }
 }
