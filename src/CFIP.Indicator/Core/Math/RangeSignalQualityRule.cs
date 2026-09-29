@@ -157,10 +157,9 @@ namespace cAlgo
                     false,
                     "RANGE NO-TRADE • SMART QUALITY");
 
-            if (input.Edge < 16)
-                return new RangeSignalQualityResult(
-                    false,
-                    "RANGE NO-TRADE • EDGE");
+            // In a range the direction model can legitimately have a modest
+            // directional edge; structural/reversal evidence must carry the decision.
+            // Do not treat the aggregate edge as a prerequisite for a qualified edge setup.
 
             // A genuine range reversal should show at least rejection/displacement
             // even when the liquidity event itself supplied the structural impulse.
