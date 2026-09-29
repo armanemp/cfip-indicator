@@ -361,3 +361,21 @@ CI evidence on verified head `5df5931828719fb635ec67fa59d57b519d4e70e7`. No empi
 | cTrader Build | PASS | Required |
 
 CI evidence on head `89919e7363d374e2cf3a362ec553b1fdac464919`: Runtime PASS; Build PASS; Source/Architecture PASS. No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
+## Phase 8.4 — Order Block Mathematical Audit
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Opposite source candle and zone geometry | PASS | Required |
+| Body vs wick zone semantics | PASS | Required |
+| Displacement uses creation-bar ATR | PASS | Required |
+| Structure-break threshold uses creation-bar ATR | PASS | Required |
+| Wick/body mitigation probe symmetry | PASS | Required |
+| Partial mitigation and retained-width rule | PASS | Required |
+| Full-fill invalidation | PASS | Required |
+| Stable Order Block identity | PASS | Required |
+| OB/FVG confluence consumes canonical FVG rule | PASS | Required |
+| Runtime Acceptance Contracts | PASS | Required |
+| Source / Architecture | PASS | Required |
+| cTrader Build | PASS | Required |
+
+CI evidence on head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime PASS; Build PASS; Source/Architecture PASS. No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
