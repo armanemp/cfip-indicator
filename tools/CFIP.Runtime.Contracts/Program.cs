@@ -8,6 +8,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyMtfContextIntegrity();
+            VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
             VerifyPendingOrderAcceptance();
             VerifyRejectedMutationHandling();
