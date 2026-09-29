@@ -47,14 +47,18 @@ namespace cAlgo
                                     "AUTO ORDERS",
                                     TriggerLineColor);
                 
-                            // Use the direct ToggleButton click as the operator action boundary.
-                            // Runtime synchronization is kept separate and guarded by
-                            // _executionToggleSyncing, so programmatic refresh cannot toggle state.
-                            _autoTradingQuickToggle.Click +=
-                                ApplyAutoTradingQuickToggleClick;
+                            // Use the official Checked/Unchecked state events as the
+                            // operator action boundary. The runtime synchronizer is separately
+                            // guarded, so programmatic state refresh cannot become an operator action.
+                            _autoTradingQuickToggle.Checked +=
+                                OnAutoTradingQuickToggleChecked;
+                            _autoTradingQuickToggle.Unchecked +=
+                                OnAutoTradingQuickToggleUnchecked;
 
-                            _automaticOrdersQuickToggle.Click +=
-                                ApplyAutomaticOrdersQuickToggleClick;
+                            _automaticOrdersQuickToggle.Checked +=
+                                OnAutomaticOrdersQuickToggleChecked;
+                            _automaticOrdersQuickToggle.Unchecked +=
+                                OnAutomaticOrdersQuickToggleUnchecked;
                 
                             _quickExecutionStack.AddChild(
                                 _autoTradingQuickToggle);
