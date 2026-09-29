@@ -40,6 +40,13 @@ namespace cAlgo
                     MinimumTargetsForPlan))
                 return false;
 
+            double[] requiredRR =
+                BuildTargetSelectionRequiredRR(
+                    Math.Max(
+                        0.10,
+                        StructuralTpRrStep),
+                    lane);
+
             tp1 =
                 SelectTarget(
                     selected,
@@ -47,9 +54,7 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp1RR,
-                        MinimumRequiredRR()),
+                    requiredRR[0],
                     lane);
 
             tp2 =
@@ -59,9 +64,7 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp2RR,
-                        Tp2MinimumRR),
+                    requiredRR[1],
                     lane);
 
             tp3 =
@@ -71,9 +74,7 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp3RR,
-                        Tp3MinimumRR),
+                    requiredRR[2],
                     lane);
 
             tp4 =
@@ -83,9 +84,7 @@ namespace cAlgo
                     entry,
                     risk,
                     direction,
-                    Math.Max(
-                        FallbackTp4RR,
-                        Tp4MinimumRR),
+                    requiredRR[3],
                     lane);
 
             if (!IsValidTarget(
