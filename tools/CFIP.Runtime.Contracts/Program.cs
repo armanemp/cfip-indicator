@@ -1127,21 +1127,44 @@ namespace cAlgo
                 renderer.Contains("RenderLevelLines("),
                 "plan renderer owns shared level rendering");
 
+            string lineRendererPath =
+                Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanLineRenderer.cs");
+            string labelAnchorPath =
+                Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "PlanLabelAnchorCalculator.cs");
+            string lineRenderer =
+                File.ReadAllText(lineRendererPath);
+            string labelAnchor =
+                File.ReadAllText(labelAnchorPath);
+
             Assert(
-                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
-                controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
+                lineRenderer.Contains("GetPlanLineRightBar()") &&
+                lineRenderer.Contains("return Bars.Count - 1") &&
+                lineRenderer.Contains("CompactPlanLineLengthBars = 40") &&
+                !lineRenderer.Contains("MapM5ToChart(") &&
+                !lineRenderer.Contains("anchorM5"),
+                "plan levels terminate at the latest chart candle without stale M5 anchoring");
+
+            Assert(
+                labelAnchor.Contains("GetPlanLineLeftBar()") &&
+                !labelAnchor.Contains("GetCompactPlanLineLeftBar()"),
+                "plan labels reuse the canonical line left edge");
+
+            Assert(
+                controlFactory.Contains("CreateExecutionStatus(") &&
+                !controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                !controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
                 !controlFactory.Contains("_autoTradingQuickToggle.Checked +=") &&
                 !controlFactory.Contains("_automaticOrdersQuickToggle.Checked +=") &&
                 !controlFactory.Contains("_autoTradingQuickToggle.Unchecked +=") &&
                 !controlFactory.Contains("_automaticOrdersQuickToggle.Unchecked +="),
-                "execution toggles use direct click authority");
+                "execution controls are non-interactive status surfaces");
 
             Assert(
-                controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
-                controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
-                controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
-                controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
-                "toggle handlers use runtime state authority");
+                !controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
+                !controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
+                !controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
+                !controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
+                "execution UI has no runtime state mutation authority");
 
             int pendingExecution =
                 calculationStage.IndexOf(
