@@ -1340,9 +1340,7 @@ if "return LineStyle.Solid" not in visual_line_code:
     raise SystemExit("All compact signal/plan level lines must use Solid style")
 if '"TRIGGER"' not in visual_line_code or '"SL"' not in visual_line_code:
     raise SystemExit("Solid compact level styles must distinguish trigger and SL by thickness")
-if "Math.Max(
-                    3," not in visual_line_code or
-   "return 1;" not in visual_line_code:
+if "return Math.Max(" not in visual_line_code or "return 1;" not in visual_line_code:
     raise SystemExit("Trigger/SL thickness distinction is missing")
 
 # Runtime UI responsiveness hotfix contract.
