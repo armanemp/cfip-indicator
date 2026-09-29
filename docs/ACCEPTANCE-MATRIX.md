@@ -544,3 +544,23 @@ Verification evidence:
 - Runtime Acceptance #1107 PASS
 - cTrader Compile/Build #1291 PASS
 - Source/Architecture #1298 PASS
+
+
+## Phase 9.14 — Signal Evidence Integrity & Consensus Calibration
+
+| Contract | Automated controlled check | cTrader / replay |
+| --- | ---: | ---: |
+| Relative frame dominance is modulated by absolute bull+bear strength | Decision Contract / Source | Required |
+| Low-evidence frames cannot contribute as full-strength directional votes | Decision Contract / Source | Required |
+| Evidence coverage is bounded and is not a hard gate | Decision Contract / Source | Required |
+| Strong evidence retains high directional influence | Decision Contract | Required |
+| BUY/SELL contribution symmetry is preserved | Decision Contract | Required |
+| Weak balanced frames remain near neutral | Decision Contract | Required |
+| Canonical adapter supplies the existing frame evidence count | Source | Required |
+| No second decision/execution authority is introduced | Source / Architecture | Required |
+| Public parameter count remains 552 | Source gate | Required |
+| Runtime Acceptance | Required | Required |
+| cTrader Compile/Build | Required | Required |
+| Source / Architecture + accumulated audit | Required | Required |
+
+Target-terminal/replay remains required for actual false-signal frequency, missed valid opportunities, signal timing, realized R, lane/regime calibration and execution behavior.
