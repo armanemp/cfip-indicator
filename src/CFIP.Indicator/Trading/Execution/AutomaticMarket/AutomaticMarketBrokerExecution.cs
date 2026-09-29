@@ -5,7 +5,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private TradeResult TryExecuteAutomaticMarketOrderFallback(
+        private TradeResult TryExecuteAutomaticMarketCompatibilityPathV97(
             TradeType type,
             double volume,
             double stopPips,
