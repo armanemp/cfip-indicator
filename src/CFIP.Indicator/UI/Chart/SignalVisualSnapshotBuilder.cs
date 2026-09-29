@@ -123,6 +123,13 @@ namespace cAlgo
                     MinimumEarlyConfidence,
                     EarlySetupConfidence);
 
+            bool triggerRuntimeReady =
+                _triggerRuntime.Latched &&
+                _decision != null &&
+                _decision.Direction != 0 &&
+                _triggerRuntime.Direction == _decision.Direction &&
+                _triggerRuntime.DecisionM5 == closedM5;
+
             int visualDirection =
                 ResolveCanonicalVisualDirection(
                     pendingValid
@@ -212,7 +219,7 @@ namespace cAlgo
                 snapshot.SetupTp4 = _setupPreview.Tp4;
                 snapshot.SetupRisk = _setupPreview.Risk;
                 snapshot.Stage =
-                    snapshot.TriggerRuntimeReady
+                    triggerRuntimeReady
                         ? "TRIGGER READY"
                         : decisionReady
                             ? "CONFIRMED SETUP"
@@ -220,7 +227,10 @@ namespace cAlgo
             }
             else if (decisionReady)
             {
-                snapshot.Stage = "CONFIRMED";
+                snapshot.Stage =
+                    triggerRuntimeReady
+                        ? "TRIGGER READY"
+                        : "CONFIRMED";
             }
             else if (reactionReady)
             {
@@ -266,11 +276,7 @@ namespace cAlgo
                     : _decision.Regime;
 
             snapshot.TriggerRuntimeReady =
-                _triggerRuntime.Latched &&
-                _decision != null &&
-                _decision.Direction != 0 &&
-                _triggerRuntime.Direction == _decision.Direction &&
-                _triggerRuntime.DecisionM5 == closedM5;
+                triggerRuntimeReady;
 
             snapshot.TriggerM1Index =
                 snapshot.TriggerRuntimeReady
