@@ -53,7 +53,16 @@ namespace cAlgo
                 directionSign *
                 (finalTarget - executionEntry);
 
-            if (d1 <= Symbol.PipSize ||
+            double stopDistance =
+                directionSign *
+                (_plan.Stop - executionEntry);
+
+            // Server protection is accepted only when the structural SL is on the
+            // protective side of the actual execution price and the TP ladder is
+            // strictly progressive. This prevents stale/misaligned plan geometry
+            // from becoming broker-owned protection.
+            if (stopDistance >= -Symbol.PipSize ||
+                d1 <= Symbol.PipSize ||
                 d2 <= d1 ||
                 dFinal <= d2)
                 return false;
