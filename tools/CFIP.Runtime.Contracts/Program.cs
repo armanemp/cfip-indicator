@@ -14,6 +14,8 @@ namespace cAlgo
             VerifyZoneConfluenceSymmetry();
             VerifyTopDownCalibration();
             VerifyProtectionProgressionSemantics();
+            VerifyWaveTrendEvidence();
+            VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
@@ -587,6 +589,165 @@ namespace cAlgo
                 weakMiddleAgreement.Stage == "MIDFRAME CALIBRATION",
                 "directionally mixed middle frames cannot be promoted to calibrated entry");
 
+        }
+
+        private static void VerifyWaveTrendEvidence()
+        {
+            WaveTrendSnapshot bullCross =
+                new WaveTrendSnapshot(
+                    true,
+                    8,
+                    3,
+                    5,
+                    1,
+                    4,
+                    7,
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    false);
+
+            WaveTrendEvidenceResult bull =
+                WaveTrendEvidenceRule.Evaluate(
+                    bullCross,
+                    58);
+
+            Assert(
+                bull.Bull &&
+                bull.Direction == 1 &&
+                bull.Quality >= 58,
+                "WaveTrend bullish cross/rising state becomes bounded bullish evidence");
+
+            WaveTrendSnapshot bearCross =
+                new WaveTrendSnapshot(
+                    true,
+                    -8,
+                    -3,
+                    -5,
+                    -1,
+                    -4,
+                    -7,
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true);
+
+            WaveTrendEvidenceResult bear =
+                WaveTrendEvidenceRule.Evaluate(
+                    bearCross,
+                    58);
+
+            Assert(
+                bear.Bear &&
+                bear.Direction == -1 &&
+                bear.Quality >= 58,
+                "WaveTrend bearish cross/falling state becomes bounded bearish evidence");
+
+            WaveTrendSnapshot weak =
+                new WaveTrendSnapshot(
+                    true,
+                    1,
+                    0.5,
+                    0.5,
+                    0.9,
+                    0.5,
+                    0.1,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    false);
+
+            WaveTrendEvidenceResult weakResult =
+                WaveTrendEvidenceRule.Evaluate(
+                    weak,
+                    70);
+
+            Assert(
+                !weakResult.Bull &&
+                !weakResult.Bear,
+                "weak WaveTrend movement cannot manufacture a strong evidence direction");
+        }
+
+        private static void VerifyParallelOpportunityRule()
+        {
+            TacticalOpportunityResult regular =
+                TacticalOpportunityRule.Evaluate(
+                    1,
+                    92,
+                    78,
+                    4,
+                    4,
+                    1,
+                    1,
+                    55,
+                    72,
+                    1.90,
+                    70,
+                    1.75,
+                    82,
+                    2.20);
+
+            Assert(
+                regular.Allowed &&
+                regular.Lane == OpportunityLane.Tactical &&
+                regular.RiskReward >= 1.75,
+                "aligned LTF opportunity can qualify without requiring strategic HTF calibration");
+
+            TacticalOpportunityResult counterWeak =
+                TacticalOpportunityRule.Evaluate(
+                    1,
+                    80,
+                    75,
+                    4,
+                    4,
+                    1,
+                    -1,
+                    84,
+                    72,
+                    2.25,
+                    70,
+                    1.75,
+                    82,
+                    2.20);
+
+            Assert(
+                !counterWeak.Allowed &&
+                counterWeak.Lane == OpportunityLane.CounterHtfTactical,
+                "counter-HTF opportunity needs the stricter tactical quality gate");
+
+            TacticalOpportunityResult counterStrong =
+                TacticalOpportunityRule.Evaluate(
+                    1,
+                    95,
+                    86,
+                    5,
+                    5,
+                    1,
+                    -1,
+                    84,
+                    72,
+                    2.35,
+                    70,
+                    1.75,
+                    82,
+                    2.20);
+
+            Assert(
+                counterStrong.Allowed &&
+                counterStrong.Lane == OpportunityLane.CounterHtfTactical,
+                "very strong LTF RR opportunity can survive a strong HTF conflict");
         }
 
         private static void VerifyProtectionProgressionSemantics()
