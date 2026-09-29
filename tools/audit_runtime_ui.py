@@ -17,7 +17,7 @@ sync = read("UI/Controls/ExecutionControlsSynchronizer.cs")
 handlers = read("UI/Controls/ExecutionToggleHandlers.cs")
 initialization = read("Runtime/Initialization/RuntimeInitialization.cs")
 
-all_source = "\n".join(
+production_source = "\n".join(
     path.read_text(encoding="utf-8")
     for path in ROOT.rglob("*.cs")
 )
@@ -28,7 +28,7 @@ for legacy in (
     "ApplyAutoTradingQuickToggleClick",
     "ApplyAutomaticOrdersQuickToggleClick",
 ):
-    if legacy in all_source:
+    if legacy in production_source:
         raise SystemExit(f"Legacy interactive execution-control symbol remains: {legacy}")
 
 if "CompactPlanLineLengthBars = 40" not in line:
