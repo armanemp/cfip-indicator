@@ -3689,3 +3689,21 @@ Detailed record: `docs/PHASE-9-8-INDICATOR-FUSION-TRADE-QUALITY.md`.
 
 
 Phase 9.8 merge closeout: PR #50 merged into `main` as `37cfd761bbb439d6e154315995664721b6c31740`. Local `main` must be pulled before the next continuation.
+
+## Phase 9.9 — Signal / Execution / Protection Coherence — 2026-09-29
+
+Status: VERIFIED COMPLETE on `98ac6f0844abb1171f70d7d5eaa50e8fdf623134`.
+
+Final automated gates: Runtime Acceptance #1048 PASS; cTrader Compile/Build #1232 PASS; Source/Architecture #1239 PASS.
+
+PR #51 merge closeout remains pending. Target-terminal cTrader replay remains required for empirical behavior and realized trading outcomes.
+
+Scope:
+- canonical live indicator-fusion actionability gate with stale-frame rejection;
+- server-side partial TP ladder for valid TP1/TP2/final configurations;
+- suppression of duplicate local TP mutation/target progression when broker-side ladder is active;
+- pending-fill adoption of broker-side TP ladder;
+- preservation of the white, background-free level-label contract;
+- no new public parameters and no second decision/execution authority.
+
+Detailed record: `docs/PHASE-9-9-SIGNAL-PROTECTION-COHERENCE.md`.

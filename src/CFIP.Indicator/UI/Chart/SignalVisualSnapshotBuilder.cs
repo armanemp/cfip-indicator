@@ -135,12 +135,16 @@ namespace cAlgo
                 _plan.PositionId > 0;
 
             bool decisionReady =
+                !pendingValid &&
+                !livePlan &&
                 _decision != null &&
                 _decision.EntryAllowed &&
                 _decision.ActionableNow &&
                 _decision.Direction != 0;
 
             bool reactionReady =
+                !pendingValid &&
+                !livePlan &&
                 EnableLiveReaction &&
                 ShowReactionArrow &&
                 _reaction != null &&

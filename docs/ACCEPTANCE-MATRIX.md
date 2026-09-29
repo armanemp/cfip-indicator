@@ -402,3 +402,30 @@ CI evidence on head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime PASS; Bu
 | cTrader compile | Required | Required |
 | Runtime acceptance | Required | Required |
 | Source / architecture | Required | Required |
+
+
+## Phase 9.9 — Signal / Execution / Protection Coherence
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Live ActionableNow consumes the current closed-M5 indicator-fusion snapshot | Source | Required |
+| Present-but-unavailable M5 indicator fusion fails closed | Decision contract / Source | Required |
+| Pending/live execution suppresses lower-priority WATCH/REACTION presentation and alerts | Source / Runtime | Required |
+| Stale M5 indicator-fusion state cannot reopen actionability | Decision/runtime contract | Required |
+| Compression remains a hard indicator-actionability block | Decision contract | Required |
+| Server TP ladder uses relative SL + partial TP1 + partial TP2 + final TP | Source / compile | Required |
+| Server TP ladder requires valid progressive geometry and broker-valid normalized volumes | Source / compile | Required |
+| Local TP1/TP2 close mutation is suppressed while server ladder is active | Source | Required |
+| Live target progression yields while server ladder is active | Source | Required |
+| Protection sync does not overwrite a server-owned TP ladder | Source | Required |
+| Pending fills adopt the confirmed server TP ladder | Source | Required |
+| Level-label renderer uses white text | Source | Required |
+| Level-label renderer/coordinator does not create text-background rectangles | Source | Required |
+| 535-parameter production contract remains unchanged | Source gate | Required |
+| No second decision/execution authority introduced | Source / architecture | Required |
+| Decision contracts | PASS | Required |
+| Runtime Acceptance | Required | Required |
+| cTrader Compile/Build | Required | Required |
+| Source / Architecture | Required | Required |
+
+Hands-on target-terminal replay remains required for observed partial fills, target-server behavior, duplicate suppression, terminal rendering, broker protection state and realized trading outcomes.

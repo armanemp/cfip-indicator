@@ -53,6 +53,7 @@ namespace cAlgo
                                     _tp2Hit = 0;
                                     _tp3Hit = 0;
                                     _tp4Hit = 0;
+                                    _serverSideTakeProfitLadderActive = false;
                                     _slHit = false;
                                     _outcomeRegistered = false;
                                     _outcomeTelemetryTimedOut = false;

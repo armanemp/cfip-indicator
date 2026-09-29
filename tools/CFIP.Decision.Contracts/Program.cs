@@ -22,6 +22,7 @@ namespace cAlgo
             VerifyActionableSignalQuality();
             VerifyRangeSignalQuality();
             VerifyIndicatorEvidenceFusion();
+            VerifyIndicatorActionability();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -966,6 +967,88 @@ namespace cAlgo
                     rangeReversal.BearBonus &&
                 rangeReversal.Quality >= 60,
                 "range reversal indicator fusion");
+        }
+
+        private static void VerifyIndicatorActionability()
+        {
+            IndicatorActionabilityResult trend =
+                IndicatorActionabilityRule.Evaluate(
+                    "TREND",
+                    72,
+                    30);
+
+            Assert(
+                trend.Allowed,
+                "strong trend indicator actionability");
+
+            IndicatorActionabilityResult weakQuality =
+                IndicatorActionabilityRule.Evaluate(
+                    "TREND",
+                    59,
+                    30);
+
+            Assert(
+                !weakQuality.Allowed &&
+                weakQuality.Reason ==
+                    "INDICATOR FUSION • QUALITY",
+                "weak trend indicator quality blocks");
+
+            IndicatorActionabilityResult unavailable =
+                IndicatorActionabilityRule.Evaluate(
+                    "TREND",
+                    0,
+                    0);
+
+            Assert(
+                !unavailable.Allowed &&
+                unavailable.Reason ==
+                    "INDICATOR FUSION • QUALITY",
+                "unavailable indicator fusion fails closed");
+
+            IndicatorActionabilityResult conflicted =
+                IndicatorActionabilityRule.Evaluate(
+                    "TREND",
+                    75,
+                    53);
+
+            Assert(
+                !conflicted.Allowed &&
+                conflicted.Reason ==
+                    "INDICATOR FUSION • CONFLICT",
+                "high indicator conflict blocks");
+
+            IndicatorActionabilityResult range =
+                IndicatorActionabilityRule.Evaluate(
+                    "RANGE",
+                    58,
+                    55);
+
+            Assert(
+                range.Allowed,
+                "range uses bounded indicator floor");
+
+            IndicatorActionabilityResult compression =
+                IndicatorActionabilityRule.Evaluate(
+                    "COMPRESSION",
+                    95,
+                    0);
+
+            Assert(
+                !compression.Allowed &&
+                compression.Reason ==
+                    "INDICATOR FUSION • COMPRESSION",
+                "compression indicator gate");
+
+            IndicatorActionabilityResult mirrored =
+                IndicatorActionabilityRule.Evaluate(
+                    "TREND",
+                    72,
+                    30);
+
+            Assert(
+                mirrored.Allowed &&
+                mirrored.Reason == trend.Reason,
+                "indicator actionability deterministic");
         }
 
         private static void Assert(bool condition, string name)

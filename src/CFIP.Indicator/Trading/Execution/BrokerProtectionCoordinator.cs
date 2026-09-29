@@ -30,6 +30,9 @@ namespace cAlgo
                                 !IsFinitePositive(position.EntryPrice))
                                 return false;
 
+                            AdoptServerSideTakeProfitLadder(
+                                position);
+
                             bool currentStopValid =
                                 position.StopLoss.HasValue &&
                                 IsFinitePositive(
@@ -116,9 +119,11 @@ namespace cAlgo
                                     target);
 
                             bool targetOk =
+                                _serverSideTakeProfitLadderActive ||
                                 currentTargetValid;
 
-                            if (!targetOk &&
+                            if (!_serverSideTakeProfitLadderActive &&
+                                !targetOk &&
                                 desiredTargetValid)
                             {
                                 targetOk =
@@ -127,7 +132,8 @@ namespace cAlgo
                                         NormalizePrice(target),
                                         context + " • TP");
                             }
-                            else if (targetOk &&
+                            else if (!_serverSideTakeProfitLadderActive &&
+                                     targetOk &&
                                      desiredTargetValid)
                             {
                                 double currentTarget =

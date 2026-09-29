@@ -18,6 +18,9 @@ namespace cAlgo
             double percentOfOriginal,
             string tag)
         {
+            if (_serverSideTakeProfitLadderActive)
+                return false;
+
             if (!EnablePartialTakeProfit ||
                 _plan == null ||
                 _plan.OriginalVolume <= 0 ||

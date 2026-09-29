@@ -319,6 +319,34 @@ namespace cAlgo
                         : 0,
                     supportiveHiddenDivergence);
 
+
+            // Live actionability must consume the same indicator-fusion quality
+            // that guards confirmed Decision/automatic execution. A stale M5
+            // fusion snapshot is fail-closed so an old indicator state cannot
+            // reopen an otherwise blocked setup.
+            string indicatorGateReason = string.Empty;
+
+            if (_m5Frame != null)
+            {
+                if (_m5Frame.Index != closedM5)
+                {
+                    indicatorGateReason =
+                        "INDICATOR FUSION • STALE";
+                }
+                else
+                {
+                    IndicatorActionabilityResult indicatorGate =
+                        IndicatorActionabilityRule.Evaluate(
+                            regime,
+                            _m5Frame.IndicatorConfluenceQuality,
+                            _m5Frame.IndicatorConflict);
+
+                    if (!indicatorGate.Allowed)
+                        indicatorGateReason =
+                            indicatorGate.Reason;
+                }
+            }
+
             bool microConflict =
                 m1DirectionConflict &&
                 (adverseM1Atr >= 0.25 ||
@@ -350,6 +378,19 @@ namespace cAlgo
                         divergenceAdjustment -
                         (int)Math.Round(
                             trapRisk.Risk * 0.18)));
+
+            if (!string.IsNullOrEmpty(indicatorGateReason))
+                return new TradeActionabilityResult(
+                    false,
+                    locationQuality,
+                    timingQuality,
+                    pricePositionQuality,
+                    entryDistanceAtr,
+                    tp1RR,
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    indicatorGateReason);
 
             if (!qualityReady)
                 return new TradeActionabilityResult(

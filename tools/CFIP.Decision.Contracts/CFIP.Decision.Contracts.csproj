@@ -34,5 +34,6 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs" Link="Core/Math/RangeSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs" Link="Core/Math/IndicatorEvidenceFusionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs" Link="Core/Math/EntryTrapRiskRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorActionabilityRule.cs" Link="Core/Math/IndicatorActionabilityRule.cs" />
   </ItemGroup>
 </Project>

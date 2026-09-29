@@ -44,9 +44,15 @@ namespace cAlgo
                     position.EntryPrice,
                     position.TakeProfit.Value);
 
+
+            bool serverTakeProfitLadderActive =
+                AdoptServerSideTakeProfitLadder(
+                    position);
+
             return
                 brokerStopValid &&
-                (!SyncBrokerTakeProfit ||
+                (serverTakeProfitLadderActive ||
+                 !SyncBrokerTakeProfit ||
                  brokerTargetValid);
         }
     }

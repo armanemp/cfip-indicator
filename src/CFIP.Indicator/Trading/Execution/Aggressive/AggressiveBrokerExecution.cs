@@ -96,21 +96,40 @@ namespace cAlgo
                     return;
                 }
 
+                RelativeTakeProfitProtections serverTakeProfits;
+                bool useServerTakeProfitLadder =
+                    TryBuildServerSideTakeProfitLadder(
+                        entry,
+                        target,
+                        volume,
+                        out serverTakeProfits);
+
                 TradeResult result;
 
                 try
                 {
                     result =
-                        TryExecuteMarketOrder(
-                            type,
-                            SymbolName,
-                            volume,
-                            NormalizeLabel(),
-                            stopPips,
-                            tpPips,
-                            TradeExecutionMetadata.DefaultExecutionComment,
-                            false,
-                            "AGGRESSIVE MARKET");
+                        useServerTakeProfitLadder
+                            ? TryExecuteMarketOrderWithTakeProfitLadder(
+                                type,
+                                SymbolName,
+                                volume,
+                                NormalizeLabel(),
+                                stopPips,
+                                serverTakeProfits,
+                                TradeExecutionMetadata.DefaultExecutionComment,
+                                false,
+                                "AGGRESSIVE MARKET • SERVER TP LADDER")
+                            : TryExecuteMarketOrder(
+                                type,
+                                SymbolName,
+                                volume,
+                                NormalizeLabel(),
+                                stopPips,
+                                tpPips,
+                                TradeExecutionMetadata.DefaultExecutionComment,
+                                false,
+                                "AGGRESSIVE MARKET");
                 }
                 catch
                 {
@@ -150,6 +169,9 @@ namespace cAlgo
                         out double actualStop,
                         out double actualTarget))
                     return;
+
+                AdoptServerSideTakeProfitLadder(
+                    result.Position);
 
                 bool protectionOk = true;
 

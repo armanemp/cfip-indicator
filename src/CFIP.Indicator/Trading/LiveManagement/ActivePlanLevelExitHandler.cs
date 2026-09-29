@@ -18,6 +18,16 @@ namespace cAlgo
                                     int closedM5,
                                     double market)
                                 {
+                                    Position managedPosition =
+                                        GetManagedLivePositionForPlan();
+
+                                    if (_serverSideTakeProfitLadderActive &&
+                                        managedPosition != null)
+                                    {
+                                        ObserveServerSidePartialTakeProfits(
+                                            managedPosition);
+                                    }
+
                                     double liveStop =
                                         GetActiveBrokerStopPrice();
                         
@@ -28,12 +38,14 @@ namespace cAlgo
                                             : market >= liveStop);
                         
                                     bool hitTp1 =
+                                        !_serverSideTakeProfitLadderActive &&
                                         _plan.Tp1 > 0 &&
                                         (_plan.Direction == 1
                                             ? market >= _plan.Tp1
                                             : market <= _plan.Tp1);
                         
                                     bool hitTp2 =
+                                        !_serverSideTakeProfitLadderActive &&
                                         _plan.Tp2 > 0 &&
                                         (_plan.Direction == 1
                                             ? market >= _plan.Tp2
@@ -46,6 +58,7 @@ namespace cAlgo
                                             : market <= _plan.Tp3);
                         
                                     bool hitTp4 =
+                                        !_serverSideTakeProfitLadderActive &&
                                         _plan.Tp4 > 0 &&
                                         (_plan.Direction == 1
                                             ? market >= _plan.Tp4

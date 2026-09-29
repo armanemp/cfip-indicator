@@ -11,8 +11,6 @@ namespace cAlgo
             double stopPips,
             double targetPips)
         {
-            // Architectural compatibility path. Valid Phase 9.7 market
-            // submissions use the bounded Market Range path.
             return TryExecuteMarketOrder(
                 type,
                 SymbolName,
@@ -37,83 +35,62 @@ namespace cAlgo
             try
             {
                 if (!CanRunAutomaticEntry())
-                {
-                    ApplyRuntimeEntryGate();
-                    return;
-                }
+                { ApplyRuntimeEntryGate(); return; }
 
                 string submissionReason;
                 if (!TryValidateAutomaticMarketSubmission(
-                        closedM5,
-                        type,
-                        entry,
-                        target,
-                        volume,
+                        closedM5, type, entry, target, volume,
                         out submissionReason))
                 {
-                    _autoExecutionBlockReason =
-                        submissionReason;
-
-                    SetAutoTradingState(
-                        "BLOCKED",
-                        submissionReason);
+                    _autoExecutionBlockReason = submissionReason;
+                    SetAutoTradingState("BLOCKED", submissionReason);
                     return;
                 }
 
                 string submissionGateReason;
                 SubmissionAttemptIdentity submissionIdentity;
+                int direction = _plan == null ? 0 : _plan.Direction;
 
                 if (!TryAcquireSubmission(
-                        closedM5,
-                        _plan == null
-                            ? 0
-                            : _plan.Direction,
+                        closedM5, direction,
                         ExecutionSubmissionPath.AutomaticMarket,
                         out submissionIdentity,
                         out submissionGateReason))
                 {
-                    _autoExecutionBlockReason =
-                        submissionGateReason;
-
-                    SetAutoTradingState(
-                        "BLOCKED",
-                        submissionGateReason);
+                    _autoExecutionBlockReason = submissionGateReason;
+                    SetAutoTradingState("BLOCKED", submissionGateReason);
                     return;
                 }
 
                 double marketRangePips =
-                    CalculateAutomaticMarketRangePips(
-                        closedM5,
-                        entry);
+                    CalculateAutomaticMarketRangePips(closedM5, entry);
 
                 if (marketRangePips <= 0)
                 {
-                    _autoExecutionBlockReason =
-                        "MARKET RANGE UNAVAILABLE";
-
-                    SetAutoTradingState(
-                        "BLOCKED",
-                        _autoExecutionBlockReason);
+                    _autoExecutionBlockReason = "MARKET RANGE UNAVAILABLE";
+                    SetAutoTradingState("BLOCKED", _autoExecutionBlockReason);
                     return;
                 }
 
-                TradeResult result;
+                RelativeTakeProfitProtections serverTakeProfits;
+                bool useServerTakeProfitLadder =
+                    TryBuildServerSideTakeProfitLadder(
+                        entry, target, volume, out serverTakeProfits);
 
+                TradeResult result;
                 try
                 {
-                    result =
-                        TryExecuteMarketRangeOrder(
-                            type,
-                            SymbolName,
-                            volume,
-                            marketRangePips,
-                            entry,
-                            NormalizeLabel(),
-                            stopPips,
-                            targetPips,
+                    result = useServerTakeProfitLadder
+                        ? TryExecuteMarketRangeOrderWithTakeProfitLadder(
+                            type, SymbolName, volume, marketRangePips, entry,
+                            NormalizeLabel(), stopPips, serverTakeProfits,
                             TradeExecutionMetadata.DefaultExecutionComment,
-                            false,
-                            "AUTOMATIC MARKET RANGE");
+                            false, "AUTOMATIC MARKET RANGE • SERVER TP LADDER")
+                        : TryExecuteMarketRangeOrder(
+                            type, SymbolName, volume, marketRangePips, entry,
+                            NormalizeLabel(), stopPips, targetPips,
+                            TradeExecutionMetadata.DefaultExecutionComment,
+                            false, "AUTOMATIC MARKET RANGE");
                 }
                 catch
                 {
@@ -125,103 +102,67 @@ namespace cAlgo
 
                 if (result == null)
                 {
-                    _autoExecutionBlockReason =
-                        "NULL TRADE RESULT";
-                    SetAutoTradingState(
-                        "ERROR",
-                        "NULL TRADE RESULT");
+                    _autoExecutionBlockReason = "NULL TRADE RESULT";
+                    SetAutoTradingState("ERROR", "NULL TRADE RESULT");
                     return;
                 }
 
                 if (!BrokerConfirmationPolicy.CanAdoptPosition(
-                        true,
-                        result.IsSuccessful,
-                        result.Position != null))
+                        true, result.IsSuccessful, result.Position != null))
                 {
                     _autoExecutionBlockReason =
                         result.Error.HasValue
                             ? result.Error.Value.ToString()
                             : "TRADE REJECTED";
-
-                    SetAutoTradingState(
-                        "ERROR",
-                        _autoExecutionBlockReason);
+                    SetAutoTradingState("ERROR", _autoExecutionBlockReason);
                     return;
                 }
 
-                if (!TryAcceptAutomaticMarketFill(
-                        closedM5,
-                        result))
+                if (!TryAcceptAutomaticMarketFill(closedM5, result))
                     return;
 
+                AdoptServerSideTakeProfitLadder(result.Position);
+
                 if (!TryResolveAutomaticPostFillTarget(
-                        closedM5,
-                        result.Position,
-                        ref target))
+                        closedM5, result.Position, ref target))
                     return;
 
                 bool protectionOk = true;
-
                 if (AutoBrokerProtection)
-                {
-                    protectionOk =
-                        EnsureBrokerProtectionForPosition(
-                            result.Position,
-                            _plan.Stop,
-                            target,
-                            "NEW MARKET ENTRY",
-                            _plan.Direction);
-                }
+                    protectionOk = EnsureBrokerProtectionForPosition(
+                        result.Position,
+                        _plan.Stop,
+                        target,
+                        "NEW MARKET ENTRY",
+                        _plan.Direction);
 
                 SetAutoTradingState(
+                    protectionOk ? "EXECUTED" : "RECOVERY",
                     protectionOk
-                        ? "EXECUTED"
-                        : "RECOVERY",
-                    protectionOk
-                        ? "POSITION #" +
-                          result.Position.Id
-                        : "POSITION #" +
-                          result.Position.Id +
+                        ? "POSITION #" + result.Position.Id
+                        : "POSITION #" + result.Position.Id +
                           " • BROKER PROTECTION RECOVERY");
 
-                double confirmedStop =
-                    GetActiveBrokerStopPrice();
-
-                double confirmedTarget =
-                    GetActiveBrokerTargetPrice();
+                double confirmedStop = GetActiveBrokerStopPrice();
+                double confirmedTarget = GetActiveBrokerTargetPrice();
 
                 SendUnifiedAlert(
-                    "AUTO|" +
-                    closedM5,
+                    "AUTO|" + closedM5,
                     "CFIP AUTO " +
-                    (_plan.Direction == 1
-                        ? "BUY"
-                        : "SELL") +
-                    " EXECUTED | #" +
-                    result.Position.Id +
-                    " | ENTRY " +
-                    Price(
-                        result.Position.EntryPrice) +
+                    (_plan.Direction == 1 ? "BUY" : "SELL") +
+                    " EXECUTED | #" + result.Position.Id +
+                    " | ENTRY " + Price(result.Position.EntryPrice) +
                     " | BROKER SL " +
-                    (IsFinitePositive(confirmedStop)
-                        ? Price(confirmedStop)
-                        : "RECOVERY") +
+                    (IsFinitePositive(confirmedStop) ? Price(confirmedStop) : "RECOVERY") +
                     " | BROKER TP " +
-                    (IsFinitePositive(confirmedTarget)
-                        ? Price(confirmedTarget)
-                        : "RECOVERY"),
+                    (IsFinitePositive(confirmedTarget) ? Price(confirmedTarget) : "RECOVERY"),
                     _plan.Direction,
                     true);
             }
             catch (Exception ex)
             {
-                SetAutoTradingState(
-                    "ERROR",
-                    ex.Message);
-
-                Print(
-                    "CFIP auto trade failed: {0}",
-                    ex.Message);
+                SetAutoTradingState("ERROR", ex.Message);
+                Print("CFIP auto trade failed: {0}", ex.Message);
             }
         }
     }

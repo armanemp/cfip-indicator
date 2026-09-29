@@ -1280,3 +1280,45 @@ Detailed phase record: `docs/PHASE-9-8-INDICATOR-FUSION-TRADE-QUALITY.md`.
 
 
 Phase 9.8 merge closeout: PR #50 merged into `main` as `37cfd761bbb439d6e154315995664721b6c31740`. Local `main` must be pulled before the next continuation.
+
+## 2026-09-29 — Phase 9.9 signal / execution / protection coherence
+
+Branch: `phase/9-9-signal-protection-coherence`
+
+Implementation scope:
+- added a canonical `IndicatorActionabilityRule` and connected live ActionableNow evaluation to the current closed-M5 fusion snapshot;
+- stale/weak/conflicted indicator fusion can no longer reopen a live actionable state;
+- added server-side relative TP1/TP2/final protection for eligible automatic market, aggressive market, continuation-stop and reversal-limit entries;
+- pending fills adopt the confirmed broker-side TP ladder;
+- local partial-close and live target progression paths yield while the server-side ladder is active;
+- broker protection sync no longer overwrites a confirmed advanced TP ladder with a simple single TP;
+- chart level labels remain background-free and white through the common renderer.
+
+Safety boundary:
+- no new public parameter;
+- no second decision authority;
+- no second broker mutation authority;
+- legacy execution path remains available when a valid server-side ladder cannot be constructed.
+
+Detailed phase record: `docs/PHASE-9-9-SIGNAL-PROTECTION-COHERENCE.md`.
+
+CI and target-terminal replay are required before the phase is considered verified complete.
+
+### Phase 9.9 corrective hardening — 2026-09-29
+
+Additional implementation pass on `phase/9-9-signal-protection-coherence`:
+
+- corrected cTrader advanced-protection partial TP construction to the current documented `RelativeTakeProfitProtection(double volume, double distance)` API;
+- changed live M5 indicator-fusion actionability to fail closed when the current fusion snapshot is present but unavailable/zero-quality;
+- suppressed decision/reaction alert layers when a managed pending order or live position is authoritative;
+- extended `tools/audit_runtime_ui.py` with regression checks for the server-ladder API shape, white/background-free labels, and execution-state signal-layer suppression.
+
+Final verified code/documentation head: `98ac6f0844abb1171f70d7d5eaa50e8fdf623134`.
+
+Final automated verification:
+- Runtime Acceptance #1048 PASS;
+- cTrader Compile/Build #1232 PASS;
+- Source/Architecture #1239 PASS.
+
+Target-terminal cTrader replay remains required for empirical signal timing, visual rendering, broker event behavior, partial-fill observation, duplicate-alert observation, protection recovery and realized trading outcomes.
+
