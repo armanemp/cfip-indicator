@@ -60,6 +60,42 @@ namespace cAlgo
                     return recent;
             }
 
+            // When the recent bounded window is too sparse, use the
+            // persistent archive aggregate as the long-term evidence baseline.
+            // This keeps old 90-day files useful without loading every outcome
+            // into the hot-path recent list.
+            if (_archiveLearningOutcomeCount >=
+                Math.Max(
+                    1,
+                    CalibrationMinimumSamples))
+            {
+                EmpiricalCalibrationSnapshot archived =
+                    calibrator.CalculateContextual(
+                        true,
+                        true,
+                        direction,
+                        lane,
+                        regime,
+                        confidence,
+                        _archiveCalibrationSamples,
+                        _archiveCalibrationWins,
+                        Math.Max(
+                            1,
+                            CalibrationMinimumSamples),
+                        minimumDirectionalSamples,
+                        CalibrationMaxConfidenceAdjustment);
+
+                if (archived.Available)
+                    return new EmpiricalCalibrationSnapshot(
+                        true,
+                        archived.Adjustment,
+                        archived.Samples,
+                        archived.Wins,
+                        archived.ConfidenceBucket,
+                        archived.ObservedWinRate,
+                        archived.Source + "-ARCHIVE");
+            }
+
             return calibrator.CalculateContextual(
                 true,
                 true,
