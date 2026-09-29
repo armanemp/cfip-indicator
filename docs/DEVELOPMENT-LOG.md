@@ -1223,3 +1223,27 @@ Acceptance boundary:
 - target cTrader replay remains required for empirical visual and signal-quality measurement.
 
 Detailed phase record: `docs/PHASE-9-6-SIGNAL-QUALITY-VISUAL-COHERENCE.md`.
+
+
+## Phase 9.7 — Regime-Aware No-Trade & Auto-Execution Hardening — 2026-09-29
+
+Status: implementation in progress on `phase/9-7-regime-auto-execution-hardening`; verification pending.
+
+Scope:
+- introduced a single canonical RANGE/COMPRESSION quality rule;
+- hard-blocked COMPRESSION;
+- filtered weak RANGE signals and visual fallbacks;
+- preserved only structurally strong range reversals or prior-range breakouts;
+- required range quality for new automatic pending orders and regime-aware pending cleanup;
+- forced fresh market suitability before automatic market and pending submission;
+- enforced spread-to-stop-risk before automatic market entry;
+- switched automatic market submission to bounded cTrader Market Range execution;
+- kept broker-confirmed lifecycle and single execution capacity unchanged;
+- forced opaque compact label backgrounds and kept the Phase 9.6 label geometry contract.
+
+External execution research:
+- cTrader supports market-range execution, where the allowed execution price range is supplied as pips;
+- cTrader's order documentation notes that market orders are exposed to slippage and that market-range/limit approaches can reduce that exposure;
+- server-side SL/TP remains part of the execution safety design.
+
+Detailed phase record: `docs/PHASE-9-7-REGIME-AUTO-EXECUTION-HARDENING.md`.
