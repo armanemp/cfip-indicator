@@ -88,9 +88,6 @@ namespace cAlgo
         [Parameter("Reversal Protection Minimum Quality", Group = "13 · AUTO TRADING", DefaultValue = 82, MinValue = 50, MaxValue = 100)]
         public int ReversalProtectionMinimumQuality { get; set; }
 
-        [Parameter("Maximum Open Positions", Group = "13 · AUTO TRADING", DefaultValue = 1, MinValue = 1, MaxValue = 20)]
-        public int MaximumOpenPositions { get; set; }
-
         [Parameter("Enable Daily Loss Limit", Group = "13 · AUTO TRADING", DefaultValue = true)]
         public bool EnableDailyLossLimit { get; set; }
 
