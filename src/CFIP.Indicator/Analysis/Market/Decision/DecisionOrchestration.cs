@@ -96,6 +96,7 @@ namespace cAlgo
 
                     Reference = reference,
                     ClosedM5 = closedM5,
+                    ClosedContext = closedContext,
 
                     Evidence =
                         new DecisionEvidenceSnapshot(
