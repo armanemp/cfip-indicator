@@ -1550,7 +1550,14 @@ Next implementation phase: Phase 8.1 — M1 trigger correctness.
 
 ## Phase 8.1 — M1 trigger correctness
 
-Status: implementation complete; verification pending.
+Status: implementation verified and ready to merge.
+
+Verification closeout on branch head `929700e154d4b84a5a0b9efeae345b92017834b6`:
+- Runtime Acceptance Contracts: PASS (workflow run 801);
+- cTrader Compile: PASS (workflow run 985);
+- Source / Architecture: PASS (workflow run 992).
+
+The automated verification boundary is closed. Target-terminal replay/live validation remains required for empirical signal-quality measurement.
 
 Implementation:
 
