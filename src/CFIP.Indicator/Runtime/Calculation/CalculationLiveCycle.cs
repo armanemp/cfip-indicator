@@ -185,9 +185,19 @@ namespace cAlgo
                     RenderSetupPreview(
                         _renderSignalVisualSnapshot);
 
-                    RenderPredictionObjects(
-                        _prediction,
-                        closedM5);
+                    if (_renderSignalVisualSnapshot == null ||
+                        (!_renderSignalVisualSnapshot.PlanActive &&
+                         !_renderSignalVisualSnapshot.PendingOrder &&
+                         !_renderSignalVisualSnapshot.SetupPreviewActive))
+                    {
+                        RenderPredictionObjects(
+                            _prediction,
+                            closedM5);
+                    }
+                    else
+                    {
+                        RemovePredictionObjects();
+                    }
 
                     RenderWatchAndReaction(
                         index,
