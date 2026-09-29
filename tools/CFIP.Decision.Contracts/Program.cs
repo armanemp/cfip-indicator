@@ -1008,7 +1008,7 @@ namespace cAlgo
         private static void VerifyLiveExitGeometry()
         {
             LiveExitGeometryResult buyForward =
-                LiveExitGeometryRule.ValidateTarget(
+                LiveExitGeometryRule.ValidateLiveTarget(
                     1,
                     100,
                     115,
@@ -1065,7 +1065,7 @@ namespace cAlgo
                 "SELL target behind market rejected");
 
             Assert(
-                LiveExitGeometryRule.ShouldAdvanceTarget(
+                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     1,
                     120,
                     132,
@@ -1074,7 +1074,7 @@ namespace cAlgo
                 "BUY target advances only forward");
 
             Assert(
-                !LiveExitGeometryRule.ShouldAdvanceTarget(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     1,
                     120,
                     119,
@@ -1083,7 +1083,7 @@ namespace cAlgo
                 "BUY target backward move rejected");
 
             Assert(
-                LiveExitGeometryRule.ShouldAdvanceTarget(
+                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     -1,
                     80,
                     68,
@@ -1092,7 +1092,7 @@ namespace cAlgo
                 "SELL target advances only forward");
 
             Assert(
-                !LiveExitGeometryRule.ShouldAdvanceTarget(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     -1,
                     80,
                     81,
