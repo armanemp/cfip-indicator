@@ -28,7 +28,150 @@ namespace cAlgo
                                     : Symbol.Ask;
 
                             double minimumForwardDistance =
-                                MinimumLiveTargetDistancePrice(direction, atr);
+                                MinimumLiveTargetDistancePrice(
+                                    direction,
+                                    atr);
+
+                            if (IsFinitePositive(requestedTarget) &&
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                                    direction,
+                                    0,
+                                    requestedTarget,
+                                    market,
+                                    minimumForwardDistance))
+                                return NormalizePrice(requestedTarget);
+
+                            return FurthestForwardPlanTarget(
+                                market,
+                                minimumForwardDistance);
+                        }
+
+        private bool EnsureBrokerProtectionForPosition(
+                            Position position,
+                            double stop,
+                            double target,
+                            string context,
+                            int direction,
+                            bool manageLifecycleState = true)
+                        {
+                            if (position == null ||
+                                direction != 1 &&
+                                direction != -1)
+                                return false;
+
+                            double market =
+                                direction == 1
+                                    ? Symbol.Bid
+                                    : Symbol.Ask;
+
+                            if (!IsFinitePositive(market) ||
+                                !IsFinitePositive(position.EntryPrice))
+                                return false;
+
+                            AdoptServerSideTakeProfitLadder(
+                                position);
+
+                            double atr =
+                                _m5Bars == null
+                                    ? 0
+                                    : Atr(
+                                        _m5Bars,
+                                        Math.Max(
+                                            1,
+                                            _m5Bars.Count - 2));
+
+                            bool currentStopValid =
+                                position.StopLoss.HasValue &&
+                                IsFinitePositive(
+                                    position.StopLoss.Value) &&
+                                IsValidManagedStop(
+                                    direction,
+                                    position.EntryPrice,
+                                    market,
+                                    position.StopLoss.Value);
+
+                            bool desiredStopValid =
+                                IsValidManagedStop(
+                                    direction,
+                                    position.EntryPrice,
+                                    market,
+                                    stop);
+
+                            bool stopOk =
+                                currentStopValid;
+
+                            if (!stopOk &&
+                                desiredStopValid)
+                            {
+                                stopOk =
+                                    TryModifyStopLoss(
+                                        position,
+                                        NormalizePrice(stop),
+                                        context + " • SL");
+                            }
+                            else if (stopOk &&
+                                     desiredStopValid)
+                            {
+                                double currentStop =
+                                    NormalizePrice(
+                                        position.StopLoss.Value);
+
+                                double normalizedStop =
+                                    NormalizePrice(stop);
+
+                                bool materiallyDifferent =
+                                    Math.Abs(
+                                        currentStop -
+                                        normalizedStop) >=
+                                    Math.Max(
+                                        Symbol.TickSize,
+                                        Symbol.PipSize * 0.25);
+
+                                if (!materiallyDifferent)
+                                {
+                                    stopOk = true;
+                                }
+                                else if (ProtectionProgressionRule.ShouldAdvanceStop(
+                                             direction,
+                                             currentStop,
+                                             normalizedStop))
+                                {
+                                    stopOk =
+                                        TryModifyStopLoss(
+                                            position,
+                                            normalizedStop,
+                                            context + " • SL");
+                                }
+                                else
+                                {
+                                    // The current broker stop is already more protective.
+                                    // Broker state remains authoritative.
+                                    stopOk = true;
+                                }
+                            }
+
+                            double effectiveTarget =
+                                ResolveLiveProtectionTarget(
+                                    position,
+                                    target,
+                                    atr);
+
+                            bool currentTargetValid =
+                                position.TakeProfit.HasValue &&
+                                IsFinitePositive(
+                                    position.TakeProfit.Value) &&
+                                IsValidTarget(
+                                    direction,
+                                    position.EntryPrice,
+                                    position.TakeProfit.Value) &&
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                                    direction,
+                                    0,
+                                    position.TakeProfit.Value,
+                                    market,
+                                    MinimumLiveTargetDistancePrice(
+                                        direction,
+                                        atr));
 
                             bool desiredTargetValid =
                                 IsFinitePositive(effectiveTarget) &&
@@ -41,7 +184,14 @@ namespace cAlgo
                                     0,
                                     effectiveTarget,
                                     market,
-                                    MinimumLiveTargetDistancePrice(direction, atr);
+                                    Math.Max(
+                                        Symbol.PipSize,
+                                        atr > 0
+                                            ? atr *
+                                              Math.Max(
+                                                  0.05,
+                                                  MinimumTpSpacingAtr)
+                                            : Symbol.TickSize));
 
                             bool serverLadderTargetValid =
                                 _serverSideTakeProfitLadderActive &&
@@ -94,7 +244,14 @@ namespace cAlgo
                                              currentTarget,
                                              normalizedTarget,
                                              market,
-                                             MinimumLiveTargetDistancePrice(direction, atr))
+                                             Math.Max(
+                                                 Symbol.PipSize,
+                                                 atr > 0
+                                                     ? atr *
+                                                       Math.Max(
+                                                           0.05,
+                                                           MinimumTpSpacingAtr)
+                                                     : Symbol.TickSize)))
                                 {
                                     targetOk =
                                         TryModifyTakeProfit(
