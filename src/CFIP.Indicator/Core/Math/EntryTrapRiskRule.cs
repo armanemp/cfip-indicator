@@ -21,7 +21,7 @@ namespace cAlgo
                     : reason;
         }
 
-        public static EntryTrapRiskResult CreateNone()
+        public static EntryTrapRiskResult CreateNoTrapRisk()
         {
             return new EntryTrapRiskResult(
                 0,
