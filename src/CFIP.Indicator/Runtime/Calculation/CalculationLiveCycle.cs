@@ -318,6 +318,20 @@ namespace cAlgo
                 }
             }
 
+            if (actionable)
+            {
+                ActionableSignalQualityResult qualityGate =
+                    EvaluateFinalActionableSignalQuality(
+                        _decision,
+                        result);
+
+                if (!qualityGate.Allowed)
+                {
+                    actionable = false;
+                    reason = qualityGate.Reason;
+                }
+            }
+
             _decision.ActionableNow =
                 actionable;
             _decision.EntryLocationQuality =

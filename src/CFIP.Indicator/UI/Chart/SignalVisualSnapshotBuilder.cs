@@ -104,7 +104,13 @@ namespace cAlgo
                 ShowReactionArrow &&
                 _reaction != null &&
                 _reaction.EntryAllowed &&
-                _reaction.Direction != 0;
+                _reaction.Direction != 0 &&
+                _reaction.Confidence >=
+                    LiveReactionStrongThreshold &&
+                _reaction.IndependentEvidence >=
+                    Math.Max(
+                        2,
+                        MinimumLiveReactionEvidence);
 
             snapshot.PlanDirection =
                 _plan == null ? 0 : _plan.Direction;
@@ -117,12 +123,20 @@ namespace cAlgo
             snapshot.ReactionDirection =
                 _reaction == null ? 0 : _reaction.Direction;
 
+            int strongPredictionConfidence =
+                Math.Max(
+                    Math.Max(
+                        MinimumEarlyConfidence,
+                        EarlySetupConfidence),
+                    Math.Max(
+                        60,
+                        MinimumConfidence - 4));
+
             bool predictionReady =
                 _prediction != null &&
                 _prediction.Direction != 0 &&
-                _prediction.Confidence >= Math.Max(
-                    MinimumEarlyConfidence,
-                    EarlySetupConfidence);
+                _prediction.Confidence >=
+                    strongPredictionConfidence;
 
             bool triggerRuntimeReady =
                 _triggerRuntime.Latched &&

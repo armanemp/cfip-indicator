@@ -26,8 +26,12 @@ namespace cAlgo
                                         prediction.Direction == 0 ||
                                         prediction.Confidence <
                                         Math.Max(
-                                            MinimumEarlyConfidence,
-                                            EarlySetupConfidence))
+                                            Math.Max(
+                                                MinimumEarlyConfidence,
+                                                EarlySetupConfidence),
+                                            Math.Max(
+                                                60,
+                                                MinimumConfidence - 4)))
                                         return;
                         
                                     int start =

@@ -283,6 +283,21 @@ namespace cAlgo
                         actionability.DivergenceType;
                     decision.ActionabilityReason =
                         actionability.Reason;
+
+                    if (decision.ActionableNow)
+                    {
+                        ActionableSignalQualityResult qualityGate =
+                            EvaluateFinalActionableSignalQuality(
+                                decision,
+                                actionability);
+
+                        if (!qualityGate.Allowed)
+                        {
+                            decision.ActionableNow = false;
+                            decision.ActionabilityReason =
+                                qualityGate.Reason;
+                        }
+                    }
                 }
             }
 

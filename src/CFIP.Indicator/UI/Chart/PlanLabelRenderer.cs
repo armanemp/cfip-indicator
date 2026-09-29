@@ -13,7 +13,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const double CompactPlanLabelFontSize = 9.0;
+        private const double CompactPlanLabelFontSize = 8.5;
 
         private void DrawPlanLabel(
             string name,
@@ -148,6 +148,39 @@ namespace cAlgo
                 double labelPrice =
                     NormalizePrice(price);
 
+                int safeLineLeft =
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            Bars.Count - 1,
+                            lineLeft));
+
+                int safeLabelBar =
+                    Math.Max(
+                        safeLineLeft,
+                        Math.Min(
+                            Bars.Count - 1,
+                            labelBar));
+
+                int safeBoxLeft =
+                    Math.Max(
+                        safeLineLeft,
+                        safeLabelBar - 1);
+
+                int safeBoxRight =
+                    Math.Max(
+                        safeBoxLeft,
+                        Math.Min(
+                            Bars.Count - 1,
+                            boxRightBar));
+
+                double effectiveHalfHeight =
+                    Math.Max(
+                        Symbol.PipSize * 1.5,
+                        Math.Min(
+                            Symbol.PipSize * 4.0,
+                            Math.Abs(boxHalfHeight)));
+
                 string boxName =
                     name + "_BOX";
 
@@ -173,10 +206,10 @@ namespace cAlgo
                     box =
                         Chart.DrawRectangle(
                             boxName,
-                            lineLeft,
-                            price + boxHalfHeight,
-                            boxRightBar,
-                            price - boxHalfHeight,
+                            safeBoxLeft,
+                            price + effectiveHalfHeight,
+                            safeBoxRight,
+                            price - effectiveHalfHeight,
                             color,
                             1,
                             LineStyle.Solid);
@@ -185,13 +218,15 @@ namespace cAlgo
                 if (box != null)
                 {
                     box.Time1 =
-                        Bars.OpenTimes[lineLeft];
+                        Bars.OpenTimes[safeBoxLeft];
                     box.Y1 =
-                        price + boxHalfHeight;
+                        NormalizePrice(
+                            price + effectiveHalfHeight);
                     box.Time2 =
-                        Bars.OpenTimes[boxRightBar];
+                        Bars.OpenTimes[safeBoxRight];
                     box.Y2 =
-                        price - boxHalfHeight;
+                        NormalizePrice(
+                            price - effectiveHalfHeight);
                     box.Color =
                         boxColor;
                     box.Thickness =
@@ -231,7 +266,7 @@ namespace cAlgo
                 label.Text =
                     text;
                 label.Time =
-                    Bars.OpenTimes[labelBar];
+                    Bars.OpenTimes[safeLabelBar];
                 label.Y =
                     labelPrice;
                 label.Color =

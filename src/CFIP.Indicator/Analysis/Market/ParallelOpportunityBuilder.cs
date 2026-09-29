@@ -41,7 +41,9 @@ namespace cAlgo
                 string.Equals(
                     _decision.TopDownStage,
                     "ENTRY CALIBRATED",
-                    StringComparison.OrdinalIgnoreCase))
+                    StringComparison.OrdinalIgnoreCase) &&
+                ShouldPresentOpportunityCandidate(
+                    strategic))
                 AddOpportunityCandidate(strategic);
 
             for (int candidateDirection = 1;
@@ -64,7 +66,9 @@ namespace cAlgo
                         candidateDirection,
                         tacticalAssessment.Quality);
 
-                if (tactical != null)
+                if (tactical != null &&
+                    ShouldPresentOpportunityCandidate(
+                        tactical))
                     AddOpportunityCandidate(tactical);
             }
 
@@ -82,7 +86,9 @@ namespace cAlgo
                         _reaction.Direction,
                         _reaction.Confidence);
 
-                if (reaction != null)
+                if (reaction != null &&
+                    ShouldPresentOpportunityCandidate(
+                        reaction))
                     AddOpportunityCandidate(reaction);
             }
 
@@ -100,6 +106,56 @@ namespace cAlgo
                 _tradePlanRegistry.Upsert(
                     _opportunityCandidates[i]);
             }
+        }
+
+        private bool ShouldPresentOpportunityCandidate(
+            TradeOpportunityCandidate candidate)
+        {
+            if (candidate == null)
+                return false;
+
+            int minimumQuality =
+                Math.Max(
+                    TacticalOpportunityMinimumQuality,
+                    Math.Max(
+                        MinimumSmartQuality,
+                        SmartQualityThreshold));
+
+            if (candidate.Lane ==
+                OpportunityLane.Strategic)
+            {
+                minimumQuality =
+                    Math.Max(
+                        minimumQuality,
+                        MinimumConfidence);
+            }
+            else if (candidate.Lane ==
+                     OpportunityLane.CounterHtfTactical)
+            {
+                minimumQuality =
+                    Math.Max(
+                        minimumQuality,
+                        CounterHtfMinimumQuality);
+            }
+            else if (candidate.Lane ==
+                     OpportunityLane.MicroReaction)
+            {
+                minimumQuality =
+                    Math.Max(
+                        minimumQuality,
+                        LiveReactionStrongThreshold);
+            }
+
+            // Keep parallel detection available, but do not crowd the chart
+            // with candidates that are materially below the active quality floor.
+            if (candidate.Lane != OpportunityLane.CounterHtfTactical &&
+                candidate.Lane != OpportunityLane.MicroReaction)
+                minimumQuality =
+                    Math.Min(
+                        95,
+                        minimumQuality + 3);
+
+            return candidate.Quality >= minimumQuality;
         }
 
         private TradeOpportunityCandidate BuildLaneCandidate(

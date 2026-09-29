@@ -56,25 +56,10 @@ namespace cAlgo
 
                             if (!snapshot.ActionableNow)
                             {
-                                Chart.RemoveObject(
-                                    P + "REACTION_ARROW");
-
-                                if (ShowEarlyArrow &&
-                                    visualDirection != 0)
-                                {
-                                    DrawIcon(
-                                        P + "WATCH_ARROW",
-                                        ChartIconType.Diamond,
-                                        hostBar,
-                                        Bars.ClosePrices[hostBar],
-                                        PanelSecondaryTextColor);
-                                }
-                                else
-                                {
-                                    Chart.RemoveObject(
-                                        P + "WATCH_ARROW");
-                                }
-
+                                RenderNonActionableWatchState(
+                                    snapshot,
+                                    visualDirection,
+                                    hostBar);
                                 return;
                             }
 
@@ -145,9 +130,11 @@ namespace cAlgo
                                 snapshot.Confidence >=
                                 Math.Max(
                                     60,
-                                    MinimumConfidence - 8) &&
+                                    MinimumConfidence - 4) &&
                                 snapshot.Confidence <
                                 MinimumConfidence &&
+                                IsStrongWatchSnapshot(
+                                    snapshot) &&
                                 _lastEarlyAlertM5 !=
                                 closedM5)
                             {
@@ -244,7 +231,7 @@ namespace cAlgo
 
                             DrawIcon(
                                 P + "M1_TRIGGER",
-                                ChartIconType.Diamond,
+                                ChartIconType.Circle,
                                 triggerBar,
                                 price,
                                 SignalArrowColorFor(
