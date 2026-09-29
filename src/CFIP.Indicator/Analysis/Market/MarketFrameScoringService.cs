@@ -26,19 +26,31 @@ namespace cAlgo
             // Structure, MSS and CHOCH can describe the same causal break.
             // Count one structural event only, preserving the strongest applicable
             // label instead of stacking correlated points.
-            if (f.StructureBull)
-                AddScore(true, 16, ref bull, ref evidence);
-            else if (f.MssBull)
-                AddScore(true, 12, ref bull, ref evidence);
-            else if (f.ChochBull)
-                AddScore(true, 9, ref bull, ref evidence);
+            if (StructuralEvidenceRule.HasCanonicalStructuralEvent(
+                    f.StructureBull,
+                    f.MssBull,
+                    f.ChochBull))
+            {
+                if (f.StructureBull)
+                    AddScore(true, 16, ref bull, ref evidence);
+                else if (f.MssBull)
+                    AddScore(true, 12, ref bull, ref evidence);
+                else
+                    AddScore(true, 9, ref bull, ref evidence);
+            }
 
-            if (f.StructureBear)
-                AddScore(true, 16, ref bear, ref evidence);
-            else if (f.MssBear)
-                AddScore(true, 12, ref bear, ref evidence);
-            else if (f.ChochBear)
-                AddScore(true, 9, ref bear, ref evidence);
+            if (StructuralEvidenceRule.HasCanonicalStructuralEvent(
+                    f.StructureBear,
+                    f.MssBear,
+                    f.ChochBear))
+            {
+                if (f.StructureBear)
+                    AddScore(true, 16, ref bear, ref evidence);
+                else if (f.MssBear)
+                    AddScore(true, 12, ref bear, ref evidence);
+                else
+                    AddScore(true, 9, ref bear, ref evidence);
+            }
             AddScore(f.DisplacementBull, 10, ref bull, ref evidence);
             AddScore(f.DisplacementBear, 10, ref bear, ref evidence);
             AddScore(f.LiquidityBull, 10, ref bull, ref evidence);
