@@ -185,3 +185,12 @@ measure:
 - missed continuation opportunities after TP1/TP2.
 
 Only then should default exit thresholds be changed.
+
+
+## Final implementation note — 2026-09-29
+
+Phase 9.17 also normalizes live target spacing against the broker-reported minimum TP
+ distance, in addition to ATR/pipe spacing, and applies the same BUY/SELL geometry rules
+ during startup recovery. The existing risk denominator remains the original Entry-to-SL
+ plan risk so peak-R and realized-R measurements remain comparable even while the protective
+ stop ratchets forward.
