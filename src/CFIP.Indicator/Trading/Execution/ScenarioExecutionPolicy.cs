@@ -50,6 +50,16 @@ namespace cAlgo
                 return false;
             }
 
+            if (!decision.ActionableNow)
+            {
+                reason =
+                    string.IsNullOrWhiteSpace(
+                        decision.ActionabilityReason)
+                        ? "CANONICAL DECISION NOT ACTIONABLE"
+                        : decision.ActionabilityReason;
+                return false;
+            }
+
             if (!candidate.ActionableNow)
             {
                 reason =
