@@ -49,9 +49,35 @@ namespace cAlgo
                                     bars.OpenPrices[i],
                                     bars.ClosePrices[i]));
 
-                    if (direction == 1)
+                    if (FvgRule.IsFullyFilled(
+                            direction,
+                            managedLow,
+                            managedHigh,
+                            breaker))
                     {
-                        if (breaker <= managedLow)
+                        if (FvgInvalidateOnFullFill)
+                            return false;
+
+                        managedHigh =
+                            managedLow;
+                        break;
+                    }
+
+                    double nextLow;
+                    double nextHigh;
+
+                    if (!FvgRule.TryApplyPartialMitigation(
+                            direction,
+                            managedLow,
+                            managedHigh,
+                            breaker,
+                            Symbol.TickSize,
+                            out nextLow,
+                            out nextHigh))
+                    {
+                        if (managedHigh -
+                            managedLow <=
+                            Symbol.TickSize)
                         {
                             if (FvgInvalidateOnFullFill)
                                 return false;
@@ -61,42 +87,11 @@ namespace cAlgo
                             break;
                         }
 
-                        if (breaker < managedHigh)
-                            managedHigh =
-                                Math.Max(
-                                    managedLow,
-                                    breaker);
-                    }
-                    else
-                    {
-                        if (breaker >= managedHigh)
-                        {
-                            if (FvgInvalidateOnFullFill)
-                                return false;
-
-                            managedLow =
-                                managedHigh;
-                            break;
-                        }
-
-                        if (breaker > managedLow)
-                            managedLow =
-                                Math.Min(
-                                    managedHigh,
-                                    breaker);
+                        return false;
                     }
 
-                    if (managedHigh -
-                        managedLow <=
-                        Symbol.TickSize)
-                    {
-                        if (FvgInvalidateOnFullFill)
-                            return false;
-
-                        managedHigh =
-                            managedLow;
-                        break;
-                    }
+                    managedLow = nextLow;
+                    managedHigh = nextHigh;
                 }
             }
             else if (FvgInvalidateOnFullFill &&
@@ -149,16 +144,25 @@ namespace cAlgo
                  i <= end;
                  i++)
             {
-                if (direction == 1)
-                {
-                    if (bars.LowPrices[i] <= low)
-                        return true;
-                }
-                else if (direction == -1)
-                {
-                    if (bars.HighPrices[i] >= high)
-                        return true;
-                }
+                double fillPrice =
+                    direction == 1
+                        ? (FvgBreakByWicks
+                            ? bars.LowPrices[i]
+                            : Math.Min(
+                                bars.OpenPrices[i],
+                                bars.ClosePrices[i]))
+                        : (FvgBreakByWicks
+                            ? bars.HighPrices[i]
+                            : Math.Max(
+                                bars.OpenPrices[i],
+                                bars.ClosePrices[i]));
+
+                if (FvgRule.IsFullyFilled(
+                        direction,
+                        low,
+                        high,
+                        fillPrice))
+                    return true;
             }
 
             return false;

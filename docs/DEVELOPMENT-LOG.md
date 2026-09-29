@@ -894,3 +894,11 @@ The production structural chain now consumes the canonical plateau semantics int
 ## Phase 8.2 merge closeout — 2026-09-29
 
 PR #36, `Phase 8.2 — Swing Plateau Correctness`, merged to `main` as `a9c63bb3e563126753206c49b070763108919b74`. Post-merge verification on that merge commit passed Runtime Acceptance, cTrader Compile/Build and Source/Architecture. The subsequent documentation continuity commits record the merge and advance the roadmap to Phase 8.3 — FVG mathematical audit. Target-terminal replay remains required for empirical signal-quality measurement; no win-rate or false-signal reduction claim is made from CI alone.
+
+## Phase 8.3 kickoff — 2026-09-29
+
+Started branch `phase-8-3-fvg-mathematical-audit` from verified main `9ffeeb22fe1da41ab7d760a3dd3a60608a543a35`. Audit findings: production FVG thresholding used current-bar ATR for historical gaps; retest acceptance used close-only proximity; full-fill handling and wick/body semantics were duplicated between mitigation paths; FVG geometry and source identity were not centrally owned. The phase introduces `FvgRule` as the deterministic mathematical owner, adds stable Zone identity, and keeps all public parameter counts unchanged. No empirical signal-quality claim is made until target cTrader replay.
+
+## Phase 8.3 verification closeout — 2026-09-29
+
+Automated gates on implementation head `89919e7363d374e2cf3a362ec553b1fdac464919` all passed: Runtime Acceptance, Build and Source/Architecture. Production and predictive-pending FVG paths now consume `FvgRule`; historical FVG sizing uses creation-bar ATR; retest requires a later bar; mitigation/full-fill semantics are centralized; managed zones retain source identity. Public parameters, risk, execution and lifecycle contracts were not expanded. No empirical false-signal or win-rate improvement is claimed without target cTrader replay.

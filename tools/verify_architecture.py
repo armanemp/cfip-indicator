@@ -140,6 +140,93 @@ for token in (
     if token not in m1_rule_code:
         raise SystemExit(f"M1 trigger rule missing causal evidence gate: {token}")
 
+# Phase 8.3 — canonical FVG mathematics and lifecycle ownership.
+fvg_rule = ROOT / "Core" / "Math" / "FvgRule.cs"
+fvg_detection = ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs"
+fvg_lifecycle = ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs"
+fvg_mitigation = ROOT / "Analysis" / "Structure" / "Zones" / "FvgMitigationEvaluator.cs"
+fvg_quality = ROOT / "Analysis" / "Structure" / "Zones" / "FvgZoneQualityCalculator.cs"
+predictive_fvg_collector = ROOT / "Planning" / "Execution" / "PredictivePendingZoneCollector.cs"
+zone_model = ROOT / "Core" / "Models" / "Zone.cs"
+
+for required in (
+    fvg_rule,
+    fvg_detection,
+    fvg_lifecycle,
+    fvg_mitigation,
+    fvg_quality,
+    predictive_fvg_collector,
+    zone_model,
+):
+    if not required.exists():
+        raise SystemExit(f"Phase 8.3 FVG owner is missing: {required}")
+
+fvg_rule_code = fvg_rule.read_text(encoding="utf-8")
+fvg_detection_code = fvg_detection.read_text(encoding="utf-8")
+fvg_lifecycle_code = fvg_lifecycle.read_text(encoding="utf-8")
+fvg_mitigation_code = fvg_mitigation.read_text(encoding="utf-8")
+fvg_quality_code = fvg_quality.read_text(encoding="utf-8")
+predictive_fvg_collector_code = predictive_fvg_collector.read_text(encoding="utf-8")
+zone_model_code = zone_model.read_text(encoding="utf-8")
+
+for token in (
+    "TryGetThreeBarGap(",
+    "TryGetTwoBarGap(",
+    "MeetsMinimumGap(",
+    "IsOverlapInclusive(",
+    "IsFullyFilled(",
+    "TryApplyPartialMitigation(",
+    "Identity(",
+    "low < high",
+):
+    if token not in fvg_rule_code:
+        raise SystemExit(f"FVG mathematical rule missing deterministic owner: {token}")
+
+for token in (
+    "double creationAtr",
+    "FvgRule.TryGetThreeBarGap(",
+    "FvgRule.TryGetTwoBarGap(",
+    "FvgRule.MeetsMinimumGap(",
+    "FvgRule.IsOverlapInclusive(",
+    "FvgLookback",
+    "MaximumZoneAgeBars",
+    "PassesCurrentFvgRetest(",
+):
+    if token not in fvg_detection_code:
+        raise SystemExit(f"FVG detector missing audited mathematical/lifecycle condition: {token}")
+
+for token in (
+    "Id =",
+    "CreatedIndex =",
+    "FvgRule.Identity(",
+):
+    if token not in fvg_lifecycle_code:
+        raise SystemExit(f"FVG lifecycle missing stable source identity: {token}")
+
+for token in (
+    "FvgRule.IsFullyFilled(",
+    "FvgRule.TryApplyPartialMitigation(",
+    "FvgBreakByWicks",
+    "FvgInvalidateOnFullFill",
+):
+    if token not in fvg_mitigation_code:
+        raise SystemExit(f"FVG mitigation missing canonical boundary semantics: {token}")
+
+if "atr)" not in fvg_quality_code or "gap /" not in fvg_quality_code:
+    raise SystemExit("FVG quality must consume creation-gap and ATR normalization")
+
+if "public string Id;" not in zone_model_code:
+    raise SystemExit("Zone model must expose stable semantic identity for managed zones")
+
+for token in (
+    "double creationAtr",
+    "FvgRule.TryGetThreeBarGap(",
+    "FvgRule.TryGetTwoBarGap(",
+    "FvgRule.MeetsMinimumGap(",
+):
+    if token not in predictive_fvg_collector_code:
+        raise SystemExit(f"Predictive pending FVG consumer missing canonical rule usage: {token}")
+
 # Phase 8.2 — canonical swing plateau and structural evidence ownership.
 swing_rule = ROOT / "Core" / "Math" / "SwingPlateauRule.cs"
 swing_analyzer = ROOT / "Analysis" / "Structure" / "SwingPointAnalyzer.cs"

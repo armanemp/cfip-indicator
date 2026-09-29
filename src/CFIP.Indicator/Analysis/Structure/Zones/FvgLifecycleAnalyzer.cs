@@ -53,6 +53,13 @@ namespace cAlgo
                         twoBarImbalance
                             ? "FVG_2BAR"
                             : "FVG",
+                    Id =
+                        FvgRule.Identity(
+                            direction,
+                            createdIndex,
+                            twoBarImbalance),
+                    CreatedIndex =
+                        createdIndex,
                     Age =
                         currentIndex -
                         createdIndex,
@@ -71,7 +78,8 @@ namespace cAlgo
         {
             if (bars == null ||
                 createdIndex < 0 ||
-                currentIndex <= createdIndex)
+                currentIndex <= createdIndex ||
+                low >= high)
                 return false;
 
             int start =
@@ -88,15 +96,16 @@ namespace cAlgo
                  i <= end;
                  i++)
             {
-                bool overlaps =
-                    bars.HighPrices[i] >= low &&
-                    bars.LowPrices[i] <= high;
-
-                if (overlaps)
+                if (FvgRule.IsOverlapInclusive(
+                        low,
+                        high,
+                        bars.LowPrices[i],
+                        bars.HighPrices[i]))
                     return true;
             }
 
             return false;
         }
+
     }
 }

@@ -48,149 +48,89 @@ namespace cAlgo
             {
                 if (UseFvg)
                 {
-                    if (direction == 1 &&
-                        i >= 2)
+                    double creationAtr =
+                        Atr(
+                            bars,
+                            i);
+
+                    if (i >= 2 &&
+                        FvgRule.TryGetThreeBarGap(
+                            direction,
+                            bars.HighPrices[i - 2],
+                            bars.LowPrices[i - 2],
+                            bars.HighPrices[i],
+                            bars.LowPrices[i],
+                            out double low,
+                            out double high,
+                            out double gap) &&
+                        FvgRule.MeetsMinimumGap(
+                            gap,
+                            creationAtr,
+                            MinimumFvgAtr))
                     {
-                        double gap =
-                            bars.LowPrices[i] -
-                            bars.HighPrices[i - 2];
-
-                        if (gap >=
-                            atr * MinimumFvgAtr)
-                        {
-                            Zone zone =
-                                BuildManagedFvgZone(
-                                    bars,
-                                    i,
-                                    index,
-                                    direction,
-                                    bars.HighPrices[i - 2],
-                                    bars.LowPrices[i],
-                                    gap,
-                                    false,
-                                    atr);
-
-                            AddPredictiveZoneCandidate(
-                                candidates,
-                                zone,
-                                atr,
-                                market,
+                        Zone zone =
+                            BuildManagedFvgZone(
+                                bars,
+                                i,
+                                index,
                                 direction,
-                                minimumFutureDistance,
-                                maximumFutureDistance,
-                                timeframeWeight,
-                                timeframe,
-                                "FVG");
-                        }
-                    }
-                    else if (direction == -1 &&
-                             i >= 2)
-                    {
-                        double gap =
-                            bars.LowPrices[i - 2] -
-                            bars.HighPrices[i];
+                                low,
+                                high,
+                                gap,
+                                false,
+                                creationAtr);
 
-                        if (gap >=
-                            atr * MinimumFvgAtr)
-                        {
-                            Zone zone =
-                                BuildManagedFvgZone(
-                                    bars,
-                                    i,
-                                    index,
-                                    direction,
-                                    bars.HighPrices[i],
-                                    bars.LowPrices[i - 2],
-                                    gap,
-                                    false,
-                                    atr);
-
-                            AddPredictiveZoneCandidate(
-                                candidates,
-                                zone,
-                                atr,
-                                market,
-                                direction,
-                                minimumFutureDistance,
-                                maximumFutureDistance,
-                                timeframeWeight,
-                                timeframe,
-                                "FVG");
-                        }
+                        AddPredictiveZoneCandidate(
+                            candidates,
+                            zone,
+                            atr,
+                            market,
+                            direction,
+                            minimumFutureDistance,
+                            maximumFutureDistance,
+                            timeframeWeight,
+                            timeframe,
+                            "FVG");
                     }
 
-                    if (UseTwoBarImbalanceFvg)
+                    if (UseTwoBarImbalanceFvg &&
+                        FvgRule.TryGetTwoBarGap(
+                            direction,
+                            bars.HighPrices[i - 1],
+                            bars.LowPrices[i - 1],
+                            bars.HighPrices[i],
+                            bars.LowPrices[i],
+                            out low,
+                            out high,
+                            out gap) &&
+                        FvgRule.MeetsMinimumGap(
+                            gap,
+                            creationAtr,
+                            MinimumFvgAtr))
                     {
-                        if (direction == 1 &&
-                            i >= 1)
-                        {
-                            double gap =
-                                bars.LowPrices[i] -
-                                bars.HighPrices[i - 1];
+                        Zone zone =
+                            BuildManagedFvgZone(
+                                bars,
+                                i,
+                                index,
+                                direction,
+                                low,
+                                high,
+                                gap,
+                                true,
+                                creationAtr);
 
-                            if (gap >=
-                                atr * MinimumFvgAtr)
-                            {
-                                Zone zone =
-                                    BuildManagedFvgZone(
-                                        bars,
-                                        i,
-                                        index,
-                                        direction,
-                                        bars.HighPrices[i - 1],
-                                        bars.LowPrices[i],
-                                        gap,
-                                        true,
-                                        atr);
-
-                                AddPredictiveZoneCandidate(
-                                    candidates,
-                                    zone,
-                                    atr,
-                                    market,
-                                    direction,
-                                    minimumFutureDistance,
-                                    maximumFutureDistance,
-                                    timeframeWeight,
-                                    timeframe,
-                                    "2BAR FVG");
-                            }
-                        }
-                        else if (direction == -1 &&
-                                 i >= 1)
-                        {
-                            double gap =
-                                bars.LowPrices[i - 1] -
-                                bars.HighPrices[i];
-
-                            if (gap >=
-                                atr * MinimumFvgAtr)
-                            {
-                                Zone zone =
-                                    BuildManagedFvgZone(
-                                        bars,
-                                        i,
-                                        index,
-                                        direction,
-                                        bars.HighPrices[i],
-                                        bars.LowPrices[i - 1],
-                                        gap,
-                                        true,
-                                        atr);
-
-                                AddPredictiveZoneCandidate(
-                                    candidates,
-                                    zone,
-                                    atr,
-                                    market,
-                                    direction,
-                                    minimumFutureDistance,
-                                    maximumFutureDistance,
-                                    timeframeWeight,
-                                    timeframe,
-                                    "2BAR FVG");
-                            }
-                        }
+                        AddPredictiveZoneCandidate(
+                            candidates,
+                            zone,
+                            atr,
+                            market,
+                            direction,
+                            minimumFutureDistance,
+                            maximumFutureDistance,
+                            timeframeWeight,
+                            timeframe,
+                            "2BAR FVG");
                     }
                 }
 
