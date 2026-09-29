@@ -75,7 +75,6 @@ namespace cAlgo
                 private string _autoOrdersBlockReason = "NOT EVALUATED";
                 private DateTime _lastAutoTradeAttemptUtc = DateTime.MinValue;
                 private DateTime _lastAutoOrderAttemptUtc = DateTime.MinValue;
-                private bool _executionToggleSyncing;
                 private bool _autoTradingEnabledRuntime;
                 private bool _automaticOrdersEnabledRuntime;
                 private bool _executionRuntimeInitialized;
@@ -160,8 +159,14 @@ namespace cAlgo
                 private Button _cancelButton;
                 private Button _panelRestoreButton;
                 private StackPanel _quickExecutionStack;
-                private ToggleButton _autoTradingQuickToggle;
-                private ToggleButton _automaticOrdersQuickToggle;
+                private Border _autoTradingQuickStatus;
+                private TextBlock _autoTradingQuickStatusText;
+                private Border _autoTradingQuickSwitchTrack;
+                private Border _autoTradingQuickSwitchThumb;
+                private Border _automaticOrdersQuickStatus;
+                private TextBlock _automaticOrdersQuickStatusText;
+                private Border _automaticOrdersQuickSwitchTrack;
+                private Border _automaticOrdersQuickSwitchThumb;
         
                 private Border _popup;
                 private TextBlock _popupText;
