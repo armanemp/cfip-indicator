@@ -536,6 +536,7 @@ VISUAL_CALC = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 VISUAL_LINE_RENDERER = ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"
 VISUAL_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
+VISUAL_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 VISUAL_LABEL_REMOVER = ROOT / "UI" / "Chart" / "PlanLabelRemover.cs"
 CONTROL_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 CONTROL_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
@@ -562,6 +563,7 @@ visual_calc_code = VISUAL_CALC.read_text(encoding="utf-8")
 visual_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
 visual_line_code = VISUAL_LINE_RENDERER.read_text(encoding="utf-8")
 plan_label_renderer_code = VISUAL_LABEL_RENDERER.read_text(encoding="utf-8")
+plan_label_coordinator_code = VISUAL_LABEL_COORDINATOR.read_text(encoding="utf-8")
 plan_label_remover_code = VISUAL_LABEL_REMOVER.read_text(encoding="utf-8")
 control_factory_code = CONTROL_FACTORY.read_text(encoding="utf-8")
 control_handlers_code = CONTROL_HANDLERS.read_text(encoding="utf-8")
@@ -584,7 +586,7 @@ if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
     raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
 if "GetPlanLineLeftBar" not in visual_line_code:
     raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
-if "GetPlanLineLeftBar" not in visual_renderer_code:
+if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
     raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
 
 if "CreateExecutionStatus(" not in control_factory_code:
