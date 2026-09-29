@@ -162,13 +162,16 @@ namespace cAlgo
                         : result.IsSuccessful
                             ? "UNCONFIRMED"
                             : "REJECTED",
-                result == null
+                "SCENARIO=" +
+                identity.ScenarioId +
+                " • " +
+                (result == null
                     ? "BROKER RETURNED NULL"
                     : result.Error.HasValue
                         ? result.Error.Value.ToString()
                         : result.IsSuccessful
                             ? "BROKER ACCEPTED"
-                            : "BROKER REJECTED");
+                            : "BROKER REJECTED"));
         }
 
         private void RecordSubmissionFailure(
@@ -187,7 +190,9 @@ namespace cAlgo
                 identity.Path.ToString(),
                 ParseTelemetryM5(identity.AttemptKey),
                 "FAILED",
-                "EXCEPTION / SUBMISSION FAILED");
+                "SCENARIO=" +
+                identity.ScenarioId +
+                " • EXCEPTION / SUBMISSION FAILED");
         }
 
         private void RecordExecutionTelemetry(
@@ -209,7 +214,9 @@ namespace cAlgo
                 _lastExecutionTelemetryState =
                     "NULL RESULT";
                 _lastExecutionTelemetryReason =
-                    "BROKER RETURNED NULL";
+                    "SCENARIO " +
+                    identity.ScenarioId +
+                    " • BROKER RETURNED NULL";
                 return;
             }
 
@@ -220,12 +227,18 @@ namespace cAlgo
                         ? "UNCONFIRMED"
                         : "REJECTED";
 
-            _lastExecutionTelemetryReason =
+            string outcomeReason =
                 result.Error.HasValue
                     ? result.Error.Value.ToString()
                     : result.IsSuccessful
                         ? "BROKER ACCEPTED"
                         : "BROKER REJECTED";
+
+            _lastExecutionTelemetryReason =
+                "SCENARIO " +
+                identity.ScenarioId +
+                " • " +
+                outcomeReason;
         }
 
         private void RecordExecutionTelemetryFailure(
@@ -241,9 +254,12 @@ namespace cAlgo
             _lastExecutionTelemetryState =
                 "FAILED";
             _lastExecutionTelemetryReason =
-                string.IsNullOrWhiteSpace(reason)
+                "SCENARIO " +
+                identity.ScenarioId +
+                " • " +
+                (string.IsNullOrWhiteSpace(reason)
                     ? "SUBMISSION FAILED"
-                    : reason;
+                    : reason);
         }
 
         private int ParseTelemetryM5(
