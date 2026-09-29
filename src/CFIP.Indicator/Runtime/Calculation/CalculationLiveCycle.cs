@@ -69,6 +69,15 @@ namespace cAlgo
         private void TryEnsureAutomaticPlan(
             int closedM5)
         {
+            // A confirmed predictive pending order is its own executable plan. Do not
+            // recreate a chart/market plan behind it in the same or a later cycle.
+            if (GetManagedPendingOrder() != null)
+            {
+                _lastAutoPlanAttemptM5 =
+                    closedM5;
+                return;
+            }
+
             if (!AutoTradingEnabled ||
                 _plan != null ||
                 _decision == null ||
