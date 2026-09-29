@@ -72,6 +72,45 @@ namespace cAlgo
                 });
         }
 
+        private string PredictivePendingSourceKey(
+            string source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+                return "UNKNOWN";
+
+            string value =
+                source.Trim()
+                    .ToUpperInvariant();
+
+            if (value.IndexOf("M5 FVG", StringComparison.Ordinal) >= 0 ||
+                value.IndexOf("M5 2BAR FVG", StringComparison.Ordinal) >= 0)
+                return "M5|FVG";
+
+            if (value.IndexOf("M15 FVG", StringComparison.Ordinal) >= 0 ||
+                value.IndexOf("M15 2BAR FVG", StringComparison.Ordinal) >= 0)
+                return "M15|FVG";
+
+            if (value.IndexOf("M5 ORDER BLOCK", StringComparison.Ordinal) >= 0)
+                return "M5|ORDER_BLOCK";
+
+            if (value.IndexOf("M15 ORDER BLOCK", StringComparison.Ordinal) >= 0)
+                return "M15|ORDER_BLOCK";
+
+            if (value.IndexOf("EQUAL LOW", StringComparison.Ordinal) >= 0)
+                return "M5|EQUAL_LOW";
+
+            if (value.IndexOf("EQUAL HIGH", StringComparison.Ordinal) >= 0)
+                return "M5|EQUAL_HIGH";
+
+            if (value.IndexOf("SWING LOW", StringComparison.Ordinal) >= 0)
+                return "M5|SWING_LOW";
+
+            if (value.IndexOf("SWING HIGH", StringComparison.Ordinal) >= 0)
+                return "M5|SWING_HIGH";
+
+            return value;
+        }
+
         private int PredictivePendingContextQuality(
             int direction,
             string timeframe)
