@@ -212,6 +212,11 @@ namespace cAlgo
                 private readonly AggressiveEntryPolicy _aggressiveEntryPolicy =
                     new AggressiveEntryPolicy();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+        private string _lastPanelPresentationKey = "";
+        private int _panelLiveRow = -1;
+        private int _panelPositionRow = -1;
+        private int _panelExitRow = -1;
+        private DateTime _lastLiveStructuralPulseUtc = DateTime.MinValue;
                 private DateTime _lastSafetySupervisorUtc = DateTime.MinValue;
                 private SignalVisualSnapshot _renderSignalVisualSnapshot;
                 private DateTime _initializationStartedUtc = DateTime.MinValue;

@@ -12,6 +12,8 @@ namespace cAlgo
             VerifyFvgMathematics();
             VerifyOrderBlockMathematics();
             VerifyZoneConfluenceSymmetry();
+            VerifyTopDownCalibration();
+            VerifyProtectionProgressionSemantics();
             VerifyMtfContextIntegrity();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
@@ -490,6 +492,149 @@ namespace cAlgo
                 !ZoneConfluenceRule.IsDirectionalMatch(1, -1) &&
                 !ZoneConfluenceRule.IsDirectionalMatch(-1, 1),
                 "zone direction matching is explicitly mirrored");
+        }
+
+        private static void VerifyTopDownCalibration()
+        {
+            TopDownCalibrationSnapshot strongBuy =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, 1 },
+                    new[] { 82, 78 },
+                    new[] { 5.0, 8.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                strongBuy.HtfStrong &&
+                strongBuy.HtfDirection == 1 &&
+                strongBuy.Eligible &&
+                strongBuy.Stage == "ENTRY CALIBRATED",
+                "strong H1+ anchor plus aligned mid/entry frames calibrates an actionable setup");
+
+            TopDownCalibrationSnapshot entryConflict =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, 1 },
+                    new[] { 82, 78 },
+                    new[] { 5.0, 8.0 },
+                    -1,
+                    85,
+                    72,
+                    -1);
+
+            Assert(
+                !entryConflict.Eligible &&
+                entryConflict.Stage == "ENTRY CONFLICT",
+                "M5 entry direction cannot override a strong H1+ anchor");
+
+            TopDownCalibrationSnapshot midConflict =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { -1, -1 },
+                    new[] { 82, 78 },
+                    new[] { 5.0, 8.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                !midConflict.Eligible &&
+                midConflict.Stage == "MIDFRAME CONFLICT",
+                "strong middle-timeframe conflict blocks lower-frame override");
+
+            TopDownCalibrationSnapshot mixedHtf =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, -1, 0, 0 },
+                    new[] { 90, 90, 0, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, 0 },
+                    new[] { 85, 0 },
+                    new[] { 5.0, 8.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                mixedHtf.Stage == "HTF MIXED",
+                "mixed H1+ context never pretends to be a calibrated anchor");
+
+            TopDownCalibrationSnapshot weakMiddleAgreement =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new double[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, -1 },
+                    new[] { 100, 100 },
+                    new double[] { 5.0, 5.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                weakMiddleAgreement.MidDirection == 0 &&
+                weakMiddleAgreement.Stage == "MIDFRAME CALIBRATION",
+                "directionally mixed middle frames cannot be promoted to calibrated entry");
+
+        }
+
+        private static void VerifyProtectionProgressionSemantics()
+        {
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    100,
+                    101) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    101,
+                    100),
+                "BUY stop progression never moves backward");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    100,
+                    99) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    99,
+                    100),
+                "SELL stop progression never moves backward");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    110,
+                    120,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    120,
+                    110,
+                    true) &&
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    110,
+                    100,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    100,
+                    110,
+                    true),
+                "target progression preserves directional monotonicity");
         }
 
         private static void VerifyOrderBlockMathematics()
@@ -1894,13 +2039,19 @@ namespace cAlgo
                 "src", "CFIP.Indicator", "UI", "Panel", "PanelRowsFactory.cs");
             string writerPath = Path.Combine(
                 "src", "CFIP.Indicator", "UI", "Panel", "PanelRowWriter.cs");
+            string optimizationPath = Path.Combine(
+                "src", "CFIP.Indicator", "UI", "Panel", "PanelRenderOptimization.cs");
+            string statePath = Path.Combine(
+                "src", "CFIP.Indicator", "Indicator", "State.cs");
 
             Assert(
                 File.Exists(heartbeatPath) &&
                 File.Exists(initPath) &&
                 File.Exists(panelPath) &&
                 File.Exists(rowsPath) &&
-                File.Exists(writerPath),
+                File.Exists(writerPath) &&
+                File.Exists(optimizationPath) &&
+                File.Exists(statePath),
                 "responsive panel sources exist");
 
             string heartbeat = File.ReadAllText(heartbeatPath);
@@ -1908,10 +2059,14 @@ namespace cAlgo
             string panel = File.ReadAllText(panelPath);
             string rows = File.ReadAllText(rowsPath);
             string writer = File.ReadAllText(writerPath);
+            string optimization = File.ReadAllText(optimizationPath);
+            string state = File.ReadAllText(statePath);
 
             Assert(
-                heartbeat.Contains("RenderPanel();"),
-                "heartbeat refreshes full panel");
+                !heartbeat.Contains("RenderPanel();") &&
+                heartbeat.Contains("UpdatePanelHeartbeatRows(") &&
+                heartbeat.Contains("UpdatePanelHeartbeatLiveRows("),
+                "heartbeat stays lightweight and refreshes live rows without full panel layout");
 
             Assert(
                 heartbeat.Contains("TotalMilliseconds >= 1000"),
@@ -1931,8 +2086,11 @@ namespace cAlgo
                 "initialization status reaches the panel");
 
             Assert(
-                panel.Contains("BuildSignalVisualSnapshot("),
-                "panel builds at most one canonical visual snapshot per refresh path");
+                panel.Contains("BuildSignalVisualSnapshot(") &&
+                panel.Contains("ShouldRenderFullPanel(") &&
+                optimization.Contains("BuildPanelPresentationKey(") &&
+                state.Contains("_lastPanelPresentationKey"),
+                "panel uses one canonical snapshot and state-change-driven full render");
 
             Assert(
                 rows.Contains("EnsurePanelRow("),

@@ -44,10 +44,6 @@ namespace cAlgo
                 
                                                     DateTime now =
                                                         Server.TimeInUtc;
-                
-                                                    if (_initializationReady &&
-                                                        (now - _lastPanelRenderUtc).TotalMilliseconds < 250)
-                                                        return;
                                         
                                                     ownsVisualSnapshot =
                                                         _renderSignalVisualSnapshot == null;
@@ -58,6 +54,10 @@ namespace cAlgo
                                                                 Math.Max(
                                                                     1,
                                                                     _lastEvaluatedM5));
+
+                                                    if (!ShouldRenderFullPanel(
+                                                            _renderSignalVisualSnapshot))
+                                                        return;
 
                                                     if (_panelToggleButton == null)
                                                         CreatePanelToggleButton();
@@ -190,34 +190,6 @@ namespace cAlgo
                                                             120,
                                                             maxHeight -
                                                             fixedHeight);
-                                        
-                                                    for (int i = 0;
-                                                         i < _panelRows.Count;
-                                                         i++)
-                                                    {
-                                                        TextBlock row =
-                                                            _panelRows[i];
-                                        
-                                                        row.Margin =
-                                                            new Thickness(
-                                                                Math.Max(
-                                                                    0,
-                                                                    PanelRowPadding),
-                                                                i == 0
-                                                                    ? 0
-                                                                    : Math.Max(
-                                                                        1,
-                                                                        PanelRowGap),
-                                                                Math.Max(
-                                                                    0,
-                                                                    PanelRowPadding),
-                                                                Math.Max(
-                                                                    0,
-                                                                    PanelRowPadding));
-                                        
-                                                        row.IsVisible =
-                                                            false;
-                                                    }
                                         
                                                     RenderPanelRows(
                                                         contentWidth);

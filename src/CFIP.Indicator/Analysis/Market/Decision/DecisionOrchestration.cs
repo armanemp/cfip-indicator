@@ -156,6 +156,25 @@ namespace cAlgo
                     _decisionInputSnapshotFactory.Create(
                         request));
 
+            TopDownCalibrationSnapshot topDown =
+                EvaluateTopDownCalibration(
+                    decision);
+
+            decision.HtfAnchorDirection =
+                topDown.HtfDirection;
+            decision.HtfAlignment =
+                topDown.HtfAlignment;
+            decision.MidframeDirection =
+                topDown.MidDirection;
+            decision.MidframeAlignment =
+                topDown.MidAlignment;
+            decision.EntryFrameAlignment =
+                topDown.EntryAlignment;
+            decision.TopDownEligible =
+                topDown.Eligible;
+            decision.TopDownStage =
+                topDown.Stage;
+
             decision.EntryAllowed =
                 PassesDecisionFilters(
                     closedM5,

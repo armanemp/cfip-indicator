@@ -121,7 +121,7 @@ namespace cAlgo
 
                                 RenderCompactPlanLabel(
                                     P + "ALERT_SIGNAL_LABEL",
-                                    "SIGNAL " +
+                                    "ALERT " +
                                     (_lastVisualAlertDirection == 1
                                         ? "BUY"
                                         : "SELL") +

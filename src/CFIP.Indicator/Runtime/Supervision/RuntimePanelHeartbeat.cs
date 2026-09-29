@@ -42,7 +42,7 @@ namespace cAlgo
                 UpdatePanelHeartbeatRows(
                     now);
 
-                RenderPanel();
+                UpdatePanelHeartbeatLiveRows();
             }
             catch (Exception ex)
             {

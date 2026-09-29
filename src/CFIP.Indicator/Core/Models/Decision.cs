@@ -7,6 +7,13 @@ namespace cAlgo
                         public int Edge;
                         public int SmartQuality;
                         public int TimeframeAgreement;
+                        public int HtfAnchorDirection;
+                        public int HtfAlignment;
+                        public int MidframeDirection;
+                        public int MidframeAlignment;
+                        public int EntryFrameAlignment;
+                        public bool TopDownEligible;
+                        public string TopDownStage;
                         public int IndependentEvidence;
                         public int StructuralConfirmations;
                         public int RetestQuality;

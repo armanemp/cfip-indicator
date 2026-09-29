@@ -1,0 +1,87 @@
+using System;
+using cAlgo.API;
+
+namespace cAlgo
+{
+    public partial class CFIPIndicator : Indicator
+    {
+        private bool ShouldRenderFullPanel(
+            SignalVisualSnapshot snapshot)
+        {
+            if (!_initializationReady)
+                return true;
+
+            string key =
+                BuildPanelPresentationKey(
+                    snapshot);
+
+            if (string.Equals(
+                    key,
+                    _lastPanelPresentationKey,
+                    StringComparison.Ordinal))
+                return false;
+
+            _lastPanelPresentationKey = key;
+            return true;
+        }
+
+        private string BuildPanelPresentationKey(
+            SignalVisualSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                return
+                    "NULL|" +
+                    (_panelHidden ? "1" : "0") +
+                    "|" +
+                    (ShowUnifiedPanel ? "1" : "0");
+            }
+
+            return string.Join(
+                "|",
+                ShowUnifiedPanel ? "1" : "0",
+                _panelHidden ? "1" : "0",
+                snapshot.Stage ?? "",
+                snapshot.AuthoritativeDirection,
+                snapshot.DecisionDirection,
+                snapshot.TopDownStage ?? "",
+                snapshot.TopDownEligible ? "1" : "0",
+                snapshot.PlanActive ? "1" : "0",
+                snapshot.PendingOrder ? "1" : "0",
+                snapshot.LivePosition ? "1" : "0",
+                snapshot.Confidence,
+                snapshot.SmartQuality,
+                snapshot.TimeframeAgreement,
+                snapshot.TriggerRuntimeReady ? "1" : "0",
+                snapshot.TriggerRuntimeScore,
+                snapshot.TriggerRuntimeRequired,
+                PriceKey(snapshot.Entry),
+                PriceKey(snapshot.IdealEntry),
+                PriceKey(snapshot.Trigger),
+                PriceKey(snapshot.Stop),
+                PriceKey(snapshot.Tp1),
+                PriceKey(snapshot.Tp2),
+                PriceKey(snapshot.Tp3),
+                PriceKey(snapshot.Tp4),
+                PriceKey(snapshot.BrokerStop),
+                PriceKey(snapshot.BrokerTarget),
+                _lifecycleState.ToString(),
+                _autoTradingState ?? "",
+                _autoTradingReason ?? "",
+                _autoExecutionBlockReason ?? "",
+                _autoOrdersBlockReason ?? "");
+        }
+
+        private string PriceKey(
+            double price)
+        {
+            if (!IsFinitePositive(price))
+                return "0";
+
+            return NormalizePrice(price)
+                .ToString(
+                    "G17",
+                    System.Globalization.CultureInfo.InvariantCulture);
+        }
+    }
+}

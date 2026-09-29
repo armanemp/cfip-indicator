@@ -965,3 +965,40 @@ Current engineering result: closed M1 confirmation can unlock a valid M5 directi
 WaveTrend exact-parity integration remains explicitly pending because the exact supplied source is not accessible in the current repo/Library continuation; no formula was guessed. The stale Phase 8.1 PR #35 was closed as superseded.
 
 Operator pull requirement: pull `main` now before local continuation.
+
+
+## Phase 9.1 kickoff — 2026-09-29
+
+User-requested requirements: use H1+ as the primary opportunity-discovery layer, then calibrate through M30/M15/M5/M1; keep panel responsive; clarify the chart alert label; and make TP/trailing progression react promptly.
+
+Deep audit findings:
+- DecisionScoreCalculator allowed M5/M15/M30 lower-timeframe contribution to dominate the raw directional sum even when H1/H4/D1 disagreed, because HTF weights were comparatively small.
+- HigherTimeframeConfidencePenalty only lowered confidence; it did not provide directional ownership.
+- TimeframeAgreement was descriptive, not a top-down permission model.
+- Panel heartbeat ran safety supervision plus full RenderPanel(), so the 500 ms heartbeat could repeatedly pay the full panel layout cost.
+- RenderPanel also hid every existing row before re-rendering, creating unnecessary UI property churn.
+- Live structural SL repricing and unhit-target updates were limited by newly-closed-M5 cadence when structural-only settings were enabled.
+- TP1/TP2 hit handling did not force a same-cycle reward-path re-evaluation.
+- AlertSignalRenderer generated visible text SIGNAL BUY/SELL plus alert kind as a presentation mirror of the last unified alert; it was not a second decision authority, but the label was semantically ambiguous.
+
+Implementation decisions:
+- H1/H4/D1/W1 are modeled as a directional anchor group.
+- M30/M15 form the middle calibration group.
+- M5 is the entry frame and M1 remains confirmation-only.
+- A pure Core/Math TopDownCalibrationRule computes anchor direction/alignment, middle alignment, entry alignment and eligibility.
+- Existing RequireHigherTfAgreement is reused as the activation boundary; no new public parameter is introduced.
+- Actionable decisions require the explicit ENTRY CALIBRATED top-down stage while watch/prediction state can remain visible.
+- Full panel renders are keyed by presentation state; the 500 ms heartbeat updates clock/live rows directly and no longer forces full layout work.
+- A bounded 1-second structural pulse re-evaluates closed-M5 structure for protective SL/target progression.
+- Successful TP1/TP2 partial-close confirmations force same-cycle target re-evaluation.
+- Alert mirror label changes from SIGNAL BUY/SELL to ALERT BUY/SELL.
+
+Evidence boundary:
+- no guessed WaveTrend formula is introduced; exact source parity remains required before production integration.
+- no empirical win-rate, false-signal or realized-RR improvement is claimed without target-terminal replay/outcome evidence.
+
+Continuity:
+- branch phase-9-1-topdown-evidence-runtime-responsiveness;
+- PR #40;
+- main baseline before phase 60749410917a4888e2a4c2ad90ce98c8f0916cfa;
+- local pull is required only after merge.

@@ -64,6 +64,30 @@ namespace cAlgo
                                                         false,
                                                         contentWidth);
                                     
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "TOP-DOWN  " +
+                                                        (_decision.TopDownStage ?? "HTF SEARCH") +
+                                                        "  •  HTF " +
+                                                        _decision.HtfAnchorDirection +
+                                                        "/" +
+                                                        _decision.HtfAlignment +
+                                                        "  •  MID " +
+                                                        _decision.MidframeDirection +
+                                                        "/" +
+                                                        _decision.MidframeAlignment +
+                                                        "  •  ENTRY " +
+                                                        _decision.EntryFrameAlignment,
+                                                        _decision.TopDownEligible &&
+                                                        string.Equals(
+                                                            _decision.TopDownStage,
+                                                            "ENTRY CALIBRATED",
+                                                            StringComparison.OrdinalIgnoreCase)
+                                                            ? TpLineColor
+                                                            : PanelWarningColor,
+                                                        true,
+                                                        contentWidth);
+
                                                     MarketRegimeSnapshot regime =
                                                         _m5RegimeSnapshot;
 

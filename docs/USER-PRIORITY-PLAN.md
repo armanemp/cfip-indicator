@@ -166,3 +166,38 @@ replay and accuracy certification → release/cloud/learning.
 Read this file, ROADMAP, ARCHITECTURE and DEVELOPMENT-LOG; inspect main; confirm
 the exact HEAD; start from the first incomplete dependency; complete one phase;
 run the relevant gates; update continuity docs; state whether pull is required.
+
+## L. New persistent top-down requirement — 2026-09-29
+
+The user's requested signal architecture is explicitly top-down:
+
+- search for the primary opportunity from H1 and higher (H4/D1/W1 when available);
+- establish directional HTF anchor before treating lower-timeframe movement as a candidate;
+- calibrate through M30/M15;
+- use M5 for setup/location and M1 only for closed-bar trigger confirmation;
+- actionable signal state should require the lower layers to agree with a strong HTF anchor;
+- lower timeframes must not override a strong HTF directional conflict;
+- reward planning should prefer HTF structure/liquidity when the reward path is valid;
+- risk/protection quality must not be weakened merely to increase displayed RR.
+
+This is a persistent engineering requirement for future phases.
+
+## M. Persistent panel/live-management requirement — 2026-09-29
+
+Panel behavior must remain responsive independently from full analysis:
+
+- heartbeat should update only lightweight live rows/clock;
+- full panel layout/render should be state-change driven;
+- unchanged UI properties must not be rewritten;
+- panel calculation staleness and render staleness should remain distinguishable.
+
+Live target/protection management:
+
+- closed-bar structural safety remains mandatory;
+- structural progression must not wait for a later M5 boundary when a bounded live pulse can safely re-evaluate already-closed M5 structure;
+- successful TP1/TP2 events should trigger immediate same-cycle re-evaluation of the next reward path;
+- broker target/stop changes remain broker-confirmed and monotonic.
+
+Chart semantics:
+
+- persistent alert-mirror labels must identify themselves as ALERT rather than looking like a second independent SIGNAL engine.

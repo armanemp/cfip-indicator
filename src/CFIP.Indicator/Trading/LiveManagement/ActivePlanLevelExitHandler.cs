@@ -99,7 +99,18 @@ namespace cAlgo
                                                 "TP1");
                         
                                         if (tp1Processed)
+                                        {
                                             _tp1Hit = 1;
+
+                                            if (UpdateUnhitTargets &&
+                                                GetManagedLivePositionForPlan() != null)
+                                            {
+                                                UpdateUnhitTargetsLive(
+                                                    closedM5,
+                                                    market,
+                                                    true);
+                                            }
+                                        }
                         
                                         if (tp1Processed &&
                                             EnableLevelHitAlerts &&
@@ -125,7 +136,18 @@ namespace cAlgo
                                                 "TP2");
                         
                                         if (tp2Processed)
+                                        {
                                             _tp2Hit = 1;
+
+                                            if (UpdateUnhitTargets &&
+                                                GetManagedLivePositionForPlan() != null)
+                                            {
+                                                UpdateUnhitTargetsLive(
+                                                    closedM5,
+                                                    market,
+                                                    true);
+                                            }
+                                        }
                         
                                         if (tp2Processed &&
                                             EnableLevelHitAlerts &&

@@ -7,6 +7,13 @@ namespace cAlgo
         public int PlanDirection;
         public int PendingDirection;
         public int DecisionDirection;
+        public int HtfAnchorDirection;
+        public int HtfAlignment;
+        public int MidframeDirection;
+        public int MidframeAlignment;
+        public int EntryFrameAlignment;
+        public bool TopDownEligible;
+        public string TopDownStage;
         public int ReactionDirection;
         public string Stage;
         public bool DecisionReady;
@@ -64,6 +71,9 @@ namespace cAlgo
         public double PendingTarget;
 
         public int SmartQuality;
+        public int TimeframeAgreement;
+        public int IndependentEvidence;
+        public int StructuralConfirmations;
         public int Confidence;
         public string DecisionReason;
         public string ReactionReason;

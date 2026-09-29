@@ -3439,3 +3439,29 @@ Pre-merge head `3e77b974cc00c82e9f134bfd0057493ea47c29e7` passed Runtime Accepta
 The exact custom WaveTrend source remains unavailable in the current searchable repo/Library continuation, so no guessed WaveTrend formula was introduced. Target cTrader replay remains required for empirical signal-quality and chart-timing validation.
 
 Next strategy-quality work must start from the verified Phase 8.5 main commit. Operator pull requirement: local `main` is now advanced to `cbda7910ad3b30fbd74cc526676e6372cb098cd7`; pull locally before continuing.
+
+
+## Phase 9.1 — Top-down opportunity calibration and runtime responsiveness — 2026-09-29
+
+Status: implementation in progress on branch phase-9-1-topdown-evidence-runtime-responsiveness.
+
+Scope:
+- H1/H4/D1/W1 directional anchor;
+- M30/M15 calibration;
+- M5 setup/entry alignment;
+- M1 closed trigger confirmation;
+- actionable EntryAllowed only after explicit top-down calibration under the existing higher-TF agreement setting;
+- state-change-driven full panel rendering with lightweight heartbeat live rows;
+- bounded live structural SL/target pulse using closed M5 structure;
+- immediate same-cycle target refresh after successful TP1/TP2;
+- explicit ALERT BUY/SELL label semantics.
+
+Acceptance:
+- strong HTF anchor cannot be overridden by lower frames;
+- deterministic top-down contracts pass;
+- panel heartbeat does not invoke full panel layout rendering;
+- target/protection progression remains monotonic and broker-confirmed;
+- Runtime Acceptance, cTrader Compile/Build and Source/Architecture all pass;
+- no empirical performance claim without target cTrader replay.
+
+Next continuation point remains this phase until final verification and merge close.
