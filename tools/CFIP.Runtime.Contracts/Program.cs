@@ -2373,7 +2373,15 @@ namespace cAlgo
                 "canonical strategic scenario may be execution-eligible");
 
             Assert(
-                !ScenarioExecutionPolicy.IsCanonicalCandidateEligible(
+                ScenarioExecutionPolicy.IsCanonicalCandidateEligible(
+                    independent,
+                    decision,
+                    OpportunityLane.Tactical,
+                    out reason),
+                "independent timeframe candidate can still be structurally evaluated");
+
+            Assert(
+                !ScenarioExecutionPolicy.IsExecutionAuthorizedCandidate(
                     independent,
                     decision,
                     OpportunityLane.Tactical,
