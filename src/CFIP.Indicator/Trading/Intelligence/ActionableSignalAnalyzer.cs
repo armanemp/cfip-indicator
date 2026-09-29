@@ -69,89 +69,80 @@ namespace cAlgo
 
             bool executionReady = false;
 
-            if (_executionModel != null &&
-                _executionModel.Direction ==
-                    _plan.Direction)
+            double zoneLow =
+                Math.Min(
+                    _plan.EntryZoneLow,
+                    _plan.EntryZoneHigh);
+            double zoneHigh =
+                Math.Max(
+                    _plan.EntryZoneLow,
+                    _plan.EntryZoneHigh);
+
+            double tolerance =
+                Math.Max(
+                    Symbol.PipSize,
+                    atr *
+                    Math.Max(
+                        0.02,
+                        MaximumEntryDistanceAtr));
+
+            bool inside =
+                market >= zoneLow - tolerance &&
+                market <= zoneHigh + tolerance;
+
+            bool triggerReached =
+                IsFinitePositive(_plan.EntryTrigger) &&
+                IsTriggerReached(
+                    _plan.Direction,
+                    market,
+                    _plan.EntryTrigger);
+
+            bool qualityReady =
+                _plan.EntryQuality >=
+                Math.Max(
+                    40,
+                    MinimumEntryQuality);
+
+            if (_plan.EntryMode ==
+                ExecutionMode.RetestMarket)
             {
-                double zoneLow =
-                    Math.Min(
-                        _executionModel.ZoneLow,
-                        _executionModel.ZoneHigh);
-                double zoneHigh =
+                int retestQuality =
+                    RetestQuality(
+                        _m5Bars,
+                        closedM5,
+                        _plan.Direction);
+
+                executionReady =
+                    inside &&
+                    !triggerReached &&
+                    qualityReady &&
+                    Math.Abs(
+                        market -
+                        _plan.IdealEntry) <=
+                    atr *
                     Math.Max(
-                        _executionModel.ZoneLow,
-                        _executionModel.ZoneHigh);
-
-                double tolerance =
+                        0.05,
+                        MaximumEntryDistanceAtr) &&
+                    (retestQuality >=
+                        MinimumRetestQuality ||
+                     !RequireRetestQuality);
+            }
+            else if (_plan.EntryMode ==
+                     ExecutionMode.BreakoutMarket)
+            {
+                executionReady =
+                    triggerReached &&
+                    qualityReady &&
+                    Math.Abs(
+                        market -
+                        _plan.EntryTrigger) <=
+                    atr *
                     Math.Max(
-                        Symbol.PipSize,
-                        atr *
-                        Math.Max(
-                            0.02,
-                            MaximumEntryDistanceAtr));
-
-                bool inside =
-                    market >= zoneLow - tolerance &&
-                    market <= zoneHigh + tolerance;
-
-                bool triggerReached =
-                    IsTriggerReached(
-                        _plan.Direction,
-                        market,
-                        _executionModel.Trigger);
-
-                bool qualityReady =
-                    !RequirePrecisionEntry ||
-                    _executionModel.Quality >=
-                    Math.Max(
-                        40,
-                        MinimumEntryQuality);
-
-                if (_executionModel.Mode ==
-                    ExecutionMode.RetestMarket)
-                {
-                    int retestQuality =
-                        RetestQuality(
-                            _m5Bars,
-                            closedM5,
-                            _plan.Direction);
-
-                    executionReady =
-                        inside &&
-                        !triggerReached &&
-                        qualityReady &&
-                        Math.Abs(
-                            market -
-                            _executionModel.IdealEntry) <=
-                        atr *
-                        Math.Max(
-                            0.05,
-                            MaximumEntryDistanceAtr) &&
-                        (retestQuality >=
-                            MinimumRetestQuality ||
-                         !RequireRetestQuality);
-                }
-                else if (_executionModel.Mode ==
-                         ExecutionMode.BreakoutMarket)
-                {
-                    executionReady =
-                        triggerReached &&
-                        qualityReady &&
-                        Math.Abs(
-                            market -
-                            _executionModel.Trigger) <=
-                        atr *
-                        Math.Max(
-                            0.10,
-                            MaximumEntryExtensionAtr);
-                }
+                        0.10,
+                        MaximumEntryExtensionAtr);
             }
 
-            if (!executionReady ||
-                (_plan.EntryMode !=
-                    ExecutionMode.RetestMarket &&
-                 _plan.EntryMode !=
-                    ExecutionMode.BreakoutMarket))
+            if (!executionReady)
             {
                 result =
                     new SignalActionabilityResult(
