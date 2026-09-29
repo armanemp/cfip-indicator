@@ -96,6 +96,11 @@ namespace cAlgo
                 private bool _lastConfiguredAutoTrading;
                 private bool _lastConfiguredAutomaticOrders;
                 private bool _outcomeTelemetryTimedOut;
+                private string _lastExecutionTelemetryPath = "";
+                private string _lastExecutionTelemetryState = "IDLE";
+                private string _lastExecutionTelemetryReason = "";
+                private int _lastExecutionTelemetryM5 = -1;
+                private DateTime _lastExecutionTelemetryUtc = DateTime.MinValue;
         
                 private LifecycleState _lifecycleState =
                     LifecycleState.Flat;
