@@ -215,7 +215,7 @@ for token in (
     if token not in ob_confluence_code:
         raise SystemExit(f"Order Block FVG confluence must consume Phase 8.3 canonical FVG rule: {token}")
 
-if "OrderBlockRule.Identity(" not in ob_builder_code:
+if "OrderBlockRule.OrderBlockIdentity(" not in ob_builder_code:
     raise SystemExit("Managed Order Blocks must retain deterministic source identity")
 
 # Phase 8.3 — canonical FVG mathematics and lifecycle ownership.
