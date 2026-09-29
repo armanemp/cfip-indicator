@@ -1,12 +1,13 @@
 namespace cAlgo
 {
     internal sealed class Zone
-                    {
-                        public double Low;
-                        public double High;
-                        public int Direction;
-                        public string Kind;
-                        public int Age;
-                        public int Quality;
-                    }
+    {
+        public double Low;
+        public double High;
+        public int Direction;
+        public string Kind;
+        public string Id;
+        public int Age;
+        public int Quality;
+    }
 }
