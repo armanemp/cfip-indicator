@@ -1609,7 +1609,7 @@ for method, path in required_method_files.items():
 
 print(
     f"Architecture OK: {len(files)} C# files, {parameters} parameters, "
-    f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum 311)."
+    f"{len(methods)} method declarations / {len(unique_methods)} unique baseline methods (minimum {REFERENCE_METHOD_MINIMUM})."
 )
 
 # Accepted terminal host compatibility guard.
