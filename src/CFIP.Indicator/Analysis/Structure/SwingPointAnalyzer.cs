@@ -17,18 +17,10 @@ namespace cAlgo
             Bars bars,
             int index)
         {
-            double atr =
-                bars == null ||
-                index < 0 ||
-                index >= bars.Count
-                    ? 0
-                    : Atr(bars, index);
-
-            return Math.Max(
-                Symbol.PipSize * 2,
-                atr > 0
-                    ? atr * 0.02
-                    : Symbol.PipSize * 2);
+            // A plateau is an exact structural equality concept. Keep
+            // its identity independent of changing volatility/ATR values;
+            // broader approximate equality remains owned by EqualLevelAnalyzer.
+            return Symbol.PipSize * 2;
         }
 
         private bool IsCanonicalSwingHigh(
