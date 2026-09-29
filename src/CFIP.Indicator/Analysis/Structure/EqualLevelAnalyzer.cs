@@ -33,49 +33,58 @@ namespace cAlgo
                         0.02,
                         EqualLevelToleranceAtr));
 
-            int maxOccurrences =
+            int first =
                 Math.Max(
-                    2,
-                    Math.Min(
-                        12,
-                        LiquidityLookback));
+                    SwingStrength,
+                    index -
+                    LiquidityLookback);
+
+            int last =
+                Math.Min(
+                    index -
+                    SwingStrength,
+                    bars.Count -
+                    SwingStrength -
+                    1);
 
             List<double> levels =
                 new List<double>();
 
-            for (int occurrence = 1;
-                 occurrence <= maxOccurrences;
-                 occurrence++)
+            for (int i = first;
+                 i <= last;
+                 i++)
             {
-                double high =
-                    FindSwingHigh(
+                int plateauStart;
+                int plateauEnd;
+                double level;
+
+                if (!IsCanonicalSwingHigh(
                         bars,
+                        i,
                         index,
                         SwingStrength,
-                        occurrence);
-
-                if (!IsFinitePositive(high) ||
-                    high <= reference)
+                        out plateauStart,
+                        out plateauEnd,
+                        out level) ||
+                    level <= reference)
                     continue;
 
-                // A pair is compared directly to a fixed member. This avoids
-                // accepting a transitive A~B~C chain when A is not close to C.
                 for (int j = 0;
                      j < levels.Count;
                      j++)
                 {
                     if (!SwingPlateauRule.IsWithinAnchor(
                             levels[j],
-                            high,
+                            level,
                             tolerance))
                         continue;
 
                     return Math.Max(
                         levels[j],
-                        high);
+                        level);
                 }
 
-                levels.Add(high);
+                levels.Add(level);
             }
 
             return 0;
@@ -101,29 +110,40 @@ namespace cAlgo
                         0.02,
                         EqualLevelToleranceAtr));
 
-            int maxOccurrences =
+            int first =
                 Math.Max(
-                    2,
-                    Math.Min(
-                        12,
-                        LiquidityLookback));
+                    SwingStrength,
+                    index -
+                    LiquidityLookback);
+
+            int last =
+                Math.Min(
+                    index -
+                    SwingStrength,
+                    bars.Count -
+                    SwingStrength -
+                    1);
 
             List<double> levels =
                 new List<double>();
 
-            for (int occurrence = 1;
-                 occurrence <= maxOccurrences;
-                 occurrence++)
+            for (int i = first;
+                 i <= last;
+                 i++)
             {
-                double low =
-                    FindSwingLow(
+                int plateauStart;
+                int plateauEnd;
+                double level;
+
+                if (!IsCanonicalSwingLow(
                         bars,
+                        i,
                         index,
                         SwingStrength,
-                        occurrence);
-
-                if (!IsFinitePositive(low) ||
-                    low >= reference)
+                        out plateauStart,
+                        out plateauEnd,
+                        out level) ||
+                    level >= reference)
                     continue;
 
                 for (int j = 0;
@@ -132,16 +152,16 @@ namespace cAlgo
                 {
                     if (!SwingPlateauRule.IsWithinAnchor(
                             levels[j],
-                            low,
+                            level,
                             tolerance))
                         continue;
 
                     return Math.Min(
                         levels[j],
-                        low);
+                        level);
                 }
 
-                levels.Add(low);
+                levels.Add(level);
             }
 
             return 0;
