@@ -492,7 +492,7 @@ namespace cAlgo
 
             double score =
                 zone.Quality *
-                0.55 *
+                0.65 *
                 timeframeWeight +
                 contextQuality -
                 distancePenalty;
@@ -557,7 +557,7 @@ namespace cAlgo
 
             double score =
                 baseQuality *
-                0.55 +
+                0.65 +
                 contextQuality -
                 10.0 *
                 Math.Min(
