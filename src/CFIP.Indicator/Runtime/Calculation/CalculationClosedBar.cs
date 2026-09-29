@@ -121,9 +121,6 @@ namespace cAlgo
             EmitContextAlerts(
                 closedM5);
 
-            ProcessDecisionAlerts(
-                closedM5);
-
             ReconcilePreTradePlanDirection(
                 closedM5);
 
