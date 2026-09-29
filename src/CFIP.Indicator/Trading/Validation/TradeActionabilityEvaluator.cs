@@ -9,6 +9,7 @@ namespace cAlgo
             int closedM5,
             int direction,
             OpportunityLane lane,
+            string regime,
             ExecutionModel execution,
             TradeSetupPreview preview)
         {
@@ -129,7 +130,7 @@ namespace cAlgo
             double minimumRR =
                 Math.Max(
                     Tp1MinimumRR,
-                    MinimumRequiredRR());
+                    MinimumRequiredRR(regime));
 
             int locationQuality =
                 Math.Max(
