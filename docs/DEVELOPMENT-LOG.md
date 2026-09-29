@@ -1394,7 +1394,7 @@ Operator pull: required now from the final main documentation closeout commit.
 
 ## Phase 9.12 — Broker Outcome / Recovery Telemetry & Recent Lifecycle Calibration — 2026-09-29
 
-Status: VERIFIED COMPLETE; ready to merge.
+Status: VERIFIED COMPLETE; merged into `main`.
 Branch: `phase/9-12-outcome-recovery-calibration`
 
 Implementation:
@@ -1425,9 +1425,10 @@ Verification:
 - cTrader Compile/Build #1280: PASS;
 - Source/Architecture + accumulated audit #1287: PASS;
 - Final verified branch head: `626618e7100b2e2cecf8a172d67ed49aee43345b`;
+- Merge commit into `main`: `033bad1555fc7e2e1780c126d501020ddb7c7737`;
 - target cTrader replay remains required for empirical validation.
 
 Detailed record: `docs/PHASE-9-12-OUTCOME-RECOVERY-TELEMETRY-CALIBRATION.md`.
 
 Next phase after verification: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
-Operator pull: required after PR #54 is merged.
+Operator pull: required now; pull `main` to the merge commit and subsequent documentation closeout.
