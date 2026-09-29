@@ -67,6 +67,9 @@ namespace cAlgo
                                         
                                                     _panel.IsVisible =
                                                         !_panelHidden;
+
+                                                    if (_panelHidden)
+                                                        return;
                                         
                                                     int padding =
                                                         Math.Max(
