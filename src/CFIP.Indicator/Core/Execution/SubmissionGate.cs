@@ -11,8 +11,8 @@ namespace cAlgo
         private const int CircuitCooldownSeconds = 60;
         private const int MaximumRetainedStates = 128;
 
-        private readonly Dictionary<SubmissionAttemptIdentity, SubmissionGateState> _states =
-            new Dictionary<SubmissionAttemptIdentity, SubmissionGateState>();
+        private readonly Dictionary<string, SubmissionGateState> _states =
+            new Dictionary<string, SubmissionGateState>();
 
         public bool TryAcquire(
             SubmissionAttemptIdentity identity,
@@ -30,7 +30,7 @@ namespace cAlgo
 
             SubmissionGateState state;
 
-            if (!_states.TryGetValue(identity, out state))
+            if (!_states.TryGetValue(identity.CanonicalKey, out state))
                 return true;
 
             if (nowUtc < state.CircuitOpenUntilUtc)
@@ -59,7 +59,7 @@ namespace cAlgo
 
             if (success)
             {
-                _states.Remove(identity);
+                _states.Remove(identity.CanonicalKey);
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace cAlgo
             if (!_states.TryGetValue(identity, out state))
             {
                 state = new SubmissionGateState();
-                _states[identity] = state;
+                _states[identity.CanonicalKey] = state;
             }
 
             state.ConsecutiveFailures =
@@ -102,10 +102,10 @@ namespace cAlgo
             if (_states.Count <= MaximumRetainedStates)
                 return;
 
-            List<SubmissionAttemptIdentity> removable =
+            List<string> removable =
                 new List<SubmissionAttemptIdentity>();
 
-            foreach (KeyValuePair<SubmissionAttemptIdentity, SubmissionGateState> entry in _states)
+            foreach (KeyValuePair<string, SubmissionGateState> entry in _states)
             {
                 SubmissionGateState state = entry.Value;
 
@@ -116,9 +116,9 @@ namespace cAlgo
                 }
             }
 
-            foreach (SubmissionAttemptIdentity identity in removable)
+            foreach (string identityKey in removable)
             {
-                _states.Remove(identity);
+                _states.Remove(identityKey);
 
                 if (_states.Count <= MaximumRetainedStates)
                     break;
