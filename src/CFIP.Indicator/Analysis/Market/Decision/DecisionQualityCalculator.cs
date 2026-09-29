@@ -15,6 +15,24 @@ namespace cAlgo
             int indicatorConflict = 0)
         {
             double normalizedIndependentEvidence =
+            if (indicatorConfluenceQuality <= 0 &&
+                indicatorConflict <= 0)
+            {
+                double legacyQuality =
+                    (int)Math.Round(
+                        NumericGuards.ClampInt(strongestShare, 0, 100) * 0.25 +
+                        NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.20 +
+                        normalizedIndependentEvidence * 0.20 +
+                        normalizedStructural * 0.15 +
+                        NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.10 +
+                        effectiveRetestQuality * 0.10);
+
+                return NumericGuards.ClampInt(
+                    (int)legacyQuality,
+                    0,
+                    100);
+            }
+
                 Math.Min(
                     100.0,
                     Math.Max(
