@@ -547,9 +547,22 @@ namespace cAlgo
             if (!EnableEconomicNewsCalendar)
                 return false;
 
-            bool healthy =
-                RefreshEconomicNewsIfNeeded(
-                    utc);
+            bool healthy;
+
+            if (_economicNewsLastAttemptUtc ==
+                DateTime.MinValue)
+            {
+                // One initial synchronous load prevents a brief startup window
+                // with no calendar cache at all. Subsequent refreshes happen on Timer.
+                healthy =
+                    RefreshEconomicNewsIfNeeded(
+                        utc);
+            }
+            else
+            {
+                healthy =
+                    _economicNewsFetchHealthy;
+            }
 
             if (!healthy &&
                 NewsFailClosedWhenStale &&
