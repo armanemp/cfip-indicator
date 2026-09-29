@@ -130,6 +130,10 @@ namespace cAlgo
                         ? "MIDFRAME CONFLICT"
                         : "ENTRY CONFLICT";
             else if (mid.Direction == htf.Direction &&
+                     mid.Alignment >=
+                     Math.Max(
+                         65,
+                         strongThreshold - 5) &&
                      safeEntryDirection == htf.Direction)
                 stage = "ENTRY CALIBRATED";
             else if (mid.Direction == htf.Direction)
