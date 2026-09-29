@@ -89,15 +89,15 @@ namespace cAlgo
                                         snapshot.Direction;
 
                                     bool aligned =
-                                        direction != 0 &&
-                                        (snapshot.PlanDirection == 0 ||
-                                         snapshot.PlanDirection == direction) &&
-                                        (snapshot.PendingDirection == 0 ||
-                                         snapshot.PendingDirection == direction) &&
-                                        (snapshot.DecisionDirection == 0 ||
-                                         snapshot.DecisionDirection == direction) &&
-                                        (snapshot.ReactionDirection == 0 ||
-                                         snapshot.ReactionDirection == direction);
+                                        direction == 0 ||
+                                        ((snapshot.PlanDirection == 0 ||
+                                          snapshot.PlanDirection == direction) &&
+                                         (snapshot.PendingDirection == 0 ||
+                                          snapshot.PendingDirection == direction) &&
+                                         (snapshot.DecisionDirection == 0 ||
+                                          snapshot.DecisionDirection == direction) &&
+                                         (snapshot.ReactionDirection == 0 ||
+                                          snapshot.ReactionDirection == direction));
 
                                     string visualState =
                                         snapshot.Stage;
