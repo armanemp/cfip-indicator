@@ -101,9 +101,11 @@ require(
 
 require(
     HOST,
-    r'\[Indicator\(\s*"CFIPIndicator"',
-    "explicit cTrader indicator display name",
+    r"\[Indicator\(\s*\n\s*IsOverlay\s*=",
+    "supported non-obsolete cTrader indicator attribute",
 )
+if '"CFIPIndicator"' in HOST.read_text(encoding="utf-8"):
+    errors.append("obsolete string-based IndicatorAttribute registration remains")
 require(
     CSPROJ,
     r"<AssemblyName>CFIPIndicator</AssemblyName>",
@@ -151,8 +153,8 @@ if "RequestBars(\n                TimeFrame.Daily" in init_text or "RequestBars(
     errors.append("D1/W1 must not block mandatory startup pending-load count")
 
 host_text = HOST.read_text(encoding="utf-8")
-if host_text.count('"CFIPIndicator"') != 1:
-    errors.append("indicator display identity must have exactly one literal registration")
+if '"CFIPIndicator"' in host_text:
+    errors.append("obsolete indicator string constructor must not be present")
 
 if errors:
     print("Phase 9.15 startup/persistence audit FAILED")
