@@ -196,7 +196,7 @@ namespace cAlgo
                 "Order Block wick/body probe semantics are directional");
 
             Assert(
-                OrderBlockRule.TryApplyPartialMitigation(
+                OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     1,
                     99,
                     103,
@@ -212,7 +212,7 @@ namespace cAlgo
                 "bullish Order Block partial mitigation moves upper boundary");
 
             Assert(
-                OrderBlockRule.TryApplyPartialMitigation(
+                OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     -1,
                     99,
                     103,
@@ -246,7 +246,7 @@ namespace cAlgo
                 "Order Block full-fill boundary is symmetric");
 
             Assert(
-                !OrderBlockRule.TryApplyPartialMitigation(
+                !OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     1,
                     99,
                     103,
@@ -256,7 +256,7 @@ namespace cAlgo
                     out high,
                     out partial,
                     out remainingRatio) &&
-                !OrderBlockRule.TryApplyPartialMitigation(
+                !OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     -1,
                     99,
                     103,
