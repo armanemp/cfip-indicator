@@ -1123,10 +1123,15 @@ namespace cAlgo
                 calculation.Contains("RenderSetupPreview("),
                 "calculation renders setup preview");
 
+            string visualSnapshotBuilderPath =
+                Path.Combine("src", "CFIP.Indicator", "UI", "Chart", "SignalVisualSnapshotBuilder.cs");
+            string visualSnapshotBuilder =
+                File.ReadAllText(visualSnapshotBuilderPath);
+
             Assert(
-                snapshot.Contains("_setupPreview.Direction != 0") &&
-                snapshot.Contains("The setup preview is the pre-trigger structural forecast") &&
-                !snapshot.Contains("_setupPreview.Direction == visualDirection"),
+                visualSnapshotBuilder.Contains("_setupPreview.Direction != 0") &&
+                visualSnapshotBuilder.Contains("The setup preview is the pre-trigger structural forecast") &&
+                !visualSnapshotBuilder.Contains("_setupPreview.Direction == visualDirection"),
                 "setup preview remains visible before TriggerReady and does not wait for post-trigger visual direction");
 
             string planEligibilityPath =
