@@ -15,7 +15,16 @@ namespace cAlgo
             if (plan == null ||
                 !IsFinitePositive(plan.Entry) ||
                 !IsFinitePositive(plan.Risk) ||
-                !IsFinitePositive(plan.Tp1))
+                !IsFinitePositive(plan.Tp1) ||
+                plan.Tp2 < 0 ||
+                plan.Tp3 < 0 ||
+                plan.Tp4 < 0 ||
+                double.IsNaN(plan.Tp2) ||
+                double.IsInfinity(plan.Tp2) ||
+                double.IsNaN(plan.Tp3) ||
+                double.IsInfinity(plan.Tp3) ||
+                double.IsNaN(plan.Tp4) ||
+                double.IsInfinity(plan.Tp4))
                 return false;
 
             double minimumRR =
