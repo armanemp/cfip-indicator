@@ -49,7 +49,7 @@ namespace cAlgo
             double atr =
                 _m5Frame != null && _m5Frame.Atr > 0
                     ? _m5Frame.Atr
-                    : 0;
+                    : Symbol.PipSize * 10;
 
             double minimumForwardDistance =
                 MinimumLiveTargetDistancePrice(
@@ -134,9 +134,6 @@ namespace cAlgo
 
             if (remaining < Symbol.VolumeInUnitsMin)
                 return false;
-
-            if (atr <= 0)
-                atr = Symbol.PipSize * 10;
 
             double minimumSpacingPrice =
                 minimumForwardDistance;
