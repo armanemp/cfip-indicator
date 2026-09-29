@@ -35,7 +35,8 @@ namespace cAlgo
                             int visualDirection =
                                 snapshot.AuthoritativeDirection;
 
-                            if (snapshot.PendingOrder)
+                            if (snapshot.PendingOrder ||
+                                !snapshot.ActionableNow)
                             {
                                 Chart.RemoveObject(P + "WATCH_ARROW");
                                 Chart.RemoveObject(P + "REACTION_ARROW");
@@ -61,23 +62,8 @@ namespace cAlgo
                                         Bars.Count - 1,
                                         hostBar));
                 
-                            int reactionBar =
-                                MapM5ToChart(
-                                    snapshot.ArrowM5Index,
-                                    chartIndex);
-                
-                            reactionBar =
-                                Math.Max(
-                                    0,
-                                    Math.Min(
-                                        Bars.Count - 1,
-                                        reactionBar));
-                
                             int arrowBar =
-                                reactionReady &&
-                                visualDirection == snapshot.ReactionDirection
-                                    ? reactionBar
-                                    : hostBar;
+                                hostBar;
                 
                             double atr =
                                 Atr(
@@ -100,23 +86,10 @@ namespace cAlgo
                                         ArrowOffsetAtr));
                 
                             string arrowState =
-                                reactionReady &&
-                                visualDirection == snapshot.ReactionDirection
-                                    ? (snapshot.ReactionConfidence >=
-                                       Math.Max(
-                                           LiveReactionThreshold,
-                                           LiveReactionStrongThreshold)
-                                        ? "STRONG"
-                                        : "REACTION")
-                                    : decisionReady
-                                        ? "CONFIRMED"
-                                        : "WATCH";
+                                "STRONG";
                 
                             bool showCurrentStateArrow =
-                                reactionReady ||
-                                decisionReady
-                                    ? ShowSignalArrow
-                                    : ShowEarlyArrow;
+                                ShowSignalArrow;
 
                             if (showCurrentStateArrow)
                             {
@@ -248,9 +221,7 @@ namespace cAlgo
 
                             DrawIcon(
                                 P + "M1_TRIGGER",
-                                snapshot.DecisionDirection == 1
-                                    ? ChartIconType.UpArrow
-                                    : ChartIconType.DownArrow,
+                                ChartIconType.Diamond,
                                 triggerBar,
                                 price,
                                 SignalArrowColorFor(
