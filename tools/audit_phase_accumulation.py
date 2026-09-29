@@ -81,7 +81,7 @@ quality_rule = read("Core/Math/ActionableSignalQualityRule.cs")
 evaluator = read("Trading/Validation/TradeActionabilityEvaluator.cs")
 telemetry = read("Trading/Execution/SubmissionGateCoordinator.cs")
 outcome_telemetry = read("Trading/Intelligence/OutcomeTelemetryEngine.cs")
-outcome_model = read("Core/Models/OutcomeObservation.cs")
+outcome_model = read("Trading/Intelligence/OutcomeObservation.cs")
 
 if "AllowsQualityRecovery(" not in quality_rule:
     raise SystemExit("high-quality signal recovery gate is missing")
