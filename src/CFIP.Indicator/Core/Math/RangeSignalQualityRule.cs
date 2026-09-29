@@ -14,6 +14,7 @@ namespace cAlgo
         public bool Displacement { get; }
         public bool WaveTrendDirectionAligned { get; }
         public bool WaveTrendReversal { get; }
+        public bool Breakout { get; }
         public int WaveTrendQuality { get; }
         public int IndependentEvidence { get; }
         public int StructuralConfirmations { get; }
@@ -33,6 +34,7 @@ namespace cAlgo
             bool displacement,
             bool waveTrendDirectionAligned,
             bool waveTrendReversal,
+            bool breakout,
             int waveTrendQuality,
             int independentEvidence,
             int structuralConfirmations,
@@ -51,6 +53,7 @@ namespace cAlgo
             Displacement = displacement;
             WaveTrendDirectionAligned = waveTrendDirectionAligned;
             WaveTrendReversal = waveTrendReversal;
+            Breakout = breakout;
             WaveTrendQuality = waveTrendQuality;
             IndependentEvidence = independentEvidence;
             StructuralConfirmations = structuralConfirmations;
@@ -115,12 +118,14 @@ namespace cAlgo
                     ? lowerEdge
                     : upperEdge;
 
-            if (!edgeAligned)
+            if (!input.Breakout &&
+                !edgeAligned)
                 return new RangeSignalQualityResult(
                     false,
                     "RANGE NO-TRADE • MID-RANGE");
 
-            if (!input.Liquidity)
+            if (!input.Breakout &&
+                !input.Liquidity)
                 return new RangeSignalQualityResult(
                     false,
                     "RANGE NO-TRADE • NO LIQUIDITY EVENT");
@@ -131,8 +136,9 @@ namespace cAlgo
                     "RANGE NO-TRADE • NO STRUCTURAL REVERSAL");
 
             if (!input.WaveTrendDirectionAligned ||
-                !input.WaveTrendReversal ||
-                input.WaveTrendQuality < 58)
+                input.WaveTrendQuality < 58 ||
+                (!input.Breakout &&
+                 !input.WaveTrendReversal))
                 return new RangeSignalQualityResult(
                     false,
                     "RANGE NO-TRADE • WAVETREND");
@@ -176,7 +182,9 @@ namespace cAlgo
 
             return new RangeSignalQualityResult(
                 true,
-                "RANGE REVERSAL QUALIFIED");
+                input.Breakout
+                    ? "RANGE BREAKOUT QUALIFIED"
+                    : "RANGE REVERSAL QUALIFIED");
         }
 
         private static bool IsFinitePositive(
