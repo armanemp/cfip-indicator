@@ -173,12 +173,13 @@ namespace cAlgo
 
                                                 if (materiallyDifferent &&
                                                     (!brokerTargetValid ||
-                                                     ProtectionProgressionRule.ShouldAdvanceTarget(
+                                                     LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                                          direction,
                                                          NormalizePrice(
                                                              planPosition.TakeProfit.Value),
                                                          normalizedTarget,
-                                                         PreventBrokerTpBackwardMove)))
+                                                         market,
+                                                         minimumForwardDistance)))
                                                 {
                                                     mutationRequired = true;
 
