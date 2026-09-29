@@ -106,7 +106,7 @@ namespace cAlgo
                     1, 100, 98, 101, 100,
                     out low, out high, out gap) &&
                 !FvgRule.TryGetThreeBarGap(
-                    -1, 102, 101, 100, 99,
+                    -1, 102, 100, 100, 99,
                     out low, out high, out gap),
                 "FVG equality/touch is not a gap");
 
