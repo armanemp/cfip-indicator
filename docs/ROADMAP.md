@@ -3831,7 +3831,8 @@ Merge commit: `6246782125718af184568eb9339965e3f228c9a7`.
 
 ## Phase 9.14 — Signal Evidence Integrity & Consensus Calibration — 2026-09-29
 
-Status: IMPLEMENTED; automated verification pending on the documentation-inclusive head.
+Status: VERIFIED COMPLETE; merged into main as PR #56.
+Verified merge commit: 16e788f6b196afcfe2580908cbdb4dabc46cb5b.
 
 Completed scope:
 - directional frame contribution now accounts for absolute bull+bear strength and canonical evidence coverage;
@@ -3850,5 +3851,7 @@ Detailed record: docs/PHASE-9-14-SIGNAL-EVIDENCE-CALIBRATION.md.
 Known boundary:
 Target-terminal/replay measurement is still required to establish empirical changes in false-signal frequency, missed opportunities, realized R and execution behavior.
 
-Next phase after verification: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
-Operator pull: required after Phase 9.14 is verified and merged.
+Verification: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture + accumulated audits PASS; Decision Contracts PASS within build.
+
+Next phase: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
+Operator pull: required now; pull main to the latest closeout commit.
