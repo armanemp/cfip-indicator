@@ -257,6 +257,7 @@ namespace cAlgo
                             closedM5,
                             decision.Direction,
                             lane,
+                            decision.Regime,
                             actionExecution,
                             actionPreview);
 
