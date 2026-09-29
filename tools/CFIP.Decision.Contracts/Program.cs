@@ -20,6 +20,7 @@ namespace cAlgo
             VerifyMarketRegimeClassification();
             VerifyEntryTrapRisk();
             VerifyActionableSignalQuality();
+            VerifySignalVisualLifecycle();
             VerifyRangeSignalQuality();
             VerifyIndicatorEvidenceFusion();
             VerifyIndicatorActionability();
@@ -759,10 +760,24 @@ namespace cAlgo
                         70, 75, 70, 1.50));
 
             Assert(
-                !weakTiming.Allowed &&
+                weakTiming.Allowed &&
                 weakTiming.Reason ==
+                    "ACTIONABLE • QUALITY RECOVERY",
+                "strong one-dimension timing recovery accepted");
+
+            ActionableSignalQualityResult veryWeakTiming =
+                ActionableSignalQualityRule.Evaluate(
+                    new ActionableSignalQualityInput(
+                        85, 80, 85, 6, 6,
+                        80, 60, 80, 2.10,
+                        76, 73, 75, 5, 5,
+                        70, 75, 70, 1.50));
+
+            Assert(
+                !veryWeakTiming.Allowed &&
+                veryWeakTiming.Reason ==
                     "SIGNAL QUALITY • TIMING",
-                "weak timing rejected");
+                "weak timing remains rejected");
 
             ActionableSignalQualityResult weakEvidence =
                 ActionableSignalQualityRule.Evaluate(
@@ -800,6 +815,94 @@ namespace cAlgo
                 repeat.Allowed == accepted.Allowed &&
                 repeat.Reason == accepted.Reason,
                 "actionable quality deterministic");
+        }
+
+        private static void VerifySignalVisualLifecycle()
+        {
+            SignalVisualLifecycleInput fresh =
+                new SignalVisualLifecycleInput(
+                    false,
+                    false,
+                    true,
+                    100,
+                    101,
+                    1,
+                    1,
+                    true,
+                    true,
+                    true);
+
+            Assert(
+                SignalVisualLifecycleRule.IsPreTradePlanVisible(fresh),
+                "fresh actionable plan visual is visible");
+
+            SignalVisualLifecycleInput expired =
+                new SignalVisualLifecycleInput(
+                    false,
+                    false,
+                    true,
+                    100,
+                    103,
+                    1,
+                    1,
+                    true,
+                    true,
+                    true);
+
+            Assert(
+                !SignalVisualLifecycleRule.IsPreTradePlanVisible(expired),
+                "expired pre-trade visual is hidden");
+
+            SignalVisualLifecycleInput movedDirection =
+                new SignalVisualLifecycleInput(
+                    false,
+                    false,
+                    true,
+                    100,
+                    101,
+                    1,
+                    -1,
+                    true,
+                    true,
+                    true);
+
+            Assert(
+                !SignalVisualLifecycleRule.IsPreTradePlanVisible(movedDirection),
+                "direction-changed plan visual is hidden");
+
+            SignalVisualLifecycleInput blocked =
+                new SignalVisualLifecycleInput(
+                    false,
+                    false,
+                    true,
+                    100,
+                    101,
+                    1,
+                    1,
+                    true,
+                    false,
+                    true);
+
+            Assert(
+                !SignalVisualLifecycleRule.IsPreTradePlanVisible(blocked),
+                "non-actionable plan visual is hidden");
+
+            SignalVisualLifecycleInput live =
+                new SignalVisualLifecycleInput(
+                    true,
+                    false,
+                    true,
+                    100,
+                    101,
+                    1,
+                    1,
+                    true,
+                    true,
+                    true);
+
+            Assert(
+                !SignalVisualLifecycleRule.IsPreTradePlanVisible(live),
+                "live position does not use pre-trade visual state");
         }
 
         private static void VerifyRangeSignalQuality()
