@@ -25,6 +25,19 @@ namespace cAlgo
                     decision.ActionabilityReason;
             }
 
+            if (decision.SmartQuality > 0)
+            {
+                reason +=
+                    " • IND Q" +
+                    (decision.Regime == null || _m5Frame == null
+                        ? "?"
+                        : _m5Frame.IndicatorConfluenceQuality.ToString()) +
+                    " C" +
+                    (_m5Frame == null
+                        ? "?"
+                        : _m5Frame.IndicatorConflict.ToString());
+            }
+
             if (decision.DivergenceQuality >= 70 &&
                 !string.Equals(
                     decision.DivergenceType,
