@@ -55,27 +55,6 @@ namespace cAlgo
                     MinimumEarlyConfidence,
                     EarlySetupConfidence);
 
-            if (pendingValid)
-            {
-                snapshot.PendingOrder = true;
-                snapshot.Direction =
-                    pending.TradeType == TradeType.Buy ? 1 : -1;
-                snapshot.Stage = "PENDING";
-                snapshot.PendingOrderId = pending.Id;
-                snapshot.PendingOrderType =
-                    pending.OrderType == PendingOrderType.Stop
-                        ? "STOP"
-                        : pending.OrderType == PendingOrderType.Limit
-                            ? "LIMIT"
-                            : "PENDING";
-                snapshot.PendingEntry = pending.TargetPrice;
-                snapshot.PendingStop = pending.StopLoss.HasValue
-                    ? pending.StopLoss.Value : 0;
-                snapshot.PendingTarget = pending.TakeProfit.HasValue
-                    ? pending.TakeProfit.Value : 0;
-                return snapshot;
-            }
-
             if (livePlan)
             {
                 snapshot.PlanActive = true;
@@ -96,6 +75,26 @@ namespace cAlgo
                 snapshot.Tp3 = _plan.Tp3;
                 snapshot.Tp4 = _plan.Tp4;
                 snapshot.BrokerTarget = GetActiveBrokerTargetPrice();
+            }
+            else if (pendingValid)
+            {
+                snapshot.PendingOrder = true;
+                snapshot.Direction =
+                    pending.TradeType == TradeType.Buy ? 1 : -1;
+                snapshot.Stage = "PENDING";
+                snapshot.PendingOrderId = pending.Id;
+                snapshot.PendingOrderType =
+                    pending.OrderType == PendingOrderType.Stop
+                        ? "STOP"
+                        : pending.OrderType == PendingOrderType.Limit
+                            ? "LIMIT"
+                            : "PENDING";
+                snapshot.PendingEntry = pending.TargetPrice;
+                snapshot.PendingStop = pending.StopLoss.HasValue
+                    ? pending.StopLoss.Value : 0;
+                snapshot.PendingTarget = pending.TakeProfit.HasValue
+                    ? pending.TakeProfit.Value : 0;
+                return snapshot;
             }
             else if (_plan != null &&
                      (_plan.Direction == 1 || _plan.Direction == -1))
@@ -169,10 +168,5 @@ namespace cAlgo
             return snapshot;
         }
 
-        private SignalVisualSnapshot GetSignalVisualSnapshot(
-            int closedM5)
-        {
-            return BuildSignalVisualSnapshot(closedM5);
-        }
     }
 }
