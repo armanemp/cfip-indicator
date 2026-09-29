@@ -196,7 +196,7 @@ namespace cAlgo
                                             atr * 0.18);
                         
                                     double y =
-                                        snapshot.Direction == 1
+                                        snapshot.PlanDirection == 1
                                             ? Bars.LowPrices[hostBar] -
                                               offset
                                             : Bars.HighPrices[hostBar] +
@@ -210,7 +210,7 @@ namespace cAlgo
                                         hostBar,
                                         y,
                                         SignalArrowColorFor(
-                                            snapshot.Direction,
+                                            snapshot.PlanDirection,
                                             snapshot.LivePosition
                                                 ? "CONFIRMED"
                                                 : snapshot.SmartQuality >=
