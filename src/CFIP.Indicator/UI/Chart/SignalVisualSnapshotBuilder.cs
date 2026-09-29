@@ -142,6 +142,20 @@ namespace cAlgo
                 _decision.ActionableNow &&
                 _decision.Direction != 0;
 
+            bool preTradePlanVisible =
+                SignalVisualLifecycleRule.IsPreTradePlanVisible(
+                    new SignalVisualLifecycleInput(
+                        livePlan,
+                        pendingValid,
+                        _plan != null,
+                        _plan == null ? -1 : _plan.CreatedM5,
+                        closedM5,
+                        _plan == null ? 0 : _plan.Direction,
+                        _decision == null ? 0 : _decision.Direction,
+                        _decision != null && _decision.EntryAllowed,
+                        _decision != null && _decision.ActionableNow,
+                        _decision != null && _decision.TriggerReady));
+
             bool reactionReady =
                 !pendingValid &&
                 !livePlan &&
@@ -268,8 +282,7 @@ namespace cAlgo
                 snapshot.PendingTarget = pending.TakeProfit.HasValue
                     ? pending.TakeProfit.Value : 0;
             }
-            else if (_plan != null &&
-                     (_plan.Direction == 1 || _plan.Direction == -1))
+            else if (preTradePlanVisible)
             {
                 snapshot.PlanActive = true;
                 snapshot.Stage = "PLAN";
