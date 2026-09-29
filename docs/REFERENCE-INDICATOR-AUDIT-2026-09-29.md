@@ -56,3 +56,27 @@ The reference WaveTrend should not become a standalone trade trigger. The safe a
 Those states can then act as confluence evidence alongside structure, liquidity, FVG and Order Block evidence. Any adapter must reproduce the reference semantics first in deterministic tests before its evidence can affect the trade decision.
 
 No new public parameters are added by this audit.
+
+
+## Phase 11 reassessment — user-provided indicator archives
+
+The additional Library archives were re-inspected:
+
+- `indicator.zip` contains `wave-trend.txt` plus an empty TPO profile placeholder.
+- `indicators.zip` contains `economic.txt`, `wavetrend.txt`, `fvg.txt` and an empty `volume-profile.txt`.
+- `wavetrend.txt` and `wave-trend.txt` are the same WaveTrend implementation.
+
+WaveTrend:
+- CFIP already contains a deterministic internal WaveTrend engine with closed-bar snapshots and evidence mapping.
+- The internal implementation includes finite-value guards and a clearer adapter boundary, so the reference file is retained as a parity reference rather than duplicated.
+
+FVG:
+- CFIP already implements 2-bar and 3-bar FVG geometry through FvgRule.
+- CFIP already implements partial mitigation, wick/body break behavior and full-fill invalidation.
+- The reference FVG indicator's opening-gap family is a separate concept and is not promoted to structural FVG evidence because it overlaps with existing displacement/volatility context and could create correlated double-counting.
+- No replacement of the canonical FVG engine was warranted.
+
+Economic:
+- The supplied economic indicator is materially useful because it uses a weekly XML economic-calendar feed and symbol-currency matching.
+- The older reference implementation only displays scheduled events and does not block trading itself.
+- Phase 11 promotes the useful calendar parsing concept into CFIP's canonical risk layer: cached feed, relevance filtering, impact-aware blackout, stale-feed handling, pending cancellation and runtime telemetry.
