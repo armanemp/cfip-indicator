@@ -16,6 +16,8 @@ namespace cAlgo
     {
         private void RenderPanel()
                                 {
+            RenderAnalysisGuide();
+
             bool ownsVisualSnapshot = false;
             if (_panelRenderBusy)
                 return;

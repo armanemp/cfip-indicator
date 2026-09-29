@@ -3097,7 +3097,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 6.2 — Reaction intrabar contract**
+**NEXT: Phase 6.3 — Aggressive entry policy**
 
 Then proceed in dependency order:
 

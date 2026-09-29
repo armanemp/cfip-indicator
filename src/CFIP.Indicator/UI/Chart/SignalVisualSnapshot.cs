@@ -11,6 +11,8 @@ namespace cAlgo
         public string Stage;
         public bool DecisionReady;
         public bool ReactionReady;
+        public bool ReactionIntrabar;
+        public int ReactionM5Index;
         public bool PredictionReady;
         public bool PlanActive;
         public bool LivePosition;

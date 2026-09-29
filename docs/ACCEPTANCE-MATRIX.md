@@ -141,3 +141,20 @@ The repository contracts cover deterministic retry state, stage continuation and
 | cTrader compile | Yes | PASS |
 
 The phase changes temporal and ownership guarantees only; decision thresholds, weights, RR, risk, trailing and broker execution semantics are intentionally unchanged.
+
+
+## Phase 6.2 — Reaction intrabar and chart observability
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Live reaction evaluates current open M5 bar | Source gate | PASS |
+| Confirmed decision remains closed-bar | Existing Phase 6.1 contract + source gate | PASS |
+| Visual snapshot carries explicit intrabar reaction identity | Source gate | PASS |
+| Reaction arrow uses explicit live reaction M5 index | Source gate | PASS |
+| On-chart guide exposes engine/data/calculation state | Source gate | PASS |
+| On-chart guide exposes decision/reaction/visual/plan/MTF state | Source gate | PASS |
+| Guide remains independent of panel UI | Source gate | PASS |
+| Chart cleanup removes the guide | Source gate | PASS |
+| Source / architecture gates | Yes | PASS |
+| Runtime acceptance contracts | Yes | PASS |
+| cTrader compile | Yes | PASS |

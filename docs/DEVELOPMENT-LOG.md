@@ -336,3 +336,37 @@ Result:
 - Phase 6.1 complete;
 - next phase: Phase 6.2 — Reaction intrabar contract;
 - operator pull: required at the completed phase boundary after the final verified documentation merge.
+
+
+## Phase 6.2 — Reaction intrabar and chart observability
+
+Status: complete.
+
+User-observed runtime issue addressed:
+- the chart could appear completely empty because the existing signal/plan/prediction renderers intentionally clear their objects when no qualifying visual state exists;
+- the panel could not distinguish no calculation from other initialization/UI conditions;
+- a persistent independent chart guide is now used as the operator-facing runtime observation surface.
+
+Implementation:
+- retained live reaction semantics on the current open M5 bar;
+- added explicit `ReactionIntrabar` and `ReactionM5Index` fields to the canonical visual snapshot;
+- routed reaction arrow anchoring through explicit snapshot identity;
+- added `AnalysisGuideRenderer.cs`, which renders engine/data/calculation/decision/reaction/visual/plan/MTF status directly on the chart;
+- ensured the guide is available during startup and does not depend on successful panel construction;
+- removed the guide during full chart cleanup;
+- added architecture gates for intrabar reaction semantics and chart observability;
+- recorded the phase in `docs/PHASE-6-2-REACTION-INTRABAR.md`.
+
+Important hardening:
+- an intermediate CI failure was caused by a newly added display parameter increasing the parameter count from 535 to 536; the parameter was removed and the guide was made a base observability layer, preserving the established 535-parameter contract;
+- an intermediate compile failure was caused by incorrect C# newline escaping in the guide text; this was corrected before final verification.
+
+Verification on final implementation head `a2a14b7a806c1432cbd174d9bb06b7c443cc1d35`:
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
+
+Result:
+- Phase 6.2 complete;
+- next phase: **Phase 6.3 — Aggressive entry policy**;
+- operator pull: **required at the completed phase boundary after the final verified documentation merge**.

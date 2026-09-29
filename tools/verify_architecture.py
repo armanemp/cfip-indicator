@@ -793,6 +793,73 @@ if "BuildDecision(" not in closed_calculation_code or "mtf);" not in closed_calc
 if not RUNTIME_CONTRACT_PROJECT.exists() or "ClosedBarReferenceRule.cs" not in RUNTIME_CONTRACT_PROJECT.read_text(encoding="utf-8"):
     raise SystemExit("Runtime acceptance project must compile the closed-bar reference contract")
 
+# Phase 6.2 reaction intrabar and on-chart analysis observability contract.
+REACTION_ANALYZER = ROOT / "Analysis" / "Reaction" / "ReactionAnalyzer.cs"
+REACTION_CALCULATION = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
+VISUAL_SNAPSHOT = ROOT / "UI" / "Chart" / "SignalVisualSnapshot.cs"
+VISUAL_SNAPSHOT_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
+ANALYSIS_GUIDE = ROOT / "UI" / "Chart" / "AnalysisGuideRenderer.cs"
+ANALYSIS_GUIDE_PANEL = ROOT / "UI" / "Panel" / "PanelMainRenderer.cs"
+ANALYSIS_GUIDE_CLEANUP = ROOT / "UI" / "Chart" / "ChartObjectCleanup.cs"
+
+for required_path in (
+    REACTION_ANALYZER,
+    REACTION_CALCULATION,
+    VISUAL_SNAPSHOT,
+    VISUAL_SNAPSHOT_BUILDER,
+    ANALYSIS_GUIDE,
+    ANALYSIS_GUIDE_PANEL,
+    ANALYSIS_GUIDE_CLEANUP,
+):
+    if not required_path.exists():
+        raise SystemExit(
+            f"Phase 6.2 reaction/observability owner is missing: {required_path.name}"
+        )
+
+reaction_code = REACTION_ANALYZER.read_text(encoding="utf-8")
+reaction_calc_code = REACTION_CALCULATION.read_text(encoding="utf-8")
+visual_snapshot_code = VISUAL_SNAPSHOT.read_text(encoding="utf-8")
+visual_builder_code = VISUAL_SNAPSHOT_BUILDER.read_text(encoding="utf-8")
+guide_code = ANALYSIS_GUIDE.read_text(encoding="utf-8")
+guide_panel_code = ANALYSIS_GUIDE_PANEL.read_text(encoding="utf-8")
+guide_cleanup_code = ANALYSIS_GUIDE_CLEANUP.read_text(encoding="utf-8")
+
+if "int live =" not in reaction_code or "_m5Bars.Count - 1" not in reaction_code:
+    raise SystemExit("Live reaction must evaluate the current open M5 bar")
+if "GetActiveM5Regime(" not in reaction_code:
+    raise SystemExit("Live reaction must consume the established regime context")
+if "UpdateLiveReaction(" not in reaction_calc_code:
+    raise SystemExit("Live reaction calculation boundary is missing")
+
+if "ReactionIntrabar" not in visual_snapshot_code or "ReactionM5Index" not in visual_snapshot_code:
+    raise SystemExit("Visual snapshot must expose explicit intrabar reaction identity")
+if "snapshot.ReactionIntrabar = reactionReady" not in visual_builder_code:
+    raise SystemExit("Reaction snapshot must explicitly identify intrabar semantics")
+if "snapshot.ReactionM5Index" not in visual_builder_code:
+    raise SystemExit("Reaction snapshot must carry its live M5 index")
+if "snapshot.ArrowM5Index =" not in visual_builder_code or "snapshot.ReactionM5Index" not in visual_builder_code:
+    raise SystemExit("Reaction arrow anchor must derive from the explicit intrabar snapshot")
+
+if "Chart.DrawText(" not in guide_code:
+    raise SystemExit("On-chart analysis guide must use the verified Chart.DrawText API")
+for required_text in (
+    "CFIP ANALYSIS",
+    "ENGINE",
+    "DATA",
+    "CALC",
+    "DECISION",
+    "REACTION",
+    "VISUAL",
+    "PLAN",
+    "MTF",
+):
+    if required_text not in guide_code:
+        raise SystemExit(f"On-chart analysis guide status missing: {required_text}")
+if "RenderAnalysisGuide();" not in guide_panel_code:
+    raise SystemExit("Panel refresh path must also refresh the independent on-chart analysis guide")
+if "RemoveAnalysisGuide();" not in guide_cleanup_code:
+    raise SystemExit("Chart cleanup must remove the on-chart analysis guide")
+
 VERSION_RESIDUE_PATTERNS = (
     re.compile(r"\bv\d+\b", re.I),
     re.compile(r"\b(?:rev|release)[-_ ]?\d+\b", re.I),
