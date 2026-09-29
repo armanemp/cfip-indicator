@@ -141,6 +141,11 @@ namespace cAlgo
                         ? "TF SCENARIO • READY"
                         : "TF SCENARIO • WATCH";
 
+                EnrichScenarioEvidence(
+                    candidate,
+                    frame,
+                    frame.Direction);
+
                 candidate.ActionabilityReason =
                     string.IsNullOrWhiteSpace(
                         candidate.ActionabilityReason)
@@ -148,6 +153,13 @@ namespace cAlgo
                           names[i] +
                           " FRAME"
                         : candidate.ActionabilityReason;
+
+                candidate.Stage =
+                    candidate.ActionableNow &&
+                    candidate.ExecutionPolicyAllowed
+                        ? "TF SCENARIO • READY"
+                        : "TF SCENARIO • WATCH • " +
+                          candidate.ExecutionPolicyReason;
 
                 AddOpportunityCandidate(
                     candidate);
