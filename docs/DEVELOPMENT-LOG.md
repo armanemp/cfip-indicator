@@ -1354,8 +1354,11 @@ Operator pull: required after PR #52 is merged.
 
 ## Phase 9.11 — Signal Lifecycle, Quality Recovery & Alert Execution Coherence — 2026-09-29
 
-Status: IMPLEMENTATION COMPLETE; CI verification pending.
+Status: VERIFIED COMPLETE; merged into `main`.
 Branch: `phase-9-11-signal-lifecycle`
+PR: #53
+Merge commit: `43101635e24ad15b77374472fc676a8c6fe591d6`
+Verified phase head: `20ba01d4daa145f1118d3795277ed4d6f6a3bed3`
 
 Implementation:
 - bounded two-M5 lifecycle for stale pre-trade Plans and setup previews;
@@ -1378,11 +1381,11 @@ Recovery is intentionally narrow: only one near-threshold location/timing/price-
 Detailed record: `docs/PHASE-9-11-SIGNAL-LIFECYCLE-QUALITY-ALERTS.md`.
 
 Verification:
-- Decision Contracts: pending;
-- Runtime Acceptance: pending;
-- cTrader Compile/Build: pending;
-- Source/Architecture + accumulated audit: pending;
+- Runtime Acceptance: PASS;
+- cTrader Compile/Build: PASS;
+- Source/Architecture + accumulated audit: PASS;
+- the Build gate includes the Decision Contracts execution.
 - target-terminal cTrader replay: still required for empirical signal timing, false-signal behavior, popup rendering, and realized SL/TP outcomes.
 
 Next phase: Phase 9.12 — broker outcome/recovery telemetry and historical signal lifecycle calibration.
-Operator pull: only after Phase 9.11 is fully verified and merged.
+Operator pull: required now from the final main documentation closeout commit.
