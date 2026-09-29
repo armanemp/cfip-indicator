@@ -574,3 +574,41 @@ This hotfix is strictly a responsiveness correction. It does not claim that the 
 ### Hotfix merge record — 2026-09-29
 
 PR #24 (instant panel Hide/Show) merged to main as `f57866a441e5e5babd83c268baa7bf91f9ff3f1b` after Source / Architecture, Runtime Acceptance and cTrader Compile all passed on the verified hotfix head. The hotfix changes only panel visibility interaction; hands-on cTrader responsiveness remains pending.
+
+## Phase 7.1 — Hidden-clamp audit — 2026-09-29
+
+Status: complete.
+
+Objective:
+- audit user-facing parameters for hidden hard-coded floors/ceilings and silent overrides.
+
+Findings and corrections:
+- `ClosedBarTriggerReadyEvaluator` previously enforced `trigger >= Math.Max(4, requiredTrigger)`, making Live Trigger Score values 1–3 ineffective and potentially making Precision Trigger Score values below 4 ineffective;
+- the trigger gate now consumes `requiredTrigger` directly, preserving the existing precision-policy combination of the user-facing trigger parameters;
+- `LiveTargetCandidateEvaluator` previously enforced `Math.Max(0.05, TargetUpdateStepAtr)`, making the declared 0.02–0.05 ATR parameter range partly ineffective;
+- the live target update step now consumes `TargetUpdateStepAtr` directly.
+
+Reviewed intentional bounds:
+- index clamps protect valid historical indexing;
+- EntryBufferAtr floor matches its declared minimum;
+- StructuralTpRrStep floor matches its declared minimum;
+- MinimumTpSpacingAtr floor matches its declared minimum;
+- MaximumRewardRR clamp is below its declared minimum and therefore does not override user-facing values;
+- DirectDisplacementOverrideScore clamp stays within its declared parameter range;
+- level-hit contribution bounds an internal score component and is not a user-facing setting.
+
+Verification hardening:
+- `tools/verify_architecture.py` now checks the declared parameter ranges and rejects reintroduction of the two material hidden clamps.
+
+Scope:
+- no new parameters;
+- 535-parameter contract preserved;
+- no changes to decision authority, broker mutation, RR/risk policy or trailing policy;
+- Smart Entry/SL/TP and trailing improvements remain in their dedicated roadmap phases.
+
+Acceptance:
+- Source / Architecture: required;
+- Runtime Acceptance Contracts: required;
+- cTrader Compile: required;
+- hands-on cTrader validation remains required for actual runtime behavior.
+
