@@ -25,3 +25,4 @@ jobs:
       - run: python tools/audit_signal_measurement.py
       - run: python tools/audit_exit_geometry.py
       - run: python tools/audit_news_guard.py
+      - run: python tools/audit_phase_11_2.py
