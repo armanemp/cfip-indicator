@@ -14,6 +14,7 @@ namespace cAlgo
         private readonly HashSet<long>
             _signalTraceMemoryKeys =
                 new HashSet<long>();
+
         private void RecordSignalEvaluationTrace(
             Decision decision,
             OpportunityLane lane,
