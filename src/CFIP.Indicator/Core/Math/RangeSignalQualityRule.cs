@@ -174,7 +174,7 @@ namespace cAlgo
                     false,
                     "RANGE NO-TRADE • NO DISPLACEMENT");
 
-            if (IsFinitePositive(input.Tp1RR) &&
+            if (IsRangeFinitePositive(input.Tp1RR) &&
                 input.Tp1RR < 1.80)
                 return new RangeSignalQualityResult(
                     false,
@@ -187,7 +187,7 @@ namespace cAlgo
                     : "RANGE REVERSAL QUALIFIED");
         }
 
-        private static bool IsFinitePositive(
+        private static bool IsRangeFinitePositive(
             double value)
         {
             return
