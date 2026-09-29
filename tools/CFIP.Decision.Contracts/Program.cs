@@ -1036,6 +1036,20 @@ namespace cAlgo
                 buyBehind.Reason == "TARGET BEHIND MARKET",
                 "BUY target behind market rejected");
 
+            LiveExitGeometryResult buyAtBoundary =
+                LiveExitGeometryRule.ValidateLiveTarget(
+                    1,
+                    100,
+                    115,
+                    116,
+                    10,
+                    1);
+
+            Assert(
+                !buyAtBoundary.Allowed &&
+                buyAtBoundary.Reason == "TARGET BEHIND MARKET",
+                "BUY target at minimum-forward boundary rejected");
+
             LiveExitGeometryResult sellForward =
                 LiveExitGeometryRule.ValidateLiveTarget(
                     -1,
@@ -1064,6 +1078,34 @@ namespace cAlgo
                 sellBehind.Reason == "TARGET BEHIND MARKET",
                 "SELL target behind market rejected");
 
+            LiveExitGeometryResult wrongSide =
+                LiveExitGeometryRule.ValidateLiveTarget(
+                    1,
+                    100,
+                    90,
+                    95,
+                    10,
+                    1);
+
+            Assert(
+                !wrongSide.Allowed &&
+                wrongSide.Reason == "TARGET WRONG SIDE",
+                "BUY target below entry rejected even when forward of market");
+
+            LiveExitGeometryResult invalidNumeric =
+                LiveExitGeometryRule.ValidateLiveTarget(
+                    1,
+                    100,
+                    115,
+                    double.NaN,
+                    10,
+                    1);
+
+            Assert(
+                !invalidNumeric.Allowed &&
+                invalidNumeric.Reason == "TARGET GEOMETRY INVALID",
+                "non-finite live target rejected");
+
             Assert(
                 LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     1,
@@ -1083,6 +1125,15 @@ namespace cAlgo
                 "BUY target backward move rejected");
 
             Assert(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    1,
+                    120,
+                    122,
+                    121,
+                    1),
+                "BUY target touching forward boundary rejected");
+
+            Assert(
                 LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                     -1,
                     80,
@@ -1099,6 +1150,15 @@ namespace cAlgo
                     82,
                     1),
                 "SELL target backward move rejected");
+
+            Assert(
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    -1,
+                    80,
+                    78,
+                    77,
+                    1),
+                "SELL target touching forward boundary rejected");
 
             Assert(
                 LiveExitGeometryRule.IsProgressiveTargetLadder(
@@ -1121,6 +1181,16 @@ namespace cAlgo
                 "SELL progressive TP ladder");
 
             Assert(
+                LiveExitGeometryRule.IsProgressiveTargetLadder(
+                    1,
+                    100,
+                    115,
+                    0,
+                    150,
+                    175),
+                "BUY progressive TP ladder tolerates unavailable middle stage");
+
+            Assert(
                 !LiveExitGeometryRule.IsProgressiveTargetLadder(
                     1,
                     100,
@@ -1129,6 +1199,16 @@ namespace cAlgo
                     150,
                     175),
                 "BUY regressive TP ladder rejected");
+
+            Assert(
+                !LiveExitGeometryRule.IsProgressiveTargetLadder(
+                    1,
+                    100,
+                    115,
+                    double.NaN,
+                    150,
+                    175),
+                "non-finite TP ladder stage ignored safely");
 
             Assert(
                 !LiveExitGeometryRule.IsProtectiveStop(
@@ -1162,6 +1242,15 @@ namespace cAlgo
                     92,
                     1),
                 "BUY/SELL protective stop symmetry");
+
+            Assert(
+                !LiveExitGeometryRule.IsProtectiveStop(
+                    1,
+                    100,
+                    110,
+                    double.NaN,
+                    1),
+                "non-finite protective stop rejected");
         }
 
         private static void VerifyMarketRegimeClassification()
@@ -1871,6 +1960,36 @@ namespace cAlgo
                     mirrored.OffsetPips -
                     strong.OffsetPips) < 0.0001,
                 "smart break-even deterministic");
+
+            SmartBreakEvenResult invalidRisk =
+                SmartBreakEvenRule.Evaluate(
+                    double.NaN,
+                    40,
+                    1.5,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            Assert(
+                !invalidRisk.Allowed &&
+                invalidRisk.Reason == "RISK/TP NUMERIC INVALID",
+                "smart break-even rejects non-finite risk");
+
+            SmartBreakEvenResult invalidTp =
+                SmartBreakEvenRule.Evaluate(
+                    20,
+                    double.PositiveInfinity,
+                    1.5,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            Assert(
+                !invalidTp.Allowed &&
+                invalidTp.Reason == "RISK/TP NUMERIC INVALID",
+                "smart break-even rejects non-finite TP1");
         }
 
         private static void Assert(bool condition, string name)
