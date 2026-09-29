@@ -510,6 +510,10 @@ if "TotalMilliseconds >= 1000" not in panel_heartbeat_code:
     raise SystemExit("Safety supervisor cadence must remain bounded at one second")
 if "TimeSpan.FromMilliseconds(500)" not in init_runtime_code:
     raise SystemExit("Ready runtime timer must provide responsive 500ms panel cadence")
+if "TimeSpan.FromMilliseconds(250)" not in init_runtime_code:
+    raise SystemExit("Initialization poll cadence must remain bounded without 100ms timer churn")
+if init_runtime_code.count("RenderPanel();") < 3:
+    raise SystemExit("Panel must refresh during initialization, finalization and heartbeat paths")
 if "_panelRows.Count != PanelRowCount" in panel_main_code:
     raise SystemExit("Panel renderer must not require eager fixed-row allocation")
 if "EnsurePanelRow(" not in panel_factory_code or "slot >= PanelRowCount" not in panel_writer_code:
