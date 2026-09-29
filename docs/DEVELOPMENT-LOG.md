@@ -1437,7 +1437,7 @@ Operator pull: required now; pull `main` to the merge commit and subsequent docu
 
 ## Phase 9.13 — Persistent Outcome Memory, Adaptive Risk & Optimization Routine — 2026-09-29
 
-Status: VERIFIED COMPLETE; ready to merge.
+Status: VERIFIED COMPLETE; merged into `main`.
 Branch: `phase/9-13-persistent-memory-safe-optimization`
 
 Implementation:
@@ -1476,9 +1476,10 @@ Verification:
 - cTrader Compile/Build #1291: PASS;
 - Source/Architecture + accumulated audit #1298: PASS;
 - final verified code head: `b742aae2dd1f94452f41743ad749374433dbc763`;
+- Merge commit into `main`: `6246782125718af184568eb9339965e3f228c9a7`;
 - target cTrader replay remains required for empirical validation.
 
 Detailed record: `docs/PHASE-9-13-PERSISTENT-MEMORY-SAFE-OPTIMIZATION.md`.
 
 Next phase after verification: Phase 9.14 — target-terminal replay, calibration/optimization measurement and evidence-driven parameter refinement.
-Operator pull: required after PR #55 is merged.
+Operator pull: required now; pull `main` to the current closeout commit.
