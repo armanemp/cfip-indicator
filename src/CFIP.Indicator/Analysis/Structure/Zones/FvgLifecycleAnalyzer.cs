@@ -53,6 +53,11 @@ namespace cAlgo
                         twoBarImbalance
                             ? "FVG_2BAR"
                             : "FVG",
+                    Id =
+                        FvgRule.Identity(
+                            direction,
+                            createdIndex,
+                            twoBarImbalance),
                     Age =
                         currentIndex -
                         createdIndex,
