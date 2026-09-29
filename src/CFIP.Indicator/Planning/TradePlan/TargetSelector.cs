@@ -34,7 +34,8 @@ namespace cAlgo
 
             double[] requiredRR =
                 BuildTargetSelectionRequiredRR(
-                    rrStep);
+                    rrStep,
+                    lane);
 
             double maximumRR =
                 Math.Max(
