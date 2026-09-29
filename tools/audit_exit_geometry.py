@@ -147,7 +147,7 @@ require(
     PROTECTION,
     "LiveExitGeometryRule.IsProtectiveStop(",
     "IsValidManagedStop(",
-    "MinimumProtectionDistancePrice(",
+    "MinimumProtectionDistancePriceForDirection(",
 )
 
 require(
