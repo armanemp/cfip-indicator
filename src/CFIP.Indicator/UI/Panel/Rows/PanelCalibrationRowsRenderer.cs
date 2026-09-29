@@ -6,6 +6,16 @@ namespace cAlgo
             ref int slot,
             int contentWidth)
         {
+            if (!EnableOutcomeTelemetry)
+                return;
+
+            AddPanelRow(
+                ref slot,
+                OutcomeHistoryPanelText(),
+                PanelSecondaryTextColor,
+                false,
+                contentWidth);
+
             if (_decision == null ||
                 _decision.EmpiricalCalibrationSamples <= 0)
                 return;
