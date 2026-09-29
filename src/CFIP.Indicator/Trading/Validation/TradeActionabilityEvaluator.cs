@@ -147,6 +147,18 @@ namespace cAlgo
                             MinimumSlAtr,
                             MaximumStructuralStopAtr)));
 
+            DivergenceResult divergence =
+                _m5Frame == null
+                    ? DivergenceResult.CreateNoDivergence()
+                    : new DivergenceResult(
+                        _m5Frame.DivergenceDirection,
+                        _m5Frame.DivergenceQuality,
+                        _m5Frame.DivergenceType,
+                        _m5Frame.RegularDivergenceBull,
+                        _m5Frame.RegularDivergenceBear,
+                        _m5Frame.HiddenDivergenceBull,
+                        _m5Frame.HiddenDivergenceBear);
+
             if (!rewardRisk.Allowed)
             {
                 return new TradeActionabilityResult(
