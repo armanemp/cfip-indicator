@@ -2297,7 +2297,7 @@ namespace cAlgo
             Assert(registry.Count == 2, "multi-plan registry retains independent lanes");
             Assert(registry.Contains("TACTICAL_BUY"), "registry BUY identity");
             Assert(registry.Contains("TACTICAL_SELL"), "registry SELL identity");
-            Assert(registry.TryGet("TACTICAL_BUY", out actual) &&
+            Assert(registry.TryGetCandidate("TACTICAL_BUY", out actual) &&
                    actual.ActionableNow,
                    "registry preserves candidate actionability");
 
