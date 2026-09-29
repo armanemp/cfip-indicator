@@ -223,6 +223,15 @@ namespace cAlgo
                         Math.Max(1, closedM5),
                         position.VolumeInUnits);
 
+                if (_plan == null)
+                {
+                    _brokerProtectionRecoveryRequired = true;
+                    SetLifecycleState(
+                        LifecycleState.RecoveryRequired,
+                        "STARTUP RECOVERY • PLAN NUMERIC INVALID");
+                    continue;
+                }
+
                 _plan.PositionId =
                     position.Id;
 
