@@ -1359,16 +1359,29 @@ lightweight analysis/presentation seed after readiness.
 
 ## Phase 6.3 — Aggressive entry policy
 
-Status: planned.
+Status: complete.
 
-Select one explicit policy:
+Selected policy: **controlled intrabar**.
 
-- closed-bar only; or
-- controlled intrabar with hysteresis and explicit invalidation.
+The live current-open-M5 reaction is the aggressive trigger source. It must
+produce two distinct qualifying reaction observations on the same M5 bar before
+arming. Duplicate observations do not count twice. Direction change, loss of
+`EntryAllowed`, a new M5 bar, or confirmed fill invalidates the qualification.
+
+The existing closed-bar decision remains the structural/execution-planning
+context. Existing risk, SL/TP, submission, broker-confirmation and protection
+owners remain authoritative.
 
 Acceptance:
 
-- no ambiguous mixed-bar policy.
+- no ambiguous mixed-bar policy: PASS;
+- two-sample intrabar qualification: PASS;
+- explicit invalidation: PASS;
+- source / architecture gates: PASS;
+- runtime acceptance contracts: PASS;
+- cTrader compile: PASS.
+
+Continuity record: `docs/PHASE-6-3-AGGRESSIVE-ENTRY.md`.
 
 ---
 
