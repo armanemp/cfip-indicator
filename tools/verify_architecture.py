@@ -883,6 +883,7 @@ INIT_RUNTIME = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 CALC_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
 PANEL_DIAGNOSTIC = ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewDiagnosticRowsRenderer.cs"
 PANEL_STATE = ROOT / "Indicator" / "State.cs"
+PANEL_OPTIMIZATION = ROOT / "UI" / "Panel" / "PanelRenderOptimization.cs"
 
 for required_path in (
     PANEL_MAIN, PANEL_FACTORY, PANEL_WRITER, PANEL_HEARTBEAT,
@@ -899,6 +900,7 @@ init_runtime_code = INIT_RUNTIME.read_text(encoding="utf-8")
 calc_cycle_code = CALC_CYCLE.read_text(encoding="utf-8")
 panel_diagnostic_code = PANEL_DIAGNOSTIC.read_text(encoding="utf-8")
 state_code = PANEL_STATE.read_text(encoding="utf-8")
+panel_optimization_code = PANEL_OPTIMIZATION.read_text(encoding="utf-8")
 
 if "RenderPanel();" in panel_heartbeat_code:
     raise SystemExit("Panel heartbeat must not invoke the full panel renderer")
@@ -914,10 +916,10 @@ if "TimeSpan.FromMilliseconds(250)" not in init_runtime_code:
     raise SystemExit("Initialization poll cadence must remain bounded without 100ms timer churn")
 if init_runtime_code.count("RenderPanel();") < 2:
     raise SystemExit("Panel must refresh during required initialization/finalization paths")
-if "ShouldRenderFullPanel(" not in panel_main_code or "_lastPanelPresentationKey" not in state_code:
-    raise SystemExit("Panel full rendering must be state-change driven")
-if "_lastPanelPresentationKey" not in panel_main_code:
-    raise SystemExit("Panel renderer must consume the canonical presentation-state key")
+if "ShouldRenderFullPanel(" not in panel_main_code or
+   "BuildPanelPresentationKey(" not in panel_optimization_code or
+   "_lastPanelPresentationKey" not in state_code:
+    raise SystemExit("Panel full rendering must be state-change driven through its canonical state owner")
 if "_panelRows.Count != PanelRowCount" in panel_main_code:
     raise SystemExit("Panel renderer must not require eager fixed-row allocation")
 if "EnsurePanelRow(" not in panel_factory_code or "slot >= PanelRowCount" not in panel_writer_code:
