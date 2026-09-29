@@ -264,9 +264,11 @@ namespace cAlgo
 
             double minimumForwardDistance =
                 Math.Max(
-                    Symbol.PipSize,
+                    MinimumTakeProfitDistancePrice(),
                     Math.Max(
-                        Symbol.TickSize,
+                        Symbol.PipSize,
+                        Math.Max(
+                            Symbol.TickSize,
                         atr *
                         Math.Max(
                             0.05,
