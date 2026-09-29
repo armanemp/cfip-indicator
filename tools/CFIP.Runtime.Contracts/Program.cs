@@ -1060,6 +1060,8 @@ namespace cAlgo
             string alertEnginePath = Path.Combine("src", "CFIP.Indicator", "Trading", "Alerts", "AlertEngine.cs");
             string statePath = Path.Combine("src", "CFIP.Indicator", "Indicator", "State.cs");
             string predictiveSelectorPath = Path.Combine("src", "CFIP.Indicator", "Planning", "Execution", "PredictivePendingLevelSelector.cs");
+            string predictiveCollectorPath = Path.Combine("src", "CFIP.Indicator", "Planning", "Execution", "PredictivePendingZoneCollector.cs");
+            string predictiveScorerPath = Path.Combine("src", "CFIP.Indicator", "Planning", "Execution", "PredictivePendingCandidateScorer.cs");
             string reversalLimitPath = Path.Combine("src", "CFIP.Indicator", "Trading", "Pending", "Placement", "ReversalLimitPreparation.cs");
             string controlFactoryPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsFactory.cs");
             string controlHandlersPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionToggleHandlers.cs");
@@ -1076,6 +1078,8 @@ namespace cAlgo
                 File.Exists(alertEnginePath) &&
                 File.Exists(statePath) &&
                 File.Exists(predictiveSelectorPath) &&
+                File.Exists(predictiveCollectorPath) &&
+                File.Exists(predictiveScorerPath) &&
                 File.Exists(reversalLimitPath) &&
                 File.Exists(controlFactoryPath) &&
                 File.Exists(controlHandlersPath),
@@ -1092,6 +1096,8 @@ namespace cAlgo
             string alertEngine = File.ReadAllText(alertEnginePath);
             string state = File.ReadAllText(statePath);
             string predictiveSelector = File.ReadAllText(predictiveSelectorPath);
+            string predictiveCollector = File.ReadAllText(predictiveCollectorPath);
+            string predictiveScorer = File.ReadAllText(predictiveScorerPath);
             string reversalLimit = File.ReadAllText(reversalLimitPath);
             string controlFactory = File.ReadAllText(controlFactoryPath);
             string controlHandlers = File.ReadAllText(controlHandlersPath);
@@ -1175,10 +1181,13 @@ namespace cAlgo
 
             Assert(
                 predictiveSelector.Contains("TrySelectPredictivePendingLevel(") &&
-                predictiveSelector.Contains("BuildManagedFvgZone(") &&
-                predictiveSelector.Contains("BuildOrderBlockCandidate(") &&
-                predictiveSelector.Contains("FindEqualLow(") &&
-                predictiveSelector.Contains("FindEqualHigh("),
+                predictiveSelector.Contains("CollectPredictiveZoneCandidates(") &&
+                predictiveCollector.Contains("BuildManagedFvgZone(") &&
+                predictiveCollector.Contains("BuildOrderBlockCandidate(") &&
+                predictiveCollector.Contains("FindEqualLow(") &&
+                predictiveCollector.Contains("FindEqualHigh(") &&
+                predictiveScorer.Contains("PredictivePendingContextQuality(") &&
+                predictiveScorer.Contains("PredictivePendingSourceKey("),
                 "predictive pending selector combines structural level sources");
 
             Assert(
