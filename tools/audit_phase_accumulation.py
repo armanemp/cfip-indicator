@@ -106,8 +106,7 @@ if "return Color.White" not in labels:
     raise SystemExit("level labels must use white text")
 if "return\n                Math.Min(" not in line:
     raise SystemExit("plan signal line thickness must be fixed at one")
-if "line.Thickness =
-                                            1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
+if "line.Thickness" not in prediction_line or "1;" not in prediction_line:
     raise SystemExit("prediction signal line thickness must be fixed at one")
 if "RenderCompactPlanLabel(" in alert_renderer:
     raise SystemExit("legacy alert chart-label rendering remains")
@@ -119,16 +118,13 @@ if "SignalVisualLifecycleRule.IsPreTradePlanVisible(" not in visual_snapshot:
     raise SystemExit("visual snapshot must consume signal lifecycle expiry rule")
 if "CurrentM5 - input.CreatedM5" not in visual_lifecycle:
     raise SystemExit("visual lifecycle must enforce bounded pre-trade age")
-if "DefaultValue = true)]
-        public bool ShowPopupAlerts" not in popup_core:
+if "public bool ShowPopupAlerts" not in popup_core or "DefaultValue = true" not in popup_core:
     raise SystemExit("popup alerts should be enabled by default")
-if "DefaultValue = false)]
-        public bool PopupCriticalOnly" not in popup_core:
+if "public bool PopupCriticalOnly" not in popup_core or "DefaultValue = false" not in popup_core:
     raise SystemExit("popup must not be critical-only by default")
-if "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
+if "public PanelCorner PopupPosition" not in popup_advanced or "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
     raise SystemExit("popup default position must be bottom-left")
-if "DefaultValue = true)]
-        public bool PopupBold" not in popup_core:
+if "public bool PopupBold" not in popup_core or "DefaultValue = true" not in popup_core:
     raise SystemExit("popup text should be bold by default")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must not create backgrounds")
