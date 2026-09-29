@@ -122,3 +122,12 @@ Planning owns executable trade intent as data, not broker submission. Entry/trig
 ## Core boundary
 
 Core contains domain models, enums, numeric guards, text helpers and generic time-window parsing only. cTrader-dependent index and broker-price helpers live outside Core.
+
+
+## Phase 9.17 exit/protection boundary
+
+Exit geometry is centralized in `Core/Math/LiveExitGeometryRule.cs`. Planning creates the
+initial ladder, live management may advance only forward, and broker protection remains the
+only mutation authority. Actual fills are reconciled through a transactional live-aware
+exit reconciler before plan state is committed. Server-side Advanced Protection remains
+broker-owned and is synchronized only with forward/progressive targets.
