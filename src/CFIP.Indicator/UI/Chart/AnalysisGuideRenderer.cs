@@ -162,32 +162,23 @@ namespace cAlgo
 
                 string guideText =
                     "CFIP ANALYSIS" +
-                    "
-ENGINE   " +
+                    "\nENGINE   " +
                     _status +
-                    "
-DATA     " +
+                    "\nDATA     " +
                     dataState +
-                    "
-CALC     " +
+                    "\nCALC     " +
                     calculationState +
-                    "
-DECISION " +
+                    "\nDECISION " +
                     decisionState +
-                    "
-REACTION " +
+                    "\nREACTION " +
                     reactionState +
-                    "
-VISUAL   " +
+                    "\nVISUAL   " +
                     visualState +
-                    "
-PLAN     " +
+                    "\nPLAN     " +
                     planState +
-                    "
-MTF      " +
+                    "\nMTF      " +
                     mtfState +
-                    "
-CLOSED M5 " +
+                    "\nCLOSED M5 " +
                     _lastEvaluatedM5 +
                     " • " +
                     TimeInUtc.ToString(
@@ -199,8 +190,7 @@ CLOSED M5 " +
                         _decision.BlockReason))
                 {
                     guideText +=
-                        "
-BLOCK    " +
+                        "\nBLOCK    " +
                         _decision.BlockReason;
                 }
 
@@ -208,8 +198,7 @@ BLOCK    " +
                     RuntimeFaultState.Healthy)
                 {
                     guideText +=
-                        "
-RUNTIME  " +
+                        "\nRUNTIME  " +
                         CurrentRuntimeFaultState;
                 }
 
