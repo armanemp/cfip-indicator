@@ -379,3 +379,26 @@ CI evidence on head `89919e7363d374e2cf3a362ec553b1fdac464919`: Runtime PASS; Bu
 | cTrader Build | PASS | Required |
 
 CI evidence on head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime PASS; Build PASS; Source/Architecture PASS. No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
+
+
+## Phase 9.3 — Contextual empirical confidence calibration
+
+| Contract | Automated controlled check | cTrader / replay |
+| --- | --- | --- |
+| Calibration uses direction + lane + regime + confidence bucket context | PASS | Required |
+| Exact context requires a minimum sample population | PASS | Required |
+| Sparse exact bucket falls back to lane/regime aggregate | PASS | Required |
+| Sparse context falls back to calibration-eligible directional history | PASS | Required |
+| Small samples are shrunk toward a 50% prior | PASS | Required |
+| Adjustment is bounded by the existing calibration cap | PASS | Required |
+| Calibration is applied only after opportunity-lane resolution | Source contract | Required |
+| Tactical / Counter-HTF opportunity discovery remains independent | Source/runtime contract | Required |
+| Closed broker outcomes bind to the original plan context | Source contract | Required |
+| Recovery-only plans are excluded from calibration | Source contract | Required |
+| Canonical visual snapshot carries calibration diagnostics | Source contract | Required |
+| Panel uses observed-win wording rather than probability wording | Source contract | Required |
+| No new public parameter added | Source / architecture | Required |
+| Decision contracts | PASS | Required |
+| cTrader compile | Required | Required |
+| Runtime acceptance | Required | Required |
+| Source / architecture | Required | Required |
