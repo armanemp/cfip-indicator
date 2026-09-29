@@ -18,6 +18,12 @@ namespace cAlgo
         {
             try
             {
+                if (!CanRunAutomaticEntry())
+                {
+                    ApplyRuntimeEntryGate();
+                    return;
+                }
+
                 if (!TryValidateAggressiveFinalExecution(
                         closedM5,
                         type,
