@@ -10,13 +10,27 @@ namespace cAlgo
             Decision decision,
             int closedM5)
         {
+            return EvaluateTacticalOpportunityForDirection(
+                decision,
+                closedM5,
+                decision == null
+                    ? 0
+                    : decision.Direction);
+        }
+
+        private TacticalOpportunityResult EvaluateTacticalOpportunityForDirection(
+            Decision decision,
+            int closedM5,
+            int direction)
+        {
             if (!EnableParallelOpportunities ||
                 decision == null ||
                 _m5Frame == null ||
                 _m5Bars == null ||
                 closedM5 < 30 ||
-                decision.Direction == 0 ||
-                _m5Frame.Direction != decision.Direction)
+                (direction != 1 &&
+                 direction != -1) ||
+                _m5Frame.Direction != direction)
                 return new TacticalOpportunityResult(
                     false,
                     OpportunityLane.Tactical,
@@ -25,7 +39,7 @@ namespace cAlgo
 
             if (!TryBuildExecutionZone(
                     closedM5,
-                    decision.Direction,
+                    direction,
                     out double atr,
                     out _,
                     out double low,
@@ -57,14 +71,14 @@ namespace cAlgo
             double stop =
                 BuildStructuralStop(
                     closedM5,
-                    decision.Direction,
+                    direction,
                     entry,
                     atr,
                     out _,
                     out _);
 
             if (!IsValidStop(
-                    decision.Direction,
+                    direction,
                     entry,
                     stop))
                 return new TacticalOpportunityResult(
@@ -88,7 +102,7 @@ namespace cAlgo
             List<Level> levels =
                 BuildTargetLevels(
                     closedM5,
-                    decision.Direction,
+                    direction,
                     entry,
                     atr);
 
@@ -103,7 +117,7 @@ namespace cAlgo
                         closedM5,
                         entry,
                         risk,
-                        decision.Direction,
+                        direction,
                         atr,
                         TacticalOpportunityMinimumRR,
                         Math.Max(
@@ -148,12 +162,12 @@ namespace cAlgo
                     decision.StructuralConfirmations * 5.0);
 
             return TacticalOpportunityRule.Evaluate(
-                _m5Frame.Direction,
+                direction,
                 quality,
                 _m5Frame.WaveTrendQuality,
-                decision.StructuralConfirmations,
-                decision.IndependentEvidence,
-                decision.Direction,
+                StructuralConfirmations(direction),
+                IndependentEvidence(direction),
+                direction,
                 decision.HtfAnchorDirection,
                 decision.HtfAlignment,
                 Math.Max(
