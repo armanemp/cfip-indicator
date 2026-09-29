@@ -21,7 +21,11 @@ namespace cAlgo
             string text,
             double price,
             Color color,
-            bool visible)
+            bool visible,
+            int lineLeft,
+            int labelBar,
+            int boxRightBar,
+            double boxHalfHeight)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -36,14 +40,22 @@ namespace cAlgo
                 name,
                 text,
                 price,
-                color);
+                color,
+                lineLeft,
+                labelBar,
+                boxRightBar,
+                boxHalfHeight);
         }
 
         private void DrawPlanLabel(
             string name,
             string text,
             double price,
-            Color color)
+            Color color,
+            int lineLeft,
+            int labelBar,
+            int boxRightBar,
+            double boxHalfHeight)
         {
             try
             {
@@ -54,35 +66,6 @@ namespace cAlgo
                     RemovePlanLabel(name);
                     return;
                 }
-
-                int lineLeft =
-                    GetCompactPlanLineLeftBar();
-
-                int labelBar =
-                    GetCompactPlanLabelAnchorBar(
-                        lineLeft);
-
-                int boxRightBar =
-                    GetLabelBoxRightBar(
-                        lineLeft);
-
-                double atr =
-                    Bars.Count >= 3
-                        ? Atr(
-                            Bars,
-                            Math.Max(
-                                1,
-                                Math.Min(
-                                    Bars.Count - 2,
-                                    labelBar)))
-                        : 0;
-
-                double boxHalfHeight =
-                    Math.Max(
-                        Symbol.PipSize * 3,
-                        atr > 0
-                            ? atr * CompactPlanLabelAtrHeight
-                            : Symbol.PipSize * 4);
 
                 double labelPrice =
                     NormalizePrice(price);
