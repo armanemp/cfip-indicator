@@ -915,7 +915,7 @@ Acceptance:
 
 ## Phase 1.5 — Safety supervisor
 
-Status: implementation complete; CI certification pending.
+Status: complete.
 
 Work completed:
 
@@ -937,6 +937,12 @@ ZIP audit result:
 - wavetrend.txt: retained as a future composite momentum candidate, not added as correlated independent votes;
 - economic.txt: not imported into the execution core because of blocking external-network startup/runtime coupling;
 - volume-profile.txt: empty.
+
+Verification:
+
+- Source / Architecture: PASS
+- Runtime Acceptance Contracts: PASS
+- cTrader compile: PASS.
 
 Acceptance:
 
