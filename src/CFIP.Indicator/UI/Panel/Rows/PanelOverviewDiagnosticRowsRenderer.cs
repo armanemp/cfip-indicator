@@ -77,7 +77,8 @@ namespace cAlgo
                     false,
                     contentWidth);
             }
-        
+        }
+
         private bool CalculationAgeIsStale()
         {
             if (_lastCalculationCompletedUtc == DateTime.MinValue)
