@@ -72,7 +72,6 @@ namespace cAlgo
         
                 private string _status = "INITIALIZING";
                 private bool _initializationReady;
-                private int _initializationStage;
                 private string _autoTradingState = "OFF";
                 private string _autoTradingReason = "DISABLED";
                 private string _autoExecutionBlockReason = "NOT EVALUATED";
@@ -199,6 +198,7 @@ namespace cAlgo
                 private MtfClosedContext _lastMtfClosedContext;
                 private readonly MtfClosedContextCache _mtfClosedContextCache = new MtfClosedContextCache();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+                private SignalVisualSnapshot _renderSignalVisualSnapshot;
                 private DateTime _initializationStartedUtc = DateTime.MinValue;
                 private int _initializationPendingDataLoads;
                 private bool _initializationDataRequested;

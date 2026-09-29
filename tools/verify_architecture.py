@@ -325,6 +325,90 @@ if "ProcessLiveCalculationStages(" not in calculation_cycle_code:
 if "if (newClosedBar &&" in calculation_cycle_code and    "RunClosedBarAnalysisStage(" in calculation_cycle_code:
     raise SystemExit("Calculate must not return early on closed-bar analysis result")
 
+# Phase 5.4 canonical visual-state gates.
+VISUAL_SNAPSHOT = ROOT / "UI" / "Chart" / "SignalVisualSnapshot.cs"
+VISUAL_SNAPSHOT_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
+VISUAL_CALCULATION = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
+VISUAL_SIGNAL_RENDERER = ROOT / "UI" / "Chart" / "SignalRenderer.cs"
+VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
+VISUAL_PLAN_LABELS = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
+VISUAL_PENDING_RENDERER = ROOT / "UI" / "Chart" / "PendingOrderRenderer.cs"
+VISUAL_PANEL = ROOT / "UI" / "Panel" / "PanelSignalState.cs"
+
+for required_path in (
+    VISUAL_SNAPSHOT,
+    VISUAL_SNAPSHOT_BUILDER,
+    VISUAL_CALCULATION,
+    VISUAL_SIGNAL_RENDERER,
+    VISUAL_PLAN_RENDERER,
+    VISUAL_PLAN_LABELS,
+    VISUAL_PENDING_RENDERER,
+    VISUAL_PANEL,
+):
+    if not required_path.exists():
+        raise SystemExit(f"Canonical visual-state owner is missing: {required_path.name}")
+
+snapshot_code = VISUAL_SNAPSHOT.read_text(encoding="utf-8")
+builder_code = VISUAL_SNAPSHOT_BUILDER.read_text(encoding="utf-8")
+calculation_visual_code = VISUAL_CALCULATION.read_text(encoding="utf-8")
+signal_renderer_code = VISUAL_SIGNAL_RENDERER.read_text(encoding="utf-8")
+plan_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
+plan_labels_code = VISUAL_PLAN_LABELS.read_text(encoding="utf-8")
+pending_renderer_code = VISUAL_PENDING_RENDERER.read_text(encoding="utf-8")
+panel_code = VISUAL_PANEL.read_text(encoding="utf-8")
+
+if "class SignalVisualSnapshot" not in snapshot_code:
+    raise SystemExit("Canonical visual-state model is missing")
+for required_field in (
+    "Entry",
+    "Trigger",
+    "Stop",
+    "Tp1",
+    "Tp2",
+    "Tp3",
+    "Tp4",
+    "BrokerStop",
+    "BrokerTarget",
+    "PendingEntry",
+    "PendingStop",
+    "PendingTarget",
+):
+    if f"public double {required_field};" not in snapshot_code:
+        raise SystemExit(f"Canonical visual snapshot field missing: {required_field}")
+
+if "BuildSignalVisualSnapshot(" not in builder_code or    "ResolveCanonicalVisualDirection(" not in builder_code:
+    raise SystemExit("Canonical visual snapshot builder/resolver is missing")
+
+live_pos = builder_code.find("if (livePlan)")
+pending_pos = builder_code.find("else if (pendingValid)")
+if live_pos < 0 or pending_pos < 0 or live_pos > pending_pos:
+    raise SystemExit("Live plan must remain visually authoritative over pending state")
+
+if "BuildSignalVisualSnapshot(" not in calculation_visual_code or    "RenderPlan(" not in calculation_visual_code or    "RenderWatchAndReaction(" not in calculation_visual_code or    "RenderManagedPendingOrder(" not in calculation_visual_code or    "_renderSignalVisualSnapshot = null;" not in calculation_visual_code:
+    raise SystemExit("Calculation cycle must construct, pass and release one visual snapshot")
+
+for visual_code, expected_call in (
+    (signal_renderer_code, "SignalVisualSnapshot snapshot"),
+    (plan_renderer_code, "SignalVisualSnapshot snapshot"),
+    (plan_labels_code, "SignalVisualSnapshot snapshot"),
+    (pending_renderer_code, "SignalVisualSnapshot snapshot"),
+):
+    if expected_call not in visual_code:
+        raise SystemExit("Chart renderer must consume canonical SignalVisualSnapshot")
+
+if "return _renderSignalVisualSnapshot.AuthoritativeDirection;" not in panel_code or    "BuildSignalVisualSnapshot(" not in panel_code:
+    raise SystemExit("Panel signal state must consume the canonical visual snapshot")
+
+for forbidden in (
+    "_decision.Direction",
+    "_decision.Confidence",
+    "_decision.SmartQuality",
+    "_reaction.Direction",
+    "_reaction.Confidence",
+):
+    if forbidden in signal_renderer_code:
+        raise SystemExit(f"Signal renderer bypasses canonical visual snapshot: {forbidden}")
+
 # Phase 1.5 performance/supervision gates.
 RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
@@ -418,8 +502,8 @@ PLAN_RENDER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 PLAN_LABEL_RENDER = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
     visual_code = visual_path.read_text(encoding="utf-8")
-    if "_plan.IsLivePosition" not in visual_code or "_plan.Stop" not in visual_code:
-        raise SystemExit(f"Pre-trade plan stop must render from the plan; live stop must use broker-confirmed state: {visual_path.name}")
+    if "SignalVisualSnapshot snapshot" not in visual_code or "snapshot.Stop" not in visual_code:
+        raise SystemExit(f"Plan levels must render through the canonical visual snapshot: {visual_path.name}")
 
 for broker_path in (
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",

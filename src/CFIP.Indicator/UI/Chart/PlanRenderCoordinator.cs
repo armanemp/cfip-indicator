@@ -14,19 +14,13 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                                private void RenderPlan()
+                                private void RenderPlan(
+            SignalVisualSnapshot snapshot)
                                 {
-                                    if (_plan == null)
-                                    {
-                                        RemovePlanObjects();
-                                        return;
-                                    }
-
-                                    PendingOrder pendingAuthority =
-                                        GetManagedPendingOrder();
-
-                                    if (pendingAuthority != null &&
-                                        !_plan.IsLivePosition)
+                                    if (_plan == null ||
+                                        snapshot == null ||
+                                        !snapshot.PlanActive ||
+                                        snapshot.PendingOrder)
                                     {
                                         RemovePlanObjects();
                                         return;
@@ -54,52 +48,36 @@ namespace cAlgo
                                     {
                                         DrawPlanLine(
                                             P + "ENTRY",
-                                            _plan.Entry,
+                                            snapshot.Entry,
                                             EntryLineColor,
                                             ShowEntry);
                         
                                         bool idealDistinct =
-                                            IsFinitePositive(_plan.IdealEntry) &&
-                                            !SamePrice(
-                                                _plan.IdealEntry,
-                                                _plan.Entry);
+                                            snapshot.IdealEntryVisible;
                         
                                         DrawPlanLine(
                                             P + "IDEAL_ENTRY",
-                                            _plan.IdealEntry,
+                                            snapshot.IdealEntry,
                                             PanelAccentColor,
                                             ShowEntry &&
                                             idealDistinct);
                         
                                         bool triggerDistinct =
-                                            IsFinitePositive(_plan.EntryTrigger) &&
-                                            !SamePrice(
-                                                _plan.EntryTrigger,
-                                                _plan.Entry) &&
-                                            (!idealDistinct ||
-                                             !SamePrice(
-                                                 _plan.EntryTrigger,
-                                                 _plan.IdealEntry));
+                                            snapshot.TriggerVisible;
                         
                                         bool triggerVisualState =
-                                            !_plan.IsLivePosition &&
-                                            (_plan.EntryMode ==
-                                                ExecutionMode.WaitingForTrigger ||
-                                             _plan.EntryMode ==
-                                                ExecutionMode.ContinuationStop);
+                                            snapshot.TriggerVisible;
 
                                         DrawPlanLine(
                                             P + "TRIGGER",
-                                            _plan.EntryTrigger,
+                                            snapshot.Trigger,
                                             TriggerLineColor,
                                             ShowTrigger &&
                                             triggerDistinct &&
                                             triggerVisualState);
                         
                                         double displayStop =
-                                            _plan.IsLivePosition
-                                                ? GetActiveBrokerStopPrice()
-                                                : _plan.Stop;
+                                            snapshot.Stop;
                         
                                         DrawPlanLine(
                                             P + "SL",
@@ -108,70 +86,69 @@ namespace cAlgo
                                             ShowSL);
                         
                                         bool tp1Distinct =
-                                            IsFinitePositive(_plan.Tp1) &&
-                                            !SamePrice(_plan.Tp1, _plan.Entry) &&
-                                            !SamePrice(_plan.Tp1, _plan.EntryTrigger);
+                                            IsFinitePositive(snapshot.Tp1) &&
+                                            !SamePrice(snapshot.Tp1, snapshot.Entry) &&
+                                            !SamePrice(snapshot.Tp1, snapshot.Trigger);
                         
                                         DrawPlanLine(
                                             P + "TP1",
-                                            _plan.Tp1,
+                                            snapshot.Tp1,
                                             TpLineColor,
                                             ShowTP1 &&
                                             tp1Distinct);
                         
                                         bool tp2Distinct =
-                                            IsFinitePositive(_plan.Tp2) &&
+                                            IsFinitePositive(snapshot.Tp2) &&
                                             (!tp1Distinct ||
-                                             !SamePrice(_plan.Tp2, _plan.Tp1)) &&
-                                            !SamePrice(_plan.Tp2, _plan.Entry) &&
-                                            !SamePrice(_plan.Tp2, _plan.EntryTrigger);
+                                             !SamePrice(snapshot.Tp2, snapshot.Tp1)) &&
+                                            !SamePrice(snapshot.Tp2, snapshot.Entry) &&
+                                            !SamePrice(snapshot.Tp2, snapshot.Trigger);
                         
                                         DrawPlanLine(
                                             P + "TP2",
-                                            _plan.Tp2,
+                                            snapshot.Tp2,
                                             Tp2LineColor,
                                             ShowTP2 &&
                                             tp2Distinct);
                         
                                         bool tp3Distinct =
-                                            IsFinitePositive(_plan.Tp3) &&
+                                            IsFinitePositive(snapshot.Tp3) &&
                                             (!tp2Distinct ||
-                                             !SamePrice(_plan.Tp3, _plan.Tp2)) &&
-                                            !SamePrice(_plan.Tp3, _plan.Entry) &&
-                                            !SamePrice(_plan.Tp3, _plan.EntryTrigger);
+                                             !SamePrice(snapshot.Tp3, snapshot.Tp2)) &&
+                                            !SamePrice(snapshot.Tp3, snapshot.Entry) &&
+                                            !SamePrice(snapshot.Tp3, snapshot.Trigger);
                         
                                         DrawPlanLine(
                                             P + "TP3",
-                                            _plan.Tp3,
+                                            snapshot.Tp3,
                                             Tp3LineColor,
                                             ShowTP3 &&
                                             tp3Distinct);
                         
                                         bool tp4Distinct =
-                                            IsFinitePositive(_plan.Tp4) &&
+                                            IsFinitePositive(snapshot.Tp4) &&
                                             (!tp3Distinct ||
-                                             !SamePrice(_plan.Tp4, _plan.Tp3)) &&
-                                            !SamePrice(_plan.Tp4, _plan.Entry) &&
-                                            !SamePrice(_plan.Tp4, _plan.EntryTrigger);
+                                             !SamePrice(snapshot.Tp4, snapshot.Tp3)) &&
+                                            !SamePrice(snapshot.Tp4, snapshot.Entry) &&
+                                            !SamePrice(snapshot.Tp4, snapshot.Trigger);
                         
                                         DrawPlanLine(
                                             P + "TP4",
-                                            _plan.Tp4,
+                                            snapshot.Tp4,
                                             Tp4LineColor,
                                             ShowTP4 &&
                                             tp4Distinct);
                         
                                         double activeBrokerTarget =
-                                            GetActiveBrokerTargetPrice();
+                                            snapshot.BrokerTarget;
                         
                                         bool activeBrokerTargetDistinct =
-                                            _plan.IsLivePosition &&
-                                            IsFinitePositive(activeBrokerTarget) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Entry) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp1) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp2) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp3) &&
-                                            !SamePrice(activeBrokerTarget, _plan.Tp4);
+                                            snapshot.ActiveBrokerTargetVisible &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Entry) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp1) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp2) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp3) &&
+                                            !SamePrice(activeBrokerTarget, snapshot.Tp4);
                         
                                         DrawPlanLine(
                                             P + "ACTIVE_TP",
@@ -186,7 +163,7 @@ namespace cAlgo
                         
                                     if (ShowLevelPriceLabels ||
                                         ShowSignalLabels)
-                                        RenderPlanLabels();
+                                        RenderPlanLabels(snapshot);
                                     else
                                         RemovePlanLabels();
                         
@@ -201,7 +178,7 @@ namespace cAlgo
                         
                                     int hostBar =
                                         MapM5ToChart(
-                                            _plan.CreatedM5,
+                                            snapshot.CreatedM5,
                                             Bars.Count - 1);
                         
                                     double atr =
@@ -219,7 +196,7 @@ namespace cAlgo
                                             atr * 0.18);
                         
                                     double y =
-                                        _plan.Direction == 1
+                                        snapshot.PlanDirection == 1
                                             ? Bars.LowPrices[hostBar] -
                                               offset
                                             : Bars.HighPrices[hostBar] +
@@ -227,17 +204,16 @@ namespace cAlgo
                         
                                     DrawIcon(
                                         P + "ARROW",
-                                        _plan.Direction == 1
+                                        snapshot.PlanDirection == 1
                                             ? ChartIconType.UpArrow
                                             : ChartIconType.DownArrow,
                                         hostBar,
                                         y,
                                         SignalArrowColorFor(
-                                            _plan.Direction,
-                                            _plan.IsLivePosition
+                                            snapshot.PlanDirection,
+                                            snapshot.LivePosition
                                                 ? "CONFIRMED"
-                                                : _decision != null &&
-                                                  _decision.SmartQuality >=
+                                                : snapshot.SmartQuality >=
                                                   SmartStrongSetupQuality
                                                     ? "STRONG"
                                                     : "CONFIRMED"));

@@ -28,154 +28,80 @@ namespace cAlgo
         
         private int GetAuthoritativeDirection()
                                 {
-                                    if (!UseAuthoritativeSignalState)
-                                        return _decision != null &&
-                                               _decision.EntryAllowed
-                                            ? _decision.Direction
-                                            : 0;
+                                    if (_renderSignalVisualSnapshot != null)
+                                        return _renderSignalVisualSnapshot.AuthoritativeDirection;
 
-                                    PendingOrder pending =
-                                        GetManagedPendingOrder();
-
-                                    if (pending != null &&
-                                        (pending.TradeType == TradeType.Buy ||
-                                         pending.TradeType == TradeType.Sell))
-                                        return pending.TradeType == TradeType.Buy
-                                            ? 1
-                                            : -1;
-
-                                    if (_plan != null &&
-                                        (_plan.Direction == 1 ||
-                                         _plan.Direction == -1))
-                                        return _plan.Direction;
-
-                                    if (_decision != null &&
-                                        _decision.EntryAllowed &&
-                                        (_decision.Direction == 1 ||
-                                         _decision.Direction == -1))
-                                        return _decision.Direction;
-
-                                    if (_reaction != null &&
-                                        _reaction.EntryAllowed &&
-                                        _reaction.Confidence >=
+                                    return BuildSignalVisualSnapshot(
                                         Math.Max(
-                                            50,
-                                            LiveReactionThreshold) &&
-                                        (_reaction.Direction == 1 ||
-                                         _reaction.Direction == -1))
-                                        return _reaction.Direction;
-
-                                    if (_m5Frame != null &&
-                                        (_m5Frame.Direction == 1 ||
-                                         _m5Frame.Direction == -1) &&
-                                        _m5Frame.Quality >=
-                                        Math.Max(
-                                            50,
-                                            LiveReactionStrongThreshold) &&
-                                        ((_m5Frame.Direction == 1 &&
-                                          (_m5Frame.MssBull ||
-                                           _m5Frame.ChochBull)) ||
-                                         (_m5Frame.Direction == -1 &&
-                                          (_m5Frame.MssBear ||
-                                           _m5Frame.ChochBear))))
-                                        return _m5Frame.Direction;
-
-                                    if (_prediction != null &&
-                                        _prediction.Direction != 0 &&
-                                        _prediction.Confidence >=
-                                        Math.Max(
-                                            MinimumEarlyConfidence,
-                                            EarlySetupConfidence))
-                                        return _prediction.Direction;
-
-                                    return 0;
+                                            1,
+                                            _lastEvaluatedM5)).AuthoritativeDirection;
                                 }
 
         private string GetAuthoritativeState(
                                     int direction)
                                 {
-                                    if (_plan != null &&
-                                        _plan.IsLivePosition)
-                                        return direction == 1
-                                            ? "BUY ACTIVE"
-                                            : direction == -1
-                                                ? "SELL ACTIVE"
-                                                : "ACTIVE";
-                        
-                                    if (_reaction != null &&
-                                        _reaction.EntryAllowed &&
-                                        _reaction.Confidence >=
-                                        Math.Max(
-                                            LiveReactionThreshold,
-                                            LiveReactionStrongThreshold))
-                                        return direction == 1
-                                            ? "BUY REACTION"
-                                            : direction == -1
-                                                ? "SELL REACTION"
-                                                : "REACTION";
-                        
-                                    if (_decision != null &&
-                                        _decision.EntryAllowed)
-                                        return direction == 1
-                                            ? "BUY READY"
-                                            : direction == -1
-                                                ? "SELL READY"
-                                                : "READY";
-                        
-                                    if (_prediction != null &&
-                                        _prediction.Direction != 0)
-                                        return direction == 1
-                                            ? "BUY PREDICTION"
-                                            : direction == -1
-                                                ? "SELL PREDICTION"
-                                                : "PREDICTION";
-                        
-                                    return direction == 1
-                                        ? "BUY WATCH"
-                                        : direction == -1
-                                            ? "SELL WATCH"
-                                            : "WAITING";
+                                    SignalVisualSnapshot snapshot =
+                                        _renderSignalVisualSnapshot != null
+                                            ? _renderSignalVisualSnapshot
+                                            : BuildSignalVisualSnapshot(
+                                                Math.Max(
+                                                    1,
+                                                    _lastEvaluatedM5));
+
+                                    if (direction == 0)
+                                        return "WAITING";
+
+                                    string prefix =
+                                        direction == 1
+                                            ? "BUY "
+                                            : "SELL ";
+
+                                    switch (snapshot.Stage)
+                                    {
+                                        case "ACTIVE":
+                                            return prefix + "ACTIVE";
+                                        case "PENDING":
+                                            return prefix + "PENDING";
+                                        case "PLAN":
+                                            return prefix + "PLAN";
+                                        case "CONFIRMED":
+                                            return prefix + "READY";
+                                        case "REACTION":
+                                            return prefix + "REACTION";
+                                        case "PREDICTION":
+                                            return prefix + "PREDICTION";
+                                        default:
+                                            return prefix + "WATCH";
+                                    }
                                 }
-        
+
         private string GetSignalSynchronizationText()
                                 {
+                                    SignalVisualSnapshot snapshot =
+                                        _renderSignalVisualSnapshot != null
+                                            ? _renderSignalVisualSnapshot
+                                            : BuildSignalVisualSnapshot(
+                                                Math.Max(
+                                                    1,
+                                                    _lastEvaluatedM5));
+
                                     int direction =
-                                        GetAuthoritativeDirection();
-                        
-                                    bool planAligned =
-                                        _plan == null ||
-                                        direction == 0 ||
-                                        _plan.Direction == direction;
-                        
-                                    bool decisionAligned =
-                                        _decision == null ||
-                                        _decision.Direction == 0 ||
-                                        direction == 0 ||
-                                        _decision.Direction == direction;
-                        
-                                    bool reactionAligned =
-                                        _reaction == null ||
-                                        _reaction.Direction == 0 ||
-                                        direction == 0 ||
-                                        !_reaction.EntryAllowed ||
-                                        _reaction.Direction == direction;
-                        
+                                        snapshot.AuthoritativeDirection;
+
                                     bool aligned =
-                                        planAligned &&
-                                        decisionAligned &&
-                                        reactionAligned;
-                        
+                                        direction == 0 ||
+                                        ((snapshot.PlanDirection == 0 ||
+                                          snapshot.PlanDirection == direction) &&
+                                         (snapshot.PendingDirection == 0 ||
+                                          snapshot.PendingDirection == direction) &&
+                                         (snapshot.DecisionDirection == 0 ||
+                                          snapshot.DecisionDirection == direction) &&
+                                         (snapshot.ReactionDirection == 0 ||
+                                          snapshot.ReactionDirection == direction));
+
                                     string visualState =
-                                        _plan != null
-                                            ? "PLAN+ARROW+LEVELS"
-                                            : _decision != null &&
-                                              _decision.EntryAllowed
-                                                ? "DECISION+ARROW"
-                                                : _prediction != null &&
-                                                  _prediction.Direction != 0
-                                                    ? "PREDICTION"
-                                                    : "WAIT";
-                        
+                                        snapshot.Stage;
+
                                     return
                                         "STATE " +
                                         (direction == 1
@@ -190,7 +116,7 @@ namespace cAlgo
                                         " | " +
                                         visualState;
                                 }
-        
+
         private Color GetSignalSynchronizationColor()
                                 {
                                     string text =

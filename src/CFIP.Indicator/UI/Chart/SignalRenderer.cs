@@ -15,39 +15,32 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private void RenderWatchAndReaction(
-                            int chartIndex,
-                            int closedM5)
+            int chartIndex,
+            int closedM5,
+            SignalVisualSnapshot snapshot)
                         {
                             ClearWatchObjects();
                 
                             if (Bars == null ||
-                                Bars.Count < 2)
+                                Bars.Count < 2 ||
+                                snapshot == null)
                                 return;
-                
-                            PendingOrder pendingAuthority =
-                                GetManagedPendingOrder();
-                
-                            if (pendingAuthority != null)
+
+                            bool decisionReady =
+                                snapshot.DecisionReady;
+
+                            bool reactionReady =
+                                snapshot.ReactionReady;
+
+                            int visualDirection =
+                                snapshot.AuthoritativeDirection;
+
+                            if (snapshot.PendingOrder)
                             {
                                 Chart.RemoveObject(P + "WATCH_ARROW");
                                 Chart.RemoveObject(P + "REACTION_ARROW");
                                 return;
                             }
-                
-                            bool decisionReady =
-                                _decision != null &&
-                                _decision.EntryAllowed &&
-                                _decision.Direction != 0;
-                
-                            bool reactionReady =
-                                EnableLiveReaction &&
-                                ShowReactionArrow &&
-                                _reaction != null &&
-                                _reaction.EntryAllowed &&
-                                _reaction.Direction != 0;
-                
-                            int visualDirection =
-                                GetAuthoritativeDirection();
                 
                             if (visualDirection == 0)
                             {
@@ -70,7 +63,7 @@ namespace cAlgo
                 
                             int reactionBar =
                                 MapM5ToChart(
-                                    _m5Bars.Count - 1,
+                                    snapshot.ArrowM5Index,
                                     chartIndex);
                 
                             reactionBar =
@@ -82,7 +75,7 @@ namespace cAlgo
                 
                             int arrowBar =
                                 reactionReady &&
-                                visualDirection == _reaction.Direction
+                                visualDirection == snapshot.ReactionDirection
                                     ? reactionBar
                                     : hostBar;
                 
@@ -108,8 +101,8 @@ namespace cAlgo
                 
                             string arrowState =
                                 reactionReady &&
-                                visualDirection == _reaction.Direction
-                                    ? (_reaction.Confidence >=
+                                visualDirection == snapshot.ReactionDirection
+                                    ? (snapshot.ReactionConfidence >=
                                        Math.Max(
                                            LiveReactionThreshold,
                                            LiveReactionStrongThreshold)
@@ -143,15 +136,15 @@ namespace cAlgo
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");
                 
-                            if (_decision != null &&
+                            if (snapshot.DecisionDirection != 0 &&
                                 !decisionReady &&
                                 ShowEarlyWatch &&
                                 AlertOnEarlyWatch &&
-                                _decision.Confidence >=
+                                snapshot.Confidence >=
                                 Math.Max(
                                     60,
                                     MinimumConfidence - 8) &&
-                                _decision.Confidence <
+                                snapshot.Confidence <
                                 MinimumConfidence &&
                                 _lastEarlyAlertM5 !=
                                 closedM5)
@@ -160,18 +153,18 @@ namespace cAlgo
                                     "WATCH|" +
                                     closedM5 +
                                     "|" +
-                                    _decision.Direction,
+                                    snapshot.DecisionDirection,
                                     "CFIP " +
-                                    (_decision.Direction == 1
+                                    (snapshot.DecisionDirection == 1
                                         ? "BUY"
                                         : "SELL") +
                                     " WATCH | CONF " +
-                                    _decision.Confidence +
+                                    snapshot.Confidence +
                                     " | SMART " +
-                                    _decision.SmartQuality +
+                                    snapshot.SmartQuality +
                                     " | " +
-                                    _decision.Reason,
-                                    _decision.Direction,
+                                    snapshot.DecisionReason,
+                                    snapshot.DecisionDirection,
                                     false);
                 
                                 _lastEarlyAlertM5 =
@@ -182,17 +175,17 @@ namespace cAlgo
                                 AlertOnReaction &&
                                 AlertOnLiveReaction &&
                                 _lastReactionAlertBar !=
-                                _m5Bars.Count - 1)
+                                snapshot.ArrowM5Index)
                             {
                                 SendUnifiedAlert(
                                     "REACTION|" +
-                                    _m5Bars.Count,
-                                    _reaction.Reason,
-                                    _reaction.Direction,
+                                    snapshot.ArrowM5Index,
+                                    snapshot.ReactionReason,
+                                    snapshot.ReactionDirection,
                                     false);
                 
                                 _lastReactionAlertBar =
-                                    _m5Bars.Count - 1;
+                                    snapshot.ArrowM5Index;
                             }
                 
                             _lastVisualDirection =

@@ -159,7 +159,7 @@ Those need their dedicated tests and acceptance criteria before production behav
 
 The current architecture is strong enough to continue refinement without rebuilding the core.
 
-The immediate safety-critical issues found in this audit are addressed in Phase 1.4, and the implementation has passed repository verification gates. The next structural improvement is the Safety Supervisor (Phase 1.5), followed by unified execution retry semantics and the canonical signal visual snapshot.
+The immediate safety-critical issues found in this audit are addressed in Phase 1.4 and Phase 1.5. The canonical visual-state contract is now implemented in the current Track 5.4 work. Remaining major areas are unified submission retry semantics, identity/session semantics, explicit intrabar policy, analytical correctness and empirical decision calibration.
 
 This document is a continuity record and should be read alongside `ROADMAP.md`, `ARCHITECTURE.md`, `WORKFLOW.md`, `DEVELOPMENT-LOG.md` and `ACCEPTANCE-MATRIX.md`.
 ## 2026-09-29 Performance and ZIP audit addendum
@@ -167,3 +167,8 @@ This document is a continuity record and should be read alongside `ROADMAP.md`, 
 The uploaded four-indicator archive was reviewed. The production FVG engine remains the authoritative implementation; the archive's useful bounded-work idea was applied without importing its chart-side ownership. WaveTrend was assessed as a correlated momentum composite and intentionally not added as multiple independent decision votes. The economic-calendar implementation was not imported because its blocking external network fetch is inappropriate for the execution core. Volume Profile was empty.
 
 The performance architecture and exact adoption decisions are recorded in docs/PERFORMANCE-ARCHITECTURE-2026-09-29.md.
+
+
+## 2026-09-29 Track 5.4 certification
+
+Canonical SignalVisualSnapshot is fully implemented. The branch passed Source / Architecture, Runtime Acceptance Contracts and cTrader Compile after the final cleanup of direct renderer state reads. Live Plan, Pending, pre-trade Plan, Confirmed, Reaction and Prediction states remain explicitly ordered and broker-confirmed live levels remain distinct from intended plan levels.

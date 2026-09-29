@@ -92,3 +92,13 @@ The repository contracts cover deterministic retry state, stage continuation and
 | FVG/OB scan and mitigation bounded by zone age | Yes | PASS |
 | Single ATR reuse in active protection | Yes | PASS |
 | ZIP audit decisions recorded | Documentation | PASS |
+## Phase 5.4 — Canonical signal visual state
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| One SignalVisualSnapshot owner | Yes | PASS |
+| Single direction resolver | Yes | PASS |
+| Plan arrow/levels consume snapshot | Yes | PASS |
+| Pending entry/SL/TP consume snapshot | Yes | PASS |
+| Panel direction/stage consumes snapshot | Yes | PASS |
+| Signal renderer has no direct decision/reaction reads | Yes | PASS |
