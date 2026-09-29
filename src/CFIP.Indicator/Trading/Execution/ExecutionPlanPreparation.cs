@@ -162,7 +162,10 @@ namespace cAlgo
                                 executionEntry,
                                 risk,
                                 direction,
-                                atr);
+                                atr,
+                                _plan == null
+                                    ? OpportunityLane.Strategic
+                                    : _plan.Lane);
                 
                             double tp1 = SelectTarget(
                                 selected, 0, executionEntry, risk, direction,
