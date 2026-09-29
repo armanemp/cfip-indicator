@@ -3659,7 +3659,7 @@ Status: VERIFIED COMPLETE on `469f66bd2d461016c9283e0e4243ca429c694aa3`.
 
 Pre-merge gates: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture PASS.
 
-Final merge closeout pending.
+Phase 9.7 merge closeout: PR #49 merged into `main` as `954e5021648e43a11d0de08f35b7fc7aaa8d2125`. The next continuation starts from this verified main baseline. Operator must pull local `main` before continuing.
 
 This continuation concentrates strategy quality and automatic execution on one shared pipeline. RANGE/COMPRESSION now receive a canonical specialist no-trade rule; automatic market orders use bounded Market Range submission; live suitability and spread-to-stop-risk are rechecked immediately before broker mutation; pending orders are revalidated/cleaned when the regime invalidates them; compact level labels now use explicitly opaque backgrounds.
 
