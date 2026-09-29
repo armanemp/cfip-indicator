@@ -219,3 +219,16 @@ The phase chooses controlled intrabar entry explicitly. The closed-bar decision 
 
 Live cTrader acceptance remains required for actual chart appearance, zoom/layout
 behavior, absence of flicker, startup latency and device-specific performance.
+
+
+## Runtime UI hotfix — Instant panel Hide/Show — 2026-09-29
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Hide/Show mutation does not synchronously invoke full RenderPanel() | Source gate / review | PASS |
+| Hidden panel visibility changes without rebuilding rows | Source gate | PASS |
+| Normal heartbeat remains responsible for panel refresh | Existing runtime contract | PASS |
+| No trading/decision state mutation is introduced | Source review | PASS |
+| 535-parameter contract remains unchanged | Source gate | PASS |
+| cTrader Compile | Required | Pending |
+| Hands-on Hide/Show responsiveness | Required | Pending |
