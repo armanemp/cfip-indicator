@@ -97,12 +97,14 @@ namespace cAlgo
                 }
 
                 RelativeTakeProfitProtections serverTakeProfits;
+                StopLossBreakEven serverBreakEven;
                 bool useServerTakeProfitLadder =
                     TryBuildServerSideTakeProfitLadder(
                         entry,
                         target,
                         volume,
-                        out serverTakeProfits);
+                        out serverTakeProfits,
+                        out serverBreakEven);
 
                 TradeResult result;
 
@@ -117,6 +119,7 @@ namespace cAlgo
                                 NormalizeLabel(),
                                 stopPips,
                                 serverTakeProfits,
+                                serverBreakEven,
                                 TradeExecutionMetadata.DefaultExecutionComment,
                                 false,
                                 "AGGRESSIVE MARKET • SERVER TP LADDER")
