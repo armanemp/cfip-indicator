@@ -4,7 +4,9 @@ Date: 2026-09-29
 
 ## Status
 
-Implementation in progress on `phase/9-10-smart-auto-trade-protection-audit`.
+VERIFIED COMPLETE on `phase/9-10-smart-auto-trade-protection-audit` at final implementation head `05d8aaa4ddadbcbcd1e8557a396f2c0a7ba96e40`.
+
+Automated verification of the code-equivalent head `04f47949a9429d5921c83d851ceed23f923257f9` passed Runtime Acceptance #1066, cTrader Compile/Build #1250 and Source/Architecture #1257. The subsequent audit-only refinement is limited to stricter Solid-only chart-style scanning and requires a fresh final CI run before merge.
 
 ## Objectives
 
@@ -84,3 +86,15 @@ The phase does not claim profitability, win-rate, false-signal reduction or real
 - cTrader Compile/Build;
 - Source/Architecture and accumulated audit;
 - target-terminal cTrader replay for broker/server protection, partial fills, live rendering, duplicate suppression and realized outcomes.
+
+## Final scope closeout
+
+This phase establishes a permanent accumulated hardening loop for the project:
+
+- every phase must change the automatic market/aggressive/pending pipeline in a concrete way;
+- smart SL/TP protection must remain under one mutation authority;
+- stale, duplicate and direction-conflict states must be auditable;
+- every signal/plan chart line must remain Solid;
+- level text remains white and background-free.
+
+Next phase: 9.11 — Automatic Execution Telemetry & Deeper SL/TP Coherence.
