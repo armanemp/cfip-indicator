@@ -27,6 +27,9 @@ namespace cAlgo
                                                 ? Symbol.Bid
                                                 : Symbol.Ask;
 
+                                        AdoptServerSideTakeProfitLadder(
+                                            planPosition);
+
                                         bool brokerStopValid =
                                             planPosition.StopLoss.HasValue &&
                                             IsFinitePositive(
@@ -50,8 +53,10 @@ namespace cAlgo
                                             brokerStopValid;
 
                                         bool targetConfirmed =
-                                            !SyncBrokerTakeProfit ||
-                                            brokerTargetValid;
+                                            _serverSideTakeProfitLadderActive
+                                                ? brokerTargetValid
+                                                : !SyncBrokerTakeProfit ||
+                                                  brokerTargetValid;
 
                                         bool mutationRequired = false;
                                         bool mutationSucceeded = true;
@@ -104,7 +109,8 @@ namespace cAlgo
                                             }
                                         }
 
-                                        if (SyncBrokerTakeProfit)
+                                        if (SyncBrokerTakeProfit &&
+                                            !_serverSideTakeProfitLadderActive)
                                         {
                                             double target =
                                                 AutoTarget(
