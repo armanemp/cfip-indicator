@@ -79,8 +79,6 @@ namespace cAlgo
                         : snapshot.SmartQuality >= SmartStrongSetupQuality
                             ? "STRONG"
                             : "CONFIRMED"));
-        }
-
             if (ShowSignalArrow &&
                 Bars != null &&
                 Bars.Count >= 2)
@@ -88,6 +86,7 @@ namespace cAlgo
                 RenderTriggerRuntimeMarker(
                     snapshot);
             }
+        }
 
         private void RenderSetupPreview(
             SignalVisualSnapshot snapshot)
