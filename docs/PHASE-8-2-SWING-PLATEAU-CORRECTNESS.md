@@ -2,7 +2,7 @@
 
 Date: 2026-09-29
 Base: main at `3dbbeed5b703f0e5be13f5a1aabc6c87fd13f3b7`
-Status: implementation in progress; canonical plateau and structural evidence de-duplication are now integrated on the phase branch.
+Status: implementation verified and ready to merge.
 
 ## Problem statement
 
@@ -47,5 +47,9 @@ Structure, MSS and CHOCH are also computed as separate booleans. This phase must
 - Live cTrader replay remains required for empirical signal-quality assessment.
 
 ## Verification and decision log
+
+Automated verification on head `5df5931828719fb635ec67fa59d57b519d4e70e7`: Runtime Acceptance PASS; cTrader Compile PASS; Source / Architecture PASS.
+
+Implementation closeout: production Swing High/Low consumers use the canonical plateau rule; Equal High/Low scans canonical swings with fixed-anchor tolerance; liquidity sweeps require an established prior structural swing; Structure/MSS/CHOCH are collapsed to one causal structural event for scoring and confirmation evidence. Public parameters, risk, execution and lifecycle semantics are unchanged.
 
 Phase 8.1 post-merge on main `3dbbeed5b703f0e5be13f5a1aabc6c87fd13f3b7`: Source and Build PASS; Runtime PASS. Phase 8.2 starts from this verified main.
