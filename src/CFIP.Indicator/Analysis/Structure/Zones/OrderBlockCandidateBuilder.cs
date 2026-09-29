@@ -19,6 +19,14 @@ namespace cAlgo
                 atr <= 0)
                 return null;
 
+            double creationAtr =
+                Atr(
+                    bars,
+                    createdIndex);
+
+            if (creationAtr <= 0)
+                return null;
+
             double open =
                 bars.OpenPrices[
                     createdIndex];
@@ -45,18 +53,15 @@ namespace cAlgo
                     open,
                     close);
 
-            double zoneLow =
-                ObUseBodyForZone
-                    ? bodyLow
-                    : low;
-
-            double zoneHigh =
-                ObUseBodyForZone
-                    ? bodyHigh
-                    : high;
-
-            if (zoneLow >=
-                zoneHigh)
+            if (!OrderBlockRule.TryGetZone(
+                    direction,
+                    ObUseBodyForZone,
+                    open,
+                    close,
+                    high,
+                    low,
+                    out double zoneLow,
+                    out double zoneHigh))
                 return null;
 
             double range =
@@ -77,7 +82,7 @@ namespace cAlgo
                     createdIndex,
                     currentIndex,
                     direction,
-                    atr,
+                    creationAtr,
                     out int impulseEnd,
                     out bool displacement,
                     out double strongestBody,
@@ -110,7 +115,7 @@ namespace cAlgo
                     createdIndex,
                     impulseEnd,
                     direction,
-                    atr,
+                    creationAtr,
                     managedLow,
                     managedHigh);
 
@@ -127,7 +132,7 @@ namespace cAlgo
                     partiallyMitigated,
                     createdIndex,
                     currentIndex,
-                    atr);
+                    creationAtr);
 
             return new Zone
             {
@@ -135,6 +140,13 @@ namespace cAlgo
                 High = managedHigh,
                 Direction = direction,
                 Kind = "ORDER_BLOCK",
+                Id =
+                    OrderBlockRule.Identity(
+                        direction,
+                        createdIndex,
+                        ObUseBodyForZone),
+                CreatedIndex =
+                    createdIndex,
                 Age = currentIndex -
                     createdIndex,
                 Quality = quality
