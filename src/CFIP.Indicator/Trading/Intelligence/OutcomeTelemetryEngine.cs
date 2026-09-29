@@ -168,11 +168,14 @@
                                      ProtectionRecoveryAtClose =
                                          _brokerProtectionRecoveryRequired,
                                      ServerSideTakeProfitLadderActive =
-                                         _serverSideTakeProfitLadderActive
+                                         _serverSideTakeProfitLadderActive,
+                                     ObservedUtcTicks =
+                                         Server.TimeInUtc.Ticks
                                  };
  
                              _outcomeHistory.Add(observation);
                              TrimOutcomeHistory();
+                             PersistOutcomeHistory();
  
                              RegisterOutcome(
                                  direction,
