@@ -12,11 +12,11 @@ namespace cAlgo
             if (bars == null ||
                 index < 30 ||
                 index >= bars.Count)
-                return DivergenceResult.CreateNone();
+                return DivergenceResult.CreateNoDivergence();
 
             double atr = Atr(bars, index);
             if (!IsFinitePositive(atr))
-                return DivergenceResult.CreateNone();
+                return DivergenceResult.CreateNoDivergence();
 
             int lowOldIndex;
             int lowNewIndex;
@@ -73,7 +73,7 @@ namespace cAlgo
             bool bearValid = bear.Quality >= 55;
 
             if (!bullValid && !bearValid)
-                return DivergenceResult.CreateNone();
+                return DivergenceResult.CreateNoDivergence();
 
             if (bullValid &&
                 bearValid &&
