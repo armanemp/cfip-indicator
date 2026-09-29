@@ -124,7 +124,25 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            return Bars.Count - 1;
+            int right =
+                Bars.Count - 1;
+
+            // Reserve a small, deterministic right-side region for level text.
+            // Without this reserve, the line reaches the same X anchor used by
+            // the label and the text visually sits on top of the line.
+            if (ShowLevelPriceLabels ||
+                ShowSignalLabels)
+            {
+                right -=
+                    CompactPlanLabelWidthBars +
+                    CompactPlanLabelMinimumGapBars;
+            }
+
+            return Math.Max(
+                1,
+                Math.Min(
+                    Bars.Count - 1,
+                    right));
         }
 
         private int GetPlanLineLeftBar()
