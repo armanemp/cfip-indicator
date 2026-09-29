@@ -38,18 +38,18 @@ if "_lastAutoPlanTriggerM1" in state:
 
 require(
     LINE,
-    r"ShowLevelPriceLabels\s*\|\|\s*\n\s*ShowSignalLabels[\s\S]*?CompactPlanLabelWidthBars[\s\S]*?CompactPlanLabelMinimumGapBars",
-    "reserved horizontal line space",
+    r"return Bars\.Count - 1;",
+    "latest-candle plan-line endpoint",
 )
 require(
     ANCHOR,
-    r"int lineRight\s*=\s*\n\s*GetPlanLineRightBar\(\)[\s\S]*?return Math\.Max\([\s\S]*?lineRight\s*\+\s*offset",
-    "label anchor after line endpoint",
+    r"CompactPlanLabelMinimumGapBars[\s\S]*?LabelLeftOffsetBars[\s\S]*?lineLeft \+ offset",
+    "stable compact label anchor",
 )
 require(
     LABEL,
     r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Left",
-    "left-aligned detached level labels",
+    "left-aligned level labels",
 )
 require(
     LABEL,
