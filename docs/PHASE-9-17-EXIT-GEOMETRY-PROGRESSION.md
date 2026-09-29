@@ -4,7 +4,7 @@ Date: 2026-09-29
 
 ## Status
 
-Source/contract implementation complete and automated CI verified; target-terminal replay remains required.
+Source/contract implementation complete, corrective hardening merged, and automated CI verified; target-terminal replay remains required.
 
 Branch:
 `phase/9-17-exit-geometry-progression-mainline`
@@ -220,8 +220,9 @@ Phase 9.17 automated source/contract verification is complete:
 - Phase 9.16 signal measurement audit: PASS
 - Phase 9.17 exit geometry audit: PASS
 
-Verified automated head at this closeout:
-`8e1f12ee56970420554bd4df6447d255c71efd7b`
+Phase 9.17 merge commit:
+`af4ef4edb5ce032c4a71feaf2cc0be1203f4992b`
 
+PR #61 (`Phase 9.17.1: corrective exit and risk hardening`) is merged into `main`.
 Target-terminal replay remains required before claiming empirical elimination of the reported
 TP rollback or any improvement in realized R, exit efficiency, false exits or continuation capture.
