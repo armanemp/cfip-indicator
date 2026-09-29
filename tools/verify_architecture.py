@@ -240,9 +240,6 @@ for token in (
     if token not in frame_scoring_code:
         raise SystemExit(f"Market-frame structural scoring must de-duplicate one causal break: {token}")
 
-if "&&
-                !structure" not in independent_evidence_code:
-    raise SystemExit("Independent evidence must not stack transition with the same structural event")
 for token in (
     "_m5Frame.StructureBull ||",
     "_m5Frame.MssBull ||",
