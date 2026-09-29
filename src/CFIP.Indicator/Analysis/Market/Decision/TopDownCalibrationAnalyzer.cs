@@ -81,6 +81,11 @@ namespace cAlgo
                     "ENTRY CALIBRATED",
                     StringComparison.OrdinalIgnoreCase))
             {
+                if (decision.TacticalOpportunityAllowed)
+                    return new DecisionFilterResult(
+                        true,
+                        string.Empty);
+
                 string reason =
                     string.Equals(
                         decision.TopDownStage,
