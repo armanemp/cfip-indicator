@@ -1524,7 +1524,8 @@ Operator pull: required now; pull main to the latest closeout commit.
 
 ## Phase 9.15 — Startup Responsiveness & Portable Long-Term History — 2026-09-29
 
-Status: IMPLEMENTED; awaiting documentation-inclusive verification.
+Status: VERIFIED COMPLETE; merged into main as PR #57.
+Merge commit: 365abb790a49e85ad58c87aa5a92f49d37b7f77c.
 
 Finding:
 Startup could remain in LOADING DATA because the critical readiness check required deep history and D1/W1 were allowed to contribute to the blocking async load count.
@@ -1550,5 +1551,12 @@ Safety:
 
 Detailed record: docs/PHASE-9-15-STARTUP-PERSISTENT-HISTORY.md.
 
+Verification:
+- Runtime Acceptance: PASS;
+- cTrader Compile/Build: PASS;
+- Source/Architecture + accumulated audit: PASS;
+- Startup/persistence audit: PASS;
+- Decision Contracts: PASS within Build.
+
 Next phase: Phase 9.16 — replay/measurement instrumentation and evidence-driven signal refinement.
-Operator pull: after Phase 9.15 verification and merge.
+Operator pull: required now; pull main to the latest closeout commit.
