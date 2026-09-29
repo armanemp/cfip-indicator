@@ -552,3 +552,20 @@ Verification targets:
 Repository gates validate source/contract/compile behavior. Actual visual
 appearance and terminal responsiveness still require hands-on cTrader
 validation after the merge.
+
+
+## Runtime UI hotfix — instant panel Hide/Show — 2026-09-29
+
+User validation reported that pressing the panel Hide/Show control itself could take a long time to visibly respond.
+
+Source inspection isolated the direct cause in UI/Panel/PanelVisibility.cs: TogglePanel() changed the panel visibility and then synchronously called RenderPanel() whenever the panel was shown again. RenderPanel() is intentionally responsible for full panel layout/row synchronization and is therefore much heavier than a visibility toggle.
+
+Correction:
+
+- TogglePanel() now performs only the visibility state mutation and restore-button visibility change;
+- the synchronous RenderPanel() call was removed from the click path;
+- the normal ready-state panel heartbeat remains responsible for ordinary refresh/reconciliation after the panel becomes visible;
+- no calculation, signal, entry, SL/TP, execution or broker state is changed;
+- no public parameter is added; the 535-parameter contract remains unchanged.
+
+This hotfix is strictly a responsiveness correction. It does not claim that the full calculation pipeline has been optimized; that remains a separate measurement/strategy-quality concern and is tracked by the performance roadmap.
