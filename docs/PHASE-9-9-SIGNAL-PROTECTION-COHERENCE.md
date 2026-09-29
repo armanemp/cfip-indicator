@@ -83,6 +83,16 @@ No new public parameters, execution authority or broker identity were introduced
 
 The existing single-plan/single-managed-position architecture remains intact. Advanced protection is additive: it activates only when a valid server-side ladder can be built; otherwise the established protection path remains the fallback.
 
+### 5. Corrective coherence hardening
+
+The final pass added three fail-safe corrections:
+
+- server TP partial protections use the documented relative constructor with a `double` volume; the obsolete `OrderVolume(...)` form is not used;
+- a present but unavailable M5 indicator-fusion snapshot (quality 0 / conflict 0) fails closed instead of bypassing the actionability gate;
+- once a managed pending order or live position exists, lower-priority decision/reaction presentation layers and their watch/reaction alerts are suppressed so they cannot compete with execution state.
+
+These corrections do not change the decision authority or add public parameters; they tighten the existing authority boundaries.
+
 ## Verification
 
 Required:
