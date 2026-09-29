@@ -1558,7 +1558,11 @@ for token in (
         raise SystemExit(f"Reversal limit ownership call missing: {token}")
 
 PENDING_LIMIT_PREP = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPreparation.cs"
-if not PENDING_LIMIT_PREP.exists() or "BuildExecutionModel(" not in PENDING_LIMIT_PREP.read_text(encoding="utf-8"):
+if (
+    not PENDING_LIMIT_PREP.exists() or
+    "TrySelectPredictivePendingLevel(" not in
+    PENDING_LIMIT_PREP.read_text(encoding="utf-8")
+):
     raise SystemExit("Reversal limit preparation owner missing")
 
 PENDING_SUBMISSION = ROOT / "Trading" / "Pending" / "Placement" / "PendingSubmissionValidator.cs"
