@@ -184,14 +184,9 @@ namespace cAlgo
                                     0,
                                     effectiveTarget,
                                     market,
-                                    Math.Max(
-                                        Symbol.PipSize,
-                                        atr > 0
-                                            ? atr *
-                                              Math.Max(
-                                                  0.05,
-                                                  MinimumTpSpacingAtr)
-                                            : Symbol.TickSize));
+                                    MinimumLiveTargetDistancePrice(
+                                        direction,
+                                        atr));
 
                             bool serverLadderTargetValid =
                                 _serverSideTakeProfitLadderActive &&
