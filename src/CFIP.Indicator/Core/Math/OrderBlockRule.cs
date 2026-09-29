@@ -246,7 +246,7 @@ namespace cAlgo
                    0.05;
         }
 
-        public static string Identity(
+        public static string OrderBlockIdentity(
             int direction,
             int createdIndex,
             bool useBodyForZone)
