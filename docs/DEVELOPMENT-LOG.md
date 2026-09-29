@@ -890,3 +890,7 @@ Phase 8.1 post-merge gates on main `3dbbeed5b703f0e5be13f5a1aabc6c87fd13f3b7`: S
 ## Phase 8.2 implementation closeout — 2026-09-29
 
 The production structural chain now consumes the canonical plateau semantics introduced by `SwingPlateauRule`. Swing highs/lows are represented once per contiguous plateau; Equal High/Low compares canonical swing levels instead of arbitrary raw-bar pairs and uses fixed-anchor tolerance; liquidity sweeps require a previously confirmed structural swing level. `StructuralEvidenceRule` prevents Structure plus MSS/CHOCH from stacking as multiple independent events on the same timeframe. Runtime contracts cover plateau symmetry, closed-index confirmation, non-chaining tolerance and structural-event de-duplication. The pre-documentation head `5df5931828719fb635ec67fa59d57b519d4e70e7` passed Runtime, Build and Source/Architecture; documentation closeout changes are now on the latest branch head and require their own final CI pass.
+
+## Phase 8.2 merge closeout — 2026-09-29
+
+PR #36, `Phase 8.2 — Swing Plateau Correctness`, merged to `main` as `a9c63bb3e563126753206c49b070763108919b74`. Post-merge verification on that merge commit passed Runtime Acceptance, cTrader Compile/Build and Source/Architecture. The subsequent documentation continuity commits record the merge and advance the roadmap to Phase 8.3 — FVG mathematical audit. Target-terminal replay remains required for empirical signal-quality measurement; no win-rate or false-signal reduction claim is made from CI alone.
