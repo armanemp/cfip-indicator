@@ -210,6 +210,8 @@ Architecture / static gates
     ↓
 Contract tests
     ↓
+Local cBot separation gate
+    ↓
 cTrader compile
     ↓
 Hands-on cTrader runtime
@@ -4206,5 +4208,5 @@ Verification completed before merge:
 - target-terminal replay for broker semantics and empirical outcomes.
 
 Next phase:
-Formal scenario execution policy and deeper automatic-order orchestration, driven by
-runtime rejection/scenario telemetry rather than blind threshold tuning.
+**Track 12A — Mandatory Local cBot Separation**, followed by scenario-aware broker policy only
+through the dedicated cBot execution authority.
