@@ -42,6 +42,30 @@ namespace cAlgo
     {
         private const int PreTradeVisualExpiryBars = 2;
 
+        public static bool IsSetupPreviewVisible(
+            bool present,
+            int createdM5,
+            int currentM5,
+            int direction,
+            int decisionDirection,
+            bool decisionEntryAllowed)
+        {
+            if (!present ||
+                createdM5 < 0 ||
+                currentM5 < createdM5 ||
+                currentM5 - createdM5 >
+                    PreTradeVisualExpiryBars)
+                return false;
+
+            if (direction != 1 &&
+                direction != -1)
+                return false;
+
+            return
+                direction == decisionDirection &&
+                decisionEntryAllowed;
+        }
+
         public static bool IsPreTradePlanVisible(
             SignalVisualLifecycleInput input)
         {
