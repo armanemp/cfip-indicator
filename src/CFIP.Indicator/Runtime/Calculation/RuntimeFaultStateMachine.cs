@@ -89,18 +89,9 @@ namespace cAlgo
                 enabled;
 
             if (explicitEnableTransition &&
-                (_state == RuntimeFaultState.Healthy ||
-                 _state == RuntimeFaultState.Degraded ||
-                 _state == RuntimeFaultState.EntryBlocked ||
-                 _state == RuntimeFaultState.Recovering))
+                _state == RuntimeFaultState.Healthy)
             {
-                // Turning Auto Trading on is the explicit operator re-arm
-                // action after a runtime entry block. A healthy next cycle
-                // will still re-detect any newly occurring fault and block
-                // execution again.
                 _entryArmed = true;
-                _state = RuntimeFaultState.Healthy;
-                _cycleFaulted = false;
             }
 
             _lastAutoTradingEnabled = true;
