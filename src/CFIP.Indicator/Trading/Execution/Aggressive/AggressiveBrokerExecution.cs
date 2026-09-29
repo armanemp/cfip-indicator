@@ -27,6 +27,16 @@ namespace cAlgo
                     SetAutoTradingState("BLOCKED", "AGG PERMISSION");
                     return;
                 }
+                string safetyReason;
+                if (!PassesAutoTradeSafetyGuards(
+                        type,
+                        volume,
+                        out safetyReason))
+                {
+                    _autoExecutionBlockReason = "AGG SAFETY " + safetyReason;
+                    SetAutoTradingState("BLOCKED", _autoExecutionBlockReason);
+                    return;
+                }
                 if (!TryValidateAggressiveFinalExecution(
                         closedM5,
                         type,
