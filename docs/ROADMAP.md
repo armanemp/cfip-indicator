@@ -3751,3 +3751,29 @@ Completed scope:
 Detailed record: `docs/PHASE-9-11-SIGNAL-LIFECYCLE-QUALITY-ALERTS.md`.
 
 Next phase after verification: Phase 9.12 — broker outcome/recovery telemetry and historical signal lifecycle calibration.
+
+
+
+## Phase 9.12 — Broker Outcome / Recovery Telemetry & Recent Lifecycle Calibration — 2026-09-29
+
+Status: IMPLEMENTATION COMPLETE on `phase/9-12-outcome-recovery-calibration`; verification pending.
+
+Completed scope:
+- bounded 128-observation broker-confirmed outcome history;
+- centralized/idempotent close-outcome recording with lane/regime/confidence context;
+- realized-R and lifecycle-duration telemetry;
+- recent-first contextual empirical calibration with exact/context/directional fallback;
+- bounded 64-record submission/recovery telemetry history;
+- explicit RecoveryRequired/resolution telemetry transitions;
+- compact panel diagnostics for recent outcomes and broker trace state;
+- Decision Contract coverage and accumulated-audit enforcement;
+- no public parameter changes and no second decision/execution authority.
+
+Known boundary:
+- recent history remains in-memory and is cleared on indicator restart;
+- target cTrader replay is still required for empirical signal timing, lifecycle duration, realized R, broker event ordering and actual signal-quality validation.
+
+Detailed record: `docs/PHASE-9-12-OUTCOME-RECOVERY-TELEMETRY-CALIBRATION.md`.
+
+Next phase after verification: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
+Operator action: local main should not be advanced from this branch until the phase is verified and merged.
