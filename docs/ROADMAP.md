@@ -4037,3 +4037,26 @@ Focus:
 Detailed record: `docs/PHASE-11-2-ANALYSIS-SIGNAL-EXECUTION-HEARTBEAT.md`.
 
 Next after closeout: Phase 11.3 — execution rejection forensics, missed-actionable cohorts and evidence-driven threshold refinement.
+
+## Phase 11.3 — Execution Rejection Forensics, Missed-Actionable Cohorts & Threshold Evidence — 2026-09-30
+
+Status: IMPLEMENTED on phase branch; verification/merge pending.
+
+Implementation:
+- added offline `tools/analyze_phase_11_3.py` for unified signal-trace and runtime-log forensics;
+- normalized execution rejection/failure cohorts by category, path, state and reason;
+- correlated execution events with same-configuration closed-M5 signal gates;
+- added potential missed-actionable and adverse-actionable forward cohorts using MFE/MAE diagnostics;
+- surfaced OB+FVG, WaveTrend, indicator-fusion and MTF evidence inside missed-actionable cohorts;
+- added near-threshold evidence around the existing confidence/quality/entry/RR boundaries;
+- allowed an optional offline threshold snapshot JSON without changing live parameters;
+- added `tools/audit_phase_11_3.py` and wired it into Source/Architecture CI;
+- documented the uploaded Swing reference assessment and kept the canonical CFIP swing owner unchanged.
+
+Threshold policy:
+No automatic live threshold was changed in Phase 11.3. Real cTrader logs/replay/outcomes are required before any threshold refinement.
+
+Verification:
+Phase 11.3 audit, accumulated Source/Architecture, Runtime Acceptance and cTrader Compile/Build are required. Target-terminal replay remains required for broker rejection semantics and empirical signal-quality measurements.
+
+Next phase: evidence-backed refinement of the specific owner/gate identified by measured cohorts.
