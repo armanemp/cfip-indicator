@@ -62,18 +62,12 @@ namespace cAlgo
 
                                         bool brokerTargetValid =
                                             planPosition.TakeProfit.HasValue &&
-                                            IsFinitePositive(
-                                                planPosition.TakeProfit.Value) &&
-                                            IsValidTarget(
+                                            IsLiveTargetBrokerSafe(
                                                 direction,
                                                 planPosition.EntryPrice,
-                                                planPosition.TakeProfit.Value) &&
-                                            LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                                                direction,
-                                                0,
-                                                planPosition.TakeProfit.Value,
                                                 market,
-                                                minimumForwardDistance);
+                                                planPosition.TakeProfit.Value,
+                                                atr);
 
                                         bool stopConfirmed =
                                             brokerStopValid;
