@@ -3164,8 +3164,7 @@ if "_tradePlanRegistry.Upsert(" not in parallel_code:
 
 visual_code = visual_builder.read_text(encoding="utf-8")
 alert_code = alert_calc.read_text(encoding="utf-8")
-if "&&
-                _decision.ActionableNow" not in visual_code and "_decision.ActionableNow" not in visual_code:
+if "_decision.ActionableNow" not in visual_code:
     raise SystemExit("Visual signal authority must require ActionableNow")
 for token in ("!_decision.ActionableNow", "GetManagedPendingOrder() != null"):
     if token not in alert_code:
