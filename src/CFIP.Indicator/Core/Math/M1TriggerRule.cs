@@ -32,6 +32,7 @@ namespace cAlgo
                 m5Open < m5NextOpen &&
                 m1Open >= m5Open &&
                 m1Open < m5NextOpen &&
+                m1NextOpen <= m5NextOpen &&
                 m1NextOpen <= reference;
         }
 
