@@ -204,7 +204,7 @@ namespace cAlgo
                 (!tp1Distinct ||
                  !SamePrice(
                      tp2,
-                     snapshot.Tp1)) &&
+                     tp1)) &&
                 !SamePrice(
                     tp2,
                     entry) &&
@@ -230,7 +230,7 @@ namespace cAlgo
                 (!tp2Distinct ||
                  !SamePrice(
                      tp3,
-                     snapshot.Tp2)) &&
+                     tp2)) &&
                 !SamePrice(
                     tp3,
                     entry) &&
@@ -256,7 +256,7 @@ namespace cAlgo
                 (!tp3Distinct ||
                  !SamePrice(
                      tp4,
-                     snapshot.Tp3)) &&
+                     tp3)) &&
                 !SamePrice(
                     tp4,
                     entry) &&
