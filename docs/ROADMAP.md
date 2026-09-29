@@ -3651,3 +3651,14 @@ Presentation changes:
 Verification requires Runtime Acceptance / Decision Contracts, cTrader Compile/Build, and Source/Architecture. Target-terminal replay is still required for empirical signal timing, chart readability, false-signal frequency and realized RR measurement.
 
 Detailed record: `docs/PHASE-9-6-SIGNAL-QUALITY-VISUAL-COHERENCE.md`.
+
+
+## Phase 9.7 — Regime-Aware No-Trade & Auto-Execution Hardening
+
+Status: implementation in progress on `phase/9-7-regime-auto-execution-hardening`; verification pending.
+
+This continuation concentrates strategy quality and automatic execution on one shared pipeline. RANGE/COMPRESSION now receive a canonical specialist no-trade rule; automatic market orders use bounded Market Range submission; live suitability and spread-to-stop-risk are rechecked immediately before broker mutation; pending orders are revalidated/cleaned when the regime invalidates them; compact level labels now use explicitly opaque backgrounds.
+
+No new public parameters, second decision authority, or multi-position broker authority were introduced.
+
+Detailed record: `docs/PHASE-9-7-REGIME-AUTO-EXECUTION-HARDENING.md`.
