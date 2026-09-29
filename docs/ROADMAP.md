@@ -1496,9 +1496,15 @@ Acceptance:
 
 ## Phase 7.3 — Semantic duplicate audit
 
-Status: in progress.
+Status: complete.
 
-This phase audits semantic overlap across the parameter surface and enforces one meaningful owner per retained concept. The audit also surfaced a visual synchronization regression where setup levels were only activated after TriggerReady; that regression is corrected in the same phase without changing execution eligibility.
+This phase audits semantic overlap across the parameter surface and enforces one meaningful owner per retained concept. It also corrected the visual synchronization regression where setup levels were only activated after TriggerReady; execution eligibility remains separately guarded.
+
+Confirmed removals: the redundant structural-stop alias `EnableDynamicSlTrail` and the redundant `DecisionEngine` pass-through facade. Current public parameter surface is 533 (530 baseline + 3 OSS extension).
+
+Permanent audit coverage is now part of Source / Architecture CI through `tools/audit_project_integrity.py`, with semantic parameter and runtime UI audits layered on top.
+
+Acceptance: 533 parameters and 0 unread candidates; 0 exact duplicate method signatures; canonical visual snapshot/level geometry PASS; execution UI single-owner boundary PASS; Runtime Acceptance PASS; cTrader Compile PASS.
 
 Compare similar settings such as:
 
