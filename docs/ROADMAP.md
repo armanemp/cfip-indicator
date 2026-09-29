@@ -3551,3 +3551,16 @@ Empirical boundary:
 
 Operator action:
 - local main must be pulled before the next continuation.
+
+
+## Current Track 9 status — 2026-09-29
+
+| Phase | Status | Note |
+| --- | --- | --- |
+| 9.1 Evidence duplication | COMPLETE | Evidence ownership/correlation controls are in main. |
+| 9.2 Confidence semantics + parallel opportunities + WaveTrend evidence | COMPLETE | Multi-lane detection/presentation and exact WaveTrend evidence are in main. |
+| 9.3 Empirical calibration | IMPLEMENTED IN PR #42 | Contextual prequential calibration is implemented; merge and CI gates remain required before main is advanced. |
+| 9.4 Regime-conditioned intelligence | NEXT | Context-specific weighting remains a separate phase. |
+| 9.5 No-trade intelligence | NEXT | Explainable no-trade state synthesis remains a separate phase. |
+
+Phase 9.3 does not claim measured trading-performance improvement until target-terminal replay/historical evaluation is completed.
