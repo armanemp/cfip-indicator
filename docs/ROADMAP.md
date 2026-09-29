@@ -1519,16 +1519,28 @@ Acceptance:
 
 ## Phase 7.4 — MaximumOpenPositions semantics
 
-Status: planned.
+Status: complete.
 
-Decide and encode real semantics:
+Decision:
 
-- single active plan; or
-- real multi-plan support.
+- CFIP remains single-active-plan / single-managed-position by design in the current execution architecture.
+- The public `MaximumOpenPositions` parameter was removed rather than leaving a configurable value that could advertise unsupported multi-plan behavior.
+- A single semantic capacity guard now gates automatic market, aggressive and predictive-pending execution through the same authoritative rule.
+- Numeric position-count checks tied to the removed setting were eliminated from execution paths.
 
 Acceptance:
 
-- parameter cannot advertise behavior that architecture does not provide.
+- no production public parameter advertises unsupported multi-position behavior;
+- execution capacity is owned by one semantic rule and one guard;
+- automatic market, aggressive and predictive-pending paths consume the same capacity boundary;
+- full-project and phase-specific audits verify the invariant.
+
+Signal-quality continuation:
+
+- This phase also reviewed the Decision -> Trigger -> Plan -> Execution chain for capacity-related drift.
+- The existing closed-bar decision/plan relationship remains intact; the deeper analytical false-signal work is deliberately reserved for Track 8/9 mathematical correctness and decision-intelligence phases rather than being hidden inside a capacity change.
+
+Next implementation phase: Phase 8.1 — M1 trigger correctness.
 
 ---
 
