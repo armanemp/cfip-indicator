@@ -7,12 +7,19 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private double[] BuildTargetSelectionRequiredRR(
-            double rrStep)
+            double rrStep,
+            OpportunityLane lane = OpportunityLane.Strategic)
         {
             double adaptiveTp1RR =
-                Math.Max(
-                    Tp1MinimumRR,
-                    MinimumRequiredRR());
+                lane == OpportunityLane.Tactical ||
+                lane == OpportunityLane.CounterHtfTactical ||
+                lane == OpportunityLane.MicroReaction
+                    ? Math.Max(
+                        1.0,
+                        TacticalOpportunityMinimumRR)
+                    : Math.Max(
+                        Tp1MinimumRR,
+                        MinimumRequiredRR());
 
             return new[]
             {
