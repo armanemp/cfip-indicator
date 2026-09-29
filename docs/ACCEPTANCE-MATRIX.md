@@ -157,14 +157,13 @@ The phase changes temporal and ownership guarantees only; decision thresholds, w
 | cTrader compile | Yes | PASS |
 
 
-## Phase 6.2 post-phase runtime stabilization
+## Post-Phase 6.2 startup/runtime correction — 2026-09-29
 
 | Contract | Automated controlled check | Status |
 |---|---:|---:|
-| Analysis guide is fixed-position on the chart and cannot leave the price viewport | Source gate | PASS |
-| Analysis guide reports loaded MTF dataset counts | Source gate | PASS |
-| Async initialization triggers one bounded startup calculation catch-up | Source gate | PASS |
-| Normal Calculate and startup catch-up share one calculation-cycle owner | Source gate | PASS |
-| Startup catch-up cannot become a recurring full-analysis heartbeat | Source gate | PASS |
-| 535-parameter contract remains unchanged | Source gate | PASS |
-| cTrader static-text API contract | Current cTrader API documentation | PASS |
+| Initialization may finalize as soon as required M5/M15/M30/H1/H4 data is sufficient | Source gate | PASS |
+| Optional M1/D1/W1 loading cannot block runtime readiness once core data is sufficient | Source gate | PASS |
+| Startup requests one lightweight calculation seed after readiness | Source gate | PASS |
+| Startup seed does not own market/pending execution or full live-cycle management | Source gate | PASS |
+| Normal Calculate remains the sole recurring live calculation owner | Source/runtime contract | PASS |
+| 535-parameter production contract remains unchanged | Source gate | PASS |
