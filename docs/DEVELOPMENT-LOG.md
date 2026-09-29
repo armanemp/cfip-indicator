@@ -1389,3 +1389,44 @@ Verification:
 
 Next phase: Phase 9.12 — broker outcome/recovery telemetry and historical signal lifecycle calibration.
 Operator pull: required now from the final main documentation closeout commit.
+
+
+
+## Phase 9.12 — Broker Outcome / Recovery Telemetry & Recent Lifecycle Calibration — 2026-09-29
+
+Status: IMPLEMENTATION COMPLETE; CI verification pending.
+Branch: `phase/9-12-outcome-recovery-calibration`
+
+Implementation:
+- added bounded `OutcomeObservation` history for broker-confirmed managed closes;
+- centralized broker-close outcome registration and deduplicated history by position id;
+- retained lane, regime, confidence and execution context for calibration-eligible plans;
+- added realized-R and lifecycle-duration observations for post-trade diagnosis;
+- added recent-first contextual empirical calibration over the latest 128 eligible observations, with existing dictionary fallback when recent history is sparse;
+- added bounded submission telemetry history and retained the latest compatibility fields;
+- recorded transitions into and out of `RecoveryRequired` through the same observational telemetry path;
+- exposed recent outcome and broker-trace summaries in the panel;
+- extended Decision Contracts and the accumulated whole-project audit.
+
+Important findings:
+- Phase 9.11's latest-only execution telemetry was diagnostically lossy because each new submission replaced the prior state;
+- the Phase 9.3 in-memory calibration dataset had no recent-window preference, so older observations could dominate a changed market context;
+- recovery plans created from reconstructed broker state must remain excluded from calibration because they do not carry the original decision context.
+
+Safety:
+- broker-confirmed position close remains the sole outcome source;
+- no broker mutation path was added;
+- no second decision or execution authority was introduced;
+- public parameter count remains unchanged.
+
+Verification:
+- Decision Contracts: pending;
+- Runtime Acceptance: pending;
+- cTrader Compile/Build: pending;
+- Source/Architecture + accumulated audit: pending;
+- target cTrader replay remains required for empirical validation.
+
+Detailed record: `docs/PHASE-9-12-OUTCOME-RECOVERY-TELEMETRY-CALIBRATION.md`.
+
+Next phase after verification: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
+Operator pull: only after Phase 9.12 is fully verified and merged.
