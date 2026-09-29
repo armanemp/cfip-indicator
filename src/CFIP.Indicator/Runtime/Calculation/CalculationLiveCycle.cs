@@ -234,6 +234,10 @@ namespace cAlgo
             int index,
             int closedM5)
         {
+            // Keep chart actionability on the same current-quote state as execution.
+            RefreshLiveDecisionActionability(
+                closedM5);
+
             _renderSignalVisualSnapshot =
                 BuildSignalVisualSnapshot(
                     closedM5);
