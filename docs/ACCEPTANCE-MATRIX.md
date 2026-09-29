@@ -564,3 +564,11 @@ Verification evidence:
 | Source / Architecture + accumulated audit | Required | Required |
 
 Target-terminal/replay remains required for actual false-signal frequency, missed valid opportunities, signal timing, realized R, lane/regime calibration and execution behavior.
+
+
+Phase 9.14 automated verification evidence:
+- Runtime Acceptance: PASS
+- cTrader Compile/Build: PASS
+- Source/Architecture + accumulated audits: PASS
+- Decision Contracts: PASS within Build
+- Target-terminal/replay: still required for empirical signal-quality and realized-R measurement.
