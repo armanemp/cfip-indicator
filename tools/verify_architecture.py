@@ -502,8 +502,8 @@ PLAN_RENDER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 PLAN_LABEL_RENDER = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
     visual_code = visual_path.read_text(encoding="utf-8")
-    if "_plan.IsLivePosition" not in visual_code or "_plan.Stop" not in visual_code:
-        raise SystemExit(f"Pre-trade plan stop must render from the plan; live stop must use broker-confirmed state: {visual_path.name}")
+    if "SignalVisualSnapshot snapshot" not in visual_code or "snapshot.Stop" not in visual_code:
+        raise SystemExit(f"Plan levels must render through the canonical visual snapshot: {visual_path.name}")
 
 for broker_path in (
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
