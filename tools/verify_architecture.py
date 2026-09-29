@@ -193,7 +193,8 @@ for token in (
         raise SystemExit(f"FVG detector missing audited mathematical/lifecycle condition: {token}")
 
 for token in (
-    'Id =',
+    "Id =",
+    "CreatedIndex =",
     "FvgRule.Identity(",
 ):
     if token not in fvg_lifecycle_code:
