@@ -149,12 +149,7 @@ namespace cAlgo
             double tp2 = preview ? snapshot.SetupTp2 : snapshot.Tp2;
             double tp3 = preview ? snapshot.SetupTp3 : snapshot.Tp3;
             double tp4 = preview ? snapshot.SetupTp4 : snapshot.Tp4;
-            int anchorM5 =
-                _m5Bars == null
-                    ? -1
-                    : _m5Bars.Count - 1;
-
-            DrawPlanLine(P + "ENTRY", entry, EntryLineColor, ShowEntry, anchorM5);
+            DrawPlanLine(P + "ENTRY", entry, EntryLineColor, ShowEntry);
 
             bool idealDistinct =
                 IsFinitePositive(idealEntry) &&
@@ -163,7 +158,7 @@ namespace cAlgo
                 P + "IDEAL_ENTRY",
                 idealEntry,
                 PanelAccentColor,
-                ShowEntry && idealDistinct, anchorM5);
+                ShowEntry && idealDistinct);
 
             bool triggerDistinct =
                 IsFinitePositive(trigger) &&
@@ -177,13 +172,13 @@ namespace cAlgo
                 P + "TRIGGER",
                 trigger,
                 TriggerLineColor,
-                ShowTrigger && triggerVisible, anchorM5);
+                ShowTrigger && triggerVisible);
 
             DrawPlanLine(
                 P + "SL",
                 stop,
                 SlLineColor,
-                ShowSL, anchorM5);
+                ShowSL);
 
             bool tp1Distinct =
                 IsFinitePositive(tp1) &&
@@ -193,7 +188,7 @@ namespace cAlgo
                 P + "TP1",
                 tp1,
                 TpLineColor,
-                ShowTP1 && tp1Distinct, anchorM5);
+                ShowTP1 && tp1Distinct);
 
             bool tp2Distinct =
                 IsFinitePositive(tp2) &&
@@ -204,7 +199,7 @@ namespace cAlgo
                 P + "TP2",
                 tp2,
                 Tp2LineColor,
-                ShowTP2 && tp2Distinct, anchorM5);
+                ShowTP2 && tp2Distinct);
 
             bool tp3Distinct =
                 IsFinitePositive(tp3) &&
@@ -215,7 +210,7 @@ namespace cAlgo
                 P + "TP3",
                 tp3,
                 Tp3LineColor,
-                ShowTP3 && tp3Distinct, anchorM5);
+                ShowTP3 && tp3Distinct);
 
             bool tp4Distinct =
                 IsFinitePositive(tp4) &&
@@ -226,7 +221,7 @@ namespace cAlgo
                 P + "TP4",
                 tp4,
                 Tp4LineColor,
-                ShowTP4 && tp4Distinct, anchorM5);
+                ShowTP4 && tp4Distinct);
 
             double activeBrokerTarget = snapshot.BrokerTarget;
             bool activeBrokerTargetDistinct =
@@ -243,7 +238,7 @@ namespace cAlgo
                 PanelAccentColor,
                 !preview &&
                 (ShowTP1 || ShowTP2 || ShowTP3 || ShowTP4) &&
-                activeBrokerTargetDistinct, anchorM5);
+                activeBrokerTargetDistinct);
         }
     }
 }

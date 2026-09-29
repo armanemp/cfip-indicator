@@ -15,19 +15,6 @@ namespace cAlgo
     {
         private const int CompactPlanLabelWidthBars = 7;
 
-        private int GetCompactPlanLineLeftBar()
-        {
-            if (Bars == null ||
-                Bars.Count < 2)
-                return 0;
-
-            return Math.Max(
-                0,
-                Bars.Count -
-                1 -
-                CompactPlanLineLengthBars);
-        }
-
         private int GetCompactPlanLabelAnchorBar(
             int lineLeft)
         {

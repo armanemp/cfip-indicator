@@ -536,6 +536,7 @@ VISUAL_CALC = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 VISUAL_LINE_RENDERER = ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"
 VISUAL_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
+VISUAL_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 VISUAL_LABEL_REMOVER = ROOT / "UI" / "Chart" / "PlanLabelRemover.cs"
 CONTROL_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 CONTROL_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
@@ -562,6 +563,7 @@ visual_calc_code = VISUAL_CALC.read_text(encoding="utf-8")
 visual_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
 visual_line_code = VISUAL_LINE_RENDERER.read_text(encoding="utf-8")
 plan_label_renderer_code = VISUAL_LABEL_RENDERER.read_text(encoding="utf-8")
+plan_label_coordinator_code = VISUAL_LABEL_COORDINATOR.read_text(encoding="utf-8")
 plan_label_remover_code = VISUAL_LABEL_REMOVER.read_text(encoding="utf-8")
 control_factory_code = CONTROL_FACTORY.read_text(encoding="utf-8")
 control_handlers_code = CONTROL_HANDLERS.read_text(encoding="utf-8")
@@ -578,26 +580,27 @@ if "_setupPreview" not in visual_builder_code and "_setupPreview" not in visual_
     raise SystemExit("Visual setup preview cache is not wired")
 if "RenderSetupPreview(" not in visual_calc_code or "RenderLevelLines(" not in visual_renderer_code:
     raise SystemExit("Visual setup levels must render through the shared level renderer")
-if "anchorM5" not in visual_line_code:
-    raise SystemExit("Level renderer must receive its canonical anchor explicitly")
-for required_binding in (
-    "_autoTradingQuickToggle.Click +=",
-    "_automaticOrdersQuickToggle.Click +=",
+if "GetPlanLineRightBar()" not in visual_line_code or "return Bars.Count - 1" not in visual_line_code:
+    raise SystemExit("Plan line renderer must anchor the right edge to the latest chart candle")
+if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
+    raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
+if "GetPlanLineLeftBar" not in visual_line_code:
+    raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
+if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
+    raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
+
+if "CreateExecutionStatus(" not in control_factory_code:
+    raise SystemExit("Execution controls must be status-only presentation surfaces")
+if ".Click +=" in control_factory_code or ".Checked +=" in control_factory_code or ".Unchecked +=" in control_factory_code:
+    raise SystemExit("Execution status surfaces must not own operator event handlers")
+for forbidden_action in (
+    "ApplyAutoTradingQuickToggleClick",
+    "ApplyAutomaticOrdersQuickToggleClick",
+    "SetAutoTradingRuntimeState",
+    "SetAutomaticOrdersRuntimeState",
 ):
-    if required_binding not in control_factory_code:
-        raise SystemExit(f"Execution toggle click binding missing: {required_binding}")
-if "_autoTradingQuickToggle.Checked +=" in control_factory_code or "_automaticOrdersQuickToggle.Checked +=" in control_factory_code:
-    raise SystemExit("Execution toggles must not retain a Checked action owner")
-if "_autoTradingQuickToggle.Unchecked +=" in control_factory_code or "_automaticOrdersQuickToggle.Unchecked +=" in control_factory_code:
-    raise SystemExit("Execution toggles must not retain an Unchecked action owner")
-for required_call in (
-    "ApplyAutoTradingQuickToggleClick(",
-    "ApplyAutomaticOrdersQuickToggleClick(",
-    "SetAutoTradingRuntimeState(",
-    "SetAutomaticOrdersRuntimeState(",
-):
-    if required_call not in control_handlers_code:
-        raise SystemExit(f"Execution control state mutation missing: {required_call}")
+    if forbidden_action in control_handlers_code:
+        raise SystemExit(f"Execution UI must not mutate runtime authority: {forbidden_action}")
 # Phase 1.5 performance/supervision gates.
 RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
@@ -897,6 +900,10 @@ if "_m5Bars.Count - 1" not in reaction_code:
 # Phase 6.4 compact 40-bar plan-level visual contract.
 if "CompactPlanLineLengthBars = 40" not in visual_line_code:
     raise SystemExit("Plan level renderer must use the fixed 40-bar compact span")
+if "GetPlanLineRightBar()" not in visual_line_code or "return Bars.Count - 1" not in visual_line_code:
+    raise SystemExit("Compact plan levels must terminate at the latest chart candle")
+if "MapM5ToChart(" in visual_line_code:
+    raise SystemExit("Compact plan levels must not use M5 time mapping for their right edge")
 if "Chart.FirstVisibleBarIndex" in visual_line_code or "Chart.LastVisibleBarIndex" in visual_line_code:
     raise SystemExit("Compact plan levels must not use full-width visible-chart boundaries")
 if "as ChartText" not in plan_label_renderer_code:
@@ -2162,16 +2169,20 @@ if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
 # Runtime UI, execution-priority and protection hotfix contracts.
 EXECUTION_CONTROLS_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 EXECUTION_CONTROLS_FACTORY_CODE = EXECUTION_CONTROLS_FACTORY.read_text(encoding="utf-8")
-for token in (
-    "_autoTradingQuickToggle.Click +=",
-    "_automaticOrdersQuickToggle.Click +=",
+if "CreateExecutionStatus(" not in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution controls must be status-only surfaces")
+if any(
+    token in EXECUTION_CONTROLS_FACTORY_CODE
+    for token in (
+        "_autoTradingQuickToggle.Click +=",
+        "_automaticOrdersQuickToggle.Click +=",
+        "_autoTradingQuickToggle.Checked +=",
+        "_automaticOrdersQuickToggle.Checked +=",
+        "_autoTradingQuickToggle.Unchecked +=",
+        "_automaticOrdersQuickToggle.Unchecked +=",
+    )
 ):
-    if token not in EXECUTION_CONTROLS_FACTORY_CODE:
-        raise SystemExit(f"Panel execution click binding missing: {token}")
-if "_autoTradingQuickToggle.Checked +=" in EXECUTION_CONTROLS_FACTORY_CODE or "_automaticOrdersQuickToggle.Checked +=" in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel execution toggles must not retain a Checked action owner")
-if "_autoTradingQuickToggle.Unchecked +=" in EXECUTION_CONTROLS_FACTORY_CODE or "_automaticOrdersQuickToggle.Unchecked +=" in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel execution toggles must not retain an Unchecked action owner")
+    raise SystemExit("Panel execution status surfaces must not own operator events")
 
 EXECUTION_TOGGLE_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
 EXECUTION_TOGGLE_HANDLERS_CODE = EXECUTION_TOGGLE_HANDLERS.read_text(encoding="utf-8")
@@ -2181,8 +2192,8 @@ for token in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
-    if token not in EXECUTION_TOGGLE_HANDLERS_CODE:
-        raise SystemExit(f"Execution toggle runtime binding missing: {token}")
+    if token in EXECUTION_TOGGLE_HANDLERS_CODE:
+        raise SystemExit(f"Execution UI must not mutate runtime authority: {token}")
 
 CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
 CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")

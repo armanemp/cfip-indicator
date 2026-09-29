@@ -3325,3 +3325,25 @@ Acceptance:
 - hands-on cTrader chart/broker validation: still required;
 - local pull is required now because `main` has advanced.
 
+
+
+## Corrective Hotfix — Chart Lines and Execution Status UI — 2026-09-29
+
+Status: implementation complete; automated verification pending final green gates.
+
+User runtime validation identified two remaining presentation/control defects after earlier hotfixes:
+- compact plan lines could stop before the latest chart candle because the right edge was tied to an M5-to-chart time mapping;
+- AUTO TRADE / AUTO ORDERS quick controls could act as runtime overrides rather than guaranteed editors of the public cTrader settings.
+
+Correction:
+- PlanLineRenderer now owns a canonical 40-bar compact span ending at the latest chart candle; FullWidthLevelLines remains an explicit full-series mode;
+- pending level rendering no longer depends on mapping a disposable M5 anchor;
+- label coordinators reuse the canonical plan-line left edge;
+- AUTO TRADE / AUTO ORDERS are now modern switch-style status indicators, not action buttons;
+- status indicators consume the canonical EnableAutoTrading / EnableAutomaticOrders state through EnsureExecutionRuntimeState();
+- legacy interactive execution-control fields and handlers are removed from the UI boundary;
+- tools/audit_runtime_ui.py adds machine checks for these invariants.
+
+No decision, signal, risk, RR, SL/TP, broker-mutation, predictive-pending or lifecycle authority changed.
+
+Next planned strategy phase after this corrective hotfix: Phase 7.3 — Semantic Duplicate Audit.
