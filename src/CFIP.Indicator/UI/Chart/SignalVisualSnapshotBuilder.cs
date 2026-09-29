@@ -172,7 +172,6 @@ namespace cAlgo
                     ? pending.StopLoss.Value : 0;
                 snapshot.PendingTarget = pending.TakeProfit.HasValue
                     ? pending.TakeProfit.Value : 0;
-                return snapshot;
             }
             else if (_plan != null &&
                      (_plan.Direction == 1 || _plan.Direction == -1))
