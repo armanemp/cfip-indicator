@@ -1088,8 +1088,10 @@ if "GetManagedLivePositionForPlan()" not in BROKER_STATE_CODE:
 
 CAPACITY_RULE = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 CAPACITY_RULE_CODE = CAPACITY_RULE.read_text(encoding="utf-8")
-if "IsSupportedSinglePlanCapacity" not in CAPACITY_RULE_CODE:
-    raise SystemExit("Pure execution capacity rule missing")
+if "AllowsNewSinglePlan(" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Pure single-plan execution capacity rule missing")
+if "return !hasManagedOpenPosition;" not in CAPACITY_RULE_CODE:
+    raise SystemExit("Single-plan execution capacity rule must fail closed when a managed position exists")
 
 LIVE_RECOVERY_RULE = ROOT / "Core" / "Math" / "LivePlanRecoveryRule.cs"
 LIVE_RECOVERY_RULE_CODE = LIVE_RECOVERY_RULE.read_text(encoding="utf-8")
@@ -1098,16 +1100,18 @@ if "ShouldClearStaleLivePlan" not in LIVE_RECOVERY_RULE_CODE:
 
 CAPACITY_GUARD = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
-if "ExecutionCapacityRule.IsSupportedSinglePlanCapacity" not in CAPACITY_CODE:
+if "ExecutionCapacityRule.AllowsNewSinglePlan(" not in CAPACITY_CODE:
     raise SystemExit("Single-plan execution capacity guard must delegate to the pure rule")
+if "ValidateSinglePlanCapacity(" not in CAPACITY_CODE:
+    raise SystemExit("Shared single-plan capacity guard missing")
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
     execution_code = execution_path.read_text(encoding="utf-8")
-    if "ValidateConfiguredPositionCapacity(" not in execution_code:
-        raise SystemExit(f"Execution capacity guard missing in {execution_path.name}")
+    if "ValidateSinglePlanCapacity(" not in execution_code:
+        raise SystemExit(f"Shared execution capacity guard missing in {execution_path.name}")
 
 AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
 AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
@@ -1599,7 +1603,7 @@ for token in (
 for path, token in (
     (
         ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-        "ValidateConfiguredPositionCapacity("
+        "ValidateSinglePlanCapacity("
     ),
     (
         ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
@@ -1644,7 +1648,7 @@ if AUTO_MARKET_PRETRADE.stat().st_size > 4096:
 AUTO_MARKET_ELIGIBILITY = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs"
 AUTO_MARKET_PREPARATION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketExecutionPreparation.cs"
 for path, token in (
-    (AUTO_MARKET_ELIGIBILITY, "ValidateConfiguredPositionCapacity("),
+    (AUTO_MARKET_ELIGIBILITY, "ValidateSinglePlanCapacity("),
     (AUTO_MARKET_PREPARATION, "TryPrepareExecutablePlan("),
 ):
     if not path.exists() or token not in path.read_text(encoding="utf-8"):
