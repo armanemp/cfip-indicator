@@ -74,6 +74,17 @@ namespace cAlgo
                 SwingPlateauRule.BreakIdentity(1, 12, 20) !=
                 SwingPlateauRule.BreakIdentity(1, 12, 21),
                 "structural break identity distinguishes direction and closed-bar event");
+
+            Assert(
+                StructuralEvidenceRule.CanonicalEventCount(true, true, true) == 1 &&
+                StructuralEvidenceRule.CanonicalEventCount(false, true, true) == 1 &&
+                StructuralEvidenceRule.CanonicalEventCount(false, false, false) == 0,
+                "structure, MSS and CHOCH collapse to one canonical event");
+            Assert(
+                !StructuralEvidenceRule.IsIndependentTransition(true, true, false) &&
+                StructuralEvidenceRule.IsIndependentTransition(false, true, false) &&
+                StructuralEvidenceRule.IsIndependentTransition(false, false, true),
+                "transition is independent only when structure is absent");
         }
 
         private static void VerifyM1TriggerSemantics()
