@@ -50,6 +50,16 @@ namespace cAlgo
                 return false;
             }
 
+            if (!candidate.ExecutionPolicyAllowed)
+            {
+                reason =
+                    string.IsNullOrWhiteSpace(
+                        candidate.ExecutionPolicyReason)
+                        ? "SCENARIO EXECUTION POLICY BLOCKED"
+                        : candidate.ExecutionPolicyReason;
+                return false;
+            }
+
             if (!candidate.ActionableNow)
             {
                 reason =
