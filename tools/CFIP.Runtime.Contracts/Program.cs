@@ -27,6 +27,7 @@ namespace cAlgo
             VerifyUnifiedSubmissionGate();
             VerifyVisualAndExecutionControls();
             VerifyResponsivePanelRuntime();
+            VerifyAggressiveEntryPolicy();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -1170,6 +1171,85 @@ namespace cAlgo
             Assert(
                 writer.Contains("if (row.Text != nextText)"),
                 "panel writer skips duplicate text writes");
+        }
+
+        private static void VerifyAggressiveEntryPolicy()
+        {
+            AggressiveEntryPolicy policy =
+                new AggressiveEntryPolicy();
+
+            DateTime t =
+                new DateTime(
+                    2026,
+                    1,
+                    1,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            Assert(
+                !policy.Observe(200, 1, true, t),
+                "first intrabar qualification sample does not arm");
+
+            Assert(
+                policy.QualifyingSamples == 1 &&
+                policy.Direction == 1 &&
+                policy.ReactionM5 == 200,
+                "first qualifying sample is tracked");
+
+            Assert(
+                !policy.Observe(200, 1, true, t),
+                "duplicate reaction sample does not count twice");
+
+            Assert(
+                policy.QualifyingSamples == 1,
+                "duplicate sample count remains stable");
+
+            Assert(
+                policy.Observe(
+                    200,
+                    1,
+                    true,
+                    t.AddMilliseconds(800)),
+                "second qualifying intrabar sample arms");
+
+            Assert(
+                policy.IsQualified &&
+                policy.StateText() == "ARMED",
+                "policy reaches armed state");
+
+            Assert(
+                !policy.Observe(
+                    200,
+                    -1,
+                    true,
+                    t.AddMilliseconds(1600)) &&
+                !policy.IsQualified &&
+                policy.Direction == -1 &&
+                policy.QualifyingSamples == 1,
+                "direction change invalidates prior qualification");
+
+            Assert(
+                !policy.Observe(
+                    200,
+                    -1,
+                    false,
+                    t.AddMilliseconds(2400)) &&
+                !policy.IsQualified &&
+                policy.QualifyingSamples == 0,
+                "lost reaction qualification invalidates immediately");
+
+            Assert(
+                !policy.Observe(
+                    201,
+                    1,
+                    true,
+                    t.AddMilliseconds(3200)) &&
+                policy.ReactionM5 == 201 &&
+                policy.Direction == 1 &&
+                policy.QualifyingSamples == 1,
+                "new M5 starts a fresh qualification window");
         }
 
         private static void Assert(bool condition, string name)
