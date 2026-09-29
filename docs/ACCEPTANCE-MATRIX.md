@@ -200,3 +200,22 @@ The phase chooses controlled intrabar entry explicitly. The closed-bar decision 
 | Startup seed remains one-shot and cannot recur | Source/runtime contract | PASS |
 | Normal Calculate remains the recurring live calculation owner | Source/runtime contract | PASS |
 | cTrader main-thread dispatch uses the documented BeginInvokeOnMainThread API | cTrader API contract | PASS |
+
+
+## Phase 6.4 — Compact 40-Bar Plan-Level Visuals — 2026-09-29
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Plan levels use a fixed 40-bar compact span | Source gate | PASS |
+| Plan levels terminate at the latest chart candle | Source gate | PASS |
+| Full-width visible-chart boundaries are not used for plan levels | Source gate | PASS |
+| Trigger / SL / TP styles are visually differentiated | Source gate | PASS |
+| Name + price tag is bound to the left end of the compact level | Source gate | PASS |
+| Existing ChartText objects are reused during refresh | Source gate | PASS |
+| Compact label boxes are cleaned with their text objects | Source gate | PASS |
+| No public parameter is added | Source / architecture | PASS |
+| Runtime acceptance contracts | Yes | PASS |
+| cTrader Compile | Yes | PASS |
+
+Live cTrader acceptance remains required for actual chart appearance, zoom/layout
+behavior, absence of flicker, startup latency and device-specific performance.
