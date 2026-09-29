@@ -34,9 +34,6 @@ namespace cAlgo
                 ShowSignalLabels)
                 RenderPlanLabels(snapshot);
             else
-                if (ShowLevelPriceLabels || ShowSignalLabels)
-                RenderPlanLabels(snapshot);
-            else
                 RemovePlanLabels();
 
             if (!ShowSignalArrow ||
