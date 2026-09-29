@@ -263,6 +263,16 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
+                    ProcessLiveActionableSignalAlert(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "ACTIONABLE SIGNAL ALERT");
+
+            RunCalculationStage(
+                () =>
+                {
                     TryAutoTrade(
                         closedM5);
                     return true;
