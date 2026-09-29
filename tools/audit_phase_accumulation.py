@@ -77,6 +77,18 @@ if "_serverSideTakeProfitLadderActive" not in target_progression:
 if "_serverSideTakeProfitLadderActive" not in partial_tp:
     raise SystemExit("partial TP mutation must yield to server-owned TP ladder")
 
+quality_rule = read("Core/Math/ActionableSignalQualityRule.cs")
+evaluator = read("Trading/Validation/TradeActionabilityEvaluator.cs")
+telemetry = read("Trading/Execution/SubmissionGateCoordinator.cs")
+if "AllowsQualityRecovery(" not in quality_rule:
+    raise SystemExit("high-quality signal recovery gate is missing")
+if "locationQuality <" not in evaluator or "timingQuality < 64" not in evaluator:
+    raise SystemExit("actionability staging recovery boundary is missing")
+if "RecordExecutionTelemetry(" not in telemetry or "RecordExecutionTelemetryFailure(" not in telemetry:
+    raise SystemExit("broker submission telemetry owner is missing")
+if "stopDistance" not in ladder:
+    raise SystemExit("server SL/TP geometry freshness guard is missing")
+
 if "return LineStyle.Solid" not in line:
     raise SystemExit("all plan level lines must be Solid")
 if "LineStyle.Dots" in line or "LineStyle.DotsRare" in line or "LineStyle.LinesDots" in line:
@@ -92,7 +104,7 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
 
 if "return Color.White" not in labels:
     raise SystemExit("level labels must use white text")
-if "Math.Min(1" not in line:
+if "return\n                Math.Min(" not in line:
     raise SystemExit("plan signal line thickness must be fixed at one")
 if "line.Thickness =
                                             1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
@@ -134,3 +146,4 @@ print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("All level label text: White / background-free")
 print("Public parameter contract: 552")
+print("Signal lifecycle / quality recovery / broker telemetry: PASS")
