@@ -61,9 +61,13 @@ namespace cAlgo
                 direction != -1)
                 return false;
 
-            return
-                direction == decisionDirection &&
-                decisionEntryAllowed;
+            if (decisionDirection != 0 &&
+                direction != decisionDirection)
+                return false;
+
+            // Setup Preview is a structural forecast. It is intentionally visible
+            // before TriggerReady/EntryAllowed, but it is still age-bounded.
+            return true;
         }
 
         public static bool IsPreTradePlanVisible(
