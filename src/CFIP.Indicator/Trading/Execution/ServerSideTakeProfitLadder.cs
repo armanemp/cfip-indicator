@@ -41,6 +41,41 @@ namespace cAlgo
                     ? 1
                     : -1;
 
+            double market =
+                _plan.Direction == 1
+                    ? Symbol.Bid
+                    : Symbol.Ask;
+
+            double atr =
+                _m5Frame != null && _m5Frame.Atr > 0
+                    ? _m5Frame.Atr
+                    : 0;
+
+            double minimumForwardDistance =
+                MinimumLiveTargetDistancePrice(
+                    _plan.Direction,
+                    atr);
+
+            if (!IsLiveTargetBrokerSafe(
+                    _plan.Direction,
+                    executionEntry,
+                    market,
+                    tp1,
+                    atr) ||
+                !IsLiveTargetBrokerSafe(
+                    _plan.Direction,
+                    executionEntry,
+                    market,
+                    tp2,
+                    atr) ||
+                !IsLiveTargetBrokerSafe(
+                    _plan.Direction,
+                    executionEntry,
+                    market,
+                    finalTarget,
+                    atr))
+                return false;
+
             double d1 =
                 directionSign *
                 (tp1 - executionEntry);
@@ -57,11 +92,15 @@ namespace cAlgo
                 directionSign *
                 (_plan.Stop - executionEntry);
 
-            // Server protection is accepted only when the structural SL is on the
-            // protective side of the actual execution price and the TP ladder is
-            // strictly progressive. This prevents stale/misaligned plan geometry
-            // from becoming broker-owned protection.
-            if (stopDistance >= -Symbol.PipSize ||
+            // Server protection is accepted only when the live structural SL is
+            // protective against the executable quote and the TP ladder is strictly
+            // progressive and still forward of the live market.
+            if (!IsValidManagedStop(
+                    _plan.Direction,
+                    executionEntry,
+                    market,
+                    _plan.Stop) ||
+                stopDistance >= -Symbol.PipSize ||
                 d1 <= Symbol.PipSize ||
                 d2 <= d1 ||
                 dFinal <= d2)
@@ -96,18 +135,11 @@ namespace cAlgo
             if (remaining < Symbol.VolumeInUnitsMin)
                 return false;
 
-            double atr =
-                _m5Frame != null && _m5Frame.Atr > 0
-                    ? _m5Frame.Atr
-                    : Symbol.PipSize * 10;
+            if (atr <= 0)
+                atr = Symbol.PipSize * 10;
 
             double minimumSpacingPrice =
-                Math.Max(
-                    Symbol.PipSize * 2,
-                    atr *
-                    Math.Max(
-                        0.05,
-                        MinimumTpSpacingAtr));
+                minimumForwardDistance;
 
             if (d2 - d1 < minimumSpacingPrice ||
                 dFinal - d2 < minimumSpacingPrice)
