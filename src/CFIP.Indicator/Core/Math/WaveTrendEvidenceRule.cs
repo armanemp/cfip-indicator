@@ -26,8 +26,6 @@ namespace cAlgo
     {
         internal static WaveTrendEvidenceResult Evaluate(
             WaveTrendSnapshot snapshot,
-            int oversoldLevel,
-            int overboughtLevel,
             int minimumQuality)
         {
             if (!snapshot.Valid)
