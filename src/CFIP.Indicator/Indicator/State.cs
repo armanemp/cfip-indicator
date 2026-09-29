@@ -100,9 +100,9 @@ namespace cAlgo
                 private bool _brokerProtectionRecoveryRequired;
         
                 // Public cTrader parameters are configuration inputs. These private
-                // flags are the single runtime authority used by execution, panel
-                // state and quick controls so UI state cannot become execution state
-                // by accident.
+                // flags are the single runtime authority consumed by execution and
+                // panel controls. Parameter changes and explicit panel actions both
+                // converge here, so execution never reads a stale UI-only state.
                 private bool AutoTradingEnabled =>
                     _autoTradingEnabledRuntime;
         
