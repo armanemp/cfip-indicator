@@ -32,6 +32,13 @@ namespace cAlgo
                                                 return;
                                             }
 
+                                            // Refresh quote-sensitive actionability immediately
+                                            // before pending evaluation. Pending eligibility itself
+                                            // remains independent of ActionableNow because a future
+                                            // Stop/Limit entry is intentionally not a market-entry state.
+                                            RefreshLiveDecisionActionability(
+                                                closedM5);
+
                                             string capacityReason;
                                             if (!ValidateSingleExecutionCapacity(
                                                     out capacityReason))
