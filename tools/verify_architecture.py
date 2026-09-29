@@ -518,7 +518,7 @@ if "_panelRows.Count != PanelRowCount" in panel_main_code:
     raise SystemExit("Panel renderer must not require eager fixed-row allocation")
 if "EnsurePanelRow(" not in panel_factory_code or "slot >= PanelRowCount" not in panel_writer_code:
     raise SystemExit("Panel rows must be lazily allocated under the fixed capacity")
-if "if (row.Text != nextText)" not in panel_writer_code or "if (row.ForegroundColor != nextColor)" not in panel_writer_code:
+if "if (row.Text != nextText)" not in panel_writer_code or ("if (row.ForegroundColor != nextColor)" not in panel_writer_code and "!Equals(row.ForegroundColor, nextColor)" not in panel_writer_code):
     raise SystemExit("Panel writer must avoid redundant UI property writes")
 if "_renderSignalVisualSnapshot =" not in panel_main_code or "BuildSignalVisualSnapshot(" not in panel_main_code:
     raise SystemExit("Panel render must reuse one canonical visual snapshot")
