@@ -77,7 +77,7 @@ namespace cAlgo
 
                     if (nextRatio <= 0.05)
                         return false;
-
+                }
             }
 
             remainingRatio =
