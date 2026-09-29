@@ -271,14 +271,20 @@ namespace cAlgo
             f.Quality =
                 ClampInt(
                     (int)Math.Round(
-                        strongest * 0.45 +
+                        strongest * 0.40 +
                         Math.Min(
                             100,
-                            f.Adx * 1.45) * 0.15 +
+                            f.Adx * 1.45) * 0.13 +
                         Math.Min(
                             100,
-                            evidence * 5) * 0.23 +
-                        regimeContribution * 0.17),
+                            evidence * 5) * 0.20 +
+                        regimeContribution * 0.15 +
+                        f.IndicatorConfluenceQuality * 0.12) -
+                    Math.Min(
+                        10,
+                        Math.Max(
+                            0,
+                            f.IndicatorConflict - 35) / 6),
                     0,
                     100);
 
