@@ -281,3 +281,24 @@ Hands-on cTrader validation remains required for actual toggle behavior, visible
 | Structural trailing is not a raw market-price chase | Required | Required | Required |
 
 Manual cTrader validation remains required for actual button interaction, observed order submission, visible label/box appearance and live protection behavior.
+
+
+## Corrective Hotfix — Chart Lines and Execution Status UI — 2026-09-29
+
+| Contract | Automated controlled check | cTrader |
+|---|---:|---:|
+| Plan lines use a canonical 40-bar compact chart span | PASS | Required |
+| Plan lines terminate at the latest chart candle | PASS | Required |
+| Plan-line geometry is independent of M5 event-time mapping | PASS | Required |
+| Pending level rendering has no disposable M5 anchor dependency | PASS | Required |
+| Label placement reuses the canonical line left edge | PASS | Required |
+| AUTO TRADE is a non-interactive switch-style status indicator | PASS | Required |
+| AUTO ORDERS is a non-interactive switch-style status indicator | PASS | Required |
+| Execution status is synchronized from EnableAutoTrading / EnableAutomaticOrders | PASS | Required |
+| UI cannot mutate execution runtime authority | PASS | Required |
+| Legacy interactive execution-control symbols are absent from source | PASS | Required |
+| Source / Architecture | Required | Required |
+| Runtime Acceptance Contracts | Required | Required |
+| cTrader Compile | Required | Required |
+
+Hands-on cTrader validation remains required for exact visual line endpoints, 40-bar appearance on target chart timeframes, status-switch rendering, settings synchronization and non-interactivity.
