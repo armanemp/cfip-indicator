@@ -114,8 +114,6 @@ namespace cAlgo
 
                                         if (_panel != null)
                                             _panel.IsVisible = true;
-
-                                        RenderAnalysisGuide();
                                     }
                                     catch (Exception panelException)
                                     {
@@ -348,23 +346,10 @@ namespace cAlgo
             }
         }
 
-        private void RunStartupCalculationCatchUp()
-        {
-            if (!_initializationReady ||
-                _lastCalculationCompletedUtc != DateTime.MinValue ||
-                Bars == null ||
-                Bars.Count == 0)
-                return;
-
-            RunCalculationCycle(
-                Bars.Count - 1);
-        }
-
         protected override void OnTimer()
         {
             if (_initializationReady)
             {
-                RunStartupCalculationCatchUp();
                 HandleRuntimeHeartbeat();
                 return;
             }

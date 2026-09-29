@@ -16,7 +16,6 @@ namespace cAlgo
     {
         private void RemoveAllChartObjects()
                         {
-                            RemoveAnalysisGuide();
                             RemovePlanObjects();
                             RemoveHistoricalObjects();
                             RemoveManagedPendingOrderObjects();
