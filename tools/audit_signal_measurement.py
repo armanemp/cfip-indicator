@@ -29,7 +29,7 @@ frame_path = ROOT / "src/CFIP.Indicator/Analysis/Market/Models/Frame.cs"
 orchestration_path = ROOT / "src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs"
 trace_model_path = ROOT / "src/CFIP.Indicator/Core/Models/SignalEvaluationTrace.cs"
 trace_store_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchiveStore.cs"
-trace_persistence_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchivePersistence.cs"
+signal_trace_persistence_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchivePersistence.cs"
 panel_path = ROOT / "src/CFIP.Indicator/UI/Panel/Rows/PanelCalibrationRowsRenderer.cs"
 analyzer_path = ROOT / "tools/analyze_signal_trace.py"
 market_exec_path = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs"
@@ -80,7 +80,7 @@ require_text(
     "MaxSignalEvaluationTraceHistory = 256",
 )
 require_text(
-    trace_persistence_path,
+    signal_trace_persistence_path,
     "SignalTraceSchema =",
     "OutcomeArchivePeriodStart(",
     "start.AddDays(90)",
@@ -140,7 +140,7 @@ require_text(
     "ExecutionPlanGeometryRule.cs",
 )
 
-trace_text = read(trace_store_path) + read(trace_persistence_path)
+trace_text = read(trace_store_path) + read(signal_trace_persistence_path)
 if "File.Delete" in trace_text or "Directory.Delete" in trace_text:
     errors.append("signal trace archive must not delete historical files")
 
