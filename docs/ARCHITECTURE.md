@@ -100,6 +100,8 @@ All production `.cs` files must remain below 20 KiB. The runtime Calculate() ent
 
 Chart object creation/removal and visual renderers live only under UI modules. Trading and intelligence modules may request presentation through authoritative state, but they do not own chart mutations.
 
+Signal visual lifecycle is owned by the platform-neutral `SignalVisualLifecycleRule`: pre-trade plans and setup previews are bounded by current direction/actionability and a finite closed-M5 age. Legacy alert-mirror text is cleanup-only and cannot become a second signal authority. Blocked/restricted candidates do not produce user-facing alert side effects.
+
 ## Broker boundary
 
 Broker mutation calls are restricted to the execution, pending, lifecycle and live-management boundaries.
