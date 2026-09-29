@@ -3064,7 +3064,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 5.5 — Visual setup levels and execution controls**
+**NEXT: Phase 6.1 — Decision closed-bar contract**
 
 Then proceed in dependency order:
 
