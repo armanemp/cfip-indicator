@@ -1277,3 +1277,6 @@ Research:
 - current cTrader Algo documentation supports multi-timeframe bar retrieval through MarketData.GetBars, bounded Market Range execution through ExecuteMarketRangeOrder, volume normalization via Symbol.NormalizeVolumeInUnits, and server-side position protections.
 
 Detailed phase record: `docs/PHASE-9-8-INDICATOR-FUSION-TRADE-QUALITY.md`.
+
+
+Phase 9.8 merge closeout: PR #50 merged into `main` as `37cfd761bbb439d6e154315995664721b6c31740`. Local `main` must be pulled before the next continuation.
