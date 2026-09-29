@@ -85,24 +85,21 @@ namespace cAlgo
             if (remaining < Symbol.VolumeInUnitsMin)
                 return false;
 
-            double minimumSpacingPips =
-                Math.Max(
-                    1.0,
-                    Math.Max(
-                        0.01,
-                        MinimumTpSpacingAtr) *
-                    Math.Max(
-                        Symbol.PipSize,
-                        _m5Frame != null &&
-                        _m5Frame.Atr > 0
-                            ? _m5Frame.Atr
-                            : Symbol.PipSize * 10) /
-                    Math.Max(
-                        Symbol.PipSize,
-                        Symbol.PipSize));
+            double atr =
+                _m5Frame != null && _m5Frame.Atr > 0
+                    ? _m5Frame.Atr
+                    : Symbol.PipSize * 10;
 
-            if (d2 - d1 < minimumSpacingPips * Symbol.PipSize ||
-                dFinal - d2 < minimumSpacingPips * Symbol.PipSize)
+            double minimumSpacingPrice =
+                Math.Max(
+                    Symbol.PipSize * 2,
+                    atr *
+                    Math.Max(
+                        0.05,
+                        MinimumTpSpacingAtr));
+
+            if (d2 - d1 < minimumSpacingPrice ||
+                dFinal - d2 < minimumSpacingPrice)
                 return false;
 
             try
