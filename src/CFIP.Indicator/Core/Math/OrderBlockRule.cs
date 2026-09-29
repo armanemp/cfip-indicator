@@ -83,8 +83,8 @@ namespace cAlgo
             double displacementAtr)
         {
             if (!IsValidDirection(direction) ||
-                !FinitePositive(creationAtr) ||
-                !FinitePositive(displacementAtr) ||
+                !FinitePositiveOrderBlockValue(creationAtr) ||
+                !FinitePositiveOrderBlockValue(displacementAtr) ||
                 !Finite(open) ||
                 !Finite(close))
                 return false;
@@ -115,7 +115,7 @@ namespace cAlgo
             if (!IsValidDirection(direction) ||
                 !Finite(close) ||
                 !Finite(priorExtreme) ||
-                !FinitePositive(creationAtr) ||
+                !FinitePositiveOrderBlockValue(creationAtr) ||
                 !FiniteNonNegative(breakAtr))
                 return false;
 
@@ -196,7 +196,7 @@ namespace cAlgo
                     zoneLow,
                     zoneHigh) ||
                 !Finite(probe) ||
-                !FinitePositive(tickSize))
+                !FinitePositiveOrderBlockValue(tickSize))
                 return false;
 
             if (IsFullyMitigated(
@@ -289,7 +289,7 @@ namespace cAlgo
                 !double.IsInfinity(value);
         }
 
-        private static bool FinitePositive(double value)
+        private static bool FinitePositiveOrderBlockValue(double value)
         {
             return
                 Finite(value) &&
