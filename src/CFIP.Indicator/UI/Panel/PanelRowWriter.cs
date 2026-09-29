@@ -18,7 +18,7 @@ namespace cAlgo
             int width)
         {
             if (index < 0 ||
-                index >= _panelRows.Count)
+                index >= PanelRowCount)
                 return;
 
             EnsurePanelRow(index);
@@ -89,8 +89,10 @@ namespace cAlgo
             bool bold,
             int width)
         {
-            if (slot >= _panelRows.Count)
+            if (slot >= PanelRowCount)
                 return;
+
+            EnsurePanelRow(slot);
 
             SetPanelRow(
                 slot,
