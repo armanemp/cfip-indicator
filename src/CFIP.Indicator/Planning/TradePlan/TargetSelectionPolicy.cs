@@ -14,9 +14,7 @@ namespace cAlgo
                 lane == OpportunityLane.Tactical ||
                 lane == OpportunityLane.CounterHtfTactical ||
                 lane == OpportunityLane.MicroReaction
-                    ? Math.Max(
-                        1.0,
-                        TacticalOpportunityMinimumRR)
+                    ? MinimumPlanRiskReward(lane)
                     : Math.Max(
                         Tp1MinimumRR,
                         MinimumRequiredRR());
@@ -34,6 +32,21 @@ namespace cAlgo
                     Tp4MinimumRR,
                     Tp3MinimumRR + rrStep)
             };
+        }
+
+        private double MinimumPlanRiskReward(
+            OpportunityLane lane)
+        {
+            if (lane == OpportunityLane.Tactical ||
+                lane == OpportunityLane.CounterHtfTactical ||
+                lane == OpportunityLane.MicroReaction)
+                return Math.Max(
+                    1.0,
+                    TacticalOpportunityMinimumRR);
+
+            return Math.Max(
+                MinimumTradeRR,
+                MinimumRequiredRR());
         }
 
         private bool RequiresHtfRewardForTargetStage(
