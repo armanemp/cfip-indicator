@@ -109,7 +109,7 @@ namespace cAlgo
                 text.Append('|');
                 text.Append((int)o.EntryMode);
                 text.Append('|');
-                text.Append(Escape(o.Regime));
+                text.Append(Encode(o.Regime));
                 text.Append('|');
                 text.Append(o.Confidence);
                 text.Append('|');
@@ -291,25 +291,25 @@ namespace cAlgo
             return true;
         }
 
-        private static string Escape(string value)
+        private static string Encode(string value)
         {
-            return string.IsNullOrEmpty(value)
-                ? ""
-                : value.Replace("\\", "\\\\")
-                       .Replace("|", "\\p")
-                       .Replace("\r", "\\r")
-                       .Replace("\n", "\\n");
+            return Convert.ToBase64String(
+                Encoding.UTF8.GetBytes(
+                    value ?? ""));
         }
 
-        private static string Unescape(string value)
+        private static string Decode(string value)
         {
-            if (value == null)
+            try
+            {
+                return Encoding.UTF8.GetString(
+                    Convert.FromBase64String(
+                        value ?? ""));
+            }
+            catch
+            {
                 return "";
-
-            return value.Replace("\\n", "\n")
-                        .Replace("\\r", "\r")
-                        .Replace("\\p", "|")
-                        .Replace("\\\\", "\\");
+            }
         }
 
         private void PersistOutcomeHistory()
