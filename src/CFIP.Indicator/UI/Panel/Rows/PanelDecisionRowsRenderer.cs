@@ -52,6 +52,58 @@ namespace cAlgo
                                                         true,
                                                         contentWidth);
 
+                                                    string divergenceText =
+                                                        _decision.DivergenceDirection == 0
+                                                            ? "NONE"
+                                                            : (_decision.DivergenceType ?? "DIVERGENCE") +
+                                                              " " +
+                                                              _decision.DivergenceQuality +
+                                                              " • " +
+                                                              _decision.DivergenceAgeBars +
+                                                              "B";
+
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "DIVERGENCE  " +
+                                                        divergenceText,
+                                                        _decision.DivergenceDirection ==
+                                                            -direction &&
+                                                        _decision.DivergenceQuality >= 70
+                                                            ? SlLineColor
+                                                            : _decision.DivergenceDirection ==
+                                                              direction &&
+                                                              _decision.DivergenceQuality >= 70
+                                                                ? TpLineColor
+                                                                : PanelSecondaryTextColor,
+                                                        false,
+                                                        contentWidth);
+
+                                                    if (_plan != null &&
+                                                        !_plan.IsLivePosition)
+                                                    {
+                                                        string actionabilityReason;
+                                                        bool actionable =
+                                                            IsCurrentSignalActionable(
+                                                                _decision == null
+                                                                    ? -1
+                                                                    : _plan.CreatedM5,
+                                                                out actionabilityReason);
+
+                                                        AddPanelRow(
+                                                            ref slot,
+                                                            "ENTRY GATE  •  " +
+                                                            (actionable
+                                                                ? "ACTIONABLE"
+                                                                : "BLOCKED") +
+                                                            "  •  " +
+                                                            actionabilityReason,
+                                                            actionable
+                                                                ? TpLineColor
+                                                                : PanelWarningColor,
+                                                            true,
+                                                            contentWidth);
+                                                    }
+
                                                     RenderPanelCalibrationRows(
                                                         ref slot,
                                                         contentWidth);
@@ -198,14 +250,13 @@ AddPanelRow(
                                                     {
                                                         AddPanelRow(
                                                             ref slot,
-                                                            "EARLY ANALYSIS  •  " +
+                                                            "EARLY WATCH  •  " +
                                                             (_prediction.Direction == 1
                                                                 ? "BUY"
                                                                 : "SELL") +
                                                             "  •  CONF " +
                                                             _prediction.Confidence,
-                                                            PanelDirectionColor(
-                                                                _prediction.Direction),
+                                                            PanelSecondaryTextColor,
                                                             true,
                                                             contentWidth);
                                     
