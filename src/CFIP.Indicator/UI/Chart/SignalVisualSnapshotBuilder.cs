@@ -263,10 +263,35 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : _decision.Regime;
 
+            snapshot.TriggerRuntimeReady =
+                _triggerRuntime.Latched &&
+                _decision != null &&
+                _decision.Direction != 0 &&
+                _triggerRuntime.Direction == _decision.Direction &&
+                _triggerRuntime.DecisionM5 == closedM5;
+
+            snapshot.TriggerM1Index =
+                snapshot.TriggerRuntimeReady
+                    ? _triggerRuntime.ConfirmedM1
+                    : -1;
+
+            snapshot.TriggerRuntimeScore =
+                _triggerRuntime.Score;
+
+            snapshot.TriggerRuntimeRequired =
+                _triggerRuntime.RequiredScore;
+
+            snapshot.TriggerRuntimeReason =
+                _triggerRuntime.Reason ?? "";
+
             snapshot.TriggerVisible =
-                snapshot.PlanActive &&
+                (snapshot.PlanActive ||
+                 snapshot.SetupPreviewActive) &&
                 !snapshot.LivePosition &&
-                IsFinitePositive(snapshot.Trigger) &&
+                IsFinitePositive(
+                    snapshot.PlanActive
+                        ? snapshot.Trigger
+                        : snapshot.SetupTrigger) &&
                 (snapshot.EntryMode == ExecutionMode.WaitingForTrigger ||
                  snapshot.EntryMode == ExecutionMode.ContinuationStop);
             snapshot.IdealEntryVisible =
