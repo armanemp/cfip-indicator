@@ -1322,3 +1322,31 @@ Final automated verification:
 
 Target-terminal cTrader replay remains required for empirical signal timing, visual rendering, broker event behavior, partial-fill observation, duplicate-alert observation, protection recovery and realized trading outcomes.
 
+
+## Phase 9.10 — Smart Auto-Trade / Auto-Order Protection & Accumulated Audit — 2026-09-29
+
+Status: implementation complete; final documentation-inclusive CI and merge closeout pending.
+
+Branch: `phase/9-10-smart-auto-trade-protection-audit`
+PR: #52
+Current head: `59da001a84c0e941027c2d6d2f6363da065a4d63`
+
+Implementation and accumulated findings:
+- added deterministic `SmartBreakEvenRule` using structural risk, TP1 geometry, spread and existing break-even settings;
+- propagated broker-owned server break-even through automatic market, aggressive market, continuation-stop and reversal-limit advanced protection paths;
+- local polling break-even yields while broker-owned break-even is active;
+- server-side TP ladder remains the mutation authority for eligible partial-TP configurations;
+- all plan/signal level lines are Solid; Trigger/SL remain differentiated by thickness only;
+- accumulated auto-trade/auto-order audit is wired into Source/Architecture CI and checks execution gates, broker protection ownership, local mutation de-duplication, chart-line style and parameter stability;
+- Decision Contracts include deterministic smart break-even and TP1-collision coverage;
+- two verifier regressions were found and corrected during this phase: legacy dotted-line expectation and an execution-boundary size edge case.
+
+Verification evidence on the latest code-equivalent head:
+- Runtime Acceptance #1066 PASS;
+- cTrader Compile/Build #1250 PASS;
+- Source/Architecture #1257 PASS, including all layered audits.
+
+The latest audit-only refinement strengthens Solid-only checking across all chart renderers, so final CI must be green on the documentation-inclusive head before merge.
+
+Next phase: Phase 9.11 — Automatic Execution Telemetry & Deeper SL/TP Coherence.
+Operator pull: required after PR #52 is merged.
