@@ -2146,6 +2146,57 @@ if re.search(
 if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
     raise SystemExit("Phase 7.1: target update step must consume TargetUpdateStepAtr directly")
 
+# Runtime UI and protection hotfix contracts.
+EXECUTION_CONTROLS_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
+EXECUTION_CONTROLS_FACTORY_CODE = EXECUTION_CONTROLS_FACTORY.read_text(encoding="utf-8")
+if "_autoTradingQuickToggle.Click +=" not in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel auto-trading toggle must use a direct click action")
+if "_automaticOrdersQuickToggle.Click +=" not in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel automatic-orders toggle must use a direct click action")
+if ".Checked +=" in EXECUTION_CONTROLS_FACTORY_CODE or ".Unchecked +=" in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution toggles must not retain duplicate Checked/Unchecked action owners")
+
+EXECUTION_TOGGLE_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
+EXECUTION_TOGGLE_HANDLERS_CODE = EXECUTION_TOGGLE_HANDLERS.read_text(encoding="utf-8")
+for token in (
+    "ApplyAutoTradingQuickToggleClick",
+    "ApplyAutomaticOrdersQuickToggleClick",
+    "SetAutoTradingRuntimeState",
+    "SetAutomaticOrdersRuntimeState",
+):
+    if token not in EXECUTION_TOGGLE_HANDLERS_CODE:
+        raise SystemExit(f"Execution toggle runtime binding missing: {token}")
+
+PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
+PLAN_RENDERER_CODE = PLAN_RENDERER.read_text(encoding="utf-8")
+if "RenderPlanLabels(snapshot, true)" not in PLAN_RENDERER_CODE:
+    raise SystemExit("Setup preview must render compact level labels")
+if "RemovePlanLabels();" in PLAN_RENDERER_CODE and "RenderPlanLabels(snapshot, true)" not in PLAN_RENDERER_CODE:
+    raise SystemExit("Setup preview must not be label-less")
+
+PLAN_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
+PLAN_LABEL_COORDINATOR_CODE = PLAN_LABEL_COORDINATOR.read_text(encoding="utf-8")
+if "bool preview" not in PLAN_LABEL_COORDINATOR_CODE:
+    raise SystemExit("Plan label renderer must accept preview context")
+if "snapshot.SetupEntry" not in PLAN_LABEL_COORDINATOR_CODE:
+    raise SystemExit("Preview compact labels must use preview level values")
+
+PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
+PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
+if "box.IsFilled =" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must render an explicit box fill")
+if "Color.FromArgb(\n                        72,\n                        color)" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan label box must use the semantic level color")
+if PLAN_LABEL_RENDERER_CODE.find('string boxName') > PLAN_LABEL_RENDERER_CODE.find('ChartText label'):
+    raise SystemExit("Compact label box must be prepared before the text object")
+
+PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
+PROTECTION_MANAGER_CODE = PROTECTION_MANAGER.read_text(encoding="utf-8")
+if "market - minimumDistance" in PROTECTION_MANAGER_CODE or "market + minimumDistance" in PROTECTION_MANAGER_CODE:
+    raise SystemExit("Structural trailing must not chase raw market price via minimum-distance clamping")
+if "if (structuralUpdate" not in PROTECTION_MANAGER_CODE:
+    raise SystemExit("Smart trailing progression must be structurally gated")
+
 # Planning/risk ownership checks.
 PLANNING_ROOT = ROOT / "Planning"
 RISK_ROOT = ROOT / "Trading" / "Risk"
