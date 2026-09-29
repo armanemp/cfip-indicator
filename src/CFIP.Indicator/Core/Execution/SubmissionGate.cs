@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace cAlgo
 {
@@ -8,88 +9,119 @@ namespace cAlgo
         private const int MaximumBackoffSeconds = 30;
         private const int CircuitFailureThreshold = 4;
         private const int CircuitCooldownSeconds = 60;
+        private const int MaximumRetainedStates = 128;
 
-        private DateTime _nextAllowedUtc = DateTime.MinValue;
-        private DateTime _circuitOpenUntilUtc = DateTime.MinValue;
-        private int _consecutiveFailures;
-        private string _lastKey = string.Empty;
+        private readonly Dictionary<SubmissionAttemptIdentity, SubmissionGateState> _states =
+            new Dictionary<SubmissionAttemptIdentity, SubmissionGateState>();
 
         public bool TryAcquire(
+            SubmissionAttemptIdentity identity,
             DateTime nowUtc,
-            string key,
             out string reason)
         {
             reason = string.Empty;
 
-            if (nowUtc < _circuitOpenUntilUtc)
+            if (identity.SignalKey.Length == 0 ||
+                identity.AttemptKey.Length == 0)
             {
-                reason =
-                    "SUBMISSION CIRCUIT BREAKER";
+                reason = "INVALID SUBMISSION IDENTITY";
                 return false;
             }
 
-            if (nowUtc < _nextAllowedUtc)
+            SubmissionGateState state;
+
+            if (!_states.TryGetValue(identity, out state))
+                return true;
+
+            if (nowUtc < state.CircuitOpenUntilUtc)
             {
-                reason =
-                    "SUBMISSION BACKOFF";
+                reason = "SUBMISSION CIRCUIT BREAKER";
                 return false;
             }
 
-            if (!string.Equals(
-                    _lastKey,
-                    key,
-                    StringComparison.Ordinal))
+            if (nowUtc < state.NextAllowedUtc)
             {
-                _lastKey =
-                    key ?? string.Empty;
+                reason = "SUBMISSION BACKOFF";
+                return false;
             }
-
-            _nextAllowedUtc =
-                nowUtc.AddMilliseconds(500);
 
             return true;
         }
 
         public void Record(
+            SubmissionAttemptIdentity identity,
             DateTime nowUtc,
             bool success)
         {
+            if (identity.SignalKey.Length == 0 ||
+                identity.AttemptKey.Length == 0)
+                return;
+
             if (success)
             {
-                _consecutiveFailures = 0;
-                _nextAllowedUtc =
-                    DateTime.MinValue;
-                _circuitOpenUntilUtc =
-                    DateTime.MinValue;
+                _states.Remove(identity);
                 return;
             }
 
-            _consecutiveFailures++;
+            SubmissionGateState state;
 
-            int exponent =
-                Math.Min(
-                    5,
-                    _consecutiveFailures - 1);
+            if (!_states.TryGetValue(identity, out state))
+            {
+                state = new SubmissionGateState();
+                _states[identity] = state;
+            }
 
-            int delay =
-                BaseBackoffSeconds *
-                (1 << exponent);
+            state.ConsecutiveFailures =
+                Math.Max(1, state.ConsecutiveFailures + 1);
+            state.LastFailureUtc = nowUtc;
 
-            delay =
+            int exponent = Math.Min(
+                5,
+                state.ConsecutiveFailures - 1);
+
+            int delaySeconds =
                 Math.Min(
                     MaximumBackoffSeconds,
-                    delay);
+                    BaseBackoffSeconds * (1 << exponent));
 
-            _nextAllowedUtc =
-                nowUtc.AddSeconds(
-                    delay);
+            state.NextAllowedUtc =
+                nowUtc.AddSeconds(delaySeconds);
 
-            if (_consecutiveFailures >=
+            if (state.ConsecutiveFailures >=
                 CircuitFailureThreshold)
             {
-                _circuitOpenUntilUtc =
-                    nowUtc.AddSeconds(
-                        CircuitCooldownSeconds);
+                state.CircuitOpenUntilUtc =
+                    nowUtc.AddSeconds(CircuitCooldownSeconds);
+            }
+
+            PruneInactiveStates(nowUtc);
+        }
+
+        private void PruneInactiveStates(DateTime nowUtc)
+        {
+            if (_states.Count <= MaximumRetainedStates)
+                return;
+
+            List<SubmissionAttemptIdentity> removable =
+                new List<SubmissionAttemptIdentity>();
+
+            foreach (KeyValuePair<SubmissionAttemptIdentity, SubmissionGateState> entry in _states)
+            {
+                SubmissionGateState state = entry.Value;
+
+                if (nowUtc >= state.NextAllowedUtc &&
+                    nowUtc >= state.CircuitOpenUntilUtc)
+                {
+                    removable.Add(entry.Key);
+                }
+            }
+
+            foreach (SubmissionAttemptIdentity identity in removable)
+            {
+                _states.Remove(identity);
+
+                if (_states.Count <= MaximumRetainedStates)
+                    break;
             }
         }
     }
