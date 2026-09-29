@@ -41,19 +41,19 @@ namespace cAlgo
             int start, end;
             double level;
             Assert(
-                SwingPlateauRule.TryGetHighPlateau(highs, 2, 1, 6, 0.001, out start, out end, out level) &&
+                SwingPlateauRule.TryGetHighPlateau(highs.Length, 2, 1, 6, 0.001, i => highs[i], out start, out end, out level) &&
                 start == 2 && end == 4 && level == 5,
                 "flat swing-high plateau resolves once at its leftmost canonical bar");
             Assert(
-                !SwingPlateauRule.TryGetHighPlateau(highs, 3, 1, 6, 0.001, out start, out end, out level),
+                !SwingPlateauRule.TryGetHighPlateau(highs.Length, 3, 1, 6, 0.001, i => highs[i], out start, out end, out level),
                 "interior plateau bars cannot create duplicate swing identities");
             Assert(
-                !SwingPlateauRule.TryGetHighPlateau(highs, 2, 1, 4, 0.001, out start, out end, out level),
+                !SwingPlateauRule.TryGetHighPlateau(highs.Length, 2, 1, 4, 0.001, i => highs[i], out start, out end, out level),
                 "unconfirmed plateau cannot use bars beyond closed index");
 
             double[] lows = { 9, 8, 5, 5, 5, 7, 8, 6 };
             Assert(
-                SwingPlateauRule.TryGetLowPlateau(lows, 2, 1, 6, 0.001, out start, out end, out level) &&
+                SwingPlateauRule.TryGetLowPlateau(lows.Length, 2, 1, 6, 0.001, i => lows[i], out start, out end, out level) &&
                 start == 2 && end == 4 && level == 5,
                 "flat swing-low plateau is directionally symmetric");
 
