@@ -146,31 +146,8 @@ namespace cAlgo
                         DmiBias(
                             bars,
                             index),
-                        UseEmaSlope &&
-                        index > 2
-                            ? (f.EmaFast -
-                               Ema(
-                                   bars,
-                                   index - 2,
-                                   true)) /
-                              Math.Max(
-                                  Symbol.TickSize,
-                                  Math.Abs(
-                                      Ema(
-                                          bars,
-                                          index,
-                                          true) -
-                                          Ema(
-                                              bars,
-                                              Math.Max(
-                                                  1,
-                                                  index - 3),
-                                              true))) *
-                              Math.Max(
-                                  0.0,
-                                  Math.Min(
-                                      1.0,
-                                      1.0))
+                        UseEmaSlope
+                            ? f.EmaSlopeAtr
                             : 0,
                         f.WaveTrendDirection,
                         f.WaveTrendQuality,
