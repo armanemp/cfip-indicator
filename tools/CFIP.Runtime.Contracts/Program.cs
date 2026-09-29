@@ -1101,16 +1101,57 @@ namespace cAlgo
                 "plan renderer owns shared level rendering");
 
             Assert(
-                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
-                controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
-                !controlFactory.Contains(".Checked +=") &&
-                !controlFactory.Contains(".Unchecked +="),
-                "execution toggles use direct operator click events");
+                controlFactory.Contains("_autoTradingQuickToggle.Checked +=") &&
+                controlFactory.Contains("_autoTradingQuickToggle.Unchecked +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Checked +=") &&
+                controlFactory.Contains("_automaticOrdersQuickToggle.Unchecked +=") &&
+                !controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                !controlFactory.Contains("_automaticOrdersQuickToggle.Click +="),
+                "execution toggles use authoritative checked/unchecked events");
 
             Assert(
+                controlHandlers.Contains("OnAutoTradingQuickToggleChecked(") &&
+                controlHandlers.Contains("OnAutoTradingQuickToggleUnchecked(") &&
+                controlHandlers.Contains("OnAutomaticOrdersQuickToggleChecked(") &&
+                controlHandlers.Contains("OnAutomaticOrdersQuickToggleUnchecked(") &&
                 controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
                 controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
                 "toggle handlers use runtime state authority");
+
+            int pendingExecution =
+                calculation.IndexOf(
+                    "PREDICTIVE PENDING EXECUTION",
+                    StringComparison.Ordinal);
+            int aggressiveExecution =
+                calculation.IndexOf(
+                    "AGGRESSIVE AUTO EXECUTION",
+                    StringComparison.Ordinal);
+            int planCreation =
+                calculation.IndexOf(
+                    "PLAN CREATION",
+                    StringComparison.Ordinal);
+            int marketExecution =
+                calculation.IndexOf(
+                    "AUTOMATIC MARKET EXECUTION",
+                    StringComparison.Ordinal);
+
+            Assert(
+                pendingExecution >= 0 &&
+                aggressiveExecution > pendingExecution &&
+                planCreation > aggressiveExecution &&
+                marketExecution > planCreation,
+                "execution priority is predictive pending -> aggressive -> plan -> market");
+
+            Assert(
+                calculation.Contains("TrySmartPendingOrders(") &&
+                calculation.Contains("TryAggressiveAutoTrade(") &&
+                calculation.Contains("TryAutoTrade("),
+                "all automatic execution paths remain connected");
+
+            Assert(
+                !File.ReadAllText(
+                    calculationPath).Contains("GetManagedPendingOrder() != null"),
+                "pending-order guard belongs to plan creation, not the cycle orchestrator");
         }
 
         private static void VerifyResponsivePanelRuntime()
