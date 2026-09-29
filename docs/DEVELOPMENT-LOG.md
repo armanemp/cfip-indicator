@@ -1919,7 +1919,7 @@ Audited execution owners include:
 
 Important non-transfer boundary:
 
-- `Planning/Execution/ExecutionPlanPreparation.cs` remains analytical/executable-plan preparation and does not become a cBot analysis engine.
+- `Trading/Execution/ExecutionPlanPreparation.cs` remains analytical/executable-plan preparation and does not become a cBot analysis engine.
 - `ScenarioExecutionPolicy.cs` remains the Indicator's scenario eligibility/materialization authority.
 - Analysis, Planning, UI, alerts and learning remain Indicator-owned.
 
@@ -1946,3 +1946,32 @@ Roadmap continuation correction: `docs/ROADMAP.md` was aligned in follow-up comm
 `b92cc367083b0830278d799f49e29d21b83d1779` so the master continuation points to CBOT-0.
 
 Operator pull: **required** before beginning CBOT-0, so the local checkout contains the authoritative roadmap.
+
+
+## Roadmap Hardening — Local cBot Separation Gate — 2026-09-30
+
+Status: DOCUMENTATION-ONLY hardening; no production C# behavior changed.
+
+Verified repository baseline: `3b0107ff0436a4f9aaa65cbefb6194312d52bf2f`.
+
+Corrections and gates added to Track 12A:
+
+- blocking CBOT-Preflight before contract implementation;
+- corrected executable-plan preparation path to `Trading/Execution/ExecutionPlanPreparation.cs`;
+- explicit method/field/helper dependency-closure rule;
+- explicit split-only handling for mixed protection, live-management, server-side TP and account-risk modules;
+- signal freshness, expiry, revision ordering and instance-scope requirements;
+- authoritative cBot execution-control state with Indicator presentation unable to bypass the broker boundary;
+- legacy executor allowed only as a repository parity oracle, never as a second live engine;
+- fail-closed behavior for missing/stale/incompatible Indicator/cBot state;
+- final zero direct-broker-mutation and zero-hidden-fallback acceptance gate.
+
+Verification completed for the documentation revision:
+
+- repository source paths and project structure rechecked against `main`;
+- current main head verified as `3b0107ff0436a4f9aaa65cbefb6194312d52bf2f`;
+- no production C# files changed;
+- implementation remains blocked at CBOT-Preflight / CBOT-0.
+
+Next implementation phase: **CBOT-Preflight**, then **CBOT-0 — Boundary inventory, dependency closure and execution-authority freeze**.
+Operator pull: required after this documentation revision is merged.

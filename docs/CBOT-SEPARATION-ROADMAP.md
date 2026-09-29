@@ -45,7 +45,7 @@ Important source examples confirmed during this audit:
 - `Trading/Execution/BrokerProtectionCoordinator.cs` coordinates broker protection.
 - `Trading/Identity/BrokerIdentity.cs` reads trading permission and managed Positions/PendingOrders state.
 - `Core/Execution/SubmissionAttemptIdentity.cs` and `SubmissionGate.cs` implement submission identity and retry/circuit semantics.
-- `Planning/Execution/ExecutionPlanPreparation.cs` explicitly states that executable plan preparation is **not** a broker-mutation owner.
+- `Trading/Execution/ExecutionPlanPreparation.cs` explicitly states that executable plan preparation is **not** a broker-mutation owner.
 - `Planning/TradePlan/PlanMaterialization.cs` creates the analytical/executable Plan data.
 - `Core/Models/Plan.cs` and `ExecutionIntent.cs` are currently internal models, so they are not yet an external Indicator→cBot contract.
 
@@ -153,9 +153,9 @@ The cBot may reject a signal because of current broker/account conditions, but i
 
 The rule is **split, do not blindly copy folders**.
 
-### 4.1 Definitely cBot-owned
+### 4.1 Definitely cBot-owned broker-mutation owners
 
-These are broker/execution authorities and should leave the Indicator execution host:
+These broker-mutation owners must leave the Indicator execution host:
 
 `Trading/Execution/BrokerMarketOrderMutation.cs`
 
@@ -171,7 +171,7 @@ These are broker/execution authorities and should leave the Indicator execution 
 
 `Trading/Execution/BrokerTakeProfitMutation.cs`
 
-`Trading/Execution/BrokerProtectionCoordinator.cs`
+For `Trading/Execution/BrokerProtectionCoordinator.cs`, only the broker-facing mutation/reconciliation methods move to the cBot. Any deterministic geometry/validation calculation that is consumed by Indicator analysis must first be extracted into the correct analytical owner or a platform-neutral contract helper. The whole mixed class must never be copied to both projects.
 
 The relevant broker-mutation portions of:
 
@@ -301,7 +301,7 @@ Most of:
 
 In particular, `ScenarioExecutionPolicy.cs` remains in the Indicator because Phase 11.5 made it the scenario eligibility/materialization authority. It must not become a second execution engine in the cBot.
 
-`Planning/Execution/ExecutionPlanPreparation.cs` remains Indicator-owned because it explicitly prepares executable geometry without broker mutation.
+`Trading/Execution/ExecutionPlanPreparation.cs` remains Indicator-owned because it explicitly prepares executable geometry without broker mutation.
 
 `Core/Models/Plan.cs` and `Core/Models/ExecutionIntent.cs` do not move as-is. Their externally consumed fields should be represented by a small public contract project.
 
@@ -443,6 +443,26 @@ This becomes the source for the Indicator's execution/visual telemetry; it does 
 
 ---
 
+## 8. Project dependency and packaging rule
+
+The dependency direction is one-way:
+
+```
+CFIP.Indicator  →  CFIP.Contracts
+CFIP.cBot       →  CFIP.Contracts
+CFIP.cBot       →  CFIP.Indicator (supported custom-indicator reference only)
+```
+
+Rules:
+
+- `CFIP.Contracts` references no cTrader package.
+- `CFIP.Indicator` owns all analysis, planning, UI and read-only signal production.
+- `CFIP.cBot` owns every live broker mutation and account-dependent execution enforcement.
+- No project may reference the other execution project to call internal/private broker helpers.
+- No shared mutable singleton is introduced across projects.
+- Packaging/output must be validated in the target cTrader environment before live cutover.
+- Adding a fourth "shared core" project is out of scope unless CBOT-0 proves a hard compiler/dependency requirement; any such exception must be documented and must not duplicate business authority.
+
 ## 8. Local connection design
 
 ### Preferred first implementation
@@ -466,6 +486,27 @@ Therefore:
 - no reflection-based access to private state.
 
 The cBot must consume structured signal data.
+
+The signal surface must include:
+
+- producer instance scope (symbol/timeframe/strategy identity);
+- CreatedUtc and CreatedClosedM5;
+- ExpiryUtc;
+- Revision plus a monotonic sequence/generation for ordering revisions;
+- actionable/status state so "no signal", "watch", "confirmed", "expired" and "unavailable" are distinct;
+- ScenarioId/Lane/SourceTimeframe;
+- correlation/idempotency keys.
+
+### UI control boundary
+
+The Indicator may continue to display Auto Trading / Auto Orders status and execution diagnostics, but after separation it must not directly mutate the broker.
+
+The authoritative live execution enable/disable state belongs to the cBot. During migration, the roadmap must either:
+
+1. provide a supported local control/status contract, or
+2. make the Indicator control explicitly read-only and expose the authoritative control on the cBot.
+
+The final implementation must never make the Indicator appear to disable trading while the cBot remains armed, or vice versa. Any unavailable control/status channel is fail-closed for automatic execution.
 
 If a target-terminal test proves that direct attached-instance access is supported and reliable for the deployment target, that can be documented as an optimization. It is not a prerequisite for the architecture.
 
@@ -528,6 +569,31 @@ This preserves the project's existing safety matrix.
 
 ## 10. Mandatory separation phases
 
+### CBOT-Preflight — cTrader host capability proof (blocking)
+
+Before creating the Contracts project, prove the supported local cTrader integration surface on the actual target environment.
+
+This is a **no-trade capability test**, not a production implementation.
+
+The proof must establish:
+
+- the cBot can instantiate the compiled custom Indicator through the supported custom-indicator mechanism;
+- the cBot can read a public structured read-only signal surface from that Indicator instance;
+- the required public types are visible across the two compiled components without reflection;
+- the Indicator can run with broker mutation disabled and still calculate/render normally;
+- Indicator and cBot startup order can be reversed without stale or fabricated signal consumption;
+- symbol/timeframe/instance scope can be identified deterministically;
+- the cBot can detect an unavailable, uninitialized or stale Indicator signal and fail closed;
+- the deployment/package layout for Indicator, Contracts and cBot is accepted by the target cTrader environment.
+
+Blocking rule:
+
+**CBOT-1 cannot start until CBOT-Preflight is verified.**
+
+If the target environment cannot support the intended structured read-only handoff, stop the migration and redesign the local transport boundary before moving any broker authority. Do not fall back to chart-object scraping, static globals, reflection, or a duplicated analysis engine.
+
+### CBOT-0 — Boundary inventory and freeze
+
 ### CBOT-0 — Boundary inventory and freeze
 
 Output:
@@ -536,6 +602,10 @@ Output:
 - exact direct broker-call inventory;
 - exact mixed-class split list;
 - dependency graph of Indicator → Contracts → cBot;
+- method/field/helper dependency closure for every candidate moved owner;
+- direct broker API inventory including both method calls and fluent/object mutation calls;
+- permission/account-state access inventory;
+- event-handler/timer/thread ownership inventory for broker lifecycle work;
 - no source behavior change.
 
 Acceptance:
@@ -548,6 +618,8 @@ Acceptance:
 
 Create `CFIP.Contracts`.
 
+The contract boundary must be **data-only and platform-neutral**. It is not a place to duplicate Indicator business rules.
+
 Implement:
 
 - Signal identity;
@@ -557,18 +629,26 @@ Implement:
 - management command;
 - broker execution report;
 - lifecycle/protection event types;
-- contract version.
+- contract schema version;
+- explicit sequence/order information for same-signal revisions;
+- correlation identifiers linking intent → attempt → broker report;
+- execution-control/status messages needed to keep the Indicator UI read-only with respect to broker mutation.
 
 Acceptance:
 
 - no cTrader dependency in Contracts;
 - no Account/Position/PendingOrder types in Contracts;
 - deterministic equality/idempotency keys;
-- multi-scenario identity preserved.
+- monotonic sequence semantics for revisions;
+- correlation from signal/scenario → execution command → broker result;
+- multi-scenario identity preserved;
+- no cTrader types, broker objects, account objects or UI objects.
 
 ### CBOT-2 — Indicator read-only signal surface
 
 The Indicator gets a public read-only provider interface.
+
+The provider must expose an immutable snapshot/envelope rather than references to mutable internal `Plan` or broker objects. The provider surface must also expose freshness state and a deterministic "no actionable signal" state.
 
 It exposes structured signal/plan data but no broker mutation API.
 
@@ -581,11 +661,16 @@ Acceptance:
 - cBot can consume a current actionable plan;
 - expired/revised scenarios are distinguishable;
 - no chart parsing is required;
-- Indicator remains able to run as an analysis/display component without broker mutation.
+- Indicator remains able to run as an analysis/display component without broker mutation;
+- stale/uninitialized output cannot be mistaken for a valid actionable signal;
+- revised signals are ordered deterministically;
+- loss of cBot presence does not activate a hidden Indicator execution fallback.
 
 ### CBOT-3 — cBot host and shadow execution
 
 Create `CFIP.cBot` and wire it to the Indicator contract.
+
+Shadow mode is a temporary validation mode only; it must never coexist with a live Indicator executor. The legacy execution path may remain only on a validation branch/snapshot used as a parity oracle and must not be shipped as a second live engine.
 
 Initially:
 
@@ -603,7 +688,9 @@ Acceptance:
 - duplicate intents are suppressed;
 - scenario-scoped retry identity works;
 - one-position capacity is enforced;
-- restart does not duplicate a pending action.
+- restart does not duplicate a pending action;
+- offline/missing Indicator is fail-closed;
+- Indicator UI/control status cannot directly invoke broker mutation from the Indicator process.
 
 ### CBOT-4 — Broker execution extraction
 
@@ -675,6 +762,8 @@ Acceptance:
 
 Remove the old automatic broker path from the Indicator.
 
+This phase includes the final physical cleanup, not merely disabling the old code path. Any execution file/method moved to cBot must be deleted from the Indicator project or reduced to a strictly analytical/read-only component. No disabled duplicate executor, dead broker helper, or hidden fallback may remain in production source.
+
 The Indicator becomes analysis/signal/display only.
 
 The cBot becomes the single broker execution authority.
@@ -707,7 +796,10 @@ Direct broker calls to audit include at minimum:
 - `ModifyPosition`;
 - `ModifyPendingOrder`;
 - `ClosePosition`;
-- `CancelPendingOrder`.
+- `CancelPendingOrder`;
+- direct position protection mutation calls such as `Position.ModifyStopLossPrice`, `Position.ModifyTakeProfitPrice`, `Position.ModifyTakeProfit(...)`;
+- trading-permission mutation/request calls;
+- order/position collection reads that are used to make execution-authoritative decisions.
 
 ### Contract
 
@@ -787,7 +879,9 @@ Until CBOT-7 is complete:
 - do not infer broker state from desired plan data;
 - do not loosen existing RR, risk or execution gates merely to make the split easier;
 - do not promote independent timeframe scenarios to broker mutation;
-- do not increase position capacity.
+- do not increase position capacity;
+- when the cBot is unavailable, stale, disconnected or contract-incompatible, the Indicator remains analytical only and automatic execution is disabled;
+- after cutover, absence of cBot capability can never re-enable an Indicator-side fallback executor.
 
 ---
 
@@ -795,20 +889,23 @@ Until CBOT-7 is complete:
 
 Recommended order:
 
-1. Freeze analytical behavior.
-2. Create Contracts.
-3. Expose read-only Indicator signal surface.
-4. Create cBot in shadow mode.
-5. Verify one-to-one plan/intent parity.
-6. Move Market execution.
-7. Move Aggressive execution.
-8. Move Pending Stop/Limit.
-9. Move close/partial/protection.
-10. Move lifecycle/recovery.
-11. Move account-dependent risk enforcement.
-12. Disable Indicator broker mutation.
-13. Run final architecture/runtime gate.
-14. Resume the previously planned development phases.
+1. Freeze analytical behavior and public signal semantics.
+2. Complete CBOT-Preflight on the target cTrader environment.
+3. Create Contracts.
+4. Expose the read-only Indicator signal surface.
+5. Create cBot in shadow mode.
+6. Inventory and test the **full dependency closure** of every moved method/helper/field.
+7. Verify one-to-one plan/intent parity against a repository snapshot of the legacy path; never keep the legacy path as a second live engine.
+8. Move Market execution.
+9. Move Aggressive execution.
+10. Move Pending Stop/Limit.
+11. Move close/partial/protection and server-side TP mutation.
+12. Move lifecycle/recovery.
+13. Move account-dependent execution risk and permission enforcement.
+14. Move/replace all execution-side UI control semantics so the cBot is authoritative.
+15. Remove every obsolete Indicator broker-mutation file/method and prove zero direct mutation remains.
+16. Run final architecture/runtime/restart/reconnect/multi-scenario gates.
+17. Only after CBOT-7 acceptance resume previously blocked feature development.
 
 This order deliberately puts the structural split before further execution-feature expansion.
 
@@ -850,7 +947,10 @@ The separation is complete only when all are true:
 14. Runtime Acceptance is green.
 15. cTrader Compile/Build is green.
 16. Target-terminal replay has passed the mandatory local execution matrix.
-17. Only then may the next master development phase resume.
+17. The Indicator production tree contains zero direct broker mutations and zero hidden/disabled duplicate execution paths.
+18. The execution-control status shown by the Indicator is consistent with the cBot's authoritative live state.
+19. A missing/stale/unavailable cBot or signal provider fails closed without fabricating state.
+20. Only then may the next master development phase resume.
 
 ---
 
@@ -878,3 +978,26 @@ No Cloud setup is required.
 
 No user-side pull is required for the roadmap's conceptual design itself; once the documentation commit is merged to `main`, the operator should pull `main` before beginning CBOT-0 so the local checkout contains the authoritative roadmap.
 
+
+
+---
+
+## 18. Roadmap hardening revision — 2026-09-30
+
+Revision 2.1 closes the pre-implementation gaps found during repository re-audit.
+
+Added/clarified:
+
+- mandatory CBOT-Preflight before Contracts;
+- exact repository path correction for `Trading/Execution/ExecutionPlanPreparation.cs`;
+- explicit mixed-class rule for `BrokerProtectionCoordinator`;
+- one-way project dependency and packaging rules;
+- method/helper/field dependency-closure review;
+- signal freshness, revision ordering, producer instance scope and correlation requirements;
+- execution-control/UI authority boundary;
+- repository-snapshot parity rule so the old executor is never retained as a second live engine;
+- explicit fail-closed behavior when Indicator/cBot connectivity, initialization or status is unavailable;
+- final zero-broker-mutation source gate in the Indicator;
+- stronger Definition of Done and final runtime acceptance requirements.
+
+This revision is documentation-only. No production C# behavior changes are authorized by this revision.

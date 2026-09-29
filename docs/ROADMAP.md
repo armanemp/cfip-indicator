@@ -1898,6 +1898,19 @@ decision, scenario and trade-plan authority.
 This track is intentionally local. It introduces no Cloud service, HTTP API,
 socket, database, broker service, or multi-position capability.
 
+## Mandatory preflight
+
+Before CBOT-1, the target cTrader environment must pass **CBOT-Preflight**:
+
+- cBot can instantiate the compiled CFIP Indicator through the supported custom-indicator mechanism;
+- cBot can read a structured public read-only signal surface without reflection or chart-object scraping;
+- Indicator and cBot can start in either order without fabricated/stale signal acceptance;
+- symbol/timeframe/strategy instance scope is deterministic;
+- stale/uninitialized/unavailable signal state fails closed;
+- the three-component packaging/output layout is accepted by the target terminal.
+
+If this capability cannot be proven, stop the migration and redesign the local handoff. Do not create a second analysis engine or an unofficial transport workaround.
+
 ## Scope
 
 Move/extract only the capabilities that must be owned by a broker-executing
@@ -1913,7 +1926,8 @@ cBot:
 - execution capacity;
 - restart/reconnect reconciliation;
 - submission idempotency/retry/backoff/circuit state;
-- broker execution telemetry.
+- broker execution telemetry;
+- authoritative automatic-execution enable/disable state.
 
 Keep the analytical brain inside the Indicator:
 
@@ -1923,15 +1937,20 @@ Keep the analytical brain inside the Indicator:
 - Planning;
 - analytical RR/reward-path;
 - scenario generation/materialization;
-- UI;
+- UI/presentation;
 - alerts;
 - learning/calibration.
 
-Mixed modules are to be **split by responsibility**, not copied wholesale.
+Mixed modules are to be **split by method/responsibility**, not copied wholesale.
+In particular, `BrokerProtectionCoordinator.cs`, server-side TP ladder modules,
+`Trading/LiveManagement/*` and account-risk files may contain both analytical
+and broker-facing responsibilities and therefore require explicit split inventories.
 
 ## Mandatory phases
 
-`CBOT-0` Boundary inventory and freeze
+`CBOT-Preflight` Target cTrader capability proof
+
+`CBOT-0` Boundary inventory, dependency closure and execution-authority freeze
 
 `CBOT-1` Platform-neutral local contracts
 
@@ -1943,7 +1962,7 @@ Mixed modules are to be **split by responsibility**, not copied wholesale.
 
 `CBOT-5` Protection/lifecycle/recovery extraction
 
-`CBOT-6` Account/execution risk ownership
+`CBOT-6` Account/execution risk + control ownership
 
 `CBOT-7` Indicator execution-authority removal and final cutover
 
@@ -1956,15 +1975,26 @@ The existing Phase 11.5 scenario policy remains valid, but any future promotion
 from scenario/opportunity data to broker mutation must be implemented through the
 cBot boundary.
 
+## Hard migration rules
+
+- A moved method carries its required fields/helpers/dependencies with it; no hidden dependency may remain in the Indicator.
+- Semantic business rules have one authoritative owner. Pure serialization/DTO code may be duplicated only when it contains no business rule.
+- The legacy Indicator executor may exist only as a repository snapshot/parity oracle during migration; it must never be shipped or run as a second live executor.
+- Until final cutover, live trading uses exactly one explicitly designated executor at a time.
+- After cutover, missing/stale/incompatible cBot state fails closed and never reactivates an Indicator fallback.
+- The Indicator remains usable as an analysis/display component when the cBot is absent.
+
 ## Required final acceptance
 
 - `CFIP.Contracts` is platform-neutral.
 - `CFIP.cBot` is the sole broker mutation authority.
 - Indicator exposes read-only structured execution intent/plan data.
+- Signal freshness, expiry, revision ordering and instance scope are deterministic.
 - Scenario identity survives Indicator → cBot → broker telemetry.
 - Broker-confirmed state remains authoritative.
 - Single managed position/capacity remains unchanged.
-- Indicator contains no duplicate broker executor.
+- Indicator contains no direct broker mutation and no hidden/disabled duplicate broker executor.
+- The authoritative Auto Trading/Auto Orders enable state is owned by cBot; Indicator presentation cannot disagree with broker behavior.
 - Source/Architecture, Runtime Acceptance and cTrader Compile/Build are green.
 - Target-terminal local execution replay passes the mandatory market, aggressive,
   pending, protection, close, recovery, restart/reconnect and duplicate-suppression matrix.
