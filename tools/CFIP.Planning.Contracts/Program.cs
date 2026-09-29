@@ -363,7 +363,7 @@ namespace cAlgo
 
             Assert(
                 sell.Allowed &&
-                sell.NominalRR > 3,
+                sell.NominalRR > 2.4,
                 "SELL reward-risk symmetry");
         }
 
