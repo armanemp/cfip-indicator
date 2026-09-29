@@ -266,7 +266,7 @@ Replaced three duplicate submission gates with one keyed policy using Submission
 
 ## Phase 5.5 — Visual setup levels and execution controls
 
-Status: implementation complete on the phase branch; CI verification pending.
+Status: complete.
 
 Implemented:
 - added the read-only TradeSetupPreview projection and builder, reusing the existing structural-stop and target-selection authorities;
@@ -279,3 +279,8 @@ Implemented:
 Invariant: the setup preview is presentation-only and cannot authorize broker submission or create an executable Plan.
 
 Strategy signal thresholds, RR policy, risk sizing, trailing and broker execution rules are intentionally unchanged in this phase.
+
+Verification for final phase head `a7e8c2cf25256cfd5de098ed7f7660f409aa446d`:
+- Source / Architecture: PASS (run 810).
+- Runtime Acceptance Contracts: PASS (run 619).
+- cTrader Compile: PASS (run 803).
