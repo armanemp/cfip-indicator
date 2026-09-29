@@ -45,12 +45,12 @@ require(
 )
 require(
     ARCHIVE,
-    r"OutcomeArchiveDirectory\s*=\s*"History"",
+    r'OutcomeArchiveDirectory\s*=\s*"History"',
     "portable history directory",
 )
 require(
     ARCHIVE,
-    r"OutcomeArchiveSchema\s*=\s*"CFIP-OUTCOME-ARCHIVE,1"",
+    r'OutcomeArchiveSchema\s*=\s*"CFIP-OUTCOME-ARCHIVE,1"',
     "archive schema marker",
 )
 require(
