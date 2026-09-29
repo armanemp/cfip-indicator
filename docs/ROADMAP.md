@@ -4060,3 +4060,22 @@ Verification:
 Phase 11.3 audit, accumulated Source/Architecture, Runtime Acceptance and cTrader Compile/Build are required. Target-terminal replay remains required for broker rejection semantics and empirical signal-quality measurements.
 
 Next phase: evidence-backed refinement of the specific owner/gate identified by measured cohorts.
+
+## Phase 11.4 — Plan Reward/Risk Quality, Multi-Scenario Coverage & Execution Hardening — 2026-09-30
+
+Status: IMPLEMENTED on phase branch; verification pending.
+
+Implementation:
+- added one shared PlanRewardRiskQualityRule for nominal/effective TP1 RR, stop-risk ATR and spread-aware reward/risk validation;
+- made structural stop selection reward-path aware so oversized SL candidates are rejected earlier or deprioritized when they cannot support adequate TP1 reward;
+- removed the Tactical/Parallel plan-selection RR bypass by making lane RR respect the canonical Tp1MinimumRR/regime floor;
+- applied the same reward-risk gate to live ActionableNow, parallel opportunity construction, automatic market, aggressive market and pending-order final submission validation;
+- strengthened parallel scenario identity so distinct timeframe/lane/direction scenarios do not collapse just because their prices are close;
+- made visible-scenario capping preserve distinct scenario coverage before filling remaining slots by priority;
+- strengthened ROUTINE.md with reward-risk, scenario-identity and final execution-gate requirements;
+- added Phase 11.4 source audit and wired it into Source/Architecture CI.
+
+Important boundary:
+No public trading threshold was blindly tuned and no second broker-execution authority was introduced. Independent timeframe scenarios remain signal/opportunity objects unless a separately tested scenario execution policy is promoted.
+
+Next phase after verification: scenario-aware execution materialization and deeper automatic-order/multi-scenario broker policy, driven by the Phase 11.3/11.4 telemetry rather than guesswork.

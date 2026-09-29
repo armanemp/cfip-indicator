@@ -1,6 +1,7 @@
 // CFIP Indicator — PlanIntegrityValidator.cs
 // Thin trade-plan integrity orchestration boundary.
 
+using System;
 using cAlgo.API;
 
 namespace cAlgo
@@ -29,6 +30,36 @@ namespace cAlgo
             if (!ValidatePlanRewardStructure(
                     plan,
                     direction))
+                return false;
+
+            PlanRewardRiskQualityResult rewardRisk =
+                PlanRewardRiskQualityRule.Evaluate(
+                    direction,
+                    plan.Entry,
+                    plan.Stop,
+                    plan.Tp1,
+                    atr,
+                    checkSpread
+                        ? Math.Max(
+                            0,
+                            Symbol.Ask - Symbol.Bid)
+                        : 0,
+                    Math.Max(
+                        Tp1MinimumRR,
+                        MinimumRequiredRRForRegime(
+                            _decision == null
+                                ? "UNKNOWN"
+                                : _decision.Regime)),
+                    PreferredStopRiskAtr,
+                    Math.Min(
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumSlAtr),
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumStructuralStopAtr)));
+
+            if (!rewardRisk.Allowed)
                 return false;
 
             return ValidatePlanMarketConstraints(

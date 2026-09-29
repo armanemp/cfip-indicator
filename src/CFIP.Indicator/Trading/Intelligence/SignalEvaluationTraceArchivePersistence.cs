@@ -8,7 +8,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator
     {
-        private const string SignalTraceSchema = "CFIP-SIGNAL-TRACE,1";
+        private const string SignalTraceSchema = "CFIP-SIGNAL-TRACE,2";
         private const string SignalTraceHeader =
             "BarOpenTimeUtcTicks,ObservedUtcTicks,ClosedM5,Open,High,Low,Close,Direction," +
             "BuyShare,SellShare,Edge,BaseConfidence,Confidence,SmartQuality," +
@@ -18,7 +18,7 @@ namespace cAlgo
             "LocationEvidenceBull,LocationEvidenceBear,IndicatorConfluenceQuality,IndicatorConflict," +
             "WaveTrendDirection,WaveTrendQuality,DivergenceDirection,DivergenceQuality," +
             "EntryAllowed,TriggerReady,ActionableNow,EntryLocationQuality,EntryTimingQuality,EntryPositionQuality," +
-            "EntryDistanceAtr,ActionableTp1RR,EntryMode,Entry,IdealEntry,Stop,Tp1,Tp2,Tp3,Tp4," +
+            "EntryDistanceAtr,ActionableTp1RR,PlanRiskAtr,EffectiveTp1RR,RequiredTp1RR,EntryMode,Entry,IdealEntry,Stop,Tp1,Tp2,Tp3,Tp4," +
             "TraceGate,BlockReason,ActionabilityReason,DecisionReason";
 
         private HashSet<long> _signalTraceArchiveKeys;
@@ -58,7 +58,7 @@ namespace cAlgo
                         : Bars.TimeFrame.ToString());
 
             return
-                "CFIP_SignalTrace_" +
+                "CFIP_SignalTrace_v2_" +
                 symbol +
                 "_" +
                 timeframe +
@@ -243,6 +243,12 @@ namespace cAlgo
             row.Append(trace.EntryDistanceAtr.ToString("R", CultureInfo.InvariantCulture));
             row.Append(',');
             row.Append(trace.ActionableTp1RR.ToString("R", CultureInfo.InvariantCulture));
+            row.Append(',');
+            row.Append(trace.PlanRiskAtr.ToString("R", CultureInfo.InvariantCulture));
+            row.Append(',');
+            row.Append(trace.EffectiveTp1RR.ToString("R", CultureInfo.InvariantCulture));
+            row.Append(',');
+            row.Append(trace.RequiredTp1RR.ToString("R", CultureInfo.InvariantCulture));
             row.Append(',');
             row.Append((int)trace.EntryMode);
             row.Append(',');

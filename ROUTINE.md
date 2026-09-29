@@ -38,14 +38,15 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 3. TPها فقط در جهت معامله و به‌صورت monotonic جلو بروند؛ TP قبلی هرگز به عقب برنگردد.
 4. broker minimum distance، RR و finite-number validation قبل از هر update برقرار باشد.
 5. بعد از fill وضعیت broker دوباره خوانده و SL/TP reconcile شود.
-6. objectهای منقضی و stale باید از چارت پاک شوند.
+9. objectهای منقضی و stale باید از چارت پاک شوند.
 
 ## 4. روتین چندسناریویی
 1. هر scenario باید ScenarioId یکتا، SourceTimeframe مشخص و direction مشخص داشته باشد.
 2. سناریوهای TFهای مختلف می‌توانند همزمان حاضر باشند، حتی با جهت‌های متفاوت.
 3. ENTRY/SL/TP هر سناریو باید prefix مشترک داشته باشند تا مالکیت خط‌ها روشن باشد.
 4. scenario مستقل فقط opportunity است؛ auto-trading فقط با policy و گیت‌های canonical مجاز است.
-5. cap کردن سناریوها deterministic باشد و سناریوهای مهم یا با کیفیت بالاتر بدون دلیل حذف نشوند.
+5. cap کردن سناریوها deterministic باشد و ابتدا coverage سناریوهای distinct را حفظ کند، سپس بر اساس quality/actionability تکمیل شود.
+6. سناریوهای متفاوت نباید فقط به‌دلیل نزدیک‌بودن Entry با هم collapse شوند؛ فقط identity دقیق یکسان مجاز به collapse است.
 
 ## 5. روتین Auto Trading / Auto Orders
 1. قبل از order: permission، single-capacity، daily loss، session/spread/volatility/news guards، decision gates، plan integrity، level quality و broker geometry بررسی شوند.
@@ -97,3 +98,26 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 3. Economic News feed باید از مسیر cache/Timer به decision و execution برسد؛ شبکه نباید روی هر tick فراخوانی شود.
 4. قبل از هر automatic market/pending entry، news guard نهایی دوباره ارزیابی شود.
 5. در صورت خبر مهم نزدیک، pending قابل لغو باشد و در صورت فعال‌بودن policy، active position با telemetry ثبت و مدیریت شود.
+## 12. روتین اختصاصی Phase 11.4 — Plan Quality و Multi-Scenario Execution
+
+در هر فاز بعدی که روی کیفیت یا execution کار می‌کند، این موارد باید صریحاً دوباره بررسی شوند:
+
+1. برای هر candidate، Entry/SL/TP1 و ریسک ATR محاسبه و nominal RR و effective RR بعد از spread هر دو بررسی شوند.
+2. stop candidate فقط بر اساس نزدیک‌بودن به قیمت انتخاب نشود؛ reward-path feasibility و stop-width نیز در انتخاب structural stop بررسی شوند.
+3. Tactical، Counter-HTF و Micro نباید از کف RR canonical plan پایین‌تر بروند.
+4. scenario identity باید از source timeframe + lane + direction مستقل باشد و نزدیکی قیمت باعث حذف scenarioهای متفاوت نشود.
+5. پیش از broker mutation در market، aggressive و pending دوباره reward-risk geometry و spread بررسی شود.
+6. auto-trading و auto-order اگر scenarioهای موازی را مصرف می‌کنند باید execution authority، capacity، duplicate prevention، broker confirmation و lifecycle را به‌صورت deterministic حفظ کنند.
+7. تغییر threshold به‌عنوان tuning محسوب می‌شود و بدون runtime log/replay/outcome evidence مجاز نیست؛ اصلاح contract mismatch از tuning جدا گزارش شود.
+
+8. signal trace باید Risk ATR، Effective TP1 RR و Required TP1 RR را برای مسیرهای قابل محاسبه ثبت کند؛ schema قدیمی باید همچنان قابل خواندن باشد.
+9. بهینه‌سازی performance فقط از طریق cacheهای deterministic با key کامل و بدون اشتراک mutable business state مجاز است.
+
+## 13. گزارش اجباری کیفیت سیگنال
+
+در گزارش هر فاز باید مشخص شود:
+- چند مسیر candidate به‌علت RR یا stop-width رد شدند؛
+- چند scenario مستقل حفظ شدند و چند مورد duplicate دقیقاً collapse شدند؛
+- market/aggressive/pending هر کدام چه reward-risk gate نهایی دارند؛
+- آیا mismatch بین signal، plan و execution authority باقی مانده است؛
+- کدام موارد هنوز فقط با target-terminal replay قابل اثبات هستند.

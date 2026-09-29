@@ -68,6 +68,47 @@ namespace cAlgo
                 return false;
             }
 
+            if (_plan != null)
+            {
+                double atr =
+                    Atr(
+                        _m5Bars,
+                        closedM5);
+
+                PlanRewardRiskQualityResult rewardRisk =
+                    PlanRewardRiskQualityRule.Evaluate(
+                        type == TradeType.Buy ? 1 : -1,
+                        entry,
+                        _plan.Stop,
+                        target,
+                        atr,
+                        Math.Max(
+                            0,
+                            Symbol.Ask - Symbol.Bid),
+                        Math.Max(
+                            Tp1MinimumRR,
+                            MinimumRequiredRRForRegime(
+                                _decision == null
+                                    ? "UNKNOWN"
+                                    : _decision.Regime)),
+                        PreferredStopRiskAtr,
+                        Math.Min(
+                            Math.Max(
+                                MinimumSlAtr,
+                                MaximumSlAtr),
+                            Math.Max(
+                                MinimumSlAtr,
+                                MaximumStructuralStopAtr)));
+
+                if (!rewardRisk.Allowed)
+                {
+                    reason =
+                        "REWARD/RISK • " +
+                        rewardRisk.Reason;
+                    return false;
+                }
+            }
+
             marketIntent =
                 BuildExecutionIntent(
                     _plan.Direction,

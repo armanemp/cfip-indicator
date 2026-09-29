@@ -120,6 +120,41 @@ namespace cAlgo
                     riskAtr > maxRiskAtr)
                     continue;
 
+                double bestTp1RR =
+                    EstimateBestTp1RRForStop(
+                        closedM5,
+                        direction,
+                        entry,
+                        stop,
+                        atr);
+
+                if (!IsFinitePositive(bestTp1RR))
+                    continue;
+
+                PlanRewardRiskQualityResult rewardRisk =
+                    PlanRewardRiskQualityRule.Evaluate(
+                        direction,
+                        entry,
+                        stop,
+                        direction == 1
+                            ? entry + risk * bestTp1RR
+                            : entry - risk * bestTp1RR,
+                        atr,
+                        Math.Max(
+                            0,
+                            Symbol.Ask - Symbol.Bid),
+                        Math.Max(
+                            Tp1MinimumRR,
+                            MinimumRequiredRRForRegime(
+                                _decision == null
+                                    ? "UNKNOWN"
+                                    : _decision.Regime)),
+                        PreferredStopRiskAtr,
+                        maxRiskAtr);
+
+                if (!rewardRisk.Allowed)
+                    continue;
+
                 double score =
                     ScoreStructuralStopCandidate(
                         candidate,
@@ -129,6 +164,16 @@ namespace cAlgo
                         stop,
                         atr,
                         riskAtr);
+
+                // Prefer structurally valid stops that leave a larger
+                // reward path after accounting for stop width.
+                score +=
+                    Math.Min(
+                        18,
+                        Math.Max(
+                            0,
+                            (bestTp1RR -
+                             rewardRisk.RequiredRR) * 12));
 
                 if (score > bestScore)
                 {
@@ -283,5 +328,95 @@ namespace cAlgo
                     StopRiskBalanceWeight) /
                 20.0;
         }
+
+        private double EstimateBestTp1RRForStop(
+            int closedM5,
+            int direction,
+            double entry,
+            double stop,
+            double atr)
+        {
+            if (_m5Bars == null ||
+                closedM5 < 0 ||
+                direction != 1 && direction != -1 ||
+                !IsFinitePositive(entry) ||
+                !IsFinitePositive(stop) ||
+                !IsFinitePositive(atr))
+                return 0;
+
+            double risk =
+                Math.Abs(
+                    entry - stop);
+
+            if (!IsFinitePositive(risk))
+                return 0;
+
+            List<Level> levels =
+                BuildTargetLevels(
+                    closedM5,
+                    direction,
+                    entry,
+                    atr);
+
+            if (levels == null || levels.Count == 0)
+                return 0;
+
+            double requiredRR =
+                Math.Max(
+                    Tp1MinimumRR,
+                    MinimumRequiredRRForRegime(
+                        _decision == null
+                            ? "UNKNOWN"
+                            : _decision.Regime));
+
+            double maximumRR =
+                Math.Max(
+                    requiredRR,
+                    MaximumRewardRR);
+
+            double bestRR = 0;
+
+            for (int i = 0;
+                 i < levels.Count;
+                 i++)
+            {
+                Level candidate = levels[i];
+
+                if (candidate == null ||
+                    !IsValidTarget(
+                        direction,
+                        entry,
+                        candidate.Price))
+                    continue;
+
+                if (!TryScoreTargetCandidate(
+                        candidate,
+                        new List<Level>(),
+                        closedM5,
+                        entry,
+                        risk,
+                        direction,
+                        atr,
+                        requiredRR,
+                        maximumRR,
+                        entry,
+                        false,
+                        0,
+                        out _))
+                    continue;
+
+                double rr =
+                    Math.Abs(
+                        candidate.Price -
+                        entry) /
+                    risk;
+
+                if (rr > bestRR)
+                    bestRR = rr;
+            }
+
+            return bestRR;
+        }
+
     }
 }
