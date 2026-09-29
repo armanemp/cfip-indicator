@@ -86,8 +86,7 @@ namespace cAlgo
                 }
             }
 
-            if ((EnableStructuralSlRepricing ||
-                 EnableDynamicSlTrail) &&
+            if (EnableStructuralSlRepricing &&
                 (structuralUpdate ||
                  !StructuralStopManagementOnly) &&
                 peakRR >=
