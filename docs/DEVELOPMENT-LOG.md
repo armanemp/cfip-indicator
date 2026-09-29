@@ -790,3 +790,35 @@ Current project surface: 533 public parameters (530 baseline + 3 OSS extension).
 Next planned implementation phase: Phase 7.4 — MaximumOpenPositions semantics.
 
 Operator action: local pull is required after this merge/documentation boundary.
+
+
+## Phase 7.4 — MaximumOpenPositions semantics — 2026-09-29
+
+Status: implementation complete; verification/merge boundary follows.
+
+Implementation:
+- Removed the public `MaximumOpenPositions` setting because the architecture has one managed active plan/position, not configurable multi-plan execution.
+- Replaced the numeric capacity rule with one semantic `ExecutionCapacityRule.AllowsNewSinglePlan(...)` owner.
+- Renamed the shared guard to `ValidateSinglePlanCapacity(...)`.
+- Aligned automatic market, aggressive pre-trade and predictive-pending execution paths to the same guard.
+- Removed late-path numeric comparisons against the deleted setting.
+- Kept broker authority, single managed identity, closed-bar decision safety and plan/execution ownership unchanged.
+
+Deep coordination audit findings:
+- Decision construction remains bound to the canonical closed M5 context.
+- Trigger readiness remains distinct from directional decision state.
+- Plan creation remains gated by `EntryAllowed` and `TriggerReady`.
+- Capacity is now a single shared execution invariant rather than a configurable number interpreted differently by different execution paths.
+- No new indicator or threshold was added to mask false signals.
+- The deeper signal-quality problem reported by the operator remains explicitly tracked for Track 8 analytical correctness and Track 9 decision intelligence; the phase does not claim improved win rate without outcome evidence.
+
+Verification target:
+- 532 public parameters total = 529 baseline + 3 OSS.
+- no production references to `MaximumOpenPositions`;
+- one semantic single-plan capacity rule;
+- automatic market, aggressive and predictive-pending paths use `ValidateSinglePlanCapacity`;
+- full-project integrity and semantic parameter audits remain green;
+- cTrader compile and runtime acceptance remain required.
+
+Next phase: Phase 8.1 — M1 trigger correctness.
+Operator pull requirement: required after the final verified Phase 7.4 merge; intermediate branch commits do not require a local pull.
