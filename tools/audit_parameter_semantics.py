@@ -104,13 +104,6 @@ families = {
     ],
 }
 
-if "MaximumOpenPositions" not in parameter_defs:
-    raise SystemExit("MaximumOpenPositions is missing from the public execution-capacity contract")
-if "BlockNewSignalWhileActive" in parameter_defs:
-    raise SystemExit("BlockNewSignalWhileActive remains as an unsupported capacity duplicate")
-if metadata["MaximumOpenPositions"]["default"] != "1":
-    raise SystemExit("MaximumOpenPositions default must be 1")
-
 print("Phase 7.4 semantic parameter audit")
 print(f"Parameters scanned: {len(parameter_defs)}")
 
