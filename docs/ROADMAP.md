@@ -3686,3 +3686,6 @@ Focus:
 The next hardening opportunity after this phase is server-side advanced protection migration and deeper target-terminal replay/calibration, subject to the project's cTrader API version and empirical verification.
 
 Detailed record: `docs/PHASE-9-8-INDICATOR-FUSION-TRADE-QUALITY.md`.
+
+
+Phase 9.8 merge closeout: PR #50 merged into `main` as `37cfd761bbb439d6e154315995664721b6c31740`. Local `main` must be pulled before the next continuation.
