@@ -16,6 +16,13 @@ namespace cAlgo
             reason = "";
             ExecutionIntent marketIntent;
 
+            if (!CanRunAutomaticEntry())
+            {
+                ApplyRuntimeEntryGate();
+                reason = "RUNTIME ENTRY BLOCKED";
+                return false;
+            }
+
             // Final quote-sensitive recheck immediately before broker mutation.
             // This is intentionally later than plan construction so the current
             // executable price cannot be authorized by stale ActionableNow state.
@@ -47,6 +54,19 @@ namespace cAlgo
                     volume,
                     out reason))
                 return false;
+
+            string suitabilityReason;
+            if (!PassesMarketSuitability(
+                    closedM5,
+                    type == TradeType.Buy ? 1 : -1,
+                    out suitabilityReason,
+                    true))
+            {
+                reason =
+                    "SUITABILITY • " +
+                    suitabilityReason;
+                return false;
+            }
 
             marketIntent =
                 BuildExecutionIntent(
