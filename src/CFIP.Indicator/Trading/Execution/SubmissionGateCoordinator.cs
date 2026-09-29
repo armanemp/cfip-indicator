@@ -5,89 +5,88 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool TryAcquireNormalSubmission(
+        private SubmissionAttemptIdentity BuildSubmissionAttemptIdentity(
             int closedM5,
             int direction,
+            ExecutionSubmissionPath path)
+        {
+            string signalKey =
+                SymbolName + "|" +
+                closedM5 + "|" +
+                direction;
+
+            string attemptKey =
+                path.ToString() + "|" +
+                closedM5 + "|" +
+                direction;
+
+            return new SubmissionAttemptIdentity(
+                signalKey,
+                attemptKey,
+                path);
+        }
+
+        private bool TryAcquireSubmission(
+            int closedM5,
+            int direction,
+            ExecutionSubmissionPath path,
+            out SubmissionAttemptIdentity identity,
             out string reason)
         {
-            return _normalSubmissionGate.TryAcquire(
+            identity = BuildSubmissionAttemptIdentity(
+                closedM5,
+                direction,
+                path);
+
+            return _submissionGate.TryAcquire(
+                identity,
                 Server.TimeInUtc,
-                "NORMAL|" + closedM5 + "|" + direction,
                 out reason);
         }
 
-        private void RecordNormalSubmission(
+        private void RecordSubmission(
+            SubmissionAttemptIdentity identity,
             TradeResult result)
         {
-            _normalSubmissionGate.Record(
+            _submissionGate.Record(
+                identity,
                 Server.TimeInUtc,
                 result != null &&
                 result.IsSuccessful &&
-                result.Position != null);
+                HasConfirmedSubmissionEntity(
+                    identity.Path,
+                    result));
         }
 
-        private bool TryAcquireAggressiveSubmission(
-            int closedM5,
-            int direction,
-            out string reason)
+        private void RecordSubmissionFailure(
+            SubmissionAttemptIdentity identity)
         {
-            return _aggressiveSubmissionGate.TryAcquire(
-                Server.TimeInUtc,
-                "AGGRESSIVE|" + closedM5 + "|" + direction,
-                out reason);
-        }
-
-        private void RecordAggressiveSubmission(
-            TradeResult result)
-        {
-            _aggressiveSubmissionGate.Record(
-                Server.TimeInUtc,
-                result != null &&
-                result.IsSuccessful &&
-                result.Position != null);
-        }
-
-        private bool TryAcquirePendingSubmission(
-            int closedM5,
-            int direction,
-            string kind,
-            out string reason)
-        {
-            return _pendingSubmissionGate.TryAcquire(
-                Server.TimeInUtc,
-                kind + "|" + closedM5 + "|" + direction,
-                out reason);
-        }
-
-        private void RecordPendingSubmission(
-            TradeResult result)
-        {
-            _pendingSubmissionGate.Record(
-                Server.TimeInUtc,
-                result != null &&
-                result.IsSuccessful &&
-                result.PendingOrder != null);
-        }
-
-        private void RecordNormalSubmissionFailure()
-        {
-            _normalSubmissionGate.Record(
+            _submissionGate.Record(
+                identity,
                 Server.TimeInUtc,
                 false);
         }
 
-        private void RecordAggressiveSubmissionFailure()
+        private bool HasConfirmedSubmissionEntity(
+            ExecutionSubmissionPath path,
+            TradeResult result)
         {
-            _aggressiveSubmissionGate.Record(
-                Server.TimeInUtc,
-                false);
-        }
+            if (result == null || !result.IsSuccessful)
+                return false;
 
-        private void RecordPendingSubmissionFailure()
-        {
-            _pendingSubmissionGate.Record(
-                Server.TimeInUtc,
-                false);
+            switch (path)
+            {
+                case ExecutionSubmissionPath.AutomaticMarket:
+                case ExecutionSubmissionPath.AggressiveMarket:
+                    return result.Position != null;
+
+                case ExecutionSubmissionPath.PendingStop:
+                case ExecutionSubmissionPath.PendingLimit:
+                    return result.PendingOrder != null;
+
+                default:
+                    return false;
+            }
         }
     }
 }
