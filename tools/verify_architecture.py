@@ -3037,8 +3037,10 @@ if "EvaluateTacticalOpportunityForDirection(" not in parallel_builder_code:
     raise SystemExit("Parallel opportunity builder must evaluate independent LTF directions")
 if "_lastOpportunityCandidatesM5" not in parallel_builder_code:
     raise SystemExit("Parallel opportunity builder must cache structural rebuild cadence")
-if 'string baseName =' not in parallel_renderer_code or
-   '"OPP_"' not in parallel_renderer_code:
+if (
+    'string baseName =' not in parallel_renderer_code or
+    '"OPP_"' not in parallel_renderer_code
+):
     raise SystemExit("Parallel opportunities must use an isolated visual namespace")
 if "ShowTacticalOpportunityLabels" not in parallel_renderer_code:
     raise SystemExit("Parallel opportunity renderer must honor label visibility control")
