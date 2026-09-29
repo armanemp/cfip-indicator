@@ -92,9 +92,7 @@ namespace cAlgo
                                             continue;
                         
                                         int closedIndex =
-                                            ClosedIndex(
-                                                bars[i],
-                                                reference);
+                                            closedIndices[i];
                         
                                         if (closedIndex < 0 ||
                                             frames[i].Index != closedIndex)
