@@ -107,7 +107,7 @@ namespace cAlgo
                     bars,
                     createdIndex,
                     direction,
-                    atr);
+                    creationAtr);
 
             bool fvgConfluence =
                 HasOrderBlockFvgConfluence(
