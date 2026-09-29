@@ -18,6 +18,7 @@ namespace cAlgo
             VerifyCorrelationAwareEvidence();
             VerifyQualityWeightedFrameContribution();
             VerifyMarketRegimeClassification();
+            VerifyEntryTrapRisk();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -636,6 +637,94 @@ namespace cAlgo
                     range) <
                 50,
                 "compression quality is low");
+        }
+
+        private static void VerifyEntryTrapRisk()
+        {
+            EntryTrapRiskResult safe =
+                EntryTrapRiskRule.Evaluate(
+                    1,
+                    0.50,
+                    0.05,
+                    0.05,
+                    0,
+                    false);
+
+            Assert(
+                !safe.Block &&
+                safe.Risk < 40,
+                "safe entry trap risk");
+
+            EntryTrapRiskResult buyTop =
+                EntryTrapRiskRule.Evaluate(
+                    1,
+                    0.92,
+                    0.20,
+                    0.10,
+                    0,
+                    false);
+
+            Assert(
+                buyTop.Block &&
+                buyTop.Reason == "EXTREME ENTRY LOCATION",
+                "buy at range top blocked");
+
+            EntryTrapRiskResult sellBottom =
+                EntryTrapRiskRule.Evaluate(
+                    -1,
+                    0.08,
+                    0.20,
+                    0.10,
+                    0,
+                    false);
+
+            Assert(
+                sellBottom.Block &&
+                sellBottom.Reason == "EXTREME ENTRY LOCATION",
+                "sell at range bottom blocked");
+
+            EntryTrapRiskResult fallingBuy =
+                EntryTrapRiskRule.Evaluate(
+                    1,
+                    0.55,
+                    0.55,
+                    0.45,
+                    0,
+                    false);
+
+            Assert(
+                fallingBuy.Block &&
+                fallingBuy.Reason == "ADVERSE MOMENTUM",
+                "falling BUY blocked");
+
+            EntryTrapRiskResult opposingDiv =
+                EntryTrapRiskRule.Evaluate(
+                    1,
+                    0.55,
+                    0.10,
+                    0.05,
+                    82,
+                    false);
+
+            Assert(
+                opposingDiv.Block &&
+                opposingDiv.Reason ==
+                    "OPPOSING REGULAR DIVERGENCE",
+                "opposing divergence blocks entry");
+
+            EntryTrapRiskResult hiddenSupport =
+                EntryTrapRiskRule.Evaluate(
+                    1,
+                    0.55,
+                    0.05,
+                    0.05,
+                    0,
+                    true);
+
+            Assert(
+                !hiddenSupport.Block &&
+                hiddenSupport.Risk < 20,
+                "supportive hidden divergence reduces trap risk");
         }
 
         private static void Assert(bool condition, string name)
