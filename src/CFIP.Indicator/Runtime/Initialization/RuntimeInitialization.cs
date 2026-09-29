@@ -290,7 +290,7 @@ namespace cAlgo
 
             Timer.Stop();
             Timer.Start(
-                TimeSpan.FromSeconds(1));
+                TimeSpan.FromMilliseconds(500));
 
             try
             {
