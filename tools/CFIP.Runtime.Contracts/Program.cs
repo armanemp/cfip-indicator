@@ -72,16 +72,21 @@ namespace cAlgo
                     1,
                     1,
                     100,
-                    103,
+                    104,
                     99,
-                    102,
+                    103,
                     2,
                     0.50,
                     0.70,
-                    3.0,
+                    2.5,
                     4,
-                    4),
-                "bullish M1 trigger uses independent closed-bar geometry and score");
+                    4,
+                    102,
+                    98,
+                    0.05,
+                    false,
+                    0),
+                "bullish M1 trigger requires and accepts a causal micro-structure break");
 
             Assert(
                 M1TriggerRule.IsReady(
@@ -89,20 +94,67 @@ namespace cAlgo
                     -1,
                     100,
                     101,
+                    96,
                     97,
-                    98,
                     2,
                     0.50,
                     0.70,
-                    3.0,
+                    2.5,
                     4,
-                    4),
+                    4,
+                    102,
+                    98,
+                    0.05,
+                    false,
+                    0),
                 "bearish M1 trigger is directionally symmetric");
+
+            Assert(
+                M1TriggerRule.IsReady(
+                    1,
+                    1,
+                    100,
+                    104,
+                    99,
+                    103,
+                    2,
+                    0.12,
+                    0.70,
+                    2.5,
+                    6,
+                    4,
+                    104,
+                    98,
+                    0.05,
+                    true,
+                    0.80),
+                "configured displacement can provide the causal confirmation when micro-break is absent");
 
             Assert(
                 !M1TriggerRule.IsReady(
                     1,
-                    -1,
+                    1,
+                    100,
+                    104,
+                    99,
+                    103,
+                    2,
+                    0.12,
+                    0.70,
+                    2.5,
+                    6,
+                    4,
+                    104,
+                    98,
+                    0.05,
+                    false,
+                    0),
+                "high technical trigger score cannot replace structural/displacement evidence");
+
+            Assert(
+                !M1TriggerRule.IsReady(
+                    1,
+                    1,
                     100,
                     103,
                     99,
@@ -110,9 +162,35 @@ namespace cAlgo
                     2,
                     0.50,
                     0.70,
-                    3.0,
+                    2.5,
                     4,
-                    4),
+                    4,
+                    102.5,
+                    98,
+                    0.05,
+                    false,
+                    0),
+                "a close that does not clear the buffered prior micro-high cannot confirm");
+
+            Assert(
+                !M1TriggerRule.IsReady(
+                    1,
+                    -1,
+                    100,
+                    104,
+                    99,
+                    103,
+                    2,
+                    0.50,
+                    0.70,
+                    2.5,
+                    4,
+                    4,
+                    102,
+                    98,
+                    0.05,
+                    true,
+                    0.80),
                 "opposite M1 direction cannot confirm the selected decision");
 
             Assert(
@@ -126,9 +204,14 @@ namespace cAlgo
                     2,
                     0.50,
                     0.70,
-                    3.0,
+                    2.5,
                     4,
-                    4),
+                    4,
+                    100,
+                    98,
+                    0.05,
+                    false,
+                    0),
                 "weak M1 body cannot confirm");
 
             Assert(
@@ -136,15 +219,20 @@ namespace cAlgo
                     1,
                     1,
                     100,
-                    102,
+                    104,
                     99,
                     100.5,
-                    1,
-                    0.50,
+                    2,
+                    0.12,
                     0.70,
-                    3.0,
+                    2.5,
                     4,
-                    4),
+                    4,
+                    100,
+                    98,
+                    0.05,
+                    false,
+                    0),
                 "poor M1 close location cannot confirm");
 
             Assert(
@@ -158,8 +246,14 @@ namespace cAlgo
                     2,
                     0.50,
                     0.70,
+                    2.5,
+                    4,
                     3,
-                    4),
+                    101,
+                    98,
+                    0.05,
+                    false,
+                    0),
                 "insufficient M1 trigger score cannot confirm");
 
             Assert(
@@ -175,7 +269,12 @@ namespace cAlgo
                     0.70,
                     3.0,
                     4,
-                    4),
+                    4,
+                    102,
+                    98,
+                    0.05,
+                    false,
+                    0),
                 "abnormally large M1 range cannot confirm");
         }
 
