@@ -79,7 +79,18 @@ namespace cAlgo
                                                         Math.Max(
                                                             150,
                                                             contentWidth -
-                                                            8);
+                                                            36);
+
+                                                    if (_processingLamp != null)
+                                                    {
+                                                        _processingLamp.Width = 24;
+                                                        _processingLamp.Height =
+                                                            Math.Max(
+                                                                20,
+                                                                headerHeight - 4);
+                                                        _processingLamp.Margin =
+                                                            new Thickness(4, 0, 0, 0);
+                                                    }
                                         
                                                     _panelHeaderTitle.FontFamily =
                                                         string.IsNullOrWhiteSpace(
