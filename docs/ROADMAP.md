@@ -3859,7 +3859,8 @@ Operator pull: required now; pull main to the latest closeout commit.
 
 ## Phase 9.15 — Startup Responsiveness & Portable Long-Term History — 2026-09-29
 
-Status: IMPLEMENTED; automated verification pending.
+Status: VERIFIED COMPLETE; merged into main as PR #57.
+Verified merge commit: 365abb790a49e85ad58c87aa5a92f49d37b7f77c.
 
 Completed scope:
 - reduced primary startup readiness thresholds to the actual minimum closed history required by the canonical analyzers;
@@ -3878,5 +3879,7 @@ Target-terminal measurement remains required for actual startup latency and live
 
 Detailed record: docs/PHASE-9-15-STARTUP-PERSISTENT-HISTORY.md.
 
-Next phase after verification: Phase 9.16 — replay/measurement instrumentation and evidence-driven signal refinement.
-Operator pull: required after Phase 9.15 verification and merge.
+Verification: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture + accumulated audits PASS; startup/persistence audit PASS; Decision Contracts PASS within Build.
+
+Next phase: Phase 9.16 — replay/measurement instrumentation and evidence-driven signal refinement.
+Operator pull: required now; pull main to the latest closeout commit.
