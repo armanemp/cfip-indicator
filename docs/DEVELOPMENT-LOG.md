@@ -1191,7 +1191,14 @@ Operator pull:
 
 ## Phase 9.6 — Signal Quality & Visual Coherence — 2026-09-29
 
-Status: implementation complete on `phase/9-6-signal-quality-visual-coherence`; automated verification and merge closeout pending.
+Status: VERIFIED COMPLETE on `phase/9-6-signal-quality-visual-coherence`.
+
+Pre-merge gates passed on head `9e001449ee852289676aa29d1907174b96ce1b44`:
+- Runtime Acceptance: PASS (run #988)
+- cTrader Compile/Build: PASS (run #1172)
+- Source/Architecture: PASS (run #1179)
+
+Target cTrader replay remains required for empirical visual/signal-quality validation. Merge closeout follows after this verified documentation update.
 
 Scope completed:
 - added one final deterministic actionable-quality gate and applied it at both closed-bar decision creation and live-quote actionability refresh, preventing live refresh from reopening a marginal signal;
