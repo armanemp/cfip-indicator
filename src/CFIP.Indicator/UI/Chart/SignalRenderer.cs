@@ -194,10 +194,101 @@ namespace cAlgo
                                     snapshot.ArrowM5Index;
                             }
                 
+                            RenderTriggerRuntimeMarker(
+                                snapshot);
+
                             _lastVisualDirection =
                                 visualDirection;
                         }
         
+        private void RenderTriggerRuntimeMarker(
+                            SignalVisualSnapshot snapshot)
+                        {
+                            Chart.RemoveObject(
+                                P + "M1_TRIGGER");
+
+                            if (snapshot == null ||
+                                !snapshot.TriggerRuntimeReady ||
+                                !ShowTrigger ||
+                                snapshot.TriggerM1Index < 0 ||
+                                (snapshot.DecisionDirection != 1 &&
+                                 snapshot.DecisionDirection != -1) ||
+                                Bars == null ||
+                                Bars.Count < 2)
+                                return;
+
+                            int triggerBar =
+                                MapM1ToChart(
+                                    snapshot.TriggerM1Index,
+                                    Bars.Count - 1);
+
+                            triggerBar =
+                                Math.Max(
+                                    0,
+                                    Math.Min(
+                                        Bars.Count - 1,
+                                        triggerBar));
+
+                            double atr =
+                                triggerBar >= 1
+                                    ? Atr(
+                                        Bars,
+                                        triggerBar)
+                                    : 0;
+
+                            double offset =
+                                Math.Max(
+                                    Symbol.PipSize * 1.5,
+                                    atr > 0
+                                        ? atr * 0.12
+                                        : Symbol.PipSize * 2);
+
+                            double price =
+                                snapshot.DecisionDirection == 1
+                                    ? Bars.LowPrices[triggerBar] - offset
+                                    : Bars.HighPrices[triggerBar] + offset;
+
+                            DrawIcon(
+                                P + "M1_TRIGGER",
+                                snapshot.DecisionDirection == 1
+                                    ? ChartIconType.UpArrow
+                                    : ChartIconType.DownArrow,
+                                triggerBar,
+                                price,
+                                SignalArrowColorFor(
+                                    snapshot.DecisionDirection,
+                                    "STRONG"));
+                        }
+
+        private int MapM1ToChart(
+                            int m1Index,
+                            int alternate)
+                        {
+                            if (_m1Bars == null ||
+                                Bars == null ||
+                                m1Index < 0 ||
+                                m1Index >= _m1Bars.Count)
+                                return Math.Max(
+                                    0,
+                                    Math.Min(
+                                        alternate,
+                                        Bars.Count - 1));
+
+                            int mapped =
+                                FindContainingBarIndex(
+                                    Bars,
+                                    _m1Bars.OpenTimes[m1Index]);
+
+                            return mapped >= 0 &&
+                                   mapped < Bars.Count
+                                ? mapped
+                                : Math.Max(
+                                    0,
+                                    Math.Min(
+                                        alternate,
+                                        Bars.Count - 1));
+                        }
+
         private Color SignalArrowColorFor(
                             int direction,
                             string state)
@@ -347,6 +438,9 @@ namespace cAlgo
                 
                             Chart.RemoveObject(
                                 P + "SWEEP_MARKER");
+                            Chart.RemoveObject(
+                                P + "M1_TRIGGER");
+
                         }
         
         private bool SamePrice(
