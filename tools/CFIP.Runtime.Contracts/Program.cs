@@ -568,6 +568,25 @@ namespace cAlgo
             Assert(
                 mixedHtf.Stage == "HTF MIXED",
                 "mixed H1+ context never pretends to be a calibrated anchor");
+
+            TopDownCalibrationSnapshot weakMiddleAgreement =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new double[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, -1 },
+                    new[] { 100, 100 },
+                    new double[] { 5.0, 5.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                weakMiddleAgreement.MidDirection == 0 &&
+                weakMiddleAgreement.Stage == "MIDFRAME CALIBRATION",
+                "directionally mixed middle frames cannot be promoted to calibrated entry");
+
         }
 
         private static void VerifyProtectionProgressionSemantics()
