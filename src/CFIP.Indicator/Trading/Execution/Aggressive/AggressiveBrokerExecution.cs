@@ -1,6 +1,4 @@
-using System;
 using cAlgo.API;
-
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
@@ -23,7 +21,6 @@ namespace cAlgo
                     ApplyRuntimeEntryGate();
                     return;
                 }
-
                 if (!TryValidateAggressiveFinalExecution(
                         closedM5,
                         type,
@@ -36,7 +33,6 @@ namespace cAlgo
                         guardReason);
                     return;
                 }
-
                 ExecutionIntent aggressiveIntent =
                     BuildExecutionIntent(
                         _reaction.Direction,
@@ -51,7 +47,6 @@ namespace cAlgo
                         volume,
                         closedM5,
                         "AGG MARKET");
-
                 string aggressiveIntentReason;
                 if (!ValidateExecutionIntent(
                         aggressiveIntent,
@@ -66,10 +61,8 @@ namespace cAlgo
                         _autoExecutionBlockReason);
                     return;
                 }
-
                 string submissionGateReason;
                 SubmissionAttemptIdentity submissionIdentity;
-
                 if (!TryAcquireSubmission(
                         closedM5,
                         _reaction == null
@@ -86,10 +79,8 @@ namespace cAlgo
                         submissionGateReason);
                     return;
                 }
-
                 RelativeTakeProfitProtections serverTakeProfits;
                 StopLossBreakEven serverBreakEven;
-
                 bool useServerTakeProfitLadder =
                     TryBuildServerSideTakeProfitLadder(
                         entry,
@@ -97,9 +88,7 @@ namespace cAlgo
                         volume,
                         out serverTakeProfits,
                         out serverBreakEven);
-
                 TradeResult result;
-
                 try
                 {
                     result =
@@ -132,11 +121,9 @@ namespace cAlgo
                         submissionIdentity);
                     throw;
                 }
-
                 RecordSubmission(
                     submissionIdentity,
                     result);
-
                 if (!BrokerConfirmationPolicy.CanAdoptPosition(
                         result != null,
                         result != null &&
@@ -150,13 +137,11 @@ namespace cAlgo
                             ? "AGGRESSIVE • " +
                               result.Error.Value.ToString()
                             : "AGGRESSIVE • TRADE REJECTED";
-
                     SetAutoTradingState(
                         "ERROR",
                         _autoExecutionBlockReason);
                     return;
                 }
-
                 if (!TryProcessAcceptedAggressiveFill(
                         closedM5,
                         entry,
@@ -168,12 +153,9 @@ namespace cAlgo
                         out double actualStop,
                         out double actualTarget))
                     return;
-
                 AdoptServerSideTakeProfitLadder(
                     result.Position);
-
                 bool protectionOk = true;
-
                 if (AutoBrokerProtection)
                 {
                     protectionOk =
@@ -184,7 +166,6 @@ namespace cAlgo
                             "AG ENTRY",
                             _reaction.Direction);
                 }
-
                 SetAutoTradingState(
                     protectionOk
                         ? "EXECUTED"
@@ -195,13 +176,10 @@ namespace cAlgo
                         : "POSITION #" +
                           result.Position.Id +
                           " • BROKER PROTECTION RECOVERY");
-
                 double confirmedStop =
                     GetActiveBrokerStopPrice();
-
                 double confirmedTarget =
                     GetActiveBrokerTargetPrice();
-
                 SendUnifiedAlert(
                     "AUTO-REACTION|" +
                     closedM5,
@@ -230,7 +208,6 @@ namespace cAlgo
                 _autoExecutionBlockReason =
                     "AGGRESSIVE • EXCEPTION • " +
                     ex.Message;
-
                 Print(
                     "CFIP aggressive trade failed: {0}",
                     ex.Message);
