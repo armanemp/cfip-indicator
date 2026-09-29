@@ -93,12 +93,47 @@ namespace cAlgo
                                 
                                             if (pendingDirection != 0)
                                             {
+                                                RangeSignalQualityResult rangeQuality =
+                                                    EvaluateRangeSignalQuality(
+                                                        closedM5,
+                                                        pendingDirection,
+                                                        continuationStrong && _decision != null
+                                                            ? _decision.Confidence
+                                                            : _reaction == null
+                                                                ? 0
+                                                                : _reaction.Confidence,
+                                                        continuationStrong && _decision != null
+                                                            ? _decision.SmartQuality
+                                                            : _reaction == null
+                                                                ? 0
+                                                                : _reaction.SmartQuality,
+                                                        _decision == null
+                                                            ? 0
+                                                            : _decision.Edge,
+                                                        continuationStrong && _decision != null
+                                                            ? _decision.IndependentEvidence
+                                                            : _reaction == null
+                                                                ? 0
+                                                                : _reaction.IndependentEvidence,
+                                                        continuationStrong && _decision != null
+                                                            ? _decision.StructuralConfirmations
+                                                            : StructuralConfirmations(
+                                                                pendingDirection));
+
+                                                if (!rangeQuality.Allowed)
+                                                {
+                                                    _autoOrdersBlockReason =
+                                                        rangeQuality.Reason;
+                                                    return;
+                                                }
+
                                                 string pendingSuitabilityReason;
                                 
                                                 if (!PassesMarketSuitability(
                                                         closedM5,
                                                         pendingDirection,
-                                                        out pendingSuitabilityReason))
+                                                        out pendingSuitabilityReason,
+                                                        true))
                                                 {
                                                     _autoOrdersBlockReason =
                                                         "SUITABILITY • " +

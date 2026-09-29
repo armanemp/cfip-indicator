@@ -28,6 +28,21 @@ namespace cAlgo
                 return false;
             }
 
+            string suitabilityReason;
+
+            if (!PassesMarketSuitability(
+                    intent.CreatedM5,
+                    intent.Direction,
+                    out suitabilityReason,
+                    true))
+            {
+                reason =
+                    prefix +
+                    "SUITABILITY " +
+                    suitabilityReason;
+                return false;
+            }
+
             string safetyReason;
 
             if (!PassesAutoTradeSafetyGuards(

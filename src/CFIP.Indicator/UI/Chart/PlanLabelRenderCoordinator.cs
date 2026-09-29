@@ -57,10 +57,10 @@ namespace cAlgo
 
             double boxHalfHeight =
                 Math.Max(
-                    Symbol.PipSize * 3,
+                    Symbol.PipSize * 4,
                     atr > 0
-                        ? atr * 0.055
-                        : Symbol.PipSize * 4);
+                        ? atr * 0.065
+                        : Symbol.PipSize * 5);
 
             double entry =
                 preview

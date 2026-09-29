@@ -20,6 +20,7 @@ namespace cAlgo
             VerifyMarketRegimeClassification();
             VerifyEntryTrapRisk();
             VerifyActionableSignalQuality();
+            VerifyRangeSignalQuality();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -796,6 +797,96 @@ namespace cAlgo
                 repeat.Allowed == accepted.Allowed &&
                 repeat.Reason == accepted.Reason,
                 "actionable quality deterministic");
+        }
+
+        private static void VerifyRangeSignalQuality()
+        {
+            RangeSignalQualityInput weakMiddle =
+                new RangeSignalQualityInput(
+                    1, 0.52, 0.20, 72, 14,
+                    true, true, true,
+                    true, true, false,
+                    70, 4, 2,
+                    85, 82, 0, 2.0);
+
+            RangeSignalQualityResult middleResult =
+                RangeSignalQualityRule.Evaluate(
+                    "RANGE",
+                    weakMiddle);
+
+            Assert(
+                !middleResult.Allowed &&
+                middleResult.Reason ==
+                    "RANGE NO-TRADE • MID-RANGE",
+                "range mid-zone rejection");
+
+            RangeSignalQualityInput weakLiquidity =
+                new RangeSignalQualityInput(
+                    1, 0.22, 0.20, 72, 14,
+                    false, true, true,
+                    true, true, false,
+                    70, 5, 2,
+                    85, 82, 0, 2.0);
+
+            RangeSignalQualityResult liquidityResult =
+                RangeSignalQualityRule.Evaluate(
+                    "RANGE",
+                    weakLiquidity);
+
+            Assert(
+                !liquidityResult.Allowed &&
+                liquidityResult.Reason ==
+                    "RANGE NO-TRADE • NO LIQUIDITY EVENT",
+                "range liquidity requirement");
+
+            RangeSignalQualityInput strongReversal =
+                new RangeSignalQualityInput(
+                    1, 0.18, 0.20, 70, 14,
+                    true, true, true,
+                    true, true, false,
+                    72, 6, 3,
+                    89, 84, 8, 2.0);
+
+            RangeSignalQualityResult reversalResult =
+                RangeSignalQualityRule.Evaluate(
+                    "RANGE",
+                    strongReversal);
+
+            Assert(
+                reversalResult.Allowed &&
+                reversalResult.Reason ==
+                    "RANGE REVERSAL QUALIFIED",
+                "strong range reversal");
+
+            RangeSignalQualityInput strongBreakout =
+                new RangeSignalQualityInput(
+                    1, 1.02, 0.42, 60, 22,
+                    false, true, true,
+                    true, false, true,
+                    68, 6, 3,
+                    88, 83, 5, 2.1);
+
+            RangeSignalQualityResult breakoutResult =
+                RangeSignalQualityRule.Evaluate(
+                    "RANGE",
+                    strongBreakout);
+
+            Assert(
+                breakoutResult.Allowed &&
+                breakoutResult.Reason ==
+                    "RANGE BREAKOUT QUALIFIED",
+                "strong range breakout");
+
+            RangeSignalQualityResult compression =
+                RangeSignalQualityRule.Evaluate(
+                    "COMPRESSION",
+                    strongBreakout);
+
+            Assert(
+                !compression.Allowed &&
+                compression.Reason ==
+                    "COMPRESSION NO-TRADE",
+                "compression hard no-trade");
         }
 
         private static void Assert(bool condition, string name)

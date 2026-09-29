@@ -16,13 +16,14 @@ namespace cAlgo
 private bool PassesMarketSuitability(
                                     int closedM5,
                                     int direction,
-                                    out string reason)
+                                    out string reason,
+                                    bool forceRefresh = false)
                                 {
                                     int score =
                                         RefreshMarketSuitability(
                                             closedM5,
                                             direction,
-                                            false);
+                                            forceRefresh);
                         
                                     reason = _marketSuitabilityReason;
                         

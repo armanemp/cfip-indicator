@@ -37,5 +37,42 @@ namespace cAlgo
                 return null;
             }
         }
+
+        private TradeResult TryExecuteMarketRangeOrder(
+            TradeType tradeType,
+            string symbolName,
+            double volume,
+            double marketRangePips,
+            double basePrice,
+            string label,
+            double stopPips,
+            double targetPips,
+            string comment,
+            bool hasTrailingStop,
+            string context)
+        {
+            try
+            {
+                return ExecuteMarketRangeOrder(
+                    tradeType,
+                    symbolName,
+                    volume,
+                    marketRangePips,
+                    basePrice,
+                    label,
+                    stopPips,
+                    targetPips,
+                    comment,
+                    hasTrailingStop);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP market-range mutation failed ({0}): {1}",
+                    context,
+                    ex.Message);
+                return null;
+            }
+        }
     }
 }

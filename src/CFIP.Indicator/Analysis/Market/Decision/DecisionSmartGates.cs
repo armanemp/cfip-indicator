@@ -50,6 +50,21 @@ namespace cAlgo
                 MinimumProxyExpectedValue)
                 return new DecisionFilterResult(false, "EXPECTED VALUE");
 
+            RangeSignalQualityResult rangeQuality =
+                EvaluateRangeSignalQuality(
+                    closedM5,
+                    decision.Direction,
+                    decision.Confidence,
+                    decision.SmartQuality,
+                    decision.Edge,
+                    decision.IndependentEvidence,
+                    decision.StructuralConfirmations);
+
+            if (!rangeQuality.Allowed)
+                return new DecisionFilterResult(
+                    false,
+                    rangeQuality.Reason);
+
             if (UseStrictRegimeQualityGate &&
                 _m5Frame != null)
             {
@@ -156,17 +171,16 @@ namespace cAlgo
 
                 if (regime != null)
                 {
-                    if (regime.Regime == "COMPRESSION" ||
-                        regime.Regime == "RANGE")
+                    if (regime.Regime == "COMPRESSION")
                         return new DecisionFilterResult(
                             false,
-                            "REGIME " +
-                            regime.Regime);
+                            "REGIME COMPRESSION");
 
                     if (regime.Quality <
                         Math.Max(
                             MinimumDirectionalRegimeQuality,
-                            adaptiveQualityThreshold))
+                            adaptiveQualityThreshold) &&
+                        regime.Regime != "RANGE")
                     {
                         return new DecisionFilterResult(
                             false,
@@ -187,7 +201,8 @@ namespace cAlgo
                             "REGIME TRANSITION");
                     }
 
-                    if (decision.Direction != 0 &&
+                    if (regime.Regime != "RANGE" &&
+                        decision.Direction != 0 &&
                         regime.Direction != 0 &&
                         regime.Direction != decision.Direction &&
                         regime.Quality <

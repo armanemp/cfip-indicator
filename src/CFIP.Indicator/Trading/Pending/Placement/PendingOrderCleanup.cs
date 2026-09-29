@@ -20,11 +20,50 @@ namespace cAlgo
                                             _lastPendingCleanupM5 =
                                                 closedM5;
                                 
+                                            MarketRegimeSnapshot activeRegime =
+                                                GetActiveM5Regime(
+                                                    closedM5);
+
                                             foreach (PendingOrder order in PendingOrders)
                                             {
                                                 if (!IsManagedPendingOrder(order))
                                                     continue;
-                                
+
+                                                bool rangeInvalid =
+                                                    activeRegime != null &&
+                                                    activeRegime.Regime == "COMPRESSION";
+
+                                                if (!rangeInvalid &&
+                                                    activeRegime != null &&
+                                                    activeRegime.Regime == "RANGE")
+                                                {
+                                                    bool qualifiedRangePending = false;
+
+                                                    if (order.OrderType ==
+                                                        PendingOrderType.Limit &&
+                                                        ReversalSetupStrong())
+                                                    {
+                                                        qualifiedRangePending = true;
+                                                    }
+                                                    else if (order.OrderType ==
+                                                             PendingOrderType.Stop &&
+                                                             TrendContinuationStrong())
+                                                    {
+                                                        qualifiedRangePending =
+                                                            EvaluateRangeSignalQuality(
+                                                                closedM5,
+                                                                _decision.Direction,
+                                                                _decision.Confidence,
+                                                                _decision.SmartQuality,
+                                                                _decision.Edge,
+                                                                _decision.IndependentEvidence,
+                                                                _decision.StructuralConfirmations).Allowed;
+                                                    }
+
+                                                    rangeInvalid =
+                                                        !qualifiedRangePending;
+                                                }
+
                                                 bool stale =
                                                     order.ExpirationTime.HasValue &&
                                                     order.ExpirationTime.Value <=
@@ -54,18 +93,21 @@ namespace cAlgo
                                                     ReversalSetupStrong() &&
                                                     order.OrderType == PendingOrderType.Stop;
                                 
-                                                if (!stale &&
+                                                if (!rangeInvalid &&
+                                                    !stale &&
                                                     !wrongDirection &&
                                                     !reversalSupersedesStop)
                                                     continue;
                                 
                                                 if (!TryCancelPendingOrder(
                                                         order,
-                                                        stale
-                                                            ? "STALE PENDING ORDER"
-                                                            : wrongDirection
-                                                                ? "WRONG DIRECTION PENDING ORDER"
-                                                                : "REVERSAL SUPERSEDES STOP"))
+                                                        rangeInvalid
+                                                            ? "RANGE / COMPRESSION NO-TRADE"
+                                                            : stale
+                                                                ? "STALE PENDING ORDER"
+                                                                : wrongDirection
+                                                                    ? "WRONG DIRECTION PENDING ORDER"
+                                                                    : "REVERSAL SUPERSEDES STOP"))
                                                 {
                                                     SetLifecycleState(
                                                         LifecycleState.RecoveryRequired,

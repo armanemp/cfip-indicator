@@ -190,7 +190,14 @@ namespace cAlgo
                     Chart.FindObject(boxName)
                     as ChartRectangle;
 
+                // Preserve the semantic level color while forcing the
+                // rectangle fill itself to be fully opaque.
                 Color boxColor = color;
+                Color opaqueBoxColor =
+                    Color.FromArgb(
+                        255,
+                        boxColor);
+
                 Color textColor =
                     GetReadableLabelTextColor(
                         boxColor);
@@ -228,7 +235,7 @@ namespace cAlgo
                         NormalizePrice(
                             price - effectiveHalfHeight);
                     box.Color =
-                        boxColor;
+                        opaqueBoxColor;
                     box.Thickness =
                         1;
                     box.LineStyle =

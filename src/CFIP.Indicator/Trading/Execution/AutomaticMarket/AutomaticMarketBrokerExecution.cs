@@ -5,6 +5,26 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private TradeResult TryExecuteAutomaticMarketCompatibilityPathV97(
+            TradeType type,
+            double volume,
+            double stopPips,
+            double targetPips)
+        {
+            // Architectural compatibility path. Valid Phase 9.7 market
+            // submissions use the bounded Market Range path.
+            return TryExecuteMarketOrder(
+                type,
+                SymbolName,
+                volume,
+                NormalizeLabel(),
+                stopPips,
+                targetPips,
+                TradeExecutionMetadata.DefaultExecutionComment,
+                false,
+                "AUTOMATIC MARKET FALLBACK");
+        }
+
         private void ExecutePreparedAutomaticMarketTrade(
             int closedM5,
             TradeType type,
@@ -61,21 +81,39 @@ namespace cAlgo
                     return;
                 }
 
+                double marketRangePips =
+                    CalculateAutomaticMarketRangePips(
+                        closedM5,
+                        entry);
+
+                if (marketRangePips <= 0)
+                {
+                    _autoExecutionBlockReason =
+                        "MARKET RANGE UNAVAILABLE";
+
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        _autoExecutionBlockReason);
+                    return;
+                }
+
                 TradeResult result;
 
                 try
                 {
                     result =
-                        TryExecuteMarketOrder(
+                        TryExecuteMarketRangeOrder(
                             type,
                             SymbolName,
                             volume,
+                            marketRangePips,
+                            entry,
                             NormalizeLabel(),
                             stopPips,
                             targetPips,
                             TradeExecutionMetadata.DefaultExecutionComment,
                             false,
-                            "AUTOMATIC MARKET");
+                            "AUTOMATIC MARKET RANGE");
                 }
                 catch
                 {

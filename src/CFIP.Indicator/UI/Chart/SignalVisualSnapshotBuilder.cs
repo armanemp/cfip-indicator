@@ -7,6 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private int ResolveCanonicalVisualDirection(
+            int closedM5,
             int pendingDirection,
             bool livePlan,
             bool decisionReady,
@@ -41,6 +42,21 @@ namespace cAlgo
                 _reaction != null)
                 return _reaction.Direction;
 
+            MarketRegimeSnapshot activeRegime =
+                GetActiveM5Regime(
+                    closedM5);
+
+            if (activeRegime != null &&
+                (activeRegime.Regime == "RANGE" ||
+                 activeRegime.Regime == "COMPRESSION"))
+            {
+                if (predictionReady &&
+                    _prediction != null)
+                    return _prediction.Direction;
+
+                return 0;
+            }
+
             if (_m5Frame != null &&
                 (_m5Frame.Direction == 1 ||
                  _m5Frame.Direction == -1) &&
@@ -61,6 +77,31 @@ namespace cAlgo
                 return _prediction.Direction;
 
             return 0;
+        }
+
+        private bool IsRangeSignalVisualAllowed(
+            int closedM5,
+            int direction,
+            int confidence,
+            int smartQuality,
+            int edge,
+            int independentEvidence,
+            int structuralConfirmations)
+        {
+            if (_m5Frame == null)
+                return true;
+
+            RangeSignalQualityResult result =
+                EvaluateRangeSignalQuality(
+                    closedM5,
+                    direction,
+                    confidence,
+                    smartQuality,
+                    edge,
+                    independentEvidence,
+                    structuralConfirmations);
+
+            return result.Allowed;
         }
 
         private SignalVisualSnapshot BuildSignalVisualSnapshot(
@@ -110,7 +151,16 @@ namespace cAlgo
                 _reaction.IndependentEvidence >=
                     Math.Max(
                         2,
-                        MinimumLiveReactionEvidence);
+                        MinimumLiveReactionEvidence) &&
+                IsRangeSignalVisualAllowed(
+                    closedM5,
+                    _reaction.Direction,
+                    _reaction.Confidence,
+                    _reaction.SmartQuality,
+                    _reaction.Edge,
+                    _reaction.IndependentEvidence,
+                    StructuralConfirmations(
+                        _reaction.Direction));
 
             snapshot.PlanDirection =
                 _plan == null ? 0 : _plan.Direction;
@@ -136,7 +186,25 @@ namespace cAlgo
                 _prediction != null &&
                 _prediction.Direction != 0 &&
                 _prediction.Confidence >=
-                    strongPredictionConfidence;
+                    strongPredictionConfidence &&
+                IsRangeSignalVisualAllowed(
+                    closedM5,
+                    _prediction.Direction,
+                    _prediction.Confidence,
+                    _decision == null
+                        ? _prediction.Confidence
+                        : _decision.SmartQuality,
+                    _decision == null
+                        ? 0
+                        : _decision.Edge,
+                    _decision == null
+                        ? IndependentEvidence(
+                            _prediction.Direction)
+                        : _decision.IndependentEvidence,
+                    _decision == null
+                        ? StructuralConfirmations(
+                            _prediction.Direction)
+                        : _decision.StructuralConfirmations);
 
             bool triggerRuntimeReady =
                 _triggerRuntime.Latched &&
@@ -149,6 +217,7 @@ namespace cAlgo
 
             int visualDirection =
                 ResolveCanonicalVisualDirection(
+                    closedM5,
                     pendingValid
                         ? (pending.TradeType == TradeType.Buy ? 1 : -1)
                         : 0,
