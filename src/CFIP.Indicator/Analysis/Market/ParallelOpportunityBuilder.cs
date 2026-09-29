@@ -346,6 +346,9 @@ namespace cAlgo
             if (candidate == null)
                 return;
 
+            string candidateIdentity =
+                ScenarioIdentity(candidate);
+
             for (int i = 0;
                  i < _opportunityCandidates.Count;
                  i++)
@@ -353,61 +356,66 @@ namespace cAlgo
                 TradeOpportunityCandidate existing =
                     _opportunityCandidates[i];
 
-                if (existing.Direction != candidate.Direction)
+                if (existing == null)
                     continue;
 
-                bool hasSourceTimeframe =
-                    !string.IsNullOrWhiteSpace(
-                        existing.SourceTimeframe) ||
-                    !string.IsNullOrWhiteSpace(
-                        candidate.SourceTimeframe);
+                string existingIdentity =
+                    ScenarioIdentity(existing);
 
-                if (hasSourceTimeframe &&
-                    !string.Equals(
-                        existing.SourceTimeframe,
-                        candidate.SourceTimeframe,
+                // Different timeframe/lane scenarios are intentionally distinct,
+                // even when their proposed price is close. Only the exact same
+                // scenario identity may be collapsed.
+                if (!string.Equals(
+                        existingIdentity,
+                        candidateIdentity,
                         StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                double distance =
-                    Math.Abs(
-                        existing.Entry -
-                        candidate.Entry);
+                double distance = Math.Abs(
+                    existing.Entry -
+                    candidate.Entry);
 
-                if (distance <
-                    Math.Max(
+                if (distance < Math.Max(
                         Symbol.PipSize * 2,
-                        candidate.Risk * 0.10))
+                        Math.Min(
+                            existing.Risk,
+                            candidate.Risk) * 0.10))
                 {
-                    bool existingStrategic =
-                        existing.Lane ==
-                        OpportunityLane.Strategic;
-
-                    bool candidateStrategic =
-                        candidate.Lane ==
-                        OpportunityLane.Strategic;
-
-                    if (candidateStrategic &&
-                        !existingStrategic)
-                    {
-                        _opportunityCandidates[i] =
-                            candidate;
-                    }
-                    else if (!existingStrategic &&
-                             !candidateStrategic &&
-                             candidate.Quality >
-                             existing.Quality)
-                    {
-                        _opportunityCandidates[i] =
-                            candidate;
-                    }
+                    if (OpportunityDisplayPriority(candidate) >
+                        OpportunityDisplayPriority(existing))
+                        _opportunityCandidates[i] = candidate;
 
                     return;
                 }
+
+                // Same identity but materially different geometry: keep the
+                // newest closed-bar candidate rather than accidentally retaining
+                // stale entry/SL/TP levels.
+                if (candidate.CreatedM5 >= existing.CreatedM5)
+                    _opportunityCandidates[i] = candidate;
+
+                return;
             }
 
             _opportunityCandidates.Add(candidate);
-
         }
+
+        private string ScenarioIdentity(
+            TradeOpportunityCandidate candidate)
+        {
+            if (candidate == null)
+                return string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(candidate.ScenarioId))
+                return candidate.ScenarioId.Trim();
+
+            return
+                (candidate.SourceTimeframe ?? "NONE") +
+                "|" +
+                (int)candidate.Lane +
+                "|" +
+                candidate.Direction;
+        }
+
     }
 }
