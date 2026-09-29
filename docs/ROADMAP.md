@@ -3629,3 +3629,23 @@ Verification closeout:
 - Source/Architecture PASS.
 
 Empirical boundary: target-terminal replay is still required for exact chart timing, visual behavior and realized risk/reward measurement.
+
+
+## Phase 9.6 — Signal Quality & Visual Coherence
+
+Status: implementation complete on `phase/9-6-signal-quality-visual-coherence`; verification pending.
+
+The phase hardens the final actionable state without creating a parallel signal authority. The same stricter quality rule is applied during closed-bar decision construction and during live quote re-evaluation.
+
+Presentation changes:
+- weak directional WATCH states are no longer rendered merely because a non-zero direction exists;
+- reaction/prediction chart presentation requires stronger existing quality evidence;
+- directional markers are UpArrow/DownArrow;
+- the M1 trigger is a non-directional Circle;
+- compact level-label backgrounds stay attached to their text and use bounded dimensions;
+- parallel opportunity labels reuse the canonical compact anchor;
+- low-quality parallel candidates are suppressed from presentation.
+
+Verification requires Runtime Acceptance / Decision Contracts, cTrader Compile/Build, and Source/Architecture. Target-terminal replay is still required for empirical signal timing, chart readability, false-signal frequency and realized RR measurement.
+
+Detailed record: `docs/PHASE-9-6-SIGNAL-QUALITY-VISUAL-COHERENCE.md`.
