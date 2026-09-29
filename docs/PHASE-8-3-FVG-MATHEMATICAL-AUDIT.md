@@ -1,6 +1,6 @@
 # Phase 8.3 — FVG Mathematical Audit
 
-Status: implementation in progress.
+Status: implementation verified and ready to merge.
 
 ## Scope
 
@@ -23,6 +23,14 @@ Audit and normalize the production Fair Value Gap chain without adding public pa
 6. All lifecycle scans remain bounded by the configured FVG lookback and maximum zone age.
 7. No public parameters are added in this phase.
 
+## Implementation closeout
+
+Production `FvgDetectionAnalyzer` and `PredictivePendingZoneCollector` now consume `FvgRule`; historical gap thresholds use creation-bar ATR; current retest is post-creation candle range interaction; mitigation uses one shared full-fill/partial-fill mathematical owner; managed FVGs carry stable source identity. No public parameter count changed.
+
+## Verification
+
+Head `89919e7363d374e2cf3a362ec553b1fdac464919`: Runtime Acceptance PASS; Build PASS; Source/Architecture PASS.
+
 ## Acceptance
 
 Automated:
@@ -34,4 +42,4 @@ Automated:
 - identity stability;
 - Runtime, Build and Source/Architecture gates.
 
-Target cTrader replay remains required for empirical signal-quality measurement.
+Target cTrader replay remains required for empirical signal-quality measurement. No empirical false-signal or win-rate improvement is claimed from CI alone.
