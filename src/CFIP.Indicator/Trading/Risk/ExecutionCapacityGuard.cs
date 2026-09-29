@@ -7,13 +7,14 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool ValidateConfiguredPositionCapacity(out string reason)
+        private bool ValidateSinglePlanCapacity(
+            out string reason)
         {
-            if (!ExecutionCapacityRule.IsSupportedSinglePlanCapacity(
-                    MaximumOpenPositions))
+            if (!ExecutionCapacityRule.AllowsNewSinglePlan(
+                    HasManagedOpenPosition()))
             {
                 reason =
-                    "MULTI-POSITION DISABLED • ACTIVE PLAN IS SINGLE-POSITION";
+                    "SINGLE ACTIVE PLAN EXISTS";
                 return false;
             }
 
