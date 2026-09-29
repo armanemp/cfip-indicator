@@ -23,6 +23,7 @@ namespace cAlgo
             VerifyRangeSignalQuality();
             VerifyIndicatorEvidenceFusion();
             VerifyIndicatorActionability();
+            VerifySmartBreakEven();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -1049,6 +1050,64 @@ namespace cAlgo
                 mirrored.Allowed &&
                 mirrored.Reason == trend.Reason,
                 "indicator actionability deterministic");
+        }
+
+
+
+        private static void VerifySmartBreakEven()
+        {
+            SmartBreakEvenResult strong =
+                SmartBreakEvenRule.Evaluate(
+                    20,
+                    40,
+                    1.5,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            Assert(
+                strong.Allowed &&
+                strong.TriggerPips >= 18 &&
+                strong.TriggerPips < 30 &&
+                strong.OffsetPips >= 2 &&
+                strong.OffsetPips <= 10,
+                "smart break-even uses risk, TP1 and spread-aware protection");
+
+            SmartBreakEvenResult tooTight =
+                SmartBreakEvenRule.Evaluate(
+                    20,
+                    10,
+                    1,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            Assert(
+                !tooTight.Allowed &&
+                tooTight.Reason == "TP1 TOO CLOSE FOR SMART BE",
+                "smart break-even avoids TP1 collision");
+
+            SmartBreakEvenResult mirrored =
+                SmartBreakEvenRule.Evaluate(
+                    20,
+                    40,
+                    1.5,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            Assert(
+                mirrored.Allowed &&
+                Math.Abs(
+                    mirrored.TriggerPips -
+                    strong.TriggerPips) < 0.0001 &&
+                Math.Abs(
+                    mirrored.OffsetPips -
+                    strong.OffsetPips) < 0.0001,
+                "smart break-even deterministic");
         }
 
         private static void Assert(bool condition, string name)
