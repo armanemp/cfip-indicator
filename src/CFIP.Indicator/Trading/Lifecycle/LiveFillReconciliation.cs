@@ -46,19 +46,16 @@ namespace cAlgo
                                         actualEntry;
                         
                                     // The broker may fill at a slightly different price than the
-                                    // executable quote. Rebuild the complete structural ladder from
-                                    // the actual fill so chart, plan and broker protection converge.
-                                    if (RebuildSmartExecutionLevels(
+                                    // executable quote. Reconcile the live exit geometry from the actual
+                                    // fill without allowing an old/passed TP or a less-protective SL to
+                                    // overwrite broker-safe state.
+                                    if (ReconcileLiveFillExitGeometry(
                                             closedM5,
                                             direction,
                                             actualEntry,
-                                            atr))
-                                    {
-                                        _plan.Entry =
-                                            actualEntry;
-                        
+                                            atr,
+                                            position))
                                         return;
-                                    }
                         
                                     double currentStop =
                                         _plan.Stop;
