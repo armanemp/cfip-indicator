@@ -125,6 +125,12 @@ namespace cAlgo
                 candidate.Id =
                     candidate.ScenarioId;
 
+                candidate.ExecutionPolicyAllowed =
+                    false;
+
+                candidate.ExecutionPolicyReason =
+                    "INDEPENDENT TIMEFRAME • OBSERVE ONLY";
+
                 candidate.LabelPrefix =
                     "TF-" +
                     names[i];
