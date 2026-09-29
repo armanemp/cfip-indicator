@@ -38,7 +38,7 @@ namespace cAlgo
                                         : Symbol.TickSize);
 
                             if (IsFinitePositive(requestedTarget) &&
-                                LiveExitGeometryRule.ShouldAdvanceTarget(
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     direction,
                                     0,
                                     requestedTarget,
@@ -169,7 +169,7 @@ namespace cAlgo
                                     direction,
                                     position.EntryPrice,
                                     position.TakeProfit.Value) &&
-                                LiveExitGeometryRule.ShouldAdvanceTarget(
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     direction,
                                     0,
                                     position.TakeProfit.Value,
@@ -189,7 +189,7 @@ namespace cAlgo
                                     direction,
                                     position.EntryPrice,
                                     effectiveTarget) &&
-                                LiveExitGeometryRule.ShouldAdvanceTarget(
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     direction,
                                     0,
                                     effectiveTarget,
@@ -240,7 +240,7 @@ namespace cAlgo
                                 {
                                     targetOk = true;
                                 }
-                                else if (LiveExitGeometryRule.ShouldAdvanceTarget(
+                                else if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                              direction,
                                              currentTarget,
                                              normalizedTarget,
