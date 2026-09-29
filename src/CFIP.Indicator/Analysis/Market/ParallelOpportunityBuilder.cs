@@ -380,12 +380,6 @@ namespace cAlgo
 
             _opportunityCandidates.Add(candidate);
 
-            while (_opportunityCandidates.Count >
-                   Math.Max(
-                       1,
-                       MaximumVisibleOpportunities))
-                _opportunityCandidates.RemoveAt(
-                    _opportunityCandidates.Count - 1);
         }
     }
 }
