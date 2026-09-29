@@ -1814,7 +1814,7 @@ Operator pull: required after final verified phase merge.
 
 ## Phase 11.3 — Execution Rejection Forensics, Missed-Actionable Cohorts & Threshold Evidence — 2026-09-30
 
-Status: IMPLEMENTED on phase branch; verification/merge pending.
+Status: VERIFIED COMPLETE; merged into main as `6eebf25f4e5604f92acdd51c73c92cfa1c83be73`.
 
 Implementation:
 - added offline `tools/analyze_phase_11_3.py` for unified signal-trace and runtime-log forensics;
