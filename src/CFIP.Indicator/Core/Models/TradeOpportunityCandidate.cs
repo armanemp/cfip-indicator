@@ -5,6 +5,11 @@ namespace cAlgo
         public string Id;
         public string ScenarioId;
         public string SourceTimeframe;
+        public int IndependentEvidenceScore;
+        public int LocationConfluenceScore;
+        public int WaveTrendQuality;
+        public bool ExecutionPolicyAllowed;
+        public string ExecutionPolicyReason;
         public OpportunityLane Lane;
         public int Direction;
         public int CreatedM5;
