@@ -16,44 +16,32 @@ namespace cAlgo
 
             SyncExecutionStatus(
                 _autoTradingQuickStatus,
-                _autoTradingQuickStatusText,
-                _autoTradingQuickSwitchTrack,
-                _autoTradingQuickSwitchThumb,
                 "AUTO TRADE",
                 AutoTradingEnabled,
                 TpLineColor);
 
             SyncExecutionStatus(
                 _automaticOrdersQuickStatus,
-                _automaticOrdersQuickStatusText,
-                _automaticOrdersQuickSwitchTrack,
-                _automaticOrdersQuickSwitchThumb,
                 "AUTO ORDERS",
                 AutomaticOrdersEnabled,
                 TriggerLineColor);
         }
 
         private void SyncExecutionStatus(
-            Border status,
-            TextBlock statusText,
-            Border switchTrack,
-            Border switchThumb,
+            Button status,
             string caption,
             bool enabled,
             Color accentColor)
         {
-            if (status == null ||
-                statusText == null ||
-                switchTrack == null ||
-                switchThumb == null)
+            if (status == null)
                 return;
 
-            statusText.Text =
+            status.Text =
                 caption +
                 "  " +
                 (enabled ? "ON" : "OFF");
 
-            statusText.ForegroundColor =
+            status.ForegroundColor =
                 PanelTextColor;
 
             status.BackgroundColor =
@@ -71,25 +59,6 @@ namespace cAlgo
                         170,
                         accentColor)
                     : PanelBorder;
-
-            switchTrack.BackgroundColor =
-                enabled
-                    ? Color.FromArgb(
-                        180,
-                        accentColor)
-                    : Color.FromArgb(
-                        110,
-                        Color.Black);
-
-            switchTrack.BorderColor =
-                enabled
-                    ? accentColor
-                    : PanelBorder;
-
-            switchThumb.HorizontalAlignment =
-                enabled
-                    ? HorizontalAlignment.Right
-                    : HorizontalAlignment.Left;
         }
     }
 }
