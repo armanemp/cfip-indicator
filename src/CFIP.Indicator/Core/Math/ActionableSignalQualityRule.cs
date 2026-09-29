@@ -207,8 +207,6 @@ namespace cAlgo
                 input.TimeframeAgreement >= timeframeFloor &&
                 input.IndependentEvidence >= evidenceFloor &&
                 input.StructuralConfirmations >= structureFloor &&
-                input.EntryPositionQuality >=
-                    input.MinimumEntryPositionQuality &&
                 IsFinitePositiveValue(input.Tp1RR) &&
                 input.Tp1RR >= rrFloor;
         }
