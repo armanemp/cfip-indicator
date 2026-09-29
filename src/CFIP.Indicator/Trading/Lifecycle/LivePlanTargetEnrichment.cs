@@ -81,7 +81,13 @@ namespace cAlgo
                                     market,
                                     atr);
 
-                            if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                            if (IsLiveTargetBrokerSafe(
+                                    _plan.Direction,
+                                    _plan.Entry,
+                                    market,
+                                    candidateTp2,
+                                    atr) &&
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     _plan.Direction,
                                     existingTp2,
                                     candidateTp2,
@@ -104,7 +110,13 @@ namespace cAlgo
                                     market,
                                     atr);
 
-                            if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                            if (IsLiveTargetBrokerSafe(
+                                    _plan.Direction,
+                                    _plan.Entry,
+                                    market,
+                                    candidateTp3,
+                                    atr) &&
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     _plan.Direction,
                                     existingTp3,
                                     candidateTp3,
@@ -127,7 +139,13 @@ namespace cAlgo
                                     market,
                                     atr);
 
-                            if (LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                            if (IsLiveTargetBrokerSafe(
+                                    _plan.Direction,
+                                    _plan.Entry,
+                                    market,
+                                    candidateTp4,
+                                    atr) &&
+                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                     _plan.Direction,
                                     existingTp4,
                                     candidateTp4,
