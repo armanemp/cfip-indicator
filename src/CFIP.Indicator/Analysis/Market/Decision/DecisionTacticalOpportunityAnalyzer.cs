@@ -158,8 +158,8 @@ namespace cAlgo
                     _m5Frame.Quality * 0.45 +
                     zoneQuality * 0.15 +
                     _m5Frame.WaveTrendQuality * 0.20 +
-                    decision.IndependentEvidence * 5.0 +
-                    decision.StructuralConfirmations * 5.0);
+                    IndependentEvidence(direction) * 5.0 +
+                    StructuralConfirmations(direction) * 5.0);
 
             return TacticalOpportunityRule.Evaluate(
                 direction,
