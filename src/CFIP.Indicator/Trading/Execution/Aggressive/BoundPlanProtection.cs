@@ -83,8 +83,17 @@ namespace cAlgo
                                         bool stopConfirmed =
                                             brokerStopValid;
 
+                                        bool serverLadderTargetValid =
+                                            _serverSideTakeProfitLadderActive &&
+                                            IsLiveTargetBrokerSafe(
+                                                direction,
+                                                planPosition.EntryPrice,
+                                                market,
+                                                _activeBrokerTarget,
+                                                atr);
+
                                         bool targetConfirmed =
-                                            _serverSideTakeProfitLadderActive
+                                            serverLadderTargetValid
                                                 ? true
                                                 : !SyncBrokerTakeProfit ||
                                                   brokerTargetValid;
