@@ -62,23 +62,8 @@ namespace cAlgo
                                         Bars.Count - 1,
                                         hostBar));
                 
-                            int reactionBar =
-                                MapM5ToChart(
-                                    snapshot.ArrowM5Index,
-                                    chartIndex);
-                
-                            reactionBar =
-                                Math.Max(
-                                    0,
-                                    Math.Min(
-                                        Bars.Count - 1,
-                                        reactionBar));
-                
                             int arrowBar =
-                                reactionReady &&
-                                visualDirection == snapshot.ReactionDirection
-                                    ? reactionBar
-                                    : hostBar;
+                                hostBar;
                 
                             double atr =
                                 Atr(
