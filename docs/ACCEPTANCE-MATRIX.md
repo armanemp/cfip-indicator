@@ -266,3 +266,18 @@ separate implementation owners.
 | cTrader Compile | Required | Required |
 
 Hands-on cTrader validation remains required for actual toggle behavior, visible labels and observed live trailing stability.
+
+
+## Corrective hotfix — execution priority / toggle state — 2026-09-29
+
+| Requirement | Source contract | Runtime contract | cTrader compile |
+| --- | --- | --- | --- |
+| AUTO TRADE uses Checked/Unchecked operator events | Required | Required | Required |
+| AUTO ORDERS uses Checked/Unchecked operator events | Required | Required | Required |
+| Programmatic control synchronization cannot act as operator input | Required | Required | Required |
+| Predictive pending execution precedes market-plan creation | Required | Required | Required |
+| Aggressive AUTO TRADE gets priority before normal market-plan creation | Required | Required | Required |
+| Market plan creation defers while a managed pending order exists | Required | Required | Required |
+| Structural trailing is not a raw market-price chase | Required | Required | Required |
+
+Manual cTrader validation remains required for actual button interaction, observed order submission, visible label/box appearance and live protection behavior.
