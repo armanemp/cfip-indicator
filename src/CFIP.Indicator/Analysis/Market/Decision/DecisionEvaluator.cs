@@ -41,7 +41,15 @@ namespace cAlgo
                     Direction = consensus.Direction,
                     Edge = consensus.Edge,
                     Regime = input.Regime,
-                    RegimeQuality = evidence.RegimeQuality
+                    RegimeQuality = evidence.RegimeQuality,
+                    IndicatorConfluenceQuality =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConfluenceQuality,
+                    IndicatorConflict =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConflict
                 };
 
             int strongestShare =
