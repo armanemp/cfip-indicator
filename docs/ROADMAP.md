@@ -1496,7 +1496,9 @@ Acceptance:
 
 ## Phase 7.3 — Semantic duplicate audit
 
-Status: planned.
+Status: in progress.
+
+This phase audits semantic overlap across the parameter surface and enforces one meaningful owner per retained concept. The audit also surfaced a visual synchronization regression where setup levels were only activated after TriggerReady; that regression is corrected in the same phase without changing execution eligibility.
 
 Compare similar settings such as:
 
