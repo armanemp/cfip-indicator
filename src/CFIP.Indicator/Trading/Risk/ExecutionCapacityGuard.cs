@@ -17,7 +17,8 @@ namespace cAlgo
                     ManagedPendingOrderCount()))
             {
                 reason =
-                    ResolveCapacityBlockReason();
+                    ResolveCapacityBlockReason(
+                        includeActivePlan: true);
                 return false;
             }
 
@@ -34,7 +35,8 @@ namespace cAlgo
                     ManagedPendingOrderCount()))
             {
                 reason =
-                    ResolveCapacityBlockReason();
+                    ResolveCapacityBlockReason(
+                        includeActivePlan: false);
                 return false;
             }
 
@@ -42,14 +44,16 @@ namespace cAlgo
             return true;
         }
 
-        private string ResolveCapacityBlockReason()
+        private string ResolveCapacityBlockReason(
+            bool includeActivePlan)
         {
             if (!ExecutionCapacityRule.IsSupportedSinglePlanCapacity(
                     MaximumOpenPositions))
                 return
                     "UNSUPPORTED CAPACITY • SINGLE PLAN ONLY";
 
-            if (_plan != null)
+            if (includeActivePlan &&
+                _plan != null)
                 return
                     "SINGLE ACTIVE PLAN EXISTS";
 
