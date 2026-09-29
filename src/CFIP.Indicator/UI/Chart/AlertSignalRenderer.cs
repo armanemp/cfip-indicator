@@ -13,10 +13,23 @@ namespace cAlgo
         private void RenderLatestAlertSignalMarker(
                             int fallbackM5)
                         {
+                            Chart.RemoveObject(
+                                P + "ALERT_SIGNAL");
+
+                            RemovePlanLabel(
+                                P + "ALERT_SIGNAL_LABEL");
+
                             if (Bars == null ||
                                 Bars.Count < 2 ||
+                                !string.Equals(
+                                    _lastVisualAlertKind,
+                                    "ACTION",
+                                    StringComparison.OrdinalIgnoreCase) ||
                                 _lastVisualAlertDirection == 0)
                                 return;
+
+                            // The canonical action arrow is rendered by SignalRenderer.
+                            // Alerts never create a second entry arrow.
 
                             int alertM5 =
                                 _lastVisualAlertM5 >= 0
