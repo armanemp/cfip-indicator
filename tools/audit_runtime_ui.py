@@ -67,17 +67,22 @@ if "_executionToggleSyncing = true" not in sync:
 
 if "EnsureExecutionRuntimeState();" not in sync:
     raise SystemExit("Execution status synchronization must consume canonical runtime/settings state")
-if "SyncExecutionStatus(" not in sync:
-    raise SystemExit("Execution status surfaces must have a dedicated synchronizer")
+if "SyncQuickExecutionControls(" not in sync:
+    raise SystemExit("Execution controls must have a dedicated synchronization boundary")
 
-for forbidden in (
+for required in (
     "ApplyAutoTradingQuickToggleClick",
     "ApplyAutomaticOrdersQuickToggleClick",
+):
+    if required not in handlers:
+        raise SystemExit(f"Execution UI click handler missing: {required}")
+
+for required_setter in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
-    if forbidden in handlers:
-        raise SystemExit(f"Execution UI handler mutation remains: {forbidden}")
+    if required_setter not in handlers:
+        raise SystemExit(f"Execution UI handler must call canonical runtime setter: {required_setter}")
 
 if "EnableAutoTrading" not in initialization or "EnableAutomaticOrders" not in initialization:
     raise SystemExit("Execution status settings must be sourced from the public cTrader parameters")
