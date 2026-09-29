@@ -21,10 +21,13 @@ namespace cAlgo
             if (!IsFinitePositive(atr))
                 return null;
 
+            // A setup preview is a structural forecast, not a live-price tracker.
+            // Keep its anchor at the model's ideal/future level. Aggressive market
+            // execution receives the actual quote only when a live Plan is created.
             double entry =
-                IsFinitePositive(execution.ActualEntry)
-                    ? execution.ActualEntry
-                    : execution.IdealEntry;
+                IsFinitePositive(execution.IdealEntry)
+                    ? execution.IdealEntry
+                    : execution.ActualEntry;
             if (!IsFinitePositive(entry))
                 return null;
 

@@ -19,6 +19,11 @@ namespace cAlgo
                             RemovePlanObjects();
                             RemoveHistoricalObjects();
                             RemoveManagedPendingOrderObjects();
+
+                            Chart.RemoveObject(
+                                P + "ALERT_SIGNAL");
+                            RemovePlanLabel(
+                                P + "ALERT_SIGNAL_LABEL");
                 
                             foreach (string name in _outcomeDrawn)
                                 Chart.RemoveObject(name);

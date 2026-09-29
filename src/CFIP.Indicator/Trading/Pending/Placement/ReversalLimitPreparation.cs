@@ -33,7 +33,7 @@ namespace cAlgo
             if (direction == 0)
             {
                 _autoOrdersBlockReason =
-                    "PENDING LIMIT • NO REVERSAL DIRECTION";
+                    "PREDICTIVE LIMIT • NO REVERSAL DIRECTION";
                 return false;
             }
 
@@ -45,43 +45,32 @@ namespace cAlgo
             if (atr <= 0)
             {
                 _autoOrdersBlockReason =
-                    "PENDING LIMIT • ATR UNAVAILABLE";
+                    "PREDICTIVE LIMIT • ATR UNAVAILABLE";
                 return false;
             }
 
-            ExecutionModel reversalModel =
-                null;
+            double market =
+                direction == 1
+                    ? Symbol.Bid
+                    : Symbol.Ask;
 
-            try
-            {
-                reversalModel =
-                    BuildExecutionModel(
-                        closedM5,
-                        direction);
-            }
-            catch (Exception ex)
+            PredictivePendingCandidate candidate;
+
+            if (!TrySelectPredictivePendingLevel(
+                    closedM5,
+                    direction,
+                    atr,
+                    market,
+                    out candidate))
             {
                 _autoOrdersBlockReason =
-                    "PENDING LIMIT • EXECUTION MODEL • " +
-                    ex.Message;
+                    "PREDICTIVE LIMIT • NO QUALIFIED FUTURE LEVEL";
                 return false;
             }
-
-            targetEntry =
-                reversalModel != null &&
-                reversalModel.Direction == direction &&
-                IsFinitePositive(
-                    reversalModel.IdealEntry)
-                    ? reversalModel.IdealEntry
-                    : direction == 1
-                        ? Symbol.Bid -
-                          atr * 0.25
-                        : Symbol.Ask +
-                          atr * 0.25;
 
             targetEntry =
                 NormalizePrice(
-                    targetEntry);
+                    candidate.Price);
 
             if (!IsValidPendingEntry(
                     direction,
@@ -89,7 +78,7 @@ namespace cAlgo
                     false))
             {
                 _autoOrdersBlockReason =
-                    "PENDING LIMIT • INVALID ENTRY";
+                    "PREDICTIVE LIMIT • INVALID FUTURE ENTRY";
                 return false;
             }
 
@@ -106,7 +95,11 @@ namespace cAlgo
                     out quality);
 
             if (!IsFinitePositive(stop))
+            {
+                _autoOrdersBlockReason =
+                    "PREDICTIVE LIMIT • INVALID STRUCTURAL SL";
                 return false;
+            }
 
             target =
                 SelectStructuralAutoTarget(
@@ -118,13 +111,13 @@ namespace cAlgo
                     EffectiveAutoTpStage());
 
             if (!IsAutoPlanValid(
-                    direction,
-                    targetEntry,
-                    stop,
-                    target))
+                direction,
+                targetEntry,
+                stop,
+                target))
             {
                 _autoOrdersBlockReason =
-                    "PENDING LIMIT • INVALID SL/TP";
+                    "PREDICTIVE LIMIT • INVALID SL/TP";
                 return false;
             }
 
@@ -156,9 +149,22 @@ namespace cAlgo
                 Symbol.VolumeInUnitsMin)
             {
                 _autoOrdersBlockReason =
-                    "PENDING LIMIT • VOLUME BELOW MINIMUM";
+                    "PREDICTIVE LIMIT • VOLUME BELOW MINIMUM";
                 return false;
             }
+
+            _autoOrdersBlockReason =
+                "PREDICTIVE " +
+                (direction == 1
+                    ? "BUY"
+                    : "SELL") +
+                " LIMIT • " +
+                candidate.Source +
+                " • SCORE " +
+                candidate.Score.ToString("F0") +
+                " • DIST " +
+                candidate.DistanceAtr.ToString("F2") +
+                " ATR";
 
             pendingIntent =
                 BuildExecutionIntent(
@@ -173,7 +179,8 @@ namespace cAlgo
                     target,
                     volume,
                     closedM5,
-                    "REVERSAL LIMIT");
+                    "PREDICTIVE REVERSAL LIMIT • " +
+                    candidate.Source);
 
             return true;
         }

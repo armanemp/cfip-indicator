@@ -13,23 +13,17 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void OnAutoTradingQuickToggleChecked(
+        private void ApplyAutoTradingQuickToggleClick(
             ToggleButtonEventArgs args)
-        {
-            ApplyAutoTradingQuickToggleState(true);
-        }
-
-        private void OnAutoTradingQuickToggleUnchecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutoTradingQuickToggleState(false);
-        }
-
-        private void ApplyAutoTradingQuickToggleState(
-            bool enabled)
         {
             if (_executionToggleSyncing)
                 return;
+
+            // Toggle the canonical runtime flag directly. This deliberately does
+            // not trust the control's IsChecked transition, which can be stale
+            // during hosted chart control synchronization.
+            bool enabled =
+                !AutoTradingEnabled;
 
             SetAutoTradingRuntimeState(
                 enabled,
@@ -48,23 +42,14 @@ namespace cAlgo
             SyncQuickExecutionControls();
         }
 
-        private void OnAutomaticOrdersQuickToggleChecked(
+        private void ApplyAutomaticOrdersQuickToggleClick(
             ToggleButtonEventArgs args)
-        {
-            ApplyAutomaticOrdersQuickToggleState(true);
-        }
-
-        private void OnAutomaticOrdersQuickToggleUnchecked(
-            ToggleButtonEventArgs args)
-        {
-            ApplyAutomaticOrdersQuickToggleState(false);
-        }
-
-        private void ApplyAutomaticOrdersQuickToggleState(
-            bool enabled)
         {
             if (_executionToggleSyncing)
                 return;
+
+            bool enabled =
+                !AutomaticOrdersEnabled;
 
             SetAutomaticOrdersRuntimeState(
                 enabled,

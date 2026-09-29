@@ -136,24 +136,11 @@ namespace cAlgo
                 _executionModel == null ||
                 _executionModel.Direction != direction;
 
-            bool priceMoved =
-                _lastExecutionModelMarket <= 0 ||
-                Math.Abs(
-                    market -
-                    _lastExecutionModelMarket) >=
-                Math.Max(
-                    Symbol.TickSize * 3,
-                    atr * 0.02);
-
-            bool intervalElapsed =
-                (now -
-                 _lastExecutionModelBuildUtc)
-                .TotalMilliseconds >= 400;
-
+            // Execution-model geometry is structural. Do not rebuild it merely because
+            // the quote moved; otherwise Entry/SL/TP previews become a disguised market
+            // follower. Rebuild on a newly closed M5 bar or a direction change only.
             if (!m5Changed &&
-                !directionChanged &&
-                !(intervalElapsed &&
-                  priceMoved))
+                !directionChanged)
                 return;
 
             _executionModel =
@@ -198,11 +185,28 @@ namespace cAlgo
                     RenderSetupPreview(
                         _renderSignalVisualSnapshot);
 
+                    if (_renderSignalVisualSnapshot == null ||
+                        (!_renderSignalVisualSnapshot.PlanActive &&
+                         !_renderSignalVisualSnapshot.PendingOrder &&
+                         !_renderSignalVisualSnapshot.SetupPreviewActive))
+                    {
+                        RenderPredictionObjects(
+                            _prediction,
+                            closedM5);
+                    }
+                    else
+                    {
+                        RemovePredictionObjects();
+                    }
+
                     RenderWatchAndReaction(
                         index,
                         closedM5,
                         _renderSignalVisualSnapshot);
                 }
+
+                RenderLatestAlertSignalMarker(
+                    closedM5);
 
                 RenderManagedPendingOrder(
                     _renderSignalVisualSnapshot);

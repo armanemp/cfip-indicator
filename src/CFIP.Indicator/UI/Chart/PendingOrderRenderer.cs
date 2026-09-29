@@ -12,132 +12,161 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-private void RenderManagedPendingOrder(
+        private void RenderManagedPendingOrder(
             SignalVisualSnapshot snapshot)
-                        {
-                            RemoveManagedPendingOrderObjects();
-                
-                            if (snapshot == null ||
-                                !snapshot.PendingOrder ||
-                                !IsFinitePositive(snapshot.PendingEntry))
-                                return;
-                
-                            if (!ShowLevelLines)
-                                return;
-                
-                            int anchorBar =
-                                Bars == null ||
-                                Bars.Count < 2
-                                    ? -1
-                                    : Math.Max(
-                                        0,
-                                        Math.Min(
-                                            Bars.Count - 1,
-                                            MapM5ToChart(
-                                                Math.Max(
-                                                    1,
-                                                    snapshot.ClosedM5),
-                                                Bars.Count - 1)));
-                
-                            if (anchorBar < 0)
-                                return;
-                
-                            DrawPlanLine(
-                                P + "PENDING_ENTRY",
-                                snapshot.PendingEntry,
-                                TriggerLineColor,
-                                ShowTrigger,
+        {
+            RemoveManagedPendingOrderObjects();
+
+            if (snapshot == null ||
+                !snapshot.PendingOrder ||
+                !IsFinitePositive(snapshot.PendingEntry))
+                return;
+
+            if (!ShowLevelLines)
+                return;
+
+            int anchorBar =
+                Bars == null ||
+                Bars.Count < 2
+                    ? -1
+                    : Math.Max(
+                        0,
+                        Math.Min(
+                            Bars.Count - 1,
+                            MapM5ToChart(
                                 Math.Max(
                                     1,
-                                    snapshot.ClosedM5));
-                
-                            if (ShowSL &&
-                                IsFinitePositive(snapshot.PendingStop))
-                            {
-                                DrawPlanLine(
-                                    P + "PENDING_SL",
-                                    snapshot.PendingStop,
-                                    SlLineColor,
-                                    ShowSL,
-                                    Math.Max(
-                                        1,
-                                        snapshot.ClosedM5));
-                            }
-                
-                            if (ShowTP1 &&
-                                IsFinitePositive(snapshot.PendingTarget))
-                            {
-                                DrawPlanLine(
-                                    P + "PENDING_TP",
-                                    snapshot.PendingTarget,
-                                    TpLineColor,
-                                    ShowTP1,
-                                    Math.Max(
-                                        1,
-                                        snapshot.ClosedM5));
-                            }
-                
-                            if (!ShowLevelPriceLabels &&
-                                !ShowSignalLabels)
-                                return;
-                
-                            string typeText =
-                                snapshot.PendingOrderType;
-                
-                            if (ShowTrigger)
-                            {
-                                DrawPlanLabel(
-                                    P + "PENDING_ENTRY_LABEL",
-                                    "PENDING " +
-                                    typeText +
-                                    " " +
-                                    Price(
-                                        snapshot.PendingEntry),
-                                    anchorBar,
-                                    snapshot.PendingEntry,
-                                    TriggerLineColor);
-                            }
-                
-                            if (IsFinitePositive(snapshot.PendingStop))
-                            {
-                                DrawPlanLabel(
-                                    P + "PENDING_SL_LABEL",
-                                    "SL " +
-                                    Price(
-                                        snapshot.PendingStop),
-                                    anchorBar,
-                                    snapshot.PendingStop,
-                                    SlLineColor);
-                            }
-                
-                            if (IsFinitePositive(snapshot.PendingTarget))
-                            {
-                                DrawPlanLabel(
-                                    P + "PENDING_TP_LABEL",
-                                    "TP " +
-                                    Price(
-                                        snapshot.PendingTarget),
-                                    anchorBar,
-                                    snapshot.PendingTarget,
-                                    TpLineColor);
-                            }
-                        }
+                                    snapshot.ClosedM5),
+                                Bars.Count - 1)));
 
-private void RemoveManagedPendingOrderObjects()
-                        {
-                            RemovePlanLine(
-                                P + "PENDING_ENTRY");
-                            RemovePlanLine(
-                                P + "PENDING_SL");
-                            RemovePlanLine(
-                                P + "PENDING_TP");
-                
-                            Chart.RemoveObject(
-                                P + "PENDING_ENTRY_LABEL");
-                            Chart.RemoveObject(
-                                P + "PENDING_SL_LABEL");
-                            Chart.RemoveObject(
-                                P + "PENDING_TP_LABEL");
-                        }
+            if (anchorBar < 0)
+                return;
+
+            DrawPlanLine(
+                P + "PENDING_ENTRY",
+                snapshot.PendingEntry,
+                TriggerLineColor,
+                ShowTrigger,
+                Math.Max(
+                    1,
+                    snapshot.ClosedM5));
+
+            if (ShowSL &&
+                IsFinitePositive(snapshot.PendingStop))
+            {
+                DrawPlanLine(
+                    P + "PENDING_SL",
+                    snapshot.PendingStop,
+                    SlLineColor,
+                    ShowSL,
+                    Math.Max(
+                        1,
+                        snapshot.ClosedM5));
+            }
+
+            if (ShowTP1 &&
+                IsFinitePositive(snapshot.PendingTarget))
+            {
+                DrawPlanLine(
+                    P + "PENDING_TP",
+                    snapshot.PendingTarget,
+                    TpLineColor,
+                    ShowTP1,
+                    Math.Max(
+                        1,
+                        snapshot.ClosedM5));
+            }
+
+            if (!ShowLevelPriceLabels &&
+                !ShowSignalLabels)
+                return;
+
+            int lineLeft =
+                GetCompactPlanLineLeftBar();
+
+            int labelBar =
+                GetCompactPlanLabelAnchorBar(
+                    lineLeft);
+
+            int boxRightBar =
+                GetLabelBoxRightBar(
+                    lineLeft);
+
+            double labelAtr =
+                Bars.Count >= 3
+                    ? Atr(
+                        Bars,
+                        Math.Max(
+                            1,
+                            Math.Min(
+                                Bars.Count - 2,
+                                labelBar)))
+                    : 0;
+
+            double boxHalfHeight =
+                Math.Max(
+                    Symbol.PipSize * 3,
+                    labelAtr > 0
+                        ? labelAtr * 0.055
+                        : Symbol.PipSize * 4);
+
+            string typeText =
+                snapshot.PendingOrderType;
+
+            RenderCompactPlanLabel(
+                P + "PENDING_ENTRY_LABEL",
+                "PENDING " +
+                typeText +
+                " " +
+                Price(snapshot.PendingEntry),
+                snapshot.PendingEntry,
+                TriggerLineColor,
+                ShowTrigger,
+                lineLeft,
+                labelBar,
+                boxRightBar,
+                boxHalfHeight);
+
+            RenderCompactPlanLabel(
+                P + "PENDING_SL_LABEL",
+                "SL " +
+                Price(snapshot.PendingStop),
+                snapshot.PendingStop,
+                SlLineColor,
+                ShowSL,
+                lineLeft,
+                labelBar,
+                boxRightBar,
+                boxHalfHeight);
+
+            RenderCompactPlanLabel(
+                P + "PENDING_TP_LABEL",
+                "TP " +
+                Price(snapshot.PendingTarget),
+                snapshot.PendingTarget,
+                TpLineColor,
+                ShowTP1,
+                lineLeft,
+                labelBar,
+                boxRightBar,
+                boxHalfHeight);
+        }
+
+        private void RemoveManagedPendingOrderObjects()
+        {
+            RemovePlanLine(
+                P + "PENDING_ENTRY");
+            RemovePlanLine(
+                P + "PENDING_SL");
+            RemovePlanLine(
+                P + "PENDING_TP");
+
+            RemovePlanLabel(
+                P + "PENDING_ENTRY_LABEL");
+            RemovePlanLabel(
+                P + "PENDING_SL_LABEL");
+            RemovePlanLabel(
+                P + "PENDING_TP_LABEL");
+        }
     }
 }

@@ -70,6 +70,7 @@ model_files = sorted(MODEL_ROOT.glob("*.cs"))
 expected_models = {
     "Level", "Zone", "ExecutionIntent", "ExecutionModel",
     "Prediction", "Decision", "Plan", "TradeSetupPreview",
+    "PredictivePendingCandidate",
     "OssIndicatorSnapshot", "MarketRegimeSnapshot", "MarketRegimeClassificationInput",
 }
 if {p.stem for p in model_files} != expected_models:
@@ -580,20 +581,18 @@ if "RenderSetupPreview(" not in visual_calc_code or "RenderLevelLines(" not in v
 if "anchorM5" not in visual_line_code:
     raise SystemExit("Level renderer must receive its canonical anchor explicitly")
 for required_binding in (
-    "_autoTradingQuickToggle.Checked +=",
-    "_autoTradingQuickToggle.Unchecked +=",
-    "_automaticOrdersQuickToggle.Checked +=",
-    "_automaticOrdersQuickToggle.Unchecked +=",
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
 ):
     if required_binding not in control_factory_code:
-        raise SystemExit(f"Execution toggle state-event binding missing: {required_binding}")
-if "_autoTradingQuickToggle.Click +=" in control_factory_code or "_automaticOrdersQuickToggle.Click +=" in control_factory_code:
-    raise SystemExit("Execution toggles must not retain a second Click action owner")
+        raise SystemExit(f"Execution toggle click binding missing: {required_binding}")
+if "_autoTradingQuickToggle.Checked +=" in control_factory_code or "_automaticOrdersQuickToggle.Checked +=" in control_factory_code:
+    raise SystemExit("Execution toggles must not retain a Checked action owner")
+if "_autoTradingQuickToggle.Unchecked +=" in control_factory_code or "_automaticOrdersQuickToggle.Unchecked +=" in control_factory_code:
+    raise SystemExit("Execution toggles must not retain an Unchecked action owner")
 for required_call in (
-    "OnAutoTradingQuickToggleChecked(",
-    "OnAutoTradingQuickToggleUnchecked(",
-    "OnAutomaticOrdersQuickToggleChecked(",
-    "OnAutomaticOrdersQuickToggleUnchecked(",
+    "ApplyAutoTradingQuickToggleClick(",
+    "ApplyAutomaticOrdersQuickToggleClick(",
     "SetAutoTradingRuntimeState(",
     "SetAutomaticOrdersRuntimeState(",
 ):
@@ -1559,7 +1558,11 @@ for token in (
         raise SystemExit(f"Reversal limit ownership call missing: {token}")
 
 PENDING_LIMIT_PREP = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPreparation.cs"
-if not PENDING_LIMIT_PREP.exists() or "BuildExecutionModel(" not in PENDING_LIMIT_PREP.read_text(encoding="utf-8"):
+if (
+    not PENDING_LIMIT_PREP.exists() or
+    "TrySelectPredictivePendingLevel(" not in
+    PENDING_LIMIT_PREP.read_text(encoding="utf-8")
+):
     raise SystemExit("Reversal limit preparation owner missing")
 
 PENDING_SUBMISSION = ROOT / "Trading" / "Pending" / "Placement" / "PendingSubmissionValidator.cs"
@@ -2160,23 +2163,21 @@ if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
 EXECUTION_CONTROLS_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 EXECUTION_CONTROLS_FACTORY_CODE = EXECUTION_CONTROLS_FACTORY.read_text(encoding="utf-8")
 for token in (
-    "_autoTradingQuickToggle.Checked +=",
-    "_autoTradingQuickToggle.Unchecked +=",
-    "_automaticOrdersQuickToggle.Checked +=",
-    "_automaticOrdersQuickToggle.Unchecked +=",
+    "_autoTradingQuickToggle.Click +=",
+    "_automaticOrdersQuickToggle.Click +=",
 ):
     if token not in EXECUTION_CONTROLS_FACTORY_CODE:
-        raise SystemExit(f"Panel execution toggle state binding missing: {token}")
-if "_autoTradingQuickToggle.Click +=" in EXECUTION_CONTROLS_FACTORY_CODE or "_automaticOrdersQuickToggle.Click +=" in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel execution toggles must not retain a second Click action owner")
+        raise SystemExit(f"Panel execution click binding missing: {token}")
+if "_autoTradingQuickToggle.Checked +=" in EXECUTION_CONTROLS_FACTORY_CODE or "_automaticOrdersQuickToggle.Checked +=" in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution toggles must not retain a Checked action owner")
+if "_autoTradingQuickToggle.Unchecked +=" in EXECUTION_CONTROLS_FACTORY_CODE or "_automaticOrdersQuickToggle.Unchecked +=" in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution toggles must not retain an Unchecked action owner")
 
 EXECUTION_TOGGLE_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
 EXECUTION_TOGGLE_HANDLERS_CODE = EXECUTION_TOGGLE_HANDLERS.read_text(encoding="utf-8")
 for token in (
-    "OnAutoTradingQuickToggleChecked",
-    "OnAutoTradingQuickToggleUnchecked",
-    "OnAutomaticOrdersQuickToggleChecked",
-    "OnAutomaticOrdersQuickToggleUnchecked",
+    "ApplyAutoTradingQuickToggleClick",
+    "ApplyAutomaticOrdersQuickToggleClick",
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
 ):
@@ -2234,6 +2235,185 @@ if "market - minimumDistance" in PROTECTION_MANAGER_CODE or "market + minimumDis
     raise SystemExit("Structural trailing must not chase raw market price via minimum-distance clamping")
 if "if (structuralUpdate" not in PROTECTION_MANAGER_CODE:
     raise SystemExit("Smart trailing progression must be structurally gated")
+
+# Phase 7.2 — predictive pending, frozen setup geometry and alert/visual parity.
+PREDICTIVE_PENDING_MODEL = MODEL_ROOT / "PredictivePendingCandidate.cs"
+PREDICTIVE_PENDING_SELECTOR = ROOT / "Planning" / "Execution" / "PredictivePendingLevelSelector.cs"
+REVERSAL_LIMIT_PREP = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPreparation.cs"
+SETUP_PREVIEW = ROOT / "Planning" / "TradePlan" / "PlanPreviewBuilder.cs"
+if not PREDICTIVE_PENDING_MODEL.exists():
+    raise SystemExit("Predictive pending candidate model is missing")
+if not PREDICTIVE_PENDING_SELECTOR.exists():
+    raise SystemExit("Predictive pending level selector is missing")
+if not REVERSAL_LIMIT_PREP.exists():
+    raise SystemExit("Reversal limit preparation is missing")
+
+predictive_selector_code = PREDICTIVE_PENDING_SELECTOR.read_text(encoding="utf-8")
+predictive_collector_code = (
+    (ROOT / "Planning" / "Execution" / "PredictivePendingZoneCollector.cs")
+    .read_text(encoding="utf-8")
+)
+predictive_scorer_code = (
+    (ROOT / "Planning" / "Execution" / "PredictivePendingCandidateScorer.cs")
+    .read_text(encoding="utf-8")
+)
+reversal_limit_code = REVERSAL_LIMIT_PREP.read_text(encoding="utf-8")
+setup_preview_code = SETUP_PREVIEW.read_text(encoding="utf-8")
+
+for token in (
+    "TrySelectPredictivePendingLevel(",
+    "CollectPredictiveZoneCandidates(",
+    "FindEqualLow(",
+    "FindEqualHigh(",
+):
+    if token not in predictive_selector_code:
+        raise SystemExit(
+            f"Predictive pending selector contract missing: {token}"
+        )
+
+for token in (
+    "BuildOrderBlockCandidate(",
+    "BuildManagedFvgZone(",
+    "HasZoneRetest(",
+):
+    if token not in predictive_collector_code:
+        raise SystemExit(
+            f"Predictive pending collector contract missing: {token}"
+        )
+
+for token in (
+    "PredictivePendingContextQuality(",
+    "PredictivePendingSourceKey(",
+):
+    if token not in predictive_scorer_code:
+        raise SystemExit(
+            f"Predictive pending scorer contract missing: {token}"
+        )
+
+if "TrySelectPredictivePendingLevel(" not in reversal_limit_code:
+    raise SystemExit(
+        "Reversal pending path must consume the predictive level selector"
+    )
+
+if (
+    "reversalModel.IdealEntry" in reversal_limit_code or
+    "Symbol.Bid - atr * 0.25" in reversal_limit_code or
+    "Symbol.Ask + atr * 0.25" in reversal_limit_code
+):
+    raise SystemExit(
+        "Reversal pending path must not fall back to a current-price-derived entry"
+    )
+
+if (
+    "candidate.Source" not in reversal_limit_code or
+    "candidate.DistanceAtr" not in reversal_limit_code
+):
+    raise SystemExit(
+        "Reversal pending intent must retain predictive candidate diagnostics"
+    )
+
+preview_start = setup_preview_code.find("double entry")
+preview_end = setup_preview_code.find(
+    "if (!IsFinitePositive(entry)",
+    preview_start,
+)
+if (
+    preview_start < 0 or
+    preview_end < 0 or
+    "execution.IdealEntry" not in
+    setup_preview_code[preview_start:preview_end]
+):
+    raise SystemExit(
+        "Setup preview entry must prefer structural IdealEntry over live ActualEntry"
+    )
+
+CALC_LIVE = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
+calc_live_text = CALC_LIVE.read_text(encoding="utf-8")
+execution_start = calc_live_text.find("private void UpdateExecutionModel(")
+render_start = calc_live_text.find("private void RenderCalculationState(", execution_start)
+if execution_start < 0 or render_start < 0:
+    raise SystemExit("UpdateExecutionModel ownership block not found")
+update_execution_code = calc_live_text[execution_start:render_start]
+
+if "priceMoved" in update_execution_code or "intervalElapsed" in update_execution_code:
+    raise SystemExit(
+        "Execution-model geometry must not rebuild from raw quote movement"
+    )
+
+if (
+    "if (!m5Changed &&" not in update_execution_code or
+    "if (!m5Changed &&\n                !directionChanged)" not in update_execution_code
+):
+    raise SystemExit(
+        "Execution-model rebuild must be closed-M5/direction gated"
+    )
+
+if "RenderPredictionObjects(" not in calc_live_text:
+    raise SystemExit(
+        "Prediction visuals must be part of the calculation presentation path"
+    )
+
+if "RenderLatestAlertSignalMarker(" not in calc_live_text:
+    raise SystemExit(
+        "Audible signal alerts must be mirrored by an on-chart marker"
+    )
+
+PENDING_RENDERER = ROOT / "UI" / "Chart" / "PendingOrderRenderer.cs"
+pending_code = PENDING_RENDERER.read_text(encoding="utf-8")
+if "RenderCompactPlanLabel(" not in pending_code:
+    raise SystemExit(
+        "Pending order levels must use the compact boxed label renderer"
+    )
+if "RemovePlanLabel(" not in pending_code:
+    raise SystemExit(
+        "Pending order label cleanup must remove boxed label objects"
+    )
+
+ALERT_ENGINE = ROOT / "Trading" / "Alerts" / "AlertEngine.cs"
+alert_engine_code = ALERT_ENGINE.read_text(encoding="utf-8")
+if "RememberVisualSignalAlert(" not in alert_engine_code:
+    raise SystemExit(
+        "Alert delivery must update the visual signal marker state"
+    )
+
+STATE_CODE = INDICATOR_STATE.read_text(encoding="utf-8")
+for required in (
+    "_lastVisualAlertM5",
+    "_lastVisualAlertDirection",
+    "_lastVisualAlertKind",
+    "_lastVisualAlertUtc",
+):
+    if required not in STATE_CODE:
+        raise SystemExit(
+            f"Visual alert state missing: {required}"
+        )
+
+ALERT_SIGNAL_RENDERER = ROOT / "UI" / "Chart" / "AlertSignalRenderer.cs"
+alert_signal_renderer_code = ALERT_SIGNAL_RENDERER.read_text(encoding="utf-8")
+if "RenderLatestAlertSignalMarker(" not in alert_signal_renderer_code:
+    raise SystemExit(
+        "Alert signal renderer must own persistent alert markers"
+    )
+
+cleanup_code = (
+    ROOT / "UI" / "Chart" / "ChartObjectCleanup.cs"
+).read_text(encoding="utf-8")
+if "ALERT_SIGNAL" not in cleanup_code or "ALERT_SIGNAL_LABEL" not in cleanup_code:
+    raise SystemExit("Alert signal marker cleanup is missing")
+
+if (
+    "pressureStop" in PROTECTION_MANAGER_CODE or
+    "market - tightRoom" in PROTECTION_MANAGER_CODE or
+    "market + tightRoom" in PROTECTION_MANAGER_CODE
+):
+    raise SystemExit(
+        "Smart trailing must not construct stops as a raw market +/- distance"
+    )
+
+if "pressureTighten" not in PROTECTION_MANAGER_CODE:
+    raise SystemExit(
+        "Exit-pressure tightening must be applied to structural trailing room, not raw market distance"
+    )
 
 # Planning/risk ownership checks.
 PLANNING_ROOT = ROOT / "Planning"
