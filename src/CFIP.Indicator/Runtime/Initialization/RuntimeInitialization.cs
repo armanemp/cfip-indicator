@@ -114,6 +114,8 @@ namespace cAlgo
 
                                         if (_panel != null)
                                             _panel.IsVisible = true;
+
+                                        RenderAnalysisGuide();
                                     }
                                     catch (Exception panelException)
                                     {
