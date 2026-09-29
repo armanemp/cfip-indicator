@@ -1524,27 +1524,29 @@ Status: complete.
 Decision:
 
 - CFIP remains single-active-plan / single-managed-position by design in the current execution architecture.
-- The public `MaximumOpenPositions` parameter was removed rather than leaving a configurable value that could advertise unsupported multi-plan behavior.
-- A single semantic capacity guard now gates automatic market, aggressive and predictive-pending execution through the same authoritative rule.
-- Numeric position-count checks tied to the removed setting were eliminated from execution paths.
+- The public `MaximumOpenPositions` parameter is retained for preset/API compatibility but now advertises the only supported capacity: DefaultValue=1, MinValue=1, MaxValue=1.
+- The unsupported `BlockNewSignalWhileActive` setting was removed because single-plan capacity is a mandatory safety invariant, not an optional execution mode.
+- `ExecutionCapacityRule` is the platform-neutral semantic owner. It distinguishes new-plan capacity from new-broker-execution capacity.
+- One shared execution-capacity guard is consumed by plan creation, automatic market execution, aggressive execution and predictive-pending placement.
+- Duplicate late-path numeric capacity comparisons were removed.
 
 Acceptance:
 
-- no production public parameter advertises unsupported multi-position behavior;
-- execution capacity is owned by one semantic rule and one guard;
-- automatic market, aggressive and predictive-pending paths consume the same capacity boundary;
-- full-project and phase-specific audits verify the invariant.
+- the public configuration cannot advertise multi-position execution;
+- execution capacity is defined by one semantic rule and one guard;
+- automatic market, aggressive and predictive-pending paths consume the same broker-capacity boundary;
+- deterministic runtime contracts cover empty, occupied, pending and unsupported-capacity cases;
+- full-project and phase-specific audits enforce the invariant.
 
 Signal-quality continuation:
 
-- This phase also reviewed the Decision -> Trigger -> Plan -> Execution chain for capacity-related drift.
-- The existing closed-bar decision/plan relationship remains intact; the deeper analytical false-signal work is deliberately reserved for Track 8/9 mathematical correctness and decision-intelligence phases rather than being hidden inside a capacity change.
+- The phase performed a deeper Decision -> Trigger -> Plan -> Execution coherence audit specifically to prevent capacity state from producing stale or contradictory trade intent.
+- The audit did not claim a win-rate improvement. It identified remaining analytical risks that directly affect false signals: M1 currently acts as a score contribution while canonical TriggerReady remains M5-closed-bar based; structural/liquidity facts are also consumed in multiple downstream gates; and structural confirmations may overlap across M5/M15/H1/H4.
+- These are now explicitly owned by Track 8/9, beginning with Phase 8.1, rather than being masked by higher thresholds in the capacity phase.
+
+Current surface: 532 parameters = 529 baseline + 3 OSS extension.
 
 Next implementation phase: Phase 8.1 — M1 trigger correctness.
-
----
-
-# Track 8 — Analytical Correctness
 
 ## Phase 8.1 — M1 trigger correctness
 
@@ -3207,7 +3209,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 7.2 — Dead/unused parameter audit**
+**NEXT: Phase 8.1 — M1 trigger correctness**
 
 Then proceed in dependency order:
 
