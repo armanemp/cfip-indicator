@@ -79,12 +79,20 @@ return;
 }
 string submissionGateReason;
 SubmissionAttemptIdentity submissionIdentity;
-if (!TryAcquireSubmission(
-closedM5,
+int aggressiveDirection =
 _reaction == null
 ? 0
-: _reaction.Direction,
+: _reaction.Direction;
+string executionScenarioId =
+ResolveDirectionExecutionScenarioId(
+aggressiveDirection);
+_activeExecutionScenarioId =
+executionScenarioId;
+if (!TryAcquireSubmission(
+closedM5,
+aggressiveDirection,
 ExecutionSubmissionPath.AggressiveMarket,
+executionScenarioId,
 out submissionIdentity,
 out submissionGateReason))
 {
