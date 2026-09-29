@@ -83,9 +83,7 @@ namespace cAlgo
                                         _m5Bars,
                                         Math.Max(
                                             1,
-                                            Math.Min(
-                                                _m5Bars.Count - 2,
-                                                _lastEvaluatedM5)));
+                                            _m5Bars.Count - 2));
 
                             bool currentStopValid =
                                 position.StopLoss.HasValue &&
@@ -216,7 +214,7 @@ namespace cAlgo
                                 targetOk =
                                     TryModifyTakeProfit(
                                         position,
-                                        NormalizePrice(target),
+                                        NormalizePrice(effectiveTarget),
                                         context + " • TP");
                             }
                             else if (!_serverSideTakeProfitLadderActive &&
@@ -228,7 +226,7 @@ namespace cAlgo
                                         position.TakeProfit.Value);
 
                                 double normalizedTarget =
-                                    NormalizePrice(target);
+                                    NormalizePrice(effectiveTarget);
 
                                 bool materiallyDifferent =
                                     Math.Abs(
