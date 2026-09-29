@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using cAlgo.API.Internals;
 
 namespace cAlgo
 {
