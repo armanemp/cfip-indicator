@@ -182,11 +182,33 @@ namespace cAlgo
         private void RefreshLiveDecisionActionability(
             int closedM5)
         {
-            if (_decision == null ||
-                _decision.Direction == 0 ||
-                !_decision.EntryAllowed ||
-                _executionModel == null)
+            if (_decision == null)
                 return;
+
+            if (_decision.Direction == 0)
+            {
+                ResetLiveActionability(
+                    "NO DIRECTION");
+                return;
+            }
+
+            if (!_decision.EntryAllowed)
+            {
+                ResetLiveActionability(
+                    string.IsNullOrWhiteSpace(
+                        _decision.BlockReason)
+                        ? "DECISION FILTER"
+                        : _decision.BlockReason);
+                return;
+            }
+
+            if (_executionModel == null ||
+                _setupPreview == null)
+            {
+                ResetLiveActionability(
+                    "EXECUTION MODEL UNAVAILABLE");
+                return;
+            }
 
             OpportunityLane lane =
                 _decision.TopDownEligible &&
@@ -206,8 +228,44 @@ namespace cAlgo
                     _executionModel,
                     _setupPreview);
 
-            _decision.ActionableNow =
+            bool actionable =
                 result.Actionable;
+
+            string reason =
+                result.Reason;
+
+            // Once a pre-trade plan exists, actionability must also agree with
+            // the plan's actual execution mode and direction. A pending stop/limit
+            // plan is not a current market-entry action and must not produce an
+            // ACTION BUY/SELL arrow or alert.
+            if (actionable &&
+                _plan != null &&
+                !_plan.IsLivePosition)
+            {
+                if (_plan.Direction !=
+                    _decision.Direction)
+                {
+                    actionable = false;
+                    reason = "PLAN / DECISION DIRECTION MISMATCH";
+                }
+                else if (_plan.EntryMode !=
+                         _executionModel.Mode)
+                {
+                    actionable = false;
+                    reason = "PLAN / EXECUTION MODE MISMATCH";
+                }
+                else if (_plan.EntryMode !=
+                             ExecutionMode.RetestMarket &&
+                         _plan.EntryMode !=
+                             ExecutionMode.BreakoutMarket)
+                {
+                    actionable = false;
+                    reason = "PENDING ENTRY PLAN • WAITING";
+                }
+            }
+
+            _decision.ActionableNow =
+                actionable;
             _decision.EntryLocationQuality =
                 result.LocationQuality;
             _decision.EntryTimingQuality =
@@ -219,15 +277,31 @@ namespace cAlgo
             _decision.ActionableTp1RR =
                 result.Tp1RR;
             _decision.DivergenceQuality =
-                Math.Max(
-                    _decision.DivergenceQuality,
-                    result.DivergenceQuality);
+                result.DivergenceQuality;
             _decision.DivergenceDirection =
                 result.DivergenceDirection;
             _decision.DivergenceType =
                 result.DivergenceType;
             _decision.ActionabilityReason =
-                result.Reason;
+                reason;
+        }
+
+        private void ResetLiveActionability(
+            string reason)
+        {
+            _decision.ActionableNow = false;
+            _decision.EntryLocationQuality = 0;
+            _decision.EntryTimingQuality = 0;
+            _decision.EntryPositionQuality = 0;
+            _decision.EntryDistanceAtr = 0;
+            _decision.ActionableTp1RR = 0;
+            _decision.DivergenceQuality = 0;
+            _decision.DivergenceDirection = 0;
+            _decision.DivergenceType = "NONE";
+            _decision.ActionabilityReason =
+                string.IsNullOrWhiteSpace(reason)
+                    ? "NOT ACTIONABLE"
+                    : reason;
         }
 
         private void RenderCalculationState(
