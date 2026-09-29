@@ -58,14 +58,7 @@ namespace cAlgo
                                     : Symbol.Ask;
 
                             double forwardDistance =
-                                Math.Max(
-                                    MinimumTakeProfitDistancePrice(),
-                                    Math.Max(
-                                        Symbol.PipSize,
-                                        atr *
-                                        Math.Max(
-                                            0.05,
-                                            MinimumTpSpacingAtr)));
+                                MinimumLiveTargetDistancePrice(_plan.Direction, atr);
 
                             double baseTarget =
                                 _plan.Tp1;
