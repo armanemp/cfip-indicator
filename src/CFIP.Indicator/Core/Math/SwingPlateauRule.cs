@@ -10,64 +10,6 @@ namespace cAlgo
     internal static class SwingPlateauRule
     {
         public static bool TryGetHighPlateau(
-            double[] highs,
-            int candidateIndex,
-            int strength,
-            int closedIndex,
-            double equalityTolerance,
-            out int plateauStart,
-            out int plateauEnd,
-            out double level)
-        {
-            if (highs == null)
-            {
-                plateauStart = plateauEnd = -1;
-                level = 0;
-                return false;
-            }
-
-            return TryGetHighPlateau(
-                highs.Length,
-                candidateIndex,
-                strength,
-                closedIndex,
-                equalityTolerance,
-                i => highs[i],
-                out plateauStart,
-                out plateauEnd,
-                out level);
-        }
-
-        public static bool TryGetLowPlateau(
-            double[] lows,
-            int candidateIndex,
-            int strength,
-            int closedIndex,
-            double equalityTolerance,
-            out int plateauStart,
-            out int plateauEnd,
-            out double level)
-        {
-            if (lows == null)
-            {
-                plateauStart = plateauEnd = -1;
-                level = 0;
-                return false;
-            }
-
-            return TryGetLowPlateau(
-                lows.Length,
-                candidateIndex,
-                strength,
-                closedIndex,
-                equalityTolerance,
-                i => lows[i],
-                out plateauStart,
-                out plateauEnd,
-                out level);
-        }
-
-        public static bool TryGetHighPlateau(
             int length,
             int candidateIndex,
             int strength,
