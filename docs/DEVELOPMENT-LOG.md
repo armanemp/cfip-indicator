@@ -1853,3 +1853,32 @@ Important boundary:
 No public trading threshold was blindly tuned and no second broker-execution authority was introduced. Independent timeframe scenarios remain signal/opportunity objects unless a separately tested scenario execution policy is promoted.
 
 Next phase after verification: scenario-aware execution materialization and deeper automatic-order/multi-scenario broker policy, driven by the Phase 11.3/11.4 telemetry rather than guesswork.
+
+
+## Phase 11.5 — Scenario-Aware Execution Materialization & Submission Isolation — 2026-09-30
+
+Status: IMPLEMENTED on phase branch; verification pending.
+
+Implementation:
+- added canonical ScenarioExecutionPolicy separating candidate eligibility from broker execution authorization;
+- kept independent timeframe scenarios explicitly observe-only;
+- materialized the canonical plan against an exact scenario identity and Entry/SL/TP1 geometry;
+- extended SubmissionAttemptIdentity with scenario-scoped retry/circuit identity;
+- propagated scenario identity into automatic market, aggressive, pending Stop and pending Limit submission paths;
+- preserved scenario identity in execution telemetry and exposed the active execution scenario in Auto Trading diagnostics;
+- added runtime contract coverage and tools/audit_phase_11_5.py;
+- wired the Phase 11.5 audit into Source/Architecture CI;
+- preserved the certified single-position broker capacity and existing execution/lifecycle authorities.
+
+Whole-chain review:
+Analysis -> Decision -> Signal -> Alert -> Execution -> Broker -> Protection/Lifecycle -> Outcome -> Learning
+was rechecked for MTF, OB/FVG/OB+FVG, WaveTrend/divergence, indicator fusion, Entry/SL/TP,
+RR, market/aggressive/pending execution, broker confirmation, lifecycle and telemetry.
+
+Evidence boundary:
+No live threshold tuning, profitability claim or accuracy claim was made. Target-terminal
+replay remains required for broker behavior and empirical signal-quality/outcome measurement.
+
+Next phase:
+Formal scenario execution policy design driven by observed runtime telemetry, without
+promoting independent timeframe broker mutation or multi-position capacity until separately certified.
