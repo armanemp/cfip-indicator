@@ -81,7 +81,11 @@ namespace cAlgo
                                         (AutomaticOrdersEnabled ? "ORDERS ON" : "ORDERS OFF") +
                                         "  •  SMART EXEC " +
                                         _marketSuitabilityScore +
-                                        "/100  •  " +
+                                        "/100  • SCENARIO " +
+                                        (string.IsNullOrWhiteSpace(_activeExecutionScenarioId)
+                                            ? "NONE"
+                                            : _activeExecutionScenarioId) +
+                                        "  •  " +
                                         trace +
                                         (ShowNewsRiskStatus
                                             ? "  •  " +

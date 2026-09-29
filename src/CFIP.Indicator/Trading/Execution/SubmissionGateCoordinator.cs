@@ -8,7 +8,8 @@ namespace cAlgo
         private SubmissionAttemptIdentity BuildSubmissionAttemptIdentity(
             int closedM5,
             int direction,
-            ExecutionSubmissionPath path)
+            ExecutionSubmissionPath path,
+            string scenarioId)
         {
             string signalKey =
                 SymbolName + "|" +
@@ -18,12 +19,28 @@ namespace cAlgo
             string attemptKey =
                 path.ToString() + "|" +
                 closedM5 + "|" +
-                direction;
+                direction + "|" +
+                (string.IsNullOrWhiteSpace(scenarioId)
+                    ? "UNSCOPED"
+                    : scenarioId.Trim().Replace("|", "/"));
 
             return new SubmissionAttemptIdentity(
                 signalKey,
                 attemptKey,
-                path);
+                path,
+                scenarioId);
+        }
+
+        private SubmissionAttemptIdentity BuildSubmissionAttemptIdentity(
+            int closedM5,
+            int direction,
+            ExecutionSubmissionPath path)
+        {
+            return BuildSubmissionAttemptIdentity(
+                closedM5,
+                direction,
+                path,
+                "UNSCOPED");
         }
 
         private bool TryAcquireSubmission(
@@ -33,15 +50,85 @@ namespace cAlgo
             out SubmissionAttemptIdentity identity,
             out string reason)
         {
+            return TryAcquireSubmission(
+                closedM5,
+                direction,
+                path,
+                "UNSCOPED",
+                out identity,
+                out reason);
+        }
+
+        private bool TryAcquireSubmission(
+            int closedM5,
+            int direction,
+            ExecutionSubmissionPath path,
+            string scenarioId,
+            out SubmissionAttemptIdentity identity,
+            out string reason)
+        {
             identity = BuildSubmissionAttemptIdentity(
                 closedM5,
                 direction,
-                path);
+                path,
+                scenarioId);
 
             return _submissionGate.TryAcquire(
                 identity,
                 Server.TimeInUtc,
                 out reason);
+        }
+
+        private string ResolvePlanExecutionScenarioId(
+            int closedM5)
+        {
+            if (_plan == null)
+                return "CANONICAL-NONE";
+
+            TradeOpportunityCandidate selected;
+            string reason;
+
+            if (ScenarioExecutionPolicy.TryResolvePlanScenario(
+                    _tradePlanRegistry.Snapshot(),
+                    _plan,
+                    _decision,
+                    Math.Max(
+                        Symbol.TickSize * 2,
+                        Symbol.PipSize * 0.10),
+                    out selected,
+                    out reason) &&
+                selected != null &&
+                !string.IsNullOrWhiteSpace(
+                    selected.ScenarioId))
+            {
+                return selected.ScenarioId;
+            }
+
+            return
+                ScenarioExecutionPolicy.CanonicalScenarioId(
+                    _plan);
+        }
+
+        private string ResolveDirectionExecutionScenarioId(
+            int direction)
+        {
+            TradeOpportunityCandidate selected;
+
+            if (ScenarioExecutionPolicy.TryResolveDirectionScenario(
+                    _tradePlanRegistry.Snapshot(),
+                    _decision,
+                    direction,
+                    out selected) &&
+                selected != null &&
+                !string.IsNullOrWhiteSpace(
+                    selected.ScenarioId))
+            {
+                return selected.ScenarioId;
+            }
+
+            return
+                "CANONICAL-DIRECTION-" +
+                (direction == 1 ? "BUY" : "SELL");
         }
 
         private void RecordSubmission(
@@ -75,13 +162,16 @@ namespace cAlgo
                         : result.IsSuccessful
                             ? "UNCONFIRMED"
                             : "REJECTED",
-                result == null
+                "SCENARIO=" +
+                identity.ScenarioId +
+                " • " +
+                (result == null
                     ? "BROKER RETURNED NULL"
                     : result.Error.HasValue
                         ? result.Error.Value.ToString()
                         : result.IsSuccessful
                             ? "BROKER ACCEPTED"
-                            : "BROKER REJECTED");
+                            : "BROKER REJECTED"));
         }
 
         private void RecordSubmissionFailure(
@@ -100,7 +190,9 @@ namespace cAlgo
                 identity.Path.ToString(),
                 ParseTelemetryM5(identity.AttemptKey),
                 "FAILED",
-                "EXCEPTION / SUBMISSION FAILED");
+                "SCENARIO=" +
+                identity.ScenarioId +
+                " • EXCEPTION / SUBMISSION FAILED");
         }
 
         private void RecordExecutionTelemetry(
@@ -122,7 +214,9 @@ namespace cAlgo
                 _lastExecutionTelemetryState =
                     "NULL RESULT";
                 _lastExecutionTelemetryReason =
-                    "BROKER RETURNED NULL";
+                    "SCENARIO " +
+                    identity.ScenarioId +
+                    " • BROKER RETURNED NULL";
                 return;
             }
 
@@ -133,12 +227,18 @@ namespace cAlgo
                         ? "UNCONFIRMED"
                         : "REJECTED";
 
-            _lastExecutionTelemetryReason =
+            string outcomeReason =
                 result.Error.HasValue
                     ? result.Error.Value.ToString()
                     : result.IsSuccessful
                         ? "BROKER ACCEPTED"
                         : "BROKER REJECTED";
+
+            _lastExecutionTelemetryReason =
+                "SCENARIO " +
+                identity.ScenarioId +
+                " • " +
+                outcomeReason;
         }
 
         private void RecordExecutionTelemetryFailure(
@@ -154,9 +254,12 @@ namespace cAlgo
             _lastExecutionTelemetryState =
                 "FAILED";
             _lastExecutionTelemetryReason =
-                string.IsNullOrWhiteSpace(reason)
+                "SCENARIO " +
+                identity.ScenarioId +
+                " • " +
+                (string.IsNullOrWhiteSpace(reason)
                     ? "SUBMISSION FAILED"
-                    : reason;
+                    : reason);
         }
 
         private int ParseTelemetryM5(

@@ -4079,3 +4079,32 @@ Important boundary:
 No public trading threshold was blindly tuned and no second broker-execution authority was introduced. Independent timeframe scenarios remain signal/opportunity objects unless a separately tested scenario execution policy is promoted.
 
 Next phase after verification: scenario-aware execution materialization and deeper automatic-order/multi-scenario broker policy, driven by the Phase 11.3/11.4 telemetry rather than guesswork.
+
+
+## Phase 11.5 — Scenario-Aware Execution Materialization & Submission Isolation — 2026-09-30
+
+Status: IMPLEMENTED on phase branch; verification and merge pending.
+
+Scope:
+- explicit scenario-to-canonical-plan materialization;
+- observe-only boundary for independent timeframe scenarios;
+- scenario-scoped SubmissionGate retry/backoff/circuit identity;
+- scenario-aware execution telemetry and Auto Trading diagnostics;
+- deterministic runtime contracts and Phase 11.5 source audit;
+- no change to the certified single-position broker capacity.
+
+Design boundary:
+The phase does not introduce a second decision authority, a second execution engine,
+or multi-position broker mutation. Independent timeframe scenarios remain opportunities
+until a separately tested execution policy is certified.
+
+Verification:
+- Phase 11.5 audit;
+- accumulated Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- target-terminal replay for broker semantics and empirical outcomes.
+
+Next phase:
+Formal scenario execution policy and deeper automatic-order orchestration, driven by
+runtime rejection/scenario telemetry rather than blind threshold tuning.

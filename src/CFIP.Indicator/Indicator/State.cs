@@ -109,6 +109,7 @@ namespace cAlgo
                 private string _lastExecutionTelemetryPath = "";
                 private string _lastExecutionTelemetryState = "IDLE";
                 private string _lastExecutionTelemetryReason = "";
+                private string _activeExecutionScenarioId = "";
                 private int _lastExecutionTelemetryM5 = -1;
                 private DateTime _lastExecutionTelemetryUtc = DateTime.MinValue;
         

@@ -121,3 +121,17 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 - market/aggressive/pending هر کدام چه reward-risk gate نهایی دارند؛
 - آیا mismatch بین signal، plan و execution authority باقی مانده است؛
 - کدام موارد هنوز فقط با target-terminal replay قابل اثبات هستند.
+
+    
+## 14. روتین اختصاصی Phase 11.5 — Scenario-Aware Execution Materialization
+
+در هر فاز بعدی که سناریوهای موازی یا auto-execution را توسعه می‌دهد:
+
+1. candidate با Decision، Lane، Direction، TriggerReady و ActionableNow تطبیق داده شود.
+2. execution authorization از candidate eligibility جدا باقی بماند؛ سناریوهای observe-only نباید مستقیم broker mutation را مجاز کنند.
+3. سناریوی canonical برای Plan فقط با identity و geometry دقیق Entry/SL/TP1 materialize شود؛ fallback identity هرگز جای safety gate را نمی‌گیرد.
+4. SubmissionAttemptIdentity باید ScenarioId داشته باشد تا backoff/circuit یک سناریو، سناریوی مستقل دیگر را سرکوب نکند.
+5. market/aggressive/pending قبل از broker mutation باید scenario identity، reward/risk، quote، capacity، permission، news/suitability، submission و broker confirmation را حفظ کنند.
+6. چندسناریویی بودن display/registry به معنی چندپوزیشن بودن execution نیست؛ تغییر capacity فقط در یک فاز certification مستقل مجاز است.
+7. telemetry باید scenario identity و reason را برای rejection/failure/recovery نگه دارد تا cohort analysis ممکن باشد.
+8. هر ادعای کاهش false signal، افزایش accuracy، بهبود realized RR یا افزایش profit capture باید با replay/outcome واقعی پشتیبانی شود.

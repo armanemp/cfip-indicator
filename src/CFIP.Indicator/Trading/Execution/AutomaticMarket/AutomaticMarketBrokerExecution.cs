@@ -50,10 +50,18 @@ namespace cAlgo
                 string submissionGateReason;
                 SubmissionAttemptIdentity submissionIdentity;
                 int direction = _plan == null ? 0 : _plan.Direction;
+                string executionScenarioId =
+                    ResolvePlanExecutionScenarioId(
+                        closedM5);
+
+                _activeExecutionScenarioId =
+                    executionScenarioId;
 
                 if (!TryAcquireSubmission(
-                        closedM5, direction,
+                        closedM5,
+                        direction,
                         ExecutionSubmissionPath.AutomaticMarket,
+                        executionScenarioId,
                         out submissionIdentity,
                         out submissionGateReason))
                 {

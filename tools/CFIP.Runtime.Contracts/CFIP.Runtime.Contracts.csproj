@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/OpportunityLane.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Enums/ExecutionMode.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/WaveTrendSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TacticalOpportunityRule.cs" />
@@ -43,6 +44,9 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionGateState.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionGate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/AggressiveEntryPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/Plan.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Execution/ScenarioExecutionPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/DivergenceResult.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeActionabilityResult.cs" />
