@@ -30,8 +30,8 @@ namespace cAlgo
                     Server.TimeInUtc;
 
                 // The heartbeat deliberately avoids full analysis. It supervises
-                // broker/live safety state and EOD boundaries, then refreshes only
-                // the lightweight panel clock.
+                // broker/live safety state on its independent cadence and keeps
+                // the complete panel view responsive without recalculating analysis.
                 _lastPanelHeartbeatUtc =
                     now;
 
