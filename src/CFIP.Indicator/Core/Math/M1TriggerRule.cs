@@ -20,6 +20,21 @@ namespace cAlgo
                 m5NextOpen <= reference;
         }
 
+        internal static bool IsClosedM1InsideM5Window(
+            DateTime m1Open,
+            DateTime m1NextOpen,
+            DateTime m5Open,
+            DateTime m5NextOpen,
+            DateTime reference)
+        {
+            return
+                m1Open < m1NextOpen &&
+                m5Open < m5NextOpen &&
+                m1Open >= m5Open &&
+                m1Open < m5NextOpen &&
+                m1NextOpen <= reference;
+        }
+
         internal static bool IsReady(
             int direction,
             int m1Direction,
