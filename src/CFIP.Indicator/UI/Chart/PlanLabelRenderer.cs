@@ -39,6 +39,9 @@ namespace cAlgo
                 double labelPrice =
                     NormalizePrice(price);
 
+                Color whiteTextColor =
+                    Color.White;
+
                 ChartText label =
                     Chart.FindObject(name)
                     as ChartText;
@@ -57,7 +60,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[safeBar],
                             labelPrice,
-                            color);
+                            whiteTextColor);
                 }
 
                 if (label == null)
@@ -70,7 +73,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    color;
+                    whiteTextColor;
                 label.FontSize =
                     Math.Max(
                         8,
