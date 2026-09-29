@@ -236,16 +236,7 @@ namespace cAlgo
                             if (bars != null && assign != null)
                                 assign(bars);
 
-                            _mtfClosedContextCache.StoreStableContext(
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null);
+                            _mtfClosedContextCache.Clear();
                         }
                         catch (Exception ex)
                         {
