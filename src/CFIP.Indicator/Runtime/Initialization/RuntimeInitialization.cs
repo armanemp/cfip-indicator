@@ -319,6 +319,7 @@ namespace cAlgo
             _initializationPendingDataLoads = 0;
             _initializationStartedUtc = TimeInUtc;
             _startupCalculationSeedDone = false;
+            _startupCalculationSeedQueued = false;
             _status = "STARTING";
 
             CreatePanel();
