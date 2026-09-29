@@ -89,8 +89,8 @@ if "RenderLevelLines(" not in plan_render:
 # The structural setup preview must be eligible before TriggerReady.
 if "_setupPreview.Direction != 0" not in snapshot:
     fail("Setup preview must not depend only on post-trigger visual direction")
-if "The setup preview is the pre-trigger structural forecast" not in snapshot:
-    fail("Pre-trigger setup-preview contract explanation is missing")
+if "_setupPreview.Direction == visualDirection" in snapshot:
+    fail("Setup preview must not require post-trigger visual direction equality")
 
 # 4) Canonical chart-level geometry invariants.
 line = texts[ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"]
