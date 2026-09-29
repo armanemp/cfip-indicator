@@ -7,7 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private int ResolveCanonicalVisualDirection(
-            PendingOrder pending,
+            int pendingDirection,
             bool livePlan,
             bool decisionReady,
             bool reactionReady,
@@ -25,10 +25,8 @@ namespace cAlgo
                 _plan != null)
                 return _plan.Direction;
 
-            if (pending != null)
-                return pending.TradeType == TradeType.Buy
-                    ? 1
-                    : -1;
+            if (pendingDirection != 0)
+                return pendingDirection;
 
             if (_plan != null &&
                 (_plan.Direction == 1 ||
@@ -127,7 +125,9 @@ namespace cAlgo
 
             int visualDirection =
                 ResolveCanonicalVisualDirection(
-                    pending,
+                    pendingValid
+                        ? (pending.TradeType == TradeType.Buy ? 1 : -1)
+                        : 0,
                     livePlan,
                     decisionReady,
                     reactionReady,
