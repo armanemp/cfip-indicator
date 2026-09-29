@@ -60,6 +60,16 @@ namespace cAlgo
             double rangeLow =
                 _m5Bars.LowPrices[first];
 
+            int priorLast =
+                Math.Max(
+                    first,
+                    index - 1);
+
+            double priorRangeHigh =
+                _m5Bars.HighPrices[first];
+            double priorRangeLow =
+                _m5Bars.LowPrices[first];
+
             for (int i = first + 1;
                  i <= index;
                  i++)
@@ -71,6 +81,20 @@ namespace cAlgo
                 rangeLow =
                     Math.Min(
                         rangeLow,
+                        _m5Bars.LowPrices[i]);
+            }
+
+            for (int i = first + 1;
+                 i <= priorLast;
+                 i++)
+            {
+                priorRangeHigh =
+                    Math.Max(
+                        priorRangeHigh,
+                        _m5Bars.HighPrices[i]);
+                priorRangeLow =
+                    Math.Min(
+                        priorRangeLow,
                         _m5Bars.LowPrices[i]);
             }
 
