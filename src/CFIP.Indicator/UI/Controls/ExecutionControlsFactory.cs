@@ -53,30 +53,31 @@ namespace cAlgo
                 _automaticOrdersQuickStatus);
         }
 
-        private Border CreateExecutionStatus(
+        private Button CreateExecutionStatus(
             string caption,
             bool enabled,
-            Color accentColor,
-            out TextBlock statusText,
-            out Border switchTrack,
-            out Border switchThumb)
+            Color accentColor)
         {
-            statusText =
-                new TextBlock
+            return
+                new Button
                 {
                     Text =
                         caption +
                         "  " +
                         (enabled ? "ON" : "OFF"),
-                    Width = 122,
+                    Width = 170,
+                    Height = QuickExecutionButtonHeight,
+                    Margin = 2,
                     HorizontalAlignment =
-                        HorizontalAlignment.Left,
+                        HorizontalAlignment.Stretch,
                     VerticalAlignment =
                         VerticalAlignment.Center,
-                    TextAlignment =
-                        TextAlignment.Left,
-                    TextWrapping =
-                        TextWrapping.NoWrap,
+                    HorizontalContentAlignment =
+                        HorizontalAlignment.Center,
+                    VerticalContentAlignment =
+                        VerticalAlignment.Center,
+                    ForegroundColor =
+                        PanelTextColor,
                     FontFamily =
                         string.IsNullOrWhiteSpace(
                             PanelFontFamily)
@@ -88,92 +89,6 @@ namespace cAlgo
                             PanelFontSize - 1),
                     FontWeight =
                         FontWeight.Bold,
-                    ForegroundColor =
-                        PanelTextColor,
-                    BackgroundColor =
-                        Color.FromArgb(
-                            0,
-                            Color.Black)
-                };
-
-            switchThumb =
-                new Border
-                {
-                    Width = 12,
-                    Height = 12,
-                    CornerRadius = 6,
-                    BackgroundColor =
-                        Color.FromArgb(
-                            240,
-                            Color.White),
-                    BorderColor =
-                        Color.FromArgb(
-                            220,
-                            Color.White),
-                    BorderThickness = 1,
-                    HorizontalAlignment =
-                        enabled
-                            ? HorizontalAlignment.Right
-                            : HorizontalAlignment.Left,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    IsHitTestVisible = false
-                };
-
-            switchTrack =
-                new Border
-                {
-                    Child = switchThumb,
-                    Width = 34,
-                    Height = 18,
-                    Padding = 2,
-                    CornerRadius = 9,
-                    BackgroundColor =
-                        enabled
-                            ? Color.FromArgb(
-                                180,
-                                accentColor)
-                            : Color.FromArgb(
-                                110,
-                                Color.Black),
-                    BorderColor =
-                        enabled
-                            ? accentColor
-                            : PanelBorder,
-                    BorderThickness = 1,
-                    HorizontalAlignment =
-                        HorizontalAlignment.Right,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    IsHitTestVisible = false
-                };
-
-            StackPanel row =
-                new StackPanel
-                {
-                    Orientation =
-                        Orientation.Horizontal,
-                    HorizontalAlignment =
-                        HorizontalAlignment.Stretch,
-                    VerticalAlignment =
-                        VerticalAlignment.Center,
-                    BackgroundColor =
-                        Color.FromArgb(
-                            0,
-                            Color.Black)
-                };
-
-            row.AddChild(statusText);
-            row.AddChild(switchTrack);
-
-            return
-                new Border
-                {
-                    Child = row,
-                    Width = 170,
-                    Height = QuickExecutionButtonHeight,
-                    Padding = 5,
-                    Margin = 2,
                     BackgroundColor =
                         enabled
                             ? Color.FromArgb(
@@ -188,14 +103,16 @@ namespace cAlgo
                                 170,
                                 accentColor)
                             : PanelBorder,
-                    BorderThickness = 1,
+                    BorderThickness =
+                        Math.Max(
+                            1,
+                            PanelBorderThickness),
                     CornerRadius =
                         Math.Min(
                             10,
                             Math.Max(
                                 6,
-                                PanelCornerRadius)),
-                    IsHitTestVisible = false
+                                PanelCornerRadius))
                 };
         }
     }
