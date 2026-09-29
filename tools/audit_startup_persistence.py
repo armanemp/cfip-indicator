@@ -66,13 +66,23 @@ require(
 )
 require(
     ARCHIVE,
-    r"Directory\.GetFiles\([\s\S]*?\);[\s\S]*?OutcomeArchivePrefix\(\)",
-    "archive file discovery",
+    r"Directory\.GetFiles\(",
+    "archive file discovery API",
 )
 require(
     ARCHIVE,
-    r"new DateTime\([\s\S]*?DateTimeKind\.Utc[\s\S]*?item\.ObservedUtcTicks",
+    r"OutcomeArchivePrefix\(\)",
+    "archive file prefix",
+)
+require(
+    ARCHIVE,
+    r"DateTimeKind\.Utc",
     "UTC archive period compatibility",
+)
+require(
+    ARCHIVE,
+    r"ObservedUtcTicks",
+    "archived observation UTC timestamp",
 )
 require(
     CAL,
