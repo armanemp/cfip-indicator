@@ -167,3 +167,24 @@ The phase changes temporal and ownership guarantees only; decision thresholds, w
 | Startup seed does not own market/pending execution or full live-cycle management | Source gate | PASS |
 | Normal Calculate remains the sole recurring live calculation owner | Source/runtime contract | PASS |
 | 535-parameter production contract remains unchanged | Source gate | PASS |
+
+
+## Phase 6.3 — Controlled intrabar aggressive entry
+
+| Contract | Automated controlled check | Status |
+|---|---:|---:|
+| Aggressive trigger source is the explicit current-open-M5 reaction | Source gate | PASS |
+| Two distinct qualifying reaction observations are required to arm | Runtime contract | PASS |
+| Duplicate reaction observation timestamps cannot double-count qualification | Runtime contract | PASS |
+| Direction change invalidates prior intrabar qualification | Runtime contract | PASS |
+| Loss of reaction qualification invalidates immediately | Runtime contract | PASS |
+| New M5 bar starts a fresh qualification window | Runtime contract | PASS |
+| Confirmed aggressive fill consumes the qualification latch | Source gate | PASS |
+| Structural SL/TP and existing execution authority remain unchanged | Source gate | PASS |
+| Broker confirmation remains authoritative for aggressive market entry | Source gate | PASS |
+| 535-parameter contract remains unchanged | Source gate | PASS |
+| Source / architecture gates | Yes | PASS |
+| Runtime acceptance contracts | Yes | PASS |
+| cTrader compile | Yes | PASS |
+
+The phase chooses controlled intrabar entry explicitly. The closed-bar decision remains the structural context; the live reaction is the trigger source. No new public parameter is introduced.
