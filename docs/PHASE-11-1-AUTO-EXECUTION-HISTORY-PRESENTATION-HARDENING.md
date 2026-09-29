@@ -8,7 +8,7 @@ This phase addresses five operator-reported defects after Phase 11:
 1. The compiled custom indicator did not explicitly register its cTrader display name.
 2. Plan level labels were drawn at the same price as their horizontal lines.
 3. Automatic market execution could miss a valid same-bar opportunity because plan creation was latched after the first failed actionability check.
-4. Runtime faults could leave automatic entry disarmed even after Auto Trading was enabled again.
+4. The Quick Auto Trading control did not participate explicitly in the runtime fault-state re-arm contract.
 5. The History directory had no operator-visible location marker or startup diagnostic.
 
 ## Implementation
@@ -33,7 +33,7 @@ No safety gate was removed.
 
 ### Runtime fault re-arm
 
-An explicit Auto Trading OFF -> ON transition now acts as the operator re-arm action for the runtime entry gate. A new runtime failure on a later cycle can still block execution again.
+The existing fault-state safety contract remains fail-closed: a live `EntryBlocked` state cannot be bypassed by enabling Auto Trading. The Quick Auto Trading control now participates in the same explicit re-arm contract, so after the runtime supervisor has returned the state to `Healthy`, an operator quick-enable can re-arm the runtime entry gate. Any new runtime failure can block execution again.
 
 ### Level-label separation
 
