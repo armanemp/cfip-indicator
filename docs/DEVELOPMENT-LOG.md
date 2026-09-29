@@ -1615,7 +1615,7 @@ The existing portable-memory bridge restores the bounded recent outcome cache fr
 
 ## Phase 9.17 — Exit Geometry, TP Progression & Protection Integrity — 2026-09-29
 
-Status: IMPLEMENTATION COMPLETE; CI verification pending.
+Status: VERIFIED COMPLETE; corrective hardening merged into main.
 
 Finding:
 The reported TP rollback had multiple interacting causes: live target selection did not require
@@ -1648,7 +1648,7 @@ practice and to measure realized exits, slippage, protection rejection, and cont
 Detailed record: docs/PHASE-9-17-EXIT-GEOMETRY-PROGRESSION.md.
 
 Next phase: Phase 9.18 — target/protection measurement and evidence-driven exit refinement.
-Operator pull: required after final verified closeout.
+Operator pull: required now; pull `main` at merge commit `af4ef4edb5ce032c4a71feaf2cc0be1203f4992b`.
 
 ## Phase 9.17 automated verification closeout — 2026-09-29
 
@@ -1683,7 +1683,7 @@ Operator pull: after PR #60 merge, pull main at the verified merge commit.
 
 ## Phase 9.17 corrective numerical hardening — 2026-09-29
 
-Status: VERIFIED COMPLETE at source/contract level; target-terminal replay remains required.
+Status: VERIFIED COMPLETE at source/contract level; PR #61 merged into main; target-terminal replay remains required.
 
 Second-pass findings and fixes:
 - centralized live TP minimum-forward distance across broker and lifecycle paths;
