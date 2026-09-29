@@ -95,3 +95,18 @@ while backtesting and optimisation keep LocalStorage in memory only.
 Phase 9.15 should add the target-terminal/replay measurement layer around this
 calibrated decision path and use the measurements to refine production defaults
 only when out-of-sample evidence supports a change.
+
+## Verification
+
+Phase 9.14 is verified and merged into main.
+
+- Runtime Acceptance: PASS
+- cTrader Compile/Build: PASS
+- Source/Architecture + accumulated audits: PASS
+- Decision Contracts: PASS within the build workflow
+- PR #56: merged
+- Merge commit: 16e788f6b196afcfe2580908cbdb4dabc46cb5b
+
+The automated gates validate deterministic consensus behavior and compile/runtime
+contracts. Target-terminal/replay remains required for empirical false-signal,
+missed-opportunity, timing, realized-R and live execution measurements.
