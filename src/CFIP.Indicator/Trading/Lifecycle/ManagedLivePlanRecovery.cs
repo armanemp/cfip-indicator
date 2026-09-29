@@ -163,33 +163,40 @@ namespace cAlgo
 
                         double maximumRR =
                             Math.Max(
-                                fallbackRR,
+                                1.0,
                                 MaximumRewardRR);
 
-                        fallbackRR =
-                            Math.Min(
-                                fallbackRR,
-                                maximumRR);
-
-                        double distance =
-                            risk *
-                            fallbackRR;
-
-                        target =
-                            direction == 1
-                                ? entry + distance
-                                : entry - distance;
-
-                        target =
-                            NormalizePrice(target);
-
-                        if (!IsLiveTargetBrokerSafe(
-                                direction,
-                                entry,
-                                market,
-                                target,
-                                atr))
+                        if (maximumRR < fallbackRR)
+                        {
                             target = 0;
+                        }
+                        else
+                        {
+                            fallbackRR =
+                                Math.Min(
+                                    fallbackRR,
+                                    maximumRR);
+
+                            double distance =
+                                risk *
+                                fallbackRR;
+
+                            target =
+                                direction == 1
+                                    ? entry + distance
+                                    : entry - distance;
+
+                            target =
+                                NormalizePrice(target);
+
+                            if (!IsLiveTargetBrokerSafe(
+                                    direction,
+                                    entry,
+                                    market,
+                                    target,
+                                    atr))
+                                target = 0;
+                        }
                     }
                 }
 
