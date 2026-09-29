@@ -69,6 +69,30 @@ namespace cAlgo
                         PrecisionTriggerScore)
                     : LiveTriggerScore;
 
+            int microLookback =
+                Math.Max(
+                    3,
+                    Math.Min(
+                        8,
+                        SwingStrength * 2));
+
+            int microStart =
+                Math.Max(
+                    0,
+                    m1Index - microLookback);
+
+            double priorMicroHigh =
+                Highest(
+                    m1Bars,
+                    microStart,
+                    m1Index - 1);
+
+            double priorMicroLow =
+                Lowest(
+                    m1Bars,
+                    microStart,
+                    m1Index - 1);
+
             return M1TriggerRule.IsReady(
                 direction,
                 _m1Frame.Direction,
@@ -81,7 +105,12 @@ namespace cAlgo
                 MinimumCloseLocation,
                 MaximumTriggerRangeAtr,
                 trigger,
-                requiredTrigger);
+                requiredTrigger,
+                priorMicroHigh,
+                priorMicroLow,
+                StructureBreakAtr,
+                UseDisplacement,
+                DisplacementAtr);
         }
     }
 }
