@@ -4,7 +4,7 @@ Date: 2026-09-29
 
 ## Status
 
-IMPLEMENTATION COMPLETE; CI verification pending.
+VERIFIED COMPLETE on `phase/9-13-persistent-memory-safe-optimization`.
 
 ## Objective
 
@@ -107,3 +107,13 @@ Target-terminal replay remains required for:
 ## Next phase
 
 Phase 9.14 — target-terminal replay, calibration/optimization measurement and evidence-driven parameter refinement.
+
+ 
+## Verification closeout
+ 
+- Runtime Acceptance #1107: PASS
+- cTrader Compile/Build #1291: PASS
+- Source/Architecture + accumulated audits #1298: PASS
+- Decision Contracts including adaptive-risk checks: PASS
+- Production parameter count: 552
+- Final verified code head: `b742aae2dd1f94452f41743ad749374433dbc763`
