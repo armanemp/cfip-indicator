@@ -308,18 +308,21 @@ Hands-on cTrader validation remains required for exact visual line endpoints, 40
 
 | Contract | Automated controlled check | cTrader / replay |
 |---|---:|---:|
-| M1 is consumed from the canonical closed M1 context | Pending verification | Required |
-| M1 bar is inside the exact closed M5 window | Pending verification | Required |
-| Future / still-open M1 bar is rejected | Pending verification | Required |
-| BUY/SELL M1 trigger symmetry | Pending verification | Required |
-| Opposite M1 direction is rejected | Pending verification | Required |
-| Weak M1 body is rejected | Pending verification | Required |
-| Poor M1 close location is rejected | Pending verification | Required |
-| Abnormally large M1 range is rejected | Pending verification | Required |
-| Insufficient M1 trigger score is rejected | Pending verification | Required |
-| M1 cannot vote directly in directional consensus | Pending source gate | Required |
-| M1 confirmation is combined with canonical M5 TriggerReady | Pending source gate | Required |
-| Runtime Acceptance Contracts | Pending | Required |
-| cTrader Compile | Pending | Required |
+| M1 is consumed from the canonical closed M1 context | PASS | Required |
+| M1 bar is inside the exact closed M5 window | PASS | Required |
+| Future / still-open M1 bar is rejected | PASS | Required |
+| BUY/SELL M1 trigger symmetry | PASS | Required |
+| Opposite M1 direction is rejected | PASS | Required |
+| Weak M1 body is rejected | PASS | Required |
+| Poor M1 close location is rejected | PASS | Required |
+| Abnormally large M1 range is rejected | PASS | Required |
+| Insufficient M1 trigger score is rejected | PASS | Required |
+| M1 cannot vote directly in directional consensus | PASS | Required |
+| M1 confirmation is combined with canonical M5 TriggerReady | PASS | Required |
+| Runtime Acceptance Contracts | PASS | Required |
+| cTrader Compile | PASS | Required |
+| Source / Architecture | PASS | Required |
 
-The implementation is complete, but the phase is not closed until the repository CI gates and required replay/terminal validation are verified. Automated contracts do not establish an empirical reduction in false signals.
+CI evidence on branch head `929700e154d4b84a5a0b9efeae345b92017834b6`: Runtime Acceptance run 801 PASS; cTrader Compile run 985 PASS; Source / Architecture run 992 PASS.
+
+The automated phase boundary is closed. Hands-on cTrader replay/live validation remains required to measure actual false-signal reduction and terminal behavior; CI does not establish an empirical win-rate or false-signal improvement.
