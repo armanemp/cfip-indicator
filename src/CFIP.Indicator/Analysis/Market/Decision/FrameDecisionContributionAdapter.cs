@@ -17,7 +17,8 @@ namespace cAlgo
                     frame.BullScore,
                     frame.BearScore,
                     frame.Quality,
-                    weight);
+                    weight,
+                    frame.Evidence);
 
             return new DecisionFrameContribution(
                 result.Bull,
