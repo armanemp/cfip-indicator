@@ -85,7 +85,10 @@ namespace cAlgo
                 !StructuralEvidenceRule.IsIndependentTransition(true, true, false) &&
                 StructuralEvidenceRule.IsIndependentTransition(false, true, false) &&
                 StructuralEvidenceRule.IsIndependentTransition(false, false, true),
-                "transition is independent only whe        private static void VerifyFvgMathematics()
+                "transition is independent only when structure is absent");
+        }
+
+        private static void VerifyFvgMathematics()
         {
             double low;
             double high;
@@ -93,110 +96,48 @@ namespace cAlgo
 
             Assert(
                 FvgRule.TryGetThreeBarGap(
-                    1,
-                    100,
-                    98,
-                    102,
-                    101,
-                    out low,
-                    out high,
-                    out gap) &&
-                low == 100 &&
-                high == 101 &&
-                gap == 1,
+                    1, 100, 98, 102, 101,
+                    out low, out high, out gap) &&
+                low == 100 && high == 101 && gap == 1,
                 "bullish 3-bar FVG uses older high to current low");
 
             Assert(
                 !FvgRule.TryGetThreeBarGap(
-                    1,
-                    100,
-                    98,
-                    101,
-                    100,
-                    out low,
-                    out high,
-                    out gap) &&
+                    1, 100, 98, 101, 100,
+                    out low, out high, out gap) &&
                 !FvgRule.TryGetThreeBarGap(
-                    -1,
-                    102,
-                    101,
-                    100,
-                    99,
-                    out low,
-                    out high,
-                    out gap),
+                    -1, 102, 101, 100, 99,
+                    out low, out high, out gap),
                 "FVG equality/touch is not a gap");
 
             Assert(
                 FvgRule.TryGetThreeBarGap(
-                    -1,
-                    105,
-                    104,
-                    103,
-                    102,
-                    out low,
-                    out high,
-                    out gap) &&
-                low == 103 &&
-                high == 104 &&
-                gap == 1,
+                    -1, 105, 104, 103, 102,
+                    out low, out high, out gap) &&
+                low == 103 && high == 104 && gap == 1,
                 "bearish 3-bar FVG is directionally symmetric");
 
             Assert(
                 FvgRule.TryGetTwoBarGap(
-                    1,
-                    100,
-                    98,
-                    102,
-                    101,
-                    out low,
-                    out high,
-                    out gap) &&
-                low == 100 &&
-                high == 101 &&
-                gap == 1 &&
+                    1, 100, 98, 102, 101,
+                    out low, out high, out gap) &&
+                low == 100 && high == 101 && gap == 1 &&
                 FvgRule.TryGetTwoBarGap(
-                    -1,
-                    105,
-                    104,
-                    103,
-                    102,
-                    out low,
-                    out high,
-                    out gap) &&
-                low == 103 &&
-                high == 104 &&
-                gap == 1,
+                    -1, 105, 104, 103, 102,
+                    out low, out high, out gap) &&
+                low == 103 && high == 104 && gap == 1,
                 "two-bar imbalance geometry is explicit and symmetric");
 
             Assert(
-                FvgRule.MeetsMinimumGap(
-                    0.80,
-                    2.0,
-                    0.30) &&
-                !FvgRule.MeetsMinimumGap(
-                    0.80,
-                    3.0,
-                    0.30),
+                FvgRule.MeetsMinimumGap(0.80, 2.0, 0.30) &&
+                !FvgRule.MeetsMinimumGap(0.80, 3.0, 0.30),
                 "minimum FVG threshold is anchored to creation-bar ATR");
 
             Assert(
-                FvgRule.IsOverlapInclusive(
-                    100,
-                    101,
-                    101,
-                    102) &&
-                !FvgRule.IsOverlapInclusive(
-                    100,
-                    101,
-                    101.01,
-                    102) &&
-                !FvgRule.IsOverlapInclusive(
-                    101,
-                    100,
-                    99,
-                    102),
-                "FVG overlap uses valid zone geometry and explicit boundary semantics");
+                FvgRule.IsOverlapInclusive(100, 101, 101, 102) &&
+                !FvgRule.IsOverlapInclusive(100, 101, 101.01, 102) &&
+                !FvgRule.IsOverlapInclusive(101, 100, 99, 102),
+                "FVG overlap uses valid geometry and explicit boundary semantics");
 
             Assert(
                 FvgRule.IsFullyFilled(1, 100, 101, 100) &&
@@ -207,47 +148,25 @@ namespace cAlgo
 
             Assert(
                 FvgRule.TryApplyPartialMitigation(
-                    1,
-                    100,
-                    101,
-                    100.50,
-                    0.01,
-                    out low,
-                    out high) &&
-                low == 100 &&
-                high == 100.50,
+                    1, 100, 101, 100.50, 0.01,
+                    out low, out high) &&
+                low == 100 && high == 100.50,
                 "bullish partial FVG fill moves only the upper boundary");
 
             Assert(
                 FvgRule.TryApplyPartialMitigation(
-                    -1,
-                    100,
-                    101,
-                    100.50,
-                    0.01,
-                    out low,
-                    out high) &&
-                low == 100.50 &&
-                high == 101,
+                    -1, 100, 101, 100.50, 0.01,
+                    out low, out high) &&
+                low == 100.50 && high == 101,
                 "bearish partial FVG fill moves only the lower boundary");
 
             Assert(
                 !FvgRule.TryApplyPartialMitigation(
-                    1,
-                    100,
-                    101,
-                    100,
-                    0.01,
-                    out low,
-                    out high) &&
+                    1, 100, 101, 100, 0.01,
+                    out low, out high) &&
                 !FvgRule.TryApplyPartialMitigation(
-                    -1,
-                    100,
-                    101,
-                    101,
-                    0.01,
-                    out low,
-                    out high),
+                    -1, 100, 101, 101, 0.01,
+                    out low, out high),
                 "full fill cannot survive as an active partial FVG geometry");
 
             Assert(
@@ -258,9 +177,6 @@ namespace cAlgo
                 FvgRule.Identity(1, 42, false) !=
                 FvgRule.Identity(-1, 42, false),
                 "FVG identity separates direction and 3-bar/2-bar source variants");
-        }
-
-n structure is absent");
         }
 
         private static void VerifyM1TriggerSemantics()
