@@ -1145,13 +1145,15 @@ if "GetManagedLivePositionForPlan()" not in BROKER_STATE_CODE:
 CAPACITY_RULE = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 CAPACITY_RULE_CODE = CAPACITY_RULE.read_text(encoding="utf-8")
 if "AllowsNewSinglePlan(" not in CAPACITY_RULE_CODE:
-    raise SystemExit("Pure single-plan execution capacity rule missing")
+    raise SystemExit("Pure single-plan capacity rule missing")
+if "AllowsNewSingleExecution(" not in CAPACITY_RULE_CODE:
+    raise SystemExit("New-execution capacity rule missing")
 if "!hasActivePlan" not in CAPACITY_RULE_CODE:
-    raise SystemExit("Single-plan execution capacity rule must reject an active plan")
+    raise SystemExit("New-plan capacity rule must reject an active local plan")
 if "managedPositionCount <" not in CAPACITY_RULE_CODE:
-    raise SystemExit("Single-plan execution capacity rule must cap managed positions")
+    raise SystemExit("Single-plan capacity rule must cap managed positions")
 if "managedPendingOrderCount == 0" not in CAPACITY_RULE_CODE:
-    raise SystemExit("Single-plan execution capacity rule must reject an existing managed pending order")
+    raise SystemExit("Single-plan capacity rule must reject an existing managed pending order")
 
 LIVE_RECOVERY_RULE = ROOT / "Core" / "Math" / "LivePlanRecoveryRule.cs"
 LIVE_RECOVERY_RULE_CODE = LIVE_RECOVERY_RULE.read_text(encoding="utf-8")
@@ -1161,17 +1163,26 @@ if "ShouldClearStaleLivePlan" not in LIVE_RECOVERY_RULE_CODE:
 CAPACITY_GUARD = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 CAPACITY_CODE = CAPACITY_GUARD.read_text(encoding="utf-8")
 if "ExecutionCapacityRule.AllowsNewSinglePlan(" not in CAPACITY_CODE:
-    raise SystemExit("Single-plan execution capacity guard must delegate to the pure rule")
+    raise SystemExit("Plan capacity guard must delegate to the pure rule")
+if "ExecutionCapacityRule.AllowsNewSingleExecution(" not in CAPACITY_CODE:
+    raise SystemExit("Execution capacity guard must delegate to the pure execution rule")
 if "ValidateSinglePlanCapacity(" not in CAPACITY_CODE:
     raise SystemExit("Shared single-plan capacity guard missing")
+if "ValidateSingleExecutionCapacity(" not in CAPACITY_CODE:
+    raise SystemExit("Shared execution capacity guard missing")
+plan_execution_path = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
+if "ValidateSinglePlanCapacity(" not in plan_execution_path.read_text(encoding="utf-8"):
+    raise SystemExit("Plan creation must use the single-plan capacity guard")
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
     execution_code = execution_path.read_text(encoding="utf-8")
-    if "ValidateSinglePlanCapacity(" not in execution_code:
+    if "ValidateSingleExecutionCapacity(" not in execution_code:
         raise SystemExit(f"Shared execution capacity guard missing in {execution_path.name}")
+    if "ManagedPositionCount() >=" in execution_code:
+        raise SystemExit(f"Duplicate position-capacity calculation remains in {execution_path.name}")
 
 AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
 AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
