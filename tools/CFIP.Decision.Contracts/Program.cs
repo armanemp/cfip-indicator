@@ -779,6 +779,20 @@ namespace cAlgo
                     "SIGNAL QUALITY • TIMING",
                 "weak timing remains rejected");
 
+            ActionableSignalQualityResult recoveredPosition =
+                ActionableSignalQualityRule.Evaluate(
+                    new ActionableSignalQualityInput(
+                        85, 80, 85, 6, 6,
+                        80, 82, 69, 2.10,
+                        76, 73, 75, 5, 5,
+                        70, 75, 70, 1.50));
+
+            Assert(
+                recoveredPosition.Allowed &&
+                recoveredPosition.Reason ==
+                    "ACTIONABLE • QUALITY RECOVERY",
+                "strong one-dimension price-position recovery accepted");
+
             ActionableSignalQualityResult weakEvidence =
                 ActionableSignalQualityRule.Evaluate(
                     new ActionableSignalQualityInput(
