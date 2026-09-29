@@ -16,35 +16,37 @@ namespace cAlgo
     {
         private void CreatePanelRows()
                                 {
-                                    if (_panelRowsStack == null ||
-                                        _panelRows.Count == PanelRowCount)
+                                    if (_panelRowsStack == null)
                                         return;
-                        
+
                                     _panelRows.Clear();
-                        
-                                    for (int i = 0;
-                                         i < PanelRowCount;
-                                         i++)
-                                    {
-                                        TextBlock row =
-                                            new TextBlock
-                                            {
-                                                Text = "",
-                                                IsVisible = false,
-                                                IsHitTestVisible = false,
-                                                TextWrapping = TextWrapping.Wrap,
-                                                TextTrimming = TextTrimming.None,
-                                                TextAlignment = TextAlignment.Left,
-                                                HorizontalAlignment = HorizontalAlignment.Stretch,
-                                                VerticalAlignment = VerticalAlignment.Top
-                                            };
-                        
-                                        _panelRows.Add(
-                                            row);
-                        
-                                        _panelRowsStack.AddChild(
-                                            row);
-                                    }
                                 }
+
+        private void EnsurePanelRow(int index)
+        {
+            if (_panelRowsStack == null ||
+                index < 0 ||
+                index >= PanelRowCount)
+                return;
+
+            while (_panelRows.Count <= index)
+            {
+                TextBlock row =
+                    new TextBlock
+                    {
+                        Text = "",
+                        IsVisible = false,
+                        IsHitTestVisible = false,
+                        TextWrapping = TextWrapping.Wrap,
+                        TextTrimming = TextTrimming.None,
+                        TextAlignment = TextAlignment.Left,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Top
+                    };
+
+                _panelRows.Add(row);
+                _panelRowsStack.AddChild(row);
+            }
+        }
     }
 }
