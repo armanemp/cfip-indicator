@@ -11,42 +11,85 @@ namespace cAlgo
             if (_decision == null)
                 return;
 
-            ProcessHighConfidenceAlert(
-                closedM5);
-
             ProcessRestrictionAlert(
                 closedM5);
 
-            ProcessSmartDecisionAlert(
+            ProcessCanonicalActionableEntryAlert(
                 closedM5);
         }
 
-        private void ProcessHighConfidenceAlert(
+        private void ProcessCanonicalActionableEntryAlert(
             int closedM5)
         {
-            if (!AlertOnHighConfidenceEntry ||
+            if (_lastActionableEntryAlertM5 ==
+                closedM5 ||
+                !_decision.EntryAllowed ||
                 !_decision.ActionableNow ||
                 GetManagedPendingOrder() != null ||
                 _plan != null ||
-                _decision.Confidence <
-                HighConfidenceThreshold ||
-                _lastHighConfidenceM5 ==
-                closedM5)
+                _decision.Direction == 0)
                 return;
 
-            SendUnifiedAlert(
-                "HIGH|" +
-                closedM5,
-                "CFIP HIGH CONFIDENCE | " +
-                (_decision.Direction == 1
+            string source = "CONFIRMED";
+
+            if (AlertOnSmartDecision &&
+                _decision.SmartQuality >=
+                    SmartStrongSetupQuality &&
+                _decision.Edge >=
+                    SmartStrongSetupEdge)
+            {
+                source = "SMART";
+            }
+            else if (AlertOnHighConfidenceEntry &&
+                     _decision.Confidence >=
+                     HighConfidenceThreshold)
+            {
+                source = "HIGH";
+            }
+            else if (!AlertOnConfirmedSignal)
+            {
+                return;
+            }
+
+            string direction =
+                _decision.Direction == 1
                     ? "BUY"
-                    : "SELL") +
+                    : "SELL";
+
+            string message =
+                "CFIP ACTIONABLE " +
+                direction +
+                " | " +
+                source +
                 " | CONF " +
-                _decision.Confidence,
+                _decision.Confidence +
+                " | SMART " +
+                _decision.SmartQuality +
+                " | LOC " +
+                _decision.EntryLocationQuality +
+                " | TIMING " +
+                _decision.EntryTimingQuality +
+                " | POS " +
+                _decision.EntryPositionQuality +
+                " | RR " +
+                _decision.ActionableTp1RR.ToString("F2") +
+                " | DIV " +
+                (_decision.DivergenceType ?? "NONE") +
+                " Q" +
+                _decision.DivergenceQuality +
+                " | " +
+                (_decision.ActionabilityReason ?? "ACTIONABLE");
+
+            SendUnifiedAlert(
+                "ACTION|" +
+                closedM5 +
+                "|" +
+                _decision.Direction,
+                message,
                 _decision.Direction,
                 true);
 
-            _lastHighConfidenceM5 =
+            _lastActionableEntryAlertM5 =
                 closedM5;
         }
 
@@ -114,40 +157,6 @@ namespace cAlgo
                 _lastRestrictionM5 =
                     -1;
             }
-        }
-
-        private void ProcessSmartDecisionAlert(
-            int closedM5)
-        {
-            if (!AlertOnSmartDecision ||
-                !_decision.EntryAllowed ||
-                !_decision.ActionableNow ||
-                GetManagedPendingOrder() != null ||
-                _plan != null ||
-                _decision.SmartQuality <
-                SmartStrongSetupQuality ||
-                _decision.Edge <
-                SmartStrongSetupEdge ||
-                _lastSmartDecisionAlertM5 ==
-                closedM5)
-                return;
-
-            SendUnifiedAlert(
-                "SMART|" +
-                closedM5,
-                "CFIP SMART DECISION | " +
-                (_decision.Direction == 1
-                    ? "BUY"
-                    : "SELL") +
-                " | Q " +
-                _decision.SmartQuality +
-                " | CONF " +
-                _decision.Confidence,
-                _decision.Direction,
-                true);
-
-            _lastSmartDecisionAlertM5 =
-                closedM5;
         }
     }
 }
