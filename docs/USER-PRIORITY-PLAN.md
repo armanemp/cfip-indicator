@@ -208,3 +208,18 @@ Chart semantics:
 The top-down architecture requirement is now persistent and implemented: H1+ opportunity anchor -> M30/M15 calibration -> M5 setup/location -> M1 closed trigger.
 
 Panel responsiveness and live-management requirements are also persistent and implemented in Phase 9.1. Future phases must preserve lightweight heartbeat behavior, state-change-driven full panel rendering, prompt same-cycle TP target refresh, and monotonic broker-confirmed progression.
+
+
+## O. Phase 9.2 persistent requirement — 2026-09-29
+
+The engine must maintain two simultaneous opportunity concepts:
+- Strategic top-down opportunities using H1+ anchor -> M30/M15 calibration -> M5 setup -> M1 confirmation.
+- Tactical lower-timeframe opportunities evaluated independently when their own risk/reward and evidence justify them.
+
+A strong HTF conflict must not erase a potentially worthwhile LTF setup automatically. It should instead place the candidate in a stricter Counter-HTF lane.
+
+The chart must be able to display several candidate setups simultaneously with isolated visual IDs and separated label anchors. Existing line length geometry must remain unchanged.
+
+Price-level labels must use solid backgrounds matching the associated line color and automatically choose readable text contrast.
+
+WaveTrend from the user's latest source ZIP is part of the evidence stack, but it remains confirmation evidence and not an independent signal authority.
