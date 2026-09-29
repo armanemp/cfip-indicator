@@ -85,3 +85,16 @@ Pre-merge automated gates are required:
 PR #30 is the implementation vehicle.
 
 After merge, a merge record and final commit will be appended here.
+
+## Merge record — 2026-09-29
+
+PR #30 was merged into main as 3c5afe6f37c8852fb6975bbb5d4004bc1ec95ffe.
+
+Final automated verification for the merged implementation:
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
+
+The source and runtime audits therefore passed for the status-only execution UI and canonical chart-line geometry. Hands-on cTrader validation is still a separate requirement and has not been claimed here.
+
+Main was advanced by this merge; local pull is required before continuing development.
