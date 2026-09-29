@@ -3987,3 +3987,21 @@ Verification gates:
 
 Next phase after closeout:
 Phase 10.1 — evidence-driven multi-timeframe scenario geometry, per-scenario execution policy design subject to audit, and deeper log/outcome analytics.
+
+
+## Phase 11 — Economic News Guard, Reference Reassessment & Calibration — 2026-09-29
+
+Status: IMPLEMENTED on phase branch; verification/merge pending.
+
+Scope:
+- promote the useful weekly economic XML feed from the user-provided reference indicator into CFIP;
+- make news a first-class market gate for new decisions and final auto-trade safety;
+- refresh feed on Timer/cache instead of tick-by-tick networking;
+- cancel managed pending orders before high-impact events;
+- optionally close active managed positions before high-impact releases;
+- log news risk state and event identity for later forensic review;
+- preserve the canonical internal WaveTrend and FVG engines after reference parity reassessment;
+- automate News Guard source auditing.
+
+Next after closeout:
+Phase 11.1 — event-aware live management and empirical calibration using actual runtime logs/outcomes, followed by audited per-scenario execution policy design.
