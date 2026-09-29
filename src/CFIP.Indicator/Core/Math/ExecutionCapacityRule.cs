@@ -2,10 +2,10 @@ namespace cAlgo
 {
     internal static class ExecutionCapacityRule
     {
-        public static bool IsSupportedSinglePlanCapacity(
-            int maximumOpenPositions)
+        public static bool AllowsNewSinglePlan(
+            bool hasManagedOpenPosition)
         {
-            return maximumOpenPositions == 1;
+            return !hasManagedOpenPosition;
         }
     }
 }
