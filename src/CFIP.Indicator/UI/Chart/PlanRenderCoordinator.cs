@@ -81,6 +81,14 @@ namespace cAlgo
                             : "CONFIRMED"));
         }
 
+            if (ShowSignalArrow &&
+                Bars != null &&
+                Bars.Count >= 2)
+            {
+                RenderTriggerRuntimeMarker(
+                    snapshot);
+            }
+
         private void RenderSetupPreview(
             SignalVisualSnapshot snapshot)
         {
