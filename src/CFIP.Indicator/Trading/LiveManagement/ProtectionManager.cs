@@ -221,7 +221,7 @@ namespace cAlgo
                     candidate,
                     Math.Max(
                         Symbol.TickSize,
-                        MinimumProtectionDistancePrice(
+                        MinimumProtectionDistancePriceForDirection(
                             _plan.Direction)))
                 return _plan.Stop;
 
