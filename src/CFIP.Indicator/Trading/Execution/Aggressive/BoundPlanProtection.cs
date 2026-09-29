@@ -171,15 +171,25 @@ namespace cAlgo
                                                         Symbol.TickSize,
                                                         Symbol.PipSize * 0.25);
 
+                                                bool configuredTpProgression =
+                                                    !PreventBrokerTpBackwardMove ||
+                                                    ProtectionProgressionRule.ShouldAdvanceTarget(
+                                                        direction,
+                                                        NormalizePrice(
+                                                            planPosition.TakeProfit.Value),
+                                                        normalizedTarget,
+                                                        true);
+
                                                 if (materiallyDifferent &&
                                                     (!brokerTargetValid ||
-                                                     LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                                                         direction,
-                                                         NormalizePrice(
-                                                             planPosition.TakeProfit.Value),
-                                                         normalizedTarget,
-                                                         market,
-                                                         minimumForwardDistance)))
+                                                     (configuredTpProgression &&
+                                                      LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                                                          direction,
+                                                          NormalizePrice(
+                                                              planPosition.TakeProfit.Value),
+                                                          normalizedTarget,
+                                                          market,
+                                                          minimumForwardDistance))))
                                                 {
                                                     mutationRequired = true;
 
