@@ -397,3 +397,34 @@ Verification gates required before merging:
 - Source / Architecture;
 - Runtime Acceptance Contracts;
 - cTrader Compile.
+
+
+## Runtime regression correction — 2026-09-29
+
+The post-Phase-6.2 observability hotfix was reverted after user validation
+reported delayed startup, a sluggish/blank panel, and no reliable live panel
+updates.
+
+The concrete regression sources were:
+
+- a persistent chart guide invoked from every panel refresh and rebuilding a
+  full visual snapshot;
+- a full startup calculation executed from the timer thread immediately after
+  async initialization.
+
+Both additions were outside the previously smooth panel/calculate cadence.
+
+Restoration:
+
+- deleted the persistent chart guide;
+- removed all guide rendering/cleanup paths;
+- removed the startup calculation catch-up;
+- restored the established `Calculate(int index)` orchestration;
+- preserved the Phase 6.1 closed-bar decision contract;
+- preserved the Phase 6.2 intrabar reaction identity and current-open-M5
+  semantics;
+- kept the 535-parameter contract unchanged.
+
+The existing responsive-panel runtime remains the production UI path. The
+next implementation phase is **Phase 6.3 — Aggressive entry policy**, to start
+only after this correction is verified on the local cTrader instance.
