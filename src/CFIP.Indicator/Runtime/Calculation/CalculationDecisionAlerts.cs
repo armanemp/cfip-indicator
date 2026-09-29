@@ -27,7 +27,9 @@ namespace cAlgo
                 closedM5);
 
             if (_lastActionableEntryAlertM5 ==
-                closedM5 ||
+                closedM5 &&
+                _lastActionableEntryAlertDirection ==
+                    _decision.Direction ||
                 !_decision.EntryAllowed ||
                 !_decision.ActionableNow ||
                 GetManagedPendingOrder() != null ||
@@ -108,6 +110,8 @@ namespace cAlgo
 
             _lastActionableEntryAlertM5 =
                 closedM5;
+            _lastActionableEntryAlertDirection =
+                _decision.Direction;
         }
 
         private void ProcessRestrictionAlert(
