@@ -27,6 +27,20 @@ namespace cAlgo
                 decision.StructuralConfirmations +
                 " | RETEST " +
                 decision.RetestQuality +
+                " | TOPDOWN " +
+                (string.IsNullOrWhiteSpace(decision.TopDownStage)
+                    ? "HTF SEARCH"
+                    : decision.TopDownStage) +
+                " | HTF " +
+                decision.HtfAnchorDirection +
+                "/" +
+                decision.HtfAlignment +
+                " | MID " +
+                decision.MidframeDirection +
+                "/" +
+                decision.MidframeAlignment +
+                " | ENTRY " +
+                decision.EntryFrameAlignment +
                 " | REGIME " +
                 decision.Regime +
                 " | " +
