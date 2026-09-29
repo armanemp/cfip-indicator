@@ -225,6 +225,12 @@ namespace cAlgo
                         boxRight,
                         boxHalfHeight);
                 }
+                else
+                {
+                    RemoveOpportunityLabels(
+                        baseName);
+                }
+
             }
 
             RemoveStaleParallelOpportunityObjects();
@@ -316,6 +322,33 @@ namespace cAlgo
         {
             // Existing IDs are intentionally kept until the current render has
             // declared ownership; stale IDs are removed in a separate pass.
+        }
+
+        private void RemoveOpportunityLabels(
+            string baseName)
+        {
+            string[] suffixes =
+            {
+                "_ENTRY_LABEL",
+                "_SL_LABEL",
+                "_TP1_LABEL",
+                "_TP2_LABEL",
+                "_TP3_LABEL",
+                "_TP4_LABEL"
+            };
+
+            for (int i = 0;
+                 i < suffixes.Length;
+                 i++)
+            {
+                Chart.RemoveObject(
+                    baseName +
+                    suffixes[i]);
+                Chart.RemoveObject(
+                    baseName +
+                    suffixes[i] +
+                    "_BOX");
+            }
         }
 
         private void RemoveStaleParallelOpportunityObjects()
