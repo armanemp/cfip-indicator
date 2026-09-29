@@ -12,16 +12,14 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-private void RenderManagedPendingOrder()
+private void RenderManagedPendingOrder(
+            SignalVisualSnapshot snapshot)
                         {
                             RemoveManagedPendingOrderObjects();
                 
-                            PendingOrder pending =
-                                GetManagedPendingOrder();
-                
-                            if (pending == null ||
-                                !IsFinitePositive(
-                                    pending.TargetPrice))
+                            if (snapshot == null ||
+                                !snapshot.PendingOrder ||
+                                !IsFinitePositive(snapshot.PendingEntry))
                                 return;
                 
                             if (!ShowLevelLines)
@@ -38,7 +36,7 @@ private void RenderManagedPendingOrder()
                                             MapM5ToChart(
                                                 Math.Max(
                                                     1,
-                                                    _lastEvaluatedM5),
+                                                    snapshot.ClosedM5),
                                                 Bars.Count - 1)));
                 
                             if (anchorBar < 0)
@@ -51,25 +49,21 @@ private void RenderManagedPendingOrder()
                                 ShowTrigger);
                 
                             if (ShowSL &&
-                                pending.StopLoss.HasValue &&
-                                IsFinitePositive(
-                                    pending.StopLoss.Value))
+                                IsFinitePositive(snapshot.PendingStop))
                             {
                                 DrawPlanLine(
                                     P + "PENDING_SL",
-                                    pending.StopLoss.Value,
+                                    snapshot.PendingStop,
                                     SlLineColor,
                                     ShowSL);
                             }
                 
                             if (ShowTP1 &&
-                                pending.TakeProfit.HasValue &&
-                                IsFinitePositive(
-                                    pending.TakeProfit.Value))
+                                IsFinitePositive(snapshot.PendingTarget))
                             {
                                 DrawPlanLine(
                                     P + "PENDING_TP",
-                                    pending.TakeProfit.Value,
+                                    snapshot.PendingTarget,
                                     TpLineColor,
                                     ShowTP1);
                             }
@@ -79,13 +73,7 @@ private void RenderManagedPendingOrder()
                                 return;
                 
                             string typeText =
-                                pending.OrderType ==
-                                    PendingOrderType.Stop
-                                    ? "STOP"
-                                    : pending.OrderType ==
-                                      PendingOrderType.Limit
-                                        ? "LIMIT"
-                                        : "PENDING";
+                                snapshot.PendingOrderType;
                 
                             if (ShowTrigger)
                             {
@@ -95,9 +83,9 @@ private void RenderManagedPendingOrder()
                                     typeText +
                                     " " +
                                     Price(
-                                        pending.TargetPrice),
+                                        snapshot.PendingEntry),
                                     anchorBar,
-                                    pending.TargetPrice,
+                                    snapshot.PendingEntry,
                                     TriggerLineColor);
                             }
                 
@@ -109,7 +97,7 @@ private void RenderManagedPendingOrder()
                                     P + "PENDING_SL_LABEL",
                                     "SL " +
                                     Price(
-                                        pending.StopLoss.Value),
+                                        snapshot.PendingStop),
                                     anchorBar,
                                     pending.StopLoss.Value,
                                     SlLineColor);
@@ -123,7 +111,7 @@ private void RenderManagedPendingOrder()
                                     P + "PENDING_TP_LABEL",
                                     "TP " +
                                     Price(
-                                        pending.TakeProfit.Value),
+                                        snapshot.PendingTarget),
                                     anchorBar,
                                     pending.TakeProfit.Value,
                                     TpLineColor);
