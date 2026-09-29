@@ -3489,3 +3489,29 @@ Core result:
 Empirical boundary: target cTrader replay is still required to measure actual terminal responsiveness, visual placement, signal latency and realized risk/reward behavior. No profitability, win-rate or false-signal reduction claim is inferred from CI.
 
 Operator action: local main is now ahead of the previously verified baseline and must be pulled before the next phase.
+
+
+## Phase 9.2 — Parallel opportunity lanes, WaveTrend evidence and non-overlapping chart labels — 2026-09-29
+
+Status: implementation in progress on branch phase-9-2-parallel-opportunities-wavetrend-visual-lanes.
+
+Scope:
+- preserve the Phase 9.1 top-down Strategic lane;
+- evaluate independent LTF Tactical candidates in both BUY and SELL directions;
+- permit Counter-HTF Tactical candidates only with stricter quality/RR requirements;
+- keep single-plan execution capacity unchanged until a dedicated multi-plan registry/position-isolation phase is implemented;
+- integrate the user's exact CUSTOMWAVETREND source cascade as bounded market-frame evidence;
+- render multiple opportunity candidates under isolated chart namespaces without changing existing level-line length geometry;
+- use opaque line-color label backgrounds with luminance-based black/white text;
+- expose WaveTrend and lane summary in the unified panel.
+
+Acceptance:
+- tactical LTF opportunities are not suppressed merely because the Strategic HTF lane is not calibrated;
+- strong HTF conflict raises the tactical quality/RR requirements rather than deleting every LTF opportunity;
+- WaveTrend is evidence, not a second signal authority;
+- multiple candidates use unique visual object IDs and stale objects are removed deterministically;
+- existing plan line geometry remains unchanged;
+- Runtime Acceptance, cTrader Compile/Build and Source/Architecture must pass;
+- numerical WaveTrend parity and empirical signal-quality improvement remain replay-validation items.
+
+Next continuation point: finish verification and merge Phase 9.2, then pull main before Phase 9.3.
