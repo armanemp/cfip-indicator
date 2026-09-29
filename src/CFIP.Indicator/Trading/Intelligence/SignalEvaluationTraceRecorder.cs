@@ -114,6 +114,16 @@ namespace cAlgo
                         decision.EntryDistanceAtr,
                     ActionableTp1RR =
                         decision.ActionableTp1RR,
+                    PlanRiskAtr =
+                        TracePlanRiskAtr(
+                            closedM5),
+                    EffectiveTp1RR =
+                        TraceEffectiveTp1RR(
+                            closedM5,
+                            decision.Regime),
+                    RequiredTp1RR =
+                        TraceRequiredTp1RR(
+                            decision.Regime),
                     EntryMode =
                         _executionModel == null
                             ? ExecutionMode.None
@@ -175,6 +185,83 @@ namespace cAlgo
 
             ArchiveSignalTrace(trace);
             ArchiveRuntimeDecisionTrace(trace);
+        }
+
+        private double TracePlanRiskAtr(
+            int closedM5)
+        {
+            if (_setupPreview == null ||
+                _m5Bars == null ||
+                closedM5 < 0 ||
+                closedM5 >= _m5Bars.Count)
+                return 0;
+
+            double atr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            double risk =
+                Math.Abs(
+                    _setupPreview.Entry -
+                    _setupPreview.Stop);
+
+            return
+                atr > 0 && risk > 0
+                    ? risk / atr
+                    : 0;
+        }
+
+        private double TraceEffectiveTp1RR(
+            int closedM5,
+            string regime)
+        {
+            if (_setupPreview == null ||
+                _m5Bars == null ||
+                closedM5 < 0 ||
+                closedM5 >= _m5Bars.Count ||
+                !IsFinitePositive(_setupPreview.Tp1))
+                return 0;
+
+            double atr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            PlanRewardRiskQualityResult rewardRisk =
+                PlanRewardRiskQualityRule.Evaluate(
+                    _decision == null
+                        ? 0
+                        : _decision.Direction,
+                    _setupPreview.Entry,
+                    _setupPreview.Stop,
+                    _setupPreview.Tp1,
+                    atr,
+                    Math.Max(
+                        0,
+                        Symbol.Ask - Symbol.Bid),
+                    Math.Max(
+                        Tp1MinimumRR,
+                        MinimumRequiredRRForRegime(regime)),
+                    PreferredStopRiskAtr,
+                    Math.Min(
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumSlAtr),
+                        Math.Max(
+                            MinimumSlAtr,
+                            MaximumStructuralStopAtr)));
+
+            return rewardRisk.EffectiveRR;
+        }
+
+        private double TraceRequiredTp1RR(
+            string regime)
+        {
+            return Math.Max(
+                Tp1MinimumRR,
+                MinimumRequiredRRForRegime(
+                    regime));
         }
 
         private static string ResolveSignalTraceGate(
