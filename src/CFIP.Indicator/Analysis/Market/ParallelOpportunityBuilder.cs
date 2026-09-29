@@ -228,61 +228,14 @@ namespace cAlgo
             if (candidate == null)
                 return;
 
-            for (int i = 0;
-                 i < _opportunityCandidates.Count;
-                 i++)
-            {
-                TradeOpportunityCandidate existing =
-                    _opportunityCandidates[i];
+            _opportunityRegistry.Upsert(
+                candidate,
+                Math.Max(
+                    Symbol.PipSize * 2,
+                    candidate.Risk * 0.10));
 
-                if (existing.Direction != candidate.Direction)
-                    continue;
-
-                double distance =
-                    Math.Abs(
-                        existing.Entry -
-                        candidate.Entry);
-
-                if (distance <
-                    Math.Max(
-                        Symbol.PipSize * 2,
-                        candidate.Risk * 0.10))
-                {
-                    bool existingStrategic =
-                        existing.Lane ==
-                        OpportunityLane.Strategic;
-
-                    bool candidateStrategic =
-                        candidate.Lane ==
-                        OpportunityLane.Strategic;
-
-                    if (candidateStrategic &&
-                        !existingStrategic)
-                    {
-                        _opportunityCandidates[i] =
-                            candidate;
-                    }
-                    else if (!existingStrategic &&
-                             !candidateStrategic &&
-                             candidate.Quality >
-                             existing.Quality)
-                    {
-                        _opportunityCandidates[i] =
-                            candidate;
-                    }
-
-                    return;
-                }
-            }
-
-            _opportunityCandidates.Add(candidate);
-
-            while (_opportunityCandidates.Count >
-                   Math.Max(
-                       1,
-                       MaximumVisibleOpportunities))
-                _opportunityCandidates.RemoveAt(
-                    _opportunityCandidates.Count - 1);
+            _opportunityRegistry.Limit(
+                MaximumVisibleOpportunities);
         }
     }
 }
