@@ -775,3 +775,18 @@ The full-project audit is now a permanent CI gate. It explicitly scans source ow
 Historical roadmap/log coverage gaps are reported by the audit as informational because the roadmap contains older umbrella/subphase records created before the current log discipline. Current development phases must have explicit implementation, findings, verification and pull-state records.
 
 Phase 7.3 can be considered complete on the implementation branch; merge is the next boundary. Next planned phase: Phase 7.4 — MaximumOpenPositions semantics.
+
+
+## Phase 7.3 merge record — 2026-09-29
+
+PR #31 was merged into main as a968550cae91e0dc2c54662f6dca2c5411654289.
+
+Phase 7.3 is complete. The implementation removed the proven duplicate EnableDynamicSlTrail and the redundant DecisionEngine facade, restored pre-trigger structural level visibility, and installed permanent semantic/project-wide audits in CI.
+
+Final pre-merge verification: Source / Architecture PASS; dead/unused parameter audit PASS; runtime UI audit PASS; semantic parameter audit PASS; full project integrity audit PASS; Runtime Acceptance Contracts PASS; cTrader Compile PASS.
+
+Current project surface: 533 public parameters (530 baseline + 3 OSS extension). The standing project audit scans 419 production C# files for duplicate method signatures, parameter uniqueness, visual synchronization, execution authority and continuity rules.
+
+Next planned implementation phase: Phase 7.4 — MaximumOpenPositions semantics.
+
+Operator action: local pull is required after this merge/documentation boundary.
