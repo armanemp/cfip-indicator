@@ -1560,3 +1560,49 @@ Verification:
 
 Next phase: Phase 9.16 — replay/measurement instrumentation and evidence-driven signal refinement.
 Operator pull: required now; pull main to the latest closeout commit.
+
+
+## Phase 9.16 — Signal Measurement, OB/FVG Location Fusion & Execution Safety — 2026-09-29
+
+Status: IMPLEMENTATION COMPLETE; final CI verification pending.
+
+Branch: `phase/9-16-signal-measurement-location-fusion`
+PR: #58
+
+Implementation:
+- introduced a canonical location evidence rule;
+- raised OB above standalone FVG for base location contribution;
+- made high-quality OB+FVG overlap the strongest bounded single location feature;
+- preserved evidence integrity by counting the correlated FVG/OB group as one evidence unit;
+- added a closed-M5 signal evaluation trace with decision, MTF, indicator, WaveTrend,
+  divergence, FVG/OB, actionability and Entry/SL/TP context;
+- persisted traces to append-only 90-day `History/` CSV files and exposed the latest
+  gate/reason in the panel;
+- added `tools/analyze_signal_trace.py` for forward MFE/MAE and potential-missed
+  opportunity diagnostics;
+- added `ExecutionPlanGeometryRule` as a final automatic-market plan safety check
+  immediately before broker mutation;
+- extended Source/Architecture CI with a dedicated Phase 9.16 audit.
+
+Important design findings:
+- the remaining missed-signal problem should be diagnosed by rejection cohort rather
+  than by blindly tightening/loosening global thresholds;
+- OB+FVG is the strongest single location feature, but it must not bypass structure,
+  liquidity, MTF conflict, trigger, RR, trap, spread, capacity or broker-protection gates;
+- the long-term raw file archive remains canonical; LocalStorage remains bounded recent
+  memory, avoiding unbounded duplication into the finite LocalStorage quota.
+
+Verification boundary:
+- Runtime Acceptance: passed on the initial PR head;
+- cTrader compile and Source/Architecture exposed two implementation issues, both corrected:
+  the new trace model was registered with domain-model isolation and the new location rule
+  was linked into Decision Contracts;
+- final rerun is required on the current documentation-inclusive head.
+
+Target-terminal replay remains required for empirical validation of signal timing, false
+signals, missed opportunities, broker behavior and realized outcomes.
+
+Detailed record: `docs/PHASE-9-16-SIGNAL-MEASUREMENT-LOCATION-FUSION.md`.
+
+Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
+Operator pull: required only after final main closeout.
