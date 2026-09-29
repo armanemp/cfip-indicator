@@ -16,6 +16,13 @@ namespace cAlgo
                 false,
                 contentWidth);
 
+            AddPanelRow(
+                ref slot,
+                SignalTracePanelText(),
+                PanelSecondaryTextColor,
+                false,
+                contentWidth);
+
             if (_decision == null ||
                 _decision.EmpiricalCalibrationSamples <= 0)
                 return;
