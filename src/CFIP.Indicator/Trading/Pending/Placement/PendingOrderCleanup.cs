@@ -37,13 +37,31 @@ namespace cAlgo
                                                     activeRegime != null &&
                                                     activeRegime.Regime == "RANGE")
                                                 {
-                                                    bool qualifiedRangeLimit =
-                                                        order.OrderType ==
-                                                            PendingOrderType.Limit &&
-                                                        ReversalSetupStrong();
+                                                    bool qualifiedRangePending = false;
+
+                                                    if (order.OrderType ==
+                                                        PendingOrderType.Limit &&
+                                                        ReversalSetupStrong())
+                                                    {
+                                                        qualifiedRangePending = true;
+                                                    }
+                                                    else if (order.OrderType ==
+                                                             PendingOrderType.Stop &&
+                                                             TrendContinuationStrong())
+                                                    {
+                                                        qualifiedRangePending =
+                                                            EvaluateRangeSignalQuality(
+                                                                closedM5,
+                                                                _decision.Direction,
+                                                                _decision.Confidence,
+                                                                _decision.SmartQuality,
+                                                                _decision.Edge,
+                                                                _decision.IndependentEvidence,
+                                                                _decision.StructuralConfirmations).Allowed;
+                                                    }
 
                                                     rangeInvalid =
-                                                        !qualifiedRangeLimit;
+                                                        !qualifiedRangePending;
                                                 }
 
                                                 bool stale =
