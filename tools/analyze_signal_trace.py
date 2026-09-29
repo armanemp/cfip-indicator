@@ -72,7 +72,13 @@ def forward_metrics(
     if direction == 0 or not is_valid_price(entry) or risk <= 0.0:
         return 0.0, 0.0, "INVALID"
 
-    future_rows = rows[index + 1 : index + 1 + forward_bars]
+    current_closed_m5 = as_int(row, "ClosedM5")
+    future_rows = [
+        future
+        for future in rows[index + 1 :]
+        if as_int(future, "ClosedM5") > current_closed_m5
+        and as_int(future, "ClosedM5") <= current_closed_m5 + forward_bars
+    ]
     max_favorable = 0.0
     max_adverse = 0.0
     first_event = "NONE"
