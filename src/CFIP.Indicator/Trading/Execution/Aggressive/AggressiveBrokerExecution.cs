@@ -136,7 +136,7 @@ namespace cAlgo
                         result.Error.HasValue
                             ? "AGGRESSIVE • " +
                               result.Error.Value.ToString()
-                            : "AGGRESSIVE • TRADE REJECTED";
+                            : "AGG • TRADE REJECTED";
                     SetAutoTradingState(
                         "ERROR",
                         _autoExecutionBlockReason);
