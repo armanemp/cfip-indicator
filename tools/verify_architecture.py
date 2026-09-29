@@ -534,6 +534,8 @@ VISUAL_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
 VISUAL_CALC = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 VISUAL_LINE_RENDERER = ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"
+VISUAL_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
+VISUAL_LABEL_REMOVER = ROOT / "UI" / "Chart" / "PlanLabelRemover.cs"
 CONTROL_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 CONTROL_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
 
@@ -558,6 +560,8 @@ visual_builder_code = VISUAL_BUILDER.read_text(encoding="utf-8")
 visual_calc_code = VISUAL_CALC.read_text(encoding="utf-8")
 visual_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
 visual_line_code = VISUAL_LINE_RENDERER.read_text(encoding="utf-8")
+plan_label_renderer_code = VISUAL_LABEL_RENDERER.read_text(encoding="utf-8")
+plan_label_remover_code = VISUAL_LABEL_REMOVER.read_text(encoding="utf-8")
 control_factory_code = CONTROL_FACTORY.read_text(encoding="utf-8")
 control_handlers_code = CONTROL_HANDLERS.read_text(encoding="utf-8")
 
@@ -886,9 +890,9 @@ if "CompactPlanLineLengthBars = 40" not in visual_line_code:
     raise SystemExit("Plan level renderer must use the fixed 40-bar compact span")
 if "Chart.FirstVisibleBarIndex" in visual_line_code or "Chart.LastVisibleBarIndex" in visual_line_code:
     raise SystemExit("Compact plan levels must not use full-width visible-chart boundaries")
-if "Chart.FindObject(name)\\n                    as ChartText" not in plan_label_renderer_code:
+if "as ChartText" not in plan_label_renderer_code:
     raise SystemExit("Plan labels must reuse existing ChartText objects")
-if 'string boxName =\\n                    name + "_BOX";' not in plan_label_renderer_code:
+if 'name + "_BOX"' not in plan_label_renderer_code:
     raise SystemExit("Plan labels must have attached compact box objects")
 if 'RemovePlanLabel(P + "ENTRY_LABEL")' not in plan_label_remover_code:
     raise SystemExit("Plan label remover must clean the compact label entry")
