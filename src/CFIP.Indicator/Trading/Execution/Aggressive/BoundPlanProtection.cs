@@ -73,7 +73,7 @@ namespace cAlgo
                                                 direction,
                                                 planPosition.EntryPrice,
                                                 planPosition.TakeProfit.Value) &&
-                                            LiveExitGeometryRule.ShouldAdvanceTarget(
+                                            LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                                 direction,
                                                 0,
                                                 planPosition.TakeProfit.Value,
@@ -150,7 +150,7 @@ namespace cAlgo
                                                     direction,
                                                     planPosition.EntryPrice,
                                                     target) &&
-                                                LiveExitGeometryRule.ShouldAdvanceTarget(
+                                                LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                                     direction,
                                                     0,
                                                     target,
