@@ -506,3 +506,49 @@ Correction:
 - no public parameter is added; 535 remains unchanged.
 
 This correction is deliberately limited to startup responsiveness and must pass all three project gates before merge.
+
+
+## Phase 6.4 — Compact 40-Bar Plan-Level Visuals — 2026-09-29
+
+User requested a cleaner chart presentation: Trigger, Entry, SL and TP levels
+must no longer span the full chart; they should cover 40 candles back from the
+latest candle, with a small left-attached name/price box in the same semantic
+color as the level. The user also reiterated that responsiveness and
+calculation performance are permanent priorities.
+
+Implementation and optimization:
+
+- `PlanLineRenderer` now fixes the plan-level span to 40 bars ending at the
+  latest chart candle;
+- visible-chart boundaries are no longer used to stretch plan levels;
+- line styles are differentiated by level while preserving the existing color
+  owners;
+- `PlanLabelRenderer` adds a compact left-side chart-bound tag using reusable
+  `ChartText` plus a lightweight outlined `ChartRectangle`;
+- labels use a small fixed 9 px presentation size, bold text, left/center
+  alignment and the existing level color;
+- `PlanLabelRenderCoordinator` no longer deletes every visible label before
+  each refresh; visible objects are updated in place and only stale labels are
+  removed;
+- teardown still removes both text and box objects;
+- no public parameter was added, so the production parameter contract remains
+  535;
+- decision, reaction, risk, RR, SL/TP construction, broker confirmation,
+  execution and lifecycle semantics are unchanged.
+
+Performance reasoning:
+
+The plan-label path was previously doing unconditional remove/recreate work
+during refresh. Reusing existing chart objects removes avoidable chart-object
+churn. The level renderer also keeps the chart footprint bounded to the
+requested 40-bar span.
+
+Verification targets:
+
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
+
+Repository gates validate source/contract/compile behavior. Actual visual
+appearance and terminal responsiveness still require hands-on cTrader
+validation after the merge.
