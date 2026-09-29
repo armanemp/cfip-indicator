@@ -11,8 +11,8 @@ namespace cAlgo
             int structuralConfirmations,
             int regimeQuality,
             int retestQuality,
-            int indicatorConfluenceQuality,
-            int indicatorConflict)
+            int indicatorConfluenceQuality = 0,
+            int indicatorConflict = 0)
         {
             double normalizedIndependentEvidence =
                 Math.Min(
