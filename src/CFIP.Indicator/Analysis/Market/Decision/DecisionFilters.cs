@@ -53,6 +53,16 @@ namespace cAlgo
                 return false;
             }
 
+            DecisionFilterResult topDownResult =
+                EvaluateDecisionTopDownGate(
+                    decision);
+
+            if (!topDownResult.Allowed)
+            {
+                reason = topDownResult.Reason;
+                return false;
+            }
+
             DecisionFilterResult confirmationResult =
                 EvaluateDecisionConfirmationGates(
                     closedM5,
