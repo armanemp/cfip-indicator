@@ -10,6 +10,7 @@ namespace cAlgo
             VerifyM1TriggerSemantics();
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
+            VerifyOrderBlockMathematics();
             VerifyMtfContextIntegrity();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
@@ -85,7 +86,214 @@ namespace cAlgo
                 !StructuralEvidenceRule.IsIndependentTransition(true, true, false) &&
                 StructuralEvidenceRule.IsIndependentTransition(false, true, false) &&
                 StructuralEvidenceRule.IsIndependentTransition(false, false, true),
-                "transition is independent only when structure is absent");
+                "transition is independent o        private static void VerifyOrderBlockMathematics()
+        {
+            double low;
+            double high;
+            double remainingRatio;
+            bool partial;
+
+            Assert(
+                OrderBlockRule.IsOppositeSourceCandle(
+                    1,
+                    101,
+                    100) &&
+                OrderBlockRule.IsOppositeSourceCandle(
+                    -1,
+                    100,
+                    101) &&
+                !OrderBlockRule.IsOppositeSourceCandle(
+                    1,
+                    100,
+                    101),
+                "Order Block source candle must be opposite to intended direction");
+
+            Assert(
+                OrderBlockRule.TryGetZone(
+                    1,
+                    false,
+                    101,
+                    100,
+                    103,
+                    99,
+                    out low,
+                    out high) &&
+                low == 99 &&
+                high == 103,
+                "wick-based Order Block zone preserves full source range");
+
+            Assert(
+                OrderBlockRule.TryGetZone(
+                    1,
+                    true,
+                    101,
+                    100,
+                    103,
+                    99,
+                    out low,
+                    out high) &&
+                low == 100 &&
+                high == 101,
+                "body-based Order Block zone uses source body");
+
+            Assert(
+                OrderBlockRule.MeetsDisplacement(
+                    1,
+                    100,
+                    101,
+                    2.0,
+                    0.50) &&
+                !OrderBlockRule.MeetsDisplacement(
+                    1,
+                    100,
+                    100.99,
+                    2.0,
+                    0.50) &&
+                OrderBlockRule.MeetsDisplacement(
+                    -1,
+                    101,
+                    100,
+                    2.0,
+                    0.50),
+                "displacement is directional and anchored to creation-bar ATR");
+
+            Assert(
+                OrderBlockRule.BreaksStructure(
+                    1,
+                    101.1,
+                    100,
+                    2.0,
+                    0.50) &&
+                !OrderBlockRule.BreaksStructure(
+                    1,
+                    101.0,
+                    100,
+                    2.0,
+                    0.50) &&
+                OrderBlockRule.BreaksStructure(
+                    -1,
+                    98.9,
+                    100,
+                    2.0,
+                    0.50),
+                "Order Block structure break uses explicit creation-ATR threshold");
+
+            Assert(
+                OrderBlockRule.GetMitigationProbe(
+                    1,
+                    100,
+                    101,
+                    103,
+                    99,
+                    false) == 100 &&
+                OrderBlockRule.GetMitigationProbe(
+                    -1,
+                    100,
+                    101,
+                    103,
+                    99,
+                    true) == 103,
+                "Order Block wick/body probe semantics are directional");
+
+            Assert(
+                OrderBlockRule.TryApplyPartialMitigation(
+                    1,
+                    99,
+                    103,
+                    101,
+                    0.01,
+                    out low,
+                    out high,
+                    out partial,
+                    out remainingRatio) &&
+                partial &&
+                low == 99 &&
+                high == 101,
+                "bullish Order Block partial mitigation moves upper boundary");
+
+            Assert(
+                OrderBlockRule.TryApplyPartialMitigation(
+                    -1,
+                    99,
+                    103,
+                    101,
+                    0.01,
+                    out low,
+                    out high,
+                    out partial,
+                    out remainingRatio) &&
+                partial &&
+                low == 101 &&
+                high == 103,
+                "bearish Order Block partial mitigation moves lower boundary");
+
+            Assert(
+                OrderBlockRule.IsFullyMitigated(
+                    1,
+                    99,
+                    103,
+                    99) &&
+                OrderBlockRule.IsFullyMitigated(
+                    -1,
+                    99,
+                    103,
+                    103) &&
+                !OrderBlockRule.IsFullyMitigated(
+                    1,
+                    99,
+                    103,
+                    99.01),
+                "Order Block full-fill boundary is symmetric");
+
+            Assert(
+                !OrderBlockRule.TryApplyPartialMitigation(
+                    1,
+                    99,
+                    103,
+                    99,
+                    0.01,
+                    out low,
+                    out high,
+                    out partial,
+                    out remainingRatio) &&
+                !OrderBlockRule.TryApplyPartialMitigation(
+                    -1,
+                    99,
+                    103,
+                    103,
+                    0.01,
+                    out low,
+                    out high,
+                    out partial,
+                    out remainingRatio),
+                "fully mitigated Order Blocks cannot remain active");
+
+            Assert(
+                OrderBlockRule.Identity(
+                    1,
+                    42,
+                    false) ==
+                OrderBlockRule.Identity(
+                    1,
+                    42,
+                    false) &&
+                OrderBlockRule.Identity(
+                    1,
+                    42,
+                    false) !=
+                OrderBlockRule.Identity(
+                    1,
+                    42,
+                    true) &&
+                OrderBlockRule.Identity(
+                    1,
+                    42,
+                    false) !=
+                OrderBlockRule.Identity(
+                    -1,
+                    42,
+                    false),
+                "Order Block identity separates direction and zone geometry variant");
         }
 
         private static void VerifyFvgMathematics()
