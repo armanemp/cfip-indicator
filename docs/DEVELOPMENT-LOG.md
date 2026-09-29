@@ -1086,3 +1086,21 @@ Next engineering phase:
 Empirical replay remains required for numerical WaveTrend parity and actual chart/UI behavior.
 
 Operator pull requirement: pull main before next phase.
+
+
+## 2026-09-29 — Phase 9.3 implementation
+
+Branch: `phase-9-3-empirical-calibration`  
+Pull request: #42
+
+Implemented contextual empirical confidence calibration:
+- removed the legacy direction-only adjustment from pre-context decision evidence;
+- added hierarchical exact → lane/regime → directional fallback;
+- added 50% shrinkage prior to reduce small-sample overreaction;
+- applied calibration after Strategic/Tactical lane resolution;
+- bound calibration metadata to executable plans and broker-closed outcomes;
+- preserved pending-fill context where a pre-existing plan carried it;
+- surfaced base/calibrated confidence and observed historical outcome diagnostics through the canonical visual snapshot and panel;
+- added decision-contract coverage.
+
+No new public parameter was introduced. No simultaneous execution path was added. Live cTrader replay remains required for empirical performance measurement.
