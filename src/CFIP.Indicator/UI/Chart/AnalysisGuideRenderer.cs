@@ -66,10 +66,12 @@ namespace cAlgo
                             : Symbol.PipSize * 8);
 
                 SignalVisualSnapshot snapshot =
-                    BuildSignalVisualSnapshot(
-                        Math.Max(
-                            1,
-                            _lastEvaluatedM5));
+                    _initializationReady
+                        ? BuildSignalVisualSnapshot(
+                            Math.Max(
+                                1,
+                                _lastEvaluatedM5))
+                        : null;
 
                 string dataState =
                     _initializationReady
