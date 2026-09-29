@@ -23,7 +23,7 @@ namespace cAlgo
         public bool UseHealthyVolatility { get; }
         public int WaveTrendEvidenceWeight { get; }
         public double Adx { get; }
-        public int AdxMinimum { get; }
+        public double AdxMinimum { get; }
         public double Rsi { get; }
         public double DmiBias { get; }
         public double EmaSlopeAtr { get; }
@@ -61,7 +61,7 @@ namespace cAlgo
             bool useHealthyVolatility,
             int waveTrendEvidenceWeight,
             double adx,
-            int adxMinimum,
+            double adxMinimum,
             double rsi,
             double dmiBias,
             double emaSlopeAtr,
@@ -98,7 +98,7 @@ namespace cAlgo
             UseHealthyVolatility = useHealthyVolatility;
             WaveTrendEvidenceWeight = Math.Max(1, waveTrendEvidenceWeight);
             Adx = adx;
-            AdxMinimum = Math.Max(1, adxMinimum);
+            AdxMinimum = Math.Max(1.0, adxMinimum);
             Rsi = rsi;
             DmiBias = dmiBias;
             EmaSlopeAtr = emaSlopeAtr;
