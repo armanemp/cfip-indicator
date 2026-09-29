@@ -32,14 +32,21 @@ namespace cAlgo
             double minimumCloseLocation,
             double maximumRangeAtr,
             int triggerScore,
-            int requiredTrigger)
+            int requiredTrigger,
+            double priorMicroHigh,
+            double priorMicroLow,
+            double structureBreakBuffer,
+            bool useDisplacement,
+            double displacementAtr)
         {
             if (direction != 1 && direction != -1)
                 return false;
 
             if (m1Direction != direction ||
                 atr <= 0 ||
-                high <= low)
+                high <= low ||
+                priorMicroHigh <= 0 ||
+                priorMicroLow <= 0)
                 return false;
 
             double range = high - low;
@@ -63,6 +70,28 @@ namespace cAlgo
                     : (high - close) / range;
 
             if (location < minimumCloseLocation)
+                return false;
+
+            double buffer =
+                Math.Max(
+                    0,
+                    atr * Math.Max(0, structureBreakBuffer));
+
+            bool microStructureBreak =
+                direction == 1
+                    ? close > priorMicroHigh + buffer
+                    : close < priorMicroLow - buffer;
+
+            bool displacement =
+                useDisplacement &&
+                displacementAtr > 0 &&
+                body >= atr * displacementAtr;
+
+            // Technical agreement alone is not a causal trigger. The closed
+            // M1 bar must either break recent micro-structure or displace with
+            // the configured displacement threshold.
+            if (!microStructureBreak &&
+                !displacement)
                 return false;
 
             return triggerScore >= requiredTrigger;
