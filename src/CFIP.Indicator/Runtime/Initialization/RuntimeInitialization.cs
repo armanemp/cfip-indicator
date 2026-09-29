@@ -318,7 +318,9 @@ namespace cAlgo
 
             try
             {
+                EnsurePortableMemoryArtifacts();
                 RestoreOutcomeHistory();
+                PersistPortableMemorySnapshot();
             }
             catch (Exception ex)
             {
@@ -521,6 +523,7 @@ namespace cAlgo
                                     }
 
                                     PersistOutcomeHistory();
+                                    PersistPortableMemorySnapshot();
 
                                     RemoveAllChartObjects();
                                     RemovePanel();

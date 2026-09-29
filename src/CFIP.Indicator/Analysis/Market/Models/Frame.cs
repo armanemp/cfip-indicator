@@ -41,6 +41,10 @@ namespace cAlgo
                         public int ObBearQuality;
                         public bool FvgObBullConfluence;
                         public bool FvgObBearConfluence;
+                        public int LocationEvidenceBull;
+                        public int LocationEvidenceBear;
+                        public int LocationEvidenceBullCount;
+                        public int LocationEvidenceBearCount;
                         public bool TrendBull;
                         public bool TrendBear;
                         public bool MomentumBull;

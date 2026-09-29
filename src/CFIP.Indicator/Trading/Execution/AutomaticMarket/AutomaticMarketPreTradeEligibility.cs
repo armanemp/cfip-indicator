@@ -311,6 +311,37 @@ namespace cAlgo
                 return false;
             }
 
+            if (_plan != null)
+            {
+                double liveEntry =
+                    NormalizePrice(
+                        _plan.Direction == 1
+                            ? Symbol.Ask
+                            : Symbol.Bid);
+
+                ExecutionPlanGeometryResult geometry =
+                    ExecutionPlanGeometryRule.Evaluate(
+                        _plan.Direction,
+                        liveEntry,
+                        _plan.Stop,
+                        _plan.Tp1,
+                        MinimumRequiredRRForRegime(
+                            _decision.Regime));
+
+                if (!geometry.Allowed)
+                {
+                    _autoExecutionBlockReason =
+                        "PLAN GEOMETRY • " +
+                        geometry.Reason;
+
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        _autoExecutionBlockReason);
+
+                    return false;
+                }
+            }
+
             return true;
         }
     }

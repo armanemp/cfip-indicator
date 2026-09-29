@@ -607,3 +607,29 @@ Target-terminal/replay remains required for actual startup latency, archive crea
 - Startup/persistence audit: PASS
 - Decision Contracts: PASS within Build
 - Target-terminal validation: Required for observed startup latency, archive restore/rotation and end-to-end trading outcomes.
+
+
+## Phase 9.16 — Signal Measurement, OB/FVG Location Fusion & Execution Safety
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Canonical OB/FVG location scoring has one source of truth | PASS | Required |
+| Standalone OB has a higher base location contribution than standalone FVG | PASS | Required |
+| High-quality OB+FVG is the strongest single bounded location feature | PASS | Required |
+| Correlated FVG/OB confluence counts as one evidence unit | PASS | Required |
+| Closed-M5 trace records the canonical decision gate | PASS | Required |
+| Trace records exact decision/actionability reasons | PASS | Required |
+| Trace is bounded in memory and append-only on disk | PASS | Required |
+| Trace archive uses the same 90-day archive cadence | PASS | Required |
+| Offline analyzer uses only forward bars for potential-missed diagnostics | PASS | Required |
+| Potential-missed cohort is clearly observational, not a synthetic trade outcome | Source | Required |
+| Final automatic-market plan geometry is revalidated immediately before broker mutation | PASS | Required |
+| Wrong-side SL / TP1 cannot pass final automatic-market geometry gate | PASS | Required |
+| No second decision or execution authority introduced | PASS | Required |
+| No new public parameters | PASS | Required |
+| Decision Contracts | PASS | Required |
+| Runtime Acceptance | PASS | Required |
+| cTrader Compile/Build | Required | Required |
+| Source / Architecture + accumulated audits | Required | Required |
+| Target-terminal replay identifies actual missed setups and false signals | Required | Required |
+| Target-terminal broker execution/protection behavior | Required | Required |

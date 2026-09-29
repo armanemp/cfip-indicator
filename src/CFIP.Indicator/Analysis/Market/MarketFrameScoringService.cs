@@ -75,57 +75,41 @@ namespace cAlgo
             AddScore(f.DisplacementBear, 10, ref bear, ref evidence);
             AddScore(f.LiquidityBull, 10, ref bull, ref evidence);
             AddScore(f.LiquidityBear, 10, ref bear, ref evidence);
-            if (f.FvgBull)
-            {
-                bull +=
-                    5 +
-                    Math.Min(
-                        5,
-                        f.FvgBullQuality / 20);
-                evidence++;
-            }
-
-            if (f.FvgBear)
-            {
-                bear +=
-                    5 +
-                    Math.Min(
-                        5,
-                        f.FvgBearQuality / 20);
-                evidence++;
-            }
-
-            if (f.ObBull)
-            {
-                bull +=
-                    6 +
-                    Math.Min(
-                        5,
-                        f.ObBullQuality / 20);
-                evidence++;
-            }
-
-            if (f.ObBear)
-            {
-                bear +=
-                    6 +
-                    Math.Min(
-                        5,
-                        f.ObBearQuality / 20);
-                evidence++;
-            }
-
-            if (f.FvgObBullConfluence &&
-                Math.Min(
+            LocationEvidenceScore bullLocation =
+                LocationEvidenceRule.Evaluate(
+                    f.FvgBull,
                     f.FvgBullQuality,
-                    f.ObBullQuality) >= 75)
-                bull += 4;
+                    f.ObBull,
+                    f.ObBullQuality,
+                    f.FvgObBullConfluence);
 
-            if (f.FvgObBearConfluence &&
-                Math.Min(
+            LocationEvidenceScore bearLocation =
+                LocationEvidenceRule.Evaluate(
+                    f.FvgBear,
                     f.FvgBearQuality,
-                    f.ObBearQuality) >= 75)
-                bear += 4;
+                    f.ObBear,
+                    f.ObBearQuality,
+                    f.FvgObBearConfluence);
+
+            f.LocationEvidenceBull =
+                bullLocation.Score;
+            f.LocationEvidenceBear =
+                bearLocation.Score;
+
+            f.LocationEvidenceBullCount =
+                bullLocation.Evidence;
+            f.LocationEvidenceBearCount =
+                bearLocation.Evidence;
+
+            bull +=
+                bullLocation.Score;
+            bear +=
+                bearLocation.Score;
+
+            evidence +=
+                bullLocation.Evidence +
+                bearLocation.Evidence;
+
             AddScore(
                 f.EqualLow,
                 5,

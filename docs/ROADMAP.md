@@ -3881,5 +3881,27 @@ Detailed record: docs/PHASE-9-15-STARTUP-PERSISTENT-HISTORY.md.
 
 Verification: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Architecture + accumulated audits PASS; startup/persistence audit PASS; Decision Contracts PASS within Build.
 
-Next phase: Phase 9.16 — replay/measurement instrumentation and evidence-driven signal refinement.
+Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
 Operator pull: required now; pull main to the latest closeout commit.
+
+
+## Phase 9.16 — Signal Measurement, OB/FVG Location Fusion & Execution Safety — 2026-09-29
+
+Status: IMPLEMENTED; final CI verification pending on PR #58.
+
+Phase 9.16 adds evidence attribution before further signal tuning:
+- canonical closed-M5 gate tracing for CONSENSUS -> DECISION-FILTER -> TRIGGER -> ACTIONABILITY -> ACTIONABLE;
+- bounded canonical OB/FVG location scoring, with OB+FVG as the strongest single location feature;
+- correlated FVG/OB location evidence remains one evidence unit;
+- append-only 90-day signal trace archives and an offline forward-window analyzer;
+- latest trace gate/reason exposed in the panel;
+- final automatic-market plan Entry/Stop/TP1 geometry revalidation before broker mutation.
+
+No new public parameters and no second decision/execution authority were introduced.
+Trace measurement is observational and never feeds live decisions.
+
+Target-terminal replay remains required before empirical claims about missed opportunities,
+false-signal rate, entry timing, realized R or trading outcomes are made.
+
+Next phase: Phase 9.17 — target-terminal replay of Phase 9.16 traces and evidence-driven gate refinement.
+Operator pull: required after the final verified Phase 9.16 main closeout.

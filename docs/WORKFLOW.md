@@ -173,3 +173,13 @@ verification and target-terminal empirical validation.
 
 A phase is not considered complete merely because one isolated indicator or
 signal module changed successfully.
+
+
+## Permanent signal-measurement rule
+
+Signal-quality phases must add measurement before adding more global thresholds. The
+canonical closed-M5 trace must identify the decision gate and exact rejection reason,
+and offline forward-window analysis may be used to form potential-missed cohorts.
+
+Trace data is observational and cannot become a second directional or execution authority.
+Any change to live thresholds/defaults must be supported by replay/out-of-sample evidence.

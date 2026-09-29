@@ -267,3 +267,18 @@ of the following as one continuous system, not isolated feature work:
 No phase may optimize one isolated metric while allowing another stage of the
 Analysis -> Decision -> Signal -> Alert -> Execution -> Broker -> Protection ->
 Outcome -> Learning chain to regress.
+
+
+## R. Phase 9.16 persistent signal-quality requirement — 2026-09-29
+
+Signal quality refinement must be measurement-first:
+
+- capture the closed-M5 stage where a directional candidate is stopped;
+- distinguish consensus failure, decision filtering, trigger failure and actionability failure;
+- compare rejection cohorts with forward MFE/MAE before changing thresholds;
+- use OB/FVG/structure/liquidity/indicator/WaveTrend evidence as separate causal categories;
+- treat OB+FVG as the strongest single location feature but never as a global override;
+- keep measurement observational and out of the live decision authority;
+- use target-terminal/replay evidence before changing default thresholds or claiming quality gains.
+
+This requirement is persistent across future chats and phases.
