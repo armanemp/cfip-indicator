@@ -60,14 +60,41 @@ namespace cAlgo
                                     P + "REACTION_ARROW");
 
                                 if (ShowEarlyArrow &&
+                                    IsStrongWatchSnapshot(snapshot) &&
                                     visualDirection != 0)
                                 {
+                                    double watchAtr =
+                                        Atr(
+                                            Bars,
+                                            Math.Max(
+                                                1,
+                                                Math.Min(
+                                                    Bars.Count - 1,
+                                                    hostBar)));
+
+                                    double watchOffset =
+                                        Math.Max(
+                                            Symbol.PipSize *
+                                            Math.Max(
+                                                0.5,
+                                                MinimumArrowOffsetPips),
+                                            watchAtr *
+                                            Math.Max(
+                                                0.02,
+                                                ArrowOffsetAtr));
+
                                     DrawIcon(
                                         P + "WATCH_ARROW",
-                                        ChartIconType.Diamond,
+                                        visualDirection == 1
+                                            ? ChartIconType.UpArrow
+                                            : ChartIconType.DownArrow,
                                         hostBar,
-                                        Bars.ClosePrices[hostBar],
-                                        PanelSecondaryTextColor);
+                                        visualDirection == 1
+                                            ? Bars.LowPrices[hostBar] - watchOffset
+                                            : Bars.HighPrices[hostBar] + watchOffset,
+                                        SignalArrowColorFor(
+                                            visualDirection,
+                                            "WATCH"));
                                 }
                                 else
                                 {
@@ -145,9 +172,11 @@ namespace cAlgo
                                 snapshot.Confidence >=
                                 Math.Max(
                                     60,
-                                    MinimumConfidence - 8) &&
+                                    MinimumConfidence - 4) &&
                                 snapshot.Confidence <
                                 MinimumConfidence &&
+                                IsStrongWatchSnapshot(
+                                    snapshot) &&
                                 _lastEarlyAlertM5 !=
                                 closedM5)
                             {
@@ -244,13 +273,47 @@ namespace cAlgo
 
                             DrawIcon(
                                 P + "M1_TRIGGER",
-                                ChartIconType.Diamond,
+                                ChartIconType.Circle,
                                 triggerBar,
                                 price,
                                 SignalArrowColorFor(
                                     snapshot.DecisionDirection,
                                     "STRONG"));
                         }
+
+        private bool IsStrongWatchSnapshot(
+            SignalVisualSnapshot snapshot)
+        {
+            if (snapshot == null ||
+                (snapshot.AuthoritativeDirection != 1 &&
+                 snapshot.AuthoritativeDirection != -1))
+                return false;
+
+            int minimumConfidence =
+                Math.Max(
+                    60,
+                    MinimumConfidence - 4);
+
+            int minimumSmartQuality =
+                Math.Max(
+                    MinimumSmartQuality,
+                    SmartQualityThreshold);
+
+            int minimumTimeframeAgreement =
+                Math.Max(
+                    MinimumTimeframeAgreement,
+                    SmartMinimumTimeframeAgreement);
+
+            return
+                snapshot.Confidence >= minimumConfidence &&
+                snapshot.SmartQuality >= minimumSmartQuality &&
+                snapshot.TimeframeAgreement >=
+                    minimumTimeframeAgreement &&
+                snapshot.IndependentEvidence >=
+                    MinimumIndependentEvidence &&
+                snapshot.StructuralConfirmations >=
+                    MinimumStructuralConfirmations;
+        }
 
         private int MapM1ToChart(
                             int m1Index,
