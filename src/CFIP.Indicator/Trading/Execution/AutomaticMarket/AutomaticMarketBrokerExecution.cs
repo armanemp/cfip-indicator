@@ -67,7 +67,7 @@ namespace cAlgo
                     derived));
         }
 
-        }        private void ExecutePreparedAutomaticMarketTrade(
+        private void ExecutePreparedAutomaticMarketTrade(
             int closedM5,
             TradeType type,
             double entry,
