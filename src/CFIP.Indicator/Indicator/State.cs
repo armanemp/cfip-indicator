@@ -47,8 +47,8 @@ namespace cAlgo
                 private readonly TriggerRuntimeState _triggerRuntime = new TriggerRuntimeState();
                 private readonly Dictionary<Bars, WaveTrendEngine> _waveTrendEngines =
                     new Dictionary<Bars, WaveTrendEngine>();
-                private readonly List<TradeOpportunityCandidate> _opportunityCandidates =
-                    new List<TradeOpportunityCandidate>();
+                private readonly TradeOpportunityRegistry _opportunityRegistry =
+                    new TradeOpportunityRegistry();
                 private int _lastOpportunityCandidatesM5 = -1;
                 private readonly HashSet<string> _opportunityVisualIds =
                     new HashSet<string>();
