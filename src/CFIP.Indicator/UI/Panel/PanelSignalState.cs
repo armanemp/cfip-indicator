@@ -64,6 +64,10 @@ namespace cAlgo
                                             return prefix + "PENDING";
                                         case "PLAN":
                                             return prefix + "PLAN";
+                                        case "CONFIRMED SETUP":
+                                            return prefix + "SETUP";
+                                        case "SETUP WATCH":
+                                            return prefix + "WATCH";
                                         case "CONFIRMED":
                                             return prefix + "READY";
                                         case "REACTION":
