@@ -295,11 +295,10 @@ namespace cAlgo
         {
             return string.IsNullOrEmpty(value)
                 ? ""
-                : value.Replace("\", "\\")
-                       .Replace("|", "\p")
-                       .Replace("", "\r")
-                       .Replace("
-", "\n");
+                : value.Replace("\\", "\\\\")
+                       .Replace("|", "\\p")
+                       .Replace("\r", "\\r")
+                       .Replace("\n", "\\n");
         }
 
         private static string Unescape(string value)
@@ -307,11 +306,10 @@ namespace cAlgo
             if (value == null)
                 return "";
 
-            return value.Replace("\n", "
-")
-                        .Replace("\r", "")
-                        .Replace("\p", "|")
-                        .Replace("\\", "\");
+            return value.Replace("\\n", "\n")
+                        .Replace("\\r", "\r")
+                        .Replace("\\p", "|")
+                        .Replace("\\\\", "\\");
         }
 
         private void PersistOutcomeHistory()
