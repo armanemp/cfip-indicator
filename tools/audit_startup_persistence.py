@@ -7,6 +7,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 INIT = ROOT / "src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs"
+STARTUP_HELPERS = ROOT / "src/CFIP.Indicator/Runtime/Initialization/StartupDataHelpers.cs"
 MTF = ROOT / "src/CFIP.Indicator/Runtime/Mtf/MtfContextBuilder.cs"
 ARCHIVE = ROOT / "src/CFIP.Indicator/Trading/Intelligence/OutcomeHistoryArchiveStore.cs"
 OUTCOME = ROOT / "src/CFIP.Indicator/Trading/Intelligence/OutcomeTelemetryEngine.cs"
@@ -29,7 +30,7 @@ require(
     "optional D1/W1 startup requests",
 )
 require(
-    INIT,
+    STARTUP_HELPERS,
     r"private void RequestOptionalBars\(",
     "optional bar request owner",
 )
@@ -65,12 +66,12 @@ require(
 )
 require(
     ARCHIVE,
-    r"Directory\.GetFiles\([\s\S]*?OutcomeArchivePrefix\(\)[\s\S]*?\.csv",
+    r"Directory\.GetFiles\([\s\S]*?\);[\s\S]*?OutcomeArchivePrefix\(\)",
     "archive file discovery",
 )
 require(
     ARCHIVE,
-    r"new DateTime\([\s\S]*?item\.ObservedUtcTicks",
+    r"new DateTime\([\s\S]*?DateTimeKind\.Utc[\s\S]*?item\.ObservedUtcTicks",
     "UTC archive period compatibility",
 )
 require(
