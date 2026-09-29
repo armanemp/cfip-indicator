@@ -33,7 +33,7 @@ namespace cAlgo
                                 snapshot.ReactionReady;
 
                             int visualDirection =
-                                snapshot.Direction;
+                                snapshot.AuthoritativeDirection;
 
                             if (snapshot.PendingOrder)
                             {
