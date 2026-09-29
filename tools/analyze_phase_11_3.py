@@ -132,7 +132,10 @@ def load_csv_files(history_dir: Path, glob: str) -> list[dict[str, str]]:
         try:
             with path.open("r", encoding="utf-8-sig", newline="") as handle:
                 schema = handle.readline().strip()
-                if glob.startswith("CFIP_SignalTrace") and schema != "CFIP-SIGNAL-TRACE,1":
+                if glob.startswith("CFIP_SignalTrace") and schema not in {
+                    "CFIP-SIGNAL-TRACE,1",
+                    "CFIP-SIGNAL-TRACE,2",
+                }:
                     continue
                 if glob.startswith("CFIP_RuntimeLog") and schema not in {"CFIP-RUNTIME-LOG,1", "CFIP-RUNTIME-LOG,2"}:
                     continue
@@ -262,6 +265,11 @@ def analyze_traces(rows: list[dict[str, str]], forward_bars: int, min_mfe_r: flo
     adverse_actionable_count = 0
     actionable_sub_one_r_count = 0
     near_threshold_rows = 0
+    reward_risk_rows = 0
+    wide_stop_rows = 0
+    effective_rr_below_required_rows = 0
+    effective_rr_sum = 0.0
+    effective_rr_samples = 0
 
     for file_rows in grouped.values():
         for index, row in enumerate(file_rows):
@@ -286,6 +294,19 @@ def analyze_traces(rows: list[dict[str, str]], forward_bars: int, min_mfe_r: flo
 
             if direction == 0:
                 continue
+
+            plan_risk_atr = as_float(row, "PlanRiskAtr")
+            effective_tp1_rr = as_float(row, "EffectiveTp1RR")
+            required_tp1_rr = as_float(row, "RequiredTp1RR")
+            if plan_risk_atr > 0 or effective_tp1_rr > 0 or required_tp1_rr > 0:
+                reward_risk_rows += 1
+            if plan_risk_atr > 1.35:
+                wide_stop_rows += 1
+            if effective_tp1_rr > 0:
+                effective_rr_sum += effective_tp1_rr
+                effective_rr_samples += 1
+                if required_tp1_rr > 0 and effective_tp1_rr < required_tp1_rr:
+                    effective_rr_below_required_rows += 1
 
             mfe, mae, first_event = forward_metrics(file_rows, index, forward_bars)
             near = near_threshold_cohort(row)
@@ -360,6 +381,14 @@ def analyze_traces(rows: list[dict[str, str]], forward_bars: int, min_mfe_r: flo
         "actionable_sub_one_r_count": actionable_sub_one_r_count,
         "near_threshold_rows": near_threshold_rows,
         "near_threshold_counts": dict(near_threshold_counts.most_common(50)),
+        "reward_risk_rows": reward_risk_rows,
+        "wide_stop_rows": wide_stop_rows,
+        "effective_rr_below_required_rows": effective_rr_below_required_rows,
+        "average_effective_tp1_rr": (
+            effective_rr_sum / effective_rr_samples
+            if effective_rr_samples
+            else 0.0
+        ),
         "potential_missed_examples": [example for group in cohort_examples.values() for example in group][:100],
         "forward_window_bars": forward_bars,
         "potential_missed_mfe_threshold_r": min_mfe_r,
