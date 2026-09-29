@@ -3788,3 +3788,29 @@ Verification:
 
 Next phase after merge: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
 Operator action: pull local `main` after PR #54 merge.
+
+
+
+## Phase 9.13 — Persistent Outcome Memory, Adaptive Risk & Optimization Routine — 2026-09-29
+
+Status: IMPLEMENTATION COMPLETE; verification pending.
+Branch: `phase/9-13-persistent-memory-safe-optimization`
+
+Completed scope:
+- persistent 128-record outcome memory through cTrader LocalStorage;
+- 90-day restore age boundary and malformed-record rejection;
+- symbol/timeframe/configuration-scoped memory;
+- recent-first empirical calibration continuity across restarts;
+- conservative adaptive risk reduction from recent realized outcomes;
+- optimization-readiness audit added to permanent Source/Architecture CI;
+- adaptive risk Decision Contracts;
+- unchanged 552-parameter public contract and single decision/execution authority.
+
+Known boundary:
+- LocalStorage persistence is available in real-time; cTrader documents that local storage is in-memory during backtesting/optimisation, so replay/optimization must still establish empirical behavior independently. citeturn380699search2
+- target-terminal replay is required to validate actual restart persistence, signal timing, realized R and false-signal behavior.
+
+Detailed record: `docs/PHASE-9-13-PERSISTENT-MEMORY-SAFE-OPTIMIZATION.md`.
+
+Next phase after verification: Phase 9.14 — target-terminal replay, calibration/optimization measurement and evidence-driven parameter refinement.
+Operator action: pull `main` after PR merge.
