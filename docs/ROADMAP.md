@@ -1598,7 +1598,7 @@ Acceptance:
 
 ## Phase 8.3 — FVG mathematical audit
 
-Status: IN PROGRESS — branch `phase-8-3-fvg-mathematical-audit`. Full scope and acceptance criteria: `docs/PHASE-8-3-FVG-MATHEMATICAL-AUDIT.md`.
+Status: IMPLEMENTATION VERIFIED — READY TO MERGE. Branch `phase-8-3-fvg-mathematical-audit`. Full scope and acceptance criteria: `docs/PHASE-8-3-FVG-MATHEMATICAL-AUDIT.md`. Production FVG detection and predictive pending collection now share canonical geometry, creation-bar ATR thresholding, post-creation retest semantics, centralized mitigation and stable identity. CI head `89919e7363d374e2cf3a362ec553b1fdac464919`: Runtime PASS; Build PASS; Source/Architecture PASS. Target cTrader replay remains required for empirical signal-quality measurement.
 
 Audit:
 
