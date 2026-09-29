@@ -71,6 +71,55 @@ if "BlockNewSignalWhileActive" in parameter_source:
         "BlockNewSignalWhileActive is an unsupported optional duplicate of single-plan capacity"
     )
 
+m1_rule = ROOT / "Core" / "Math" / "M1TriggerRule.cs"
+m1_evaluator = ROOT / "Planning" / "Entry" / "M1TriggerReadyEvaluator.cs"
+decision_score = ROOT / "Analysis" / "Market" / "Decision" / "DecisionScoreCalculator.cs"
+decision_evaluator = ROOT / "Analysis" / "Market" / "Decision" / "DecisionEvaluator.cs"
+decision_orchestration = ROOT / "Analysis" / "Market" / "Decision" / "DecisionOrchestration.cs"
+if not m1_rule.exists() or not m1_evaluator.exists():
+    raise SystemExit("M1 trigger owner/evaluator is missing")
+
+m1_rule_code = m1_rule.read_text(encoding="utf-8")
+m1_evaluator_code = m1_evaluator.read_text(encoding="utf-8")
+decision_score_code = decision_score.read_text(encoding="utf-8")
+decision_evaluator_code = decision_evaluator.read_text(encoding="utf-8")
+decision_orchestration_code = decision_orchestration.read_text(encoding="utf-8")
+
+for token in (
+    "IsClosedInsideM5Window(",
+    "IsReady(",
+    "m1Direction != direction",
+    "body < atr * minimumBodyAtr",
+    "location < minimumCloseLocation",
+    "triggerScore >= requiredTrigger",
+):
+    if token not in m1_rule_code:
+        raise SystemExit(f"M1 trigger rule missing deterministic condition: {token}")
+
+for token in (
+    "M1TriggerRule.IsClosedInsideM5Window(",
+    "M1TriggerRule.IsReady(",
+    "_m1Frame.Index != m1Index",
+    "BullTriggerScore(",
+    "BearTriggerScore(",
+):
+    if token not in m1_evaluator_code:
+        raise SystemExit(f"M1 evaluator missing real M1 evidence path: {token}")
+
+if "input.M1Frame.Direction" in decision_score_code or "buy += 3" in decision_score_code or "sell += 3" in decision_score_code:
+    raise SystemExit("M1 must not act as a fixed directional score vote")
+
+for token in (
+    "evidence.BullM1TriggerReady",
+    "evidence.BearM1TriggerReady",
+    "!input.UseM1Trigger || m1TriggerReady",
+):
+    if token not in decision_evaluator_code:
+        raise SystemExit(f"Decision evaluator missing M1 trigger gating: {token}")
+
+if "M1TriggerReady(" not in decision_orchestration_code:
+    raise SystemExit("Decision orchestration must capture M1 trigger evidence")
+
 capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
 capacity_guard = ROOT / "Trading" / "Risk" / "ExecutionCapacityGuard.cs"
 if not capacity_rule.exists() or not capacity_guard.exists():
