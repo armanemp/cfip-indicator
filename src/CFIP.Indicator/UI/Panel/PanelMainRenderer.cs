@@ -44,10 +44,6 @@ namespace cAlgo
                 
                                                     DateTime now =
                                                         Server.TimeInUtc;
-                
-                                                    if (_initializationReady &&
-                                                        (now - _lastPanelRenderUtc).TotalMilliseconds < 250)
-                                                        return;
                                         
                                                     ownsVisualSnapshot =
                                                         _renderSignalVisualSnapshot == null;
@@ -58,6 +54,10 @@ namespace cAlgo
                                                                 Math.Max(
                                                                     1,
                                                                     _lastEvaluatedM5));
+
+                                                    if (!ShouldRenderFullPanel(
+                                                            _renderSignalVisualSnapshot))
+                                                        return;
 
                                                     if (_panelToggleButton == null)
                                                         CreatePanelToggleButton();
