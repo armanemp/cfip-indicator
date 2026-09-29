@@ -156,3 +156,20 @@ The review must separate:
 Parameter optimization must be multi-objective and must not be judged by raw win rate alone. Candidate parameter changes require replay/out-of-sample evidence before default values are changed.
 
 Persistent memory may inform calibration and conservative risk scaling only through bounded, configuration-scoped, broker-confirmed outcomes. It must never become a second directional decision engine or a broker mutation authority.
+
+
+## Permanent phase execution discipline
+
+Every implementation phase must treat the complete trading chain as one system:
+
+Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation ->
+Protection/Lifecycle -> Outcome -> Learning.
+
+Each phase must include a fresh source/architecture audit, accumulated regression
+audit, safe performance optimization, analytical and signal-quality review,
+Entry/SL/TP and reward-path review, automatic order/execution review, broker-state
+verification, history/learning review, and explicit separation between automated
+verification and target-terminal empirical validation.
+
+A phase is not considered complete merely because one isolated indicator or
+signal module changed successfully.
