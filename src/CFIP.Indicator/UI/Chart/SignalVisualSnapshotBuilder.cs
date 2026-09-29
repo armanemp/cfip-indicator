@@ -270,10 +270,8 @@ namespace cAlgo
                 snapshot.LivePosition &&
                 IsFinitePositive(snapshot.BrokerTarget);
             snapshot.ArrowM5Index =
-                reactionReady &&
-                snapshot.AuthoritativeDirection == _reaction.Direction &&
-                _m5Bars != null
-                    ? _m5Bars.Count - 1
+                snapshot.ReactionIntrabar
+                    ? snapshot.ReactionM5Index
                     : closedM5;
 
             return snapshot;
