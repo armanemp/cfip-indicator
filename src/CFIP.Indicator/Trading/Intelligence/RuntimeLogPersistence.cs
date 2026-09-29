@@ -313,6 +313,7 @@ namespace cAlgo
                 candidate.ActionableNow,
                 0,
                 0,
+                null,
                 candidate.IndependentEvidenceScore,
                 candidate.LocationConfluenceScore,
                 candidate.WaveTrendQuality,
