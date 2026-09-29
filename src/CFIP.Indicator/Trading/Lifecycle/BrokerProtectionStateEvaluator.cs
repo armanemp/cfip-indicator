@@ -46,7 +46,7 @@ namespace cAlgo
 
 
             bool serverTakeProfitLadderActive =
-                IsServerSideTakeProfitLadderActive(
+                AdoptServerSideTakeProfitLadder(
                     position);
 
             return
@@ -54,30 +54,6 @@ namespace cAlgo
                 (serverTakeProfitLadderActive ||
                  !SyncBrokerTakeProfit ||
                  brokerTargetValid);
-        }
-        private bool IsServerSideTakeProfitLadderActive(
-            Position position)
-        {
-            if (position == null)
-                return false;
-
-            try
-            {
-                AbsoluteTakeProfitProtections protections =
-                    position.AbsoluteTakeProfitProtections;
-
-                return protections != null &&
-                       protections.FirstTakeProfit != null &&
-                       protections.SecondTakeProfit != null &&
-                       protections.LastTakeProfit != null;
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP server TP ladder health check failed: {0}",
-                    ex.Message);
-                return false;
-            }
         }
     }
 }
