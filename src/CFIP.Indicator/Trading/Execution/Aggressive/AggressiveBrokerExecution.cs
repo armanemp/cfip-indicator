@@ -76,12 +76,15 @@ namespace cAlgo
                 }
 
                 string submissionGateReason;
+                SubmissionAttemptIdentity submissionIdentity;
 
-                if (!TryAcquireAggressiveSubmission(
+                if (!TryAcquireSubmission(
                         closedM5,
                         _reaction == null
                             ? 0
                             : _reaction.Direction,
+                        ExecutionSubmissionPath.AggressiveMarket,
+                        out submissionIdentity,
                         out submissionGateReason))
                 {
                     _autoExecutionBlockReason =
@@ -111,11 +114,11 @@ namespace cAlgo
                 }
                 catch
                 {
-                    RecordAggressiveSubmissionFailure();
+                    RecordSubmissionFailure(submissionIdentity);
                     throw;
                 }
 
-                RecordAggressiveSubmission(result);
+                RecordSubmission(submissionIdentity, result);
 
                 if (!BrokerConfirmationPolicy.CanAdoptPosition(
                         result != null,
