@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyConfidenceDeterminism();
             VerifyCorrelationAwareEvidence();
             VerifyQualityWeightedFrameContribution();
+            VerifyLocationEvidenceHierarchy();
             VerifyMarketRegimeClassification();
             VerifyEntryTrapRisk();
             VerifyActionableSignalQuality();
@@ -812,6 +813,108 @@ namespace cAlgo
             Assert(
                 legacy.Bull > weakConcentrated.Bull,
                 "compatibility overload treats isolated inputs as strong evidence");
+        }
+
+        private static void VerifyLocationEvidenceHierarchy()
+        {
+            LocationEvidenceScore none =
+                LocationEvidenceRule.Evaluate(
+                    false,
+                    0,
+                    false,
+                    0,
+                    false);
+
+            Assert(
+                none.Score == 0 &&
+                none.Evidence == 0 &&
+                !none.Confluence,
+                "no location evidence");
+
+            LocationEvidenceScore fvg =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    85,
+                    false,
+                    0,
+                    false);
+
+            LocationEvidenceScore ob =
+                LocationEvidenceRule.Evaluate(
+                    false,
+                    0,
+                    true,
+                    85,
+                    false);
+
+            LocationEvidenceScore combo =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    85,
+                    true,
+                    85,
+                    true);
+
+            Assert(
+                combo.Score > ob.Score &&
+                combo.Score > fvg.Score &&
+                combo.Confluence &&
+                combo.Evidence == 1,
+                "OB+FVG is strongest bounded location feature");
+
+            LocationEvidenceScore separate =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    70,
+                    true,
+                    70,
+                    false);
+
+            Assert(
+                separate.Evidence == 1 &&
+                separate.Score < combo.Score,
+                "correlated location evidence stays one evidence unit");
+
+            LocationEvidenceScore mirrored =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    85,
+                    false,
+                    0,
+                    false);
+
+            LocationEvidenceScore mirroredOpposite =
+                LocationEvidenceRule.Evaluate(
+                    false,
+                    0,
+                    true,
+                    85,
+                    false);
+
+            Assert(
+                mirrored.Score != mirroredOpposite.Score,
+                "OB/FVG individual weights remain intentionally distinct");
+
+            LocationEvidenceScore buyCombo =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    80,
+                    true,
+                    80,
+                    true);
+
+            LocationEvidenceScore sellCombo =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    80,
+                    true,
+                    80,
+                    true);
+
+            Assert(
+                buyCombo.Score == sellCombo.Score &&
+                buyCombo.Evidence == sellCombo.Evidence,
+                "OB/FVG combo symmetry");
         }
 
         private static void VerifyMarketRegimeClassification()
