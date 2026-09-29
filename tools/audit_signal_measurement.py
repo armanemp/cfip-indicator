@@ -29,6 +29,7 @@ frame_path = ROOT / "src/CFIP.Indicator/Analysis/Market/Models/Frame.cs"
 orchestration_path = ROOT / "src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs"
 trace_model_path = ROOT / "src/CFIP.Indicator/Core/Models/SignalEvaluationTrace.cs"
 trace_store_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchiveStore.cs"
+trace_recorder_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs"
 signal_trace_persistence_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchivePersistence.cs"
 panel_path = ROOT / "src/CFIP.Indicator/UI/Panel/Rows/PanelCalibrationRowsRenderer.cs"
 analyzer_path = ROOT / "tools/analyze_signal_trace.py"
@@ -96,7 +97,8 @@ require_text(
     "BarOpenTimeUtcTicks",
 )
 require_text(
-    signal_trace_persistence_path,
+    trace_recorder_path,
+    "RecordSignalEvaluationTrace(",
     "ResolveSignalTraceGate(",
     "DECISION-FILTER",
     "TRIGGER",
