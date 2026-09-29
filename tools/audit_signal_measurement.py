@@ -96,7 +96,7 @@ require_text(
     "BarOpenTimeUtcTicks",
 )
 require_text(
-    trace_store_path,
+    signal_trace_persistence_path,
     "ResolveSignalTraceGate(",
     "DECISION-FILTER",
     "TRIGGER",
