@@ -57,6 +57,10 @@ namespace cAlgo
                                     ? "REACTION"
                                     : string.Equals(
                                         _lastVisualAlertKind,
+                                        "ACTION",
+                                        StringComparison.OrdinalIgnoreCase) ||
+                                      string.Equals(
+                                        _lastVisualAlertKind,
                                         "HIGH",
                                         StringComparison.OrdinalIgnoreCase) ||
                                       string.Equals(
