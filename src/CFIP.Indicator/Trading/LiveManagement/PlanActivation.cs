@@ -61,6 +61,8 @@ namespace cAlgo
                                         plan.CreatedM5;
                                     _lastTargetRepriceM5 =
                                         -1;
+                                    _lastLiveStructuralPulseUtc =
+                                        DateTime.MinValue;
                         
                                     _executionModel = null;
                         
