@@ -15,15 +15,24 @@ namespace cAlgo
                 return 0;
 
             bool bull = direction == 1;
+            bool structure =
+                bull
+                    ? _m5Frame.StructureBull
+                    : _m5Frame.StructureBear;
+            bool transition =
+                StructuralEvidenceRule.IsIndependentTransition(
+                    structure,
+                    bull
+                        ? _m5Frame.MssBull
+                        : _m5Frame.MssBear,
+                    bull
+                        ? _m5Frame.ChochBull
+                        : _m5Frame.ChochBear);
 
             return _independentEvidenceFusionCalculator.Calculate(
                 new IndependentEvidenceFusionInput(
-                    bull
-                        ? _m5Frame.StructureBull
-                        : _m5Frame.StructureBear,
-                    bull
-                        ? _m5Frame.MssBull || _m5Frame.ChochBull
-                        : _m5Frame.MssBear || _m5Frame.ChochBear,
+                    structure,
+                    transition,
                     bull
                         ? _m5Frame.DisplacementBull
                         : _m5Frame.DisplacementBear,

@@ -326,3 +326,20 @@ Hands-on cTrader validation remains required for exact visual line endpoints, 40
 CI evidence on branch head `929700e154d4b84a5a0b9efeae345b92017834b6`: Runtime Acceptance run 801 PASS; cTrader Compile run 985 PASS; Source / Architecture run 992 PASS.
 
 The automated phase boundary is closed. Hands-on cTrader replay/live validation remains required to measure actual false-signal reduction and terminal behavior; CI does not establish an empirical win-rate or false-signal improvement.
+
+
+## Phase 8.2 — Swing Plateau Correctness and Structural Evidence Identity
+
+| Contract | Automated controlled check | cTrader / replay |
+|---|---:|---:|
+| Deterministic symmetric plateau high/low canonicalization | PASS | Required |
+| Closed-bar-only pivot confirmation; no future bars | PASS | Required |
+| One canonical swing identity per plateau | PASS | Required |
+| Equal-level cluster uses fixed anchor; no tolerance chaining | PASS | Required |
+| Liquidity sweep references an established prior level | PASS | Required |
+| One causal break cannot be counted independently as BOS/MSS/CHOCH multiple times | PASS | Required |
+| Runtime Acceptance Contracts | PASS | Required |
+| Source / Architecture | PASS | Required |
+| cTrader Compile | PASS | Required |
+
+CI evidence on verified head `5df5931828719fb635ec67fa59d57b519d4e70e7`. No empirical false-signal or win-rate improvement is claimed until target-platform replay/historical evaluation is completed.
