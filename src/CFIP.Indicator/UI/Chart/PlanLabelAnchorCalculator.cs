@@ -28,41 +28,33 @@ namespace cAlgo
                 CompactPlanLineLengthBars);
         }
 
-        private int GetLabelAnchorBar(
-            string name,
-            int referenceBar)
+        private int GetCompactPlanLabelAnchorBar(
+            int lineLeft)
         {
             if (Bars == null ||
                 Bars.Count < 2)
                 return 0;
-
-            int left =
-                GetCompactPlanLineLeftBar();
-
-            int offset =
-                1;
 
             return Math.Max(
                 0,
                 Math.Min(
                     Bars.Count - 1,
-                    left + offset));
+                    lineLeft + 1));
         }
 
-        private int GetLabelBoxRightBar()
+        private int GetLabelBoxRightBar(
+            int lineLeft)
         {
             if (Bars == null ||
                 Bars.Count < 2)
                 return 0;
 
-            int left =
-                GetCompactPlanLineLeftBar();
-
             return Math.Max(
-                left,
+                lineLeft,
                 Math.Min(
                     Bars.Count - 1,
-                    left + CompactPlanLabelWidthBars));
+                    lineLeft +
+                    CompactPlanLabelWidthBars));
         }
     }
 }
