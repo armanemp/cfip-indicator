@@ -1248,7 +1248,7 @@ Acceptance:
 
 ## Phase 5.4 — Signal presentation contract
 
-Status: implementation complete; CI certification pending.
+Status: complete.
 
 Three independent visual states:
 
@@ -1277,6 +1277,12 @@ Acceptance:
 - live SL/TP display uses broker-confirmed values;
 - arrow, trigger, entry, TP, SL, pending and panel state share one visual-state contract;
 - no visual renderer owns independent decision logic.
+
+Verification:
+
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile: PASS.
 ---
 
 # Track 6 — Intrabar and Closed-Bar Semantics
