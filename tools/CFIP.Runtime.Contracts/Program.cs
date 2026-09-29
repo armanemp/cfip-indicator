@@ -2020,13 +2020,19 @@ namespace cAlgo
                 "src", "CFIP.Indicator", "UI", "Panel", "PanelRowsFactory.cs");
             string writerPath = Path.Combine(
                 "src", "CFIP.Indicator", "UI", "Panel", "PanelRowWriter.cs");
+            string optimizationPath = Path.Combine(
+                "src", "CFIP.Indicator", "UI", "Panel", "PanelRenderOptimization.cs");
+            string statePath = Path.Combine(
+                "src", "CFIP.Indicator", "Indicator", "State.cs");
 
             Assert(
                 File.Exists(heartbeatPath) &&
                 File.Exists(initPath) &&
                 File.Exists(panelPath) &&
                 File.Exists(rowsPath) &&
-                File.Exists(writerPath),
+                File.Exists(writerPath) &&
+                File.Exists(optimizationPath) &&
+                File.Exists(statePath),
                 "responsive panel sources exist");
 
             string heartbeat = File.ReadAllText(heartbeatPath);
@@ -2034,6 +2040,8 @@ namespace cAlgo
             string panel = File.ReadAllText(panelPath);
             string rows = File.ReadAllText(rowsPath);
             string writer = File.ReadAllText(writerPath);
+            string optimization = File.ReadAllText(optimizationPath);
+            string state = File.ReadAllText(statePath);
 
             Assert(
                 !heartbeat.Contains("RenderPanel();") &&
@@ -2061,7 +2069,8 @@ namespace cAlgo
             Assert(
                 panel.Contains("BuildSignalVisualSnapshot(") &&
                 panel.Contains("ShouldRenderFullPanel(") &&
-                panel.Contains("_lastPanelPresentationKey"),
+                optimization.Contains("BuildPanelPresentationKey(") &&
+                state.Contains("_lastPanelPresentationKey"),
                 "panel uses one canonical snapshot and state-change-driven full render");
 
             Assert(
