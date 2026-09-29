@@ -39,8 +39,8 @@ if duplicates:
         print(f"DUPLICATE PARAMETER: {name} -> {owners}")
     fail(f"Found {len(duplicates)} duplicate public parameter names")
 
-if len(param_decls) != 533:
-    fail(f"Project integrity expects 533 public parameters, found {len(param_decls)}")
+if len(param_decls) != 532:
+    fail(f"Project integrity expects 532 public parameters, found {len(param_decls)}")
 
 # 2) Exact duplicate method signatures across partial production files.
 method_re = re.compile(
@@ -164,7 +164,11 @@ if historical_unlogged:
 if "Phase 7.3 — Semantic duplicate audit" not in roadmap:
     fail("Roadmap does not expose Phase 7.3 continuity")
 if "Phase 7.3 — Semantic duplicate audit" not in devlog:
-    fail("Current Phase 7.3 must be recorded in the development log")
+    fail("Phase 7.3 continuity must remain recorded in the development log")
+if "Phase 7.4 — MaximumOpenPositions semantics" not in roadmap:
+    fail("Roadmap does not expose Phase 7.4 continuity")
+if "Phase 7.4 — MaximumOpenPositions semantics" not in devlog:
+    fail("Current Phase 7.4 must be recorded in the development log")
 
 print("Full project integrity audit PASS")
 print(f"Production C# files scanned: {len(files)}")
