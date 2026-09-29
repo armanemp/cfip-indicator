@@ -52,6 +52,14 @@ namespace cAlgo
                 private readonly TradePlanRegistry _tradePlanRegistry =
                     new TradePlanRegistry();
                 private int _lastOpportunityCandidatesM5 = -1;
+
+                // Target-level construction is shared by all same-M5 scenario
+                // evaluations for a direction. Cache the deterministic closed-bar
+                // result and return a shallow copy to protect callers from mutation.
+                private int _targetLevelCacheM5 = -1;
+                private int _targetLevelCacheDirection = 0;
+                private List<Level> _targetLevelCache;
+
                 private readonly HashSet<string> _opportunityVisualIds =
                     new HashSet<string>();
 
