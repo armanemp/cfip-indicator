@@ -282,3 +282,21 @@ Signal quality refinement must be measurement-first:
 - use target-terminal/replay evidence before changing default thresholds or claiming quality gains.
 
 This requirement is persistent across future chats and phases.
+
+
+
+## S. Phase 9.17 exit/protection integrity requirement — 2026-09-29
+
+Exit management is part of the same signal-to-trade chain. Every future refinement must
+preserve these invariants:
+
+- BUY TP progression is strictly upward; SELL TP progression is strictly downward.
+- A live TP must remain beyond the current executable market price.
+- A live TP may advance only; it must never regress to an already-passed target.
+- SL progression may only become more protective.
+- Actual broker fill must become the new geometric reference for Entry/SL/TP.
+- Server-side partial TP state must be reconciled to broker-confirmed position volume.
+- After partial realization, remaining targets may be restructured only in the trade's
+  favorable direction.
+- Broker minimum stop/TP distance must be honored.
+- No global exit threshold should be changed without replay evidence.
