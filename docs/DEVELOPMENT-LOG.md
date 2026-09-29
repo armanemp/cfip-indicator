@@ -635,3 +635,8 @@ Auto Orders note:
 - deeper reversal-point forecasting across MTF structure/FVG/OB/liquidity/indicator confluence remains a dedicated smart-pending improvement and is not mixed into this UI/protection correction.
 
 No public parameter was added. Production parameter count remains 535.
+### Hotfix CI contract correction — 2026-09-29
+
+The first hotfix CI attempt exposed stale test contracts that still required ToggleButton Checked/Unchecked handlers. Since cTrader's current ToggleButton API explicitly supports Click events, the UI action boundary was intentionally moved to direct Click handling. The source verifier and Runtime Acceptance contract were updated to enforce the new single action boundary and reject duplicate Checked/Unchecked owners.
+
+The first failed Source/Runtime runs were therefore contract mismatches in the test harness; cTrader compile for that hotfix head already passed.
