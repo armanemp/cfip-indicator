@@ -65,7 +65,12 @@ require(PANEL_MAIN, r"UpdateProcessingHeartbeatLamp\(\)", "lamp refresh hook")
 require(PANEL_PIPE, r"PIPELINE[\s\S]*?QUALITY[\s\S]*?PIPELINE REASON", "signal pipeline panel diagnostics")
 require(PANEL_ROWS, r"RenderPanelSignalPipelineRows\(", "pipeline renderer wired to overview")
 require(MARKET, r"CanRunAutomaticEntry\(\)[\s\S]*?RefreshLiveDecisionActionability\(\s*closedM5\s*\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true\)", "final market runtime, actionability and suitability refresh")
-require(AGG, r"RefreshLiveDecisionActionability\(\s*closedM5\s*\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true\)", "aggressive final freshness and suitability gate")
+require(AGG, r"EnsureTradingPermission\([\s\S]*?PassesAutoTradeSafetyGuards\(", "aggressive broker execution safety ownership")
+require(
+    AGG_FINAL,
+    r"RefreshLiveDecisionActionability\(\s*closedM5\s*\)[\s\S]*?EnsureTradingPermission\(\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true",
+    "aggressive final freshness and suitability guard",
+)
 require(PENDING, r"CanRunAutomaticEntry\(\)[\s\S]*?EnsureTradingPermission\(\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true", "pending final runtime, permission and suitability gates")
 
 print("Phase 11.2 contract audit OK")
