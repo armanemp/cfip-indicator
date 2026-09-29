@@ -41,9 +41,9 @@ namespace cAlgo
                 Bars.Count < 2)
             {
                 Chart.RemoveObject(P + "ARROW");
-                return;
             }
-
+            else
+            {
             int hostBar =
                 MapM5ToChart(
                     snapshot.CreatedM5,
@@ -79,7 +79,9 @@ namespace cAlgo
                         : snapshot.SmartQuality >= SmartStrongSetupQuality
                             ? "STRONG"
                             : "CONFIRMED"));
-            if (ShowSignalArrow &&
+            }
+
+            if (ShowTrigger &&
                 Bars != null &&
                 Bars.Count >= 2)
             {
@@ -108,6 +110,14 @@ namespace cAlgo
             else
                 RemovePlanLabels();
             Chart.RemoveObject(P + "ARROW");
+
+            if (ShowTrigger &&
+                Bars != null &&
+                Bars.Count >= 2)
+            {
+                RenderTriggerRuntimeMarker(
+                    snapshot);
+            }
         }
 
         private void RenderLevelLines(
