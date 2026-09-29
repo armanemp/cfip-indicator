@@ -69,16 +69,21 @@ namespace cAlgo
         
         private bool HasEnoughData()
                                 {
+                                    // Startup readiness should require enough closed
+                                    // history for the canonical analyzers, not the much
+                                    // deeper warm-up used by optional historical studies.
+                                    // This lets the decision engine start while the
+                                    // terminal continues to supply additional history.
                                     return _m5Bars != null &&
                                            _m15Bars != null &&
                                            _m30Bars != null &&
                                            _h1Bars != null &&
                                            _h4Bars != null &&
-                                           _m5Bars.Count >= 100 &&
-                                           _m15Bars.Count >= 100 &&
-                                           _m30Bars.Count >= 80 &&
-                                           _h1Bars.Count >= 80 &&
-                                           _h4Bars.Count >= 60;
+                                           _m5Bars.Count >= 60 &&
+                                           _m15Bars.Count >= 50 &&
+                                           _m30Bars.Count >= 45 &&
+                                           _h1Bars.Count >= 40 &&
+                                           _h4Bars.Count >= 36;
                                 }
     }
 }

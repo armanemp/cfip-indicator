@@ -3855,3 +3855,28 @@ Verification: Runtime Acceptance PASS; cTrader Compile/Build PASS; Source/Archit
 
 Next phase: Phase 9.15 — target-terminal replay/measurement and evidence-driven parameter refinement.
 Operator pull: required now; pull main to the latest closeout commit.
+
+
+## Phase 9.15 — Startup Responsiveness & Portable Long-Term History — 2026-09-29
+
+Status: IMPLEMENTED; automated verification pending.
+
+Completed scope:
+- reduced primary startup readiness thresholds to the actual minimum closed history required by the canonical analyzers;
+- D1/W1 are no longer included in the blocking startup pending-load count;
+- optional D1/W1 callbacks are adopted after core startup and invalidate MTF context cache;
+- startup panel header reports loading status and core timeframe bar counts;
+- added portable append-only CSV outcome archive in the cTrader designated indicator folder;
+- archive rotation uses deterministic fixed 90-day UTC buckets;
+- previous archive files are never deleted;
+- long-term archive aggregates feed empirical calibration only after recent history is considered;
+- archive import is deferred until after the first startup calculation seed;
+- no public parameters or execution authorities were added.
+
+Known boundary:
+Target-terminal measurement remains required for actual startup latency and live signal timing. The archive learning layer is configuration-scoped for safety; moving across operating systems requires copying both cTrader LocalStorage and the indicator History folder.
+
+Detailed record: docs/PHASE-9-15-STARTUP-PERSISTENT-HISTORY.md.
+
+Next phase after verification: Phase 9.16 — replay/measurement instrumentation and evidence-driven signal refinement.
+Operator pull: required after Phase 9.15 verification and merge.

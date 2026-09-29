@@ -572,3 +572,28 @@ Phase 9.14 automated verification evidence:
 - Source/Architecture + accumulated audits: PASS
 - Decision Contracts: PASS within Build
 - Target-terminal/replay: still required for empirical signal-quality and realized-R measurement.
+
+
+## Phase 9.15 — Startup Responsiveness & Portable Long-Term History
+
+| Contract | Automated controlled check | cTrader / replay |
+| --- | ---: | ---: |
+| Primary startup no longer waits for D1/W1 callbacks | Source / startup audit | Required |
+| Core startup history thresholds remain sufficient for closed-bar analyzers | Source / startup audit | Required |
+| D1/W1 optional callbacks are adopted after core startup | Source / compile | Required |
+| MTF context cache is invalidated when optional bars arrive | Source / compile | Required |
+| Startup panel reports meaningful loading progress | Source | Required |
+| Persistent 90-day outcome archive uses append-only files | Source / startup audit | Required |
+| Archive keeps prior 90-day files and does not delete them | Source / startup audit | Required |
+| Archive remains scoped by symbol/timeframe/configuration | Source | Required |
+| Archive import is deferred out of the critical startup path | Source | Required |
+| Long-term archive aggregates participate only in existing calibration authority | Source | Required |
+| LocalStorage recent memory remains available | Source | Required |
+| AccessRights remains None | Source / architecture | Required |
+| No second decision/execution authority | Source / Architecture | Required |
+| Public parameter count remains 552 | Source gate | Required |
+| Runtime Acceptance | Required | Required |
+| cTrader Compile/Build | Required | Required |
+| Source / Architecture + accumulated audits | Required | Required |
+
+Target-terminal/replay remains required for actual startup latency, archive creation/rotation, migration/restore, signal timing and end-to-end trading outcomes.

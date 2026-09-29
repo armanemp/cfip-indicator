@@ -166,11 +166,14 @@ namespace cAlgo
 
             if (SmartWeeklyContext)
             {
-                RequestBars(
+                // D1/W1 refine the top-down context but are not required to
+                // start the primary decision engine. Load them independently
+                // so a slow higher-timeframe request cannot stall startup.
+                RequestOptionalBars(
                     TimeFrame.Daily,
                     bars => _d1Bars = bars);
 
-                RequestBars(
+                RequestOptionalBars(
                     TimeFrame.Weekly,
                     bars => _w1Bars = bars);
             }
@@ -431,6 +434,7 @@ namespace cAlgo
                         ? "LOADING DATA"
                         : "BUILDING DATA";
 
+                UpdateInitializationPanelStatus();
                 RenderPanel();
                 ScheduleInitializationPoll();
                 return;

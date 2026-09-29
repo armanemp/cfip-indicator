@@ -67,6 +67,12 @@ namespace cAlgo
 
                 _startupCalculationSeedDone = true;
                 _lastCalculationCompletedUtc = TimeInUtc;
+
+                // Import the portable history archive only after the first
+                // usable decision cycle has been seeded, keeping disk I/O out
+                // of the critical startup path.
+                QueueOutcomeArchiveImport();
+
                 return true;
             }
             catch (OutOfMemoryException)

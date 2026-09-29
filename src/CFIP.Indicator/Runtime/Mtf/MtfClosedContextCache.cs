@@ -97,6 +97,27 @@ namespace cAlgo
             _context = context;
         }
 
+        public void Invalidate()
+        {
+            _m1 = null;
+            _m5 = null;
+            _m15 = null;
+            _m30 = null;
+            _h1 = null;
+            _h4 = null;
+            _d1 = null;
+            _w1 = null;
+            _m1Count = -1;
+            _m5Count = -1;
+            _m15Count = -1;
+            _m30Count = -1;
+            _h1Count = -1;
+            _h4Count = -1;
+            _d1Count = -1;
+            _w1Count = -1;
+            _context = null;
+        }
+
         private static int Count(Bars bars)
         {
             return bars == null ? -1 : bars.Count;
