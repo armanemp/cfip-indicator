@@ -25,6 +25,9 @@ namespace cAlgo
             int closedM5)
         {
             if (!AlertOnHighConfidenceEntry ||
+                !_decision.ActionableNow ||
+                GetManagedPendingOrder() != null ||
+                _plan != null ||
                 _decision.Confidence <
                 HighConfidenceThreshold ||
                 _lastHighConfidenceM5 ==
@@ -50,14 +53,27 @@ namespace cAlgo
         private void ProcessRestrictionAlert(
             int closedM5)
         {
-            if (!_decision.EntryAllowed &&
-                RestrictionAlertEnabled(
-                    _decision.BlockReason) &&
+            bool actionabilityBlocked =
+                _decision.EntryAllowed &&
+                !_decision.ActionableNow &&
                 !string.IsNullOrWhiteSpace(
-                    _decision.BlockReason))
+                    _decision.ActionabilityReason);
+
+            string effectiveRestriction =
+                actionabilityBlocked
+                    ? "ACTIONABILITY • " +
+                      _decision.ActionabilityReason
+                    : _decision.BlockReason;
+
+            if ((!_decision.EntryAllowed ||
+                 actionabilityBlocked) &&
+                RestrictionAlertEnabled(
+                    effectiveRestriction) &&
+                !string.IsNullOrWhiteSpace(
+                    effectiveRestriction))
             {
                 string restrictionMessage =
-                    _decision.BlockReason.Trim();
+                    effectiveRestriction.Trim();
 
                 bool restrictionChanged =
                     !string.Equals(
@@ -88,7 +104,8 @@ namespace cAlgo
                 return;
             }
 
-            if (_decision.EntryAllowed)
+            if (_decision.EntryAllowed &&
+                _decision.ActionableNow)
             {
                 _lastRestrictionMessage =
                     "";
@@ -104,6 +121,9 @@ namespace cAlgo
         {
             if (!AlertOnSmartDecision ||
                 !_decision.EntryAllowed ||
+                !_decision.ActionableNow ||
+                GetManagedPendingOrder() != null ||
+                _plan != null ||
                 _decision.SmartQuality <
                 SmartStrongSetupQuality ||
                 _decision.Edge <
