@@ -269,27 +269,27 @@ namespace cAlgo
                 "fully mitigated Order Blocks cannot remain active");
 
             Assert(
-                OrderBlockRule.Identity(
+                OrderBlockRule.OrderBlockIdentity(
                     1,
                     42,
                     false) ==
-                OrderBlockRule.Identity(
+                OrderBlockRule.OrderBlockIdentity(
                     1,
                     42,
                     false) &&
-                OrderBlockRule.Identity(
+                OrderBlockRule.OrderBlockIdentity(
                     1,
                     42,
                     false) !=
-                OrderBlockRule.Identity(
+                OrderBlockRule.OrderBlockIdentity(
                     1,
                     42,
                     true) &&
-                OrderBlockRule.Identity(
+                OrderBlockRule.OrderBlockIdentity(
                     1,
                     42,
                     false) !=
-                OrderBlockRule.Identity(
+                OrderBlockRule.OrderBlockIdentity(
                     -1,
                     42,
                     false),
