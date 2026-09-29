@@ -2,6 +2,10 @@
 
 Date: 2026-09-29
 
+Status: verified and merged into main.
+
+Merge: PR #32, commit 29881e1a89eb0c8d92f2465234a6c3a44671154a.
+
 ## Objective
 
 Make execution-capacity semantics truthful and coordinated across every automatic execution path.
