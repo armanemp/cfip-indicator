@@ -52,7 +52,8 @@ namespace cAlgo
                         bars,
                         i);
 
-                if (FvgRule.TryGetThreeBarGap(
+                if (i >= 2 &&
+                    FvgRule.TryGetThreeBarGap(
                         direction,
                         bars.HighPrices[i - 2],
                         bars.LowPrices[i - 2],
