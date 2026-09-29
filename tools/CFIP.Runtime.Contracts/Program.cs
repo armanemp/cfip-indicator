@@ -12,6 +12,8 @@ namespace cAlgo
             VerifyFvgMathematics();
             VerifyOrderBlockMathematics();
             VerifyZoneConfluenceSymmetry();
+            VerifyTopDownCalibration();
+            VerifyProtectionProgressionSemantics();
             VerifyMtfContextIntegrity();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
@@ -490,6 +492,130 @@ namespace cAlgo
                 !ZoneConfluenceRule.IsDirectionalMatch(1, -1) &&
                 !ZoneConfluenceRule.IsDirectionalMatch(-1, 1),
                 "zone direction matching is explicitly mirrored");
+        }
+
+        private static void VerifyTopDownCalibration()
+        {
+            TopDownCalibrationSnapshot strongBuy =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, 1 },
+                    new[] { 82, 78 },
+                    new[] { 5.0, 8.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                strongBuy.HtfStrong &&
+                strongBuy.HtfDirection == 1 &&
+                strongBuy.Eligible &&
+                strongBuy.Stage == "ENTRY CALIBRATED",
+                "strong H1+ anchor plus aligned mid/entry frames calibrates an actionable setup");
+
+            TopDownCalibrationSnapshot entryConflict =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, 1 },
+                    new[] { 82, 78 },
+                    new[] { 5.0, 8.0 },
+                    -1,
+                    85,
+                    72,
+                    -1);
+
+            Assert(
+                !entryConflict.Eligible &&
+                entryConflict.Stage == "ENTRY CONFLICT",
+                "M5 entry direction cannot override a strong H1+ anchor");
+
+            TopDownCalibrationSnapshot midConflict =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1, 0 },
+                    new[] { 90, 84, 80, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { -1, -1 },
+                    new[] { 82, 78 },
+                    new[] { 5.0, 8.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                !midConflict.Eligible &&
+                midConflict.Stage == "MIDFRAME CONFLICT",
+                "strong middle-timeframe conflict blocks lower-frame override");
+
+            TopDownCalibrationSnapshot mixedHtf =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, -1, 0, 0 },
+                    new[] { 90, 90, 0, 0 },
+                    new[] { 3.0, 2.0, 2.0, 0.0 },
+                    new[] { 1, 0 },
+                    new[] { 85, 0 },
+                    new[] { 5.0, 8.0 },
+                    1,
+                    85,
+                    72,
+                    1);
+
+            Assert(
+                mixedHtf.Stage == "HTF MIXED",
+                "mixed H1+ context never pretends to be a calibrated anchor");
+        }
+
+        private static void VerifyProtectionProgressionSemantics()
+        {
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    100,
+                    101) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    101,
+                    100),
+                "BUY stop progression never moves backward");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    100,
+                    99) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    99,
+                    100),
+                "SELL stop progression never moves backward");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    110,
+                    120,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    120,
+                    110,
+                    true) &&
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    110,
+                    100,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    100,
+                    110,
+                    true),
+                "target progression preserves directional monotonicity");
         }
 
         private static void VerifyOrderBlockMathematics()
