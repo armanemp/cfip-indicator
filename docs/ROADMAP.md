@@ -3329,7 +3329,7 @@ Acceptance:
 
 ## Corrective Hotfix — Chart Lines and Execution Status UI — 2026-09-29
 
-Status: implementation complete; automated verification pending final green gates.
+Status: complete; merged after all three automated gates passed.
 
 User runtime validation identified two remaining presentation/control defects after earlier hotfixes:
 - compact plan lines could stop before the latest chart candle because the right edge was tied to an M5-to-chart time mapping;
@@ -3345,5 +3345,7 @@ Correction:
 - tools/audit_runtime_ui.py adds machine checks for these invariants.
 
 No decision, signal, risk, RR, SL/TP, broker-mutation, predictive-pending or lifecycle authority changed.
+
+Verification: Source / Architecture PASS; Runtime Acceptance Contracts PASS; cTrader Compile PASS. Hands-on cTrader validation remains required.
 
 Next planned strategy phase after this corrective hotfix: Phase 7.3 — Semantic Duplicate Audit.
