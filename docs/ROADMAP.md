@@ -3756,7 +3756,7 @@ Next phase after verification: Phase 9.12 — broker outcome/recovery telemetry 
 
 ## Phase 9.12 — Broker Outcome / Recovery Telemetry & Recent Lifecycle Calibration — 2026-09-29
 
-Status: IMPLEMENTATION COMPLETE on `phase/9-12-outcome-recovery-calibration`; verification pending.
+Status: VERIFIED COMPLETE on `phase/9-12-outcome-recovery-calibration`.
 
 Completed scope:
 - bounded 128-observation broker-confirmed outcome history;
@@ -3777,3 +3777,14 @@ Detailed record: `docs/PHASE-9-12-OUTCOME-RECOVERY-TELEMETRY-CALIBRATION.md`.
 
 Next phase after verification: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
 Operator action: local main should not be advanced from this branch until the phase is verified and merged.
+
+
+Verification:
+- Runtime Acceptance #1096 PASS
+- cTrader Compile/Build #1280 PASS
+- Source/Architecture + accumulated audit #1287 PASS
+- Decision Contracts PASS within the compile workflow
+- final verified branch head `626618e7100b2e2cecf8a172d67ed49aee43345b`
+
+Next phase after merge: Phase 9.13 — target-terminal lifecycle replay and outcome calibration validation.
+Operator action: pull local `main` after PR #54 merge.
