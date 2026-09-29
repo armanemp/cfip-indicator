@@ -229,6 +229,7 @@ for token in (
         raise SystemExit(f"Structural confirmations must consume the canonical structural rule: {token}")
 
 for token in (
+    "StructuralEvidenceRule.HasCanonicalStructuralEvent(",
     "if (f.StructureBull)",
     "else if (f.MssBull)",
     "else if (f.ChochBull)",
