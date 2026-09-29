@@ -141,9 +141,7 @@ private bool ClosedBarTriggerReady(
                 
                             return
                                 trigger >=
-                                Math.Max(
-                                    4,
-                                    requiredTrigger) &&
+                                requiredTrigger &&
                                 breakReady;
                         }
     }
