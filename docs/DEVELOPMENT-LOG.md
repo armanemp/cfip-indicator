@@ -233,3 +233,11 @@ Verification:
 - Source / Architecture: PASS (verify job 109191030847);
 - Runtime Acceptance Contracts: PASS (runtime job 109191030611);
 - cTrader compile: PASS (build job 109191030662).
+
+## Phase 5.4 — Canonical signal visual state
+
+Status: implementation complete; CI certification pending.
+
+Created SignalVisualSnapshot and centralized its builder/resolver. Chart plan, plan labels, pending rendering, signal arrows and panel signal state now consume the canonical snapshot. The renderer layer no longer reads decision/reaction/plan objects directly.
+
+CI certification is pending on the branch after the final code/doc commits.
