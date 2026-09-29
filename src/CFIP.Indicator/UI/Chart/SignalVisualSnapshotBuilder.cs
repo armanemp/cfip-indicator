@@ -6,6 +6,65 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private int ResolveCanonicalVisualDirection(
+            PendingOrder pending,
+            bool livePlan,
+            bool decisionReady,
+            bool reactionReady,
+            bool predictionReady)
+        {
+            if (!UseAuthoritativeSignalState)
+            {
+                return decisionReady &&
+                       _decision != null
+                    ? _decision.Direction
+                    : 0;
+            }
+
+            if (livePlan &&
+                _plan != null)
+                return _plan.Direction;
+
+            if (pending != null)
+                return pending.TradeType == TradeType.Buy
+                    ? 1
+                    : -1;
+
+            if (_plan != null &&
+                (_plan.Direction == 1 ||
+                 _plan.Direction == -1))
+                return _plan.Direction;
+
+            if (decisionReady &&
+                _decision != null)
+                return _decision.Direction;
+
+            if (reactionReady &&
+                _reaction != null)
+                return _reaction.Direction;
+
+            if (_m5Frame != null &&
+                (_m5Frame.Direction == 1 ||
+                 _m5Frame.Direction == -1) &&
+                _m5Frame.Quality >=
+                    Math.Max(
+                        50,
+                        LiveReactionStrongThreshold) &&
+                ((_m5Frame.Direction == 1 &&
+                  (_m5Frame.MssBull ||
+                   _m5Frame.ChochBull)) ||
+                 (_m5Frame.Direction == -1 &&
+                  (_m5Frame.MssBear ||
+                   _m5Frame.ChochBear))))
+                return _m5Frame.Direction;
+
+            if (predictionReady &&
+                _prediction != null)
+                return _prediction.Direction;
+
+            return 0;
+        }
+
         private SignalVisualSnapshot BuildSignalVisualSnapshot(
             int closedM5)
         {
@@ -54,6 +113,14 @@ namespace cAlgo
                 _prediction.Confidence >= Math.Max(
                     MinimumEarlyConfidence,
                     EarlySetupConfidence);
+
+            int visualDirection =
+                ResolveCanonicalVisualDirection(
+                    pending,
+                    livePlan,
+                    decisionReady,
+                    reactionReady,
+                    predictionReady);
 
             if (livePlan)
             {
@@ -132,9 +199,20 @@ namespace cAlgo
             else
             {
                 snapshot.Direction =
-                    _decision != null ? _decision.Direction : 0;
+                    visualDirection;
                 snapshot.Stage = snapshot.Direction == 0
                     ? "WAIT" : "WATCH";
+            }
+
+            if (snapshot.Direction == 0 &&
+                (snapshot.Stage == "ACTIVE" ||
+                 snapshot.Stage == "PENDING" ||
+                 snapshot.Stage == "PLAN" ||
+                 snapshot.Stage == "CONFIRMED" ||
+                 snapshot.Stage == "REACTION" ||
+                 snapshot.Stage == "PREDICTION"))
+            {
+                snapshot.Direction = visualDirection;
             }
 
             snapshot.DecisionReady = decisionReady;
@@ -146,6 +224,10 @@ namespace cAlgo
                 _decision == null ? 0 : _decision.Confidence;
             snapshot.DecisionReason =
                 _decision == null ? "" : _decision.Reason;
+            snapshot.ReactionReason =
+                _reaction == null ? "" : _reaction.Reason;
+            snapshot.ReactionConfidence =
+                _reaction == null ? 0 : _reaction.Confidence;
             snapshot.Regime =
                 _decision == null || string.IsNullOrWhiteSpace(_decision.Regime)
                     ? "UNKNOWN"
@@ -164,6 +246,12 @@ namespace cAlgo
             snapshot.ActiveBrokerTargetVisible =
                 snapshot.LivePosition &&
                 IsFinitePositive(snapshot.BrokerTarget);
+            snapshot.ArrowM5Index =
+                reactionReady &&
+                snapshot.Direction == _reaction.Direction &&
+                _m5Bars != null
+                    ? _m5Bars.Count - 1
+                    : closedM5;
 
             return snapshot;
         }
