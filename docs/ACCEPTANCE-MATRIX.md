@@ -629,7 +629,20 @@ Target-terminal/replay remains required for actual startup latency, archive crea
 | No new public parameters | PASS | Required |
 | Decision Contracts | PASS | Required |
 | Runtime Acceptance | PASS | Required |
-| cTrader Compile/Build | Required | Required |
+| cTrader Compile/Build | PASS | Required |
 | Source / Architecture + accumulated audits | Required | Required |
 | Target-terminal replay identifies actual missed setups and false signals | Required | Required |
 | Target-terminal broker execution/protection behavior | Required | Required |
+
+
+## Phase 9.16 verification evidence
+
+- Runtime Acceptance #1172: PASS
+- cTrader Compile/Build #1356: PASS
+- Source/Architecture + accumulated audits #1363: PASS
+- Phase 9.15 startup/persistence audit: PASS
+- Phase 9.16 signal measurement audit: PASS
+- Decision Contracts: PASS within Build
+- Verified merge commit: `fd6f43594ac1a50a67ccd3007c661a2ba059374f`
+
+Target-terminal replay remains required for empirical missed-opportunity/false-signal measurement, actual startup latency, chart lifecycle and broker execution/protection.
