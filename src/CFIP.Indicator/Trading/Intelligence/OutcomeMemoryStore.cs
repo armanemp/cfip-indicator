@@ -287,7 +287,7 @@ namespace cAlgo
 
                 string[] lines =
                     stored.Split(
-                        new[] { '\\n' },
+                        new[] { '\n' },
                         StringSplitOptions.RemoveEmptyEntries);
 
                 if (lines.Length == 0)
