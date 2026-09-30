@@ -16,6 +16,8 @@ namespace cAlgo
     {
         private void OnPositionClosed(PositionClosedEventArgs args)
                                 {
+            MarkBrokerStateDirty();
+
                                     if (args == null ||
                                         !IsManagedPosition(args.Position))
                                         return;
