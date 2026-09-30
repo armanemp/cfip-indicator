@@ -193,7 +193,7 @@ Next phase: CR4.3 / D3.
 
 ### CR4.3 closeout — 2026-09-30
 
-CR4.3 / D3 was completed on PR #104 and verified on implementation head `7defa4731ebd1e60d87d88a1659d4307607c46ab`.
+CR4.3 / D3 was completed and merged to main via PR #104, merge commit `d24b26de3ddf3709c8ea5e94f97a9f533b9b33dc`. The implementation head before merge was `7defa4731ebd1e60d87d88a1659d4307607c46ab`.
 
 Implementation record:
 - trace capture now occurs exactly once per canonical new closed M5 boundary, after decision/execution state is finalized;
