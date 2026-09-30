@@ -144,3 +144,12 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 6. چندسناریویی بودن display/registry به معنی چندپوزیشن بودن execution نیست؛ تغییر capacity فقط در یک فاز certification مستقل مجاز است.
 7. telemetry باید scenario identity و reason را برای rejection/failure/recovery نگه دارد تا cohort analysis ممکن باشد.
 8. هر ادعای کاهش false signal، افزایش accuracy، بهبود realized RR یا افزایش profit capture باید با replay/outcome واقعی پشتیبانی شود.
+
+
+## 15. روتین اختصاصی CR1.8 — Managed Identity و Reversal Safety
+
+1. در تمام broker mutationها، label باید از یک identity canonical و InstanceId همان instance ساخته شود؛ استفاده مستقیم از base label برای Market/Aggressive ممنوع است.
+2. `IsManagedPosition` و `IsManagedPendingOrder` باید exact instance identity را مصرف کنند؛ `ManagedActionsOnly=false` نباید دامنه مالکیت را به manual/foreign positionها باز کند.
+3. Recovery، EOD، News، Reversal و protection باید فقط از همان managed identity استفاده کنند و cross-instance adoption نداشته باشند.
+4. Reversal Close باید حداقل سود را از یک rule/parameter واحد بگیرد؛ هیچ `NetProfit > 0` hard-code جدیدی مجاز نیست.
+5. هشدارهای safety که در scanهای پرتکرار اجرا می‌شوند باید bounded باشند و نباید log I/O تکراری وارد hot path کنند.
