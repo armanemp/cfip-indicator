@@ -6,40 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
 
 namespace cAlgo
 {
-    internal sealed class NativeBarsReferenceComparer :
-        IEqualityComparer<Bars>
-    {
-        internal static readonly NativeBarsReferenceComparer Instance =
-            new NativeBarsReferenceComparer();
-
-        private NativeBarsReferenceComparer()
-        {
-        }
-
-        bool IEqualityComparer<Bars>.Equals(
-            Bars x,
-            Bars y)
-        {
-            return ReferenceEquals(x, y);
-        }
-
-        int IEqualityComparer<Bars>.GetHashCode(
-            Bars obj)
-        {
-            return
-                obj == null
-                    ? 0
-                    : RuntimeHelpers.GetHashCode(obj);
-        }
-    }
-
     public partial class CFIPIndicator : Indicator
     {
         private void RegisterAllNative()
@@ -54,57 +26,87 @@ namespace cAlgo
                             RegisterNative(_w1Bars);
                         }
         
-        private Native RegisterNative(Bars bars)
-                        {
-                            if (bars == null)
-                                return null;
-                
-                            Native existing;
-                
-                            if (_native.TryGetValue(
-                                    bars,
-                                    out existing))
-                                return existing;
-                
-                            Native set = new Native();
-                            set.Bars = bars;
-                
-                            try
-                            {
-                                InitializeExponentialMovingAverages(set, bars);
-                                InitializeAverageTrueRange(set, bars);
-                                InitializeRelativeStrengthIndex(set, bars);
-                                InitializeDirectionalMovementSystem(set, bars);
+        private Native FindRegisteredNative(Bars bars)
+        {
+            if (bars == null)
+                return null;
 
-                                if (UseMacdBias)
-                                    InitializeMacd(
-                                        set,
-                                        bars);
-                            }
-                            catch (Exception ex)
-                            {
-                                Print(
-                                    "CFIP indicator initialization failed: {0}",
-                                    ex.Message);
-                            }
-                
-                            _native[bars] = set;
-                            return set;
-                        }
-        
+            if (ReferenceEquals(_lastNativeBars, bars))
+                return _lastNative;
+
+            for (int i = 0; i < _native.Count; i++)
+            {
+                Native candidate = _native[i];
+
+                if (candidate != null &&
+                    ReferenceEquals(candidate.Bars, bars))
+                {
+                    _lastNativeBars = bars;
+                    _lastNative = candidate;
+                    return candidate;
+                }
+            }
+
+            return null;
+        }
+
+        private void RememberNative(
+            Bars bars,
+            Native set)
+        {
+            _lastNativeBars = bars;
+            _lastNative = set;
+        }
+
+        private Native RegisterNative(Bars bars)
+        {
+            if (bars == null)
+                return null;
+
+            Native existing =
+                FindRegisteredNative(bars);
+
+            if (existing != null)
+                return existing;
+
+            Native set = new Native();
+            set.Bars = bars;
+
+            try
+            {
+                InitializeExponentialMovingAverages(set, bars);
+                InitializeAverageTrueRange(set, bars);
+                InitializeRelativeStrengthIndex(set, bars);
+                InitializeDirectionalMovementSystem(set, bars);
+
+                if (UseMacdBias)
+                    InitializeMacd(
+                        set,
+                        bars);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP indicator initialization failed: {0}",
+                    ex.Message);
+            }
+
+            _native.Add(set);
+            RememberNative(bars, set);
+            return set;
+        }
+
         private Native GetNative(Bars bars)
-                        {
-                            if (bars == null)
-                                return null;
-                
-                            Native set;
-                
-                            return
-                                _native.TryGetValue(
-                                    bars,
-                                    out set)
-                                    ? set
-                                    : RegisterNative(bars);
-                        }
+        {
+            if (bars == null)
+                return null;
+
+            Native set =
+                FindRegisteredNative(bars);
+
+            return
+                set ??
+                RegisterNative(bars);
+        }
     }
 }
