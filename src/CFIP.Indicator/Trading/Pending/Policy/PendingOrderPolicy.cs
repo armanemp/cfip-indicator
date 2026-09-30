@@ -42,52 +42,56 @@ namespace cAlgo
                                 }
         
         private bool ReversalSetupStrong()
-                                {
-                                    if (_reaction == null ||
-                                        _decision == null ||
-                                        _reaction.Direction == 0 ||
-                                        _decision.Direction == 0)
-                                        return false;
+        {
+            if (_reaction == null ||
+                _decision == null ||
+                _reaction.Direction == 0 ||
+                _decision.Direction == 0)
+                return false;
 
-                                    bool strongBase =
-                                        _reaction.Direction != _decision.Direction &&
-                                        _reaction.EntryAllowed &&
-                                        _reaction.Confidence >=
-                                        Math.Max(
-                                            PendingMinimumConfidence,
-                                            ReversalProtectionMinimumQuality) &&
-                                        _reaction.IndependentEvidence >=
-                                        Math.Max(
-                                            2,
-                                            ReversalCloseMinimumEvidence);
+            bool strongBase =
+                _reaction.Direction != _decision.Direction &&
+                ReactionQualificationRule.IsQualified(
+                    _reaction.Direction,
+                    _reaction.ReactionConfirmedQuality,
+                    _reaction.ReactionConfirmedEvidence,
+                    _reaction.ReactionConfirmedHasContext,
+                    Math.Max(
+                        PendingMinimumConfidence,
+                        ReversalProtectionMinimumQuality),
+                    Math.Max(
+                        2,
+                        ReversalCloseMinimumEvidence),
+                    true,
+                    _reaction.ReactionClosedBarConfirmed);
 
-                                    if (!strongBase)
-                                        return false;
+            if (!strongBase)
+                return false;
 
-                                    RangeSignalQualityResult rangeQuality =
-                                        EvaluateRangeSignalQuality(
-                                            Math.Max(
-                                                0,
-                                                _m5Bars == null
-                                                    ? 0
-                                                    : _m5Bars.Count - 2),
-                                            _reaction.Direction,
-                                            _reaction.Confidence,
-                                            _reaction.SmartQuality,
-                                            Math.Max(
-                                                0,
-                                                _decision.Edge),
-                                            _reaction.IndependentEvidence,
-                                            StructuralConfirmations(
-                                                _reaction.Direction));
+            RangeSignalQualityResult rangeQuality =
+                EvaluateRangeSignalQuality(
+                    Math.Max(
+                        0,
+                        _m5Bars == null
+                            ? 0
+                            : _m5Bars.Count - 2),
+                    _reaction.Direction,
+                    _reaction.ReactionConfirmedQuality,
+                    _reaction.ReactionConfirmedQuality,
+                    Math.Max(
+                        0,
+                        _decision.Edge),
+                    _reaction.ReactionConfirmedEvidence,
+                    StructuralConfirmations(
+                        _reaction.Direction));
 
-                                    return rangeQuality.Allowed &&
-                                        _m5Frame.IndicatorConfluenceQuality >=
-                                        ExecutionThresholdPolicy.PendingReversalIndicatorConfluenceMinimum &&
-                                        _m5Frame.IndicatorConflict <=
-                                        ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum;
-                                }
-        
+            return rangeQuality.Allowed &&
+                _m5Frame.IndicatorConfluenceQuality >=
+                ExecutionThresholdPolicy.PendingReversalIndicatorConfluenceMinimum &&
+                _m5Frame.IndicatorConflict <=
+                ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum;
+        }
+
         private bool PendingModeAllowsStop()
                                 {
                                     return

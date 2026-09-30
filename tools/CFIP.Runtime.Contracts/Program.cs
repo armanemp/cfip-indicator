@@ -58,6 +58,7 @@ namespace cAlgo
             VerifyRejectionSemantics();
             VerifyDivergenceConflictSemantics();
             VerifyStructuralTimeframeSemantics();
+            VerifyReactionQualificationSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -3900,6 +3901,130 @@ namespace cAlgo
                 policy.Direction == 1 &&
                 policy.QualifyingSamples == 1,
                 "new M5 starts a fresh qualification window");
+        }
+
+        private static void VerifyReactionQualificationSemantics()
+        {
+            Assert(
+                ReactionQualificationRule.ResolveDirection(80, 70) == 1 &&
+                ReactionQualificationRule.ResolveDirection(70, 80) == -1 &&
+                ReactionQualificationRule.ResolveDirection(80, 80) == 0,
+                "reaction direction resolves symmetrically and ties to neutral");
+
+            Assert(
+                ReactionQualificationRule.HasPriorCounterMove(
+                    1,
+                    100.0,
+                    99.0,
+                    98.0) &&
+                ReactionQualificationRule.HasPriorCounterMove(
+                    -1,
+                    100.0,
+                    101.0,
+                    102.0),
+                "reversal requires a prior move against the candidate direction");
+
+            Assert(
+                !ReactionQualificationRule.HasPriorCounterMove(
+                    1,
+                    100.0,
+                    101.0,
+                    101.5) &&
+                !ReactionQualificationRule.HasPriorCounterMove(
+                    -1,
+                    100.0,
+                    99.0,
+                    98.5),
+                "same-direction continuation is not accepted as prior counter-move");
+
+            Assert(
+                ReactionQualificationRule.HasQualifyingContext(
+                    true,
+                    false,
+                    false,
+                    false) &&
+                ReactionQualificationRule.HasQualifyingContext(
+                    false,
+                    false,
+                    false,
+                    true),
+                "no-zone reversal requires a real non-zone structural context");
+
+            Assert(
+                ReactionQualificationRule.HasQualifyingContext(
+                    false,
+                    true,
+                    true,
+                    false) &&
+                !ReactionQualificationRule.HasQualifyingContext(
+                    true,
+                    true,
+                    false,
+                    true),
+                "present zones must be qualifying and cannot be bypassed by unrelated context");
+
+            Assert(
+                ReactionQualificationRule.IsQualified(
+                    1,
+                    75,
+                    3,
+                    true,
+                    70,
+                    2,
+                    false,
+                    false) &&
+                !ReactionQualificationRule.IsQualified(
+                    1,
+                    75,
+                    3,
+                    true,
+                    70,
+                    2,
+                    true,
+                    false) &&
+                ReactionQualificationRule.IsQualified(
+                    1,
+                    75,
+                    3,
+                    true,
+                    70,
+                    2,
+                    true,
+                    true),
+                "intrabar qualification can arm immediately, while pending confirmation requires a closed bar");
+
+            Assert(
+                !ReactionQualificationRule.IsQualified(
+                    1,
+                    90,
+                    3,
+                    false,
+                    70,
+                    2,
+                    false,
+                    false) &&
+                !ReactionQualificationRule.IsQualified(
+                    0,
+                    90,
+                    3,
+                    true,
+                    70,
+                    2,
+                    false,
+                    false),
+                "missing context or direction always fails closed");
+
+            Assert(
+                ReactionQualificationRule.IsClosedBarConfirmed(
+                    20,
+                    20) &&
+                ReactionQualificationRule.IsClosedBarConfirmed(
+                    20,
+                    21) &&
+                !ReactionQualificationRule.IsClosedBarConfirmed(
+                    20,
+                    19),
+                "closed-bar confirmation never accepts a candidate after the known closed index");
         }
 
         private static void Assert(bool condition, string name)

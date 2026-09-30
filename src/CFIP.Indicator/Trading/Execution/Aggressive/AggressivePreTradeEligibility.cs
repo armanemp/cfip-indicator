@@ -14,12 +14,36 @@ namespace cAlgo
                     LifecycleState.ExitRequested ||
                 _plan != null ||
                 _reaction == null ||
-                !_reaction.EntryAllowed ||
                 _reaction.Direction == 0)
             {
                 _aggressiveEntryPolicy.ResetQualification();
                 _autoExecutionBlockReason =
                     "AGGRESSIVE • SETUP NOT ELIGIBLE";
+                return false;
+            }
+
+            bool intrabarReactionQualified =
+                ReactionQualificationRule.IsQualified(
+                    _reaction.Direction,
+                    _reaction.ReactionIntrabarQuality,
+                    _reaction.ReactionIntrabarEvidence,
+                    _reaction.ReactionHasContext,
+                    Math.Max(
+                        50,
+                        Math.Max(
+                            FastReversalMinimumQuality,
+                            LiveReactionThreshold)),
+                    Math.Max(
+                        2,
+                        LiveReversalMinimumEvidence),
+                    false,
+                    false);
+
+            if (!intrabarReactionQualified)
+            {
+                _aggressiveEntryPolicy.ResetQualification();
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • REACTION CONTEXT";
                 return false;
             }
 

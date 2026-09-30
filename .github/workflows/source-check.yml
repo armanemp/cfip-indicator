@@ -31,6 +31,7 @@ jobs:
       - run: python tools/audit_cbot_boundary.py
       - run: python tools/audit_cbot_preflight.py
       - run: python tools/audit_phase_2_1.py
+      - run: python tools/audit_phase_2_2.py
       - run: python tools/audit_phase_11_2.py
       - run: python tools/audit_phase_11_3.py
       - run: python tools/audit_phase_11_4.py

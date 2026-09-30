@@ -49,5 +49,16 @@ namespace cAlgo
                         public int DivergenceQuality;
                         public string DivergenceType;
                         public string ActionabilityReason;
+                        public bool ReactionHasContext;
+                        public bool ReactionHasCounterMove;
+                        public bool ReactionHasQualifyingZone;
+                        public bool ReactionHasSwingInteraction;
+                        public bool ReactionZonePresent;
+                        public bool ReactionClosedBarConfirmed;
+                        public bool ReactionConfirmedHasContext;
+                        public int ReactionConfirmedQuality;
+                        public int ReactionConfirmedEvidence;
+                        public int ReactionIntrabarQuality;
+                        public int ReactionIntrabarEvidence;
                     }
 }
