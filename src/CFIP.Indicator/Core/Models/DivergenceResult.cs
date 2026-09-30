@@ -44,5 +44,23 @@ namespace cAlgo
                 false,
                 false);
         }
+
+        public static DivergenceResult CreateConflict(
+            bool regularBull,
+            bool regularBear,
+            bool hiddenBull,
+            bool hiddenBear)
+        {
+            // Conflict remains diagnostically visible, but Quality is zero
+            // because it is not a directional-strength value.
+            return new DivergenceResult(
+                0,
+                0,
+                "CONFLICT",
+                regularBull,
+                regularBear,
+                hiddenBull,
+                hiddenBear);
+        }
     }
 }

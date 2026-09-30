@@ -24,14 +24,36 @@ namespace cAlgo
                 atr <= 0)
                 return false;
 
-            // Sweep only a causally established structural low. Rolling raw
-            // extremes are not treated as structural liquidity identities.
-            double prior =
-                FindSwingLow(
+            // Sweep only a causally established, still-active structural
+            // low. A level already invalidated by a prior close cannot be
+            // reused as fresh liquidity.
+            int plateauStart;
+            int plateauEnd;
+            double prior;
+
+            if (!TryFindLatestSwingLow(
                     bars,
                     index,
                     SwingStrength,
-                    1);
+                    out plateauStart,
+                    out plateauEnd,
+                    out prior))
+                return false;
+
+            int confirmationIndex =
+                plateauEnd +
+                Math.Max(
+                    1,
+                    SwingStrength);
+
+            if (!LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    1,
+                    confirmationIndex,
+                    index,
+                    prior,
+                    Symbol.PipSize * 2,
+                    i => bars.ClosePrices[i]))
+                return false;
 
             double minimumDepth =
                 Math.Max(
@@ -44,7 +66,6 @@ namespace cAlgo
                 bars.LowPrices[index];
 
             return
-                prior > 0 &&
                 penetration >=
                 minimumDepth &&
                 bars.ClosePrices[index] >
@@ -64,12 +85,33 @@ namespace cAlgo
                 atr <= 0)
                 return false;
 
-            double prior =
-                FindSwingHigh(
+            int plateauStart;
+            int plateauEnd;
+            double prior;
+
+            if (!TryFindLatestSwingHigh(
                     bars,
                     index,
                     SwingStrength,
-                    1);
+                    out plateauStart,
+                    out plateauEnd,
+                    out prior))
+                return false;
+
+            int confirmationIndex =
+                plateauEnd +
+                Math.Max(
+                    1,
+                    SwingStrength);
+
+            if (!LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    -1,
+                    confirmationIndex,
+                    index,
+                    prior,
+                    Symbol.PipSize * 2,
+                    i => bars.ClosePrices[i]))
+                return false;
 
             double minimumDepth =
                 Math.Max(
@@ -82,7 +124,6 @@ namespace cAlgo
                 prior;
 
             return
-                prior > 0 &&
                 penetration >=
                 minimumDepth &&
                 bars.ClosePrices[index] <

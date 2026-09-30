@@ -26,6 +26,10 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TopDownCalibrationGroupResult.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SwingPlateauRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralEvidenceRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralEventRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/LiquiditySweepRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/RejectionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/VolumeSizingRule.cs" />

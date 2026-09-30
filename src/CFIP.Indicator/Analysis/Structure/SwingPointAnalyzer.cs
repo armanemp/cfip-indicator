@@ -177,6 +177,104 @@ namespace cAlgo
             return 0;
         }
 
+        private bool TryFindLatestSwingHigh(
+            Bars bars,
+            int index,
+            int strength,
+            out int plateauStart,
+            out int plateauEnd,
+            out double level)
+        {
+            plateauStart = plateauEnd = -1;
+            level = 0;
+
+            if (bars == null ||
+                index < strength * 2 + 1)
+                return false;
+
+            int first =
+                Math.Max(
+                    strength,
+                    index -
+                    StructureLookback);
+
+            int last =
+                Math.Min(
+                    index -
+                    strength,
+                    bars.Count -
+                    strength -
+                    1);
+
+            for (int i = last;
+                 i >= first;
+                 i--)
+            {
+                if (IsCanonicalSwingHigh(
+                        bars,
+                        i,
+                        index,
+                        strength,
+                        out plateauStart,
+                        out plateauEnd,
+                        out level))
+                    return true;
+            }
+
+            plateauStart = plateauEnd = -1;
+            level = 0;
+            return false;
+        }
+
+        private bool TryFindLatestSwingLow(
+            Bars bars,
+            int index,
+            int strength,
+            out int plateauStart,
+            out int plateauEnd,
+            out double level)
+        {
+            plateauStart = plateauEnd = -1;
+            level = 0;
+
+            if (bars == null ||
+                index < strength * 2 + 1)
+                return false;
+
+            int first =
+                Math.Max(
+                    strength,
+                    index -
+                    StructureLookback);
+
+            int last =
+                Math.Min(
+                    index -
+                    strength,
+                    bars.Count -
+                    strength -
+                    1);
+
+            for (int i = last;
+                 i >= first;
+                 i--)
+            {
+                if (IsCanonicalSwingLow(
+                        bars,
+                        i,
+                        index,
+                        strength,
+                        out plateauStart,
+                        out plateauEnd,
+                        out level))
+                    return true;
+            }
+
+            plateauStart = plateauEnd = -1;
+            level = 0;
+            return false;
+        }
+
         private double FindSwingHighAbove(
             Bars bars,
             int index,

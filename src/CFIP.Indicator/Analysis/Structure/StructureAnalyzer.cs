@@ -21,19 +21,25 @@ namespace cAlgo
                             int index,
                             double atr)
                         {
+                            if (bars == null ||
+                                index < 1)
+                                return false;
+
                             double swing =
                                 FindSwingHigh(
                                     bars,
                                     index,
                                     SwingStrength,
                                     1);
-                
+
                             return
-                                IsFinitePositive(swing) &&
-                                bars.ClosePrices[index] >
-                                swing +
-                                atr *
-                                StructureBreakAtr;
+                                StructuralEventRule.IsFreshBreak(
+                                    1,
+                                    bars.ClosePrices[index - 1],
+                                    bars.ClosePrices[index],
+                                    swing,
+                                    atr,
+                                    StructureBreakAtr);
                         }
         
         private bool BearStructure(
@@ -41,19 +47,25 @@ namespace cAlgo
                             int index,
                             double atr)
                         {
+                            if (bars == null ||
+                                index < 1)
+                                return false;
+
                             double swing =
                                 FindSwingLow(
                                     bars,
                                     index,
                                     SwingStrength,
                                     1);
-                
+
                             return
-                                IsFinitePositive(swing) &&
-                                bars.ClosePrices[index] <
-                                swing -
-                                atr *
-                                StructureBreakAtr;
+                                StructuralEventRule.IsFreshBreak(
+                                    -1,
+                                    bars.ClosePrices[index - 1],
+                                    bars.ClosePrices[index],
+                                    swing,
+                                    atr,
+                                    StructureBreakAtr);
                         }
         
         private bool BullMss(
@@ -61,20 +73,26 @@ namespace cAlgo
                             int index,
                             double atr)
                         {
+                            if (!UseMssChoch ||
+                                bars == null ||
+                                index < 2)
+                                return false;
+
                             double previous =
                                 FindSwingHigh(
                                     bars,
                                     index - 1,
                                     SwingStrength,
                                     1);
-                
+
                             return
-                                UseMssChoch &&
-                                IsFinitePositive(previous) &&
-                                bars.ClosePrices[index] >
-                                previous +
-                                atr *
-                                StructureBreakAtr;
+                                StructuralEventRule.IsFreshBreak(
+                                    1,
+                                    bars.ClosePrices[index - 1],
+                                    bars.ClosePrices[index],
+                                    previous,
+                                    atr,
+                                    StructureBreakAtr);
                         }
         
         private bool BearMss(
@@ -82,20 +100,26 @@ namespace cAlgo
                             int index,
                             double atr)
                         {
+                            if (!UseMssChoch ||
+                                bars == null ||
+                                index < 2)
+                                return false;
+
                             double previous =
                                 FindSwingLow(
                                     bars,
                                     index - 1,
                                     SwingStrength,
                                     1);
-                
+
                             return
-                                UseMssChoch &&
-                                IsFinitePositive(previous) &&
-                                bars.ClosePrices[index] <
-                                previous -
-                                atr *
-                                StructureBreakAtr;
+                                StructuralEventRule.IsFreshBreak(
+                                    -1,
+                                    bars.ClosePrices[index - 1],
+                                    bars.ClosePrices[index],
+                                    previous,
+                                    atr,
+                                    StructureBreakAtr);
                         }
         
         private bool BullChoch(
@@ -103,22 +127,37 @@ namespace cAlgo
                             int index)
                         {
                             if (!UseMssChoch ||
+                                bars == null ||
                                 index < 12)
                                 return false;
-                
-                            double level =
-                                Highest(
+
+                            double atr =
+                                Atr(
                                     bars,
-                                    Math.Max(
-                                        0,
-                                        index - 8),
+                                    index);
+
+                            bool freshBullBreak =
+                                BullStructure(
+                                    bars,
+                                    index,
+                                    atr);
+
+                            double previousAtr =
+                                Atr(
+                                    bars,
                                     index - 1);
-                
+
+                            bool priorBearStructure =
+                                BearStructure(
+                                    bars,
+                                    index - 1,
+                                    previousAtr);
+
                             return
-                                bars.ClosePrices[index] >
-                                level &&
-                                bars.ClosePrices[index - 1] <=
-                                level;
+                                StructuralEventRule.IsChangeOfCharacter(
+                                    1,
+                                    priorBearStructure,
+                                    freshBullBreak);
                         }
         
         private bool BearChoch(
@@ -126,22 +165,37 @@ namespace cAlgo
                             int index)
                         {
                             if (!UseMssChoch ||
+                                bars == null ||
                                 index < 12)
                                 return false;
-                
-                            double level =
-                                Lowest(
+
+                            double atr =
+                                Atr(
                                     bars,
-                                    Math.Max(
-                                        0,
-                                        index - 8),
+                                    index);
+
+                            bool freshBearBreak =
+                                BearStructure(
+                                    bars,
+                                    index,
+                                    atr);
+
+                            double previousAtr =
+                                Atr(
+                                    bars,
                                     index - 1);
-                
+
+                            bool priorBullStructure =
+                                BullStructure(
+                                    bars,
+                                    index - 1,
+                                    previousAtr);
+
                             return
-                                bars.ClosePrices[index] <
-                                level &&
-                                bars.ClosePrices[index - 1] >=
-                                level;
+                                StructuralEventRule.IsChangeOfCharacter(
+                                    -1,
+                                    priorBullStructure,
+                                    freshBearBreak);
                         }
         
         private bool BullDisplacement(
@@ -205,37 +259,18 @@ namespace cAlgo
                             int index,
                             int direction)
                         {
-                            double range =
-                                Math.Max(
-                                    Symbol.PipSize,
-                                    bars.HighPrices[index] -
-                                    bars.LowPrices[index]);
-                
-                            double body =
-                                Math.Abs(
-                                    bars.ClosePrices[index] -
-                                    bars.OpenPrices[index]);
-                
-                            if (direction == 1)
-                            {
-                                double wick =
-                                    Math.Min(
-                                        bars.OpenPrices[index],
-                                        bars.ClosePrices[index]) -
-                                    bars.LowPrices[index];
-                
-                                return wick > body * 1.25 &&
-                                       wick / range > 0.20;
-                            }
-                
-                            double upper =
-                                bars.HighPrices[index] -
-                                Math.Max(
-                                    bars.OpenPrices[index],
-                                    bars.ClosePrices[index]);
-                
-                            return upper > body * 1.25 &&
-                                   upper / range > 0.20;
+                            if (bars == null ||
+                                index < 0 ||
+                                index >= bars.Count)
+                                return false;
+
+                            return RejectionRule.IsRejection(
+                                bars.OpenPrices[index],
+                                bars.ClosePrices[index],
+                                bars.HighPrices[index],
+                                bars.LowPrices[index],
+                                direction,
+                                Symbol.PipSize);
                         }
         
         private bool StableDirection(

@@ -53,6 +53,11 @@ namespace cAlgo
             VerifyActionabilityAndDivergenceState();
             VerifyManagedIdentitySemantics();
             VerifyReversalProfitThresholdSemantics();
+            VerifyStructuralEventSemantics();
+            VerifyLiquiditySweepSemantics();
+            VerifyRejectionSemantics();
+            VerifyDivergenceConflictSemantics();
+            VerifyStructuralTimeframeSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -3573,6 +3578,249 @@ namespace cAlgo
             Assert(
                 !ReversalProfitThresholdRule.MeetsMinimumNetProfit(10, -1),
                 "negative configured reversal profit threshold is rejected");
+        }
+
+        private static void VerifyStructuralEventSemantics()
+        {
+            Assert(
+                StructuralEventRule.IsFreshBreak(
+                    1,
+                    100.50,
+                    100.60,
+                    100.0,
+                    1.0,
+                    0.50),
+                "bullish structural break is a fresh threshold crossing");
+
+            Assert(
+                !StructuralEventRule.IsFreshBreak(
+                    1,
+                    100.60,
+                    100.70,
+                    100.0,
+                    1.0,
+                    0.50),
+                "bullish structural break does not repeat after the level is already broken");
+
+            Assert(
+                StructuralEventRule.IsFreshBreak(
+                    -1,
+                    99.50,
+                    99.40,
+                    100.0,
+                    1.0,
+                    0.50),
+                "bearish structural break is a fresh threshold crossing");
+
+            Assert(
+                !StructuralEventRule.IsFreshBreak(
+                    -1,
+                    99.40,
+                    99.30,
+                    100.0,
+                    1.0,
+                    0.50),
+                "bearish structural break does not repeat after the level is already broken");
+
+            Assert(
+                StructuralEventRule.IsChangeOfCharacter(
+                    1,
+                    true,
+                    true) &&
+                !StructuralEventRule.IsChangeOfCharacter(
+                    1,
+                    false,
+                    true) &&
+                !StructuralEventRule.IsChangeOfCharacter(
+                    -1,
+                    true,
+                    false),
+                "CHOCH requires prior opposite structure and a fresh break");
+
+            Assert(
+                StructuralEventRule.EventIdentity(
+                    1,
+                    "bos",
+                    20,
+                    25) ==
+                StructuralEventRule.EventIdentity(
+                    1,
+                    "BOS",
+                    20,
+                    25) &&
+                StructuralEventRule.EventIdentity(
+                    1,
+                    "BOS",
+                    20,
+                    25) !=
+                StructuralEventRule.EventIdentity(
+                    1,
+                    "MSS",
+                    20,
+                    25) &&
+                StructuralEventRule.EventIdentity(
+                    1,
+                    "BOS",
+                    20,
+                    25) !=
+                StructuralEventRule.EventIdentity(
+                    -1,
+                    "BOS",
+                    20,
+                    25),
+                "structural event identity separates type and direction");
+        }
+
+        private static void VerifyLiquiditySweepSemantics()
+        {
+            double[] intact =
+            {
+                100.10,
+                99.95,
+                100.05,
+                100.20,
+                100.30
+            };
+
+            Assert(
+                LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    1,
+                    0,
+                    4,
+                    100.0,
+                    0.10,
+                    i => intact[i]),
+                "bullish liquidity remains active while prior closes stay above tolerance");
+
+            double[] broken =
+            {
+                100.10,
+                99.70,
+                100.05,
+                100.20,
+                100.30
+            };
+
+            Assert(
+                !LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    1,
+                    0,
+                    4,
+                    100.0,
+                    0.10,
+                    i => broken[i]),
+                "bullish sweep rejects a level already invalidated by a prior close");
+
+            double[] bearIntact =
+            {
+                99.90,
+                100.05,
+                99.95,
+                99.80,
+                99.70
+            };
+
+            Assert(
+                LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    -1,
+                    0,
+                    4,
+                    100.0,
+                    0.10,
+                    i => bearIntact[i]),
+                "bearish liquidity remains active while prior closes stay below tolerance");
+
+            double[] bearBroken =
+            {
+                99.90,
+                100.30,
+                99.95,
+                99.80,
+                99.70
+            };
+
+            Assert(
+                !LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    -1,
+                    0,
+                    4,
+                    100.0,
+                    0.10,
+                    i => bearBroken[i]),
+                "bearish sweep rejects a level already invalidated by a prior close");
+        }
+
+        private static void VerifyRejectionSemantics()
+        {
+            Assert(
+                RejectionRule.IsRejection(
+                    100.0,
+                    100.5,
+                    101.0,
+                    98.0,
+                    1,
+                    0.10),
+                "bullish rejection requires a meaningful body and lower wick");
+
+            Assert(
+                RejectionRule.IsRejection(
+                    100.5,
+                    100.0,
+                    102.0,
+                    99.0,
+                    -1,
+                    0.10),
+                "bearish rejection is directionally symmetric");
+
+            Assert(
+                RejectionRule.IsDoji(
+                    100.0,
+                    100.01,
+                    101.0,
+                    99.0,
+                    0.10) &&
+                !RejectionRule.IsRejection(
+                    100.0,
+                    100.01,
+                    101.0,
+                    99.0,
+                    1,
+                    0.10),
+                "doji-like body is not promoted to directional rejection evidence");
+        }
+
+        private static void VerifyDivergenceConflictSemantics()
+        {
+            DivergenceResult conflict =
+                DivergenceResult.CreateConflict(
+                    true,
+                    true,
+                    false,
+                    false);
+
+            Assert(
+                conflict.Direction == 0 &&
+                conflict.Quality == 0 &&
+                conflict.Type == "CONFLICT" &&
+                conflict.RegularBull &&
+                conflict.RegularBear &&
+                !conflict.HasSignal,
+                "divergence conflict remains visible but cannot act as directional strength");
+        }
+
+        private static void VerifyStructuralTimeframeSemantics()
+        {
+            Assert(
+                StructuralTimeframeRule.IsSupported("M15") &&
+                StructuralTimeframeRule.IsSupported("H4") &&
+                StructuralTimeframeRule.IsSupported("W1"),
+                "known structural timeframes are accepted");
+
+            Assert(
+                !StructuralTimeframeRule.IsSupported("H2") &&
+                !StructuralTimeframeRule.IsSupported("") &&
+                !StructuralTimeframeRule.IsSupported("  "),
+                "unknown structural timeframes fail explicitly");
         }
 
         private static void VerifyAggressiveEntryPolicy()

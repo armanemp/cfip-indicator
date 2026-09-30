@@ -81,12 +81,7 @@ namespace cAlgo
                     bull.Quality -
                     bear.Quality) < 10)
             {
-                return new DivergenceResult(
-                    0,
-                    Math.Max(
-                        bull.Quality,
-                        bear.Quality),
-                    "CONFLICT",
+                return DivergenceResult.CreateConflict(
                     bull.Regular,
                     bear.BearRegular,
                     bull.Hidden,
