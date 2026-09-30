@@ -272,8 +272,7 @@ namespace cAlgo
                     closedM5,
                     barOpenTimeUtcTicks,
                     _plan.CreatedM5,
-                    _plan.SignalBarOpenTimeUtcTicks,
-                    _plan.SignalTraceId))
+                    _plan.SignalBarOpenTimeUtcTicks))
             {
                 entryMode = _plan.EntryMode;
                 entry = _plan.Entry;
@@ -300,12 +299,11 @@ namespace cAlgo
             }
 
             if (_setupPreview != null &&
-                SignalTraceLineageRule.Matches(
+                SignalTraceLineageRule.MatchesClosedBar(
                     closedM5,
                     barOpenTimeUtcTicks,
                     _setupPreview.CreatedM5,
-                    barOpenTimeUtcTicks,
-                    traceId: null))
+                    barOpenTimeUtcTicks))
             {
                 entryMode = _setupPreview.EntryMode;
                 entry = _setupPreview.Entry;
