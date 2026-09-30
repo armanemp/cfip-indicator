@@ -83,7 +83,7 @@ namespace cAlgo
 
                                     return rangeQuality.Allowed &&
                                         _m5Frame.IndicatorConfluenceQuality >=
-                                        62 &&
+                                        ExecutionThresholdPolicy.PendingReversalIndicatorConfluenceMinimum &&
                                         _m5Frame.IndicatorConflict <=
                                         ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum;
                                 }
