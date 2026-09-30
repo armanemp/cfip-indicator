@@ -11,7 +11,7 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const string OutcomeMemorySchema = "CFIP-OUTCOME,2";
-        private const string CompatibilityOutcomeMemorySchema = "CFIP-OUTCOME";
+        private const string PriorOutcomeMemorySchema = "CFIP-OUTCOME";
         private const int OutcomeMemoryMaxAgeDays = 90;
 
         private string _memoryConfigurationFingerprintCache;
@@ -305,7 +305,7 @@ namespace cAlgo
                 bool legacySchema =
                     string.Equals(
                         schema,
-                        CompatibilityOutcomeMemorySchema,
+                        PriorOutcomeMemorySchema,
                         StringComparison.Ordinal);
 
                 if (!currentSchema &&
