@@ -13,6 +13,7 @@ namespace cAlgo
         public int RollingFirstIndex { get; set; } = -1;
         public int RollingClosedIndex { get; set; } = -1;
         public int BarCount { get; set; } = -1;
+        public bool InvalidationPending { get; set; }
 
         public DateTime FirstOpenTime { get; set; } = DateTime.MinValue;
         public double FirstOpen { get; set; } = double.NaN;
