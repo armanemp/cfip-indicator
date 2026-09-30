@@ -1896,6 +1896,14 @@ CR-0 audit/source inventory:
 CR1.1 — Session/EOD and period-reference correctness is complete.
 CR1.2 — Daily-loss lock and stable accounting basis is complete.
 CR1.3 — News guard correctness and non-blocking refresh is complete.
+CR1.4 — Closed-bar cycle ordering and waiting-for-data state is complete.
+
+CR1.4 implementation closed 2026-09-30:
+- same-cycle broker reconciliation before new closed-bar decision/alert consumption;
+- deterministic bounded readiness states with 250/500 ms probe cadence;
+- waiting-state management remains active while planning/execution is disabled;
+- startup seed follows the same pre-decision broker boundary;
+- dedicated cycle audit + runtime readiness contracts added.
 
 Completed CR1.3 scope:
 - replaced synchronous economic-news HTTP with cTrader Http.GetAsync;
