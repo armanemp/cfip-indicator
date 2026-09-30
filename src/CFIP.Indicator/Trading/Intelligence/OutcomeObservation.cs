@@ -3,6 +3,7 @@ namespace cAlgo
     internal sealed class OutcomeObservation
     {
         public long PositionId;
+        public string SignalTraceId;
         public int Direction;
         public OpportunityLane Lane;
         public ExecutionMode EntryMode;
