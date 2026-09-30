@@ -404,13 +404,16 @@ namespace cAlgo
                     SerializeOutcomeHistory(),
                     LocalStorageScope.Type);
 
-                LocalStorage.Flush(
-                    LocalStorageScope.Type);
+                // SetString updates the local-storage value; cTrader persists
+                // local storage automatically. The explicit disk flush is
+                // deferred to the runtime heartbeat so outcome recording never
+                // blocks the calculation hot path.
+                MarkOutcomeMemoryPersistenceDirty();
             }
             catch (Exception ex)
             {
                 Print(
-                    "CFIP outcome memory persist failed: {0}",
+                    "CFIP outcome memory queue failed: {0}",
                     ex.Message);
             }
         }
