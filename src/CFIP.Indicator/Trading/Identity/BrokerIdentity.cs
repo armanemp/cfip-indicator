@@ -67,6 +67,16 @@ namespace cAlgo
         
         private bool ValidateTradeIdentityConfiguration()
                         {
+                            if (!ManagedIdentityRule.TryBuildLabel(
+                                    NormalizeLabel(),
+                                    InstanceId,
+                                    out _))
+                            {
+                                Print(
+                                    "CFIP managed identity unavailable: InstanceId is empty. Automatic execution is blocked.");
+                                return false;
+                            }
+
                             if (string.IsNullOrWhiteSpace(
                                     ManagedPositionLabel))
                                 return true;
@@ -98,18 +108,20 @@ namespace cAlgo
                                 return false;
                 
                             if (!ManagedActionsOnly)
-                                return true;
-                
+                            {
+                                Print(
+                                    "CFIP Managed Actions Only=false is safety-restricted: foreign/manual positions are never auto-managed; exact CFIP instance identity is still required.");
+                            }
+
                             string managedLabel =
-                                string.IsNullOrWhiteSpace(
-                                    ManagedPositionLabel)
-                                    ? NormalizeLabel()
-                                    : ManagedPositionLabel.Trim();
-                
-                            return string.Equals(
-                                position.Label,
-                                managedLabel,
-                                StringComparison.Ordinal);
+                                ManagedExecutionLabel();
+
+                            return
+                                !string.IsNullOrWhiteSpace(managedLabel) &&
+                                string.Equals(
+                                    position.Label,
+                                    managedLabel,
+                                    StringComparison.Ordinal);
                         }
         
         private bool IsManagedPendingOrder(PendingOrder order)
@@ -125,7 +137,12 @@ namespace cAlgo
         
         private string PendingOrderLabel()
                         {
-                            return NormalizeLabel() + "-PENDING";
+                            string managedLabel =
+                                ManagedExecutionLabel();
+
+                            return string.IsNullOrWhiteSpace(managedLabel)
+                                ? string.Empty
+                                : managedLabel + "-PENDING";
                         }
         
         private int ManagedPendingOrderCount()
