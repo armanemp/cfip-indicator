@@ -93,7 +93,7 @@ require_text(
     "SignalTraceSchema =",
     "OutcomeArchivePeriodStart(",
     "start.AddDays(90)",
-    "BufferedArchivePersistence",
+    "_bufferedArchivePersistence.Enqueue(",
     "BarOpenTimeUtcTicks",
 )
 require_text(
@@ -164,7 +164,7 @@ require_text(
 signal_trace_persistence_text = read(signal_trace_persistence_path)
 if "File.AppendAllText(" in signal_trace_persistence_text or "File.WriteAllText(" in signal_trace_persistence_text:
     errors.append("signal trace persistence must use buffered archive ownership")
-if "BufferedArchivePersistence" not in signal_trace_persistence_text:
+if "_bufferedArchivePersistence.Enqueue(" not in signal_trace_persistence_text:
     errors.append("signal trace persistence must enqueue into buffered archive ownership")
 
 trace_text = read(trace_store_path) + read(signal_trace_persistence_path)
