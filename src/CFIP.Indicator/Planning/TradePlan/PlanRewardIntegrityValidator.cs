@@ -77,7 +77,7 @@ namespace cAlgo
                     rr > maximumRR)
                     return RecordPlanRewardRejection(
                         direction,
-                        "TP2_RR_INVALID_OR_TOO_LOW");
+                        "TP2_REQUIRED");
 
                 if (RequireHtfRewardForTp2Plus &&
                     !IsHtfSource(
@@ -128,7 +128,7 @@ namespace cAlgo
                         plan.Tp3Source))
                     return RecordPlanRewardRejection(
                         direction,
-                        "TP3_RR_INVALID_OR_TOO_LOW");
+                        "TP2_NOT_PROGRESSIVE");
             }
 
             if (plan.Tp4 > 0)
@@ -179,7 +179,7 @@ namespace cAlgo
                     plan.Tp1Source))
                 return RecordPlanRewardRejection(
                         direction,
-                        "TP4_RR_INVALID_OR_TOO_LOW");
+                        "TP3_NOT_PROGRESSIVE");
 
             if (RequireHtfRewardForTp2Plus &&
                 plan.HtfTargetCount <= 0)
