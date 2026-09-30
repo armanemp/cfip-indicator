@@ -73,6 +73,9 @@ namespace cAlgo
             VerifyIndicatorExecutionQualitySemantics();
             VerifyPendingDecisionArbiterSemantics();
             VerifyLifecycleOutcomeSemantics();
+            VerifyPartialTakeProfitRetrySemantics();
+            VerifyServerPartialTakeProfitEvidenceSemantics();
+            VerifyPeakPriceReconstructionSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -5188,6 +5191,185 @@ namespace cAlgo
                      EarlyPredictionScoreRule.VolumeBonus +
                      EarlyPredictionScoreRule.VwapBonus)) < 0.000001,
                 "named early prediction weights and evidence bonuses own the scoring constants");
+        }
+
+
+        private static void VerifyPartialTakeProfitRetrySemantics()
+        {
+            Assert(
+                PartialTakeProfitRetryRule.ShouldAttempt(20, -1) &&
+                !PartialTakeProfitRetryRule.ShouldAttempt(20, 20) &&
+                PartialTakeProfitRetryRule.ShouldAttempt(21, 20),
+                "partial take-profit mutation retries at most once per canonical closed M5 bar");
+
+            Assert(
+                PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    20,
+                    20,
+                    "TP1",
+                    "TP2") &&
+                !PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    20,
+                    20,
+                    "TP1",
+                    "TP1") &&
+                !PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    21,
+                    20,
+                    "TP1",
+                    "TP1"),
+                "partial take-profit retry identity is stage-specific and advances on the next closed bar");
+
+            Assert(
+                !PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    -1,
+                    -1,
+                    "",
+                    "TP1") &&
+                !PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    20,
+                    20,
+                    "",
+                    ""),
+                "invalid retry inputs fail closed");
+        }
+
+        private static void VerifyServerPartialTakeProfitEvidenceSemantics()
+        {
+            Assert(
+                ServerPartialTakeProfitEvidenceRule.IsMatchingClosingDeal(
+                    101,
+                    1,
+                    101,
+                    -1,
+                    true,
+                    101.20,
+                    101.20,
+                    3300,
+                    3300,
+                    0.03,
+                    1),
+                "BUY server TP evidence requires the matching closing deal identity, price and volume");
+
+            Assert(
+                ServerPartialTakeProfitEvidenceRule.IsMatchingClosingDeal(
+                    102,
+                    -1,
+                    102,
+                    1,
+                    true,
+                    98.80,
+                    98.80,
+                    2200,
+                    2200,
+                    0.03,
+                    1),
+                "SELL server TP evidence is directionally symmetric");
+
+            Assert(
+                !ServerPartialTakeProfitEvidenceRule.IsMatchingClosingDeal(
+                    103,
+                    1,
+                    103,
+                    -1,
+                    false,
+                    101.20,
+                    101.20,
+                    3300,
+                    3300,
+                    0.03,
+                    1) &&
+                !ServerPartialTakeProfitEvidenceRule.IsMatchingClosingDeal(
+                    103,
+                    1,
+                    999,
+                    -1,
+                    true,
+                    101.20,
+                    101.20,
+                    3300,
+                    3300,
+                    0.03,
+                    1) &&
+                !ServerPartialTakeProfitEvidenceRule.IsMatchingClosingDeal(
+                    103,
+                    1,
+                    103,
+                    1,
+                    true,
+                    101.20,
+                    101.20,
+                    3300,
+                    3300,
+                    0.03,
+                    1) &&
+                !ServerPartialTakeProfitEvidenceRule.IsMatchingClosingDeal(
+                    103,
+                    1,
+                    103,
+                    -1,
+                    true,
+                    101.70,
+                    101.20,
+                    3300,
+                    3300,
+                    0.03,
+                    1),
+                "server TP evidence rejects non-closing, wrong-position, wrong-direction and materially wrong-price deals");
+        }
+
+        private static void VerifyPeakPriceReconstructionSemantics()
+        {
+            double[] highs = { 100, 101.5, 104, 103 };
+            double[] lows = { 100, 99, 98, 97.5 };
+
+            double peak;
+            Assert(
+                PeakPriceReconstructionRule.TryResolve(
+                    1,
+                    100,
+                    102,
+                    0,
+                    3,
+                    i => highs[i],
+                    i => lows[i],
+                    out peak) &&
+                Math.Abs(peak - 104) < 0.000001,
+                "BUY peak reconstruction includes the highest closed-bar extreme and current market");
+
+            Assert(
+                PeakPriceReconstructionRule.TryResolve(
+                    -1,
+                    100,
+                    98.5,
+                    0,
+                    3,
+                    i => highs[i],
+                    i => lows[i],
+                    out peak) &&
+                Math.Abs(peak - 97.5) < 0.000001,
+                "SELL peak reconstruction includes the lowest closed-bar extreme and current market");
+
+            Assert(
+                !PeakPriceReconstructionRule.TryResolve(
+                    0,
+                    100,
+                    101,
+                    0,
+                    3,
+                    i => highs[i],
+                    i => lows[i],
+                    out peak) &&
+                !PeakPriceReconstructionRule.TryResolve(
+                    1,
+                    100,
+                    101,
+                    3,
+                    2,
+                    i => highs[i],
+                    i => lows[i],
+                    out peak),
+                "peak reconstruction rejects invalid direction and reversed ranges");
         }
 
         private static void Assert(bool condition, string name)
