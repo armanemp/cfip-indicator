@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTED — repository verification pending CI completion.
+COMPLETE — merged via PR #102; no retrievable CI status was available at closeout.
 
 CR4.1 covers Prompt 4 / D1 only.
 
@@ -56,4 +56,6 @@ Static gate: tools/audit_phase_4_1.py
 
 ## Completion boundary
 
-The repository phase is complete when the deterministic contract, CR4.1 static gate, source/architecture checks, runtime contracts and cTrader compile pass. Target-terminal account-switch/persistence evidence remains a manual acceptance boundary.
+Repository implementation and required verification assets are complete. GitHub did not expose retrievable CI status records for the merge at closeout, so no CI PASS is claimed. Target-terminal account-switch/persistence evidence remains a manual acceptance boundary.
+
+Next phase: CR4.2 — File/archive path and persistence observability (D2).
