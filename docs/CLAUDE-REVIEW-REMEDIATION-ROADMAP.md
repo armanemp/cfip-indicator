@@ -801,6 +801,233 @@ Acceptance:
 
 ---
 
+## 7.0 — Prompt 4 Remediation Track: Storage, Learning, TP, OSS, Regime and Live Reversal
+
+Prompt 4 from the external Claude review is now incorporated as a **new verification/remediation track before CR-FINAL**.
+
+Important review rule:
+- D1–D10 are review findings supplied from static code reading.
+- They are **not automatically accepted as proven defects**.
+- Each item must first be reconciled against current main source and existing CR-0 → CR3.5 changes.
+- No public parameter name/type/DefaultValue may change.
+- No behavior-changing default adjustment may be made without explicit evidence and separate documentation.
+- Every accepted implementation item receives its own `fix(Dx): ...` or `test(Dx): ...` commit as appropriate.
+- Every phase includes the permanent Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning audit and the performance/code-cleanliness audit.
+
+### CR4.1 — Learning-memory identity and account scoping (D1)
+
+Initial review label: **CONFIRMED / HIGH — must re-audit current main implementation before coding.**
+
+Scope:
+- `OutcomeMemoryStore.MemoryConfigurationFingerprint()`;
+- `OutcomeMemoryKey()`;
+- `OutcomeHistoryArchiveStore.OutcomeArchivePrefix()`;
+- runtime/portable memory key construction;
+- account identity and cross-account collision semantics;
+- schema migration from legacy memory keys/files.
+
+Required verification:
+- separate decision-affecting parameters from presentation-only parameters;
+- confirm whether the current fingerprint still includes all public parameters;
+- confirm account scoping is absent/present in all learning stores;
+- confirm legacy archives remain readable after the new identity is introduced;
+- ensure PositionId deduplication cannot collide across accounts.
+
+Possible implementation direction, subject to audit:
+- explicit decision-affecting parameter identity manifest or attribute;
+- account-scoped schema v2 key;
+- migration reader for the legacy schema;
+- deterministic test fixtures proving presentation-only changes preserve the learning identity while decision changes alter it.
+
+Manual cTrader evidence:
+- account number/type;
+- LocalStorage persistence and migration behavior across restart/account switch.
+
+### CR4.2 — File/archive path and persistence observability (D2)
+
+Initial review label: **CONFIRMED / HIGH — current host/runtime behavior must be verified before any AccessRights change.**
+
+Scope:
+- outcome archive;
+- signal trace archive;
+- runtime log persistence;
+- portable memory snapshot;
+- path construction;
+- write-test/read-test and error counters;
+- hot-path synchronous I/O.
+
+Required verification:
+- resolve the actual cTrader writable storage contract available to this project;
+- replace cwd-dependent paths only if the target cTrader-supported path is confirmed;
+- make persistence failure observable in UI/telemetry without adding hot-path I/O;
+- preserve AccessRights.None unless documentation and target-terminal testing prove another access level is required;
+- ensure a single bounded persistence service owns file writes.
+
+Manual cTrader evidence:
+- exact terminal version/build;
+- actual resolved path;
+- write success/failure under `AccessRights.None`;
+- restart persistence.
+
+### CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3)
+
+Initial review label: **PARTIAL — ordering concern must be reconciled with CR1.4 before implementation.**
+
+Scope:
+- `SignalEvaluationTraceRecorder`;
+- `ArchiveSignalTrace`;
+- `ArchiveRuntimeDecisionTrace`;
+- relationship between decision, setup preview and execution model;
+- research/backtest outcome linkage.
+
+Required verification:
+- prove which canonical closed-M5 state each trace row represents;
+- prevent stale `_setupPreview` / `_executionModel` values from being paired with a new decision;
+- define a deterministic trace identity for later outcome joining;
+- do not add future outcome labels directly into live decision logic;
+- research-only linkage may be implemented as an offline/archival join keyed by stable signal identity and closure timestamp.
+
+Performance constraint:
+- no per-bar doubling of synchronous file writes; use the existing bounded persistence mechanism.
+
+### CR4.4 — Skender/OSS numerical stability and incremental caching (D4)
+
+Initial review label: **CONFIRMED / MEDIUM — production effect remains default-off, but enabled-path correctness/performance must be hardened.**
+
+Scope:
+- `Analysis/Indicators/External/*.cs`;
+- `OssQuoteSeriesCache`;
+- `OssIndicatorConfluenceAnalyzer`;
+- SAR / SuperTrend path dependence;
+- OBV independence;
+- hard-coded OSS indicator constants;
+- warm-up and lookback ownership;
+- incremental cache invalidation.
+
+Required verification:
+- determine which OSS implementations are path-dependent and require stable history prefix;
+- remove or reclassify OBV contribution if it is not independently informative, without silently altering default scoring;
+- centralize OSS indicator constants and warm-up requirements;
+- design an incremental cache that reuses the stable prefix and only advances new bars;
+- benchmark enabled-path allocations and runtime.
+
+No default behavior change:
+- `UseOssExtendedIndicatorConfluence` remains unchanged unless a separately approved change is documented.
+
+### CR4.5 — Per-timeframe regime semantics (D5)
+
+Initial review label: **CONFIRMED / MEDIUM — current per-frame regime coverage must be audited.**
+
+Scope:
+- `MarketFrameScoringService.ResolveFrameRegime`;
+- `IndicatorEvidenceFusionRule.ApplyRegimeWeights`;
+- M5/M15/M30/H1/H4/D1/W1 frame semantics.
+
+Required verification:
+- determine whether each frame already has a regime source or intentionally inherits M5 context;
+- if per-frame regimes are introduced, preserve M5 behavior and use bounded/cached calculations;
+- if UNKNOWN is intentional, document the neutral semantics explicitly;
+- runtime contract must cover frame-specific regime resolution and BUY/SELL symmetry.
+
+No silent threshold/weight tuning.
+
+### CR4.6 — Frame-scoring constant ownership (D6)
+
+Initial review label: **CONFIRMED / LOW — structural cleanup unless source audit finds a deeper semantic issue.**
+
+Scope:
+- direction thresholds;
+- conflict penalties;
+- RSI exhaustion thresholds;
+- event contribution constants.
+
+Required implementation:
+- create a named `FrameScoringConstants` owner in Core/;
+- preserve current numerical values;
+- replace scattered magic numbers with that single owner;
+- add deterministic contract coverage.
+
+### CR4.7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics (D7)
+
+Initial review label: **CONFIRMED-COMPUTATION / PARTIAL-BEHAVIOR — requires deterministic replay before any threshold change.**
+
+Scope:
+- `TargetCandidateEvaluator`;
+- `PlanRewardIntegrityValidator`;
+- `TargetSelector`;
+- `SmartExtraTargetSource`;
+- `HtfTargetSource`;
+- risk/target parameter groups;
+- server-side TP ladder dependencies.
+
+Required verification:
+- quantify how current RR floors and maximum target extension interact with SL ATR;
+- measure accepted TP1/TP2/TP3/TP4 rates under current defaults using deterministic fixtures/replay;
+- emit per-stage rejection reason counters using the CR3.5 bounded telemetry model;
+- separate M5 setup age from HTF target age semantics;
+- define HTF age in elapsed time or a dedicated equivalent while preserving current behavior by default;
+- identify whether TP3/TP4 unavailability is geometric, HTF-source, age, obstacle or reward-integrity driven.
+
+No default RR/SL/age tuning in this phase. Any behavior-changing correction must be separately documented and explicitly approved.
+
+### CR4.8 — TP1 directional defensive validation (D8)
+
+Initial review label: **PARTIAL — upstream protection may already exist; defensive invariant should be verified.**
+
+Scope:
+- `PlanMaterialization`;
+- `TargetSelector`;
+- `PlanRewardIntegrityValidator`;
+- `TargetProgressionRule`.
+
+Required verification:
+- prove TP1 cannot be materialized on the invalid side of Entry;
+- if the invariant is not guaranteed at every boundary, add a defensive Core validation;
+- add BUY/SELL symmetry tests for wrong-side TP1;
+- rejection must be observable without creating a second decision authority.
+
+### CR4.9 — Live reversal action/alert semantics (D9)
+
+Initial review label: **CONFIRMED / PARTIAL — alert ordering is likely valid as described; direction-score and clamp claims require exact-source verification.**
+
+Scope:
+- `LiveReversalAnalyzer`;
+- reversal alert emission;
+- Auto Trading state presentation;
+- directional reversal scoring;
+- hidden minimum clamp;
+- outcome/lifecycle coupling.
+
+Required verification:
+- distinguish "reversal detected" from "reversal close executed";
+- remove repeated no-op active-plan alerts or gate them by one reversal episode/cooldown;
+- do not label Auto Trading globally BLOCKED when the actual action is "position retained";
+- verify whether reversal quality must use opposite-direction evidence;
+- identify and remove only hidden clamps that violate the public-parameter contract; never tune the public default silently;
+- verify no-position outcome behavior against PositionClosed/OutcomeTelemetry paths.
+
+### CR4.10 — Native-indicator defensive safety and registry performance (D10)
+
+Initial review label: **PARTIAL — consumer coverage must be inventoried before code changes.**
+
+Scope:
+- `Native.cs`;
+- all ATR/RSI/ADX/native indicator consumers;
+- `NativeIndicatorRegistry`.
+
+Required verification:
+- inventory every consumer of potentially non-ready zero/neutral outputs;
+- add `IsFinitePositive`/readiness checks only where mathematically required;
+- prove no division-by-zero or fabricated neutral value can become a trading signal;
+- replace repeated linear registry lookup with a deterministic dictionary keyed by Bars only if lifecycle/ownership semantics remain correct;
+- benchmark lookup cost before/after on the hot path.
+
+### Prompt 4 completion gate
+
+CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → **CR-FINAL**
+
+CR-FINAL cannot be considered complete while any D-item remains unverified, deferred without an explicit reason, or blocked by a missing target-terminal test.
+
 ## 7.1 Cross-chat continuation checkpoint
 
 This file is the canonical implementation order for the Claude review-remediation track. It supersedes the local cBot track as the immediate next-work source until `CR-FINAL` is accepted.
