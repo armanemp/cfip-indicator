@@ -4966,7 +4966,7 @@ Safety boundary:
 
 ### CR4.10 / D10 implementation closeout — 2026-10-01
 
-Status: **CORE IMPLEMENTATION MERGED; registry-performance correction pending repository verification.**
+Status: **VERIFIED — CR4.10 / D10 implementation and registry-performance correction merged.**
 
 Implemented:
 - added centralized Core `NativeIndicatorReadinessRule` for warm-up, prior-window, finite-positive and bounded oscillator checks;
@@ -4976,7 +4976,7 @@ Implemented:
 - hardened market-regime normalization against unusable ATR/baseline/EMA values;
 - evaluated reference-identity `Dictionary<Bars, Native>`, measured it at 7.284 ms/run versus 6.486 ms/run for the fixed eight-item linear reference scan, then replaced it with a last-hit reference cache plus explicit reference scan;
 - added deterministic runtime contracts for readiness and neutral RSI safety;
-- added a deterministic three-way registry benchmark (list/dictionary/last-hit cache) covering repeated-same-Bars and round-robin patterns;
+- final three-way benchmark: repeated-same-Bars linear 29.748 ms/run, dictionary 49.658 ms/run, last-hit cache 2.166 ms/run; round-robin linear 3.978 ms/run, dictionary 9.203 ms/run, last-hit cache 9.919 ms/run;
 - added `audit_phase_4_10.py` and wired it after CR4.9 in the accumulated Source/Architecture workflow.
 
 Consumer inventory:
