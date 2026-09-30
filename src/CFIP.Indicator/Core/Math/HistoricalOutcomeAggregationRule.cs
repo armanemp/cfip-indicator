@@ -47,7 +47,7 @@ namespace cAlgo
 
     internal static class HistoricalOutcomeAggregationRule
     {
-        public static HistoricalOutcomeAggregate Aggregate(
+        public static HistoricalOutcomeAggregate AggregateHistoricalOutcomeRecords(
             IEnumerable<HistoricalOutcomeRecord> trades)
         {
             if (trades == null)
