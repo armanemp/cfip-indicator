@@ -75,7 +75,11 @@ The benchmark now compares three registry strategies:
 
 It measures both a repeated-same-`Bars` hot-path pattern and a round-robin eight-`Bars` cold pattern, with deterministic synthetic references and one million iterations per measurement.
 
-The benchmark is evidence for lookup behavior on the test runtime, not a claim about broker/terminal timing.
+Latest benchmark evidence:
+- repeated same-Bars hot path: linear 29.748 ms/run; dictionary 49.658 ms/run; last-hit cache 2.166 ms/run;
+- round-robin eight-Bars cold pattern: linear 3.978 ms/run; dictionary 9.203 ms/run; last-hit cache 9.919 ms/run.
+
+The result supports the cache specifically for the actual repeated-Bars wrapper sequence; the fixed-size linear scan remains the fallback for cache misses. The benchmark is evidence for lookup behavior on the test runtime, not a claim about broker/terminal timing.
 
 ## Safety boundary
 
