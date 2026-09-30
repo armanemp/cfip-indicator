@@ -4378,3 +4378,42 @@ Completed:
 Next phase: **CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Rejection semantics**.
 
 Track 12A remains blocked until CR-FINAL passes.
+
+## Claude Review Remediation — CR2.1 Closeout — 2026-09-30
+
+Status: VERIFIED COMPLETE — PR #86, merge commit 20835cbf1e541b51b9ad56af46cf0c5d13ff5350.
+
+Completed:
+- true structural break freshness and prior-opposite-structure CHOCH semantics;
+- canonical structure/MSS/CHOCH event identity and duplicate evidence suppression;
+- active/unbroken liquidity sweep state;
+- fail-closed unknown structural timeframe handling;
+- divergence conflict neutrality;
+- minimum-meaningful-body rejection/doji semantics;
+- deterministic runtime contracts, CR2.1 static audit and phase documentation.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+## Claude Review Remediation — CR2.2 Closeout — 2026-09-30
+
+Status: VERIFIED COMPLETE — PR #87, merge commit bdb9b72d021972db4b3638ff5eb4d7078ab2cb2a.
+
+Completed:
+- explicit intrabar observation versus closed-bar reversal confirmation;
+- actual reversal context based on prior counter-move, qualifying zone or canonical swing interaction;
+- explicit no-zone and weak-zone behavior;
+- equal bull/bear reaction scores resolve to neutral Direction=0;
+- one canonical ReactionQualificationRule shared by Pending reversal and Aggressive intrabar qualification;
+- deterministic runtime contracts, CR2.2 static audit and phase documentation.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Next phase: **CR2.3 — Unified indicator-quality thresholds**.
+
+Track 12A remains blocked until CR-FINAL passes.
