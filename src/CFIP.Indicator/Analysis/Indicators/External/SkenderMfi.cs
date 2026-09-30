@@ -19,13 +19,13 @@ namespace cAlgo
                     index);
 
             if (quotes == null ||
-                quotes.Count < 40)
+                quotes.Count < OssIndicatorParameters.MfiMinimumHistory)
                 return double.NaN;
 
             var results =
                 StockIndicator.GetMfi(
                     quotes,
-                    14)
+                    OssIndicatorParameters.MfiPeriod)
                     .ToList();
 
             return results.Count == 0 ||
