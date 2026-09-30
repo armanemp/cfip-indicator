@@ -17,6 +17,8 @@ namespace cAlgo
         private void OnPendingOrderModified(
                                     PendingOrderModifiedEventArgs args)
                                 {
+            MarkBrokerStateDirty();
+
                                     if (args == null ||
                                         args.PendingOrder == null ||
                                         !IsManagedPendingOrder(args.PendingOrder))
