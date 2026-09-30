@@ -4320,7 +4320,7 @@ Completed in this phase:
 Acceptance boundary:
 - direct broker calls must remain behind the current known mutation owners until extraction;
 - all execution-related parameters must receive deterministic INDICATOR / CBOT / SPLIT classification from source usage;
-- public parameter count remains 552;
+- public parameter count remains 562;
 - no duplicate public parameter declarations;
 - no new broker executor is permitted during the separation track.
 
