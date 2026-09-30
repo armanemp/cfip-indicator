@@ -44,12 +44,19 @@ namespace cAlgo
 
                 if (!mtf.HasPrimaryDecisionHistory)
                 {
-                    _status =
-                        "WAITING FOR CLOSED M5";
-                    RenderPanel();
+                    RecordCalculationReadiness(
+                        CalculationReadinessState.WaitingForMtfData,
+                        reference);
+
+                    RenderCalculationReadinessIfNeeded(
+                        reference);
                     CompleteRuntimeFaultCycle();
                     return false;
                 }
+
+                RecordCalculationReadiness(
+                    CalculationReadinessState.Ready,
+                    reference);
 
                 RunClosedBarAnalysisStage(
                     Bars.Count - 1,
