@@ -18,6 +18,8 @@ namespace cAlgo
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
             VerifySessionWindowSemantics();
+            VerifyDailyLossSemantics();
+            VerifyDailyLossBaselineSemantics();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
             VerifyPendingOrderAcceptance();
@@ -347,6 +349,267 @@ namespace cAlgo
                 FvgRule.Identity(1, 42, false) !=
                 FvgRule.Identity(-1, 42, false),
                 "FVG identity separates direction and 3-bar/2-bar source variants");
+        }
+
+        private static void VerifyDailyLossBaselineSemantics()
+        {
+            double startEquity;
+            double baselineFloating;
+
+            Assert(
+                DailyLossBaselineRule.TryReconstruct(
+                    975,
+                    0,
+                    -25,
+                    0,
+                    false,
+                    out startEquity,
+                    out baselineFloating) &&
+                Math.Abs(startEquity - 1000) < 0.0001 &&
+                Math.Abs(baselineFloating) < 0.0001,
+                "midday restart reconstructs start-of-day equity from realized facts");
+
+            Assert(
+                DailyLossBaselineRule.TryReconstruct(
+                    1480,
+                    0,
+                    -20,
+                    500,
+                    false,
+                    out startEquity,
+                    out baselineFloating) &&
+                Math.Abs(startEquity - 1000) < 0.0001,
+                "midday deposit is excluded from reconstructed trading loss");
+
+            Assert(
+                !DailyLossBaselineRule.TryReconstruct(
+                    1000,
+                    -12,
+                    0,
+                    0,
+                    true,
+                    out startEquity,
+                    out baselineFloating),
+                "restart baseline reconstruction refuses unknown prior floating P/L");
+
+            Assert(
+                !DailyLossBaselineRule.TryReconstruct(
+                    0,
+                    0,
+                    0,
+                    0,
+                    false,
+                    out startEquity,
+                    out baselineFloating),
+                "invalid equity cannot produce a synthetic baseline");
+        }
+
+        private static void VerifyDailyLossSemantics()
+        {
+            DailyLossEvaluation evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    0,
+                    -30,
+                    0,
+                    3.0,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                evaluation.DataReady &&
+                evaluation.LimitHit &&
+                evaluation.Locked &&
+                Math.Abs(evaluation.LossAmount - 30) < 0.0001 &&
+                Math.Abs(evaluation.LossPercent - 3.0) < 0.0001,
+                "realized daily loss is measured from a stable equity baseline");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    -20,
+                    970,
+                    -50,
+                    0,
+                    0,
+                    3.0,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                evaluation.LimitHit &&
+                Math.Abs(evaluation.LossAmount - 30) < 0.0001,
+                "change in floating P/L from the day baseline is included");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    1480,
+                    0,
+                    0,
+                    500,
+                    3.0,
+                    false,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.LimitHit &&
+                evaluation.UsedEquityFallback &&
+                Math.Abs(evaluation.DailyNetPnl) < 0.0001,
+                "deposit does not become daily trading loss in equity fallback");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    700,
+                    0,
+                    0,
+                    -300,
+                    3.0,
+                    false,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.LimitHit &&
+                evaluation.UsedEquityFallback &&
+                Math.Abs(evaluation.DailyNetPnl) < 0.0001,
+                "withdrawal does not become daily trading loss in equity fallback");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    0,
+                    0,
+                    0,
+                    3.0,
+                    true,
+                    true,
+                    true);
+
+            Assert(
+                evaluation.LimitHit &&
+                evaluation.Locked &&
+                evaluation.Reason ==
+                    "DAILY LOSS LIMIT ALREADY LOCKED",
+                "daily loss lock remains latched after equity recovery");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    969.9,
+                    0,
+                    -30.1,
+                    0,
+                    3.0,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                evaluation.LimitHit &&
+                Math.Abs(
+                    evaluation.LossPercent -
+                    3.01) < 0.02,
+                "threshold comparison is inclusive at the configured percentage");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    double.NaN,
+                    -30,
+                    0,
+                    3.0,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.DataReady,
+                "non-finite floating P/L cannot produce a false-safe result");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    0,
+                    -30,
+                    0,
+                    double.NaN,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.DataReady,
+                "non-finite daily-loss threshold fails closed");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    0,
+                    -30,
+                    0,
+                    3.0,
+                    true,
+                    false,
+                    false);
+
+            Assert(
+                !evaluation.DataReady &&
+                evaluation.Reason ==
+                    "DAILY LOSS TRANSACTION DATA UNAVAILABLE",
+                "missing transaction facts fail closed");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    0,
+                    0,
+                    1000,
+                    0,
+                    0,
+                    0,
+                    3.0,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.DataReady &&
+                !evaluation.LimitHit,
+                "invalid baseline is reported as unavailable rather than as a false limit hit");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    975,
+                    0,
+                    -25,
+                    0,
+                    0,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.LimitHit,
+                "zero configured threshold does not create an implicit hidden floor");
         }
 
         private static void VerifyM1TriggerSemantics()

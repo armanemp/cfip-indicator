@@ -68,11 +68,15 @@ namespace cAlgo
                 return false;
             }
 
+            string dailyLossReason;
+
             if (DailyLossLimitHit(
-                    TimeInUtc))
+                    TimeInUtc,
+                    out dailyLossReason))
             {
                 _autoExecutionBlockReason =
-                    "AGGRESSIVE • DAILY LOSS LIMIT";
+                    "AGGRESSIVE • " +
+                    dailyLossReason;
                 return false;
             }
 

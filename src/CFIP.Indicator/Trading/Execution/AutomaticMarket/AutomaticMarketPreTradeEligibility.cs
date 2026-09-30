@@ -44,14 +44,18 @@ namespace cAlgo
                 return false;
             }
 
+            string dailyLossReason;
+
             if (DailyLossLimitHit(
-                    TimeInUtc))
+                    TimeInUtc,
+                    out dailyLossReason))
             {
                 _autoExecutionBlockReason =
-                    "DAILY LOSS LIMIT";
+                    dailyLossReason;
+
                 SetAutoTradingState(
                     "BLOCKED",
-                    "DAILY LOSS LIMIT REACHED");
+                    dailyLossReason);
                 return false;
             }
 
