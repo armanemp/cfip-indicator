@@ -185,7 +185,7 @@ namespace cAlgo
 
             if (_m5Frame != null)
             {
-                if (_m5Frame.IndicatorConfluenceQuality < 60)
+                if (_m5Frame.IndicatorConfluenceQuality < ExecutionThresholdPolicy.AutomaticMarketIndicatorConfluenceMinimum)
                 {
                     string reason =
                         "INDICATOR Q " +
@@ -200,7 +200,7 @@ namespace cAlgo
                     return false;
                 }
 
-                if (_m5Frame.IndicatorConflict > 52)
+                if (_m5Frame.IndicatorConflict > ExecutionThresholdPolicy.AutomaticMarketIndicatorConflictMaximum)
                 {
                     string reason =
                         "INDICATOR CONFLICT " +
@@ -258,8 +258,7 @@ namespace cAlgo
                         : double.MaxValue;
 
                 if (spreadRiskRatio >
-                    Math.Max(
-                        0.02,
+                    ExecutionThresholdPolicy.NormalizeMaximumSpreadToStopRiskRatio(
                         MaximumSpreadToStopRiskRatio))
                 {
                     _autoExecutionBlockReason =
