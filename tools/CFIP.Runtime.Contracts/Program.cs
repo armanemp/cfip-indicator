@@ -76,6 +76,8 @@ namespace cAlgo
             VerifyPartialTakeProfitRetrySemantics();
             VerifyServerPartialTakeProfitEvidenceSemantics();
             VerifyPeakPriceReconstructionSemantics();
+            VerifySmartBreakEvenSemantics();
+            VerifyTargetProgressionMonotonicity();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -5370,6 +5372,112 @@ namespace cAlgo
                     i => lows[i],
                     out peak),
                 "peak reconstruction rejects invalid direction and reversed ranges");
+        }
+
+
+        private static void VerifySmartBreakEvenSemantics()
+        {
+            SmartBreakEvenResult buy =
+                SmartBreakEvenRule.Evaluate(
+                    20,
+                    60,
+                    2,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            SmartBreakEvenResult sell =
+                SmartBreakEvenRule.Evaluate(
+                    20,
+                    60,
+                    2,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            Assert(
+                buy.Allowed &&
+                sell.Allowed &&
+                Math.Abs(buy.TriggerPips - sell.TriggerPips) < 0.000001 &&
+                Math.Abs(buy.OffsetPips - sell.OffsetPips) < 0.000001,
+                "spread-aware break-even parameters are direction-neutral");
+
+            SmartBreakEvenResult blocked =
+                SmartBreakEvenRule.Evaluate(
+                    20,
+                    5,
+                    2,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true);
+
+            Assert(
+                !blocked.Allowed &&
+                blocked.Reason.Contains(
+                    "TP1 TOO CLOSE"),
+                "break-even reports an explicit non-applicable reason when TP1 leaves insufficient room");
+
+            Assert(
+                !SmartBreakEvenRule.Evaluate(
+                    double.NaN,
+                    60,
+                    2,
+                    0.90,
+                    0.5,
+                    0.5,
+                    true).Allowed,
+                "break-even fails closed for non-finite risk inputs");
+        }
+
+        private static void VerifyTargetProgressionMonotonicity()
+        {
+            Assert(
+                TargetProgressionRule.IsValid(
+                    1,
+                    100,
+                    105) &&
+                !TargetProgressionRule.IsValid(
+                    1,
+                    105,
+                    100),
+                "BUY target progression is strictly forward");
+
+            Assert(
+                TargetProgressionRule.IsValid(
+                    -1,
+                    100,
+                    95) &&
+                !TargetProgressionRule.IsValid(
+                    -1,
+                    95,
+                    100),
+                "SELL target progression is strictly forward");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    100,
+                    105,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    105,
+                    100,
+                    true) &&
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    100,
+                    95,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    95,
+                    100,
+                    true),
+                "broker TP progression never accepts a backward move");
         }
 
         private static void Assert(bool condition, string name)
