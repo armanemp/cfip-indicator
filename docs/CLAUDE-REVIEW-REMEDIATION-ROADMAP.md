@@ -666,19 +666,36 @@ Next implementation phase: **CR3.1 — Live invalidation and false-signal semant
 
 Covers: C1, C2.
 
-Work:
-- introduce an explicit soft-adverse-R feature flag with current-safe default semantics where required;
-- make broker-close success part of lifecycle result;
-- do not advance _lastExitM5 as though an exit succeeded when the broker rejected it;
-- evaluate soft invalidation on a closed-bar or explicit stability rule, not a single tick, unless a separately configured intrabar rule is intended;
-- replace rolling min/max swing semantics with actual confirmed structural candidates;
-- make FalseSignalAdverseR semantics visibly coherent with broker SL and parameter validation.
+Status: VERIFIED COMPLETE — PR #95 merged to main as f482d2f76cdf37cca87fabc5b11b3d8c0a7edac7.
+
+Implemented:
+- explicit Enable Soft Adverse-R Invalidation safety flag with DefaultValue=true;
+- closed-bar-stable live invalidation on canonical closed M5 results;
+- confirmed structural swing candidates instead of rolling min/max invalidation extrema;
+- explicit broker-close mutation result and RecoveryRequired handling on rejection;
+- centralized successful _lastExitM5 bookkeeping;
+- canonical FalseSignalAdverseR validation and BUY/SELL symmetric protected-stop envelope handling;
+- deterministic CR3.1 runtime contracts and dedicated static audit;
+- preserved configured FalseSignalAdverseR default 1.10 and its 0.25–5 bounds; no empirical threshold tuning.
 
 Acceptance:
-- rejected exits remain recovery states, not successful exits;
-- software soft stop cannot silently contradict the plan's stated risk model;
-- BUY/SELL symmetry holds.
+- rejected broker exits do not advance successful-exit bookkeeping;
+- soft/hard adverse-R semantics cannot silently contradict a known adverse broker SL envelope;
+- BUY/SELL symmetry is covered by runtime contracts.
 
+Verification:
+- Source/Architecture: PASS, run 1808;
+- Runtime Acceptance: PASS, run 1617;
+- cTrader Compile: PASS, run 1801;
+- CR3.1 static audit: PASS;
+- accumulated CR2.1–CR2.9 audits: PASS;
+- project-wide optimization/integrity audits: PASS after reconciling the intentional safety-parameter inventory to 568.
+
+Evidence boundary:
+- CI does not prove target-terminal timing, broker rejection under live network conditions, restart/reconnect reconciliation, or profitability/accuracy.
+- Any future parameter/threshold tuning remains replay/outcome gated.
+
+Next implementation phase: CR3.2 — Decision gate and early prediction semantics (C3/C4).
 ## CR3.2 — Decision gate and early prediction semantics
 
 Covers: C3, C4.
