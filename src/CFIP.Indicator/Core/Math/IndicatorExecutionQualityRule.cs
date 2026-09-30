@@ -132,7 +132,7 @@ namespace cAlgo
 
                 default:
                     minimumQuality =
-                        100;
+                        101;
                     maximumConflict =
                         0;
                     return;
