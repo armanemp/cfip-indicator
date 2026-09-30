@@ -4031,7 +4031,7 @@ namespace cAlgo
         private static void VerifyIndicatorExecutionQualitySemantics()
         {
             IndicatorQualityGateResult marketPass =
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.AutomaticMarket,
                     60,
                     52);
@@ -4043,39 +4043,39 @@ namespace cAlgo
                 "automatic market uses its documented final-entry indicator gate");
 
             Assert(
-                !IndicatorExecutionQualityRule.Evaluate(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.AutomaticMarket,
                     59,
                     40).Allowed &&
-                !IndicatorExecutionQualityRule.Evaluate(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.AutomaticMarket,
                     80,
                     53).Allowed,
                 "automatic market rejects below quality or above conflict");
 
             Assert(
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingSubmission,
                     58,
                     55).Allowed &&
-                !IndicatorExecutionQualityRule.Evaluate(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingSubmission,
                     57,
                     10).Allowed &&
-                !IndicatorExecutionQualityRule.Evaluate(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingSubmission,
                     80,
                     56).Allowed,
                 "pending submission keeps a separate lower defense-in-depth floor");
 
             IndicatorQualityGateResult continuation =
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingContinuation,
                     62,
                     48);
 
             IndicatorQualityGateResult reversal =
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingReversal,
                     62,
                     50);
@@ -4089,23 +4089,23 @@ namespace cAlgo
                 "continuation and reversal share one pending setup quality floor");
 
             Assert(
-                !IndicatorExecutionQualityRule.Evaluate(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingContinuation,
                     70,
                     49).Allowed &&
-                !IndicatorExecutionQualityRule.Evaluate(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingReversal,
                     70,
                     51).Allowed,
                 "continuation and reversal retain explicitly different conflict tolerance");
 
             Assert(
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingContinuation,
                     70,
                     48).Reason.Contains(
                         "PENDING CONTINUATION") &&
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingSubmission,
                     57,
                     20).Reason.Contains(
@@ -4113,7 +4113,7 @@ namespace cAlgo
                 "blocked diagnostics identify the canonical semantic gate");
 
             Assert(
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     (IndicatorQualityGateStage)999,
                     100,
                     0).Allowed == false,
