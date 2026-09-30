@@ -89,11 +89,10 @@ check(
 check(
     "registry uses deterministic Bars-reference dictionary",
     "Dictionary<Bars, Native>" in state and
-    "NativeBarsReferenceComparer" in state and
+    "ReferenceEqualityComparer.Instance" in state and
     "TryGetValue(" in registry and
-    "ReferenceEquals(x, y)" in registry and
-    "RuntimeHelpers.GetHashCode(obj)" in registry and
-    "_native.FirstOrDefault" not in registry,
+    "_native.FirstOrDefault" not in registry and
+    "NativeBarsReferenceComparer" not in registry,
 )
 check(
     "readiness rule is centralized and platform-neutral",
