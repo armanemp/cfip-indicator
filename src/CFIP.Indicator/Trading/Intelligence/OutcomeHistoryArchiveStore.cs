@@ -13,55 +13,36 @@ namespace cAlgo
 
         private string _outcomeArchivePrefixCache;
 
-        private string OutcomeArchivePrefix() {
+        private string OutcomeArchivePrefix()
+        {
             if (!string.IsNullOrWhiteSpace(
                     _outcomeArchivePrefixCache))
                 return _outcomeArchivePrefixCache;
 
-            if (string.IsNullOrWhiteSpace(value))
-                return "UNKNOWN";
+            string symbol =
+                SanitizeArchivePart(
+                    string.IsNullOrWhiteSpace(SymbolName)
+                        ? "UNKNOWN"
+                        : SymbolName);
 
-            StringBuilder result = new StringBuilder();
+            string timeframe =
+                SanitizeArchivePart(
+                    Bars == null
+                        ? "UNKNOWN"
+                        : Bars.TimeFrame.ToString());
 
-            foreach (char ch in value)
-            {
-                result.Append(
-                    char.IsLetterOrDigit(ch)
-                        ? ch
-                        : '_');
-            }
+            _outcomeArchivePrefixCache =
+                "CFIP_History_" +
+                symbol +
+                "_" +
+                timeframe +
+                "_" +
+                MemoryConfigurationFingerprint();
 
-            return result.ToString();
+            return
+                _outcomeArchivePrefixCache;
         }
 
-        private static DateTime OutcomeArchivePeriodStart(
-            DateTime observedUtc)
-        {
-            DateTime utc =
-                observedUtc.Kind == DateTimeKind.Utc
-                    ? observedUtc
-                    : observedUtc.ToUniversalTime();
-
-            DateTime epoch =
-                new DateTime(
-                    1970,
-                    1,
-                    1,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
-
-            long days =
-                (long)Math.Floor(
-                    (utc - epoch).TotalDays);
-
-            long periodDays =
-                days -
-                (days % 90);
-
-            return epoch.AddDays(periodDays);
-                }
         private string OutcomeArchiveFilePath(
             DateTime observedUtc)
         {
