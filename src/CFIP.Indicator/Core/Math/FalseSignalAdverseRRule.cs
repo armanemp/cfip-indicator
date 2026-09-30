@@ -29,8 +29,8 @@ namespace cAlgo
             protectedStopR = 0;
 
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositiveInput(entry) ||
-                !IsFinitePositiveInput(risk) ||
+                !IsValidPositiveFiniteC2(entry) ||
+                !IsValidPositiveFiniteC2(risk) ||
                 double.IsNaN(configuredAdverseR) ||
                 double.IsInfinity(configuredAdverseR) ||
                 configuredAdverseR < MinimumSoftAdverseR ||
@@ -84,7 +84,7 @@ namespace cAlgo
         {
             stopR = 0;
 
-            if (!IsFinitePositiveInput(protectedStop))
+            if (!IsValidPositiveFiniteC2(protectedStop))
                 return false;
 
             double adverseDistance =
@@ -106,7 +106,7 @@ namespace cAlgo
                    !double.IsInfinity(stopR);
         }
 
-        private static bool IsFinitePositiveInput(double value)
+        private static bool IsValidPositiveFiniteC2(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
