@@ -241,15 +241,25 @@ def main() -> int:
 
     usage: dict[str, set[str]] = defaultdict(set)
     usage_files: dict[str, set[str]] = defaultdict(set)
-    for parameter in parameters:
-        name = parameter["name"]
-        token = re.compile(r"\b" + re.escape(name) + r"\b")
+
+    # One combined identifier scan per source file avoids recompiling and
+    # executing hundreds of separate regular expressions for every file.
+    parameter_names = sorted({p["name"] for p in parameters}, key=len, reverse=True)
+    usage_pattern = (
+        re.compile(r"\\b(?:" + "|".join(re.escape(n) for n in parameter_names) + r")\\b")
+        if parameter_names
+        else None
+    )
+    name_set = set(parameter_names)
+
+    if usage_pattern is not None:
         for path, source in texts.items():
-            if not token.search(source):
-                continue
-            d = domain_for(Path(PROD / path))
-            usage[name].add(d)
-            usage_files[name].add(path)
+            domain = domain_for(Path(PROD / path))
+            for match in usage_pattern.finditer(source):
+                name = match.group(0)
+                if name in name_set:
+                    usage[name].add(domain)
+                    usage_files[name].add(path)
 
     execution_related = [
         p for p in parameters
