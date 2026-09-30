@@ -82,8 +82,10 @@ check(
 check(
     "cache invalidates on series replacement or fingerprint mutation",
     "!ReferenceEquals(entry.Bars, bars)" in frame_cache
-    and "entry.First ==" in frame_cache
-    and "entry.Last ==" in frame_cache,
+    and "MatchesFingerprint(
+                    entry.First," in frame_cache
+    and "MatchesFingerprint(
+                    entry.Last," in frame_cache,
 )
 check(
     "scoring consumes the frame's own normalized regime",
@@ -111,7 +113,7 @@ check(
 )
 check(
     "all canonical MTF frames are analyzed independently",
-    "_m5Frame = " in calc
+    "_m5Frame =" in calc
     and "_m15Frame =" in calc
     and "_m30Frame =" in calc
     and "_h1Frame =" in calc
