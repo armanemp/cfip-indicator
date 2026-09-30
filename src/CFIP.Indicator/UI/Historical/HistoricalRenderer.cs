@@ -15,14 +15,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private sealed class HistoricalSignalPresentation
-        {
-            public DateTime OpenTime { get; set; }
-            public int Direction { get; set; }
-            public double Price { get; set; }
-            public bool IsSignal { get; set; }
-        }
-
         private readonly Dictionary<DateTime, HistoricalSignalPresentation>
             _historicalSignalCache =
                 new Dictionary<DateTime, HistoricalSignalPresentation>();
