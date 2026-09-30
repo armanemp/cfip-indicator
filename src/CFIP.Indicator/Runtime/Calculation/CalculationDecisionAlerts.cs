@@ -8,7 +8,10 @@ namespace cAlgo
         private void ProcessDecisionAlerts(
             int closedM5)
         {
-            if (_decision == null)
+            // Decision/entry alerts must never consume a broker lifecycle snapshot
+            // that was not reconciled at the start of the same calculation cycle.
+            if (_decision == null ||
+                !_brokerStateReconciledThisCycle)
                 return;
 
             ProcessRestrictionAlert(
