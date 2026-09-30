@@ -11,6 +11,7 @@ namespace cAlgo
         private const string SignalTraceSchema = "CFIP-SIGNAL-TRACE,2";
 
         private string _signalTraceArchivePrefixCache;
+        private string _signalTraceArchivePrefixIdentityCache;
         private const string SignalTraceHeader =
             "BarOpenTimeUtcTicks,ObservedUtcTicks,ClosedM5,Open,High,Low,Close,Direction," +
             "BuyShare,SellShare,Edge,BaseConfidence,Confidence,SmartQuality," +
@@ -44,10 +45,6 @@ namespace cAlgo
 
         private string SignalTraceArchivePrefix()
         {
-            if (!string.IsNullOrWhiteSpace(
-                    _signalTraceArchivePrefixCache))
-                return _signalTraceArchivePrefixCache;
-
             string symbol =
                 SanitizeArchivePart(
                     string.IsNullOrWhiteSpace(SymbolName)
@@ -59,6 +56,26 @@ namespace cAlgo
                     Bars == null
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
+
+            string identity =
+                symbol +
+                "|" +
+                timeframe +
+                "|" +
+                MemoryAccountScopeToken() +
+                "|" +
+                MemoryConfigurationFingerprint();
+
+            if (!string.IsNullOrWhiteSpace(
+                    _signalTraceArchivePrefixCache) &&
+                string.Equals(
+                    _signalTraceArchivePrefixIdentityCache,
+                    identity,
+                    StringComparison.Ordinal))
+                return _signalTraceArchivePrefixCache;
+
+            _signalTraceArchivePrefixIdentityCache =
+                identity;
 
             _signalTraceArchivePrefixCache =
                 "CFIP_SignalTrace_v2_" +
