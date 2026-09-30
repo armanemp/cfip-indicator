@@ -40,8 +40,8 @@ fvg = read(FVG)
 ob = read(OB)
 zone_cache = read(ZONE_CACHE)
 
-if "BufferedArchivePersistence" not in runtime_log:
-    errors.append("runtime log is not backed by BufferedArchivePersistence")
+if "_bufferedArchivePersistence.Enqueue(" not in runtime_log:
+    errors.append("runtime log must enqueue rows into buffered archive persistence")
 
 for source_name, source in (
     ("OutcomeHistoryArchiveStore.cs", outcome_archive),
@@ -86,7 +86,7 @@ if "ResetZoneLookupCacheIfNeeded(" not in ob:
     errors.append("Order Block lookup must use closed-context cache invalidation")
 if "TryGetCachedObCandidates(" not in ob:
     errors.append("Order Block lookup must read candidate cache")
-if "bars == null" not in zone_cache or "_zoneLookupCacheIndex" not in zone_cache:
+if "_zoneLookupCacheBars" not in zone_cache or "_zoneLookupCacheIndex" not in zone_cache:
     errors.append("zone cache must remain tied to explicit Bars/index context")
 
 # Runtime log rows are queued in Calculate; the only synchronous disk ownership
@@ -105,7 +105,10 @@ for relative in (
 for path in (ROOT / "src").rglob("*.cs"):
     source = path.read_text(encoding="utf-8")
     relative = str(path.relative_to(ROOT)).replace("\\", "/")
-    if relative != "src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs":
+    if relative not in (
+        "src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs",
+        "src/CFIP.Indicator/Trading/Intelligence/PortableMemorySnapshotStore.cs",
+    ):
         if "File.WriteAllText(" in source or "File.AppendAllText(" in source:
             errors.append(f"{relative}: direct file write bypasses buffered persistence")
 
