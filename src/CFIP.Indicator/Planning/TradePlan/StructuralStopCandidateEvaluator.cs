@@ -171,12 +171,9 @@ namespace cAlgo
                 // Prefer structurally valid stops that leave a larger
                 // reward path after accounting for stop width.
                 score +=
-                    Math.Min(
-                        18,
-                        Math.Max(
-                            0,
-                            (bestTp1RR -
-                             rewardRisk.RequiredRR) * 12));
+                    StructuralStopScoringRule.CalculateRewardPathBonus(
+                        bestTp1RR,
+                        rewardRisk.RequiredRR);
 
                 if (score > bestScore)
                 {
@@ -315,32 +312,14 @@ namespace cAlgo
                 score +=
                     SmartLiquidityPoolBonus;
 
-            double preferredRisk =
-                Math.Max(
-                    0.25,
-                    PreferredStopRiskAtr);
-
             double riskBalance =
-                Math.Max(
-                    0,
-                    20.0 -
-                    Math.Abs(
-                        riskAtr -
-                        preferredRisk) *
-                    Math.Max(
-                        6.0,
-                        12.0 *
-                        Math.Max(
-                            0.25,
-                            StopRiskBalanceWeight /
-                            18.0)));
+                StructuralStopScoringRule.CalculateRiskBalance(
+                    riskAtr,
+                    PreferredStopRiskAtr,
+                    StopRiskBalanceWeight);
 
             return score +
-                riskBalance *
-                Math.Max(
-                    0,
-                    StopRiskBalanceWeight) /
-                20.0;
+                riskBalance;
         }
 
         private double EstimateBestTp1RRForStop(

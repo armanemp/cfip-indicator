@@ -21,6 +21,9 @@ namespace cAlgo
             VerifyProtectionProgressionSemantics();
             VerifyWaveTrendMathematics();
             VerifyHistoricalRenderingSemantics();
+            VerifyStructuralStopScoringSemantics();
+            VerifyDivergenceThresholdSemantics();
+            VerifyRejectionThresholdSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
@@ -1599,6 +1602,148 @@ namespace cAlgo
                 weakMiddleAgreement.Stage == "MIDFRAME CALIBRATION",
                 "directionally mixed middle frames cannot be promoted to calibrated entry");
 
+        }
+
+        private static void VerifyStructuralStopScoringSemantics()
+        {
+            Assert(
+                StructuralStopScoringRule.CalculateRewardPathBonus(
+                    2.0,
+                    1.50) == 6.0 &&
+                StructuralStopScoringRule.CalculateRewardPathBonus(
+                    10.0,
+                    1.50) == StructuralStopScoringRule.RewardPathBonusCap,
+                "structural-stop reward-path bonus is bounded and preserves the existing slope");
+
+            Assert(
+                StructuralStopScoringRule.CalculateRewardPathBonus(
+                    1.40,
+                    1.50) == 0 &&
+                StructuralStopScoringRule.CalculateRewardPathBonus(
+                    double.NaN,
+                    1.50) == 0,
+                "structural-stop reward bonus fails closed below required RR or on non-finite input");
+
+            double atPreferred =
+                StructuralStopScoringRule.CalculateRiskBalance(
+                    1.0,
+                    1.0,
+                    18);
+
+            double tight =
+                StructuralStopScoringRule.CalculateRiskBalance(
+                    0.5,
+                    1.0,
+                    18);
+
+            double wide =
+                StructuralStopScoringRule.CalculateRiskBalance(
+                    1.5,
+                    1.0,
+                    18);
+
+            Assert(
+                atPreferred > tight &&
+                Math.Abs(tight - wide) < 1e-9,
+                "structural-stop risk balance peaks at preferred risk and is symmetric around it");
+
+            Assert(
+                StructuralStopScoringRule.CalculateRiskBalance(
+                    double.NaN,
+                    1.0,
+                    18) == 0 &&
+                StructuralStopScoringRule.CalculateRiskBalance(
+                    1.0,
+                    1.0,
+                    -1) == 0,
+                "structural-stop risk scoring is finite and non-negative");
+        }
+
+        private static void VerifyDivergenceThresholdSemantics()
+        {
+            Assert(
+                DivergenceThresholdRule.MinimumQuality == 55 &&
+                DivergenceThresholdRule.ConflictQualityMargin == 10 &&
+                DivergenceThresholdRule.RegularRsiDelta == 2.0 &&
+                DivergenceThresholdRule.HiddenRsiDelta == 2.0 &&
+                DivergenceThresholdRule.RegularWaveDelta == 1.50 &&
+                DivergenceThresholdRule.HiddenWaveDelta == 1.50,
+                "divergence quality/conflict and oscillator thresholds have one semantic owner");
+
+            Assert(
+                DivergenceThresholdRule.MinimumRegularPriceExcursion(1.0) == 0.10 &&
+                DivergenceThresholdRule.MinimumHiddenPriceExcursion(1.0) == 0.08 &&
+                DivergenceThresholdRule.MinimumRegularPriceExcursion(2.0) == 0.20 &&
+                DivergenceThresholdRule.MinimumHiddenPriceExcursion(2.0) == 0.16,
+                "divergence price thresholds scale with ATR while retaining absolute floors");
+
+            Assert(
+                DivergenceThresholdRule.ResolveRecentBoost(100, 88) ==
+                    DivergenceThresholdRule.RecentBoostStrong &&
+                DivergenceThresholdRule.ResolveRecentBoost(100, 80) ==
+                    DivergenceThresholdRule.RecentBoostModerate &&
+                DivergenceThresholdRule.ResolveRecentBoost(100, 79) == 0,
+                "divergence recency boost boundaries are deterministic");
+
+            Assert(
+                DivergenceThresholdRule.CalculateQuality(0.5, 2, false, 5) >
+                DivergenceThresholdRule.CalculateQuality(0.5, 1, false, 5) &&
+                DivergenceThresholdRule.CalculateQuality(
+                    double.NaN, 2, false, 5) == 0 &&
+                DivergenceThresholdRule.CalculateQuality(
+                    double.PositiveInfinity, 2, false, 5) == 0,
+                "divergence quality is bounded and fails closed on invalid input");
+        }
+
+        private static void VerifyRejectionThresholdSemantics()
+        {
+            Assert(
+                RejectionRule.MinimumBodyPips == 0.10 &&
+                RejectionRule.MinimumBodyRangeFraction == 0.05 &&
+                RejectionRule.WickToBodyRatio == 1.25 &&
+                RejectionRule.MinimumWickRangeFraction == 0.20,
+                "rejection/doji geometry has one explicit threshold owner");
+
+            Assert(
+                RejectionRule.ResolveMinimumMeaningfulBody(
+                    2.0,
+                    0.10) == 0.10 &&
+                RejectionRule.ResolveMinimumMeaningfulBody(
+                    4.0,
+                    0.10) == 0.20,
+                "minimum meaningful body uses the larger pip/range floor");
+
+            Assert(
+                RejectionRule.IsDoji(
+                    100.0,
+                    100.11,
+                    102.0,
+                    100.0,
+                    0.10) == false &&
+                RejectionRule.IsDoji(
+                    100.0,
+                    100.09,
+                    102.0,
+                    100.0,
+                    0.10),
+                "doji boundary is deterministic at the minimum meaningful body");
+
+            Assert(
+                RejectionRule.IsRejection(
+                    100.0,
+                    100.5,
+                    101.0,
+                    98.0,
+                    1,
+                    0.10) &&
+                RejectionRule.IsRejection(
+                    100.5,
+                    100.0,
+                    102.0,
+                    99.0,
+                    -1,
+                    0.10),
+                "bullish and bearish rejection geometry remains symmetric");
         }
 
         private static void VerifyHistoricalRenderingSemantics()
