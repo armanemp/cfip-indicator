@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Next: CR3.3 — Partial TP, server ladder, BE and trailing (Prompt 4 / C5-C6).
+Next: CR3.4 — Execution UI control and popup reliability (C7).
 
 ## Completed before this checkpoint
 
@@ -72,4 +72,21 @@ CR3.1 is closed. The next implementation response must execute CR3.2 only. Track
 
 ## Next transition
 
-CR3.2 is closed. The next implementation response must execute CR3.3 only. Track 12A remains blocked until CR-FINAL.
+CR3.2 is closed. CR3.3 has been implemented and merged to main. The next implementation response must execute CR3.4 only. Track 12A remains blocked until CR-FINAL.
+
+
+## CR3.3 implementation record
+
+CR3.3 was merged to main in PR #99, merge commit `1e8681f57cb48bc51367b3df2ca129803d93d0c4`.
+
+- partial TP retry is bounded by stage and canonical closed-M5 identity;
+- server TP ladder stage evidence is broker-confirmed and remains authoritative through ladder collapse;
+- post-partial and server-side break-even use the canonical spread-aware rule;
+- peak-RR recovery uses broker EntryTime plus closed-bar historical extremes;
+- target progression is monotonic and cannot move backward.
+
+Target-terminal broker timing, restart/reconnect behavior and empirical outcome validation remain manual acceptance boundaries.
+
+## Next transition
+
+CR3.3 is closed. The next implementation response must execute CR3.4 only. Track 12A remains blocked until CR-FINAL.
