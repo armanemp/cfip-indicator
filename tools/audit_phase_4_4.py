@@ -161,7 +161,7 @@ check(
 )
 check(
     "benchmark measures incremental-vs-rebuild quote materialization",
-    "MeasureQuoteCache" in benchmark_program
+    "QuoteCacheBenchmark.Measure" in benchmark_program
     and "incremental" in benchmark_report.lower()
     and "rebuild" in benchmark_report.lower(),
 )
