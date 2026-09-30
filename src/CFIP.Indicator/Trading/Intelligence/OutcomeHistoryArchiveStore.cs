@@ -113,15 +113,6 @@ namespace cAlgo
             return row.ToString();
         }
 
-        private bool ArchiveContainsPosition(
-            string path,
-            long positionId)
-        {
-            // Duplicate detection is maintained by the buffered archive writer.
-            // File scanning is deliberately excluded from the calculation hot path.
-            return false;
-        }
-
         private void ArchiveOutcomeObservation(
             OutcomeObservation observation)
         {
