@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Next: CR3.5 — Calibration, outcome and rejection transparency (C8/C9/B6).
+Next: CR-FINAL — final integration audit and target-terminal acceptance.
 
 ## Completed before this checkpoint
 
@@ -112,7 +112,7 @@ CR3.4 is closed. The next implementation response must execute CR3.5 only. Track
 
 ## CR3.5 implementation record
 
-CR3.5 is implemented on branch `phase/cr3-5-calibration-outcome-rejection-transparency`; merge/CI verification remains pending.
+CR3.5 is verified complete and merged to main via PR #101, merge commit `2c31232b7d1f16e88e89e693d7d74fd8a5eedab6`.
 
 - `ConfidenceCalibrationKey` now has deterministic structural equality and consistent hashing;
 - managed outcome calibration retains broker-history aggregated realized R and exposes average realized R beside observed win rate and sample count;
@@ -125,4 +125,4 @@ Manual target-terminal broker-history, restart/reconnect and empirical outcome v
 
 ## Next transition
 
-CR3.5 must pass all required CI gates and merge before the next implementation response. After merge, the next phase is **CR-FINAL**. Track 12A remains blocked until CR-FINAL.
+CR3.5 is closed. The next implementation response must execute **CR-FINAL** only. Track 12A remains blocked until CR-FINAL.
