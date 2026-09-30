@@ -80,8 +80,11 @@ namespace cAlgo
         private readonly object _economicNewsSync =
             new object();
 
-        private readonly List<CfipEconomicNewsEvent> _economicNewsEvents =
-            new List<CfipEconomicNewsEvent>();
+        // Immutable-after-publication cache. Refreshes build a new array and
+        // atomically publish the reference; readers never allocate or enumerate
+        // a collection that can be mutated underneath them.
+        private CfipEconomicNewsEvent[] _economicNewsEvents =
+            new CfipEconomicNewsEvent[0];
 
         private DateTime _economicNewsLastAttemptUtc =
             DateTime.MinValue;
@@ -368,10 +371,8 @@ namespace cAlgo
                         _economicNewsRequestGeneration)
                         return;
 
-                    _economicNewsEvents.Clear();
-
-                    _economicNewsEvents.AddRange(
-                        next);
+                    _economicNewsEvents =
+                        next.ToArray();
 
                     _economicNewsLastSuccessUtc =
                         requestUtc;
@@ -582,11 +583,9 @@ namespace cAlgo
             }
         }
 
-        private List<CfipEconomicNewsEvent> SnapshotEconomicNewsEvents()
+        private CfipEconomicNewsEvent[] GetEconomicNewsEvents()
         {
-            lock (_economicNewsSync)
-                return new List<CfipEconomicNewsEvent>(
-                    _economicNewsEvents);
+            return _economicNewsEvents;
         }
     }
 }
