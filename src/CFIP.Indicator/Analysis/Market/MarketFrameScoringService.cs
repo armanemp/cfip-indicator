@@ -42,11 +42,11 @@ namespace cAlgo
                     f.ChochBull))
             {
                 if (f.StructureBull)
-                    AddScore(true, 16, ref bull, ref evidence);
+                    AddScore(true, FrameScoringConstants.StructureContribution, ref bull, ref evidence);
                 else if (f.MssBull)
-                    AddScore(true, 12, ref bull, ref evidence);
+                    AddScore(true, FrameScoringConstants.MssContribution, ref bull, ref evidence);
                 else
-                    AddScore(true, 9, ref bull, ref evidence);
+                    AddScore(true, FrameScoringConstants.ChochContribution, ref bull, ref evidence);
             }
 
             if (StructuralEvidenceRule.HasCanonicalStructuralEvent(
@@ -61,10 +61,10 @@ namespace cAlgo
                 else
                     AddScore(true, 9, ref bear, ref evidence);
             }
-            AddScore(f.DisplacementBull, 10, ref bull, ref evidence);
-            AddScore(f.DisplacementBear, 10, ref bear, ref evidence);
-            AddScore(f.LiquidityBull, 10, ref bull, ref evidence);
-            AddScore(f.LiquidityBear, 10, ref bear, ref evidence);
+            AddScore(f.DisplacementBull, FrameScoringConstants.DisplacementContribution, ref bull, ref evidence);
+            AddScore(f.DisplacementBear, FrameScoringConstants.DisplacementContribution, ref bear, ref evidence);
+            AddScore(f.LiquidityBull, FrameScoringConstants.LiquidityContribution, ref bull, ref evidence);
+            AddScore(f.LiquidityBear, FrameScoringConstants.LiquidityContribution, ref bear, ref evidence);
             LocationEvidenceScore bullLocation =
                 LocationEvidenceRule.Evaluate(
                     f.FvgBull,
@@ -102,13 +102,13 @@ namespace cAlgo
 
             AddScore(
                 f.EqualLow,
-                5,
+                FrameScoringConstants.EqualLevelContribution,
                 ref bull,
                 ref evidence);
 
             AddScore(
                 f.EqualHigh,
-                5,
+                FrameScoringConstants.EqualLevelContribution,
                 ref bear,
                 ref evidence);
 
@@ -166,7 +166,7 @@ namespace cAlgo
             f.IndicatorConflict =
                 indicatorFusion.Conflict;
 
-            if (indicatorFusion.Conflict >= 45)
+            if (indicatorFusion.Conflict >= FrameScoringConstants.ConflictPenaltyThreshold)
             {
                 if (bull >= bear)
                     bull =
@@ -188,26 +188,26 @@ namespace cAlgo
 
             if (AvoidRsiExhaustion)
             {
-                if (f.Rsi >= 75)
+                if (f.Rsi >= FrameScoringConstants.RsiBullExhaustionThreshold)
                     bull = Math.Max(
                         0,
-                        bull - 5);
+                        bull - FrameScoringConstants.RsiExhaustionPenalty);
 
-                if (f.Rsi <= 25)
+                if (f.Rsi <= FrameScoringConstants.RsiBearExhaustionThreshold)
                     bear = Math.Max(
                         0,
-                        bear - 5);
+                        bear - FrameScoringConstants.RsiExhaustionPenalty);
             }
 
             f.BullScore = bull;
             f.BearScore = bear;
             f.Evidence = evidence;
 
-            if (bull >= 35 &&
-                bull >= bear + 8)
+            if (bull >= FrameScoringConstants.DirectionMinimumScore &&
+                bull >= bear + FrameScoringConstants.DirectionMinimumLead)
                 f.Direction = 1;
-            else if (bear >= 35 &&
-                     bear >= bull + 8)
+            else if (bear >= FrameScoringConstants.DirectionMinimumScore &&
+                     bear >= bull + FrameScoringConstants.DirectionMinimumLead)
                 f.Direction = -1;
 
             double total =
@@ -229,7 +229,7 @@ namespace cAlgo
                 regimeContribution =
                     Math.Max(
                         0,
-                        8 -
+                        FrameScoringConstants.ChoppyRegimeBase -
                         Math.Max(
                             0,
                             f.Choppiness -
@@ -240,35 +240,38 @@ namespace cAlgo
             {
                 regimeContribution =
                     Math.Min(
-                        14,
+                        FrameScoringConstants.NonChoppyRegimeCap,
                         Math.Max(
                             0,
                             f.Adx -
                             MinimumTransitionAdx) *
-                        0.35 +
-                        f.RangeEfficiency * 8 +
+                        FrameScoringConstants.NonChoppyAdxSlope +
+                        f.RangeEfficiency * FrameScoringConstants.RangeEfficiencyWeight +
                         Math.Min(
-                            4,
-                            f.EmaSpreadAtr * 2));
+                            FrameScoringConstants.EmaSpreadCap,
+                            f.EmaSpreadAtr * FrameScoringConstants.EmaSpreadWeight));
             }
 
             f.Quality =
                 ClampInt(
                     (int)Math.Round(
-                        strongest * 0.40 +
+                        strongest * FrameScoringConstants.StrongestQualityWeight +
                         Math.Min(
-                            100,
-                            f.Adx * 1.45) * 0.13 +
+                            FrameScoringConstants.EvidenceQualityCap,
+                            f.Adx * FrameScoringConstants.AdxQualityScale) *
+                        FrameScoringConstants.AdxQualityWeight +
                         Math.Min(
-                            100,
-                            evidence * 5) * 0.20 +
-                        regimeContribution * 0.15 +
-                        f.IndicatorConfluenceQuality * 0.12) -
+                            FrameScoringConstants.EvidenceQualityCap,
+                            evidence * FrameScoringConstants.EvidenceQualityScale) *
+                        FrameScoringConstants.EvidenceQualityWeight +
+                        regimeContribution * FrameScoringConstants.RegimeQualityWeight +
+                        f.IndicatorConfluenceQuality * FrameScoringConstants.IndicatorQualityWeight) -
                     Math.Min(
-                        10,
+                        FrameScoringConstants.QualityConflictPenaltyCap,
                         Math.Max(
                             0,
-                            f.IndicatorConflict - 35) / 6),
+                            f.IndicatorConflict - FrameScoringConstants.QualityConflictPenaltyBaseline) /
+                        FrameScoringConstants.QualityConflictPenaltyDivisor),
                     0,
                     100);
 
