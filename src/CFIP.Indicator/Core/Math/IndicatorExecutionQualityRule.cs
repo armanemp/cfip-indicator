@@ -42,7 +42,7 @@ namespace cAlgo
         internal const int PendingContinuationConflictMaximum = 48;
         internal const int PendingReversalConflictMaximum = 50;
 
-        public static IndicatorQualityGateResult Evaluate(
+        public static IndicatorQualityGateResult EvaluateIndicatorExecutionQuality(
             IndicatorQualityGateStage stage,
             int quality,
             int conflict)
@@ -50,7 +50,7 @@ namespace cAlgo
             int minimumQuality;
             int maximumConflict;
 
-            ResolveThresholds(
+            ResolveIndicatorExecutionQualityThresholds(
                 stage,
                 out minimumQuality,
                 out maximumConflict);
@@ -64,7 +64,7 @@ namespace cAlgo
                     " < " +
                     minimumQuality +
                     " • " +
-                    StageText(stage),
+                    DescribeIndicatorQualityStage(stage),
                     minimumQuality,
                     maximumConflict);
             }
@@ -78,7 +78,7 @@ namespace cAlgo
                     " > " +
                     maximumConflict +
                     " • " +
-                    StageText(stage),
+                    DescribeIndicatorQualityStage(stage),
                     minimumQuality,
                     maximumConflict);
             }
@@ -90,7 +90,7 @@ namespace cAlgo
                 maximumConflict);
         }
 
-        private static void ResolveThresholds(
+        private static void ResolveIndicatorExecutionQualityThresholds(
             IndicatorQualityGateStage stage,
             out int minimumQuality,
             out int maximumConflict)
@@ -134,7 +134,7 @@ namespace cAlgo
             }
         }
 
-        private static string StageText(
+        private static string DescribeIndicatorQualityStage(
             IndicatorQualityGateStage stage)
         {
             switch (stage)
