@@ -25,6 +25,7 @@ namespace cAlgo
         {
             try
             {
+                MarkBrokerStateDirty();
                 return PlaceStopOrder(
                     tradeType,
                     symbolName,
@@ -66,6 +67,7 @@ namespace cAlgo
         {
             try
             {
+                MarkBrokerStateDirty();
                 return PlaceStopOrder(
                     tradeType,
                     symbolName,
