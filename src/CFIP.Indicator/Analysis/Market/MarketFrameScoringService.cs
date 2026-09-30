@@ -11,20 +11,10 @@ namespace cAlgo
             Frame frame)
         {
             if (frame == null)
-                return "UNKNOWN";
+                return FrameRegimeResolutionRule.Unknown;
 
-            if (ReferenceEquals(frame.Bars, _m5Bars))
-            {
-                MarketRegimeSnapshot regime =
-                    GetActiveM5Regime(
-                        frame.Index);
-
-                return regime == null
-                    ? "UNKNOWN"
-                    : regime.Regime;
-            }
-
-            return "UNKNOWN";
+            return FrameRegimeResolutionRule.Resolve(
+                frame.Regime);
         }
 
         private Frame ScoreMarketFrame(
