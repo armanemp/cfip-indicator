@@ -457,17 +457,16 @@ namespace cAlgo
         private static void VerifyExecutionThresholdSemantics()
         {
             Assert(
-                ExecutionThresholdPolicy.AutomaticMarketIndicatorConfluenceMinimum == 60 &&
-                ExecutionThresholdPolicy.AutomaticMarketIndicatorConflictMaximum == 52,
+                IndicatorExecutionQualityRule.AutomaticMarketQualityMinimum == 60 &&
+                IndicatorExecutionQualityRule.AutomaticMarketConflictMaximum == 52,
                 "automatic-market indicator thresholds retain current defaults");
 
             Assert(
-                ExecutionThresholdPolicy.PendingContinuationIndicatorConfluenceMinimum == 62 &&
-                ExecutionThresholdPolicy.PendingContinuationIndicatorConflictMaximum == 48 &&
-                ExecutionThresholdPolicy.PendingReversalIndicatorConfluenceMinimum == 62 &&
-                ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum == 50 &&
-                ExecutionThresholdPolicy.PendingSubmissionIndicatorConfluenceMinimum == 58 &&
-                ExecutionThresholdPolicy.PendingSubmissionIndicatorConflictMaximum == 55,
+                IndicatorExecutionQualityRule.PendingSetupQualityMinimum == 62 &&
+                IndicatorExecutionQualityRule.PendingContinuationConflictMaximum == 48 &&
+                IndicatorExecutionQualityRule.PendingReversalConflictMaximum == 50 &&
+                IndicatorExecutionQualityRule.PendingSubmissionQualityMinimum == 58 &&
+                IndicatorExecutionQualityRule.PendingSubmissionConflictMaximum == 55,
                 "pending-path indicator thresholds are explicitly centralized");
 
             Assert(
