@@ -97,8 +97,12 @@ namespace cAlgo
             int index,
             int closedM5)
         {
-            // The pre-decision broker reconciliation already happened in the
-            // current cycle. Keep lifecycle/protection alive, but do not run
+            // There is no decision/alert to consume while readiness is waiting.
+            // Reconcile broker truth once, then keep lifecycle/protection alive.
+            RunPreDecisionBrokerReconciliation(
+                index);
+
+            // Keep lifecycle/protection alive, but do not run
             // decision, signal, plan-creation or execution stages while data
             // readiness is incomplete.
             RunCalculationStage(
