@@ -191,7 +191,7 @@ Next transition: **CR4.6 / D6 — Frame-scoring constant ownership.**
 
 ### CR4.6 / D6 closeout — 2026-10-01
 
-CR4.6 was completed on `phase/cr4-6-frame-scoring-constants`.
+CR4.6 was completed on `phase/cr4-6-frame-scoring-constants` and merged to `main` via PR #107, merge commit `edf1f50511082a4eb7359217d6ae80853348c71c`.
 
 Implementation:
 - centralized frame-scoring constants under `Core/Math/FrameScoringConstants.cs`;
