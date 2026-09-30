@@ -20,7 +20,7 @@ namespace cAlgo
             if ((direction != 1 && direction != -1) ||
                 confirmationIndex < 0 ||
                 currentIndex <= confirmationIndex ||
-                !IsFinitePositiveLevelValue(level) ||
+                !IsFinitePositiveLiquidityInput(level) ||
                 double.IsNaN(tolerance) ||
                 double.IsInfinity(tolerance) ||
                 tolerance < 0 ||
@@ -33,7 +33,7 @@ namespace cAlgo
             {
                 double close = closeAt(i);
 
-                if (!IsFinitePositiveLevelValue(close))
+                if (!IsFinitePositiveLiquidityInput(close))
                     return false;
 
                 bool invalidated =
@@ -48,7 +48,7 @@ namespace cAlgo
             return true;
         }
 
-        private static bool IsFinitePositiveLevelValue(double value)
+        private static bool IsFinitePositiveLiquidityInput(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
