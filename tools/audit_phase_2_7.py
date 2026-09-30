@@ -101,8 +101,8 @@ checks = {
         "firstOpenTime !=" in engine
     ),
     "public WaveTrend parameters remain unchanged": (
-        "[Parameter("WaveTrend Smooth MA"" in parameters and
-        "[Parameter("WaveTrend Signal MA"" in parameters and
+        '[Parameter("WaveTrend Smooth MA"' in parameters and
+        '[Parameter("WaveTrend Signal MA"' in parameters and
         "DefaultValue = MovingAverageType.Exponential" in parameters and
         "DefaultValue = MovingAverageType.Simple" in parameters
     ),
