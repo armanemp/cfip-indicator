@@ -55,6 +55,21 @@ namespace cAlgo
                                                     EffectiveAutoTpStage()),
                                                 atr);
 
+                                        double desiredStop =
+                                            IsValidManagedStop(
+                                                direction,
+                                                planPosition.EntryPrice,
+                                                market,
+                                                _pendingProtectedStopCandidate) &&
+                                            ProtectionProgressionRule.ShouldAdvanceStop(
+                                                direction,
+                                                _plan.Stop,
+                                                _pendingProtectedStopCandidate)
+                                                ? NormalizePrice(
+                                                    _pendingProtectedStopCandidate)
+                                                : NormalizePrice(
+                                                    _plan.Stop);
+
                                         double minimumForwardDistance =
                                             MinimumLiveTargetDistancePrice(
                                                 direction,
@@ -89,15 +104,16 @@ namespace cAlgo
 
                                         bool mutationRequired = false;
                                         bool mutationSucceeded = true;
+                                        bool stopMutationSucceeded = false;
 
                                         if (IsValidManagedStop(
                                                 direction,
                                                 planPosition.EntryPrice,
                                                 market,
-                                                _plan.Stop))
+                                                desiredStop))
                                         {
                                             double normalizedStop =
-                                                NormalizePrice(_plan.Stop);
+                                                NormalizePrice(desiredStop);
 
                                             if (!brokerStopValid ||
                                                 Math.Abs(
@@ -118,7 +134,7 @@ namespace cAlgo
                                                 {
                                                     mutationRequired = true;
 
-                                                    bool stopMutationSucceeded =
+                                                    stopMutationSucceeded =
                                                         TryModifyStopLoss(
                                                             planPosition,
                                                             normalizedStop,
@@ -130,11 +146,37 @@ namespace cAlgo
 
                                                     stopConfirmed =
                                                         stopMutationSucceeded;
+
+                                                    if (stopMutationSucceeded)
+                                                    {
+                                                        // TradeResult success is the mutation confirmation.
+                                                        // Only now may the plan adopt the new protected stop.
+                                                        _plan.Stop =
+                                                            NormalizePrice(desiredStop);
+                                                        _activeBrokerStop =
+                                                            _plan.Stop;
+                                                        _pendingProtectedStopCandidate =
+                                                            0;
+                                                    }
                                                 }
                                                 else
                                                 {
                                                     stopConfirmed = true;
                                                 }
+                                            }
+                                        }
+
+                                        if (stopConfirmed)
+                                        {
+                                            if (!stopMutationSucceeded &&
+                                                brokerStopValid &&
+                                                planPosition.StopLoss.HasValue)
+                                            {
+                                                _plan.Stop =
+                                                    NormalizePrice(
+                                                        planPosition.StopLoss.Value);
+                                                _activeBrokerStop =
+                                                    _plan.Stop;
                                             }
                                         }
 
