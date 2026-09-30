@@ -175,11 +175,12 @@ check(
     "CR4.10" in review and
     "CR-FINAL" in phase_doc,
 )
+phase_doc_lower = phase_doc.lower()
 check(
     "D10 preserves no-tuning and manual-terminal boundaries",
-    "no public parameter name/type/DefaultValue changed" in phase_doc and
-    "no default RR" in phase_doc and
-    "target-terminal" in phase_doc,
+    "no public parameter name/type/defaultvalue changed" in phase_doc_lower and
+    "no default rr" in phase_doc_lower and
+    "target-terminal" in phase_doc_lower,
 )
 
 print("CR4.10 SUMMARY")
