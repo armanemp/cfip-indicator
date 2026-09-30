@@ -23,9 +23,9 @@ namespace cAlgo
             bool fvgConfluence,
             bool partiallyMitigated)
         {
-            if (!Finite(bodyRatio) ||
-                !Finite(impulseRatio) ||
-                !Finite(remainingRatio) ||
+            if (!IsFiniteQuality(bodyRatio) ||
+                !IsFiniteQuality(impulseRatio) ||
+                !IsFiniteQuality(remainingRatio) ||
                 ageBars < 0)
                 return 0;
 
@@ -79,13 +79,13 @@ namespace cAlgo
                          boundedRemaining));
             }
 
-            return Clamp(
+            return ClampQuality(
                 quality,
                 0,
                 100);
         }
 
-        private static int Clamp(
+        private static int ClampQuality(
             int value,
             int min,
             int max)
@@ -98,7 +98,7 @@ namespace cAlgo
                         value));
         }
 
-        private static bool Finite(
+        private static bool IsFiniteQuality(
             double value)
         {
             return
