@@ -387,7 +387,9 @@ namespace cAlgo
 
                 return
                     stageName ==
-                    "CLOSED-BAR ANALYSIS"
+                    "CLOSED-BAR ANALYSIS" ||
+                    stageName ==
+                    "BROKER RECONCILIATION • PRE-DECISION"
                         ? false
                         : true;
             }
