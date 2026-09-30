@@ -23,18 +23,138 @@ namespace cAlgo
                 atr <= 0)
                 return null;
 
-            int effectiveLookback =
-                Math.Min(
-                    FvgLookback,
+            ResetZoneLookupCacheIfNeeded(
+                bars,
+                index);
+
+            string cacheKey =
+                direction.ToString() +
+                "|" +
+                (requireCurrentRetest ? "1" : "0");
+
+            Zone[] candidates;
+
+            if (!TryGetCachedFvgCandidates(
+                    cacheKey,
+                    out candidates))
+            {
+                List<Zone> built =
+                    new List<Zone>();
+
+                int effectiveLookback =
+                    Math.Min(
+                        FvgLookback,
+                        Math.Max(
+                            1,
+                            MaximumZoneAgeBars));
+
+                int first =
                     Math.Max(
                         1,
-                        MaximumZoneAgeBars));
+                        index -
+                        effectiveLookback);
 
-            int first =
-                Math.Max(
-                    1,
-                    index -
-                    effectiveLookback);
+                for (int i = index;
+                     i >= first;
+                     i--)
+                {
+                    double creationAtr =
+                        Atr(
+                            bars,
+                            i);
+
+                    double low;
+                    double high;
+                    double gap;
+
+                    if (i >= 2 &&
+                        FvgRule.TryGetThreeBarGap(
+                            direction,
+                            bars.HighPrices[i - 2],
+                            bars.LowPrices[i - 2],
+                            bars.HighPrices[i],
+                            bars.LowPrices[i],
+                            out low,
+                            out high,
+                            out gap) &&
+                        FvgRule.MeetsMinimumGap(
+                            gap,
+                            creationAtr,
+                            MinimumFvgAtr))
+                    {
+                        Zone candidate =
+                            BuildManagedFvgZone(
+                                bars,
+                                i,
+                                index,
+                                direction,
+                                low,
+                                high,
+                                gap,
+                                false,
+                                creationAtr);
+
+                        if (candidate != null &&
+                            (!requireCurrentRetest ||
+                             PassesCurrentFvgRetest(
+                                 bars,
+                                 index,
+                                 candidate,
+                                 atr)))
+                        {
+                            built.Add(
+                                candidate);
+                        }
+                    }
+
+                    if (UseTwoBarImbalanceFvg &&
+                        FvgRule.TryGetTwoBarGap(
+                            direction,
+                            bars.HighPrices[i - 1],
+                            bars.LowPrices[i - 1],
+                            bars.HighPrices[i],
+                            bars.LowPrices[i],
+                            out low,
+                            out high,
+                            out gap) &&
+                        FvgRule.MeetsMinimumGap(
+                            gap,
+                            creationAtr,
+                            MinimumFvgAtr))
+                    {
+                        Zone candidate =
+                            BuildManagedFvgZone(
+                                bars,
+                                i,
+                                index,
+                                direction,
+                                low,
+                                high,
+                                gap,
+                                true,
+                                creationAtr);
+
+                        if (candidate != null &&
+                            (!requireCurrentRetest ||
+                             PassesCurrentFvgRetest(
+                                 bars,
+                                 index,
+                                 candidate,
+                                 atr)))
+                        {
+                            built.Add(
+                                candidate);
+                        }
+                    }
+                }
+
+                StoreCachedFvgCandidates(
+                    cacheKey,
+                    built);
+
+                candidates =
+                    built.ToArray();
+            }
 
             double nearestPrice =
                 IsFinitePositive(selectionPrice)
@@ -43,113 +163,33 @@ namespace cAlgo
 
             Zone best = null;
 
-            for (int i = index;
-                 i >= first;
-                 i--)
+            for (int i = 0;
+                 i < candidates.Length;
+                 i++)
             {
-                double creationAtr =
-                    Atr(
+                Zone candidate =
+                    candidates[i];
+
+                if (candidate == null ||
+                    candidate.Age >
+                    MaximumZoneAgeBars)
+                    continue;
+
+                if (requireCurrentRetest &&
+                    RequireFvgRetest &&
+                    !PassesCurrentFvgRetest(
                         bars,
-                        i);
+                        index,
+                        candidate,
+                        atr))
+                    continue;
 
-                if (i >= 2 &&
-                    FvgRule.TryGetThreeBarGap(
-                        direction,
-                        bars.HighPrices[i - 2],
-                        bars.LowPrices[i - 2],
-                        bars.HighPrices[i],
-                        bars.LowPrices[i],
-                        out double low,
-                        out double high,
-                        out double gap) &&
-                    FvgRule.MeetsMinimumGap(
-                        gap,
-                        creationAtr,
-                        MinimumFvgAtr))
-                {
-                    Zone candidate =
-                        BuildManagedFvgZone(
-                            bars,
-                            i,
-                            index,
-                            direction,
-                            low,
-                            high,
-                            gap,
-                            false,
-                            creationAtr);
-
-                    if (!requireCurrentRetest ||
-                        PassesCurrentFvgRetest(
-                            bars,
-                            index,
-                            candidate,
-                            atr))
-                    {
-                        best =
-                            SelectNearestFvg(
-                                nearestPrice,
-                                best,
-                                candidate);
-                    }
-                }
-
-                if (UseTwoBarImbalanceFvg &&
-                    FvgRule.TryGetTwoBarGap(
-                        direction,
-                        bars.HighPrices[i - 1],
-                        bars.LowPrices[i - 1],
-                        bars.HighPrices[i],
-                        bars.LowPrices[i],
-                        out low,
-                        out high,
-                        out gap) &&
-                    FvgRule.MeetsMinimumGap(
-                        gap,
-                        creationAtr,
-                        MinimumFvgAtr))
-                {
-                    Zone candidate =
-                        BuildManagedFvgZone(
-                            bars,
-                            i,
-                            index,
-                            direction,
-                            low,
-                            high,
-                            gap,
-                            true,
-                            creationAtr);
-
-                    if (!requireCurrentRetest ||
-                        PassesCurrentFvgRetest(
-                            bars,
-                            index,
-                            candidate,
-                            atr))
-                    {
-                        best =
-                            SelectNearestFvg(
-                                nearestPrice,
-                                best,
-                                candidate);
-                    }
-                }
+                best =
+                    SelectNearestFvg(
+                        nearestPrice,
+                        best,
+                        candidate);
             }
-
-            if (best == null ||
-                best.Age >
-                MaximumZoneAgeBars)
-                return null;
-
-            if (requireCurrentRetest &&
-                RequireFvgRetest &&
-                !PassesCurrentFvgRetest(
-                    bars,
-                    index,
-                    best,
-                    atr))
-                return null;
 
             return best;
         }
