@@ -73,7 +73,7 @@ namespace cAlgo
                                 _m5Bars.Count - 1)));
 
                 PlanRewardRiskQualityResult rewardRisk =
-                    PlanRewardRiskQualityRule.Evaluate(
+                    PlanRewardRiskQualityRule.EvaluateIndicatorExecutionQuality(
                         intent.Direction,
                         intent.RequestedEntry,
                         intent.Stop,
@@ -110,7 +110,7 @@ namespace cAlgo
             if (_m5Frame != null)
             {
                 IndicatorQualityGateResult indicatorGate =
-                    IndicatorExecutionQualityRule.Evaluate(
+                    IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                         IndicatorQualityGateStage.PendingSubmission,
                         _m5Frame.IndicatorConfluenceQuality,
                         _m5Frame.IndicatorConflict);
