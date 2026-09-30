@@ -50,7 +50,7 @@ namespace cAlgo
             return OutcomeMemoryIdentityRule.BuildLegacyMemoryKey(
                 symbol,
                 timeframe,
-                LegacyMemoryConfigurationFingerprint());
+                PriorMemoryConfigurationFingerprint());
         }
 
         private string MemoryAccountScopeToken()
@@ -165,7 +165,7 @@ namespace cAlgo
             return _memoryConfigurationFingerprintCache;
         }
 
-        private string LegacyMemoryConfigurationFingerprint()
+        private string PriorMemoryConfigurationFingerprint()
         {
             if (!string.IsNullOrWhiteSpace(
                     _legacyMemoryConfigurationFingerprintCache))
