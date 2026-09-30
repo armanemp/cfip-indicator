@@ -89,6 +89,7 @@ namespace cAlgo
                 private int _lastServerTpLadderMutationM5 = -1;
                 private string _lastServerTpLadderMutationKind = "";
                 private bool _serverSideTakeProfitLadderActive;
+                private bool _serverSideTakeProfitLadderOwned;
                 private bool _serverSideBreakEvenActive;
                 private bool _slHit;
                 private double _peakPrice;
