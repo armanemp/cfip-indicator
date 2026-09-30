@@ -80,7 +80,7 @@ checks = {
     ),
     "component readiness includes RMI depth": (
         "momentumLength + safeLength - 1" in readiness and
-        "ResolveComponentReadyIndex(" in engine
+        "ResolveWaveTrendComponentReadyIndex(" in engine
     ),
     "snapshot readiness requires previous signal": (
         "index >" in readiness and
