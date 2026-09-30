@@ -12,14 +12,43 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private const int BrokerStateRefreshIntervalMilliseconds = 1000;
+
+        private bool _brokerStateDirty = true;
+        private DateTime _lastBrokerStateSyncUtc =
+            DateTime.MinValue;
+
+        private void MarkBrokerStateDirty()
+        {
+            _brokerStateDirty = true;
+        }
+
         private void SynchronizeLiveBrokerState()
         {
+            DateTime now =
+                Server.TimeInUtc;
+
+            if (!_brokerStateDirty &&
+                _lastBrokerStateSyncUtc !=
+                    DateTime.MinValue &&
+                (now -
+                 _lastBrokerStateSyncUtc)
+                .TotalMilliseconds <
+                    BrokerStateRefreshIntervalMilliseconds)
+            {
+                return;
+            }
+
             _activeBrokerStop = 0;
             _activeBrokerTarget = 0;
 
             if (_plan == null ||
                 !_plan.IsLivePosition)
+            {
+                _brokerStateDirty = false;
+                _lastBrokerStateSyncUtc = now;
                 return;
+            }
 
             Position position =
                 GetManagedLivePositionForPlan();
@@ -29,9 +58,6 @@ namespace cAlgo
                     position != null) &&
                 _plan != null)
             {
-                // The broker position is authoritative. If the live plan's bound
-                // position no longer exists, clear the stale plan even when the
-                // PositionClosed event was missed during reconnect/restart.
                 _brokerProtectionRecoveryRequired = false;
                 _executionModel = null;
                 _activeBrokerStop = 0;
@@ -43,11 +69,18 @@ namespace cAlgo
 
                 _plan = null;
                 RemovePlanObjects();
+
+                _brokerStateDirty = false;
+                _lastBrokerStateSyncUtc = now;
                 return;
             }
 
             if (position == null)
+            {
+                _brokerStateDirty = false;
+                _lastBrokerStateSyncUtc = now;
                 return;
+            }
 
             bool protectionHealthy =
                 EvaluateBrokerProtection(
@@ -93,6 +126,9 @@ namespace cAlgo
                     LifecycleState.RecoveryRequired,
                     "BROKER STATE • PROTECTION INVALID");
             }
+
+            _brokerStateDirty = false;
+            _lastBrokerStateSyncUtc = now;
         }
     }
 }
