@@ -42,7 +42,7 @@ namespace cAlgo
                                             : market <= _plan.Tp2);
                         
                                     bool hitTp3 =
-                                        !_serverSideTakeProfitLadderActive &&
+                                        !_serverSideTakeProfitLadderOwned &&
                                         _plan.Tp3 > 0 &&
                                         (_plan.Direction == 1
                                             ? market >= _plan.Tp3
