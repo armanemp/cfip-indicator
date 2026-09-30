@@ -176,24 +176,45 @@ Next implementation phase: **CR1.2 — Daily-loss lock and stable accounting bas
 
 Covers: A2.
 
-Work:
-- separate loss amount calculation from account/broker data acquisition;
-- define a deterministic daily-loss evaluation rule;
-- persist/recover the trading-day reference needed for restart continuity;
-- use realized daily history plus current floating P/L according to an explicit accounting contract;
-- exclude deposits/withdrawals from corrupting the loss reference;
-- use the broker trading-day boundary once proven, with a safe persisted fallback if required;
-- maintain one shared gate for Market, Pending and Aggressive;
-- never auto-close open positions unless an explicit parameter already authorizes such behavior.
+Status: COMPLETE — implementation closed 2026-09-30; target-terminal verification remains required.
 
-Architecture boundary: The deterministic loss rule is Indicator-testable now; broker/account history ownership remains designated for later cBot migration.
+Implemented:
+- separated deterministic daily-loss evaluation from broker/account fact acquisition;
+- persisted the account-scoped UTC-day baseline and latched lock state through LocalStorageScope.Type;
+- included same-day realized P/L plus the change in floating P/L from the baseline when complete history and transaction facts are available;
+- added an equity-change fallback when realized history is unavailable, while subtracting verified same-day deposits/withdrawals;
+- changed incomplete transaction facts to fail closed rather than silently ignoring cash-flow effects;
+- hardened all daily-loss numeric inputs against NaN/Infinity and invalid thresholds;
+- kept Market, Aggressive and Pending automatic-entry paths on the same daily-loss gate;
+- preserved the existing rule that daily-loss lock blocks new automatic entries and does not close open positions;
+- added account-switch reset/recovery handling;
+- added deterministic contracts for realized loss, floating drawdown, deposits, withdrawals, persistence lock semantics, inclusive threshold behavior, invalid baseline, missing transaction facts and non-finite inputs;
+- kept the implementation isolated into baseline rule, evaluation, accounting, guard and persistence owners to avoid a monolithic risk helper.
 
-Acceptance:
-- once the limit is reached, equity recovery cannot silently re-arm entries;
-- restart does not erase the current-day lock;
-- the same result is used by all automatic-entry paths.
+Accounting contract:
+- preferred path: realizedNetProfit + (currentUnrealizedNetProfit - baselineUnrealizedNetProfit);
+- fallback path: currentEquity - baselineEquity - netCashFlow;
+- transaction facts are mandatory because cash-flow adjustments must be explicit;
+- the baseline is persisted per account and UTC calendar day; broker/session-day equivalence remains a target-terminal verification item.
 
-Manual verification: broker-day boundary; realized-deal history semantics; deposits/withdrawals; restart while a limit is already active.
+Verification:
+- deterministic runtime-contract coverage updated for the complete accounting contract;
+- current cTrader API surface verified against official documentation for Account equity/unrealized P/L, Transactions, HistoricalTrade and LocalStorage persistence;
+- full repository cTrader compile/runtime acceptance and broker-day/restart behavior remain target-environment gates.
+
+Safety:
+- no new decision authority;
+- no new execution authority;
+- no increase in position capacity;
+- no automatic close-on-daily-loss behavior introduced;
+- broker mutation remains in the current Indicator until the approved cBot migration.
+
+Manual verification:
+- broker trading-day boundary;
+- realized/deal history semantics;
+- deposits/withdrawals;
+- restart with an active daily-loss lock;
+- separate Indicator instances observing the same account-scoped lock.
 
 ## CR1.3 — News guard correctness and non-blocking refresh
 
