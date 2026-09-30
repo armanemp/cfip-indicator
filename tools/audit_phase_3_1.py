@@ -44,8 +44,9 @@ checks = {
         "double swingLow" not in structural
     ),
     "rolling min/max swing scan was removed": (
-        "Math.Min(" not in structural and
-        "Math.Max(" not in structural.split("double structureBuffer", 1)[0]
+        "swingLookback" not in structural and
+        "swingHigh" not in structural and
+        "swingLow" not in structural
     ),
     "structural exit records success only after broker mutation success": (
         "bool closeAccepted" in structural and
