@@ -11,31 +11,13 @@ namespace cAlgo
         private const string OutcomeArchiveDirectory = "History";
         private const string OutcomeArchiveSchema = "CFIP-OUTCOME-ARCHIVE,1";
 
-        private string OutcomeArchivePrefix()
-        {
-            string symbol =
-                SanitizeArchivePart(
-                    string.IsNullOrWhiteSpace(SymbolName)
-                        ? "UNKNOWN"
-                        : SymbolName);
+        private string _outcomeArchivePrefixCache;
 
-            string timeframe =
-                SanitizeArchivePart(
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString());
+        private string OutcomeArchivePrefix() {
+            if (!string.IsNullOrWhiteSpace(
+                    _outcomeArchivePrefixCache))
+                return _outcomeArchivePrefixCache;
 
-            return
-                "CFIP_History_" +
-                symbol +
-                "_" +
-                timeframe +
-                "_" +
-                MemoryConfigurationFingerprint();
-        }
-
-        private static string SanitizeArchivePart(string value)
-        {
             if (string.IsNullOrWhiteSpace(value))
                 return "UNKNOWN";
 
@@ -79,8 +61,7 @@ namespace cAlgo
                 (days % 90);
 
             return epoch.AddDays(periodDays);
-        }
-
+                }
         private string OutcomeArchiveFilePath(
             DateTime observedUtc)
         {
