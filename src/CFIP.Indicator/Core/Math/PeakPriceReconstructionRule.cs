@@ -18,8 +18,8 @@ namespace cAlgo
 
             if ((direction != 1 &&
                  direction != -1) ||
-                !IsFinitePositive(entry) ||
-                !IsFinitePositive(currentMarket) ||
+                !NumericGuards.IsFinitePositive(entry) ||
+                !NumericGuards.IsFinitePositive(currentMarket) ||
                 startIndex < 0 ||
                 endIndex < startIndex ||
                 highAt == null ||
@@ -52,7 +52,7 @@ namespace cAlgo
                         : Math.Min(peak, extreme);
             }
 
-            if (!IsFinitePositive(peak))
+            if (!NumericGuards.IsFinitePositive(peak))
                 return false;
 
             peakPrice = peak;
