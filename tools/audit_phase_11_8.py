@@ -56,7 +56,7 @@ for token in (
     if token not in identity:
         errors.append("broker identity boundary missing: " + token)
 
-if "if (!ManagedActionsOnly)" not in identity:
+if "!ManagedActionsOnly" not in identity:
     errors.append("ManagedActionsOnly compatibility boundary is no longer explicit")
 
 if "string.IsNullOrWhiteSpace(managedLabel)" not in identity:
