@@ -46,7 +46,7 @@ required = {
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
         [
-            "EconomicNewsFeedStateRule.Resolve(",
+            "EconomicNewsFeedStateRule.Evaluate(",
             "NeverLoaded",
             "Stale",
             "NewsBlocked(",
