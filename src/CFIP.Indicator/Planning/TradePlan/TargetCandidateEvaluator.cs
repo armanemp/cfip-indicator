@@ -146,7 +146,11 @@ namespace cAlgo
                     entry,
                     candidate.Price,
                     atr))
+            {
+                rejectionReason =
+                    TargetCandidateRejectionReasons.M5Obstacle;
                 return false;
+            }
 
             if (RejectTargetObstacle &&
                 HasOpposingZonePathObstacle(
@@ -156,7 +160,11 @@ namespace cAlgo
                     entry,
                     candidate.Price,
                     atr))
+            {
+                rejectionReason =
+                    TargetCandidateRejectionReasons.OpposingZoneObstacle;
                 return false;
+            }
 
             if (stage >= 1 &&
                 RejectTargetObstacle &&
@@ -166,7 +174,11 @@ namespace cAlgo
                     direction,
                     entry,
                     candidate.Price))
+            {
+                rejectionReason =
+                    TargetCandidateRejectionReasons.HtfZoneObstacle;
                 return false;
+            }
 
             double normalizedDistance =
                 distance /
