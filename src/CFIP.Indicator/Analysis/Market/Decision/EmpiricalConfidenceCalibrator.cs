@@ -65,6 +65,7 @@ namespace cAlgo
         public int Wins { get; }
         public int ConfidenceBucket { get; }
         public double ObservedWinRate { get; }
+        public double AverageRealizedR { get; }
         public string Source { get; }
 
         public EmpiricalCalibrationSnapshot(
@@ -89,6 +90,7 @@ namespace cAlgo
                     observedWinRate,
                     0,
                     1);
+            AverageRealizedR = 0;
             Source =
                 string.IsNullOrWhiteSpace(source)
                     ? "NONE"
