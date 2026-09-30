@@ -22,7 +22,7 @@ namespace cAlgo
                         maximumSetupAgeBars);
             }
 
-            if (!IsHtfTimeframe(timeframe) ||
+            if (!StructuralTimeframeRule.IsSupported(timeframe) ||
                 double.IsNaN(sourceAgeMinutes) ||
                 double.IsInfinity(sourceAgeMinutes) ||
                 sourceAgeMinutes < 0)
@@ -65,26 +65,6 @@ namespace cAlgo
                    double.IsInfinity(minutes)
                     ? 0
                     : Math.Max(0, minutes);
-        }
-
-        private static bool IsHtfTimeframe(
-            string timeframe)
-        {
-            if (string.IsNullOrWhiteSpace(timeframe))
-                return false;
-
-            switch (timeframe.Trim().ToUpperInvariant())
-            {
-                case "M15":
-                case "M30":
-                case "H1":
-                case "H4":
-                case "D1":
-                case "W1":
-                    return true;
-                default:
-                    return false;
-            }
         }
 
         private static double TimeframeMinutes(
