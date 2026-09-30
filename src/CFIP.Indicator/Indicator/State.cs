@@ -232,6 +232,10 @@ namespace cAlgo
                 private ToggleButton _autoTradingQuickToggle;
                 private ToggleButton _automaticOrdersQuickToggle;
         
+                private readonly PopupAlertQueue _popupAlertQueue =
+                    new PopupAlertQueue(16);
+                private bool _popupCritical;
+
                 private Border _popup;
                 private TextBlock _popupText;
                 private DateTime _popupUntilUtc = DateTime.MinValue;
