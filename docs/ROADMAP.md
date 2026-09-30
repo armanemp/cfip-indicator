@@ -1885,39 +1885,40 @@ Acceptance:
 
 # Track 11.6 — Claude Review Defect Remediation — 2026-09-30
 
-Status: **CR1.1 COMPLETE; CR1.2 IS THE NEXT IMPLEMENTATION PHASE**
+Status: **CR1.2 COMPLETE; CR1.3 IS THE NEXT IMPLEMENTATION PHASE**
 
 Three external code-review prompts (A1–A12, B1–B12, C1–C9) are tracked in:
-
 `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
 
 CR-0 audit/source inventory:
-
 `docs/CLAUDE-REVIEW-CR0-AUDIT.md`
 
 CR1.1 — Session/EOD and period-reference correctness is complete.
 
-Verified changes:
-- canonical SessionWindowRule;
-- standard, overnight and start==end session semantics;
-- bounded five-minute EOD cleanup;
-- broker-state confirmation before EOD completion is latched;
-- managed pending cleanup at EOD;
-- post-boundary position protection;
-- latest closed D1/W1 period and D1 pivot references;
-- deterministic runtime contracts.
+CR1.2 — Daily-loss lock and stable accounting basis is complete.
 
-Verification:
-- Runtime acceptance contracts: PASS (run 1339);
-- cTrader compile: PASS (run 1523);
-- Source and architecture checks: PASS (run 1530).
+Completed CR1.2 scope:
+- deterministic DailyLossRule separated from broker/account fact acquisition;
+- persisted account-scoped UTC-day baseline and latched daily-loss lock;
+- realized daily P/L plus floating-P/L change from the stable baseline;
+- equity-change fallback with explicit deposit/withdrawal subtraction when realized history is unavailable;
+- fail-closed behavior when transaction facts are unavailable;
+- NaN/Infinity and invalid-threshold hardening;
+- one shared gate for Market, Aggressive and Pending automatic-entry paths;
+- account-switch reset/recovery handling;
+- deterministic runtime coverage for realized loss, floating loss, cash flow, persistence, threshold boundary and invalid-input cases.
 
-The next required implementation phase is **CR1.2 — Daily-loss lock and stable accounting basis**.
+Verification boundary:
+- official cTrader API surface was rechecked for Account equity/unrealized P/L, Transactions, HistoricalTrade and LocalStorage persistence;
+- target-terminal verification remains required for broker trading-day semantics, history/deal behavior, persistence across restart, and cross-instance lock propagation;
+- full cTrader Compile/Build and Runtime Acceptance remain required on the target repository environment.
 
-Track 12A local cBot separation remains the next architectural track after
-Track 11.6 CR-FINAL.
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was rechecked for this phase. No second decision/execution authority, position-capacity expansion, hidden live threshold change, or duplicate broker mutation path was introduced.
 
----
+The next required implementation phase is **CR1.3 — News guard correctness and non-blocking refresh**.
+
+Track 12A local cBot separation remains blocked until Track 11.6 CR-FINAL passes.
 
 # Track 12A — Mandatory Local cBot Separation
 
