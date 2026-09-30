@@ -216,7 +216,7 @@ namespace cAlgo
                     100,
                     2,
                     0.60,
-                    98.5,
+                    101.5,
                     out soft,
                     out hard,
                     out stopR) &&
