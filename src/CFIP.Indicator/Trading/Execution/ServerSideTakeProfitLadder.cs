@@ -239,6 +239,9 @@ namespace cAlgo
                     protections.SecondTakeProfit != null &&
                     protections.LastTakeProfit != null;
 
+                if (_serverSideTakeProfitLadderActive)
+                    _serverSideTakeProfitLadderOwned = true;
+
                 _serverSideBreakEvenActive =
                     _serverSideTakeProfitLadderActive &&
                     position.StopLossBreakEven != null;
