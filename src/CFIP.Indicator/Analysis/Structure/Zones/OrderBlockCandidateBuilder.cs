@@ -87,8 +87,11 @@ namespace cAlgo
                     managedHigh);
             int quality =
                 CalculateOrderBlockQuality(
-                    range,
-                    body,
+                    high -
+                    low,
+                    Math.Abs(
+                        close -
+                        open),
                     strongestBody,
                     remainingRatio,
                     displacement,
