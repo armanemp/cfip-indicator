@@ -8,6 +8,13 @@ CR3.2 is verified complete and merged to main via PR #98, merge commit `af7eb503
 
 CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37cca87fabc5b11b3d8c0a7edac7`, with Source/Architecture run 1808, Runtime Acceptance run 1617 and cTrader Compile run 1801.
 
+## Phase-sequence integrity
+
+Prompt 4 is explicitly D1–D10 in the canonical remediation roadmap. A
+repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
+`Prompt 4.11` entry. Therefore the implemented sequence is
+`CR4.10 → CR5.1 → CR5.2 → CR5.3`, with no authoritative CR4.11 phase omitted.
+
 ## Authoritative order
 
 1. Claude review remediation: docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md
@@ -18,7 +25,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
 
-CR4.1 and CR4.2 are complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
+CR4.1 through CR4.10, CR5.1 and CR5.2 are now recorded as completed on main. The repository-side CR-FINAL gate remains paused until CR5.3–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
 ## Completed before this checkpoint
 
