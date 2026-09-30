@@ -135,7 +135,7 @@ Entire areas that remain Indicator-owned:
 
 CBOT-0 does not blindly move whole parameter files.
 
-`tools/audit_cbot_boundary.py` parses the complete public parameter surface (expected baseline: 552) and, for every execution-related parameter:
+`tools/audit_cbot_boundary.py` parses the complete public parameter surface (current audited baseline: 562) and, for every execution-related parameter:
 
 1. finds all production references;
 2. classifies the reference domains as Analysis, Planning, Trading/Execution, Lifecycle, Risk, Identity, UI and Runtime;
@@ -191,7 +191,7 @@ CBOT-0 is accepted only when:
 - no mutation exists outside the frozen owners;
 - lifecycle/account ownership markers are present;
 - all execution-related parameters receive a deterministic ownership classification;
-- public parameter count remains 552;
+- public parameter count remains 562;
 - no duplicate public parameter declaration exists;
 - no production behavior was changed.
 
