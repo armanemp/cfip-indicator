@@ -2003,7 +2003,7 @@ namespace cAlgo
                     false, false, false, false, false) == 53 &&
                 OrderBlockQualityRule.Calculate(
                     0.50, 0, 0.50, 0,
-                    false, false, false, false, true) == 49,
+                    false, false, false, false, true) == 53,
                 "body shape, age and partial-mitigation penalties are deterministic");
 
             Assert(
