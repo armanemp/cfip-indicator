@@ -35,7 +35,7 @@ namespace cAlgo
                 MemoryConfigurationFingerprint());
         }
 
-        private string LegacyOutcomeMemoryKey()
+        private string PriorOutcomeMemoryKey()
         {
             string symbol =
                 string.IsNullOrWhiteSpace(SymbolName)
@@ -264,7 +264,7 @@ namespace cAlgo
                 {
                     stored =
                         LocalStorage.GetString(
-                            LegacyOutcomeMemoryKey(),
+                            PriorOutcomeMemoryKey(),
                             LocalStorageScope.Type);
 
                     legacyMemory =
