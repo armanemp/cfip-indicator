@@ -15,7 +15,8 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
                         private void ShowPopup(
-                            string message)
+                            string message,
+                            bool critical)
                         {
                             if (!ShowPopupAlerts)
                                 return;
@@ -189,6 +190,9 @@ namespace cAlgo
                                 _popupCloseButton.IsVisible =
                                     ShowPopupCloseButton;
                 
+                            _popupCritical =
+                                critical;
+
                             _popupUntilUtc =
                                 TimeInUtc.AddSeconds(
                                     Math.Max(

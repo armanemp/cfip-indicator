@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Next: CR3.3 — Partial TP, server ladder, BE and trailing (Prompt 4 / C5-C6).
+Next: CR3.4 — Execution UI control and popup reliability (C7).
 
 ## Completed before this checkpoint
 
@@ -72,4 +72,39 @@ CR3.1 is closed. The next implementation response must execute CR3.2 only. Track
 
 ## Next transition
 
-CR3.2 is closed. The next implementation response must execute CR3.3 only. Track 12A remains blocked until CR-FINAL.
+CR3.2 is closed. CR3.3 has been implemented and merged to main. The next implementation response must execute CR3.4 only. Track 12A remains blocked until CR-FINAL.
+
+
+## CR3.3 implementation record
+
+CR3.3 was merged to main in PR #99, merge commit `1e8681f57cb48bc51367b3df2ca129803d93d0c4`.
+
+- partial TP retry is bounded by stage and canonical closed-M5 identity;
+- server TP ladder stage evidence is broker-confirmed and remains authoritative through ladder collapse;
+- post-partial and server-side break-even use the canonical spread-aware rule;
+- peak-RR recovery uses broker EntryTime plus closed-bar historical extremes;
+- target progression is monotonic and cannot move backward.
+
+Target-terminal broker timing, restart/reconnect behavior and empirical outcome validation remain manual acceptance boundaries.
+
+## Next transition
+
+CR3.3 is closed. CR3.4 is verified complete on PR #100. The next implementation response must execute CR3.5 only. Track 12A remains blocked until CR-FINAL.
+
+
+## CR3.4 implementation record
+
+CR3.4 was implemented on branch `phase/cr3-4-execution-ui-popup-reliability` and all three required CI gates passed on commit `d8bb61083a043ce46c11b92dc8068b029c0c5add`.
+
+- explicit Auto Trade runtime re-arm is owned by RuntimeFaultStateMachine and is independent of the public Indicator configuration parameter;
+- non-Healthy runtime states remain fail-closed;
+- popup alerts use a bounded critical-first queue;
+- popup rendering is processed from the timer boundary rather than directly from alert emission;
+- direct popup overwrite call sites were removed from lifecycle reminders;
+- deterministic runtime and static phase contracts are wired into CI.
+
+Manual target-terminal checks remain required for hosted UI timing and real cTrader runtime interaction.
+
+## Next transition
+
+CR3.4 is closed. The next implementation response must execute CR3.5 only. Track 12A remains blocked until CR-FINAL.

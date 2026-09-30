@@ -37,12 +37,6 @@ namespace cAlgo
                                 "OFF",
                                 "HIGH-CONFIDENCE SIGNAL READY");
                 
-                            ShowPopup(
-                                "CFIP SMART\n" +
-                                (_decision.Direction == 1 ? "BUY" : "SELL") +
-                                " setup is confirmed while Auto Trading is OFF.\n" +
-                                "Review ENTRY / SL / TP before taking any manual action.");
-                
                             SendUnifiedAlert(
                                 "AUTOOFF|" + closedM5,
                                 "CFIP AUTO TRADING OFF | " +

@@ -34,6 +34,8 @@ namespace cAlgo
                             _popup = null;
                             _popupText = null;
                             _popupCloseButton = null;
+                            _popupCritical = false;
+
                             _popupUntilUtc =
                                 DateTime.MinValue;
                         }

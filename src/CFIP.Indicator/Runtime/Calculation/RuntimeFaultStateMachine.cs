@@ -111,6 +111,16 @@ namespace cAlgo
             _state = RuntimeFaultState.EntryBlocked;
         }
 
+        public bool RequestExplicitRearm()
+        {
+            if (_state != RuntimeFaultState.Healthy)
+                return false;
+
+            _entryArmed = true;
+            _cycleFaulted = false;
+            return true;
+        }
+
         public bool CanAttemptClosedBarAnalysis(
             int closedBarKey,
             DateTime nowUtc,

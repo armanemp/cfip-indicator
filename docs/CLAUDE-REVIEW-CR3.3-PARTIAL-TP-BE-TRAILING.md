@@ -2,7 +2,7 @@
 
 Date: 2026-09-30
 
-Status: implementation complete; verification pending CI.
+Status: **MERGED TO MAIN — PR #99, merge commit `1e8681f57cb48bc51367b3df2ca129803d93d0c4`.**
 
 Covers: Claude review findings C5 and C6.
 

@@ -753,6 +753,24 @@ Acceptance:
 
 Covers: C7.
 
+Status: **VERIFIED COMPLETE — PR #100, all required CI gates passed on commit `d8bb61083a043ce46c11b92dc8068b029c0c5add`.**
+
+Implemented:
+- explicit Auto Trade quick-enable re-arm now uses a dedicated runtime state-machine operation and does not depend on the public Indicator configuration parameter;
+- fail-closed re-arm behavior remains enforced for Degraded, EntryBlocked and Recovering runtime states;
+- alert popups now enter a fixed-capacity queue instead of overwriting the active popup directly;
+- critical popup alerts are prioritized over normal informational alerts, while normal overflow is bounded;
+- popup queue processing is moved to the timer boundary so popup control mutation is outside the calculation hot path;
+- runtime contracts and a dedicated CR3.4 static audit enforce these ownership rules.
+
+Acceptance:
+- runtime-fault re-arm cannot bypass a non-Healthy state;
+- popup messages are not silently replaced by later normal alerts;
+- critical messages can take priority over an active normal popup;
+- no new trading decision or broker authority was introduced.
+
+Next implementation phase: **CR3.5 — Calibration, outcome and rejection transparency.**
+
 Work:
 - make runtime fault/re-arm checks independent of the current Indicator parameter state when the UI requests a runtime enable;
 - do not let the Indicator UI falsely imply broker execution is armed after cBot separation begins;
@@ -789,7 +807,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR3.3 — Partial TP, server ladder, BE and trailing**.
+Current active phase: **CR3.5 — Calibration, outcome and rejection transparency**.
 
 ## 8. Completion order and dependencies
 

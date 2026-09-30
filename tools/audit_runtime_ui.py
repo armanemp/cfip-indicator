@@ -92,6 +92,14 @@ for required in (
     if required not in handlers:
         raise SystemExit(f"Execution UI click handler missing: {required}")
 
+if "RequestExplicitRearm()" not in handlers:
+    raise SystemExit("Auto Trade quick enable must use the canonical runtime re-arm contract")
+if "EnableAutoTrading" in handlers:
+    raise SystemExit("Auto Trade quick re-arm must not depend on the public Indicator parameter state")
+if "RequestExplicitRearm()" not in state and "RequestExplicitRearm()" not in handlers:
+    raise SystemExit("Explicit runtime re-arm owner is missing")
+
+
 for required_setter in (
     "SetAutoTradingRuntimeState",
     "SetAutomaticOrdersRuntimeState",
@@ -124,6 +132,21 @@ if "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
     raise SystemExit("Popup must default to bottom-left")
 if "DefaultValue = false)]\n        public bool PopupCriticalOnly" not in popup_core:
     raise SystemExit("Popup must default to show valid alerts, not critical-only")
+
+popup_queue = read("Core/Runtime/PopupAlertQueue.cs")
+popup_processor = read("UI/Popup/PopupQueueProcessor.cs")
+if "PopupAlertQueue(16)" not in state:
+    raise SystemExit("Popup queue must have a fixed bounded capacity")
+if "_popupAlertQueue.Enqueue(" not in alert_engine:
+    raise SystemExit("Alerts must enter the bounded popup queue")
+if "ShowPopup(next.Message, next.Critical)" not in popup_processor:
+    raise SystemExit("Popup processor must be the only queued-to-render handoff")
+if "RemoveExpiredPopup();\n                ProcessQueuedPopups();" not in initialization:
+    raise SystemExit("Popup queue must be drained at the timer boundary")
+if "_normal.Dequeue()" not in popup_queue or "if (critical)" not in popup_queue:
+    raise SystemExit("Popup queue must prefer critical alerts over normal alerts")
+if "ShowPopup(message)" in alert_engine:
+    raise SystemExit("Alert hot path must not directly overwrite popup presentation")
 
 if "return Color.White" not in labels_renderer:
     raise SystemExit("All compact plan-level text must be white")
