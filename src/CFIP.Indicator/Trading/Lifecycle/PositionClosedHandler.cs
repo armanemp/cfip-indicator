@@ -39,11 +39,11 @@ namespace cAlgo
                                             ? 1
                                             : -1;
                         
+                                    OutcomeRegistrationResult outcome =
+                                        OutcomeRegistrationResult.NotRecorded;
+
                                     if (!_outcomeRegistered)
                                     {
-                                        bool profitable =
-                                            args.Position.NetProfit > 0;
-
                                         Plan outcomePlan =
                                             _plan != null &&
                                             _plan.IsLivePosition &&
@@ -52,21 +52,31 @@ namespace cAlgo
                                                 ? _plan
                                                 : null;
 
-                                        if (EnableOutcomeTelemetry)
+                                        outcome =
+                                            EnableOutcomeTelemetry
+                                                ? RecordManagedOutcome(
+                                                    outcomePlan,
+                                                    args.Position,
+                                                    _lastEvaluatedM5)
+                                                : OutcomeRegistrationResult.NotRecorded;
+
+                                        if (outcome.Recorded)
                                         {
-                                            RecordManagedOutcome(
-                                                outcomePlan,
-                                                args.Position,
-                                                _lastEvaluatedM5);
+                                            _outcomeRegistered = true;
+
+                                            if (outcome.Profitable)
+                                                _wins++;
+                                            else
+                                                _losses++;
                                         }
-
-                                        _outcomeRegistered = true;
-
-                                        if (profitable)
-                                            _wins++;
-                                        else
-                                            _losses++;
                                     }
+
+                                    string closeReason =
+                                        outcome.Recorded
+                                            ? outcome.Profitable
+                                                ? "POSITION CLOSED • PROFIT"
+                                                : "POSITION CLOSED • LOSS"
+                                            : "POSITION CLOSED";
                         
                                     _brokerProtectionRecoveryRequired = false;
                         
@@ -82,9 +92,7 @@ namespace cAlgo
                         
                                         SetLifecycleState(
                                             LifecycleState.Closed,
-                                            args.Position.NetProfit > 0
-                                                ? "POSITION CLOSED • PROFIT"
-                                                : "POSITION CLOSED • LOSS");
+                                            closeReason);
                         
                                         RemovePlanObjects();
                                     }

@@ -28,6 +28,10 @@ namespace cAlgo
 
             RemoveManagedPendingOrderObjects();
 
+            // A new position lifecycle starts here even when PositionOpened
+            // arrives before or after this pending-fill event.
+            _outcomeRegistered = false;
+
             int direction =
                 args.Position.TradeType == TradeType.Buy
                     ? 1

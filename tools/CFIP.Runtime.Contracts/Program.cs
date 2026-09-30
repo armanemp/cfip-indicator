@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace cAlgo
@@ -61,6 +62,7 @@ namespace cAlgo
             VerifyReactionQualificationSemantics();
             VerifyIndicatorExecutionQualitySemantics();
             VerifyPendingDecisionArbiterSemantics();
+            VerifyLifecycleOutcomeSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -4290,6 +4292,132 @@ namespace cAlgo
                     0,
                     0) == 0,
                 "candidate score remains bounded");
+        }
+
+        private static void VerifyLifecycleOutcomeSemantics()
+        {
+            LifecycleEventIdempotencyGuard guard =
+                new LifecycleEventIdempotencyGuard();
+
+            Assert(
+                guard.TryBegin("POSITION_OPENED", 101) &&
+                !guard.TryBegin("POSITION_OPENED", 101) &&
+                guard.TryBegin("POSITION_CLOSED", 101),
+                "lifecycle idempotency distinguishes event type and rejects duplicates");
+
+            for (long id = 1; id <= 600; id++)
+            {
+                Assert(
+                    guard.TryBegin("TEST_EVENT", id),
+                    "bounded idempotency accepts fresh lifecycle identities");
+            }
+
+            Assert(
+                guard.RememberedEventCount <= 512,
+                "lifecycle idempotency memory is bounded");
+
+            HistoricalOutcomeAggregate empty =
+                HistoricalOutcomeAggregationRule.AggregateHistoricalOutcomeRecords(
+                    null);
+
+            Assert(
+                !empty.Available &&
+                empty.TradeCount == 0,
+                "empty historical outcome set fails closed");
+
+            List<HistoricalOutcomeRecord> trades =
+                new List<HistoricalOutcomeRecord>
+                {
+                    new HistoricalOutcomeRecord
+                    {
+                        NetProfit = 40,
+                        GrossProfit = 45,
+                        Swap = -2,
+                        Commissions = -3,
+                        Pips = 10,
+                        ClosingTime =
+                            new DateTime(
+                                2026,
+                                9,
+                                30,
+                                10,
+                                0,
+                                0,
+                                DateTimeKind.Utc)
+                    },
+                    new HistoricalOutcomeRecord
+                    {
+                        NetProfit = -10,
+                        GrossProfit = -8,
+                        Swap = -1,
+                        Commissions = -1,
+                        Pips = -2,
+                        ClosingTime =
+                            new DateTime(
+                                2026,
+                                9,
+                                30,
+                                10,
+                                5,
+                                0,
+                                DateTimeKind.Utc)
+                    }
+                };
+
+            HistoricalOutcomeAggregate aggregate =
+                HistoricalOutcomeAggregationRule.AggregateHistoricalOutcomeRecords(
+                    trades);
+
+            Assert(
+                aggregate.Available &&
+                aggregate.TradeCount == 2 &&
+                Math.Abs(aggregate.NetProfit - 30) < 0.000001 &&
+                Math.Abs(aggregate.GrossProfit - 37) < 0.000001 &&
+                Math.Abs(aggregate.Swap + 3) < 0.000001 &&
+                Math.Abs(aggregate.Commissions + 4) < 0.000001 &&
+                Math.Abs(aggregate.Pips - 8) < 0.000001 &&
+                aggregate.ClosingTime ==
+                    new DateTime(
+                        2026,
+                        9,
+                        30,
+                        10,
+                        5,
+                        0,
+                        DateTimeKind.Utc),
+                "multiple closing historical trades aggregate to one final realized outcome");
+
+            HistoricalOutcomeAggregate invalid =
+                HistoricalOutcomeAggregationRule.AggregateHistoricalOutcomeRecords(
+                    new[]
+                    {
+                        new HistoricalOutcomeRecord
+                        {
+                            NetProfit = double.NaN,
+                            GrossProfit = 1,
+                            Swap = 0,
+                            Commissions = 0,
+                            Pips = 1,
+                            ClosingTime = DateTime.UtcNow
+                        }
+                    });
+
+            Assert(
+                !invalid.Available &&
+                invalid.TradeCount == 0,
+                "non-finite historical outcome data is ignored");
+
+            HistoricalOutcomeAggregate fallback =
+                HistoricalOutcomeAggregationRule.FromPositionFallback(
+                    25,
+                    5);
+
+            Assert(
+                fallback.Available &&
+                fallback.TradeCount == 1 &&
+                Math.Abs(fallback.NetProfit - 25) < 0.000001 &&
+                Math.Abs(fallback.Pips - 5) < 0.000001,
+                "position outcome fallback remains deterministic when history is unavailable");
         }
 
         private static void Assert(bool condition, string name)
