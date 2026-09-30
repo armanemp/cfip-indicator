@@ -1415,12 +1415,12 @@ namespace cAlgo
 
             Assert(
                 NativeIndicatorReadinessRule.IsFrameReady(
-                    40,
                     60,
-                    60,
-                    60,
-                    60,
-                    60,
+                    80,
+                    80,
+                    80,
+                    80,
+                    80,
                     14,
                     14,
                     14,
@@ -1435,12 +1435,12 @@ namespace cAlgo
 
             Assert(
                 !NativeIndicatorReadinessRule.IsFrameReady(
-                    40,
                     60,
-                    60,
-                    60,
-                    60,
-                    60,
+                    80,
+                    80,
+                    80,
+                    80,
+                    80,
                     14,
                     14,
                     14,
