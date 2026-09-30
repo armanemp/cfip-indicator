@@ -4379,6 +4379,27 @@ Next phase: **CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Rejection semantics
 
 Track 12A remains blocked until CR-FINAL passes.
 
+## Claude Review Remediation — CR2.8 Planned — 2026-09-30
+
+Status: PLANNED — not started.
+
+Covers: B9.
+
+Work:
+- bound the number of historical bars scanned;
+- cache per closed-bar historical result;
+- use timestamp-based chart-object identity;
+- label historical arrows as presentation-only rather than independently verified live signals;
+- avoid rerunning full analysis when the same host-bar state is unchanged.
+
+Acceptance:
+- fixed maximum historical work;
+- stable drawings under history changes;
+- no implication that a historical arrow is an independently verified live signal.
+
+This phase is the next implementation unit after CR2.7 and must be completed independently before CR2.9.
+
+
 ## Claude Review Remediation — CR2.1 Closeout — 2026-09-30
 
 Status: VERIFIED COMPLETE — PR #86, merge commit 20835cbf1e541b51b9ad56af46cf0c5d13ff5350.
