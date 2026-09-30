@@ -50,6 +50,32 @@ namespace cAlgo
                 return false;
             }
 
+            if (!IsFinitePositive(
+                    _executionModel.Trigger) &&
+                closedM5 < 1)
+            {
+                _autoOrdersBlockReason =
+                    "PENDING STOP • INSUFFICIENT LOOKBACK";
+                return false;
+            }
+
+            int fallbackStart =
+                Math.Max(
+                    0,
+                    closedM5 - 6);
+
+            int fallbackEnd =
+                closedM5 - 1;
+
+            if (fallbackEnd < fallbackStart &&
+                !IsFinitePositive(
+                    _executionModel.Trigger))
+            {
+                _autoOrdersBlockReason =
+                    "PENDING STOP • INVALID LOOKBACK";
+                return false;
+            }
+
             trigger =
                 IsFinitePositive(
                     _executionModel.Trigger)
@@ -57,20 +83,16 @@ namespace cAlgo
                     : direction == 1
                         ? Highest(
                               _m5Bars,
-                              Math.Max(
-                                  1,
-                                  closedM5 - 6),
-                              closedM5 - 1) +
+                              fallbackStart,
+                              fallbackEnd) +
                           atr *
                           Math.Max(
                               0.02,
                               PendingEntryBufferAtr)
                         : Lowest(
                               _m5Bars,
-                              Math.Max(
-                                  1,
-                                  closedM5 - 6),
-                              closedM5 - 1) -
+                              fallbackStart,
+                              fallbackEnd) -
                           atr *
                           Math.Max(
                               0.02,
