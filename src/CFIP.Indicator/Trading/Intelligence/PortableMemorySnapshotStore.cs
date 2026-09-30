@@ -10,7 +10,7 @@ namespace cAlgo
         private const string PortableMemorySnapshotSchema =
             "CFIP-PORTABLE-MEMORY,2";
 
-        private const string LegacyPortableMemorySnapshotSchema =
+        private const string CompatibilityPortableMemorySnapshotSchema =
             "CFIP-PORTABLE-MEMORY,1";
 
         // The indicator is explicitly registered as CFIPIndicator. With
@@ -256,7 +256,7 @@ namespace cAlgo
                 bool legacySchema =
                     string.Equals(
                         schema,
-                        LegacyPortableMemorySnapshotSchema,
+                        CompatibilityPortableMemorySnapshotSchema,
                         StringComparison.Ordinal);
 
                 if (!currentSchema &&
