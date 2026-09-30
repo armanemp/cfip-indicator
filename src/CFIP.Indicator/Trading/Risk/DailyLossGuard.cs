@@ -87,12 +87,16 @@ namespace cAlgo
                 double currentUnrealized =
                     Account.UnrealizedNetProfit;
 
-                bool accountingReady =
-                    _dailyLossHistoryAvailable ||
-                    (
-                        !_dailyLossHistoryAvailable &&
-                        _dailyLossTransactionsAvailable
-                    );
+                if (!_dailyLossHistoryAvailable &&
+                    !_dailyLossTransactionsAvailable)
+                {
+                    _dailyLossDataReady = false;
+                    _dailyLossStateReason =
+                        "DAILY LOSS DATA UNAVAILABLE";
+                    reason =
+                        "DAILY LOSS DATA UNAVAILABLE";
+                    return true;
+                }
 
                 DailyLossEvaluation evaluation =
                     DailyLossRule.Evaluate(
@@ -103,7 +107,6 @@ namespace cAlgo
                         _dailyLossRealizedNetProfit,
                         _dailyLossNetCashFlow,
                         MaximumDailyLossPercent,
-                        accountingReady &&
                         _dailyLossHistoryAvailable,
                         _dailyLossLocked);
 
