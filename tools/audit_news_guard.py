@@ -11,24 +11,50 @@ required = {
         [
             "EnableEconomicNewsCalendar",
             "EconomicNewsDataUri",
+            "NewsRefreshMinutes",
+            "NewsSymbolCurrencyMap",
             "HighImpactNewsMinutesBefore",
             "HighImpactNewsMinutesAfter",
             "CancelPendingBeforeHighImpactNews",
             "CloseActiveBeforeHighImpactNews",
+            "NewsFailClosedWhenStale",
+            "MaximumNewsFeedAgeMinutes",
+        ],
+    "src/CFIP.Indicator/Core/Math/EconomicNewsFeedStateRule.cs":
+        [
+            "EconomicNewsFeedState",
+            "NeverLoaded",
+            "Healthy",
+            "Stale",
+            "BlockingEvent",
+            "Resolve(",
+        ],
+    "src/CFIP.Indicator/Core/Math/EconomicNewsCurrencyRule.cs":
+        [
+            "NormalizeSymbol(",
+            "NewsSymbolCurrencyMap",
+            "AddSymbolMapMatches",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarClient.cs":
         [
             "RefreshEconomicNewsIfNeeded",
+            "Http.GetAsync(",
+            "_economicNewsRequestInFlight",
+            "_economicNewsRequestGeneration",
+            "EconomicNewsRequestTimeoutSeconds",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
         [
-            "FindBlockingNewsEvent",
-            "NewsBlocked",
+            "EconomicNewsFeedStateRule.Resolve(",
+            "NeverLoaded",
+            "Stale",
+            "NewsBlocked(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsProtection.cs":
         [
             "ArchiveEconomicNewsRisk",
             "ApplyEconomicNewsRiskProtection",
+            '"NEWS_RISK"',
         ],
     "src/CFIP.Indicator/Analysis/Market/Decision/DecisionMarketGates.cs":
         ["NewsBlocked("],
@@ -36,26 +62,51 @@ required = {
         ["NewsBlocked("],
     "src/CFIP.Indicator/Runtime/Supervision/RuntimePanelHeartbeat.cs":
         ["RefreshEconomicNewsIfNeeded("],
-    "src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs":
-        ["ApplyEconomicNewsRiskProtection("],
-    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsProtection.cs":
-        ['"NEWS_RISK"'],
 }
 
 errors = []
 
-for relative, needles in required.items():
+
+def read(relative: str) -> str:
     path = ROOT / relative
     if not path.exists():
         errors.append(f"missing required file: {relative}")
-        continue
+        return ""
+    return path.read_text(encoding="utf-8")
 
-    text = path.read_text(encoding="utf-8")
+
+for relative, needles in required.items():
+    source = read(relative)
     for needle in needles:
-        if needle not in text:
+        if needle not in source:
             errors.append(
                 f"{relative}: missing required news contract: {needle}"
             )
+
+calendar = read(
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarClient.cs"
+)
+initialization = read(
+    "src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs"
+)
+
+if "Http.Get(" in calendar or "Http.Send(" in calendar:
+    errors.append(
+        "EconomicNewsCalendarClient.cs: synchronous HTTP API usage remains"
+    )
+
+if "RefreshEconomicNewsIfNeeded(" in initialization:
+    errors.append(
+        "RuntimeInitialization.cs: news refresh must not run during initialization"
+    )
+
+# No production source may retain a synchronous news HTTP mutation.
+for path in (ROOT / "src").rglob("*.cs"):
+    source = path.read_text(encoding="utf-8")
+    if "Http.Get(" in source or "Http.Send(" in source:
+        errors.append(
+            f"{path.relative_to(ROOT)}: synchronous Http.Get/Http.Send is forbidden"
+        )
 
 if errors:
     print("NEWS GUARD AUDIT: FAIL")
