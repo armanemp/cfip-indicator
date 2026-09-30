@@ -73,7 +73,7 @@ namespace cAlgo
                                 _m5Bars.Count - 1)));
 
                 PlanRewardRiskQualityResult rewardRisk =
-                    PlanRewardRiskQualityRule.EvaluateIndicatorExecutionQuality(
+                    PlanRewardRiskQualityRule.Evaluate(
                         intent.Direction,
                         intent.RequestedEntry,
                         intent.Stop,
