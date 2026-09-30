@@ -68,5 +68,23 @@ namespace cAlgo
 
                                     return true;
                                 }
+
+        private bool TryGetClosedM5InvalidationMarket(
+                                    int closedM5,
+                                    out double market)
+                                {
+                                    market = 0;
+
+                                    if (_m5Bars == null ||
+                                        closedM5 < 0 ||
+                                        closedM5 >= _m5Bars.Count)
+                                        return false;
+
+                                    market =
+                                        _m5Bars.ClosePrices[closedM5];
+
+                                    return IsFinitePositive(market);
+                                }
     }
 }
+
