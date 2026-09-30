@@ -95,8 +95,8 @@ checks = {
         "_pendingProtectedStopCandidate" in bound and
         "stopMutationSucceeded" in bound and
         "TryModifyStopLoss(" in bound and
-        "_plan.Stop =
-                                                            NormalizePrice(desiredStop)" in bound
+        "_plan.Stop" in bound and
+        "NormalizePrice(desiredStop)" in bound
     ),
     "broker stop rejection does not overwrite plan stop": (
         "if (!stopConfirmed" in bound and
