@@ -4995,13 +4995,13 @@ Verification boundary:
 - target-terminal startup/readiness timing, panel responsiveness, broker acknowledgement ordering, restart/reconnect behavior and empirical signal-quality/profitability remain manual acceptance items;
 - repository-level CR4.10 acceptance is closed and does not infer those manual results.
 
-**Next phase: CR-FINAL repository integration gate.**
+**Next phase: CR5.1 / E1 — Effective maximum structural-stop risk and duplicate ceiling removal.**
 
 
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+Status: **IN PROGRESS — CR5.1 VERIFIED COMPLETE; CR5.2 NEXT.**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -5029,6 +5029,36 @@ Mandatory Prompt 5 rules:
 - project-wide routine audit and performance/code-cleanliness audit run in every phase;
 - cTrader-dependent behavior is explicitly marked for hands-on verification;
 - newly discovered bugs are documented separately and are not fixed outside the active scope.
+
+### CR5.1 / E1 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #114 merged to `main`; merge commit `62a119bef79e5a978f1f2ed66a913fa11a1bb2d4`.**
+
+Implementation:
+- centralized the effective maximum structural-stop risk ceiling in Core `StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(...)`;
+- preserved the existing numerical formula and the distinct roles of `MaximumSlAtr` and `MaximumStructuralStopAtr`;
+- migrated all dual-cap consumers identified by the E1 inventory;
+- retained early structural-stop rejection when risk exceeds the effective ceiling;
+- added deterministic floor/cap ordering and symmetry contracts;
+- added `audit_phase_5_1.py` to inventory dual-cap consumers and reject duplicate inline ceiling formulas.
+
+Repository verification on PR #114 head `1f5b7e85c3c0f284431b38d56f17f833df24205b`:
+- Source/Architecture: PASS — run `36791329486`;
+- Runtime Acceptance Contracts: PASS — run `36791329385`;
+- cTrader Compile: PASS — run `36791329369`.
+
+The merge commit `62a119bef79e5a978f1f2ed66a913fa11a1bb2d4` also passed:
+- Source/Architecture — PASS — run `36791455294`;
+- Runtime Acceptance Contracts — PASS — run `36791455156`;
+- cTrader Compile — PASS — run `36791455288`.
+
+Safety/manual boundary:
+- no public parameter name/type/default changed;
+- no RR/confidence/SL/target/execution threshold tuning;
+- no decision/execution authority changed;
+- target-terminal, broker lifecycle, restart/reconnect and empirical outcome validation remain manual.
+
+**Next phase: CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates.**
 
 CR-FINAL is **paused** until Prompt 4, Prompt 5 and Prompt 6 are completed or explicitly documented as verified/deferred with evidence.
 
@@ -5090,3 +5120,10 @@ Remaining mandatory CR-FINAL evidence:
 
 Therefore Track 12A remains blocked. The next operator action is to run the no-trade CBOT-Preflight procedure from `docs/CBOT-PREFLIGHT.md`.
 
+
+
+## Current active implementation phase
+
+**CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates.**
+
+CR5.1 / E1 is verified complete; continue from CR5.2. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
