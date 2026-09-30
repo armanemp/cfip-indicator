@@ -35,6 +35,7 @@
     <Compile Include="../../src/CFIP.Indicator/Runtime/Mtf/MtfClosedContext.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ClosedBarReferenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/DailyLossRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/DailyLossBaselineRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/DailyLossEvaluation.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SessionWindowRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Execution/BrokerConfirmationPolicy.cs" />
