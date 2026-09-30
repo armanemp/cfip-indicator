@@ -81,6 +81,7 @@ namespace cAlgo
             VerifySmartBreakEvenSemantics();
             VerifyTargetProgressionMonotonicity();
             VerifyOutcomeMemoryIdentitySemantics();
+            VerifyPersistenceHealthSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -227,6 +228,65 @@ namespace cAlgo
                     OutcomeMemoryIdentityRule.CurrentKeyPrefix,
                     StringComparison.Ordinal),
                 "scoped LocalStorage key stays within cTrader key constraints");
+        }
+
+
+        private static void VerifyPersistenceHealthSemantics()
+        {
+            Assert(
+                PersistenceHealthRule.IsRelativeHistoryPath(
+                    "History\\CFIP_Runtime.csv") &&
+                PersistenceHealthRule.IsRelativeHistoryPath(
+                    "History/sub/file.csv") &&
+                !PersistenceHealthRule.IsRelativeHistoryPath(
+                    "C:\\Users\\User\\History\\file.csv") &&
+                !PersistenceHealthRule.IsRelativeHistoryPath(
+                    "../History/file.csv") &&
+                !PersistenceHealthRule.IsRelativeHistoryPath(
+                    "/History/file.csv"),
+                "History persistence paths remain sandbox-relative and reject rooted or parent-escape paths");
+
+            Assert(
+                PersistenceHealthRule.Resolve(
+                    true,
+                    0,
+                    0,
+                    0) ==
+                PersistenceHealthState.Healthy,
+                "successful History probe with no I/O failures is healthy");
+
+            Assert(
+                PersistenceHealthRule.Resolve(
+                    true,
+                    1,
+                    0,
+                    0) ==
+                PersistenceHealthState.Degraded &&
+                PersistenceHealthRule.Resolve(
+                    true,
+                    0,
+                    1,
+                    0) ==
+                PersistenceHealthState.Degraded,
+                "read or write failures downgrade persistence health");
+
+            Assert(
+                PersistenceHealthRule.Resolve(
+                    true,
+                    0,
+                    0,
+                    3) ==
+                PersistenceHealthState.Healthy,
+                "pending buffered lines do not falsely report persistence failure after a successful probe");
+
+            Assert(
+                PersistenceHealthRule.Resolve(
+                    false,
+                    0,
+                    0,
+                    0) ==
+                PersistenceHealthState.Unknown,
+                "unverified History access is distinguishable from confirmed failure");
         }
 
         private static void VerifySwingPlateauSemantics()
