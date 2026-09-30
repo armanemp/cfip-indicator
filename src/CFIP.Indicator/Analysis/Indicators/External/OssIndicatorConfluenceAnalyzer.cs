@@ -35,6 +35,8 @@ namespace cAlgo
                     SuperTrend = SkenderSuperTrend(bars, index),
                     AroonOscillator = SkenderAroonOscillator(bars, index),
                     Cci = SkenderCci(bars, index),
+                    // diagnostic-only: OBV is retained for trace/research visibility,
+                    // but its one-bar bias is not counted as independent confluence evidence.
                     ObvBias = SkenderObvBias(bars, index),
                     ParabolicSar = SkenderParabolicSar(bars, index)
                 };
@@ -74,7 +76,6 @@ namespace cAlgo
             bool superTrendValid = IsFiniteValue(snapshot.SuperTrend);
             bool aroonValid = IsFiniteValue(snapshot.AroonOscillator);
             bool cciValid = IsFiniteValue(snapshot.Cci);
-            bool obvValid = IsFiniteValue(snapshot.ObvBias);
             bool parabolicSarValid = IsFiniteValue(snapshot.ParabolicSar);
 
             AddDirectionalVote(snapshot.Rsi, 50, rsiValid, snapshot);
@@ -101,13 +102,6 @@ namespace cAlgo
                     snapshot.BearVotes++;
             }
 
-            if (obvValid)
-            {
-                if (snapshot.ObvBias > 0)
-                    snapshot.BullVotes++;
-                else if (snapshot.ObvBias < 0)
-                    snapshot.BearVotes++;
-            }
 
             if (parabolicSarValid &&
                 IsFiniteValue(close))
@@ -127,7 +121,6 @@ namespace cAlgo
                 (superTrendValid ? 1 : 0) +
                 (aroonValid ? 1 : 0) +
                 (cciValid ? 1 : 0) +
-                (obvValid ? 1 : 0) +
                 (parabolicSarValid ? 1 : 0);
 
             _ossIndicatorSnapshotCache.Set(
