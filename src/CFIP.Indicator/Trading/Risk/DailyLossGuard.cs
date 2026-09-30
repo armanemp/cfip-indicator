@@ -1,10 +1,7 @@
 // CFIP Indicator — DailyLossGuard.cs
-// Single-responsibility account loss guard.
-// The deterministic loss calculation lives in Core/Math/DailyLossRule.cs.
+// Single-responsibility account loss gate.
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -12,9 +9,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const string DailyLossStateSchema =
-            "CFIP-DL,2";
-
         private void OnAccountSwitched(
             AccountSwitchedEventArgs args)
         {
@@ -93,6 +87,13 @@ namespace cAlgo
                 double currentUnrealized =
                     Account.UnrealizedNetProfit;
 
+                bool accountingReady =
+                    _dailyLossHistoryAvailable ||
+                    (
+                        !_dailyLossHistoryAvailable &&
+                        _dailyLossTransactionsAvailable
+                    );
+
                 DailyLossEvaluation evaluation =
                     DailyLossRule.Evaluate(
                         _dailyLossStartEquity,
@@ -102,6 +103,7 @@ namespace cAlgo
                         _dailyLossRealizedNetProfit,
                         _dailyLossNetCashFlow,
                         MaximumDailyLossPercent,
+                        accountingReady &&
                         _dailyLossHistoryAvailable,
                         _dailyLossLocked);
 
@@ -129,8 +131,7 @@ namespace cAlgo
 
                     if (!_dailyLossLimitAlerted)
                     {
-                        _dailyLossLimitAlerted =
-                            true;
+                        _dailyLossLimitAlerted = true;
 
                         PersistDailyLossState(
                             reference);
@@ -139,15 +140,15 @@ namespace cAlgo
                             "DAILYLOSS|" +
                             reference.Date.ToString(
                                 "yyyyMMdd",
-                                CultureInfo.InvariantCulture),
+                                System.Globalization.CultureInfo.InvariantCulture),
                             "Daily loss limit reached (" +
                             evaluation.LossPercent.ToString(
                                 "F2",
-                                CultureInfo.InvariantCulture) +
+                                System.Globalization.CultureInfo.InvariantCulture) +
                             "% >= " +
                             MaximumDailyLossPercent.ToString(
                                 "F2",
-                                CultureInfo.InvariantCulture) +
+                                System.Globalization.CultureInfo.InvariantCulture) +
                             "%) - new automatic entries are blocked for the " +
                             "rest of the UTC trading day. Open positions are left untouched.",
                             0,
@@ -227,421 +228,13 @@ namespace cAlgo
             _dailyLossTransactionsAvailable = false;
             _dailyLossLocked = false;
             _dailyLossLimitAlerted = false;
+            _dailyLossDataReady = false;
             _dailyLossEvaluationUtc = DateTime.MinValue;
+            _lastDailyLossPersistUtc =
+                DateTime.MinValue;
 
             PersistDailyLossState(
                 referenceUtc);
-        }
-
-        private void RefreshDailyLossTradeFacts(
-            DateTime referenceUtc)
-        {
-            if (_dailyLossBaselineDate.Date !=
-                    referenceUtc.Date)
-                return;
-
-            bool historyNeedsRefresh =
-                _dailyLossHistoryCount < 0 ||
-                History == null ||
-                History.Count !=
-                    _dailyLossHistoryCount;
-
-            bool transactionsNeedRefresh =
-                _dailyLossTransactionCount < 0 ||
-                !_dailyLossTransactionsAvailable ||
-                Transactions == null ||
-                Transactions.Count !=
-                    _dailyLossTransactionCount;
-
-            if (historyNeedsRefresh)
-                RefreshDailyRealizedNetProfit(
-                    referenceUtc);
-
-            if (transactionsNeedRefresh)
-                RefreshDailyCashFlows(
-                    referenceUtc);
-
-            _dailyLossEvaluationUtc =
-                referenceUtc;
-        }
-
-        private void RefreshDailyRealizedNetProfit(
-            DateTime referenceUtc)
-        {
-            _dailyLossRealizedNetProfit = 0;
-            _dailyLossHistoryAvailable = false;
-
-            if (History == null)
-                return;
-
-            DateTime startUtc =
-                new DateTime(
-                    referenceUtc.Year,
-                    referenceUtc.Month,
-                    referenceUtc.Day,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
-
-            DateTime endExclusive =
-                startUtc.AddDays(1);
-
-            try
-            {
-                foreach (HistoricalTrade trade in History)
-                {
-                    if (trade == null)
-                        continue;
-
-                    DateTime closeUtc =
-                        AsUtc(trade.ClosingTime);
-
-                    if (closeUtc < startUtc ||
-                        closeUtc >= endExclusive)
-                        continue;
-
-                    double netProfit =
-                        trade.NetProfit;
-
-                    if (double.IsNaN(netProfit) ||
-                        double.IsInfinity(netProfit))
-                        continue;
-
-                    _dailyLossRealizedNetProfit +=
-                        netProfit;
-                }
-
-                _dailyLossHistoryCount =
-                    History.Count;
-
-                _dailyLossHistoryAvailable = true;
-            }
-            catch (Exception ex)
-            {
-                _dailyLossHistoryAvailable = false;
-
-                Print(
-                    "CFIP daily realized history refresh failed: {0}",
-                    ex.Message);
-            }
-        }
-
-        private void RefreshDailyCashFlows(
-            DateTime referenceUtc)
-        {
-            _dailyLossNetCashFlow = 0;
-
-            if (Transactions == null)
-            {
-                _dailyLossTransactionCount = -1;
-                _dailyLossTransactionsAvailable = false;
-                return;
-            }
-
-            DateTime startUtc =
-                new DateTime(
-                    referenceUtc.Year,
-                    referenceUtc.Month,
-                    referenceUtc.Day,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
-
-            DateTime endExclusive =
-                startUtc.AddDays(1);
-
-            try
-            {
-                foreach (Transaction transaction
-                         in Transactions)
-                {
-                    if (transaction == null)
-                        continue;
-
-                    DateTime transactionUtc =
-                        AsUtc(transaction.Time);
-
-                    if (transactionUtc < startUtc ||
-                        transactionUtc >= endExclusive)
-                        continue;
-
-                    if (transaction.Type ==
-                        TransactionType.Deposit)
-                    {
-                        _dailyLossNetCashFlow +=
-                            Math.Abs(
-                                transaction.Amount);
-                    }
-                    else if (transaction.Type ==
-                             TransactionType.Withdrawal)
-                    {
-                        _dailyLossNetCashFlow -=
-                            Math.Abs(
-                                transaction.Amount);
-                    }
-                }
-
-                _dailyLossTransactionCount =
-                    Transactions.Count;
-                _dailyLossTransactionsAvailable = true;
-            }
-            catch (Exception ex)
-            {
-                _dailyLossTransactionCount = -1;
-                _dailyLossTransactionsAvailable = false;
-
-                Print(
-                    "CFIP daily cash-flow refresh failed: {0}",
-                    ex.Message);
-            }
-        }
-
-        private bool RestoreDailyLossState(
-            DateTime referenceUtc)
-        {
-            try
-            {
-                string stored =
-                    LocalStorage.GetString(
-                        DailyLossStorageKey(),
-                        LocalStorageScope.Type);
-
-                if (string.IsNullOrWhiteSpace(stored))
-                    return false;
-
-                string[] parts =
-                    stored.Split('|');
-
-                if (parts.Length < 6 ||
-                    !string.Equals(
-                        parts[0],
-                        DailyLossStateSchema,
-                        StringComparison.Ordinal))
-                    return false;
-
-                DateTime baselineDate =
-                    new DateTime(
-                        long.Parse(
-                            parts[1],
-                            CultureInfo.InvariantCulture),
-                        DateTimeKind.Utc);
-
-                double startEquity =
-                    double.Parse(
-                        parts[2],
-                        CultureInfo.InvariantCulture);
-
-                double startFloating =
-                    double.Parse(
-                        parts[3],
-                        CultureInfo.InvariantCulture);
-
-                bool locked =
-                    parts[4] == "1";
-
-                bool alerted =
-                    parts[5] == "1";
-
-                if (baselineDate.Date !=
-                        referenceUtc.Date ||
-                    !IsFinitePositive(
-                        startEquity) ||
-                    double.IsNaN(startFloating) ||
-                    double.IsInfinity(startFloating))
-                    return false;
-
-                _dailyLossBaselineDate =
-                    baselineDate.Date;
-
-                _dailyLossStartEquity =
-                    startEquity;
-
-                _dailyLossBaselineUnrealizedNetProfit =
-                    startFloating;
-
-                _dailyLossRealizedNetProfit = 0;
-                _dailyLossNetCashFlow = 0;
-                _dailyLossHistoryCount = -1;
-                _dailyLossTransactionCount = -1;
-                _dailyLossHistoryAvailable = false;
-                _dailyLossTransactionsAvailable = false;
-                _dailyLossLocked = locked;
-                _dailyLossLimitAlerted = alerted;
-                _dailyLossDataReady = false;
-                _dailyLossEvaluationUtc =
-                    DateTime.MinValue;
-                _lastDailyLossSharedStateReloadUtc =
-                    DateTime.MinValue;
-                _dailyLossStateReason =
-                    locked
-                        ? "DAILY LOSS LIMIT LOCKED"
-                        : "RESTORED";
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP daily loss state restore failed: {0}",
-                    ex.Message);
-                return false;
-            }
-        }
-
-        private void RefreshSharedDailyLossLock(
-            DateTime referenceUtc)
-        {
-            if ((referenceUtc -
-                 _lastDailyLossSharedStateReloadUtc).TotalSeconds <
-                1)
-                return;
-
-            try
-            {
-                // Type scope is shared by all Indicator instances. Reload is
-                // intentionally rate-limited so one instance can observe a
-                // lock latched by another without putting LocalStorage on the
-                // hot calculation path every tick.
-                LocalStorage.Reload(
-                    LocalStorageScope.Type);
-
-                _lastDailyLossSharedStateReloadUtc =
-                    referenceUtc;
-
-                string stored =
-                    LocalStorage.GetString(
-                        DailyLossStorageKey(),
-                        LocalStorageScope.Type);
-
-                if (string.IsNullOrWhiteSpace(stored))
-                    return;
-
-                string[] parts =
-                    stored.Split('|');
-
-                if (parts.Length < 6 ||
-                    !string.Equals(
-                        parts[0],
-                        DailyLossStateSchema,
-                        StringComparison.Ordinal))
-                    return;
-
-                DateTime baselineDate =
-                    new DateTime(
-                        long.Parse(
-                            parts[1],
-                            CultureInfo.InvariantCulture),
-                        DateTimeKind.Utc);
-
-                if (baselineDate.Date !=
-                    referenceUtc.Date)
-                    return;
-
-                bool locked =
-                    parts[4] == "1";
-
-                bool alerted =
-                    parts[5] == "1";
-
-                if (locked)
-                    _dailyLossLocked = true;
-
-                if (alerted)
-                    _dailyLossLimitAlerted = true;
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP shared daily loss lock reload failed: {0}",
-                    ex.Message);
-            }
-        }
-
-        private void PersistDailyLossState(
-            DateTime referenceUtc)
-        {
-            try
-            {
-                string payload =
-                    DailyLossStateSchema +
-                    "|" +
-                    new DateTime(
-                        referenceUtc.Year,
-                        referenceUtc.Month,
-                        referenceUtc.Day,
-                        0,
-                        0,
-                        0,
-                        DateTimeKind.Utc).Ticks.ToString(
-                            CultureInfo.InvariantCulture) +
-                    "|" +
-                    _dailyLossStartEquity.ToString(
-                        "R",
-                        CultureInfo.InvariantCulture) +
-                    "|" +
-                    _dailyLossBaselineUnrealizedNetProfit.ToString(
-                        "R",
-                        CultureInfo.InvariantCulture) +
-                    "|" +
-                    (_dailyLossLocked ? "1" : "0") +
-                    "|" +
-                    (_dailyLossLimitAlerted ? "1" : "0");
-
-                LocalStorage.SetString(
-                    DailyLossStorageKey(),
-                    payload,
-                    LocalStorageScope.Type);
-
-                LocalStorage.Flush(
-                    LocalStorageScope.Type);
-
-                _lastDailyLossPersistUtc =
-                    AsUtc(referenceUtc);
-                _lastDailyLossSharedStateReloadUtc =
-                    AsUtc(referenceUtc);
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP daily loss state persist failed: {0}",
-                    ex.Message);
-            }
-        }
-
-        private void PersistDailyLossStateIfNeeded(
-            DateTime referenceUtc,
-            bool force)
-        {
-            if (force ||
-                _dailyLossBaselineDate.Date !=
-                    referenceUtc.Date ||
-                (referenceUtc -
-                 _lastDailyLossPersistUtc).TotalSeconds >=
-                    60)
-            {
-                PersistDailyLossState(
-                    referenceUtc);
-                _lastDailyLossPersistUtc =
-                    referenceUtc;
-            }
-        }
-
-        private string DailyLossStorageKey()
-        {
-            return
-                "CFIP DailyLoss " +
-                Account.Number.ToString(
-                    CultureInfo.InvariantCulture);
-        }
-
-        private static DateTime AsUtc(
-            DateTime value)
-        {
-            return value.Kind == DateTimeKind.Utc
-                ? value
-                : value.ToUniversalTime();
         }
     }
 }
