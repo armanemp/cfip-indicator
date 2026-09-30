@@ -1898,9 +1898,9 @@ decision, scenario and trade-plan authority.
 This track is intentionally local. It introduces no Cloud service, HTTP API,
 socket, database, broker service, or multi-position capability.
 
-## Mandatory preflight
+## Mandatory preflight gate after CBOT-0
 
-Before CBOT-1, the target cTrader environment must pass **CBOT-Preflight**:
+After CBOT-0 and before CBOT-1, the target cTrader environment must pass **CBOT-Preflight**:
 
 - cBot can instantiate the compiled CFIP Indicator through the supported custom-indicator mechanism;
 - cBot can read a structured public read-only signal surface without reflection or chart-object scraping;
@@ -1948,9 +1948,9 @@ and broker-facing responsibilities and therefore require explicit split inventor
 
 ## Mandatory phases
 
-`CBOT-Preflight` Target cTrader capability proof
+`CBOT-0` Boundary inventory, dependency closure, parameter ownership and execution-authority freeze
 
-`CBOT-0` Boundary inventory, dependency closure and execution-authority freeze
+`CBOT-Preflight` Target cTrader capability proof (blocking gate before CBOT-1)
 
 `CBOT-1` Platform-neutral local contracts
 
@@ -1983,6 +1983,10 @@ cBot boundary.
 - Until final cutover, live trading uses exactly one explicitly designated executor at a time.
 - After cutover, missing/stale/incompatible cBot state fails closed and never reactivates an Indicator fallback.
 - The Indicator remains usable as an analysis/display component when the cBot is absent.
+
+## Parameter-ownership rule
+
+A parameter stays in Indicator when it changes analytical evidence, confidence/quality, MTF interpretation, scenario selection or proposed Entry/SL/TP geometry. A parameter moves to cBot when it controls account/broker permission, sizing normalization, capacity, daily-loss enforcement, broker protection mutation, execution throttling or the authoritative Auto Trading/Auto Orders state. Presentation-only parameters stay in Indicator. No execution behavior may have two independent parameter values.
 
 ## Required final acceptance
 
@@ -4240,3 +4244,23 @@ Verification completed before merge:
 Next phase:
 **Track 12A — Mandatory Local cBot Separation**, followed by scenario-aware broker policy only
 through the dedicated cBot execution authority.
+
+
+---
+
+## Track 12A Final-Readiness Audit — 2026-09-30
+
+Status: ROADMAP READY FOR IMPLEMENTATION.
+
+The master and detailed separation roadmap now agree on CBOT-Preflight, CBOT-0 dependency-closure and parameter ownership, Indicator/cBot authority boundaries, one-executor-at-a-time migration, final zero-broker-mutation/fallback gates, and target-terminal runtime/replay requirements.
+
+No production C# behavior changed.
+
+
+---
+
+## Track 12A Final Phase Ordering — 2026-09-30
+
+The authoritative order is now: `CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7`. CBOT-0 is repository/source inventory; CBOT-Preflight is the no-trade target-terminal capability gate; CBOT-1 and later may not bypass either gate.
+
+No production C# behavior changed.
