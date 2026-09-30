@@ -1782,14 +1782,16 @@ namespace cAlgo
                     signalReady),
                 "WaveTrend readiness includes RSI/MFI/RMI dependencies, both smoothing layers and previous-bar stability");
 
+            WaveTrendMovingAverageCalculator stateCalculator =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Exponential,
+                    3,
+                    0);
+
             Assert(
-                !double.IsNaN(
-                    new WaveTrendMovingAverageCalculator(
-                        WaveTrendMovingAverageCalculator.Exponential,
-                        3,
-                        0)
-                    .GetWaveTrendAverageValue(0)),
-                "WaveTrend calculator exposes deterministic state values");
+                double.IsNaN(
+                    stateCalculator.GetWaveTrendAverageValue(0)),
+                "WaveTrend calculator keeps pre-warm-up state non-ready");
         }
 
         private static void VerifyWaveTrendEvidence()
