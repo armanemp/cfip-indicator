@@ -568,20 +568,37 @@ Why this order:
 
 ## 9. CR-0 — Final audit closure
 
-Before CR1.1 begins, produce:
+Status: **COMPLETE — audit-only gate closed 2026-09-30**
 
-- exact file/method inventory for A1–A12/B1–B12/C1–C9;
-- every unresolved AUDIT FIRST item either confirmed or explicitly deferred;
-- exact current parameter ownership;
-- exact cBot-boundary-sensitive items;
-- one shared list of threshold semantics;
-- one shared list of time/session semantics;
-- one shared list of outcome/accounting semantics;
-- manual cTrader verification matrix.
+Detailed source inventory and parameter ownership record:
 
-CR-0 must not modify production behavior.
+`docs/CLAUDE-REVIEW-CR0-AUDIT.md`
 
----
+CR-0 completed:
+
+- exact file/method inventory for all A1–A12/B1–B12/C1–C9;
+- all prior AUDIT FIRST items resolved to a confirmed owner or an explicitly bounded/deferred phase;
+- current parameter truth recounted from all parameter source files: 566 declarations across 29 source files / 27 logical groups;
+- cBot-boundary-sensitive parameters and mixed ownership groups classified without authorizing whole-file moves;
+- threshold semantics unified into explicit semantic families;
+- session/time semantics unified around one UTC closed-bar reference and one canonical session meaning;
+- outcome/accounting semantics separated into broker facts, managed outcome observations, calibration observations and persistent archive;
+- mandatory manual cTrader verification matrix defined.
+
+Important corrections retained:
+
+- A4 remains a partial finding; the latest-swing causal claim was not adopted verbatim.
+- A5 AccessRights.None is not treated as a network blocker; current official cTrader documentation states AccessRights.None is sufficient for network functions, while target-terminal verification remains mandatory.
+- B9 historical rendering is evaluated at host-bar rebuild frequency, not every Calculate call.
+- C5's stale BE-rejection subclaim is not implemented because current source updates the plan stop only after successful broker stop modification.
+
+CR-0 production behavior changes: **NONE**.
+
+Implementation order now advances to:
+
+`CR1.1 → CR1.2 → CR1.3 → CR1.4 → CR1.5 → CR1.6 → CR1.7 → CR1.8 → CR1.9 → CR2.1 → CR2.2 → CR2.3 → CR2.4 → CR2.5 → CR2.6 → CR2.7 → CR2.8 → CR2.9 → CR3.1 → CR3.2 → CR3.3 → CR3.4 → CR3.5 → CR-FINAL`
+
+Track 12A local cBot separation remains blocked until CR-FINAL passes.
 
 ## 10. Final integration gate — CR-FINAL
 
