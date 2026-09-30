@@ -16,6 +16,8 @@ namespace cAlgo
         private int _readFailureCount;
         private string _lastError = "";
         private DateTime _lastSuccessUtc = DateTime.MinValue;
+        private DateTime _lastProbeUtc = DateTime.MinValue;
+        private bool _probeSucceeded;
 
         public int WriteFailureCount
         {
@@ -35,6 +37,28 @@ namespace cAlgo
         public DateTime LastSuccessUtc
         {
             get { return _lastSuccessUtc; }
+        }
+
+        public DateTime LastProbeUtc
+        {
+            get { return _lastProbeUtc; }
+        }
+
+        public bool ProbeSucceeded
+        {
+            get { return _probeSucceeded; }
+        }
+
+        public void MarkProbeResult(
+            bool succeeded,
+            string error = "")
+        {
+            _probeSucceeded = succeeded;
+            _lastProbeUtc = DateTime.UtcNow;
+
+            if (!succeeded &&
+                !string.IsNullOrWhiteSpace(error))
+                _lastError = error;
         }
 
         public int PendingLineCount
