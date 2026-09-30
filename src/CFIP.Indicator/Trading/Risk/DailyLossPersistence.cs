@@ -259,7 +259,8 @@ namespace cAlgo
                     60)
             {
                 PersistDailyLossState(
-                    referenceUtc);
+                    referenceUtc,
+                    force);
             }
         }
 
