@@ -102,6 +102,8 @@ namespace cAlgo
 
         private bool _economicNewsRequestInFlight;
 
+        private bool _economicNewsDisposed;
+
         private CfipEconomicNewsEvent _economicNewsBlockingEvent;
 
         private string _economicNewsStatus =
@@ -236,6 +238,8 @@ namespace cAlgo
                     // response may still arrive; its generation will be ignored.
                     _economicNewsRequestInFlight = false;
                     _economicNewsRequestGeneration++;
+                    _economicNewsLastAttemptUtc =
+                        DateTime.MinValue;
                     _economicNewsLastFailureUtc =
                         normalizedUtc;
                     _economicNewsLastError =
@@ -285,6 +289,15 @@ namespace cAlgo
 
             try
             {
+                lock (_economicNewsSync)
+                {
+                    if (_economicNewsDisposed)
+                    {
+                        _economicNewsRequestInFlight = false;
+                        return false;
+                    }
+                }
+
                 Http.GetAsync(
                     uri,
                     response =>
@@ -320,7 +333,8 @@ namespace cAlgo
             {
                 lock (_economicNewsSync)
                 {
-                    if (requestId !=
+                    if (_economicNewsDisposed ||
+                        requestId !=
                         _economicNewsRequestGeneration)
                         return;
                 }
