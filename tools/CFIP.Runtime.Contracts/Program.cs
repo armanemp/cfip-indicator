@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyZoneConfluenceSymmetry();
             VerifyTopDownCalibration();
             VerifyProtectionProgressionSemantics();
+            VerifyWaveTrendMathematics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
@@ -1597,6 +1598,200 @@ namespace cAlgo
                 weakMiddleAgreement.Stage == "MIDFRAME CALIBRATION",
                 "directionally mixed middle frames cannot be promoted to calibrated entry");
 
+        }
+
+        private static void VerifyWaveTrendMathematics()
+        {
+            Assert(
+                WaveTrendMovingAverageCalculator.RequiredSourceBars(
+                    WaveTrendMovingAverageCalculator.Simple,
+                    3) == 3 &&
+                WaveTrendMovingAverageCalculator.RequiredSourceBars(
+                    WaveTrendMovingAverageCalculator.DoubleExponential,
+                    3) == 5 &&
+                WaveTrendMovingAverageCalculator.RequiredSourceBars(
+                    WaveTrendMovingAverageCalculator.TripleExponential,
+                    3) == 7 &&
+                WaveTrendMovingAverageCalculator.RequiredSourceBars(
+                    WaveTrendMovingAverageCalculator.Hull,
+                    4) == 5,
+                "WaveTrend MA dependency depth is explicit for simple, DEMA, TEMA and HMA");
+
+            double[] source =
+            {
+                1, 2, 3, 4, 5, 6, 7
+            };
+
+            WaveTrendMovingAverageCalculator simple =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Simple,
+                    3,
+                    0);
+
+            double value;
+            Assert(
+                !simple.TryCalculateWaveTrendAverage(source, 1, out value) &&
+                simple.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                value == 2,
+                "WaveTrend SMA uses a closed source window");
+
+            WaveTrendMovingAverageCalculator exponential =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Exponential,
+                    3,
+                    0);
+
+            Assert(
+                exponential.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                value == 2 &&
+                exponential.TryCalculateWaveTrendAverage(source, 3, out value) &&
+                value == 3,
+                "WaveTrend EMA seeds from an SMA and then uses alpha 2/(L+1)");
+
+            WaveTrendMovingAverageCalculator wilder =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.WilderSmoothing,
+                    3,
+                    0);
+
+            Assert(
+                wilder.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                value == 2 &&
+                wilder.TryCalculateWaveTrendAverage(source, 3, out value) &&
+                Math.Abs(value - 2.6666666667) < 1e-9,
+                "WaveTrend Wilder smoothing uses alpha 1/L");
+
+            WaveTrendMovingAverageCalculator weighted =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Weighted,
+                    3,
+                    0);
+
+            Assert(
+                weighted.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                Math.Abs(value - 14.0 / 6.0) < 1e-9,
+                "WaveTrend WMA uses linearly increasing weights");
+
+            WaveTrendMovingAverageCalculator timeSeries =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.TimeSeries,
+                    3,
+                    0);
+
+            Assert(
+                timeSeries.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                value == 3,
+                "WaveTrend TimeSeries MA uses the regression endpoint");
+
+            WaveTrendMovingAverageCalculator triangular =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Triangular,
+                    3,
+                    0);
+
+            Assert(
+                triangular.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                value == 2,
+                "WaveTrend triangular smoothing composes two canonical SMA windows");
+
+            WaveTrendMovingAverageCalculator vidya =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Vidya,
+                    3,
+                    0);
+
+            Assert(
+                vidya.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                value == 2 &&
+                vidya.TryCalculateWaveTrendAverage(source, 3, out value) &&
+                Math.Abs(value - 3.0) < 1e-9,
+                "WaveTrend VIDYA adapts EMA alpha from source momentum efficiency");
+
+            WaveTrendMovingAverageCalculator hull =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Hull,
+                    4,
+                    0);
+
+            Assert(
+                hull.TryCalculateWaveTrendAverage(source, 4, out value) &&
+                Math.Abs(value - 5.0) < 1e-9,
+                "WaveTrend HMA composes half-length WMA, full-length WMA and sqrt-length WMA");
+
+            WaveTrendMovingAverageCalculator dema =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.DoubleExponential,
+                    3,
+                    0);
+
+            Assert(
+                dema.TryCalculateWaveTrendAverage(source, 4, out value) &&
+                Math.Abs(value - 5.0) < 1e-9,
+                "WaveTrend DEMA is 2*EMA1-EMA2 with explicit warm-up");
+
+            WaveTrendMovingAverageCalculator tema =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.TripleExponential,
+                    3,
+                    0);
+
+            Assert(
+                tema.TryCalculateWaveTrendAverage(source, 6, out value) &&
+                Math.Abs(value - 7.0) < 1e-9,
+                "WaveTrend TEMA is 3*EMA1-3*EMA2+EMA3 with explicit warm-up");
+
+            WaveTrendMovingAverageCalculator kama =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.KaufmanAdaptive,
+                    3,
+                    0);
+
+            Assert(
+                kama.TryCalculateWaveTrendAverage(source, 2, out value) &&
+                value == 2 &&
+                kama.TryCalculateWaveTrendAverage(source, 3, out value) &&
+                Math.Abs(value - 2.8888888889) < 1e-9,
+                "WaveTrend Kaufman Adaptive MA uses efficiency-ratio smoothing");
+
+            int componentReady =
+                WaveTrendReadinessRule.ResolveWaveTrendComponentReadyIndex(
+                    10,
+                    5);
+
+            int smoothReady =
+                WaveTrendReadinessRule.ResolveWaveTrendSmoothReadyIndex(
+                    componentReady,
+                    WaveTrendMovingAverageCalculator.Exponential,
+                    4);
+
+            int signalReady =
+                WaveTrendReadinessRule.ResolveWaveTrendSignalReadyIndex(
+                    smoothReady,
+                    WaveTrendMovingAverageCalculator.Simple,
+                    5);
+
+            Assert(
+                componentReady == 14 &&
+                smoothReady == 17 &&
+                signalReady == 21 &&
+                !WaveTrendReadinessRule.IsWaveTrendSnapshotReady(
+                    21,
+                    signalReady) &&
+                WaveTrendReadinessRule.IsWaveTrendSnapshotReady(
+                    22,
+                    signalReady),
+                "WaveTrend readiness includes RSI/MFI/RMI dependencies, both smoothing layers and previous-bar stability");
+
+            WaveTrendMovingAverageCalculator stateCalculator =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Exponential,
+                    3,
+                    0);
+
+            Assert(
+                double.IsNaN(
+                    stateCalculator.GetWaveTrendAverageValue(0)),
+                "WaveTrend calculator keeps pre-warm-up state non-ready");
         }
 
         private static void VerifyWaveTrendEvidence()

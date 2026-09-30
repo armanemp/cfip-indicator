@@ -17,6 +17,15 @@ namespace cAlgo
         private readonly int _ob1;
         private readonly int _ob2;
 
+        private readonly int _componentReadyIndex;
+        private readonly int _smoothReadyIndex;
+        private readonly int _signalReadyIndex;
+
+        private readonly WaveTrendMovingAverageCalculator _rmiUpAverage;
+        private readonly WaveTrendMovingAverageCalculator _rmiDownAverage;
+        private readonly WaveTrendMovingAverageCalculator _smoothAverage;
+        private readonly WaveTrendMovingAverageCalculator _signalAverage;
+
         private double[] _typical;
         private double[] _rsi;
         private double[] _rsiAvgGain;
@@ -25,12 +34,15 @@ namespace cAlgo
         private double[] _rmi;
         private double[] _rmiUpRaw;
         private double[] _rmiDownRaw;
-        private double[] _rmiUpEma;
-        private double[] _rmiDownEma;
         private double[] _together;
         private double[] _all;
         private double[] _signal;
+
         private int _calculatedTo = -1;
+        private int _knownBarCount = -1;
+        private DateTime _knownFirstBarOpenTime = DateTime.MinValue;
+        private bool _historyContextInitialized;
+        private bool _historyInvalidated;
 
         internal WaveTrendEngine(
             Bars bars,
@@ -56,6 +68,62 @@ namespace cAlgo
             _os2 = Math.Max(os1, os2);
             _ob1 = Math.Min(ob1, ob2);
             _ob2 = Math.Max(ob1, ob2);
+
+            int smoothMaType =
+                MapWaveTrendMovingAverageType(
+                    _smoothType);
+            int signalMaType =
+                MapWaveTrendMovingAverageType(
+                    _signalType);
+
+            _componentReadyIndex =
+                WaveTrendReadinessRule.ResolveWaveTrendComponentReadyIndex(
+                    _length,
+                    _momentumLength);
+
+            _smoothReadyIndex =
+                WaveTrendReadinessRule.ResolveWaveTrendSmoothReadyIndex(
+                    _componentReadyIndex,
+                    smoothMaType,
+                    _smoothLength);
+
+            _signalReadyIndex =
+                WaveTrendReadinessRule.ResolveWaveTrendSignalReadyIndex(
+                    _smoothReadyIndex,
+                    signalMaType,
+                    _signalLength);
+
+            _rmiUpAverage =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Exponential,
+                    _length,
+                    _momentumLength);
+
+            _rmiDownAverage =
+                new WaveTrendMovingAverageCalculator(
+                    WaveTrendMovingAverageCalculator.Exponential,
+                    _length,
+                    _momentumLength);
+
+            _smoothAverage =
+                new WaveTrendMovingAverageCalculator(
+                    smoothMaType,
+                    _smoothLength,
+                    _componentReadyIndex);
+
+            _signalAverage =
+                new WaveTrendMovingAverageCalculator(
+                    signalMaType,
+                    _signalLength,
+                    _smoothReadyIndex);
+
+            if (_bars != null)
+            {
+                _bars.HistoryLoaded +=
+                    OnWaveTrendHistoryLoaded;
+                _bars.Reloaded +=
+                    OnWaveTrendBarsReloaded;
+            }
         }
 
         internal WaveTrendSnapshot GetSnapshot(int index)
@@ -65,22 +133,33 @@ namespace cAlgo
                 index >= _bars.Count)
                 return default(WaveTrendSnapshot);
 
+            EnsureWaveTrendHistoryContext();
             EnsureCapacity(_bars.Count);
+
+            if (_calculatedTo < 0)
+            {
+                _typical[0] =
+                    CalculateTypicalPrice(0);
+            }
 
             int start =
                 Math.Max(
                     1,
                     _calculatedTo + 1);
 
-            for (int i = start; i <= index; i++)
-                CalculateIndex(i);
+            for (int i = start;
+                 i <= index;
+                 i++)
+                CalculateWaveTrendIndex(i);
 
             _calculatedTo =
                 Math.Max(
                     _calculatedTo,
                     index);
 
-            if (index < _signalLength + _smoothLength)
+            if (!WaveTrendReadinessRule.IsWaveTrendSnapshotReady(
+                    index,
+                    _signalReadyIndex))
                 return default(WaveTrendSnapshot);
 
             double wave =
@@ -92,16 +171,18 @@ namespace cAlgo
             double previousSignal =
                 _signal[index - 1] - 50.0;
 
-            if (!IsFinite(wave) ||
-                !IsFinite(signal) ||
-                !IsFinite(previousWave) ||
-                !IsFinite(previousSignal))
+            if (!IsFiniteWaveTrendValue(wave) ||
+                !IsFiniteWaveTrendValue(signal) ||
+                !IsFiniteWaveTrendValue(previousWave) ||
+                !IsFiniteWaveTrendValue(previousSignal))
                 return default(WaveTrendSnapshot);
 
             double histogram =
-                wave - signal;
+                wave -
+                signal;
             double delta =
-                wave - previousWave;
+                wave -
+                previousWave;
 
             bool bullCross =
                 previousWave <= previousSignal &&
@@ -129,93 +210,114 @@ namespace cAlgo
                 delta < 0);
         }
 
-        private void CalculateIndex(int i)
+        private void CalculateWaveTrendIndex(int i)
         {
             _typical[i] =
-                (_bars.HighPrices[i] +
-                 _bars.LowPrices[i] +
-                 _bars.ClosePrices[i]) /
-                3.0;
+                CalculateTypicalPrice(i);
 
             _rsi[i] =
-                CalculateRsi(i);
+                CalculateWaveTrendRsi(i);
 
             _mfi[i] =
-                CalculateMfi(i);
+                CalculateWaveTrendMfi(i);
 
-            _rmiUpRaw[i] =
-                i >= _momentumLength
-                    ? Math.Max(
+            if (i >= _momentumLength)
+            {
+                _rmiUpRaw[i] =
+                    Math.Max(
                         _bars.ClosePrices[i] -
-                        _bars.ClosePrices[i - _momentumLength],
-                        0)
-                    : 0;
+                        _bars.ClosePrices[
+                            i -
+                            _momentumLength],
+                        0);
 
-            _rmiDownRaw[i] =
-                i >= _momentumLength
-                    ? Math.Max(
-                        _bars.ClosePrices[i - _momentumLength] -
+                _rmiDownRaw[i] =
+                    Math.Max(
+                        _bars.ClosePrices[
+                            i -
+                            _momentumLength] -
                         _bars.ClosePrices[i],
-                        0)
-                    : 0;
+                        0);
+            }
+            else
+            {
+                _rmiUpRaw[i] = double.NaN;
+                _rmiDownRaw[i] = double.NaN;
+            }
 
-            _rmiUpEma[i] =
-                UpdateEma(
+            double rmiUp;
+            double rmiDown;
+
+            bool rmiUpReady =
+                _rmiUpAverage.TryCalculateWaveTrendAverage(
                     _rmiUpRaw,
-                    _rmiUpEma,
                     i,
-                    _length);
+                    out rmiUp);
 
-            _rmiDownEma[i] =
-                UpdateEma(
+            bool rmiDownReady =
+                _rmiDownAverage.TryCalculateWaveTrendAverage(
                     _rmiDownRaw,
-                    _rmiDownEma,
                     i,
-                    _length);
+                    out rmiDown);
 
             _rmi[i] =
-                CalculateRatioOscillator(
-                    _rmiUpEma[i],
-                    _rmiDownEma[i]);
+                rmiUpReady &&
+                rmiDownReady
+                    ? CalculateWaveTrendRatioOscillator(
+                        rmiUp,
+                        rmiDown)
+                    : double.NaN;
 
             _together[i] =
-                Average3(
+                CalculateWaveTrendAverage3(
                     _rsi[i],
                     _mfi[i],
                     _rmi[i]);
 
-            _all[i] =
-                UpdateMovingAverage(
-                    _together,
-                    _all,
-                    i,
-                    _smoothLength,
-                    _smoothType);
+            double allValue;
 
-            _signal[i] =
-                UpdateMovingAverage(
-                    _all,
-                    _signal,
+            if (_smoothAverage.TryCalculateWaveTrendAverage(
+                    _together,
                     i,
-                    _signalLength,
-                    _signalType);
+                    out allValue))
+                _all[i] = allValue;
+            else
+                _all[i] = double.NaN;
+
+            double signalValue;
+
+            if (_signalAverage.TryCalculateWaveTrendAverage(
+                    _all,
+                    i,
+                    out signalValue))
+                _signal[i] = signalValue;
+            else
+                _signal[i] = double.NaN;
         }
 
-        private double CalculateRsi(int i)
+        private double CalculateWaveTrendRsi(int i)
         {
-            if (i < _length)
-                return 50.0;
+            if (i <
+                _length)
+                return double.NaN;
 
-            if (i == _length)
+            if (i ==
+                _length)
             {
                 double totalGain = 0;
                 double totalLoss = 0;
 
-                for (int j = 1; j <= _length; j++)
+                for (int j = 1;
+                     j <= _length;
+                     j++)
                 {
                     double change =
                         _typical[j] -
                         _typical[j - 1];
+
+                    if (!IsFiniteWaveTrendValue(
+                            change))
+                        return double.NaN;
 
                     if (change > 0)
                         totalGain += change;
@@ -235,6 +337,14 @@ namespace cAlgo
                 double change =
                     _typical[i] -
                     _typical[i - 1];
+
+                if (!IsFiniteWaveTrendValue(
+                        change) ||
+                    !IsFiniteWaveTrendValue(
+                        _rsiAvgGain[i - 1]) ||
+                    !IsFiniteWaveTrendValue(
+                        _rsiAvgLoss[i - 1]))
+                    return double.NaN;
 
                 double gain =
                     Math.Max(
@@ -259,15 +369,16 @@ namespace cAlgo
                     _length;
             }
 
-            return RatioToPercent(
+            return CalculateWaveTrendRatioOscillator(
                 _rsiAvgGain[i],
                 _rsiAvgLoss[i]);
         }
 
-        private double CalculateMfi(int i)
+        private double CalculateWaveTrendMfi(int i)
         {
-            if (i < _length)
-                return 50.0;
+            if (i <
+                _length)
+                return double.NaN;
 
             double positive = 0;
             double negative = 0;
@@ -275,112 +386,72 @@ namespace cAlgo
             int start =
                 Math.Max(
                     1,
-                    i - _length + 1);
+                    i -
+                    _length +
+                    1);
 
-            for (int j = start; j <= i; j++)
+            for (int j = start;
+                 j <= i;
+                 j++)
             {
-                double money =
-                    _typical[j] *
+                double typical =
+                    _typical[j];
+
+                double previousTypical =
+                    _typical[j - 1];
+
+                double tickVolume =
                     Math.Max(
                         1.0,
                         _bars.TickVolumes[j]);
 
-                if (_typical[j] >
-                    _typical[j - 1])
+                double money =
+                    typical *
+                    tickVolume;
+
+                if (!IsFiniteWaveTrendValue(
+                        typical) ||
+                    !IsFiniteWaveTrendValue(
+                        previousTypical) ||
+                    !IsFiniteWaveTrendValue(
+                        money))
+                    return double.NaN;
+
+                if (typical >
+                    previousTypical)
                     positive += money;
-                else if (_typical[j] <
-                         _typical[j - 1])
+                else if (typical <
+                         previousTypical)
                     negative += money;
             }
 
             if (negative <= 0)
-                return positive > 0 ? 100.0 : 50.0;
+                return positive > 0
+                    ? 100.0
+                    : 50.0;
 
             if (positive <= 0)
                 return 0.0;
 
-            return
-                100.0 -
-                100.0 /
-                (1.0 + positive / negative);
+            return CalculateWaveTrendRatioOscillator(
+                positive,
+                negative);
         }
 
-        private double UpdateEma(
-            double[] raw,
-            double[] output,
-            int i,
-            int length)
-        {
-            if (i == 0)
-                return raw[i];
-
-            if (i < length - 1)
-                return raw[i];
-
-            if (i == length - 1)
-            {
-                double sum = 0;
-                for (int j = 0; j < length; j++)
-                    sum += raw[j];
-
-                return sum / length;
-            }
-
-            double alpha =
-                2.0 /
-                (length + 1.0);
-
-            return
-                output[i - 1] +
-                alpha *
-                (raw[i] -
-                 output[i - 1]);
-        }
-
-        private double UpdateMovingAverage(
-            double[] source,
-            double[] output,
-            int i,
-            int length,
-            MovingAverageType type)
-        {
-            if (i < length - 1)
-                return source[i];
-
-            if (i == length - 1)
-            {
-                double sum = 0;
-                for (int j = 0; j < length; j++)
-                    sum += source[j];
-                return sum / length;
-            }
-
-            if (type == MovingAverageType.Exponential)
-            {
-                double alpha =
-                    2.0 /
-                    (length + 1.0);
-
-                return
-                    output[i - 1] +
-                    alpha *
-                    (source[i] -
-                     output[i - 1]);
-            }
-
-            double simple = 0;
-            for (int j = i - length + 1; j <= i; j++)
-                simple += source[j];
-
-            return simple / length;
-        }
-
-        private double CalculateRatioOscillator(
+        private double CalculateWaveTrendRatioOscillator(
             double up,
             double down)
         {
+            if (!IsFiniteWaveTrendValue(up) ||
+                !IsFiniteWaveTrendValue(down) ||
+                up < 0 ||
+                down < 0)
+                return double.NaN;
+
             if (down <= 0)
-                return up > 0 ? 100.0 : 50.0;
+                return up > 0
+                    ? 100.0
+                    : 50.0;
 
             if (up <= 0)
                 return 0.0;
@@ -388,24 +459,157 @@ namespace cAlgo
             return
                 100.0 -
                 100.0 /
-                (1.0 + up / down);
+                (1.0 +
+                 up /
+                 down);
         }
 
-        private double RatioToPercent(
-            double up,
-            double down)
-        {
-            return CalculateRatioOscillator(up, down);
-        }
-
-        private double Average3(
+        private double CalculateWaveTrendAverage3(
             double a,
             double b,
             double c)
         {
+            if (!IsFiniteWaveTrendValue(a) ||
+                !IsFiniteWaveTrendValue(b) ||
+                !IsFiniteWaveTrendValue(c))
+                return double.NaN;
+
             return
                 (a + b + c) /
                 3.0;
+        }
+
+        private double CalculateTypicalPrice(int index)
+        {
+            double high =
+                _bars.HighPrices[index];
+            double low =
+                _bars.LowPrices[index];
+            double close =
+                _bars.ClosePrices[index];
+
+            if (!IsFiniteWaveTrendValue(high) ||
+                !IsFiniteWaveTrendValue(low) ||
+                !IsFiniteWaveTrendValue(close))
+                return double.NaN;
+
+            return
+                (high +
+                 low +
+                 close) /
+                3.0;
+        }
+
+        private int MapWaveTrendMovingAverageType(
+            MovingAverageType type)
+        {
+            switch (type)
+            {
+                case MovingAverageType.Simple:
+                    return WaveTrendMovingAverageCalculator.Simple;
+
+                case MovingAverageType.Exponential:
+                    return WaveTrendMovingAverageCalculator.Exponential;
+
+                case MovingAverageType.TimeSeries:
+                    return WaveTrendMovingAverageCalculator.TimeSeries;
+
+                case MovingAverageType.Triangular:
+                    return WaveTrendMovingAverageCalculator.Triangular;
+
+                case MovingAverageType.VIDYA:
+                    return WaveTrendMovingAverageCalculator.Vidya;
+
+                case MovingAverageType.Weighted:
+                    return WaveTrendMovingAverageCalculator.Weighted;
+
+                case MovingAverageType.WilderSmoothing:
+                    return WaveTrendMovingAverageCalculator.WilderSmoothing;
+
+                case MovingAverageType.Hull:
+                    return WaveTrendMovingAverageCalculator.Hull;
+
+                case MovingAverageType.DoubleExponential:
+                    return WaveTrendMovingAverageCalculator.DoubleExponential;
+
+                case MovingAverageType.TripleExponential:
+                    return WaveTrendMovingAverageCalculator.TripleExponential;
+
+                case MovingAverageType.KaufmanAdaptive:
+                    return WaveTrendMovingAverageCalculator.KaufmanAdaptive;
+
+                default:
+                    return WaveTrendMovingAverageCalculator.Simple;
+            }
+        }
+
+        private void EnsureWaveTrendHistoryContext()
+        {
+            if (_bars == null ||
+                _bars.Count <= 0)
+                return;
+
+            DateTime firstOpenTime =
+                _bars.OpenTimes[0];
+
+            if (!_historyContextInitialized)
+            {
+                _knownFirstBarOpenTime =
+                    firstOpenTime;
+                _knownBarCount =
+                    _bars.Count;
+                _historyContextInitialized = true;
+                return;
+            }
+
+            if (_historyInvalidated ||
+                firstOpenTime !=
+                _knownFirstBarOpenTime ||
+                _bars.Count <
+                _knownBarCount)
+            {
+                ResetWaveTrendCalculationState();
+                _knownFirstBarOpenTime =
+                    firstOpenTime;
+            }
+
+            _knownBarCount =
+                _bars.Count;
+            _historyInvalidated = false;
+        }
+
+        private void ResetWaveTrendCalculationState()
+        {
+            _calculatedTo = -1;
+
+            _typical = null;
+            _rsi = null;
+            _rsiAvgGain = null;
+            _rsiAvgLoss = null;
+            _mfi = null;
+            _rmi = null;
+            _rmiUpRaw = null;
+            _rmiDownRaw = null;
+            _together = null;
+            _all = null;
+            _signal = null;
+
+            _rmiUpAverage.ResetWaveTrendAverage();
+            _rmiDownAverage.ResetWaveTrendAverage();
+            _smoothAverage.ResetWaveTrendAverage();
+            _signalAverage.ResetWaveTrendAverage();
+        }
+
+        private void OnWaveTrendHistoryLoaded(
+            BarsHistoryLoadedEventArgs args)
+        {
+            _historyInvalidated = true;
+        }
+
+        private void OnWaveTrendBarsReloaded(
+            BarsHistoryLoadedEventArgs args)
+        {
+            _historyInvalidated = true;
         }
 
         private void EnsureCapacity(int count)
@@ -421,22 +625,43 @@ namespace cAlgo
                         ? 256
                         : _typical.Length * 2);
 
-            Array.Resize(ref _typical, target);
-            Array.Resize(ref _rsi, target);
-            Array.Resize(ref _rsiAvgGain, target);
-            Array.Resize(ref _rsiAvgLoss, target);
-            Array.Resize(ref _mfi, target);
-            Array.Resize(ref _rmi, target);
-            Array.Resize(ref _rmiUpRaw, target);
-            Array.Resize(ref _rmiDownRaw, target);
-            Array.Resize(ref _rmiUpEma, target);
-            Array.Resize(ref _rmiDownEma, target);
-            Array.Resize(ref _together, target);
-            Array.Resize(ref _all, target);
-            Array.Resize(ref _signal, target);
+            Array.Resize(
+                ref _typical,
+                target);
+            Array.Resize(
+                ref _rsi,
+                target);
+            Array.Resize(
+                ref _rsiAvgGain,
+                target);
+            Array.Resize(
+                ref _rsiAvgLoss,
+                target);
+            Array.Resize(
+                ref _mfi,
+                target);
+            Array.Resize(
+                ref _rmi,
+                target);
+            Array.Resize(
+                ref _rmiUpRaw,
+                target);
+            Array.Resize(
+                ref _rmiDownRaw,
+                target);
+            Array.Resize(
+                ref _together,
+                target);
+            Array.Resize(
+                ref _all,
+                target);
+            Array.Resize(
+                ref _signal,
+                target);
         }
 
-        private bool IsFinite(double value)
+        private bool IsFiniteWaveTrendValue(
+            double value)
         {
             return
                 !double.IsNaN(value) &&
