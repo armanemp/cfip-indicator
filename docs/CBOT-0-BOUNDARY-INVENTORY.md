@@ -204,3 +204,8 @@ Verification: Source/Architecture `109870832998` PASS; Runtime `109870832972` PA
 Next gate: **CBOT-Preflight**.
 
 Local checkout action after this phase is merged: `git pull --ff-only`.
+
+
+## CR1.8 remediation delta
+
+CBOT-0 remains a historical boundary-freeze record; its original 562-parameter count is preserved as historical evidence. CR1.8 added exactly one required safety parameter, `ReversalCloseMinimumNetProfit`, so the current machine-audited public parameter baseline is now **563**. This safety correction does not create a new execution authority, reopen the CBOT-0 inventory design, or authorize cBot implementation. `tools/audit_cbot_boundary.py` now expects the post-CR1.8 count of 563 before the separation track can continue.

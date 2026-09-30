@@ -18,5 +18,18 @@ namespace cAlgo
                                             ? "CFIP-SMART"
                                             : AutoTradeLabel.Trim();
                                 }
+
+        private string ManagedExecutionLabel()
+        {
+            string label;
+
+            return
+                ManagedIdentityRule.TryBuildLabel(
+                    NormalizeLabel(),
+                    InstanceId,
+                    out label)
+                    ? label
+                    : string.Empty;
+        }
     }
 }

@@ -40,6 +40,9 @@ namespace cAlgo
         [Parameter("Reversal Close Minimum MTF", Group = "13 · AUTO TRADING", DefaultValue = 70, MinValue = 50, MaxValue = 100)]
         public int ReversalCloseMinimumMtf { get; set; }
 
+        [Parameter("Reversal Close Minimum Net Profit", Group = "13 · AUTO TRADING", DefaultValue = 0.0, MinValue = 0, MaxValue = 100000, Step = 0.01)]
+        public double ReversalCloseMinimumNetProfit { get; set; }
+
         [Parameter("Confirmed Signals Only", Group = "13 · AUTO TRADING", DefaultValue = true)]
         public bool ConfirmedSignalsOnly { get; set; }
 

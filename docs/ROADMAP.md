@@ -1887,7 +1887,7 @@ Acceptance:
 
 # Track 11.6 — Claude Review Defect Remediation — 2026-09-30
 
-Status: CR1.5 COMPLETE; CR1.6 IS THE NEXT IMPLEMENTATION PHASE
+Status: CR1.8 COMPLETE; CR1.9 IS THE NEXT IMPLEMENTATION PHASE
 
 Three external code-review prompts (A1–A12, B1–B12, C1–C9) are tracked in:
 `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
@@ -1900,6 +1900,11 @@ CR1.2 — Daily-loss lock and stable accounting basis is complete.
 CR1.3 — News guard correctness and non-blocking refresh is complete.
 CR1.4 — Closed-bar cycle ordering and waiting-for-data state is complete.
 CR1.5 — Hot-path/cache/logging performance is complete.
+
+CR1.6 — FVG quality discrimination is complete and merged.
+CR1.7 — Threshold truth + volume audit is complete and merged.
+CR1.8 — Managed identity boundary is complete and merged at the remediation level; target-terminal broker identity/restart/reconciliation verification remains required.
+The next required implementation phase is **CR1.9 — Minor cleanup and documentation**.
 
 Completed CR1.5 scope:
 - buffered Runtime Log / Outcome / Signal Trace archive writes outside Calculate;

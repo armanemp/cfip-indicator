@@ -45,7 +45,9 @@ namespace cAlgo
                     continue;
 
                 if (!IsDecisiveOppositeDirection(positionDirection) ||
-                    position.NetProfit <= 0)
+                    !ReversalProfitThresholdRule.MeetsMinimumNetProfit(
+                        position.NetProfit,
+                        ReversalCloseMinimumNetProfit))
                     continue;
 
                 double protectedProfit = position.NetProfit;

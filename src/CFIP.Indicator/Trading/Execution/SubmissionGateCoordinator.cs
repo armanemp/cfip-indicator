@@ -162,7 +162,9 @@ namespace cAlgo
                         : result.IsSuccessful
                             ? "UNCONFIRMED"
                             : "REJECTED",
-                "SCENARIO=" +
+                "INSTANCE=" +
+                InstanceId +
+                " • SCENARIO=" +
                 identity.ScenarioId +
                 " • " +
                 (result == null
@@ -190,7 +192,9 @@ namespace cAlgo
                 identity.Path.ToString(),
                 ParseTelemetryM5(identity.AttemptKey),
                 "FAILED",
-                "SCENARIO=" +
+                "INSTANCE=" +
+                InstanceId +
+                " • SCENARIO=" +
                 identity.ScenarioId +
                 " • EXCEPTION / SUBMISSION FAILED");
         }
