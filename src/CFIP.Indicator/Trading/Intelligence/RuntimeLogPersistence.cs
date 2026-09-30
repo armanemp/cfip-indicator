@@ -12,6 +12,7 @@ namespace cAlgo
             "CFIP-RUNTIME-LOG,2";
 
         private string _runtimeLogPrefixCache;
+        private string _runtimeLogPrefixIdentityCache;
 
         private const string RuntimeLogHeader =
             "ObservedUtcTicks,EventType,M5,Path,State,Reason,ScenarioId,SourceTimeframe," +
@@ -21,10 +22,6 @@ namespace cAlgo
 
         private string RuntimeLogPrefix()
         {
-            if (!string.IsNullOrWhiteSpace(
-                    _runtimeLogPrefixCache))
-                return _runtimeLogPrefixCache;
-
             string symbol =
                 SanitizeArchivePart(
                     string.IsNullOrWhiteSpace(SymbolName)
@@ -37,16 +34,40 @@ namespace cAlgo
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
 
+            string accountScope =
+                MemoryAccountScopeToken();
+
+            string identity =
+                symbol +
+                "|" +
+                timeframe +
+                "|" +
+                accountScope +
+                "|" +
+                MemoryConfigurationFingerprint();
+
+            if (!string.IsNullOrWhiteSpace(
+                    _runtimeLogPrefixCache) &&
+                string.Equals(
+                    _runtimeLogPrefixIdentityCache,
+                    identity,
+                    StringComparison.Ordinal))
+                return _runtimeLogPrefixCache;
+
+            _runtimeLogPrefixIdentityCache =
+                identity;
+
             _runtimeLogPrefixCache =
                 "CFIP_RuntimeLog_v2_" +
                 symbol +
                 "_" +
                 timeframe +
                 "_" +
+                accountScope +
+                "_" +
                 MemoryConfigurationFingerprint();
 
-            return
-                _runtimeLogPrefixCache;
+            return _runtimeLogPrefixCache;
         }
 
         private string RuntimeLogFilePath(
