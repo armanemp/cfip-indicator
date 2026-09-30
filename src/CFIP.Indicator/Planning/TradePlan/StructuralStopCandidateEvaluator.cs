@@ -251,8 +251,13 @@ namespace cAlgo
                     return _h4Bars;
                 case "D1":
                     return _d1Bars;
-                default:
+                case "W1":
                     return _w1Bars;
+                default:
+                    // Unknown structural timeframes are invalid. Never
+                    // substitute W1 silently because doing so changes the
+                    // structural owner of the stop candidate.
+                    return null;
             }
         }
 
