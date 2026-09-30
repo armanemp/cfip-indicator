@@ -42,7 +42,9 @@ namespace cAlgo
                 adjustmentText +
                 "  •  OBS WIN " +
                 (_decision.EmpiricalCalibrationObservedWinRate * 100.0).ToString("F0") +
-                "%  •  N" +
+                "%  •  AVG R " +
+                _decision.EmpiricalCalibrationAverageRealizedR.ToString("F2") +
+                "  •  N" +
                 _decision.EmpiricalCalibrationSamples +
                 "  •  " +
                 _decision.EmpiricalCalibrationSource,
