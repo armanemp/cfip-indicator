@@ -4673,7 +4673,7 @@ The fourth Claude review prompt is now mandatory input to the remediation sequen
 
 Authoritative order is now:
 
-`CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR-FINAL`
+`CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL`
 
 Coverage:
 - D1: learning-memory identity, decision-only fingerprinting, account scoping and schema migration;
@@ -4694,7 +4694,41 @@ Safety:
 - every accepted fix receives deterministic tests and the permanent project-wide routine + optimization audit;
 - target-terminal-only behaviors remain explicitly marked manual.
 
-CR-FINAL is **paused as a final acceptance gate** until CR4.1–CR4.10 are either completed or explicitly documented as verified/deferred with evidence.
+CR-FINAL is **paused as a final acceptance gate** until CR4.1–CR4.10 and CR5.1–CR5.8 are either completed or explicitly documented as verified/deferred with evidence.
+
+
+## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
+
+Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+
+Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
+
+Authoritative order:
+
+`CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL`
+
+Coverage:
+- E1: one canonical effective maximum structural-stop ATR ceiling across all consumers;
+- E2: real/multi-level liquidity target candidates and explicit session-forecast semantics;
+- E3: independent-evidence group counting that does not treat correlated flags as independent confirmation;
+- E4: pending Stop/Limit post-fill reconciliation of absolute plan SL/TP after fill-price divergence;
+- E5: shared parallel-scenario computation, MicroReaction closed-bar safety and deterministic scenario replacement/selection;
+- E6: PremiumDiscount/LiveBias/HealthyVolatility semantic separation and canonical M5 closed-bar consistency;
+- E7: decision-owned WATCH/REACTION alerts separated from rendering;
+- E8: named small constants plus TargetSelector lane/required-R consistency and TP-stage ordering.
+
+Mandatory Prompt 5 rules:
+- public `[Parameter]` name, type and `DefaultValue` remain unchanged;
+- any new parameter must preserve current behavior by default;
+- no default RR/confidence/stop/threshold tuning based on source review alone;
+- each accepted code correction gets its own `fix(<ID>): ...` commit;
+- each accepted correction receives deterministic behavior tests, not text/grep-only checks;
+- logic that can be made platform-neutral belongs in testable Core ownership;
+- project-wide routine audit and performance/code-cleanliness audit run in every phase;
+- cTrader-dependent behavior is explicitly marked for hands-on verification;
+- newly discovered bugs are documented separately and are not fixed outside the active scope.
+
+CR-FINAL is **paused** until Prompt 4 and Prompt 5 are completed or explicitly documented as verified/deferred with evidence.
 
 ## CR-FINAL Repository Integration Gate — 2026-09-30
 
