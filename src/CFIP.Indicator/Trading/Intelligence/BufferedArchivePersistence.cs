@@ -97,7 +97,7 @@ namespace cAlgo
 
             try
             {
-                EnsureDirectory(path);
+                Directory.CreateDirectory(path);
                 RegisterSuccess();
                 return true;
             }
