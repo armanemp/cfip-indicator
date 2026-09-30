@@ -160,15 +160,15 @@ namespace cAlgo
                 };
 
             if (FrameRegimeResolutionRule.ResolveFrameSnapshotRegime(bullTrend) != "TREND" ||
-                FrameRegimeResolutionRule.ResolveSnapshot(bearTrend) != "TREND")
+                FrameRegimeResolutionRule.ResolveFrameSnapshotRegime(bearTrend) != "TREND")
             {
                 throw new InvalidOperationException(
                     "Known timeframe regime resolution must not depend on trade direction.");
             }
 
-            if (FrameRegimeResolutionRule.Resolve(null) !=
+            if (FrameRegimeResolutionRule.NormalizeFrameRegimeValue(null) !=
                     FrameRegimeResolutionRule.Unknown ||
-                FrameRegimeResolutionRule.Resolve("unknown") !=
+                FrameRegimeResolutionRule.NormalizeFrameRegimeValue("unknown") !=
                     FrameRegimeResolutionRule.Unknown ||
                 !FrameRegimeResolutionRule.IsNeutral(null) ||
                 !FrameRegimeResolutionRule.IsNeutral("bad-regime") ||
