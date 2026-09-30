@@ -154,6 +154,8 @@ namespace cAlgo
             {
                 SendUnifiedAlert(
                     "REVERSAL|" +
+                    closedM5 +
+                    "|" +
                     livePosition.Id +
                     "|" +
                     opposite,
