@@ -2011,3 +2011,39 @@ Important review corrections:
 
 No production C# behavior changed.
 Next phase: CR-0 — final audit closure.
+
+## CR-0 — Claude Review Audit Closure
+
+Status: **complete — 2026-09-30**.
+
+Scope:
+- audited all 33 supplied findings: A1–A12, B1–B12 and C1–C9;
+- mapped each finding to exact current source owners and relevant methods;
+- resolved prior AUDIT FIRST items into confirmed or explicitly bounded/deferred work;
+- established cBot-boundary-sensitive source ownership without moving mixed files wholesale;
+- defined canonical threshold, session/time and outcome/accounting semantics;
+- created the mandatory manual cTrader verification matrix.
+
+Detailed evidence:
+- `docs/CLAUDE-REVIEW-CR0-AUDIT.md`
+- `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
+- `docs/CBOT-SEPARATION-ROADMAP.md`
+
+Repository truth correction:
+- current parameter source tree: 29 files / 27 logical parameter groups;
+- current `[Parameter]` declarations: **566**;
+- the older documented count of 534 is stale and has been corrected in the remediation/master roadmap.
+
+Review corrections preserved:
+- A4 latest-sweep causality narrowed;
+- A5 AccessRights.None is not treated as a source-proven HTTP blocker; current official cTrader documentation confirms network access is available under None;
+- B9 historical rendering frequency corrected to host-bar rebuilds;
+- C5 BE-rejection overwrite claim rejected because current source only commits the plan-stop change after successful broker modification.
+
+Production behavior changed by CR-0: **none**.
+
+Next implementation phase: **CR1.1 — Session/EOD and period-reference correctness**.
+Track 12A cBot separation remains blocked until CR-FINAL.
+
+Operator pull required at this completed phase boundary:
+`git pull --ff-only origin main`

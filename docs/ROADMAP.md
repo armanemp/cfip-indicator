@@ -1885,21 +1885,33 @@ Acceptance:
 
 # Track 11.6 — Claude Review Defect Remediation — 2026-09-30
 
-Status: **BLOCKING NEXT QUALITY GATE**
+Status: **CR-0 COMPLETE; CR1.1 IS THE NEXT IMPLEMENTATION PHASE**
 
-Three external code-review prompts (A1–A12, B1–B12, C1–C9) were audited against the current repository. They are now tracked in:
+Three external code-review prompts (A1–A12, B1–B12, C1–C9) were audited against
+the current repository and are tracked in:
 
 `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
 
-The review is treated as evidence, not automatic truth. Confirmed defects are scheduled for correction; partial, stale and design-risk items are explicitly constrained so speculative behavior is not introduced.
+The completed CR-0 audit/source inventory is:
+
+`docs/CLAUDE-REVIEW-CR0-AUDIT.md`
 
 Mandatory remediation order:
 
-`CR-0 → CR1.1–CR1.9 → CR2.1–CR2.9 → CR3.1–CR3.5 → CR-FINAL`
+`CR1.1–CR1.9 → CR2.1–CR2.9 → CR3.1–CR3.5 → CR-FINAL`
 
-Track 12A local cBot separation remains the next architectural track after Track 11.6 CR-FINAL.
+CR-0 established the current parameter truth as **566 `[Parameter]` declarations
+across 29 parameter source files representing 27 logical groups**. Older
+documentation claiming 534 is stale and must not be reused.
 
-No production C# behavior is changed by this documentation gate.
+The review remains evidence-based: confirmed defects will be corrected; partial,
+stale and design-risk findings are implemented only under their bounded phases
+and acceptance evidence.
+
+No production C# behavior was changed by CR-0.
+
+Track 12A local cBot separation remains the next architectural track after
+Track 11.6 CR-FINAL.
 
 ---
 
