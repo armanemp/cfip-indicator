@@ -4,7 +4,7 @@ Last updated: 2026-09-30
 
 ## Phase closeout
 
-CR1.9 implementation is complete on this branch; CI/merge verification remains the acceptance gate.
+CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d021972db4b3638ff5eb4d7078ab2cb2a. Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
 
 ## Authoritative order
 
@@ -14,7 +14,7 @@ CR1.9 implementation is complete on this branch; CI/merge verification remains t
 
 ## Active phase
 
-**CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Rejection semantics (Prompt 2 / B1, B2, A4, B10, B11, B12).**
+**CR2.3 — Unified indicator-quality thresholds (Prompt 2 / B4 plus A9).**
 
 ## Completed before this checkpoint
 
@@ -28,6 +28,8 @@ CR1.9 implementation is complete on this branch; CI/merge verification remains t
 - CR1.7 threshold truth + volume audit
 - CR1.8 managed identity boundary
 - CR1.9 minor cleanup and documentation
+- CR2.1 structure/CHoCH/MSS/sweep/divergence/rejection semantics
+- CR2.2 reaction/reversal integrity
 
 ## Rules for every continuation
 
@@ -42,4 +44,4 @@ CR1.9 implementation is complete on this branch; CI/merge verification remains t
 
 ## Next transition
 
-CR1.9 is implemented and its source/contract changes are awaiting CI acceptance. The next implementation response must execute **CR2.1** and only CR2.1.
+CR2.2 is verified and merged. The next implementation response must execute **CR2.3** and only CR2.3. Track 12A remains blocked until CR-FINAL.
