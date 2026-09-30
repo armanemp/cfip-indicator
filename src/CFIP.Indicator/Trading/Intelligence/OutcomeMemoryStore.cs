@@ -9,10 +9,12 @@ namespace cAlgo
 {
     public partial class CFIPIndicator
     {
-        private const string OutcomeMemorySchema = "CFIP-OUTCOME";
+        private const string OutcomeMemorySchema = "CFIP-OUTCOME,2";
+        private const string LegacyOutcomeMemorySchema = "CFIP-OUTCOME";
         private const int OutcomeMemoryMaxAgeDays = 90;
 
         private string _memoryConfigurationFingerprintCache;
+        private string _legacyMemoryConfigurationFingerprintCache;
         private string OutcomeMemoryKey()
         {
             string symbol =
@@ -25,31 +27,57 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : Bars.TimeFrame.ToString();
 
-            StringBuilder key =
-                new StringBuilder("CFIP.OUTCOME.");
-
-            foreach (char ch in symbol)
-                key.Append(
-                    char.IsLetterOrDigit(ch) ? ch : '_');
-
-            key.Append('.');
-
-            foreach (char ch in timeframe)
-                key.Append(
-                    char.IsLetterOrDigit(ch) ? ch : '_');
-
-            key.Append('.');
-            key.Append(MemoryConfigurationFingerprint());
-            key.Append(".MEM");
-            return key.ToString();
+            return OutcomeMemoryIdentityRule.BuildMemoryKey(
+                symbol,
+                timeframe,
+                MemoryAccountScopeToken(),
+                MemoryConfigurationFingerprint());
         }
 
-        private string MemoryConfigurationFingerprint()
+        private string LegacyOutcomeMemoryKey()
         {
-            if (!string.IsNullOrWhiteSpace(
-                    _memoryConfigurationFingerprintCache))
-                return _memoryConfigurationFingerprintCache;
+            string symbol =
+                string.IsNullOrWhiteSpace(SymbolName)
+                    ? "UNKNOWN"
+                    : SymbolName;
 
+            string timeframe =
+                Bars == null
+                    ? "UNKNOWN"
+                    : Bars.TimeFrame.ToString();
+
+            return OutcomeMemoryIdentityRule.BuildLegacyMemoryKey(
+                symbol,
+                timeframe,
+                LegacyMemoryConfigurationFingerprint());
+        }
+
+        private string MemoryAccountScopeToken()
+        {
+            try
+            {
+                return OutcomeMemoryIdentityRule.BuildAccountScopeToken(
+                    Account.BrokerName,
+                    Account.Number,
+                    Account.AccountType.ToString(),
+                    Account.IsLive);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP outcome memory account identity unavailable: {0}",
+                    ex.Message);
+
+                return OutcomeMemoryIdentityRule.BuildAccountScopeToken(
+                    "UNKNOWN",
+                    0,
+                    "UNKNOWN",
+                    false);
+            }
+        }
+
+        private List<OutcomeMemoryParameter> CollectOutcomeMemoryParameters()
+        {
             PropertyInfo[] properties =
                 GetType().GetProperties(
                     BindingFlags.Instance |
@@ -64,79 +92,90 @@ namespace cAlgo
                         right.Name);
                 });
 
-            StringBuilder raw =
-                new StringBuilder();
-
-            int parameterCount = 0;
+            List<OutcomeMemoryParameter> parameters =
+                new List<OutcomeMemoryParameter>();
 
             foreach (PropertyInfo property in properties)
             {
-                if (property.GetCustomAttributes(
+                object[] attributes =
+                    property.GetCustomAttributes(
                         typeof(ParameterAttribute),
-                        true).Length == 0)
+                        true);
+
+                if (attributes == null ||
+                    attributes.Length == 0)
                     continue;
+
+                ParameterAttribute parameterAttribute =
+                    attributes[0] as ParameterAttribute;
+
+                string group =
+                    parameterAttribute == null
+                        ? ""
+                        : parameterAttribute.Group;
 
                 object value;
 
                 try
                 {
-                    value = property.GetValue(
-                        this,
-                        null);
+                    value =
+                        property.GetValue(
+                            this,
+                            null);
                 }
                 catch
                 {
                     value = null;
                 }
 
-                string formatted;
-
                 IFormattable formattable =
                     value as IFormattable;
 
-                if (formattable != null)
-                {
-                    formatted =
-                        formattable.ToString(
+                string formatted =
+                    formattable != null
+                        ? formattable.ToString(
                             null,
-                            CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    formatted =
-                        value == null
+                            CultureInfo.InvariantCulture)
+                        : value == null
                             ? ""
                             : value.ToString();
-                }
 
-                raw.Append(property.Name);
-                raw.Append('=');
-                raw.Append(formatted);
-                raw.Append(';');
-                parameterCount++;
+                parameters.Add(
+                    new OutcomeMemoryParameter(
+                        property.Name,
+                        group,
+                        formatted));
             }
 
-            unchecked
-            {
-                uint hash = 2166136261;
+            return parameters;
+        }
 
-                hash ^= (uint)parameterCount;
-                hash *= 16777619;
+        private string MemoryConfigurationFingerprint()
+        {
+            if (!string.IsNullOrWhiteSpace(
+                    _memoryConfigurationFingerprintCache))
+                return _memoryConfigurationFingerprintCache;
 
-                for (int i = 0; i < raw.Length; i++)
-                {
-                    hash ^= raw[i];
-                    hash *= 16777619;
-                }
+            _memoryConfigurationFingerprintCache =
+                OutcomeMemoryIdentityRule.BuildFingerprint(
+                    CollectOutcomeMemoryParameters(),
+                    true);
 
-                _memoryConfigurationFingerprintCache =
-                    hash.ToString(
-                        "X8",
-                        CultureInfo.InvariantCulture);
+            return _memoryConfigurationFingerprintCache;
+        }
 
-                return
-                    _memoryConfigurationFingerprintCache;
-            }
+        private string LegacyMemoryConfigurationFingerprint()
+        {
+            if (!string.IsNullOrWhiteSpace(
+                    _legacyMemoryConfigurationFingerprintCache))
+                return _legacyMemoryConfigurationFingerprintCache;
+
+            _legacyMemoryConfigurationFingerprintCache =
+                OutcomeMemoryIdentityRule.BuildFingerprint(
+                    CollectOutcomeMemoryParameters(),
+                    false);
+
+            return _legacyMemoryConfigurationFingerprintCache;
         }
 
         private string SerializeOutcomeHistory()
@@ -212,10 +251,24 @@ namespace cAlgo
         {
             try
             {
+                bool legacyMemory =
+                    false;
+
                 string stored =
                     LocalStorage.GetString(
                         OutcomeMemoryKey(),
                         LocalStorageScope.Type);
+
+                if (string.IsNullOrWhiteSpace(stored))
+                {
+                    stored =
+                        LocalStorage.GetString(
+                            LegacyOutcomeMemoryKey(),
+                            LocalStorageScope.Type);
+
+                    legacyMemory =
+                        !string.IsNullOrWhiteSpace(stored);
+                }
 
                 if (string.IsNullOrWhiteSpace(stored))
                 {
@@ -225,23 +278,6 @@ namespace cAlgo
                             out portablePayload))
                     {
                         stored = portablePayload;
-
-                        try
-                        {
-                            LocalStorage.SetString(
-                                OutcomeMemoryKey(),
-                                stored,
-                                LocalStorageScope.Type);
-
-                            LocalStorage.Flush(
-                                LocalStorageScope.Type);
-                        }
-                        catch (Exception persistException)
-                        {
-                            Print(
-                                "CFIP restored portable memory could not be copied into LocalStorage: {0}",
-                                persistException.Message);
-                        }
                     }
                 }
 
@@ -250,15 +286,36 @@ namespace cAlgo
 
                 string[] lines =
                     stored.Split(
-                        new[] { '\n' },
+                        new[] { '\\n' },
                         StringSplitOptions.RemoveEmptyEntries);
 
-                if (lines.Length == 0 ||
-                    !string.Equals(
-                        lines[0].Trim(),
-                        OutcomeMemorySchema,
-                        StringComparison.Ordinal))
+                if (lines.Length == 0)
                     return false;
+
+                string schema =
+                    lines[0].Trim();
+
+                bool currentSchema =
+                    string.Equals(
+                        schema,
+                        OutcomeMemorySchema,
+                        StringComparison.Ordinal);
+
+                bool legacySchema =
+                    string.Equals(
+                        schema,
+                        LegacyOutcomeMemorySchema,
+                        StringComparison.Ordinal);
+
+                if (!currentSchema &&
+                    !legacySchema)
+                    return false;
+
+                // A legacy key/snapshot has no account identity. Only adopt a
+                // legacy observation when the current account's broker history
+                // proves that the PositionId belongs to this account.
+                if (legacySchema)
+                    legacyMemory = true;
 
                 DateTime cutoff =
                     Server.TimeInUtc.AddDays(
@@ -275,6 +332,11 @@ namespace cAlgo
                     if (!TryParseOutcome(
                             lines[i],
                             out item))
+                        continue;
+
+                    if (legacyMemory &&
+                        !IsLegacyOutcomeOwnedByCurrentAccount(
+                            item.PositionId))
                         continue;
 
                     if (item.ObservedUtcTicks > 0)
@@ -298,6 +360,16 @@ namespace cAlgo
                 TrimOutcomeHistory();
                 RebuildOutcomeAggregates();
 
+                if (legacyMemory &&
+                    _outcomeHistory.Count > 0)
+                {
+                    PersistOutcomeHistory();
+
+                    Print(
+                        "CFIP outcome memory migrated safely: {0} observations",
+                        _outcomeHistory.Count);
+                }
+
                 return _outcomeHistory.Count > 0;
             }
             catch (Exception ex)
@@ -305,6 +377,33 @@ namespace cAlgo
                 Print(
                     "CFIP outcome memory restore failed: {0}",
                     ex.Message);
+                return false;
+            }
+        }
+
+        private bool IsLegacyOutcomeOwnedByCurrentAccount(
+            long positionId)
+        {
+            if (positionId <= 0 ||
+                positionId > int.MaxValue)
+                return false;
+
+            try
+            {
+                HistoricalTrade[] historicalTrades =
+                    History.FindByPositionId(
+                        (int)positionId);
+
+                return historicalTrades != null &&
+                    historicalTrades.Length > 0;
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP legacy outcome account validation failed for #{0}: {1}",
+                    positionId,
+                    ex.Message);
+
                 return false;
             }
         }
