@@ -355,7 +355,7 @@ namespace cAlgo
                 snapshot.Wins,
                 snapshot.ConfidenceBucket,
                 snapshot.ObservedWinRate,
-                CalculateAverageRealizedR(outcomes, direction, lane, NormalizeRegime(regime), snapshot.ConfidenceBucket, snapshot.Source),
+                CalculateAverageRealizedR(outcomes, direction, lane, NormalizeRegime(regime), snapshot.ConfidenceBucket, snapshot.Source, Math.Max(1, recentMaximum)),
                 snapshot.Source + "-RECENT");
         }
 
@@ -508,7 +508,8 @@ namespace cAlgo
             OpportunityLane lane,
             string regime,
             int confidenceBucket,
-            string source)
+            string source,
+            int recentMaximum)
         {
             double total = 0;
             int count = 0;
@@ -516,7 +517,9 @@ namespace cAlgo
                 return 0;
             bool exact = source.StartsWith("EXACT", StringComparison.Ordinal);
             bool contextual = source.StartsWith("LANE+REGIME", StringComparison.Ordinal);
-            for (int i = 0; i < outcomes.Count; i++)
+            int start = Math.Max(0, outcomes.Count - Math.Max(1, recentMaximum));
+
+            for (int i = start; i < outcomes.Count; i++)
             {
                 OutcomeObservation observation = outcomes[i];
                 if (observation == null || !observation.CalibrationEligible || observation.Direction != direction)
