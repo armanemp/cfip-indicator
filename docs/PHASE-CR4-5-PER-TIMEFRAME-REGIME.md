@@ -57,3 +57,5 @@ No public parameter name/type/DefaultValue changed.
 No regime threshold or scoring weight value was tuned.
 No execution authority, position capacity, RR floor or confidence threshold changed.
 Target-terminal timing and empirical signal-quality validation remain manual acceptance boundaries.
+
+Audit note: the CR4.5 static gate validates architecture-facing owner names and semantic neutral/symmetry contracts without changing runtime thresholds.
