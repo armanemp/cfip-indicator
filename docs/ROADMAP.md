@@ -4636,3 +4636,30 @@ Completed:
 Next phase: **CR3.5 — Calibration, outcome and rejection transparency.**
 
 Track 12A remains blocked until CR-FINAL passes.
+
+
+## Claude Review Remediation — CR3.5 Implementation — 2026-09-30
+
+Status: **IMPLEMENTED on phase branch `phase/cr3-5-calibration-outcome-rejection-transparency`; CI/merge verification pending.**
+
+Covers: C8, C9 and B6.
+
+Completed:
+- implemented `IEquatable<ConfidenceCalibrationKey>` with deterministic structural equality and hash consistency;
+- retained broker-history aggregation as the source of realized outcome net profit and realized R;
+- added recent-context average realized R to calibration diagnostics alongside observed win rate and sample count;
+- exposed realized-R calibration evidence in Decision and the panel without changing thresholds, defaults or probability semantics;
+- added explicit `PLAN_REWARD / REJECTED` telemetry reasons for reward-integrity failures;
+- bounded repeated identical reward-rejection telemetry to one record per M5/reason pair;
+- added deterministic Decision Contracts and a dedicated CR3.5 static audit wired into Source/Architecture CI.
+
+Safety:
+- no public parameter/default changes;
+- no RR, confidence, stop or capacity tuning;
+- no second decision authority or new broker authority;
+- Track 12A remains blocked until CR-FINAL.
+
+Verification boundary:
+- CI does not prove target-terminal broker-history semantics, restart/reconnect behavior or empirical profitability/accuracy improvement.
+
+Next phase: **CR-FINAL — final integration audit and target-terminal acceptance.**
