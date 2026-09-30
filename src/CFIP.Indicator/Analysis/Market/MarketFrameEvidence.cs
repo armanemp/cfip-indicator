@@ -62,7 +62,7 @@ namespace cAlgo
             if (regimeSnapshot != null)
             {
                 f.Regime =
-                    FrameRegimeResolutionRule.Resolve(
+                    FrameRegimeResolutionRule.ResolveSnapshot(
                         regimeSnapshot);
                 f.RegimeQuality =
                     Math.Max(
