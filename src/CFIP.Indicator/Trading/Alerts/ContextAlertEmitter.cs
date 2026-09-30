@@ -117,9 +117,11 @@ namespace cAlgo
                 
                             if (AlertOnEarlySetup &&
                                 _prediction != null &&
-                                _prediction.Confidence >=
+                                _prediction.DirectionalShare >=
                                 MinimumEarlyConfidence &&
-                                _prediction.Confidence <
+                                _prediction.AbsoluteStrength >=
+                                Math.Max(1, MinimumEarlyConfidence) &&
+                                _prediction.DirectionalShare <
                                 MinimumConfidence &&
                                 _lastEarlyAlertM5 !=
                                 closedM5)
