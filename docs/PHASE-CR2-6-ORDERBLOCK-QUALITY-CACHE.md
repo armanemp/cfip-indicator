@@ -1,6 +1,6 @@
 # CR2.6 — OrderBlock Quality and Cache Discipline
 
-Status: IMPLEMENTED; automated verification pending.
+Status: VERIFIED COMPLETE — PR #91 merged 2026-09-30, merge commit 8f89d75e9fed70a53b51a902b52c539d9c514f0b.
 
 ## Scope
 
@@ -31,6 +31,8 @@ Deterministic contracts cover:
 - fresh/mitigated/broken lifecycle;
 - side-of-market validity;
 - bullish/bearish mitigation symmetry.
+
+Verification completed on head `1c5dbf17140f3757ea4e3289183fb73ab8e65b9b`: Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
 
 Source/Architecture also requires the CR2.6 static audit and cache ownership checks.
 

@@ -470,6 +470,7 @@ Verification:
 - Source/Architecture: PASS;
 - Runtime Acceptance: PASS;
 - cTrader Compile: PASS.
+- Verified head: `1c5dbf17140f3757ea4e3289183fb73ab8e65b9b`.
 
 Target-terminal broker/chart runtime remains a separate manual acceptance boundary.
 
@@ -566,7 +567,7 @@ Manual acceptance remains required for actual cTrader broker History/Deal orderi
 
 Covers: B7.
 
-Status: COMPLETE — implementation verified and merged 2026-09-30.
+Status: COMPLETE — PR #91 merged 2026-09-30, merge commit 8f89d75e9fed70a53b51a902b52c539d9c514f0b.
 
 Implemented:
 - canonical OrderBlockQualityRule owning the exact base score, independent evidence components, age/mitigation penalties and final clamp;

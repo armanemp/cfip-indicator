@@ -4,7 +4,7 @@ Last updated: 2026-09-30
 
 ## Phase closeout
 
-CR2.6 is verified complete and merged to main after Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
+CR2.6 is verified complete and merged to main via PR #91, merge commit 8f89d75e9fed70a53b51a902b52c539d9c514f0b. Source/Architecture, Runtime Acceptance and cTrader Compile all passed on head 1c5dbf17140f3757ea4e3289183fb73ab8e65b9b.
 
 ## Authoritative order
 

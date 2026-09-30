@@ -4475,7 +4475,7 @@ Next phase: **CR2.6 — OrderBlock quality and cache discipline**.
 Track 12A remains blocked until CR-FINAL passes.
 ## Claude Review Remediation — CR2.6 Closeout — 2026-09-30
 
-Status: VERIFIED COMPLETE — implementation merged after all three automated gates passed.
+Status: VERIFIED COMPLETE — PR #91 merged 2026-09-30, merge commit 8f89d75e9fed70a53b51a902b52c539d9c514f0b.
 
 Completed:
 - centralized Order Block quality arithmetic in OrderBlockQualityRule with explicit base, component contributions, clamps and fail-closed finite checks;
@@ -4492,6 +4492,8 @@ Verification:
 - cTrader Compile: PASS.
 
 Target-terminal replay remains required for empirical OB interaction and signal-quality measurement.
+
+Verification head: `1c5dbf17140f3757ea4e3289183fb73ab8e65b9b` — Source/Architecture PASS, Runtime Acceptance PASS, cTrader Compile PASS.
 
 Next phase: **CR2.7 — WaveTrend mathematical correctness**.
 
