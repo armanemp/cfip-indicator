@@ -89,4 +89,22 @@ Target-terminal broker timing, restart/reconnect behavior and empirical outcome 
 
 ## Next transition
 
-CR3.3 is closed. The next implementation response must execute CR3.4 only. Track 12A remains blocked until CR-FINAL.
+CR3.3 is closed. CR3.4 is verified complete on PR #100. The next implementation response must execute CR3.5 only. Track 12A remains blocked until CR-FINAL.
+
+
+## CR3.4 implementation record
+
+CR3.4 was implemented on branch `phase/cr3-4-execution-ui-popup-reliability` and all three required CI gates passed on commit `d8bb61083a043ce46c11b92dc8068b029c0c5add`.
+
+- explicit Auto Trade runtime re-arm is owned by RuntimeFaultStateMachine and is independent of the public Indicator configuration parameter;
+- non-Healthy runtime states remain fail-closed;
+- popup alerts use a bounded critical-first queue;
+- popup rendering is processed from the timer boundary rather than directly from alert emission;
+- direct popup overwrite call sites were removed from lifecycle reminders;
+- deterministic runtime and static phase contracts are wired into CI.
+
+Manual target-terminal checks remain required for hosted UI timing and real cTrader runtime interaction.
+
+## Next transition
+
+CR3.4 is closed. The next implementation response must execute CR3.5 only. Track 12A remains blocked until CR-FINAL.
