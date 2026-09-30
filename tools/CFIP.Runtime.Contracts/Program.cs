@@ -4317,7 +4317,7 @@ namespace cAlgo
                 "lifecycle idempotency memory is bounded");
 
             HistoricalOutcomeAggregate empty =
-                HistoricalOutcomeAggregationRule.Aggregate(
+                HistoricalOutcomeAggregationRule.AggregateHistoricalOutcomeRecords(
                     null);
 
             Assert(
@@ -4365,7 +4365,7 @@ namespace cAlgo
                 };
 
             HistoricalOutcomeAggregate aggregate =
-                HistoricalOutcomeAggregationRule.Aggregate(
+                HistoricalOutcomeAggregationRule.AggregateHistoricalOutcomeRecords(
                     trades);
 
             Assert(
@@ -4388,7 +4388,7 @@ namespace cAlgo
                 "multiple closing historical trades aggregate to one final realized outcome");
 
             HistoricalOutcomeAggregate invalid =
-                HistoricalOutcomeAggregationRule.Aggregate(
+                HistoricalOutcomeAggregationRule.AggregateHistoricalOutcomeRecords(
                     new[]
                     {
                         new HistoricalOutcomeRecord
