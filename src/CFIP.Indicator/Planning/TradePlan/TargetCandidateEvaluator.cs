@@ -21,9 +21,12 @@ namespace cAlgo
             double previous,
             bool requireHtf,
             int stage,
-            out double score)
+            out double score,
+            out string rejectionReason)
         {
             score = double.MinValue;
+            rejectionReason =
+                TargetCandidateRejectionReasons.InvalidGeometry;
 
             if (candidate == null ||
                 !IsFinitePositive(entry) ||
@@ -33,35 +36,53 @@ namespace cAlgo
                     direction,
                     entry,
                     candidate.Price))
+            {
+                rejectionReason =
+                    candidate == null
+                        ? TargetCandidateRejectionReasons.InvalidGeometry
+                        : TargetCandidateRejectionReasons.TargetSideInvalid;
                 return false;
-
-            if (candidate.Age >
-                MaximumSetupAgeBars)
-                return false;
+            }
 
             bool htf =
                 IsHtfTimeframe(
                     candidate.Timeframe);
 
-            if (requireHtf &&
-                (!htf ||
-                 candidate.Score <
-                 MinimumHtfRewardQuality))
+            if (!TargetAgeSemanticsRule.IsAllowed(
+                    candidate.Timeframe,
+                    candidate.Age,
+                    candidate.SourceAgeMinutes,
+                    MaximumSetupAgeBars,
+                    MaximumZoneAgeBars))
+            {
+                rejectionReason =
+                    htf
+                        ? TargetCandidateRejectionReasons.HtfTargetTooOld
+                        : TargetCandidateRejectionReasons.M5SetupTooOld;
                 return false;
+            }
+
+            if (requireHtf &&
+                !htf)
+            {
+                rejectionReason =
+                    TargetCandidateRejectionReasons.HtfSourceRequired;
+                return false;
+            }
+
+            if (requireHtf &&
+                candidate.Score <
+                MinimumHtfRewardQuality)
+            {
+                rejectionReason =
+                    TargetCandidateRejectionReasons.HtfQualityTooLow;
+                return false;
+            }
 
             double distance =
                 Math.Abs(
                     candidate.Price -
                     entry);
-
-            double rr =
-                distance /
-                Math.Max(
-                    Symbol.PipSize,
-                    risk);
-
-            if (!IsFinitePositive(rr))
-                return false;
 
             double minimumCandidateRR =
                 requiredStageRR;
@@ -72,46 +93,50 @@ namespace cAlgo
                         minimumCandidateRR,
                         MinimumHtfTargetRR);
 
-            if (rr < minimumCandidateRR ||
-                rr > maximumRR)
-                return false;
-
-            if (distance >
-                atr *
-                Math.Max(
-                    1.0,
-                    MaximumTargetExtensionAtr))
-                return false;
-
             double spacing =
                 atr *
                 Math.Max(
                     0.05,
                     MinimumTpSpacingAtr);
 
-            if (selected.Any(
-                x =>
-                    x != null &&
-                    Math.Abs(
-                        x.Price -
-                        candidate.Price) <=
-                    spacing * 0.50))
-                return false;
+            bool spacingConflict =
+                selected.Any(
+                    x =>
+                        x != null &&
+                        Math.Abs(
+                            x.Price -
+                            candidate.Price) <=
+                        spacing * 0.50);
 
-            if (stage > 0)
+            TargetCandidateConstraintResult constraint =
+                TargetCandidateConstraintRule.Evaluate(
+                    stage,
+                    direction,
+                    entry,
+                    risk,
+                    candidate.Price,
+                    atr,
+                    Symbol.PipSize,
+                    minimumCandidateRR,
+                    maximumRR,
+                    MaximumTargetExtensionAtr,
+                    MinimumTpSpacingAtr,
+                    previous,
+                    spacingConflict,
+                    false,
+                    htf,
+                    (int)Math.Round(candidate.Score),
+                    MinimumHtfRewardQuality);
+
+            if (!constraint.Allowed)
             {
-                if (direction == 1 &&
-                    candidate.Price <=
-                    previous +
-                    spacing)
-                    return false;
-
-                if (direction == -1 &&
-                    candidate.Price >=
-                    previous -
-                    spacing)
-                    return false;
+                rejectionReason =
+                    constraint.Reason;
+                return false;
             }
+
+            double rr =
+                constraint.RiskReward;
 
             if (RejectTargetObstacle &&
                 HasTargetObstacle(
