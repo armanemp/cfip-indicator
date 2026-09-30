@@ -183,8 +183,9 @@ namespace cAlgo
                             0,
                             bear -
                             Math.Min(
-                                6,
-                                (indicatorFusion.Conflict - 40) / 10));
+                                FrameScoringConstants.ConflictPenaltyCap,
+                                (indicatorFusion.Conflict - FrameScoringConstants.ConflictPenaltyBaseline) /
+                                FrameScoringConstants.ConflictPenaltyDivisor));
             }
 
             if (AvoidRsiExhaustion)
@@ -273,8 +274,8 @@ namespace cAlgo
                             0,
                             f.IndicatorConflict - FrameScoringConstants.QualityConflictPenaltyBaseline) /
                         FrameScoringConstants.QualityConflictPenaltyDivisor),
-                    0,
-                    100);
+                    FrameScoringConstants.QualityMinimum,
+                    FrameScoringConstants.QualityMaximum);
 
             return f;
         }
