@@ -159,7 +159,7 @@ namespace cAlgo
                     Direction = -1
                 };
 
-            if (FrameRegimeResolutionRule.ResolveSnapshot(bullTrend) != "TREND" ||
+            if (FrameRegimeResolutionRule.ResolveFrameSnapshotRegime(bullTrend) != "TREND" ||
                 FrameRegimeResolutionRule.ResolveSnapshot(bearTrend) != "TREND")
             {
                 throw new InvalidOperationException(
