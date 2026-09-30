@@ -25,6 +25,7 @@ namespace cAlgo
             VerifyDivergenceThresholdSemantics();
             VerifyRejectionThresholdSemantics();
             VerifyLiveInvalidationSemantics();
+            VerifyFalseSignalAdverseRSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
@@ -171,6 +172,79 @@ namespace cAlgo
                     double.NaN,
                     out move),
                 "live invalidation rejects invalid direction, price and non-finite input");
+        }
+
+        private static void VerifyFalseSignalAdverseRSemantics()
+        {
+            double soft;
+            double hard;
+            double stopR;
+
+            Assert(
+                FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    1.10,
+                    99,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                Math.Abs(soft - 1.0) < 1e-12 &&
+                Math.Abs(hard - 1.0) < 1e-12 &&
+                Math.Abs(stopR - 1.0) < 1e-12,
+                "BUY false-signal thresholds cannot sit behind a one-R protective stop");
+
+            Assert(
+                FalseSignalAdverseRRule.TryResolveThresholds(
+                    -1,
+                    100,
+                    2,
+                    0.60,
+                    98.5,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                Math.Abs(soft - 0.60) < 1e-12 &&
+                Math.Abs(hard - 0.75) < 1e-12 &&
+                Math.Abs(stopR - 0.75) < 1e-12,
+                "SELL false-signal thresholds remain symmetric when protected risk is tighter");
+
+            Assert(
+                FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    1.10,
+                    100,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                Math.Abs(soft - 1.10) < 1e-12 &&
+                Math.Abs(hard - 1.10) < 1e-12 &&
+                stopR == 0,
+                "break-even-or-better protection leaves configured adverse threshold meaningful but outside adverse-stop envelope");
+
+            Assert(
+                !FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    double.NaN,
+                    99,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                !FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    5.10,
+                    99,
+                    out soft,
+                    out hard,
+                    out stopR),
+                "false-signal adverse-R validation fails closed for non-finite and out-of-contract inputs");
         }
 
         private static void VerifySessionWindowSemantics()
