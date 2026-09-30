@@ -4687,6 +4687,8 @@ Repository status limitation:
 
 Target-terminal account switch/restart/persistence verification remains required.
 
+Repository verification note: GitHub status records for this merge were not retrievable through the available interface at closeout; no CI PASS is claimed. Target-terminal manual evidence remains required.
+
 Next phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3)**.
 
 
@@ -4723,7 +4725,7 @@ CR-FINAL is **paused as a final acceptance gate** until CR4.2–CR4.10, CR5.1–
 
 ### CR4.2 closeout — 2026-09-30
 
-Status: **COMPLETE — implementation prepared in phase branch; PR merge and CI evidence pending.**
+Status: **COMPLETE — PR #103 merged to main; merge commit `05a91cb9764f7ee86fcaaba0d7dede540c4b6e1c`.**
 
 Completed:
 - retained cTrader-supported relative `History` path under AccessRights.None;
