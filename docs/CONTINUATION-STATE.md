@@ -413,10 +413,37 @@ Manual boundary remains:
 - restart/reconnect;
 - empirical signal-quality/profitability.
 
+### CR5.2 / E2 closeout — 2026-10-01
+
+CR5.2 / E2 is **VERIFIED COMPLETE** and merged to `main` via PR #116, merge commit `10e01bd2610ce0c42b6d365f55fae24c75a3edfb`.
+
+Final PR head verification:
+- Source/Architecture PASS — run `36792555340`;
+- Runtime Acceptance Contracts PASS — run `36792555225`;
+- cTrader Compile PASS — run `36792555189`.
+
+Implementation/safety:
+- canonical active-unbroken swing liquidity sources above/below entry;
+- multi-level `LIQUIDITY_FORECAST` candidates ordered by distance;
+- existing `MinimumTpSpacingAtr` reused for source discrimination;
+- existing SessionWindowRule semantics preserved;
+- no public parameter/default or trading-threshold tuning;
+- no decision/execution authority change.
+
+Phase-index integrity:
+- Prompt 4 is D1–D10 in the canonical remediation roadmap;
+- no CR4.11/D11 entry exists in the repository roadmap or source inventory checked on 2026-10-01.
+
+Manual boundary remains:
+- target-terminal readiness/panel timing;
+- broker lifecycle ordering;
+- restart/reconnect;
+- empirical signal-quality/profitability.
+
 ## Current active phase
 
-CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates.
+CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.
 
 ### Next transition
 
-Complete CR5.2 repository verification before advancing to CR5.3 / E3.
+Complete CR5.3 repository verification before advancing to CR5.4 / E4.
