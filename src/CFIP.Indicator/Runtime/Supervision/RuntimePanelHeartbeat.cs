@@ -41,6 +41,12 @@ namespace cAlgo
                     RefreshEconomicNewsIfNeeded(
                         now);
 
+                // Cross-instance DailyLoss storage reload is a timer concern.
+                // Calculate consumes the already-loaded value without disk I/O.
+                if (EnableDailyLossLimit)
+                    ReloadSharedDailyLossLockFromStorage(
+                        now);
+
                 if (ShouldRunSafetySupervisor(now))
                     RunRuntimeSafetySupervisor(
                         now);
@@ -51,6 +57,10 @@ namespace cAlgo
                     now);
 
                 UpdatePanelHeartbeatLiveRows();
+
+                FlushBufferedPersistence(
+                    now,
+                    false);
             }
             catch (Exception ex)
             {
