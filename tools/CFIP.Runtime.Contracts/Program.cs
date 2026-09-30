@@ -11,6 +11,8 @@ namespace cAlgo
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
             VerifyFvgQualitySemantics();
+            VerifyExecutionThresholdSemantics();
+            VerifyVolumeSizingSemantics();
             VerifyOrderBlockMathematics();
             VerifyZoneConfluenceSymmetry();
             VerifyTopDownCalibration();
@@ -439,6 +441,85 @@ namespace cAlgo
                     false) == 0,
                 "non-finite FVG quality input fails closed");
         }
+        private static void VerifyExecutionThresholdSemantics()
+        {
+            Assert(
+                ExecutionThresholdPolicy.AutomaticMarketIndicatorConfluenceMinimum == 60 &&
+                ExecutionThresholdPolicy.AutomaticMarketIndicatorConflictMaximum == 52,
+                "automatic-market indicator thresholds retain current defaults");
+
+            Assert(
+                ExecutionThresholdPolicy.PendingContinuationIndicatorConfluenceMinimum == 62 &&
+                ExecutionThresholdPolicy.PendingContinuationIndicatorConflictMaximum == 48 &&
+                ExecutionThresholdPolicy.PendingReversalIndicatorConfluenceMinimum == 62 &&
+                ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum == 50 &&
+                ExecutionThresholdPolicy.PendingSubmissionIndicatorConfluenceMinimum == 58 &&
+                ExecutionThresholdPolicy.PendingSubmissionIndicatorConflictMaximum == 55,
+                "pending-path indicator thresholds are explicitly centralized");
+
+            Assert(
+                ExecutionThresholdPolicy.NormalizeDirectionShare(49) == 50 &&
+                ExecutionThresholdPolicy.NormalizeDirectionShare(57) == 57 &&
+                ExecutionThresholdPolicy.NormalizeDirectionShare(96) == 95,
+                "direction-share bounds match the public parameter range");
+
+            Assert(
+                ExecutionThresholdPolicy.NormalizeReversalEvidence(1) == 2 &&
+                ExecutionThresholdPolicy.NormalizeReversalEvidence(5) == 5 &&
+                ExecutionThresholdPolicy.NormalizeReversalMtf(49) == 50 &&
+                ExecutionThresholdPolicy.NormalizeReversalMtf(72) == 72,
+                "reversal evidence and MTF defensive bounds are explicit");
+
+            Assert(
+                ExecutionThresholdPolicy.NormalizeEndOfDayAlertMinutesBefore(4) == 5 &&
+                ExecutionThresholdPolicy.NormalizeEndOfDayAlertMinutesBefore(30) == 30,
+                "EOD alert defensive bounds match parameter limits");
+
+            Assert(
+                Math.Abs(ExecutionThresholdPolicy.NormalizeMaximumSpreadToStopRiskRatio(0.01) - 0.02) < 0.0000001 &&
+                Math.Abs(ExecutionThresholdPolicy.NormalizeMaximumSpreadToStopRiskRatio(0.18) - 0.18) < 0.0000001 &&
+                Math.Abs(ExecutionThresholdPolicy.NormalizeMaximumSpreadToStopRiskRatio(0.60) - 0.50) < 0.0000001 &&
+                Math.Abs(ExecutionThresholdPolicy.NormalizeMaximumSpreadToStopRiskRatio(double.NaN) - 0.02) < 0.0000001,
+                "spread/stop ratio is finite and parameter-aligned");
+        }
+
+        private static void VerifyVolumeSizingSemantics()
+        {
+            Assert(
+                VolumeSizingRule.IsValidStopPips(0.1) &&
+                !VolumeSizingRule.IsValidStopPips(0) &&
+                !VolumeSizingRule.IsValidStopPips(-1) &&
+                !VolumeSizingRule.IsValidStopPips(double.NaN) &&
+                !VolumeSizingRule.IsValidStopPips(double.PositiveInfinity),
+                "volume sizing rejects zero, negative and non-finite stop risk");
+
+            Assert(
+                VolumeSizingRule.IsValidRiskInput(1000, 0.5) &&
+                !VolumeSizingRule.IsValidRiskInput(0, 0.5) &&
+                !VolumeSizingRule.IsValidRiskInput(1000, double.NaN),
+                "risk sizing accepts only finite positive account inputs");
+
+            Assert(
+                Math.Abs(RiskAmountCalculator.Calculate(1000, 0.5) - 5.0) < 0.0000001 &&
+                RiskAmountCalculator.Calculate(1000, 0) == 0 &&
+                RiskAmountCalculator.Calculate(double.NaN, 0.5) == 0 &&
+                RiskAmountCalculator.Calculate(1000, double.PositiveInfinity) == 0,
+                "risk amount calculation is finite and fail-closed");
+
+            Assert(
+                VolumeSizingRule.IsValidNormalizedVolume(1000, 1000, 10000) &&
+                !VolumeSizingRule.IsValidNormalizedVolume(999, 1000, 10000) &&
+                !VolumeSizingRule.IsValidNormalizedVolume(10001, 1000, 10000) &&
+                !VolumeSizingRule.IsValidNormalizedVolume(double.NaN, 1000, 10000),
+                "normalized volume must remain inside broker bounds");
+
+            Assert(
+                Math.Abs(RiskPercentPolicy.Calculate(7, false, 1.0) - 5.0) < 0.0000001 &&
+                Math.Abs(RiskPercentPolicy.Calculate(0.5, false, 1.0) - 0.5) < 0.0000001 &&
+                Math.Abs(RiskPercentPolicy.Calculate(1.0, true, 0.5) - 0.5) < 0.0000001,
+                "risk percent policy respects the five-percent parameter ceiling");
+        }
+
         private static void VerifyDailyLossBaselineSemantics()
         {
             double startEquity;

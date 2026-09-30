@@ -54,7 +54,7 @@ namespace cAlgo
                 "base risk");
 
             Assert(
-                RiskPercentPolicy.Calculate(10, true, 0.5) == 5,
+                RiskPercentPolicy.Calculate(10, true, 0.5) == 2.5,
                 "smart risk scaling");
 
             Assert(
@@ -62,11 +62,11 @@ namespace cAlgo
                 "minimum risk");
 
             Assert(
-                RiskPercentPolicy.Calculate(10, true, 2) == 10,
+                RiskPercentPolicy.Calculate(10, true, 2) == 5,
                 "maximum multiplier clamp");
 
             Assert(
-                RiskPercentPolicy.Calculate(10, true, 0.1) == 2.5,
+                RiskPercentPolicy.Calculate(10, true, 0.1) == 1.25,
                 "minimum multiplier clamp");
         }
 

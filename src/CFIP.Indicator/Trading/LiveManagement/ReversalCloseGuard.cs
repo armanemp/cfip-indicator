@@ -39,9 +39,9 @@ namespace cAlgo
                 if (_decision.Direction == positionDirection ||
                     _decision.SmartQuality < ReversalProtectionMinimumQuality ||
                     _decision.IndependentEvidence <
-                        Math.Max(2, ReversalCloseMinimumEvidence) ||
+                        ExecutionThresholdPolicy.NormalizeReversalEvidence(ReversalCloseMinimumEvidence) ||
                     _decision.TimeframeAgreement <
-                        Math.Max(50, ReversalCloseMinimumMtf))
+                        ExecutionThresholdPolicy.NormalizeReversalMtf(ReversalCloseMinimumMtf))
                     continue;
 
                 if (!IsDecisiveOppositeDirection(positionDirection) ||
@@ -138,7 +138,7 @@ namespace cAlgo
             }
 
             if (!m5Structural ||
-                evidence < Math.Max(1, ReversalCloseMinimumEvidence))
+                evidence < ExecutionThresholdPolicy.NormalizeReversalEvidence(ReversalCloseMinimumEvidence))
                 return false;
 
             if (RequireReversalForce &&

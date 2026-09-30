@@ -6,11 +6,16 @@ namespace cAlgo
             double equity,
             double riskPercent)
         {
-            if (equity <= 0 ||
-                riskPercent <= 0)
+            if (!NumericGuards.IsFinitePositive(equity) ||
+                !NumericGuards.IsFinitePositive(riskPercent))
                 return 0;
 
-            return equity * riskPercent / 100.0;
+            double amount =
+                equity * riskPercent / 100.0;
+
+            return NumericGuards.IsFinitePositive(amount)
+                ? amount
+                : 0;
         }
     }
 }

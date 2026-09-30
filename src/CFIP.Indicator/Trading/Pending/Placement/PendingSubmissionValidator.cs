@@ -109,7 +109,7 @@ namespace cAlgo
 
             if (_m5Frame != null)
             {
-                if (_m5Frame.IndicatorConfluenceQuality < 58)
+                if (_m5Frame.IndicatorConfluenceQuality < ExecutionThresholdPolicy.PendingSubmissionIndicatorConfluenceMinimum)
                 {
                     reason =
                         prefix +
@@ -119,7 +119,7 @@ namespace cAlgo
                     return false;
                 }
 
-                if (_m5Frame.IndicatorConflict > 55)
+                if (_m5Frame.IndicatorConflict > ExecutionThresholdPolicy.PendingSubmissionIndicatorConflictMaximum)
                 {
                     reason =
                         prefix +

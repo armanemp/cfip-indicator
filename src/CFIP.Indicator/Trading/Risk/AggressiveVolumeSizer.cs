@@ -18,7 +18,7 @@ private double CalculateAggressiveVolume(
                         {
                             try
                             {
-                                if (stopPips <= 0)
+                                if (!VolumeSizingRule.IsValidStopPips(stopPips))
                                     return 0;
                 
                                 double amount =
@@ -26,7 +26,7 @@ private double CalculateAggressiveVolume(
                                         Account.Equity,
                                         EffectiveAggressiveRiskPercent());
                 
-                                if (amount <= 0)
+                                if (!NumericGuards.IsFinitePositive(amount))
                                     return 0;
                 
                                 double volume =
@@ -35,13 +35,25 @@ private double CalculateAggressiveVolume(
                                         stopPips,
                                         RoundingMode.Down);
                 
-                                return
+                                double normalized =
                                     Symbol.NormalizeVolumeInUnits(
                                         volume,
                                         RoundingMode.Down);
+
+                                if (!VolumeSizingRule.IsValidNormalizedVolume(
+                                        normalized,
+                                        Symbol.VolumeInUnitsMin,
+                                        Symbol.VolumeInUnitsMax))
+                                    return 0;
+
+                                return normalized;
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                Print(
+                                    "CFIP aggressive volume calculation failed: {0}",
+                                    ex.Message);
+
                                 return 0;
                             }
                         }

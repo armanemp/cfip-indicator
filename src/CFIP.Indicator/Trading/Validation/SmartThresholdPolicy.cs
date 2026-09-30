@@ -22,11 +22,8 @@ namespace cAlgo
                         MinimumSmartQuality));
 
             shareThreshold =
-                Math.Max(
-                    50,
-                    Math.Min(
-                        90,
-                        MinimumSmartDirectionShare));
+                ExecutionThresholdPolicy.NormalizeDirectionShare(
+                    MinimumSmartDirectionShare);
 
             edgeThreshold =
                 Math.Max(
@@ -79,11 +76,8 @@ namespace cAlgo
                         qualityThreshold));
 
             shareThreshold =
-                Math.Max(
-                    50,
-                    Math.Min(
-                        90,
-                        shareThreshold));
+                ExecutionThresholdPolicy.NormalizeDirectionShare(
+                    shareThreshold);
 
             edgeThreshold =
                 Math.Max(

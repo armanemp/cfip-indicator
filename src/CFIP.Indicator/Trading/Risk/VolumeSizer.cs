@@ -31,12 +31,15 @@ private double CalculateVolume(
                                 }
                                 else
                                 {
+                                    if (!VolumeSizingRule.IsValidStopPips(stopPips))
+                                        return 0;
+
                                     double riskAmount =
                                         RiskAmountCalculator.Calculate(
                                             Account.Equity,
                                             EffectiveAutoRiskPercent());
                 
-                                    if (riskAmount <= 0)
+                                    if (!NumericGuards.IsFinitePositive(riskAmount))
                                         return 0;
                 
                                     volume =
@@ -55,19 +58,12 @@ private double CalculateVolume(
                                         volume,
                                         RoundingMode.Down);
                 
-                                if (volume <
-                                    Symbol.VolumeInUnitsMin)
+                                if (!VolumeSizingRule.IsValidNormalizedVolume(
+                                        volume,
+                                        Symbol.VolumeInUnitsMin,
+                                        Symbol.VolumeInUnitsMax))
                                     return 0;
-                
-                                if (volume >
-                                    Symbol.VolumeInUnitsMax)
-                                {
-                                    volume =
-                                        Symbol.NormalizeVolumeInUnits(
-                                            Symbol.VolumeInUnitsMax,
-                                            RoundingMode.Down);
-                                }
-                
+
                                 return volume;
                             }
                             catch (Exception ex)

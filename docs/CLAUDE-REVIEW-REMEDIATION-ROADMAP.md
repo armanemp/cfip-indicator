@@ -356,18 +356,40 @@ Next implementation phase: **CR1.7 — Threshold truth + volume audit**.
 
 Covers: A9, A10 and overlap with B4.
 
-Work:
-- create one authoritative threshold-definition layer only where the same concept currently has multiple values;
-- remove hidden numeric clamps that silently override user parameters;
-- preserve existing effective defaults unless a bug fix requires explicit safety handling;
-- inventory exact current volume-calculation methods before modifying them, because the Claude filenames do not match the repository paths inspected so far;
-- add explicit logs/reasons when a user setting is bounded by design.
+Status: **COMPLETE — implementation closed 2026-09-30; target-terminal verification remains required.**
 
-Acceptance:
-- no duplicate quality/conflict threshold for the same semantic rule;
-- volume methods have explicit finite/positive validation and normalization behavior;
-- every clamp is either a declared parameter constraint or an explicit documented safety rule.
+A9 — threshold truth:
+- moved fixed execution-path IndicatorConfluenceQuality/IndicatorConflict thresholds into `Core/Math/ExecutionThresholdPolicy.cs` as named semantic constants;
+- migrated Automatic Market, Pending Submission and Pending Continuation/Reversal callers to the centralized definitions;
+- centralized defensive bounds for DirectionShare, reversal evidence/MTF, EOD alert minutes and MaximumSpreadToStopRiskRatio;
+- aligned DirectionShare's defensive upper bound with its public `MaxValue=95` instead of the prior hard 90 ceiling;
+- reduced the generic `RiskPercentPolicy` defensive upper clamp from 100 to the public parameter ceiling 5 because the parameter itself is constrained to 5%;
+- did not add public parameters or change any public parameter name/type/DefaultValue;
+- retained the four existing path-specific indicator-quality policies because semantic unification is deliberately deferred to CR2.3, preventing an accidental default-behavior change.
 
+A10 — volume/sizing:
+- added pure `Core/Math/VolumeSizingRule.cs` for stop-risk, risk-input and normalized-volume invariants;
+- risk-percent volume sizing now rejects non-positive/non-finite stop risk before invoking `VolumeForFixedRisk`;
+- both normal and Aggressive volume paths require finite normalized volume within broker min/max bounds;
+- Aggressive volume failure now emits bounded diagnostic logging instead of silently swallowing exceptions;
+- `RiskAmountCalculator` now fails closed on non-finite equity/risk percentage and computed amount;
+- no position capacity or public risk default was increased.
+
+Tests:
+- added deterministic threshold-boundary contracts;
+- added deterministic volume/risk-input and normalized-volume contracts;
+- verified the five-percent risk ceiling and smart-risk scaling behavior.
+
+Permanent routine audit:
+- Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning reviewed for threshold/volume ownership drift;
+- performance/code-cleanliness reviewed; no network/file I/O or unbounded scan was introduced.
+
+Manual verification:
+- target cTrader volume normalization/step semantics for the actual symbol;
+- broker rejection behavior for min/max/step-normalized volume;
+- actual account equity and risk conversion on representative symbols.
+
+Next implementation phase: **CR1.8 — Managed identity boundary**.
 ## CR1.8 — Managed identity boundary
 
 Covers: A11.

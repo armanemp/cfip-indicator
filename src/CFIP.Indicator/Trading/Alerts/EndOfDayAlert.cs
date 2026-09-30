@@ -28,8 +28,7 @@ namespace cAlgo
                 SessionWindowRule.IsWithinPreBoundaryWindow(
                     nowUtc,
                     boundaryUtc,
-                    Math.Max(
-                        5,
+                    ExecutionThresholdPolicy.NormalizeEndOfDayAlertMinutesBefore(
                         EndOfDayAlertMinutesBefore)) &&
                 _lastEndOfDayAlertDate.Date != boundaryUtc.Date &&
                 HasManagedOpenPosition())
