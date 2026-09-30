@@ -75,14 +75,16 @@ check(
 )
 
 check(
-    "reversal alert is episode-bounded rather than closed-M5 keyed",
+    "reversal alert is episode-bounded and carries chart M5 identity",
     "_reversalEpisodeAlerted" in episode
     and "TryMarkReversalAlertEmitted(" in analyzer
     and '"REVERSAL|"' in analyzer
+    and "closedM5" in analyzer
     and "livePosition.Id" in analyzer
     and "opposite" in analyzer
-    and '"REVERSAL|" + closedM5' not in analyzer
-    or ("REVERSAL|" in analyzer and "closedM5" in analyzer),
+    and "REVERSAL-CLOSE|" not in analyzer.split(
+        "TryMarkReversalAlertEmitted(", 1
+    )[0],
 )
 
 check(
@@ -109,8 +111,7 @@ check(
     "POSITION STATE RECONCILING" in analyzer
     and "MarkBrokerStateDirty();" in analyzer
     and 'LifecycleState.RecoveryRequired' in analyzer
-    and "SetLifecycleState(
-                    LifecycleState.Closed" not in analyzer
+    and "LifecycleState.Closed" not in analyzer
     and "_plan = null" not in analyzer,
 )
 
