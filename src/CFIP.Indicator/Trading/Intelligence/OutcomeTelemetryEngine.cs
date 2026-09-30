@@ -259,16 +259,6 @@
                                  plan,
                                  profitable);
 
-                             return new OutcomeRegistrationResult(
-                                 true,
-                                 profitable,
-                                 realizedNetProfit,
-                                 realizedR,
-                                 aggregate.Available
-                                     ? aggregate.TradeCount
-                                     : 1);
-
-                             /*
                              ArchiveRuntimeExecution(
                                  "OUTCOME",
                                  closedM5,
@@ -288,7 +278,15 @@
                                  realizedR.ToString(
                                      "F4",
                                      CultureInfo.InvariantCulture));
-                             */
+
+                             return new OutcomeRegistrationResult(
+                                 true,
+                                 profitable,
+                                 realizedNetProfit,
+                                 realizedR,
+                                 aggregate.Available
+                                     ? aggregate.TradeCount
+                                     : 1);
                          }
 
          private HistoricalOutcomeAggregate AggregateHistoricalOutcome(
