@@ -42,7 +42,7 @@ checks = {
     ),
     "history aggregation owner exists": (
         "HistoricalOutcomeAggregationRule" in aggregate and
-        "Aggregate(" in aggregate
+        "AggregateHistoricalOutcomeRecords(" in aggregate
     ),
     "close path uses historical aggregation": (
         "History.FindByPositionId(" in outcome and
