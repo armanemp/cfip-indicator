@@ -4305,7 +4305,7 @@ No production C# behavior changed.
 
 ## CBOT-0 — Boundary Inventory and Execution-Authority Freeze — 2026-09-30
 
-Status: **IMPLEMENTED; verification pending**
+Status: **VERIFIED COMPLETE**
 
 Completed in this phase:
 - created the machine-enforced CBOT-0 inventory gate at tools/audit_cbot_boundary.py;
@@ -4316,6 +4316,9 @@ Completed in this phase:
 - wired the CBOT-0 audit into Source/Architecture CI;
 - made no production C# behavior change;
 - did not create CFIP.Contracts or CFIP.cBot yet.
+- final Source/Architecture verify `109870832998`: PASS;
+- final Runtime Acceptance `109870832972`: PASS;
+- final cTrader Build/Compile `109870832958`: PASS;
 
 Acceptance boundary:
 - direct broker calls must remain behind the current known mutation owners until extraction;
@@ -4324,6 +4327,6 @@ Acceptance boundary:
 - no duplicate public parameter declarations;
 - no new broker executor is permitted during the separation track.
 
-Next phase after CBOT-0 verification: CBOT-Preflight — target-terminal, no-trade proof of the supported local Indicator → cBot structured read-only handoff.
+Next phase: CBOT-Preflight — target-terminal, no-trade proof of the supported local Indicator → cBot structured read-only handoff.
 
 Operator action after merge: git pull --ff-only.
