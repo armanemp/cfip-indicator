@@ -39,6 +39,20 @@ namespace cAlgo
                    !double.IsInfinity(move);
         }
 
+        public static int RecordExitM5(
+            int previousExitM5,
+            int requestedExitM5,
+            bool brokerMutationSucceeded)
+        {
+            if (!brokerMutationSucceeded ||
+                requestedExitM5 < 0)
+                return previousExitM5;
+
+            return Math.Max(
+                previousExitM5,
+                requestedExitM5);
+        }
+
         private static bool FinitePositive(double value)
         {
             return value > 0 &&
