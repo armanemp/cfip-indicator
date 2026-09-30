@@ -18,13 +18,13 @@ namespace cAlgo
                     bars,
                     index);
 
-            if (quotes == null || quotes.Count < 40)
+            if (quotes == null || quotes.Count < OssIndicatorParameters.CciMinimumHistory)
                 return double.NaN;
 
             var results =
                 StockIndicator.GetCci(
                     quotes,
-                    20)
+                    OssIndicatorParameters.CciPeriod)
                     .ToList();
 
             return results.Count == 0 ||
