@@ -4473,29 +4473,30 @@ Target-terminal History/Deal semantics remain a manual acceptance boundary.
 Next phase: **CR2.6 — OrderBlock quality and cache discipline**.
 
 Track 12A remains blocked until CR-FINAL passes.
-## Claude Review Remediation — CR2.6 Closeout — 2026-09-30
+## Claude Review Remediation — CR2.7 Closeout — 2026-09-30
 
-Status: VERIFIED COMPLETE — PR #91 merged 2026-09-30, merge commit 8f89d75e9fed70a53b51a902b52c539d9c514f0b.
+Status: VERIFIED COMPLETE — PR #92 merged 2026-09-30, merge commit b021f56c4b75331fb52127547e006f2f8bb287c4.
 
 Completed:
-- centralized Order Block quality arithmetic in OrderBlockQualityRule with explicit base, component contributions, clamps and fail-closed finite checks;
-- corrected the creation-ATR impulse normalization to use price-unit ATR semantics;
-- added canonical side-of-market validation at live candidate selection time;
-- added explicit Fresh / Mitigated / Broken lifecycle semantics with broken-zone exclusion;
-- retained and documented closed-bar/frame/direction candidate caching while keeping quote selection outside the cache identity;
-- added deterministic CR2.6 runtime contracts and static source audit;
-- preserved public parameters, execution authority and broker capacity.
+- deterministic WaveTrend MovingAverageType semantics for all currently exposed cTrader MA enum values;
+- corrected DEMA/TEMA dependency-state warm-up;
+- corrected HMA raw-window weighting;
+- corrected WaveTrend component and signal readiness to include all dependent windows;
+- added HistoryLoaded/Reloaded and history-prefix/count invalidation;
+- documented TickVolume-based MFI semantics;
+- added deterministic runtime contracts and CR2.7 static audit;
+- preserved public parameters and execution authority.
 
 Verification:
 - Source/Architecture: PASS;
 - Runtime Acceptance: PASS;
 - cTrader Compile: PASS.
 
-Target-terminal replay remains required for empirical OB interaction and signal-quality measurement.
+Verified head: `181b238a548280fc01a67fb1e3ba8a617f63e42a`.
 
-Verification head: `1c5dbf17140f3757ea4e3289183fb73ab8e65b9b` — Source/Architecture PASS, Runtime Acceptance PASS, cTrader Compile PASS.
+Target-terminal replay remains required for numerical platform parity and empirical signal-quality measurement.
 
-Next phase: **CR2.7 — WaveTrend mathematical correctness**.
+Next phase: **CR2.8 — Historical rendering semantics and cost**.
 
 Track 12A remains blocked until CR-FINAL passes.
 
