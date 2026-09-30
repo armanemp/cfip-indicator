@@ -141,9 +141,9 @@ The findings remain static-review hypotheses until each item is independently ve
 
 
 
-### CR4.4 / D4 implementation checkpoint — 2026-10-01
+### CR4.4 / D4 closeout — 2026-10-01
 
-CR4.4 is implemented on branch `phase/cr4-4-skender-numerical-caching`; merge/CI closeout is pending.
+CR4.4 is complete and merged to `main` via PR #105, merge commit `1b1a1762fee960e65903880f2566b3355a9a7431`.
 
 Implementation:
 - stable-prefix caching for RSI, MACD, SuperTrend and Parabolic SAR;
@@ -152,9 +152,14 @@ Implementation:
 - conservative history/cache invalidation;
 - OBV retained as diagnostic/research data but removed from independent confluence vote/count evidence;
 - runtime/static verification and cache benchmark added;
+- Source/Architecture PASS — run 36779376240;
+- cTrader Compile PASS — run 36779376267;
+- Runtime Acceptance PASS — run 36779376210;
+- OSS indicator benchmark PASS — run 36779376203;
+- CR4.4 static gate PASS across the accumulated audit chain.
 - Source/Architecture workflow now includes the CR4.4 static gate.
 
-Next after verified merge: **CR4.5 / D5 — Per-timeframe regime semantics.**
+Next phase: **CR4.5 / D5 — Per-timeframe regime semantics.**
 Target-terminal acceptance remains a later manual boundary.
 
 ### Prompt 6 remediation insertion — 2026-09-30
