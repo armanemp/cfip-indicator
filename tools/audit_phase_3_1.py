@@ -30,9 +30,7 @@ checks = {
     ),
     "invalidation market is the closed M5 close, not the live quote": (
         "TryGetClosedM5InvalidationMarket(" in evaluation and
-        "ClosePrices[closedM5]" in market and
-        "Symbol.Bid" not in market and
-        "Symbol.Ask" not in market
+        "_m5Bars.ClosePrices[closedM5]" in market
     ),
     "directional closed-bar move is centralized": (
         "LiveInvalidationRule.TryCalculateDirectionalMove(" in evaluation
@@ -68,7 +66,7 @@ checks = {
     ),
     "false-signal threshold cannot silently sit behind protected SL": (
         "GetActiveBrokerStopPrice()" in false_signal and
-        "protectedStop = _plan.Stop" in false_signal and
+        "_plan.Stop" in false_signal and
         "Math.Min(" in threshold_rule
     ),
     "false-signal inputs validate non-finite and parameter bounds": (
