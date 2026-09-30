@@ -43,6 +43,56 @@ namespace cAlgo
                 _outcomeArchivePrefixCache;
         }
 
+        private static string SanitizeArchivePart(
+            string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "UNKNOWN";
+
+            StringBuilder result =
+                new StringBuilder();
+
+            foreach (char ch in value)
+            {
+                result.Append(
+                    char.IsLetterOrDigit(ch)
+                        ? ch
+                        : '_');
+            }
+
+            return result.ToString();
+        }
+
+        private static DateTime OutcomeArchivePeriodStart(
+            DateTime observedUtc)
+        {
+            DateTime utc =
+                observedUtc.Kind == DateTimeKind.Utc
+                    ? observedUtc
+                    : observedUtc.ToUniversalTime();
+
+            DateTime epoch =
+                new DateTime(
+                    1970,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            long days =
+                (long)Math.Floor(
+                    (utc - epoch).TotalDays);
+
+            long periodDays =
+                days -
+                (days % 90);
+
+            return epoch.AddDays(
+                periodDays);
+        }
+
         private string OutcomeArchiveFilePath(
             DateTime observedUtc)
         {
