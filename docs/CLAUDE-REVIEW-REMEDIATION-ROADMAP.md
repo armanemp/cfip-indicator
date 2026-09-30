@@ -1171,7 +1171,18 @@ Authoritative order:
 
 ### CR5.1 — Effective maximum structural stop risk and duplicate ceiling removal (E1)
 
-Initial review label: **CONFIRMED / MEDIUM — numerical duplication and parameter-semantics risk must be re-verified before change.**
+Status: **VERIFIED COMPLETE — PR #114 merged to `main`; merge commit `62a119bef79e5a978f1f2ed66a913fa11a1bb2d4`.**
+
+Repository evidence:
+- Source/Architecture PASS — PR head run `36791329486`; merge run `36791455294`;
+- Runtime Acceptance PASS — PR head run `36791329385`; merge run `36791455156`;
+- cTrader Compile PASS — PR head run `36791329369`; merge run `36791455288`.
+
+The existing effective ceiling formula was preserved exactly; all identified dual-cap
+consumers now use the canonical Core owner and the deterministic E1 truth table
+covers cap ordering, minimum-floor behavior and symmetry.
+
+Next transition: **CR5.2 / E2.**
 
 Scope:
 - `StructuralStopCandidateEvaluator`;
@@ -1618,7 +1629,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.8 — TP1 directional defensive validation (D8)**.
+Current active phase: **CR5.2 — Liquidity/session target-source semantics and multi-level target candidates (E2)**.
 
 ## 8. Completion order and dependencies
 

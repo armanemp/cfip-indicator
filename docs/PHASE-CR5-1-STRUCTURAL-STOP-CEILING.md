@@ -1,6 +1,6 @@
 # CR5.1 / E1 — Effective maximum structural-stop risk ceiling
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — repository acceptance closed 2026-10-01.**
 
 ## Scope
 
@@ -44,15 +44,17 @@ formula. No parameter value or default is tuned by this phase.
 
 ## Verification boundary
 
-Repository verification must pass:
-- Source/Architecture, including CR5.1 static inventory;
-- Runtime Acceptance Contracts;
-- cTrader Compile.
+Repository verification completed:
+- Source/Architecture — PR #114 head run `36791329486`; merge run `36791455294`;
+- Runtime Acceptance Contracts — PR #114 head run `36791329385`; merge run `36791455156`;
+- cTrader Compile — PR #114 head run `36791329369`; merge run `36791455288`.
+
+The merge commit is `62a119bef79e5a978f1f2ed66a913fa11a1bb2d4`.
 
 Target-terminal broker timing, restart/reconnect, panel behavior and empirical
 signal-quality/outcome validation remain manual and are not inferred here.
 
 ## Transition
 
-After repository verification passes, the next phase is **CR5.2 / E2 —
+After repository verification, the next phase is **CR5.2 / E2 —
 Liquidity/session target-source semantics and multi-level target candidates**.
