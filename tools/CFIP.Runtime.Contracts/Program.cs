@@ -83,6 +83,7 @@ namespace cAlgo
             VerifyOutcomeMemoryIdentitySemantics();
             VerifyPersistenceHealthSemantics();
             VerifySignalTraceLineageSemantics();
+            VerifyFrameRegimeSemantics();
             VerifyOssIndicatorParameters();
 
             Console.WriteLine("Runtime acceptance contracts OK");
@@ -138,6 +139,227 @@ namespace cAlgo
             {
                 throw new InvalidOperationException(
                     "OSS configured-period safety semantics changed unexpectedly.");
+            }
+        }
+
+
+        private static void VerifyFrameRegimeSemantics()
+        {
+            MarketRegimeSnapshot bullTrend =
+                new MarketRegimeSnapshot
+                {
+                    Regime = "TREND",
+                    Direction = 1
+                };
+
+            MarketRegimeSnapshot bearTrend =
+                new MarketRegimeSnapshot
+                {
+                    Regime = "TREND",
+                    Direction = -1
+                };
+
+            if (FrameRegimeResolutionRule.Resolve(bullTrend) != "TREND" ||
+                FrameRegimeResolutionRule.Resolve(bearTrend) != "TREND")
+            {
+                throw new InvalidOperationException(
+                    "Known timeframe regime resolution must not depend on trade direction.");
+            }
+
+            if (FrameRegimeResolutionRule.Resolve(null) !=
+                    FrameRegimeResolutionRule.Unknown ||
+                FrameRegimeResolutionRule.Resolve("unknown") !=
+                    FrameRegimeResolutionRule.Unknown ||
+                !FrameRegimeResolutionRule.IsNeutral(null) ||
+                !FrameRegimeResolutionRule.IsNeutral("bad-regime") ||
+                FrameRegimeResolutionRule.IsNeutral("RANGE"))
+            {
+                throw new InvalidOperationException(
+                    "UNKNOWN regime semantics are not neutral or normalization is unstable.");
+            }
+
+            IndicatorEvidenceFusionInput baseInput =
+                new IndicatorEvidenceFusionInput(
+                    "TREND",
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    4,
+                    24,
+                    16,
+                    60,
+                    0.8,
+                    0.30,
+                    1,
+                    70,
+                    0,
+                    0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    3,
+                    1,
+                    4,
+                    4,
+                    3);
+
+            IndicatorEvidenceFusionResult bullResult =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    baseInput);
+
+            IndicatorEvidenceFusionInput mirrorInput =
+                new IndicatorEvidenceFusionInput(
+                    "TREND",
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    4,
+                    24,
+                    16,
+                    40,
+                    -0.8,
+                    -0.30,
+                    -1,
+                    70,
+                    0,
+                    0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    1,
+                    3,
+                    4,
+                    4,
+                    3);
+
+            IndicatorEvidenceFusionResult bearResult =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    mirrorInput);
+
+            if (bullResult.BullBonus != bearResult.BearBonus ||
+                bullResult.BearBonus != bearResult.BullBonus ||
+                bullResult.Conflict != bearResult.Conflict ||
+                bullResult.Quality != bearResult.Quality)
+            {
+                throw new InvalidOperationException(
+                    "BUY/SELL regime-weighted fusion is not symmetric.");
+            }
+
+            IndicatorEvidenceFusionResult unknownResult =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        null,
+                        true,
+                        false,
+                        true,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        4,
+                        24,
+                        16,
+                        60,
+                        0.8,
+                        0.30,
+                        1,
+                        70,
+                        0,
+                        0,
+                        false,
+                        false,
+                        false,
+                        false,
+                        3,
+                        1,
+                        4,
+                        4,
+                        3));
+
+            IndicatorEvidenceFusionResult explicitNeutralResult =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "UNKNOWN",
+                        true,
+                        false,
+                        true,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        4,
+                        24,
+                        16,
+                        60,
+                        0.8,
+                        0.30,
+                        1,
+                        70,
+                        0,
+                        0,
+                        false,
+                        false,
+                        false,
+                        false,
+                        3,
+                        1,
+                        4,
+                        4,
+                        3));
+
+            if (unknownResult.BullBonus != explicitNeutralResult.BullBonus ||
+                unknownResult.BearBonus != explicitNeutralResult.BearBonus ||
+                unknownResult.Conflict != explicitNeutralResult.Conflict ||
+                unknownResult.Quality != explicitNeutralResult.Quality)
+            {
+                throw new InvalidOperationException(
+                    "UNKNOWN must remain explicitly neutral in regime weighting.");
             }
         }
 
