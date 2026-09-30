@@ -15,14 +15,20 @@ namespace cAlgo
                                             _lastAutoOrderAttemptUtc =
                                                 TimeInUtc;
                                 
-                                            if (AutomaticOrdersEnabled &&
-                                                DailyLossLimitHit(TimeInUtc))
+                                            if (AutomaticOrdersEnabled)
                                             {
-                                                _autoOrdersBlockReason =
-                                                    "DAILY LOSS LIMIT";
-                                
-                                                CancelAllOrders();
-                                                return;
+                                                string dailyLossReason;
+
+                                                if (DailyLossLimitHit(
+                                                        TimeInUtc,
+                                                        out dailyLossReason))
+                                                {
+                                                    _autoOrdersBlockReason =
+                                                        dailyLossReason;
+
+                                                    CancelAllOrders();
+                                                    return;
+                                                }
                                             }
                                 
                                             if (!AutomaticOrdersEnabled)
