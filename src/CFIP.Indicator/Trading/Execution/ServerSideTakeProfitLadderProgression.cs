@@ -397,6 +397,15 @@ namespace cAlgo
                     Symbol.PipSize,
                     1e-9);
 
+            if (_activeBrokerTarget > 0 &&
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    _plan.Direction,
+                    _activeBrokerTarget,
+                    finalTarget,
+                    market,
+                    minimumForwardDistance))
+                return false;
+
             if (!PartialTakeProfitRetryRule.ShouldAttemptStage(
                     closedM5,
                     _lastServerTpLadderMutationM5,
@@ -406,15 +415,6 @@ namespace cAlgo
 
             _lastServerTpLadderMutationM5 = closedM5;
             _lastServerTpLadderMutationKind = "SERVER-LADDER-AFTER-TP2";
-
-            if (_activeBrokerTarget > 0 &&
-                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
-                    _plan.Direction,
-                    _activeBrokerTarget,
-                    finalTarget,
-                    market,
-                    minimumForwardDistance))
-                return false;
 
             if (!TryModifyTakeProfitPips(
                     position,
