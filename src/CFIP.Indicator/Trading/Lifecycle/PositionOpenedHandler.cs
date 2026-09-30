@@ -23,7 +23,7 @@ namespace cAlgo
                                         !IsManagedPosition(args.Position))
                                         return;
 
-            MarkBrokerStateDirty();
+                                    MarkBrokerStateDirty();
                         
                                     Position position =
                                         args.Position;
