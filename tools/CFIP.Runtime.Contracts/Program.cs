@@ -680,7 +680,7 @@ namespace cAlgo
         private static void VerifyEconomicNewsCurrencyMappingSemantics()
         {
             string[] eurUsd =
-                EconomicNewsCurrencyRule.Resolve(
+                EconomicNewsCurrencyRule.ResolveCurrencies(
                     "EURUSD.m",
                     "",
                     "");
@@ -692,7 +692,7 @@ namespace cAlgo
                 "FX symbol resolves both traded currencies");
 
             string[] indexUsd =
-                EconomicNewsCurrencyRule.Resolve(
+                EconomicNewsCurrencyRule.ResolveCurrencies(
                     "US30.cash",
                     "",
                     "US30=USD;GER40=EUR");
@@ -703,7 +703,7 @@ namespace cAlgo
                 "index mapping resolves configured USD news relevance");
 
             string[] indexEur =
-                EconomicNewsCurrencyRule.Resolve(
+                EconomicNewsCurrencyRule.ResolveCurrencies(
                     "GER40",
                     "",
                     "US30=USD;GER40=EUR");
@@ -714,7 +714,7 @@ namespace cAlgo
                 "index mapping resolves configured EUR news relevance");
 
             string[] crypto =
-                EconomicNewsCurrencyRule.Resolve(
+                EconomicNewsCurrencyRule.ResolveCurrencies(
                     "BTCUSDT",
                     "",
                     "BTC=USD;ETH=USD");
@@ -725,7 +725,7 @@ namespace cAlgo
                 "crypto mapping resolves USD news relevance");
 
             string[] extras =
-                EconomicNewsCurrencyRule.Resolve(
+                EconomicNewsCurrencyRule.ResolveCurrencies(
                     "EURUSD",
                     "JPY, CHF",
                     "");
@@ -739,7 +739,7 @@ namespace cAlgo
                 "additional currencies merge deterministically without duplicates");
 
             string[] normalized =
-                EconomicNewsCurrencyRule.Resolve(
+                EconomicNewsCurrencyRule.ResolveCurrencies(
                     "US_500.cash",
                     "",
                     "US500=USD");
