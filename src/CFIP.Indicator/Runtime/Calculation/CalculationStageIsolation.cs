@@ -168,7 +168,7 @@ namespace cAlgo
                     return true;
                 },
                 index,
-                "TELEMETRY • WAITING");
+                "OUTCOME/EOD SUPERVISION • WAITING");
 
             RunCalculationStage(
                 () =>
