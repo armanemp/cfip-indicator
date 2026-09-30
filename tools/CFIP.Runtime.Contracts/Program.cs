@@ -1754,18 +1754,18 @@ namespace cAlgo
                 "WaveTrend Kaufman Adaptive MA uses efficiency-ratio smoothing");
 
             int componentReady =
-                WaveTrendReadinessRule.ResolveComponentReadyIndex(
+                WaveTrendReadinessRule.ResolveWaveTrendComponentReadyIndex(
                     10,
                     5);
 
             int smoothReady =
-                WaveTrendReadinessRule.ResolveSmoothReadyIndex(
+                WaveTrendReadinessRule.ResolveWaveTrendSmoothReadyIndex(
                     componentReady,
                     WaveTrendMovingAverageCalculator.Exponential,
                     4);
 
             int signalReady =
-                WaveTrendReadinessRule.ResolveSignalReadyIndex(
+                WaveTrendReadinessRule.ResolveWaveTrendSignalReadyIndex(
                     smoothReady,
                     WaveTrendMovingAverageCalculator.Simple,
                     5);
@@ -1774,7 +1774,7 @@ namespace cAlgo
                 componentReady == 14 &&
                 smoothReady == 17 &&
                 signalReady == 21 &&
-                !WaveTrendReadinessRule.IsSnapshotReady(
+                !WaveTrendReadinessRule.IsWaveTrendSnapshotReady(
                     21,
                     signalReady) &&
                 WaveTrendReadinessRule.IsSnapshotReady(
