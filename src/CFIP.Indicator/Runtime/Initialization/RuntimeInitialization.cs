@@ -265,6 +265,7 @@ namespace cAlgo
             }
 
             InitializeExecutionRuntimeState();
+            HookHistoricalBarsEvents();
 
             if (!ValidateTradeIdentityConfiguration())
             {
@@ -318,6 +319,7 @@ namespace cAlgo
             _native.Clear();
             _historicalDrawn.Clear();
             _outcomeDrawn.Clear();
+            ResetHistoricalRenderingState();
 
             try
             {
@@ -513,6 +515,7 @@ namespace cAlgo
 
                                     try
                                     {
+                                        UnhookHistoricalBarsEvents();
                                         Positions.Opened -= OnPositionOpened;
                                         Positions.Closed -= OnPositionClosed;
                                         Positions.Modified -= OnPositionModified;
