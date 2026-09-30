@@ -34,7 +34,7 @@ namespace cAlgo
             double bestDistance = double.MaxValue;
 
             for (int i = 0;
-                 i < events.Count;
+                 i < events.Length;
                  i++)
             {
                 CfipEconomicNewsEvent item =
