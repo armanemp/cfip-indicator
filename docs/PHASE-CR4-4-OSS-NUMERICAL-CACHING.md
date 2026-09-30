@@ -44,7 +44,7 @@ remain unchanged.
 - a bounded 161-bar rolling window that advances by append/remove;
 - first-bar and cached stable-last-bar fingerprints for conservative invalidation.
 
-History replacement or cached-prefix mutation causes a full cache reset.
+History replacement, reconnect, or cached-prefix mutation causes a full cache reset. cTrader HistoryLoaded / Reloaded events mark the cache invalid before the next calculation.
 Consecutive new bars do not.
 
 Backward index requests rebuild only the bounded rolling view or copy the already
