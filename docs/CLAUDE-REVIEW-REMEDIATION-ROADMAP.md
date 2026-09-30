@@ -588,16 +588,23 @@ Manual acceptance remains required for target-terminal zone interaction and empi
 
 Covers: B8.
 
-Work:
-- implement the declared MovingAverageType semantics or restrict the parameter only through a separately approved parameter-safe change;
-- correct warm-up readiness based on all component dependencies;
-- define cache invalidation for history-extension events;
-- document TickVolume-based MFI as tick-volume, not real exchange volume.
+Status: COMPLETE — PR #92 merged 2026-09-30, merge commit b021f56c4b75331fb52127547e006f2f8bb287c4.
 
-Acceptance:
-- selected MA type produces the declared mathematics;
-- no early-series signal is marked ready before all dependent inputs are stable;
-- cache remains valid after history changes.
+Implemented:
+- deterministic MA semantics for all currently declared cTrader MovingAverageType values;
+- DEMA/TEMA dependency-chain initialization and warm-up correction;
+- HMA raw-window weighting correction;
+- full component/smoothing/signal readiness dependency;
+- HistoryLoaded/Reloaded and history-prefix/count invalidation;
+- explicit TickVolume-based MFI documentation;
+- deterministic runtime contracts and CR2.7 static audit.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Verified head: `181b238a548280fc01a2e1e290e8f9d9fea34b2`.
 
 ## CR2.8 — Historical rendering semantics and cost
 
