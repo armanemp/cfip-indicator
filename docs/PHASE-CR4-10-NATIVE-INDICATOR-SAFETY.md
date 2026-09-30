@@ -1,5 +1,7 @@
 # CR4.10 / D10 — Native-indicator defensive safety and registry performance
 
+Status: **VERIFIED COMPLETE — repository acceptance closed 2026-10-01.**
+
 ## Scope
 
 Harden native indicator readiness at the analysis boundary and reduce native registry lookup overhead without changing public parameters, default trading thresholds, RR, confidence, stop, target or execution policy.
@@ -82,11 +84,11 @@ The benchmark uses deterministic synthetic reference keys and one million lookup
 
 ## Verification boundary
 
-Required repository verification:
-- Source/Architecture;
-- Runtime Acceptance Contracts;
-- cTrader Compile;
-- OSS/benchmark workflow.
+Repository verification completed on merge commit `3371b9790902c4d35e4e1e28522dee42f93af861`:
+- Source/Architecture — PASS, workflow run `36790307897`;
+- Runtime Acceptance Contracts — PASS, workflow run `36790307911`;
+- cTrader Compile — PASS, workflow run `36790307893`;
+- OSS/Registry Benchmark — PASS, workflow run `36790307937`.
 
 Manual acceptance remains required for:
 - target-terminal startup/readiness timing;
