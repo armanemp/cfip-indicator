@@ -336,7 +336,7 @@ namespace cAlgo
                     stage == 0
                         ? 100
                         : 100 +
-                          requiredRR[stage - 1] * 2.0 +
+                          requiredRR[stage - 1] * 1.0 +
                           0.4;
 
                 TargetCandidateConstraintResult valid =
@@ -415,7 +415,7 @@ namespace cAlgo
                         stage == 0
                             ? 100
                             : 100 -
-                              requiredRR[stage - 1] * 2.0 -
+                              requiredRR[stage - 1] * 1.0 -
                               0.4,
                         false,
                         stage >= 1,
