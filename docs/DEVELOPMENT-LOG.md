@@ -2195,7 +2195,7 @@ Next phase: CR1.6 — FVG quality discrimination.
 
 ## CBOT-0 — Boundary Inventory & Execution-Authority Freeze — 2026-09-30
 
-Status: **IMPLEMENTED; verification pending**
+Status: **VERIFIED COMPLETE**
 
 Implemented:
 - added tools/audit_cbot_boundary.py to inventory every direct broker mutation call in production and prevent new calls outside the frozen broker-mutation owners;
@@ -2205,8 +2205,13 @@ Implemented:
 - kept current production execution behavior unchanged;
 - did not create the Contracts/cBot projects and did not introduce a second executor.
 
+Verification:
+- Source/Architecture: PASS (`109870832998`)
+- Runtime Acceptance: PASS (`109870832972`)
+- cTrader Build/Compile: PASS (`109870832958`)
+
 Verification boundary:
-- CI must prove the 552-parameter baseline remains intact;
+- CI proves the 562-parameter current baseline remains intact;
 - direct broker mutations must stay inside the current seven broker-mutation owner files;
 - lifecycle/account ownership markers must remain present;
 - no duplicate public parameter declaration may exist.
@@ -2214,5 +2219,5 @@ Verification boundary:
 Whole-chain routine audit:
 Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning remains unchanged in this no-behavior-change phase.
 
-Next phase after verification: CBOT-Preflight.
+Next phase: CBOT-Preflight.
 Operator action after merge: git pull --ff-only.
