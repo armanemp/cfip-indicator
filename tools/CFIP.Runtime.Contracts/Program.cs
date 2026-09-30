@@ -20,6 +20,7 @@ namespace cAlgo
             VerifyTopDownCalibration();
             VerifyProtectionProgressionSemantics();
             VerifyWaveTrendMathematics();
+            VerifyHistoricalRenderingSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
@@ -1598,6 +1599,57 @@ namespace cAlgo
                 weakMiddleAgreement.Stage == "MIDFRAME CALIBRATION",
                 "directionally mixed middle frames cannot be promoted to calibrated entry");
 
+        }
+
+        private static void VerifyHistoricalRenderingSemantics()
+        {
+            Assert(
+                HistoricalRenderingRule.MaximumScanBars == 500 &&
+                HistoricalRenderingRule.FirstAnalyzableIndex == 40 &&
+                HistoricalRenderingRule.MinimumBarsRequired == 60,
+                "historical presentation work has an explicit fixed scan budget");
+
+            Assert(
+                HistoricalRenderingRule.ResolveLastClosedIndex(100) == 98 &&
+                HistoricalRenderingRule.ResolveOldestScannedIndex(100) == 40,
+                "short histories use only fully closed analyzable bars");
+
+            Assert(
+                HistoricalRenderingRule.ResolveLastClosedIndex(10000) == 9998 &&
+                HistoricalRenderingRule.ResolveOldestScannedIndex(10000) == 9499,
+                "long histories are bounded to exactly 500 scanned bars");
+
+            DateTime openTime =
+                new DateTime(
+                    2026,
+                    9,
+                    30,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            Assert(
+                HistoricalRenderingRule.ObjectIdentity(openTime) ==
+                HistoricalRenderingRule.ObjectIdentity(openTime) &&
+                HistoricalRenderingRule.ObjectIdentity(openTime) !=
+                HistoricalRenderingRule.ObjectIdentity(
+                    openTime.AddMinutes(5)) &&
+                HistoricalRenderingRule.ObjectIdentity(
+                    openTime).Contains("PRESENTATION_"),
+                "historical object identity is deterministic and timestamp based");
+
+            Assert(
+                HistoricalRenderingRule.IsClosedAnalyzableIndex(
+                    40,
+                    100) &&
+                !HistoricalRenderingRule.IsClosedAnalyzableIndex(
+                    99,
+                    100) &&
+                !HistoricalRenderingRule.IsClosedAnalyzableIndex(
+                    39,
+                    100),
+                "historical renderer never treats the open host bar as a historical signal");
         }
 
         private static void VerifyWaveTrendMathematics()
