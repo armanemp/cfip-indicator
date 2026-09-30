@@ -374,6 +374,8 @@ namespace cAlgo
         {
             if (_initializationReady)
             {
+                RemoveExpiredPopup();
+                ProcessQueuedPopups();
                 HandleRuntimeHeartbeat();
                 return;
             }
@@ -538,6 +540,7 @@ namespace cAlgo
                                     RemoveAllChartObjects();
                                     RemovePanel();
                                     RemovePopup();
+                                    _popupAlertQueue.Clear();
                                     base.OnDestroy();
                                 }
     }
