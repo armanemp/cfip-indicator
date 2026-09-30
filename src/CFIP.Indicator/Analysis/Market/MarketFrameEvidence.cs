@@ -54,76 +54,47 @@ namespace cAlgo
             f.HiddenDivergenceBear =
                 divergence.HiddenBear;
 
-            if (ReferenceEquals(
+            MarketRegimeSnapshot regimeSnapshot =
+                AnalyzeMarketRegime(
                     bars,
-                    _m5Bars))
-            {
-                MarketRegimeSnapshot regimeSnapshot =
-                    GetActiveM5Regime(index);
+                    index);
 
-                if (regimeSnapshot != null)
-                {
-                    f.Choppiness =
-                        regimeSnapshot.Choppiness;
-                    f.AtrRatio =
-                        regimeSnapshot.AtrRatio;
-                    f.EmaSpreadAtr =
-                        regimeSnapshot.EmaSpreadAtr;
-                    f.EmaSlopeAtr =
-                        regimeSnapshot.EmaSlopeAtr;
-                    f.RangeEfficiency =
-                        regimeSnapshot.RangeEfficiency;
-                }
+            if (regimeSnapshot != null)
+            {
+                f.Regime =
+                    FrameRegimeResolutionRule.Resolve(
+                        regimeSnapshot);
+                f.RegimeQuality =
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            100,
+                            regimeSnapshot.Quality));
+                f.RegimeStability =
+                    Math.Max(
+                        1,
+                        Math.Min(
+                            3,
+                            regimeSnapshot.Stability));
+                f.Choppiness =
+                    regimeSnapshot.Choppiness;
+                f.AtrRatio =
+                    regimeSnapshot.AtrRatio;
+                f.EmaSpreadAtr =
+                    regimeSnapshot.EmaSpreadAtr;
+                f.EmaSlopeAtr =
+                    regimeSnapshot.EmaSlopeAtr;
+                f.RangeEfficiency =
+                    regimeSnapshot.RangeEfficiency;
             }
             else
             {
-                double previousFast =
-                    Ema(
-                        bars,
-                        Math.Max(
-                            1,
-                            index - 3),
-                        true);
-
-                double averageAtr =
-                    AverageAtr(
-                        bars,
-                        Math.Max(
-                            20,
-                            index - 1),
-                        20);
-
-                f.AtrRatio =
-                    averageAtr > 0
-                        ? f.Atr / averageAtr
-                        : 1.0;
-
-                f.EmaSpreadAtr =
-                    f.Atr > 0
-                        ? Math.Abs(
-                            f.EmaFast -
-                            f.EmaSlow) /
-                          f.Atr
-                        : 0;
-
-                f.EmaSlopeAtr =
-                    f.Atr > 0
-                        ? (f.EmaFast -
-                           previousFast) /
-                          f.Atr
-                        : 0;
-
-                f.RangeEfficiency =
-                    CalculateRangeEfficiency(
-                        bars,
-                        index,
-                        10);
-
-                f.Choppiness =
-                    f.Choppy
-                        ? 65
-                        : 45;
+                f.Regime =
+                    FrameRegimeResolutionRule.Unknown;
+                f.RegimeQuality = 0;
+                f.RegimeStability = 0;
             }
+
 
             f.StructureBull =
                 UseInternalStructure &&
