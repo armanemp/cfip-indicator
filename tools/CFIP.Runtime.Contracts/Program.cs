@@ -24,6 +24,8 @@ namespace cAlgo
             VerifyStructuralStopScoringSemantics();
             VerifyDivergenceThresholdSemantics();
             VerifyRejectionThresholdSemantics();
+            VerifyLiveInvalidationSemantics();
+            VerifyFalseSignalAdverseRSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
@@ -124,6 +126,140 @@ namespace cAlgo
                 StructuralEvidenceRule.IsIndependentTransition(false, true, false) &&
                 StructuralEvidenceRule.IsIndependentTransition(false, false, true),
                 "transition is independent only when structure is absent");
+        }
+
+        private static void VerifyLiveInvalidationSemantics()
+        {
+            Assert(
+                LiveInvalidationRule.ShouldEvaluateClosedBar(20, -1) &&
+                !LiveInvalidationRule.ShouldEvaluateClosedBar(20, 20) &&
+                LiveInvalidationRule.ShouldEvaluateClosedBar(21, 20),
+                "live invalidation evaluates at most once per canonical closed M5 bar");
+
+            double move;
+            Assert(
+                LiveInvalidationRule.TryCalculateDirectionalMove(
+                    1,
+                    100,
+                    99.25,
+                    out move) &&
+                Math.Abs(move + 0.75) < 1e-12,
+                "BUY adverse move is directional and deterministic");
+
+            Assert(
+                LiveInvalidationRule.TryCalculateDirectionalMove(
+                    -1,
+                    100,
+                    100.75,
+                    out move) &&
+                Math.Abs(move + 0.75) < 1e-12,
+                "SELL adverse move is directionally symmetric");
+
+            Assert(
+                !LiveInvalidationRule.TryCalculateDirectionalMove(
+                    0,
+                    100,
+                    99,
+                    out move) &&
+                !LiveInvalidationRule.TryCalculateDirectionalMove(
+                    1,
+                    0,
+                    99,
+                    out move) &&
+                !LiveInvalidationRule.TryCalculateDirectionalMove(
+                    -1,
+                    100,
+                    double.NaN,
+                    out move),
+                "live invalidation rejects invalid direction, price and non-finite input");
+
+            Assert(
+                LiveInvalidationRule.RecordExitM5(
+                    5,
+                    10,
+                    true) == 10 &&
+                LiveInvalidationRule.RecordExitM5(
+                    5,
+                    10,
+                    false) == 5 &&
+                LiveInvalidationRule.RecordExitM5(
+                    5,
+                    -1,
+                    true) == 5,
+                "rejected or invalid exits never advance successful-exit bookkeeping");
+        }
+
+        private static void VerifyFalseSignalAdverseRSemantics()
+        {
+            double soft;
+            double hard;
+            double stopR;
+
+            Assert(
+                FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    1.10,
+                    99,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                Math.Abs(soft - 1.0) < 1e-12 &&
+                Math.Abs(hard - 1.0) < 1e-12 &&
+                Math.Abs(stopR - 1.0) < 1e-12,
+                "BUY false-signal thresholds cannot sit behind a one-R protective stop");
+
+            Assert(
+                FalseSignalAdverseRRule.TryResolveThresholds(
+                    -1,
+                    100,
+                    2,
+                    0.60,
+                    101.5,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                Math.Abs(soft - 0.60) < 1e-12 &&
+                Math.Abs(hard - 0.75) < 1e-12 &&
+                Math.Abs(stopR - 0.75) < 1e-12,
+                "SELL false-signal thresholds remain symmetric when protected risk is tighter");
+
+            Assert(
+                FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    1.10,
+                    100,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                Math.Abs(soft - 1.10) < 1e-12 &&
+                Math.Abs(hard - 1.10) < 1e-12 &&
+                stopR == 0,
+                "break-even-or-better protection leaves configured adverse threshold meaningful but outside adverse-stop envelope");
+
+            Assert(
+                !FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    double.NaN,
+                    99,
+                    out soft,
+                    out hard,
+                    out stopR) &&
+                !FalseSignalAdverseRRule.TryResolveThresholds(
+                    1,
+                    100,
+                    1,
+                    5.10,
+                    99,
+                    out soft,
+                    out hard,
+                    out stopR),
+                "false-signal adverse-R validation fails closed for non-finite and out-of-contract inputs");
         }
 
         private static void VerifySessionWindowSemantics()

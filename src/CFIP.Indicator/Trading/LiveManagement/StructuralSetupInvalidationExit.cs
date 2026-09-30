@@ -34,40 +34,26 @@ namespace cAlgo
                                             if (!IsFinitePositive(atr))
                                                 return false;
                                 
-                                            int swingLookback =
-                                                Math.Max(
-                                                    10,
-                                                    Math.Min(
-                                                        StructureLookback,
-                                                        closedM5 - 1));
-                                
-                                            int swingStart =
-                                                Math.Max(
-                                                    1,
-                                                    closedM5 -
-                                                    swingLookback);
-                                
-                                            double swingHigh =
-                                                _m5Bars.HighPrices[swingStart];
-                                
-                                            double swingLow =
-                                                _m5Bars.LowPrices[swingStart];
-                                
-                                            for (int i = swingStart + 1;
-                                                 i < closedM5;
-                                                 i++)
-                                            {
-                                                swingHigh =
-                                                    Math.Max(
-                                                        swingHigh,
-                                                        _m5Bars.HighPrices[i]);
-                                
-                                                swingLow =
-                                                    Math.Min(
-                                                        swingLow,
-                                                        _m5Bars.LowPrices[i]);
-                                            }
-                                
+                                            int swingStart = -1;
+                                            int swingEnd = -1;
+                                            double swingLevel = 0;
+                                            bool hasStructuralCandidate =
+                                                _plan.Direction == 1
+                                                    ? TryFindLatestSwingLow(
+                                                        _m5Bars,
+                                                        closedM5,
+                                                        Math.Max(1, SwingStrength),
+                                                        out swingStart,
+                                                        out swingEnd,
+                                                        out swingLevel)
+                                                    : TryFindLatestSwingHigh(
+                                                        _m5Bars,
+                                                        closedM5,
+                                                        Math.Max(1, SwingStrength),
+                                                        out swingStart,
+                                                        out swingEnd,
+                                                        out swingLevel);
+
                                             double structureBuffer =
                                                 atr *
                                                 Math.Max(
@@ -75,15 +61,14 @@ namespace cAlgo
                                                     InvalidationStructureAtr);
                                 
                                             bool structureFailure =
-                                                _plan.Direction == 1
-                                                    ? swingLow > 0 &&
-                                                      market <
-                                                      swingLow -
+                                                hasStructuralCandidate &&
+                                                (_plan.Direction == 1
+                                                    ? market <
+                                                      swingLevel -
                                                       structureBuffer
-                                                    : swingHigh > 0 &&
-                                                      market >
-                                                      swingHigh +
-                                                      structureBuffer;
+                                                    : market >
+                                                      swingLevel +
+                                                      structureBuffer);
                                 
                                             double risk =
                                                 Math.Max(
@@ -196,17 +181,20 @@ namespace cAlgo
                                                 LifecycleState.ExitRequested,
                                                 "STRUCTURAL INVALIDATION");
                                 
-                                            if (!TryClosePosition(
+                                            bool closeAccepted =
+                                                TryClosePosition(
                                                     position,
-                                                    "STRUCTURAL INVALIDATION"))
+                                                    "STRUCTURAL INVALIDATION");
+
+                                            if (!closeAccepted)
                                             {
                                                 SetLifecycleState(
                                                     LifecycleState.RecoveryRequired,
                                                     "STRUCTURAL EXIT REJECTED");
-                                
+
                                                 _autoExecutionBlockReason =
                                                     "STRUCTURAL EXIT REJECTED";
-                                
+
                                                 SendUnifiedAlert(
                                                     "STRUCT-INVALID-EXIT-FAILED|" +
                                                     position.Id,
@@ -214,10 +202,16 @@ namespace cAlgo
                                                     position.Id,
                                                     _plan.Direction,
                                                     true);
+
+                                                return false;
                                             }
-                                
-                                            _lastExitM5 = closedM5;
-                                
+
+                                            _lastExitM5 =
+                                                LiveInvalidationRule.RecordExitM5(
+                                                    _lastExitM5,
+                                                    closedM5,
+                                                    closeAccepted);
+
                                             // _plan remains authoritative until OnPositionClosed confirms
                                             // that the broker position is actually gone.
                                             return true;

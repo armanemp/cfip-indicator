@@ -60,9 +60,10 @@ namespace cAlgo
                                     }
                         
                                     _lastExitM5 =
-                                        Math.Max(
+                                        LiveInvalidationRule.RecordExitM5(
                                             _lastExitM5,
-                                            closedM5);
+                                            closedM5,
+                                            true);
                         
                                     return true;
                                 }
