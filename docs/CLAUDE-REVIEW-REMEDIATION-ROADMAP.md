@@ -521,37 +521,24 @@ Target-terminal behavior remains a separate manual acceptance boundary.
 
 Covers: B5.
 
-Work:
-- define explicit priority between continuation Stop and reversal Limit;
-- prevent both from being simultaneously strong without an explicit winner policy;
-- evaluate range/suitability for the actual direction of each candidate;
-- add cancellation hysteresis;
-- correct side-of-market reference prices where required;
-- review fallback lookback boundaries;
-- preserve distinct cancellation reasons for Daily Loss, circuit, supersession and cleanup.
+Status: COMPLETE — merged 2026-09-30 (PR #89, merge commit ac8c526f7ed0887ba990dc9a091c8299e96a6de5).
 
-Acceptance:
-- one pending direction/policy decision exists per cycle;
-- an invalid continuation Stop cannot silently fall through to an under-validated reversal Limit;
-- pending orders do not oscillate place/cancel because of a one-bar reaction change.
+Implemented:
+- canonical one-winner arbitration between Continuation Stop and Reversal Limit;
+- explicit quality comparison and deterministic continuation tie-break;
+- independent range/suitability evaluation for each candidate direction;
+- no silent fallback from a failed selected placement to the other strategy;
+- two-bar closed-M5 cancellation hysteresis;
+- executable-side predictive Limit pricing;
+- explicit continuation fallback lookback bounds;
+- deterministic runtime contracts, static audit and phase documentation.
 
-## CR2.4 — Pending-order decision arbiter
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
 
-Covers: B5.
-
-Work:
-- define explicit priority between continuation Stop and reversal Limit;
-- prevent both from being simultaneously strong without an explicit winner policy;
-- evaluate range/suitability for the actual direction of each candidate;
-- add cancellation hysteresis;
-- correct side-of-market reference prices where required;
-- review fallback lookback boundaries;
-- preserve distinct cancellation reasons for Daily Loss, circuit, supersession and cleanup.
-
-Acceptance:
-- one pending direction/policy decision exists per cycle;
-- an invalid continuation Stop cannot silently fall through to an under-validated reversal Limit;
-- pending orders do not oscillate place/cancel because of a one-bar reaction change.
+Target-terminal broker behavior remains a separate manual acceptance boundary.
 
 ## CR2.5 — Lifecycle ordering and outcome aggregation
 
