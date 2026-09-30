@@ -41,7 +41,7 @@ check("decision parameters remain included",
       '"Tp1MinimumRR"' not in identity and '"MinimumConfidence"' not in identity)
 check("current memory schema is versioned",
       'OutcomeMemorySchema = "CFIP-OUTCOME,2"' in memory and
-      'LegacyOutcomeMemorySchema = "CFIP-OUTCOME"' in memory)
+      'PriorOutcomeMemorySchema = "CFIP-OUTCOME"' in memory)
 check("new LocalStorage key is account scoped",
       "MemoryAccountScopeToken()" in memory and "BuildMemoryKey(" in memory and
       "Account.Number" in memory and "Account.AccountType" in memory and
