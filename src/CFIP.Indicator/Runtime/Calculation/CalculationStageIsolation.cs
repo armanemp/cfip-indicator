@@ -184,16 +184,8 @@ namespace cAlgo
                 index,
                 "BROKER STATE FINALIZATION • WAITING");
 
-            try
-            {
-                RenderPanel();
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP waiting-state panel render failed: {0}",
-                    ex.Message);
-            }
+            RenderCalculationReadinessIfNeeded(
+                TimeInUtc);
         }
 
         private void ProcessLiveCalculationStages(
