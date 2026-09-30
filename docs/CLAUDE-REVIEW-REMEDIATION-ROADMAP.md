@@ -816,7 +816,24 @@ Important review rule:
 
 ### CR4.1 — Learning-memory identity and account scoping (D1)
 
-Initial review label: **CONFIRMED / HIGH — must re-audit current main implementation before coding.**
+Status: **COMPLETE — PR #102 merged to main, 2026-09-30.**
+
+Own verification:
+- D1.1 presentation parameters contaminating the learning fingerprint: confirmed and fixed;
+- D1.2 missing account scope: confirmed and fixed across LocalStorage, outcome archive, runtime log and portable snapshot identities;
+- D1.3 PositionId collision risk across accounts: isolated by account-scoped identity; legacy migration additionally requires current-account broker History evidence;
+- D1.4 missing schema migration: confirmed and fixed with current schema v2 and a legacy reader;
+- D1.5/D1.6 archive/runtime/snapshot identity drift: confirmed and fixed.
+
+Verification assets:
+- deterministic runtime contract: `VerifyOutcomeMemoryIdentitySemantics()`;
+- static phase gate: `tools/audit_phase_4_1.py`;
+- PR: #102;
+- merge commit: `071baf7ab0bda6df8f1d06c9ecbf9d28810e33d1`.
+
+Repository CI status for the merge could not be retrieved through the available GitHub status interface at closeout; no CI PASS is claimed here. Target-terminal account-switch/persistence evidence remains mandatory.
+
+
 
 Scope:
 - `OutcomeMemoryStore.MemoryConfigurationFingerprint()`;
@@ -1488,7 +1505,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.1 — Learning-memory identity and account scoping (D1)**.
+Current active phase: **CR4.2 — File/archive path and persistence observability (D2)**.
 
 ## 8. Completion order and dependencies
 
