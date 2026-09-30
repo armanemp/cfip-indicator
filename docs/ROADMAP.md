@@ -4693,7 +4693,7 @@ Next phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage
 
 
 
-Status: **ACTIVE — CR4.1 complete; CR4.2 next**
+Status: **ACTIVE — CR4.3 complete; CR4.4 next**
 
 The fourth Claude review prompt is now mandatory input to the remediation sequence. Its D1–D10 findings are treated as review hypotheses until independently reconciled against current main source.
 
@@ -4738,6 +4738,31 @@ Completed:
 No public parameter name/type/DefaultValue or trading threshold changed.
 
 Next phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3)**.
+
+### CR4.3 closeout — 2026-09-30
+
+Status: **COMPLETE — PR #104; merge pending.**
+
+Completed:
+- moved SignalEvaluationTrace capture to the finalized new-closed-M5 boundary, removing the earlier BuildDecision capture point;
+- added deterministic `CFIP-ST1` SignalTraceId scoped by symbol, timeframe, account, configuration fingerprint and canonical closed-M5 open time;
+- enforced exact Plan/Preview source-bar and direction lineage so stale mutable execution/setup state cannot be paired with a new signal;
+- propagated SignalTraceId into plans, aggressive-fill-created plans and realized outcomes;
+- versioned Signal Trace archive to v3 and Outcome archive to v2 while preserving buffered append-only persistence and prior-row readability;
+- added research-only offline SignalTraceId → outcome joins and geometry-lineage diagnostics;
+- added deterministic runtime lineage contracts, CR4.3 static gate and project-wide audit reconciliation.
+
+Verification:
+- Source/Architecture: PASS — run 36776384440;
+- cTrader Compile: PASS — run 36776384275;
+- Runtime Acceptance: PASS — run 36776384489;
+- verified implementation head: `7defa4731ebd1e60d87d88a1659d4307607c46ab`.
+
+Boundary:
+- target-terminal replay/restart/reconnect and empirical signal-quality/profitability validation remain manual acceptance items;
+- no public parameter name/type/DefaultValue, default threshold or RR tuning changed.
+
+Next phase: **CR4.4 — Skender/OSS numerical stability and incremental caching (D4)**.
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
