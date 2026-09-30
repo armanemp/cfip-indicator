@@ -74,7 +74,7 @@ check(
 )
 check(
     "recorder uses stable trace identity",
-    "SignalTraceIdentityRule.Build(" in recorder and
+    "SignalTraceIdentityRule.CreateTraceId(" in recorder and
     "SignalTraceId = traceId" in recorder,
 )
 check(
@@ -122,7 +122,7 @@ check(
 check(
     "runtime contract covers deterministic trace lineage",
     "VerifySignalTraceLineageSemantics();" in contracts and
-    "SignalTraceIdentityRule.Build(" in contracts and
+    "SignalTraceIdentityRule.CreateTraceId(" in contracts and
     "MatchesClosedBar(" in contracts,
 )
 check(
