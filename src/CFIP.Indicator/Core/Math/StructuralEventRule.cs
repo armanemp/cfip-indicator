@@ -18,11 +18,11 @@ namespace cAlgo
             double breakAtr)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFiniteValue(previousClose) ||
-                !IsFiniteValue(currentClose) ||
-                !IsFinitePositiveValue(level) ||
-                !IsFinitePositiveValue(atr) ||
-                !IsFiniteNonNegativeValue(breakAtr))
+                !IsFiniteStructuralInput(previousClose) ||
+                !IsFiniteStructuralInput(currentClose) ||
+                !IsFinitePositiveStructuralInput(level) ||
+                !IsFinitePositiveStructuralInput(atr) ||
+                !IsFiniteNonNegativeStructuralInput(breakAtr))
                 return false;
 
             double threshold =
@@ -68,20 +68,20 @@ namespace cAlgo
                    closedIndex.ToString();
         }
 
-        private static bool IsFiniteValue(double value)
+        private static bool IsFiniteStructuralInput(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
         }
 
-        private static bool IsFinitePositiveValue(double value)
+        private static bool IsFinitePositiveStructuralInput(double value)
         {
-            return IsFiniteValue(value) && value > 0;
+            return IsFiniteStructuralInput(value) && value > 0;
         }
 
-        private static bool IsFiniteNonNegativeValue(double value)
+        private static bool IsFiniteNonNegativeStructuralInput(double value)
         {
-            return IsFiniteValue(value) && value >= 0;
+            return IsFiniteStructuralInput(value) && value >= 0;
         }
     }
 }
