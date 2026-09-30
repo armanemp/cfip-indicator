@@ -66,6 +66,8 @@ namespace cAlgo
                 "_" +
                 timeframe +
                 "_" +
+                MemoryAccountScopeToken() +
+                "_" +
                 MemoryConfigurationFingerprint();
 
             return
