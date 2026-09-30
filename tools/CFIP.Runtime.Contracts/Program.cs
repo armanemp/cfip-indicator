@@ -5558,9 +5558,9 @@ namespace cAlgo
                 "critical popup overflow evicts lower-priority work first");
 
             Assert(
-                queue.Enqueue("ignored", false, now) ||
-                !queue.Enqueue("", false, now),
-                "popup queue rejects empty messages without unbounded growth");
+                !queue.Enqueue("", false, now) &&
+                queue.Count == 3,
+                "popup queue rejects empty messages without changing bounded state");
         }
 
         private static void Assert(bool condition, string name)
