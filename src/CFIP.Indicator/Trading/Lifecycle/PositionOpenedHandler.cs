@@ -17,6 +17,8 @@ namespace cAlgo
         private void OnPositionOpened(
                                     PositionOpenedEventArgs args)
                                 {
+            MarkBrokerStateDirty();
+
                                     if (args == null ||
                                         args.Position == null ||
                                         !IsManagedPosition(args.Position))
