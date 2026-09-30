@@ -4,6 +4,7 @@ namespace cAlgo
 {
     internal sealed partial class WaveTrendMovingAverageCalculator
     {
+
         private double CalculateWaveTrendTriangular(
             double[] source,
             int index,
@@ -471,42 +472,5 @@ namespace cAlgo
             return result;
         }
 
-        private void EnsureWaveTrendAverageCapacity(
-            int count)
-        {
-            if (_capacity >= count)
-                return;
-
-            int target =
-                Math.Max(
-                    count,
-                    _capacity == 0
-                        ? 128
-                        : _capacity * 2);
-
-            Array.Resize(
-                ref _output,
-                target);
-            Array.Resize(
-                ref _aux1,
-                target);
-            Array.Resize(
-                ref _aux2,
-                target);
-            Array.Resize(
-                ref _aux3,
-                target);
-
-            _capacity = target;
-        }
-
-        private bool IsFiniteWaveTrendAverage(
-            double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value);
-        }
-    }
     }
 }
