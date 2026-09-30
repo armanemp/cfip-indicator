@@ -137,7 +137,8 @@ namespace cAlgo
                         _dailyLossLimitAlerted = true;
 
                         PersistDailyLossState(
-                            reference);
+                            reference,
+                            true);
 
                         SendUnifiedAlert(
                             "DAILYLOSS|" +
@@ -268,7 +269,8 @@ namespace cAlgo
                 DateTime.MinValue;
 
             PersistDailyLossState(
-                referenceUtc);
+                referenceUtc,
+                false);
         }
     }
 }
