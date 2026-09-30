@@ -251,6 +251,7 @@ namespace cAlgo
                 Positions.Opened += OnPositionOpened;
                 Positions.Closed += OnPositionClosed;
                 Positions.Modified += OnPositionModified;
+                Account.Switched += OnAccountSwitched;
                 PendingOrders.Created += OnPendingOrderCreated;
                 PendingOrders.Modified += OnPendingOrderModified;
                 PendingOrders.Filled += OnPendingOrderFilled;
@@ -514,6 +515,7 @@ namespace cAlgo
                                         Positions.Opened -= OnPositionOpened;
                                         Positions.Closed -= OnPositionClosed;
                                         Positions.Modified -= OnPositionModified;
+                                        Account.Switched -= OnAccountSwitched;
                                         PendingOrders.Created -= OnPendingOrderCreated;
                                         PendingOrders.Modified -= OnPendingOrderModified;
                                         PendingOrders.Filled -= OnPendingOrderFilled;
