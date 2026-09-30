@@ -16,6 +16,18 @@ from pathlib import Path
 from typing import Any
 
 
+TRACE_SCHEMAS = {
+    "CFIP-SIGNAL-TRACE,1",
+    "CFIP-SIGNAL-TRACE,2",
+    "CFIP-SIGNAL-TRACE,3",
+}
+
+OUTCOME_SCHEMAS = {
+    "CFIP-OUTCOME-ARCHIVE,1",
+    "CFIP-OUTCOME-ARCHIVE,2",
+}
+
+
 def decode(value: str) -> str:
     if not value:
         return ""
@@ -124,7 +136,7 @@ def load_rows(history_dir: Path) -> list[dict[str, str]]:
         try:
             with path.open("r", encoding="utf-8-sig", newline="") as handle:
                 first = handle.readline().strip()
-                if first != "CFIP-SIGNAL-TRACE,1":
+                if first not in TRACE_SCHEMAS:
                     continue
                 reader = csv.DictReader(handle)
                 for row in reader:
@@ -138,6 +150,12 @@ def load_rows(history_dir: Path) -> list[dict[str, str]]:
                     row["_decision_reason"] = decode(
                         row.get("DecisionReason", "")
                     )
+                    row["_signal_trace_id"] = decode(
+                        row.get("SignalTraceId", "")
+                    )
+                    row["_geometry_source"] = decode(
+                        row.get("GeometrySource", "")
+                    )
                     rows.append(row)
         except (OSError, csv.Error):
             continue
@@ -146,10 +164,115 @@ def load_rows(history_dir: Path) -> list[dict[str, str]]:
     return rows
 
 
+
+def load_outcomes(history_dir: Path) -> list[dict[str, str]]:
+    outcomes: list[dict[str, str]] = []
+
+    for path in sorted(history_dir.glob("CFIP_History_*.csv")):
+        try:
+            with path.open("r", encoding="utf-8-sig", newline="") as handle:
+                first = handle.readline().strip()
+                if first not in OUTCOME_SCHEMAS:
+                    continue
+
+                for line in handle:
+                    line = line.strip()
+                    if not line:
+                        continue
+
+                    parts = line.split(",")
+                    if len(parts) < 18:
+                        continue
+
+                    outcomes.append(
+                        {
+                            "_file": str(path),
+                            "PositionId": parts[0],
+                            "Direction": parts[1],
+                            "Lane": parts[2],
+                            "EntryMode": parts[3],
+                            "Confidence": parts[5],
+                            "RealizedR": parts[12],
+                            "Profitable": parts[13],
+                            "ObservedUtcTicks": parts[17],
+                            "SignalTraceId": (
+                                decode(parts[18])
+                                if len(parts) >= 19
+                                else ""
+                            ),
+                        }
+                    )
+        except (OSError, csv.Error):
+            continue
+
+    return outcomes
+
+
+def outcome_linkage(
+    rows: list[dict[str, str]],
+    outcomes: list[dict[str, str]],
+) -> dict[str, Any]:
+    by_trace: defaultdict[str, list[dict[str, str]]] = defaultdict(list)
+
+    for outcome in outcomes:
+        trace_id = outcome["SignalTraceId"]
+        if trace_id:
+            by_trace[trace_id].append(outcome)
+
+    linked_trace_rows = 0
+    unlinked_trace_rows = 0
+    duplicate_outcome_links = 0
+    linked_outcomes: list[dict[str, str]] = []
+
+    for row in rows:
+        trace_id = row["_signal_trace_id"]
+        linked = by_trace.get(trace_id, [])
+
+        if trace_id and linked:
+            linked_trace_rows += 1
+            if len(linked) > 1:
+                duplicate_outcome_links += len(linked) - 1
+            linked_outcomes.extend(linked)
+        else:
+            unlinked_trace_rows += 1
+
+    realized_r: list[float] = []
+    profitable = 0
+
+    for outcome in linked_outcomes:
+        try:
+            value = float(outcome["RealizedR"])
+        except (TypeError, ValueError):
+            continue
+
+        realized_r.append(value)
+        if outcome["Profitable"] == "1":
+            profitable += 1
+
+    return {
+        "outcome_rows": len(outcomes),
+        "outcome_rows_with_trace_id": sum(
+            1 for outcome in outcomes if outcome["SignalTraceId"]
+        ),
+        "linked_trace_rows": linked_trace_rows,
+        "unlinked_trace_rows": unlinked_trace_rows,
+        "duplicate_outcome_links": duplicate_outcome_links,
+        "linked_outcome_rows": len(linked_outcomes),
+        "linked_realized_r_mean": (
+            sum(realized_r) / len(realized_r)
+            if realized_r
+            else 0.0
+        ),
+        "linked_profitable_rows": profitable,
+        "join_is_research_only": True,
+    }
+
+
 def analyze(
     rows: list[dict[str, str]],
     forward_bars: int,
     min_mfe_r: float,
+    outcomes: list[dict[str, str]] | None = None,
 ) -> dict[str, Any]:
     gates = Counter()
     actionability_reasons = Counter()
@@ -157,6 +280,7 @@ def analyze(
     candidate_counts = Counter()
     lane_counts = Counter()
     confluence = Counter()
+    geometry_lineage = Counter()
 
     missed: list[dict[str, Any]] = []
     actionable_metrics: list[float] = []
@@ -164,6 +288,26 @@ def analyze(
 
     for i, row in enumerate(rows):
         direction = direction_value(row)
+
+        geometry_source = row.get("_geometry_source", "")
+        geometry_ticks = as_int(
+            row,
+            "GeometryBarOpenTimeUtcTicks",
+        )
+        bar_ticks = as_int(
+            row,
+            "BarOpenTimeUtcTicks",
+        )
+
+        if geometry_source in {"PLAN", "PREVIEW"}:
+            geometry_lineage[
+                "matched"
+                if geometry_ticks == bar_ticks
+                else "mismatch"
+            ] += 1
+        else:
+            geometry_lineage["none"] += 1
+
         if direction == 0:
             gates[row["_trace_gate"] or "CONSENSUS"] += 1
             continue
@@ -244,6 +388,7 @@ def analyze(
         "candidate_counts": dict(candidate_counts),
         "lane_counts": dict(lane_counts),
         "ob_fvg_confluence": dict(confluence),
+        "geometry_lineage": dict(geometry_lineage),
         "potential_missed_count": len(missed),
         "potential_missed_by_reason": dict(
             Counter(item["reason"] or "UNKNOWN" for item in missed)
@@ -263,6 +408,10 @@ def analyze(
             sum(blocked_metrics) / len(blocked_metrics)
             if blocked_metrics
             else 0.0
+        ),
+        "outcome_linkage": outcome_linkage(
+            rows,
+            outcomes or [],
         ),
     }
 
@@ -303,10 +452,12 @@ def main() -> int:
         parser.error("--min-mfe-r must be positive")
 
     rows = load_rows(args.history_dir)
+    outcomes = load_outcomes(args.history_dir)
     result = analyze(
         rows,
         args.forward_bars,
         args.min_mfe_r,
+        outcomes,
     )
 
     if args.output is not None:
