@@ -34,6 +34,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs" Link="Core/Math/ActionableSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs" Link="Core/Math/RangeSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs" Link="Core/Math/IndicatorEvidenceFusionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/FrameRegimeResolutionRule.cs" Link="Core/Math/FrameRegimeResolutionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LocationEvidenceRule.cs" Link="Core/Math/LocationEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionPlanGeometryRule.cs" Link="Core/Math/ExecutionPlanGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveExitGeometryRule.cs" Link="Core/Math/LiveExitGeometryRule.cs" />
