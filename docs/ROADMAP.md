@@ -4255,3 +4255,12 @@ Status: ROADMAP READY FOR IMPLEMENTATION.
 The master and detailed separation roadmap now agree on CBOT-Preflight, CBOT-0 dependency-closure and parameter ownership, Indicator/cBot authority boundaries, one-executor-at-a-time migration, final zero-broker-mutation/fallback gates, and target-terminal runtime/replay requirements.
 
 No production C# behavior changed.
+
+
+---
+
+## Track 12A Final Phase Ordering — 2026-09-30
+
+The authoritative order is now: `CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7`. CBOT-0 is repository/source inventory; CBOT-Preflight is the no-trade target-terminal capability gate; CBOT-1 and later may not bypass either gate.
+
+No production C# behavior changed.
