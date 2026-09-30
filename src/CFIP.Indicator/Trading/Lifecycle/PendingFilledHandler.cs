@@ -11,6 +11,8 @@ namespace cAlgo
         private void OnPendingOrderFilled(
             PendingOrderFilledEventArgs args)
         {
+            MarkBrokerStateDirty();
+
             if (args == null ||
                 args.Position == null ||
                 !IsManagedPosition(args.Position))
