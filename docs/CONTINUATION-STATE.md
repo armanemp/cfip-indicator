@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.4 — Skender/OSS numerical stability and incremental caching (D4).**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.5 — Per-timeframe regime semantics (D5).**
 
 CR4.1 and CR4.2 are complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
@@ -236,3 +236,7 @@ Boundary:
 - no public parameters or default trading thresholds were changed.
 
 Next phase: **CR4.4 / D4 — Skender/OSS numerical stability and incremental caching.**
+
+## Current active phase
+
+CR4.5 / D5 — Per-timeframe regime semantics.
