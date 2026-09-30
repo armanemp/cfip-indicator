@@ -93,6 +93,105 @@ namespace cAlgo
             return result;
         }
 
+        private void ProcessWaitingForDataStages(
+            int index,
+            int closedM5)
+        {
+            // There is no decision/alert to consume while readiness is waiting.
+            // Reconcile broker truth once, then keep lifecycle/protection alive.
+            RunPreDecisionBrokerReconciliation(
+                index);
+
+            // Keep lifecycle/protection alive, but do not run
+            // decision, signal, plan-creation or execution stages while data
+            // readiness is incomplete.
+            RunCalculationStage(
+                () =>
+                {
+                    RecoverManagedLivePlan(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "BROKER LIFECYCLE RECOVERY");
+
+            RunCalculationStage(
+                () =>
+                {
+                    SynchronizeLiveBrokerState();
+                    return true;
+                },
+                index,
+                "BROKER RECONCILIATION • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    ApplyEconomicNewsRiskProtection(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "NEWS RISK PROTECTION • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    EvaluateActivePlan(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "ACTIVE PLAN MANAGEMENT • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    ProtectBrokerPositions(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "BROKER PROTECTION • WAITING");
+
+            MarkRuntimeManagementReadyForRecovery();
+
+            RunCalculationStage(
+                () =>
+                {
+                    MonitorOutcome(
+                        closedM5);
+
+                    CheckEndOfDayAlert(
+                        TimeInUtc);
+
+                    return true;
+                },
+                index,
+                "OUTCOME/EOD SUPERVISION • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    CheckReversalProtection();
+                    return true;
+                },
+                index,
+                "REVERSAL MANAGEMENT • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    SynchronizeLiveBrokerState();
+                    return true;
+                },
+                index,
+                "BROKER STATE FINALIZATION • WAITING");
+
+            RenderCalculationReadinessIfNeeded(
+                TimeInUtc);
+        }
+
         private void ProcessLiveCalculationStages(
             int index,
             int closedM5)
@@ -387,7 +486,9 @@ namespace cAlgo
 
                 return
                     stageName ==
-                    "CLOSED-BAR ANALYSIS"
+                    "CLOSED-BAR ANALYSIS" ||
+                    stageName ==
+                    "BROKER RECONCILIATION • PRE-DECISION"
                         ? false
                         : true;
             }

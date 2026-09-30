@@ -19,6 +19,8 @@ namespace cAlgo
 
                 BeginRuntimeFaultCycle();
 
+                _brokerStateReconciledThisCycle = false;
+
                 int closedM5;
                 bool newClosedBar;
                 DateTime reference;
@@ -34,18 +36,13 @@ namespace cAlgo
 
                 if (!prepared)
                 {
-                    if (!_runtimeFaultStateMachine.CycleFaulted)
-                        return;
-
-                    // A preparation fault must not starve management. Reuse the
-                    // last known closed context while the fault state keeps
-                    // automatic entry blocked.
+                    // New decision analysis is intentionally suspended while
+                    // history/MTF readiness is incomplete or its probe is throttled.
+                    // Broker reconciliation, recovery and protection must continue.
                     closedM5 =
-                        Math.Max(
-                            1,
-                            _lastEvaluatedM5);
+                        GetManagementClosedM5Fallback();
 
-                    ProcessLiveCalculationStages(
+                    ProcessWaitingForDataStages(
                         index,
                         closedM5);
 
@@ -55,6 +52,11 @@ namespace cAlgo
 
                 if (newClosedBar)
                 {
+                    // Reconcile broker truth immediately before a new decision
+                    // is consumed. Non-new-bar ticks do not repeat this boundary.
+                    RunPreDecisionBrokerReconciliation(
+                        index);
+
                     // Closed-bar analysis may fail, or be in retry backoff. In
                     // either case management/protection must still run on the
                     // already-known broker state.

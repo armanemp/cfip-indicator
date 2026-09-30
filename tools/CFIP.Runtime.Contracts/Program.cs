@@ -18,6 +18,7 @@ namespace cAlgo
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
             VerifySessionWindowSemantics();
+            VerifyCalculationReadinessSemantics();
             VerifyDailyLossSemantics();
             VerifyDailyLossBaselineSemantics();
             VerifyEconomicNewsFeedStateSemantics();
@@ -404,6 +405,107 @@ namespace cAlgo
                     out startEquity,
                     out baselineFloating),
                 "invalid equity cannot produce a synthetic baseline");
+        }
+
+        private static void VerifyCalculationReadinessSemantics()
+        {
+            DateTime now =
+                new DateTime(
+                    2026,
+                    9,
+                    30,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            Assert(
+                CalculationReadinessRule.ResolveState(
+                    false,
+                    false,
+                    false,
+                    -1) ==
+                CalculationReadinessState.BuildingHistory,
+                "missing bars remain in BUILDING_HISTORY");
+
+            Assert(
+                CalculationReadinessRule.ResolveState(
+                    true,
+                    false,
+                    false,
+                    -1) ==
+                CalculationReadinessState.BuildingHistory,
+                "insufficient history remains in BUILDING_HISTORY");
+
+            Assert(
+                CalculationReadinessRule.ResolveState(
+                    true,
+                    true,
+                    true,
+                    -1) ==
+                CalculationReadinessState.WaitingForClosedM5,
+                "no stable closed M5 is explicit WAITING_FOR_CLOSED_M5");
+
+            Assert(
+                CalculationReadinessRule.ResolveState(
+                    true,
+                    true,
+                    false,
+                    30) ==
+                CalculationReadinessState.WaitingForMtfData,
+                "primary MTF data gap is explicit WAITING_FOR_MTF_DATA");
+
+            Assert(
+                CalculationReadinessRule.ResolveState(
+                    true,
+                    true,
+                    true,
+                    30) ==
+                CalculationReadinessState.Ready,
+                "complete closed MTF context becomes READY");
+
+            Assert(
+                CalculationReadinessRule.IsProbeDue(
+                    DateTime.MinValue,
+                    now,
+                    500),
+                "first readiness probe is due immediately");
+
+            Assert(
+                !CalculationReadinessRule.IsProbeDue(
+                    now,
+                    now.AddMilliseconds(499),
+                    500) &&
+                CalculationReadinessRule.IsProbeDue(
+                    now,
+                    now.AddMilliseconds(500),
+                    500),
+                "waiting readiness probe is bounded by an explicit interval");
+
+            Assert(
+                CalculationReadinessRule.IsProbeDue(
+                    now,
+                    now.AddMilliseconds(-1),
+                    500),
+                "clock rollback reopens readiness probing");
+
+            Assert(
+                CalculationReadinessRule.ProbeIntervalMilliseconds(
+                    CalculationReadinessState.WaitingForMtfData) == 500 &&
+                CalculationReadinessRule.ProbeIntervalMilliseconds(
+                    CalculationReadinessState.BuildingHistory) == 250 &&
+                CalculationReadinessRule.ProbeIntervalMilliseconds(
+                    CalculationReadinessState.Ready) == 0,
+                "readiness backoff intervals are deterministic");
+
+            Assert(
+                CalculationReadinessRule.StatusText(
+                    CalculationReadinessState.WaitingForMtfData) ==
+                    "WAITING FOR MTF DATA" &&
+                CalculationReadinessRule.StatusText(
+                    CalculationReadinessState.Ready) ==
+                    "READY",
+                "readiness status text is deterministic");
         }
 
         private static void VerifyDailyLossSemantics()

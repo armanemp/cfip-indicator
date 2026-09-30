@@ -2139,3 +2139,30 @@ Whole-chain routine audit:
 Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No trading threshold, RR floor, position capacity or execution authority was changed.
 
 Next phase: **CR1.4 — Closed-bar cycle ordering and waiting-for-data state**.
+
+
+## CR1.4 — Closed-bar cycle ordering and waiting-for-data state — 2026-09-30
+
+Status: **IMPLEMENTATION COMPLETE; target-terminal verification remains required.**
+
+Implemented:
+- pre-decision broker reconciliation before each newly closed M5 decision cycle;
+- same-cycle broker reconciliation gate for decision/restriction/actionable alerts;
+- startup seed alignment with the same broker boundary;
+- deterministic BUILDING DATA / WAITING FOR CLOSED M5 / WAITING FOR MTF DATA / READY states;
+- bounded readiness probe cadence and throttled waiting-state panel refresh;
+- lifecycle/recovery/news/protection/outcome supervision kept alive while analysis waits;
+- waiting-state path explicitly excludes plan creation and every execution submission path;
+- runtime acceptance contracts and a dedicated cycle source audit added.
+
+Verification:
+- Runtime acceptance: PASS;
+- cTrader compile: PASS;
+- Source/architecture checks: final head verification required before merge;
+- official cTrader documentation rechecked for indicator Calculate/IsLastBar and closed-bar semantics;
+- target-terminal verification remains mandatory for broker event timing and data-readiness behavior.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No threshold, RR floor, position-capacity or execution-authority change was introduced.
+
+Next phase: **CR1.5 — repeated work / synchronous persistence**.
