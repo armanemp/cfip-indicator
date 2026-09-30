@@ -16,17 +16,8 @@ namespace cAlgo
 private bool IsHtfTimeframe(
                                     string timeframe)
                                 {
-                                    if (string.IsNullOrWhiteSpace(
-                                            timeframe))
-                                        return false;
-                        
-                                    return
-                                        timeframe == "M15" ||
-                                        timeframe == "M30" ||
-                                        timeframe == "H1" ||
-                                        timeframe == "H4" ||
-                                        timeframe == "D1" ||
-                                        timeframe == "W1";
+                                    return StructuralTimeframeRule.IsSupported(
+                                        timeframe);
                                 }
     }
 }
