@@ -498,6 +498,7 @@ namespace cAlgo
         protected override void OnDestroy()
                                 {
                                     DisposeEconomicNewsClient();
+                                    FlushBufferedPersistenceOnShutdown();
 
                                     try
                                     {
