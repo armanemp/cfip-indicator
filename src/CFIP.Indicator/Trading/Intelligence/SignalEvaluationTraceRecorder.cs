@@ -268,11 +268,15 @@ namespace cAlgo
                 return;
 
             if (_plan != null &&
-                SignalTraceLineageRule.Matches(
+                _plan.Direction == decision.Direction &&
+                SignalTraceLineageRule.MatchesClosedBar(
                     closedM5,
                     barOpenTimeUtcTicks,
                     _plan.CreatedM5,
-                    _plan.SignalBarOpenTimeUtcTicks))
+                    _plan.SignalBarOpenTimeUtcTicks) &&
+                SignalTraceLineageRule.CanJoinOutcome(
+                    traceId,
+                    _plan.SignalTraceId))
             {
                 entryMode = _plan.EntryMode;
                 entry = _plan.Entry;
@@ -299,6 +303,7 @@ namespace cAlgo
             }
 
             if (_setupPreview != null &&
+                _setupPreview.Direction == decision.Direction &&
                 SignalTraceLineageRule.MatchesClosedBar(
                     closedM5,
                     barOpenTimeUtcTicks,
