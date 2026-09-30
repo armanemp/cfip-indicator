@@ -48,7 +48,7 @@ parameter_source = "\n".join(
     for p in sorted((ROOT / "Indicator" / "Parameters").glob("*.cs"))
 )
 parameter_count = len(re.findall(r"\[Parameter\s*\(", parameter_source))
-if parameter_count != 566:
+if parameter_count != 567:
     raise SystemExit(f"Public parameter count changed: {parameter_count}")
 
 if "AccessRights.FullAccess" in read("Indicator/CFIPIndicator.cs"):
