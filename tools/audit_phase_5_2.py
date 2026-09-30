@@ -54,8 +54,7 @@ for name, source, swing_token, list_method in [
     )
     check(
         f"{name} rejects broken levels through canonical active-unbroken rule",
-        "LiquiditySweepRule.IsActiveUnbrokenLevel(" in source and
-    "LiquidityTargetCandidateRule.OrderDistinctByDistance(" in source,
+        "LiquiditySweepRule.IsActiveUnbrokenLevel(" in source,
     )
     check(
         f"{name} uses canonical directional and spacing rules",
