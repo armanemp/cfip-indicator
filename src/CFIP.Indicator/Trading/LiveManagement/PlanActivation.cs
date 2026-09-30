@@ -60,6 +60,7 @@ namespace cAlgo
                                     _lastServerTpLadderMutationKind = "";
                                     _serverSideTakeProfitLadderActive = false;
                                     _serverSideBreakEvenActive = false;
+                                    _pendingProtectedStopCandidate = 0;
                                     _slHit = false;
                                     _outcomeRegistered = false;
                                     _outcomeTelemetryTimedOut = false;
