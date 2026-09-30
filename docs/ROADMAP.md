@@ -4379,25 +4379,33 @@ Next phase: **CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Rejection semantics
 
 Track 12A remains blocked until CR-FINAL passes.
 
-## Claude Review Remediation — CR2.8 Planned — 2026-09-30
+## Claude Review Remediation — CR2.8 Closeout — 2026-09-30
 
-Status: PLANNED — not started.
+Status: **VERIFIED COMPLETE — PR #93 merged to main as cab5a5e2e9a4fbccaf3ffe10d114c4ff54e6a243.**
 
 Covers: B9.
 
-Work:
-- bound the number of historical bars scanned;
-- cache per closed-bar historical result;
-- use timestamp-based chart-object identity;
-- label historical arrows as presentation-only rather than independently verified live signals;
-- avoid rerunning full analysis when the same host-bar state is unchanged.
+Completed:
+- fixed historical scan budget at 500 closed bars;
+- cached per closed-bar presentation results by timestamp;
+- changed chart object identity to timestamp-based presentation identity;
+- invalidated historical rendering state on Bars HistoryLoaded/Reloaded and detected history-shape changes;
+- avoided full historical object deletion/recreation on ordinary refreshes;
+- kept historical arrows strictly presentation-only;
+- preserved the existing same-host-bar rebuild guard;
+- added deterministic runtime contracts and the CR2.8 static audit;
+- preserved public parameters and all analysis/decision/execution authority.
 
-Acceptance:
-- fixed maximum historical work;
-- stable drawings under history changes;
-- no implication that a historical arrow is an independently verified live signal.
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS, run 1585;
+- cTrader Compile: PASS, run 1769;
+- CR2.8 static audit: PASS;
+- accumulated CR2.1–CR2.7 audits: PASS.
 
-This phase is the next implementation unit after CR2.7 and must be completed independently before CR2.9.
+Manual target-terminal verification remains required for history prepend/load-more/reload, visual stability/responsiveness, and presentation-only behavior.
+
+Next phase: **CR2.9 — Structural stop, divergence and rejection guardrail refinement (B10/B11/B12).**
 
 
 ## Claude Review Remediation — CR2.1 Closeout — 2026-09-30
