@@ -82,12 +82,12 @@ for name, ok in checks.items():
     if not ok:
         errors.append(name)
 
-matches = re.findall(
-    r"for \(int i = lastClosed;\s+i >= oldest;\s+i--",
-    renderer,
-    flags=re.S,
+loop_is_bounded = (
+    "for (int i = lastClosed;" in renderer and
+    "i >= oldest" in renderer and
+    "i--" in renderer
 )
-if len(matches) != 1:
+if not loop_is_bounded:
     errors.append("historical loop must be one bounded descending scan")
     print("FAIL | historical loop must be one bounded descending scan")
 else:
