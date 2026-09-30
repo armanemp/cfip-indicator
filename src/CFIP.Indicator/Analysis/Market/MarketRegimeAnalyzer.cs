@@ -145,8 +145,8 @@ namespace cAlgo
                         index - 1),
                     20);
 
-            if (atr <= 0 ||
-                baselineAtr <= 0)
+            if (!NativeIndicatorReadinessRule.IsFinitePositive(atr) ||
+                !NativeIndicatorReadinessRule.IsFinitePositive(baselineAtr))
                 return snapshot;
 
             double fast =
@@ -168,6 +168,11 @@ namespace cAlgo
                         1,
                         index - 3),
                     true);
+
+            if (!NativeIndicatorReadinessRule.IsFinitePositive(fast) ||
+                !NativeIndicatorReadinessRule.IsFinitePositive(slow) ||
+                !NativeIndicatorReadinessRule.IsFinitePositive(previousFast))
+                return snapshot;
 
             double atrRatio =
                 atr /
