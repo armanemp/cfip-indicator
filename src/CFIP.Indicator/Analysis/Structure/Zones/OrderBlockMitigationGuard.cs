@@ -16,12 +16,15 @@ namespace cAlgo
             out double managedLow,
             out double managedHigh,
             out bool partiallyMitigated,
-            out double remainingRatio)
+            out double remainingRatio,
+            out OrderBlockLifecycleState lifecycleState)
         {
             managedLow = zoneLow;
             managedHigh = zoneHigh;
             partiallyMitigated = false;
             remainingRatio = 0;
+            lifecycleState =
+                OrderBlockLifecycleState.Broken;
             double originalWidth =
                 Math.Max(
                     Symbol.TickSize,
@@ -66,7 +69,8 @@ namespace cAlgo
                             out nextLow,
                             out nextHigh,
                             out changed,
-                            out nextRatio))
+                            out nextRatio,
+                            out lifecycleState))
                         return false;
 
                     managedLow = nextLow;
@@ -75,8 +79,13 @@ namespace cAlgo
                         partiallyMitigated ||
                         changed;
 
-                    if (nextRatio <= 0.05)
+                    if (nextRatio <=
+                        OrderBlockRule.MinimumRetainedRatio)
+                    {
+                        lifecycleState =
+                            OrderBlockLifecycleState.Broken;
                         return false;
+                    }
                 }
             }
 
@@ -85,9 +94,17 @@ namespace cAlgo
                  managedLow) /
                 originalWidth;
 
+            lifecycleState =
+                OrderBlockRule.ClassifyLifecycle(
+                    partiallyMitigated,
+                    remainingRatio);
+
             return
+                lifecycleState !=
+                OrderBlockLifecycleState.Broken &&
                 managedHigh > managedLow &&
-                remainingRatio > 0.05;
+                remainingRatio >
+                OrderBlockRule.MinimumRetainedRatio;
         }
     }
 }

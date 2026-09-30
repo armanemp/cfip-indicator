@@ -31,67 +31,17 @@ namespace cAlgo
                     Symbol.PipSize,
                     atr);
 
-            int quality = 54;
-
-            if (displacement)
-                quality += 14;
-
-            if (structureBreak)
-                quality += 13;
-
-            if (liquiditySweep)
-                quality += 8;
-
-            if (fvgConfluence)
-                quality += 8;
-
-            quality +=
-                (int)Math.Round(
-                    8 *
-                    Math.Min(
-                        1.0,
-                        Math.Max(
-                            0,
-                            remainingRatio)));
-
-            if (bodyRatio <=
-                0.25)
-                quality -= 4;
-            else if (bodyRatio >=
-                     0.65)
-                quality += 3;
-
-            if (impulseRatio >=
-                1.50)
-                quality += 4;
-            else if (impulseRatio >=
-                     1.00)
-                quality += 2;
-
-            quality -=
-                Math.Min(
-                    10,
-                    (currentIndex -
-                     createdIndex) /
-                    6);
-
-            if (partiallyMitigated)
-            {
-                quality -=
-                    (int)Math.Round(
-                        10 *
-                        (1.0 -
-                         Math.Min(
-                             1.0,
-                             Math.Max(
-                                 0,
-                                 remainingRatio))));
-            }
-
-            return ClampInt(
-                quality,
-                0,
-                100);
+            return
+                OrderBlockQualityRule.Calculate(
+                    bodyRatio,
+                    impulseRatio,
+                    remainingRatio,
+                    currentIndex - createdIndex,
+                    displacement,
+                    structureBreak,
+                    liquiditySweep,
+                    fvgConfluence,
+                    partiallyMitigated);
         }
     }
 }

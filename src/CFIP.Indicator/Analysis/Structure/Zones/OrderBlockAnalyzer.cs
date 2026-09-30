@@ -127,6 +127,9 @@ namespace cAlgo
                     ? selectionPrice
                     : bars.ClosePrices[index];
 
+            if (!IsFinitePositive(market))
+                return null;
+
             Zone best = null;
             double bestScore =
                 double.MinValue;
@@ -138,7 +141,18 @@ namespace cAlgo
                 Zone candidate =
                     candidates[i];
 
-                if (candidate == null)
+                if (candidate == null ||
+                    candidate.OrderBlockLifecycle ==
+                    OrderBlockLifecycleState.Broken ||
+                    candidate.OrderBlockLifecycle == null)
+                    continue;
+
+                if (!OrderBlockRule.IsOnCorrectMarketSide(
+                        direction,
+                        market,
+                        candidate.Low,
+                        candidate.High,
+                        Symbol.TickSize))
                     continue;
 
                 if (candidate.Age >

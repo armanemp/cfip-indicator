@@ -4,7 +4,7 @@ Last updated: 2026-09-30
 
 ## Phase closeout
 
-CR2.5 is verified complete and merged to main. PR #90 merge commit: 45d6d21e050db2c519a57a0cdeccfff5d2d88fac. Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
+CR2.6 is verified complete and merged to main after Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
 
 ## Authoritative order
 
@@ -14,7 +14,7 @@ CR2.5 is verified complete and merged to main. PR #90 merge commit: 45d6d21e050d
 
 ## Active phase
 
-**CR2.6 — OrderBlock quality and cache discipline (Prompt 2 / B7).**
+**Next: CR2.7 — WaveTrend mathematical correctness (Prompt 2 / B8).**
 
 ## Completed before this checkpoint
 
@@ -33,6 +33,7 @@ CR2.5 is verified complete and merged to main. PR #90 merge commit: 45d6d21e050d
 - CR2.3 unified indicator-quality thresholds
 - CR2.4 pending-order decision arbiter
 - CR2.5 lifecycle ordering and outcome aggregation
+- CR2.6 OrderBlock quality and cache discipline
 
 ## Rules for every continuation
 
@@ -47,4 +48,4 @@ CR2.5 is verified complete and merged to main. PR #90 merge commit: 45d6d21e050d
 
 ## Next transition
 
-CR2.5 is verified and merged (PR #90, merge commit 45d6d21e050db2c519a57a0cdeccfff5d2d88fac). The next implementation response must execute **CR2.6** and only CR2.6. Track 12A remains blocked until CR-FINAL.
+CR2.6 is now verified and merged. The next implementation response must execute **CR2.7** and only CR2.7. Track 12A remains blocked until CR-FINAL.

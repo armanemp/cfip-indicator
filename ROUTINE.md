@@ -153,3 +153,13 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 3. Recovery، EOD، News، Reversal و protection باید فقط از همان managed identity استفاده کنند و cross-instance adoption نداشته باشند.
 4. Reversal Close باید حداقل سود را از یک rule/parameter واحد بگیرد؛ هیچ `NetProfit > 0` hard-code جدیدی مجاز نیست.
 5. هشدارهای safety که در scanهای پرتکرار اجرا می‌شوند باید bounded باشند و نباید log I/O تکراری وارد hot path کنند.
+
+
+## 16. روتین اختصاصی CR2.6 — Order Block Quality و Cache
+
+1. OB quality باید فقط از یک owner ریاضی محاسبه شود و base/clamp و تمام مؤلفه‌ها قابل ردیابی باشند.
+2. displacement، structure break، liquidity sweep، FVG و شواهد HTF نباید به‌صورت یک feature تکراری امتیازدهی شوند.
+3. bullish OB فقط در سمت حمایتی بازار و bearish OB فقط در سمت مقاومتی بازار انتخاب شود؛ این کنترل باید پس از cache و با quote فعلی انجام شود.
+4. lifecycle zone باید Fresh/Mitigated/Broken را از هم جدا کند؛ zone شکسته هرگز به execution/plan برنگردد.
+5. cache فقط برای context بسته و key deterministic مجاز است؛ quote/selection price نباید cache identity را تغییر دهد.
+6. بهینه‌سازی cache نباید mixed-bar یا stale-zone state ایجاد کند و empirical quality claim فقط با replay/outcome پذیرفته است.

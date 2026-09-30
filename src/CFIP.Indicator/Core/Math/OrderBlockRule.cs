@@ -2,12 +2,21 @@ using System;
 
 namespace cAlgo
 {
+    internal enum OrderBlockLifecycleState
+    {
+        Fresh,
+        Mitigated,
+        Broken
+    }
+
     /// <summary>
     /// Deterministic mathematical owner for Order Block source geometry,
     /// structural qualification and lifecycle boundaries.
     /// </summary>
     internal static class OrderBlockRule
     {
+        public const double MinimumRetainedRatio = 0.05;
+
         public static bool IsOppositeSourceCandle(
             int direction,
             double open,
@@ -73,6 +82,39 @@ namespace cAlgo
             return Finite(zoneLow) &&
                    Finite(zoneHigh) &&
                    zoneLow < zoneHigh;
+        }
+
+        public static bool IsOnCorrectMarketSide(
+            int direction,
+            double market,
+            double zoneLow,
+            double zoneHigh,
+            double tickSize)
+        {
+            if (!IsValidDirection(direction) ||
+                !Finite(market) ||
+                !IsValidOrderBlockGeometry(zoneLow, zoneHigh) ||
+                !FinitePositiveOrderBlockValue(tickSize))
+                return false;
+
+            double tolerance = tickSize;
+
+            return direction == 1
+                ? zoneHigh <= market + tolerance
+                : zoneLow >= market - tolerance;
+        }
+
+        public static OrderBlockLifecycleState ClassifyLifecycle(
+            bool partiallyMitigated,
+            double remainingRatio)
+        {
+            if (!Finite(remainingRatio) ||
+                remainingRatio <= MinimumRetainedRatio)
+                return OrderBlockLifecycleState.Broken;
+
+            return partiallyMitigated
+                ? OrderBlockLifecycleState.Mitigated
+                : OrderBlockLifecycleState.Fresh;
         }
 
         public static bool MeetsDisplacement(
@@ -184,12 +226,14 @@ namespace cAlgo
             out double managedLow,
             out double managedHigh,
             out bool partiallyMitigated,
-            out double remainingRatio)
+            out double remainingRatio,
+            out OrderBlockLifecycleState lifecycleState)
         {
             managedLow = zoneLow;
             managedHigh = zoneHigh;
             partiallyMitigated = false;
             remainingRatio = 0;
+            lifecycleState = OrderBlockLifecycleState.Broken;
 
             if (!IsValidDirection(direction) ||
                 !IsValidOrderBlockGeometry(
@@ -200,11 +244,15 @@ namespace cAlgo
                 return false;
 
             if (IsFullyMitigated(
-                    direction,
-                    zoneLow,
-                    zoneHigh,
-                    probe))
+                direction,
+                zoneLow,
+                zoneHigh,
+                probe))
+            {
+                lifecycleState =
+                    OrderBlockLifecycleState.Broken;
                 return false;
+            }
 
             if (direction == 1 &&
                 probe < managedHigh)
@@ -239,11 +287,18 @@ namespace cAlgo
                     tickSize,
                     originalWidth);
 
+            lifecycleState =
+                ClassifyLifecycle(
+                    partiallyMitigated,
+                    remainingRatio);
+
+            if (lifecycleState ==
+                OrderBlockLifecycleState.Broken)
+                return false;
+
             return managedLow < managedHigh &&
                    managedWidth >
-                   tickSize &&
-                   remainingRatio >
-                   0.05;
+                   tickSize;
         }
 
         public static string OrderBlockIdentity(

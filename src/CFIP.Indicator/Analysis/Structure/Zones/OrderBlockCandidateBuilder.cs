@@ -36,24 +36,14 @@ namespace cAlgo
                 bars.LowPrices[
                     createdIndex];
             if (!OrderBlockRule.TryGetZone(
-                    direction,
-                    ObUseBodyForZone,
-                    open,
-                    close,
-                    high,
-                    low,
-                    out double zoneLow,
-                    out double zoneHigh))
-                return null;
-            double range =
-                high -
-                low;
-            double body =
-                Math.Abs(
-                    close -
-                    open);
-            if (range <= 0 ||
-                body <= 0)
+                direction,
+                ObUseBodyForZone,
+                open,
+                close,
+                high,
+                low,
+                out double zoneLow,
+                out double zoneHigh))
                 return null;
             if (!TryBuildOrderBlockImpulseEvidence(
                     bars,
@@ -76,8 +66,10 @@ namespace cAlgo
                     out double managedLow,
                     out double managedHigh,
                     out bool partiallyMitigated,
-                    out double remainingRatio))
+                    out double remainingRatio,
+                    out OrderBlockLifecycleState lifecycleState))
                 return null;
+
             bool liquiditySweep =
                 HasOrderBlockLiquiditySweep(
                     bars,
@@ -95,8 +87,11 @@ namespace cAlgo
                     managedHigh);
             int quality =
                 CalculateOrderBlockQuality(
-                    range,
-                    body,
+                    high -
+                    low,
+                    Math.Abs(
+                        close -
+                        open),
                     strongestBody,
                     remainingRatio,
                     displacement,
@@ -122,7 +117,9 @@ namespace cAlgo
                     createdIndex,
                 Age = currentIndex -
                     createdIndex,
-                Quality = quality
+                Quality = quality,
+                OrderBlockLifecycle =
+                    lifecycleState
             };
         }
     }
