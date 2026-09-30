@@ -438,11 +438,71 @@ namespace cAlgo
                 sellAccepted == 4,
                 "D7 deterministic fixture matrix");
 
+            double[] riskAtrFixtures =
+            {
+                0.55,
+                0.75,
+                1.00,
+                1.80
+            };
+
+            int[] tp4Reachable =
+            {
+                1, 0, 0, 0
+            };
+
+            int observedTp4Reachable = 0;
+
+            for (int i = 0;
+                 i < riskAtrFixtures.Length;
+                 i++)
+            {
+                double risk =
+                    riskAtrFixtures[i];
+
+                double maximumReachableRR =
+                    TargetRewardEnvelopeRule.MaximumReachableRR(
+                        risk,
+                        1.0,
+                        4.0,
+                        12.0);
+
+                bool tp4 =
+                    TargetRewardEnvelopeRule.CanReachStage(
+                        6.50,
+                        risk,
+                        1.0,
+                        4.0,
+                        12.0);
+
+                if (tp4)
+                    observedTp4Reachable++;
+
+                Assert(
+                    tp4 ==
+                    tp4Reachable[i] == 1,
+                    "TP4 extension feasibility at risk ATR " +
+                    risk.ToString("F2"));
+
+                Console.WriteLine(
+                    "D7 envelope riskATR=" +
+                    risk.ToString("F2") +
+                    " maxReachableRR=" +
+                    maximumReachableRR.ToString("F2") +
+                    " TP4=" +
+                    (tp4 ? "YES" : "NO"));
+            }
+
+            Assert(
+                observedTp4Reachable == 1,
+                "D7 TP4 feasibility matrix");
+
             Console.WriteLine(
                 "D7 fixture matrix: " +
-                "TP1=" + accepted.ToString() + "/4 primary stages, " +
-                "TP2=" + belowRejected.ToString() + "/4 below-min rejects, " +
-                "TP3=" + sellAccepted.ToString() + "/4 SELL mirrors");
+                "primary=" + accepted.ToString() + "/4, " +
+                "belowMin=" + belowRejected.ToString() + "/4, " +
+                "sellMirror=" + sellAccepted.ToString() + "/4, " +
+                "tp4Reachable=" + observedTp4Reachable.ToString() + "/4");
         }
 
 
