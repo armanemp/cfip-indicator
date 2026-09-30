@@ -174,3 +174,15 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 5. HistoryLoaded/Reloaded و تغییر prefix/count تاریخچه باید state/cache مشتق WaveTrend را invalidate کنند؛ history extension نباید مقدار stale برگرداند.
 6. MFI این موتور با TickVolume محاسبه می‌شود و نباید به‌عنوان real exchange volume گزارش یا تفسیر شود.
 7. تغییرات WaveTrend نباید authority تصمیم، execution، broker mutation یا ظرفیت معامله را ایجاد یا تغییر دهد؛ claims مربوط به accuracy/parity/profit فقط با replay و target-terminal evidence مجازند.
+
+
+## 18. روتین اختصاصی CR2.8 — Historical Rendering Semantics and Cost
+
+1. اسکن historical فقط روی کندل‌های بسته و با سقف ثابت انجام شود؛ `MaximumScanBars` باید owner مشخص داشته باشد و با HistoricalSignalLimit اشتباه نشود.
+2. نتیجه‌ی historical presentation هر closed-bar باید با کلید timestamp/identity پایدار cache شود؛ cache نباید mixed-bar یا quote-sensitive business state را نگه دارد.
+3. chart object identity برای historical rendering باید timestamp-based باشد تا prepend/load-more باعث collision یا جابه‌جایی مالکیت نشود.
+4. Bars.HistoryLoaded/Reloaded و تغییر first-open-time یا کاهش count باید cache و object state را invalidate کنند.
+5. renderer فقط presentation authority است؛ historical arrow هرگز نباید alert، Decision/Plan، broker mutation، lifecycle یا outcome ایجاد کند.
+6. روی هر historical refresh فقط objectهای جدید/تغییرکرده ساخته شوند و stale objectهای خارج از ownership حذف شوند؛ حذف و بازسازی کامل مجموعه در هر render ممنوع است مگر history invalidation.
+7. هیچ accuracy، win-rate، RR improvement یا profitability claim از historical arrows بدون replay/outcome واقعی پذیرفته نیست.
+8. هر تغییر بعدی به historical rendering باید اثر آن بر panel latency، Calculate hot path، object count، history prepend و cleanup بررسی شود.
