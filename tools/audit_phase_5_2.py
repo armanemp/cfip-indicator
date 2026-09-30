@@ -132,7 +132,7 @@ check(
 check(
     "phase documentation records the E2 safety boundary",
     "CR5.2" in phase_doc and
-    "MaximumTpSpacingAtr" in phase_doc and
+    "MinimumTpSpacingAtr" in phase_doc and
     "SessionWindowRule" in phase_doc and
     "no public" in phase_doc.lower(),
 )
