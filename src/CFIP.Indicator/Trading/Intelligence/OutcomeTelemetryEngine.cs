@@ -81,57 +81,90 @@
                                  position.Id <= 0 ||
                                  HasRecordedOutcome(position.Id))
                                  return;
- 
+
                              int direction =
                                  position.TradeType == TradeType.Buy
                                      ? 1
                                      : -1;
- 
+
+                             HistoricalOutcomeAggregate aggregate =
+                                 AggregateHistoricalOutcome(
+                                     position);
+
+                             double realizedNetProfit =
+                                 aggregate.Available
+                                     ? aggregate.NetProfit
+                                     : position.NetProfit;
+
+                             double realizedPips =
+                                 aggregate.Available
+                                     ? aggregate.Pips
+                                     : position.Pips;
+
                              bool profitable =
-                                 position.NetProfit > 0;
- 
+                                 realizedNetProfit > 0;
+
                              int createdM5 =
                                  plan == null
                                      ? -1
                                      : plan.CreatedM5;
- 
+
                              int lifecycleBars =
                                  createdM5 >= 0 &&
                                  closedM5 >= createdM5
                                      ? closedM5 - createdM5
                                      : 0;
- 
-                             double risk =
+
+                             double riskPips =
                                  plan != null &&
-                                 IsFinitePositive(plan.Risk)
-                                     ? plan.Risk
-                                     : plan == null
-                                         ? 0
-                                         : Math.Abs(
-                                             plan.Entry -
-                                             plan.Stop);
- 
-                             double realizedR =
-                                 IsFinitePositive(risk) &&
-                                 !double.IsNaN(position.Pips) &&
-                                 !double.IsInfinity(position.Pips)
-                                     ? (position.Pips * Symbol.PipSize) / risk
+                                 IsFinitePositive(plan.Risk) &&
+                                 Symbol.PipSize > 0
+                                     ? plan.Risk /
+                                       Symbol.PipSize
                                      : 0;
- 
+
+                             double riskVolume =
+                                 plan != null &&
+                                 IsFinitePositive(
+                                     plan.OriginalVolume)
+                                     ? plan.OriginalVolume
+                                     : 0;
+
+                             double riskAmount =
+                                 IsFinitePositive(
+                                     riskPips) &&
+                                 IsFinitePositive(
+                                     riskVolume)
+                                     ? Symbol.AmountRisked(
+                                         riskVolume,
+                                         riskPips)
+                                     : 0;
+
+                             double realizedR =
+                                 IsFinitePositive(
+                                     riskAmount) &&
+                                 !double.IsNaN(
+                                     realizedNetProfit) &&
+                                 !double.IsInfinity(
+                                     realizedNetProfit)
+                                     ? realizedNetProfit /
+                                       riskAmount
+                                     : 0;
+
                              OpportunityLane lane =
                                  plan == null
                                      ? OpportunityLane.Strategic
                                      : plan.CalibrationEligible
                                          ? plan.CalibrationLane
                                          : plan.Lane;
- 
+
                              string regime =
                                  plan != null &&
                                  !string.IsNullOrWhiteSpace(
                                      plan.CalibrationRegime)
                                      ? plan.CalibrationRegime
                                      : "UNKNOWN";
- 
+
                              int confidence =
                                  plan != null &&
                                  plan.CalibrationEligible
@@ -140,7 +173,7 @@
                                          0,
                                          100)
                                      : 0;
- 
+
                              OutcomeObservation observation =
                                  new OutcomeObservation
                                  {
@@ -158,8 +191,8 @@
                                      CreatedM5 = createdM5,
                                      ClosedM5 = closedM5,
                                      LifecycleBars = lifecycleBars,
-                                     Pips = position.Pips,
-                                     NetProfit = position.NetProfit,
+                                     Pips = realizedPips,
+                                     NetProfit = realizedNetProfit,
                                      RealizedR = realizedR,
                                      Profitable = profitable,
                                      CalibrationEligible =
@@ -172,22 +205,130 @@
                                      ObservedUtcTicks =
                                          Server.TimeInUtc.Ticks
                                  };
- 
+
                              _outcomeHistory.Add(observation);
                              TrimOutcomeHistory();
                              PersistOutcomeHistory();
                              ArchiveOutcomeObservation(observation);
                              RegisterArchiveLearningObservation(observation);
- 
+
                              RegisterOutcome(
                                  direction,
                                  profitable);
- 
+
                              RegisterCalibratedOutcome(
                                  plan,
                                  profitable);
+
+                             ArchiveRuntimeExecution(
+                                 "OUTCOME",
+                                 closedM5,
+                                 "FINALIZED",
+                                 "POSITION=" +
+                                 position.Id +
+                                 " • HISTORY=" +
+                                 (aggregate.Available
+                                     ? aggregate.TradeCount.ToString(
+                                         CultureInfo.InvariantCulture)
+                                     : "FALLBACK") +
+                                 " • NET=" +
+                                 realizedNetProfit.ToString(
+                                     "R",
+                                     CultureInfo.InvariantCulture) +
+                                 " • R=" +
+                                 realizedR.ToString(
+                                     "F4",
+                                     CultureInfo.InvariantCulture));
                          }
- 
+
+         private HistoricalOutcomeAggregate AggregateHistoricalOutcome(
+                             Position position)
+                         {
+                             if (position == null ||
+                                 position.Id <= 0 ||
+                                 position.Id > int.MaxValue)
+                                 return
+                                     HistoricalOutcomeAggregationRule
+                                         .FromPositionFallback(
+                                             position == null
+                                                 ? 0
+                                                 : position.NetProfit,
+                                             position == null
+                                                 ? 0
+                                                 : position.Pips);
+
+                             try
+                             {
+                                 HistoricalTrade[] historicalTrades =
+                                     History.FindByPositionId(
+                                         (int)position.Id);
+
+                                 if (historicalTrades == null ||
+                                     historicalTrades.Length == 0)
+                                     return
+                                         HistoricalOutcomeAggregationRule
+                                             .FromPositionFallback(
+                                                 position.NetProfit,
+                                                 position.Pips);
+
+                                 List<HistoricalOutcomeRecord> records =
+                                     new List<HistoricalOutcomeRecord>(
+                                         historicalTrades.Length);
+
+                                 for (int i = 0;
+                                      i < historicalTrades.Length;
+                                      i++)
+                                 {
+                                     HistoricalTrade trade =
+                                         historicalTrades[i];
+
+                                     if (trade == null)
+                                         continue;
+
+                                     records.Add(
+                                         new HistoricalOutcomeRecord
+                                         {
+                                             NetProfit =
+                                                 trade.NetProfit,
+                                             GrossProfit =
+                                                 trade.GrossProfit,
+                                             Swap =
+                                                 trade.Swap,
+                                             Commissions =
+                                                 trade.Commissions,
+                                             Pips =
+                                                 trade.Pips,
+                                             ClosingTime =
+                                                 trade.ClosingTime
+                                         });
+                                 }
+
+                                 HistoricalOutcomeAggregate aggregate =
+                                     HistoricalOutcomeAggregationRule.Aggregate(
+                                         records);
+
+                                 return aggregate.Available
+                                     ? aggregate
+                                     : HistoricalOutcomeAggregationRule
+                                         .FromPositionFallback(
+                                             position.NetProfit,
+                                             position.Pips);
+                             }
+                             catch (Exception ex)
+                             {
+                                 Print(
+                                     "CFIP historical outcome aggregation failed for #{0}: {1}",
+                                     position.Id,
+                                     ex.Message);
+
+                                 return
+                                     HistoricalOutcomeAggregationRule
+                                         .FromPositionFallback(
+                                             position.NetProfit,
+                                             position.Pips);
+                             }
+                         }
+
          private bool HasRecordedOutcome(
                              long positionId)
                          {
