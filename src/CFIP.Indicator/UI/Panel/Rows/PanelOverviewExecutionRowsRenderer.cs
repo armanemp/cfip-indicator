@@ -44,6 +44,25 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
+                "BREAK-EVEN  " +
+                CompactText(
+                    string.IsNullOrWhiteSpace(
+                        _lastBreakEvenDiagnostic)
+                        ? "NOT EVALUATED"
+                        : _lastBreakEvenDiagnostic,
+                    88),
+                string.IsNullOrWhiteSpace(
+                    _lastBreakEvenDiagnostic) ||
+                _lastBreakEvenDiagnostic.StartsWith(
+                    "APPLIED",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? PanelSecondaryTextColor
+                    : PanelWarningColor,
+                false,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
                 OutcomeHistoryPanelText(),
                 PanelSecondaryTextColor,
                 false,
