@@ -14,7 +14,7 @@ CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d0219
 
 ## Active phase
 
-**CR2.3 — Unified indicator-quality thresholds (Prompt 2 / B4 plus A9).**
+**CR2.4 — Pending-order decision arbiter (Prompt 2 / B5).**
 
 ## Completed before this checkpoint
 
@@ -30,6 +30,7 @@ CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d0219
 - CR1.9 minor cleanup and documentation
 - CR2.1 structure/CHoCH/MSS/sweep/divergence/rejection semantics
 - CR2.2 reaction/reversal integrity
+- CR2.3 unified indicator-quality thresholds
 
 ## Rules for every continuation
 
@@ -44,4 +45,4 @@ CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d0219
 
 ## Next transition
 
-CR2.2 is verified and merged. The next implementation response must execute **CR2.3** and only CR2.3. Track 12A remains blocked until CR-FINAL.
+CR2.3 is verified and merged (PR #88, merge commit 98da2030d8e36312ee0c073c1a58889bb405f893). The next implementation response must execute **CR2.4** and only CR2.4. Track 12A remains blocked until CR-FINAL.
