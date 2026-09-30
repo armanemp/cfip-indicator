@@ -12,7 +12,7 @@ required = {
             "EnableEconomicNewsCalendar",
             "EconomicNewsDataUri",
             "NewsRefreshMinutes",
-            "NewsSymbolCurrencyMap",
+            "symbolCurrencyMap",
             "HighImpactNewsMinutesBefore",
             "HighImpactNewsMinutesAfter",
             "CancelPendingBeforeHighImpactNews",
