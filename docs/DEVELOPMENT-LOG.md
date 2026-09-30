@@ -1975,3 +1975,26 @@ Verification completed for the documentation revision:
 
 Next implementation phase: **CBOT-Preflight**, then **CBOT-0 — Boundary inventory, dependency closure and execution-authority freeze**.
 Operator pull: required after this documentation revision is merged.
+
+
+## Roadmap Final Audit — Local cBot Separation — 2026-09-30
+
+Status: DOCUMENTATION GATE HARDENED; no production C# behavior changed.
+
+Second audit found and corrected:
+- duplicate/incorrect section numbering in the detailed separation roadmap;
+- mismatch between the detailed roadmap and master Track 12A ordering;
+- missing explicit parameter ownership/migration gate;
+- missing explicit clean-checkout solution/project wiring acceptance;
+- ambiguous final-volume ownership;
+- incomplete statement for async broker mutation scanning.
+
+Revision 2.2 now requires:
+- CBOT-Preflight before architectural transfer;
+- CBOT-0 method/field/helper dependency closure plus full parameter ownership matrix;
+- no duplicate execution parameters or hidden second decision rule;
+- cBot-owned broker-normalized final volume;
+- final source/runtime zero-broker-mutation and zero-fallback gates.
+
+Current repository main before this documentation-only branch: `412a1a6945e72f2588c0368520e87616893866f0`.
+Implementation readiness target: **CBOT-Preflight / CBOT-0**.
