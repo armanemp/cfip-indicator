@@ -2221,3 +2221,25 @@ Analysis → Decision → Signal → Alert → Execution → Broker confirmation
 
 Next phase: CBOT-Preflight.
 Operator action after merge: git pull --ff-only.
+## CBOT-Preflight — Local cTrader Host Capability Gate — 2026-09-30
+
+Status: IMPLEMENTED; target-terminal verification remains required.
+
+Implemented:
+- verified the supported custom-indicator reference model against current cTrader documentation;
+- added a no-trade probe Indicator and cBot under preflight/;
+- added a static preflight audit and CI integration;
+- explicitly banned broker mutation, reflection, chart scraping and alternative IPC transports in the preflight kit;
+- documented the target-terminal startup-order and stale/unavailable fail-closed matrix;
+- preserved the rule that the final CFIP structured signal/provider surface is created in CBOT-2, not silently duplicated here.
+
+Verification:
+- repository Source/Architecture preflight gate is implemented;
+- actual target-terminal P1–P8 execution is still required and must not be simulated or claimed from repository CI.
+
+Whole-chain routine audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning remains unchanged. No production broker behavior was changed.
+
+Next phase: CBOT-1 after target-terminal preflight acceptance.
+
+Operator action after merge: git pull --ff-only.
