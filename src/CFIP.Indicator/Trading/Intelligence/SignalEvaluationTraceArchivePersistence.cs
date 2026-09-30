@@ -42,10 +42,36 @@ namespace cAlgo
             return tacticalLane;
         }
 
-        private string SignalTraceArchivePrefix() {
+        private string SignalTraceArchivePrefix()
+        {
             if (!string.IsNullOrWhiteSpace(
                     _signalTraceArchivePrefixCache))
                 return _signalTraceArchivePrefixCache;
+
+            string symbol =
+                SanitizeArchivePart(
+                    string.IsNullOrWhiteSpace(SymbolName)
+                        ? "UNKNOWN"
+                        : SymbolName);
+
+            string timeframe =
+                SanitizeArchivePart(
+                    Bars == null
+                        ? "UNKNOWN"
+                        : Bars.TimeFrame.ToString());
+
+            _signalTraceArchivePrefixCache =
+                "CFIP_SignalTrace_v2_" +
+                symbol +
+                "_" +
+                timeframe +
+                "_" +
+                MemoryConfigurationFingerprint();
+
+            return
+                _signalTraceArchivePrefixCache;
+        }
+
         private string SignalTraceArchivePrefix()
         {
             string symbol =
