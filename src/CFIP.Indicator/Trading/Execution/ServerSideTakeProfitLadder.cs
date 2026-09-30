@@ -383,6 +383,9 @@ namespace cAlgo
 
             if (tp2Evidence)
             {
+                // A confirmed TP2 closing deal proves that the earlier TP1 stage
+                // has already occurred even if the local process missed its event.
+                _tp1Hit = 1;
                 _tp2Hit = 1;
 
                 if (EnableLevelHitAlerts &&
