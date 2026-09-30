@@ -74,6 +74,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PeakPriceReconstructionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RewardQualityFloorRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EarlyPredictionScoreRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/OutcomeMemoryIdentityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistenceModels.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SessionWindowRule.cs" />
