@@ -4302,3 +4302,31 @@ No production C# behavior changed.
 The authoritative order is now: `CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7`. CBOT-0 is repository/source inventory; CBOT-Preflight is the no-trade target-terminal capability gate; CBOT-1 and later may not bypass either gate.
 
 No production C# behavior changed.
+
+## CBOT-0 — Boundary Inventory and Execution-Authority Freeze — 2026-09-30
+
+Status: **VERIFIED COMPLETE**
+
+Completed in this phase:
+- created the machine-enforced CBOT-0 inventory gate at tools/audit_cbot_boundary.py;
+- recorded the direct broker mutation owner matrix in docs/CBOT-0-BOUNDARY-INVENTORY.md;
+- froze the current broker/account/lifecycle boundary before any cBot source is created;
+- classified the separation as Indicator analytical authority vs cBot broker/account authority, with mixed modules explicitly split by responsibility;
+- added execution-related parameter usage-domain classification so parameters are never moved wholesale by file/group;
+- wired the CBOT-0 audit into Source/Architecture CI;
+- made no production C# behavior change;
+- did not create CFIP.Contracts or CFIP.cBot yet.
+- final Source/Architecture verify `109870832998`: PASS;
+- final Runtime Acceptance `109870832972`: PASS;
+- final cTrader Build/Compile `109870832958`: PASS;
+
+Acceptance boundary:
+- direct broker calls must remain behind the current known mutation owners until extraction;
+- all execution-related parameters must receive deterministic INDICATOR / CBOT / SPLIT classification from source usage;
+- public parameter count remains 562;
+- no duplicate public parameter declarations;
+- no new broker executor is permitted during the separation track.
+
+Next phase: CBOT-Preflight — target-terminal, no-trade proof of the supported local Indicator → cBot structured read-only handoff.
+
+Operator action after merge: git pull --ff-only.

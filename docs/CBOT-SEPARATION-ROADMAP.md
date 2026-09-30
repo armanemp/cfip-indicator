@@ -22,7 +22,7 @@ The only future-proofing required now is that the boundary between them uses sma
 
 Repository: `armanemp/cfip-indicator`
 
-Baseline reviewed from `main`:
+Baseline reviewed from `main` at `473d5f1c89afaf8880bb16092e5d9b16b98d0395`:
 
 - Current host project: `src/CFIP.Indicator/CFIP.Indicator.csproj`.
 - Target framework: `.NET 6`.
@@ -578,6 +578,8 @@ This preserves the project's existing safety matrix.
 The implementation order is **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. CBOT-Preflight is a no-trade blocking gate, not a separate product rewrite phase.
 
 ### CBOT-0 — Boundary inventory and freeze
+
+Machine gate: `tools/audit_cbot_boundary.py` inventories direct broker mutations, broker/account lifecycle access, and execution-related parameter usage. It is wired into Source/Architecture CI during the separation track.
 
 Output:
 
