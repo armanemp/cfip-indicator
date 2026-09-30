@@ -4431,6 +4431,25 @@ Verification:
 - Runtime Acceptance: PASS;
 - cTrader Compile: PASS.
 
-Next phase: **CR2.4 — Pending-order decision arbiter**.
+## Claude Review Remediation — CR2.4 Closeout — 2026-09-30
+
+Status: VERIFIED COMPLETE — PR #89, merge commit ac8c526f7ed0887ba990dc9a091c8299e96a6de5.
+
+Completed:
+- centralized Continuation Stop vs Reversal Limit selection in PendingDecisionArbiterRule;
+- defined explicit quality-based winner selection with deterministic continuation tie-break;
+- validated continuation and reversal candidates independently for their own direction, range and market suitability;
+- removed same-cycle silent fallback from one pending strategy to the other after placement/preparation failure;
+- added two-consecutive-closed-M5-bar cancellation hysteresis;
+- corrected predictive Limit quote reference to Ask for Buy Limit and Bid for Sell Limit;
+- hardened continuation fallback lookback boundaries;
+- added deterministic runtime contracts, CR2.4 static audit and phase documentation.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Next phase: **CR2.5 — Lifecycle ordering and outcome aggregation**.
 
 Track 12A remains blocked until CR-FINAL passes.
