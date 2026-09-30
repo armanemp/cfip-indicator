@@ -198,7 +198,7 @@ namespace cAlgo
                         
                                         if (d1Index > 0)
                                         {
-                                            int previous = d1Index - 1;
+                                            int previous = d1Index;
                                             double pivot =
                                                 (_d1Bars.HighPrices[previous] +
                                                  _d1Bars.LowPrices[previous] +
