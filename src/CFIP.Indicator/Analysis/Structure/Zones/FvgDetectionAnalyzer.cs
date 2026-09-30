@@ -23,9 +23,17 @@ namespace cAlgo
                 atr <= 0)
                 return null;
 
-            ResetZoneLookupCacheIfNeeded(
-                bars,
-                index);
+            bool cacheable =
+                index >= 0 &&
+                index <
+                bars.Count - 1;
+
+            if (cacheable)
+            {
+                ResetZoneLookupCacheIfNeeded(
+                    bars,
+                    index);
+            }
 
             string cacheKey =
                 direction.ToString() +
@@ -34,7 +42,8 @@ namespace cAlgo
 
             Zone[] candidates;
 
-            if (!TryGetCachedFvgCandidates(
+            if (!cacheable ||
+                !TryGetCachedFvgCandidates(
                     cacheKey,
                     out candidates))
             {
@@ -148,9 +157,12 @@ namespace cAlgo
                     }
                 }
 
-                StoreCachedFvgCandidates(
-                    cacheKey,
-                    built);
+                if (cacheable)
+                {
+                    StoreCachedFvgCandidates(
+                        cacheKey,
+                        built);
+                }
 
                 candidates =
                     built.ToArray();
