@@ -55,8 +55,8 @@ if legacy:
     print(f"FAIL | {errors[-1]}")
 
 # Cleanup must not cancel a live pending order after a single transient mismatch.
-if "ShouldCancelAfterHysteresis" not in cleanup:
-    errors.append("pending cleanup does not reference canonical hysteresis rule")
+if "ObservePendingInvalidation(" not in cleanup:
+    errors.append("pending cleanup does not route invalidation through its canonical hysteresis observer")
     print(f"FAIL | {errors[-1]}")
 
 print("CR2.4 SUMMARY")
