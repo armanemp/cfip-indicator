@@ -15,8 +15,8 @@ namespace cAlgo
 
         internal static bool IsValidRiskInput(double equity, double riskPercent)
         {
-            return IsFinitePositive(equity) &&
-                   IsFinitePositive(riskPercent);
+            return IsFinitePositiveVolumeInput(equity) &&
+                   IsFinitePositiveVolumeInput(riskPercent);
         }
 
         internal static bool IsValidNormalizedVolume(
@@ -24,15 +24,15 @@ namespace cAlgo
             double minimumVolume,
             double maximumVolume)
         {
-            return IsFinitePositive(volume) &&
-                   IsFinitePositive(minimumVolume) &&
-                   IsFinitePositive(maximumVolume) &&
+            return IsFinitePositiveVolumeInput(volume) &&
+                   IsFinitePositiveVolumeInput(minimumVolume) &&
+                   IsFinitePositiveVolumeInput(maximumVolume) &&
                    minimumVolume <= maximumVolume &&
                    volume >= minimumVolume &&
                    volume <= maximumVolume;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveVolumeInput(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
