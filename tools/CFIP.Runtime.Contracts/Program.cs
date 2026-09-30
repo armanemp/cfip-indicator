@@ -4101,7 +4101,7 @@ namespace cAlgo
             Assert(
                 IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingContinuation,
-                    70,
+                    61,
                     48).Reason.Contains(
                         "PENDING CONTINUATION") &&
                 IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
