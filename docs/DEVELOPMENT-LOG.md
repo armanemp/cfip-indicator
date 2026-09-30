@@ -2192,3 +2192,27 @@ Routine whole-chain audit:
 Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No threshold, RR floor, capacity or execution-authority change was introduced.
 
 Next phase: CR1.6 — FVG quality discrimination.
+
+## CBOT-0 — Boundary Inventory & Execution-Authority Freeze — 2026-09-30
+
+Status: **IMPLEMENTED; verification pending**
+
+Implemented:
+- added tools/audit_cbot_boundary.py to inventory every direct broker mutation call in production and prevent new calls outside the frozen broker-mutation owners;
+- recorded the current direct broker API owner matrix and Indicator/cBot responsibility split in docs/CBOT-0-BOUNDARY-INVENTORY.md;
+- added source-usage-domain analysis for execution-related public parameters so mixed analytical/execution controls become explicit SPLIT refactors instead of duplicated controls;
+- wired the new audit into Source/Architecture CI;
+- kept current production execution behavior unchanged;
+- did not create the Contracts/cBot projects and did not introduce a second executor.
+
+Verification boundary:
+- CI must prove the 552-parameter baseline remains intact;
+- direct broker mutations must stay inside the current seven broker-mutation owner files;
+- lifecycle/account ownership markers must remain present;
+- no duplicate public parameter declaration may exist.
+
+Whole-chain routine audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning remains unchanged in this no-behavior-change phase.
+
+Next phase after verification: CBOT-Preflight.
+Operator action after merge: git pull --ff-only.
