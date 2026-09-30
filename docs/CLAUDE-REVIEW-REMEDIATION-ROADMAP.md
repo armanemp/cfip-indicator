@@ -1032,6 +1032,9 @@ Required verification:
 
 No default RR/SL/age tuning in this phase. Any behavior-changing correction must be separately documented and explicitly approved.
 
+**CR4.7 closeout — COMPLETE.**  
+PR #108 merged to `main` as `2a586ca353f79d6151b9b8375edf46cb94df7880`. Source/Architecture #1999, Runtime Acceptance #1808 and cTrader Compile #1992 all passed on implementation HEAD `441611a8d1ca513ee332f9a8a006a3f37eb9a727`. The phase added deterministic target constraints, bounded stage rejection telemetry, M5-vs-HTF age separation, source-age propagation, reward-envelope feasibility detection, and dedicated owners that keep TargetSelector orchestration-only. No public defaults or trading thresholds were tuned; replay and target-terminal evidence remain required.
+
 ### CR4.8 — TP1 directional defensive validation (D8)
 
 Initial review label: **PARTIAL — upstream protection may already exist; defensive invariant should be verified.**
@@ -1550,7 +1553,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics (D7)**.
+Current active phase: **CR4.8 — TP1 directional defensive validation (D8)**.
 
 ## 8. Completion order and dependencies
 
