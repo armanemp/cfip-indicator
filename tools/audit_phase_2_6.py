@@ -86,7 +86,7 @@ checks = {
     ),
     "runtime project links CR2.6 math": (
         "OrderBlockQualityRule.cs" in project and
-        "OrderBlockLifecycleState.cs" in project
+        "OrderBlockRule.cs" in project
     ),
 }
 
