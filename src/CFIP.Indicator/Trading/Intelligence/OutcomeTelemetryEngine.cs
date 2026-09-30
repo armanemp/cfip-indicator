@@ -42,7 +42,7 @@
  
          private void RegisterCalibratedOutcome(
                              Plan plan,
-                             bool win)
+                             double realizedR)
                          {
                              if (!EnableOutcomeTelemetry ||
                                  plan == null ||
@@ -67,7 +67,9 @@
  
                              _calibrationSamples[key]++;
  
-                             if (win)
+                             if (!double.IsNaN(realizedR) &&
+                                 !double.IsInfinity(realizedR) &&
+                                 realizedR > 0)
                                  _calibrationWins[key]++;
                          }
  
@@ -218,7 +220,7 @@
 
                              RegisterCalibratedOutcome(
                                  plan,
-                                 profitable);
+                                 realizedR);
 
                              ArchiveRuntimeExecution(
                                  "OUTCOME",
@@ -280,6 +282,30 @@
                                  _outcomeHistory.RemoveAt(0);
                          }
  
+         private bool RecordPlanRewardRejection(
+                             int direction,
+                             string reason)
+                         {
+                             if (!EnableOutcomeTelemetry)
+                                 return false;
+
+                             string normalizedReason =
+                                 string.IsNullOrWhiteSpace(reason)
+                                     ? "UNKNOWN"
+                                     : reason.Trim();
+
+                             RecordExecutionTelemetryHistory(
+                                 "PLAN_REWARD",
+                                 Math.Max(-1, _lastEvaluatedM5),
+                                 "REJECTED",
+                                 "DIR=" +
+                                 direction.ToString(CultureInfo.InvariantCulture) +
+                                 " • " +
+                                 normalizedReason);
+
+                             return false;
+                         }
+
          private void RecordExecutionTelemetryHistory(
                              string path,
                              int m5,
