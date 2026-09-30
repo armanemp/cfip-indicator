@@ -862,7 +862,23 @@ Manual cTrader evidence:
 
 ### CR4.2 — File/archive path and persistence observability (D2)
 
-Initial review label: **CONFIRMED / HIGH — current host/runtime behavior must be verified before any AccessRights change.**
+Status: **COMPLETE — implementation merged in the CR4.2 phase PR.**
+
+Own verification:
+- cTrader's current .NET 6 restricted-file contract confirms that relative paths are the intended mechanism inside the designated algo folder; no AccessRights change is required by this finding.
+- direct snapshot/marker writes were consolidated into the bounded persistence owner;
+- archive/runtime/signal-trace writes remain buffered and timer-flushed;
+- persistence read/write failures now have bounded observable counters and startup probe state;
+- Signal Trace archive identity is account-scoped and invalidated on account switch.
+
+Repository artifacts:
+- deterministic runtime contract: `VerifyPersistenceHealthSemantics()` plus extended `VerifyBufferedArchivePersistence()`;
+- static gate: `tools/audit_phase_4_2.py`;
+- phase record: `docs/PHASE-CR4-2-PERSISTENCE.md`.
+
+Target-terminal evidence remains mandatory for exact cTrader build, actual History path, AccessRights.None execution, read/write probe and restart/account-switch persistence behavior.
+
+
 
 Scope:
 - outcome archive;
@@ -1505,7 +1521,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.2 — File/archive path and persistence observability (D2)**.
+Current active phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3)**.
 
 ## 8. Completion order and dependencies
 
