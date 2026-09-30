@@ -30,6 +30,13 @@ namespace cAlgo
                 double.IsInfinity(plan.Tp4))
                 return RejectPlanRewardStructure("INVALID PLAN GEOMETRY");
 
+            if (!PriceProtectionRule.ValidateTarget(
+                    direction,
+                    plan.Entry,
+                    plan.Tp1,
+                    0))
+                return RejectPlanRewardStructure("TP1 DIRECTION INVALID");
+
             double minimumRR =
                 Math.Max(
                     Tp1MinimumRR,
