@@ -23,7 +23,7 @@ namespace cAlgo
                                         !IsManagedPendingOrder(args.PendingOrder))
                                         return;
 
-            MarkBrokerStateDirty();
+                                    MarkBrokerStateDirty();
                         
 
                                     if (!_lifecycleEventGuard.TryBegin(
