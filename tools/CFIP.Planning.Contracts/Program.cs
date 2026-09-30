@@ -17,6 +17,7 @@ namespace cAlgo
             VerifyLifecycleTransitions();
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
+            VerifyTargetPipelineD7();
             Console.WriteLine("Planning contracts OK");
         }
 
@@ -272,6 +273,168 @@ namespace cAlgo
                 registry.TryGetBest(out best) &&
                 best.Quality == 95,
                 "stable identity replacement");
+        }
+
+
+        private static void VerifyTargetPipelineD7()
+        {
+            Assert(
+                TargetAgeSemanticsRule.IsAllowed(
+                    "M5",
+                    10,
+                    0,
+                    10,
+                    40),
+                "M5 setup age uses setup-bar semantics");
+
+            double htfMaxMinutes =
+                TargetAgeSemanticsRule.GetMaximumHtfAgeMinutes(
+                    "H1",
+                    20,
+                    40);
+
+            Assert(
+                htfMaxMinutes == 1200,
+                "H1 target age uses elapsed-time equivalent");
+
+            Assert(
+                TargetAgeSemanticsRule.IsAllowed(
+                    "H1",
+                    60,
+                    1199.0,
+                    20,
+                    40) &&
+                !TargetAgeSemanticsRule.IsAllowed(
+                    "H1",
+                    60,
+                    1201.0,
+                    20,
+                    40),
+                "HTF age boundary is deterministic");
+
+            Assert(
+                TargetAgeSemanticsRule.ElapsedMinutes(
+                    new DateTime(2026, 1, 1, 10, 0, 0),
+                    new DateTime(2026, 1, 1, 11, 30, 0)) == 90,
+                "elapsed target age is deterministic");
+
+            double[] requiredRR =
+            {
+                2.00,
+                3.20,
+                4.80,
+                6.50
+            };
+
+            int[] accepted =
+            {
+                0, 0, 0, 0
+            };
+
+            for (int stage = 0; stage < 4; stage++)
+            {
+                double previous =
+                    stage == 0
+                        ? 100
+                        : 100 +
+                          requiredRR[stage - 1] * 2.0 +
+                          0.4;
+
+                TargetCandidateConstraintResult valid =
+                    TargetCandidateConstraintRule.Evaluate(
+                        stage,
+                        1,
+                        100,
+                        2,
+                        100 + requiredRR[stage] * 2.0 + 0.2,
+                        2,
+                        0.01,
+                        requiredRR[stage],
+                        12.0,
+                        4.0,
+                        0.40,
+                        previous,
+                        false,
+                        stage >= 1,
+                        stage >= 1,
+                        75,
+                        68);
+
+                if (valid.Allowed)
+                    accepted[stage]++;
+
+                TargetCandidateConstraintResult below =
+                    TargetCandidateConstraintRule.Evaluate(
+                        stage,
+                        1,
+                        100,
+                        2,
+                        100 + Math.Max(0.5, requiredRR[stage] - 0.2) * 2.0,
+                        2,
+                        0.01,
+                        requiredRR[stage],
+                        12.0,
+                        4.0,
+                        0.40,
+                        previous,
+                        false,
+                        stage >= 1,
+                        stage >= 1,
+                        75,
+                        68);
+
+                Assert(
+                    !below.Allowed &&
+                    below.Reason ==
+                    TargetCandidateRejectionReasons.RewardRiskBelowMinimum,
+                    "TP" +
+                    (stage + 1).ToString() +
+                    " below-minimum RR rejection");
+
+                Assert(
+                    valid.Allowed ||
+                    stage == 0,
+                    "TP" +
+                    (stage + 1).ToString() +
+                    " fixture acceptance path");
+
+                TargetCandidateConstraintResult sell =
+                    TargetCandidateConstraintRule.Evaluate(
+                        stage,
+                        -1,
+                        100,
+                        2,
+                        100 - requiredRR[stage] * 2.0 - 0.2,
+                        2,
+                        0.01,
+                        requiredRR[stage],
+                        12.0,
+                        4.0,
+                        0.40,
+                        stage == 0
+                            ? 100
+                            : 100 -
+                              requiredRR[stage - 1] * 2.0 -
+                              0.4,
+                        false,
+                        stage >= 1,
+                        stage >= 1,
+                        75,
+                        68);
+
+                Assert(
+                    sell.Allowed,
+                    "TP" +
+                    (stage + 1).ToString() +
+                    " BUY/SELL feasibility symmetry");
+            }
+
+            Console.WriteLine(
+                "D7 deterministic fixture acceptance: " +
+                "TP1=" + accepted[0] + "/1, " +
+                "TP2=" + accepted[1] + "/1, " +
+                "TP3=" + accepted[2] + "/1, " +
+                "TP4=" + accepted[3] + "/1");
         }
 
 
