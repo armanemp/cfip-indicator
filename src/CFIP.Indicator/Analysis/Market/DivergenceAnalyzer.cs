@@ -342,10 +342,10 @@ namespace cAlgo
                     Math.Max(
                         0.08,
                         atr * DivergenceThresholdRule.HiddenPriceAtr) &&
-                rsiDelta <= -DivergenceThresholdRule.RegularRsiDelta &&
+                rsiDelta <= -DivergenceThresholdRule.HiddenRsiDelta &&
                 oldWave.Valid &&
                 newWave.Valid &&
-                waveDelta <= -DivergenceThresholdRule.RegularWaveDelta;
+                waveDelta <= -DivergenceThresholdRule.HiddenWaveDelta;
 
             int oscillatorAgreement = 0;
             if (rsiDelta >= DivergenceThresholdRule.RegularRsiDelta)
@@ -362,9 +362,9 @@ namespace cAlgo
 
             double recentBoost =
                 newerIndex >= index - DivergenceThresholdRule.RecentBoostBarsStrong
-                    ? 10
+                    ? DivergenceThresholdRule.RecentBoostStrong
                     : newerIndex >= index - DivergenceThresholdRule.RecentBoostBarsModerate
-                        ? 5
+                        ? DivergenceThresholdRule.RecentBoostModerate
                         : 0;
 
             int quality =
@@ -448,10 +448,10 @@ namespace cAlgo
                     Math.Max(
                         0.08,
                         atr * DivergenceThresholdRule.HiddenPriceAtr) &&
-                rsiDelta >= DivergenceThresholdRule.RegularRsiDelta &&
+                rsiDelta >= DivergenceThresholdRule.HiddenRsiDelta &&
                 oldWave.Valid &&
                 newWave.Valid &&
-                waveDelta >= DivergenceThresholdRule.RegularWaveDelta;
+                waveDelta >= DivergenceThresholdRule.HiddenWaveDelta;
 
             int oscillatorAgreement = 0;
             if (rsiDelta <= -DivergenceThresholdRule.RegularRsiDelta)
@@ -474,15 +474,11 @@ namespace cAlgo
                         : 0;
 
             int quality =
-                45 +
-                Math.Min(
-                    22,
-                    (int)Math.Round(
-                        priceExcursion *
-                        20)) +
-                oscillatorAgreement * 9 +
-                (chosenHidden ? 3 : 7) +
-                (int)recentBoost;
+                DivergenceThresholdRule.CalculateQuality(
+                    priceExcursion,
+                    oscillatorAgreement,
+                    chosenHidden,
+                    (int)recentBoost);
 
             return new DivergenceCandidate(
                 Math.Min(
