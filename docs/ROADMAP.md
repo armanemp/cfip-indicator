@@ -4879,6 +4879,11 @@ Implemented:
 - added deterministic TP1–TP4 feasibility and BUY/SELL symmetry contracts;
 - reused the canonical `StructuralTimeframeRule` for HTF classification.
 
+Repository verification evidence:
+- Source/Architecture: PASS, workflow run #2021;
+- cTrader Compile: PASS, workflow run #2014;
+- Runtime Acceptance Contracts: PASS, workflow run #1830.
+
 Deterministic evidence:
 - 4/4 valid TP1–TP4 BUY stage fixtures accepted;
 - 4/4 below-minimum-RR fixtures rejected with the canonical reason;
@@ -4929,7 +4934,7 @@ Safety boundary:
 
 ### CR4.9 / D9 closeout — 2026-10-01
 
-Status: **IMPLEMENTED — repository verification pending on the phase branch.**
+Status: **COMPLETE — repository verification PASS.**
 
 Implemented:
 - added one Core `LiveReversalDecisionRule` owner for opposite-direction mapping, directional reversal confidence and action semantics;
