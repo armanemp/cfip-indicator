@@ -25,6 +25,8 @@ namespace cAlgo
                 
                             try
                             {
+                                MarkBrokerStateDirty();
+
                                 TradeResult result =
                                     position.ModifyTakeProfitPrice(normalized);
                 
@@ -62,6 +64,8 @@ namespace cAlgo
 
                             try
                             {
+                                MarkBrokerStateDirty();
+
                                 TradeResult result =
                                     position.ModifyTakeProfit(
                                         protections);
@@ -102,6 +106,8 @@ namespace cAlgo
 
                             try
                             {
+                                MarkBrokerStateDirty();
+
                                 TradeResult result =
                                     position.ModifyTakeProfitPips(
                                         targetPips);
