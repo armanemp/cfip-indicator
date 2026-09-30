@@ -4450,6 +4450,26 @@ Verification:
 - Runtime Acceptance: PASS;
 - cTrader Compile: PASS.
 
-Next phase: **CR2.5 — Lifecycle ordering and outcome aggregation**.
+## Claude Review Remediation — CR2.5 Closeout — 2026-09-30
+
+Status: VERIFIED COMPLETE — PR #90, merge commit 45d6d21e050db2c519a57a0cdeccfff5d2d88fac.
+
+Completed:
+- lifecycle idempotency memory bounded to a fixed 512-event window;
+- PositionOpened recovery made tolerant to broker event ordering while preserving managed-identity boundaries;
+- final close outcome aggregated from all available History.FindByPositionId trade legs, with deterministic position-level fallback only when history is unavailable;
+- realized R calculated from final aggregated monetary outcome against the plan's original volume/initial risk;
+- win/loss lifecycle counters aligned with the canonical recorded outcome;
+- dedicated lifecycle/outcome runtime contracts, static audit and phase documentation added;
+- outcome telemetry/presentation and history-reading responsibilities split into bounded modules to preserve architecture limits and hot-path cleanliness.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Target-terminal History/Deal semantics remain a manual acceptance boundary.
+
+Next phase: **CR2.6 — OrderBlock quality and cache discipline**.
 
 Track 12A remains blocked until CR-FINAL passes.
