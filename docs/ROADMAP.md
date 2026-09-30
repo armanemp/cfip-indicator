@@ -4330,3 +4330,28 @@ Acceptance boundary:
 Next phase: CBOT-Preflight — target-terminal, no-trade proof of the supported local Indicator → cBot structured read-only handoff.
 
 Operator action after merge: git pull --ff-only.
+## CBOT-Preflight — Local cTrader Host Capability Gate — 2026-09-30
+
+Status: IMPLEMENTED; target-terminal verification is the remaining blocking acceptance
+
+Completed:
+- validated the intended local integration path against current official cTrader documentation: Manage References + Indicators.GetIndicator<T>();
+- added a no-trade preflight probe indicator and cBot under preflight/;
+- added tools/audit_cbot_preflight.py and wired it into Source/Architecture CI;
+- enforced no broker mutation, reflection, chart scraping, file/HTTP/WebSocket transport or static singleton in the preflight kit;
+- documented the target-terminal startup-order matrix and evidence requirements in docs/CBOT-PREFLIGHT.md;
+- kept production C# trading behavior unchanged;
+- did not create CFIP.Contracts or CFIP.cBot yet.
+
+Important boundary:
+- the current CFIP Indicator does not yet expose the final structured public signal/provider surface; that is deliberately owned by CBOT-2;
+- therefore this preflight proves the host/reference mechanism and safe no-trade instantiation, while the final CFIP structured handoff remains a CBOT-2 acceptance item;
+- CBOT-1 remains blocked until the target terminal verifies the no-trade capability matrix.
+
+Static verification:
+- Source/Architecture includes the preflight static gate.
+- Build/Runtime are unchanged by the preflight kit.
+
+Next phase after target-terminal acceptance: CBOT-1 — platform-neutral contracts.
+
+Operator action after merge: git pull --ff-only.
