@@ -169,13 +169,33 @@ namespace cAlgo
                     MaximumNewsFeedAgeMinutes,
                     _economicNewsBlockingEvent != null);
 
+            CfipEconomicNewsEvent currentBlocking =
+                FindBlockingNewsEvent(
+                    now);
+
+            if (currentBlocking != null)
+                _economicNewsBlockingEvent =
+                    currentBlocking;
+            else
+                _economicNewsBlockingEvent = null;
+
+            state =
+                EconomicNewsFeedStateRule.Resolve(
+                    EnableEconomicNewsCalendar,
+                    GetEconomicNewsLastSuccessUtc(),
+                    now,
+                    MaximumNewsFeedAgeMinutes,
+                    _economicNewsBlockingEvent != null);
+
             if (state ==
                 EconomicNewsFeedState.BlockingEvent &&
                 _economicNewsBlockingEvent != null)
             {
-                return FormatNewsRiskReason(
-                    _economicNewsBlockingEvent,
-                    now);
+                return
+                    "NEWS CALENDAR • BLOCKING EVENT • " +
+                    FormatNewsRiskReason(
+                        _economicNewsBlockingEvent,
+                        now);
             }
 
             string status =
