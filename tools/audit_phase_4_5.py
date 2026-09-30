@@ -154,7 +154,7 @@ check(
     "non-M5 cache refreshes when the same Bars series advances to a new frame index",
     "entry.Index != index" in frame_cache
     and re.search(
-        r"ReferenceEquals\\s*\\(\\s*(?:entry\\.Bars|_entries\\[i\\]\\.Bars)\\s*,\\s*bars\\s*\\)",
+        r"ReferenceEquals\s*\(\s*(?:entry\.Bars|_entries\[i\]\.Bars)\s*,\s*bars\s*\)",
         frame_cache,
     ) is not None
     and "new MarketRegimeFrameCacheEntry(" in frame_cache,
