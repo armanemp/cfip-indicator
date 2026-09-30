@@ -15,8 +15,8 @@ namespace cAlgo
             bool historyAvailable,
             bool previouslyLocked)
         {
-            if (!IsFinitePositive(baselineEquity) ||
-                !IsFinitePositive(currentEquity) ||
+            if (!HasFinitePositiveValue(baselineEquity) ||
+                !HasFinitePositiveValue(currentEquity) ||
                 double.IsNaN(baselineUnrealizedNetProfit) ||
                 double.IsInfinity(baselineUnrealizedNetProfit))
             {
@@ -163,7 +163,7 @@ namespace cAlgo
             double amount,
             double baseline)
         {
-            if (!IsFinitePositive(baseline) ||
+            if (!HasFinitePositiveValue(baseline) ||
                 double.IsNaN(amount) ||
                 double.IsInfinity(amount))
                 return 0;
@@ -173,7 +173,7 @@ namespace cAlgo
                    100.0;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool HasFinitePositiveValue(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
