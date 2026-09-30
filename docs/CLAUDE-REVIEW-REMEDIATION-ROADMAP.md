@@ -943,7 +943,7 @@ Performance/code-cleanliness:
 - duplicate trace/helper paths were removed or centralized under one owner;
 - public parameters and default thresholds were unchanged.
 
-Status: **COMPLETE — PR #104; merge pending.**
+Status: **COMPLETE — PR #104 merged to main; merge commit `d24b26de3ddf3709c8ea5e94f97a9f533b9b33dc`.**
 
 ### CR4.4 — Skender/OSS numerical stability and incremental caching (D4)
 
