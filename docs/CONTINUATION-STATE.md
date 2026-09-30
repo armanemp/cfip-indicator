@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
 
 CR4.1 and CR4.2 are complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
@@ -413,10 +413,32 @@ Manual boundary remains:
 - restart/reconnect;
 - empirical signal-quality/profitability.
 
+### CR5.2 / E2 closeout — 2026-10-01
+
+CR5.2 / E2 is **VERIFIED COMPLETE** and merged to `main` via PR #116, merge commit `10e01bd2610ce0c42b6d365f55fae24c75a3edfb`.
+
+Repository verification:
+- Source/Architecture: PASS — run `36792555340` / workflow #2072, including `audit_phase_5_2.py` and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — run `36792555225` / workflow #1881;
+- cTrader Compile: PASS — run `36792555189` / workflow #2065.
+
+Implementation/safety:
+- canonical swing highs/lows replace raw candle-extreme liquidity forecasts;
+- broken liquidity is rejected through the canonical active-unbroken rule;
+- multiple valid liquidity forecasts are ordered by distance and discriminated through the existing `MinimumTpSpacingAtr`;
+- session targets retain the existing `SessionWindowRule` + `SessionStartUtc` / `SessionEndUtc` semantics;
+- no public parameter/default, RR/confidence/stop/target threshold or decision/execution authority changed.
+
+Manual boundary remains:
+- target-terminal startup/readiness/panel timing;
+- broker lifecycle ordering;
+- restart/reconnect;
+- empirical signal-quality/profitability.
+
 ## Current active phase
 
-CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates.
+CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.
 
 ### Next transition
 
-Complete CR5.2 repository verification before advancing to CR5.3 / E3.
+Execute CR5.3 / E3 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
