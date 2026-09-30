@@ -4407,6 +4407,31 @@ Manual target-terminal verification remains required for history prepend/load-mo
 
 Next phase: **CR2.9 — Structural stop, divergence and rejection guardrail refinement (B10/B11/B12).**
 
+## Claude Review Remediation — CR2.9 Closeout — 2026-09-30
+
+Status: **VERIFIED COMPLETE — PR #94 merged to main as 6786af20d7b63d371c57890fb1adabb666f830bc.**
+
+Covers: B10, B11, B12.
+
+Completed:
+- preserved and verified fail-closed unknown structural timeframe behavior;
+- centralized structural-stop reward-path and preferred-risk score components without unverified tuning;
+- centralized divergence thresholds/conflict margin/oscillator deltas/recency and quality-score components;
+- centralized doji/rejection body and wick thresholds under one canonical meaningful-body rule;
+- added deterministic runtime contracts and CR2.9 static audit;
+- preserved public parameters and all decision/execution/capacity authority.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS, run 1597;
+- cTrader Compile: PASS, run 1781;
+- CR2.9 static audit: PASS;
+- accumulated CR2.1–CR2.8 audits: PASS.
+
+Manual target-terminal replay/outcome evidence remains required before any structural-stop score tuning or empirical signal-quality claim.
+
+Next phase: **CR3.1 — Live invalidation and false-signal semantics (C1/C2).**
+
 
 ## Claude Review Remediation — CR2.1 Closeout — 2026-09-30
 
