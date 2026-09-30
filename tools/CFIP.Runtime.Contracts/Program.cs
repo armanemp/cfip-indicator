@@ -352,7 +352,7 @@ namespace cAlgo
 
         private static void VerifyDailyLossSemantics()
         {
-            DailyLossEvaluation evaluation =
+            DailyLossRule.Evaluation evaluation =
                 DailyLossRule.Evaluate(
                     1000,
                     0,
