@@ -47,7 +47,9 @@ internal static class NativeRegistryLookupBenchmark
 
         BenchmarkTiming dictionaryRepeated =
             MeasureTiming(
-                () => RunRepeatedDictionaryLookup(dictionary),
+                () => RunRepeatedDictionaryLookup(
+                    dictionary,
+                    keys[keys.Length - 1]),
                 WarmupIterations,
                 TimingIterations);
 
@@ -146,16 +148,10 @@ internal static class NativeRegistryLookupBenchmark
     }
 
     private static void RunRepeatedDictionaryLookup(
-        Dictionary<ReferenceKey, int> values)
+        Dictionary<ReferenceKey, int> values,
+        ReferenceKey target)
     {
         int checksum = 0;
-        ReferenceKey target = null;
-
-        foreach (ReferenceKey key in values.Keys)
-        {
-            target = key;
-            break;
-        }
 
         for (int i = 0; i < LookupCount; i++)
         {
