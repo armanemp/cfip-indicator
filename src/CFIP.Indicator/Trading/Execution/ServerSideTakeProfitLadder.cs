@@ -450,7 +450,9 @@ namespace cAlgo
                         dealDirection,
                         deal.PositionImpact ==
                             DealPositionImpact.Closing,
-                        deal.ExecutionPrice,
+                        deal.ExecutionPrice.HasValue
+                            ? deal.ExecutionPrice.Value
+                            : 0,
                         expectedTarget,
                         deal.VolumeInUnits,
                         expectedVolume,
