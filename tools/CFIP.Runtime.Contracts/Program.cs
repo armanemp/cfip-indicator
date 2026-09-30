@@ -82,6 +82,7 @@ namespace cAlgo
             VerifyTargetProgressionMonotonicity();
             VerifyOutcomeMemoryIdentitySemantics();
             VerifyPersistenceHealthSemantics();
+            VerifySignalTraceLineageSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -230,6 +231,84 @@ namespace cAlgo
                 "scoped LocalStorage key stays within cTrader key constraints");
         }
 
+
+        private static void VerifySignalTraceLineageSemantics()
+        {
+            long barOpenTicks = 638949600000000000;
+
+            string first =
+                SignalTraceIdentityRule.Build(
+                    "XAUUSD",
+                    "Minute5",
+                    "BROKER-123456-HEDGED-LIVE",
+                    "ABCDEF",
+                    barOpenTicks);
+
+            string same =
+                SignalTraceIdentityRule.Build(
+                    "XAUUSD",
+                    "Minute5",
+                    "BROKER-123456-HEDGED-LIVE",
+                    "ABCDEF",
+                    barOpenTicks);
+
+            Assert(
+                !string.IsNullOrWhiteSpace(first) &&
+                string.Equals(first, same, StringComparison.Ordinal),
+                "signal trace identity is deterministic for the same scope");
+
+            Assert(
+                first != SignalTraceIdentityRule.Build(
+                    "XAUUSD",
+                    "Minute5",
+                    "BROKER-123456-HEDGED-LIVE",
+                    "ABCDEF",
+                    barOpenTicks + 1) &&
+                first != SignalTraceIdentityRule.Build(
+                    "XAUUSD",
+                    "Minute5",
+                    "BROKER-123457-HEDGED-LIVE",
+                    "ABCDEF",
+                    barOpenTicks) &&
+                first != SignalTraceIdentityRule.Build(
+                    "XAUUSD",
+                    "Minute5",
+                    "BROKER-123456-HEDGED-LIVE",
+                    "ABCDEF2",
+                    barOpenTicks) &&
+                first != SignalTraceIdentityRule.Build(
+                    "EURUSD",
+                    "Minute5",
+                    "BROKER-123456-HEDGED-LIVE",
+                    "ABCDEF",
+                    barOpenTicks),
+                "trace identity isolates bar, account, configuration and symbol");
+
+            Assert(
+                string.IsNullOrEmpty(
+                    SignalTraceIdentityRule.Build(
+                        "XAUUSD",
+                        "Minute5",
+                        "BROKER",
+                        "CONFIG",
+                        0)),
+                "invalid trace bar fails closed");
+
+            Assert(
+                SignalTraceLineageRule.MatchesClosedBar(
+                    25, barOpenTicks, 25, barOpenTicks) &&
+                !SignalTraceLineageRule.MatchesClosedBar(
+                    25, barOpenTicks, 26, barOpenTicks) &&
+                !SignalTraceLineageRule.MatchesClosedBar(
+                    25, barOpenTicks, 25, barOpenTicks + 1),
+                "trace geometry requires the exact closed-M5 lineage");
+
+            Assert(
+                SignalTraceLineageRule.CanJoinOutcome(first, first) &&
+                !SignalTraceLineageRule.CanJoinOutcome(first, first + "|other") &&
+                !SignalTraceLineageRule.CanJoinOutcome("", first),
+                "research outcome join requires exact non-empty trace identity");
+        }
 
         private static void VerifyPersistenceHealthSemantics()
         {
