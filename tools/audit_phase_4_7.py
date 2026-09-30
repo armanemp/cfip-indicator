@@ -150,7 +150,8 @@ check(
     "phase documentation preserves no-tuning and manual-terminal boundaries",
     "CR4.7" in roadmap
     and "CR4.7" in continuation
-    and "no default RR/SL/age tuning" in phase_doc
+    and "no public parameter name/type/DefaultValue changed" in phase_doc
+    and "no default RR" in phase_doc.lower()
     and "target-terminal" in phase_doc.lower(),
 )
 
