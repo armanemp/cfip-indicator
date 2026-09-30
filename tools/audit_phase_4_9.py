@@ -164,7 +164,7 @@ check(
     "no public parameter name/type/defaultvalue changed" in phase_doc.lower()
     and "no default rr" in phase_doc.lower()
     and "target-terminal" in phase_doc.lower()
-    and "no second decision or broker-execution authority introduced" in phase_doc.lower(),
+    and "no second decision or broker-execution authority was introduced" in phase_doc.lower(),
 )
 
 print("CR4.9 SUMMARY")
