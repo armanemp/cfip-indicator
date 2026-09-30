@@ -204,6 +204,31 @@ namespace cAlgo
                 sellLevels[2] == 92,
                 "liquidity candidates are ordered by distance from entry");
 
+            List<double> distinctBuyLevels =
+                LiquidityTargetCandidateRule.OrderDistinctByDistance(
+                    1,
+                    100,
+                    new List<double> { 102, 102.4, 105 },
+                    2,
+                    0.40);
+
+            List<double> distinctSellLevels =
+                LiquidityTargetCandidateRule.OrderDistinctByDistance(
+                    -1,
+                    100,
+                    new List<double> { 98, 97.6, 95 },
+                    2,
+                    0.40);
+
+            Assert(
+                distinctBuyLevels.Count == 2 &&
+                distinctBuyLevels[0] == 102 &&
+                distinctBuyLevels[1] == 105 &&
+                distinctSellLevels.Count == 2 &&
+                distinctSellLevels[0] == 98 &&
+                distinctSellLevels[1] == 95,
+                "liquidity candidates are ordered by distance and deduplicated by ATR spacing");
+
             Assert(
                 LiquiditySweepRule.IsActiveUnbrokenLevel(
                     -1,
