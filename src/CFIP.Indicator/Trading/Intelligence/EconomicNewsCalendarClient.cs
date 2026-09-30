@@ -524,7 +524,7 @@ namespace cAlgo
                 state == EconomicNewsFeedState.BlockingEvent
                     ? ""
                     : " • " +
-                      _economicNewsEvents.Count +
+                      _economicNewsEvents.Length +
                       " RELEVANT EVENTS";
 
             string refresh =
