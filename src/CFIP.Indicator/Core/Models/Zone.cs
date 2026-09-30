@@ -10,5 +10,6 @@ namespace cAlgo
         public int CreatedIndex;
         public int Age;
         public int Quality;
+        public OrderBlockLifecycleState? OrderBlockLifecycle;
     }
 }
