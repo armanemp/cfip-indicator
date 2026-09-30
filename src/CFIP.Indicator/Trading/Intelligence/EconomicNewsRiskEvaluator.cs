@@ -15,10 +15,10 @@ namespace cAlgo
         private CfipEconomicNewsEvent FindBlockingNewsEvent(
             DateTime utc)
         {
-            List<CfipEconomicNewsEvent> events =
-                SnapshotEconomicNewsEvents();
+            CfipEconomicNewsEvent[] events =
+                GetEconomicNewsEvents();
 
-            if (events.Count == 0)
+            if (events.Length == 0)
                 return null;
 
             DateTimeOffset now =
@@ -161,14 +161,6 @@ namespace cAlgo
                     ? TimeInUtc
                     : TimeInUtc.ToUniversalTime();
 
-            EconomicNewsFeedState state =
-                EconomicNewsFeedStateRule.Resolve(
-                    EnableEconomicNewsCalendar,
-                    GetEconomicNewsLastSuccessUtc(),
-                    now,
-                    MaximumNewsFeedAgeMinutes,
-                    _economicNewsBlockingEvent != null);
-
             CfipEconomicNewsEvent currentBlocking =
                 FindBlockingNewsEvent(
                     now);
@@ -224,7 +216,7 @@ namespace cAlgo
             {
                 status =
                     "NEWS CALENDAR • HEALTHY • " +
-                    SnapshotEconomicNewsEvents().Count +
+                    GetEconomicNewsEvents().Length +
                     " RELEVANT EVENTS";
             }
 
