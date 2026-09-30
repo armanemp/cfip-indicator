@@ -186,3 +186,15 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 6. روی هر historical refresh فقط objectهای جدید/تغییرکرده ساخته شوند و stale objectهای خارج از ownership حذف شوند؛ حذف و بازسازی کامل مجموعه در هر render ممنوع است مگر history invalidation.
 7. هیچ accuracy، win-rate، RR improvement یا profitability claim از historical arrows بدون replay/outcome واقعی پذیرفته نیست.
 8. هر تغییر بعدی به historical rendering باید اثر آن بر panel latency، Calculate hot path، object count، history prepend و cleanup بررسی شود.
+
+
+## 19. روتین اختصاصی CR2.9 — Structural Stop / Divergence / Rejection
+
+1. Structural stop باید فقط از timeframeهای canonical استفاده کند؛ timeframe ناشناخته باید fail-closed باشد و هرگز با W1 جایگزین نشود.
+2. امتیاز stop باید reward-path information را نگه دارد، اما reward bonus و preferred-risk contribution باید owner خالص و قابل‌آزمون داشته باشند.
+3. هیچ تغییر عددی در stop score، divergence threshold یا rejection threshold بدون fixture/replay/outcome evidence مجاز نیست؛ contract centralization با tuning اشتباه نشود.
+4. Divergence thresholdهای quality، conflict، price excursion، RSI، WaveTrend و recency باید یک owner داشته باشند و BUY/SELL symmetry حفظ شود.
+5. conflict divergence باید Direction=0 و non-actionable بماند؛ conflict نباید به strength directional تبدیل شود.
+6. Doji باید با همان meaningful-body rule سنجیده شود که rejection directional را gate می‌کند؛ wick-only candle نباید rejection evidence بسازد.
+7. deterministic contracts باید boundaryهای threshold، invalid numeric input و symmetry را پوشش دهند.
+8. در هر تغییر بعدی، اثر stop selection روی risk ATR، RR، reward path و selection bias و نیز اثر divergence/rejection روی false-positive/false-negative فقط با replay/outcome سنجیده شود.
