@@ -87,8 +87,8 @@ check(
 )
 check(
     "stage telemetry is bounded and deduplicated per M5",
-    "MaxTargetStageTelemetryReasonsPerM5 = 24" in selector
-    and "_targetStageTelemetryM5" in selector
+    "MaxTargetStageTelemetryReasonsPerM5 = 24" in telemetry
+    and "_targetStageTelemetryM5" in telemetry
     and "TargetStageRejectionTelemetry" not in selector
     and "_targetStageTelemetryKeys" in telemetry
     and "RecordExecutionTelemetryHistory(" in telemetry
