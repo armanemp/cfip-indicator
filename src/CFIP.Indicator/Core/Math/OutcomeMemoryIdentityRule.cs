@@ -210,14 +210,14 @@ namespace cAlgo
         internal static string BuildLegacyMemoryKey(
             string symbol,
             string timeframe,
-            string legacyFingerprint)
+            string compatibilityFingerprint)
         {
             return "CFIP.OUTCOME." +
                 SanitizeArchivePart(symbol) +
                 "." +
                 SanitizeArchivePart(timeframe) +
                 "." +
-                (legacyFingerprint ?? "") +
+                (compatibilityFingerprint ?? "") +
                 ".MEM";
         }
 
