@@ -44,8 +44,8 @@ check(
 )
 check(
     "calculation propagates the new-closed-bar boundary",
-    "closedM5,
-                        newClosedBar" in cycle,
+    "closedM5" in cycle and
+    "newClosedBar" in cycle,
 )
 check(
     "trace capture is guarded by newClosedBar",
