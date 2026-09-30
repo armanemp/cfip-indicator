@@ -112,24 +112,6 @@ namespace cAlgo
                         ? observedUtc.Value.ToUniversalTime()
                         : Server.TimeInUtc;
 
-                Directory.CreateDirectory(
-                    OutcomeArchiveDirectory);
-
-                string target =
-                    RuntimeLogFilePath(
-                        observed);
-
-                if (!File.Exists(target))
-                {
-                    File.WriteAllText(
-                        target,
-                        RuntimeLogSchema +
-                        Environment.NewLine +
-                        RuntimeLogHeader +
-                        Environment.NewLine,
-                        Encoding.UTF8);
-                }
-
                 StringBuilder row =
                     new StringBuilder();
 
@@ -188,17 +170,19 @@ namespace cAlgo
                 row.Append(',');
                 row.Append(forecastHorizonBars);
 
-                File.AppendAllText(
-                    target,
-                    row.ToString() +
-                    Environment.NewLine,
-                    Encoding.UTF8);
+                _bufferedArchivePersistence.Enqueue(
+                    RuntimeLogFilePath(
+                        observed),
+                    RuntimeLogSchema +
+                    Environment.NewLine +
+                    RuntimeLogHeader,
+                    row.ToString());
             }
             catch (Exception ex)
             {
                 // Diagnostics must never become a trading failure path.
                 Print(
-                    "CFIP runtime log persist failed: {0}",
+                    "CFIP runtime log queue failed: {0}",
                     ex.Message);
             }
         }
