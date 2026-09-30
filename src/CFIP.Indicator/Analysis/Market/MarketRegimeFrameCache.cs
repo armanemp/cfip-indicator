@@ -10,7 +10,7 @@ namespace cAlgo
         private readonly Entry[] _entries =
             new Entry[Capacity];
 
-        public bool TryGet(
+        public bool TryGetSnapshot(
             Bars bars,
             int index,
             out MarketRegimeSnapshot snapshot)
@@ -38,7 +38,7 @@ namespace cAlgo
             return false;
         }
 
-        public void Set(
+        public void StoreSnapshot(
             Bars bars,
             int index,
             MarketRegimeSnapshot snapshot)
@@ -101,10 +101,12 @@ namespace cAlgo
                 return false;
 
             return
-                entry.First == Fingerprint(
+                MatchesFingerprint(
+                    entry.First,
                     bars,
                     0) &&
-                entry.Last == Fingerprint(
+                MatchesFingerprint(
+                    entry.Last,
                     bars,
                     entry.Index);
         }
@@ -121,6 +123,20 @@ namespace cAlgo
                 bars.ClosePrices[index],
                 bars.TickVolumes[index]);
         }
+
+        private static bool MatchesFingerprint(
+            BarFingerprint expected,
+            Bars bars,
+            int index)
+        {
+            return expected.OpenTime == bars.OpenTimes[index] &&
+                   expected.Open == bars.OpenPrices[index] &&
+                   expected.High == bars.HighPrices[index] &&
+                   expected.Low == bars.LowPrices[index] &&
+                   expected.Close == bars.ClosePrices[index] &&
+                   expected.TickVolume == bars.TickVolumes[index];
+        }
+
 
         private sealed class Entry
         {
@@ -148,14 +164,14 @@ namespace cAlgo
             }
         }
 
-        private readonly struct BarFingerprint : IEquatable<BarFingerprint>
+        private readonly struct BarFingerprint
         {
-            private readonly DateTime _openTime;
-            private readonly double _open;
-            private readonly double _high;
-            private readonly double _low;
-            private readonly double _close;
-            private readonly double _tickVolume;
+            public DateTime OpenTime { get; }
+            public double Open { get; }
+            public double High { get; }
+            public double Low { get; }
+            public double Close { get; }
+            public double TickVolume { get; }
 
             public BarFingerprint(
                 DateTime openTime,
@@ -165,43 +181,12 @@ namespace cAlgo
                 double close,
                 double tickVolume)
             {
-                _openTime = openTime;
-                _open = open;
-                _high = high;
-                _low = low;
-                _close = close;
-                _tickVolume = tickVolume;
-            }
-
-            public bool Equals(BarFingerprint other)
-            {
-                return _openTime == other._openTime &&
-                       _open == other._open &&
-                       _high == other._high &&
-                       _low == other._low &&
-                       _close == other._close &&
-                       _tickVolume == other._tickVolume;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is BarFingerprint other &&
-                       Equals(other);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    int hash = 17;
-                    hash = hash * 31 + _openTime.GetHashCode();
-                    hash = hash * 31 + _open.GetHashCode();
-                    hash = hash * 31 + _high.GetHashCode();
-                    hash = hash * 31 + _low.GetHashCode();
-                    hash = hash * 31 + _close.GetHashCode();
-                    hash = hash * 31 + _tickVolume.GetHashCode();
-                    return hash;
-                }
+                OpenTime = openTime;
+                Open = open;
+                High = high;
+                Low = low;
+                Close = close;
+                TickVolume = tickVolume;
             }
         }
     }
