@@ -32,7 +32,13 @@ namespace cAlgo
                             ExponentialMovingAverage ema =
                                 fast ? set.Fast : set.Slow;
                 
-                            if (ema == null || index >= ema.Result.Count)
+                            if (ema == null ||
+                                !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                                    index,
+                                    ema.Result.Count,
+                                    fast
+                                        ? Math.Max(2, FastEma)
+                                        : Math.Max(3, SlowEma)))
                                 return 0;
                 
                             return SafePositive(ema.Result[index]);

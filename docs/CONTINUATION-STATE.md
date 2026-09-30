@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.5 — Per-timeframe regime semantics (D5).**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
 
 CR4.1 and CR4.2 are complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
@@ -365,8 +365,30 @@ Verification boundary:
 - repository Source/Architecture, Runtime Acceptance and cTrader Compile remain to be read from the PR checks;
 - target-terminal broker acknowledgement ordering, restart/reconnect timing, panel behavior and empirical outcome validation remain manual.
 
-Next transition: **CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
+Next transition: **CR4-FINAL repository integration gate after D10 repository verification.**
+
+### CR4.10 / D10 implementation record
+
+CR4.10 / D10 is implemented on branch `phase/cr4-10-native-indicator-safety`.
+
+Implementation:
+- centralized native warm-up/numeric readiness in Core `NativeIndicatorReadinessRule`;
+- hardened native wrappers and MACD prior-sample access;
+- blocked incomplete native frames before scoring/evidence;
+- hardened market-regime normalization against unusable native values;
+- replaced linear native registry scans with a Bars reference-identity dictionary;
+- added deterministic readiness/neutral-output runtime contracts;
+- added a deterministic registry lookup benchmark;
+- wired `audit_phase_4_10.py` after CR4.9 in Source/Architecture.
+
+Verification boundary:
+- repository Source/Architecture, Runtime Acceptance, cTrader Compile and benchmark evidence are pending branch/PR checks;
+- target-terminal readiness timing, panel behavior, broker lifecycle ordering, restart/reconnect and empirical signal-quality validation remain manual.
 
 ## Current active phase
 
-CR4.10 / D10 — Native-indicator defensive safety and registry performance.
+CR4.10 / D10 — implementation complete; repository verification pending.
+
+### Next transition
+
+CR-FINAL repository integration gate.

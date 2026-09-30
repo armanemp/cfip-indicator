@@ -23,7 +23,8 @@ namespace cAlgo
             if (f == null ||
                 f.Bars == null ||
                 f.Index < 0 ||
-                f.Index >= f.Bars.Count)
+                f.Index >= f.Bars.Count ||
+                !f.NativeIndicatorsReady)
                 return f;
 
             Bars bars = f.Bars;

@@ -28,7 +28,10 @@ namespace cAlgo
                 
                             if (set == null ||
                                 set.Dms == null ||
-                                index >= set.Dms.ADX.Count)
+                                !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                                    index,
+                                    set.Dms.ADX.Count,
+                                    Math.Max(2, AdxPeriod)))
                                 return 0;
                 
                             double value = set.Dms.ADX[index];

@@ -1122,19 +1122,28 @@ Next phase: **CR4.10 / D10 — Native-indicator defensive safety and registry pe
 
 ### CR4.10 — Native-indicator defensive safety and registry performance (D10)
 
-Initial review label: **PARTIAL — consumer coverage must be inventoried before code changes.**
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
 
-Scope:
-- `Native.cs`;
-- all ATR/RSI/ADX/native indicator consumers;
-- `NativeIndicatorRegistry`.
+Reconciled findings:
+- repository-wide consumer inventory isolates direct native wrapper/registry access and the expected analysis consumers;
+- ATR/EMA/ADX/DMI already fail closed on unusable numerical input;
+- RSI neutral fallback `50` is compatibility-preserved, but incomplete native frames are now blocked before scoring;
+- MACD prior-sample access now has explicit warm-up readiness.
 
-Required verification:
-- inventory every consumer of potentially non-ready zero/neutral outputs;
-- add `IsFinitePositive`/readiness checks only where mathematically required;
-- prove no division-by-zero or fabricated neutral value can become a trading signal;
-- replace repeated linear registry lookup with a deterministic dictionary keyed by Bars only if lifecycle/ownership semantics remain correct;
-- benchmark lookup cost before/after on the hot path.
+Implemented:
+- centralized Core `NativeIndicatorReadinessRule`;
+- wrapper, MarketFrame and MarketRegime defensive readiness boundaries;
+- reference-identity `Dictionary<Bars, Native>` registry;
+- deterministic runtime readiness contracts;
+- platform-neutral registry lookup benchmark;
+- `audit_phase_4_10.py` wired after CR4.9.
+
+Safety:
+- no public parameter identity or default trading threshold changed;
+- no second decision/execution authority introduced;
+- target-terminal/broker runtime and empirical signal-quality validation remain manual.
+
+Next transition: **CR-FINAL repository integration gate.**
 
 ### Prompt 4 completion gate
 

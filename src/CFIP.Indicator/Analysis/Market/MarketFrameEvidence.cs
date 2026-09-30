@@ -29,6 +29,41 @@ namespace cAlgo
             f.EmaFast = Ema(bars, index, true);
             f.EmaSlow = Ema(bars, index, false);
 
+            Native native =
+                GetNative(bars);
+
+            f.NativeIndicatorsReady =
+                NativeIndicatorReadinessRule.IsFrameReady(
+                    index,
+                    native == null || native.Atr == null
+                        ? 0
+                        : native.Atr.Result.Count,
+                    native == null || native.Rsi == null
+                        ? 0
+                        : native.Rsi.Result.Count,
+                    native == null || native.Dms == null
+                        ? 0
+                        : native.Dms.ADX.Count,
+                    native == null || native.Fast == null
+                        ? 0
+                        : native.Fast.Result.Count,
+                    native == null || native.Slow == null
+                        ? 0
+                        : native.Slow.Result.Count,
+                    Math.Max(2, AtrPeriod),
+                    Math.Max(2, RsiPeriod),
+                    Math.Max(2, AdxPeriod),
+                    Math.Max(2, FastEma),
+                    Math.Max(3, SlowEma),
+                    f.Atr,
+                    f.Rsi,
+                    f.Adx,
+                    f.EmaFast,
+                    f.EmaSlow);
+
+            if (!f.NativeIndicatorsReady)
+                return f;
+
             ApplyWaveTrendEvidence(
                 f,
                 bars,

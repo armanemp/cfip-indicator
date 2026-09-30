@@ -4964,6 +4964,36 @@ Safety boundary:
 
 **Next phase: CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
 
+### CR4.10 / D10 implementation closeout — 2026-10-01
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Implemented:
+- added centralized Core `NativeIndicatorReadinessRule` for warm-up, prior-window, finite-positive and bounded oscillator checks;
+- hardened ATR, RSI, ADX and EMA native wrappers at their readiness boundaries;
+- made MACD prior-sample comparison explicitly warm-up bounded;
+- added `Frame.NativeIndicatorsReady` and fail-closed analysis/scoring before incomplete native inputs can become evidence;
+- hardened market-regime normalization against unusable ATR/baseline/EMA values;
+- converted the native registry from linear `List<Native>` lookup to reference-identity `Dictionary<Bars, Native>` without changing ownership semantics;
+- added deterministic runtime contracts for readiness and neutral RSI safety;
+- added a deterministic pre/post registry lookup benchmark;
+- added `audit_phase_4_10.py` and wired it after CR4.9 in the accumulated Source/Architecture workflow.
+
+Consumer inventory:
+- repository-wide static inventory confines direct `GetNative`/ATR/RSI/ADX/DMI/EMA consumers to the expected native wrappers/registry and analysis boundaries;
+- `Native.cs` remains storage-only;
+- no second decision or execution authority was introduced.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/SL/target/execution threshold changed;
+- no trading policy was tuned;
+- target-terminal readiness timing, panel responsiveness, broker ordering/restart behavior and empirical signal quality remain manual acceptance boundaries.
+
+**Next phase: CR-FINAL repository integration gate.**
+
+
+
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**

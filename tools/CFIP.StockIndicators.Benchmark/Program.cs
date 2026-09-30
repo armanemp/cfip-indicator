@@ -79,6 +79,14 @@ internal static class Program
 
         Console.WriteLine(report);
 
+        NativeRegistryLookupBenchmarkResult nativeRegistryTiming =
+            NativeRegistryLookupBenchmark.Measure();
+
+        Console.WriteLine();
+        Console.WriteLine(
+            NativeRegistryLookupBenchmark.Format(
+                nativeRegistryTiming));
+
         bool passed =
             comparisons.All(x => x.Passed) &&
             comparisons.Count ==

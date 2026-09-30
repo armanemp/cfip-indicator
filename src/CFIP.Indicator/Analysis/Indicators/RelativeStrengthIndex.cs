@@ -28,7 +28,10 @@ namespace cAlgo
                 
                             if (set == null ||
                                 set.Rsi == null ||
-                                index >= set.Rsi.Result.Count)
+                                !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                                    index,
+                                    set.Rsi.Result.Count,
+                                    Math.Max(2, RsiPeriod)))
                                 return 50;
                 
                             double value = set.Rsi.Result[index];

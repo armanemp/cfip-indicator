@@ -13,6 +13,7 @@ namespace cAlgo
                         public int Index;
                         public double Atr;
                         public double Rsi;
+                        public bool NativeIndicatorsReady;
                         public double Adx;
                         public double EmaFast;
                         public double EmaSlow;
