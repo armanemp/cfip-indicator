@@ -63,8 +63,11 @@ namespace cAlgo
                     TargetCandidateRejectionReasons.InvalidGeometry);
             }
 
-            if ((direction == 1 && target <= entry) ||
-                (direction == -1 && target >= entry))
+            if (!PriceProtectionRule.ValidateTarget(
+                    direction,
+                    entry,
+                    target,
+                    0))
             {
                 return BlockGeometry(
                     TargetCandidateRejectionReasons.TargetSideInvalid);
