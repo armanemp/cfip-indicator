@@ -27,35 +27,19 @@ namespace cAlgo
                 atr <= 0)
                 return selected;
 
-            double rrStep =
-                Math.Max(
-                    0.10,
-                    StructuralTpRrStep);
+            double rrStep = Math.Max(0.10, StructuralTpRrStep);
 
-            double[] requiredRR =
-                BuildTargetSelectionRequiredRR(
-                    rrStep,
-                    lane);
+            double[] requiredRR = BuildTargetSelectionRequiredRR(rrStep, lane);
 
-            double maximumRR =
-                Math.Max(
-                    requiredRR[0],
-                    MaximumRewardRR);
+            double maximumRR = Math.Max(requiredRR[0], MaximumRewardRR);
 
             for (int stage = 0;
                  stage < 4;
                  stage++)
             {
-                Dictionary<string, int> rejectionCounts =
-                    new Dictionary<string, int>(
-                        StringComparer.Ordinal);
+                Dictionary<string, int> rejectionCounts = new Dictionary<string, int>(StringComparer.Ordinal);
 
-                if (!TryValidateTargetStageFeasibility(
-                        requiredRR[stage],
-                        maximumRR,
-                        risk,
-                        atr,
-                        out string stageRejectionReason))
+                if (!TryValidateTargetStageFeasibility(requiredRR[stage], maximumRR, risk, atr, out string stageRejectionReason))
                 {
                     AddTargetRejectionCount(
                         rejectionCounts,
@@ -67,16 +51,9 @@ namespace cAlgo
                     continue;
                 }
 
-                double previous =
-                    FindPreviousSelectedTargetPrice(
-                        selected,
-                        stage,
-                        entry);
+                double previous = FindPreviousSelectedTargetPrice(selected, stage, entry);
 
-                bool requireHtf =
-                    RequiresHtfRewardForTargetStage(
-                        stage,
-                        lane);
+                bool requireHtf = RequiresHtfRewardForTargetStage(stage, lane);
 
                 Level best = null;
                 double bestScore =
