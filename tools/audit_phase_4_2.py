@@ -32,7 +32,10 @@ check("indicator keeps AccessRights.None",
       "AccessRights = AccessRights.None" in indicator)
 check("History remains a sandbox-relative directory",
       'private const string OutcomeArchiveDirectory = "History";' in archive and
-      "OutcomeArchiveDirectory + Path.DirectorySeparatorChar" in portable)
+      "HistoryLocationMarkerPath()" in portable and
+      "OutcomeArchiveDirectory" in portable and
+      "Path.DirectorySeparatorChar" in portable and
+      '"RelativeHistoryPath=History"' in portable)
 check("portable marker performs a real write/read round trip",
       "TryWriteAllText(" in portable and "TryReadAllText(" in portable and
       "MarkProbeResult(" in portable)
