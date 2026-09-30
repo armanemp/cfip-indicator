@@ -144,7 +144,7 @@ check(
 
 check(
     "phase keeps the no-tuning/manual-terminal boundaries",
-    "no public parameter name/type/DefaultValue changed" in phase_doc.lower()
+    "no public parameter name/type/defaultvalue changed" in phase_doc.lower()
     and "no default rr" in phase_doc.lower()
     and "target-terminal" in phase_doc.lower()
     and "no new decision or execution authority" in phase_doc.lower(),
