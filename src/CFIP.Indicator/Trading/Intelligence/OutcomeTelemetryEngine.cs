@@ -178,6 +178,10 @@
                                  new OutcomeObservation
                                  {
                                      PositionId = position.Id,
+                                     SignalTraceId =
+                                         plan == null
+                                             ? ""
+                                             : plan.SignalTraceId ?? "",
                                      Direction = direction,
                                      Lane = lane,
                                      EntryMode = plan == null
