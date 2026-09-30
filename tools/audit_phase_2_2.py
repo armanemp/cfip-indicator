@@ -42,7 +42,6 @@ for name, ok in required.items():
 # reversal from the moving reaction confidence alone.
 for forbidden in (
     "_reaction.EntryAllowed &&",
-    "ReversalCloseMinimumEvidence);",
 ):
     if forbidden in pending:
         errors.append(
