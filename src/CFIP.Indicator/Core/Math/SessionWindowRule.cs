@@ -5,6 +5,7 @@ namespace cAlgo
     internal static class SessionWindowRule
     {
         internal const int DefaultEndOfDayCloseWindowMinutes = 5;
+        internal const int SessionResolutionMinutes = 60;
 
         internal static bool IsInside(
             DateTime utc,
@@ -12,9 +13,9 @@ namespace cAlgo
             int sessionEndHour)
         {
             int startMinute =
-                NormalizeHour(sessionStartHour) * 60;
+                NormalizeHour(sessionStartHour) * SessionResolutionMinutes;
             int endMinute =
-                NormalizeHour(sessionEndHour) * 60;
+                NormalizeHour(sessionEndHour) * SessionResolutionMinutes;
             int nowMinute =
                 utc.Hour * 60 + utc.Minute;
 
@@ -56,8 +57,8 @@ namespace cAlgo
                     0,
                     DateTimeKind.Utc);
 
-            int startMinute = startHour * 60;
-            int endMinute = endHour * 60;
+            int startMinute = startHour * SessionResolutionMinutes;
+            int endMinute = endHour * SessionResolutionMinutes;
             int nowMinute =
                 reference.Hour * 60 + reference.Minute;
 
@@ -158,8 +159,8 @@ namespace cAlgo
                     0,
                     DateTimeKind.Utc);
 
-            int startMinute = startHour * 60;
-            int endMinute = endHour * 60;
+            int startMinute = startHour * SessionResolutionMinutes;
+            int endMinute = endHour * SessionResolutionMinutes;
             int nowMinute =
                 reference.Hour * 60 + reference.Minute;
 

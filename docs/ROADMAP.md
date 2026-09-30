@@ -4330,7 +4330,7 @@ Completed in this phase:
 Acceptance boundary:
 - direct broker calls must remain behind the current known mutation owners until extraction;
 - all execution-related parameters must receive deterministic INDICATOR / CBOT / SPLIT classification from source usage;
-- public parameter count remains 562;
+- public parameter count remains 563 on the current CR1.8-audited main baseline;
 - no duplicate public parameter declarations;
 - no new broker executor is permitted during the separation track.
 
@@ -4362,3 +4362,19 @@ Static verification:
 Next phase after target-terminal acceptance: CBOT-1 — platform-neutral contracts.
 
 Operator action after merge: git pull --ff-only.
+
+## Claude Review Remediation — CR1.9 Closeout — 2026-09-30
+
+Status: IMPLEMENTED
+
+Completed:
+- machine-enforced parameter count/documentation audit added and wired into Source/Architecture CI;
+- README parameter count aligned to the current machine-derived 567 public parameters;
+- MaximumOpenPositions explicitly documented as intentional single-plan capacity (MinValue=1, MaxValue=1);
+- session parameter resolution explicitly fixed at 60 minutes through the canonical SessionWindowRule invariant and runtime contract;
+- phase record added at docs/PHASE-CR1-9-MINOR-CLEANUP.md;
+- no public parameter defaults, trading thresholds, RR floors, position capacity or execution authority changed.
+
+Next phase: **CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Rejection semantics**.
+
+Track 12A remains blocked until CR-FINAL passes.

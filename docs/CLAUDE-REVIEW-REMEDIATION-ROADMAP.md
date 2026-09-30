@@ -427,14 +427,25 @@ Verification:
 
 Covers: A12.
 
-Work:
-- verify parameter-count reporting against a script rather than a hand-maintained number;
-- identify whether MaximumOpenPositions is intentionally single-valued;
-- make session minute resolution explicit in documentation/contract.
+Status: COMPLETE — implementation closed 2026-09-30.
 
-Acceptance:
-- README count is machine-derived or verified;
-- no dead parameter gives a misleading impression of configurability.
+Implemented:
+- added machine-enforced `tools/audit_parameter_count.py` and wired it into Source/Architecture CI;
+- corrected README parameter reporting to the current machine-derived count of 567;
+- documented `MaximumOpenPositions` as intentionally single-valued (`1/1`) under the current certified single-plan capacity;
+- made the public session-parameter resolution explicit as 60 minutes via the canonical `SessionWindowRule.SessionResolutionMinutes` invariant;
+- extended runtime contracts to assert the session-resolution invariant;
+- documented the cleanup and exact acceptance boundary in `docs/PHASE-CR1-9-MINOR-CLEANUP.md`;
+- preserved all public parameter names/types/defaults and introduced no new trading threshold or execution authority.
+
+Verification:
+- Source/Architecture CI must pass the new parameter-count/documentation audit;
+- Runtime Acceptance must pass the extended session contract;
+- cTrader Compile/Build must pass with unchanged host behavior.
+
+Target-terminal runtime behavior is not claimed from CI alone.
+
+Next implementation phase: **CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Rejection semantics**.
 
 ---
 

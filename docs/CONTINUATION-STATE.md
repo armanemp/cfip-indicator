@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-30
 
+## Phase closeout
+
+CR1.9 implementation is complete on this branch; CI/merge verification remains the acceptance gate.
+
 ## Authoritative order
 
 1. Claude review remediation: `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
@@ -10,7 +14,7 @@ Last updated: 2026-09-30
 
 ## Active phase
 
-**CR1.9 — Minor cleanup and documentation (Prompt 1 / A12).**
+**CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Rejection semantics (Prompt 2 / B1, B2, A4, B10, B11, B12).**
 
 ## Completed before this checkpoint
 
@@ -20,6 +24,10 @@ Last updated: 2026-09-30
 - CR1.3 news guard refresh/state handling
 - CR1.4 closed-bar cycle ordering/readiness state
 - CR1.5 hot-path/cache/logging optimization
+- CR1.6 FVG quality discrimination
+- CR1.7 threshold truth + volume audit
+- CR1.8 managed identity boundary
+- CR1.9 minor cleanup and documentation
 
 ## Rules for every continuation
 
@@ -34,4 +42,4 @@ Last updated: 2026-09-30
 
 ## Next transition
 
-CR1.8 is complete. The next implementation response must execute **CR1.9** and only CR1.9.
+CR1.9 is implemented and its source/contract changes are awaiting CI acceptance. The next implementation response must execute **CR2.1** and only CR2.1.
