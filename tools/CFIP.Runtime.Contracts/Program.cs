@@ -59,6 +59,7 @@ namespace cAlgo
             VerifyDivergenceConflictSemantics();
             VerifyStructuralTimeframeSemantics();
             VerifyReactionQualificationSemantics();
+            VerifyIndicatorExecutionQualitySemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -456,17 +457,16 @@ namespace cAlgo
         private static void VerifyExecutionThresholdSemantics()
         {
             Assert(
-                ExecutionThresholdPolicy.AutomaticMarketIndicatorConfluenceMinimum == 60 &&
-                ExecutionThresholdPolicy.AutomaticMarketIndicatorConflictMaximum == 52,
+                IndicatorExecutionQualityRule.AutomaticMarketQualityMinimum == 60 &&
+                IndicatorExecutionQualityRule.AutomaticMarketConflictMaximum == 52,
                 "automatic-market indicator thresholds retain current defaults");
 
             Assert(
-                ExecutionThresholdPolicy.PendingContinuationIndicatorConfluenceMinimum == 62 &&
-                ExecutionThresholdPolicy.PendingContinuationIndicatorConflictMaximum == 48 &&
-                ExecutionThresholdPolicy.PendingReversalIndicatorConfluenceMinimum == 62 &&
-                ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum == 50 &&
-                ExecutionThresholdPolicy.PendingSubmissionIndicatorConfluenceMinimum == 58 &&
-                ExecutionThresholdPolicy.PendingSubmissionIndicatorConflictMaximum == 55,
+                IndicatorExecutionQualityRule.PendingSetupQualityMinimum == 62 &&
+                IndicatorExecutionQualityRule.PendingContinuationConflictMaximum == 48 &&
+                IndicatorExecutionQualityRule.PendingReversalConflictMaximum == 50 &&
+                IndicatorExecutionQualityRule.PendingSubmissionQualityMinimum == 58 &&
+                IndicatorExecutionQualityRule.PendingSubmissionConflictMaximum == 55,
                 "pending-path indicator thresholds are explicitly centralized");
 
             Assert(
@@ -4025,6 +4025,98 @@ namespace cAlgo
                     20,
                     19),
                 "closed-bar confirmation never accepts a candidate after the known closed index");
+        }
+
+        private static void VerifyIndicatorExecutionQualitySemantics()
+        {
+            IndicatorQualityGateResult marketPass =
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.AutomaticMarket,
+                    60,
+                    52);
+
+            Assert(
+                marketPass.Allowed &&
+                marketPass.MinimumQuality == 60 &&
+                marketPass.MaximumConflict == 52,
+                "automatic market uses its documented final-entry indicator gate");
+
+            Assert(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.AutomaticMarket,
+                    59,
+                    40).Allowed &&
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.AutomaticMarket,
+                    80,
+                    53).Allowed,
+                "automatic market rejects below quality or above conflict");
+
+            Assert(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingSubmission,
+                    58,
+                    55).Allowed &&
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingSubmission,
+                    57,
+                    10).Allowed &&
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingSubmission,
+                    80,
+                    56).Allowed,
+                "pending submission keeps a separate lower defense-in-depth floor");
+
+            IndicatorQualityGateResult continuation =
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingContinuation,
+                    62,
+                    48);
+
+            IndicatorQualityGateResult reversal =
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingReversal,
+                    62,
+                    50);
+
+            Assert(
+                continuation.Allowed &&
+                reversal.Allowed &&
+                continuation.MinimumQuality ==
+                    reversal.MinimumQuality &&
+                continuation.MinimumQuality == 62,
+                "continuation and reversal share one pending setup quality floor");
+
+            Assert(
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingContinuation,
+                    70,
+                    49).Allowed &&
+                !IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingReversal,
+                    70,
+                    51).Allowed,
+                "continuation and reversal retain explicitly different conflict tolerance");
+
+            Assert(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingContinuation,
+                    61,
+                    48).Reason.Contains(
+                        "PENDING CONTINUATION") &&
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingSubmission,
+                    57,
+                    20).Reason.Contains(
+                        "PENDING SUBMISSION"),
+                "blocked diagnostics identify the canonical semantic gate");
+
+            Assert(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    (IndicatorQualityGateStage)999,
+                    100,
+                    0).Allowed == false,
+                "unknown indicator gate stage fails closed");
         }
 
         private static void Assert(bool condition, string name)

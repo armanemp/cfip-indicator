@@ -185,32 +185,20 @@ namespace cAlgo
 
             if (_m5Frame != null)
             {
-                if (_m5Frame.IndicatorConfluenceQuality < ExecutionThresholdPolicy.AutomaticMarketIndicatorConfluenceMinimum)
-                {
-                    string reason =
-                        "INDICATOR Q " +
-                        _m5Frame.IndicatorConfluenceQuality +
-                        " < 60";
+                IndicatorQualityGateResult indicatorGate =
+                    IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                        IndicatorQualityGateStage.AutomaticMarket,
+                        _m5Frame.IndicatorConfluenceQuality,
+                        _m5Frame.IndicatorConflict);
 
+                if (!indicatorGate.Allowed)
+                {
                     _autoExecutionBlockReason =
-                        reason;
+                        indicatorGate.Reason;
+
                     SetAutoTradingState(
                         "BLOCKED",
-                        reason);
-                    return false;
-                }
-
-                if (_m5Frame.IndicatorConflict > ExecutionThresholdPolicy.AutomaticMarketIndicatorConflictMaximum)
-                {
-                    string reason =
-                        "INDICATOR CONFLICT " +
-                        _m5Frame.IndicatorConflict;
-
-                    _autoExecutionBlockReason =
-                        reason;
-                    SetAutoTradingState(
-                        "BLOCKED",
-                        reason);
+                        indicatorGate.Reason);
                     return false;
                 }
             }

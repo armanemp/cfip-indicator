@@ -109,22 +109,17 @@ namespace cAlgo
 
             if (_m5Frame != null)
             {
-                if (_m5Frame.IndicatorConfluenceQuality < ExecutionThresholdPolicy.PendingSubmissionIndicatorConfluenceMinimum)
-                {
-                    reason =
-                        prefix +
-                        "INDICATOR Q " +
-                        _m5Frame.IndicatorConfluenceQuality +
-                        " < 58";
-                    return false;
-                }
+                IndicatorQualityGateResult indicatorGate =
+                    IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                        IndicatorQualityGateStage.PendingSubmission,
+                        _m5Frame.IndicatorConfluenceQuality,
+                        _m5Frame.IndicatorConflict);
 
-                if (_m5Frame.IndicatorConflict > ExecutionThresholdPolicy.PendingSubmissionIndicatorConflictMaximum)
+                if (!indicatorGate.Allowed)
                 {
                     reason =
                         prefix +
-                        "INDICATOR CONFLICT " +
-                        _m5Frame.IndicatorConflict;
+                        indicatorGate.Reason;
                     return false;
                 }
             }

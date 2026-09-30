@@ -35,10 +35,10 @@ namespace cAlgo
                                         PendingMinimumSmartQuality &&
                                         _decision.TimeframeAgreement >=
                                         PendingMinimumTrendQuality &&
-                                        _m5Frame.IndicatorConfluenceQuality >=
-                                        ExecutionThresholdPolicy.PendingContinuationIndicatorConfluenceMinimum &&
-                                        _m5Frame.IndicatorConflict <=
-                                        ExecutionThresholdPolicy.PendingContinuationIndicatorConflictMaximum;
+                                        IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                                            IndicatorQualityGateStage.PendingContinuation,
+                                            _m5Frame.IndicatorConfluenceQuality,
+                                            _m5Frame.IndicatorConflict).Allowed;
                                 }
         
         private bool ReversalSetupStrong()
@@ -86,10 +86,10 @@ namespace cAlgo
                         _reaction.Direction));
 
             return rangeQuality.Allowed &&
-                _m5Frame.IndicatorConfluenceQuality >=
-                ExecutionThresholdPolicy.PendingReversalIndicatorConfluenceMinimum &&
-                _m5Frame.IndicatorConflict <=
-                ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum;
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
+                    IndicatorQualityGateStage.PendingReversal,
+                    _m5Frame.IndicatorConfluenceQuality,
+                    _m5Frame.IndicatorConflict).Allowed;
         }
 
         private bool PendingModeAllowsStop()
