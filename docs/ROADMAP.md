@@ -4433,6 +4433,32 @@ Manual target-terminal replay/outcome evidence remains required before any struc
 Next phase: **CR3.1 — Live invalidation and false-signal semantics (C1/C2).**
 
 
+## Claude Review Remediation — CR3.1 Closeout — 2026-09-30
+
+Status: VERIFIED COMPLETE — PR #95 merged to main as f482d2f76cdf37cca87fabc5b11b3d8c0a7edac7.
+
+Covers: C1, C2.
+
+Completed:
+- closed-bar-stable live invalidation and false-signal evaluation;
+- confirmed structural swing candidates for structural invalidation;
+- explicit broker-close success handling and rejected-exit recovery;
+- centralized successful _lastExitM5 bookkeeping;
+- explicit soft-adverse-R safety flag with current default preserved;
+- canonical FalseSignalAdverseR protected-stop semantics and BUY/SELL symmetry;
+- deterministic CR3.1 runtime contracts and static audit;
+- parameter inventory/audit reconciliation to the intentional 568 public parameters.
+
+Verification:
+- Source/Architecture: PASS, run 1808;
+- Runtime Acceptance: PASS, run 1617;
+- cTrader Compile: PASS, run 1801;
+- CR3.1 static audit: PASS;
+- project-wide routine/optimization/integrity audits: PASS on the final implementation revision.
+
+Manual target-terminal acceptance remains required for broker-event timing, rejected-close recovery, restart/reconnect behavior, and live quote/bar synchronization. No accuracy, RR improvement or profitability claim is made from CI.
+
+Next phase: CR3.2 — Decision gate and early prediction semantics (C3/C4).
 ## Claude Review Remediation — CR2.1 Closeout — 2026-09-30
 
 Status: VERIFIED COMPLETE — PR #86, merge commit 20835cbf1e541b51b9ad56af46cf0c5d13ff5350.
