@@ -3408,27 +3408,44 @@ namespace cAlgo
                 IndependentEvidenceFusionRule.CountGroups(allGroups) == 4,
                 "all independent evidence families resolve to exactly four groups");
 
-            IndependentEvidenceFusionInput mirroredProjection =
+            IndependentEvidenceFusionInput buyProjection =
+                new IndependentEvidenceFusionInput(
+                    true,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false);
+
+            IndependentEvidenceFusionInput sellProjection =
                 new IndependentEvidenceFusionInput(
                     false,
                     true,
-                    false,
-                    true,
-                    false,
-                    true,
                     true,
                     false,
                     true,
                     false,
+                    false,
                     true,
                     false,
+                    true,
+                    false,
+                    true,
                     true,
                     false);
 
             Assert(
-                IndependentEvidenceFusionRule.CountGroups(mirroredProjection) ==
-                IndependentEvidenceFusionRule.CountGroups(mirroredProjection),
-                "BUY/SELL evidence projection remains direction-neutral at the Core group layer");
+                IndependentEvidenceFusionRule.CountGroups(buyProjection) == 4 &&
+                IndependentEvidenceFusionRule.CountGroups(sellProjection) == 4,
+                "BUY/SELL directional projections preserve identical independent-family semantics");
 
             Assert(
                 IndependentEvidenceFusionRule.CountGroups(
