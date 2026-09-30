@@ -14,20 +14,20 @@ namespace cAlgo
             int index)
         {
             IReadOnlyList<StockQuote> quotes =
-                GetOssQuotes(
+                GetOssStableQuotes(
                     bars,
                     index);
 
             int fast =
-                Math.Max(2, MacdFastPeriod);
+                OssIndicatorParameters.SafeMacdFastPeriod(MacdFastPeriod);
 
             int slow =
-                Math.Max(
-                    fast + 1,
+                OssIndicatorParameters.SafeMacdSlowPeriod(
+                    MacdFastPeriod,
                     MacdSlowPeriod);
 
             if (quotes == null ||
-                quotes.Count < slow + 20)
+                quotes.Count < OssIndicatorParameters.MacdHistoryRequired(MacdFastPeriod, MacdSlowPeriod))
                 return double.NaN;
 
             var results =
@@ -35,7 +35,7 @@ namespace cAlgo
                     quotes,
                     fast,
                     slow,
-                    9)
+                    OssIndicatorParameters.MacdSignalPeriod)
                     .ToList();
 
             return results.Count == 0 ||
