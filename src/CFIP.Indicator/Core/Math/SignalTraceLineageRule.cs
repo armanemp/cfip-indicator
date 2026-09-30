@@ -4,19 +4,17 @@ namespace cAlgo
 {
     internal static class SignalTraceLineageRule
     {
-        public static bool Matches(
+        public static bool MatchesClosedBar(
             int traceClosedM5,
             long traceBarOpenTimeUtcTicks,
             int sourceCreatedM5,
-            long sourceBarOpenTimeUtcTicks,
-            string sourceTraceId)
+            long sourceBarOpenTimeUtcTicks)
         {
             return
                 traceClosedM5 >= 0 &&
                 traceBarOpenTimeUtcTicks > 0 &&
                 sourceCreatedM5 == traceClosedM5 &&
-                sourceBarOpenTimeUtcTicks == traceBarOpenTimeUtcTicks &&
-                !string.IsNullOrWhiteSpace(sourceTraceId);
+                sourceBarOpenTimeUtcTicks == traceBarOpenTimeUtcTicks;
         }
 
         public static bool CanJoinOutcome(
