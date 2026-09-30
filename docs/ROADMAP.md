@@ -4667,7 +4667,31 @@ Next phase: **CR-FINAL — final integration audit and target-terminal acceptanc
 
 ## Prompt 4 Remediation Gate — D1–D10 — 2026-09-30
 
-Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+### CR4.1 closeout — 2026-09-30
+
+Status: **COMPLETE — PR #102 merged to main; merge commit `071baf7ab0bda6df8f1d06c9ecbf9d28810e33d1`.**
+
+Completed:
+- decision/result-only outcome-learning fingerprint;
+- account-scoped LocalStorage identity using broker/account/type/live-demo identity;
+- account-scoped outcome archive/runtime-log prefixes;
+- account-scoped, versioned portable memory snapshot;
+- conservative legacy memory/snapshot migration with current-account broker History ownership validation;
+- explicit Account.Switched memory reload;
+- deterministic CR4.1 runtime contract and static gate.
+
+Behavioral changes are limited to learning-memory identity and safe legacy migration; no public parameter name/type/DefaultValue or trading threshold was changed.
+
+Repository status limitation:
+- the available GitHub status interface returned no check/status records for PR #102/merge commit at closeout, so no CI PASS is claimed.
+
+Target-terminal account switch/restart/persistence verification remains required.
+
+Next phase: **CR4.2 — File/archive path and persistence observability (D2)**.
+
+
+
+Status: **ACTIVE — CR4.1 complete; CR4.2 next**
 
 The fourth Claude review prompt is now mandatory input to the remediation sequence. Its D1–D10 findings are treated as review hypotheses until independently reconciled against current main source.
 
@@ -4694,7 +4718,7 @@ Safety:
 - every accepted fix receives deterministic tests and the permanent project-wide routine + optimization audit;
 - target-terminal-only behaviors remain explicitly marked manual.
 
-CR-FINAL is **paused as a final acceptance gate** until CR4.1–CR4.10 and CR5.1–CR5.8 are either completed or explicitly documented as verified/deferred with evidence.
+CR-FINAL is **paused as a final acceptance gate** until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are either completed or explicitly documented as verified/deferred with evidence.
 
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
