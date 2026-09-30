@@ -361,6 +361,7 @@ namespace cAlgo
                 snapshot.Wins,
                 snapshot.ConfidenceBucket,
                 snapshot.ObservedWinRate,
+                CalculateAverageRealizedR(outcomes, direction, lane, NormalizeRegime(regime), snapshot.ConfidenceBucket, snapshot.Source),
                 snapshot.Source + "-RECENT");
         }
 
@@ -505,6 +506,37 @@ namespace cAlgo
             }
 
             return sum;
+        }
+
+        private static double CalculateAverageRealizedR(
+            IList<OutcomeObservation> outcomes,
+            int direction,
+            OpportunityLane lane,
+            string regime,
+            int confidenceBucket,
+            string source)
+        {
+            double total = 0;
+            int count = 0;
+            if (outcomes == null)
+                return 0;
+            bool exact = source.StartsWith("EXACT", StringComparison.Ordinal);
+            bool contextual = source.StartsWith("LANE+REGIME", StringComparison.Ordinal);
+            for (int i = 0; i < outcomes.Count; i++)
+            {
+                OutcomeObservation observation = outcomes[i];
+                if (observation == null || !observation.CalibrationEligible || observation.Direction != direction)
+                    continue;
+                if (exact && (observation.Lane != lane || !string.Equals(observation.Regime, regime, StringComparison.Ordinal) || ConfidenceBucket(observation.Confidence) != confidenceBucket))
+                    continue;
+                if (contextual && (observation.Lane != lane || !string.Equals(observation.Regime, regime, StringComparison.Ordinal)))
+                    continue;
+                if (double.IsNaN(observation.RealizedR) || double.IsInfinity(observation.RealizedR))
+                    continue;
+                total += observation.RealizedR;
+                count++;
+            }
+            return count > 0 ? total / count : 0;
         }
 
         private static string NormalizeRegime(
