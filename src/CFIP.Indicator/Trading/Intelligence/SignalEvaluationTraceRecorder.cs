@@ -26,7 +26,7 @@ namespace cAlgo
                 return;
 
             string traceId =
-                SignalTraceIdentityRule.Build(
+                SignalTraceIdentityRule.CreateTraceId(
                     SymbolName,
                     Bars == null
                         ? "UNKNOWN"
@@ -211,7 +211,7 @@ namespace cAlgo
         private string BuildSignalTraceId(
             int closedM5)
         {
-            return SignalTraceIdentityRule.Build(
+            return SignalTraceIdentityRule.CreateTraceId(
                 SymbolName,
                 Bars == null
                     ? "UNKNOWN"
