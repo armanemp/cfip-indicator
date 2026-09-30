@@ -12,7 +12,7 @@ namespace cAlgo
             new Dictionary<string, BufferedArchivePendingFile>(
                 StringComparer.Ordinal);
 
-        public int BufferedArchivePendingLineCount
+        public int PendingLineCount
         {
             get
             {
@@ -105,7 +105,9 @@ namespace cAlgo
 
                 if (file.Lines.Count == 0)
                 {
-                    _files.Remove(file.Path);
+                    if (file.ExistingKeys == null)
+                        _files.Remove(file.Path);
+
                     continue;
                 }
 
