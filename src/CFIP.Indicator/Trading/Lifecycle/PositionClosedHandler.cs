@@ -41,9 +41,6 @@ namespace cAlgo
                         
                                     if (!_outcomeRegistered)
                                     {
-                                        bool profitable =
-                                            args.Position.NetProfit > 0;
-
                                         Plan outcomePlan =
                                             _plan != null &&
                                             _plan.IsLivePosition &&
@@ -52,20 +49,23 @@ namespace cAlgo
                                                 ? _plan
                                                 : null;
 
-                                        if (EnableOutcomeTelemetry)
+                                        OutcomeRegistrationResult outcome =
+                                            EnableOutcomeTelemetry
+                                                ? RecordManagedOutcome(
+                                                    outcomePlan,
+                                                    args.Position,
+                                                    _lastEvaluatedM5)
+                                                : OutcomeRegistrationResult.NotRecorded;
+
+                                        if (outcome.Recorded)
                                         {
-                                            RecordManagedOutcome(
-                                                outcomePlan,
-                                                args.Position,
-                                                _lastEvaluatedM5);
+                                            _outcomeRegistered = true;
+
+                                            if (outcome.Profitable)
+                                                _wins++;
+                                            else
+                                                _losses++;
                                         }
-
-                                        _outcomeRegistered = true;
-
-                                        if (profitable)
-                                            _wins++;
-                                        else
-                                            _losses++;
                                     }
                         
                                     _brokerProtectionRecoveryRequired = false;
