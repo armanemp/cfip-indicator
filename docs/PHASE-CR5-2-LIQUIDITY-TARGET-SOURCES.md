@@ -1,6 +1,6 @@
 # CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — repository acceptance closed 2026-10-01.**
 
 ## Scope
 
@@ -47,15 +47,17 @@ Covers:
 
 ## Verification boundary
 
-Repository verification must pass:
-- Source/Architecture, including `audit_phase_5_2.py`;
-- Runtime Acceptance Contracts;
-- cTrader Compile.
+Repository verification completed on PR #116 head `9c7c2acdfe8575915ad1dc4129281bd429144a94`:
+- Source/Architecture — PASS — run `36792555340` / workflow #2072, including `audit_phase_5_2.py` and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts — PASS — run `36792555225` / workflow #1881;
+- cTrader Compile — PASS — run `36792555189` / workflow #2065.
+
+PR #116 was merged to `main` as merge commit `10e01bd2610ce0c42b6d365f55fae24c75a3edfb`.
 
 Target-terminal broker timing, restart/reconnect, panel behavior and empirical
 signal-quality/outcome validation remain manual and are not inferred here.
 
 ## Transition
 
-After repository verification passes, the next phase is **CR5.3 / E3 —
+After repository verification, the next phase is **CR5.3 / E3 —
 Independent-evidence group counting for parallel opportunities**.
