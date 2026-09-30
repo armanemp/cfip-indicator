@@ -125,6 +125,17 @@ if production.count("ShowPopup(next.Message, next.Critical)") != 1:
     print("FAIL | queued popup render handoff count is not exactly one")
     errors.append("queued popup render handoff count is not exactly one")
 
+for path in (ROOT / "src/CFIP.Indicator").rglob("*.cs"):
+    relative = path.relative_to(ROOT).as_posix()
+    if relative in {
+        "UI/Popup/PopupRenderer.cs",
+        "UI/Popup/PopupQueueProcessor.cs",
+    }:
+        continue
+    if "ShowPopup(" in path.read_text(encoding="utf-8"):
+        print(f"FAIL | direct popup render caller: {relative}")
+        errors.append(f"direct popup render caller: {relative}")
+
 print("CR3.4 SUMMARY")
 print("=" * 72)
 print(f"Failures: {len(errors)}")
