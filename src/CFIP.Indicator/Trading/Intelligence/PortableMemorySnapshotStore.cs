@@ -219,7 +219,7 @@ namespace cAlgo
                 string path =
                     PortableMemorySnapshotPath();
 
-                bool legacyPath =
+                bool priorPath =
                     false;
 
                 if (!File.Exists(path))
@@ -227,7 +227,7 @@ namespace cAlgo
                     path =
                         PriorPortableMemorySnapshotPath();
 
-                    legacyPath = true;
+                    priorPath = true;
                 }
 
                 if (!File.Exists(path))
@@ -373,7 +373,7 @@ namespace cAlgo
                     // them eligible only when their legacy configuration
                     // fingerprint matches; RestoreOutcomeHistory then applies
                     // broker-history PositionId ownership filtering.
-                    if (!legacyPath ||
+                    if (!priorPath ||
                         !string.Equals(
                             fingerprint,
                             PriorMemoryConfigurationFingerprint(),
