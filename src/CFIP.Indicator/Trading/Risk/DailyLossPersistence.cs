@@ -146,8 +146,6 @@ namespace cAlgo
                 _dailyLossLocked = locked;
                 _dailyLossLimitAlerted = alerted;
                 _dailyLossDataReady = false;
-                _dailyLossEvaluationUtc =
-                    DateTime.MinValue;
                 _lastDailyLossPersistUtc =
                     DateTime.MinValue;
                 _lastDailyLossSharedStateReloadUtc =
