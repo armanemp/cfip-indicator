@@ -77,18 +77,18 @@ namespace cAlgo
                     _signalType);
 
             _componentReadyIndex =
-                WaveTrendReadinessRule.ResolveComponentReadyIndex(
+                WaveTrendReadinessRule.ResolveWaveTrendComponentReadyIndex(
                     _length,
                     _momentumLength);
 
             _smoothReadyIndex =
-                WaveTrendReadinessRule.ResolveSmoothReadyIndex(
+                WaveTrendReadinessRule.ResolveWaveTrendSmoothReadyIndex(
                     _componentReadyIndex,
                     smoothMaType,
                     _smoothLength);
 
             _signalReadyIndex =
-                WaveTrendReadinessRule.ResolveSignalReadyIndex(
+                WaveTrendReadinessRule.ResolveWaveTrendSignalReadyIndex(
                     _smoothReadyIndex,
                     signalMaType,
                     _signalLength);
@@ -157,7 +157,7 @@ namespace cAlgo
                     _calculatedTo,
                     index);
 
-            if (!WaveTrendReadinessRule.IsSnapshotReady(
+            if (!WaveTrendReadinessRule.IsWaveTrendSnapshotReady(
                     index,
                     _signalReadyIndex))
                 return default(WaveTrendSnapshot);
