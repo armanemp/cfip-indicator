@@ -326,10 +326,9 @@ namespace cAlgo
                 6.50
             };
 
-            int[] accepted =
-            {
-                0, 0, 0, 0
-            };
+            int accepted = 0;
+            int belowRejected = 0;
+            int sellAccepted = 0;
 
             for (int stage = 0; stage < 4; stage++)
             {
@@ -360,8 +359,13 @@ namespace cAlgo
                         75,
                         68);
 
-                if (valid.Allowed)
-                    accepted[stage]++;
+                Assert(
+                    valid.Allowed,
+                    "TP" +
+                    (stage + 1).ToString() +
+                    " valid fixture accepted");
+
+                accepted++;
 
                 TargetCandidateConstraintResult below =
                     TargetCandidateConstraintRule.Evaluate(
@@ -369,7 +373,9 @@ namespace cAlgo
                         1,
                         100,
                         2,
-                        100 + Math.Max(0.5, requiredRR[stage] - 0.2) * 2.0,
+                        100 + Math.Max(
+                            0.5,
+                            requiredRR[stage] - 0.2) * 2.0,
                         2,
                         0.01,
                         requiredRR[stage],
@@ -391,12 +397,7 @@ namespace cAlgo
                     (stage + 1).ToString() +
                     " below-minimum RR rejection");
 
-                Assert(
-                    valid.Allowed ||
-                    stage == 0,
-                    "TP" +
-                    (stage + 1).ToString() +
-                    " fixture acceptance path");
+                belowRejected++;
 
                 TargetCandidateConstraintResult sell =
                     TargetCandidateConstraintRule.Evaluate(
@@ -427,14 +428,21 @@ namespace cAlgo
                     "TP" +
                     (stage + 1).ToString() +
                     " BUY/SELL feasibility symmetry");
+
+                sellAccepted++;
             }
 
+            Assert(
+                accepted == 4 &&
+                belowRejected == 4 &&
+                sellAccepted == 4,
+                "D7 deterministic fixture matrix");
+
             Console.WriteLine(
-                "D7 deterministic fixture acceptance: " +
-                "TP1=" + accepted[0] + "/1, " +
-                "TP2=" + accepted[1] + "/1, " +
-                "TP3=" + accepted[2] + "/1, " +
-                "TP4=" + accepted[3] + "/1");
+                "D7 fixture matrix: " +
+                "TP1=" + accepted.ToString() + "/4 primary stages, " +
+                "TP2=" + belowRejected.ToString() + "/4 below-min rejects, " +
+                "TP3=" + sellAccepted.ToString() + "/4 SELL mirrors");
         }
 
 
