@@ -36,9 +36,6 @@ namespace cAlgo
             if (transactionsNeedRefresh)
                 RefreshDailyCashFlows(
                     referenceUtc);
-
-            _dailyLossEvaluationUtc =
-                referenceUtc;
         }
 
         private void RefreshDailyRealizedNetProfit(
