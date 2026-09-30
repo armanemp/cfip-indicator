@@ -2112,3 +2112,30 @@ Verification basis:
 - target-terminal cTrader Compile/Build, Runtime Acceptance, broker trading-day boundary, restart persistence and cross-instance behavior remain mandatory verification items.
 
 Next phase: **CR1.3 — News guard correctness and non-blocking refresh**.
+
+
+## CR1.3 — News guard correctness and non-blocking refresh — 2026-09-30
+
+Status: **IMPLEMENTATION COMPLETE; target-terminal verification remains required.**
+
+Root-cause hardening:
+- removed the synchronous economic-news HTTP path from initialization;
+- switched calendar transport to cTrader Http.GetAsync;
+- restricted refresh initiation to the existing Timer heartbeat;
+- added in-flight request gating, request-generation identity and a bounded 30-second transport timeout;
+- ignored late responses from timed-out/abandoned generations;
+- retained the last validated calendar cache after refresh failure;
+- added explicit DISABLED / NEVER_LOADED / HEALTHY / STALE / BLOCKING_EVENT state semantics plus REFRESHING and bounded error diagnostics;
+- added configurable symbol/index/commodity/crypto currency mapping with normalized broker-symbol matching;
+- preserved one shared NewsBlocked consumer across decision, market, aggressive and pending safety paths.
+
+Verification basis:
+- cTrader HTTP documentation rechecked for Http.GetAsync and AccessRights.None network support;
+- deterministic runtime contracts cover feed state transitions and currency mapping;
+- News Guard source audit now forbids synchronous Http.Get/Http.Send in production source and checks async generation/in-flight contracts;
+- target-terminal tests remain mandatory for real feed availability, timestamp interpretation, startup responsiveness and live news block/cancellation.
+
+Whole-chain routine audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No trading threshold, RR floor, position capacity or execution authority was changed.
+
+Next phase: **CR1.4 — Closed-bar cycle ordering and waiting-for-data state**.

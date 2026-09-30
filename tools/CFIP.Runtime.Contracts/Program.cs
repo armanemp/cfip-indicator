@@ -20,6 +20,8 @@ namespace cAlgo
             VerifySessionWindowSemantics();
             VerifyDailyLossSemantics();
             VerifyDailyLossBaselineSemantics();
+            VerifyEconomicNewsFeedStateSemantics();
+            VerifyEconomicNewsCurrencyMappingSemantics();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
             VerifyPendingOrderAcceptance();
@@ -449,7 +451,7 @@ namespace cAlgo
                 DailyLossRule.Evaluate(
                     1000,
                     0,
-                    1480,
+                    1500,
                     0,
                     0,
                     500,
@@ -610,6 +612,142 @@ namespace cAlgo
             Assert(
                 !evaluation.LimitHit,
                 "zero configured threshold does not create an implicit hidden floor");
+        }
+
+        private static void VerifyEconomicNewsFeedStateSemantics()
+        {
+            DateTime now =
+                new DateTime(
+                    2026,
+                    9,
+                    30,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            Assert(
+                EconomicNewsFeedStateRule.Evaluate(
+                    false,
+                    DateTime.MinValue,
+                    now,
+                    90,
+                    false) ==
+                EconomicNewsFeedState.Disabled,
+                "disabled news feed reports DISABLED state");
+
+            Assert(
+                EconomicNewsFeedStateRule.Evaluate(
+                    true,
+                    DateTime.MinValue,
+                    now,
+                    90,
+                    false) ==
+                EconomicNewsFeedState.NeverLoaded,
+                "missing successful refresh reports NEVER_LOADED");
+
+            Assert(
+                EconomicNewsFeedStateRule.Evaluate(
+                    true,
+                    now.AddMinutes(-30),
+                    now,
+                    90,
+                    false) ==
+                EconomicNewsFeedState.Healthy,
+                "fresh successful refresh reports HEALTHY");
+
+            Assert(
+                EconomicNewsFeedStateRule.Evaluate(
+                    true,
+                    now.AddMinutes(-91),
+                    now,
+                    90,
+                    false) ==
+                EconomicNewsFeedState.Stale,
+                "expired successful refresh reports STALE");
+
+            Assert(
+                EconomicNewsFeedStateRule.Evaluate(
+                    true,
+                    now.AddMinutes(-1),
+                    now,
+                    90,
+                    true) ==
+                EconomicNewsFeedState.BlockingEvent,
+                "active event overrides feed health with BLOCKING_EVENT");
+        }
+
+        private static void VerifyEconomicNewsCurrencyMappingSemantics()
+        {
+            string[] eurUsd =
+                EconomicNewsCurrencyRule.ResolveCurrencies(
+                    "EURUSD.m",
+                    "",
+                    "");
+
+            Assert(
+                eurUsd.Length == 2 &&
+                eurUsd[0] == "EUR" &&
+                eurUsd[1] == "USD",
+                "FX symbol resolves both traded currencies");
+
+            string[] indexUsd =
+                EconomicNewsCurrencyRule.ResolveCurrencies(
+                    "US30.cash",
+                    "",
+                    "US30=USD;GER40=EUR");
+
+            Assert(
+                indexUsd.Length == 1 &&
+                indexUsd[0] == "USD",
+                "index mapping resolves configured USD news relevance");
+
+            string[] indexEur =
+                EconomicNewsCurrencyRule.ResolveCurrencies(
+                    "GER40",
+                    "",
+                    "US30=USD;GER40=EUR");
+
+            Assert(
+                indexEur.Length == 1 &&
+                indexEur[0] == "EUR",
+                "index mapping resolves configured EUR news relevance");
+
+            string[] crypto =
+                EconomicNewsCurrencyRule.ResolveCurrencies(
+                    "BTCUSDT",
+                    "",
+                    "BTC=USD;ETH=USD");
+
+            Assert(
+                crypto.Length == 1 &&
+                crypto[0] == "USD",
+                "crypto mapping resolves USD news relevance");
+
+            string[] extras =
+                EconomicNewsCurrencyRule.ResolveCurrencies(
+                    "EURUSD",
+                    "JPY, CHF",
+                    "");
+
+            Assert(
+                extras.Length == 4 &&
+                extras[0] == "CHF" &&
+                extras[1] == "EUR" &&
+                extras[2] == "JPY" &&
+                extras[3] == "USD",
+                "additional currencies merge deterministically without duplicates");
+
+            string[] normalized =
+                EconomicNewsCurrencyRule.ResolveCurrencies(
+                    "US_500.cash",
+                    "",
+                    "US500=USD");
+
+            Assert(
+                normalized.Length == 1 &&
+                normalized[0] == "USD",
+                "broker symbol punctuation does not break configured mapping");
         }
 
         private static void VerifyM1TriggerSemantics()

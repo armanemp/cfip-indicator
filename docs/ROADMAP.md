@@ -1885,7 +1885,7 @@ Acceptance:
 
 # Track 11.6 — Claude Review Defect Remediation — 2026-09-30
 
-Status: **CR1.2 COMPLETE; CR1.3 IS THE NEXT IMPLEMENTATION PHASE**
+Status: **CR1.3 COMPLETE; CR1.4 IS THE NEXT IMPLEMENTATION PHASE**
 
 Three external code-review prompts (A1–A12, B1–B12, C1–C9) are tracked in:
 `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
@@ -1894,29 +1894,30 @@ CR-0 audit/source inventory:
 `docs/CLAUDE-REVIEW-CR0-AUDIT.md`
 
 CR1.1 — Session/EOD and period-reference correctness is complete.
-
 CR1.2 — Daily-loss lock and stable accounting basis is complete.
+CR1.3 — News guard correctness and non-blocking refresh is complete.
 
-Completed CR1.2 scope:
-- deterministic DailyLossRule separated from broker/account fact acquisition;
-- persisted account-scoped UTC-day baseline and latched daily-loss lock;
-- realized daily P/L plus floating-P/L change from the stable baseline;
-- equity-change fallback with explicit deposit/withdrawal subtraction when realized history is unavailable;
-- fail-closed behavior when transaction facts are unavailable;
-- NaN/Infinity and invalid-threshold hardening;
-- one shared gate for Market, Aggressive and Pending automatic-entry paths;
-- account-switch reset/recovery handling;
-- deterministic runtime coverage for realized loss, floating loss, cash flow, persistence, threshold boundary and invalid-input cases.
+Completed CR1.3 scope:
+- replaced synchronous economic-news HTTP with cTrader Http.GetAsync;
+- moved all scheduled news refresh work to the existing Timer heartbeat;
+- added one in-flight request policy, generation-based late-response rejection and a bounded 30-second transport timeout;
+- retained the last validated feed cache across refresh failures;
+- added deterministic DISABLED / NEVER_LOADED / HEALTHY / STALE / BLOCKING_EVENT state semantics plus REFRESHING/error diagnostics;
+- preserved fail-closed automatic trading when the feed is never loaded or stale and the configured stale policy is enabled;
+- added configurable Symbol/Index/Crypto currency mapping with normalized broker-symbol matching;
+- kept the existing NewsBlocked consumer shared by decision, Market, Aggressive and Pending safety paths;
+- preserved pending cancellation, optional active-position close and manual UTC blackout semantics.
 
 Verification boundary:
-- official cTrader API surface was rechecked for Account equity/unrealized P/L, Transactions, HistoricalTrade and LocalStorage persistence;
-- target-terminal verification remains required for broker trading-day semantics, history/deal behavior, persistence across restart, and cross-instance lock propagation;
-- full cTrader Compile/Build and Runtime Acceptance remain required on the target repository environment.
+- cTrader HTTP documentation was rechecked: Http.GetAsync is the supported asynchronous GET API and AccessRights.None is sufficient for network functions;
+- deterministic runtime contracts cover feed states and currency mapping;
+- News Guard source audit now rejects synchronous Http.Get/Http.Send in production source and checks async state/generation contracts;
+- target-terminal verification remains required for real feed availability, timestamp semantics, mapping on the target broker, startup responsiveness and live news blocking/cancellation.
 
 Routine whole-chain audit:
-Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was rechecked for this phase. No second decision/execution authority, position-capacity expansion, hidden live threshold change, or duplicate broker mutation path was introduced.
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was rechecked. No signal threshold, RR floor, position capacity, decision authority or execution authority was changed by this phase.
 
-The next required implementation phase is **CR1.3 — News guard correctness and non-blocking refresh**.
+The next required implementation phase is **CR1.4 — Closed-bar cycle ordering and waiting-for-data state**.
 
 Track 12A local cBot separation remains blocked until Track 11.6 CR-FINAL passes.
 

@@ -220,22 +220,34 @@ Manual verification:
 
 Covers: A5.
 
-Work:
-- remove synchronous network work from decision/hot paths;
-- use bounded refresh/caching with explicit in-flight/failure state;
-- distinguish NEVER_LOADED, STALE, HEALTHY, BLOCKING_EVENT, DISABLED;
-- make never-loaded behavior explicit and configurable without silent ambiguity;
-- add configurable symbol/index/crypto currency mapping;
-- remove redundant status logic;
-- retain the weekly feed model and avoid unnecessarily frequent refreshes.
+Status: COMPLETE — implementation closed 2026-09-30; target-terminal verification remains required.
+
+Implemented:
+- removed synchronous news HTTP from initialization and replaced calendar transport with cTrader Http.GetAsync;
+- limited refresh to the existing Timer heartbeat so decision/hot paths never initiate network I/O;
+- added explicit in-flight state, monotonically increasing request generation and a bounded 30-second transport timeout;
+- ignored late responses from abandoned/timed-out requests so stale callbacks cannot overwrite newer calendar state;
+- retained the last validated calendar cache across refresh failures instead of clearing valid events;
+- added deterministic DISABLED / NEVER_LOADED / HEALTHY / STALE / BLOCKING_EVENT feed states with REFRESHING and bounded last-error diagnostics;
+- preserved fail-closed automatic execution behavior for NEVER_LOADED/STALE across Auto Trading and Auto Orders when NewsFailClosedWhenStale is enabled;
+- added a pure symbol/index/crypto currency-mapping rule and the configurable the existing AdditionalNewsCurrencies parameter using SYMBOL=CUR mapping entries parameter;
+- normalized broker-specific symbol punctuation and deterministically merged detected, additional and mapped currencies;
+- kept Market/decision and automatic execution news gates on the same cached NewsBlocked consumer;
+- preserved existing pending cancellation, optional active-position pre-news close and manual UTC blackout behavior.
 
 Acceptance:
 - no decision path waits on network I/O;
-- a feed failure has an explicit visible state;
-- relevant currencies are resolved deterministically for indices/CFDs/crypto;
-- stale policy is testable independently from HTTP transport.
+- refresh failures are visible without destroying the last valid cache;
+- never-loaded and stale feed behavior is deterministic and independently testable;
+- relevant currencies for FX/index/commodity/crypto symbols are resolved deterministically;
+- synchronous Http.Get/Http.Send usage is forbidden by the News Guard source audit;
+- deterministic runtime contracts cover feed state and currency mapping.
 
-Manual cTrader verification remains required for actual target-terminal HTTP behavior and packaging.
+Verification:
+- cTrader documentation rechecked for Http.GetAsync and AccessRights.None network support;
+- deterministic runtime-contract coverage added;
+- News Guard source audit strengthened to detect synchronous HTTP and missing async/state contracts;
+- target-terminal verification remains mandatory for actual feed availability, timestamp semantics, installed cTrader behavior, startup latency and live news-block/cancellation behavior.
 
 ## CR1.4 — Closed-bar cycle ordering and waiting-for-data state
 
