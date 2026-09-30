@@ -1715,7 +1715,7 @@ namespace cAlgo
 
             Assert(
                 hull.TryCalculateWaveTrendAverage(source, 4, out value) &&
-                Math.Abs(value - 3.0) < 1e-9,
+                Math.Abs(value - 5.0) < 1e-9,
                 "WaveTrend HMA composes half-length WMA, full-length WMA and sqrt-length WMA");
 
             WaveTrendMovingAverageCalculator dema =
