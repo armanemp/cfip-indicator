@@ -450,6 +450,12 @@ namespace cAlgo
                         "CFIP HISTORY STORAGE",
                         StringComparison.Ordinal);
 
+                _bufferedArchivePersistence.MarkProbeResult(
+                    markerRoundTrip,
+                    markerRoundTrip
+                        ? ""
+                        : "History read/write round-trip not verified");
+
                 if (!markerRoundTrip)
                 {
                     Print(
