@@ -2047,3 +2047,44 @@ Track 12A cBot separation remains blocked until CR-FINAL.
 
 Operator pull required at this completed phase boundary:
 `git pull --ff-only origin main`
+
+
+## CR1.1 — Session/EOD and period-reference correctness
+
+Status: **complete — 2026-09-30**.
+
+Implemented:
+- introduced canonical `SessionWindowRule` for session membership, session ranges and EOD boundaries;
+- unified SessionAllowed, session suitability and session presentation semantics;
+- fixed overnight and start==end session handling;
+- corrected previous D1/W1 target references to use the latest canonical fully closed index;
+- corrected the D1 pivot suitability reference;
+- replaced unbounded EOD auto-close with a five-minute bounded post-boundary cleanup window;
+- included managed pending orders in EOD cleanup;
+- protected positions opened after the previous session boundary from immediate EOD closure;
+- made EOD completion reporting depend on broker-state re-read rather than mutation-request success alone;
+- added deterministic runtime contracts for the new session and closed-period rules.
+
+Relevant commits:
+- `067ee861ffc28f627b2de4b37915d8c94479a78b` — canonical session rule
+- `a0e1b8f720594fc9947c0d8ce38f82977d53cabd` — unified session evaluator
+- `4d4279ded3adf903778a8ef758481269e7ff5c97` — removed duplicate session semantics
+- `91c216e648d4184536700e1f622d259bc40aa7ff` — unified session range
+- `0311f3bcda1dd593691ef91a941ea908d42caf64` / `0f803eab65509b71e5035d5b6e9e5bb36188232a` / `617577244ddce0c9318bc911e9a8ef43494bfab3` — corrected closed D1/W1 consumers
+- `d51dafbed42a1dc5cb3f081c811b683a67191a6a` — bounded EOD cleanup
+- `fecbfec1507d6e3316b9791fe426e462653a4edc` / `1a08be083479ce62f6f0412d6473d32248a2ab26` — deterministic contracts
+- `107fa474e4c6bb8d6b910b294a82b5c3a8d27d95` — canonical session presentation
+
+Verification:
+- Runtime acceptance contracts: PASS (run 1339)
+- cTrader compile: PASS (run 1523)
+- Source and architecture checks: PASS (run 1530)
+
+Routine audit:
+- Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning coupling reviewed.
+- Performance/code cleanliness reviewed; no synchronous network/file path or duplicate session decision authority introduced.
+
+Operator pull required at this completed phase boundary:
+`git pull --ff-only origin main`
+
+Next phase: **CR1.2 — Daily-loss lock and stable accounting basis**.
