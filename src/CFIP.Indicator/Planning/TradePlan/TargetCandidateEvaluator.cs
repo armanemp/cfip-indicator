@@ -31,16 +31,10 @@ namespace cAlgo
             if (candidate == null ||
                 !IsFinitePositive(entry) ||
                 !IsFinitePositive(risk) ||
-                !IsFinitePositive(atr) ||
-                !IsValidTarget(
-                    direction,
-                    entry,
-                    candidate.Price))
+                !IsFinitePositive(atr))
             {
                 rejectionReason =
-                    candidate == null
-                        ? TargetCandidateRejectionReasons.InvalidGeometry
-                        : TargetCandidateRejectionReasons.TargetSideInvalid;
+                    TargetCandidateRejectionReasons.InvalidGeometry;
                 return false;
             }
 
@@ -62,22 +56,7 @@ namespace cAlgo
                 return false;
             }
 
-            if (requireHtf &&
-                !htf)
-            {
-                rejectionReason =
-                    TargetCandidateRejectionReasons.HtfSourceRequired;
-                return false;
-            }
 
-            if (requireHtf &&
-                candidate.Score <
-                MinimumHtfRewardQuality)
-            {
-                rejectionReason =
-                    TargetCandidateRejectionReasons.HtfQualityTooLow;
-                return false;
-            }
 
             double distance =
                 Math.Abs(
@@ -123,7 +102,7 @@ namespace cAlgo
                     MinimumTpSpacingAtr,
                     previous,
                     spacingConflict,
-                    false,
+                    requireHtf,
                     htf,
                     (int)Math.Round(candidate.Score),
                     MinimumHtfRewardQuality);
