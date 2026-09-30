@@ -77,7 +77,7 @@ check(
 check(
     "cache is bounded to the active MTF set",
     "private const int Capacity = 8;" in frame_cache
-    and "new Entry[Capacity]" in frame_cache,
+    and "new MarketRegimeFrameCacheEntry[Capacity]" in frame_cache,
 )
 check(
     "cache invalidates on series replacement or fingerprint mutation",
@@ -89,7 +89,7 @@ check(
     "scoring consumes the frame's own normalized regime",
     "return FrameRegimeResolutionRule.NormalizeFrameRegimeValue(" in frame_scoring
     and "frame.Regime" in frame_scoring
-    and "return "UNKNOWN";" not in frame_scoring,
+    and 'return "UNKNOWN";' not in frame_scoring,
 )
 check(
     "UNKNOWN regime is explicitly neutral",
