@@ -28,7 +28,7 @@ checks = {
     ),
     "quality base/clamp is explicit": (
         "BaseQuality = 54" in quality_rule and
-        "return Clamp(" in quality_rule and
+        "return ClampQuality(" in quality_rule and
         "100" in quality_rule
     ),
     "independent evidence components remain separate": all(
