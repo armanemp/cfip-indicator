@@ -7,7 +7,7 @@ namespace cAlgo
     {
         public const string CurrentPrefix = "CFIP-ST1";
 
-        public static string Build(
+        public static string CreateTraceId(
             string symbol,
             string timeframe,
             string accountScope,
