@@ -27,12 +27,15 @@ namespace cAlgo
             _dailyLossHistoryCount = -1;
             _dailyLossTransactionCount = -1;
             _dailyLossHistoryAvailable = false;
+            _dailyLossTransactionsAvailable = false;
             _dailyLossDataReady = false;
             _dailyLossLocked = false;
             _dailyLossLimitAlerted = false;
             _dailyLossStateReason =
                 "ACCOUNT SWITCHED";
             _lastDailyLossPersistUtc =
+                DateTime.MinValue;
+            _lastDailyLossSharedStateReloadUtc =
                 DateTime.MinValue;
 
             try
@@ -76,6 +79,9 @@ namespace cAlgo
                     AsUtc(nowUtc);
 
                 EnsureDailyLossBaseline(
+                    reference);
+
+                RefreshSharedDailyLossLock(
                     reference);
 
                 RefreshDailyLossTradeFacts(
@@ -218,6 +224,7 @@ namespace cAlgo
             _dailyLossHistoryCount = -1;
             _dailyLossTransactionCount = -1;
             _dailyLossHistoryAvailable = false;
+            _dailyLossTransactionsAvailable = false;
             _dailyLossLocked = false;
             _dailyLossLimitAlerted = false;
             _dailyLossEvaluationUtc = DateTime.MinValue;
@@ -241,6 +248,7 @@ namespace cAlgo
 
             bool transactionsNeedRefresh =
                 _dailyLossTransactionCount < 0 ||
+                !_dailyLossTransactionsAvailable ||
                 Transactions == null ||
                 Transactions.Count !=
                     _dailyLossTransactionCount;
@@ -326,7 +334,8 @@ namespace cAlgo
 
             if (Transactions == null)
             {
-                _dailyLossTransactionCount = 0;
+                _dailyLossTransactionCount = -1;
+                _dailyLossTransactionsAvailable = false;
                 return;
             }
 
@@ -376,10 +385,12 @@ namespace cAlgo
 
                 _dailyLossTransactionCount =
                     Transactions.Count;
+                _dailyLossTransactionsAvailable = true;
             }
             catch (Exception ex)
             {
                 _dailyLossTransactionCount = -1;
+                _dailyLossTransactionsAvailable = false;
 
                 Print(
                     "CFIP daily cash-flow refresh failed: {0}",
@@ -455,10 +466,13 @@ namespace cAlgo
                 _dailyLossHistoryCount = -1;
                 _dailyLossTransactionCount = -1;
                 _dailyLossHistoryAvailable = false;
+                _dailyLossTransactionsAvailable = false;
                 _dailyLossLocked = locked;
                 _dailyLossLimitAlerted = alerted;
                 _dailyLossDataReady = false;
                 _dailyLossEvaluationUtc =
+                    DateTime.MinValue;
+                _lastDailyLossSharedStateReloadUtc =
                     DateTime.MinValue;
                 _dailyLossStateReason =
                     locked
@@ -473,6 +487,75 @@ namespace cAlgo
                     "CFIP daily loss state restore failed: {0}",
                     ex.Message);
                 return false;
+            }
+        }
+
+        private void RefreshSharedDailyLossLock(
+            DateTime referenceUtc)
+        {
+            if ((referenceUtc -
+                 _lastDailyLossSharedStateReloadUtc).TotalSeconds <
+                1)
+                return;
+
+            try
+            {
+                // Type scope is shared by all Indicator instances. Reload is
+                // intentionally rate-limited so one instance can observe a
+                // lock latched by another without putting LocalStorage on the
+                // hot calculation path every tick.
+                LocalStorage.Reload(
+                    LocalStorageScope.Type);
+
+                _lastDailyLossSharedStateReloadUtc =
+                    referenceUtc;
+
+                string stored =
+                    LocalStorage.GetString(
+                        DailyLossStorageKey(),
+                        LocalStorageScope.Type);
+
+                if (string.IsNullOrWhiteSpace(stored))
+                    return;
+
+                string[] parts =
+                    stored.Split('|');
+
+                if (parts.Length < 6 ||
+                    !string.Equals(
+                        parts[0],
+                        DailyLossStateSchema,
+                        StringComparison.Ordinal))
+                    return;
+
+                DateTime baselineDate =
+                    new DateTime(
+                        long.Parse(
+                            parts[1],
+                            CultureInfo.InvariantCulture),
+                        DateTimeKind.Utc);
+
+                if (baselineDate.Date !=
+                    referenceUtc.Date)
+                    return;
+
+                bool locked =
+                    parts[4] == "1";
+
+                bool alerted =
+                    parts[5] == "1";
+
+                if (locked)
+                    _dailyLossLocked = true;
+
+                if (alerted)
+                    _dailyLossLimitAlerted = true;
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP shared daily loss lock reload failed: {0}",
+                    ex.Message);
             }
         }
 
@@ -513,6 +596,11 @@ namespace cAlgo
 
                 LocalStorage.Flush(
                     LocalStorageScope.Type);
+
+                _lastDailyLossPersistUtc =
+                    AsUtc(referenceUtc);
+                _lastDailyLossSharedStateReloadUtc =
+                    AsUtc(referenceUtc);
             }
             catch (Exception ex)
             {
