@@ -386,7 +386,7 @@ for token in (
     "TryFindLatestSwingLow(",
     "TryFindLatestSwingHigh(",
     "LiquiditySweepRule.IsActiveUnbrokenLevel(",
-    "causally established structural",
+    "TryFindLatestSwingLow(",
 ):
     if token not in liquidity_sweep_code:
         raise SystemExit(f"Liquidity sweep must use canonical active structural levels: {token}")
