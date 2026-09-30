@@ -34,6 +34,7 @@ namespace cAlgo
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
             VerifyNativeIndicatorReadinessSemantics();
+            VerifyStructuralStopRiskCeilingSemantics();
             VerifyBrokerStateRefreshSemantics();
             VerifyBufferedArchivePersistence();
             VerifyDailyLossSemantics();
@@ -93,6 +94,59 @@ namespace cAlgo
 
 
 
+
+        private static void VerifyStructuralStopRiskCeilingSemantics()
+        {
+            Assert(
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    0.55,
+                    1.80,
+                    2.40) == 1.80,
+                "effective stop ceiling uses the broad MaximumSlAtr when it is tighter");
+
+            Assert(
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    0.55,
+                    2.40,
+                    1.80) == 1.80,
+                "effective stop ceiling uses the structural MaximumStructuralStopAtr when it is tighter");
+
+            Assert(
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    0.55,
+                    0.30,
+                    1.80) == 0.55 &&
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    0.55,
+                    1.80,
+                    0.30) == 0.55,
+                "effective ceiling preserves the minimum SL floor against either undersized maximum");
+
+            Assert(
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    1.80,
+                    1.00,
+                    1.20) == 1.80,
+                "effective ceiling remains at the normalized minimum when both maximums are below it");
+
+            Assert(
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    0.80,
+                    1.70,
+                    2.10) ==
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    0.80,
+                    2.10,
+                    1.70),
+                "effective ceiling is symmetric in the two maximum-cap parameters");
+
+            Assert(
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    0.55,
+                    1.80,
+                    2.40) == 1.80,
+                "legacy default effective ceiling remains 1.80 ATR");
+        }
 
         private static void VerifyFrameScoringConstants()
         {

@@ -27,13 +27,10 @@ namespace cAlgo
                     MinimumSlAtr);
 
             double maxRiskAtr =
-                Math.Min(
-                    Math.Max(
-                        minRiskAtr,
-                        MaximumSlAtr),
-                    Math.Max(
-                        minRiskAtr,
-                        MaximumStructuralStopAtr));
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    minRiskAtr,
+                    MaximumSlAtr,
+                    MaximumStructuralStopAtr);
 
             double spread =
                 Math.Max(

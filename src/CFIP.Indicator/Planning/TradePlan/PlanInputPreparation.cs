@@ -149,13 +149,10 @@ namespace cAlgo
                         MaximumSpreadToStopRiskRatio));
 
             double maximumRisk =
-                Math.Min(
-                    Math.Max(
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
                         MinimumSlAtr,
-                        MaximumSlAtr),
-                    Math.Max(
-                        MinimumSlAtr,
-                        MaximumStructuralStopAtr)) *
+                        MaximumSlAtr,
+                        MaximumStructuralStopAtr) *
                 atr;
 
             return
