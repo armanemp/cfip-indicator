@@ -61,6 +61,15 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 3. CFIP_History_*.csv outcomeهای واقعی را نگه می‌دارد.
 4. در هر log review، reject/fail/recovery، non-finite، stale TP/SL، duplicate، mismatch بین decision/plan/broker و ناسازگاری جهت بررسی شود.
 5. log ارسالی کاربر با ابزار analyze_runtime_log.py بررسی و بعد root-cause → fix → regression test → verification ثبت شود.
+6. file append و LocalStorage.Flush/Reload نباید در Calculate انجام شود؛ archiveها باید از buffer/Timer heartbeat مصرف شوند.
+7. broker-state snapshot باید event/mutation-aware و با TTL محدود باشد؛ repeated reconciliation بدون dirty/recovery reason نباید دوباره broker read ایجاد کند.
+8. cacheهای تحلیلی FVG/OB فقط روی context بسته و با key deterministic مجازند؛ انتخاب نهایی live می‌تواند quote-sensitive بماند.
+
+1. CFIP_RuntimeLog_*.csv مرجع یکپارچه برای decision، scenario و execution است.
+2. CFIP_SignalTrace_*.csv جزئیات تصمیم بسته‌شده را نگه می‌دارد.
+3. CFIP_History_*.csv outcomeهای واقعی را نگه می‌دارد.
+4. در هر log review، reject/fail/recovery، non-finite، stale TP/SL، duplicate، mismatch بین decision/plan/broker و ناسازگاری جهت بررسی شود.
+5. log ارسالی کاربر با ابزار analyze_runtime_log.py بررسی و بعد root-cause → fix → regression test → verification ثبت شود.
 
 ## 7. روتین Prediction
 1. prediction خروجی احتمالاتی/امتیازی است، نه تضمین.
