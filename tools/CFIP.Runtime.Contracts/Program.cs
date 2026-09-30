@@ -1393,10 +1393,10 @@ namespace cAlgo
                 "native indicator window readiness protects prior-sample comparisons");
 
             Assert(
-                NativeIndicatorReadinessRule.IsFinitePositive(1.0) &&
-                !NativeIndicatorReadinessRule.IsFinitePositive(0) &&
-                !NativeIndicatorReadinessRule.IsFinitePositive(double.NaN) &&
-                !NativeIndicatorReadinessRule.IsFinitePositive(
+                NativeIndicatorReadinessRule.IsFinitePositiveNative(1.0) &&
+                !NativeIndicatorReadinessRule.IsFinitePositiveNative(0) &&
+                !NativeIndicatorReadinessRule.IsFinitePositiveNative(double.NaN) &&
+                !NativeIndicatorReadinessRule.IsFinitePositiveNative(
                     double.PositiveInfinity),
                 "positive volatility and moving-average inputs reject zero/non-finite values");
 
