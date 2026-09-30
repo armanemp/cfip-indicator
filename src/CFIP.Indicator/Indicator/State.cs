@@ -83,6 +83,11 @@ namespace cAlgo
                 private int _tp2Hit;
                 private int _tp3Hit;
                 private int _tp4Hit;
+                private int _lastPartialTp1AttemptM5 = -1;
+                private int _lastPartialTp2AttemptM5 = -1;
+                private int _lastServerPartialObservationDealCount = -1;
+                private int _lastServerTpLadderMutationM5 = -1;
+                private string _lastServerTpLadderMutationKind = "";
                 private bool _serverSideTakeProfitLadderActive;
                 private bool _serverSideBreakEvenActive;
                 private bool _slHit;
