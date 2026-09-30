@@ -161,6 +161,14 @@ namespace cAlgo
                     ? TimeInUtc
                     : TimeInUtc.ToUniversalTime();
 
+            EconomicNewsFeedState state =
+                EconomicNewsFeedStateRule.Evaluate(
+                    EnableEconomicNewsCalendar,
+                    GetEconomicNewsLastSuccessUtc(),
+                    now,
+                    MaximumNewsFeedAgeMinutes,
+                    false);
+
             CfipEconomicNewsEvent currentBlocking =
                 FindBlockingNewsEvent(
                     now);
