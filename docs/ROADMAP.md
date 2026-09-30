@@ -210,6 +210,8 @@ Architecture / static gates
     ↓
 Contract tests
     ↓
+Claude review-remediation gate (CR-0 → CR-FINAL)
+    ↓
 Local cBot separation gate
     ↓
 cTrader compile

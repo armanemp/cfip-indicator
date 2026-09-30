@@ -10,6 +10,7 @@ namespace cAlgo
             VerifyM1TriggerSemantics();
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
+            VerifyFvgQualitySemantics();
             VerifyOrderBlockMathematics();
             VerifyZoneConfluenceSymmetry();
             VerifyTopDownCalibration();
@@ -356,6 +357,88 @@ namespace cAlgo
                 "FVG identity separates direction and 3-bar/2-bar source variants");
         }
 
+        private static void VerifyFvgQualitySemantics()
+        {
+            int weak =
+                FvgQualityRule.Calculate(
+                    0.08, 0.20, 30, 40, 0.05,
+                    false, false, false);
+
+            int moderate =
+                FvgQualityRule.Calculate(
+                    0.40, 0.80, 20, 40, 0.80,
+                    true, false, false);
+
+            int strong =
+                FvgQualityRule.Calculate(
+                    0.80, 1.00, 0, 40, 1.50,
+                    true, true, false);
+
+            Assert(
+                weak < 60 &&
+                moderate > weak &&
+                strong > moderate &&
+                strong >= 90,
+                "FVG quality separates weak, contextual and strong candidates");
+
+            Assert(
+                FvgQualityRule.Calculate(
+                    0.40, 0.80, 20, 40, 0.80,
+                    true, true, false) >
+                FvgQualityRule.Calculate(
+                    0.40, 0.80, 20, 40, 0.80,
+                    false, false, false),
+                "structural and higher-timeframe context increase quality");
+
+            Assert(
+                FvgQualityRule.Calculate(
+                    0.40, 1.0, 0, 40, 1.0,
+                    true, true, false) >
+                FvgQualityRule.Calculate(
+                    0.40, 1.0, 20, 40, 1.0,
+                    true, true, false),
+                "fresher FVGs receive higher quality");
+
+            Assert(
+                FvgQualityRule.Calculate(
+                    0.40, 1.0, 0, 40, 1.0,
+                    true, true, false) >
+                FvgQualityRule.Calculate(
+                    0.40, 0.50, 0, 40, 1.0,
+                    true, true, false),
+                "remaining unmitigated geometry increases quality");
+
+            Assert(
+                FvgQualityRule.Calculate(
+                    0.40, 1.0, 0, 40, 1.5,
+                    true, true, false) >
+                FvgQualityRule.Calculate(
+                    0.40, 1.0, 0, 40, 0.2,
+                    true, true, false),
+                "directional displacement increases quality");
+
+            Assert(
+                FvgQualityRule.Calculate(
+                    0.40, 1.0, 0, 40, 1.0,
+                    true, true, false) -
+                FvgQualityRule.Calculate(
+                    0.40, 1.0, 0, 40, 1.0,
+                    true, true, true) ==
+                3,
+                "two-bar imbalance retains an explicit quality penalty");
+
+            Assert(
+                FvgQualityRule.Calculate(
+                    double.NaN,
+                    1.0,
+                    0,
+                    40,
+                    1.0,
+                    true,
+                    true,
+                    false) == 0,
+                "non-finite FVG quality input fails closed");
+        }
         private static void VerifyDailyLossBaselineSemantics()
         {
             double startEquity;

@@ -325,17 +325,32 @@ Verification boundary:
 
 Covers: A8.
 
-Work:
-- preserve current FVG geometry;
-- redesign quality inputs to include directional displacement, structural context, freshness/mitigation state and HTF relevance where those features already exist;
-- explicitly define Partial Mitigation versus Full Fill semantics;
-- prevent thresholds from becoming mathematically meaningless due to a high fixed base;
-- add pure quality fixtures.
+Status: **COMPLETE — implementation closed 2026-09-30; target-terminal/replay validation remains required.**
 
-Acceptance:
-- quality distribution becomes meaningfully separable;
-- no formula change is accepted without fixture evidence;
-- default thresholds are not blindly tuned.
+Implementation:
+- preserved canonical FVG geometry and mitigation rules unchanged;
+- replaced the uniformly high fixed-base quality formula with the pure Core/Math/FvgQualityRule;
+- scored six dimensions: gap/ATR magnitude, directional displacement, freshness, remaining unmitigated geometry, current structural alignment and higher-timeframe alignment;
+- retained an explicit three-point penalty for the two-bar imbalance extension;
+- used the M5→M15→M30→H1→H4→D1→W1 higher-timeframe chain;
+- made non-finite quality input fail closed;
+- added deterministic runtime-contract fixtures for weak/moderate/strong separation and monotonic component effects.
+
+Behavior:
+- weak, aged, mitigated and context-free FVGs no longer start from an artificial 70+ baseline;
+- strong fresh FVGs with directional displacement and aligned structure/HTF context can reach the upper quality range;
+- no public parameter name/type/DefaultValue changed.
+
+Verification:
+- deterministic FVG quality contract added to CFIP.Runtime.Contracts;
+- Build/Runtime/Source checks are required on the final commit;
+- target cTrader replay remains required before claiming empirical signal-quality improvement.
+
+Permanent routine audit:
+- Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning reviewed for duplicate FVG-quality ownership;
+- performance/code-cleanliness reviewed; no network/file I/O or per-tick scan was introduced by this fix.
+
+Next implementation phase: **CR1.7 — Threshold truth + volume audit**.
 
 ## CR1.7 — Threshold truth + volume audit
 
@@ -628,6 +643,14 @@ Acceptance:
 - plan rejection reasons are inspectable without converting the validator into a second decision engine.
 
 ---
+
+## 7.1 Cross-chat continuation checkpoint
+
+This file is the canonical implementation order for the Claude review-remediation track. It supersedes the local cBot track as the immediate next-work source until `CR-FINAL` is accepted.
+
+At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
+
+Current active phase: **CR1.7 — Threshold truth + volume audit**.
 
 ## 8. Completion order and dependencies
 

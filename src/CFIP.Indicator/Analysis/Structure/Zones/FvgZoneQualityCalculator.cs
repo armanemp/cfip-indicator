@@ -6,6 +6,10 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private int CalculateFvgQuality(
+            Bars bars,
+            int currentIndex,
+            int direction,
+            int ageBars,
             double low,
             double high,
             double originalLow,
@@ -14,7 +18,7 @@ namespace cAlgo
             double atr,
             bool twoBarImbalance)
         {
-            double normalizedGap =
+            double gapAtrRatio =
                 gap /
                 Math.Max(
                     Symbol.PipSize,
@@ -27,33 +31,88 @@ namespace cAlgo
                     originalHigh -
                     originalLow);
 
-            int quality =
-                70 +
-                (int)Math.Round(
-                    15 *
-                    Math.Max(
-                        0,
-                        normalizedGap));
+            double displacementAtrRatio = 0;
+            bool structuralAlignment = false;
+            bool higherTimeframeAlignment = false;
 
-            if (EnableFvgPartialMitigation &&
-                UseZoneMitigationGuard)
+            if (bars != null &&
+                atr > 0 &&
+                currentIndex >= 0 &&
+                currentIndex < bars.Count)
             {
-                quality +=
-                    (int)Math.Round(
-                        10 *
-                        ClampDouble(
-                            remainingRatio,
-                            0,
-                            1));
+                double body =
+                    Math.Abs(
+                        bars.ClosePrices[currentIndex] -
+                        bars.OpenPrices[currentIndex]);
+
+                bool directionAlignedDisplacement =
+                    direction == 1
+                        ? bars.ClosePrices[currentIndex] >
+                          bars.OpenPrices[currentIndex]
+                        : direction == -1 &&
+                          bars.ClosePrices[currentIndex] <
+                          bars.OpenPrices[currentIndex];
+
+                if (directionAlignedDisplacement)
+                {
+                    displacementAtrRatio =
+                        body /
+                        atr;
+                }
+
+                if (UseInternalStructure)
+                {
+                    structuralAlignment =
+                        direction == 1
+                            ? BullStructure(
+                                bars,
+                                currentIndex,
+                                atr)
+                            : direction == -1 &&
+                              BearStructure(
+                                bars,
+                                currentIndex,
+                                atr);
+                }
+
+                higherTimeframeAlignment =
+                    IsFvgHigherTimeframeAligned(
+                        bars,
+                        direction);
             }
 
-            if (twoBarImbalance)
-                quality -= 3;
+            return FvgQualityRule.Calculate(
+                gapAtrRatio,
+                remainingRatio,
+                ageBars,
+                MaximumZoneAgeBars,
+                displacementAtrRatio,
+                structuralAlignment,
+                higherTimeframeAlignment,
+                twoBarImbalance);
+        }
 
-            return ClampInt(
-                quality,
-                0,
-                100);
+        private bool IsFvgHigherTimeframeAligned(
+            Bars bars,
+            int direction)
+        {
+            Frame higherFrame = null;
+
+            if (ReferenceEquals(bars, _m5Bars))
+                higherFrame = _m15Frame;
+            else if (ReferenceEquals(bars, _m15Bars))
+                higherFrame = _m30Frame;
+            else if (ReferenceEquals(bars, _m30Bars))
+                higherFrame = _h1Frame;
+            else if (ReferenceEquals(bars, _h1Bars))
+                higherFrame = _h4Frame;
+            else if (ReferenceEquals(bars, _h4Bars))
+                higherFrame = _d1Frame;
+            else if (ReferenceEquals(bars, _d1Bars))
+                higherFrame = _w1Frame;
+
+            return higherFrame != null &&
+                   higherFrame.Direction == direction;
         }
     }
 }
