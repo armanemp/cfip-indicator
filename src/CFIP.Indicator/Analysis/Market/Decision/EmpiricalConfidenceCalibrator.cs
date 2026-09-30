@@ -97,6 +97,12 @@ namespace cAlgo
                     : source;
         }
 
+        public EmpiricalCalibrationSnapshot(bool available, int adjustment, int samples, int wins, int confidenceBucket, double observedWinRate, double averageRealizedR, string source)
+            : this(available, adjustment, samples, wins, confidenceBucket, observedWinRate, source)
+        {
+            AverageRealizedR = double.IsNaN(averageRealizedR) || double.IsInfinity(averageRealizedR) ? 0 : averageRealizedR;
+        }
+
         public static EmpiricalCalibrationSnapshot None(
             int confidenceBucket)
         {
