@@ -229,7 +229,7 @@ Implemented:
 - ignored late responses from abandoned/timed-out requests so stale callbacks cannot overwrite newer calendar state;
 - retained the last validated calendar cache across refresh failures instead of clearing valid events;
 - added deterministic DISABLED / NEVER_LOADED / HEALTHY / STALE / BLOCKING_EVENT feed states with REFRESHING and bounded last-error diagnostics;
-- preserved fail-closed automatic trading behavior for NEVER_LOADED/STALE when NewsFailClosedWhenStale is enabled;
+- preserved fail-closed automatic execution behavior for NEVER_LOADED/STALE across Auto Trading and Auto Orders when NewsFailClosedWhenStale is enabled;
 - added a pure symbol/index/crypto currency-mapping rule and the configurable the existing AdditionalNewsCurrencies parameter using SYMBOL=CUR mapping entries parameter;
 - normalized broker-specific symbol punctuation and deterministically merged detected, additional and mapped currencies;
 - kept Market/decision and automatic execution news gates on the same cached NewsBlocked consumer;
