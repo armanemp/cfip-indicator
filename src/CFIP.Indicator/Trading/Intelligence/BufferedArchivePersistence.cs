@@ -333,10 +333,7 @@ namespace cAlgo
 
                 try
                 {
-                    EnsureDirectory(
-                        file.Path);
-
-                    if (!File.Exists(
+                    if (!FileExists(
                             file.Path))
                     {
                         if (!string.IsNullOrEmpty(
@@ -351,8 +348,10 @@ namespace cAlgo
                                         : file.Header +
                                           Environment.NewLine,
                                     Encoding.UTF8))
-                                throw new IOException(
-                                    "Buffered archive header write failed.");
+                            {
+                                file.ExistingKeys = null;
+                                continue;
+                            }
                         }
                     }
 
@@ -381,8 +380,10 @@ namespace cAlgo
                                 file.Path,
                                 payload.ToString(),
                                 Encoding.UTF8))
-                            throw new IOException(
-                                "Buffered archive append failed.");
+                        {
+                            file.ExistingKeys = null;
+                            continue;
+                        }
 
                         flushed += write.Count;
                     }
@@ -406,7 +407,6 @@ namespace cAlgo
                 }
                 catch (Exception ex)
                 {
-                    RegisterWriteFailure(ex);
                     // Preserve all lines when disk I/O fails. Requeue by not
                     // removing anything; the next Timer heartbeat can retry.
                     // ExistingKeys is also discarded so a recovered file is
@@ -428,7 +428,7 @@ namespace cAlgo
                 new HashSet<string>(
                     StringComparer.Ordinal);
 
-            if (!File.Exists(file.Path))
+            if (!FileExists(file.Path))
                 return file.ExistingKeys;
 
             try
