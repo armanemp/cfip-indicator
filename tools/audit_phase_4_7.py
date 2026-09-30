@@ -136,7 +136,8 @@ check(
     "TargetCandidateRejectionReasons.cs" in contracts_project
     and "TargetAgeSemanticsRule.cs" in contracts_project
     and "TargetCandidateConstraintRule.cs" in contracts_project
-    and "TargetRewardEnvelopeRule.cs" in contracts_project,
+    and "TargetRewardEnvelopeRule.cs" in contracts_project
+    and "StructuralTimeframeRule.cs" in contracts_project,
 )
 check(
     "D7 source audit is wired after CR4.6",
