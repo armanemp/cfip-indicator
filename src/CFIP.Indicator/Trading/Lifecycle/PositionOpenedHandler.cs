@@ -44,20 +44,51 @@ namespace cAlgo
                                         _plan.PositionId > 0 &&
                                         _plan.PositionId == position.Id;
 
+                                    _outcomeRegistered = false;
+
+                                    if (!boundToActivePlan)
+                                    {
+                                        // Broker event ordering is not an application-level
+                                        // ordering guarantee. If PositionOpened arrives before
+                                        // PendingFilled or before a market plan is bound, recover
+                                        // from the managed broker position instead of losing the
+                                        // protection/lifecycle transition.
+                                        Plan preEventPlan =
+                                            _plan;
+
+                                        RecoverManagedLivePlan(
+                                            Math.Max(
+                                                1,
+                                                _lastEvaluatedM5));
+
+                                        if (_plan != null &&
+                                            _plan.IsLivePosition &&
+                                            _plan.PositionId == position.Id &&
+                                            preEventPlan != null &&
+                                            preEventPlan.CalibrationEligible)
+                                        {
+                                            CopyPlanCalibrationContext(
+                                                preEventPlan,
+                                                _plan);
+                                        }
+
+                                        boundToActivePlan =
+                                            _plan != null &&
+                                            _plan.IsLivePosition &&
+                                            _plan.PositionId == position.Id;
+                                    }
+
                                     if (boundToActivePlan)
                                     {
-                                        // The broker event reconciles the already-bound position.
-                                        // A pre-trade plan is never rebound to an unrelated
-                                        // position sharing the managed label.
                                         _plan.PositionId =
                                             position.Id;
-                        
+
                                         _plan.Entry =
                                             NormalizePrice(
                                                 position.EntryPrice);
-                        
+
                                         _plan.IsLivePosition = true;
-                        
+
                                         bool protectionHealthy =
                                             EvaluateBrokerProtection(
                                                 position,
@@ -86,6 +117,15 @@ namespace cAlgo
                                             _brokerProtectionRecoveryRequired
                                                 ? "POSITION OPENED • PROTECTION MISSING OR INVALID"
                                                 : "POSITION OPENED • LIVE");
+                                    }
+                                    else
+                                    {
+                                        _brokerProtectionRecoveryRequired =
+                                            true;
+
+                                        SetLifecycleState(
+                                            LifecycleState.RecoveryRequired,
+                                            "POSITION OPENED • PLAN BINDING PENDING");
                                     }
                         
                                     SendUnifiedAlert(
