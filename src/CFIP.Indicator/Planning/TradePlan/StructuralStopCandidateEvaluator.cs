@@ -80,6 +80,9 @@ namespace cAlgo
                         closedM5,
                         atr);
 
+                if (!IsFinitePositive(frameAtr))
+                    continue;
+
                 double buffer =
                     frameAtr *
                     Math.Max(
@@ -206,16 +209,22 @@ namespace cAlgo
             int closedM5,
             double atr)
         {
-            if (candidate == null ||
-                candidate.Timeframe == "M5")
+            if (candidate == null)
+                return 0;
+
+            if (candidate.Timeframe == "M5")
                 return atr;
+
+            if (!StructuralTimeframeRule.IsSupported(
+                    candidate.Timeframe))
+                return 0;
 
             Bars frame =
                 ResolveStructuralStopFrame(
                     candidate.Timeframe);
 
             if (frame == null)
-                return atr;
+                return 0;
 
             int idx =
                 ClosedIndex(
