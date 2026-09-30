@@ -21,9 +21,6 @@ namespace cAlgo
             "EntryDistanceAtr,ActionableTp1RR,PlanRiskAtr,EffectiveTp1RR,RequiredTp1RR,EntryMode,Entry,IdealEntry,Stop,Tp1,Tp2,Tp3,Tp4," +
             "TraceGate,BlockReason,ActionabilityReason,DecisionReason";
 
-        private HashSet<long> _signalTraceArchiveKeys;
-        private string _signalTraceArchiveKeyPath;
-
         private OpportunityLane ResolveSignalTraceLane(
             Decision decision,
             OpportunityLane tacticalLane)
@@ -89,57 +86,6 @@ namespace cAlgo
                     "yyyyMMdd",
                     CultureInfo.InvariantCulture) +
                 ".csv";
-        }
-
-        private void PrepareSignalTraceArchiveIndex(
-            string path)
-        {
-            if (string.Equals(
-                    _signalTraceArchiveKeyPath,
-                    path,
-                    StringComparison.Ordinal) &&
-                _signalTraceArchiveKeys != null)
-                return;
-
-            _signalTraceArchiveKeyPath = path;
-            _signalTraceArchiveKeys =
-                new HashSet<long>();
-
-            if (!File.Exists(path))
-                return;
-
-            try
-            {
-                foreach (string line in File.ReadLines(path))
-                {
-                    if (string.IsNullOrWhiteSpace(line) ||
-                        line.StartsWith(
-                            "CFIP-SIGNAL-TRACE",
-                            StringComparison.Ordinal))
-                        continue;
-
-                    int comma =
-                        line.IndexOf(',');
-
-                    if (comma <= 0)
-                        continue;
-
-                    if (long.TryParse(
-                            line.Substring(0, comma),
-                            NumberStyles.Integer,
-                            CultureInfo.InvariantCulture,
-                            out long key))
-                    {
-                        _signalTraceArchiveKeys.Add(key);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP signal trace archive index load failed: {0}",
-                    ex.Message);
-            }
         }
 
         private string SerializeSignalTrace(
@@ -286,9 +232,6 @@ namespace cAlgo
 
             try
             {
-                Directory.CreateDirectory(
-                    OutcomeArchiveDirectory);
-
                 DateTime observed =
                     trace.ObservedUtcTicks > 0
                         ? new DateTime(
@@ -296,42 +239,21 @@ namespace cAlgo
                             DateTimeKind.Utc)
                         : Server.TimeInUtc;
 
-                string path =
+                return _bufferedArchivePersistence.Enqueue(
                     SignalTraceArchiveFilePath(
-                        observed);
-
-                PrepareSignalTraceArchiveIndex(path);
-
-                if (_signalTraceArchiveKeys.Contains(
-                        trace.BarOpenTimeUtcTicks))
-                    return false;
-
-                if (!File.Exists(path))
-                {
-                    File.WriteAllText(
-                        path,
-                        SignalTraceSchema +
-                        Environment.NewLine +
-                        SignalTraceHeader +
-                        Environment.NewLine,
-                        Encoding.UTF8);
-                }
-
-                File.AppendAllText(
-                    path,
-                    SerializeSignalTrace(trace) +
-                    Environment.NewLine,
-                    Encoding.UTF8);
-
-                _signalTraceArchiveKeys.Add(
-                    trace.BarOpenTimeUtcTicks);
-
-                return true;
+                        observed),
+                    SignalTraceSchema +
+                    Environment.NewLine +
+                    SignalTraceHeader,
+                    SerializeSignalTrace(
+                        trace),
+                    trace.BarOpenTimeUtcTicks.ToString(
+                        CultureInfo.InvariantCulture));
             }
             catch (Exception ex)
             {
                 Print(
-                    "CFIP signal trace archive persist failed: {0}",
+                    "CFIP signal trace queue failed: {0}",
                     ex.Message);
                 return false;
             }
