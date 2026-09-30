@@ -160,6 +160,8 @@ namespace cAlgo
 
                 private double _dailyLossBaselineUnrealizedNetProfit = 0;
 
+                private double _dailyLossStartEquity = 0;
+
                 private double _dailyLossRealizedNetProfit = 0;
 
                 private double _dailyLossNetCashFlow = 0;
@@ -170,7 +172,13 @@ namespace cAlgo
 
                 private bool _dailyLossDataReady;
 
+                private bool _dailyLossHistoryAvailable;
+
                 private bool _dailyLossLocked;
+
+                private DailyLossEvaluation _dailyLossEvaluation;
+
+                private DateTime _lastDailyLossPersistUtc = DateTime.MinValue;
 
                 private string _dailyLossStateReason = "NOT EVALUATED";
 
