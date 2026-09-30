@@ -65,7 +65,16 @@ require_text(
 require_text(
     orchestration_path,
     "ResolveSignalTraceLane(",
+)
+
+stage_isolation_path = ROOT / "src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs"
+
+require_text(
+    stage_isolation_path,
+    "bool newClosedBar",
+    "if (newClosedBar)",
     "RecordSignalEvaluationTrace(",
+    "SIGNAL TRACE • CLOSED-M5",
 )
 require_text(
     trace_model_path,
