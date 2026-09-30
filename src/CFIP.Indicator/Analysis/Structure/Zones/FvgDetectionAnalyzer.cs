@@ -2,6 +2,7 @@
 // Single-responsibility zone detection module.
 
 using System;
+using System.Collections.Generic;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
