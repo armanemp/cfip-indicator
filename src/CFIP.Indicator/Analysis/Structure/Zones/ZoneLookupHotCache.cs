@@ -6,6 +6,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        // Closed-zone candidate cache context is exactly one Bars/frame plus one
+        // closed index. Direction/retest mode live inside the per-context key;
+        // quote/selection price is intentionally excluded and evaluated live.
         private Bars _zoneLookupCacheBars;
         private int _zoneLookupCacheIndex = -1;
 
