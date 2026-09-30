@@ -1,3 +1,7 @@
+## Phase-sequence integrity note
+
+Prompt 4 in the canonical remediation roadmap contains D1 through D10. A repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or `Prompt 4.11` entry. The authoritative sequence therefore transitions from CR4.10 to CR5.1; no CR4.11 step is being skipped.
+
 # CFIP Indicator — Master Implementation, Certification and Release Roadmap
 
 ## 0. Purpose
@@ -5001,7 +5005,7 @@ Verification boundary:
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **IN PROGRESS — CR5.1 VERIFIED COMPLETE; CR5.2 NEXT.**
+Status: **IN PROGRESS — CR5.1 AND CR5.2 VERIFIED COMPLETE; CR5.3 NEXT.**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -5122,8 +5126,36 @@ Therefore Track 12A remains blocked. The next operator action is to run the no-t
 
 
 
+### CR5.2 / E2 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #116 merged to `main`; merge commit `10e01bd2610ce0c42b6d365f55fae24c75a3edfb`.**
+
+Implementation:
+- replaced raw M5 candle-extreme liquidity forecasts with canonical swing-high/swing-low candidates;
+- required structurally confirmed levels to remain active/unbroken before they enter the liquidity forecast;
+- added deterministic multi-level liquidity candidates ordered by distance from entry;
+- reused `MinimumTpSpacingAtr` for ATR-bounded source-level discrimination without adding a public parameter;
+- preserved the existing `SessionWindowRule` and `SessionStartUtc` / `SessionEndUtc` session semantics;
+- kept the normal target selector/reward-risk pipeline authoritative;
+- added deterministic E2 contracts and the accumulated `audit_phase_5_2.py` source gate.
+
+Repository verification on the final PR head `9c7c2acdfe8575915ad1dc4129281bd429144a94`:
+- Source/Architecture: PASS — run `36792555340`;
+- Runtime Acceptance Contracts: PASS — run `36792555225`;
+- cTrader Compile: PASS — run `36792555189`.
+
+The implementation passed Runtime/Compile/Source verification after correction of deterministic contract/audit defects; no unresolved E2 CI failures remain on the final PR head.
+
+Safety/manual boundary:
+- no public parameter name/type/default changed;
+- no RR/confidence/stop/target-extension/execution threshold tuning;
+- no decision/execution authority changed;
+- target-terminal broker lifecycle, restart/reconnect, panel behavior and empirical outcome validation remain manual.
+
+**Next phase: CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
+
 ## Current active implementation phase
 
-**CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates.**
+**CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
 
-CR5.1 / E1 is verified complete; continue from CR5.2. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.1 and CR5.2 are verified complete. Continue from CR5.3; Prompt 5 and Prompt 6 remain mandatory before CR-FINAL.
