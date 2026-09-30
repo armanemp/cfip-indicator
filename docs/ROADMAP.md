@@ -5001,7 +5001,7 @@ Verification boundary:
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **IN PROGRESS — CR5.1 VERIFIED COMPLETE; CR5.2 NEXT.**
+Status: **IN PROGRESS — CR5.1 and CR5.2 VERIFIED COMPLETE; CR5.3 NEXT.**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -5122,8 +5122,35 @@ Therefore Track 12A remains blocked. The next operator action is to run the no-t
 
 
 
+### CR5.2 / E2 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #116 merged to `main`; merge commit `10e01bd2610ce0c42b6d365f55fae24c75a3edfb`.**
+
+Completed:
+- replaced raw candle-extreme liquidity forecasts with canonical swing-high/swing-low candidates;
+- rejected broken liquidity through the canonical `LiquiditySweepRule.IsActiveUnbrokenLevel(...)`;
+- exposed multiple valid liquidity forecasts in deterministic nearest-first distance order;
+- applied the existing `MinimumTpSpacingAtr` for source-level separation;
+- preserved `SessionWindowRule` and existing `SessionStartUtc` / `SessionEndUtc` semantics;
+- kept the normal target selection/reward-risk pipeline authoritative;
+- added deterministic E2 Core contracts and `audit_phase_5_2.py` to the accumulated Source/Architecture gate.
+
+Repository verification on PR #116 head `9c7c2acdfe8575915ad1dc4129281bd429144a94`:
+- Source/Architecture: PASS — run `36792555340` / workflow #2072;
+- Runtime Acceptance Contracts: PASS — run `36792555225` / workflow #1881;
+- cTrader Compile: PASS — run `36792555189` / workflow #2065.
+
+Safety/manual boundary:
+- no public parameter name/type/default changed;
+- no RR/confidence/SL/target-extension threshold tuning;
+- no decision/execution authority changed;
+- target-terminal startup/readiness, broker lifecycle, restart/reconnect and empirical signal-quality/profitability remain manual.
+
+**Next phase: CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
+
+
 ## Current active implementation phase
 
-**CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates.**
+**CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
 
-CR5.1 / E1 is verified complete; continue from CR5.2. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.2 / E2 is verified complete and merged; continue from CR5.3. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
