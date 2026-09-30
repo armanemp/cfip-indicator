@@ -4,7 +4,7 @@ Last updated: 2026-09-30
 
 ## Phase closeout
 
-CR2.8 is verified complete and merged to main via PR #93, merge commit cab5a5e2e9a4fbccaf3ffe10d114c4ff54e6a243. Source/Architecture, Runtime Acceptance and cTrader Compile all passed on final verified code head 18a0d14035b30249bac69f0315c1ad143af33704.
+CR2.9 is verified complete and merged to main via PR #94, merge commit 6786af20d7b63d371c57890fb1adabb666f830bc. Source/Architecture, Runtime Acceptance and cTrader Compile all passed on final verified code head 8e51396c89498b84ac569b29517d4ba2ba6c8f45.
 
 ## Authoritative order
 
@@ -14,7 +14,7 @@ CR2.8 is verified complete and merged to main via PR #93, merge commit cab5a5e2e
 
 ## Active phase
 
-**Next: CR2.9 — Structural stop, divergence and rejection guardrail refinement (Prompt 2 / B10-B12).**
+**Next: CR3.1 — Live invalidation and false-signal semantics (Prompt 3 / C1-C2).**
 
 ## Completed before this checkpoint
 
@@ -36,6 +36,7 @@ CR2.8 is verified complete and merged to main via PR #93, merge commit cab5a5e2e
 - CR2.6 OrderBlock quality and cache discipline
 - CR2.7 WaveTrend mathematical correctness
 - CR2.8 historical rendering semantics and cost
+- CR2.9 structural stop, divergence and rejection guardrails
 
 ## Rules for every continuation
 
@@ -50,4 +51,4 @@ CR2.8 is verified complete and merged to main via PR #93, merge commit cab5a5e2e
 
 ## Next transition
 
-CR2.8 is now verified and merged. The next implementation response must execute **CR2.9** and only CR2.9. Track 12A remains blocked until CR-FINAL.
+CR2.9 is now verified and merged. The next implementation response must execute **CR3.1** and only CR3.1. Track 12A remains blocked until CR-FINAL.
