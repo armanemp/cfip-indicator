@@ -45,9 +45,9 @@ namespace cAlgo
                     warmupPeriod);
         }
 
-        internal static bool IsFinitePositive(double value)
+        internal static bool IsFinitePositiveNative(double value)
         {
-            return NumericGuards.IsFinitePositive(value);
+            return NumericGuards.IsFinitePositiveNative(value);
         }
 
         internal static bool IsFiniteBounded(
@@ -100,11 +100,11 @@ namespace cAlgo
                     index,
                     slowEmaResultCount,
                     slowEmaPeriod) &&
-                IsFinitePositive(atr) &&
+                IsFinitePositiveNative(atr) &&
                 IsFiniteBounded(rsi, 0, 100) &&
                 IsFiniteBounded(adx, 0, 100) &&
-                IsFinitePositive(fastEma) &&
-                IsFinitePositive(slowEma);
+                IsFinitePositiveNative(fastEma) &&
+                IsFinitePositiveNative(slowEma);
         }
     }
 }
