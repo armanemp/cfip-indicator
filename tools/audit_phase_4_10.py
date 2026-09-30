@@ -136,8 +136,8 @@ check(
 )
 check(
     "regime and reaction consumers fail closed on unusable native values",
-    "IsFinitePositive(fast)" in regime and
-    "IsFinitePositive(slow)" in regime and
+    "IsFinitePositiveNative(fast)" in regime and
+    "IsFinitePositiveNative(slow)" in regime and
     "if (atr <= 0)" in reaction,
 )
 check(
