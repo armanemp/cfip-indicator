@@ -5,6 +5,11 @@ namespace cAlgo
                         public int Direction;
                         public ExecutionMode Mode;
                         public int Confidence;
+                        public int DirectionalShare;
+                        public double AbsoluteStrength;
+                        public double BuyStrength;
+                        public double SellStrength;
+                        public double TotalStrength;
                         public double Entry;
                         public double StopLoss;
                         public double ZoneLow;
