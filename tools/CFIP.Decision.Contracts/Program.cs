@@ -402,7 +402,14 @@ namespace cAlgo
                         PositionId = 100 + i,
                         Direction = 1,
                         Lane = OpportunityLane.Strategic,
-                        EntryMode = ExecutionMode.RetestMarket,
+                        EntryMode =
+                            i == 0
+                                ? ExecutionMode.RetestMarket
+                                : i == 1
+                                    ? ExecutionMode.BreakoutMarket
+                                    : i == 2
+                                        ? ExecutionMode.ContinuationStop
+                                        : ExecutionMode.ReversalLimit,
                         Regime = "EXPANSION",
                         Confidence = 85,
                         Profitable = true,
