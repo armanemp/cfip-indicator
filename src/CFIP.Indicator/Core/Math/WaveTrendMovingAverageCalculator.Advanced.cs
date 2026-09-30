@@ -150,31 +150,22 @@ namespace cAlgo
                         Math.Sqrt(
                             length)));
 
-            double rawNow =
-                CalculateWaveTrendHullRaw(
-                    source,
-                    index,
-                    halfLength,
-                    length);
+            int firstRawIndex =
+                index -
+                finalLength +
+                1;
 
-            if (!IsFiniteWaveTrendAverage(
-                    rawNow))
-                return double.NaN;
+            double weightedSum = 0;
+            double weightSum = 0;
 
-            double sum = rawNow;
-            double weighted = rawNow;
-
-            for (int i = 1;
+            for (int i = 0;
                  i < finalLength;
                  i++)
             {
                 double raw =
                     CalculateWaveTrendHullRaw(
                         source,
-                        index -
-                        finalLength +
-                        1 +
-                        i,
+                        firstRawIndex + i,
                         halfLength,
                         length);
 
@@ -182,21 +173,22 @@ namespace cAlgo
                         raw))
                     return double.NaN;
 
-                sum += raw;
-                weighted += raw * (i + 1);
+                double weight =
+                    i + 1;
+
+                weightedSum +=
+                    raw *
+                    weight;
+
+                weightSum +=
+                    weight;
             }
 
-            double firstWeight =
-                finalLength *
-                (finalLength + 1) /
-                2.0;
-
-            if (firstWeight <= 0)
-                return double.NaN;
-
             return
-                weighted /
-                firstWeight;
+                weightSum > 0
+                    ? weightedSum /
+                      weightSum
+                    : double.NaN;
         }
 
         private double CalculateWaveTrendHullRaw(
