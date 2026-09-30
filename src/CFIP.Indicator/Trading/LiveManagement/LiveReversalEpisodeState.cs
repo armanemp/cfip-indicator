@@ -32,9 +32,7 @@ namespace cAlgo
                 return;
 
             if (_reversalEpisodePositionId != positionId ||
-                _reversalEpisodeDirection != oppositeDirection ||
-                (_reversalEpisodeLastQualifiedM5 >= 0 &&
-                 closedM5 - _reversalEpisodeLastQualifiedM5 > 1))
+                _reversalEpisodeDirection != oppositeDirection)
             {
                 _reversalEpisodePositionId = positionId;
                 _reversalEpisodeDirection = oppositeDirection;
