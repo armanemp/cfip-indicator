@@ -63,6 +63,35 @@ namespace cAlgo
                     contentWidth);
             }
 
+            PersistenceHealthState persistenceHealth =
+                PersistenceHealthRule.Resolve(
+                    _bufferedArchivePersistence.ProbeSucceeded,
+                    _bufferedArchivePersistence.WriteFailureCount,
+                    _bufferedArchivePersistence.ReadFailureCount,
+                    _bufferedArchivePersistence.PendingLineCount);
+
+            string persistenceText =
+                "PERSISTENCE  •  " +
+                PersistenceHealthRule.ToText(
+                    persistenceHealth) +
+                "  •  History" +
+                "  •  P" +
+                _bufferedArchivePersistence.PendingLineCount +
+                "  W" +
+                _bufferedArchivePersistence.WriteFailureCount +
+                "  R" +
+                _bufferedArchivePersistence.ReadFailureCount;
+
+            AddPanelRow(
+                ref slot,
+                persistenceText,
+                persistenceHealth ==
+                    PersistenceHealthState.Healthy
+                    ? PanelMutedTextColor
+                    : PanelWarningColor,
+                false,
+                contentWidth);
+
             if (ShowEngineStatus)
             {
                 AddPanelRow(
