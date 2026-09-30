@@ -53,5 +53,7 @@ namespace cAlgo
 
         internal const double DirectionalTotalMinimum = 1.0;
         internal const double PercentageScale = 100.0;
+        internal const int QualityMinimum = 0;
+        internal const int QualityMaximum = 100;
     }
 }
