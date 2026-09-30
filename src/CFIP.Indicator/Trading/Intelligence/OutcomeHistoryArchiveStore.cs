@@ -17,13 +17,13 @@ namespace cAlgo
         private string OutcomeArchivePrefix()
         {
             string symbol =
-                SanitizeArchivePart(
+                SanitizeOutcomeArchivePart(
                     string.IsNullOrWhiteSpace(SymbolName)
                         ? "UNKNOWN"
                         : SymbolName);
 
             string timeframe =
-                SanitizeArchivePart(
+                SanitizeOutcomeArchivePart(
                     Bars == null
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
@@ -64,7 +64,7 @@ namespace cAlgo
             return _outcomeArchivePrefixCache;
         }
 
-        private static string SanitizeArchivePart(
+        private static string SanitizeOutcomeArchivePart(
             string value)
         {
             if (string.IsNullOrWhiteSpace(value))
