@@ -22,6 +22,8 @@ namespace cAlgo
                 _outcomeArchivePrefixIdentityCache = null;
                 _runtimeLogPrefixCache = null;
                 _runtimeLogPrefixIdentityCache = null;
+                _signalTraceArchivePrefixCache = null;
+                _signalTraceArchivePrefixIdentityCache = null;
 
                 bool restored =
                     RestoreOutcomeHistory();
