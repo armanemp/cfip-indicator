@@ -28,13 +28,11 @@ namespace cAlgo
             DateTime now =
                 Server.TimeInUtc;
 
-            if (!_brokerStateDirty &&
-                _lastBrokerStateSyncUtc !=
-                    DateTime.MinValue &&
-                (now -
-                 _lastBrokerStateSyncUtc)
-                .TotalMilliseconds <
-                    BrokerStateRefreshIntervalMilliseconds)
+            if (!BrokerStateRefreshRule.IsRefreshDue(
+                    _brokerStateDirty,
+                    _lastBrokerStateSyncUtc,
+                    now,
+                    BrokerStateRefreshIntervalMilliseconds))
             {
                 return;
             }
