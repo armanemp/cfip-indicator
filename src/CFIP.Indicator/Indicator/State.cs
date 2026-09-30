@@ -180,7 +180,7 @@ namespace cAlgo
 
                 private bool _dailyLossLocked;
 
-                private DailyLossRule.Evaluation _dailyLossEvaluation;
+                private DailyLossEvaluation _dailyLossEvaluation;
 
                 private DateTime _lastDailyLossPersistUtc = DateTime.MinValue;
 
