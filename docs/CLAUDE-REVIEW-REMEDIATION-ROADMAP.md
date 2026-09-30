@@ -1210,7 +1210,25 @@ Testing:
 
 ### CR5.2 — Liquidity/session target-source semantics and multi-level target candidates (E2)
 
-Initial review label: **CONFIRMED / MEDIUM — target-source behavior must be verified across all source consumers before semantic correction.**
+Status: **VERIFIED COMPLETE — PR #116 merged to `main`; merge commit `10e01bd2610ce0c42b6d365f55fae24c75a3edfb`.**
+
+Repository evidence:
+- Source/Architecture PASS — final PR head run `36792555340`;
+- Runtime Acceptance Contracts PASS — final PR head run `36792555225`;
+- cTrader Compile PASS — final PR head run `36792555189`.
+
+The final E2 implementation uses canonical unbroken swing liquidity above/below entry,
+supports multiple forecast levels with deterministic distance ordering, reuses the
+existing TP-spacing parameter for source discrimination, and preserves the existing
+SessionWindowRule/session-parameter semantics.
+
+Safety/manual boundary:
+- no public parameter identity/default changed;
+- no RR/confidence/stop/target-extension/execution threshold tuning;
+- no decision/execution authority change;
+- target-terminal/broker lifecycle and empirical outcome validation remain manual.
+
+Next transition: **CR5.3 / E3.**
 
 Scope:
 - `LiquidityAboveTargetSource`;
@@ -1629,7 +1647,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR5.2 — Liquidity/session target-source semantics and multi-level target candidates (E2)**.
+Current active phase: **CR5.3 — Independent-evidence group counting for parallel opportunities (E3)**.
 
 ## 8. Completion order and dependencies
 
