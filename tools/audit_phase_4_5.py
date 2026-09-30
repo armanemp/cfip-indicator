@@ -122,7 +122,7 @@ check(
 check(
     "runtime contract tests frame-regime direction independence and symmetry",
     "VerifyFrameRegimeSemantics();" in contracts
-    and "FrameRegimeResolutionRule.ResolveSnapshot(bullTrend)" in contracts
+    and "FrameRegimeResolutionRule.ResolveFrameSnapshotRegime(bullTrend)" in contracts
     and "FrameRegimeResolutionRule.ResolveSnapshot(bearTrend)" in contracts
     and "BUY/SELL regime-weighted fusion is not symmetric." in contracts,
 )
