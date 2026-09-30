@@ -93,6 +93,109 @@ namespace cAlgo
             return result;
         }
 
+        private void ProcessWaitingForDataStages(
+            int index,
+            int closedM5)
+        {
+            // The pre-decision broker reconciliation already happened in the
+            // current cycle. Keep lifecycle/protection alive, but do not run
+            // decision, signal, plan-creation or execution stages while data
+            // readiness is incomplete.
+            RunCalculationStage(
+                () =>
+                {
+                    RecoverManagedLivePlan(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "BROKER LIFECYCLE RECOVERY");
+
+            RunCalculationStage(
+                () =>
+                {
+                    SynchronizeLiveBrokerState();
+                    return true;
+                },
+                index,
+                "BROKER RECONCILIATION • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    ApplyEconomicNewsRiskProtection(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "NEWS RISK PROTECTION • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    EvaluateActivePlan(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "ACTIVE PLAN MANAGEMENT • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    ProtectBrokerPositions(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "BROKER PROTECTION • WAITING");
+
+            MarkRuntimeManagementReadyForRecovery();
+
+            RunCalculationStage(
+                () =>
+                {
+                    MonitorOutcome(
+                        closedM5);
+
+                    CheckEndOfDayAlert(
+                        TimeInUtc);
+
+                    return true;
+                },
+                index,
+                "TELEMETRY • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    CheckReversalProtection();
+                    return true;
+                },
+                index,
+                "REVERSAL MANAGEMENT • WAITING");
+
+            RunCalculationStage(
+                () =>
+                {
+                    SynchronizeLiveBrokerState();
+                    return true;
+                },
+                index,
+                "BROKER STATE FINALIZATION • WAITING");
+
+            try
+            {
+                RenderPanel();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP waiting-state panel render failed: {0}",
+                    ex.Message);
+            }
+        }
+
         private void ProcessLiveCalculationStages(
             int index,
             int closedM5)
