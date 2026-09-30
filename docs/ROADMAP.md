@@ -4640,7 +4640,7 @@ Track 12A remains blocked until CR-FINAL passes.
 
 ## Claude Review Remediation — CR3.5 Implementation — 2026-09-30
 
-Status: **IMPLEMENTED on phase branch `phase/cr3-5-calibration-outcome-rejection-transparency`; CI/merge verification pending.**
+Status: **VERIFIED COMPLETE — PR #101 merged to main as `2c31232b7d1f16e88e89e693d7d74fd8a5eedab6`.**
 
 Covers: C8, C9 and B6.
 
