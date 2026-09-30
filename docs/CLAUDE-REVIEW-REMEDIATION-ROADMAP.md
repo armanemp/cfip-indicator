@@ -1122,7 +1122,7 @@ Next phase: **CR4.10 / D10 — Native-indicator defensive safety and registry pe
 
 ### CR4.10 — Native-indicator defensive safety and registry performance (D10)
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **CORE IMPLEMENTATION MERGED; registry-performance correction pending repository verification.**
 
 Reconciled findings:
 - repository-wide consumer inventory isolates direct native wrapper/registry access and the expected analysis consumers;
@@ -1133,7 +1133,8 @@ Reconciled findings:
 Implemented:
 - centralized Core `NativeIndicatorReadinessRule`;
 - wrapper, MarketFrame and MarketRegime defensive readiness boundaries;
-- reference-identity `Dictionary<Bars, Native>` registry;
+- evaluated reference-identity `Dictionary<Bars, Native>`, then replaced it after the fixed eight-item benchmark showed the dictionary slower than the linear reference scan;
+- finalized last-hit `Bars` reference cache plus explicit scan;
 - deterministic runtime readiness contracts;
 - platform-neutral registry lookup benchmark;
 - `audit_phase_4_10.py` wired after CR4.9.
