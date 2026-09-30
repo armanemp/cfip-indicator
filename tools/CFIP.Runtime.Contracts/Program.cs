@@ -24,6 +24,7 @@ namespace cAlgo
             VerifyStructuralStopScoringSemantics();
             VerifyDivergenceThresholdSemantics();
             VerifyRejectionThresholdSemantics();
+            VerifyLiveInvalidationSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
@@ -124,6 +125,52 @@ namespace cAlgo
                 StructuralEvidenceRule.IsIndependentTransition(false, true, false) &&
                 StructuralEvidenceRule.IsIndependentTransition(false, false, true),
                 "transition is independent only when structure is absent");
+        }
+
+        private static void VerifyLiveInvalidationSemantics()
+        {
+            Assert(
+                LiveInvalidationRule.ShouldEvaluateClosedBar(20, -1) &&
+                !LiveInvalidationRule.ShouldEvaluateClosedBar(20, 20) &&
+                LiveInvalidationRule.ShouldEvaluateClosedBar(21, 20),
+                "live invalidation evaluates at most once per canonical closed M5 bar");
+
+            double move;
+            Assert(
+                LiveInvalidationRule.TryCalculateDirectionalMove(
+                    1,
+                    100,
+                    99.25,
+                    out move) &&
+                Math.Abs(move + 0.75) < 1e-12,
+                "BUY adverse move is directional and deterministic");
+
+            Assert(
+                LiveInvalidationRule.TryCalculateDirectionalMove(
+                    -1,
+                    100,
+                    100.75,
+                    out move) &&
+                Math.Abs(move + 0.75) < 1e-12,
+                "SELL adverse move is directionally symmetric");
+
+            Assert(
+                !LiveInvalidationRule.TryCalculateDirectionalMove(
+                    0,
+                    100,
+                    99,
+                    out move) &&
+                !LiveInvalidationRule.TryCalculateDirectionalMove(
+                    1,
+                    0,
+                    99,
+                    out move) &&
+                !LiveInvalidationRule.TryCalculateDirectionalMove(
+                    -1,
+                    100,
+                    double.NaN,
+                    out move),
+                "live invalidation rejects invalid direction, price and non-finite input");
         }
 
         private static void VerifySessionWindowSemantics()
