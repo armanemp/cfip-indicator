@@ -972,6 +972,12 @@ Safety boundary:
 
 ### CR4.5 — Per-timeframe regime semantics (D5)
 
+Status: **VERIFIED COMPLETE — PR #106 merged to `main`, merge commit `c529c38ecea09e4b1ad85bc465e1ba12739ff95b`.**
+
+Verification: Source/Architecture run `36781736303`; cTrader Compile run `36781736379`; Runtime Acceptance run `36781736247`.
+
+Implementation preserved the existing M5 regime path, added bounded non-M5 regime caching, exposed frame-owned normalized regime metadata, made `UNKNOWN` explicitly neutral, and kept all regime thresholds/weights unchanged.
+
 Initial review label: **CONFIRMED / MEDIUM — current per-frame regime coverage must be audited.**
 
 Scope:
@@ -1544,7 +1550,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.5 — Per-timeframe regime semantics (D5)**.
+Current active phase: **CR4.6 — Frame-scoring constant ownership (D6)**.
 
 ## 8. Completion order and dependencies
 
