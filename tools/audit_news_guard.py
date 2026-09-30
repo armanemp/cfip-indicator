@@ -32,7 +32,8 @@ required = {
     "src/CFIP.Indicator/Core/Math/EconomicNewsCurrencyRule.cs":
         [
             "NormalizeSymbol(",
-            "NewsSymbolCurrencyMap",
+            "AdditionalNewsCurrencies",
+            "Additional News Currencies / Symbol Map",
             "AddSymbolMapMatches",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarClient.cs":
