@@ -6,12 +6,37 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
 
 namespace cAlgo
 {
+    internal sealed class NativeBarsReferenceComparer :
+        IEqualityComparer<Bars>
+    {
+        internal static readonly NativeBarsReferenceComparer Instance =
+            new NativeBarsReferenceComparer();
+
+        private NativeBarsReferenceComparer()
+        {
+        }
+
+        public bool Equals(Bars x, Bars y)
+        {
+            return ReferenceEquals(x, y);
+        }
+
+        public int GetHashCode(Bars obj)
+        {
+            return
+                obj == null
+                    ? 0
+                    : RuntimeHelpers.GetHashCode(obj);
+        }
+    }
+
     public partial class CFIPIndicator : Indicator
     {
         private void RegisterAllNative()
@@ -31,10 +56,11 @@ namespace cAlgo
                             if (bars == null)
                                 return null;
                 
-                            Native existing =
-                                _native.FirstOrDefault(x => ReferenceEquals(x.Bars, bars));
+                            Native existing;
                 
-                            if (existing != null)
+                            if (_native.TryGetValue(
+                                    bars,
+                                    out existing))
                                 return existing;
                 
                             Native set = new Native();
@@ -59,7 +85,7 @@ namespace cAlgo
                                     ex.Message);
                             }
                 
-                            _native.Add(set);
+                            _native[bars] = set;
                             return set;
                         }
         
@@ -68,11 +94,14 @@ namespace cAlgo
                             if (bars == null)
                                 return null;
                 
-                            Native set =
-                                _native.FirstOrDefault(
-                                    x => ReferenceEquals(x.Bars, bars));
+                            Native set;
                 
-                            return set ?? RegisterNative(bars);
+                            return
+                                _native.TryGetValue(
+                                    bars,
+                                    out set)
+                                    ? set
+                                    : RegisterNative(bars);
                         }
     }
 }
