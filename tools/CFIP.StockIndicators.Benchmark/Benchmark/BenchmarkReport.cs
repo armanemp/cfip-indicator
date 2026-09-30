@@ -9,7 +9,8 @@ internal static class BenchmarkReport
     internal static string Format(
         IReadOnlyList<ComparisonResult> comparisons,
         BenchmarkTiming v2Timing,
-        BenchmarkTiming v3Timing)
+        BenchmarkTiming v3Timing,
+        QuoteCacheBenchmarkResult quoteCacheTiming)
     {
         bool passed = comparisons.All(x => x.Passed);
         int scenarioCount =
@@ -89,6 +90,24 @@ internal static class BenchmarkReport
         lines.Add(
             $"| FacioQuo 3.0.1 | {v3Timing.TotalMilliseconds:F2} | " +
             $"{v3Timing.MeanMilliseconds:F4} | {v3Timing.MeanAllocatedBytes:N0} |");
+
+        lines.Add(string.Empty);
+        lines.Add("## CR4.4 incremental quote-cache benchmark");
+        lines.Add(string.Empty);
+        lines.Add(
+            "The following measurement compares per-bar quote-window rebuilds " +
+            "with the incremental bounded cache strategy used by the production OSS boundary.");
+        lines.Add(string.Empty);
+        lines.Add("| Strategy | Total ms | Mean ms/iteration | Mean allocated bytes/iteration |");
+        lines.Add("| --- | ---: | ---: | ---: |");
+        lines.Add(
+            $"| Rebuild per bar | {quoteCacheTiming.Rebuild.TotalMilliseconds:F2} | " +
+            $"{quoteCacheTiming.Rebuild.MeanMilliseconds:F4} | " +
+            $"{quoteCacheTiming.Rebuild.MeanAllocatedBytes:N0} |");
+        lines.Add(
+            $"| Incremental append/remove | {quoteCacheTiming.Incremental.TotalMilliseconds:F2} | " +
+            $"{quoteCacheTiming.Incremental.MeanMilliseconds:F4} | " +
+            $"{quoteCacheTiming.Incremental.MeanAllocatedBytes:N0} |");
 
         lines.Add(string.Empty);
         lines.Add(
