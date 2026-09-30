@@ -60,7 +60,7 @@ check(
     "every analyzed timeframe resolves regime through the shared analyzer",
     "AnalyzeMarketRegime(" in frame_evidence
     and "f.Regime =" in frame_evidence
-    and "FrameRegimeResolutionRule.ResolveSnapshot(" in frame_evidence,
+    and "FrameRegimeResolutionRule.ResolveFrameSnapshotRegime(" in frame_evidence,
 )
 check(
     "non-M5 regime snapshots are independently cached",
