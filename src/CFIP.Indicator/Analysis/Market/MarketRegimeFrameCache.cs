@@ -84,7 +84,7 @@ namespace cAlgo
                         index));
         }
 
-        public void Invalidate()
+        public void InvalidateFrameRegimeSnapshots()
         {
             for (int i = 0; i < _entries.Length; i++)
                 _entries[i] = null;
