@@ -698,7 +698,24 @@ Evidence boundary:
 Next implementation phase: CR3.2 — Decision gate and early prediction semantics (C3/C4).
 ## CR3.2 — Decision gate and early prediction semantics
 
+Status: **VERIFIED COMPLETE — PR #98 merged to main as af7eb503dd661d508afcc7619c72f74cea1b3a0f.**
+
 Covers: C3, C4.
+
+Completed:
+- deterministic Reward Quality Floor semantic replaces the misleading proxy-EV naming;
+- early prediction exposes and validates directional share plus absolute evidence strength;
+- named evidence weights are centrally owned;
+- deterministic runtime contracts and CR3.2 static audit are in place.
+
+Verification:
+- Source/Architecture: PASS, run 1820;
+- Runtime Acceptance: PASS, run 1629;
+- cTrader Compile: PASS, run 1813;
+- CR3.2 static audit: PASS;
+- accumulated routine/optimization/integrity audits: PASS.
+
+Manual target-terminal replay/outcome evidence remains required for empirical signal-quality claims.
 
 Work:
 - stop calling a proxy calculation expected value unless its input is a calibrated probability and actual RR;
@@ -772,7 +789,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR3.1 — Live invalidation and false-signal semantics**.
+Current active phase: **CR3.3 — Partial TP, server ladder, BE and trailing**.
 
 ## 8. Completion order and dependencies
 

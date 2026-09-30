@@ -4458,7 +4458,35 @@ Verification:
 
 Manual target-terminal acceptance remains required for broker-event timing, rejected-close recovery, restart/reconnect behavior, and live quote/bar synchronization. No accuracy, RR improvement or profitability claim is made from CI.
 
-Next phase: CR3.2 — Decision gate and early prediction semantics (C3/C4).
+## Claude Review Remediation — CR3.2 Closeout — 2026-09-30
+
+Status: **VERIFIED COMPLETE — PR #98 merged to main as af7eb503dd661d508afcc7619c72f74cea1b3a0f.**
+
+Covers: C3, C4.
+
+Completed:
+- renamed the former proxy expected-value concept to a deterministic Reward Quality Floor semantic without changing its established numerical behavior on valid inputs;
+- moved the reward-quality calculation into platform-neutral Core math and removed the obsolete `ProxyExpectedValue` executable owner;
+- preserved the public parameter property names, types and DefaultValue values for compatibility while correcting their visible cTrader labels;
+- centralized early-prediction evidence weights/bonuses in `EarlyPredictionScoreRule`;
+- separated directional share from absolute evidence strength and required both conditions for an early prediction;
+- prevented a high directional ratio on tiny absolute evidence from being presented as a strong early prediction;
+- added deterministic runtime contracts and a dedicated CR3.2 static audit;
+- updated panel/readiness/early-alert wording to describe the actual measured semantics;
+- completed the project-wide routine, optimization, integrity and accumulated phase audits without introducing a second decision authority.
+
+Verification:
+- Source/Architecture: PASS, run 1820;
+- Runtime Acceptance: PASS, run 1629;
+- cTrader Compile: PASS, run 1813;
+- CR3.2 static audit: PASS;
+- accumulated CR2.1–CR2.9 and CR3.1 audits: PASS;
+- main merge commit: `af7eb503dd661d508afcc7619c72f74cea1b3a0f`.
+
+Manual target-terminal replay/outcome evidence remains required for empirical signal-quality or profitability claims. No accuracy, RR improvement or profitability claim is made from CI.
+
+Next phase: **CR3.3 — Partial TP, server ladder, BE and trailing.**
+
 ## Claude Review Remediation — CR2.1 Closeout — 2026-09-30
 
 Status: VERIFIED COMPLETE — PR #86, merge commit 20835cbf1e541b51b9ad56af46cf0c5d13ff5350.

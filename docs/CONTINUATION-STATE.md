@@ -4,7 +4,9 @@ Last updated: 2026-09-30
 
 ## Phase closeout
 
-CR3.1 is verified complete and merged to main via PR #95, merge commit f482d2f76cdf37cca87fabc5b11b3d8c0a7edac7. The final implementation revision f9ab0aeb6802c78f4bb97adbde140fff1ed1967e passed Source/Architecture (run 1808), Runtime Acceptance (run 1617) and cTrader Compile (run 1801).
+CR3.2 is verified complete and merged to main via PR #98, merge commit `af7eb503dd661d508afcc7619c72f74cea1b3a0f`. The final implementation revision `c787c88538e82fbe795f09b7632061575ff023db` passed Source/Architecture (run 1820), Runtime Acceptance (run 1629) and cTrader Compile (run 1813).
+
+CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37cca87fabc5b11b3d8c0a7edac7`, with Source/Architecture run 1808, Runtime Acceptance run 1617 and cTrader Compile run 1801.
 
 ## Authoritative order
 
@@ -14,7 +16,7 @@ CR3.1 is verified complete and merged to main via PR #95, merge commit f482d2f76
 
 ## Active phase
 
-Next: CR3.2 — Decision gate and early prediction semantics (Prompt 3 / C3-C4).
+Next: CR3.3 — Partial TP, server ladder, BE and trailing (Prompt 4 / C5-C6).
 
 ## Completed before this checkpoint
 
@@ -59,3 +61,15 @@ Next: CR3.2 — Decision gate and early prediction semantics (Prompt 3 / C3-C4).
 ## Next transition
 
 CR3.1 is closed. The next implementation response must execute CR3.2 only. Track 12A remains blocked until CR-FINAL.
+
+
+## CR3.2 implementation record
+
+- C3: the former proxy expected-value heuristic now has an explicit Reward Quality Floor semantic owner in Core math; numerical behavior for valid inputs and public parameter defaults were preserved.
+- C4: early prediction scoring is centrally owned; directional share and absolute evidence strength are explicit; tiny-total/high-ratio evidence cannot qualify as a strong early prediction.
+- Runtime contracts and the CR3.2 static gate cover reward-quality semantics, BUY/SELL symmetry, centralized weights and low-total/high-ratio behavior.
+- Manual target-terminal validation remains required for empirical signal-quality conclusions; Track 12A remains blocked until CR-FINAL.
+
+## Next transition
+
+CR3.2 is closed. The next implementation response must execute CR3.3 only. Track 12A remains blocked until CR-FINAL.
