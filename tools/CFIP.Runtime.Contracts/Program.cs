@@ -159,8 +159,8 @@ namespace cAlgo
                     Direction = -1
                 };
 
-            if (FrameRegimeResolutionRule.Resolve(bullTrend) != "TREND" ||
-                FrameRegimeResolutionRule.Resolve(bearTrend) != "TREND")
+            if (FrameRegimeResolutionRule.ResolveSnapshot(bullTrend) != "TREND" ||
+                FrameRegimeResolutionRule.ResolveSnapshot(bearTrend) != "TREND")
             {
                 throw new InvalidOperationException(
                     "Known timeframe regime resolution must not depend on trade direction.");
