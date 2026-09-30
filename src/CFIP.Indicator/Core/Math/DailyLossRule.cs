@@ -4,7 +4,7 @@ namespace cAlgo
 {
     internal static class DailyLossRule
     {
-        internal static DailyLossEvaluation Evaluate(
+        internal static Evaluation Evaluate(
             double baselineEquity,
             double baselineUnrealizedNetProfit,
             double currentEquity,
@@ -20,7 +20,7 @@ namespace cAlgo
                 double.IsNaN(baselineUnrealizedNetProfit) ||
                 double.IsInfinity(baselineUnrealizedNetProfit))
             {
-                return DailyLossEvaluation.Unavailable(
+                return Evaluation.Unavailable(
                     "DAILY LOSS BASELINE UNAVAILABLE");
             }
 
@@ -46,7 +46,7 @@ namespace cAlgo
 
             if (previouslyLocked)
             {
-                return new DailyLossEvaluation(
+                return new Evaluation(
                     true,
                     true,
                     true,
@@ -84,7 +84,7 @@ namespace cAlgo
                 lossPercent >= threshold &&
                 threshold > 0;
 
-            return new DailyLossEvaluation(
+            return new Evaluation(
                 true,
                 limitHit,
                 limitHit,
@@ -99,6 +99,64 @@ namespace cAlgo
                 limitHit
                     ? "DAILY LOSS LIMIT REACHED"
                     : "DAILY LOSS WITHIN LIMIT");
+        }
+
+        internal sealed class Evaluation
+        {
+            internal bool DataReady { get; }
+            internal bool LimitHit { get; }
+            internal bool Locked { get; }
+            internal double LossAmount { get; }
+            internal double LossPercent { get; }
+            internal double DailyNetPnl { get; }
+            internal double RealizedNetProfit { get; }
+            internal double FloatingPnlChange { get; }
+            internal double NetCashFlow { get; }
+            internal bool UsedEquityFallback { get; }
+            internal string Reason { get; }
+
+            internal Evaluation(
+                bool dataReady,
+                bool limitHit,
+                bool locked,
+                double lossAmount,
+                double lossPercent,
+                double dailyNetPnl,
+                double realizedNetProfit,
+                double floatingPnlChange,
+                double netCashFlow,
+                bool usedEquityFallback,
+                string reason)
+            {
+                DataReady = dataReady;
+                LimitHit = limitHit;
+                Locked = locked;
+                LossAmount = lossAmount;
+                LossPercent = lossPercent;
+                DailyNetPnl = dailyNetPnl;
+                RealizedNetProfit = realizedNetProfit;
+                FloatingPnlChange = floatingPnlChange;
+                NetCashFlow = netCashFlow;
+                UsedEquityFallback = usedEquityFallback;
+                Reason = reason ?? "";
+            }
+
+            internal static Evaluation Unavailable(
+                string reason)
+            {
+                return new Evaluation(
+                    false,
+                    false,
+                    false,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    false,
+                    reason);
+            }
         }
 
         private static double CalculatePercent(
