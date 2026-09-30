@@ -62,6 +62,11 @@ if "if (!ManagedActionsOnly)" not in identity:
 if "string.IsNullOrWhiteSpace(managedLabel)" not in identity:
     errors.append("managed position lookup must fail closed on unavailable instance identity")
 
+TELEMETRY = ROOT / "src/CFIP.Indicator/Trading/Execution/SubmissionGateCoordinator.cs"
+telemetry = read(TELEMETRY)
+if "InstanceId" not in telemetry or "INSTANCE=" not in telemetry:
+    errors.append("execution telemetry must persist the managed instance identity")
+
 if "NormalizeLabel() + "-PENDING"" in identity:
     errors.append("pending orders must not use base label without instance identity")
 
