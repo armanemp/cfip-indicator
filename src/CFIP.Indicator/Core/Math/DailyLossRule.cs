@@ -13,15 +13,26 @@ namespace cAlgo
             double netCashFlow,
             double maximumDailyLossPercent,
             bool historyAvailable,
+            bool transactionsAvailable,
             bool previouslyLocked)
         {
             if (!HasFinitePositiveValue(baselineEquity) ||
                 !HasFinitePositiveValue(currentEquity) ||
-                double.IsNaN(baselineUnrealizedNetProfit) ||
-                double.IsInfinity(baselineUnrealizedNetProfit))
+                !IsFinite(baselineUnrealizedNetProfit) ||
+                !IsFinite(currentUnrealizedNetProfit) ||
+                !IsFinite(realizedNetProfit) ||
+                !IsFinite(netCashFlow) ||
+                !IsFinite(maximumDailyLossPercent) ||
+                maximumDailyLossPercent < 0)
             {
                 return DailyLossEvaluation.Unavailable(
-                    "DAILY LOSS BASELINE UNAVAILABLE");
+                    "DAILY LOSS DATA UNAVAILABLE");
+            }
+
+            if (!transactionsAvailable)
+            {
+                return DailyLossEvaluation.Unavailable(
+                    "DAILY LOSS TRANSACTION DATA UNAVAILABLE");
             }
 
             double dailyNetPnl;
@@ -44,15 +55,19 @@ namespace cAlgo
                 usedEquityFallback = true;
             }
 
+            if (!IsFinite(dailyNetPnl))
+            {
+                return DailyLossEvaluation.Unavailable(
+                    "DAILY LOSS PNL UNAVAILABLE");
+            }
+
             if (previouslyLocked)
             {
                 return new DailyLossEvaluation(
                     true,
                     true,
                     true,
-                    Math.Max(
-                        0,
-                        -dailyNetPnl),
+                    Math.Max(0, -dailyNetPnl),
                     CalculatePercent(
                         Math.Max(0, -dailyNetPnl),
                         baselineEquity),
@@ -66,23 +81,16 @@ namespace cAlgo
             }
 
             double lossAmount =
-                Math.Max(
-                    0,
-                    -dailyNetPnl);
+                Math.Max(0, -dailyNetPnl);
 
             double lossPercent =
                 CalculatePercent(
                     lossAmount,
                     baselineEquity);
 
-            double threshold =
-                Math.Max(
-                    0,
-                    maximumDailyLossPercent);
-
             bool limitHit =
-                lossPercent >= threshold &&
-                threshold > 0;
+                maximumDailyLossPercent > 0 &&
+                lossPercent >= maximumDailyLossPercent;
 
             return new DailyLossEvaluation(
                 true,
@@ -106,8 +114,7 @@ namespace cAlgo
             double baseline)
         {
             if (!HasFinitePositiveValue(baseline) ||
-                double.IsNaN(amount) ||
-                double.IsInfinity(amount))
+                !IsFinite(amount))
                 return 0;
 
             return amount /
@@ -118,7 +125,12 @@ namespace cAlgo
         private static bool HasFinitePositiveValue(double value)
         {
             return value > 0 &&
-                   !double.IsNaN(value) &&
+                   IsFinite(value);
+        }
+
+        private static bool IsFinite(double value)
+        {
+            return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
         }
     }
