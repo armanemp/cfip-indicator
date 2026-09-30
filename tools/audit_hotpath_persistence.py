@@ -100,6 +100,22 @@ for relative in (
     if "File.AppendAllText(" in source or "File.WriteAllText(" in source:
         errors.append(f"{relative}: synchronous file write remains")
 
+
+# No production source may call direct file writes outside the buffer owner.
+for path in (ROOT / "src").rglob("*.cs"):
+    source = path.read_text(encoding="utf-8")
+    relative = str(path.relative_to(ROOT)).replace("\\", "/")
+    if relative != "src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs":
+        if "File.WriteAllText(" in source or "File.AppendAllText(" in source:
+            errors.append(f"{relative}: direct file write bypasses buffered persistence")
+
+refresh_start = daily_loss.find("private void RefreshSharedDailyLossLock(")
+refresh_end = daily_loss.find("private void ReloadSharedDailyLossLockFromStorage(", refresh_start)
+if refresh_start >= 0 and refresh_end > refresh_start:
+    refresh_method = daily_loss[refresh_start:refresh_end]
+    if "LocalStorage.Reload(" in refresh_method:
+        errors.append("RefreshSharedDailyLossLock must not reload disk during Calculate")
+
 if "BufferedArchiveFlushIntervalMilliseconds" not in coordinator:
     errors.append("buffered persistence must have an explicit timer cadence")
 if "BufferedArchiveFlushBudget" not in coordinator:
