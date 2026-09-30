@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Static acceptance gate for CR4.5 per-timeframe regime semantics."""
+"""Static acceptance gate for CR4.5 per-timeframe regime semantics.
+
+The gate checks ownership/contracts rather than relying on one formatting-specific
+source spelling, so harmless C# line wrapping cannot create a false failure."""
 
 from pathlib import Path
 import sys
@@ -82,10 +85,10 @@ check(
 check(
     "cache invalidates on series replacement or fingerprint mutation",
     "!ReferenceEquals(entry.Bars, bars)" in frame_cache
-    and "MatchesFingerprint(
-                    entry.First," in frame_cache
-    and "MatchesFingerprint(
-                    entry.Last," in frame_cache,
+    and "MatchesFingerprint(" in frame_cache
+    and "entry.First" in frame_cache
+    and "entry.Last" in frame_cache
+    and "entry.BarCount > bars.Count" in frame_cache,
 )
 check(
     "scoring consumes the frame's own normalized regime",
@@ -113,13 +116,19 @@ check(
 )
 check(
     "all canonical MTF frames are analyzed independently",
-    "_m5Frame =" in calc
-    and "_m15Frame =" in calc
-    and "_m30Frame =" in calc
-    and "_h1Frame =" in calc
-    and "_h4Frame =" in calc
-    and "_d1Frame =" in calc
-    and "_w1Frame =" in calc,
+    all(
+        token in calc
+        for token in (
+            "_m5Frame =",
+            "_m15Frame =",
+            "_m30Frame =",
+            "_h1Frame =",
+            "_h4Frame =",
+            "_d1Frame =",
+            "_w1Frame =",
+        )
+    )
+    and calc.count("AnalyzeFrame(") >= 7,
 )
 check(
     "runtime contract tests frame-regime direction independence and symmetry",
@@ -147,4 +156,11 @@ if errors:
     for error in errors:
         print(f"- {error}")
     sys.exit(1)
+check(
+    "non-M5 cache refreshes when the same Bars series advances to a new frame index",
+    "entry.Index != index" in frame_cache
+    and "ReferenceEquals(_entries[i].Bars, bars)" in frame_cache
+    and "new MarketRegimeFrameCacheEntry(" in frame_cache,
+)
+
 print("CR4.5 STATIC GATE PASS")
