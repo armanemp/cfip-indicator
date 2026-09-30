@@ -11,7 +11,7 @@ namespace cAlgo
                 NumericGuards.Clamp(
                     baseRiskPercent,
                     0.05,
-                    100.0);
+                    5.0);
 
             if (!smartScalingEnabled)
                 return baseRisk;
