@@ -2,6 +2,13 @@ using System;
 
 namespace cAlgo
 {
+    internal enum OrderBlockLifecycleState
+    {
+        Fresh,
+        Mitigated,
+        Broken
+    }
+
     /// <summary>
     /// Deterministic mathematical owner for Order Block source geometry,
     /// structural qualification and lifecycle boundaries.
