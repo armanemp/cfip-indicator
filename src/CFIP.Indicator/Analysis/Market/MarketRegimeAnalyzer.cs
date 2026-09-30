@@ -145,8 +145,8 @@ namespace cAlgo
                         index - 1),
                     20);
 
-            if (!NativeIndicatorReadinessRule.IsFinitePositive(atr) ||
-                !NativeIndicatorReadinessRule.IsFinitePositive(baselineAtr))
+            if (!NativeIndicatorReadinessRule.IsFinitePositiveNative(atr) ||
+                !NativeIndicatorReadinessRule.IsFinitePositiveNative(baselineAtr))
                 return snapshot;
 
             double fast =
@@ -169,9 +169,9 @@ namespace cAlgo
                         index - 3),
                     true);
 
-            if (!NativeIndicatorReadinessRule.IsFinitePositive(fast) ||
-                !NativeIndicatorReadinessRule.IsFinitePositive(slow) ||
-                !NativeIndicatorReadinessRule.IsFinitePositive(previousFast))
+            if (!NativeIndicatorReadinessRule.IsFinitePositiveNative(fast) ||
+                !NativeIndicatorReadinessRule.IsFinitePositiveNative(slow) ||
+                !NativeIndicatorReadinessRule.IsFinitePositiveNative(previousFast))
                 return snapshot;
 
             double atrRatio =
