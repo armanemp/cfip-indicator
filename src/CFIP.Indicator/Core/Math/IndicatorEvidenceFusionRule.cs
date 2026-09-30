@@ -80,7 +80,7 @@ namespace cAlgo
             int minimumOssAgreement)
         {
             Regime =
-                FrameRegimeResolutionRule.Normalize(
+                FrameRegimeResolutionRule.NormalizeFrameRegimeValue(
                     regime);
             TrendBull = trendBull;
             TrendBear = trendBear;
