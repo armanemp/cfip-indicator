@@ -12,13 +12,10 @@ namespace cAlgo
         private const string OutcomeArchiveSchema = "CFIP-OUTCOME-ARCHIVE,1";
 
         private string _outcomeArchivePrefixCache;
+        private string _outcomeArchivePrefixIdentityCache;
 
         private string OutcomeArchivePrefix()
         {
-            if (!string.IsNullOrWhiteSpace(
-                    _outcomeArchivePrefixCache))
-                return _outcomeArchivePrefixCache;
-
             string symbol =
                 SanitizeArchivePart(
                     string.IsNullOrWhiteSpace(SymbolName)
@@ -31,16 +28,40 @@ namespace cAlgo
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
 
+            string accountScope =
+                MemoryAccountScopeToken();
+
+            string identity =
+                symbol +
+                "|" +
+                timeframe +
+                "|" +
+                accountScope +
+                "|" +
+                MemoryConfigurationFingerprint();
+
+            if (!string.IsNullOrWhiteSpace(
+                    _outcomeArchivePrefixCache) &&
+                string.Equals(
+                    _outcomeArchivePrefixIdentityCache,
+                    identity,
+                    StringComparison.Ordinal))
+                return _outcomeArchivePrefixCache;
+
+            _outcomeArchivePrefixIdentityCache =
+                identity;
+
             _outcomeArchivePrefixCache =
                 "CFIP_History_" +
                 symbol +
                 "_" +
                 timeframe +
                 "_" +
+                accountScope +
+                "_" +
                 MemoryConfigurationFingerprint();
 
-            return
-                _outcomeArchivePrefixCache;
+            return _outcomeArchivePrefixCache;
         }
 
         private static string SanitizeArchivePart(
