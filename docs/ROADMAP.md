@@ -4764,6 +4764,27 @@ Boundary:
 
 Next phase: **CR4.4 — Skender/OSS numerical stability and incremental caching (D4)**.
 
+
+### CR4.4 / D4 implementation checkpoint — 2026-10-01
+
+Status: **IMPLEMENTED ON BRANCH — CI VERIFICATION PENDING**
+
+Implemented on `phase/cr4-4-skender-numerical-caching`:
+- centralized fixed OSS indicator constants and warm-up contracts under `OssIndicatorParameters`;
+- separated path-dependent Skender adapters (RSI, MACD, SuperTrend, Parabolic SAR) onto a stable-history-prefix cache;
+- replaced per-bar rolling Quote rebuilding with a bounded 161-bar incremental append/remove cache for fixed-window adapters;
+- added conservative cache invalidation using Bars identity, first-bar fingerprint and stable-last-bar fingerprint;
+- retained OBV for diagnostics/research while removing its one-bar bias from OSS confluence vote/count evidence;
+- added CR4.4 runtime contracts, static audit and isolated incremental-cache benchmark/reporting;
+- wired `audit_phase_4_4.py` into Source/Architecture CI.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- existing RsiPeriod/MacdFastPeriod/MacdSlowPeriod safety semantics preserved;
+- no default trading threshold, RR, confidence or execution policy tuning;
+- Track 12A and CR-FINAL ordering remain unchanged;
+- target-terminal behavior remains unverified until the required cTrader acceptance stage.
+
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
