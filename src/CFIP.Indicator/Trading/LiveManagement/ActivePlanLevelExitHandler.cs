@@ -110,6 +110,7 @@ namespace cAlgo
                                     {
                                         bool tp1Processed =
                                             ExecutePartialClose(
+                                                closedM5,
                                                 PartialCloseTp1Percent,
                                                 "TP1");
                         
@@ -147,6 +148,7 @@ namespace cAlgo
                                     {
                                         bool tp2Processed =
                                             ExecutePartialClose(
+                                                closedM5,
                                                 PartialCloseTp2Percent,
                                                 "TP2");
                         
