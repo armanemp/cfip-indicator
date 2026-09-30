@@ -540,7 +540,7 @@ namespace cAlgo
                                     RemoveAllChartObjects();
                                     RemovePanel();
                                     RemovePopup();
-                                    _popupAlertQueue.Clear();
+                                    _popupAlertQueue.ClearPendingAlerts();
                                     base.OnDestroy();
                                 }
     }
