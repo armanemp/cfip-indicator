@@ -204,8 +204,21 @@ namespace cAlgo
                 sellLevels[2] == 92,
                 "liquidity candidates are ordered by distance from entry");
 
+            List<double> orderedDistinct =
+                LiquidityTargetCandidateRule.OrderDistinctByDistance(
+                    1,
+                    100,
+                    new List<double> { 103.0, 103.7, 104.0 },
+                    2,
+                    0.40);
+
             Assert(
-                LiquiditySweepRule.IsActiveUnbrokenLevel(
+                orderedDistinct.Count == 2 &&
+                orderedDistinct[0] == 103.0 &&
+                orderedDistinct[1] == 104.0,
+                "liquidity spacing is applied after distance ordering so a farther source cannot mask a nearer valid level");
+
+            LiquiditySweepRule.IsActiveUnbrokenLevel(
                     -1,
                     1,
                     5,
