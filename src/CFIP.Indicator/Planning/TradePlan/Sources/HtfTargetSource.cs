@@ -66,6 +66,11 @@ namespace cAlgo
                                                     i < 2
                                                         ? MtfClusterWeight
                                                         : HtfStructureWeight;
+
+                                                double sourceAgeMinutes =
+                                                    TargetAgeSemanticsRule.ElapsedMinutes(
+                                                        frames[i].OpenTimes[idx],
+                                                        reference);
                                 
                                                 double frameAtr =
                                                     Atr(
@@ -94,7 +99,8 @@ namespace cAlgo
                                                     0,
                                                     weights[i] +
                                                     clusterWeight / 10.0 +
-                                                    HtfRewardBonus);
+                                                    HtfRewardBonus,
+                                                    sourceAgeMinutes);
                                 
                                                 int opposing =
                                                     -direction;
@@ -118,7 +124,8 @@ namespace cAlgo
                                                         fvg.Age,
                                                         FvgWeight +
                                                         clusterWeight / 10.0 +
-                                                        HtfRewardBonus);
+                                                        HtfRewardBonus,
+                                                        sourceAgeMinutes);
                                                 }
                                 
                                                 Zone ob =
@@ -140,7 +147,8 @@ namespace cAlgo
                                                         ob.Age,
                                                         OrderBlockWeight +
                                                         clusterWeight / 10.0 +
-                                                        HtfRewardBonus);
+                                                        HtfRewardBonus,
+                                                        sourceAgeMinutes);
                                                 }
                                 
                                                 double liquidity =
@@ -166,7 +174,8 @@ namespace cAlgo
                                                         0,
                                                         LiquidityPoolWeight +
                                                         clusterWeight / 10.0 +
-                                                        HtfRewardBonus);
+                                                        HtfRewardBonus,
+                                                        sourceAgeMinutes);
                                                 }
                                             }
                                         }
