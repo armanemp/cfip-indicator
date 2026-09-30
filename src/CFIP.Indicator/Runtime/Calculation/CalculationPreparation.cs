@@ -22,15 +22,29 @@ namespace cAlgo
 
             RemoveExpiredPopup();
 
-            if (!HasEnoughData())
+            DateTime now =
+                Server.TimeInUtc;
+
+            if (!ShouldProbeCalculationReadiness(
+                    now))
+                return false;
+
+            bool hasMinimumHistory =
+                HasEnoughData();
+
+            if (!hasMinimumHistory)
             {
-                _status = "BUILDING DATA";
-                RenderPanel();
+                RecordCalculationReadiness(
+                    CalculationReadinessState.BuildingHistory,
+                    now);
+
+                RenderCalculationReadinessIfNeeded(
+                    now);
                 return false;
             }
 
             reference =
-                Server.TimeInUtc;
+                now;
 
             mtf =
                 BuildMtfClosedContext(
@@ -45,11 +59,22 @@ namespace cAlgo
             closedM5 =
                 mtf.M5;
 
-            if (!mtf.HasPrimaryDecisionHistory)
+            CalculationReadinessState readiness =
+                CalculationReadinessRule.ResolveState(
+                    true,
+                    true,
+                    mtf.HasPrimaryDecisionHistory,
+                    closedM5);
+
+            RecordCalculationReadiness(
+                readiness,
+                now);
+
+            if (readiness !=
+                CalculationReadinessState.Ready)
             {
-                _status =
-                    "WAITING FOR CLOSED M5";
-                RenderPanel();
+                RenderCalculationReadinessIfNeeded(
+                    now);
                 return false;
             }
 
