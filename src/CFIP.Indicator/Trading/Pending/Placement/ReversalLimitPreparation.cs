@@ -49,10 +49,12 @@ namespace cAlgo
                 return false;
             }
 
+            // A pending Limit is triggered on the executable side that must
+            // be reached: Ask for Buy Limit, Bid for Sell Limit.
             double market =
                 direction == 1
-                    ? Symbol.Bid
-                    : Symbol.Ask;
+                    ? Symbol.Ask
+                    : Symbol.Bid;
 
             PredictivePendingCandidate candidate;
 
