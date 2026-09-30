@@ -24,15 +24,15 @@ namespace cAlgo
                     index);
 
             if (quotes == null ||
-                quotes.Count < 40)
+                quotes.Count < OssIndicatorParameters.StochMinimumHistory)
                 return;
 
             var results =
                 StockIndicator.GetStoch(
                     quotes,
-                    14,
-                    3,
-                    3)
+                    OssIndicatorParameters.StochLookbackPeriod,
+                    OssIndicatorParameters.StochSignalPeriod,
+                    OssIndicatorParameters.StochSmoothPeriod)
                     .ToList();
 
             if (results.Count == 0)
