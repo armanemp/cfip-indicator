@@ -5,17 +5,46 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private readonly MarketRegimeFrameCache _marketRegimeFrameCache =
+            new MarketRegimeFrameCache();
         private MarketRegimeSnapshot AnalyzeMarketRegime(
             Bars bars,
             int index)
         {
+            if (bars == null ||
+                index < 0 ||
+                index >= bars.Count)
+                return null;
+
+            if (!ReferenceEquals(
+                    bars,
+                    _m5Bars))
+            {
+                if (_marketRegimeFrameCache.TryGet(
+                        bars,
+                        index,
+                        out MarketRegimeSnapshot cached))
+                    return cached;
+
+                MarketRegimeSnapshot nonM5Snapshot =
+                    AnalyzeMarketRegimeCore(
+                        bars,
+                        index);
+
+                _marketRegimeFrameCache.Set(
+                    bars,
+                    index,
+                    nonM5Snapshot);
+
+                return nonM5Snapshot;
+            }
+
             MarketRegimeSnapshot snapshot =
                 GetM5RegimeCoreSnapshot(
                     bars,
                     index);
 
             if (snapshot == null ||
-                !ReferenceEquals(bars, _m5Bars) ||
                 index <= 40)
                 return snapshot;
 
