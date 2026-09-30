@@ -79,7 +79,9 @@ namespace cAlgo
             int ossConfluenceWeight,
             int minimumOssAgreement)
         {
-            Regime = regime ?? "UNKNOWN";
+            Regime =
+                FrameRegimeResolutionRule.Resolve(
+                    regime);
             TrendBull = trendBull;
             TrendBear = trendBear;
             MomentumBull = momentumBull;
@@ -367,6 +369,8 @@ namespace cAlgo
             ref double contextBull,
             ref double contextBear)
         {
+            // UNKNOWN is intentionally neutral. A frame without a confirmed
+            // regime must not receive a directional regime preference.
             double trendWeight = 1.0;
             double momentumWeight = 1.0;
             double contextWeight = 1.0;
