@@ -627,7 +627,7 @@ namespace cAlgo
                     DateTimeKind.Utc);
 
             Assert(
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     false,
                     DateTime.MinValue,
                     now,
@@ -637,7 +637,7 @@ namespace cAlgo
                 "disabled news feed reports DISABLED state");
 
             Assert(
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     true,
                     DateTime.MinValue,
                     now,
@@ -647,7 +647,7 @@ namespace cAlgo
                 "missing successful refresh reports NEVER_LOADED");
 
             Assert(
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     true,
                     now.AddMinutes(-30),
                     now,
@@ -657,7 +657,7 @@ namespace cAlgo
                 "fresh successful refresh reports HEALTHY");
 
             Assert(
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     true,
                     now.AddMinutes(-91),
                     now,
@@ -667,7 +667,7 @@ namespace cAlgo
                 "expired successful refresh reports STALE");
 
             Assert(
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     true,
                     now.AddMinutes(-1),
                     now,
