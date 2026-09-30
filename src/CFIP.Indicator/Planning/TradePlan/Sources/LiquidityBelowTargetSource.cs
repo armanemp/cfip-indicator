@@ -75,21 +75,16 @@ namespace cAlgo
                         x => bars.ClosePrices[x]))
                     continue;
 
-                if (!LiquidityTargetCandidateRule.IsDistinct(
-                        level,
-                        levels,
-                        atr,
-                        MinimumTpSpacingAtr))
-                    continue;
-
                 levels.Add(level);
             }
 
             return
-                LiquidityTargetCandidateRule.OrderByDistance(
+                LiquidityTargetCandidateRule.OrderDistinctByDistance(
                     -1,
                     price,
-                    levels);
+                    levels,
+                    atr,
+                    MinimumTpSpacingAtr);
         }
 
         private double FindNextLiquidityBelow(
