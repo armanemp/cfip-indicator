@@ -85,7 +85,7 @@ checks = {
         "RemoveExpiredPopup();\n                ProcessQueuedPopups();\n                HandleRuntimeHeartbeat();" in initialization
     ),
     "popup queue is cleared on destroy": (
-        "_popupAlertQueue.Clear();" in initialization
+        "_popupAlertQueue.ClearPendingAlerts();" in initialization
     ),
     "deterministic re-arm runtime contract is registered": (
         "VerifyRuntimeExplicitRearmSemantics();" in contracts
@@ -128,8 +128,8 @@ if production.count("ShowPopup(next.Message, next.Critical)") != 1:
 for path in (ROOT / "src/CFIP.Indicator").rglob("*.cs"):
     relative = path.relative_to(ROOT).as_posix()
     if relative in {
-        "UI/Popup/PopupRenderer.cs",
-        "UI/Popup/PopupQueueProcessor.cs",
+        "src/CFIP.Indicator/UI/Popup/PopupRenderer.cs",
+        "src/CFIP.Indicator/UI/Popup/PopupQueueProcessor.cs",
     }:
         continue
     if "ShowPopup(" in path.read_text(encoding="utf-8"):
