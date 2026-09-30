@@ -388,8 +388,8 @@ Verification boundary:
 
 ## Current active phase
 
-CR4.10 / D10 — core implementation merged; registry performance correction on `phase/cr4-10-registry-hot-cache` pending repository verification.
+CR4.10 / D10 — verified on `phase/cr4-10-registry-hot-cache`; merge to main is the final D10 integration step.
 
 ### Next transition
 
-CR-FINAL repository integration gate after the D10 registry-performance correction is verified.
+CR-FINAL repository integration gate after D10 integration.
