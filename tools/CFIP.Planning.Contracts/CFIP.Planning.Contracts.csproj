@@ -25,6 +25,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PriceProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveReversalDecisionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveReversalEpisodeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleTransitionPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/OpportunityLane.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
