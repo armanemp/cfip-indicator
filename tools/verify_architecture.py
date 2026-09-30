@@ -444,7 +444,7 @@ for token in (
     "if (f.StructureBull)",
     "else if (f.MssBull)",
     "else",
-    "AddScore(true, 9, ref bull, ref evidence);",
+    "FrameScoringConstants.ChochContribution",
     "if (f.StructureBear)",
     "else if (f.MssBear)",
     "else",
