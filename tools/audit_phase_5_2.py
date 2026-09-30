@@ -92,8 +92,10 @@ check(
 
 check(
     "session semantics remain parameter-driven rather than named-session replacement",
-    "SessionStartUtc" in session and
-    "SessionEndUtc" in session and
+    "SessionStartUtc" in smart and
+    "SessionEndUtc" in smart and
+    "SessionStartUtc" in supply and
+    "SessionEndUtc" in supply and
     "Asia" not in session and
     "London" not in session and
     "New York" not in session,
