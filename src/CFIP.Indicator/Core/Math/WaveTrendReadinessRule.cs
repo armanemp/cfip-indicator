@@ -1,3 +1,4 @@
+
     internal static class WaveTrendReadinessRule
     {
         internal static int ResolveComponentReadyIndex(
@@ -58,3 +59,4 @@
         }
     }
 }
+
