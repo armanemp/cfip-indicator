@@ -186,7 +186,7 @@ namespace cAlgo
             if (_m5Frame != null)
             {
                 IndicatorQualityGateResult indicatorGate =
-                    IndicatorExecutionQualityRule.Evaluate(
+                    IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                         IndicatorQualityGateStage.AutomaticMarket,
                         _m5Frame.IndicatorConfluenceQuality,
                         _m5Frame.IndicatorConflict);
@@ -311,7 +311,7 @@ namespace cAlgo
                             : Symbol.Bid);
 
                 ExecutionPlanGeometryResult geometry =
-                    ExecutionPlanGeometryRule.Evaluate(
+                    ExecutionPlanGeometryRule.EvaluateIndicatorExecutionQuality(
                         _plan.Direction,
                         liveEntry,
                         _plan.Stop,
