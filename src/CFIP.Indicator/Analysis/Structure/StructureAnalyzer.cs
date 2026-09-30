@@ -259,37 +259,18 @@ namespace cAlgo
                             int index,
                             int direction)
                         {
-                            double range =
-                                Math.Max(
-                                    Symbol.PipSize,
-                                    bars.HighPrices[index] -
-                                    bars.LowPrices[index]);
-                
-                            double body =
-                                Math.Abs(
-                                    bars.ClosePrices[index] -
-                                    bars.OpenPrices[index]);
-                
-                            if (direction == 1)
-                            {
-                                double wick =
-                                    Math.Min(
-                                        bars.OpenPrices[index],
-                                        bars.ClosePrices[index]) -
-                                    bars.LowPrices[index];
-                
-                                return wick > body * 1.25 &&
-                                       wick / range > 0.20;
-                            }
-                
-                            double upper =
-                                bars.HighPrices[index] -
-                                Math.Max(
-                                    bars.OpenPrices[index],
-                                    bars.ClosePrices[index]);
-                
-                            return upper > body * 1.25 &&
-                                   upper / range > 0.20;
+                            if (bars == null ||
+                                index < 0 ||
+                                index >= bars.Count)
+                                return false;
+
+                            return RejectionRule.IsRejection(
+                                bars.OpenPrices[index],
+                                bars.ClosePrices[index],
+                                bars.HighPrices[index],
+                                bars.LowPrices[index],
+                                direction,
+                                Symbol.PipSize);
                         }
         
         private bool StableDirection(
