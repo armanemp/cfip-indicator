@@ -15,6 +15,7 @@ namespace cAlgo
             VerifyExecutionThresholdSemantics();
             VerifyVolumeSizingSemantics();
             VerifyOrderBlockMathematics();
+            VerifyOrderBlockQualitySemantics();
             VerifyZoneConfluenceSymmetry();
             VerifyTopDownCalibration();
             VerifyProtectionProgressionSemantics();
@@ -1811,6 +1812,7 @@ namespace cAlgo
             double high;
             double remainingRatio;
             bool partial;
+            OrderBlockLifecycleState lifecycleState;
 
             Assert(
                 OrderBlockRule.IsOppositeSourceCandle(1, 101, 100) &&
@@ -1860,16 +1862,52 @@ namespace cAlgo
             Assert(
                 OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     1, 99, 103, 101, 0.01,
-                    out low, out high, out partial, out remainingRatio) &&
-                partial && low == 99 && high == 101,
-                "bullish Order Block partial mitigation moves upper boundary");
+                    out low, out high, out partial,
+                    out remainingRatio,
+                    out lifecycleState) &&
+                partial &&
+                lifecycleState ==
+                    OrderBlockLifecycleState.Mitigated &&
+                low == 99 && high == 101,
+                "bullish Order Block partial mitigation moves upper boundary and marks the zone mitigated");
 
             Assert(
                 OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     -1, 99, 103, 101, 0.01,
-                    out low, out high, out partial, out remainingRatio) &&
-                partial && low == 101 && high == 103,
-                "bearish Order Block partial mitigation moves lower boundary");
+                    out low, out high, out partial,
+                    out remainingRatio,
+                    out lifecycleState) &&
+                partial &&
+                lifecycleState ==
+                    OrderBlockLifecycleState.Mitigated &&
+                low == 101 && high == 103,
+                "bearish Order Block partial mitigation moves lower boundary and remains directionally symmetric");
+
+            Assert(
+                OrderBlockRule.ClassifyLifecycle(
+                    false,
+                    1.0) ==
+                    OrderBlockLifecycleState.Fresh &&
+                OrderBlockRule.ClassifyLifecycle(
+                    true,
+                    0.5) ==
+                    OrderBlockLifecycleState.Mitigated &&
+                OrderBlockRule.ClassifyLifecycle(
+                    true,
+                    OrderBlockRule.MinimumRetainedRatio) ==
+                    OrderBlockLifecycleState.Broken,
+                "Order Block lifecycle distinguishes fresh, mitigated and broken zones");
+
+            Assert(
+                OrderBlockRule.IsOnCorrectMarketSide(
+                    1, 100, 95, 99, 0.01) &&
+                !OrderBlockRule.IsOnCorrectMarketSide(
+                    1, 100, 99, 101, 0.01) &&
+                OrderBlockRule.IsOnCorrectMarketSide(
+                    -1, 100, 101, 105, 0.01) &&
+                !OrderBlockRule.IsOnCorrectMarketSide(
+                    -1, 100, 99, 101, 0.01),
+                "Order Block selection accepts only the intended side of market");
 
             Assert(
                 OrderBlockRule.IsFullyMitigated(1, 99, 103, 99) &&
@@ -1880,11 +1918,19 @@ namespace cAlgo
             Assert(
                 !OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     1, 99, 103, 99, 0.01,
-                    out low, out high, out partial, out remainingRatio) &&
+                    out low, out high, out partial,
+                    out remainingRatio,
+                    out lifecycleState) &&
+                lifecycleState ==
+                    OrderBlockLifecycleState.Broken &&
                 !OrderBlockRule.TryApplyOrderBlockPartialMitigation(
                     -1, 99, 103, 103, 0.01,
-                    out low, out high, out partial, out remainingRatio),
-                "fully mitigated Order Blocks cannot remain active");
+                    out low, out high, out partial,
+                    out remainingRatio,
+                    out lifecycleState) &&
+                lifecycleState ==
+                    OrderBlockLifecycleState.Broken,
+                "fully mitigated Order Blocks are explicitly broken and cannot remain active");
 
             Assert(
                 OrderBlockRule.OrderBlockIdentity(1, 42, false) ==
@@ -1896,6 +1942,96 @@ namespace cAlgo
                 "Order Block identity separates direction and zone geometry variant");
         }
 
+        private static void VerifyOrderBlockQualitySemantics()
+        {
+            int baseQuality =
+                OrderBlockQualityRule.Calculate(
+                    0.50,
+                    0.00,
+                    0.00,
+                    0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false);
+
+            Assert(
+                baseQuality == 54,
+                "Order Block quality has one explicit base score");
+
+            Assert(
+                OrderBlockQualityRule.Calculate(
+                    0.50, 0, 0, 0,
+                    true, false, false, false, false) -
+                baseQuality == 14 &&
+                OrderBlockQualityRule.Calculate(
+                    0.50, 0, 0, 0,
+                    false, true, false, false, false) -
+                baseQuality == 13 &&
+                OrderBlockQualityRule.Calculate(
+                    0.50, 0, 0, 0,
+                    false, false, true, false, false) -
+                baseQuality == 8 &&
+                OrderBlockQualityRule.Calculate(
+                    0.50, 0, 0, 0,
+                    false, false, false, true, false) -
+                baseQuality == 8,
+                "displacement, structure break, liquidity sweep and FVG confluence are independently traceable");
+
+            Assert(
+                OrderBlockQualityRule.Calculate(
+                    0.50, 0, 1.0, 0,
+                    false, false, false, false, false) == 62 &&
+                OrderBlockQualityRule.Calculate(
+                    0.50, 1.0, 0, 0,
+                    false, false, false, false, false) == 56 &&
+                OrderBlockQualityRule.Calculate(
+                    0.50, 1.50, 0, 0,
+                    false, false, false, false, false) == 58,
+                "remaining-width and impulse thresholds keep their explicit contributions");
+
+            Assert(
+                OrderBlockQualityRule.Calculate(
+                    0.20, 0, 0, 0,
+                    false, false, false, false, false) == 50 &&
+                OrderBlockQualityRule.Calculate(
+                    0.70, 0, 0, 0,
+                    false, false, false, false, false) == 57 &&
+                OrderBlockQualityRule.Calculate(
+                    0.50, 0, 0, 6,
+                    false, false, false, false, false) == 53 &&
+                OrderBlockQualityRule.Calculate(
+                    0.50, 0, 0.50, 0,
+                    false, false, false, false, true) == 49,
+                "body shape, age and partial-mitigation penalties are deterministic");
+
+            Assert(
+                OrderBlockQualityRule.Calculate(
+                    0.70,
+                    1.50,
+                    1.0,
+                    0,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false) == 100,
+                "Order Block quality is explicitly clamped at the upper bound");
+
+            Assert(
+                OrderBlockQualityRule.Calculate(
+                    double.NaN,
+                    1.0,
+                    1.0,
+                    0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false) == 0,
+                "non-finite Order Block quality inputs fail closed");
+        }
 
         private static void VerifyMtfContextIntegrity()
         {
