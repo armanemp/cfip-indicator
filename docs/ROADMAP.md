@@ -24,6 +24,14 @@ production behavior change by itself.
 
 ---
 
+## Phase-sequence integrity note
+
+The canonical Prompt 4 remediation track contains **D1 through D10** only.
+A repository-wide search on 2026-10-01 found no authoritative `CR4.11`,
+`D11`, `Phase 4.11` or `Prompt 4.11` entry. The authoritative sequence
+therefore transitions from **CR4.10 / D10** to **CR5.1 / E1**, and then to
+**CR5.2 / E2**. No CR4.11 step is being skipped.
+
 # 1. Non-negotiable working rules
 
 ## 1.1 One phase per implementation response
