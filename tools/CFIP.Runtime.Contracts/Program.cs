@@ -1071,6 +1071,19 @@ namespace cAlgo
                     lines[2] == "2,beta",
                     "buffered archive writes header and each unique row once");
 
+                string[] roundTripLines;
+                Assert(
+                    store.FileExists(path) &&
+                    store.TryReadAllLines(
+                        path,
+                        out roundTripLines) &&
+                    roundTripLines != null &&
+                    roundTripLines.Length == 3 &&
+                    store.WriteFailureCount == 0 &&
+                    store.ReadFailureCount == 0 &&
+                    store.LastSuccessUtc != DateTime.MinValue,
+                    "central persistence owner can verify on-disk content without reported I/O failures");
+
                 Assert(
                     !store.Enqueue(
                         path,
