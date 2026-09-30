@@ -923,6 +923,28 @@ Required verification:
 Performance constraint:
 - no per-bar doubling of synchronous file writes; use the existing bounded persistence mechanism.
 
+Implementation closeout — 2026-09-30:
+- trace capture was moved out of BuildDecision and bound to the finalized new-closed-M5 calculation boundary;
+- a deterministic `CFIP-ST1` trace identity now includes symbol, timeframe, account scope, configuration fingerprint and canonical closed-M5 open time;
+- Plan/Preview geometry is accepted only when the source `closedM5`, bar-open timestamp and direction match the current decision;
+- SignalTraceId is carried through Plan, aggressive fill plan creation and realized OutcomeObservation/archive rows;
+- signal trace archive schema is v3 and remains on the existing buffered persistence owner;
+- Outcome archive schema is v2 and remains backward-readable for prior rows;
+- the offline analyzer performs research-only exact SignalTraceId joins and does not feed future outcomes into live decision logic;
+- deterministic runtime contracts and the dedicated CR4.3 static gate cover identity, lineage, duplicate suppression, archive compatibility and outcome joining;
+- the project-wide source/architecture audit, cTrader compile and runtime acceptance all passed on implementation head `7defa4731ebd1e60d87d88a1659d4307607c46ab` (Source/Architecture run 36776384440; cTrader Compile run 36776384275; Runtime Acceptance run 36776384489).
+
+Verification boundary:
+- no target-terminal replay/performance/profitability claim is made from CI;
+- restart/reconnect timing and empirical signal/outcome quality remain target-terminal acceptance work.
+
+Performance/code-cleanliness:
+- no synchronous per-bar archive writes were introduced;
+- duplicate trace/helper paths were removed or centralized under one owner;
+- public parameters and default thresholds were unchanged.
+
+Status: **COMPLETE — PR #104; merge pending.**
+
 ### CR4.4 — Skender/OSS numerical stability and incremental caching (D4)
 
 Initial review label: **CONFIRMED / MEDIUM — production effect remains default-off, but enabled-path correctness/performance must be hardened.**
@@ -1521,7 +1543,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3)**.
+Current active phase: **CR4.4 — Skender/OSS numerical stability and incremental caching (D4)**.
 
 ## 8. Completion order and dependencies
 
