@@ -10,7 +10,7 @@ Last updated: 2026-09-30
 
 ## Active phase
 
-**CR1.6 — FVG quality discrimination (Prompt 1 / A8).**
+**CR1.7 — Threshold truth + volume audit (Prompt 1 / A9 + A10).**
 
 ## Completed before this checkpoint
 
@@ -34,4 +34,4 @@ Last updated: 2026-09-30
 
 ## Next transition
 
-After CR1.6 is completely implemented and verified, update this file to **CR1.7** before the next implementation response.
+CR1.6 is complete. The next implementation response must execute **CR1.7** and only CR1.7.

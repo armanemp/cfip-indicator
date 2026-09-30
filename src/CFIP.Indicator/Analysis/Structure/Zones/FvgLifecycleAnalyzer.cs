@@ -35,6 +35,9 @@ namespace cAlgo
 
             int quality =
                 CalculateFvgQuality(
+                    bars,
+                    currentIndex,
+                    direction,
                     managedLow,
                     managedHigh,
                     low,
