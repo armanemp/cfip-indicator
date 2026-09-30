@@ -443,6 +443,7 @@ namespace cAlgo
                 "recent exact calibration prefers current lifecycle window");
 
             outcomes[11].Profitable = false;
+            outcomes[11].RealizedR = -0.50;
 
             EmpiricalCalibrationSnapshot changed =
                 calibrator.CalculateRecentContextual(
