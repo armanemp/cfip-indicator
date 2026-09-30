@@ -11,8 +11,14 @@ namespace cAlgo
         private const string OutcomeArchiveDirectory = "History";
         private const string OutcomeArchiveSchema = "CFIP-OUTCOME-ARCHIVE,1";
 
+        private string _outcomeArchivePrefixCache;
+
         private string OutcomeArchivePrefix()
         {
+            if (!string.IsNullOrWhiteSpace(
+                    _outcomeArchivePrefixCache))
+                return _outcomeArchivePrefixCache;
+
             string symbol =
                 SanitizeArchivePart(
                     string.IsNullOrWhiteSpace(SymbolName)
@@ -25,21 +31,26 @@ namespace cAlgo
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
 
-            return
+            _outcomeArchivePrefixCache =
                 "CFIP_History_" +
                 symbol +
                 "_" +
                 timeframe +
                 "_" +
                 MemoryConfigurationFingerprint();
+
+            return
+                _outcomeArchivePrefixCache;
         }
 
-        private static string SanitizeArchivePart(string value)
+        private static string SanitizeArchivePart(
+            string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return "UNKNOWN";
 
-            StringBuilder result = new StringBuilder();
+            StringBuilder result =
+                new StringBuilder();
 
             foreach (char ch in value)
             {
@@ -78,7 +89,8 @@ namespace cAlgo
                 days -
                 (days % 90);
 
-            return epoch.AddDays(periodDays);
+            return epoch.AddDays(
+                periodDays);
         }
 
         private string OutcomeArchiveFilePath(
@@ -151,51 +163,6 @@ namespace cAlgo
             return row.ToString();
         }
 
-        private bool ArchiveContainsPosition(
-            string path,
-            long positionId)
-        {
-            if (positionId <= 0 ||
-                !File.Exists(path))
-                return false;
-
-            try
-            {
-                foreach (string line in File.ReadLines(path))
-                {
-                    if (string.IsNullOrWhiteSpace(line) ||
-                        line.StartsWith(
-                            "CFIP-OUTCOME-ARCHIVE",
-                            StringComparison.Ordinal))
-                        continue;
-
-                    int comma =
-                        line.IndexOf(',');
-
-                    string first =
-                        comma > 0
-                            ? line.Substring(0, comma)
-                            : line;
-
-                    if (long.TryParse(
-                            first,
-                            NumberStyles.Integer,
-                            CultureInfo.InvariantCulture,
-                            out long existing) &&
-                        existing == positionId)
-                        return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP outcome archive duplicate check failed: {0}",
-                    ex.Message);
-            }
-
-            return false;
-        }
-
         private void ArchiveOutcomeObservation(
             OutcomeObservation observation)
         {
@@ -205,9 +172,6 @@ namespace cAlgo
 
             try
             {
-                Directory.CreateDirectory(
-                    OutcomeArchiveDirectory);
-
                 string path =
                     OutcomeArchiveFilePath(
                         observation.ObservedUtcTicks > 0
@@ -216,30 +180,22 @@ namespace cAlgo
                                 DateTimeKind.Utc)
                             : Server.TimeInUtc);
 
-                if (ArchiveContainsPosition(
+                bool queued =
+                    _bufferedArchivePersistence.Enqueue(
                         path,
-                        observation.PositionId))
+                        OutcomeArchiveSchema,
+                        SerializeArchiveObservation(
+                            observation),
+                        observation.PositionId.ToString(
+                            CultureInfo.InvariantCulture));
+
+                if (!queued)
                     return;
-
-                if (!File.Exists(path))
-                {
-                    File.WriteAllText(
-                        path,
-                        OutcomeArchiveSchema +
-                        Environment.NewLine,
-                        Encoding.UTF8);
-                }
-
-                File.AppendAllText(
-                    path,
-                    SerializeArchiveObservation(observation) +
-                    Environment.NewLine,
-                    Encoding.UTF8);
             }
             catch (Exception ex)
             {
                 Print(
-                    "CFIP outcome archive persist failed: {0}",
+                    "CFIP outcome archive queue failed: {0}",
                     ex.Message);
             }
         }

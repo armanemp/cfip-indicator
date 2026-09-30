@@ -1885,7 +1885,7 @@ Acceptance:
 
 # Track 11.6 — Claude Review Defect Remediation — 2026-09-30
 
-Status: **CR1.3 COMPLETE; CR1.4 IS THE NEXT IMPLEMENTATION PHASE**
+Status: CR1.5 COMPLETE; CR1.6 IS THE NEXT IMPLEMENTATION PHASE
 
 Three external code-review prompts (A1–A12, B1–B12, C1–C9) are tracked in:
 `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
@@ -1897,35 +1897,27 @@ CR1.1 — Session/EOD and period-reference correctness is complete.
 CR1.2 — Daily-loss lock and stable accounting basis is complete.
 CR1.3 — News guard correctness and non-blocking refresh is complete.
 CR1.4 — Closed-bar cycle ordering and waiting-for-data state is complete.
+CR1.5 — Hot-path/cache/logging performance is complete.
 
-CR1.4 implementation closed 2026-09-30:
-- same-cycle broker reconciliation before new closed-bar decision/alert consumption;
-- deterministic bounded readiness states with 250/500 ms probe cadence;
-- waiting-state management remains active while planning/execution is disabled;
-- startup seed follows the same pre-decision broker boundary;
-- dedicated cycle audit + runtime readiness contracts added.
-
-Completed CR1.3 scope:
-- replaced synchronous economic-news HTTP with cTrader Http.GetAsync;
-- moved all scheduled news refresh work to the existing Timer heartbeat;
-- added one in-flight request policy, generation-based late-response rejection and a bounded 30-second transport timeout;
-- retained the last validated feed cache across refresh failures;
-- added deterministic DISABLED / NEVER_LOADED / HEALTHY / STALE / BLOCKING_EVENT state semantics plus REFRESHING/error diagnostics;
-- preserved fail-closed automatic trading when the feed is never loaded or stale and the configured stale policy is enabled;
-- added configurable Symbol/Index/Crypto currency mapping with normalized broker-symbol matching;
-- kept the existing NewsBlocked consumer shared by decision, Market, Aggressive and Pending safety paths;
-- preserved pending cancellation, optional active-position close and manual UTC blackout semantics.
+Completed CR1.5 scope:
+- buffered Runtime Log / Outcome / Signal Trace archive writes outside Calculate;
+- deferred explicit LocalStorage flush/reload work to the Timer heartbeat;
+- cached archive prefixes and parameter fingerprint used by logging;
+- cached closed-bar FVG/OB candidate scans with quote-sensitive final selection;
+- event/mutation-driven broker-state dirty invalidation with a bounded refresh rule;
+- deterministic buffer/broker refresh runtime contracts and dedicated hot-path audit;
+- preserved 90-day historical archive partitioning without deletion.
 
 Verification boundary:
-- cTrader HTTP documentation was rechecked: Http.GetAsync is the supported asynchronous GET API and AccessRights.None is sufficient for network functions;
-- deterministic runtime contracts cover feed states and currency mapping;
-- News Guard source audit now rejects synchronous Http.Get/Http.Send in production source and checks async state/generation contracts;
-- target-terminal verification remains required for real feed availability, timestamp semantics, mapping on the target broker, startup responsiveness and live news blocking/cancellation.
+- Runtime Acceptance and cTrader Compile PASS on the final CR1.5 head;
+- Source/Architecture final-head verification remains required before merge;
+- target-terminal performance and persistence behavior remain mandatory runtime checks;
+- container-local clone/build was unavailable because external DNS could not resolve github.com.
 
 Routine whole-chain audit:
-Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was rechecked. No signal threshold, RR floor, position capacity, decision authority or execution authority was changed by this phase.
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was rechecked. No signal threshold, RR floor, position capacity, decision authority or execution authority was changed.
 
-The next required implementation phase is **CR1.4 — Closed-bar cycle ordering and waiting-for-data state**.
+The next required implementation phase is **CR1.6 — FVG quality discrimination**.
 
 Track 12A local cBot separation remains blocked until Track 11.6 CR-FINAL passes.
 

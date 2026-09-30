@@ -65,8 +65,13 @@ require(
 )
 require(
     ARCHIVE,
-    r"File\.AppendAllText\(",
-    "append-only archive writes",
+    r"ArchiveOutcomeObservation\(",
+    "outcome archive writer",
+)
+require(
+    ROOT / "src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs",
+    r"File\.AppendAllText\([\s\S]*?PendingLineCount|public int PendingLineCount",
+    "buffered append-only persistence owner",
 )
 require(
     ARCHIVE,

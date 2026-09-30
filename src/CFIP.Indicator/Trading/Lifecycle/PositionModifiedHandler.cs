@@ -17,10 +17,13 @@ namespace cAlgo
         private void OnPositionModified(
                                     PositionModifiedEventArgs args)
                                 {
+
                                     if (args == null ||
                                         args.Position == null ||
                                         !IsManagedPosition(args.Position))
                                         return;
+
+                                    MarkBrokerStateDirty();
                         
                                     Position position =
                                         args.Position;

@@ -40,6 +40,9 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EconomicNewsFeedStateRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EconomicNewsCurrencyRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/CalculationReadinessRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/BrokerStateRefreshRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistenceModels.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SessionWindowRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Execution/BrokerConfirmationPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleEventIdempotencyGuard.cs" />

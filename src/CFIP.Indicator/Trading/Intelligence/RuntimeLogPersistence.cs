@@ -11,6 +11,8 @@ namespace cAlgo
         private const string RuntimeLogSchema =
             "CFIP-RUNTIME-LOG,2";
 
+        private string _runtimeLogPrefixCache;
+
         private const string RuntimeLogHeader =
             "ObservedUtcTicks,EventType,M5,Path,State,Reason,ScenarioId,SourceTimeframe," +
             "Direction,Entry,Stop,Tp1,Tp2,Tp3,Tp4,Confidence,SmartQuality,ActionableNow," +
@@ -19,6 +21,10 @@ namespace cAlgo
 
         private string RuntimeLogPrefix()
         {
+            if (!string.IsNullOrWhiteSpace(
+                    _runtimeLogPrefixCache))
+                return _runtimeLogPrefixCache;
+
             string symbol =
                 SanitizeArchivePart(
                     string.IsNullOrWhiteSpace(SymbolName)
@@ -31,13 +37,16 @@ namespace cAlgo
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
 
-            return
+            _runtimeLogPrefixCache =
                 "CFIP_RuntimeLog_v2_" +
                 symbol +
                 "_" +
                 timeframe +
                 "_" +
                 MemoryConfigurationFingerprint();
+
+            return
+                _runtimeLogPrefixCache;
         }
 
         private string RuntimeLogFilePath(
@@ -112,24 +121,6 @@ namespace cAlgo
                         ? observedUtc.Value.ToUniversalTime()
                         : Server.TimeInUtc;
 
-                Directory.CreateDirectory(
-                    OutcomeArchiveDirectory);
-
-                string target =
-                    RuntimeLogFilePath(
-                        observed);
-
-                if (!File.Exists(target))
-                {
-                    File.WriteAllText(
-                        target,
-                        RuntimeLogSchema +
-                        Environment.NewLine +
-                        RuntimeLogHeader +
-                        Environment.NewLine,
-                        Encoding.UTF8);
-                }
-
                 StringBuilder row =
                     new StringBuilder();
 
@@ -188,17 +179,19 @@ namespace cAlgo
                 row.Append(',');
                 row.Append(forecastHorizonBars);
 
-                File.AppendAllText(
-                    target,
-                    row.ToString() +
-                    Environment.NewLine,
-                    Encoding.UTF8);
+                _bufferedArchivePersistence.Enqueue(
+                    RuntimeLogFilePath(
+                        observed),
+                    RuntimeLogSchema +
+                    Environment.NewLine +
+                    RuntimeLogHeader,
+                    row.ToString());
             }
             catch (Exception ex)
             {
                 // Diagnostics must never become a trading failure path.
                 Print(
-                    "CFIP runtime log persist failed: {0}",
+                    "CFIP runtime log queue failed: {0}",
                     ex.Message);
             }
         }

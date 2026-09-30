@@ -17,10 +17,13 @@ namespace cAlgo
         private void OnPendingOrderCreated(
                                     PendingOrderCreatedEventArgs args)
                                 {
+
                                     if (args == null ||
                                         args.PendingOrder == null ||
                                         !IsManagedPendingOrder(args.PendingOrder))
                                         return;
+
+                                    MarkBrokerStateDirty();
                         
 
                                     if (!_lifecycleEventGuard.TryBegin(

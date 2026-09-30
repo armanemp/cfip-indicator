@@ -175,7 +175,7 @@ require(
 )
 
 # Live TP broker mutation must remain behind the coordinator/BoundPlan guards.
-production_files = list((ROOT).rglob("*.cs"))
+production_files = list((ROOT / "src" / "CFIP.Indicator").rglob("*.cs"))
 direct_tp_mutations = []
 for path in production_files:
     source = read(path)

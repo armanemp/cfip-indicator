@@ -15,6 +15,28 @@ namespace cAlgo
         private void RefreshSharedDailyLossLock(
             DateTime referenceUtc)
         {
+            try
+            {
+                string stored =
+                    LocalStorage.GetString(
+                        DailyLossStorageKey(),
+                        LocalStorageScope.Type);
+
+                ApplySharedDailyLossLock(
+                    referenceUtc,
+                    stored);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP shared daily loss lock read failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private void ReloadSharedDailyLossLockFromStorage(
+            DateTime referenceUtc)
+        {
             if ((referenceUtc -
                  _lastDailyLossSharedStateReloadUtc).TotalSeconds <
                 1)
@@ -28,40 +50,8 @@ namespace cAlgo
                 _lastDailyLossSharedStateReloadUtc =
                     referenceUtc;
 
-                string stored =
-                    LocalStorage.GetString(
-                        DailyLossStorageKey(),
-                        LocalStorageScope.Type);
-
-                if (string.IsNullOrWhiteSpace(stored))
-                    return;
-
-                string[] parts =
-                    stored.Split('|');
-
-                if (parts.Length < 6 ||
-                    !string.Equals(
-                        parts[0],
-                        DailyLossStateSchema,
-                        StringComparison.Ordinal))
-                    return;
-
-                DateTime baselineDate =
-                    new DateTime(
-                        long.Parse(
-                            parts[1],
-                            CultureInfo.InvariantCulture),
-                        DateTimeKind.Utc);
-
-                if (baselineDate.Date !=
-                    referenceUtc.Date)
-                    return;
-
-                if (parts[4] == "1")
-                    _dailyLossLocked = true;
-
-                if (parts[5] == "1")
-                    _dailyLossLimitAlerted = true;
+                RefreshSharedDailyLossLock(
+                    referenceUtc);
             }
             catch (Exception ex)
             {
@@ -69,6 +59,41 @@ namespace cAlgo
                     "CFIP shared daily loss lock reload failed: {0}",
                     ex.Message);
             }
+        }
+
+        private void ApplySharedDailyLossLock(
+            DateTime referenceUtc,
+            string stored)
+        {
+            if (string.IsNullOrWhiteSpace(stored))
+                return;
+
+            string[] parts =
+                stored.Split('|');
+
+            if (parts.Length < 6 ||
+                !string.Equals(
+                    parts[0],
+                    DailyLossStateSchema,
+                    StringComparison.Ordinal))
+                return;
+
+            DateTime baselineDate =
+                new DateTime(
+                    long.Parse(
+                        parts[1],
+                        CultureInfo.InvariantCulture),
+                    DateTimeKind.Utc);
+
+            if (baselineDate.Date !=
+                referenceUtc.Date)
+                return;
+
+            if (parts[4] == "1")
+                _dailyLossLocked = true;
+
+            if (parts[5] == "1")
+                _dailyLossLimitAlerted = true;
         }
 
         private bool RestoreDailyLossState(
@@ -168,7 +193,8 @@ namespace cAlgo
         }
 
         private void PersistDailyLossState(
-            DateTime referenceUtc)
+            DateTime referenceUtc,
+            bool forceFlush = false)
         {
             try
             {
@@ -202,8 +228,11 @@ namespace cAlgo
                     payload,
                     LocalStorageScope.Type);
 
-                LocalStorage.Flush(
-                    LocalStorageScope.Type);
+                // SetString is intentionally kept in memory here. Explicit disk
+                // flushing is owned by the Timer heartbeat, with forceFlush used
+                // for a newly acquired daily-loss lock.
+                MarkDailyLossPersistenceDirty(
+                    forceFlush);
 
                 _lastDailyLossPersistUtc =
                     AsUtc(referenceUtc);
@@ -213,7 +242,7 @@ namespace cAlgo
             catch (Exception ex)
             {
                 Print(
-                    "CFIP daily loss state persist failed: {0}",
+                    "CFIP daily loss state persist queue failed: {0}",
                     ex.Message);
             }
         }
@@ -230,7 +259,8 @@ namespace cAlgo
                     60)
             {
                 PersistDailyLossState(
-                    referenceUtc);
+                    referenceUtc,
+                    force);
             }
         }
 

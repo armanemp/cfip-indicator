@@ -12,6 +12,7 @@ namespace cAlgo
         private const string OutcomeMemorySchema = "CFIP-OUTCOME";
         private const int OutcomeMemoryMaxAgeDays = 90;
 
+        private string _memoryConfigurationFingerprintCache;
         private string OutcomeMemoryKey()
         {
             string symbol =
@@ -45,6 +46,10 @@ namespace cAlgo
 
         private string MemoryConfigurationFingerprint()
         {
+            if (!string.IsNullOrWhiteSpace(
+                    _memoryConfigurationFingerprintCache))
+                return _memoryConfigurationFingerprintCache;
+
             PropertyInfo[] properties =
                 GetType().GetProperties(
                     BindingFlags.Instance |
@@ -75,7 +80,9 @@ namespace cAlgo
 
                 try
                 {
-                    value = property.GetValue(this, null);
+                    value = property.GetValue(
+                        this,
+                        null);
                 }
                 catch
                 {
@@ -122,9 +129,13 @@ namespace cAlgo
                     hash *= 16777619;
                 }
 
-                return hash.ToString(
-                    "X8",
-                    CultureInfo.InvariantCulture);
+                _memoryConfigurationFingerprintCache =
+                    hash.ToString(
+                        "X8",
+                        CultureInfo.InvariantCulture);
+
+                return
+                    _memoryConfigurationFingerprintCache;
             }
         }
 
@@ -404,13 +415,16 @@ namespace cAlgo
                     SerializeOutcomeHistory(),
                     LocalStorageScope.Type);
 
-                LocalStorage.Flush(
-                    LocalStorageScope.Type);
+                // SetString updates the local-storage value; cTrader persists
+                // local storage automatically. The explicit disk flush is
+                // deferred to the runtime heartbeat so outcome recording never
+                // blocks the calculation hot path.
+                MarkOutcomeMemoryPersistenceDirty();
             }
             catch (Exception ex)
             {
                 Print(
-                    "CFIP outcome memory persist failed: {0}",
+                    "CFIP outcome memory queue failed: {0}",
                     ex.Message);
             }
         }

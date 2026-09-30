@@ -18,6 +18,8 @@ namespace cAlgo
                 
                             try
                             {
+                                MarkBrokerStateDirty();
+
                                 TradeResult result =
                                     volumeInUnits.HasValue
                                         ? ClosePosition(
