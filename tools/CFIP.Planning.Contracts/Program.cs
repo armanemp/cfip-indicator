@@ -14,6 +14,7 @@ namespace cAlgo
             VerifyMarginUsage();
 
             VerifyStopTargetProtection();
+            VerifyTp1DirectionalDefence();
             VerifyLifecycleTransitions();
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
@@ -142,6 +143,127 @@ namespace cAlgo
                 PriceProtectionRule.ValidateStop(-1, 100, 102, 1) ==
                 PriceProtectionRule.ValidateTarget(1, 100, 102, 1),
                 "BUY target mirrors SELL stop");
+        }
+
+        private static void VerifyTp1DirectionalDefence()
+        {
+            Assert(
+                PriceProtectionRule.ValidateTarget(
+                    1,
+                    100,
+                    102,
+                    0),
+                "BUY TP1 direction accepted");
+
+            Assert(
+                PriceProtectionRule.ValidateTarget(
+                    -1,
+                    100,
+                    98,
+                    0),
+                "SELL TP1 direction accepted");
+
+            Assert(
+                !PriceProtectionRule.ValidateTarget(
+                    1,
+                    100,
+                    98,
+                    0),
+                "BUY wrong-side TP1 rejected");
+
+            Assert(
+                !PriceProtectionRule.ValidateTarget(
+                    -1,
+                    100,
+                    102,
+                    0),
+                "SELL wrong-side TP1 rejected");
+
+            Assert(
+                PriceProtectionRule.ValidateTarget(
+                    1,
+                    100,
+                    102,
+                    0) ==
+                PriceProtectionRule.ValidateStop(
+                    -1,
+                    100,
+                    102,
+                    0),
+                "BUY TP1 mirrors SELL stop");
+
+            Assert(
+                PriceProtectionRule.ValidateTarget(
+                    -1,
+                    100,
+                    98,
+                    0) ==
+                PriceProtectionRule.ValidateStop(
+                    1,
+                    100,
+                    98,
+                    0),
+                "SELL TP1 mirrors BUY stop");
+
+            TargetCandidateConstraintResult buyWrongSide =
+                TargetCandidateConstraintRule.Evaluate(
+                    0,
+                    1,
+                    100,
+                    1,
+                    98,
+                    2,
+                    0.01,
+                    2.0,
+                    12.0,
+                    4.0,
+                    0.40,
+                    100,
+                    false,
+                    false,
+                    false,
+                    0,
+                    0);
+
+            Assert(
+                !buyWrongSide.Allowed &&
+                buyWrongSide.Reason ==
+                TargetCandidateRejectionReasons.TargetSideInvalid,
+                "BUY wrong-side TP1 candidate rejected canonically");
+
+            TargetCandidateConstraintResult sellWrongSide =
+                TargetCandidateConstraintRule.Evaluate(
+                    0,
+                    -1,
+                    100,
+                    1,
+                    102,
+                    2,
+                    0.01,
+                    2.0,
+                    12.0,
+                    4.0,
+                    0.40,
+                    100,
+                    false,
+                    false,
+                    false,
+                    0,
+                    0);
+
+            Assert(
+                !sellWrongSide.Allowed &&
+                sellWrongSide.Reason ==
+                TargetCandidateRejectionReasons.TargetSideInvalid,
+                "SELL wrong-side TP1 candidate rejected canonically");
+
+            Assert(
+                TargetProgressionRule.IsValid(1, 102, 104) ==
+                TargetProgressionRule.IsValid(-1, 98, 96),
+                "TP progression BUY/SELL symmetry remains intact");
+
+            Console.WriteLine(
+                "D8 TP1 directional defence: BUY/SELL valid and wrong-side fixtures passed");
         }
 
         private static void VerifyLifecycleTransitions()
