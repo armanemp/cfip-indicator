@@ -2362,3 +2362,40 @@ Phase record:
 docs/PHASE-CR2-9-STRUCTURAL-DIVERGENCE-REJECTION.md
 
 Next phase: **CR3.1 — Live invalidation and false-signal semantics (C1/C2).**
+
+## CR3.1 — Live invalidation and false-signal semantics — 2026-09-30
+
+Status: VERIFIED COMPLETE
+
+Implemented:
+- closed-bar-stable invalidation on canonical closed M5 results;
+- confirmed structural swing candidate invalidation;
+- explicit broker-close success handling with rejected-exit recovery;
+- centralized successful _lastExitM5 bookkeeping;
+- explicit soft adverse-R safety flag with DefaultValue=true;
+- canonical FalseSignalAdverseR validation and protected-stop coherence;
+- deterministic runtime contracts and tools/audit_phase_3_1.py;
+- reconciled parameter inventories/audits to the intentional 568 public parameters.
+
+Verification:
+- Source/Architecture: PASS, run 1808;
+- Runtime Acceptance: PASS, run 1617;
+- cTrader Compile: PASS, run 1801;
+- CR3.1 static audit: PASS;
+- project-wide routine/optimization/integrity audits: PASS.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning reviewed. No new cBot code, execution authority, capacity or signal/RR tuning was introduced.
+
+Performance/code cleanliness:
+- repeated intra-bar invalidation work was removed from the invalidation path;
+- canonical rules isolate C1/C2 arithmetic from the cTrader host;
+- structural invalidation no longer performs a rolling min/max scan;
+- no network/file I/O or new mutable business-state cache was introduced.
+
+Evidence boundary:
+CI does not prove target-terminal broker timing, live network rejection behavior, restart/reconnect reconciliation or profitability/accuracy. Any future threshold tuning remains replay/outcome gated.
+
+Phase record: docs/PHASE-CR3-1-LIVE-INVALIDATION.md
+
+Next phase: CR3.2 — Decision gate and early prediction semantics (C3/C4).
