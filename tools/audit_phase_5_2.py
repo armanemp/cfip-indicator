@@ -63,7 +63,8 @@ for name, source, swing_token, list_method in [
     )
     check(
         f"{name} orders candidates by distance",
-        "LiquidityTargetCandidateRule.OrderByDistance(" in source,
+        ("LiquidityTargetCandidateRule.OrderByDistance(" in source or
+         "LiquidityTargetCandidateRule.OrderDistinctByDistance(" in source),
     )
 
 check(
@@ -113,14 +114,14 @@ check(
     "liquidity candidates preserve BUY/SELL direction" in contracts and
     "high liquidity remains active while no later close breaks above it" in contracts and
     "low liquidity becomes invalid after a close breaks below it" in contracts and
-    "valid liquidity target survives canonical reward-risk constraints" in contracts and
-    "distant liquidity target remains bounded by the existing extension contract" in contracts,
+    "valid liquidity target survives the canonical reward-risk gate" in contracts and
+    "liquidity target stages remain bounded by the existing reward envelope" in contracts,
 )
 
 check(
     "runtime contract project includes E2 owners",
     "LiquidityTargetCandidateRule.cs" in project and
-    "TargetCandidateConstraintRule.cs" in project,
+    "LiquiditySweepRule.cs" in project,
 )
 
 check(
