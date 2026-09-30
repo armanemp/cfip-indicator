@@ -50,8 +50,7 @@ for forbidden in (
         print(f"FAIL | {errors[-1]}")
 
 # A single open-bar reaction is observation state, not closed-bar confirmation.
-if "requireClosedBar,
-            bool closedBarConfirmed" not in rule:
+if "requireClosedBar" not in rule or "closedBarConfirmed" not in rule:
     errors.append("reaction rule does not expose an explicit temporal confirmation boundary")
 
 # The analyzer must retain the two temporal states separately.
