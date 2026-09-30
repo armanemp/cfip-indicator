@@ -30,8 +30,10 @@ namespace cAlgo
                                         _prediction.Direction != 0)
                                         return
                                             (_prediction.Direction == 1 ? "BUY" : "SELL") +
-                                            " PREDICTED • CONF " +
-                                            _prediction.Confidence;
+                                            " PREDICTED • SHARE " +
+                                            _prediction.DirectionalShare +
+                                            " • STR " +
+                                            _prediction.AbsoluteStrength.ToString("F1", CultureInfo.InvariantCulture);
                         
                                     return
                                         "WAIT • " +

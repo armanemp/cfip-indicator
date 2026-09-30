@@ -26,6 +26,8 @@ namespace cAlgo
             VerifyRejectionThresholdSemantics();
             VerifyLiveInvalidationSemantics();
             VerifyFalseSignalAdverseRSemantics();
+            VerifyRewardQualityFloorSemantics();
+            VerifyEarlyPredictionScoreSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
@@ -5082,6 +5084,110 @@ namespace cAlgo
                 Math.Abs(fallback.NetProfit - 25) < 0.000001 &&
                 Math.Abs(fallback.Pips - 5) < 0.000001,
                 "position outcome fallback remains deterministic when history is unavailable");
+        }
+
+
+        private static void VerifyRewardQualityFloorSemantics()
+        {
+            Assert(
+                Math.Abs(
+                    RewardQualityFloorRule.Calculate(
+                        80,
+                        1.50) -
+                    1.00) < 0.000001,
+                "reward quality floor preserves the legacy deterministic quality/RR balance");
+
+            Assert(
+                RewardQualityFloorRule.Calculate(80, 2.0) >
+                RewardQualityFloorRule.Calculate(80, 1.0) &&
+                RewardQualityFloorRule.Calculate(80, 1.0) >
+                RewardQualityFloorRule.Calculate(70, 1.0),
+                "reward quality floor is monotonic in both reward-risk and analytical quality");
+
+            Assert(
+                RewardQualityFloorRule.Calculate(100, 1.0) <=
+                RewardQualityFloorRule.Calculate(100, 2.0),
+                "reward quality floor never reverses reward-risk ordering");
+
+            Assert(
+                RewardQualityFloorRule.Calculate(80, double.NaN) ==
+                RewardQualityFloorRule.Calculate(80, double.PositiveInfinity) ||
+                RewardQualityFloorRule.Calculate(80, double.NaN) <
+                RewardQualityFloorRule.Calculate(80, 1.0),
+                "non-finite reward-risk input cannot create an inflated reward-quality result");
+        }
+
+        private static void VerifyEarlyPredictionScoreSemantics()
+        {
+            EarlyPredictionScoreResult lowTotal =
+                EarlyPredictionScoreRule.Evaluate(
+                    1.0,
+                    0.1,
+                    0,
+                    0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false);
+
+            Assert(
+                lowTotal.DirectionalShare >= 90 &&
+                lowTotal.AbsoluteStrength < 1,
+                "tiny absolute evidence cannot hide behind a highly asymmetric directional share");
+
+            Assert(
+                lowTotal.AbsoluteStrength < 56,
+                "low-total early prediction evidence remains below the existing minimum confidence strength floor");
+
+            EarlyPredictionScoreResult buy =
+                EarlyPredictionScoreRule.Evaluate(
+                    80,
+                    20,
+                    70,
+                    10,
+                    true,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true,
+                    false);
+
+            EarlyPredictionScoreResult sell =
+                EarlyPredictionScoreRule.Evaluate(
+                    20,
+                    80,
+                    10,
+                    70,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true);
+
+            Assert(
+                buy.Direction == 1 &&
+                sell.Direction == -1 &&
+                buy.DirectionalShare == sell.DirectionalShare &&
+                Math.Abs(
+                    buy.AbsoluteStrength -
+                    sell.AbsoluteStrength) < 0.000001,
+                "early prediction evidence fusion is BUY/SELL symmetric");
+
+            Assert(
+                Math.Abs(
+                    buy.BuyStrength -
+                    (80 * EarlyPredictionScoreRule.M5Weight +
+                     70 * EarlyPredictionScoreRule.M15Weight +
+                     EarlyPredictionScoreRule.LiquidityForecastBonus +
+                     EarlyPredictionScoreRule.VolumeBonus +
+                     EarlyPredictionScoreRule.VwapBonus)) < 0.000001,
+                "named early prediction weights and evidence bonuses own the scoring constants");
         }
 
         private static void Assert(bool condition, string name)

@@ -44,11 +44,11 @@ namespace cAlgo
                 return new DecisionFilterResult(false, "SMART QUALITY");
 
             if (UseProxyExpectedValueGate &&
-                ProxyExpectedValue(
+                RewardQualityFloorRule.Calculate(
                     decision.SmartQuality,
                     Math.Max(1.0, SmartTargetMinimumRR)) <
                 MinimumProxyExpectedValue)
-                return new DecisionFilterResult(false, "EXPECTED VALUE");
+                return new DecisionFilterResult(false, "REWARD QUALITY FLOOR");
 
             RangeSignalQualityResult rangeQuality =
                 EvaluateRangeSignalQuality(

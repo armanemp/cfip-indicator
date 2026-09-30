@@ -245,8 +245,10 @@ AddPanelRow(
                                                             (_prediction.Direction == 1
                                                                 ? "BUY"
                                                                 : "SELL") +
-                                                            "  •  CONF " +
-                                                            _prediction.Confidence,
+                                                            "  •  SHARE " +
+                                                            _prediction.DirectionalShare +
+                                                            "  •  STRENGTH " +
+                                                            _prediction.AbsoluteStrength.ToString("F1", CultureInfo.InvariantCulture),
                                                             PanelSecondaryTextColor,
                                                             true,
                                                             contentWidth);
