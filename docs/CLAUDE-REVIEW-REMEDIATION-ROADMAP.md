@@ -1550,7 +1550,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.6 — Frame-scoring constant ownership (D6)**.
+Current active phase: **CR4.7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics (D7)**.
 
 ## 8. Completion order and dependencies
 
