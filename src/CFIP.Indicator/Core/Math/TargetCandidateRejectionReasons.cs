@@ -18,5 +18,6 @@ namespace cAlgo
         internal const string OpposingZoneObstacle = "OBSTACLE_OPPOSING_ZONE";
         internal const string HtfZoneObstacle = "OBSTACLE_HTF_ZONE";
         internal const string StageRequiredAboveMaximum = "STAGE_REQUIRED_RR_ABOVE_MAX";
+        internal const string StageUnreachableByExtension = "STAGE_UNREACHABLE_BY_EXTENSION";
     }
 }
