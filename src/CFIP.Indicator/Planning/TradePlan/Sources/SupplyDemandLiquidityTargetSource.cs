@@ -83,7 +83,10 @@ namespace cAlgo
                                                         "LIQUIDITY_POOL",
                                                         "D1",
                                                         1,
-                                                        LiquidityPoolWeight);
+                                                        LiquidityPoolWeight,
+                                                        TargetAgeSemanticsRule.ElapsedMinutes(
+                                                            _d1Bars.OpenTimes[d1],
+                                                            _m5Bars.OpenTimes[closedM5]));
                                                 }
                                             }
                                 
