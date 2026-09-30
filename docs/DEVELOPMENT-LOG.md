@@ -2166,3 +2166,29 @@ Routine whole-chain audit:
 Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No threshold, RR floor, position-capacity or execution-authority change was introduced.
 
 Next phase: **CR1.5 — repeated work / synchronous persistence**.
+
+
+## CR1.5 — Hot-path/cache/logging performance — 2026-09-30
+
+Status: IMPLEMENTATION COMPLETE; target-terminal verification remains required.
+
+Implemented:
+- buffered Runtime Log / Outcome / Signal Trace archives with bounded Timer flush;
+- deferred explicit LocalStorage flush/reload to the Timer heartbeat;
+- cached archive prefixes and parameter fingerprint;
+- closed-bar FVG/OB candidate cache with deterministic Bars/index invalidation;
+- event/mutation-driven broker-state dirty invalidation with bounded one-second refresh;
+- deterministic buffer and broker-refresh contracts plus dedicated source audit;
+- preserved historical 90-day archive partitioning and did not delete prior history.
+
+Verification:
+- Runtime Acceptance: PASS on final CR1.5 head;
+- cTrader compile: PASS on final CR1.5 head;
+- Source/Architecture final-head verification remains required before merge;
+- actual cTrader persistence/timing/performance behavior remains a target-terminal test item;
+- container clone/build was unavailable because github.com DNS resolution was unavailable in this execution environment.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No threshold, RR floor, capacity or execution-authority change was introduced.
+
+Next phase: CR1.6 — FVG quality discrimination.
