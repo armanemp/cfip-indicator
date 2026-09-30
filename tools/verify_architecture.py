@@ -383,12 +383,13 @@ for token in (
         raise SystemExit(f"Equal-level analyzer must use canonical swing identities: {token}")
 
 for token in (
-    "FindSwingLow(",
-    "FindSwingHigh(",
+    "TryFindLatestSwingLow(",
+    "TryFindLatestSwingHigh(",
+    "LiquiditySweepRule.IsActiveUnbrokenLevel(",
     "causally established structural",
 ):
     if token not in liquidity_sweep_code:
-        raise SystemExit(f"Liquidity sweep must use established structural levels: {token}")
+        raise SystemExit(f"Liquidity sweep must use canonical active structural levels: {token}")
 
 for token in (
     "HasCanonicalStructuralEvent(",
@@ -397,6 +398,32 @@ for token in (
 ):
     if token not in structural_rule_code:
         raise SystemExit(f"Structural evidence rule missing canonical de-dup owner: {token}")
+
+structural_event_rule = ROOT / "Core" / "Math" / "StructuralEventRule.cs"
+if not structural_event_rule.exists():
+    raise SystemExit("Canonical structural event freshness rule is missing")
+structural_event_code = structural_event_rule.read_text(encoding="utf-8")
+for token in (
+    "IsFreshBreak(",
+    "IsChangeOfCharacter(",
+    "EventIdentity(",
+    "previousClose <=",
+    "previousClose >=",
+):
+    if token not in structural_event_code:
+        raise SystemExit(f"Structural event rule missing freshness/identity contract: {token}")
+
+if "StructuralEventRule.IsFreshBreak(" not in structure_analyzer_code:
+    raise SystemExit("Structure analyzer must consume canonical fresh-break semantics")
+if "StructuralEventRule.IsChangeOfCharacter(" not in structure_analyzer_code:
+    raise SystemExit("Structure analyzer must consume canonical CHOCH semantics")
+
+rejection_rule = ROOT / "Core" / "Math" / "RejectionRule.cs"
+if not rejection_rule.exists():
+    raise SystemExit("Canonical rejection rule is missing")
+rejection_code = rejection_rule.read_text(encoding="utf-8")
+if "minimumBody" not in rejection_code or "IsRejection(" not in rejection_code:
+    raise SystemExit("Rejection rule must enforce meaningful-body semantics")
 
 for token in (
     "StructuralEvidenceRule.IsIndependentTransition(",
