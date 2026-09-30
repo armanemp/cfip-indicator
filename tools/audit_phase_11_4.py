@@ -100,8 +100,11 @@ for token in (
     if token not in trace_model or token not in trace_recorder or token not in trace_archive:
         errors.append("signal trace reward-risk field missing: " + token)
 
-if "CFIP-SIGNAL-TRACE,2" not in trace_archive:
-    errors.append("signal trace schema v2 missing")
+if not re.search(
+    r'CFIP-SIGNAL-TRACE,(?:2|3)',
+    trace_archive,
+):
+    errors.append("signal trace archive schema v2/v3 missing")
 
 if '"CFIP-SIGNAL-TRACE,2"' not in analyzer or '"CFIP-SIGNAL-TRACE,1"' not in analyzer:
     errors.append("forensic analyzer must remain backward-compatible with signal trace v1/v2")
