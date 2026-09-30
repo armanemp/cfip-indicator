@@ -27,6 +27,10 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SwingPlateauRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/VolumeSizingRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskAmountCalculator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskPercentPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ZoneConfluenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OrderBlockRule.cs" />
