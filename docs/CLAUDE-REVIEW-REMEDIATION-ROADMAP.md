@@ -702,6 +702,11 @@ Status: **VERIFIED COMPLETE — PR #98 merged to main as af7eb503dd661d508afcc76
 
 Covers: C3, C4.
 
+Repository verification evidence:
+- Source/Architecture: PASS, workflow run #2021;
+- cTrader Compile: PASS, workflow run #2014;
+- Runtime Acceptance Contracts: PASS, workflow run #1830.
+
 Completed:
 - deterministic Reward Quality Floor semantic replaces the misleading proxy-EV naming;
 - early prediction exposes and validates directional share plus absolute evidence strength;
@@ -1091,7 +1096,7 @@ Required verification:
 
 ### CR4.9 / D9 closeout — 2026-10-01
 
-Status: **IMPLEMENTED — repository verification pending on the phase branch.**
+Status: **COMPLETE — repository verification PASS.**
 
 Completed:
 - centralized live-reversal direction, directional confidence and action semantics in Core;
