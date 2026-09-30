@@ -470,9 +470,7 @@ namespace cAlgo
 
                 _calibrationSamples[key]++;
 
-                if (!double.IsNaN(item.RealizedR) &&
-                    !double.IsInfinity(item.RealizedR) &&
-                    item.RealizedR > 0)
+                if (CalibrationOutcomeRule.IsPositiveRealizedR(item.RealizedR))
                     _calibrationWins[key]++;
             }
         }
