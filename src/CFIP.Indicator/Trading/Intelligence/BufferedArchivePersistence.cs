@@ -122,8 +122,25 @@ namespace cAlgo
                     continue;
                 }
 
+                bool hasKeyedLines =
+                    false;
+
+                for (int lineIndex = 0;
+                     lineIndex < file.Lines.Count;
+                     lineIndex++)
+                {
+                    if (!string.IsNullOrWhiteSpace(
+                            file.Lines[lineIndex].Key))
+                    {
+                        hasKeyedLines = true;
+                        break;
+                    }
+                }
+
                 HashSet<string> existing =
-                    EnsureExistingKeys(file);
+                    hasKeyedLines
+                        ? EnsureExistingKeys(file)
+                        : null;
 
                 List<PendingLine> write =
                     new List<PendingLine>();
