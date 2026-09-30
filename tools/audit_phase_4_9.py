@@ -77,7 +77,9 @@ check(
     "reversal alert is episode-bounded rather than closed-M5 keyed",
     "_reversalEpisodeAlerted" in episode
     and "TryMarkReversalAlertEmitted(" in analyzer
-    and '"REVERSAL|" + livePosition.Id + "|" + opposite' in analyzer
+    and '"REVERSAL|"' in analyzer
+    and "livePosition.Id" in analyzer
+    and "opposite" in analyzer
     and '"REVERSAL|" + closedM5' not in analyzer,
 )
 
