@@ -2,7 +2,7 @@
 
 Date: 2026-09-30
 
-Status: **IMPLEMENTED on phase branch; CI/merge verification is the acceptance boundary.**
+Status: **VERIFIED COMPLETE — PR #101 merged to main as `2c31232b7d1f16e88e89e693d7d74fd8a5eedab6`.**
 
 ## Scope
 
@@ -46,6 +46,14 @@ The Decision Contracts now cover:
 - deterministic calibration response.
 
 A dedicated `tools/audit_phase_3_5.py` static gate is wired into Source/Architecture CI.
+
+## Final CI verification
+
+- Source/Architecture: PASS on final head;
+- Runtime Acceptance: PASS on final head;
+- cTrader Compile: PASS on final head;
+- CR3.5 static audit: PASS;
+- accumulated project-wide audits: PASS.
 
 ## Evidence boundary
 
