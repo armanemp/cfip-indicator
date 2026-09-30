@@ -13,7 +13,7 @@ namespace cAlgo
             if (frame == null)
                 return FrameRegimeResolutionRule.Unknown;
 
-            return FrameRegimeResolutionRule.Normalize(
+            return FrameRegimeResolutionRule.NormalizeFrameRegimeValue(
                 frame.Regime);
         }
 
