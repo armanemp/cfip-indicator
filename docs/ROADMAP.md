@@ -1984,6 +1984,10 @@ cBot boundary.
 - After cutover, missing/stale/incompatible cBot state fails closed and never reactivates an Indicator fallback.
 - The Indicator remains usable as an analysis/display component when the cBot is absent.
 
+## Parameter-ownership rule
+
+A parameter stays in Indicator when it changes analytical evidence, confidence/quality, MTF interpretation, scenario selection or proposed Entry/SL/TP geometry. A parameter moves to cBot when it controls account/broker permission, sizing normalization, capacity, daily-loss enforcement, broker protection mutation, execution throttling or the authoritative Auto Trading/Auto Orders state. Presentation-only parameters stay in Indicator. No execution behavior may have two independent parameter values.
+
 ## Required final acceptance
 
 - `CFIP.Contracts` is platform-neutral.
@@ -4240,3 +4244,14 @@ Verification completed before merge:
 Next phase:
 **Track 12A — Mandatory Local cBot Separation**, followed by scenario-aware broker policy only
 through the dedicated cBot execution authority.
+
+
+---
+
+## Track 12A Final-Readiness Audit — 2026-09-30
+
+Status: ROADMAP READY FOR IMPLEMENTATION.
+
+The master and detailed separation roadmap now agree on CBOT-Preflight, CBOT-0 dependency-closure and parameter ownership, Indicator/cBot authority boundaries, one-executor-at-a-time migration, final zero-broker-mutation/fallback gates, and target-terminal runtime/replay requirements.
+
+No production C# behavior changed.
