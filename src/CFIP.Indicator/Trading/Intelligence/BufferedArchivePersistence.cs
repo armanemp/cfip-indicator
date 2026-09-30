@@ -75,6 +75,10 @@ namespace cAlgo
 
             if (!string.IsNullOrWhiteSpace(key))
             {
+                if (file.ExistingKeys != null &&
+                    file.ExistingKeys.Contains(key))
+                    return false;
+
                 if (!file.PendingKeys.Add(key))
                     return false;
             }
@@ -238,8 +242,12 @@ namespace cAlgo
                             consumed);
                     }
 
-                    if (file.Lines.Count == 0)
+                    if (file.Lines.Count == 0 &&
+                        file.ExistingKeys == null)
                     {
+                        // Keep keyed archive state resident so subsequent
+                        // enqueues in this runtime remain idempotent without
+                        // another disk read.
                         _files.Remove(
                             file.Path);
                     }
