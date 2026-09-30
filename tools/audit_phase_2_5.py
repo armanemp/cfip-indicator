@@ -12,6 +12,7 @@ errors = []
 
 guard = read("src/CFIP.Indicator/Trading/Lifecycle/LifecycleEventIdempotencyGuard.cs")
 opened = read("src/CFIP.Indicator/Trading/Lifecycle/PositionOpenedHandler.cs")
+recovery = read("src/CFIP.Indicator/Trading/Lifecycle/ManagedLivePlanRecovery.cs")
 pending_filled = read("src/CFIP.Indicator/Trading/Lifecycle/PendingFilledHandler.cs")
 closed = read("src/CFIP.Indicator/Trading/Lifecycle/PositionClosedHandler.cs")
 outcome = read("src/CFIP.Indicator/Trading/Intelligence/OutcomeTelemetryEngine.cs")
@@ -35,7 +36,7 @@ checks = {
     ),
     "position-open recovery is managed-only": (
         "IsManagedPosition(args.Position)" in opened and
-        "IsManagedPosition(position)" in opened
+        "IsManagedPosition(position)" in recovery
     ),
     "pending-filled starts a fresh outcome lifecycle": (
         "_outcomeRegistered = false" in pending_filled
@@ -46,7 +47,7 @@ checks = {
     ),
     "close path uses historical aggregation": (
         "History.FindByPositionId(" in outcome and
-        "HistoricalTrade[] historicalTrades" in outcome
+        "HistoricalTrade[] historicalTrades" in read("src/CFIP.Indicator/Trading/Lifecycle/../Intelligence/HistoricalOutcomeReader.cs")
     ),
     "realized outcome uses aggregated net profit": (
         "aggregate.NetProfit" in outcome and
