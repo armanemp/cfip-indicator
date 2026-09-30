@@ -163,6 +163,27 @@ namespace cAlgo
                     : Bars.TimeFrame.ToString());
             text.Append(Environment.NewLine);
 
+            text.Append("AccountNumber=");
+            text.Append(
+                Account.Number.ToString(
+                    CultureInfo.InvariantCulture));
+            text.Append(Environment.NewLine);
+
+            text.Append("AccountType=");
+            text.Append(
+                Account.AccountType.ToString());
+            text.Append(Environment.NewLine);
+
+            text.Append("AccountIsLive=");
+            text.Append(
+                Account.IsLive ? "1" : "0");
+            text.Append(Environment.NewLine);
+
+            text.Append("AccountBroker=");
+            text.Append(
+                Account.BrokerName ?? "UNKNOWN");
+            text.Append(Environment.NewLine);
+
             text.Append("Fingerprint=");
             text.Append(
                 MemoryConfigurationFingerprint());
