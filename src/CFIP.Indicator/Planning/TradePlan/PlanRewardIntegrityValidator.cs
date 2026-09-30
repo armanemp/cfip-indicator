@@ -8,6 +8,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private int _lastPlanRewardRejectionM5 = int.MinValue;
+        private string _lastPlanRewardRejectionReason = "";
+
         private bool ValidatePlanRewardStructure(
             Plan plan,
             int direction)
@@ -195,15 +198,27 @@ namespace cAlgo
         private bool RejectPlanRewardStructure(
             string reason)
         {
-            if (EnableOutcomeTelemetry)
+            int m5 = Math.Max(-1, _lastEvaluatedM5);
+            string normalizedReason =
+                string.IsNullOrWhiteSpace(reason)
+                    ? "UNSPECIFIED"
+                    : reason.Trim();
+
+            if (EnableOutcomeTelemetry &&
+                (m5 != _lastPlanRewardRejectionM5 ||
+                 !string.Equals(
+                     normalizedReason,
+                     _lastPlanRewardRejectionReason,
+                     StringComparison.Ordinal)))
             {
+                _lastPlanRewardRejectionM5 = m5;
+                _lastPlanRewardRejectionReason = normalizedReason;
+
                 RecordExecutionTelemetryHistory(
                     "PLAN_REWARD",
-                    Math.Max(-1, _lastEvaluatedM5),
+                    m5,
                     "REJECTED",
-                    string.IsNullOrWhiteSpace(reason)
-                        ? "UNSPECIFIED"
-                        : reason.Trim());
+                    normalizedReason);
             }
 
             return false;
