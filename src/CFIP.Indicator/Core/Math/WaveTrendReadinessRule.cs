@@ -1,7 +1,10 @@
+using System;
 
+namespace cAlgo
+{
     internal static class WaveTrendReadinessRule
     {
-        internal static int ResolveComponentReadyIndex(
+        internal static int ResolveWaveTrendComponentReadyIndex(
             int length,
             int momentumLength)
         {
@@ -23,7 +26,7 @@
                     1);
         }
 
-        internal static int ResolveSmoothReadyIndex(
+        internal static int ResolveWaveTrendSmoothReadyIndex(
             int componentReadyIndex,
             int smoothType,
             int smoothLength)
@@ -36,7 +39,7 @@
                 1;
         }
 
-        internal static int ResolveSignalReadyIndex(
+        internal static int ResolveWaveTrendSignalReadyIndex(
             int smoothReadyIndex,
             int signalType,
             int signalLength)
@@ -49,7 +52,7 @@
                 1;
         }
 
-        internal static bool IsSnapshotReady(
+        internal static bool IsWaveTrendSnapshotReady(
             int index,
             int signalReadyIndex)
         {
@@ -59,4 +62,3 @@
         }
     }
 }
-
