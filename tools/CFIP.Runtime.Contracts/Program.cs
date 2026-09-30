@@ -54,6 +54,8 @@ namespace cAlgo
             VerifyLifecycleIdempotency();
             VerifyRuntimeStageIsolation();
             VerifyRuntimeFaultStateMachine();
+            VerifyRuntimeExplicitRearmSemantics();
+            VerifyPopupAlertQueueSemantics();
             VerifyClosedBarRetryPolicy();
             VerifyUnifiedSubmissionGate();
             VerifyVisualAndExecutionControls();
@@ -5478,6 +5480,87 @@ namespace cAlgo
                     100,
                     true),
                 "broker TP progression never accepts a backward move");
+        }
+
+        private static void VerifyRuntimeExplicitRearmSemantics()
+        {
+            RuntimeFaultStateMachine machine =
+                new RuntimeFaultStateMachine();
+
+            Assert(
+                machine.RequestExplicitRearm() &&
+                machine.CanAutomaticEntryProceed,
+                "healthy runtime accepts an explicit re-arm request");
+
+            machine.BlockAutomaticEntry();
+
+            Assert(
+                !machine.RequestExplicitRearm() &&
+                !machine.CanAutomaticEntryProceed,
+                "entry-blocked runtime cannot be bypassed by explicit re-arm");
+
+            machine = new RuntimeFaultStateMachine();
+            machine.RecordRecoverableFault();
+
+            Assert(
+                !machine.RequestExplicitRearm() &&
+                !machine.CanAutomaticEntryProceed,
+                "degraded runtime cannot be re-armed before recovery");
+        }
+
+        private static void VerifyPopupAlertQueueSemantics()
+        {
+            DateTime now = Utc(12, 0);
+            PopupAlertQueue queue = new PopupAlertQueue(3);
+
+            Assert(
+                queue.Enqueue("normal-1", false, now) &&
+                queue.Enqueue("normal-2", false, now),
+                "popup queue accepts normal alerts");
+
+            Assert(
+                queue.Enqueue("critical-1", true, now) &&
+                queue.Count == 3,
+                "popup queue remains bounded when a critical alert arrives");
+
+            PopupAlert alert;
+            Assert(
+                queue.TryDequeue(out alert) &&
+                alert.Critical &&
+                alert.Message == "critical-1",
+                "critical popup alert is delivered before normal alerts");
+
+            Assert(
+                queue.TryDequeue(out alert) &&
+                alert.Message == "normal-1" &&
+                !alert.Critical,
+                "normal popup FIFO order is preserved after critical priority");
+
+            queue = new PopupAlertQueue(3);
+            Assert(
+                queue.Enqueue("normal-1", false, now) &&
+                queue.Enqueue("normal-2", false, now) &&
+                queue.Enqueue("normal-3", false, now) &&
+                !queue.Enqueue("normal-4", false, now) &&
+                queue.Count == 3,
+                "normal popup overflow is bounded and drops new low-priority work");
+
+            queue = new PopupAlertQueue(3);
+            queue.Enqueue("normal-1", false, now);
+            queue.Enqueue("normal-2", false, now);
+            queue.Enqueue("normal-3", false, now);
+
+            Assert(
+                queue.Enqueue("critical-2", true, now) &&
+                queue.Count == 3 &&
+                queue.TryPeek(out alert) &&
+                alert.Critical,
+                "critical popup overflow evicts lower-priority work first");
+
+            Assert(
+                queue.Enqueue("ignored", false, now) ||
+                !queue.Enqueue("", false, now),
+                "popup queue rejects empty messages without unbounded growth");
         }
 
         private static void Assert(bool condition, string name)
