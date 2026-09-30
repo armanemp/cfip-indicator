@@ -1777,7 +1777,7 @@ namespace cAlgo
                 !WaveTrendReadinessRule.IsWaveTrendSnapshotReady(
                     21,
                     signalReady) &&
-                WaveTrendReadinessRule.IsSnapshotReady(
+                WaveTrendReadinessRule.IsWaveTrendSnapshotReady(
                     22,
                     signalReady),
                 "WaveTrend readiness includes RSI/MFI/RMI dependencies, both smoothing layers and previous-bar stability");
