@@ -79,3 +79,9 @@ also written to the GitHub Actions job summary.
 A passing benchmark is necessary numerical evidence, but it is not sufficient
 for promotion. Runtime compatibility and the CFIP authority-boundary checks
 remain mandatory.
+
+## CR4.4 cache benchmark
+
+The benchmark also measures the quote materialization boundary used by the production OSS adapters on the deterministic 800-bar fixture. It compares a per-bar 161-quote rebuild with the incremental append/remove strategy.
+
+This is a cache-materialization benchmark, not a claim about end-to-end cTrader latency. The path-dependent production adapters additionally use a stable history prefix so recursive Skender calculations are not reset by a moving window.

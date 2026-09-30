@@ -140,6 +140,23 @@ Order:
 The findings remain static-review hypotheses until each item is independently verified. No default trading threshold, RR floor, confidence threshold or public parameter identity is to be changed implicitly.
 
 
+
+### CR4.4 / D4 implementation checkpoint — 2026-10-01
+
+CR4.4 is implemented on branch `phase/cr4-4-skender-numerical-caching`; merge/CI closeout is pending.
+
+Implementation:
+- stable-prefix caching for RSI, MACD, SuperTrend and Parabolic SAR;
+- bounded incremental 161-bar rolling cache for fixed-window adapters;
+- centralized OSS constants and warm-up contracts;
+- conservative history/cache invalidation;
+- OBV retained as diagnostic/research data but removed from independent confluence vote/count evidence;
+- runtime/static verification and cache benchmark added;
+- Source/Architecture workflow now includes the CR4.4 static gate.
+
+Next after verified merge: **CR4.5 / D5 — Per-timeframe regime semantics.**
+Target-terminal acceptance remains a later manual boundary.
+
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.

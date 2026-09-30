@@ -24,14 +24,14 @@ namespace cAlgo
                     index);
 
             if (quotes == null ||
-                quotes.Count < 40)
+                quotes.Count < OssIndicatorParameters.BollingerMinimumHistory)
                 return false;
 
             var results =
                 StockIndicator.GetBollingerBands(
                     quotes,
-                    20,
-                    2)
+                    OssIndicatorParameters.BollingerPeriod,
+                    OssIndicatorParameters.BollingerStandardDeviations)
                     .ToList();
 
             if (results.Count == 0)

@@ -18,13 +18,13 @@ namespace cAlgo
                     bars,
                     index);
 
-            if (quotes == null || quotes.Count < 40)
+            if (quotes == null || quotes.Count < OssIndicatorParameters.AroonMinimumHistory)
                 return double.NaN;
 
             var results =
                 StockIndicator.GetAroon(
                     quotes,
-                    25)
+                    OssIndicatorParameters.AroonPeriod)
                     .ToList();
 
             return results.Count == 0 ||

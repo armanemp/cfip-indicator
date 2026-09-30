@@ -3045,6 +3045,7 @@ TRACK_19_BENCHMARK_FILES = {
     "BenchmarkFixtures.cs",
     "IndicatorComparison.cs",
     "BenchmarkReport.cs",
+    "QuoteCacheBenchmark.cs",
 }
 if not TRACK_19_BENCHMARK_ROOT.exists():
     raise SystemExit("Track 19 benchmark source boundary is missing")

@@ -83,11 +83,63 @@ namespace cAlgo
             VerifyOutcomeMemoryIdentitySemantics();
             VerifyPersistenceHealthSemantics();
             VerifySignalTraceLineageSemantics();
+            VerifyOssIndicatorParameters();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
 
 
+
+
+        private static void VerifyOssIndicatorParameters()
+        {
+            if (OssIndicatorParameters.RollingQuoteWindowSize != 161 ||
+                OssIndicatorParameters.MacdSignalPeriod != 9 ||
+                OssIndicatorParameters.BollingerPeriod != 20 ||
+                Math.Abs(
+                    OssIndicatorParameters.BollingerStandardDeviations -
+                    2.0) > 1e-12 ||
+                OssIndicatorParameters.MfiPeriod != 14 ||
+                OssIndicatorParameters.StochLookbackPeriod != 14 ||
+                OssIndicatorParameters.StochSignalPeriod != 3 ||
+                OssIndicatorParameters.StochSmoothPeriod != 3 ||
+                OssIndicatorParameters.SuperTrendPeriod != 10 ||
+                Math.Abs(
+                    OssIndicatorParameters.SuperTrendMultiplier -
+                    3.0) > 1e-12 ||
+                OssIndicatorParameters.AroonPeriod != 25 ||
+                OssIndicatorParameters.CciPeriod != 20 ||
+                Math.Abs(
+                    OssIndicatorParameters.ParabolicSarAccelerationFactor -
+                    0.02) > 1e-12 ||
+                Math.Abs(
+                    OssIndicatorParameters.ParabolicSarMaximumAccelerationFactor -
+                    0.20) > 1e-12 ||
+                OssIndicatorParameters.RsiMinimumHistory != 20 ||
+                OssIndicatorParameters.BollingerMinimumHistory != 40 ||
+                OssIndicatorParameters.MfiMinimumHistory != 40 ||
+                OssIndicatorParameters.StochMinimumHistory != 40 ||
+                OssIndicatorParameters.SuperTrendMinimumHistory != 60 ||
+                OssIndicatorParameters.AroonMinimumHistory != 40 ||
+                OssIndicatorParameters.CciMinimumHistory != 40 ||
+                OssIndicatorParameters.ObvMinimumHistory != 3 ||
+                OssIndicatorParameters.ParabolicSarMinimumHistory != 60 ||
+                OssIndicatorParameters.MacdWarmupMargin != 20)
+            {
+                throw new InvalidOperationException(
+                    "OSS indicator constants or warm-up contracts changed unexpectedly.");
+            }
+
+            if (OssIndicatorParameters.SafeRsiPeriod(1) != 2 ||
+                OssIndicatorParameters.SafeMacdFastPeriod(1) != 2 ||
+                OssIndicatorParameters.SafeMacdSlowPeriod(2, 2) != 3 ||
+                OssIndicatorParameters.RsiHistoryRequired(50) != 55 ||
+                OssIndicatorParameters.MacdHistoryRequired(12, 26) != 46)
+            {
+                throw new InvalidOperationException(
+                    "OSS configured-period safety semantics changed unexpectedly.");
+            }
+        }
 
         private static void VerifyOutcomeMemoryIdentitySemantics()
         {

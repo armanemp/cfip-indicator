@@ -33,3 +33,7 @@ internal readonly record struct BenchmarkTiming(
     double TotalMilliseconds,
     double MeanMilliseconds,
     long MeanAllocatedBytes);
+
+internal readonly record struct QuoteCacheBenchmarkResult(
+    BenchmarkTiming Rebuild,
+    BenchmarkTiming Incremental);
