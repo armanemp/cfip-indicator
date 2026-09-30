@@ -592,6 +592,24 @@ duplicate_counts = {
     for name in set(reference_methods)
     if (count := reference_methods.count(name)) > 1
 }
+
+# Reference-identity comparers legitimately implement the two interface members
+# Equals/GetHashCode. Keep this exception narrow: it is valid only when exactly
+# one production source file owns an IEqualityComparer implementation.
+comparer_files = [
+    p for p in files
+    if "IEqualityComparer<" in p.read_text(encoding="utf-8")
+]
+ALLOWED_COMPARER_METHODS = {"Equals", "GetHashCode"}
+if comparer_files:
+    for comparer_method in ALLOWED_COMPARER_METHODS:
+        duplicate_counts.pop(comparer_method, None)
+    if len(comparer_files) != 1:
+        raise SystemExit(
+            "Unexpected number of production IEqualityComparer owners: "
+            + str(len(comparer_files))
+        )
+
 ALLOWED_OVERLOADS = {"AddScore", "Calculate", "Evaluate"}
 unexpected_overloads = set(duplicate_counts) - ALLOWED_OVERLOADS
 if unexpected_overloads:
