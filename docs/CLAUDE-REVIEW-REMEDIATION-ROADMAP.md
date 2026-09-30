@@ -389,23 +389,39 @@ Manual verification:
 - broker rejection behavior for min/max/step-normalized volume;
 - actual account equity and risk conversion on representative symbols.
 
-Next implementation phase: **CR1.8 — Managed identity boundary**.
+Next implementation phase: **CR1.9 — Minor cleanup and documentation**.
 ## CR1.8 — Managed identity boundary
 
 Covers: A11.
 
-Work:
-- define stable instance identity;
-- prevent one Indicator instance from adopting another instance's broker position merely because symbol and label match;
-- ensure ManagedActionsOnly=false cannot accidentally broaden protection/exit ownership beyond the explicitly intended scope;
-- preserve broker-confirmed identity as authoritative.
+Status: VERIFIED COMPLETE — implementation closed 2026-09-30.
 
-Architecture boundary: Pure identity matching can be hardened now. Final broker-position authority moves to cBot under Track 12A.
+Confirmed findings:
+- BrokerIdentity.cs previously accepted same-symbol/same-label positions without instance isolation.
+- ManagedActionsOnly=false previously broadened ownership to every same-symbol position.
+- ReversalCloseGuard.cs previously required position.NetProfit > 0 with no configurable minimum.
+
+Implementation:
+- stable cTrader InstanceId is bound into one canonical managed execution label: <base>|CFIP-I:<instance>;
+- Automatic Market, Aggressive Market, Pending Stop and Pending Limit submissions all use that instance-scoped label;
+- position and pending-order ownership require the exact instance-scoped identity, so ManagedActionsOnly=false can no longer broaden broker mutation scope;
+- ReversalCloseMinimumNetProfit was added as the explicit minimum net-profit safety parameter, default 0.0, preserving the prior strict-positive behavior while removing the hidden constant;
+- deterministic runtime contracts and a dedicated CR1.8 source audit cover identity stability, cross-instance isolation and reversal-profit boundary behavior.
+
+Architecture boundary: Pure identity matching is hardened now. Final broker-position authority still moves to cBot under Track 12A; CR1.8 does not start or advance cBot separation.
 
 Acceptance:
-- same-label instances are distinguishable;
-- manual/foreign positions are never mutated accidentally by default;
-- identity is included in execution telemetry and recovery.
+- same-label instances are distinguishable by InstanceId;
+- unmanaged/manual/foreign positions are not adopted merely because symbol/label match;
+- all current broker submission paths carry the canonical instance identity;
+- reversal closing consumes one explicit profit-threshold rule;
+- identity remains authoritative for recovery/exit ownership.
+
+Verification:
+- Source/Architecture + CR1.8 source audit: required via CI;
+- Runtime Acceptance: required via CI;
+- cTrader Compile/Build: required via CI;
+- target-terminal replay remains required for actual broker identity/restart/reconciliation behavior.
 
 ## CR1.9 — Minor cleanup and documentation
 
@@ -672,7 +688,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR1.7 — Threshold truth + volume audit**.
+Current active phase: **CR1.9 — Minor cleanup and documentation**.
 
 ## 8. Completion order and dependencies
 
