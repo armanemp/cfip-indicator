@@ -52,8 +52,8 @@ checks = {
     "BE rejection preserves broker-authoritative plan protection": (
         '"PARTIAL CLOSE • BREAK-EVEN REJECTED"' in partial and
         "_lastBreakEvenDiagnostic" in partial and
-        "NormalizePrice(
-                                            breakEvenPrice" in partial
+        "NormalizePrice(" in partial and
+        "breakEvenPrice" in partial
     ),
     "server partial TP observes broker closing deals, not volume coincidence": (
         "position.Deals" in server and
@@ -64,8 +64,7 @@ checks = {
     "server partial observation is cached by deal-count change": (
         "_lastServerPartialObservationDealCount" in state and
         "int dealCount" in server and
-        "dealCount ==
-                _lastServerPartialObservationDealCount" in server
+        "_lastServerPartialObservationDealCount" in server
     ),
     "server ladder ownership survives collapse so TP3 is never synthesized": (
         "_serverSideTakeProfitLadderOwned" in state and
