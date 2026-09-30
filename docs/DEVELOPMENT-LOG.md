@@ -1991,3 +1991,8 @@ No production C# behavior changed.
 Confirmed authoritative order for local cBot separation: **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. CBOT-0 is source-only inventory and can start without terminal interaction; CBOT-Preflight is the no-trade target-terminal blocking gate before Contracts.
 
 No production C# behavior changed.
+
+
+## Roadmap Ordering Recheck — 2026-09-30
+
+Detailed and master separation roadmaps are aligned to the authoritative order **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. Preflight is a no-trade blocking capability gate after repository inventory, not a prerequisite for starting CBOT-0.
