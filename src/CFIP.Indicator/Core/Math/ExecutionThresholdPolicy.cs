@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     /// <summary>
@@ -18,48 +20,28 @@ namespace cAlgo
 
         internal static int NormalizeDirectionShare(int value)
         {
-            return ClampInt(value, 50, 95);
+            return NumericGuards.ClampInt(value, 50, 95);
         }
 
         internal static int NormalizeReversalEvidence(int value)
         {
-            return ClampInt(value, 2, 10);
+            return NumericGuards.ClampInt(value, 2, 10);
         }
 
         internal static int NormalizeReversalMtf(int value)
         {
-            return ClampInt(value, 50, 100);
+            return NumericGuards.ClampInt(value, 50, 100);
         }
 
         internal static int NormalizeEndOfDayAlertMinutesBefore(int value)
         {
-            return ClampInt(value, 5, 180);
+            return NumericGuards.ClampInt(value, 5, 180);
         }
 
         internal static double NormalizeMaximumSpreadToStopRiskRatio(double value)
         {
-            return ClampDouble(value, 0.02, 0.50);
+            return NumericGuards.ClampDouble(value, 0.02, 0.50);
         }
 
-        private static int ClampInt(int value, int minimum, int maximum)
-        {
-            if (value < minimum)
-                return minimum;
-            if (value > maximum)
-                return maximum;
-            return value;
-        }
-
-        private static double ClampDouble(double value, double minimum, double maximum)
-        {
-            if (double.IsNaN(value) ||
-                double.IsInfinity(value))
-                return minimum;
-            if (value < minimum)
-                return minimum;
-            if (value > maximum)
-                return maximum;
-            return value;
-        }
     }
 }
