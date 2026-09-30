@@ -69,6 +69,9 @@ namespace cAlgo
                         public double EmaSpreadAtr;
                         public double EmaSlopeAtr;
                         public double RangeEfficiency;
+                        public string Regime;
+                        public int RegimeQuality;
+                        public int RegimeStability;
                         public int OssBullVotes;
                         public int OssBearVotes;
                         public int OssIndicatorCount;
