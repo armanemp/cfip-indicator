@@ -116,6 +116,42 @@ if refresh_start >= 0 and refresh_end > refresh_start:
     if "LocalStorage.Reload(" in refresh_method:
         errors.append("RefreshSharedDailyLossLock must not reload disk during Calculate")
 
+
+# Broker-state reads are event-aware and time-bounded rather than repeated blindly.
+broker = read(ROOT / "src" / "CFIP.Indicator" / "Trading" / "Lifecycle" / "BrokerStateSnapshot.cs")
+broker_rule = read(ROOT / "src" / "CFIP.Indicator" / "Core" / "Math" / "BrokerStateRefreshRule.cs")
+if "MarkBrokerStateDirty()" not in broker:
+    errors.append("BrokerStateSnapshot must expose dirty invalidation")
+if "BrokerStateRefreshRule.IsRefreshDue(" not in broker:
+    errors.append("BrokerStateSnapshot must use the canonical broker refresh rule")
+if "IsRefreshDue(" not in broker_rule:
+    errors.append("BrokerStateRefreshRule must own broker refresh cadence")
+
+for relative in (
+    "src/CFIP.Indicator/Trading/Execution/BrokerMarketOrderMutation.cs",
+    "src/CFIP.Indicator/Trading/Execution/BrokerPendingOrderPlacement.cs",
+    "src/CFIP.Indicator/Trading/Execution/BrokerPendingOrderCancellation.cs",
+    "src/CFIP.Indicator/Trading/Execution/BrokerPositionCloseMutation.cs",
+    "src/CFIP.Indicator/Trading/Execution/BrokerStopLossMutation.cs",
+    "src/CFIP.Indicator/Trading/Execution/BrokerTakeProfitMutation.cs",
+):
+    source = read(ROOT / relative)
+    if "MarkBrokerStateDirty();" not in source:
+        errors.append(f"{relative}: successful/attempted broker mutation must invalidate state cache")
+
+for relative in (
+    "src/CFIP.Indicator/Trading/Lifecycle/PositionOpenedHandler.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/PositionClosedHandler.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/PositionModifiedHandler.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/PendingCreatedHandler.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/PendingModifiedHandler.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/PendingFilledHandler.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/PendingCancelledHandler.cs",
+):
+    source = read(ROOT / relative)
+    if "MarkBrokerStateDirty();" not in source:
+        errors.append(f"{relative}: managed broker event must invalidate state cache")
+
 if "BufferedArchiveFlushIntervalMilliseconds" not in coordinator:
     errors.append("buffered persistence must have an explicit timer cadence")
 if "BufferedArchiveFlushBudget" not in coordinator:
