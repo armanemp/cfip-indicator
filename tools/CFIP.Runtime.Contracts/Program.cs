@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyMtfContextIntegrity();
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
+            VerifyBufferedArchivePersistence();
             VerifyDailyLossSemantics();
             VerifyDailyLossBaselineSemantics();
             VerifyEconomicNewsFeedStateSemantics();
@@ -405,6 +406,115 @@ namespace cAlgo
                     out startEquity,
                     out baselineFloating),
                 "invalid equity cannot produce a synthetic baseline");
+        }
+
+        private static void VerifyBufferedArchivePersistence()
+        {
+            string directory =
+                Path.Combine(
+                    Path.GetTempPath(),
+                    "CFIP.Runtime.Contracts",
+                    "buffered-archive");
+
+            Directory.CreateDirectory(
+                directory);
+
+            string path =
+                Path.Combine(
+                    directory,
+                    "buffered.csv");
+
+            try
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+
+                BufferedArchivePersistence store =
+                    new BufferedArchivePersistence();
+
+                Assert(
+                    store.Enqueue(
+                        path,
+                        "CFIP-TEST,1",
+                        "1,alpha",
+                        "1"),
+                    "first keyed archive row is queued");
+
+                Assert(
+                    !store.Enqueue(
+                        path,
+                        "CFIP-TEST,1",
+                        "1,duplicate",
+                        "1"),
+                    "duplicate queued archive key is rejected");
+
+                Assert(
+                    store.Enqueue(
+                        path,
+                        "CFIP-TEST,1",
+                        "2,beta",
+                        "2"),
+                    "second keyed archive row is queued");
+
+                Assert(
+                    store.PendingLineCount == 2,
+                    "buffer contains exactly unique pending rows");
+
+                int firstFlush =
+                    store.Flush(1);
+
+                Assert(
+                    firstFlush == 1 &&
+                    store.PendingLineCount == 1,
+                    "flush budget writes only one queued row");
+
+                int secondFlush =
+                    store.Flush(1);
+
+                Assert(
+                    secondFlush == 1 &&
+                    store.PendingLineCount == 0,
+                    "second bounded flush drains remaining row");
+
+                string[] lines =
+                    File.ReadAllLines(path);
+
+                Assert(
+                    lines.Length == 3 &&
+                    lines[0] == "CFIP-TEST,1" &&
+                    lines[1] == "1,alpha" &&
+                    lines[2] == "2,beta",
+                    "buffered archive writes header and each unique row once");
+
+                Assert(
+                    !store.Enqueue(
+                        path,
+                        "CFIP-TEST,1",
+                        "2,duplicate-after-flush",
+                        "2"),
+                    "existing on-disk keyed row remains idempotent");
+
+                Assert(
+                    store.PendingLineCount == 0,
+                    "existing archive key creates no pending duplicate");
+            }
+            finally
+            {
+                try
+                {
+                    if (File.Exists(path))
+                        File.Delete(path);
+
+                    if (Directory.Exists(directory))
+                        Directory.Delete(
+                            directory,
+                            true);
+                }
+                catch
+                {
+                    // Test cleanup must not mask the contract result.
+                }
+            }
         }
 
         private static void VerifyCalculationReadinessSemantics()
