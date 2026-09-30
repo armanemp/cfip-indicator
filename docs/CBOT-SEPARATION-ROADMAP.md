@@ -594,7 +594,7 @@ The proof must establish:
 
 Blocking rule:
 
-**CBOT-1 cannot start until CBOT-Preflight is verified.**
+**CBOT-1 cannot start until CBOT-0 is accepted and CBOT-Preflight is verified.**
 
 If the target environment cannot support the intended structured read-only handoff, stop the migration and redesign the local transport boundary before moving any broker authority. Do not fall back to chart-object scraping, static globals, reflection, or a duplicated analysis engine.
 
@@ -765,6 +765,17 @@ Acceptance:
 - no cBot re-implementation of the decision engine;
 - execution rejects unsafe broker conditions immediately before mutation.
 
+## Hard migration rules
+
+- A moved method carries its required fields/helpers/dependencies with it; no hidden dependency remains in the Indicator.
+- Semantic business rules have one authoritative owner. Pure DTO/serialization code may be shared only when it contains no business rule.
+- The legacy Indicator executor may be used only as a repository parity oracle during migration; it must never ship or run as a second live executor.
+- At every live test stage exactly one executor is armed.
+- Missing, stale or incompatible Indicator/cBot state fails closed.
+- Analytical parameters remain Indicator-owned; broker/account/live-management parameters move to cBot; no duplicate execution controls.
+- No direct broker mutation remains in Indicator after CBOT-7.
+- The Indicator remains usable as an analysis/display component when the cBot is absent.
+
 ### CBOT-7 — Cutover and removal of Indicator execution authority
 
 Remove the old automatic broker path from the Indicator.
@@ -897,11 +908,11 @@ Until CBOT-7 is complete:
 Recommended order:
 
 1. Freeze analytical behavior and public signal semantics.
-2. Complete CBOT-Preflight on the target cTrader environment.
-3. Create Contracts.
-4. Expose the read-only Indicator signal surface.
-5. Create cBot in shadow mode.
-6. Inventory and test the **full dependency closure** of every moved method/helper/field.
+2. Complete CBOT-0 repository inventory and dependency/parameter ownership audit.
+3. Complete CBOT-Preflight on the target cTrader environment.
+4. Create Contracts.
+5. Expose the read-only Indicator signal surface.
+6. Create cBot in shadow mode.
 7. Verify one-to-one plan/intent parity against a repository snapshot of the legacy path; never keep the legacy path as a second live engine.
 8. Move Market execution.
 9. Move Aggressive execution.
@@ -1029,3 +1040,12 @@ Added/fixed:
 - added a final cross-document roadmap consistency gate.
 
 No production C# behavior is changed by this revision.
+
+
+---
+
+## 21. Final readiness correction — 2026-09-30
+
+Final audit correction: CBOT-0 is the first implementation phase and can begin from repository truth. CBOT-Preflight is a blocking no-trade capability gate that must pass before CBOT-1 Contracts are implemented. This keeps the one-phase workflow intact while ensuring no unproven cTrader handoff is used for the actual migration.
+
+No production C# behavior is changed by this documentation correction.
