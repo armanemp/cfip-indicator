@@ -4693,7 +4693,7 @@ Next phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage
 
 
 
-Status: **ACTIVE — CR4.3 complete; CR4.4 next**
+Status: **ACTIVE — CR4.3 merged; CR4.4 next**
 
 The fourth Claude review prompt is now mandatory input to the remediation sequence. Its D1–D10 findings are treated as review hypotheses until independently reconciled against current main source.
 
@@ -4741,7 +4741,7 @@ Next phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage
 
 ### CR4.3 closeout — 2026-09-30
 
-Status: **COMPLETE — PR #104; merge pending.**
+Status: **COMPLETE — PR #104 merged to main; merge commit `d24b26de3ddf3709c8ea5e94f97a9f533b9b33dc`.**
 
 Completed:
 - moved SignalEvaluationTrace capture to the finalized new-closed-M5 boundary, removing the earlier BuildDecision capture point;
