@@ -32,14 +32,19 @@ namespace cAlgo
 
     internal static class IndicatorExecutionQualityRule
     {
+        // Final market-entry safety gate. It runs after decision/actionability checks.
         internal const int AutomaticMarketQualityMinimum = 60;
         internal const int AutomaticMarketConflictMaximum = 52;
 
+        // Defense-in-depth submission gate. Setup qualification is intentionally stricter.
         internal const int PendingSubmissionQualityMinimum = 58;
         internal const int PendingSubmissionConflictMaximum = 55;
 
+        // Shared candidate-qualification floor for both pending continuation and reversal.
         internal const int PendingSetupQualityMinimum = 62;
+        // Continuation requires tighter indicator alignment because it confirms trend continuation.
         internal const int PendingContinuationConflictMaximum = 48;
+        // Reversal permits slightly more mixed indicator context because reversal qualification is separate.
         internal const int PendingReversalConflictMaximum = 50;
 
         public static IndicatorQualityGateResult EvaluateIndicatorExecutionQuality(
