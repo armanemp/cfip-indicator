@@ -331,6 +331,7 @@ frame_scoring = ROOT / "Analysis" / "Market" / "MarketFrameScoringService.cs"
 independent_evidence = ROOT / "Analysis" / "Market" / "Decision" / "IndependentEvidenceAnalyzer.cs"
 structural_confirmations = ROOT / "Analysis" / "Market" / "Decision" / "StructuralConfirmationAnalyzer.cs"
 structural_rule = ROOT / "Core" / "Math" / "StructuralEvidenceRule.cs"
+structure_analyzer = ROOT / "Analysis" / "Structure" / "StructureAnalyzer.cs"
 
 for required in (
     swing_rule,
@@ -353,6 +354,7 @@ frame_scoring_code = frame_scoring.read_text(encoding="utf-8")
 independent_evidence_code = independent_evidence.read_text(encoding="utf-8")
 structural_confirmations_code = structural_confirmations.read_text(encoding="utf-8")
 structural_rule_code = structural_rule.read_text(encoding="utf-8")
+structure_analyzer_code = structure_analyzer.read_text(encoding="utf-8")
 
 for token in (
     "TryGetHighPlateau(",
