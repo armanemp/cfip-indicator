@@ -222,6 +222,16 @@ namespace cAlgo
             RefreshDailyCashFlows(
                 referenceUtc);
 
+            if (!_dailyLossHistoryAvailable ||
+                !_dailyLossTransactionsAvailable)
+            {
+                _dailyLossDataReady = false;
+                _dailyLossStateReason =
+                    "DAILY LOSS BASELINE DATA UNAVAILABLE";
+
+                return;
+            }
+
             double reconstructedStartEquity;
             double reconstructedBaselineFloating;
 
