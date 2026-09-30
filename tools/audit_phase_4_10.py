@@ -34,9 +34,7 @@ actual_native_callers = set()
 
 for path in (ROOT / "src" / "CFIP.Indicator").rglob("*.cs"):
     rel = path.relative_to(ROOT).as_posix()
-    content = strip_for_static_checks(
-        path.read_text(encoding="utf-8")
-    )
+    content = path.read_text(encoding="utf-8")
     if direct_native_access_re.search(content):
         actual_native_callers.add(rel)
 
