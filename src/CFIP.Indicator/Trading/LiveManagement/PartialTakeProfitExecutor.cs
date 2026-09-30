@@ -154,6 +154,12 @@ namespace cAlgo
                                     RiskFreeLockPips,
                                     UseSpreadAwareBreakEven);
 
+                            _lastBreakEvenDiagnostic =
+                                smartBreakEven.Allowed
+                                    ? smartBreakEven.Reason
+                                    : "NOT APPLICABLE • " +
+                                      smartBreakEven.Reason;
+
                             double breakEvenPrice =
                                 smartBreakEven.Allowed
                                     ? _plan.Direction == 1
@@ -194,6 +200,12 @@ namespace cAlgo
 
                                     _brokerProtectionRecoveryRequired =
                                         false;
+                                    _lastBreakEvenDiagnostic =
+                                        "APPLIED • " +
+                                        NormalizePrice(
+                                            breakEvenPrice).ToString(
+                                                "R",
+                                                System.Globalization.CultureInfo.InvariantCulture);
                                 }
                                 else
                                 {
