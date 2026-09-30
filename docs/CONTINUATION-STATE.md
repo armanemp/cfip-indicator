@@ -391,10 +391,32 @@ Manual boundary remains:
 - restart/reconnect;
 - empirical signal-quality/profitability.
 
+### CR5.1 / E1 closeout — 2026-10-01
+
+CR5.1 / E1 is **VERIFIED COMPLETE** and merged to `main` via PR #114, merge commit `62a119bef79e5a978f1f2ed66a913fa11a1bb2d4`.
+
+Repository verification:
+- Source/Architecture: PASS — PR #114 head run `36791329486`; merge run `36791455294`.
+- Runtime Acceptance Contracts: PASS — PR #114 head run `36791329385`; merge run `36791455156`.
+- cTrader Compile: PASS — PR #114 head run `36791329369`; merge run `36791455288`.
+
+Implementation/safety:
+- canonical `StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(...)`;
+- all E1 dual-cap consumers migrated;
+- deterministic truth-table contract and repository-wide E1 audit;
+- public risk parameters/defaults and trading thresholds preserved;
+- no decision/execution authority change.
+
+Manual boundary remains:
+- target-terminal startup/readiness/panel timing;
+- broker lifecycle ordering;
+- restart/reconnect;
+- empirical signal-quality/profitability.
+
 ## Current active phase
 
-CR-FINAL — repository integration gate.
+CR5.2 / E2 — Liquidity/session target-source semantics and multi-level target candidates.
 
 ### Next transition
 
-Complete CR-FINAL repository verification before resuming the target-terminal CBOT-Preflight acceptance boundary.
+Complete CR5.2 repository verification before advancing to CR5.3 / E3.
