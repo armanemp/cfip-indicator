@@ -27,13 +27,10 @@ namespace cAlgo
                     MinimumSlAtr);
 
             double maxRiskAtr =
-                Math.Min(
-                    Math.Max(
-                        minRiskAtr,
-                        MaximumSlAtr),
-                    Math.Max(
-                        minRiskAtr,
-                        MaximumStructuralStopAtr));
+                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    minRiskAtr,
+                    MaximumSlAtr,
+                    MaximumStructuralStopAtr);
 
             double spread =
                 Math.Max(
@@ -120,7 +117,11 @@ namespace cAlgo
                         atr);
 
                 if (riskAtr < minRiskAtr ||
-                    riskAtr > maxRiskAtr)
+                    !StructuralStopRiskRule.IsWithinEffectiveMaximumStopRiskAtr(
+                        riskAtr,
+                        minRiskAtr,
+                        MaximumSlAtr,
+                        MaximumStructuralStopAtr))
                     continue;
 
                 double bestTp1RR =
