@@ -566,17 +566,22 @@ Manual acceptance remains required for actual cTrader broker History/Deal orderi
 
 Covers: B7.
 
-Work:
-- audit OrderBlockQualityCalculator exact base/clamp behavior;
-- add side-of-market validity;
-- distinguish fresh/mitigated/broken zones;
-- cache candidate work per closed bar/frame/direction;
-- keep displacement/structure/HTF evidence independent to avoid double counting.
+Status: COMPLETE — implementation verified and merged 2026-09-30.
 
-Acceptance:
-- OB selection is directionally valid;
-- repeated closed-bar evaluation does not rebuild identical expensive candidates;
-- quality features are independently traceable.
+Implemented:
+- canonical OrderBlockQualityRule owning the exact base score, independent evidence components, age/mitigation penalties and final clamp;
+- unit-consistent creation-ATR impulse normalization;
+- canonical side-of-market validation for bullish/bearish OB selection;
+- explicit Fresh / Mitigated / Broken lifecycle semantics;
+- closed-bar/frame/direction candidate caching with quote selection deliberately kept outside the cache key;
+- deterministic runtime contracts and static CR2.6 audit.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Manual acceptance remains required for target-terminal zone interaction and empirical signal-quality measurement.
 
 ## CR2.7 — WaveTrend mathematical correctness
 
