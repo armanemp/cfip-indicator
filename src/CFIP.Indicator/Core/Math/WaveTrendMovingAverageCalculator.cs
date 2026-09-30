@@ -338,3 +338,5 @@ namespace cAlgo
                 index >
                 signalReadyIndex;
         }
+    }
+}
