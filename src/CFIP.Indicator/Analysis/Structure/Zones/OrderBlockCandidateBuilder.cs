@@ -45,16 +45,6 @@ namespace cAlgo
                 out double zoneLow,
                 out double zoneHigh))
                 return null;
-            double range =
-                high -
-                low;
-            double body =
-                Math.Abs(
-                    close -
-                    open);
-            if (range <= 0 ||
-                body <= 0)
-                return null;
             if (!TryBuildOrderBlockImpulseEvidence(
                     bars,
                     createdIndex,
@@ -78,10 +68,6 @@ namespace cAlgo
                     out bool partiallyMitigated,
                     out double remainingRatio,
                     out OrderBlockLifecycleState lifecycleState))
-                return null;
-
-            if (lifecycleState ==
-                OrderBlockLifecycleState.Broken)
                 return null;
 
             bool liquiditySweep =
