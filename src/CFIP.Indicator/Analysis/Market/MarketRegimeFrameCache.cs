@@ -91,7 +91,7 @@ namespace cAlgo
         }
 
         private static bool IsCompatible(
-            Entry entry,
+            MarketRegimeFrameCacheEntry entry,
             Bars bars)
         {
             if (entry == null ||
