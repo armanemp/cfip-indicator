@@ -1898,9 +1898,9 @@ decision, scenario and trade-plan authority.
 This track is intentionally local. It introduces no Cloud service, HTTP API,
 socket, database, broker service, or multi-position capability.
 
-## Mandatory preflight
+## Mandatory preflight gate after CBOT-0
 
-Before CBOT-1, the target cTrader environment must pass **CBOT-Preflight**:
+After CBOT-0 and before CBOT-1, the target cTrader environment must pass **CBOT-Preflight**:
 
 - cBot can instantiate the compiled CFIP Indicator through the supported custom-indicator mechanism;
 - cBot can read a structured public read-only signal surface without reflection or chart-object scraping;
@@ -1948,9 +1948,9 @@ and broker-facing responsibilities and therefore require explicit split inventor
 
 ## Mandatory phases
 
-`CBOT-Preflight` Target cTrader capability proof
+`CBOT-0` Boundary inventory, dependency closure, parameter ownership and execution-authority freeze
 
-`CBOT-0` Boundary inventory, dependency closure and execution-authority freeze
+`CBOT-Preflight` Target cTrader capability proof (blocking gate before CBOT-1)
 
 `CBOT-1` Platform-neutral local contracts
 
