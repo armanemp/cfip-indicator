@@ -1122,7 +1122,7 @@ Next phase: **CR4.10 / D10 — Native-indicator defensive safety and registry pe
 
 ### CR4.10 — Native-indicator defensive safety and registry performance (D10)
 
-Status: **CORE IMPLEMENTATION MERGED; registry-performance correction pending repository verification.**
+Status: **VERIFIED — CR4.10 / D10 implementation and registry-performance correction complete.**
 
 Reconciled findings:
 - repository-wide consumer inventory isolates direct native wrapper/registry access and the expected analysis consumers;
