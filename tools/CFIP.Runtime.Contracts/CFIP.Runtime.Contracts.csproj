@@ -35,6 +35,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralEventRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiquiditySweepRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateConstraintRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/LiquidityTargetCandidateRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RejectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ReactionQualificationRule.cs" />
