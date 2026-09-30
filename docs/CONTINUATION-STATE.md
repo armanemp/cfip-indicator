@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3).**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.4 — Skender/OSS numerical stability and incremental caching (D4).**
 
 CR4.1 and CR4.2 are complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
@@ -190,3 +190,27 @@ CR4.2 / D2 was completed and merged to main via PR #103, merge commit `05a91cb97
 Target-terminal verification remains required for exact cTrader build, actual History path, AccessRights.None behavior and restart/account-switch persistence.
 
 Next phase: CR4.3 / D3.
+
+### CR4.3 closeout — 2026-09-30
+
+CR4.3 / D3 was completed on PR #104 and verified on implementation head `7defa4731ebd1e60d87d88a1659d4307607c46ab`.
+
+Implementation record:
+- trace capture now occurs exactly once per canonical new closed M5 boundary, after decision/execution state is finalized;
+- SignalTraceId is deterministic and account/configuration/symbol/timeframe scoped;
+- Plan and Preview geometry require exact closed-M5 + bar-open timestamp + direction lineage;
+- realized outcomes carry the originating SignalTraceId for research-only historical joins;
+- trace archive v3 and outcome archive v2 remain buffered and prior-row readable;
+- aggressive fill-created plans preserve source trace identity; recovery plans remain opt-in and are not attributed retroactively;
+- deterministic runtime contracts and CR4.3 static audit are green.
+
+Verification:
+- Source/Architecture PASS — run 36776384440;
+- cTrader Compile PASS — run 36776384275;
+- Runtime Acceptance PASS — run 36776384489.
+
+Boundary:
+- target-terminal replay, restart/reconnect timing and empirical quality/profitability validation remain manual;
+- no public parameters or default trading thresholds were changed.
+
+Next phase: **CR4.4 / D4 — Skender/OSS numerical stability and incremental caching.**
