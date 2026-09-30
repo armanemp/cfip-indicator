@@ -15,6 +15,39 @@ namespace cAlgo
         private const string DailyLossStateSchema =
             "CFIP-DL,2";
 
+        private void OnAccountSwitched(
+            AccountSwitchedEventArgs args)
+        {
+            _dailyLossBaselineDate =
+                DateTime.MinValue;
+            _dailyLossStartEquity = 0;
+            _dailyLossBaselineUnrealizedNetProfit = 0;
+            _dailyLossRealizedNetProfit = 0;
+            _dailyLossNetCashFlow = 0;
+            _dailyLossHistoryCount = -1;
+            _dailyLossTransactionCount = -1;
+            _dailyLossHistoryAvailable = false;
+            _dailyLossDataReady = false;
+            _dailyLossLocked = false;
+            _dailyLossLimitAlerted = false;
+            _dailyLossStateReason =
+                "ACCOUNT SWITCHED";
+            _lastDailyLossPersistUtc =
+                DateTime.MinValue;
+
+            try
+            {
+                RestoreDailyLossState(
+                    AsUtc(TimeInUtc));
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP daily loss account-switch restore failed: {0}",
+                    ex.Message);
+            }
+        }
+
         private bool DailyLossLimitHit(
             DateTime nowUtc)
         {
