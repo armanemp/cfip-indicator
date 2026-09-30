@@ -2088,3 +2088,27 @@ Operator pull required at this completed phase boundary:
 `git pull --ff-only origin main`
 
 Next phase: **CR1.2 — Daily-loss lock and stable accounting basis**.
+
+
+## CR1.2 — Daily-loss lock and stable accounting basis — 2026-09-30
+
+Status: **IMPLEMENTATION COMPLETE; target-terminal verification remains required.**
+
+Root-cause hardening:
+- replaced the volatile daily equity baseline with persisted account-scoped UTC-day state;
+- made daily loss a deterministic pure rule with explicit realized/floating/cash-flow accounting;
+- corrected an integration gap where missing transaction facts could otherwise allow cash-flow effects to be ignored;
+- made incomplete/Non-finite accounting inputs fail closed;
+- preserved a single daily-loss gate across Market, Aggressive and Pending automatic-entry paths;
+- preserved the no-auto-close behavior when the daily-loss lock is reached;
+- added deterministic contracts for recovery, deposits, withdrawals, threshold boundary, incomplete facts and invalid numeric input.
+
+Whole-chain routine audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed for this phase. The change introduces no second decision authority, no second execution authority, no position-capacity expansion and no additional broker mutation path.
+
+Verification basis:
+- official cTrader API documentation rechecked for Account equity/unrealized P/L, account Transactions, HistoricalTrade and LocalStorage persistence;
+- pure daily-loss contract coverage updated in the Runtime Contracts tool;
+- target-terminal cTrader Compile/Build, Runtime Acceptance, broker trading-day boundary, restart persistence and cross-instance behavior remain mandatory verification items.
+
+Next phase: **CR1.3 — News guard correctness and non-blocking refresh**.
