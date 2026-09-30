@@ -172,7 +172,7 @@ namespace cAlgo
                 _economicNewsBlockingEvent = null;
 
             state =
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     EnableEconomicNewsCalendar,
                     GetEconomicNewsLastSuccessUtc(),
                     now,
@@ -295,7 +295,7 @@ namespace cAlgo
                 GetEconomicNewsLastSuccessUtc();
 
             EconomicNewsFeedState feedState =
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     true,
                     lastSuccess,
                     normalizedUtc,
