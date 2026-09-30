@@ -94,10 +94,10 @@ namespace cAlgo
         [Parameter("Minimum Entry Location Quality", Group = "16 · Accuracy", DefaultValue = 64, MinValue = 40, MaxValue = 95)]
         public int MinimumEntryLocationQuality { get; set; }
 
-        [Parameter("Use Proxy Expected Value Gate", Group = "16 · Accuracy", DefaultValue = true)]
+        [Parameter("Use Reward Quality Gate", Group = "16 · Accuracy", DefaultValue = true)]
         public bool UseProxyExpectedValueGate { get; set; }
 
-        [Parameter("Minimum Proxy Expected Value", Group = "16 · Accuracy", DefaultValue = 0.20, MinValue = -1, MaxValue = 2, Step = 0.05)]
+        [Parameter("Minimum Reward Quality Floor", Group = "16 · Accuracy", DefaultValue = 0.20, MinValue = -1, MaxValue = 2, Step = 0.05)]
         public double MinimumProxyExpectedValue { get; set; }
     }
 }
