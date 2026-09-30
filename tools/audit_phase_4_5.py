@@ -149,6 +149,13 @@ check(
     and "Next phase" in continuation,
 )
 
+check(
+    "non-M5 cache refreshes when the same Bars series advances to a new frame index",
+    "entry.Index != index" in frame_cache
+    and "ReferenceEquals(_entries[i].Bars, bars)" in frame_cache
+    and "new MarketRegimeFrameCacheEntry(" in frame_cache,
+)
+
 print("CR4.5 SUMMARY")
 print("=" * 72)
 print(f"Failures: {len(errors)}")
@@ -156,11 +163,5 @@ if errors:
     for error in errors:
         print(f"- {error}")
     sys.exit(1)
-check(
-    "non-M5 cache refreshes when the same Bars series advances to a new frame index",
-    "entry.Index != index" in frame_cache
-    and "ReferenceEquals(_entries[i].Bars, bars)" in frame_cache
-    and "new MarketRegimeFrameCacheEntry(" in frame_cache,
-)
 
 print("CR4.5 STATIC GATE PASS")
