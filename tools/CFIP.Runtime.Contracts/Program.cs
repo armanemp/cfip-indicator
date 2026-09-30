@@ -726,15 +726,16 @@ namespace cAlgo
 
             string[] extras =
                 EconomicNewsCurrencyRule.Resolve(
-                    "US30",
+                    "EURUSD",
                     "JPY, CHF",
                     "");
 
             Assert(
-                extras.Length == 3 &&
+                extras.Length == 4 &&
                 extras[0] == "CHF" &&
-                extras[1] == "JPY" &&
-                extras[2] == "USD",
+                extras[1] == "EUR" &&
+                extras[2] == "JPY" &&
+                extras[3] == "USD",
                 "additional currencies merge deterministically without duplicates");
 
             string[] normalized =
