@@ -6,7 +6,7 @@ namespace cAlgo
     /// Deterministic WaveTrend moving-average implementation.
     /// The calculator is independent from Bars/UI/broker state.
     /// </summary>
-    internal sealed class WaveTrendMovingAverageCalculator
+    internal sealed partial class WaveTrendMovingAverageCalculator
     {
         internal const int Simple = 0;
         internal const int Exponential = 1;
