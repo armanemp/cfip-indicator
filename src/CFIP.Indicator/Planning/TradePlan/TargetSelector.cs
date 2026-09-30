@@ -50,29 +50,16 @@ namespace cAlgo
                     new Dictionary<string, int>(
                         StringComparer.Ordinal);
 
-                if (requiredRR[stage] >
-                    maximumRR)
-                {
-                    AddTargetRejectionCount(
-                        rejectionCounts,
-                        TargetCandidateRejectionReasons.StageRequiredAboveMaximum);
-                    RecordTargetStageRejections(
-                        closedM5,
-                        stage,
-                        rejectionCounts);
-                    continue;
-                }
-
-                if (!TargetRewardEnvelopeRule.CanReachStage(
+                if (!TryValidateTargetStageFeasibility(
                         requiredRR[stage],
+                        maximumRR,
                         risk,
                         atr,
-                        MaximumTargetExtensionAtr,
-                        maximumRR))
+                        out string stageRejectionReason))
                 {
                     AddTargetRejectionCount(
                         rejectionCounts,
-                        TargetCandidateRejectionReasons.StageUnreachableByExtension);
+                        stageRejectionReason);
                     RecordTargetStageRejections(
                         closedM5,
                         stage,
