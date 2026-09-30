@@ -36,7 +36,7 @@ The aggregate sums:
 - Commissions;
 - Pips.
 
-Because the history API exposes historical trades associated with a position and each historical trade has its own NetProfit/Pips data, partial/final closing legs are aggregated before learning and win/loss classification. citeturn127703search1turn312111view0
+Because the history API exposes historical trades associated with a position and each historical trade has its own NetProfit/Pips data, partial/final closing legs are aggregated before learning and win/loss classification.
 
 When history is unavailable, the previous position-level values are used as a deterministic fallback rather than inventing a partial result.
 
