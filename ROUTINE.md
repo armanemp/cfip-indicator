@@ -95,7 +95,7 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 ## 10. روتین بررسی اندیکاتورهای مرجع
 1. ZIPهای مرجع قبلی را دوباره بررسی کن و قبل از کپی‌کردن هر کد، parity و همپوشانی با موتورهای داخلی CFIP را مشخص کن.
 2. WaveTrend و FVG مرجع فقط وقتی وارد runtime شوند که parity ریاضی، closed-bar semantics و double-counting audit آن‌ها روشن باشد.
-3. Economic News feed باید از مسیر cache/Timer به decision و execution برسد؛ شبکه نباید روی هر tick فراخوانی شود.
+3. Economic News feed باید فقط از مسیر cache/Timer به decision و execution برسد؛ هیچ تصمیمی نباید HTTP را شروع یا منتظر نتیجه‌ی شبکه بماند. Refresh باید async، single-flight و generation-aware باشد و feed stateهای NEVER_LOADED/HEALTHY/STALE/BLOCKING_EVENT/DISABLED قابل تشخیص باشند.
 4. قبل از هر automatic market/pending entry، news guard نهایی دوباره ارزیابی شود.
 5. در صورت خبر مهم نزدیک، pending قابل لغو باشد و در صورت فعال‌بودن policy، active position با telemetry ثبت و مدیریت شود.
 ## 12. روتین اختصاصی Phase 11.4 — Plan Quality و Multi-Scenario Execution
