@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4 added a mandatory remediation track. **Next: CR4.1 — Learning-memory identity and account scoping (D1).**
+Prompt 4 and Prompt 5 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.1 — Learning-memory identity and account scoping (D1).**
 
 The repository-side CR-FINAL gate remains paused until CR4.1–CR4.10 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
@@ -138,6 +138,16 @@ Order:
 `CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR-FINAL`
 
 The findings remain static-review hypotheses until each item is independently verified. No default trading threshold, RR floor, confidence threshold or public parameter identity is to be changed implicitly.
+
+
+### Prompt 5 remediation insertion — 2026-09-30
+
+Prompt 5 E1–E8 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
+
+Order:
+`CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL`
+
+The E-series remains static-review hypotheses until each item is independently verified. No public parameter name/type/DefaultValue or default RR/confidence/stop threshold may be changed implicitly.
 
 ### CR4.1 continuity contract
 
