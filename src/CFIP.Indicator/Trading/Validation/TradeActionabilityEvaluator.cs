@@ -141,13 +141,10 @@ namespace cAlgo
                         Tp1MinimumRR,
                         MinimumRequiredRRForRegime(regime)),
                     PreferredStopRiskAtr,
-                    Math.Min(
-                        Math.Max(
-                            MinimumSlAtr,
-                            MaximumSlAtr),
-                        Math.Max(
-                            MinimumSlAtr,
-                            MaximumStructuralStopAtr)));
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        MinimumSlAtr,
+                        MaximumSlAtr,
+                        MaximumStructuralStopAtr));
 
             DivergenceResult divergence =
                 _m5Frame == null
