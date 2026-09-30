@@ -22,6 +22,9 @@ namespace cAlgo
         [Parameter("False Signal Adverse R", Group = "16 · Accuracy", DefaultValue = 1.10, MinValue = 0.25, MaxValue = 5)]
         public double FalseSignalAdverseR { get; set; }
 
+        [Parameter("Enable Soft Adverse-R Invalidation", Group = "16 · Accuracy", DefaultValue = true)]
+        public bool EnableSoftAdverseRInvalidation { get; set; }
+
         [Parameter("False Signal Watch Bars", Group = "16 · Accuracy", DefaultValue = 3, MinValue = 1, MaxValue = 12)]
         public int FalseSignalWatchBars { get; set; }
 
