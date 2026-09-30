@@ -112,8 +112,25 @@ check(
     "rolling cache is bounded and advances by append/remove",
     "RollingQuoteWindowSize" in cache
     and "RemoveAt(0)" in cache
-    and "RollingQuotes.Add(CreateQuote" in cache,
+    and "RollingQuotes.Add(" in cache
+    and "CreateQuote(" in cache,
 )
+check(
+    "production adapters contain no duplicated fixed OSS constants",
+    "                    20," not in read(
+        "src/CFIP.Indicator/Analysis/Indicators/External/SkenderBollingerBands.cs"
+    )
+    and "                    14)" not in read(
+        "src/CFIP.Indicator/Analysis/Indicators/External/SkenderMfi.cs"
+    )
+    and "                    25)" not in read(
+        "src/CFIP.Indicator/Analysis/Indicators/External/SkenderAroon.cs"
+    )
+    and "                    0.02," not in read(
+        "src/CFIP.Indicator/Analysis/Indicators/External/SkenderParabolicSar.cs"
+    ),
+)
+
 check(
     "cache invalidation detects series replacement and cached-prefix mutation",
     "!ReferenceEquals(cache.Bars, bars)" in cache
@@ -123,8 +140,8 @@ check(
 check(
     "OBV remains available but is no longer counted as confluence evidence",
     "ObvBias = SkenderObvBias" in analyzer
-    and "bool obvValid" in analyzer
-    and "obvValid)" not in analyzer.replace("bool obvValid", "bool obv_valid"),
+    and "obvValid" not in analyzer
+    and "(obvValid ? 1 : 0)" not in analyzer,
 )
 check(
     "OBV diagnostic status is explicit in code",
