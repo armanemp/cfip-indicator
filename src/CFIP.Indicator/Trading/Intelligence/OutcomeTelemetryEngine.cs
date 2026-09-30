@@ -352,7 +352,7 @@
                                  }
 
                                  HistoricalOutcomeAggregate aggregate =
-                                     HistoricalOutcomeAggregationRule.Aggregate(
+                                     HistoricalOutcomeAggregationRule.AggregateHistoricalOutcomeRecords(
                                          records);
 
                                  return aggregate.Available
