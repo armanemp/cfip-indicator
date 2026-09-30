@@ -6,9 +6,12 @@ using System.Runtime.CompilerServices;
 namespace CfipStockIndicatorsBenchmark;
 
 internal readonly record struct NativeRegistryLookupBenchmarkResult(
-    double LinearMeanMilliseconds,
-    double DictionaryMeanMilliseconds,
-    double Speedup);
+    double LinearRepeatedMilliseconds,
+    double DictionaryRepeatedMilliseconds,
+    double LastHitRepeatedMilliseconds,
+    double LinearRoundRobinMilliseconds,
+    double DictionaryRoundRobinMilliseconds,
+    double LastHitRoundRobinMilliseconds);
 
 internal static class NativeRegistryLookupBenchmark
 {
@@ -33,32 +36,53 @@ internal static class NativeRegistryLookupBenchmark
         for (int i = 0; i < keys.Length; i++)
             dictionary[keys[i]] = i;
 
-        ReferenceKey target =
-            keys[keys.Length - 1];
+        NativeRegistryCache cache =
+            new NativeRegistryCache(linear);
 
-        BenchmarkTiming linearTiming =
+        BenchmarkTiming linearRepeated =
             MeasureTiming(
-                () => RunLinearLookup(linear, target),
+                () => RunRepeatedLinearLookup(linear),
                 WarmupIterations,
                 TimingIterations);
 
-        BenchmarkTiming dictionaryTiming =
+        BenchmarkTiming dictionaryRepeated =
             MeasureTiming(
-                () => RunDictionaryLookup(dictionary, target),
+                () => RunRepeatedDictionaryLookup(dictionary),
                 WarmupIterations,
                 TimingIterations);
 
-        double speedup =
-            dictionaryTiming.MeanMilliseconds <= 0
-                ? 0
-                : linearTiming.MeanMilliseconds /
-                  dictionaryTiming.MeanMilliseconds;
+        BenchmarkTiming lastHitRepeated =
+            MeasureTiming(
+                () => RunRepeatedLastHitLookup(cache),
+                WarmupIterations,
+                TimingIterations);
+
+        BenchmarkTiming linearRoundRobin =
+            MeasureTiming(
+                () => RunRoundRobinLinearLookup(linear),
+                WarmupIterations,
+                TimingIterations);
+
+        BenchmarkTiming dictionaryRoundRobin =
+            MeasureTiming(
+                () => RunRoundRobinDictionaryLookup(dictionary),
+                WarmupIterations,
+                TimingIterations);
+
+        BenchmarkTiming lastHitRoundRobin =
+            MeasureTiming(
+                () => RunRoundRobinLastHitLookup(cache),
+                WarmupIterations,
+                TimingIterations);
 
         return
             new NativeRegistryLookupBenchmarkResult(
-                linearTiming.MeanMilliseconds,
-                dictionaryTiming.MeanMilliseconds,
-                speedup);
+                linearRepeated.MeanMilliseconds,
+                dictionaryRepeated.MeanMilliseconds,
+                lastHitRepeated.MeanMilliseconds,
+                linearRoundRobin.MeanMilliseconds,
+                dictionaryRoundRobin.MeanMilliseconds,
+                lastHitRoundRobin.MeanMilliseconds);
     }
 
     internal static string Format(
@@ -67,27 +91,112 @@ internal static class NativeRegistryLookupBenchmark
         return
             "NATIVE REGISTRY LOOKUP BENCHMARK" +
             Environment.NewLine +
-            "Linear List (pre-D10): " +
-            result.LinearMeanMilliseconds.ToString("F3") +
+            "Repeated same Bars (hot-path pattern)" +
+            Environment.NewLine +
+            "Linear List: " +
+            result.LinearRepeatedMilliseconds.ToString("F3") +
             " ms/run" +
             Environment.NewLine +
-            "Reference Dictionary (D10): " +
-            result.DictionaryMeanMilliseconds.ToString("F3") +
+            "Reference Dictionary: " +
+            result.DictionaryRepeatedMilliseconds.ToString("F3") +
             " ms/run" +
             Environment.NewLine +
-            "Lookup speedup: " +
-            result.Speedup.ToString("F2") +
-            "x";
+            "Last-hit cache: " +
+            result.LastHitRepeatedMilliseconds.ToString("F3") +
+            " ms/run" +
+            Environment.NewLine +
+            "Round-robin Bars (cold pattern)" +
+            Environment.NewLine +
+            "Linear List: " +
+            result.LinearRoundRobinMilliseconds.ToString("F3") +
+            " ms/run" +
+            Environment.NewLine +
+            "Reference Dictionary: " +
+            result.DictionaryRoundRobinMilliseconds.ToString("F3") +
+            " ms/run" +
+            Environment.NewLine +
+            "Last-hit cache: " +
+            result.LastHitRoundRobinMilliseconds.ToString("F3") +
+            " ms/run";
     }
 
-    private static void RunLinearLookup(
-        List<ReferenceKey> values,
-        ReferenceKey target)
+    private static void RunRepeatedLinearLookup(
+        List<ReferenceKey> values)
+    {
+        int checksum = 0;
+        ReferenceKey target =
+            values[values.Count - 1];
+
+        for (int i = 0; i < LookupCount; i++)
+        {
+            for (int repeat = 0; repeat < 5; repeat++)
+            {
+                for (int j = 0; j < values.Count; j++)
+                {
+                    if (ReferenceEquals(values[j], target))
+                    {
+                        checksum += j;
+                        break;
+                    }
+                }
+            }
+        }
+
+        GC.KeepAlive(checksum);
+    }
+
+    private static void RunRepeatedDictionaryLookup(
+        Dictionary<ReferenceKey, int> values)
+    {
+        int checksum = 0;
+        ReferenceKey target = null;
+
+        foreach (ReferenceKey key in values.Keys)
+        {
+            target = key;
+            break;
+        }
+
+        for (int i = 0; i < LookupCount; i++)
+        {
+            for (int repeat = 0; repeat < 5; repeat++)
+            {
+                if (values.TryGetValue(
+                        target,
+                        out int index))
+                    checksum += index;
+            }
+        }
+
+        GC.KeepAlive(checksum);
+    }
+
+    private static void RunRepeatedLastHitLookup(
+        NativeRegistryCache cache)
+    {
+        int checksum = 0;
+        ReferenceKey target =
+            cache.Values[cache.Values.Count - 1];
+
+        for (int i = 0; i < LookupCount; i++)
+        {
+            for (int repeat = 0; repeat < 5; repeat++)
+                checksum += cache.Get(target);
+        }
+
+        GC.KeepAlive(checksum);
+    }
+
+    private static void RunRoundRobinLinearLookup(
+        List<ReferenceKey> values)
     {
         int checksum = 0;
 
         for (int i = 0; i < LookupCount; i++)
         {
+            ReferenceKey target =
+                values[i % values.Count];
+
             for (int j = 0; j < values.Count; j++)
             {
                 if (ReferenceEquals(values[j], target))
@@ -101,16 +210,40 @@ internal static class NativeRegistryLookupBenchmark
         GC.KeepAlive(checksum);
     }
 
-    private static void RunDictionaryLookup(
-        Dictionary<ReferenceKey, int> values,
-        ReferenceKey target)
+    private static void RunRoundRobinDictionaryLookup(
+        Dictionary<ReferenceKey, int> values)
+    {
+        int checksum = 0;
+        ReferenceKey[] keys =
+            new ReferenceKey[KeyCount];
+
+        values.Keys.CopyTo(keys, 0);
+
+        for (int i = 0; i < LookupCount; i++)
+        {
+            ReferenceKey target =
+                keys[i % keys.Length];
+
+            if (values.TryGetValue(
+                    target,
+                    out int index))
+                checksum += index;
+        }
+
+        GC.KeepAlive(checksum);
+    }
+
+    private static void RunRoundRobinLastHitLookup(
+        NativeRegistryCache cache)
     {
         int checksum = 0;
 
         for (int i = 0; i < LookupCount; i++)
         {
-            if (values.TryGetValue(target, out int index))
-                checksum += index;
+            ReferenceKey target =
+                cache.Values[i % cache.Values.Count];
+
+            checksum += cache.Get(target);
         }
 
         GC.KeepAlive(checksum);
@@ -146,6 +279,39 @@ internal static class NativeRegistryLookupBenchmark
     private readonly record struct BenchmarkTiming(
         double TotalMilliseconds,
         double MeanMilliseconds);
+
+    private sealed class NativeRegistryCache
+    {
+        internal IReadOnlyList<ReferenceKey> Values { get; }
+
+        private ReferenceKey _lastKey;
+        private int _lastIndex = -1;
+
+        internal NativeRegistryCache(
+            IReadOnlyList<ReferenceKey> values)
+        {
+            Values = values;
+        }
+
+        internal int Get(
+            ReferenceKey key)
+        {
+            if (ReferenceEquals(_lastKey, key))
+                return _lastIndex;
+
+            for (int i = 0; i < Values.Count; i++)
+            {
+                if (ReferenceEquals(Values[i], key))
+                {
+                    _lastKey = key;
+                    _lastIndex = i;
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+    }
 
     private sealed class ReferenceKey
     {
