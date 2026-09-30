@@ -28,7 +28,7 @@ required = {
             "Healthy",
             "Stale",
             "BlockingEvent",
-            "Resolve(",
+            "Evaluate(",
         ],
     "src/CFIP.Indicator/Core/Math/EconomicNewsCurrencyRule.cs":
         [
