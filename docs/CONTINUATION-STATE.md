@@ -4,7 +4,7 @@ Last updated: 2026-09-30
 
 ## Phase closeout
 
-CR2.6 is verified complete and merged to main via PR #91, merge commit 8f89d75e9fed70a53b51a902b52c539d9c514f0b. Source/Architecture, Runtime Acceptance and cTrader Compile all passed on head 1c5dbf17140f3757ea4e3289183fb73ab8e65b9b.
+CR2.7 is verified complete and merged to main via PR #92, merge commit b021f56c4b75331fb52127547e006f2f8bb287c4. Source/Architecture, Runtime Acceptance and cTrader Compile all passed on head 181b238a548280fc01a67fb1e3ba8a617f63e42a.
 
 ## Authoritative order
 
@@ -14,7 +14,7 @@ CR2.6 is verified complete and merged to main via PR #91, merge commit 8f89d75e9
 
 ## Active phase
 
-**Next: CR2.7 — WaveTrend mathematical correctness (Prompt 2 / B8).**
+**Next: CR2.8 — Historical rendering semantics and cost (Prompt 2 / B9).**
 
 ## Completed before this checkpoint
 
@@ -34,6 +34,7 @@ CR2.6 is verified complete and merged to main via PR #91, merge commit 8f89d75e9
 - CR2.4 pending-order decision arbiter
 - CR2.5 lifecycle ordering and outcome aggregation
 - CR2.6 OrderBlock quality and cache discipline
+- CR2.7 WaveTrend mathematical correctness
 
 ## Rules for every continuation
 
@@ -48,4 +49,4 @@ CR2.6 is verified complete and merged to main via PR #91, merge commit 8f89d75e9
 
 ## Next transition
 
-CR2.6 is now verified and merged. The next implementation response must execute **CR2.7** and only CR2.7. Track 12A remains blocked until CR-FINAL.
+CR2.7 is now verified and merged. The next implementation response must execute **CR2.8** and only CR2.8. Track 12A remains blocked until CR-FINAL.
