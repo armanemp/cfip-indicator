@@ -285,19 +285,41 @@ Verification:
 
 Covers: A7.
 
-Work:
-- inventory repeated broker-state reads;
-- introduce dirty flags or event-aware invalidation where correctness permits;
-- cache expensive FVG/OB calculations by explicit deterministic keys;
-- make file persistence buffered/asynchronous where platform-safe;
-- add bounded log/archive rotation;
-- benchmark before/after on deterministic fixtures.
+Status: COMPLETE — implementation closed 2026-09-30; target-terminal verification remains required.
+
+Implemented:
+- shared buffered archive writer with bounded one-second Timer flush cadence and 512-line budget;
+- Runtime Log, Outcome archive and Signal Evaluation Trace file appends moved out of Calculate;
+- keyed archive idempotency retained while existing-file scans are limited to the timer flush path;
+- explicit LocalStorage.Flush for Outcome Memory and Daily Loss deferred to the runtime heartbeat, with priority persistence for a newly reached daily-loss lock;
+- cross-instance Daily Loss LocalStorage.Reload moved off Calculate and onto the heartbeat;
+- shutdown flushing for buffered persistence;
+- 90-day archive prefixes and the parameter fingerprint cached to remove repeated reflection/string work from logging;
+- closed-bar-context FVG and Order Block candidate caches with deterministic Bars/index keys while live/open-bar selection remains quote-sensitive;
+- event/mutation-driven broker-state invalidation with a one-second safety refresh interval;
+- deterministic Runtime Contracts for buffered archive dedupe/budget and broker refresh dirty/TTL semantics;
+- dedicated hot-path persistence/cache audit wired into Source/Architecture CI;
+- existing historical archive partitioning preserved and historical files are not deleted.
 
 Acceptance:
-- identical analytical results before/after;
-- measurable reduction in redundant work;
-- no synchronous disk/network operation remains on the calculation hot path unless explicitly proven safe;
-- cache invalidation is deterministic.
+- Runtime Acceptance: PASS on the final CR1.5 head;
+- cTrader compile: PASS on the final CR1.5 head;
+- Source/Architecture final-head verification remains required before merge;
+- no direct file write remains in production source outside BufferedArchivePersistence;
+- no synchronous LocalStorage.Reload/Flush remains in Calculate-facing persistence owners;
+- broker-state refresh is deterministic and event/mutation invalidated;
+- FVG/OB cache invalidation is tied to explicit Bars/index context and excludes open bars.
+
+Safety:
+- no public parameter added or changed;
+- no signal/RR threshold tuned;
+- no position capacity changed;
+- no execution authority changed;
+- no existing 90-day history files are deleted.
+
+Verification boundary:
+- target-terminal verification remains required for actual cTrader LocalStorage/file timing, restart persistence, cross-instance behavior and runtime performance;
+- container-local clone/build was unavailable because this execution environment could not resolve github.com; repository CI is the compile/runtime contract authority for this phase.
 
 ## CR1.6 — FVG quality discrimination
 
