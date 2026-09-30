@@ -319,7 +319,8 @@ namespace cAlgo
                  feedState ==
                  EconomicNewsFeedState.Stale) &&
                 NewsFailClosedWhenStale &&
-                AutoTradingEnabled)
+                (AutoTradingEnabled ||
+                 AutomaticOrdersEnabled))
             {
                 _economicNewsStatus =
                     "NEWS CALENDAR • " +
