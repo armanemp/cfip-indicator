@@ -82,6 +82,43 @@ namespace cAlgo
             return true;
         }
 
+
+        public static List<double> OrderDistinctByDistance(
+            int direction,
+            double referencePrice,
+            List<double> candidates,
+            double atr,
+            double minimumSpacingAtr)
+        {
+            List<double> ordered =
+                OrderByDistance(
+                    direction,
+                    referencePrice,
+                    candidates);
+
+            List<double> selected =
+                new List<double>();
+
+            for (int i = 0;
+                 i < ordered.Count;
+                 i++)
+            {
+                double candidate =
+                    ordered[i];
+
+                if (!IsDistinct(
+                        candidate,
+                        selected,
+                        atr,
+                        minimumSpacingAtr))
+                    continue;
+
+                selected.Add(candidate);
+            }
+
+            return selected;
+        }
+
         public static List<double> OrderByDistance(
             int direction,
             double referencePrice,
