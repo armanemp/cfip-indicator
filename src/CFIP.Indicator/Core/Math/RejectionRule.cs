@@ -109,10 +109,13 @@ namespace cAlgo
             double range,
             double pipSize)
         {
-            return
-                body >= ResolveMinimumMeaningfulBody(
+            double minimumBody =
+                ResolveMinimumMeaningfulBody(
                     range,
-                    pipSize) &&
+                    pipSize);
+
+            return
+                body >= minimumBody &&
                 !double.IsNaN(body) &&
                 !double.IsInfinity(body);
         }
