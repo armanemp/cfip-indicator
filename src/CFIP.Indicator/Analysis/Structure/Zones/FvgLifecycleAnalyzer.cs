@@ -38,6 +38,7 @@ namespace cAlgo
                     bars,
                     currentIndex,
                     direction,
+                    currentIndex - createdIndex,
                     managedLow,
                     managedHigh,
                     low,

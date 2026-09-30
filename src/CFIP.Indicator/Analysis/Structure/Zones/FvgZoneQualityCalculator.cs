@@ -9,6 +9,7 @@ namespace cAlgo
             Bars bars,
             int currentIndex,
             int direction,
+            int ageBars,
             double low,
             double high,
             double originalLow,
@@ -83,7 +84,7 @@ namespace cAlgo
             return FvgQualityRule.Calculate(
                 gapAtrRatio,
                 remainingRatio,
-                currentIndex,
+                ageBars,
                 MaximumZoneAgeBars,
                 displacementAtrRatio,
                 structuralAlignment,
