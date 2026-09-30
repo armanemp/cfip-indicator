@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace cAlgo
 {
-    internal readonly struct ConfidenceCalibrationKey
+    internal readonly struct ConfidenceCalibrationKey : IEquatable<ConfidenceCalibrationKey>
     {
         public int Direction { get; }
         public OpportunityLane Lane { get; }
@@ -23,6 +23,23 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : regime.Trim().ToUpperInvariant();
             ConfidenceBucket = confidenceBucket;
+        }
+
+        public bool Equals(ConfidenceCalibrationKey other)
+        {
+            return Direction == other.Direction &&
+                   Lane == other.Lane &&
+                   ConfidenceBucket == other.ConfidenceBucket &&
+                   string.Equals(
+                       Regime,
+                       other.Regime,
+                       StringComparison.Ordinal);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ConfidenceCalibrationKey other &&
+                   Equals(other);
         }
 
         public override int GetHashCode()
