@@ -16,7 +16,9 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-CR-FINAL repository integration is PASS. Remaining active gate: **target-terminal acceptance** only.
+Prompt 4 added a mandatory remediation track. **Next: CR4.1 — Learning-memory identity and account scoping (D1).**
+
+The repository-side CR-FINAL gate remains paused until CR4.1–CR4.10 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
 ## Completed before this checkpoint
 
@@ -60,7 +62,7 @@ CR-FINAL repository integration is PASS. Remaining active gate: **target-termina
 
 ## Next transition
 
-CR3.5 is closed and repository-side CR-FINAL is PASS. The next required work is target-terminal CR-FINAL acceptance; Track 12A remains blocked until that evidence is accepted.
+CR3.5 is closed. Prompt 4 D1–D10 is now inserted before CR-FINAL. The next implementation response must execute **CR4.1 only**. Track 12A remains blocked.
 
 
 ## CR3.2 implementation record
@@ -126,3 +128,19 @@ Manual target-terminal broker-history, restart/reconnect and empirical outcome v
 ## Next transition
 
 CR3.5 is closed. The next implementation response must execute **CR-FINAL** only. Track 12A remains blocked until CR-FINAL.
+
+
+## Prompt 4 remediation insertion — 2026-09-30
+
+Prompt 4 D1–D10 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
+
+Order:
+`CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR-FINAL`
+
+The findings remain static-review hypotheses until each item is independently verified. No default trading threshold, RR floor, confidence threshold or public parameter identity is to be changed implicitly.
+
+### CR4.1 continuity contract
+
+D1 must be audited first. It covers learning-memory identity, decision-affecting parameter fingerprinting, account scoping, PositionId collision isolation and legacy schema migration.
+
+Next implementation response: **CR4.1 only**.
