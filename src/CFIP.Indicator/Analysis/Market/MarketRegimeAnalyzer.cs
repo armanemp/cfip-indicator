@@ -20,7 +20,7 @@ namespace cAlgo
                     bars,
                     _m5Bars))
             {
-                if (_marketRegimeFrameCache.TryGet(
+                if (_marketRegimeFrameCache.TryGetSnapshot(
                         bars,
                         index,
                         out MarketRegimeSnapshot cached))
@@ -31,7 +31,7 @@ namespace cAlgo
                         bars,
                         index);
 
-                _marketRegimeFrameCache.Set(
+                _marketRegimeFrameCache.StoreSnapshot(
                     bars,
                     index,
                     nonM5Snapshot);
