@@ -16,9 +16,9 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.2 — File/archive path and persistence observability (D2).**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3).**
 
-CR4.1 is complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
+CR4.1 and CR4.2 are complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
 ## Completed before this checkpoint
 
@@ -181,3 +181,12 @@ Implementation:
 Verification boundary:
 - GitHub exposed no retrievable CI status records for the merge at closeout; no CI PASS is claimed.
 - target-terminal account switching, restart and broker History migration semantics remain manual.
+
+
+### CR4.2 closeout — 2026-09-30
+
+CR4.2 / D2 was implemented in the phase branch with a centralized bounded file-write owner, startup History read/write probe, persistence health diagnostics, and account-scoped Signal Trace archive identity.
+
+Target-terminal verification remains required for exact cTrader build, actual History path, AccessRights.None behavior and restart/account-switch persistence.
+
+Next phase: CR4.3 / D3.

@@ -78,6 +78,7 @@
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistenceModels.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SessionWindowRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/PersistenceHealthRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Execution/BrokerConfirmationPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleEventIdempotencyGuard.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleTransitionPolicy.cs" />

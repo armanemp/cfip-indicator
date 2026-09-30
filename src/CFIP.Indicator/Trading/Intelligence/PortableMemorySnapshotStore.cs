@@ -53,15 +53,16 @@ namespace cAlgo
         {
             try
             {
-                Directory.CreateDirectory(
-                    OutcomeArchiveDirectory);
+                if (!_bufferedArchivePersistence.TryEnsureDirectory(
+                        OutcomeArchiveDirectory))
+                    return;
 
                 string marker =
                     HistoryLocationMarkerPath();
 
-                if (!File.Exists(marker))
+                if (!_bufferedArchivePersistence.FileExists(marker))
                 {
-                    File.WriteAllText(
+                    _bufferedArchivePersistence.TryWriteAllText(
                         marker,
                         HistoryLocationMarkerText(),
                         Encoding.UTF8);
@@ -232,8 +233,13 @@ namespace cAlgo
                 if (!File.Exists(path))
                     return false;
 
-                string[] lines =
-                    File.ReadAllLines(path);
+                string[] lines;
+
+                if (!_bufferedArchivePersistence.TryReadAllLines(
+                        path,
+                        out lines) ||
+                    lines == null)
+                    return false;
 
                 if (lines.Length == 0)
                     return false;
@@ -420,21 +426,53 @@ namespace cAlgo
         {
             try
             {
-                Directory.CreateDirectory(
-                    OutcomeArchiveDirectory);
+                if (!_bufferedArchivePersistence.TryEnsureDirectory(
+                        OutcomeArchiveDirectory))
+                {
+                    Print(
+                        "CFIP history storage unavailable: cannot create History directory.");
+                    return;
+                }
 
                 EnsureHistoryLocationMarker();
 
-                Print(
-                    "CFIP history storage ready: Documents/cAlgo/Data/Indicators/{0}/History",
-                    IndicatorStorageFolderName);
+                string marker =
+                    HistoryLocationMarkerPath();
+
+                string markerReadback;
+
+                bool markerRoundTrip =
+                    _bufferedArchivePersistence.TryReadAllText(
+                        marker,
+                        out markerReadback) &&
+                    !string.IsNullOrWhiteSpace(markerReadback) &&
+                    markerReadback.StartsWith(
+                        "CFIP HISTORY STORAGE",
+                        StringComparison.Ordinal);
+
+                _bufferedArchivePersistence.MarkProbeResult(
+                    markerRoundTrip,
+                    markerRoundTrip
+                        ? ""
+                        : "History read/write round-trip not verified");
+
+                if (!markerRoundTrip)
+                {
+                    Print(
+                        "CFIP history persistence probe failed: History read/write round-trip not verified.");
+                }
+                else
+                {
+                    Print(
+                        "CFIP history persistence probe PASS: relative History path is readable and writable.");
+                }
 
                 string path =
                     PortableMemorySnapshotPath();
 
-                if (!File.Exists(path))
+                if (!_bufferedArchivePersistence.FileExists(path))
                 {
-                    File.WriteAllText(
+                    _bufferedArchivePersistence.TryWriteAllText(
                         path,
                         PortableMemorySnapshotText(),
                         Encoding.UTF8);
@@ -452,10 +490,7 @@ namespace cAlgo
         {
             try
             {
-                Directory.CreateDirectory(
-                    OutcomeArchiveDirectory);
-
-                File.WriteAllText(
+                _bufferedArchivePersistence.TryWriteAllText(
                     PortableMemorySnapshotPath(),
                     PortableMemorySnapshotText(),
                     Encoding.UTF8);

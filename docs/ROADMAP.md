@@ -4687,7 +4687,7 @@ Repository status limitation:
 
 Target-terminal account switch/restart/persistence verification remains required.
 
-Next phase: **CR4.2 — File/archive path and persistence observability (D2)**.
+Next phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3)**.
 
 
 
@@ -4720,6 +4720,22 @@ Safety:
 
 CR-FINAL is **paused as a final acceptance gate** until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are either completed or explicitly documented as verified/deferred with evidence.
 
+
+### CR4.2 closeout — 2026-09-30
+
+Status: **COMPLETE — implementation prepared in phase branch; PR merge and CI evidence pending.**
+
+Completed:
+- retained cTrader-supported relative `History` path under AccessRights.None;
+- centralized production file writes under `BufferedArchivePersistence`;
+- added bounded write/read health counters and startup History round-trip probe;
+- added persistence health diagnostics to the panel;
+- account-scoped Signal Trace archive identity with account-switch cache invalidation;
+- added deterministic persistence path/health/readback contracts and CR4.2 static gate.
+
+No public parameter name/type/DefaultValue or trading threshold changed.
+
+Next phase: **CR4.3 — Signal-trace temporal lineage and future-outcome linkage (D3)**.
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
