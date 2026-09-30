@@ -356,9 +356,9 @@ namespace cAlgo
                 DailyLossRule.Evaluate(
                     1000,
                     0,
-                    975,
+                    970,
                     0,
-                    -25,
+                    -30,
                     0,
                     3.0,
                     true,
@@ -368,8 +368,8 @@ namespace cAlgo
                 evaluation.DataReady &&
                 evaluation.LimitHit &&
                 evaluation.Locked &&
-                Math.Abs(evaluation.LossAmount - 25) < 0.0001 &&
-                Math.Abs(evaluation.LossPercent - 2.5) < 0.0001,
+                Math.Abs(evaluation.LossAmount - 30) < 0.0001 &&
+                Math.Abs(evaluation.LossPercent - 3.0) < 0.0001,
                 "realized daily loss is measured from a stable equity baseline");
 
             evaluation =
