@@ -36,9 +36,9 @@ namespace cAlgo
                                         _decision.TimeframeAgreement >=
                                         PendingMinimumTrendQuality &&
                                         _m5Frame.IndicatorConfluenceQuality >=
-                                        62 &&
+                                        ExecutionThresholdPolicy.PendingContinuationIndicatorConfluenceMinimum &&
                                         _m5Frame.IndicatorConflict <=
-                                        48;
+                                        ExecutionThresholdPolicy.PendingContinuationIndicatorConflictMaximum;
                                 }
         
         private bool ReversalSetupStrong()
@@ -85,7 +85,7 @@ namespace cAlgo
                                         _m5Frame.IndicatorConfluenceQuality >=
                                         62 &&
                                         _m5Frame.IndicatorConflict <=
-                                        50;
+                                        ExecutionThresholdPolicy.PendingReversalIndicatorConflictMaximum;
                                 }
         
         private bool PendingModeAllowsStop()
