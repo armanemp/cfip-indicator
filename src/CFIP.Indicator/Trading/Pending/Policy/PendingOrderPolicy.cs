@@ -35,7 +35,7 @@ namespace cAlgo
                                         PendingMinimumSmartQuality &&
                                         _decision.TimeframeAgreement >=
                                         PendingMinimumTrendQuality &&
-                                        IndicatorExecutionQualityRule.Evaluate(
+                                        IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                                             IndicatorQualityGateStage.PendingContinuation,
                                             _m5Frame.IndicatorConfluenceQuality,
                                             _m5Frame.IndicatorConflict).Allowed;
@@ -86,7 +86,7 @@ namespace cAlgo
                         _reaction.Direction));
 
             return rangeQuality.Allowed &&
-                IndicatorExecutionQualityRule.Evaluate(
+                IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(
                     IndicatorQualityGateStage.PendingReversal,
                     _m5Frame.IndicatorConfluenceQuality,
                     _m5Frame.IndicatorConflict).Allowed;
