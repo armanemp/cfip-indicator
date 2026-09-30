@@ -18,18 +18,6 @@ namespace cAlgo
                                     int closedM5,
                                     double market)
                                 {
-                                    Position managedPosition =
-                                        GetManagedLivePositionForPlan();
-
-                                    if (_serverSideTakeProfitLadderActive &&
-                                        managedPosition != null)
-                                    {
-                                        ObserveServerSidePartialTakeProfits(
-                                            managedPosition,
-                                            closedM5,
-                                            market);
-                                    }
-
                                     double liveStop =
                                         GetActiveBrokerStopPrice();
                         
@@ -54,6 +42,7 @@ namespace cAlgo
                                             : market <= _plan.Tp2);
                         
                                     bool hitTp3 =
+                                        !_serverSideTakeProfitLadderActive &&
                                         _plan.Tp3 > 0 &&
                                         (_plan.Direction == 1
                                             ? market >= _plan.Tp3
