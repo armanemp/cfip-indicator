@@ -59,7 +59,7 @@ for name, source, swing_token, list_method in [
     check(
         f"{name} uses canonical directional and spacing rules",
         "LiquidityTargetCandidateRule.IsDirectionallyValid(" in source and
-        "LiquidityTargetCandidateRule.OrderDistinctByDistance(" in source,
+        "LiquidityTargetCandidateRule.IsDistinct(" in source,
     )
     check(
         f"{name} orders candidates by distance",
