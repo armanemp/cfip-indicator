@@ -31,18 +31,29 @@ namespace cAlgo
                 
                             if (direction == 1)
                             {
-                                if (BullStructure(
+                                bool structure =
+                                    BullStructure(
                                         bars,
                                         index,
-                                        atr))
-                                    result++;
-                
-                                if (BullMss(
+                                        atr);
+
+                                bool mss =
+                                    BullMss(
                                         bars,
                                         index,
-                                        atr))
-                                    result++;
-                
+                                        atr);
+
+                                bool choch =
+                                    BullChoch(
+                                        bars,
+                                        index);
+
+                                result +=
+                                    StructuralEvidenceRule.CanonicalEventCount(
+                                        structure,
+                                        mss,
+                                        choch);
+
                                 if (BullDisplacement(
                                         bars,
                                         index,
@@ -51,18 +62,29 @@ namespace cAlgo
                             }
                             else
                             {
-                                if (BearStructure(
+                                bool structure =
+                                    BearStructure(
                                         bars,
                                         index,
-                                        atr))
-                                    result++;
-                
-                                if (BearMss(
+                                        atr);
+
+                                bool mss =
+                                    BearMss(
                                         bars,
                                         index,
-                                        atr))
-                                    result++;
-                
+                                        atr);
+
+                                bool choch =
+                                    BearChoch(
+                                        bars,
+                                        index);
+
+                                result +=
+                                    StructuralEvidenceRule.CanonicalEventCount(
+                                        structure,
+                                        mss,
+                                        choch);
+
                                 if (BearDisplacement(
                                         bars,
                                         index,
