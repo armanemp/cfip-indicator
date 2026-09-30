@@ -36,12 +36,6 @@ namespace cAlgo
                        StringComparison.Ordinal);
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is ConfidenceCalibrationKey other &&
-                   Equals(other);
-        }
-
         public override int GetHashCode()
         {
             unchecked
