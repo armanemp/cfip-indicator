@@ -304,11 +304,6 @@ namespace cAlgo
                 _decisionReasonBuilder.Build(
                     decision);
 
-            RecordSignalEvaluationTrace(
-                decision,
-                decisionLane,
-                closedM5);
-
             return decision;
         }
     }
