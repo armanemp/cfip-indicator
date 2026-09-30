@@ -55,11 +55,11 @@ namespace cAlgo
                     f.ChochBear))
             {
                 if (f.StructureBear)
-                    AddScore(true, 16, ref bear, ref evidence);
+                    AddScore(true, FrameScoringConstants.StructureContribution, ref bear, ref evidence);
                 else if (f.MssBear)
-                    AddScore(true, 12, ref bear, ref evidence);
+                    AddScore(true, FrameScoringConstants.MssContribution, ref bear, ref evidence);
                 else
-                    AddScore(true, 9, ref bear, ref evidence);
+                    AddScore(true, FrameScoringConstants.ChochContribution, ref bear, ref evidence);
             }
             AddScore(f.DisplacementBull, FrameScoringConstants.DisplacementContribution, ref bull, ref evidence);
             AddScore(f.DisplacementBear, FrameScoringConstants.DisplacementContribution, ref bear, ref evidence);
