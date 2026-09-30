@@ -49,37 +49,6 @@ namespace cAlgo
                 _runtimeLogPrefixCache;
         }
 
-        private string RuntimeLogPrefix()
-        {
-            string symbol =
-                SanitizeArchivePart(
-                    string.IsNullOrWhiteSpace(SymbolName)
-                        ? "UNKNOWN"
-                        : SymbolName);
-
-            string timeframe =
-                SanitizeArchivePart(
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString());
-
-            _runtimeLogPrefixCache =
-                "CFIP_RuntimeLog_v2_" +
-                symbol +
-                "_" +
-                timeframe +
-                "_" +
-                MemoryConfigurationFingerprint();
-
-            return
-                _runtimeLogPrefixCache;
-                "CFIP_RuntimeLog_v2_" +
-                symbol +
-                "_" +
-                timeframe +
-                "_" +
-                MemoryConfigurationFingerprint();
-                }
         private string RuntimeLogFilePath(
             DateTime observedUtc)
         {
