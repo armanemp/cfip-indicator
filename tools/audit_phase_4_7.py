@@ -29,6 +29,9 @@ envelope = read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs")
 reasons = read("src/CFIP.Indicator/Core/Math/TargetCandidateRejectionReasons.cs")
 evaluator = read("src/CFIP.Indicator/Planning/TradePlan/TargetCandidateEvaluator.cs")
 selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
+telemetry = read(
+    "src/CFIP.Indicator/Planning/TradePlan/TargetStageRejectionTelemetry.cs"
+)
 merger = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelMerger.cs")
 htf = read("src/CFIP.Indicator/Planning/TradePlan/Sources/HtfTargetSource.cs")
 prior = read("src/CFIP.Indicator/Planning/TradePlan/Sources/PreviousPeriodTargetSource.cs")
@@ -83,9 +86,10 @@ check(
     "stage telemetry is bounded and deduplicated per M5",
     "MaxTargetStageTelemetryReasonsPerM5 = 24" in selector
     and "_targetStageTelemetryM5" in selector
-    and "_targetStageTelemetryKeys" in selector
-    and "RecordExecutionTelemetryHistory(" in selector
-    and '"PLAN_TARGET"' in selector,
+    and "TargetStageRejectionTelemetry" not in selector
+    and "_targetStageTelemetryKeys" in telemetry
+    and "RecordExecutionTelemetryHistory(" in telemetry
+    and '"PLAN_TARGET"' in telemetry,
 )
 check(
     "obstacle failures have explicit stage rejection reasons",
