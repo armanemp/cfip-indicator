@@ -185,7 +185,7 @@ Verification boundary:
 
 ### CR4.2 closeout — 2026-09-30
 
-CR4.2 / D2 was implemented in the phase branch with a centralized bounded file-write owner, startup History read/write probe, persistence health diagnostics, and account-scoped Signal Trace archive identity.
+CR4.2 / D2 was completed and merged to main via PR #103, merge commit `05a91cb9764f7ee86fcaaba0d7dede540c4b6e1c`. with a centralized bounded file-write owner, startup History read/write probe, persistence health diagnostics, and account-scoped Signal Trace archive identity.
 
 Target-terminal verification remains required for exact cTrader build, actual History path, AccessRights.None behavior and restart/account-switch persistence.
 
