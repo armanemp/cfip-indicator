@@ -376,7 +376,8 @@ Implementation:
 - hardened native wrappers and MACD prior-sample access;
 - blocked incomplete native frames before scoring/evidence;
 - hardened market-regime normalization against unusable native values;
-- replaced linear native registry scans with a Bars reference-identity dictionary;
+- evaluated the Bars reference-identity dictionary, then replaced it after the fixed eight-item microbenchmark showed it slower than the linear scan;
+- finalized the registry with a last-hit Bars-reference cache plus explicit scan;
 - added deterministic readiness/neutral-output runtime contracts;
 - added a deterministic registry lookup benchmark;
 - wired `audit_phase_4_10.py` after CR4.9 in Source/Architecture.
@@ -387,8 +388,8 @@ Verification boundary:
 
 ## Current active phase
 
-CR4.10 / D10 — implementation complete; repository verification pending.
+CR4.10 / D10 — core implementation merged; registry performance correction on `phase/cr4-10-registry-hot-cache` pending repository verification.
 
 ### Next transition
 
-CR-FINAL repository integration gate.
+CR-FINAL repository integration gate after the D10 registry-performance correction is verified.
