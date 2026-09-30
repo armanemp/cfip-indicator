@@ -1885,30 +1885,34 @@ Acceptance:
 
 # Track 11.6 — Claude Review Defect Remediation — 2026-09-30
 
-Status: **CR-0 COMPLETE; CR1.1 IS THE NEXT IMPLEMENTATION PHASE**
+Status: **CR1.1 COMPLETE; CR1.2 IS THE NEXT IMPLEMENTATION PHASE**
 
-Three external code-review prompts (A1–A12, B1–B12, C1–C9) were audited against
-the current repository and are tracked in:
+Three external code-review prompts (A1–A12, B1–B12, C1–C9) are tracked in:
 
 `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
 
-The completed CR-0 audit/source inventory is:
+CR-0 audit/source inventory:
 
 `docs/CLAUDE-REVIEW-CR0-AUDIT.md`
 
-Mandatory remediation order:
+CR1.1 — Session/EOD and period-reference correctness is complete.
 
-`CR1.1–CR1.9 → CR2.1–CR2.9 → CR3.1–CR3.5 → CR-FINAL`
+Verified changes:
+- canonical SessionWindowRule;
+- standard, overnight and start==end session semantics;
+- bounded five-minute EOD cleanup;
+- broker-state confirmation before EOD completion is latched;
+- managed pending cleanup at EOD;
+- post-boundary position protection;
+- latest closed D1/W1 period and D1 pivot references;
+- deterministic runtime contracts.
 
-CR-0 established the current parameter truth as **566 `[Parameter]` declarations
-across 29 parameter source files representing 27 logical groups**. Older
-documentation claiming 534 is stale and must not be reused.
+Verification:
+- Runtime acceptance contracts: PASS (run 1339);
+- cTrader compile: PASS (run 1523);
+- Source and architecture checks: PASS (run 1530).
 
-The review remains evidence-based: confirmed defects will be corrected; partial,
-stale and design-risk findings are implemented only under their bounded phases
-and acceptance evidence.
-
-No production C# behavior was changed by CR-0.
+The next required implementation phase is **CR1.2 — Daily-loss lock and stable accounting basis**.
 
 Track 12A local cBot separation remains the next architectural track after
 Track 11.6 CR-FINAL.
