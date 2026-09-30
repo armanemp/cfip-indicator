@@ -1,7 +1,7 @@
 
     internal static class WaveTrendReadinessRule
     {
-        internal static int ResolveWaveTrendComponentReadyIndex(
+        internal static int ResolveComponentReadyIndex(
             int length,
             int momentumLength)
         {
@@ -23,7 +23,7 @@
                     1);
         }
 
-        internal static int ResolveWaveTrendSmoothReadyIndex(
+        internal static int ResolveSmoothReadyIndex(
             int componentReadyIndex,
             int smoothType,
             int smoothLength)
@@ -36,7 +36,7 @@
                 1;
         }
 
-        internal static int ResolveWaveTrendSignalReadyIndex(
+        internal static int ResolveSignalReadyIndex(
             int smoothReadyIndex,
             int signalType,
             int signalLength)
@@ -49,7 +49,7 @@
                 1;
         }
 
-        internal static bool IsWaveTrendSnapshotReady(
+        internal static bool IsSnapshotReady(
             int index,
             int signalReadyIndex)
         {
