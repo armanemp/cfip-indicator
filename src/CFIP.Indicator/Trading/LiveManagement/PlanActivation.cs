@@ -53,7 +53,13 @@ namespace cAlgo
                                     _tp2Hit = 0;
                                     _tp3Hit = 0;
                                     _tp4Hit = 0;
+                                    _lastPartialTp1AttemptM5 = -1;
+                                    _lastPartialTp2AttemptM5 = -1;
+                                    _lastServerPartialObservationDealCount = -1;
+                                    _lastServerTpLadderMutationM5 = -1;
+                                    _lastServerTpLadderMutationKind = "";
                                     _serverSideTakeProfitLadderActive = false;
+                                    _serverSideBreakEvenActive = false;
                                     _slHit = false;
                                     _outcomeRegistered = false;
                                     _outcomeTelemetryTimedOut = false;
