@@ -65,12 +65,11 @@ namespace cAlgo
                 return false;
 
             if (_activeBrokerTarget > 0 &&
-                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
                     _plan.Direction,
                     _activeBrokerTarget,
                     finalTarget,
-                    market,
-                    minimumForwardDistance))
+                    true))
                 return false;
 
             double tp2Volume =
