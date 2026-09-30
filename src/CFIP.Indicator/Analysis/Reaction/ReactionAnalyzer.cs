@@ -259,6 +259,8 @@ namespace cAlgo
                 confirmedQuality;
             d.ReactionConfirmedEvidence =
                 confirmedEvidence;
+            d.ReactionConfirmedHasContext =
+                confirmedContext;
             d.ReactionClosedBarConfirmed =
                 ReactionQualificationRule.IsClosedBarConfirmed(
                     closedIndex,
