@@ -163,3 +163,14 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 4. lifecycle zone باید Fresh/Mitigated/Broken را از هم جدا کند؛ zone شکسته هرگز به execution/plan برنگردد.
 5. cache فقط برای context بسته و key deterministic مجاز است؛ quote/selection price نباید cache identity را تغییر دهد.
 6. بهینه‌سازی cache نباید mixed-bar یا stale-zone state ایجاد کند و empirical quality claim فقط با replay/outcome پذیرفته است.
+
+
+## 17. روتین اختصاصی CR2.7 — WaveTrend Mathematical Correctness
+
+1. تمام MovingAverageTypeهای عمومی باید mapping و implementation مشخص و deterministic داشته باشند؛ هیچ fallback مبهمی جای semantics اعلام‌شده را نگیرد.
+2. warm-up باید dependencyهای RSI/MFI/RMI، smoothing، signal و previous-signal stability را پوشش دهد؛ داده‌های ناپایدار باید fail-closed بمانند.
+3. DEMA/TEMA باید زنجیره EMA خود را از اولین index معتبر seed کنند؛ صفرهای پیش‌فرض array هرگز نباید وارد محاسبات شوند.
+4. HMA باید raw window متوالی را با WMA نهایی درست مصرف کند؛ هر تغییر فرمول باید contract عددی داشته باشد.
+5. HistoryLoaded/Reloaded و تغییر prefix/count تاریخچه باید state/cache مشتق WaveTrend را invalidate کنند؛ history extension نباید مقدار stale برگرداند.
+6. MFI این موتور با TickVolume محاسبه می‌شود و نباید به‌عنوان real exchange volume گزارش یا تفسیر شود.
+7. تغییرات WaveTrend نباید authority تصمیم، execution، broker mutation یا ظرفیت معامله را ایجاد یا تغییر دهد؛ claims مربوط به accuracy/parity/profit فقط با replay و target-terminal evidence مجازند.
