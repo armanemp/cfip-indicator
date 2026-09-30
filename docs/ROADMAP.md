@@ -4964,12 +4964,12 @@ Safety boundary:
 
 **Next phase: CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
 
-### CR4.10 / D10 implementation closeout — 2026-10-01
+### CR4.10 / D10 closeout — 2026-10-01
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #111 merged to `main`; merge commit `3371b9790902c4d35e4e1e28522dee42f93af861`.**
 
-Implemented:
-- added centralized Core `NativeIndicatorReadinessRule` for warm-up, prior-window, finite-positive and bounded oscillator checks;
+Implementation verified:
+- centralized Core `NativeIndicatorReadinessRule` for warm-up, prior-window, finite-positive and bounded oscillator checks;
 - hardened ATR, RSI, ADX and EMA native wrappers at their readiness boundaries;
 - made MACD prior-sample comparison explicitly warm-up bounded;
 - added `Frame.NativeIndicatorsReady` and fail-closed analysis/scoring before incomplete native inputs can become evidence;
@@ -4979,16 +4979,21 @@ Implemented:
 - added a deterministic pre/post registry lookup benchmark;
 - added `audit_phase_4_10.py` and wired it after CR4.9 in the accumulated Source/Architecture workflow.
 
-Consumer inventory:
-- repository-wide static inventory confines direct `GetNative`/ATR/RSI/ADX/DMI/EMA consumers to the expected native wrappers/registry and analysis boundaries;
-- `Native.cs` remains storage-only;
-- no second decision or execution authority was introduced.
+Repository verification:
+- Source and Architecture: **PASS** — workflow run `36790307897`; accumulated project audits, including CR4.10, completed successfully.
+- Runtime Acceptance Contracts: **PASS** — workflow run `36790307911`.
+- cTrader Compile: **PASS** — workflow run `36790307893`.
+- OSS / Registry Benchmark: **PASS** — workflow run `36790307937`.
 
-Safety:
-- no public parameter name/type/DefaultValue changed;
-- no default RR/confidence/SL/target/execution threshold changed;
-- no trading policy was tuned;
-- target-terminal readiness timing, panel responsiveness, broker ordering/restart behavior and empirical signal quality remain manual acceptance boundaries.
+Consumer/cleanliness audit:
+- direct native-holder access remains confined to the expected wrapper/registry and analysis boundaries;
+- `Native.cs` remains storage-only;
+- no duplicate decision/execution authority was introduced;
+- no public parameter/default, RR, confidence, SL, target or execution threshold was tuned.
+
+Verification boundary:
+- target-terminal startup/readiness timing, panel responsiveness, broker acknowledgement ordering, restart/reconnect behavior and empirical signal-quality/profitability remain manual acceptance items;
+- repository-level CR4.10 acceptance is closed and does not infer those manual results.
 
 **Next phase: CR-FINAL repository integration gate.**
 
