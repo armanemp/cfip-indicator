@@ -15,7 +15,7 @@ namespace cAlgo
                 type,
                 SymbolName,
                 volume,
-                NormalizeLabel(),
+                ManagedExecutionLabel(),
                 stopPips,
                 targetPips,
                 TradeExecutionMetadata.DefaultExecutionComment,
@@ -92,12 +92,12 @@ namespace cAlgo
                     result = useServerTakeProfitLadder
                         ? TryExecuteMarketRangeOrderWithTakeProfitLadder(
                             type, SymbolName, volume, marketRangePips, entry,
-                            NormalizeLabel(), stopPips, serverTakeProfits, serverBreakEven,
+                            ManagedExecutionLabel(), stopPips, serverTakeProfits, serverBreakEven,
                             TradeExecutionMetadata.DefaultExecutionComment,
                             false, "AUTOMATIC MARKET RANGE • SERVER TP LADDER")
                         : TryExecuteMarketRangeOrder(
                             type, SymbolName, volume, marketRangePips, entry,
-                            NormalizeLabel(), stopPips, targetPips,
+                            ManagedExecutionLabel(), stopPips, targetPips,
                             TradeExecutionMetadata.DefaultExecutionComment,
                             false, "AUTOMATIC MARKET RANGE");
                 }
