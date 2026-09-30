@@ -45,9 +45,11 @@ The existing RSI `50` fallback remains for compatibility; it cannot create direc
 
 ### 3. Registry performance and ownership
 
-Replaced the linear `List<Native>` lookup with a `Dictionary<Bars, Native>` using a reference-identity comparer based on `ReferenceEquals` and `RuntimeHelpers.GetHashCode`.
+The initial D10 implementation evaluated a reference-identity `Dictionary<Bars, Native>` because it removes the linear scan asymptotically. The first production-like microbenchmark on the fixed eight-timeframe registry measured 6.486 ms/run for the reference list versus 7.284 ms/run for the dictionary, so the dictionary was not retained as a performance win.
 
-This preserves the existing ownership identity: the exact `Bars` object remains the cache key. No symbol/timeframe inference or secondary ownership rule was introduced.
+The final D10 strategy is a small last-hit reference cache followed by a manual reference scan of the fixed registry. This removes repeated scans when the same `Bars` reference is requested by the ATR/RSI/ADX/EMA/MACD wrapper sequence while preserving exact `Bars` identity and avoiding hash/comparer overhead.
+
+No symbol/timeframe inference or secondary ownership rule was introduced.
 
 `Native.cs` remains a storage-only holder; no execution or decision authority was added.
 
@@ -66,11 +68,14 @@ Added `tools/audit_phase_4_10.py`, including a repository-wide consumer inventor
 
 ### 5. Performance evidence
 
-Added a platform-neutral benchmark comparing:
-- the pre-D10 linear reference scan;
-- the D10 reference-identity dictionary lookup.
+The benchmark now compares three registry strategies:
+- linear reference scan;
+- reference-identity dictionary;
+- last-hit reference cache.
 
-The benchmark uses deterministic synthetic reference keys and one million lookups per measurement. It is evidence for lookup complexity/performance, not a claim about broker/terminal timing.
+It measures both a repeated-same-`Bars` hot-path pattern and a round-robin eight-`Bars` cold pattern, with deterministic synthetic references and one million iterations per measurement.
+
+The benchmark is evidence for lookup behavior on the test runtime, not a claim about broker/terminal timing.
 
 ## Safety boundary
 
@@ -104,6 +109,6 @@ Manual acceptance remains required for:
 
 ## Transition
 
-CR4.10 / D10 is complete after repository verification passes.
+CR4.10 / D10 is complete after the registry performance correction and repository verification pass.
 
 Next phase: **CR-FINAL repository integration gate**, followed by the already-defined target-terminal CBOT-Preflight acceptance boundary before Track 12A can advance.
