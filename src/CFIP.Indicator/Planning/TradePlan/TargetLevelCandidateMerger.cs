@@ -19,7 +19,8 @@ private void AddLevel(
                                             string kind,
                                             string timeframe,
                                             int age,
-                                            double baseScore)
+                                            double baseScore,
+                                            double sourceAgeMinutes = 0)
                                         {
                                             if (!IsFinitePositive(price))
                                                 return;
@@ -67,6 +68,15 @@ private void AddLevel(
                                                         Math.Max(
                                                             0,
                                                             age),
+                                                    SourceAgeMinutes =
+                                                        double.IsNaN(
+                                                            sourceAgeMinutes) ||
+                                                        double.IsInfinity(
+                                                            sourceAgeMinutes)
+                                                            ? 0
+                                                            : Math.Max(
+                                                                0,
+                                                                sourceAgeMinutes),
                                                     Hits = 1
                                                 };
                                 
