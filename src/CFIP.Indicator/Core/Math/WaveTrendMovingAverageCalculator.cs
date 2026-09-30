@@ -279,3 +279,4 @@ namespace cAlgo
                 !double.IsInfinity(value);
         }
     }
+}
