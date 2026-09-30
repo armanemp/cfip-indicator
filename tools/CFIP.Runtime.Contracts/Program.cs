@@ -237,7 +237,7 @@ namespace cAlgo
             long barOpenTicks = 638949600000000000;
 
             string first =
-                SignalTraceIdentityRule.Build(
+                SignalTraceIdentityRule.CreateTraceId(
                     "XAUUSD",
                     "Minute5",
                     "BROKER-123456-HEDGED-LIVE",
@@ -245,7 +245,7 @@ namespace cAlgo
                     barOpenTicks);
 
             string same =
-                SignalTraceIdentityRule.Build(
+                SignalTraceIdentityRule.CreateTraceId(
                     "XAUUSD",
                     "Minute5",
                     "BROKER-123456-HEDGED-LIVE",
@@ -258,25 +258,25 @@ namespace cAlgo
                 "signal trace identity is deterministic for the same scope");
 
             Assert(
-                first != SignalTraceIdentityRule.Build(
+                first != SignalTraceIdentityRule.CreateTraceId(
                     "XAUUSD",
                     "Minute5",
                     "BROKER-123456-HEDGED-LIVE",
                     "ABCDEF",
                     barOpenTicks + 1) &&
-                first != SignalTraceIdentityRule.Build(
+                first != SignalTraceIdentityRule.CreateTraceId(
                     "XAUUSD",
                     "Minute5",
                     "BROKER-123457-HEDGED-LIVE",
                     "ABCDEF",
                     barOpenTicks) &&
-                first != SignalTraceIdentityRule.Build(
+                first != SignalTraceIdentityRule.CreateTraceId(
                     "XAUUSD",
                     "Minute5",
                     "BROKER-123456-HEDGED-LIVE",
                     "ABCDEF2",
                     barOpenTicks) &&
-                first != SignalTraceIdentityRule.Build(
+                first != SignalTraceIdentityRule.CreateTraceId(
                     "EURUSD",
                     "Minute5",
                     "BROKER-123456-HEDGED-LIVE",
@@ -286,7 +286,7 @@ namespace cAlgo
 
             Assert(
                 string.IsNullOrEmpty(
-                    SignalTraceIdentityRule.Build(
+                    SignalTraceIdentityRule.CreateTraceId(
                         "XAUUSD",
                         "Minute5",
                         "BROKER",
