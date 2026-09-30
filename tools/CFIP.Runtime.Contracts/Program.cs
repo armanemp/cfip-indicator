@@ -172,6 +172,21 @@ namespace cAlgo
                     double.NaN,
                     out move),
                 "live invalidation rejects invalid direction, price and non-finite input");
+
+            Assert(
+                LiveInvalidationRule.RecordExitM5(
+                    5,
+                    10,
+                    true) == 10 &&
+                LiveInvalidationRule.RecordExitM5(
+                    5,
+                    10,
+                    false) == 5 &&
+                LiveInvalidationRule.RecordExitM5(
+                    5,
+                    -1,
+                    true) == 5,
+                "rejected or invalid exits never advance successful-exit bookkeeping");
         }
 
         private static void VerifyFalseSignalAdverseRSemantics()
