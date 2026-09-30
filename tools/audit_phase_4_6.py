@@ -80,7 +80,8 @@ check(
     and "FrameScoringConstants.ChochContribution" in scoring
     and "FrameScoringConstants.DisplacementContribution" in scoring
     and "FrameScoringConstants.LiquidityContribution" in scoring
-    and "FrameScoringConstants.EqualLevelContribution" in scoring,
+    and "FrameScoringConstants.EqualLevelContribution" in scoring
+    and "ref bear, ref evidence" in scoring,
 )
 check(
     "regime and quality composition constants are centrally owned",
