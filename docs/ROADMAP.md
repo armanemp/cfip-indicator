@@ -4485,7 +4485,18 @@ Verification:
 
 Manual target-terminal replay/outcome evidence remains required for empirical signal-quality or profitability claims. No accuracy, RR improvement or profitability claim is made from CI.
 
-Next phase: **CR3.3 — Partial TP, server ladder, BE and trailing.**
+Next phase: **CR3.4 — Execution UI control and popup reliability.**
+
+
+## Claude Review Remediation — CR3.3 Closeout — 2026-09-30
+
+Status: **MERGED TO MAIN — PR #99, merge commit `1e8681f57cb48bc51367b3df2ca129803d93d0c4`.**
+
+Completed the partial-TP, server-side ladder, break-even and trailing hardening recorded in `docs/CLAUDE-REVIEW-CR3.3-PARTIAL-TP-BE-TRAILING.md`. The phase added bounded retry semantics, broker-deal evidence, restart peak reconstruction, spread-aware BE diagnostics and monotonic target progression.
+
+Target-terminal broker timing, restart/reconnect behavior and empirical outcome validation remain manual acceptance boundaries.
+
+Next phase: **CR3.4 — Execution UI control and popup reliability.**
 
 ## Claude Review Remediation — CR2.1 Closeout — 2026-09-30
 
