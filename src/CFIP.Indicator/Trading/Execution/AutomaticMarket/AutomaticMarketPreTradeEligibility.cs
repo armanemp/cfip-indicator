@@ -311,7 +311,7 @@ namespace cAlgo
                             : Symbol.Bid);
 
                 ExecutionPlanGeometryResult geometry =
-                    ExecutionPlanGeometryRule.EvaluateIndicatorExecutionQuality(
+                    ExecutionPlanGeometryRule.Evaluate(
                         _plan.Direction,
                         liveEntry,
                         _plan.Stop,
