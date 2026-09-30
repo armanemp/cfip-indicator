@@ -149,8 +149,7 @@ namespace cAlgo
 
             if (TryMarkReversalAlertEmitted(
                     livePosition.Id,
-                    opposite,
-                    closedM5))
+                    opposite))
             {
                 SendUnifiedAlert(
                     "REVERSAL|" +
