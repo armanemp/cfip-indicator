@@ -32,6 +32,9 @@ selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
 telemetry = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetStageRejectionTelemetry.cs"
 )
+stage_gate = read(
+    "src/CFIP.Indicator/Planning/TradePlan/TargetStageFeasibilityGate.cs"
+)
 merger = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelMerger.cs")
 htf = read("src/CFIP.Indicator/Planning/TradePlan/Sources/HtfTargetSource.cs")
 prior = read("src/CFIP.Indicator/Planning/TradePlan/Sources/PreviousPeriodTargetSource.cs")
@@ -102,7 +105,8 @@ check(
 )
 check(
     "unreachable stages are identified before the candidate scan",
-    "TargetRewardEnvelopeRule.CanReachStage(" in selector
+    "TryValidateTargetStageFeasibility(" in selector
+    and "TargetRewardEnvelopeRule.CanReachStage(" in stage_gate
     and "STAGE_UNREACHABLE_BY_EXTENSION" in reasons,
 )
 check(
