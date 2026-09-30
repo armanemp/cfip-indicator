@@ -25,7 +25,9 @@ namespace cAlgo
                 double.IsInfinity(plan.Tp3) ||
                 double.IsNaN(plan.Tp4) ||
                 double.IsInfinity(plan.Tp4))
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "INVALID_PLAN_INPUT");
 
             double minimumRR =
                 Math.Max(
@@ -39,7 +41,9 @@ namespace cAlgo
 
             if (!IsFinitePositive(minimumRR) ||
                 !IsFinitePositive(maximumRR))
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "INVALID_RR_LIMITS");
 
             double tp1RR =
                 Math.Abs(
@@ -50,7 +54,9 @@ namespace cAlgo
             if (!IsFinitePositive(tp1RR) ||
                 tp1RR < minimumRR ||
                 tp1RR > maximumRR)
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "TP1_RR_INVALID_OR_OUT_OF_RANGE");
 
             if (plan.Tp2 > 0)
             {
@@ -69,16 +75,22 @@ namespace cAlgo
                                 0.10,
                                 StructuralTpRrStep)) ||
                     rr > maximumRR)
-                    return false;
+                    return RecordPlanRewardRejection(
+                        direction,
+                        "TP2_RR_INVALID_OR_TOO_LOW");
 
                 if (RequireHtfRewardForTp2Plus &&
                     !IsHtfSource(
                         plan.Tp2Source))
-                    return false;
+                    return RecordPlanRewardRejection(
+                        direction,
+                        "TP2_RR_INVALID_OR_OUT_OF_RANGE");
             }
             else if (MinimumTargetsForPlan >= 2)
             {
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "TP2_HTF_SOURCE_REQUIRED");
             }
 
             if (plan.Tp3 > 0)
@@ -107,12 +119,16 @@ namespace cAlgo
                                 0.10,
                                 StructuralTpRrStep)) ||
                     rr > maximumRR)
-                    return false;
+                    return RecordPlanRewardRejection(
+                        direction,
+                        "TP2_REQUIRED");
 
                 if (RequireHtfRewardForTp2Plus &&
                     !IsHtfSource(
                         plan.Tp3Source))
-                    return false;
+                    return RecordPlanRewardRejection(
+                        direction,
+                        "TP3_RR_INVALID_OR_TOO_LOW");
             }
 
             if (plan.Tp4 > 0)
@@ -146,29 +162,39 @@ namespace cAlgo
                                 0.10,
                                 StructuralTpRrStep)) ||
                     rr > maximumRR)
-                    return false;
+                    return RecordPlanRewardRejection(
+                        direction,
+                        "TP3_RR_INVALID_OR_OUT_OF_RANGE");
 
                 if (RequireHtfRewardForTp2Plus &&
                     !IsHtfSource(
                         plan.Tp4Source))
-                    return false;
+                    return RecordPlanRewardRejection(
+                        direction,
+                        "TP3_HTF_SOURCE_REQUIRED");
             }
 
             if (RequireHtfRewardForTp1 &&
                 !IsHtfSource(
                     plan.Tp1Source))
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "TP4_RR_INVALID_OR_TOO_LOW");
 
             if (RequireHtfRewardForTp2Plus &&
                 plan.HtfTargetCount <= 0)
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "TP4_RR_INVALID_OR_OUT_OF_RANGE");
 
             if (plan.Tp2 > 0 &&
                 !IsProgressiveTarget(
                     direction,
                     plan.Tp1,
                     plan.Tp2))
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "TP4_HTF_SOURCE_REQUIRED");
 
             if (plan.Tp3 > 0 &&
                 !IsProgressiveTarget(
@@ -177,7 +203,9 @@ namespace cAlgo
                         ? plan.Tp2
                         : plan.Tp1,
                     plan.Tp3))
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "TP1_HTF_SOURCE_REQUIRED");
 
             if (plan.Tp4 > 0 &&
                 !IsProgressiveTarget(
@@ -188,7 +216,9 @@ namespace cAlgo
                             ? plan.Tp2
                             : plan.Tp1,
                     plan.Tp4))
-                return false;
+                return RecordPlanRewardRejection(
+                        direction,
+                        "HTF_REWARD_TARGET_REQUIRED");
 
             return true;
         }
