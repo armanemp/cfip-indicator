@@ -147,7 +147,7 @@ check(
     "no public parameter name/type/DefaultValue changed" in phase_doc.lower()
     and "no default rr" in phase_doc.lower()
     and "target-terminal" in phase_doc.lower()
-    and "no second decision" in phase_doc.lower(),
+    and "no new decision or execution authority" in phase_doc.lower(),
 )
 
 print("CR4.8 SUMMARY")
