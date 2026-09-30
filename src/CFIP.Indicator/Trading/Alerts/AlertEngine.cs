@@ -174,8 +174,10 @@ namespace cAlgo
                                   (!PopupCriticalOnly ||
                                    critical))))
                             {
-                                ShowPopup(
-                                    message);
+                                _popupAlertQueue.Enqueue(
+                                    message,
+                                    critical,
+                                    now);
                             }
                         }
 
