@@ -428,6 +428,26 @@ namespace cAlgo
             double expectedTarget =
                 expectedPrice;
 
+            double expectedRemainingAfterStage =
+                _plan.OriginalVolume -
+                expectedVolume;
+
+            if (!NumericGuards.IsFinitePositive(
+                    expectedRemainingAfterStage) ||
+                !NumericGuards.IsFinitePositive(
+                    position.VolumeInUnits))
+                return false;
+
+            double remainingVolumeTolerance =
+                Math.Max(
+                    Symbol.VolumeInUnitsStep,
+                    Symbol.VolumeInUnitsMin * 0.5);
+
+            if (position.VolumeInUnits >
+                expectedRemainingAfterStage +
+                remainingVolumeTolerance)
+                return false;
+
             for (int i = 0;
                  i < position.Deals.Count;
                  i++)
