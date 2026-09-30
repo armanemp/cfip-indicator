@@ -16,16 +16,12 @@ namespace cAlgo
             bool enabled =
                 !AutoTradingEnabled;
 
-            if (enabled &&
-                EnableAutoTrading)
+            if (enabled)
             {
-                // Quick enable is an explicit operator re-arm request, but it
-                // may only clear a previously recovered block. An active
-                // EntryBlocked state remains fail-closed.
-                _runtimeFaultStateMachine.ObserveAutoTradingSetting(false);
-                _runtimeFaultStateMachine.ObserveAutoTradingSetting(true);
-
-                if (!_runtimeFaultStateMachine.CanAutomaticEntryProceed)
+                // UI re-arm is an explicit runtime action, independent of the
+                // current public Indicator configuration parameter value.
+                // The state machine remains fail-closed unless its state is Healthy.
+                if (!_runtimeFaultStateMachine.RequestExplicitRearm())
                 {
                     SetAutoTradingRuntimeState(
                         false,
