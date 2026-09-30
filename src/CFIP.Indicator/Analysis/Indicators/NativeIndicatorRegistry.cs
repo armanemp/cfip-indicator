@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
