@@ -29,8 +29,18 @@ namespace cAlgo
                             if (set == null ||
                                 set.MacdFast == null ||
                                 set.MacdSlow == null ||
-                                index >= set.MacdFast.Result.Count ||
-                                index >= set.MacdSlow.Result.Count)
+                                !NativeIndicatorReadinessRule.IsIndexedWindowReady(
+                                    index,
+                                    2,
+                                    set.MacdFast.Result.Count,
+                                    Math.Max(2, MacdFastPeriod)) ||
+                                !NativeIndicatorReadinessRule.IsIndexedWindowReady(
+                                    index,
+                                    2,
+                                    set.MacdSlow.Result.Count,
+                                    Math.Max(
+                                        Math.Max(2, MacdFastPeriod) + 1,
+                                        MacdSlowPeriod)))
                                 return false;
                 
                             double histogram =
