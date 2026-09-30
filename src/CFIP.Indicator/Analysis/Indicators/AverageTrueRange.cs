@@ -28,7 +28,10 @@ namespace cAlgo
                 
                             if (set == null ||
                                 set.Atr == null ||
-                                index >= set.Atr.Result.Count)
+                                !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                                    index,
+                                    set.Atr.Result.Count,
+                                    Math.Max(2, AtrPeriod)))
                                 return 0;
                 
                             return SafePositive(set.Atr.Result[index]);
