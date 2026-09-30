@@ -2281,3 +2281,48 @@ Manual boundary:
 - no accuracy, win-rate, realized-RR or profitability claim is made from CI alone.
 
 Next phase: **CR2.8 — Historical rendering semantics and cost**.
+
+
+## CR2.8 — Historical rendering semantics and cost — 2026-09-30
+
+Status: **VERIFIED COMPLETE**
+
+Implemented:
+- bounded historical scan to a fixed maximum of 500 closed bars;
+- cached historical presentation results by closed-bar timestamp;
+- replaced index-based historical chart identity with timestamp-based presentation identity;
+- invalidated historical presentation state on Bars HistoryLoaded/Reloaded and detected history-shape changes;
+- synchronized drawings by ownership instead of deleting/recreating the complete historical set on every ordinary render;
+- explicitly kept historical arrows presentation-only, with no alert, plan, execution, lifecycle mutation or outcome authority;
+- added deterministic runtime contracts and dedicated CR2.8 static architecture audit;
+- moved the helper presentation model to a top-level file to preserve repository architecture limits;
+- removed unused historical-renderer imports.
+
+Root-cause boundary:
+- B9 was confirmed as a bounded-cost/repeat-work issue at host-bar historical rebuild frequency, not an every-Calculate rendering path.
+
+Verification:
+- Source/Architecture: PASS on final code head 18a0d14035b30249bac69f0315c1ad143af33704;
+- Runtime Acceptance: PASS, run 1585;
+- cTrader Compile: PASS, run 1769;
+- CR2.8 static audit: PASS;
+- accumulated CR2.1–CR2.7 audits: PASS.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning reviewed. No signal threshold, RR/SL/TP, OB/FVG, WaveTrend, structure/divergence, Auto Trading, Auto Orders, capacity or broker mutation authority changed.
+
+Performance/code cleanliness:
+- maximum historical analytical work is bounded;
+- per-timestamp cache prevents repeat analysis for unchanged closed bars;
+- cache is trimmed to the bounded display window;
+- history lifecycle invalidation prevents stale reuse;
+- no network/file persistence or broker mutation is introduced into historical rendering.
+
+Manual target-terminal boundary:
+- history prepend/load-more, reconnect/reload, chart-index remapping and visual responsiveness still require real cTrader verification;
+- historical arrows must be observed to remain presentation-only and never trigger alerts/plans/orders/outcomes;
+- no empirical accuracy or profitability claim is made from CI.
+
+Phase record: `docs/PHASE-CR2-8-HISTORICAL-RENDERING.md`.
+
+Next phase: **CR2.9 — Structural stop, divergence and rejection guardrail refinement (B10/B11/B12).**
