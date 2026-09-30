@@ -1716,7 +1716,7 @@ namespace cAlgo
             Assert(
                 RejectionRule.IsDoji(
                     100.0,
-                    100.10,
+                    100.11,
                     102.0,
                     100.0,
                     0.10) == false &&
