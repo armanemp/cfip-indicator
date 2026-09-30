@@ -14,18 +14,18 @@ namespace cAlgo
             int index)
         {
             IReadOnlyList<StockQuote> quotes =
-                GetOssQuotes(
+                GetOssStableQuotes(
                     bars,
                     index);
 
-            if (quotes == null || quotes.Count < 60)
+            if (quotes == null || quotes.Count < OssIndicatorParameters.ParabolicSarMinimumHistory)
                 return double.NaN;
 
             var results =
                 StockIndicator.GetParabolicSar(
                     quotes,
-                    0.02,
-                    0.20)
+                    OssIndicatorParameters.ParabolicSarAccelerationFactor,
+                    OssIndicatorParameters.ParabolicSarMaximumAccelerationFactor)
                     .ToList();
 
             return results.Count == 0 ||
