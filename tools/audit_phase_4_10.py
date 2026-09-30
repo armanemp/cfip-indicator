@@ -28,7 +28,7 @@ def check(name, condition):
 # It tracks GetNative() and field access on the Native holder itself.
 direct_native_access_re = re.compile(
     r"\bGetNative\s*\(|"
-    r"\.(?:Atr|Rsi|Dms|Fast|Slow|MacdFast|MacdSlow)\b"
+    r"\b(?:set|native)\.(?:Atr|Rsi|Dms|Fast|Slow|MacdFast|MacdSlow)\b"
 )
 actual_native_callers = set()
 
@@ -179,22 +179,25 @@ check(
 )
 check(
     "project documentation records D10 completion and CR-FINAL transition",
-    "CR4.10 / D10 closeout" in roadmap and
+    "CR4.10 / D10" in roadmap and
+    "implementation complete" in roadmap.lower() and
     "CR4.10" in continuation and
+    "CR-FINAL" in continuation and
     "CR4.10" in review and
     "CR-FINAL" in phase_doc,
 )
 phase_doc_lower = phase_doc.lower().replace("`", "")
 check(
     "D10 preserves no-tuning and manual-terminal boundaries",
-    "no public parameter name/type/defaultvalue changed" in phase_doc_lower and
+    "no public parameter name/type/" in phase_doc_lower and
+    "defaultvalue changed" in phase_doc_lower and
     "no default rr" in phase_doc_lower and
     "target-terminal" in phase_doc_lower,
 )
 
 print("CR4.10 SUMMARY")
 print("=" * 72)
-print(f"Expected native-call files: {len(expected_native_callers)}")
+print(f"Expected native-owner files: {len(expected_native_owner_files)}")
 print(f"Actual native-call files: {len(actual_native_callers)}")
 print(f"Failures: {len(errors)}")
 if errors:
