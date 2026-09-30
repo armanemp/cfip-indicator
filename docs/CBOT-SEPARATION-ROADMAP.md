@@ -575,9 +575,11 @@ This preserves the project's existing safety matrix.
 
 ## 10. Mandatory separation phases
 
-### CBOT-Preflight — cTrader host capability proof (blocking)
+The implementation order is **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. CBOT-Preflight is a no-trade blocking gate, not a separate product rewrite phase.
 
-Before creating the Contracts project, prove the supported local cTrader integration surface on the actual target environment.
+### CBOT-Preflight — cTrader host capability proof (blocking gate after CBOT-0)
+
+After CBOT-0 is accepted and before creating the Contracts project, prove the supported local cTrader integration surface on the actual target environment.
 
 This is a **no-trade capability test**, not a production implementation.
 
