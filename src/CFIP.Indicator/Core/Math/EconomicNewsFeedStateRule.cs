@@ -13,7 +13,7 @@ namespace cAlgo
 
     internal static class EconomicNewsFeedStateRule
     {
-        internal static EconomicNewsFeedState Resolve(
+        internal static EconomicNewsFeedState Evaluate(
             bool enabled,
             DateTime lastSuccessUtc,
             DateTime nowUtc,
