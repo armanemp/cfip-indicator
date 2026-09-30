@@ -26,8 +26,8 @@ namespace cAlgo
             move = 0;
 
             if ((direction != 1 && direction != -1) ||
-                !FinitePositive(entry) ||
-                !FinitePositive(market))
+                !IsFinitePositiveInput(entry) ||
+                !IsFinitePositiveInput(market))
                 return false;
 
             move =
@@ -53,7 +53,7 @@ namespace cAlgo
                 requestedExitM5);
         }
 
-        private static bool FinitePositive(double value)
+        private static bool IsFinitePositiveInput(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
