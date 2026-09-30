@@ -19,6 +19,13 @@ namespace cAlgo
             double tp3,
             double tp4)
         {
+            if (!PriceProtectionRule.ValidateTarget(
+                    direction,
+                    entry,
+                    tp1,
+                    0))
+                return null;
+
             Plan p =
                 new Plan
                 {
