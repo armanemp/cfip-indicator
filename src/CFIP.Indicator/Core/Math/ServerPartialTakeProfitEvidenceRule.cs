@@ -5,9 +5,9 @@ namespace cAlgo
     internal static class ServerPartialTakeProfitEvidenceRule
     {
         public static bool IsMatchingClosingDeal(
-            int positionId,
+            long positionId,
             int direction,
-            int dealPositionId,
+            long dealPositionId,
             int dealDirection,
             bool isClosing,
             double executionPrice,
