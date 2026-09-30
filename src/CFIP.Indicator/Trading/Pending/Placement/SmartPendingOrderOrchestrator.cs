@@ -10,197 +10,355 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void TrySmartPendingOrders(int closedM5)
-                                        {
-                                            _lastAutoOrderAttemptUtc =
-                                                TimeInUtc;
-                                
-                                            if (AutomaticOrdersEnabled)
-                                            {
-                                                string dailyLossReason;
+        private int _pendingInvalidationLastM5 = -1;
+        private int _pendingInvalidationStreak;
+        private string _pendingInvalidationKey = string.Empty;
 
-                                                if (DailyLossLimitHit(
-                                                        TimeInUtc,
-                                                        out dailyLossReason))
-                                                {
-                                                    _autoOrdersBlockReason =
-                                                        dailyLossReason;
+        private PendingArbiterResult ResolvePendingDecision(
+            int closedM5)
+        {
+            bool continuationEligible =
+                _decision != null &&
+                TrendContinuationStrong() &&
+                PendingModeAllowsStop();
 
-                                                    CancelAllOrders();
-                                                    return;
-                                                }
-                                            }
-                                
-                                            if (!AutomaticOrdersEnabled)
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "DISABLED";
-                                                return;
-                                            }
+            bool reversalEligible =
+                _reaction != null &&
+                ReversalSetupStrong() &&
+                PendingModeAllowsLimit();
 
-                                            // Refresh quote-sensitive actionability immediately
-                                            // before pending evaluation. Pending eligibility itself
-                                            // remains independent of ActionableNow because a future
-                                            // Stop/Limit entry is intentionally not a market-entry state.
-                                            RefreshLiveDecisionActionability(
-                                                closedM5);
+            string continuationBlock = string.Empty;
+            string reversalBlock = string.Empty;
 
-                                            string capacityReason;
-                                            if (!ValidateSingleExecutionCapacity(
-                                                    out capacityReason))
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    capacityReason;
-                                                return;
-                                            }
-                                
-                                            if (GetManagedPosition() != null)
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "MANAGED POSITION ACTIVE";
-                                                return;
-                                            }
-                                
-                                            if (_plan != null &&
-                                                !_plan.IsLivePosition)
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "MARKET PLAN ACTIVE";
-                                                return;
-                                            }
-                                
-                                            CleanupPendingOrdersIfNeeded(closedM5);
-                                
-                                            PendingOrder existingPending =
-                                                GetManagedPendingOrder();
-                                
-                                            if (existingPending != null)
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "PENDING ORDER EXISTS";
-                                                return;
-                                            }
-                                
-                                
-                                            if (ManagedPendingOrderCount() > 0)
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "PENDING ORDER ALREADY EXISTS";
-                                                return;
-                                            }
+            if (continuationEligible)
+            {
+                RangeSignalQualityResult rangeQuality =
+                    EvaluateRangeSignalQuality(
+                        closedM5,
+                        _decision.Direction,
+                        _decision.Confidence,
+                        _decision.SmartQuality,
+                        _decision.Edge,
+                        _decision.IndependentEvidence,
+                        _decision.StructuralConfirmations);
 
-                                            bool continuationStrong =
-                                                _decision != null &&
-                                                TrendContinuationStrong();
+                if (!rangeQuality.Allowed)
+                {
+                    continuationEligible = false;
+                    continuationBlock =
+                        rangeQuality.Reason;
+                }
+                else
+                {
+                    string suitabilityReason;
 
-                                            bool reversalStrong =
-                                                _reaction != null &&
-                                                ReversalSetupStrong();
+                    if (!PassesMarketSuitability(
+                            closedM5,
+                            _decision.Direction,
+                            out suitabilityReason,
+                            true))
+                    {
+                        continuationEligible = false;
+                        continuationBlock =
+                            "SUITABILITY • " +
+                            suitabilityReason;
+                    }
+                }
+            }
 
-                                            int pendingDirection =
-                                                continuationStrong
-                                                    ? _decision.Direction
-                                                    : reversalStrong
-                                                        ? _reaction.Direction
-                                                        : 0;
-                                
-                                            if (pendingDirection != 0)
-                                            {
-                                                RangeSignalQualityResult rangeQuality =
-                                                    EvaluateRangeSignalQuality(
-                                                        closedM5,
-                                                        pendingDirection,
-                                                        continuationStrong && _decision != null
-                                                            ? _decision.Confidence
-                                                            : _reaction == null
-                                                                ? 0
-                                                                : _reaction.Confidence,
-                                                        continuationStrong && _decision != null
-                                                            ? _decision.SmartQuality
-                                                            : _reaction == null
-                                                                ? 0
-                                                                : _reaction.SmartQuality,
-                                                        _decision == null
-                                                            ? 0
-                                                            : _decision.Edge,
-                                                        continuationStrong && _decision != null
-                                                            ? _decision.IndependentEvidence
-                                                            : _reaction == null
-                                                                ? 0
-                                                                : _reaction.IndependentEvidence,
-                                                        continuationStrong && _decision != null
-                                                            ? _decision.StructuralConfirmations
-                                                            : StructuralConfirmations(
-                                                                pendingDirection));
+            if (reversalEligible)
+            {
+                RangeSignalQualityResult rangeQuality =
+                    EvaluateRangeSignalQuality(
+                        closedM5,
+                        _reaction.Direction,
+                        _reaction.ReactionConfirmedQuality,
+                        _reaction.ReactionConfirmedQuality,
+                        _decision == null
+                            ? 0
+                            : _decision.Edge,
+                        _reaction.ReactionConfirmedEvidence,
+                        StructuralConfirmations(
+                            _reaction.Direction));
 
-                                                if (!rangeQuality.Allowed)
-                                                {
-                                                    _autoOrdersBlockReason =
-                                                        rangeQuality.Reason;
-                                                    return;
-                                                }
+                if (!rangeQuality.Allowed)
+                {
+                    reversalEligible = false;
+                    reversalBlock =
+                        rangeQuality.Reason;
+                }
+                else
+                {
+                    string suitabilityReason;
 
-                                                string pendingSuitabilityReason;
-                                
-                                                if (!PassesMarketSuitability(
-                                                        closedM5,
-                                                        pendingDirection,
-                                                        out pendingSuitabilityReason,
-                                                        true))
-                                                {
-                                                    _autoOrdersBlockReason =
-                                                        "SUITABILITY • " +
-                                                        pendingSuitabilityReason;
-                                                    return;
-                                                }
-                                            }
-                                
-                                            if (pendingDirection != 0 &&
-                                                !EnsureTradingPermission())
-                                            {
-                                                _autoOrdersBlockReason = "TRADING PERMISSION";
-                                                return;
-                                            }
-                                
-                                            if (continuationStrong &&
-                                                PendingModeAllowsStop())
-                                            {
-                                                if (PlaceContinuationStop(closedM5))
-                                                {
-                                                    _autoOrdersBlockReason =
-                                                        "ORDER PLACED";
-                                                    return;
-                                                }
-                                            }
-                                
-                                            if (reversalStrong &&
-                                                PendingModeAllowsLimit())
-                                            {
-                                                CheckReversalProtection();
-                                
-                                                if (PlaceReversalLimit(closedM5))
-                                                {
-                                                    _autoOrdersBlockReason =
-                                                        "ORDER PLACED";
-                                                    return;
-                                                }
-                                            }
-                                
-                                            if (pendingDirection == 0)
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "NO ELIGIBLE PENDING SETUP";
-                                                return;
-                                            }
-                                
-                                            if (string.IsNullOrWhiteSpace(
-                                                    _autoOrdersBlockReason) ||
-                                                _autoOrdersBlockReason ==
-                                                    "NOT EVALUATED")
-                                            {
-                                                _autoOrdersBlockReason =
-                                                    "PENDING EXECUTION BLOCKED";
-                                            }
-                                        }
+                    if (!PassesMarketSuitability(
+                            closedM5,
+                            _reaction.Direction,
+                            out suitabilityReason,
+                            true))
+                    {
+                        reversalEligible = false;
+                        reversalBlock =
+                            "SUITABILITY • " +
+                            suitabilityReason;
+                    }
+                }
+            }
+
+            int continuationScore =
+                continuationEligible
+                    ? PendingDecisionArbiterRule.ScoreCandidate(
+                        _decision.Confidence,
+                        _decision.SmartQuality,
+                        _decision.TimeframeAgreement,
+                        _decision.IndependentEvidence,
+                        _decision.StructuralConfirmations)
+                    : 0;
+
+            int reversalScore =
+                reversalEligible
+                    ? PendingDecisionArbiterRule.ScoreCandidate(
+                        _reaction.ReactionConfirmedQuality,
+                        _reaction.ReactionConfirmedQuality,
+                        _reaction.ReactionConfirmedEvidence * 10,
+                        _reaction.ReactionConfirmedEvidence,
+                        StructuralConfirmations(
+                            _reaction.Direction))
+                    : 0;
+
+            PendingArbiterResult result =
+                PendingDecisionArbiterRule.SelectWinner(
+                    continuationEligible,
+                    _decision == null
+                        ? 0
+                        : _decision.Direction,
+                    continuationScore,
+                    reversalEligible,
+                    _reaction == null
+                        ? 0
+                        : _reaction.Direction,
+                    reversalScore,
+                    PendingOrderMode);
+
+            if (!result.HasChoice)
+            {
+                if (!string.IsNullOrWhiteSpace(
+                        continuationBlock))
+                {
+                    _autoOrdersBlockReason =
+                        "CONTINUATION • " +
+                        continuationBlock;
+                }
+                else if (!string.IsNullOrWhiteSpace(
+                             reversalBlock))
+                {
+                    _autoOrdersBlockReason =
+                        "REVERSAL • " +
+                        reversalBlock;
+                }
+                else
+                {
+                    _autoOrdersBlockReason =
+                        result.Reason;
+                }
+            }
+
+            return result;
+        }
+
+        private void TrySmartPendingOrders(
+            int closedM5)
+        {
+            _lastAutoOrderAttemptUtc =
+                TimeInUtc;
+
+            if (AutomaticOrdersEnabled)
+            {
+                string dailyLossReason;
+
+                if (DailyLossLimitHit(
+                        TimeInUtc,
+                        out dailyLossReason))
+                {
+                    _autoOrdersBlockReason =
+                        dailyLossReason;
+
+                    CancelAllOrders();
+                    return;
+                }
+            }
+
+            if (!AutomaticOrdersEnabled)
+            {
+                _autoOrdersBlockReason =
+                    "DISABLED";
+                return;
+            }
+
+            RefreshLiveDecisionActionability(
+                closedM5);
+
+            string capacityReason;
+            if (!ValidateSingleExecutionCapacity(
+                    out capacityReason))
+            {
+                _autoOrdersBlockReason =
+                    capacityReason;
+                return;
+            }
+
+            if (GetManagedPosition() != null)
+            {
+                _autoOrdersBlockReason =
+                    "MANAGED POSITION ACTIVE";
+                return;
+            }
+
+            if (_plan != null &&
+                !_plan.IsLivePosition)
+            {
+                _autoOrdersBlockReason =
+                    "MARKET PLAN ACTIVE";
+                return;
+            }
+
+            CleanupPendingOrdersIfNeeded(
+                closedM5);
+
+            PendingOrder existingPending =
+                GetManagedPendingOrder();
+
+            if (existingPending != null)
+            {
+                _autoOrdersBlockReason =
+                    "PENDING ORDER EXISTS";
+                return;
+            }
+
+            if (ManagedPendingOrderCount() > 0)
+            {
+                _autoOrdersBlockReason =
+                    "PENDING ORDER ALREADY EXISTS";
+                return;
+            }
+
+            PendingArbiterResult arbiter =
+                ResolvePendingDecision(
+                    closedM5);
+
+            if (!arbiter.HasChoice)
+            {
+                _autoOrdersBlockReason =
+                    string.IsNullOrWhiteSpace(
+                        _autoOrdersBlockReason)
+                        ? "NO ELIGIBLE PENDING SETUP"
+                        : _autoOrdersBlockReason;
+                return;
+            }
+
+            if (!EnsureTradingPermission())
+            {
+                _autoOrdersBlockReason =
+                    "TRADING PERMISSION";
+                return;
+            }
+
+            _autoOrdersBlockReason =
+                "PENDING • " +
+                arbiter.Reason +
+                " • C " +
+                arbiter.ContinuationScore +
+                " / R " +
+                arbiter.ReversalScore;
+
+            // The arbiter is authoritative for this cycle. A failed placement
+            // never silently falls through to the other pending strategy.
+            if (arbiter.Choice ==
+                PendingArbiterChoice.ContinuationStop)
+            {
+                if (PlaceContinuationStop(
+                        closedM5))
+                {
+                    _autoOrdersBlockReason =
+                        "ORDER PLACED";
+                }
+
+                return;
+            }
+
+            if (arbiter.Choice ==
+                PendingArbiterChoice.ReversalLimit)
+            {
+                CheckReversalProtection();
+
+                if (PlaceReversalLimit(
+                        closedM5))
+                {
+                    _autoOrdersBlockReason =
+                        "ORDER PLACED";
+                }
+
+                return;
+            }
+
+            _autoOrdersBlockReason =
+                "PENDING EXECUTION BLOCKED";
+        }
+
+        private bool ObservePendingInvalidation(
+            int closedM5,
+            string key,
+            bool invalidated)
+        {
+            if (!invalidated)
+            {
+                _pendingInvalidationLastM5 =
+                    -1;
+                _pendingInvalidationStreak =
+                    0;
+                _pendingInvalidationKey =
+                    string.Empty;
+                return false;
+            }
+
+            if (!string.Equals(
+                    _pendingInvalidationKey,
+                    key,
+                    StringComparison.Ordinal))
+            {
+                _pendingInvalidationKey =
+                    key;
+                _pendingInvalidationStreak = 0;
+                _pendingInvalidationLastM5 =
+                    -1;
+            }
+
+            if (_pendingInvalidationLastM5 == closedM5)
+                return
+                    PendingDecisionArbiterRule
+                        .ShouldCancelAfterHysteresis(
+                            true,
+                            _pendingInvalidationStreak,
+                            2);
+
+            if (_pendingInvalidationLastM5 >= 0 &&
+                closedM5 !=
+                _pendingInvalidationLastM5 + 1)
+            {
+                _pendingInvalidationStreak =
+                    0;
+            }
+
+            _pendingInvalidationStreak++;
+            _pendingInvalidationLastM5 =
+                closedM5;
+
+            return
+                PendingDecisionArbiterRule
+                    .ShouldCancelAfterHysteresis(
+                        true,
+                        _pendingInvalidationStreak,
+                        2);
+        }
     }
 }
