@@ -9,6 +9,11 @@ namespace cAlgo
     /// </summary>
     internal static class RejectionRule
     {
+        public const double MinimumBodyPips = 0.10;
+        public const double MinimumBodyRangeFraction = 0.05;
+        public const double WickToBodyRatio = 1.25;
+        public const double MinimumWickRangeFraction = 0.20;
+
         public static bool IsRejection(
             double open,
             double close,
@@ -35,12 +40,10 @@ namespace cAlgo
                 Math.Abs(
                     close - open);
 
-            double minimumBody =
-                Math.Max(
-                    pipSize * 0.10,
-                    range * 0.05);
-
-            if (body < minimumBody)
+            if (!HasMeaningfulBody(
+                    body,
+                    range,
+                    pipSize))
                 return false;
 
             if (direction == 1)
@@ -48,15 +51,15 @@ namespace cAlgo
                 double lowerWick =
                     Math.Min(open, close) - low;
 
-                return lowerWick > body * 1.25 &&
-                       lowerWick / range > 0.20;
+                return lowerWick > body * WickToBodyRatio &&
+                       lowerWick / range > MinimumWickRangeFraction;
             }
 
             double upperWick =
                 high - Math.Max(open, close);
 
-            return upperWick > body * 1.25 &&
-                   upperWick / range > 0.20;
+            return upperWick > body * WickToBodyRatio &&
+                   upperWick / range > MinimumWickRangeFraction;
         }
 
         public static bool IsDoji(
@@ -80,10 +83,38 @@ namespace cAlgo
                     high - low);
 
             return
-                Math.Abs(close - open) <
-                Math.Max(
-                    pipSize * 0.10,
-                    range * 0.05);
+                !HasMeaningfulBody(
+                    Math.Abs(close - open),
+                    range,
+                    pipSize);
+        }
+
+        public static double ResolveMinimumMeaningfulBody(
+            double range,
+            double pipSize)
+        {
+            if (!IsFinitePositivePipInput(pipSize) ||
+                double.IsNaN(range) ||
+                double.IsInfinity(range) ||
+                range < 0)
+                return double.PositiveInfinity;
+
+            return Math.Max(
+                pipSize * MinimumBodyPips,
+                range * MinimumBodyRangeFraction);
+        }
+
+        private static bool HasMeaningfulBody(
+            double body,
+            double range,
+            double pipSize)
+        {
+            return
+                body >= ResolveMinimumMeaningfulBody(
+                    range,
+                    pipSize) &&
+                !double.IsNaN(body) &&
+                !double.IsInfinity(body);
         }
 
         private static bool IsFiniteRejectionInput(double value)
