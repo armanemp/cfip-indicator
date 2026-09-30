@@ -33,7 +33,7 @@ namespace cAlgo
         
                 private readonly Dictionary<Bars, Native> _native =
                     new Dictionary<Bars, Native>(
-                        ReferenceEqualityComparer.Instance);
+                        NativeBarsReferenceComparer.Instance);
                 private readonly SubmissionGate _submissionGate =
                     new SubmissionGate();
                 private readonly HashSet<string> _historicalDrawn = new HashSet<string>();
