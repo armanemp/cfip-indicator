@@ -695,11 +695,8 @@ namespace cAlgo
         
         private static void VerifyCorrelationAwareEvidence()
         {
-            IndependentEvidenceFusionCalculator calculator =
-                new IndependentEvidenceFusionCalculator();
-
             int structural =
-                calculator.Calculate(
+                IndependentEvidenceFusionRule.CalculateScore(
                     new IndependentEvidenceFusionInput(
                         true,
                         true,
@@ -718,10 +715,19 @@ namespace cAlgo
 
             Assert(
                 structural == 2,
-                "correlated structural evidence is capped");
+                "correlated structural evidence retains the established score cap");
+
+            Assert(
+                IndependentEvidenceFusionRule.CountGroups(
+                    new IndependentEvidenceFusionInput(
+                        true, true, true,
+                        false, false, false,
+                        false, false, false, false,
+                        false, false, false, false)) == 1,
+                "correlated structural evidence resolves to one independent group");
 
             int bull =
-                calculator.Calculate(
+                IndependentEvidenceFusionRule.CalculateScore(
                     new IndependentEvidenceFusionInput(
                         true,
                         true,
@@ -739,7 +745,7 @@ namespace cAlgo
                         true));
 
             int bear =
-                calculator.Calculate(
+                IndependentEvidenceFusionRule.CalculateScore(
                     new IndependentEvidenceFusionInput(
                         true,
                         true,
@@ -756,8 +762,16 @@ namespace cAlgo
                         true,
                         true));
 
-            Assert(bull == 8, "maximum independent evidence");
-            Assert(bear == bull, "BUY/SELL evidence symmetry");
+            Assert(bull == 8, "maximum independent evidence score remains 8");
+            Assert(bear == bull, "BUY/SELL evidence score symmetry");
+            Assert(
+                IndependentEvidenceFusionRule.CountGroups(
+                    new IndependentEvidenceFusionInput(
+                        true, true, true,
+                        true, true, true,
+                        true, true, true, true,
+                        true, true, true, true)) == 4,
+                "maximum evidence spans exactly four independent groups");
         }
 
         private static void VerifyQualityWeightedFrameContribution()
