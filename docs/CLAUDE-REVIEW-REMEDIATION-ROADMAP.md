@@ -455,39 +455,46 @@ Next implementation phase: **CR2.1 — Structure/CHoCH/MSS/Sweep/Divergence/Reje
 
 Covers: B1, B2, A4 overlap, B10, B11, B12.
 
-Work:
-- replace the tautological CHoCH confirmation condition with a true prior-structure transition;
-- distinguish BOS/MSS/CHoCH event identity and freshness;
-- prevent one structural break from being repeatedly counted as a fresh event;
-- define active/unbroken swing/liquidity state;
-- normalize sweep penetration to ATR-relative rules;
-- remove silent unknown-timeframe fallback to W1;
-- make divergence conflict quality clearly non-actionable as a directional strength value;
-- harden rejection/doji logic with a minimum meaningful body/structure condition.
+Status: COMPLETE — merged 2026-09-30 (PR #86, merge commit 20835cbf1e541b51b9ad56af46cf0c5d13ff5350).
 
-Acceptance:
-- first structural transition only is emitted as an event;
-- the same break is not counted repeatedly across subsequent bars;
-- sweep requires a valid active level;
-- unknown structural timeframe fails explicitly;
-- divergence conflict cannot masquerade as a high-quality directional signal.
+Implemented:
+- true closed-bar structural break freshness and prior-opposite-structure CHOCH semantics;
+- canonical structural event identity and duplicate-evidence collapse;
+- active/unbroken liquidity validation tied to canonical swing plateaus;
+- explicit W1 handling plus fail-closed unknown structural timeframes;
+- divergence conflict neutrality;
+- minimum meaningful-body rejection/doji semantics;
+- deterministic runtime contracts and CR2.1 static audit.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Target-terminal broker/chart runtime remains a separate manual acceptance boundary.
 
 ## CR2.2 — Reaction/reversal integrity
 
 Covers: B3.
 
-Work:
-- separate intrabar observation from closed-bar confirmation;
-- require an actual reversal context: prior counter-move and/or interaction with a qualifying zone/swing;
-- define no-zone behavior for reversal setups;
-- tie scores produce direction 0;
-- reuse one qualification policy for Aggressive and Pending reversal logic.
+Status: COMPLETE — merged 2026-09-30 (PR #87, merge commit bdb9b72d021972db4b3638ff5eb4d7078ab2cb2a).
 
-Acceptance:
-- a moving candle cannot permanently create a confirmed reversal;
-- equal bull/bear reaction quality is neutral;
-- no-zone reversal behavior follows an explicit parameter/rule;
-- Pending and Aggressive reversal qualification cannot disagree silently.
+Implemented:
+- explicit split between moving M5 intrabar observation and closed-bar reversal confirmation;
+- canonical reversal context using prior counter-move, qualifying zone, or canonical swing interaction;
+- explicit no-zone behavior and weak-zone non-bypass semantics;
+- equal bull/bear reaction scores resolve to Direction=0;
+- shared ReactionQualificationRule used by Pending reversal and Aggressive intrabar qualification;
+- deterministic runtime contracts, static audit and phase documentation.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Target-terminal intrabar behavior remains a manual acceptance boundary.
+
+Next implementation phase: **CR2.3 — Unified indicator-quality thresholds**.
 
 ## CR2.3 — Unified indicator-quality thresholds
 
@@ -699,7 +706,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR1.9 — Minor cleanup and documentation**.
+Current active phase: **CR2.3 — Unified indicator-quality thresholds**.
 
 ## 8. Completion order and dependencies
 
