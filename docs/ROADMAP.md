@@ -4414,6 +4414,23 @@ Verification:
 - Runtime Acceptance: PASS;
 - cTrader Compile: PASS.
 
-Next phase: **CR2.3 — Unified indicator-quality thresholds**.
+## Claude Review Remediation — CR2.3 Closeout — 2026-09-30
+
+Status: VERIFIED COMPLETE — PR #88, merge commit 98da2030d8e36312ee0c073c1a58889bb405f893.
+
+Completed:
+- centralized IndicatorConfluenceQuality and IndicatorConflict execution gates in IndicatorExecutionQualityRule;
+- preserved existing 60/52, 58/55 and 62/48/50 values while documenting their semantic stage differences;
+- shared one 62 quality floor for pending continuation/reversal setup qualification;
+- migrated Automatic Market, Pending Submission, Pending Continuation and Pending Reversal callers;
+- added deterministic threshold contracts and CR2.3 static ownership audit;
+- added phase documentation.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Next phase: **CR2.4 — Pending-order decision arbiter**.
 
 Track 12A remains blocked until CR-FINAL passes.
