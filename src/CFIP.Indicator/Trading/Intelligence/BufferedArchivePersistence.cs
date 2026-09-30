@@ -12,6 +12,31 @@ namespace cAlgo
             new Dictionary<string, BufferedArchivePendingFile>(
                 StringComparer.Ordinal);
 
+        private int _writeFailureCount;
+        private int _readFailureCount;
+        private string _lastError = "";
+        private DateTime _lastSuccessUtc = DateTime.MinValue;
+
+        public int WriteFailureCount
+        {
+            get { return _writeFailureCount; }
+        }
+
+        public int ReadFailureCount
+        {
+            get { return _readFailureCount; }
+        }
+
+        public string LastError
+        {
+            get { return _lastError; }
+        }
+
+        public DateTime LastSuccessUtc
+        {
+            get { return _lastSuccessUtc; }
+        }
+
         public int PendingLineCount
         {
             get
@@ -22,6 +47,144 @@ namespace cAlgo
                     count += file.Lines.Count;
 
                 return count;
+            }
+        }
+
+        public bool FileExists(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            try
+            {
+                return File.Exists(path);
+            }
+            catch (Exception ex)
+            {
+                RegisterReadFailure(ex);
+                return false;
+            }
+        }
+
+        public bool TryEnsureDirectory(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            try
+            {
+                EnsureDirectory(path);
+                RegisterSuccess();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RegisterWriteFailure(ex);
+                return false;
+            }
+        }
+
+        public bool TryWriteAllText(
+            string path,
+            string content,
+            Encoding encoding = null)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            try
+            {
+                EnsureDirectory(path);
+
+                File.WriteAllText(
+                    path,
+                    content ?? "",
+                    encoding ?? Encoding.UTF8);
+
+                RegisterSuccess();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RegisterWriteFailure(ex);
+                return false;
+            }
+        }
+
+        public bool TryAppendAllText(
+            string path,
+            string content,
+            Encoding encoding = null)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            try
+            {
+                EnsureDirectory(path);
+
+                File.AppendAllText(
+                    path,
+                    content ?? "",
+                    encoding ?? Encoding.UTF8);
+
+                RegisterSuccess();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RegisterWriteFailure(ex);
+                return false;
+            }
+        }
+
+        public bool TryReadAllText(
+            string path,
+            out string content)
+        {
+            content = "";
+
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            try
+            {
+                if (!File.Exists(path))
+                    return false;
+
+                content = File.ReadAllText(path);
+                RegisterSuccess();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RegisterReadFailure(ex);
+                return false;
+            }
+        }
+
+        public bool TryReadAllLines(
+            string path,
+            out string[] lines)
+        {
+            lines = null;
+
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            try
+            {
+                if (!File.Exists(path))
+                    return false;
+
+                lines = File.ReadAllLines(path);
+                RegisterSuccess();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RegisterReadFailure(ex);
+                return false;
             }
         }
 
@@ -179,15 +342,17 @@ namespace cAlgo
                         if (!string.IsNullOrEmpty(
                                 file.Header))
                         {
-                            File.WriteAllText(
-                                file.Path,
-                                file.Header.EndsWith(
-                                    Environment.NewLine,
-                                    StringComparison.Ordinal)
-                                    ? file.Header
-                                    : file.Header +
-                                      Environment.NewLine,
-                                Encoding.UTF8);
+                            if (!TryWriteAllText(
+                                    file.Path,
+                                    file.Header.EndsWith(
+                                        Environment.NewLine,
+                                        StringComparison.Ordinal)
+                                        ? file.Header
+                                        : file.Header +
+                                          Environment.NewLine,
+                                    Encoding.UTF8))
+                                throw new IOException(
+                                    "Buffered archive header write failed.");
                         }
                     }
 
@@ -212,10 +377,12 @@ namespace cAlgo
                             }
                         }
 
-                        File.AppendAllText(
-                            file.Path,
-                            payload.ToString(),
-                            Encoding.UTF8);
+                        if (!TryAppendAllText(
+                                file.Path,
+                                payload.ToString(),
+                                Encoding.UTF8))
+                            throw new IOException(
+                                "Buffered archive append failed.");
 
                         flushed += write.Count;
                     }
@@ -237,8 +404,9 @@ namespace cAlgo
                             file.Path);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    RegisterWriteFailure(ex);
                     // Preserve all lines when disk I/O fails. Requeue by not
                     // removing anything; the next Timer heartbeat can retry.
                     // ExistingKeys is also discarded so a recovered file is
@@ -291,14 +459,41 @@ namespace cAlgo
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                RegisterReadFailure(ex);
                 file.ExistingKeys =
                     new HashSet<string>(
                         StringComparer.Ordinal);
             }
 
             return file.ExistingKeys;
+        }
+
+        private void RegisterWriteFailure(
+            Exception exception)
+        {
+            _writeFailureCount++;
+            _lastError =
+                exception == null
+                    ? "WRITE FAILURE"
+                    : exception.Message ?? "WRITE FAILURE";
+        }
+
+        private void RegisterReadFailure(
+            Exception exception)
+        {
+            _readFailureCount++;
+            _lastError =
+                exception == null
+                    ? "READ FAILURE"
+                    : exception.Message ?? "READ FAILURE";
+        }
+
+        private void RegisterSuccess()
+        {
+            _lastSuccessUtc = DateTime.UtcNow;
+            _lastError = "";
         }
 
         private static string ExtractFirstField(
