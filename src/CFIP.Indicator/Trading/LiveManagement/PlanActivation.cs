@@ -61,6 +61,7 @@ namespace cAlgo
                                     _serverSideTakeProfitLadderActive = false;
                                     _serverSideBreakEvenActive = false;
                                     _pendingProtectedStopCandidate = 0;
+                                    _lastBreakEvenDiagnostic = "NOT EVALUATED";
                                     _slHit = false;
                                     _outcomeRegistered = false;
                                     _outcomeTelemetryTimedOut = false;
