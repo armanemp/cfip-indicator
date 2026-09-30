@@ -26,7 +26,7 @@ errors = []
 checks = {
     "calibration key implements structural equality": (
         "IEquatable<ConfidenceCalibrationKey>" in key and
-        "bool Equals(ConfidenceCalibrationKey other)" in key and
+        "bool Equals(ConfidenceCalibrationKey other)" in key
     ),
     "calibration key hash is consistent with equality": (
         "StringComparer.Ordinal.GetHashCode(Regime)" in key and
