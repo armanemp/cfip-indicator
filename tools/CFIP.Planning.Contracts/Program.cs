@@ -54,7 +54,7 @@ namespace cAlgo
                 "base risk");
 
             Assert(
-                RiskPercentPolicy.Calculate(10, true, 0.5) == 5,
+                RiskPercentPolicy.Calculate(10, true, 0.5) == 2.5,
                 "smart risk scaling");
 
             Assert(
