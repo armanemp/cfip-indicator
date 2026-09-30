@@ -80,10 +80,154 @@ namespace cAlgo
             VerifyPeakPriceReconstructionSemantics();
             VerifySmartBreakEvenSemantics();
             VerifyTargetProgressionMonotonicity();
+            VerifyOutcomeMemoryIdentitySemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
 
+
+
+        private static void VerifyOutcomeMemoryIdentitySemantics()
+        {
+            List<OutcomeMemoryParameter> parameters =
+                new List<OutcomeMemoryParameter>
+                {
+                    new OutcomeMemoryParameter(
+                        "PanelWidth",
+                        "14 · DISPLAY — CORE",
+                        "430"),
+                    new OutcomeMemoryParameter(
+                        "EnableSoundAlerts",
+                        "12 · ALERTS — CORE",
+                        "true"),
+                    new OutcomeMemoryParameter(
+                        "Tp1MinimumRR",
+                        "09 · Risk & Targets",
+                        "2.00"),
+                    new OutcomeMemoryParameter(
+                        "MinimumConfidence",
+                        "01 · Decision",
+                        "72")
+                };
+
+            string baseFingerprint =
+                OutcomeMemoryIdentityRule.BuildFingerprint(
+                    parameters,
+                    true);
+
+            parameters[0] =
+                new OutcomeMemoryParameter(
+                    "PanelWidth",
+                    "14 · DISPLAY — CORE",
+                    "700");
+
+            parameters[1] =
+                new OutcomeMemoryParameter(
+                    "EnableSoundAlerts",
+                    "12 · ALERTS — CORE",
+                    "false");
+
+            string presentationChangedFingerprint =
+                OutcomeMemoryIdentityRule.BuildFingerprint(
+                    parameters,
+                    true);
+
+            Assert(
+                string.Equals(
+                    baseFingerprint,
+                    presentationChangedFingerprint,
+                    StringComparison.Ordinal),
+                "presentation-only parameter changes do not change learning fingerprint");
+
+            parameters[2] =
+                new OutcomeMemoryParameter(
+                    "Tp1MinimumRR",
+                    "09 · Risk & Targets",
+                    "2.10");
+
+            string decisionChangedFingerprint =
+                OutcomeMemoryIdentityRule.BuildFingerprint(
+                    parameters,
+                    true);
+
+            Assert(
+                !string.Equals(
+                    baseFingerprint,
+                    decisionChangedFingerprint,
+                    StringComparison.Ordinal),
+                "decision-affecting Tp1MinimumRR changes learning fingerprint");
+
+            string legacyFingerprint =
+                OutcomeMemoryIdentityRule.BuildFingerprint(
+                    parameters,
+                    false);
+
+            Assert(
+                !string.Equals(
+                    legacyFingerprint,
+                    decisionChangedFingerprint,
+                    StringComparison.Ordinal),
+                "legacy all-parameter fingerprint remains distinguishable for migration");
+
+            string accountA =
+                OutcomeMemoryIdentityRule.BuildAccountScopeToken(
+                    "Broker-A",
+                    123456,
+                    "Hedged",
+                    true);
+
+            string accountB =
+                OutcomeMemoryIdentityRule.BuildAccountScopeToken(
+                    "Broker-A",
+                    123457,
+                    "Hedged",
+                    true);
+
+            string accountC =
+                OutcomeMemoryIdentityRule.BuildAccountScopeToken(
+                    "Broker-A",
+                    123456,
+                    "Netted",
+                    true);
+
+            string accountD =
+                OutcomeMemoryIdentityRule.BuildAccountScopeToken(
+                    "Broker-A",
+                    123456,
+                    "Hedged",
+                    false);
+
+            Assert(
+                !string.Equals(accountA, accountB, StringComparison.Ordinal) &&
+                !string.Equals(accountA, accountC, StringComparison.Ordinal) &&
+                !string.Equals(accountA, accountD, StringComparison.Ordinal),
+                "account number, account type and live/demo state are isolated in the account scope");
+
+            string key =
+                OutcomeMemoryIdentityRule.BuildMemoryKey(
+                    "XAUUSD",
+                    "Minute5",
+                    accountA,
+                    decisionChangedFingerprint);
+
+            bool keyIsAlphaNumeric = true;
+            for (int i = 0; i < key.Length; i++)
+            {
+                if (!char.IsLetterOrDigit(key[i]))
+                {
+                    keyIsAlphaNumeric = false;
+                    break;
+                }
+            }
+
+            Assert(
+                key.Length <= 50 &&
+                keyIsAlphaNumeric &&
+                key.StartsWith(
+                    OutcomeMemoryIdentityRule.CurrentKeyPrefix,
+                    StringComparison.Ordinal),
+                "scoped LocalStorage key stays within cTrader key constraints");
+        }
 
         private static void VerifySwingPlateauSemantics()
         {
