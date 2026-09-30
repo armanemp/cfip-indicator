@@ -6,7 +6,7 @@ namespace cAlgo
 {
     internal static class EconomicNewsCurrencyRule
     {
-        internal static string[] Resolve(
+        internal static string[] ResolveCurrencies(
             string symbolName,
             string additionalCurrencies,
             string symbolCurrencyMap)
