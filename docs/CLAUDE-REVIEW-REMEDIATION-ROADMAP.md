@@ -544,21 +544,23 @@ Target-terminal broker behavior remains a separate manual acceptance boundary.
 
 Covers: B6 plus the shared outcome work required by C8.
 
-Work:
-- make lifecycle event correlation tolerant of broker event ordering;
-- bound idempotency memory;
-- aggregate all relevant history deals for final realized P/L and R;
-- separate partial-close accounting from final close accounting;
-- verify recovery never mutates foreign/unmanaged positions;
-- add explicit broker-event mocks.
+Status: COMPLETE — merged 2026-09-30 (PR #90, merge commit 45d6d21e050db2c519a57a0cdeccfff5d2d88fac).
 
-Acceptance:
-- position-open-before-plan-binding is reconciled later without losing protection;
-- idempotency state is bounded;
-- a trade with profitable partials cannot become a false loss because the final leg was flat/negative;
-- realized R reflects the actual deal history contract.
+Implemented:
+- bounded lifecycle event idempotency storage;
+- broker-order-tolerant PositionOpened recovery with managed identity enforcement;
+- complete historical closing-trade aggregation through the canonical History reader;
+- initial-risk-based realized R from final aggregated monetary outcome;
+- one canonical outcome source for telemetry and win/loss counters;
+- separated history reading, outcome result typing and panel/window telemetry responsibilities;
+- deterministic runtime contracts, static CR2.5 audit and phase documentation.
 
-Manual verification remains required for actual broker History/Deal semantics.
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Manual acceptance remains required for actual cTrader broker History/Deal ordering and deal-history semantics.
 
 ## CR2.6 — OrderBlock quality and cache discipline
 
