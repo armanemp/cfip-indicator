@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Next: CR3.4 — Execution UI control and popup reliability (C7).
+Next: CR3.5 — Calibration, outcome and rejection transparency (C8/C9/B6).
 
 ## Completed before this checkpoint
 
@@ -60,7 +60,7 @@ Next: CR3.4 — Execution UI control and popup reliability (C7).
 
 ## Next transition
 
-CR3.1 is closed. The next implementation response must execute CR3.2 only. Track 12A remains blocked until CR-FINAL.
+CR3.1 is closed. CR3.2, CR3.3 and CR3.4 are closed. The next implementation response must execute CR3.5 only. Track 12A remains blocked until CR-FINAL.
 
 
 ## CR3.2 implementation record
@@ -108,3 +108,21 @@ Manual target-terminal checks remain required for hosted UI timing and real cTra
 ## Next transition
 
 CR3.4 is closed. The next implementation response must execute CR3.5 only. Track 12A remains blocked until CR-FINAL.
+
+
+## CR3.5 implementation record
+
+CR3.5 is implemented on branch `phase/cr3-5-calibration-outcome-rejection-transparency`; merge/CI verification remains pending.
+
+- `ConfidenceCalibrationKey` now has deterministic structural equality and consistent hashing;
+- managed outcome calibration retains broker-history aggregated realized R and exposes average realized R beside observed win rate and sample count;
+- Decision/panel calibration diagnostics expose AVG R without changing thresholds or probability semantics;
+- plan reward-integrity rejections emit explicit bounded `PLAN_REWARD / REJECTED` telemetry reasons;
+- repeated identical reward rejection telemetry is deduplicated per M5/reason pair;
+- Decision Contracts and a dedicated CR3.5 static audit cover the new semantics.
+
+Manual target-terminal broker-history, restart/reconnect and empirical outcome validation remain required.
+
+## Next transition
+
+CR3.5 must pass all required CI gates and merge before the next implementation response. After merge, the next phase is **CR-FINAL**. Track 12A remains blocked until CR-FINAL.
