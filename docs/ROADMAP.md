@@ -4330,7 +4330,7 @@ Completed in this phase:
 Acceptance boundary:
 - direct broker calls must remain behind the current known mutation owners until extraction;
 - all execution-related parameters must receive deterministic INDICATOR / CBOT / SPLIT classification from source usage;
-- public parameter count remains 562;
+- public parameter count remains 563 on the current CR1.8-audited main baseline;
 - no duplicate public parameter declarations;
 - no new broker executor is permitted during the separation track.
 
