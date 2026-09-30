@@ -947,27 +947,28 @@ Status: **COMPLETE — PR #104 merged to main; merge commit `d24b26de3ddf3709c8e
 
 ### CR4.4 — Skender/OSS numerical stability and incremental caching (D4)
 
-Initial review label: **CONFIRMED / MEDIUM — production effect remains default-off, but enabled-path correctness/performance must be hardened.**
+Status: **COMPLETE — PR #105 merged to main; merge commit `1b1a1762fee960e65903880f2566b3355a9a7431`.**
 
-Scope:
-- `Analysis/Indicators/External/*.cs`;
-- `OssQuoteSeriesCache`;
-- `OssIndicatorConfluenceAnalyzer`;
-- SAR / SuperTrend path dependence;
-- OBV independence;
-- hard-coded OSS indicator constants;
-- warm-up and lookback ownership;
-- incremental cache invalidation.
+Implementation record:
+- path-dependent Skender adapters use stable-prefix history: RSI, MACD, SuperTrend and Parabolic SAR;
+- fixed-window adapters use a bounded 161-bar incremental quote cache;
+- cache invalidation covers Bars identity, cTrader HistoryLoaded/Reloaded and conservative OHLCV fingerprints;
+- OSS constants, warm-up contracts and configured-period safety clamps have one authoritative owner;
+- OBV remains diagnostic/research data but is no longer counted as independent OSS confluence evidence;
+- runtime contracts and a dedicated static audit are green;
+- benchmark coverage compares rebuild versus incremental quote materialization.
 
-Required verification:
-- determine which OSS implementations are path-dependent and require stable history prefix;
-- remove or reclassify OBV contribution if it is not independently informative, without silently altering default scoring;
-- centralize OSS indicator constants and warm-up requirements;
-- design an incremental cache that reuses the stable prefix and only advances new bars;
-- benchmark enabled-path allocations and runtime.
+Verification:
+- Source/Architecture PASS — run 36779376240;
+- cTrader Compile PASS — run 36779376267;
+- Runtime Acceptance PASS — run 36779376210;
+- OSS indicator benchmark PASS — run 36779376203.
 
-No default behavior change:
-- `UseOssExtendedIndicatorConfluence` remains unchanged unless a separately approved change is documented.
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default trading threshold, RR, confidence or execution policy changed;
+- FacioQuo remains research-only;
+- target-terminal cTrader timing, memory behavior and empirical signal-quality validation remain manual acceptance boundaries.
 
 ### CR4.5 — Per-timeframe regime semantics (D5)
 
@@ -1543,7 +1544,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.4 — Skender/OSS numerical stability and incremental caching (D4)**.
+Current active phase: **CR4.5 — Per-timeframe regime semantics (D5)**.
 
 ## 8. Completion order and dependencies
 
