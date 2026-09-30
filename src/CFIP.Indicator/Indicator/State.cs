@@ -173,6 +173,11 @@ namespace cAlgo
 
                 private bool _dailyLossHistoryAvailable;
 
+                private bool _dailyLossTransactionsAvailable;
+
+                private DateTime _lastDailyLossSharedStateReloadUtc =
+                    DateTime.MinValue;
+
                 private bool _dailyLossLocked;
 
                 private DailyLossEvaluation _dailyLossEvaluation;
