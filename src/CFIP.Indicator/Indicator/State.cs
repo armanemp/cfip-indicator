@@ -154,7 +154,6 @@ namespace cAlgo
         
                 private DateTime _dailyLossBaselineDate = DateTime.MinValue;
         
-                private double _dailyStartEquity = 0;
         
                 private bool _dailyLossLimitAlerted = false;
 
@@ -182,7 +181,6 @@ namespace cAlgo
 
                 private string _dailyLossStateReason = "NOT EVALUATED";
 
-                private DateTime _lastDailyLossEvaluationUtc = DateTime.MinValue;
                 private DateTime _lastRestrictionAlertUtc = DateTime.MinValue;
                 private int _lastPendingSignalM5 = -1;
                 private int _lastPendingCleanupM5 = -1;
