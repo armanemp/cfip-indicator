@@ -31,6 +31,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RejectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ReactionQualificationRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorExecutionQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/VolumeSizingRule.cs" />
