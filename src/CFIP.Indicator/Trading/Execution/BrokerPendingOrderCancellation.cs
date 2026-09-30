@@ -17,6 +17,8 @@ namespace cAlgo
                 
                             try
                             {
+                                MarkBrokerStateDirty();
+
                                 TradeResult result =
                                     CancelPendingOrder(order);
                 
