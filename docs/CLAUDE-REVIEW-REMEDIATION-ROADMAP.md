@@ -1246,7 +1246,243 @@ CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → 
 
 CR-FINAL cannot be considered complete while any E-item remains unverified, deferred without an explicit reason, or blocked by a missing target-terminal/replay test.
 
-## 7.2 Cross-chat continuation checkpoint
+
+## 7.2 — Prompt 6 Remediation Track: Target-Path Obstacles, Aggressive Risk Guards, Hidden Thresholds, Timeframe Scenarios and Orphan Protection
+
+Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+
+Prompt 6 is now a mandatory follow-on review track after Prompt 5 and before CR-FINAL. All F1–F9 findings remain static-review hypotheses until independently reconciled against current main source, deterministic contracts/replay, and target-terminal behavior where required.
+
+Authoritative order:
+
+`CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR-FINAL`
+
+### CR6.1 — Opposing FVG/OB path-obstacle direction, mitigation and caching (F1)
+
+Initial review label: **LIKELY CONFIRMED / HIGH — exact source and existing FVG mitigation semantics must be re-verified.**
+
+Scope:
+- `RewardPathZoneObstacleScanner`;
+- `RewardPathGeometryRule`;
+- `HigherTfRewardPathValidator`;
+- `TargetCandidateEvaluator`;
+- `FvgMitigationEvaluator`;
+- M15/M30/H1/H4 obstacle scans.
+
+Required verification:
+- prove that opposing-zone semantics use `-direction` consistently for both FVG and Order Block;
+- verify bullish/bearish FVG orientation against canonical `FvgRule`;
+- exclude mitigated FVGs using the existing canonical mitigation owner;
+- cache obstacle-scan results per (timeframe, closed index, direction) so the same path is not rescanned for each target/stage;
+- preserve obstacle-owner separation and BUY/SELL symmetry.
+
+Testing:
+- BUY with bearish FVG obstacle;
+- BUY with bullish FVG that is not an opposing obstacle;
+- mitigated FVG excluded;
+- SELL mirror cases;
+- repeated target evaluation reuses the same obstacle result.
+
+### CR6.2 — Aggressive execution minimum-RR/risk guard and fill-plan consistency (F2)
+
+Initial review label: **CONFIRMED / HIGH for the missing pre-trade RR/risk path; other fill/lifecycle claims require source verification.**
+
+Scope:
+- `AggressiveFinalExecutionGuard`;
+- `AggressivePreTradeEligibility`;
+- `AggressiveExecutionPreparation`;
+- `AutoPlanRiskValidator`;
+- accepted-fill reconciliation and managed-plan adoption.
+
+Required verification:
+- prove whether the final aggressive guard's current reward-quality check is unreachable because the pre-trade path requires `_plan == null`;
+- add a pre-submission RR and stop-risk validation using the existing canonical `PlanRewardRiskQualityRule` only if confirmed;
+- do not add/tune a new public minimum-RR parameter without explicit approval; report a proposed parameter/default separately;
+- enforce reaction/decision direction consistency at the final guard unless the existing explicit policy parameter intentionally permits divergence;
+- remove/fix any dead `_plan != null` path;
+- verify actual-fill versus pre-fill entry/SL/TP reconciliation and lifecycle cleanup after close.
+
+Testing:
+- sub-minimum RR rejected;
+- stop risk above effective ceiling rejected;
+- opposite reaction/decision direction rejected under the applicable policy;
+- accepted fill reconciles to the canonical managed plan;
+- post-close cleanup is deterministic.
+
+Manual cTrader:
+- actual aggressive fill-price divergence and broker protection behavior.
+
+### CR6.3 — Effective-threshold transparency and hidden additive margins (F4)
+
+Initial review label: **CONFIRMED / HIGH — parameter truth is the primary invariant; exact consumer ordering must be audited.**
+
+Scope:
+- `ActionableSignalQualityGate.EvaluateFinalActionableSignalQuality`;
+- `ParallelOpportunityBuilder.ShouldPresentOpportunityCandidate`;
+- `TradeActionabilityEvaluator`;
+- panel/diagnostic exposure of effective thresholds.
+
+Required verification:
+- inventory every hidden addition/clamp: `+4`, `+3`, `+1`, fixed 75/70 floors, 70 entry-location clamp and any related constants;
+- determine whether `ActionableNow` shown in the panel/chart is before or after the final gate;
+- preserve current effective defaults until evidence supports a behavior change;
+- if the hidden margins are retained, give them explicit named ownership and expose effective thresholds to diagnostics/panel;
+- only introduce new parameters when necessary, with current effective values as defaults;
+- reconcile 64/64 upstream thresholds with 75/70/70 final thresholds and document which layer is authoritative.
+
+Testing:
+- deterministic input/output table for each threshold layer;
+- exact effective threshold calculation;
+- parameter-truth regression cases;
+- BUY/SELL symmetry.
+
+### CR6.4 — Smart-threshold regime identity and hidden REVERSAL dead path (F5)
+
+Initial review label: **CONFIRMED / LOW — dead regime branch and literal drift should be verified.**
+
+Scope:
+- `SmartThresholdPolicy.GetAdaptiveSmartThresholds`;
+- `MarketRegimeClassifier`;
+- all regime string consumers.
+
+Required verification:
+- enumerate every regime value the classifier can emit;
+- prove which adaptive-threshold branch each value takes;
+- eliminate unreachable `REVERSAL` logic or connect it only if the canonical classifier actually gains that state;
+- centralize regime identity via an enum or named constants without introducing a second regime authority;
+- preserve current threshold behavior unless a separate evidence-backed tuning phase is approved.
+
+Testing:
+- every possible classifier output has a deterministic threshold-policy result;
+- unknown/future values fail safely;
+- BUY/SELL symmetry.
+
+### CR6.5 — Trap-risk/trigger exceptions and actionability constant ownership (F6)
+
+Initial review label: **DESIGN RISK + PARTIAL SEMANTIC FINDING — must distinguish intentional breakout policy from accidental bypass.**
+
+Scope:
+- `TradeActionabilityEvaluator`;
+- `EntryTrapRiskRule`;
+- `IndicatorActionabilityRule`;
+- Breakout/Retest/Pending/Aggressive eligibility consumers.
+
+Required verification:
+- determine whether Breakout intentionally bypasses trap blocking and whether the existing parameter set expresses that policy;
+- verify whether Retest can become actionable before its required trigger and whether downstream plan/entry gates independently enforce the trigger;
+- centralize/name hard-coded actionability, divergence and range constants without changing values;
+- verify `actualEntry`, anchor selection and late-entry ATR semantics for Breakout versus Retest.
+
+Behavior rule:
+- any change that makes Breakout subject to trap blocking or changes trigger requirements is behavior-changing and must be separately reported/approved; do not silently apply it.
+
+Testing:
+- Breakout trap-risk case;
+- Retest inside-zone without trigger;
+- trigger-ready case;
+- anchor/late-entry symmetry;
+- parameter/default preservation.
+
+### CR6.6 — Independent-timeframe scenario semantics and duplicate-policy owners (F7)
+
+Initial review label: **CONFIRMED / MEDIUM — current candidates appear to reuse the M5 plan; exact source must be audited before semantic reclassification.**
+
+Scope:
+- `TimeframeScenarioBuilder.AddTimeframeScenarioCandidates`;
+- `ParallelOpportunityBuilder`;
+- `ScenarioExecutionPolicy` in both Analysis and Trading namespaces;
+- scenario execution reason/presentation.
+
+Required verification:
+- prove whether M15/M30/H1/H4/D1/W1 candidates use only M5 Entry/Stop/TP data plus a timeframe label/quality;
+- either make them genuine timeframe-specific scenarios or explicitly reclassify them as timeframe annotations over the shared M5 plan, without silently changing behavior;
+- identify and unify the two scenario execution-policy authorities;
+- ensure display reason cannot contradict the actual execution eligibility policy;
+- avoid repeated full plan construction when candidates are annotations of one canonical plan.
+
+Testing:
+- same-direction frames do not cause unnecessary duplicate full plan builds;
+- genuinely distinct frame inputs produce genuinely distinct scenarios;
+- execution policy and display reason remain consistent;
+- simultaneous distinct scenarios remain supported.
+
+### CR6.7 — Target-obstacle rejection telemetry and distant-target semantics (F8)
+
+Initial review label: **PARTIAL / MEDIUM — likely interaction with the existing D7 target pipeline; quantify before tuning.**
+
+Scope:
+- `TargetObstacleValidator`;
+- `TargetCandidateEvaluator`;
+- CR3.5 bounded rejection telemetry;
+- M5 swing/equality/zone/HTF obstacle categories.
+
+Required verification:
+- determine whether ordinary M5 swings over-reject distant targets under current defaults;
+- add bounded rejection reasons such as `OBSTACLE_SWING`, `OBSTACLE_EQ`, `OBSTACLE_ZONE`, `OBSTACLE_HTF_ZONE` if the current telemetry model does not already distinguish them;
+- for HTF targets, verify whether obstacle magnitude/depth is evaluated in an appropriate timeframe before any change;
+- preserve current defaults until replay evidence supports target-survival changes.
+
+Testing:
+- near versus distant targets;
+- ordinary versus deep/major swings;
+- zone/equality/HTF obstacles;
+- rejection telemetry counts and dedupe.
+
+### CR6.8 — Target-obstacle scan performance and cache reuse (F9)
+
+Initial review label: **CONFIRMED / MEDIUM — repeated obstacle work is a hot-path optimization target; benchmark before/after.**
+
+Scope:
+- `SelectTargets`;
+- `HasTargetObstacle`;
+- `HasOpposingZonePathObstacle`;
+- `HasHigherTfZonePathObstacle`;
+- all TargetSelector callers identified by Prompt 5/E8.
+
+Required verification:
+- inventory every TargetSelector/SelectTargets call in current main;
+- create a bounded obstacle-cache keyed by timeframe, closed index, direction and any other input that materially changes the scan;
+- ensure cache invalidation follows history reload/new closed bar boundaries;
+- benchmark computation count, elapsed time and allocations before/after;
+- do not create a duplicate target-selection authority.
+
+Testing:
+- identical target selection calls return identical results;
+- cache reuse is observable in deterministic counters/benchmarks;
+- history/index/direction changes invalidate appropriately;
+- BUY/SELL symmetry.
+
+### CR6.9 — Orphaned managed-position protection (F3)
+
+Initial review label: **CONFIRMED / MEDIUM — invalid-stop success result is a concrete safety invariant violation.**
+
+Scope:
+- `OrphanManagedProtection.ProtectOrphanManagedPosition`;
+- `ManagedStopProtectionRule`;
+- recovery-state transitions;
+- caller handling of protection failure.
+
+Required verification:
+- prove that an invalid computed stop can return success even though no SL was placed;
+- return explicit failure/RecoveryRequired when no valid protective stop can be established;
+- emit a clear diagnostic without adding an alternate broker-mutation owner;
+- verify callers retry/reconcile rather than treating the position as protected.
+
+Testing:
+- all stop candidates invalid;
+- protection result is failure;
+- recovery state is entered;
+- caller does not suppress subsequent protection attempts;
+- BUY/SELL symmetry.
+
+### Prompt 6 completion gate
+
+CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → **CR-FINAL**
+
+CR-FINAL cannot be considered complete while any F-item remains unverified, deferred without an explicit reason, or blocked by missing deterministic/replay/target-terminal evidence.
+
+## 7.3 Cross-chat continuation checkpoint
+
 
 This file is the canonical implementation order for the Claude review-remediation track. It supersedes the local cBot track as the immediate next-work source until `CR-FINAL` is accepted.
 
@@ -1258,7 +1494,7 @@ Current active phase: **CR4.1 — Learning-memory identity and account scoping (
 
 Mandatory order:
 
-CR-0 → CR1.1 → CR1.2 → CR1.3 → CR1.4 → CR1.5 → CR1.6 → CR1.7 → CR1.8 → CR1.9 → CR2.1 → CR2.2 → CR2.3 → CR2.4 → CR2.5 → CR2.6 → CR2.7 → CR2.8 → CR2.9 → CR3.1 → CR3.2 → CR3.3 → CR3.4 → CR3.5 → CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL
+CR-0 → CR1.1 → CR1.2 → CR1.3 → CR1.4 → CR1.5 → CR1.6 → CR1.7 → CR1.8 → CR1.9 → CR2.1 → CR2.2 → CR2.3 → CR2.4 → CR2.5 → CR2.6 → CR2.7 → CR2.8 → CR2.9 → CR3.1 → CR3.2 → CR3.3 → CR3.4 → CR3.5 → CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR-FINAL
 
 Why this order:
 
