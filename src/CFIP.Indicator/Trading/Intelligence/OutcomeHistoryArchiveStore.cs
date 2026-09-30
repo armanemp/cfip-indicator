@@ -324,17 +324,10 @@ namespace cAlgo
 
             _archiveCalibrationSamples[key]++;
 
-            if (IsPositiveRealizedR(observation.RealizedR))
+            if (CalibrationOutcomeRule.IsPositiveRealizedR(observation.RealizedR))
                 _archiveCalibrationWins[key]++;
 
             _archiveLearningOutcomeCount++;
-        }
-
-        private static bool IsPositiveRealizedR(double realizedR)
-        {
-            return !double.IsNaN(realizedR) &&
-                   !double.IsInfinity(realizedR) &&
-                   realizedR > 0;
         }
 
         private void ImportOutcomeArchive()
