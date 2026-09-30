@@ -252,13 +252,10 @@ namespace cAlgo
                                 ? "UNKNOWN"
                                 : _decision.Regime)),
                     PreferredStopRiskAtr,
-                    Math.Min(
-                        Math.Max(
-                            MinimumSlAtr,
-                            MaximumSlAtr),
-                        Math.Max(
-                            MinimumSlAtr,
-                            MaximumStructuralStopAtr)));
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        MinimumSlAtr,
+                        MaximumSlAtr,
+                        MaximumStructuralStopAtr));
 
             if (!rewardRisk.Allowed)
                 return null;
