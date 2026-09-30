@@ -126,7 +126,7 @@ namespace cAlgo
                 "_" +
                 timeframe +
                 "_" +
-                LegacyMemoryConfigurationFingerprint() +
+                PriorMemoryConfigurationFingerprint() +
                 ".txt";
         }
 
@@ -376,7 +376,7 @@ namespace cAlgo
                     if (!legacyPath ||
                         !string.Equals(
                             fingerprint,
-                            LegacyMemoryConfigurationFingerprint(),
+                            PriorMemoryConfigurationFingerprint(),
                             StringComparison.Ordinal))
                         return false;
                 }
