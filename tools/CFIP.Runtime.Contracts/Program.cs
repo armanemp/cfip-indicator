@@ -33,6 +33,7 @@ namespace cAlgo
             VerifyMtfContextIntegrity();
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
+            VerifyNativeIndicatorReadinessSemantics();
             VerifyBrokerStateRefreshSemantics();
             VerifyBufferedArchivePersistence();
             VerifyDailyLossSemantics();
@@ -1351,6 +1352,193 @@ namespace cAlgo
                     out startEquity,
                     out baselineFloating),
                 "invalid equity cannot produce a synthetic baseline");
+        }
+
+
+        private static void VerifyNativeIndicatorReadinessSemantics()
+        {
+            Assert(
+                !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                    13,
+                    20,
+                    14) &&
+                NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                    14,
+                    20,
+                    14),
+                "native series readiness requires the configured warm-up boundary");
+
+            Assert(
+                !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                    14,
+                    14,
+                    14) &&
+                !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
+                    -1,
+                    20,
+                    14),
+                "native series readiness rejects missing and out-of-range samples");
+
+            Assert(
+                NativeIndicatorReadinessRule.IsIndexedWindowReady(
+                    16,
+                    2,
+                    20,
+                    14) &&
+                !NativeIndicatorReadinessRule.IsIndexedWindowReady(
+                    15,
+                    2,
+                    20,
+                    14),
+                "native indicator window readiness protects prior-sample comparisons");
+
+            Assert(
+                NativeIndicatorReadinessRule.IsFinitePositive(1.0) &&
+                !NativeIndicatorReadinessRule.IsFinitePositive(0) &&
+                !NativeIndicatorReadinessRule.IsFinitePositive(double.NaN) &&
+                !NativeIndicatorReadinessRule.IsFinitePositive(
+                    double.PositiveInfinity),
+                "positive volatility and moving-average inputs reject zero/non-finite values");
+
+            Assert(
+                NativeIndicatorReadinessRule.IsFiniteBounded(50, 0, 100) &&
+                NativeIndicatorReadinessRule.IsFiniteBounded(0, 0, 100) &&
+                !NativeIndicatorReadinessRule.IsFiniteBounded(
+                    double.NaN,
+                    0,
+                    100) &&
+                !NativeIndicatorReadinessRule.IsFiniteBounded(
+                    101,
+                    0,
+                    100),
+                "bounded oscillator readiness accepts valid RSI/ADX ranges only");
+
+            Assert(
+                NativeIndicatorReadinessRule.IsFrameReady(
+                    40,
+                    60,
+                    60,
+                    60,
+                    60,
+                    60,
+                    14,
+                    14,
+                    14,
+                    20,
+                    50,
+                    1.5,
+                    50,
+                    20,
+                    100,
+                    101),
+                "native frame readiness accepts fully warmed finite inputs");
+
+            Assert(
+                !NativeIndicatorReadinessRule.IsFrameReady(
+                    40,
+                    60,
+                    60,
+                    60,
+                    60,
+                    60,
+                    14,
+                    14,
+                    14,
+                    20,
+                    50,
+                    1.5,
+                    50,
+                    20,
+                    0,
+                    101),
+                "native frame readiness rejects an unusable EMA/volatility value");
+
+            IndicatorEvidenceFusionResult neutralRsi =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "UNKNOWN",
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        4,
+                        20,
+                        20,
+                        50,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        false,
+                        false,
+                        false,
+                        false,
+                        0,
+                        0,
+                        0,
+                        4,
+                        1));
+
+            Assert(
+                neutralRsi.BullBonus == 0 &&
+                neutralRsi.BearBonus == 0,
+                "fabricated RSI-neutral value 50 cannot create directional evidence");
+
+            IndicatorEvidenceFusionResult directionalRsi =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "UNKNOWN",
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        4,
+                        20,
+                        20,
+                        55,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        false,
+                        false,
+                        false,
+                        false,
+                        0,
+                        0,
+                        0,
+                        4,
+                        1));
+
+            Assert(
+                directionalRsi.BullBonus > 0,
+                "RSI above the existing directional threshold remains an intentional evidence input");
         }
 
         private static void VerifyBrokerStateRefreshSemantics()
