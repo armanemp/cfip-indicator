@@ -67,6 +67,23 @@ namespace cAlgo
                     continue;
                 }
 
+                if (!TargetRewardEnvelopeRule.CanReachStage(
+                        requiredRR[stage],
+                        risk,
+                        atr,
+                        MaximumTargetExtensionAtr,
+                        maximumRR))
+                {
+                    AddTargetRejectionCount(
+                        rejectionCounts,
+                        TargetCandidateRejectionReasons.StageUnreachableByExtension);
+                    RecordTargetStageRejections(
+                        closedM5,
+                        stage,
+                        rejectionCounts);
+                    continue;
+                }
+
                 double previous =
                     FindPreviousSelectedTargetPrice(
                         selected,
