@@ -78,6 +78,9 @@ namespace cAlgo
                     tp3,
                     tp4);
 
+            if (p == null)
+                return null;
+
             p.Lane = lane;
 
             p.SignalBarOpenTimeUtcTicks =
