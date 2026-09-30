@@ -129,10 +129,9 @@ namespace cAlgo
         private static double Score(
             double value)
         {
-            return NumericGuards.ClampDouble(
-                value,
-                0,
-                100);
+            return NumericGuards.IsFiniteValue(value)
+                ? value
+                : 0;
         }
     }
 }
