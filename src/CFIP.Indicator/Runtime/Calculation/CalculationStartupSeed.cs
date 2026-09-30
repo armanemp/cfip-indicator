@@ -26,6 +26,9 @@ namespace cAlgo
                 DateTime reference =
                     Server.TimeInUtc;
 
+                RunPreDecisionBrokerReconciliation(
+                    Bars.Count - 1);
+
                 MtfClosedContext mtf =
                     BuildMtfClosedContext(
                         reference);
