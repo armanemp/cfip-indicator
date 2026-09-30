@@ -2326,3 +2326,39 @@ Manual target-terminal boundary:
 Phase record: `docs/PHASE-CR2-8-HISTORICAL-RENDERING.md`.
 
 Next phase: **CR2.9 — Structural stop, divergence and rejection guardrail refinement (B10/B11/B12).**
+
+
+## CR2.9 — Structural stop, divergence and rejection guardrails — 2026-09-30
+
+Status: **VERIFIED COMPLETE**
+
+Implemented:
+- preserved the existing fail-closed unknown structural-timeframe behavior;
+- extracted structural-stop reward-path bonus and preferred-risk balance into a pure owner without tuning current live coefficients;
+- centralized divergence minimum quality, conflict margin, ATR excursion floors, RSI/WaveTrend deltas, recency boosts and quality-score components;
+- centralized rejection/doji body and wick thresholds and unified meaningful-body semantics;
+- added deterministic runtime contracts for B10/B11/B12;
+- added and wired tools/audit_phase_2_9.py;
+- preserved public parameters, signal/RR policy, execution authority and single-position capacity.
+
+Verification:
+- Source/Architecture: PASS, final branch head 8e51396c89498b84ac569b29517d4ba2ba6c8f45;
+- Runtime Acceptance: PASS, run 1597;
+- cTrader Compile: PASS, run 1781;
+- CR2.9 static audit: PASS;
+- accumulated CR2.1–CR2.8 audits: PASS.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning reviewed.
+No new execution authority, broker mutation path, capacity, RR floor or signal gate was introduced.
+
+Performance/code-cleanliness:
+Pure rules are isolated in Core/; no UI/network/broker I/O was added; duplicated divergence arithmetic was removed from the analyzer; rejection/doji body logic has one owner; structural-stop scoring arithmetic is centralized.
+
+Important evidence boundary:
+CR2.9 does not claim that structural-stop scoring is empirically superior, nor that divergence/rejection changes improve accuracy or profitability. Any future coefficient/threshold tuning requires replay/outcome evidence.
+
+Phase record:
+docs/PHASE-CR2-9-STRUCTURAL-DIVERGENCE-REJECTION.md
+
+Next phase: **CR3.1 — Live invalidation and false-signal semantics (C1/C2).**
