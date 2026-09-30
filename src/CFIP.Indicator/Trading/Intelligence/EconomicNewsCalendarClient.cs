@@ -562,6 +562,26 @@ namespace cAlgo
                 return _economicNewsFetchHealthy;
         }
 
+        private void ResetEconomicNewsClientLifecycle()
+        {
+            lock (_economicNewsSync)
+            {
+                _economicNewsDisposed = false;
+                _economicNewsRequestInFlight = false;
+                _economicNewsRequestGeneration++;
+            }
+        }
+
+        private void DisposeEconomicNewsClient()
+        {
+            lock (_economicNewsSync)
+            {
+                _economicNewsDisposed = true;
+                _economicNewsRequestInFlight = false;
+                _economicNewsRequestGeneration++;
+            }
+        }
+
         private List<CfipEconomicNewsEvent> SnapshotEconomicNewsEvents()
         {
             lock (_economicNewsSync)
