@@ -39,7 +39,7 @@ runtime_project = read(RUNTIME_PROJECT)
 runtime = read(RUNTIME)
 
 for token in (
-    "InstanceMarker = "|CFIP-I:"",
+    'InstanceMarker = "|CFIP-I:"',
     "TryBuildLabel(",
     "string baseLabel",
     "string instanceId",
@@ -67,7 +67,7 @@ telemetry = read(TELEMETRY)
 if "InstanceId" not in telemetry or "INSTANCE=" not in telemetry:
     errors.append("execution telemetry must persist the managed instance identity")
 
-if "NormalizeLabel() + "-PENDING"" in identity:
+if 'NormalizeLabel() + "-PENDING"' in identity:
     errors.append("pending orders must not use base label without instance identity")
 
 for path, label in (
