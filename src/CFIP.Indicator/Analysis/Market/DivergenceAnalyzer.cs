@@ -69,8 +69,8 @@ namespace cAlgo
                         highNew)
                     : default(DivergenceCandidate);
 
-            bool bullValid = bull.Quality >= 55;
-            bool bearValid = bear.Quality >= 55;
+            bool bullValid = bull.Quality >= DivergenceThresholdRule.MinimumQuality;
+            bool bearValid = bear.Quality >= DivergenceThresholdRule.MinimumQuality;
 
             if (!bullValid && !bearValid)
                 return DivergenceResult.CreateNoDivergence();
@@ -79,7 +79,7 @@ namespace cAlgo
                 bearValid &&
                 Math.Abs(
                     bull.Quality -
-                    bear.Quality) < 10)
+                    bear.Quality) < DivergenceThresholdRule.ConflictQualityMargin)
             {
                 return DivergenceResult.CreateConflict(
                     bull.Regular,
@@ -331,26 +331,26 @@ namespace cAlgo
                 priceDelta >=
                     Math.Max(
                         0.10,
-                        atr * 0.10) &&
-                rsiDelta >= 2.0 &&
+                        atr * DivergenceThresholdRule.RegularPriceAtr) &&
+                rsiDelta >= DivergenceThresholdRule.RegularRsiDelta &&
                 (!oldWave.Valid ||
                  !newWave.Valid ||
-                 waveDelta >= 1.50);
+                 waveDelta >= DivergenceThresholdRule.RegularWaveDelta);
 
             bool hidden =
                 -priceDelta >=
                     Math.Max(
                         0.08,
-                        atr * 0.08) &&
-                rsiDelta <= -2.0 &&
+                        atr * DivergenceThresholdRule.HiddenPriceAtr) &&
+                rsiDelta <= -DivergenceThresholdRule.RegularRsiDelta &&
                 oldWave.Valid &&
                 newWave.Valid &&
-                waveDelta <= -1.50;
+                waveDelta <= -DivergenceThresholdRule.RegularWaveDelta;
 
             int oscillatorAgreement = 0;
-            if (rsiDelta >= 2.0)
+            if (rsiDelta >= DivergenceThresholdRule.RegularRsiDelta)
                 oscillatorAgreement++;
-            if (waveDelta >= 1.50)
+            if (waveDelta >= DivergenceThresholdRule.RegularWaveDelta)
                 oscillatorAgreement++;
 
             if (!regular && !hidden)
@@ -361,22 +361,18 @@ namespace cAlgo
                 !regular;
 
             double recentBoost =
-                newerIndex >= index - 12
+                newerIndex >= index - DivergenceThresholdRule.RecentBoostBarsStrong
                     ? 10
-                    : newerIndex >= index - 20
+                    : newerIndex >= index - DivergenceThresholdRule.RecentBoostBarsModerate
                         ? 5
                         : 0;
 
             int quality =
-                45 +
-                Math.Min(
-                    22,
-                    (int)Math.Round(
-                        priceExcursion *
-                        20)) +
-                oscillatorAgreement * 9 +
-                (chosenHidden ? 3 : 7) +
-                (int)recentBoost;
+                DivergenceThresholdRule.CalculateQuality(
+                    priceExcursion,
+                    oscillatorAgreement,
+                    chosenHidden,
+                    (int)recentBoost);
 
             return new DivergenceCandidate(
                 Math.Min(
@@ -441,26 +437,26 @@ namespace cAlgo
                 priceDelta >=
                     Math.Max(
                         0.10,
-                        atr * 0.10) &&
-                rsiDelta <= -2.0 &&
+                        atr * DivergenceThresholdRule.RegularPriceAtr) &&
+                rsiDelta <= -DivergenceThresholdRule.RegularRsiDelta &&
                 (!oldWave.Valid ||
                  !newWave.Valid ||
-                 waveDelta <= -1.50);
+                 waveDelta <= -DivergenceThresholdRule.RegularWaveDelta);
 
             bool hidden =
                 -priceDelta >=
                     Math.Max(
                         0.08,
-                        atr * 0.08) &&
-                rsiDelta >= 2.0 &&
+                        atr * DivergenceThresholdRule.HiddenPriceAtr) &&
+                rsiDelta >= DivergenceThresholdRule.RegularRsiDelta &&
                 oldWave.Valid &&
                 newWave.Valid &&
-                waveDelta >= 1.50;
+                waveDelta >= DivergenceThresholdRule.RegularWaveDelta;
 
             int oscillatorAgreement = 0;
-            if (rsiDelta <= -2.0)
+            if (rsiDelta <= -DivergenceThresholdRule.RegularRsiDelta)
                 oscillatorAgreement++;
-            if (waveDelta <= -1.50)
+            if (waveDelta <= -DivergenceThresholdRule.RegularWaveDelta)
                 oscillatorAgreement++;
 
             if (!regular && !hidden)
@@ -471,9 +467,9 @@ namespace cAlgo
                 !regular;
 
             double recentBoost =
-                newerIndex >= index - 12
+                newerIndex >= index - DivergenceThresholdRule.RecentBoostBarsStrong
                     ? 10
-                    : newerIndex >= index - 20
+                    : newerIndex >= index - DivergenceThresholdRule.RecentBoostBarsModerate
                         ? 5
                         : 0;
 
