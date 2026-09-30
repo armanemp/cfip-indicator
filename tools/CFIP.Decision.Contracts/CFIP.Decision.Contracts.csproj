@@ -45,6 +45,5 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalVisualLifecycleRule.cs" Link="Core/Math/SignalVisualLifecycleRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/AdaptiveOutcomeRiskPolicy.cs" Link="Trading/Risk/AdaptiveOutcomeRiskPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/OutcomeObservation.cs" Link="Trading/Intelligence/OutcomeObservation.cs" />
-    <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeSnapshot.cs" />
   </ItemGroup>
 </Project>
