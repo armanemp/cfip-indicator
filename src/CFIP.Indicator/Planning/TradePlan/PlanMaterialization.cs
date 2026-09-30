@@ -19,6 +19,19 @@ namespace cAlgo
             double tp3,
             double tp4)
         {
+            double normalizedEntry =
+                NormalizePrice(entry);
+
+            double normalizedTp1 =
+                NormalizePrice(tp1);
+
+            if (!PriceProtectionRule.ValidateTarget(
+                    direction,
+                    normalizedEntry,
+                    normalizedTp1,
+                    0))
+                return null;
+
             Plan p =
                 new Plan
                 {
@@ -27,7 +40,7 @@ namespace cAlgo
                         execution == null
                             ? ExecutionMode.None
                             : execution.Mode,
-                    Entry = NormalizePrice(entry),
+                    Entry = normalizedEntry,
                     IdealEntry =
                         execution == null
                             ? entry
@@ -62,7 +75,7 @@ namespace cAlgo
                             ? ""
                             : execution.Source,
                     Stop = NormalizePrice(stop),
-                    Tp1 = NormalizePrice(tp1),
+                    Tp1 = normalizedTp1,
                     Tp2 =
                         IsValidTarget(
                             direction,

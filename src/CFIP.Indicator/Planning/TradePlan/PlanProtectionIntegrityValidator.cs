@@ -17,6 +17,13 @@ namespace cAlgo
                     plan.Stop))
                 return false;
 
+            if (!PriceProtectionRule.ValidateTarget(
+                    direction,
+                    plan.Entry,
+                    plan.Tp1,
+                    0))
+                return false;
+
             if (!IsValidTarget(
                     direction,
                     plan.Entry,

@@ -321,6 +321,26 @@ Boundary:
 
 Next phase: **CR4.4 / D4 — Skender/OSS numerical stability and incremental caching.**
 
+### CR4.8 / D8 implementation record
+
+CR4.8 / D8 is complete on branch `phase/cr4-8-tp1-directional-defence`.
+
+Implementation:
+- canonical target-side validation now flows through `PriceProtectionRule.ValidateTarget`;
+- invalid TP1 is rejected before plan materialization can expose it;
+- BuildPlan propagates materialization rejection fail-closed;
+- protection and reward-integrity boundaries independently enforce TP1 direction;
+- deterministic BUY/SELL valid and wrong-side fixtures cover both candidate and protection semantics;
+- the CR4.8 static gate is wired into the accumulated Source/Architecture workflow.
+
+Boundary:
+- no public parameter/default or RR/SL/confidence tuning;
+- no second decision/execution authority;
+- target-terminal runtime, broker lifecycle ordering, replay and empirical signal-quality validation remain manual.
+
+Next transition: **CR4.9 / D9 — Live reversal action/alert semantics.**
+
+
 ## Current active phase
 
-CR4.8 / D8 — TP1 directional defensive validation.
+CR4.9 / D9 — Live reversal action/alert semantics.
