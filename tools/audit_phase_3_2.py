@@ -26,7 +26,7 @@ workflow = read(".github/workflows/source-check.yml")
 checks = {
     "reward quality rule lives in platform-neutral Core math": (
         "RewardQualityFloorRule" in reward_rule and
-        "(ROOT / 'src/CFIP.Indicator/Core/Math/RewardQualityFloorRule.cs').exists()
+        (ROOT / "src/CFIP.Indicator/Core/Math/RewardQualityFloorRule.cs").exists()
     ),
     "smart gate consumes the canonical reward-quality rule": (
         "RewardQualityFloorRule.Calculate(" in smart_gates and
