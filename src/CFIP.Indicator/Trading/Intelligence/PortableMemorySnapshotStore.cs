@@ -104,7 +104,7 @@ namespace cAlgo
                 ".txt";
         }
 
-        private string LegacyPortableMemorySnapshotPath()
+        private string PriorPortableMemorySnapshotPath()
         {
             string symbol =
                 SanitizeArchivePart(
@@ -225,7 +225,7 @@ namespace cAlgo
                 if (!File.Exists(path))
                 {
                     path =
-                        LegacyPortableMemorySnapshotPath();
+                        PriorPortableMemorySnapshotPath();
 
                     legacyPath = true;
                 }
