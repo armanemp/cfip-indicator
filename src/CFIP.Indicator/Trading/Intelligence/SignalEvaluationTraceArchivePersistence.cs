@@ -9,6 +9,8 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const string SignalTraceSchema = "CFIP-SIGNAL-TRACE,2";
+
+        private string _signalTraceArchivePrefixCache;
         private const string SignalTraceHeader =
             "BarOpenTimeUtcTicks,ObservedUtcTicks,ClosedM5,Open,High,Low,Close,Direction," +
             "BuyShare,SellShare,Edge,BaseConfidence,Confidence,SmartQuality," +
@@ -40,6 +42,10 @@ namespace cAlgo
             return tacticalLane;
         }
 
+        private string SignalTraceArchivePrefix() {
+            if (!string.IsNullOrWhiteSpace(
+                    _signalTraceArchivePrefixCache))
+                return _signalTraceArchivePrefixCache;
         private string SignalTraceArchivePrefix()
         {
             string symbol =
@@ -54,15 +60,23 @@ namespace cAlgo
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
 
-            return
+            _signalTraceArchivePrefixCache =
                 "CFIP_SignalTrace_v2_" +
                 symbol +
                 "_" +
                 timeframe +
                 "_" +
                 MemoryConfigurationFingerprint();
-        }
 
+            return
+                _signalTraceArchivePrefixCache;
+                "CFIP_SignalTrace_v2_" +
+                symbol +
+                "_" +
+                timeframe +
+                "_" +
+                MemoryConfigurationFingerprint();
+                }
         private string SignalTraceArchiveFilePath(
             DateTime observedUtc)
         {
