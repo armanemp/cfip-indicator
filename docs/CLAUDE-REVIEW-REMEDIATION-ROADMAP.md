@@ -753,7 +753,7 @@ Acceptance:
 
 Covers: C7.
 
-Status: **VERIFIED COMPLETE on phase branch; merge/CI verification remains the repository acceptance boundary.**
+Status: **VERIFIED COMPLETE — PR #100, all required CI gates passed on commit `d8bb61083a043ce46c11b92dc8068b029c0c5add`.**
 
 Implemented:
 - explicit Auto Trade quick-enable re-arm now uses a dedicated runtime state-machine operation and does not depend on the public Indicator configuration parameter;
@@ -807,7 +807,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR3.4 — Execution UI control and popup reliability**.
+Current active phase: **CR3.5 — Calibration, outcome and rejection transparency**.
 
 ## 8. Completion order and dependencies
 
