@@ -448,7 +448,7 @@ for token in (
     "if (f.StructureBear)",
     "else if (f.MssBear)",
     "else",
-    "AddScore(true, 9, ref bear, ref evidence);"
+    "FrameScoringConstants.ChochContribution"
 ):
     if token not in frame_scoring_code:
         raise SystemExit(f"Market-frame structural scoring must de-duplicate one causal break: {token}")
