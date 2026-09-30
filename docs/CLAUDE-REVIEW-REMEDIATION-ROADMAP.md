@@ -1210,7 +1210,26 @@ Testing:
 
 ### CR5.2 — Liquidity/session target-source semantics and multi-level target candidates (E2)
 
-Initial review label: **CONFIRMED / MEDIUM — target-source behavior must be verified across all source consumers before semantic correction.**
+Status: **VERIFIED COMPLETE — PR #116 merged to `main`; merge commit `10e01bd2610ce0c42b6d365f55fae24c75a3edfb`.**
+
+Repository evidence:
+- Source/Architecture: PASS — PR #116 head run `36792555340` / workflow #2072, including `audit_phase_5_2.py` and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — PR #116 head run `36792555225` / workflow #1881;
+- cTrader Compile: PASS — PR #116 head run `36792555189` / workflow #2065.
+
+Implementation/safety:
+- canonical swing highs/lows replace raw candle-extreme liquidity forecasts;
+- active/unbroken liquidity semantics are enforced before target admission;
+- multiple valid liquidity forecasts are distance-ordered and separated with the existing `MinimumTpSpacingAtr`;
+- session forecasts preserve the canonical `SessionWindowRule` and existing UTC parameter semantics;
+- no public parameter/default, RR/confidence/stop/target threshold or decision/execution authority changed.
+
+Manual boundary remains:
+- target-terminal timing/readiness/panel behavior;
+- broker lifecycle and restart/reconnect;
+- empirical signal-quality/profitability.
+
+**Next transition: CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
 
 Scope:
 - `LiquidityAboveTargetSource`;
@@ -1629,7 +1648,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR5.2 — Liquidity/session target-source semantics and multi-level target candidates (E2)**.
+Current active phase: **CR5.3 — Independent-evidence group counting for parallel opportunities (E3)**.
 
 ## 8. Completion order and dependencies
 
