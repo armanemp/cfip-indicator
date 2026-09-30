@@ -198,3 +198,16 @@ Analysis -> Decision -> Signal -> Alert -> Execution -> Broker confirmation -> P
 6. Doji باید با همان meaningful-body rule سنجیده شود که rejection directional را gate می‌کند؛ wick-only candle نباید rejection evidence بسازد.
 7. deterministic contracts باید boundaryهای threshold، invalid numeric input و symmetry را پوشش دهند.
 8. در هر تغییر بعدی، اثر stop selection روی risk ATR، RR، reward path و selection bias و نیز اثر divergence/rejection روی false-positive/false-negative فقط با replay/outcome سنجیده شود.
+
+## 20. روتین اختصاصی CR3.1 — Live Invalidation / False-Signal
+
+1. invalidation و false-signal risk باید روی یک canonical closed M5 result ارزیابی شوند؛ همان closed bar نباید چندبار trigger business-state mutation کند.
+2. Structural invalidation باید از confirmed swing candidate استفاده کند؛ rolling min/max window جایگزین structural confirmation نیست.
+3. broker-close mutation باید نتیجه‌ی explicit داشته باشد؛ rejection باید به RecoveryRequired برسد و هیچ successful-exit bookkeeping را جلو نبرد.
+4. _lastExitM5 فقط پس از موفقیت mutation قابل advancement است؛ actual closure همچنان broker-confirmed via OnPositionClosed باقی می‌ماند.
+5. FalseSignalAdverseR باید یک semantic owner داشته باشد؛ inputهای NaN/Infinity/out-of-range fail-closed شوند.
+6. وقتی broker protective SL در adverse direction شناخته شده است، software adverse-R threshold نباید پشت envelope ریسک محافظت‌شده قرار بگیرد.
+7. BUY/SELL threshold geometry باید symmetric باشد و runtime fixture هر دو جهت را پوشش دهد.
+8. افزودن safety parameter باید در تمام parameter inventories/audits/README reconcile شود؛ تغییر عددی threshold بدون replay/outcome evidence مجاز نیست.
+9. routine audit باید کل زنجیره Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning و همچنین startup/hot-path performance/code cleanliness را دوباره بررسی کند.
+10. target-terminal verification برای broker-event timing، rejection/recovery، restart/reconnect و quote/bar synchronization همچنان جدا از CI الزامی است.
