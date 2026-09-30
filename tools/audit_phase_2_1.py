@@ -37,8 +37,9 @@ required = {
     "Canonical timeframe owner": "StructuralTimeframeRule.IsSupported(" in classifier,
     "Divergence conflict factory": "DivergenceResult.CreateConflict(" in divergence,
     "Divergence conflict is non-directional": (
-        "direction == 0" in divergence_model and
-        "Quality = NumericGuards.ClampInt(quality, 0, 100)" in divergence_model
+        "CreateConflict(" in divergence_model and
+        '"CONFLICT"' in divergence_model and
+        "0," in divergence_model
     ),
     "Canonical rejection owner": "RejectionRule.IsRejection(" in structure,
     "Closed-bar structure inputs": "f.StructureBull =" in frame_evidence,
