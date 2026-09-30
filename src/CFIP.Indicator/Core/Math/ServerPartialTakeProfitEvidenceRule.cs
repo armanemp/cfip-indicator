@@ -23,12 +23,14 @@ namespace cAlgo
                 direction != -1 ||
                 dealDirection != -direction ||
                 !isClosing ||
-                !IsFinitePositive(executionPrice) ||
-                !IsFinitePositive(expectedPrice) ||
-                !IsFinitePositive(volumeInUnits) ||
-                !IsFinitePositive(expectedVolumeInUnits) ||
-                !IsFiniteNonNegative(priceTolerance) ||
-                !IsFiniteNonNegative(volumeTolerance))
+                !NumericGuards.IsFinitePositive(executionPrice) ||
+                !NumericGuards.IsFinitePositive(expectedPrice) ||
+                !NumericGuards.IsFinitePositive(volumeInUnits) ||
+                !NumericGuards.IsFinitePositive(expectedVolumeInUnits) ||
+                !NumericGuards.IsFiniteValue(priceTolerance) ||
+                priceTolerance < 0 ||
+                !NumericGuards.IsFiniteValue(volumeTolerance) ||
+                volumeTolerance < 0)
                 return false;
 
             return
@@ -42,22 +44,5 @@ namespace cAlgo
                 volumeTolerance;
         }
 
-        private static bool IsFinitePositive(
-            double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value > 0;
-        }
-
-        private static bool IsFiniteNonNegative(
-            double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value >= 0;
-        }
     }
 }
