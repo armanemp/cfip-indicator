@@ -637,16 +637,26 @@ Next implementation phase: **CR2.9 — Structural stop, divergence and rejection
 
 Covers: B10, B11, B12.
 
-Work:
-- fail explicitly on unknown structural timeframe;
-- keep reward-path information but validate whether the current score structurally over-rewards tight stops using measured candidate fixtures;
-- parameterize or centralize fixed divergence thresholds;
-- harden doji/rejection classification.
+Status: **COMPLETE — PR #94 merged 2026-09-30, merge commit 6786af20d7b63d371c57890fb1adabb666f830bc.**
 
-Acceptance:
-- no silent W1 fallback;
-- no scoring change without fixture/evidence;
-- divergence conflict and doji cases are deterministic.
+Implemented:
+- preserved the existing fail-closed unknown structural timeframe behavior and verified it in the CR2.9 fixtures;
+- extracted structural-stop reward-path bonus and preferred-risk balance into a pure, testable owner without tuning live coefficients;
+- centralized all divergence quality/conflict thresholds, price-excursion floors, oscillator deltas, recency boosts and quality-score components;
+- centralized rejection/doji meaningful-body and wick thresholds and made both semantics share the same body rule;
+- added deterministic CR2.9 runtime contracts and a dedicated static audit;
+- preserved public parameters and execution/decision authority.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS, run 1597;
+- cTrader Compile: PASS, run 1781;
+- CR2.9 static audit: PASS;
+- accumulated CR2.1–CR2.8 audits: PASS.
+
+No empirical stop-bias, accuracy, win-rate or profitability claim is made. Any future score tuning requires replay/outcome evidence.
+
+Next implementation phase: **CR3.1 — Live invalidation and false-signal semantics**.
 
 ---
 
@@ -745,7 +755,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR2.9 — Structural stop, divergence and rejection guardrail refinement**.
+Current active phase: **CR3.1 — Live invalidation and false-signal semantics**.
 
 ## 8. Completion order and dependencies
 
