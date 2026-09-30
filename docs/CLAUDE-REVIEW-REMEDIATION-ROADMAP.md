@@ -629,6 +629,14 @@ Acceptance:
 
 ---
 
+## 7.1 Cross-chat continuation checkpoint
+
+This file is the canonical implementation order for the Claude review-remediation track. It supersedes the local cBot track as the immediate next-work source until `CR-FINAL` is accepted.
+
+At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
+
+Current active phase: **CR1.6 — FVG quality discrimination**.
+
 ## 8. Completion order and dependencies
 
 Mandatory order:
