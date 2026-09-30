@@ -284,6 +284,11 @@ Implementation:
 - account-scoped archive/runtime-log prefixes;
 - deterministic runtime contract + CR4.1 static audit.
 
+Repository verification:
+- Source/Architecture: PASS, workflow run #2021;
+- cTrader Compile: PASS, workflow run #2014;
+- Runtime Acceptance Contracts: PASS, workflow run #1830.
+
 Verification boundary:
 - GitHub exposed no retrievable CI status records for the merge at closeout; no CI PASS is claimed.
 - target-terminal account switching, restart and broker History migration semantics remain manual.
