@@ -5215,7 +5215,7 @@ namespace cAlgo
                     20,
                     "TP1",
                     "TP1") &&
-                !PartialTakeProfitRetryRule.ShouldAttemptStage(
+                PartialTakeProfitRetryRule.ShouldAttemptStage(
                     21,
                     20,
                     "TP1",
