@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR5.1 / E1 — Effective maximum structural stop risk and duplicate ceiling removal.**
 
 CR4.1 and CR4.2 are complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
@@ -391,9 +391,25 @@ Manual boundary remains:
 - restart/reconnect;
 - empirical signal-quality/profitability.
 
+### CR5.1 / E1 implementation record — 2026-10-01
+
+CR5.1 / E1 is implemented on `phase/cr5-1-stop-risk-ceiling`.
+
+Changes:
+- canonical Core StructuralStopRiskRule owns the effective maximum structural-stop ATR formula;
+- all nine scoped consumers use the canonical owner;
+- candidate over-ceiling rejection occurs before TP1 estimation/scoring;
+- PlanRewardRiskQualityRule no longer lets Preferred Stop Risk ATR raise the effective maximum;
+- deterministic truth-table, BUY/SELL symmetry, early-rejection and preferred-above-ceiling contracts were added;
+- audit_phase_5_1.py is wired after audit_phase_4_10.py.
+
+Verification: repository gates are pending on the active branch; cTrader-dependent and target-terminal behavior remain manual boundaries.
+
+Next transition after verification: **CR5.2 / E2**.
+
 ## Current active phase
 
-CR-FINAL — repository integration gate.
+CR5.1 / E1 — Effective maximum structural stop risk and duplicate ceiling removal.
 
 ### Next transition
 
