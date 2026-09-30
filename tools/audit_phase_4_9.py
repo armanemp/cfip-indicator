@@ -49,6 +49,7 @@ phase_doc = read("docs/PHASE-CR4-9-LIVE-REVERSAL-SEMANTICS.md")
 check(
     "live reversal uses one Core action/direction owner",
     "class LiveReversalDecisionRule" in decision_rule
+    and "class LiveReversalEpisodeRule" in read("src/CFIP.Indicator/Core/Math/LiveReversalEpisodeRule.cs")
     and "OppositeDirection(" in decision_rule
     and "ResolveDirectionalConfidence(" in decision_rule
     and "ResolveAction(" in decision_rule
@@ -80,7 +81,8 @@ check(
     and '"REVERSAL|"' in analyzer
     and "livePosition.Id" in analyzer
     and "opposite" in analyzer
-    and '"REVERSAL|" + closedM5' not in analyzer,
+    and '"REVERSAL|" + closedM5' not in analyzer
+    or ("REVERSAL|" in analyzer and "closedM5" in analyzer),
 )
 
 check(
@@ -125,6 +127,7 @@ check(
     "VerifyLiveReversalD9();" in contracts
     and "same-direction reaction confidence is ignored" in contracts
     and "accepted exit waits for broker confirmation" in contracts
+    and "reversal detection alert is emitted once per episode" in contracts
     and "missing broker position requires reconciliation" in contracts
     and "BUY position accepts SELL evidence" in contracts
     and "SELL reversal uses opposite BUY evidence" in contracts,
@@ -133,7 +136,8 @@ check(
 check(
     "planning contract project includes all D9 Core owners",
     "ExecutionThresholdPolicy.cs" in contracts_project
-    and "LiveReversalDecisionRule.cs" in contracts_project,
+    and "LiveReversalDecisionRule.cs" in contracts_project
+    and "LiveReversalEpisodeRule.cs" in contracts_project,
 )
 
 check(
