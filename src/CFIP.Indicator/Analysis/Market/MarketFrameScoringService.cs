@@ -174,8 +174,9 @@ namespace cAlgo
                             0,
                             bull -
                             Math.Min(
-                                6,
-                                (indicatorFusion.Conflict - 40) / 10));
+                                FrameScoringConstants.ConflictPenaltyCap,
+                                (indicatorFusion.Conflict - FrameScoringConstants.ConflictPenaltyBaseline) /
+                                FrameScoringConstants.ConflictPenaltyDivisor));
                 else
                     bear =
                         Math.Max(
@@ -212,11 +213,11 @@ namespace cAlgo
 
             double total =
                 Math.Max(
-                    1,
+                    FrameScoringConstants.DirectionalTotalMinimum,
                     bull + bear);
 
             double strongest =
-                100.0 *
+                FrameScoringConstants.PercentageScale *
                 Math.Max(
                     bull,
                     bear) /
@@ -234,7 +235,7 @@ namespace cAlgo
                             0,
                             f.Choppiness -
                             RangeChoppinessThreshold) *
-                        0.30);
+                        FrameScoringConstants.ChoppyRegimeSlope);
             }
             else
             {
