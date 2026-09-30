@@ -4473,3 +4473,28 @@ Target-terminal History/Deal semantics remain a manual acceptance boundary.
 Next phase: **CR2.6 — OrderBlock quality and cache discipline**.
 
 Track 12A remains blocked until CR-FINAL passes.
+## Claude Review Remediation — CR2.6 Closeout — 2026-09-30
+
+Status: VERIFIED COMPLETE — implementation merged after all three automated gates passed.
+
+Completed:
+- centralized Order Block quality arithmetic in OrderBlockQualityRule with explicit base, component contributions, clamps and fail-closed finite checks;
+- corrected the creation-ATR impulse normalization to use price-unit ATR semantics;
+- added canonical side-of-market validation at live candidate selection time;
+- added explicit Fresh / Mitigated / Broken lifecycle semantics with broken-zone exclusion;
+- retained and documented closed-bar/frame/direction candidate caching while keeping quote selection outside the cache identity;
+- added deterministic CR2.6 runtime contracts and static source audit;
+- preserved public parameters, execution authority and broker capacity.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Target-terminal replay remains required for empirical OB interaction and signal-quality measurement.
+
+Next phase: **CR2.7 — WaveTrend mathematical correctness**.
+
+Track 12A remains blocked until CR-FINAL passes.
+
+
