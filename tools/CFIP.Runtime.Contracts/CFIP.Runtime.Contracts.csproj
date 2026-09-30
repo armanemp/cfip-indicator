@@ -44,6 +44,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ZoneConfluenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OrderBlockRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/OrderBlockQualityRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Enums/OrderBlockLifecycleState.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LivePlanRecoveryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionFillAcceptanceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" />
