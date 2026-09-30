@@ -604,7 +604,7 @@ Verification:
 - Runtime Acceptance: PASS;
 - cTrader Compile: PASS.
 
-Verified head: `181b238a548280fc01a2e1e290e8f9d9fea34b2`.
+Verified head: `181b238a548280fc01a67fb1e3ba8a617f63e42a`.
 
 ## CR2.8 — Historical rendering semantics and cost
 
