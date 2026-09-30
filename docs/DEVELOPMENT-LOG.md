@@ -2173,7 +2173,7 @@ Next phase: **CR1.5 — repeated work / synchronous persistence**.
 Status: IMPLEMENTATION COMPLETE; target-terminal verification remains required.
 
 Implemented:
-- buffered Runtime Log / Outcome / Signal Trace archives with bounded Timer flush;
+- buffered Runtime Log / Outcome / Signal Trace archives with bounded Timer flush; startup-only history marker file write remains outside the archive writer by design;
 - deferred explicit LocalStorage flush/reload to the Timer heartbeat;
 - cached archive prefixes and parameter fingerprint;
 - closed-bar FVG/OB candidate cache with deterministic Bars/index invalidation;
