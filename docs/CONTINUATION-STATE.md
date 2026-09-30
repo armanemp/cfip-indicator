@@ -163,20 +163,31 @@ Next phase: **CR4.5 / D5 — Per-timeframe regime semantics.**
 Target-terminal acceptance remains a later manual boundary.
 
 
-### CR4.5 / D5 implementation checkpoint — 2026-10-01
+### CR4.5 / D5 closeout — 2026-10-01
 
-CR4.5 is implemented on branch `phase/cr4-5-per-timeframe-regime`; CI/merge closeout is pending.
+CR4.5 / D5 was completed and merged to `main` via PR #106, merge commit `c529c38ecea09e4b1ad85bc465e1ba12739ff95b`.
 
-Implementation:
-- preserve the existing dedicated M5 regime path;
-- add bounded per-timeframe regime caching for non-M5 Bars series;
-- expose normalized regime, quality and stability on each Frame;
-- make frame scoring consume each frame's own regime;
-- centralize normalization and keep UNKNOWN explicitly neutral;
-- add deterministic BUY/SELL symmetry and UNKNOWN-neutrality contracts;
-- add `audit_phase_4_5.py` to the accumulated Source/Architecture gate.
+Implementation record:
+- preserved the dedicated M5 regime path;
+- added bounded per-timeframe regime caching for non-M5 Bars series;
+- exposed normalized regime, quality and stability on each Frame;
+- made frame scoring consume each frame's own normalized regime;
+- centralized regime normalization and kept UNKNOWN explicitly neutral;
+- added deterministic BUY/SELL symmetry and UNKNOWN-neutrality runtime contracts;
+- hardened the CR4.5 static audit so source formatting cannot create false failures while cache invalidation and per-timeframe ownership remain checked.
 
-Next after verified merge: **CR4.6 / D6 — Frame-scoring constant ownership.**
+Verification:
+- Source/Architecture PASS — run 36781736303, including CR4.5 static gate;
+- cTrader Compile PASS — run 36781736379;
+- Runtime Acceptance PASS — run 36781736247.
+
+Boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default regime threshold, RR, confidence or execution policy changed;
+- no second decision or execution authority introduced;
+- target-terminal timing, replay and empirical signal-quality validation remain manual acceptance items.
+
+Next transition: **CR4.6 / D6 — Frame-scoring constant ownership.**
 
 ### Prompt 6 remediation insertion — 2026-09-30
 
@@ -255,4 +266,4 @@ Next phase: **CR4.4 / D4 — Skender/OSS numerical stability and incremental cac
 
 ## Current active phase
 
-CR4.5 / D5 — Per-timeframe regime semantics.
+CR4.6 / D6 — Frame-scoring constant ownership.
