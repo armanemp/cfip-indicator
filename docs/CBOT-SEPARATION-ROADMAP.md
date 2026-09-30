@@ -577,6 +577,31 @@ This preserves the project's existing safety matrix.
 
 The implementation order is **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. CBOT-Preflight is a no-trade blocking gate, not a separate product rewrite phase.
 
+### CBOT-0 — Boundary inventory and freeze
+
+Output:
+
+- exact file/method ownership matrix;
+- exact direct broker-call inventory;
+- exact mixed-class split list;
+- dependency graph of Indicator → Contracts → cBot;
+- method/field/helper dependency closure for every candidate moved owner;
+- direct broker API inventory including both method calls and fluent/object mutation calls;
+- permission/account-state access inventory;
+- event-handler/timer/thread ownership inventory for broker lifecycle work;
+- complete parameter ownership/migration matrix for every current execution-related parameter;
+- explicit list of parameters that remain Indicator-owned because they change analytical proposal/plan behavior;
+- explicit list of parameters that move to cBot because they control broker/account execution or live broker management;
+- explicit list of presentation-only parameters that remain Indicator-owned;
+- proof that no two public parameters control the same execution behavior after migration;
+- no source behavior change.
+
+Acceptance:
+
+- every broker mutation has one future cBot owner;
+- every analytical owner remains with Indicator;
+- no ambiguous “shared executor” remains.
+
 ### CBOT-Preflight — cTrader host capability proof (blocking gate after CBOT-0)
 
 After CBOT-0 is accepted and before creating the Contracts project, prove the supported local cTrader integration surface on the actual target environment.
@@ -599,28 +624,6 @@ Blocking rule:
 **CBOT-1 cannot start until CBOT-0 is accepted and CBOT-Preflight is verified.**
 
 If the target environment cannot support the intended structured read-only handoff, stop the migration and redesign the local transport boundary before moving any broker authority. Do not fall back to chart-object scraping, static globals, reflection, or a duplicated analysis engine.
-
-### CBOT-0 — Boundary inventory and freeze
-
-### CBOT-0 — Boundary inventory and freeze
-
-Output:
-
-- exact file/method ownership matrix;
-- exact direct broker-call inventory;
-- exact mixed-class split list;
-- dependency graph of Indicator → Contracts → cBot;
-- method/field/helper dependency closure for every candidate moved owner;
-- direct broker API inventory including both method calls and fluent/object mutation calls;
-- permission/account-state access inventory;
-- event-handler/timer/thread ownership inventory for broker lifecycle work;
-- no source behavior change.
-
-Acceptance:
-
-- every broker mutation has one future cBot owner;
-- every analytical owner remains with Indicator;
-- no ambiguous “shared executor” remains.
 
 ### CBOT-1 — Contracts
 
