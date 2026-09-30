@@ -22,6 +22,7 @@ namespace cAlgo
                                         return;
 
                                     MarkBrokerStateDirty();
+                                    ResetReversalEpisodeOnClosedPosition(args.Position.Id);
                         
 
                                     if (!_lifecycleEventGuard.TryBegin(

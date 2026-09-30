@@ -9,7 +9,6 @@ namespace cAlgo
     /// </summary>
     internal static class ExecutionThresholdPolicy
     {
-
         internal static int NormalizeDirectionShare(int value)
         {
             return NumericGuards.ClampInt(value, 50, 95);
@@ -25,6 +24,16 @@ namespace cAlgo
             return NumericGuards.ClampInt(value, 50, 100);
         }
 
+        internal static int NormalizeLiveReversalConfidence(int value)
+        {
+            return NumericGuards.ClampInt(value, 50, 95);
+        }
+
+        internal static int NormalizeLiveReversalStructuralScore(int value)
+        {
+            return NumericGuards.ClampInt(value, 50, 100);
+        }
+
         internal static int NormalizeEndOfDayAlertMinutesBefore(int value)
         {
             return NumericGuards.ClampInt(value, 5, 180);
@@ -34,6 +43,5 @@ namespace cAlgo
         {
             return NumericGuards.ClampDouble(value, 0.02, 0.50);
         }
-
     }
 }

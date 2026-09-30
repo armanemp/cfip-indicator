@@ -284,6 +284,11 @@ Implementation:
 - account-scoped archive/runtime-log prefixes;
 - deterministic runtime contract + CR4.1 static audit.
 
+Repository verification:
+- Source/Architecture: PASS, workflow run #2021;
+- cTrader Compile: PASS, workflow run #2014;
+- Runtime Acceptance Contracts: PASS, workflow run #1830.
+
 Verification boundary:
 - GitHub exposed no retrievable CI status records for the merge at closeout; no CI PASS is claimed.
 - target-terminal account switching, restart and broker History migration semantics remain manual.
@@ -341,6 +346,27 @@ Boundary:
 Next transition: **CR4.9 / D9 — Live reversal action/alert semantics.**
 
 
+### CR4.9 / D9 implementation record
+
+CR4.9 / D9 is implemented on branch `phase/cr4-9-live-reversal-semantics`.
+
+Implementation:
+- one Core owner for live-reversal direction/confidence/action semantics;
+- opposite-direction-only reaction/frame evidence;
+- bounded reversal episode alert state;
+- confirmed-close episode reset;
+- retained-position state is WAIT, not BLOCKED;
+- accepted close is EXIT_REQUESTED, not EXECUTED;
+- missing-position path requests broker reconciliation/recovery and does not synthesize closure/outcome;
+- deterministic D9 contracts and static audit are wired into CI;
+- no public parameter/default or trading threshold tuning.
+
+Verification boundary:
+- repository Source/Architecture, Runtime Acceptance and cTrader Compile remain to be read from the PR checks;
+- target-terminal broker acknowledgement ordering, restart/reconnect timing, panel behavior and empirical outcome validation remain manual.
+
+Next transition: **CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
+
 ## Current active phase
 
-CR4.9 / D9 — Live reversal action/alert semantics.
+CR4.10 / D10 — Native-indicator defensive safety and registry performance.

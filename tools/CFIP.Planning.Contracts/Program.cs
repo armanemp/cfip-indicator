@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
             VerifyTargetPipelineD7();
+            VerifyLiveReversalD9();
             Console.WriteLine("Planning contracts OK");
         }
 
@@ -264,6 +265,158 @@ namespace cAlgo
 
             Console.WriteLine(
                 "D8 TP1 directional defence: BUY/SELL valid and wrong-side fixtures passed");
+        }
+
+        private static void VerifyLiveReversalD9()
+        {
+            Assert(
+                LiveReversalDecisionRule.OppositeDirection(1) == -1,
+                "BUY position reverses to SELL");
+
+            Assert(
+                LiveReversalDecisionRule.OppositeDirection(-1) == 1,
+                "SELL position reverses to BUY");
+
+            Assert(
+                LiveReversalDecisionRule.OppositeDirection(0) == 0,
+                "neutral position has no reversal direction");
+
+            Assert(
+                LiveReversalDecisionRule.IsOppositeEvidenceDirection(
+                    1,
+                    -1),
+                "BUY position accepts SELL evidence");
+
+            Assert(
+                !LiveReversalDecisionRule.IsOppositeEvidenceDirection(
+                    1,
+                    1),
+                "BUY position rejects same-direction evidence");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveDirectionalConfidence(
+                    1,
+                    -1,
+                    84,
+                    -1,
+                    79) == 84,
+                "reaction confidence is used only for opposite direction");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveDirectionalConfidence(
+                    1,
+                    1,
+                    94,
+                    -1,
+                    79) == 79,
+                "same-direction reaction confidence is ignored");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveDirectionalConfidence(
+                    -1,
+                    1,
+                    77,
+                    1,
+                    88) == 88,
+                "SELL reversal uses opposite BUY evidence");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveDirectionalConfidence(
+                    -1,
+                    -1,
+                    96,
+                    -1,
+                    96) == 0,
+                "same-direction SELL evidence cannot qualify a SELL reversal");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveAction(
+                    true,
+                    false,
+                    true,
+                    false) ==
+                LiveReversalAction.DetectedRetain,
+                "reversal detection without close permission retains position");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveAction(
+                    true,
+                    true,
+                    false,
+                    false) ==
+                LiveReversalAction.DetectedRetain,
+                "non-profitable reversal retains position");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveAction(
+                    true,
+                    true,
+                    true,
+                    false) ==
+                LiveReversalAction.ExitRequested,
+                "profitable reversal requests exit");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveAction(
+                    true,
+                    true,
+                    true,
+                    true) ==
+                LiveReversalAction.AwaitBrokerConfirmation,
+                "accepted exit waits for broker confirmation");
+
+            Assert(
+                LiveReversalDecisionRule.ResolveAction(
+                    false,
+                    true,
+                    true,
+                    false) ==
+                LiveReversalAction.ReconcileBrokerState,
+                "missing broker position requires reconciliation");
+
+            Assert(
+                ExecutionThresholdPolicy.NormalizeLiveReversalConfidence(49) == 50 &&
+                ExecutionThresholdPolicy.NormalizeLiveReversalConfidence(68) == 68 &&
+                ExecutionThresholdPolicy.NormalizeLiveReversalConfidence(96) == 95,
+                "live reversal confidence boundary preserves public range");
+
+            Assert(
+                ExecutionThresholdPolicy.NormalizeLiveReversalStructuralScore(49) == 50 &&
+                ExecutionThresholdPolicy.NormalizeLiveReversalStructuralScore(72) == 72 &&
+                ExecutionThresholdPolicy.NormalizeLiveReversalStructuralScore(101) == 100,
+                "live reversal structural-score boundary preserves public range");
+
+            Assert(
+                LiveReversalEpisodeRule.IsSameEpisode(
+                    42,
+                    -1,
+                    42,
+                    -1),
+                "same position/direction remains one reversal episode");
+
+            Assert(
+                !LiveReversalEpisodeRule.IsSameEpisode(
+                    42,
+                    -1,
+                    43,
+                    -1),
+                "position change starts a new reversal episode");
+
+            Assert(
+                !LiveReversalEpisodeRule.IsSameEpisode(
+                    42,
+                    1,
+                    42,
+                    -1),
+                "opposite-direction change starts a new reversal episode");
+
+            Assert(
+                LiveReversalEpisodeRule.ShouldEmitDetectionAlert(false) &&
+                !LiveReversalEpisodeRule.ShouldEmitDetectionAlert(true),
+                "reversal detection alert is emitted once per episode");
+
+            Console.WriteLine(
+                "D9 live reversal: directional evidence, action semantics, episode semantics and parameter boundaries passed");
         }
 
         private static void VerifyLifecycleTransitions()

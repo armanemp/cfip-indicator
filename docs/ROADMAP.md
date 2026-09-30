@@ -4879,6 +4879,11 @@ Implemented:
 - added deterministic TP1–TP4 feasibility and BUY/SELL symmetry contracts;
 - reused the canonical `StructuralTimeframeRule` for HTF classification.
 
+Repository verification evidence:
+- Source/Architecture: PASS, workflow run #2021;
+- cTrader Compile: PASS, workflow run #2014;
+- Runtime Acceptance Contracts: PASS, workflow run #1830.
+
 Deterministic evidence:
 - 4/4 valid TP1–TP4 BUY stage fixtures accepted;
 - 4/4 below-minimum-RR fixtures rejected with the canonical reason;
@@ -4926,6 +4931,38 @@ Safety boundary:
 - no target-terminal or broker-runtime claim is made from source changes alone.
 
 **Next phase: CR4.9 / D9 — Live reversal action/alert semantics.**
+
+### CR4.9 / D9 closeout — 2026-10-01
+
+Status: **COMPLETE — repository verification PASS.**
+
+Implemented:
+- added one Core `LiveReversalDecisionRule` owner for opposite-direction mapping, directional reversal confidence and action semantics;
+- ensured reversal confidence only consumes reaction/frame evidence when it is aligned with the opposite direction;
+- added O(1) reversal-episode state so `REVERSAL` detection alerts are not re-emitted every qualifying M5 while the same episode remains active;
+- reset reversal-episode state on broker-confirmed `PositionClosed`;
+- changed retained-position presentation from `BLOCKED` to `WAIT • REVERSAL DETECTED • POSITION RETAINED`;
+- changed accepted reversal close presentation from `EXECUTED` to `EXIT_REQUESTED`, leaving final closure/outcome authority with broker lifecycle events;
+- changed missing-position reversal handling to broker-state reconciliation/recovery instead of directly clearing the plan or synthesizing a close/outcome;
+- centralized the existing public live-reversal bounds under named Core threshold ownership without changing their values;
+- added deterministic D9 contracts and `audit_phase_4_9.py`, wired after CR4.8 in the accumulated Source/Architecture workflow.
+
+Deterministic evidence:
+- BUY/SELL opposite-direction mapping: covered;
+- same-direction reversal evidence rejection: covered;
+- directional reaction/frame confidence: covered;
+- retained vs exit-requested vs broker-confirmation states: covered;
+- missing-position reconciliation: covered;
+- live-reversal parameter-bound preservation: covered.
+
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/SL/target or execution threshold was tuned;
+- no second decision or broker-execution authority introduced;
+- no synthetic outcome is emitted by reversal detection;
+- target-terminal timing, broker acknowledgement ordering, restart/reconnect behavior and empirical signal-quality/profitability remain manual acceptance boundaries.
+
+**Next phase: CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
