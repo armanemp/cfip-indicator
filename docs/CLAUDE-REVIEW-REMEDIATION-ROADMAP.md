@@ -1051,6 +1051,24 @@ Required verification:
 - add BUY/SELL symmetry tests for wrong-side TP1;
 - rejection must be observable without creating a second decision authority.
 
+### CR4.8 closeout — 2026-10-01
+
+Status: **COMPLETE — TP1 directional defensive invariant verified at the relevant repository boundaries.**
+
+Verification:
+- the canonical target-side owner is `PriceProtectionRule.ValidateTarget`;
+- candidate constraint evaluation delegates wrong-side rejection to that owner;
+- plan materialization fails closed for invalid-direction TP1;
+- plan protection and reward-integrity boundaries independently defend TP1 direction;
+- deterministic BUY/SELL valid and wrong-side TP1 fixtures are present;
+- `TargetProgressionRule` BUY/SELL symmetry remains explicitly covered;
+- the accumulated Source/Architecture workflow now includes `audit_phase_4_8.py`.
+
+Safety:
+- no public parameter, RR floor, confidence threshold, stop policy or execution policy changed;
+- no second decision/execution authority introduced;
+- target-terminal and broker runtime behavior remain manual acceptance boundaries.
+
 ### CR4.9 — Live reversal action/alert semantics (D9)
 
 Initial review label: **CONFIRMED / PARTIAL — alert ordering is likely valid as described; direction-score and clamp claims require exact-source verification.**
