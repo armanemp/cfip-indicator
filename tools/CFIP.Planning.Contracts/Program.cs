@@ -480,7 +480,7 @@ namespace cAlgo
 
                 Assert(
                     tp4 ==
-                    tp4Reachable[i] == 1,
+                    (tp4Reachable[i] == 1),
                     "TP4 extension feasibility at risk ATR " +
                     risk.ToString("F2"));
 
