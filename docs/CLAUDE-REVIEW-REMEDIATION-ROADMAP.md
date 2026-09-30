@@ -305,7 +305,7 @@ Acceptance:
 - Runtime Acceptance: PASS on the final CR1.5 head;
 - cTrader compile: PASS on the final CR1.5 head;
 - Source/Architecture final-head verification remains required before merge;
-- no direct file write remains in production source outside BufferedArchivePersistence;
+- archive/event file writes are owned by BufferedArchivePersistence; the startup history-location marker remains an explicit startup-only file write;
 - no synchronous LocalStorage.Reload/Flush remains in Calculate-facing persistence owners;
 - broker-state refresh is deterministic and event/mutation invalidated;
 - FVG/OB cache invalidation is tied to explicit Bars/index context and excludes open bars.
