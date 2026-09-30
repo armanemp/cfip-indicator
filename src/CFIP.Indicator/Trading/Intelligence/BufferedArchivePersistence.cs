@@ -8,34 +8,17 @@ namespace cAlgo
 {
     internal sealed class BufferedArchivePersistence
     {
-        private sealed class PendingLine
-        {
-            public string Line;
-            public string Key;
-        }
-
-        private sealed class PendingFile
-        {
-            public string Path;
-            public string Header;
-            public readonly List<PendingLine> Lines =
-                new List<PendingLine>();
-            public readonly HashSet<string> PendingKeys =
-                new HashSet<string>(StringComparer.Ordinal);
-            public HashSet<string> ExistingKeys;
-        }
-
-        private readonly Dictionary<string, PendingFile> _files =
-            new Dictionary<string, PendingFile>(
+        private readonly Dictionary<string, BufferedArchivePendingFile> _files =
+            new Dictionary<string, BufferedArchivePendingFile>(
                 StringComparer.Ordinal);
 
-        public int PendingLineCount
+        public int BufferedArchivePendingLineCount
         {
             get
             {
                 int count = 0;
 
-                foreach (PendingFile file in _files.Values)
+                foreach (BufferedArchivePendingFile file in _files.Values)
                     count += file.Lines.Count;
 
                 return count;
@@ -52,14 +35,14 @@ namespace cAlgo
                 line == null)
                 return false;
 
-            PendingFile file;
+            BufferedArchivePendingFile file;
 
             if (!_files.TryGetValue(
                     path,
                     out file))
             {
                 file =
-                    new PendingFile
+                    new BufferedArchivePendingFile
                     {
                         Path = path,
                         Header = header ?? ""
@@ -84,7 +67,7 @@ namespace cAlgo
             }
 
             file.Lines.Add(
-                new PendingLine
+                new BufferedArchivePendingLine
                 {
                     Line = line,
                     Key = string.IsNullOrWhiteSpace(key)
@@ -117,7 +100,7 @@ namespace cAlgo
                  remainingBudget > 0;
                  i++)
             {
-                PendingFile file =
+                BufferedArchivePendingFile file =
                     _files[paths[i]];
 
                 if (file.Lines.Count == 0)
@@ -146,8 +129,8 @@ namespace cAlgo
                         ? EnsureExistingKeys(file)
                         : null;
 
-                List<PendingLine> write =
-                    new List<PendingLine>();
+                List<BufferedArchivePendingLine> write =
+                    new List<BufferedArchivePendingLine>();
 
                 int consumed = 0;
 
@@ -156,7 +139,7 @@ namespace cAlgo
                      remainingBudget > 0;
                      lineIndex++)
                 {
-                    PendingLine pending =
+                    BufferedArchivePendingLine pending =
                         file.Lines[lineIndex];
 
                     if (!string.IsNullOrWhiteSpace(
@@ -271,7 +254,7 @@ namespace cAlgo
         }
 
         private HashSet<string> EnsureExistingKeys(
-            PendingFile file)
+            BufferedArchivePendingFile file)
         {
             if (file.ExistingKeys != null)
                 return file.ExistingKeys;
