@@ -4864,6 +4864,40 @@ Safety boundary:
 
 **Next phase: CR4.7 / D7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics.**
 
+### CR4.7 / D7 closeout — 2026-10-01
+
+Status: **COMPLETE — PR #108 merged to main, merge commit `2a586ca353f79d6151b9b8375edf46cb94df7880`.**
+
+Implemented:
+- centralized deterministic target-candidate constraints in Core;
+- separated M5 setup age from HTF source elapsed age;
+- propagated source elapsed age through HTF, D1/W1 prior-period, pivot and liquidity target producers;
+- added bounded per-stage `PLAN_TARGET` rejection telemetry with deterministic reason ordering and per-M5 deduplication;
+- added explicit RR, extension, age, HTF and obstacle rejection reasons;
+- added the target reward envelope check before candidate scanning so mathematically unreachable stages are observable;
+- kept `TargetSelector` as a thin orchestration boundary by moving telemetry and stage feasibility into dedicated owners;
+- added deterministic TP1–TP4 feasibility and BUY/SELL symmetry contracts;
+- reused the canonical `StructuralTimeframeRule` for HTF classification.
+
+Deterministic evidence:
+- 4/4 valid TP1–TP4 BUY stage fixtures accepted;
+- 4/4 below-minimum-RR fixtures rejected with the canonical reason;
+- 4/4 SELL mirror fixtures accepted;
+- TP4 was reachable in 1/4 fixed risk/ATR envelope fixtures under the existing 4 ATR extension and 12 RR cap.
+
+Verification on implementation HEAD `441611a8d1ca513ee332f9a8a006a3f37eb9a727`:
+- Source/Architecture PASS — run #1999;
+- Runtime Acceptance Contracts PASS — run #1808;
+- cTrader Compile PASS — run #1992.
+
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default RR, SL or target-age tuning;
+- no second decision or execution authority introduced;
+- historical/live market TP acceptance rates, broker timing, replay and profitability remain target-terminal/manual evidence.
+
+**Next phase: CR4.8 / D8 — TP1 directional defensive validation.**
+
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
