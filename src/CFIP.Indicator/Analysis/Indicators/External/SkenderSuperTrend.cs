@@ -14,19 +14,19 @@ namespace cAlgo
             int index)
         {
             IReadOnlyList<StockQuote> quotes =
-                GetOssQuotes(
+                GetOssStableQuotes(
                     bars,
                     index);
 
             if (quotes == null ||
-                quotes.Count < 60)
+                quotes.Count < OssIndicatorParameters.SuperTrendMinimumHistory)
                 return double.NaN;
 
             var results =
                 StockIndicator.GetSuperTrend(
                     quotes,
-                    10,
-                    3)
+                    OssIndicatorParameters.SuperTrendPeriod,
+                    OssIndicatorParameters.SuperTrendMultiplier)
                     .ToList();
 
             return results.Count == 0 ||
