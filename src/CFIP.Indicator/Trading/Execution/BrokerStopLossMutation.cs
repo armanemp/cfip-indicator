@@ -25,6 +25,8 @@ namespace cAlgo
                 
                             try
                             {
+                                MarkBrokerStateDirty();
+
                                 TradeResult result =
                                     position.ModifyStopLossPrice(normalized);
                 
