@@ -202,8 +202,8 @@ namespace cAlgo
                     payload,
                     LocalStorageScope.Type);
 
-                LocalStorage.Flush(
-                    LocalStorageScope.Type);
+                MarkDailyLossPersistenceDirty(
+                    false);
 
                 _lastDailyLossPersistUtc =
                     AsUtc(referenceUtc);
