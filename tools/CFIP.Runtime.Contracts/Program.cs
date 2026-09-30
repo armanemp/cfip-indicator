@@ -84,12 +84,69 @@ namespace cAlgo
             VerifyPersistenceHealthSemantics();
             VerifySignalTraceLineageSemantics();
             VerifyFrameRegimeSemantics();
+            VerifyFrameScoringConstants();
             VerifyOssIndicatorParameters();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
 
 
+
+
+        private static void VerifyFrameScoringConstants()
+        {
+            Assert(
+                FrameScoringConstants.StructureContribution == 16 &&
+                FrameScoringConstants.MssContribution == 12 &&
+                FrameScoringConstants.ChochContribution == 9 &&
+                FrameScoringConstants.DisplacementContribution == 10 &&
+                FrameScoringConstants.LiquidityContribution == 10 &&
+                FrameScoringConstants.EqualLevelContribution == 5,
+                "frame-scoring event contributions preserve the established values");
+
+            Assert(
+                FrameScoringConstants.DirectionMinimumScore == 35 &&
+                FrameScoringConstants.DirectionMinimumLead == 8 &&
+                FrameScoringConstants.ConflictPenaltyThreshold == 45 &&
+                FrameScoringConstants.ConflictPenaltyBaseline == 40 &&
+                FrameScoringConstants.ConflictPenaltyCap == 6 &&
+                FrameScoringConstants.ConflictPenaltyDivisor == 10,
+                "frame-scoring direction and conflict constants preserve the established values");
+
+            Assert(
+                Math.Abs(FrameScoringConstants.RsiBullExhaustionThreshold - 75.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.RsiBearExhaustionThreshold - 25.0) < 1e-12 &&
+                FrameScoringConstants.RsiExhaustionPenalty == 5,
+                "RSI exhaustion constants preserve the established values");
+
+            Assert(
+                Math.Abs(FrameScoringConstants.ChoppyRegimeBase - 8.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.ChoppyRegimeSlope - 0.30) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.NonChoppyRegimeCap - 14.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.NonChoppyAdxSlope - 0.35) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.RangeEfficiencyWeight - 8.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.EmaSpreadCap - 4.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.EmaSpreadWeight - 2.0) < 1e-12,
+                "regime contribution constants preserve the established values");
+
+            Assert(
+                Math.Abs(FrameScoringConstants.StrongestQualityWeight - 0.40) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.AdxQualityScale - 1.45) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.AdxQualityWeight - 0.13) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.EvidenceQualityScale - 5.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.EvidenceQualityCap - 100.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.EvidenceQualityWeight - 0.20) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.RegimeQualityWeight - 0.15) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.IndicatorQualityWeight - 0.12) < 1e-12 &&
+                FrameScoringConstants.QualityConflictPenaltyCap == 10 &&
+                FrameScoringConstants.QualityConflictPenaltyBaseline == 35 &&
+                FrameScoringConstants.QualityConflictPenaltyDivisor == 6 &&
+                Math.Abs(FrameScoringConstants.DirectionalTotalMinimum - 1.0) < 1e-12 &&
+                Math.Abs(FrameScoringConstants.PercentageScale - 100.0) < 1e-12 &&
+                FrameScoringConstants.QualityMinimum == 0 &&
+                FrameScoringConstants.QualityMaximum == 100,
+                "frame quality composition constants preserve the established values");
+        }
 
 
         private static void VerifyOssIndicatorParameters()

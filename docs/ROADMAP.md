@@ -4839,6 +4839,31 @@ Boundary:
 
 **Next phase: CR4.6 / D6 — Frame-scoring constant ownership.**
 
+### CR4.6 / D6 closeout — 2026-10-01
+
+Status: **COMPLETE — PR #107 merged to main after final verification.**
+
+Implemented:
+- created the single Core `FrameScoringConstants` owner;
+- migrated MarketFrameScoringService to the owner for event contributions, direction thresholds, conflict penalties, RSI exhaustion, regime contribution and frame-quality composition;
+- preserved all established numerical values;
+- added deterministic runtime contract coverage for the constant owner;
+- wired `audit_phase_4_6.py` into the accumulated Source/Architecture workflow;
+- corrected the CR4.5 cache-refresh audit's formatting-dependent false positive in a separate fix commit.
+
+Verification on final implementation HEAD `a134b72e863067291fb04eae7ac530c3fbcae999`:
+- Source/Architecture PASS — run 36783220015 (#1978);
+- Runtime Acceptance Contracts PASS — run 36783220007 (#1787);
+- cTrader Compile PASS — run 36783220117 (#1971).
+
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/stop/threshold tuning;
+- no second decision or execution authority introduced;
+- target-terminal timing, replay and empirical signal-quality validation remain manual.
+
+**Next phase: CR4.7 / D7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics.**
+
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**

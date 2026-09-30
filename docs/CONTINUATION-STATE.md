@@ -1,6 +1,6 @@
 # CFIP — Cross-Chat Continuation State
 
-Last updated: 2026-09-30
+Last updated: 2026-10-01
 
 ## Phase closeout
 
@@ -189,6 +189,33 @@ Boundary:
 
 Next transition: **CR4.6 / D6 — Frame-scoring constant ownership.**
 
+### CR4.6 / D6 closeout — 2026-10-01
+
+CR4.6 was completed on `phase/cr4-6-frame-scoring-constants`.
+
+Implementation:
+- centralized frame-scoring constants under `Core/Math/FrameScoringConstants.cs`;
+- migrated MarketFrameScoringService to that single owner without changing existing numerical values;
+- added deterministic runtime coverage for the constant owner;
+- added CR4.6 to the accumulated Source/Architecture audit chain;
+- separately corrected a formatting-dependent false positive in the CR4.5 cache-refresh static audit.
+
+Verification on implementation HEAD `a134b72e863067291fb04eae7ac530c3fbcae999`:
+- Source/Architecture PASS — run 36783220015 / #1978;
+- Runtime Acceptance Contracts PASS — run 36783220007 / #1787;
+- cTrader Compile PASS — run 36783220117 / #1971.
+
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/stop/threshold tuning;
+- no second decision or execution authority introduced;
+- target-terminal timing, replay and empirical signal-quality validation remain manual.
+
+### Next transition
+
+The next implementation response must execute **CR4.7 / D7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics** only.
+Track 12A remains blocked until CR-FINAL.
+
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
@@ -266,4 +293,4 @@ Next phase: **CR4.4 / D4 — Skender/OSS numerical stability and incremental cac
 
 ## Current active phase
 
-CR4.6 / D6 — Frame-scoring constant ownership.
+CR4.7 / D7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics.
