@@ -12,7 +12,8 @@ required = {
             "EnableEconomicNewsCalendar",
             "EconomicNewsDataUri",
             "NewsRefreshMinutes",
-            "symbolCurrencyMap",
+            "Additional News Currencies / Symbol Map",
+            "US30=USD",
             "HighImpactNewsMinutesBefore",
             "HighImpactNewsMinutesAfter",
             "CancelPendingBeforeHighImpactNews",
@@ -32,8 +33,7 @@ required = {
     "src/CFIP.Indicator/Core/Math/EconomicNewsCurrencyRule.cs":
         [
             "NormalizeSymbol(",
-            "AdditionalNewsCurrencies",
-            "Additional News Currencies / Symbol Map",
+            "symbolCurrencyMap",
             "AddSymbolMapMatches",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarClient.cs":
