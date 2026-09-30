@@ -313,6 +313,8 @@ namespace cAlgo
 
         protected override void Initialize()
         {
+            ResetEconomicNewsClientLifecycle();
+
             _native.Clear();
             _historicalDrawn.Clear();
             _outcomeDrawn.Clear();
@@ -495,6 +497,8 @@ namespace cAlgo
 
         protected override void OnDestroy()
                                 {
+                                    DisposeEconomicNewsClient();
+
                                     try
                                     {
                                         Timer.Stop();
