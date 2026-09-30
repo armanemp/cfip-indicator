@@ -31,12 +31,15 @@ private double CalculateVolume(
                                 }
                                 else
                                 {
+                                    if (!VolumeSizingRule.IsValidStopPips(stopPips))
+                                        return 0;
+
                                     double riskAmount =
                                         RiskAmountCalculator.Calculate(
                                             Account.Equity,
                                             EffectiveAutoRiskPercent());
                 
-                                    if (riskAmount <= 0)
+                                    if (!NumericGuards.IsFinitePositive(riskAmount))
                                         return 0;
                 
                                     volume =
