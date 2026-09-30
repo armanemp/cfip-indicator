@@ -16,7 +16,7 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Next: CR-FINAL — final integration audit and target-terminal acceptance.
+CR-FINAL repository integration is PASS. Remaining active gate: **target-terminal acceptance** only.
 
 ## Completed before this checkpoint
 
@@ -60,7 +60,7 @@ Next: CR-FINAL — final integration audit and target-terminal acceptance.
 
 ## Next transition
 
-CR3.1 is closed. CR3.2, CR3.3 and CR3.4 are closed. The next implementation response must execute CR3.5 only. Track 12A remains blocked until CR-FINAL.
+CR3.5 is closed and repository-side CR-FINAL is PASS. The next required work is target-terminal CR-FINAL acceptance; Track 12A remains blocked until that evidence is accepted.
 
 
 ## CR3.2 implementation record
