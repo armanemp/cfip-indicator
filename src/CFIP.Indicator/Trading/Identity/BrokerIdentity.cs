@@ -14,6 +14,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private bool _managedActionsOnlySafetyNoticeIssued;
+
         // ============================================================
                 
                         private bool HasTradingPermission()
@@ -107,10 +109,12 @@ namespace cAlgo
                                 position.SymbolName != SymbolName)
                                 return false;
                 
-                            if (!ManagedActionsOnly)
+                            if (!ManagedActionsOnly &&
+                                !_managedActionsOnlySafetyNoticeIssued)
                             {
                                 Print(
                                     "CFIP Managed Actions Only=false is safety-restricted: foreign/manual positions are never auto-managed; exact CFIP instance identity is still required.");
+                                _managedActionsOnlySafetyNoticeIssued = true;
                             }
 
                             string managedLabel =
