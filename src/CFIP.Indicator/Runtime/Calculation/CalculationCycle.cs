@@ -19,8 +19,7 @@ namespace cAlgo
 
                 BeginRuntimeFaultCycle();
 
-                RunPreDecisionBrokerReconciliation(
-                    index);
+                _brokerStateReconciledThisCycle = false;
 
                 int closedM5;
                 bool newClosedBar;
@@ -53,6 +52,11 @@ namespace cAlgo
 
                 if (newClosedBar)
                 {
+                    // Reconcile broker truth immediately before a new decision
+                    // is consumed. Non-new-bar ticks do not repeat this boundary.
+                    RunPreDecisionBrokerReconciliation(
+                        index);
+
                     // Closed-bar analysis may fail, or be in retry backoff. In
                     // either case management/protection must still run on the
                     // already-known broker state.
