@@ -222,7 +222,8 @@ namespace cAlgo
                             position.EntryTime);
 
                 if (recoveryCreatedM5 < 1 ||
-                    recoveryCreatedM5 >= _m5Bars.Count)
+                    (_m5Bars != null &&
+                     recoveryCreatedM5 >= _m5Bars.Count))
                     recoveryCreatedM5 =
                         Math.Max(
                             1,
@@ -252,6 +253,9 @@ namespace cAlgo
 
                 _plan.PositionId =
                     position.Id;
+
+                _pendingProtectedStopCandidate =
+                    0;
 
                 _activeBrokerStop =
                     position.StopLoss.HasValue
