@@ -21,7 +21,7 @@ namespace cAlgo
                                         !IsManagedPosition(args.Position))
                                         return;
 
-            MarkBrokerStateDirty();
+                                    MarkBrokerStateDirty();
                         
 
                                     if (!_lifecycleEventGuard.TryBegin(
