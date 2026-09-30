@@ -31,9 +31,14 @@ namespace cAlgo
                 private Frame _d1Frame;
                 private Frame _w1Frame;
         
-                private readonly Dictionary<Bars, Native> _native =
-                    new Dictionary<Bars, Native>(
-                        NativeBarsReferenceComparer.Instance);
+                private readonly List<Native> _native =
+                    new List<Native>();
+
+                // Native wrappers repeatedly request the same Bars reference while
+                // one analysis frame is being built (ATR/RSI/ADX/EMA/MACD). Keep the
+                // last resolved identity out of the fixed eight-item registry scan.
+                private Bars _lastNativeBars;
+                private Native _lastNative;
                 private readonly SubmissionGate _submissionGate =
                     new SubmissionGate();
                 private readonly HashSet<string> _historicalDrawn = new HashSet<string>();
