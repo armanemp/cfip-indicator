@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace cAlgo
 {
-    internal readonly struct ConfidenceCalibrationKey
+    internal readonly struct ConfidenceCalibrationKey : IEquatable<ConfidenceCalibrationKey>
     {
         public int Direction { get; }
         public OpportunityLane Lane { get; }
@@ -23,6 +23,20 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : regime.Trim().ToUpperInvariant();
             ConfidenceBucket = confidenceBucket;
+        }
+
+        public bool Equals(ConfidenceCalibrationKey other)
+        {
+            return Direction == other.Direction &&
+                   Lane == other.Lane &&
+                   ConfidenceBucket == other.ConfidenceBucket &&
+                   string.Equals(Regime, other.Regime, StringComparison.Ordinal);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ConfidenceCalibrationKey &&
+                   Equals((ConfidenceCalibrationKey)obj);
         }
 
         public override int GetHashCode()
@@ -306,7 +320,7 @@ namespace cAlgo
 
                 samples[key] = sampleCount + 1;
 
-                if (observation.Profitable)
+                if (IsPositiveRealizedR(observation.RealizedR))
                     wins[key] = winCount + 1;
                 else if (!wins.ContainsKey(key))
                     wins[key] = 0;
@@ -447,6 +461,13 @@ namespace cAlgo
             }
 
             return sampleCount;
+        }
+
+        private static bool IsPositiveRealizedR(double realizedR)
+        {
+            return !double.IsNaN(realizedR) &&
+                   !double.IsInfinity(realizedR) &&
+                   realizedR > 0;
         }
 
         private static int Get(
