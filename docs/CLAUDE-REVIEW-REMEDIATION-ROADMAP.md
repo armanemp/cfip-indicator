@@ -1028,19 +1028,237 @@ CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → 
 
 CR-FINAL cannot be considered complete while any D-item remains unverified, deferred without an explicit reason, or blocked by a missing target-terminal test.
 
-## 7.1 Cross-chat continuation checkpoint
+
+## 7.1 — Prompt 5 Remediation Track: Stop Caps, Target Sources, Evidence Independence, Pending Fills and Parallel Scenarios
+
+Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+
+Prompt 5 is now a mandatory follow-on review track after Prompt 4. Its findings remain static-review hypotheses until each item is independently reconciled against current main source, contracts, replay evidence and target-terminal behavior where required.
+
+Authoritative order:
+
+`CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL`
+
+### CR5.1 — Effective maximum structural stop risk and duplicate ceiling removal (E1)
+
+Initial review label: **CONFIRMED / MEDIUM — numerical duplication and parameter-semantics risk must be re-verified before change.**
+
+Scope:
+- `StructuralStopCandidateEvaluator`;
+- `PlanInputPreparation`;
+- `PlanIntegrityValidator`;
+- `ParallelOpportunityBuilder`;
+- `TradeActionabilityEvaluator`;
+- `AutomaticMarketSubmissionValidator`;
+- `AggressiveFinalExecutionGuard`;
+- `PendingSubmissionValidator`;
+- `SignalEvaluationTraceRecorder`;
+- all other structural-stop ceiling consumers.
+
+Required verification:
+- prove the current effective maximum-stop formula and all duplicate call sites;
+- create one canonical `EffectiveMaximumStopRiskAtr()` owner if the duplicate rule is confirmed;
+- preserve current numerical behavior by default;
+- clarify the distinct meaning of `MaximumSlAtr` and `MaximumStructuralStopAtr` without silently changing either parameter's default semantics;
+- reject over-ceiling structural-stop candidates as early as safely possible.
+
+Testing:
+- deterministic truth table covering Min/Maximum SL ATR and Maximum Structural Stop ATR combinations;
+- BUY/SELL symmetry;
+- candidate early-rejection behavior.
+
+### CR5.2 — Liquidity/session target-source semantics and multi-level target candidates (E2)
+
+Initial review label: **CONFIRMED / MEDIUM — target-source behavior must be verified across all source consumers before semantic correction.**
+
+Scope:
+- `LiquidityAboveTargetSource`;
+- `LiquidityBelowTargetSource`;
+- `SmartExtraTargetSource`;
+- `SESSION_FORECAST`;
+- target candidate scoring/reward filtering.
+
+Required verification:
+- determine whether current liquidity candidates are true swing/pool/unbroken-liquidity references or merely nearest candle extremes;
+- ensure multiple valid farther liquidity levels can be represented when the source intends to provide a liquidity forecast;
+- apply ATR-bounded minimum-distance discrimination without breaking existing valid targets;
+- verify session forecast semantics and whether its current window intentionally represents the existing default behavior;
+- do not replace the existing session window with named Asia/London/New York sessions without explicit evidence/approval for a default behavior change.
+
+Testing:
+- near/far High/Low fixtures;
+- equal-high/equal-low and broken/unbroken level cases;
+- ordering by distance;
+- target-candidate survival through RR/reward checks.
+
+### CR5.3 — Independent-evidence group counting for parallel opportunities (E3)
+
+Initial review label: **CONFIRMED / MEDIUM — independence naming and evidence inflation require consumer audit.**
+
+Scope:
+- `ScenarioExecutionPolicy.EnrichScenarioEvidence`;
+- `TradeOpportunityCandidate.IndependentEvidenceScore`;
+- all presentation/decision consumers of the score.
+
+Required verification:
+- inventory all consumers before changing semantics or field names;
+- group evidence into structurally meaningful families such as structure, momentum, volume and position/context;
+- verify how many distinct groups are actually represented in current candidates;
+- keep public parameter names/types/defaults unchanged;
+- if the persisted field name remains misleading, rename only with complete caller/schema migration and compatibility evidence.
+
+Testing:
+- three correlated structure flags must contribute one structural group, not three independent confirmations;
+- BUY/SELL symmetry;
+- no loss of canonical evidence provenance.
+
+### CR5.4 — Pending-order post-fill absolute SL/TP reconciliation (E4)
+
+Initial review label: **PARTIAL / NEEDS SOURCE VERIFICATION — pending fill semantics depend on broker reconciliation path.**
+
+Scope:
+- `BrokerPendingOrderPlacement`;
+- `BrokerLimitOrderPlacement`;
+- pending Stop/Limit fill adoption;
+- `LiveFillExitReconciler`;
+- any pending-specific post-fill target/stop resolver;
+- broker-confirmed managed-plan adoption.
+
+Required verification:
+- prove whether RelativeStopLossProtection / RelativeTakeProfitProtection remains authoritative after a pending order is filled away from the planned entry price;
+- trace the complete pending fill lifecycle to final broker-confirmed SL/TP;
+- if absolute plan levels are not restored after fill, add one canonical post-fill reconciliation path rather than a second execution authority;
+- preserve broker-confirmed state as authoritative and never assume accepted pending placement equals a position.
+
+Testing:
+- deterministic mock fills with positive and negative slippage/gap;
+- final absolute SL/TP must match the canonical adopted plan where the strategy contract requires structural levels;
+- rejection/retry/idempotency behavior.
+
+Manual cTrader:
+- actual Stop/Limit fill-price divergence;
+- broker-side final protection levels after fill.
+
+### CR5.5 — Parallel-scenario computation/candidate ownership and MicroReaction safety (E5)
+
+Initial review label: **CONFIRMED + PARTIAL — duplicated scenario computation is confirmed; MicroReaction and candidate-replacement semantics require exact-source verification.**
+
+Scope:
+- `ParallelOpportunityBuilder`;
+- Strategic/Tactical/MicroReaction lanes;
+- `BuildExecutionModel`;
+- `BuildTradeSetupPreview`;
+- shared target/stop candidate calculations;
+- `AddTimeframeScenarioCandidates`;
+- `ScenarioExecutionPolicy.IsCanonicalCandidateEligible`;
+- scenario identity/merge selection.
+
+Required verification:
+- identify shared calculations that can be computed once and reused across scenario lanes without changing ownership;
+- prevent MicroReaction from becoming an automatic countertrend engine on unfinished candles;
+- require the appropriate closed-bar confirmation before execution eligibility;
+- verify same-`ScenarioId` replacement rules and whether replacement is based on quality/priority as intended rather than recency alone;
+- preserve simultaneous scenario support when candidates are genuinely distinct.
+
+Testing:
+- one shared fixture should prove cache reuse across lanes;
+- unfinished-candle MicroReaction is not executable;
+- closed-bar confirmation restores the intended eligibility;
+- stronger existing candidate is not replaced merely because a weaker candidate is newer;
+- simultaneous distinct scenarios remain visible.
+
+Performance:
+- benchmark scenario build cost before/after;
+- avoid per-lane duplicate expensive target/stop discovery.
+
+### CR5.6 — Directional-bias semantics and timeframe consistency (E6)
+
+Initial review label: **DESIGN RISK / LOW–MEDIUM — semantic coupling must be verified before any weighting change.**
+
+Scope:
+- `PremiumDiscountAnalyzer`;
+- `LiveBiasAnalyzer`;
+- `HealthyVolatilityAnalyzer`;
+- all consumers of these flags;
+- M5 closed-bar authority.
+
+Required verification:
+- determine whether premium/discount is deliberately used as a mean-reversion/context signal or is unintentionally fighting trend regimes;
+- verify the exact parameter/default controlling its participation before any regime weighting change;
+- prove whether `LiveBias` is actually M5-based or chart-timeframe based;
+- migrate the live-bias read to the canonical closed M5 source only if the current contract is contradicted;
+- separate volatility-health from trigger-body confirmation so `MinimumTriggerBodyAtr` cannot silently redefine volatility health, unless source/contract evidence shows that coupling is intentional.
+
+Testing:
+- M5, M15 and H1 chart fixtures;
+- open-bar vs closed-M5 behavior;
+- trend/premium and mean-reversion cases;
+- volatility-health independence from trigger-body threshold.
+
+### CR5.7 — Decision-owned WATCH/REACTION alerts separated from chart rendering (E7)
+
+Initial review label: **PARTIAL / MEDIUM — exact render/alert coupling and fixed thresholds must be source-audited.**
+
+Scope:
+- `UI/Chart/SignalRenderer.RenderWatchAndReaction`;
+- canonical decision/alert emission boundary;
+- popup/audio delivery path;
+- `ShowSignalArrow` and `PanelRenderOptimization` interactions.
+
+Required verification:
+- prove whether WATCH/REACTION alerts can disappear solely because rendering is disabled or skipped;
+- move alert qualification/emission to the decision/alert owner when confirmed, leaving the renderer presentation-only;
+- centralize or name the current fixed threshold offsets (60 and 4) without changing their values by default;
+- preserve blocked-signal silence for marks/audio where that is already an invariant.
+
+Testing:
+- rendering enabled/disabled produces the same qualifying alert decision;
+- blocked signal produces no alert;
+- repeated closed-bar alert identity remains deterministic and bounded;
+- BUY/SELL symmetry.
+
+### CR5.8 — Small constant ownership and TargetSelection consistency (E8)
+
+Initial review label: **CONFIRMED/PARTIAL — structural cleanup plus targeted semantic tests.**
+
+Scope:
+- `PlanRewardRiskQualityRule` internal adaptive-RR constants;
+- `TargetSelectionPolicy.BuildTargetSelectionRequiredRR`;
+- all `TargetSelector` callers (`PlanBuilder`, `ExecutionPlanPreparation`, `LivePlanTargetEnrichment`, `LiveFillExitReconciler`, `EarlyPredictionEngine`, `PlanPreviewBuilder`, and any current seventh caller);
+- lane/required-RR propagation.
+
+Required verification:
+- name and centralize the internal constants without changing values;
+- prove required RR for TP1..TP4 is monotonically non-decreasing for every lane and current/default parameter combination;
+- verify Tactical minimum RR cannot invert TP2/TP3/TP4 ordering;
+- prove all TargetSelector callers pass the same canonical lane and required-RR contract for the same plan context;
+- reconcile any caller that intentionally uses a distinct lane as an explicit contract, not accidental divergence.
+
+Testing:
+- property-style/order fixtures for TP1..TP4;
+- lane matrix;
+- caller consistency contract;
+- BUY/SELL symmetry.
+
+### Prompt 5 completion gate
+
+CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → **CR-FINAL**
+
+CR-FINAL cannot be considered complete while any E-item remains unverified, deferred without an explicit reason, or blocked by a missing target-terminal/replay test.
+
+## 7.2 Cross-chat continuation checkpoint
 
 This file is the canonical implementation order for the Claude review-remediation track. It supersedes the local cBot track as the immediate next-work source until `CR-FINAL` is accepted.
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR3.5 — Calibration, outcome and rejection transparency**.
+Current active phase: **CR4.1 — Learning-memory identity and account scoping (D1)**.
 
 ## 8. Completion order and dependencies
 
 Mandatory order:
 
-CR-0 → CR1.1 → CR1.2 → CR1.3 → CR1.4 → CR1.5 → CR1.6 → CR1.7 → CR1.8 → CR1.9 → CR2.1 → CR2.2 → CR2.3 → CR2.4 → CR2.5 → CR2.6 → CR2.7 → CR2.8 → CR2.9 → CR3.1 → CR3.2 → CR3.3 → CR3.4 → CR3.5 → CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR-FINAL
+CR-0 → CR1.1 → CR1.2 → CR1.3 → CR1.4 → CR1.5 → CR1.6 → CR1.7 → CR1.8 → CR1.9 → CR2.1 → CR2.2 → CR2.3 → CR2.4 → CR2.5 → CR2.6 → CR2.7 → CR2.8 → CR2.9 → CR3.1 → CR3.2 → CR3.3 → CR3.4 → CR3.5 → CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL
 
 Why this order:
 
