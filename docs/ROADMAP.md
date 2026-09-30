@@ -4812,6 +4812,33 @@ Boundary:
 
 **Next phase: CR4.5 / D5 — Per-timeframe regime semantics.**
 
+### CR4.5 / D5 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #106 merged to `main`, merge commit `c529c38ecea09e4b1ad85bc465e1ba12739ff95b`.**
+
+Completed:
+- preserved the dedicated M5 regime path;
+- added bounded per-timeframe regime caching for non-M5 Bars series;
+- exposed normalized regime, quality and stability on each Frame;
+- made MarketFrameScoringService consume each frame's own normalized regime instead of forcing non-M5 frames to UNKNOWN;
+- centralized regime normalization and kept UNKNOWN explicitly neutral;
+- added deterministic BUY/SELL symmetry and UNKNOWN-neutrality runtime contracts;
+- added the CR4.5 static gate to the accumulated Source/Architecture workflow;
+- hardened the CR4.5 static audit so source-formatting changes cannot create false failures, while still checking cache invalidation and per-timeframe analysis ownership.
+
+Verification on implementation head `9353cf11b5473d2753d4e4b539677115765c4792`:
+- Source/Architecture PASS — run 36781736303 (including CR4.5 static gate);
+- Runtime Acceptance PASS — run 36781736247;
+- cTrader Compile PASS — run 36781736379.
+
+Boundary:
+- no public parameter name/type/DefaultValue changed;
+- no regime threshold, RR, confidence or execution policy was tuned;
+- no second decision or execution authority introduced;
+- target-terminal timing, replay and empirical signal-quality validation remain manual acceptance items.
+
+**Next phase: CR4.6 / D6 — Frame-scoring constant ownership.**
+
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
