@@ -131,6 +131,16 @@ check(
     ),
 )
 
+
+check(
+    "cache invalidates on cTrader history/reconnect events",
+    "HistoryLoaded += " in cache
+    and "Reloaded += " in cache
+    and "InvalidationPending" in cache
+    and "Bars_HistoryLoaded" in cache
+    and "Bars_Reloaded" in cache,
+)
+
 check(
     "cache invalidation detects series replacement and cached-prefix mutation",
     "!ReferenceEquals(cache.Bars, bars)" in cache
