@@ -16,6 +16,7 @@ recovery = read("src/CFIP.Indicator/Trading/Lifecycle/ManagedLivePlanRecovery.cs
 pending_filled = read("src/CFIP.Indicator/Trading/Lifecycle/PendingFilledHandler.cs")
 closed = read("src/CFIP.Indicator/Trading/Lifecycle/PositionClosedHandler.cs")
 outcome = read("src/CFIP.Indicator/Trading/Intelligence/OutcomeTelemetryEngine.cs")
+history_reader = read("src/CFIP.Indicator/Trading/Intelligence/HistoricalOutcomeReader.cs")
 aggregate = read("src/CFIP.Indicator/Core/Math/HistoricalOutcomeAggregationRule.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
@@ -46,8 +47,8 @@ checks = {
         "AggregateHistoricalOutcomeRecords(" in aggregate
     ),
     "close path uses historical aggregation": (
-        "History.FindByPositionId(" in outcome and
-        "HistoricalTrade[] historicalTrades" in read("src/CFIP.Indicator/Trading/Lifecycle/../Intelligence/HistoricalOutcomeReader.cs")
+        "History.FindByPositionId(" in history_reader and
+        "HistoricalTrade[] historicalTrades" in history_reader
     ),
     "realized outcome uses aggregated net profit": (
         "aggregate.NetProfit" in outcome and
