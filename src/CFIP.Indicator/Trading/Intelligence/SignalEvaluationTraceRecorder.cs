@@ -384,13 +384,10 @@ namespace cAlgo
                                 ? "UNKNOWN"
                                 : decision.Regime)),
                     PreferredStopRiskAtr,
-                    Math.Min(
-                        Math.Max(
-                            MinimumSlAtr,
-                            MaximumSlAtr),
-                        Math.Max(
-                            MinimumSlAtr,
-                            MaximumStructuralStopAtr)));
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        MinimumSlAtr,
+                        MaximumSlAtr,
+                        MaximumStructuralStopAtr));
 
             effectiveTp1RR = rewardRisk.EffectiveRR;
         }
