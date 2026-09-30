@@ -1118,7 +1118,7 @@ Repository verification:
 - Source/Architecture, Runtime Acceptance and cTrader Compile are pending PR check evidence at phase closeout;
 - target-terminal broker acknowledgement, restart/reconnect and empirical validation remain manual.
 
-Next phase: **CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
+Next phase: **CR5.1 / E1 — Effective maximum structural stop risk and duplicate ceiling removal.**
 
 ### CR4.10 — Native-indicator defensive safety and registry performance (D10)
 
@@ -1196,6 +1196,15 @@ Testing:
 - deterministic truth table covering Min/Maximum SL ATR and Maximum Structural Stop ATR combinations;
 - BUY/SELL symmetry;
 - candidate early-rejection behavior.
+
+
+
+Implementation record:
+- canonical Core structural-stop ceiling owner added;
+- all nine scoped consumers reconciled to one formula owner;
+- PlanRewardRiskQualityRule hard-ceiling promotion path removed;
+- deterministic runtime contracts and E1 static audit added;
+- no public parameter identity or default trading threshold changed.
 
 ### CR5.2 — Liquidity/session target-source semantics and multi-level target candidates (E2)
 
@@ -1379,7 +1388,7 @@ CR-FINAL cannot be considered complete while any E-item remains unverified, defe
 
 ## 7.2 — Prompt 6 Remediation Track: Target-Path Obstacles, Aggressive Risk Guards, Hidden Thresholds, Timeframe Scenarios and Orphan Protection
 
-Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+Status: **IMPLEMENTED — repository verification pending.**
 
 Prompt 6 is now a mandatory follow-on review track after Prompt 5 and before CR-FINAL. All F1–F9 findings remain static-review hypotheses until independently reconciled against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -1618,7 +1627,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR4.8 — TP1 directional defensive validation (D8)**.
+Current active phase: **CR5.1 — Effective maximum structural stop risk and duplicate ceiling removal (E1)**.
 
 ## 8. Completion order and dependencies
 
