@@ -4673,7 +4673,7 @@ The fourth Claude review prompt is now mandatory input to the remediation sequen
 
 Authoritative order is now:
 
-`CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL`
+`CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR-FINAL`
 
 Coverage:
 - D1: learning-memory identity, decision-only fingerprinting, account scoping and schema migration;
@@ -4728,7 +4728,42 @@ Mandatory Prompt 5 rules:
 - cTrader-dependent behavior is explicitly marked for hands-on verification;
 - newly discovered bugs are documented separately and are not fixed outside the active scope.
 
-CR-FINAL is **paused** until Prompt 4 and Prompt 5 are completed or explicitly documented as verified/deferred with evidence.
+CR-FINAL is **paused** until Prompt 4, Prompt 5 and Prompt 6 are completed or explicitly documented as verified/deferred with evidence.
+
+
+## Prompt 6 Remediation Gate — F1–F9 — 2026-09-30
+
+Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+
+Prompt 6 is now a mandatory remediation track after Prompt 5 and before CR-FINAL. The F1–F9 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
+
+Authoritative order:
+
+`CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR-FINAL`
+
+Coverage:
+- F1: opposing FVG/OB target-path direction, mitigation and obstacle caching;
+- F2: Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation;
+- F3: orphan managed-position protection failure must not report success;
+- F4: hidden additive/clamped actionability thresholds and effective-threshold transparency;
+- F5: regime identity and unreachable REVERSAL threshold branch;
+- F6: Breakout trap-risk exception, Retest trigger semantics and actionability constant ownership;
+- F7: independent-timeframe scenario semantics and duplicate scenario-policy authority;
+- F8: target-obstacle rejection reasons and distant-target survival analysis;
+- F9: target-obstacle scan performance and cache reuse.
+
+Mandatory Prompt 6 rules:
+- public `[Parameter]` name, type and `DefaultValue` remain unchanged;
+- any new parameter must preserve current behavior by default;
+- no behavior-changing Breakout, RR, stop, target, confidence or trigger-policy change without explicit approval and evidence;
+- every accepted correction gets its own `fix(<ID>): ...` commit;
+- every accepted correction receives deterministic behavioral tests;
+- platform-neutral logic belongs in testable Core ownership where appropriate;
+- project-wide routine audit and performance/code-cleanliness audit run in every phase;
+- cTrader-dependent behavior is explicitly marked for hands-on verification;
+- newly discovered bugs outside the active F-item remain documented and unfixed.
+
+CR-FINAL is **paused** until Prompt 4, Prompt 5 and Prompt 6 are completed or explicitly documented as verified/deferred with evidence.
 
 ## CR-FINAL Repository Integration Gate — 2026-09-30
 
