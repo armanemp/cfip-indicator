@@ -11,12 +11,18 @@ namespace cAlgo
         private const string RuntimeLogSchema =
             "CFIP-RUNTIME-LOG,2";
 
+        private string _runtimeLogPrefixCache;
+
         private const string RuntimeLogHeader =
             "ObservedUtcTicks,EventType,M5,Path,State,Reason,ScenarioId,SourceTimeframe," +
             "Direction,Entry,Stop,Tp1,Tp2,Tp3,Tp4,Confidence,SmartQuality,ActionableNow," +
             "PositionId,PendingOrderId,ScenarioEvidence,LocationQuality,WaveTrendQuality," +
             "PolicyAllowed,PolicyReason,ForecastHorizonBars";
 
+        private string RuntimeLogPrefix() {
+            if (!string.IsNullOrWhiteSpace(
+                    _runtimeLogPrefixCache))
+                return _runtimeLogPrefixCache;
         private string RuntimeLogPrefix()
         {
             string symbol =
@@ -31,15 +37,23 @@ namespace cAlgo
                         ? "UNKNOWN"
                         : Bars.TimeFrame.ToString());
 
-            return
+            _runtimeLogPrefixCache =
                 "CFIP_RuntimeLog_v2_" +
                 symbol +
                 "_" +
                 timeframe +
                 "_" +
                 MemoryConfigurationFingerprint();
-        }
 
+            return
+                _runtimeLogPrefixCache;
+                "CFIP_RuntimeLog_v2_" +
+                symbol +
+                "_" +
+                timeframe +
+                "_" +
+                MemoryConfigurationFingerprint();
+                }
         private string RuntimeLogFilePath(
             DateTime observedUtc)
         {
