@@ -33,8 +33,8 @@ namespace cAlgo
                                                 AddLevel(
                                                     levels,
                                                     direction == 1
-                                                        ? _d1Bars.HighPrices[d1 - 1]
-                                                        : _d1Bars.LowPrices[d1 - 1],
+                                                        ? _d1Bars.HighPrices[d1]
+                                                        : _d1Bars.LowPrices[d1],
                                                     "PREVIOUS_DAY",
                                                     "D1",
                                                     1,
@@ -47,8 +47,8 @@ namespace cAlgo
                                                 AddLevel(
                                                     levels,
                                                     direction == 1
-                                                        ? _w1Bars.HighPrices[w1 - 1]
-                                                        : _w1Bars.LowPrices[w1 - 1],
+                                                        ? _w1Bars.HighPrices[w1]
+                                                        : _w1Bars.LowPrices[w1],
                                                     "PREVIOUS_WEEK",
                                                     "W1",
                                                     1,
