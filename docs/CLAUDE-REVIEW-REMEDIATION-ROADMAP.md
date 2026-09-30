@@ -610,17 +610,28 @@ Verified head: `181b238a548280fc01a67fb1e3ba8a617f63e42a`.
 
 Covers: B9.
 
-Work:
-- bound the number of historical bars scanned;
-- cache per closed-bar result;
-- use timestamp-based object identity;
-- label historical arrows as presentation-only rather than replay/backtest outcomes;
-- avoid rerunning full analysis when the same host-bar state is unchanged.
+Status: **COMPLETE — PR #93 merged 2026-09-30, merge commit cab5a5e2e9a4fbccaf3ffe10d114c4ff54e6a243.**
 
-Acceptance:
-- fixed maximum historical work;
-- stable drawings under history changes;
-- no implication that a historical arrow is an independently verified live signal.
+Implemented:
+- fixed historical scan budget at 500 closed bars, independent of HistoricalSignalLimit;
+- cached each historical presentation result by closed-bar timestamp;
+- changed historical object identity from bar index to timestamp-based presentation identity;
+- invalidated historical cache/object state on Bars HistoryLoaded/Reloaded and detected history-shape changes;
+- stopped deleting/recreating all historical objects on every ordinary render;
+- documented and statically enforced that historical arrows are presentation-only;
+- preserved the existing host-bar rebuild gate so unchanged host-bar state does not rerun historical analysis;
+- added deterministic runtime contracts and the CR2.8 static audit.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS, run 1585;
+- cTrader Compile: PASS, run 1769;
+- CR2.8 static audit: PASS;
+- accumulated CR2.1–CR2.7 audits: PASS.
+
+Manual target-terminal verification remains required for history prepend/load-more/reload visual behavior, chart responsiveness and confirmation that historical arrows never create alerts/plans/orders/outcomes.
+
+Next implementation phase: **CR2.9 — Structural stop, divergence and rejection guardrail refinement.**
 
 ## CR2.9 — Structural stop, divergence and rejection guardrail refinement
 
@@ -734,7 +745,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR2.4 — Pending-order decision arbiter**.
+Current active phase: **CR2.9 — Structural stop, divergence and rejection guardrail refinement**.
 
 ## 8. Completion order and dependencies
 
