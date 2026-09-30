@@ -26,57 +26,40 @@ namespace cAlgo
                                         closedM5 < 10)
                                         return p;
                         
-                                    double buy =
-                                        _m5Frame.BullScore * 0.55 +
-                                        _m15Frame.BullScore * 0.45;
-                        
-                                    double sell =
-                                        _m5Frame.BearScore * 0.55 +
-                                        _m15Frame.BearScore * 0.45;
-                        
-                                    if (UseLiquidityForecast)
-                                    {
-                                        if (_m5Frame.LiquidityBull)
-                                            buy += 8;
-                        
-                                        if (_m5Frame.LiquidityBear)
-                                            sell += 8;
-                                    }
-                        
-                                    if (_m5Frame.VolumeBull)
-                                        buy += 2;
-                        
-                                    if (_m5Frame.VolumeBear)
-                                        sell += 2;
-                        
-                                    if (_m5Frame.VwapBull)
-                                        buy += 1;
-                        
-                                    if (_m5Frame.VwapBear)
-                                        sell += 1;
-                        
-                                    double total =
-                                        Math.Max(
-                                            1,
-                                            buy + sell);
-                        
-                                    int candidateDirection =
-                                        buy > sell
-                                            ? 1
-                                            : sell > buy
-                                                ? -1
-                                                : 0;
-                        
+                                    EarlyPredictionScoreResult score =
+                                        EarlyPredictionScoreRule.Evaluate(
+                                            _m5Frame.BullScore,
+                                            _m5Frame.BearScore,
+                                            _m15Frame.BullScore,
+                                            _m15Frame.BearScore,
+                                            UseLiquidityForecast,
+                                            _m5Frame.LiquidityBull,
+                                            _m5Frame.LiquidityBear,
+                                            _m5Frame.VolumeBull,
+                                            _m5Frame.VolumeBear,
+                                            _m5Frame.VwapBull,
+                                            _m5Frame.VwapBear);
+
+                                    p.DirectionalShare =
+                                        score.DirectionalShare;
+
                                     p.Confidence =
-                                        ClampInt(
-                                            (int)Math.Round(
-                                                100.0 *
-                                                Math.Max(
-                                                    buy,
-                                                    sell) /
-                                                total),
-                                            0,
-                                            100);
+                                        p.DirectionalShare;
+
+                                    p.AbsoluteStrength =
+                                        score.AbsoluteStrength;
+
+                                    p.BuyStrength =
+                                        score.BuyStrength;
+
+                                    p.SellStrength =
+                                        score.SellStrength;
+
+                                    p.TotalStrength =
+                                        score.TotalStrength;
+
+                                    int candidateDirection =
+                                        score.Direction;
                         
                                     MarketRegimeSnapshot regime =
                                         GetActiveM5Regime(
@@ -134,18 +117,47 @@ namespace cAlgo
                                         }
                                     }
 
-                                    if (candidateDirection == 0 ||
-                                        p.Confidence <
+                                    int minimumDirectionalShare =
                                         Math.Max(
                                             MinimumEarlyConfidence,
-                                            EarlySetupConfidence))
+                                            EarlySetupConfidence);
+
+                                    double minimumAbsoluteStrength =
+                                        Math.Max(
+                                            1,
+                                            MinimumEarlyConfidence);
+
+                                    if (candidateDirection == 0)
                                     {
                                         p.Direction = 0;
                                         p.Reason =
-                                            candidateDirection == 0
-                                                ? "NEUTRAL EARLY"
-                                                : "EARLY WATCH | CONF " +
-                                                  p.Confidence;
+                                            "NEUTRAL EARLY";
+                                        return p;
+                                    }
+
+                                    if (p.AbsoluteStrength <
+                                        minimumAbsoluteStrength)
+                                    {
+                                        p.Direction = 0;
+                                        p.Reason =
+                                            "EARLY BLOCK • ABSOLUTE STRENGTH " +
+                                            p.AbsoluteStrength.ToString(
+                                                "F1",
+                                                CultureInfo.InvariantCulture) +
+                                            " < " +
+                                            minimumAbsoluteStrength.ToString(
+                                                "F1",
+                                                CultureInfo.InvariantCulture);
+                                        return p;
+                                    }
+
+                                    if (p.DirectionalShare <
+                                        minimumDirectionalShare)
+                                    {
+                                        p.Direction = 0;
+                                        p.Reason =
+                                            "EARLY WATCH | SHARE " +
+                                            p.DirectionalShare;
                                         return p;
                                     }
                         
@@ -314,8 +326,12 @@ namespace cAlgo
                                         (p.Direction == 1
                                             ? "BUY"
                                             : "SELL") +
-                                        " EARLY | CONF " +
-                                        p.Confidence;
+                                        " EARLY | SHARE " +
+                                        p.DirectionalShare +
+                                        " | STRENGTH " +
+                                        p.AbsoluteStrength.ToString(
+                                            "F1",
+                                            CultureInfo.InvariantCulture);
                         
                                     return p;
                                 }
