@@ -98,7 +98,7 @@ namespace cAlgo
                     return true;
                 }
 
-                DailyLossEvaluation evaluation =
+                DailyLossRule.Evaluation evaluation =
                     DailyLossRule.Evaluate(
                         _dailyLossStartEquity,
                         _dailyLossBaselineUnrealizedNetProfit,
