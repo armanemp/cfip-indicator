@@ -17,6 +17,7 @@ namespace cAlgo
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
             VerifyMtfContextIntegrity();
+            VerifySessionWindowSemantics();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
             VerifyPendingOrderAcceptance();
@@ -95,6 +96,166 @@ namespace cAlgo
                 StructuralEvidenceRule.IsIndependentTransition(false, true, false) &&
                 StructuralEvidenceRule.IsIndependentTransition(false, false, true),
                 "transition is independent only when structure is absent");
+        }
+
+        private static void VerifySessionWindowSemantics()
+        {
+            DateTime sameDay = Utc(12, 0);
+
+            Assert(
+                SessionWindowRule.IsInside(
+                    sameDay,
+                    6,
+                    20),
+                "same-day session accepts an in-session time");
+
+            Assert(
+                !SessionWindowRule.IsInside(
+                    Utc(20, 0),
+                    6,
+                    20),
+                "same-day session excludes its end boundary");
+
+            Assert(
+                SessionWindowRule.IsInside(
+                    Utc(23, 0),
+                    22,
+                    6) &&
+                SessionWindowRule.IsInside(
+                    Utc(5, 59),
+                    22,
+                    6) &&
+                !SessionWindowRule.IsInside(
+                    Utc(6, 0),
+                    22,
+                    6),
+                "overnight session is directionally correct at both boundaries");
+
+            Assert(
+                SessionWindowRule.IsInside(
+                    Utc(5, 0),
+                    6,
+                    6),
+                "start equals end represents a full-day session");
+
+            DateTime sessionStart;
+            DateTime sessionEnd;
+
+            Assert(
+                SessionWindowRule.TryResolveSessionWindow(
+                    Utc(5, 0),
+                    6,
+                    20,
+                    out sessionStart,
+                    out sessionEnd) &&
+                sessionStart == Utc(6, 0).AddDays(-1) &&
+                sessionEnd == Utc(20, 0).AddDays(-1),
+                "pre-session reference resolves the previous completed same-day window");
+
+            Assert(
+                SessionWindowRule.TryResolveSessionWindow(
+                    Utc(3, 0),
+                    22,
+                    6,
+                    out sessionStart,
+                    out sessionEnd) &&
+                sessionStart == Utc(22, 0).AddDays(-1) &&
+                sessionEnd == Utc(6, 0),
+                "overnight session range crosses midnight correctly");
+
+            DateTime boundary;
+
+            Assert(
+                SessionWindowRule.TryResolveEndOfDayBoundary(
+                    Utc(19, 45),
+                    6,
+                    20,
+                    5,
+                    out boundary) &&
+                boundary == Utc(20, 0) &&
+                SessionWindowRule.IsWithinPreBoundaryWindow(
+                    Utc(19, 45),
+                    boundary,
+                    30),
+                "same-day EOD pre-warning resolves the current session boundary");
+
+            Assert(
+                SessionWindowRule.IsWithinPostBoundaryWindow(
+                    Utc(20, 3),
+                    boundary,
+                    5) &&
+                !SessionWindowRule.IsWithinPostBoundaryWindow(
+                    Utc(20, 6),
+                    boundary,
+                    5),
+                "EOD cleanup is bounded to the five-minute post-boundary window");
+
+            Assert(
+                SessionWindowRule.TryResolveEndOfDayBoundary(
+                    new DateTime(
+                        2026, 1, 2, 5, 40, 0, DateTimeKind.Utc),
+                    22,
+                    6,
+                    5,
+                    out boundary) &&
+                boundary ==
+                    new DateTime(
+                        2026, 1, 2, 6, 0, 0, DateTimeKind.Utc) &&
+                SessionWindowRule.IsWithinPreBoundaryWindow(
+                    new DateTime(
+                        2026, 1, 2, 5, 40, 0, DateTimeKind.Utc),
+                    boundary,
+                    30),
+                "overnight EOD warning uses the active session's next-day boundary");
+
+            Assert(
+                SessionWindowRule.TryResolveEndOfDayBoundary(
+                    new DateTime(
+                        2026, 1, 2, 6, 3, 0, DateTimeKind.Utc),
+                    22,
+                    6,
+                    5,
+                    out boundary) &&
+                SessionWindowRule.IsWithinPostBoundaryWindow(
+                    new DateTime(
+                        2026, 1, 2, 6, 3, 0, DateTimeKind.Utc),
+                    boundary,
+                    5),
+                "overnight EOD cleanup recognizes the completed session immediately after its boundary");
+
+            int[] openMinutes = { 0, 60, 120, 180, 240 };
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    openMinutes.Length,
+                    Utc(3, 0),
+                    index =>
+                        Utc(
+                            openMinutes[index] / 60,
+                            openMinutes[index] % 60)) == 2,
+                "closed-bar reference resolves the latest fully closed period without a second-period offset");
+
+            Assert(
+                ClosedBarReferenceRule.IsFullyClosed(
+                    openMinutes.Length,
+                    2,
+                    Utc(3, 0),
+                    index =>
+                        Utc(
+                            openMinutes[index] / 60,
+                            openMinutes[index] % 60)),
+                "latest closed period is explicitly fully closed at its next open");
+
+            Assert(
+                !ClosedBarReferenceRule.IsFullyClosed(
+                    openMinutes.Length,
+                    3,
+                    Utc(3, 0),
+                    index =>
+                        Utc(
+                            openMinutes[index] / 60,
+                            openMinutes[index] % 60)),
+                "the current open period cannot be consumed as a closed reference");
         }
 
         private static void VerifyFvgMathematics()

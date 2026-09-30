@@ -143,26 +143,34 @@ Current PartialTakeProfitExecutor updates the plan stop to entry only after the 
 
 ## CR1.1 — Session/EOD and period-reference correctness
 
-Covers: A1, A3 and the shared session semantics identified in A1.
+Status: **COMPLETE — 2026-09-30**
 
-Work:
-- build pure EndOfDayWindowRule;
-- support daily and overnight sessions;
-- distinguish current session boundary from next-day boundary;
-- bound the EOD close window;
-- prevent newly opened post-boundary positions from being immediately closed unless explicit behavior is configured;
-- move EOD retry/lock semantics to confirmed complete rather than attempt started;
-- include managed pending orders in EOD cleanup;
-- unify start == end semantics across session consumers;
-- correct daily/weekly previous-period sources to use the actual latest closed D1/W1 period;
-- add deterministic tests for 06→20, 22→06, post-boundary opens, start==end, midnight and week boundaries.
+Implemented:
+- added pure `Core/Math/SessionWindowRule.cs` as the single semantic owner for session membership, session ranges and EOD boundaries;
+- unified `SessionAllowed()`, `IsInsideSessionWindow()` and session presentation against the same rule;
+- unified session-range resolution for session target sources, including overnight and start==end semantics;
+- corrected the latest fully closed D1/W1 period references from `index - 1` to the canonical closed index;
+- corrected the D1 pivot suitability consumer to the same canonical closed index;
+- bounded EOD automatic cleanup to the explicit five-minute post-boundary safety window;
+- included managed pending orders in EOD cleanup;
+- prevented positions whose broker EntryTime is after the session boundary from being immediately closed by the previous session's cleanup;
+- made EOD completion/reported closure contingent on a broker-state reread showing no remaining pre-boundary managed position and no managed pending order;
+- added deterministic runtime contracts covering standard/overnight/start==end sessions, pre/post EOD windows and closed-bar reference semantics.
 
-Acceptance:
-- one canonical session-window meaning is consumed by EOD, decision gates, suitability, presentation and target-source logic;
-- no one-period regression remains in previous-day/week levels;
-- no EOD close is triggered outside the intended bounded window.
+Explicit safety behavior change:
+- the previous unbounded `now >= dayClose` auto-close behavior is replaced by a bounded post-boundary window;
+- successful mutation request is no longer treated as final EOD completion without broker-state confirmation.
 
-Behavior note: This phase may intentionally change the old unsafe close-at-any-later-time behavior. Any such safety behavior change must be called out explicitly in the phase report.
+Verification:
+- Runtime acceptance contracts: **PASS**, run 1339;
+- cTrader compile: **PASS**, run 1523;
+- Source and architecture checks: **PASS**, run 1530.
+
+Permanent routine audit for this phase:
+- Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning reviewed for session-boundary coupling;
+- performance/code-cleanliness checked; no new hot-path I/O or duplicate session authority introduced.
+
+Next implementation phase: **CR1.2 — Daily-loss lock and stable accounting basis**.
 
 ## CR1.2 — Daily-loss lock and stable accounting basis
 

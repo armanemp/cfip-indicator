@@ -15,18 +15,16 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private bool SessionAllowed(DateTime utc)
-                        {
-                            if (!UseSessionFilter)
-                                return true;
-                
-                            if (SessionStartUtc <= SessionEndUtc)
-                                return utc.Hour >= SessionStartUtc &&
-                                       utc.Hour < SessionEndUtc;
-                
-                            return utc.Hour >= SessionStartUtc ||
-                                   utc.Hour < SessionEndUtc;
-                        }
-        
+        {
+            if (!UseSessionFilter)
+                return true;
+
+            return SessionWindowRule.IsInside(
+                utc,
+                SessionStartUtc,
+                SessionEndUtc);
+        }
+
         private bool FridayAllowed(DateTime utc)
                         {
                             if (!AvoidFridayLateEntry ||

@@ -26,51 +26,25 @@ namespace cAlgo
                                 
                                             DateTime anchor =
                                                 bars.OpenTimes[index];
-                                
-                                            DateTime dayStart =
-                                                new DateTime(
-                                                    anchor.Year,
-                                                    anchor.Month,
-                                                    anchor.Day,
-                                                    0,
-                                                    0,
-                                                    0);
-                                
-                                            bool overnight =
-                                                startHour > endHour;
-                                
-                                            DateTime from;
-                                            DateTime to;
-                                
-                                            if (!overnight)
-                                            {
-                                                from =
-                                                    dayStart.AddHours(startHour);
-                                
-                                                to =
-                                                    dayStart.AddHours(endHour);
-                                            }
-                                            else if (anchor.Hour < endHour)
-                                            {
-                                                from =
-                                                    dayStart.AddDays(-1)
-                                                        .AddHours(startHour);
-                                
-                                                to =
-                                                    dayStart.AddHours(endHour);
-                                            }
-                                            else
-                                            {
-                                                from =
-                                                    dayStart.AddHours(startHour);
-                                
-                                                to =
-                                                    dayStart.AddDays(1)
-                                                        .AddHours(endHour);
-                                            }
-                                
+                                            DateTime sessionStartUtc;
+                                            DateTime sessionEndUtc;
+
+                                            if (!SessionWindowRule.TryResolveSessionWindow(
+                                                    anchor,
+                                                    startHour,
+                                                    endHour,
+                                                    out sessionStartUtc,
+                                                    out sessionEndUtc))
+                                                return;
+
+                                            DateTime from =
+                                                sessionStartUtc;
+                                            DateTime to =
+                                                sessionEndUtc;
+
                                             int first = -1;
                                             int last = -1;
+
                                 
                                             for (int i = index;
                                                  i >= Math.Max(0, index - 400);
