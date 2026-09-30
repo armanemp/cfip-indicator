@@ -253,14 +253,14 @@ namespace cAlgo
                         PortableMemorySnapshotSchema,
                         StringComparison.Ordinal);
 
-                bool legacySchema =
+                bool priorSchema =
                     string.Equals(
                         schema,
                         PriorPortableMemorySnapshotSchema,
                         StringComparison.Ordinal);
 
                 if (!currentSchema &&
-                    !legacySchema)
+                    !priorSchema)
                     return false;
 
                 string fingerprint = "";
@@ -398,7 +398,7 @@ namespace cAlgo
                                 StringComparison.Ordinal)
                                 ? PriorOutcomeMemorySchema
                                 : "",
-                        legacySchema
+                        priorSchema
                             ? PriorOutcomeMemorySchema
                             : OutcomeMemorySchema,
                         StringComparison.Ordinal);
