@@ -44,6 +44,9 @@ checks = {
     ),
     "early prediction scoring has one canonical math owner": (
         "EarlyPredictionScoreRule.Evaluate(" in early and
+        "M5Weight = 0.55" in early_rule and
+        "M15Weight = 0.45" in early_rule and
+        "LiquidityForecastBonus = 8.0" in early_rule and
         "* 0.55" not in early and
         "* 0.45" not in early and
         "+= 8" not in early and
@@ -64,7 +67,7 @@ checks = {
         '"  •  SHARE " +' in panel and
         '"  •  STRENGTH " +' in panel and
         '" PREDICTED • SHARE " +' in readiness and
-        '".*"' not in readiness
+        '" • STR " +' in readiness
     ),
     "early setup alert requires both share and absolute strength": (
         "_prediction.DirectionalShare >=" in alerts and
