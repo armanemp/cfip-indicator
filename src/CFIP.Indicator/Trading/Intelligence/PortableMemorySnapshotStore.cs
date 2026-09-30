@@ -394,12 +394,12 @@ namespace cAlgo
                             StringComparison.Ordinal)
                             ? OutcomeMemorySchema
                             : payload.StartsWith(
-                                CompatibilityOutcomeMemorySchema,
+                                PriorOutcomeMemorySchema,
                                 StringComparison.Ordinal)
-                                ? CompatibilityOutcomeMemorySchema
+                                ? PriorOutcomeMemorySchema
                                 : "",
                         legacySchema
-                            ? CompatibilityOutcomeMemorySchema
+                            ? PriorOutcomeMemorySchema
                             : OutcomeMemorySchema,
                         StringComparison.Ordinal);
 
