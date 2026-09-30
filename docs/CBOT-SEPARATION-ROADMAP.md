@@ -405,7 +405,7 @@ Minimum execution fields:
 - requested entry;
 - stop;
 - initial target;
-- volume request or sizing mode;
+- analytical sizing request/mode where needed; final broker/account-normalized volume is cBot-owned;
 - scenario identity;
 - plan identity;
 - timestamp;
@@ -461,9 +461,12 @@ Rules:
 - No project may reference the other execution project to call internal/private broker helpers.
 - No shared mutable singleton is introduced across projects.
 - Packaging/output must be validated in the target cTrader environment before live cutover.
+- The solution file and all project/build metadata must explicitly include the three required source projects and their supported reference/build order.
+- Parameter migration follows one rule: if a parameter changes the Indicator's analytical proposal/plan, it remains Indicator-owned; if it only controls broker/account execution or live broker management, it moves to cBot; presentation-only parameters remain Indicator-owned.
+- No execution parameter is duplicated across Indicator and cBot with two independent values.
 - Adding a fourth "shared core" project is out of scope unless CBOT-0 proves a hard compiler/dependency requirement; any such exception must be documented and must not duplicate business authority.
 
-## 8. Local connection design
+## 8.1 Local connection design
 
 ### Preferred first implementation
 
@@ -594,8 +597,6 @@ If the target environment cannot support the intended structured read-only hando
 
 ### CBOT-0 — Boundary inventory and freeze
 
-### CBOT-0 — Boundary inventory and freeze
-
 Output:
 
 - exact file/method ownership matrix;
@@ -603,15 +604,22 @@ Output:
 - exact mixed-class split list;
 - dependency graph of Indicator → Contracts → cBot;
 - method/field/helper dependency closure for every candidate moved owner;
-- direct broker API inventory including both method calls and fluent/object mutation calls;
+- direct broker API inventory including sync/async method calls and fluent/object mutation calls;
 - permission/account-state access inventory;
 - event-handler/timer/thread ownership inventory for broker lifecycle work;
+- complete parameter ownership/migration matrix for every execution-related parameter;
+- explicit list of parameters that remain Indicator-owned because they change analytical proposal/plan behavior;
+- explicit list of parameters that move to cBot because they control broker/account execution or live management;
+- explicit list of visual/presentation-only parameters that remain Indicator-owned;
+- proof that no two public parameters control the same execution behavior after migration;
 - no source behavior change.
 
 Acceptance:
 
 - every broker mutation has one future cBot owner;
 - every analytical owner remains with Indicator;
+- every execution-related public parameter has exactly one owner;
+- no analytical threshold is silently moved into cBot as a second decision rule;
 - no ambiguous “shared executor” remains.
 
 ### CBOT-1 — Contracts
@@ -690,7 +698,8 @@ Acceptance:
 - one-position capacity is enforced;
 - restart does not duplicate a pending action;
 - offline/missing Indicator is fail-closed;
-- Indicator UI/control status cannot directly invoke broker mutation from the Indicator process.
+- Indicator UI/control status cannot directly invoke broker mutation from the Indicator process;
+- solution/project/package wiring is reproducible from a clean checkout.
 
 ### CBOT-4 — Broker execution extraction
 
@@ -796,7 +805,7 @@ Direct broker calls to audit include at minimum:
 - `ModifyPosition`;
 - `ModifyPendingOrder`;
 - `ClosePosition`;
-- `CancelPendingOrder`;
+- `CancelPendingOrder` and supported async variants where present in the target API;
 - direct position protection mutation calls such as `Position.ModifyStopLossPrice`, `Position.ModifyTakeProfitPrice`, `Position.ModifyTakeProfit(...)`;
 - trading-permission mutation/request calls;
 - order/position collection reads that are used to make execution-authoritative decisions.
@@ -962,13 +971,30 @@ After Phase 11.5, the project must not add more live broker-execution features t
 
 The next implementation work is:
 
-`CBOT-0 → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7`
+`CBOT-Preflight (blocking gate) → CBOT-0 → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7`
 
 Only after CBOT-7 is accepted should the previous analytical/execution certification queue resume.
 
 The existing Phase 11.5 rule about formal scenario execution policy is retained, but any broker-execution promotion of additional scenarios must now be designed through the cBot boundary rather than by expanding the Indicator's broker authority.
 
 ---
+
+## 16.1 Final roadmap readiness audit
+
+Before the first production-code migration, verify this document and the master roadmap agree on:
+
+- target ownership;
+- dependency direction;
+- CBOT-Preflight blocking status;
+- CBOT-0 scope and outputs;
+- parameter ownership/migration rule;
+- public contract boundaries;
+- one-executor rule;
+- fail-closed behavior;
+- zero-broker-mutation final gate;
+- runtime/replay acceptance requirements.
+
+Any disagreement between these documents is a documentation gate failure and must be resolved before implementation continues.
 
 ## 17. Operator rule
 
@@ -1001,3 +1027,24 @@ Added/clarified:
 - stronger Definition of Done and final runtime acceptance requirements.
 
 This revision is documentation-only. No production C# behavior changes are authorized by this revision.
+
+
+---
+
+## 19. Roadmap final-audit revision — 2026-09-30
+
+Revision 2.2 closes the remaining documentation gaps found in the second pre-implementation audit.
+
+Added/fixed:
+
+- corrected section numbering and removed duplicate CBOT-0 heading;
+- aligned the mandatory order so CBOT-Preflight is explicitly the blocking gate before CBOT-0/CBOT-1;
+- made solution/project/build metadata part of the architecture gate;
+- added a complete execution-parameter ownership/migration requirement;
+- established the rule that analytical parameters remain with Indicator while broker/account/live-management parameters move to cBot, with no duplicate controls;
+- clarified that broker-normalized final volume is cBot-owned;
+- broadened direct broker API scanning to include supported asynchronous mutation variants;
+- added clean-checkout/package reproducibility to cBot host acceptance;
+- added a final cross-document roadmap consistency gate.
+
+No production C# behavior is changed by this revision.
