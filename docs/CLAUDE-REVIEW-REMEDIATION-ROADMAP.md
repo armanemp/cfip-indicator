@@ -1122,7 +1122,14 @@ Next phase: **CR4.10 / D10 — Native-indicator defensive safety and registry pe
 
 ### CR4.10 — Native-indicator defensive safety and registry performance (D10)
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #111 merged to `main`; merge commit `3371b9790902c4d35e4e1e28522dee42f93af861`.**
+
+Repository evidence:
+- Source/Architecture PASS — workflow run `36790307897`;
+- Runtime Acceptance Contracts PASS — workflow run `36790307911`;
+- cTrader Compile PASS — workflow run `36790307893`;
+- OSS/Registry Benchmark PASS — workflow run `36790307937`.
+
 
 Reconciled findings:
 - repository-wide consumer inventory isolates direct native wrapper/registry access and the expected analysis consumers;
