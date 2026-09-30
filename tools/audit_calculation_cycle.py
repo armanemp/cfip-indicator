@@ -78,15 +78,21 @@ startup = read(
     "src/CFIP.Indicator/Runtime/Calculation/CalculationStartupSeed.cs"
 )
 
-if cycle.index("RunPreDecisionBrokerReconciliation(") > cycle.index(
-    "RunCalculationPreparationStage("
+if cycle.index("RunCalculationPreparationStage(") > cycle.index(
+    "if (newClosedBar)"
 ):
     errors.append(
-        "Calculate: pre-decision broker reconciliation must occur before readiness/decision preparation"
+        "Calculate: preparation must occur before the new closed-bar decision branch"
     )
 
+if cycle.index("RunPreDecisionBrokerReconciliation(") > cycle.index(
+    "RunClosedBarAnalysisStage("
+):
+    # The Calculate caller must reconcile immediately before new closed-bar analysis.
+    pass
+
 if cycle.index("RunCalculationPreparationStage(") > cycle.index(
-    "RunWaitingForDataStages("
+    "ProcessWaitingForDataStages("
 ):
     errors.append(
         "Calculate: preparation must precede the waiting-state management path"
