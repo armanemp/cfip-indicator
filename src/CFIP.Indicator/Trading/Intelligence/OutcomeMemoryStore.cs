@@ -12,6 +12,7 @@ namespace cAlgo
         private const string OutcomeMemorySchema = "CFIP-OUTCOME";
         private const int OutcomeMemoryMaxAgeDays = 90;
 
+        private string _memoryConfigurationFingerprintCache;
         private string OutcomeMemoryKey()
         {
             string symbol =
@@ -45,6 +46,10 @@ namespace cAlgo
 
         private string MemoryConfigurationFingerprint()
         {
+            if (!string.IsNullOrWhiteSpace(
+                    _memoryConfigurationFingerprintCache))
+                return _memoryConfigurationFingerprintCache;
+
             PropertyInfo[] properties =
                 GetType().GetProperties(
                     BindingFlags.Instance |
@@ -75,7 +80,9 @@ namespace cAlgo
 
                 try
                 {
-                    value = property.GetValue(this, null);
+                    value = property.GetValue(
+                        this,
+                        null);
                 }
                 catch
                 {
@@ -122,9 +129,13 @@ namespace cAlgo
                     hash *= 16777619;
                 }
 
-                return hash.ToString(
-                    "X8",
-                    CultureInfo.InvariantCulture);
+                _memoryConfigurationFingerprintCache =
+                    hash.ToString(
+                        "X8",
+                        CultureInfo.InvariantCulture);
+
+                return
+                    _memoryConfigurationFingerprintCache;
             }
         }
 
