@@ -35,6 +35,7 @@ namespace cAlgo
             VerifyCalculationReadinessSemantics();
             VerifyNativeIndicatorReadinessSemantics();
             VerifyStructuralStopRiskCeilingSemantics();
+            VerifyLiquidityTargetCandidateSemantics();
             VerifyBrokerStateRefreshSemantics();
             VerifyBufferedArchivePersistence();
             VerifyDailyLossSemantics();
@@ -146,6 +147,151 @@ namespace cAlgo
                     1.80,
                     2.40) == 1.80,
                 "legacy default effective ceiling remains 1.80 ATR");
+        }
+
+        private static void VerifyLiquidityTargetCandidateSemantics()
+        {
+            Assert(
+                LiquidityTargetCandidateRule.IsDirectionallyValid(
+                    1,
+                    100,
+                    101) &&
+                !LiquidityTargetCandidateRule.IsDirectionallyValid(
+                    1,
+                    100,
+                    99) &&
+                LiquidityTargetCandidateRule.IsDirectionallyValid(
+                    -1,
+                    100,
+                    99) &&
+                !LiquidityTargetCandidateRule.IsDirectionallyValid(
+                    -1,
+                    100,
+                    101),
+                "liquidity candidates preserve BUY/SELL direction");
+
+            Assert(
+                LiquidityTargetCandidateRule.IsDistinct(
+                    104,
+                    new List<double> { 100 },
+                    2,
+                    0.40) &&
+                !LiquidityTargetCandidateRule.IsDistinct(
+                    100.5,
+                    new List<double> { 100 },
+                    2,
+                    0.40),
+                "liquidity candidates apply ATR-bounded minimum separation");
+
+            List<double> buyLevels =
+                LiquidityTargetCandidateRule.OrderByDistance(
+                    1,
+                    100,
+                    new List<double> { 108, 102, 105 });
+
+            List<double> sellLevels =
+                LiquidityTargetCandidateRule.OrderByDistance(
+                    -1,
+                    100,
+                    new List<double> { 92, 98, 95 });
+
+            Assert(
+                buyLevels[0] == 102 &&
+                buyLevels[1] == 105 &&
+                buyLevels[2] == 108 &&
+                sellLevels[0] == 98 &&
+                sellLevels[1] == 95 &&
+                sellLevels[2] == 92,
+                "liquidity candidates are ordered by distance from entry");
+
+            Assert(
+                LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    -1,
+                    1,
+                    5,
+                    105,
+                    0.01,
+                    i => new[] { 100.0, 103.0, 104.0, 104.5, 104.0, 103.0 }[i]),
+                "high liquidity remains active while no later close breaks above it");
+
+            Assert(
+                !LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    -1,
+                    1,
+                    5,
+                    105,
+                    0.01,
+                    i => new[] { 100.0, 103.0, 106.0, 104.5, 104.0, 103.0 }[i]),
+                "high liquidity becomes invalid after a close breaks above it");
+
+            Assert(
+                LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    1,
+                    1,
+                    5,
+                    95,
+                    0.01,
+                    i => new[] { 100.0, 97.0, 96.0, 95.5, 96.0, 97.0 }[i]),
+                "low liquidity remains active while no later close breaks below it");
+
+            Assert(
+                !LiquiditySweepRule.IsActiveUnbrokenLevel(
+                    1,
+                    1,
+                    5,
+                    95,
+                    0.01,
+                    i => new[] { 100.0, 97.0, 94.0, 95.5, 96.0, 97.0 }[i]),
+                "low liquidity becomes invalid after a close breaks below it");
+
+            TargetCandidateConstraintResult validTarget =
+                TargetCandidateConstraintRule.Evaluate(
+                    0,
+                    1,
+                    100,
+                    1,
+                    104,
+                    2,
+                    0.01,
+                    2,
+                    12,
+                    4,
+                    0.40,
+                    0,
+                    false,
+                    false,
+                    0,
+                    0);
+
+            TargetCandidateConstraintResult farTarget =
+                TargetCandidateConstraintRule.Evaluate(
+                    0,
+                    1,
+                    100,
+                    1,
+                    110,
+                    2,
+                    0.01,
+                    2,
+                    12,
+                    4,
+                    0.40,
+                    0,
+                    false,
+                    false,
+                    0,
+                    0);
+
+            Assert(
+                validTarget.Allowed &&
+                validTarget.RiskReward == 4,
+                "valid liquidity target survives canonical reward-risk constraints");
+
+            Assert(
+                !farTarget.Allowed &&
+                farTarget.Reason ==
+                    TargetCandidateRejectionReasons.TargetTooFar,
+                "distant liquidity target remains bounded by the existing extension contract");
         }
 
         private static void VerifyFrameScoringConstants()
