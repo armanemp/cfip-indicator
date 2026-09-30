@@ -231,6 +231,7 @@ namespace cAlgo
         
                 private int _lastContextM5 = -1;
                 private int _lastInvalidationAlertM5 = -1;
+                private int _lastInvalidationEvaluationM5 = -1;
                 private bool _panelHidden;
                 private Button _panelToggleButton;
                 private string _panelStableHeader = "";
