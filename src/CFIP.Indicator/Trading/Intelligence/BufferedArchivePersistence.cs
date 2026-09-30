@@ -250,11 +250,6 @@ namespace cAlgo
             return flushed;
         }
 
-        public void Clear()
-        {
-            _files.Clear();
-        }
-
         private HashSet<string> EnsureExistingKeys(
             BufferedArchivePendingFile file)
         {
