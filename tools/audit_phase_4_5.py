@@ -60,12 +60,12 @@ check(
     "every analyzed timeframe resolves regime through the shared analyzer",
     "AnalyzeMarketRegime(" in frame_evidence
     and "f.Regime =" in frame_evidence
-    and "FrameRegimeResolutionRule.Resolve(" in frame_evidence,
+    and "FrameRegimeResolutionRule.ResolveSnapshot(" in frame_evidence,
 )
 check(
     "non-M5 regime snapshots are independently cached",
-    "_marketRegimeFrameCache.TryGet(" in analyzer
-    and "_marketRegimeFrameCache.Set(" in analyzer
+    "_marketRegimeFrameCache.TryGetSnapshot(" in analyzer
+    and "_marketRegimeFrameCache.StoreSnapshot(" in analyzer
     and "AnalyzeMarketRegimeCore(" in analyzer,
 )
 check(
@@ -87,7 +87,7 @@ check(
 )
 check(
     "scoring consumes the frame's own normalized regime",
-    "return FrameRegimeResolutionRule.Resolve(" in frame_scoring
+    "return FrameRegimeResolutionRule.Normalize(" in frame_scoring
     and "frame.Regime" in frame_scoring
     and "return "UNKNOWN";" not in frame_scoring,
 )
@@ -122,8 +122,8 @@ check(
 check(
     "runtime contract tests frame-regime direction independence and symmetry",
     "VerifyFrameRegimeSemantics();" in contracts
-    and "FrameRegimeResolutionRule.Resolve(bullTrend)" in contracts
-    and "FrameRegimeResolutionRule.Resolve(bearTrend)" in contracts
+    and "FrameRegimeResolutionRule.ResolveSnapshot(bullTrend)" in contracts
+    and "FrameRegimeResolutionRule.ResolveSnapshot(bearTrend)" in contracts
     and "BUY/SELL regime-weighted fusion is not symmetric." in contracts,
 )
 check(
