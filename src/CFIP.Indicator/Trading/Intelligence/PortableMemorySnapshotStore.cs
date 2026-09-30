@@ -8,6 +8,9 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const string PortableMemorySnapshotSchema =
+            "CFIP-PORTABLE-MEMORY,2";
+
+        private const string LegacyPortableMemorySnapshotSchema =
             "CFIP-PORTABLE-MEMORY,1";
 
         // The indicator is explicitly registered as CFIPIndicator. With
@@ -94,7 +97,35 @@ namespace cAlgo
                 "_" +
                 timeframe +
                 "_" +
+                MemoryAccountScopeToken() +
+                "_" +
                 MemoryConfigurationFingerprint() +
+                ".txt";
+        }
+
+        private string LegacyPortableMemorySnapshotPath()
+        {
+            string symbol =
+                SanitizeArchivePart(
+                    string.IsNullOrWhiteSpace(SymbolName)
+                        ? "UNKNOWN"
+                        : SymbolName);
+
+            string timeframe =
+                SanitizeArchivePart(
+                    Bars == null
+                        ? "UNKNOWN"
+                        : Bars.TimeFrame.ToString());
+
+            return
+                OutcomeArchiveDirectory +
+                Path.DirectorySeparatorChar +
+                "CFIP_PortableMemory_" +
+                symbol +
+                "_" +
+                timeframe +
+                "_" +
+                LegacyMemoryConfigurationFingerprint() +
                 ".txt";
         }
 
@@ -187,21 +218,51 @@ namespace cAlgo
                 string path =
                     PortableMemorySnapshotPath();
 
+                bool legacyPath =
+                    false;
+
+                if (!File.Exists(path))
+                {
+                    path =
+                        LegacyPortableMemorySnapshotPath();
+
+                    legacyPath = true;
+                }
+
                 if (!File.Exists(path))
                     return false;
 
                 string[] lines =
                     File.ReadAllLines(path);
 
-                if (lines.Length == 0 ||
-                    !string.Equals(
-                        lines[0].Trim(),
+                if (lines.Length == 0)
+                    return false;
+
+                string schema =
+                    lines[0].Trim();
+
+                bool currentSchema =
+                    string.Equals(
+                        schema,
                         PortableMemorySnapshotSchema,
-                        StringComparison.Ordinal))
+                        StringComparison.Ordinal);
+
+                bool legacySchema =
+                    string.Equals(
+                        schema,
+                        LegacyPortableMemorySnapshotSchema,
+                        StringComparison.Ordinal);
+
+                if (!currentSchema &&
+                    !legacySchema)
                     return false;
 
                 string fingerprint = "";
                 string encoded = "";
+                string accountNumber = "";
+                string accountType = "";
+                string accountIsLive = "";
+                string accountBroker = "";
 
                 for (int i = 1;
                      i < lines.Length;
@@ -239,14 +300,80 @@ namespace cAlgo
                     {
                         encoded = value;
                     }
+                    else if (string.Equals(
+                                 key,
+                                 "AccountNumber",
+                                 StringComparison.Ordinal))
+                    {
+                        accountNumber = value;
+                    }
+                    else if (string.Equals(
+                                 key,
+                                 "AccountType",
+                                 StringComparison.Ordinal))
+                    {
+                        accountType = value;
+                    }
+                    else if (string.Equals(
+                                 key,
+                                 "AccountIsLive",
+                                 StringComparison.Ordinal))
+                    {
+                        accountIsLive = value;
+                    }
+                    else if (string.Equals(
+                                 key,
+                                 "AccountBroker",
+                                 StringComparison.Ordinal))
+                    {
+                        accountBroker = value;
+                    }
                 }
 
-                if (!string.Equals(
-                        fingerprint,
-                        MemoryConfigurationFingerprint(),
-                        StringComparison.Ordinal) ||
-                    string.IsNullOrWhiteSpace(encoded))
+                if (string.IsNullOrWhiteSpace(encoded))
                     return false;
+
+                if (currentSchema)
+                {
+                    string currentAccountNumber =
+                        Account.Number.ToString(
+                            CultureInfo.InvariantCulture);
+
+                    if (!string.Equals(
+                            fingerprint,
+                            MemoryConfigurationFingerprint(),
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            accountNumber,
+                            currentAccountNumber,
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            accountType,
+                            Account.AccountType.ToString(),
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            accountIsLive,
+                            Account.IsLive ? "1" : "0",
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            accountBroker,
+                            Account.BrokerName ?? "UNKNOWN",
+                            StringComparison.Ordinal))
+                        return false;
+                }
+                else
+                {
+                    // Legacy snapshots did not carry account identity. Keep
+                    // them eligible only when their legacy configuration
+                    // fingerprint matches; RestoreOutcomeHistory then applies
+                    // broker-history PositionId ownership filtering.
+                    if (!legacyPath ||
+                        !string.Equals(
+                            fingerprint,
+                            LegacyMemoryConfigurationFingerprint(),
+                            StringComparison.Ordinal))
+                        return false;
+                }
 
                 byte[] bytes =
                     Convert.FromBase64String(encoded);
@@ -254,11 +381,29 @@ namespace cAlgo
                 payload =
                     Encoding.UTF8.GetString(bytes);
 
-                return
-                    !string.IsNullOrWhiteSpace(payload) &&
-                    payload.StartsWith(
-                        OutcomeMemorySchema,
+                bool validPayload =
+                    string.Equals(
+                        payload.StartsWith(
+                            OutcomeMemorySchema,
+                            StringComparison.Ordinal)
+                            ? OutcomeMemorySchema
+                            : payload.StartsWith(
+                                LegacyOutcomeMemorySchema,
+                                StringComparison.Ordinal)
+                                ? LegacyOutcomeMemorySchema
+                                : "",
+                        legacySchema
+                            ? LegacyOutcomeMemorySchema
+                            : OutcomeMemorySchema,
                         StringComparison.Ordinal);
+
+                if (!validPayload)
+                {
+                    payload = "";
+                    return false;
+                }
+
+                return true;
             }
             catch (Exception ex)
             {
