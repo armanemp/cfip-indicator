@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyMtfContextIntegrity();
             VerifySessionWindowSemantics();
             VerifyDailyLossSemantics();
+            VerifyDailyLossBaselineSemantics();
             VerifyClosedBarReferenceContract();
             VerifyMarketExecutionAcceptance();
             VerifyPendingOrderAcceptance();
@@ -348,6 +349,59 @@ namespace cAlgo
                 FvgRule.Identity(1, 42, false) !=
                 FvgRule.Identity(-1, 42, false),
                 "FVG identity separates direction and 3-bar/2-bar source variants");
+        }
+
+        private static void VerifyDailyLossBaselineSemantics()
+        {
+            double startEquity;
+            double baselineFloating;
+
+            Assert(
+                DailyLossBaselineRule.TryReconstruct(
+                    975,
+                    0,
+                    -25,
+                    0,
+                    false,
+                    out startEquity,
+                    out baselineFloating) &&
+                Math.Abs(startEquity - 1000) < 0.0001 &&
+                Math.Abs(baselineFloating) < 0.0001,
+                "midday restart reconstructs start-of-day equity from realized facts");
+
+            Assert(
+                DailyLossBaselineRule.TryReconstruct(
+                    1480,
+                    0,
+                    -20,
+                    500,
+                    false,
+                    out startEquity,
+                    out baselineFloating) &&
+                Math.Abs(startEquity - 1000) < 0.0001,
+                "midday deposit is excluded from reconstructed trading loss");
+
+            Assert(
+                !DailyLossBaselineRule.TryReconstruct(
+                    1000,
+                    -12,
+                    0,
+                    0,
+                    true,
+                    out startEquity,
+                    out baselineFloating),
+                "restart baseline reconstruction refuses unknown prior floating P/L");
+
+            Assert(
+                !DailyLossBaselineRule.TryReconstruct(
+                    0,
+                    0,
+                    0,
+                    0,
+                    false,
+                    out startEquity,
+                    out baselineFloating),
+                "invalid equity cannot produce a synthetic baseline");
         }
 
         private static void VerifyDailyLossSemantics()
