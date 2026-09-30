@@ -43,7 +43,7 @@ namespace cAlgo
                         ? highAt(index)
                         : lowAt(index);
 
-                if (!IsFinitePositive(extreme))
+                if (!NumericGuards.IsFinitePositive(extreme))
                     continue;
 
                 peak =
@@ -59,13 +59,5 @@ namespace cAlgo
             return true;
         }
 
-        private static bool IsFinitePositive(
-            double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value > 0;
-        }
     }
 }
