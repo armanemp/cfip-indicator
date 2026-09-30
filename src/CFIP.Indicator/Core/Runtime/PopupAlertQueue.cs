@@ -108,7 +108,7 @@ namespace cAlgo
             return false;
         }
 
-        public void Clear()
+        public void ClearPendingAlerts()
         {
             _critical.Clear();
             _normal.Clear();
