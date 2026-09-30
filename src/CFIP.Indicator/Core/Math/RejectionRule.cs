@@ -18,11 +18,11 @@ namespace cAlgo
             double pipSize)
         {
             if ((direction != 1 && direction != -1) ||
-                !Finite(open) ||
-                !Finite(close) ||
-                !Finite(high) ||
-                !Finite(low) ||
-                !FinitePositive(pipSize) ||
+                !IsFiniteCandleValue(open) ||
+                !IsFiniteCandleValue(close) ||
+                !IsFiniteCandleValue(high) ||
+                !IsFiniteCandleValue(low) ||
+                !IsFinitePositivePipValue(pipSize) ||
                 high < low)
                 return false;
 
@@ -66,11 +66,11 @@ namespace cAlgo
             double low,
             double pipSize)
         {
-            if (!Finite(open) ||
-                !Finite(close) ||
-                !Finite(high) ||
-                !Finite(low) ||
-                !FinitePositive(pipSize) ||
+            if (!IsFiniteCandleValue(open) ||
+                !IsFiniteCandleValue(close) ||
+                !IsFiniteCandleValue(high) ||
+                !IsFiniteCandleValue(low) ||
+                !IsFinitePositivePipValue(pipSize) ||
                 high < low)
                 return true;
 
@@ -86,15 +86,15 @@ namespace cAlgo
                     range * 0.05);
         }
 
-        private static bool Finite(double value)
+        private static bool IsFiniteCandleValue(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
         }
 
-        private static bool FinitePositive(double value)
+        private static bool IsFinitePositivePipValue(double value)
         {
-            return Finite(value) && value > 0;
+            return IsFiniteCandleValue(value) && value > 0;
         }
     }
 }
