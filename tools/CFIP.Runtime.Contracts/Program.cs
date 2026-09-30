@@ -112,6 +112,10 @@ namespace cAlgo
 
         private static void VerifySessionWindowSemantics()
         {
+            Assert(
+                SessionWindowRule.SessionResolutionMinutes == 60,
+                "session parameters use explicit 60-minute UTC resolution");
+
             DateTime sameDay = Utc(12, 0);
 
             Assert(
