@@ -455,11 +455,13 @@ namespace cAlgo
                     500,
                     3.0,
                     false,
+                    true,
                     false);
 
             Assert(
                 !evaluation.LimitHit &&
-                evaluation.UsedEquityFallback,
+                evaluation.UsedEquityFallback &&
+                Math.Abs(evaluation.DailyNetPnl) < 0.0001,
                 "deposit does not become daily trading loss in equity fallback");
 
             evaluation =
@@ -472,10 +474,12 @@ namespace cAlgo
                     -300,
                     3.0,
                     false,
+                    true,
                     false);
 
             Assert(
                 !evaluation.LimitHit &&
+                evaluation.UsedEquityFallback &&
                 Math.Abs(evaluation.DailyNetPnl) < 0.0001,
                 "withdrawal does not become daily trading loss in equity fallback");
 
@@ -488,6 +492,7 @@ namespace cAlgo
                     0,
                     0,
                     3.0,
+                    true,
                     true,
                     true);
 
@@ -520,6 +525,59 @@ namespace cAlgo
 
             evaluation =
                 DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    double.NaN,
+                    -30,
+                    0,
+                    3.0,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.DataReady,
+                "non-finite floating P/L cannot produce a false-safe result");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    0,
+                    -30,
+                    0,
+                    double.NaN,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                !evaluation.DataReady,
+                "non-finite daily-loss threshold fails closed");
+
+            evaluation =
+                DailyLossRule.Evaluate(
+                    1000,
+                    0,
+                    970,
+                    0,
+                    -30,
+                    0,
+                    3.0,
+                    true,
+                    false,
+                    false);
+
+            Assert(
+                !evaluation.DataReady &&
+                evaluation.Reason ==
+                    "DAILY LOSS TRANSACTION DATA UNAVAILABLE",
+                "missing transaction facts fail closed");
+
+            evaluation =
+                DailyLossRule.Evaluate(
                     0,
                     0,
                     1000,
@@ -545,6 +603,7 @@ namespace cAlgo
                     -25,
                     0,
                     0,
+                    true,
                     true,
                     false);
 
