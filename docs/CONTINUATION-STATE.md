@@ -367,28 +367,34 @@ Verification boundary:
 
 Next transition: **CR4-FINAL repository integration gate after D10 repository verification.**
 
-### CR4.10 / D10 implementation record
+### CR4.10 / D10 closeout — 2026-10-01
 
-CR4.10 / D10 is implemented on branch `phase/cr4-10-native-indicator-safety`.
+CR4.10 / D10 is **VERIFIED COMPLETE** and merged to `main` via PR #111, merge commit `3371b9790902c4d35e4e1e28522dee42f93af861`.
 
-Implementation:
-- centralized native warm-up/numeric readiness in Core `NativeIndicatorReadinessRule`;
-- hardened native wrappers and MACD prior-sample access;
-- blocked incomplete native frames before scoring/evidence;
-- hardened market-regime normalization against unusable native values;
-- replaced linear native registry scans with a Bars reference-identity dictionary;
-- added deterministic readiness/neutral-output runtime contracts;
-- added a deterministic registry lookup benchmark;
-- wired `audit_phase_4_10.py` after CR4.9 in Source/Architecture.
+Repository verification:
+- Source/Architecture: PASS — run `36790307897` (including the accumulated CR4.10 static gate and prior audits);
+- Runtime Acceptance Contracts: PASS — run `36790307911`;
+- cTrader Compile: PASS — run `36790307893`;
+- OSS/Registry Benchmark: PASS — run `36790307937`.
 
-Verification boundary:
-- repository Source/Architecture, Runtime Acceptance, cTrader Compile and benchmark evidence are pending branch/PR checks;
-- target-terminal readiness timing, panel behavior, broker lifecycle ordering, restart/reconnect and empirical signal-quality validation remain manual.
+Implementation and safety record:
+- centralized native readiness and numeric safety in Core `NativeIndicatorReadinessRule`;
+- hardened native wrappers, MACD prior-sample access and frame/scoring/regime boundaries;
+- replaced linear native registry lookup with reference-identity dictionary lookup;
+- added deterministic D10 runtime contracts, static audit and lookup benchmark;
+- preserved public parameter identity/defaults and trading thresholds;
+- no second decision/execution authority introduced.
+
+Manual boundary remains:
+- target-terminal readiness/panel timing;
+- broker lifecycle ordering;
+- restart/reconnect;
+- empirical signal-quality/profitability.
 
 ## Current active phase
 
-CR4.10 / D10 — implementation complete; repository verification pending.
+CR-FINAL — repository integration gate.
 
 ### Next transition
 
-CR-FINAL repository integration gate.
+Complete CR-FINAL repository verification before resuming the target-terminal CBOT-Preflight acceptance boundary.
