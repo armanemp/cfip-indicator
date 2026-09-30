@@ -61,11 +61,21 @@ internal static class Program
                 TimingIterations,
                 () => RunV3Suite(timingV3Bars));
 
+        (BenchmarkTiming rebuildQuotes, BenchmarkTiming incrementalQuotes) =
+            QuoteCacheBenchmark.Measure(
+                timingV2Quotes);
+
+        QuoteCacheBenchmarkResult quoteCacheTiming =
+            new QuoteCacheBenchmarkResult(
+                rebuildQuotes,
+                incrementalQuotes);
+
         string report =
             BenchmarkReport.Format(
                 comparisons,
                 v2Timing,
-                v3Timing);
+                v3Timing,
+                quoteCacheTiming);
 
         Console.WriteLine(report);
 
