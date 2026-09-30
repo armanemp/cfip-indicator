@@ -16,9 +16,9 @@ CR3.1 remains part of the completed chain: PR #95, merge commit `f482d2f76cdf37c
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.1 — Learning-memory identity and account scoping (D1).**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Next: CR4.2 — File/archive path and persistence observability (D2).**
 
-The repository-side CR-FINAL gate remains paused until CR4.1–CR4.10 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
+CR4.1 is complete on main. The repository-side CR-FINAL gate remains paused until CR4.2–CR4.10, CR5.1–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
 ## Completed before this checkpoint
 
@@ -163,3 +163,21 @@ The E-series remains static-review hypotheses until each item is independently v
 D1 must be audited first. It covers learning-memory identity, decision-affecting parameter fingerprinting, account scoping, PositionId collision isolation and legacy schema migration.
 
 Next implementation response: **CR4.1 only**.
+
+
+### CR4.1 closeout — 2026-09-30
+
+CR4.1 / D1 was completed and merged via PR #102, merge commit `071baf7ab0bda6df8f1d06c9ecbf9d28810e33d1`.
+
+Implementation:
+- canonical Core learning-memory identity rule;
+- decision/result-only fingerprint;
+- broker/account/type/live-demo scoping;
+- v2 memory/snapshot identity and conservative legacy migration;
+- account-switch memory reload;
+- account-scoped archive/runtime-log prefixes;
+- deterministic runtime contract + CR4.1 static audit.
+
+Verification boundary:
+- GitHub exposed no retrievable CI status records for the merge at closeout; no CI PASS is claimed.
+- target-terminal account switching, restart and broker History migration semantics remain manual.
