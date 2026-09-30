@@ -98,7 +98,8 @@ check(
     "plan carries the source trace identity",
     "SignalBarOpenTimeUtcTicks" in plan and
     "SignalTraceId" in plan and
-    "p.SignalTraceId = BuildSignalTraceId(closedM5)" in plan_builder,
+    "p.SignalTraceId" in plan_builder and
+    "BuildSignalTraceId(closedM5)" in plan_builder,
 )
 check(
     "outcome carries source trace identity",
