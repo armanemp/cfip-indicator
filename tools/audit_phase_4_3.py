@@ -105,6 +105,18 @@ check(
     "SignalTraceId" in outcome_model and
     "SignalTraceId" in outcome_engine,
 )
+aggressive = read(
+    "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveAcceptedFillHandler.cs"
+)
+factory = read(
+    "src/CFIP.Indicator/Trading/Lifecycle/LivePlanFactory.cs"
+)
+check(
+    "aggressive fills retain the source trace while recovery remains opt-in",
+    "ExecutionMode.BreakoutMarket,\n                    true)" in aggressive and
+    "bool bindSignalTrace = false" in factory and
+    "if (bindSignalTrace)" in factory,
+)
 check(
     "outcome archive is backward-compatible with legacy rows",
     'OutcomeArchiveSchema = "CFIP-OUTCOME-ARCHIVE,2"' in outcome_archive and
