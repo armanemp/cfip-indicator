@@ -194,7 +194,8 @@ namespace cAlgo
 
         private void ProcessLiveCalculationStages(
             int index,
-            int closedM5)
+            int closedM5,
+            bool newClosedBar)
         {
             // Management-first rule:
             // reconcile broker state, recover managed live state, evaluate active
@@ -429,6 +430,25 @@ namespace cAlgo
                 },
                 index,
                 "BROKER STATE FINALIZATION");
+
+            if (newClosedBar)
+            {
+                RunCalculationStage(
+                    () =>
+                    {
+                        RecordSignalEvaluationTrace(
+                            _decision,
+                            ResolveSignalTraceLane(
+                                _decision,
+                                _decision == null
+                                    ? OpportunityLane.Tactical
+                                    : _decision.TacticalOpportunityLane),
+                            closedM5);
+                        return true;
+                    },
+                    index,
+                    "SIGNAL TRACE • CLOSED-M5");
+            }
 
             RunCalculationStage(
                 () =>
