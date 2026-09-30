@@ -95,12 +95,18 @@ private List<Level> MergeLevels(
                                                         match.Age,
                                                         current.Age);
                                 
-                                                if (current.Timeframe == "H1" ||
+                                                if (current.Timeframe == "M15" ||
+                                                    current.Timeframe == "M30" ||
+                                                    current.Timeframe == "H1" ||
                                                     current.Timeframe == "H4" ||
                                                     current.Timeframe == "D1" ||
                                                     current.Timeframe == "W1")
+                                                {
                                                     match.Timeframe =
                                                         current.Timeframe;
+                                                    match.SourceAgeMinutes =
+                                                        current.SourceAgeMinutes;
+                                                }
                                 
                                                 if (match.Kind == "SWING" &&
                                                     current.Kind != "SWING")

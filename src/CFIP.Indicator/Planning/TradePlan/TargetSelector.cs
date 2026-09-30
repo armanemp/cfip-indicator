@@ -27,39 +27,33 @@ namespace cAlgo
                 atr <= 0)
                 return selected;
 
-            double rrStep =
-                Math.Max(
-                    0.10,
-                    StructuralTpRrStep);
+            double rrStep = Math.Max(0.10, StructuralTpRrStep);
 
-            double[] requiredRR =
-                BuildTargetSelectionRequiredRR(
-                    rrStep,
-                    lane);
+            double[] requiredRR = BuildTargetSelectionRequiredRR(rrStep, lane);
 
-            double maximumRR =
-                Math.Max(
-                    requiredRR[0],
-                    MaximumRewardRR);
+            double maximumRR = Math.Max(requiredRR[0], MaximumRewardRR);
 
             for (int stage = 0;
                  stage < 4;
                  stage++)
             {
-                if (requiredRR[stage] >
-                    maximumRR)
+                Dictionary<string, int> rejectionCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+
+                if (!TryValidateTargetStageFeasibility(requiredRR[stage], maximumRR, risk, atr, out string stageRejectionReason))
+                {
+                    AddTargetRejectionCount(
+                        rejectionCounts,
+                        stageRejectionReason);
+                    RecordTargetStageRejections(
+                        closedM5,
+                        stage,
+                        rejectionCounts);
                     continue;
+                }
 
-                double previous =
-                    FindPreviousSelectedTargetPrice(
-                        selected,
-                        stage,
-                        entry);
+                double previous = FindPreviousSelectedTargetPrice(selected, stage, entry);
 
-                bool requireHtf =
-                    RequiresHtfRewardForTargetStage(
-                        stage,
-                        lane);
+                bool requireHtf = RequiresHtfRewardForTargetStage(stage, lane);
 
                 Level best = null;
                 double bestScore =
@@ -85,8 +79,14 @@ namespace cAlgo
                             previous,
                             requireHtf,
                             stage,
-                            out double score))
+                            out double score,
+                            out string rejectionReason))
+                    {
+                        AddTargetRejectionCount(
+                            rejectionCounts,
+                            rejectionReason);
                         continue;
+                    }
 
                     if (score > bestScore)
                     {
@@ -98,11 +98,28 @@ namespace cAlgo
                 }
 
                 if (best != null)
+                {
                     selected[stage] =
                         best;
+                }
+                else
+                {
+                    if (rejectionCounts.Count == 0)
+                    {
+                        AddTargetRejectionCount(
+                            rejectionCounts,
+                            TargetCandidateRejectionReasons.InvalidGeometry);
+                    }
+
+                    RecordTargetStageRejections(
+                        closedM5,
+                        stage,
+                        rejectionCounts);
+                }
             }
 
             return selected;
         }
+
     }
 }

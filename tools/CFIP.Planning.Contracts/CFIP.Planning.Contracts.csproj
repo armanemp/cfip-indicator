@@ -13,6 +13,11 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PlanRewardRiskQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateRejectionReasons.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetAgeSemanticsRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateConstraintRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskPercentPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskAmountCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/MarginUsagePolicy.cs" />

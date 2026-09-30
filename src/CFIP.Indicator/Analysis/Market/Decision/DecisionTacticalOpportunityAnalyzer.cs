@@ -139,7 +139,8 @@ namespace cAlgo
                         entry,
                         false,
                         0,
-                        out double score))
+                        out double score,
+                        out _))
                     continue;
 
                 if (score > bestScore)

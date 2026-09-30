@@ -55,20 +55,25 @@ namespace cAlgo
                                                 Math.Max(
                                                     1,
                                                     DailyPivotWeight);
+
+                                            double sourceAgeMinutes =
+                                                TargetAgeSemanticsRule.ElapsedMinutes(
+                                                    _d1Bars.OpenTimes[previous],
+                                                    reference);
                                 
-                                            AddLevel(levels, pivot, "PIVOT", "D1", 1, weight);
+                                            AddLevel(levels, pivot, "PIVOT", "D1", 1, weight, sourceAgeMinutes);
                                 
                                             if (direction == 1)
                                             {
-                                                AddLevel(levels, r1, "PIVOT_R1", "D1", 1, weight + 4);
-                                                AddLevel(levels, r2, "PIVOT_R2", "D1", 1, weight + 8);
-                                                AddLevel(levels, r3, "PIVOT_R3", "D1", 1, weight + 10);
+                                                AddLevel(levels, r1, "PIVOT_R1", "D1", 1, weight + 4, sourceAgeMinutes);
+                                                AddLevel(levels, r2, "PIVOT_R2", "D1", 1, weight + 8, sourceAgeMinutes);
+                                                AddLevel(levels, r3, "PIVOT_R3", "D1", 1, weight + 10, sourceAgeMinutes);
                                             }
                                             else if (direction == -1)
                                             {
-                                                AddLevel(levels, s1, "PIVOT_S1", "D1", 1, weight + 4);
-                                                AddLevel(levels, s2, "PIVOT_S2", "D1", 1, weight + 8);
-                                                AddLevel(levels, s3, "PIVOT_S3", "D1", 1, weight + 10);
+                                                AddLevel(levels, s1, "PIVOT_S1", "D1", 1, weight + 4, sourceAgeMinutes);
+                                                AddLevel(levels, s2, "PIVOT_S2", "D1", 1, weight + 8, sourceAgeMinutes);
+                                                AddLevel(levels, s3, "PIVOT_S3", "D1", 1, weight + 10, sourceAgeMinutes);
                                             }
                                         }
     }
