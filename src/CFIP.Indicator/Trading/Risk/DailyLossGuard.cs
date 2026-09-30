@@ -232,7 +232,6 @@ namespace cAlgo
             _dailyLossLocked = false;
             _dailyLossLimitAlerted = false;
             _dailyLossDataReady = false;
-            _dailyLossEvaluationUtc = DateTime.MinValue;
             _lastDailyLossPersistUtc =
                 DateTime.MinValue;
 
