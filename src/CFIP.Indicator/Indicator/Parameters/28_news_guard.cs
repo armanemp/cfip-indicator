@@ -28,11 +28,9 @@ namespace cAlgo
         [Parameter("Medium Impact Minutes After", Group = "28 · NEWS GUARD", DefaultValue = 10, MinValue = 0, MaxValue = 120)]
         public int MediumImpactNewsMinutesAfter { get; set; }
 
-        [Parameter("Additional News Currencies", Group = "28 · NEWS GUARD", DefaultValue = "USD")]
+        [Parameter("Additional News Currencies / Symbol Map", Group = "28 · NEWS GUARD", DefaultValue = "USD;XAU=USD;XAG=USD;US30=USD;US500=USD;SPX500=USD;NAS100=USD;US100=USD;USTEC=USD;DE40=EUR;GER40=EUR;DAX40=EUR;UK100=GBP;FTSE100=GBP;JP225=JPY;HK50=HKD;CN50=CNY;AUS200=AUD;FRA40=EUR;EU50=EUR;BTC=USD;ETH=USD")]
         public string AdditionalNewsCurrencies { get; set; }
 
-        [Parameter("Symbol/Index/Crypto News Currency Map", Group = "28 · NEWS GUARD", DefaultValue = "XAU=USD;XAG=USD;US30=USD;US500=USD;SPX500=USD;NAS100=USD;US100=USD;USTEC=USD;DE40=EUR;GER40=EUR;DAX40=EUR;UK100=GBP;FTSE100=GBP;JP225=JPY;HK50=HKD;CN50=CNY;AUS200=AUD;FRA40=EUR;EU50=EUR;BTC=USD;ETH=USD")]
-        public string NewsSymbolCurrencyMap { get; set; }
 
         [Parameter("Fail Closed When News Feed Stale", Group = "28 · NEWS GUARD", DefaultValue = true)]
         public bool NewsFailClosedWhenStale { get; set; }
