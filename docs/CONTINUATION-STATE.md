@@ -10,7 +10,7 @@ Last updated: 2026-09-30
 
 ## Active phase
 
-**CR1.7 — Threshold truth + volume audit (Prompt 1 / A9 + A10).**
+**CR1.8 — Managed identity boundary (Prompt 1 / A11).**
 
 ## Completed before this checkpoint
 
@@ -34,4 +34,4 @@ Last updated: 2026-09-30
 
 ## Next transition
 
-CR1.6 is complete. The next implementation response must execute **CR1.7** and only CR1.7.
+CR1.7 is complete. The next implementation response must execute **CR1.8** and only CR1.8.
