@@ -93,13 +93,15 @@ check(
     "Decision" not in native,
 )
 check(
-    "registry uses deterministic Bars-reference dictionary",
-    "Dictionary<Bars, Native>" in state and
-    "NativeBarsReferenceComparer" in state and
-    "TryGetValue(" in registry and
-    "ReferenceEquals(x, y)" in registry and
-    "RuntimeHelpers.GetHashCode(obj)" in registry and
-    "_native.FirstOrDefault" not in registry,
+    "registry uses deterministic Bars-reference last-hit cache",
+    "private readonly List<Native> _native" in state and
+    "_lastNativeBars" in state and
+    "_lastNative" in state and
+    "FindRegisteredNative(" in registry and
+    "RememberNative(" in registry and
+    "ReferenceEquals(_lastNativeBars, bars)" in registry and
+    "_native.Add(set)" in registry and
+    "NativeBarsReferenceComparer" not in registry,
 )
 check(
     "readiness rule is centralized and platform-neutral",
@@ -157,11 +159,15 @@ check(
     "NativeIndicatorReadinessRule.cs" in contracts_project,
 )
 check(
-    "registry benchmark compares reference-list and reference-dictionary lookup",
-    "RunLinearLookup" in benchmark and
-    "RunDictionaryLookup" in benchmark and
+    "registry benchmark compares list, dictionary and last-hit cache",
+    "RunRepeatedLinearLookup" in benchmark and
+    "RunRepeatedDictionaryLookup" in benchmark and
+    "RunRepeatedLastHitLookup" in benchmark and
+    "RunRoundRobinLinearLookup" in benchmark and
+    "RunRoundRobinDictionaryLookup" in benchmark and
+    "RunRoundRobinLastHitLookup" in benchmark and
     "LookupCount = 1_000_000" in benchmark and
-    "ReferenceKeyComparer" in benchmark,
+    "NativeRegistryCache" in benchmark,
 )
 check(
     "benchmark is executed by the existing benchmark entry point",
