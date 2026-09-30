@@ -4896,7 +4896,36 @@ Safety boundary:
 - no second decision or execution authority introduced;
 - historical/live market TP acceptance rates, broker timing, replay and profitability remain target-terminal/manual evidence.
 
-**Next phase: CR4.8 / D8 — TP1 directional defensive validation.**
+### CR4.8 / D8 closeout — 2026-10-01
+
+Status: **COMPLETE — implementation ready for repository verification.**
+
+Implemented:
+- reused the canonical Core `PriceProtectionRule.ValidateTarget` owner for target-side validation inside target candidate constraints;
+- added a fail-closed TP1 directional guard at plan materialization;
+- propagated materialization rejection through `BuildPlan`;
+- added independent TP1 directional validation at the plan protection boundary;
+- added independent TP1 directional validation at the plan reward boundary with bounded `PLAN_REWARD` reason `TP1 DIRECTION INVALID`;
+- preserved `TargetProgressionRule` as the monotonic progression owner without introducing a second direction/progression authority;
+- added deterministic BUY/SELL valid and wrong-side TP1 contracts;
+- added the CR4.8 static gate and wired it into the accumulated Source/Architecture workflow.
+
+Deterministic evidence:
+- valid BUY TP1: PASS;
+- valid SELL TP1: PASS;
+- wrong-side BUY TP1: PASS rejection;
+- wrong-side SELL TP1: PASS rejection;
+- canonical candidate-level wrong-side rejection: PASS for both directions;
+- BUY/SELL target-progression symmetry: PASS.
+
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/SL/target-age or execution threshold changed;
+- no second decision or execution authority introduced;
+- no target-selection threshold was tuned;
+- no target-terminal or broker-runtime claim is made from source changes alone.
+
+**Next phase: CR4.9 / D9 — Live reversal action/alert semantics.**
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
