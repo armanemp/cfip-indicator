@@ -49,9 +49,16 @@ namespace cAlgo
             {
                 cache = new OssQuoteCacheEntry();
                 _ossQuoteCaches.Add(cache);
+
+                bars.HistoryLoaded +=
+                    Bars_HistoryLoaded;
+                bars.Reloaded +=
+                    Bars_Reloaded;
+
                 ResetCache(cache, bars);
             }
-            else if (!IsCacheCompatible(cache, bars))
+            else if (cache.InvalidationPending ||
+                     !IsCacheCompatible(cache, bars))
             {
                 ResetCache(cache, bars);
             }
@@ -137,6 +144,7 @@ namespace cAlgo
             Bars bars)
         {
             cache.Bars = bars;
+            cache.InvalidationPending = false;
             cache.StableClosedIndex = -1;
             cache.RollingFirstIndex = -1;
             cache.RollingClosedIndex = -1;
@@ -167,6 +175,38 @@ namespace cAlgo
                 CaptureFirstBar(
                     cache,
                     bars);
+        }
+
+        private void Bars_HistoryLoaded(
+            BarsHistoryLoadedEventArgs args)
+        {
+            InvalidateBars(
+                args == null
+                    ? null
+                    : args.Bars);
+        }
+
+        private void Bars_Reloaded(
+            BarsHistoryLoadedEventArgs args)
+        {
+            InvalidateBars(
+                args == null
+                    ? null
+                    : args.Bars);
+        }
+
+        private void InvalidateBars(
+            Bars bars)
+        {
+            if (bars == null)
+                return;
+
+            OssQuoteCacheEntry cache =
+                _ossQuoteCaches.Find(
+                    entry => ReferenceEquals(entry.Bars, bars));
+
+            if (cache != null)
+                cache.InvalidationPending = true;
         }
 
         private static void EnsureStablePrefix(
