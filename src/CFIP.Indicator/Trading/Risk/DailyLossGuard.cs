@@ -214,21 +214,43 @@ namespace cAlgo
                     referenceUtc))
                 return;
 
+            // A newly started instance may not have a midnight snapshot. Build
+            // today's account facts before attempting baseline reconstruction.
+            RefreshDailyRealizedNetProfit(
+                referenceUtc);
+
+            RefreshDailyCashFlows(
+                referenceUtc);
+
+            double reconstructedStartEquity;
+            double reconstructedBaselineFloating;
+
+            if (!DailyLossBaselineRule.TryReconstruct(
+                    Account.Equity,
+                    Account.UnrealizedNetProfit,
+                    _dailyLossRealizedNetProfit,
+                    _dailyLossNetCashFlow,
+                    Positions != null &&
+                    Positions.Count > 0,
+                    out reconstructedStartEquity,
+                    out reconstructedBaselineFloating))
+            {
+                _dailyLossDataReady = false;
+                _dailyLossStateReason =
+                    "DAILY LOSS BASELINE UNAVAILABLE";
+
+                return;
+            }
+
             _dailyLossBaselineDate =
                 referenceUtc.Date;
 
             _dailyLossStartEquity =
-                Account.Equity;
+                reconstructedStartEquity;
 
             _dailyLossBaselineUnrealizedNetProfit =
-                Account.UnrealizedNetProfit;
+                reconstructedBaselineFloating;
 
-            _dailyLossRealizedNetProfit = 0;
-            _dailyLossNetCashFlow = 0;
-            _dailyLossHistoryCount = -1;
-            _dailyLossTransactionCount = -1;
-            _dailyLossHistoryAvailable = false;
-            _dailyLossTransactionsAvailable = false;
             _dailyLossLocked = false;
             _dailyLossLimitAlerted = false;
             _dailyLossDataReady = false;
