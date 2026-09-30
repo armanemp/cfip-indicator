@@ -253,16 +253,33 @@ Verification:
 
 Covers: A6.
 
-Work:
-- reconcile broker state before decision/alert consumption in the same cycle;
-- keep management/protection available even when new analysis is waiting for MTF data;
-- introduce a deterministic waiting/backoff state so missing MTF data does not cause full repeated analysis every tick;
-- keep actionability refresh quote-sensitive immediately before execution.
+Status: **COMPLETE — implementation closed 2026-09-30; target-terminal verification remains required.**
+
+Implemented:
+- added an explicit same-cycle pre-decision broker reconciliation boundary for each newly closed M5 decision cycle;
+- gated decision/restriction/actionable alerts on successful same-cycle broker reconciliation so stale lifecycle snapshots cannot be consumed as fresh execution context;
+- applied the same boundary to the startup calculation seed;
+- introduced deterministic BUILDING DATA / WAITING FOR CLOSED M5 / WAITING FOR MTF DATA / READY states;
+- throttled readiness probes while history or primary MTF context is incomplete, preventing expensive readiness/panel work on every tick;
+- preserved broker lifecycle recovery, news protection, active-plan management, broker position protection and outcome/EOD/reversal supervision while analysis readiness waits;
+- explicitly kept plan creation, market execution, aggressive execution and predictive pending execution out of the waiting-state path;
+- limited pre-decision broker reconciliation to newly closed-bar decision cycles for hot-path efficiency; non-new-bar live cycles retain the existing management reconciliation;
+- added deterministic runtime contracts for readiness state, probe cadence and rollback-safe clock behavior;
+- added a dedicated cycle audit to enforce ordering and to reject execution calls from the waiting-state path.
 
 Acceptance:
-- no decision alert is generated from a stale broker lifecycle snapshot when broker reconciliation is available;
-- WAITING FOR MTF DATA is a bounded state, not a per-tick expensive retry loop;
-- runtime fault containment remains intact.
+- decision/alert consumption follows same-cycle broker reconciliation;
+- WAITING FOR MTF DATA is represented as an explicit bounded state and panel refresh is throttled to 500 ms while waiting;
+- BUILDING DATA and WAITING FOR CLOSED M5 use a 250 ms probe cadence;
+- waiting-state cycles continue protection/lifecycle work but never create or submit a new execution plan;
+- runtime fault containment remains intact and a failed pre-decision reconciliation blocks automatic entry while lifecycle supervision continues.
+
+Verification:
+- Runtime acceptance contracts: PASS;
+- cTrader compile: PASS;
+- Source/architecture checks: PASS is required on the final head and includes the dedicated CR1.4 cycle audit;
+- cTrader documentation rechecked for Calculate/IsLastBar semantics and Bars BarClosed/closed-bar behavior;
+- target-terminal verification remains required for broker event timing, asynchronous data availability and startup/readiness behavior.
 
 ## CR1.5 — Hot-path/cache/logging performance
 
