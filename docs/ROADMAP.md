@@ -4767,7 +4767,7 @@ Next phase: **CR4.4 — Skender/OSS numerical stability and incremental caching 
 
 ### CR4.4 / D4 implementation checkpoint — 2026-10-01
 
-Status: **IMPLEMENTED ON BRANCH — CI VERIFICATION PENDING**
+Status: **COMPLETE — MERGED TO MAIN**
 
 Implemented on `phase/cr4-4-skender-numerical-caching`:
 - centralized fixed OSS indicator constants and warm-up contracts under `OssIndicatorParameters`;
@@ -4784,6 +4784,33 @@ Safety:
 - no default trading threshold, RR, confidence or execution policy tuning;
 - Track 12A and CR-FINAL ordering remain unchanged;
 - target-terminal behavior remains unverified until the required cTrader acceptance stage.
+
+
+### CR4.4 / D4 closeout — 2026-10-01
+
+CR4.4 was completed and merged to `main` via PR #105, merge commit `1b1a1762fee960e65903880f2566b3355a9a7431`.
+
+Verification on final head `2aef0f7474535131604374f066f535025fe4cb7a`:
+- Source/Architecture PASS — run 36779376240;
+- cTrader Compile PASS — run 36779376267;
+- Runtime Acceptance PASS — run 36779376210;
+- OSS indicator benchmark PASS — run 36779376203;
+- CR4.4 static gate PASS, including the accumulated routine audits.
+
+Final implementation:
+- stable-prefix history for RSI, MACD, SuperTrend and Parabolic SAR;
+- bounded incremental 161-bar quote cache for fixed-window adapters;
+- conservative invalidation for Bars replacement, cTrader HistoryLoaded/Reloaded and cached-history fingerprints;
+- centralized OSS numerical constants and warm-up contracts;
+- OBV retained for diagnostics/research and removed from independent OSS confluence vote/count evidence;
+- benchmark coverage for rebuild versus incremental quote materialization.
+
+Boundary:
+- no public parameter name/type/DefaultValue or default trading threshold was changed;
+- no new decision/execution authority was introduced;
+- target-terminal runtime timing, memory behavior and empirical signal-quality/profitability remain manual acceptance work.
+
+**Next phase: CR4.5 / D5 — Per-timeframe regime semantics.**
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
