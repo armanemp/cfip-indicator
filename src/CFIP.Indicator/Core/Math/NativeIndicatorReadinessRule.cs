@@ -47,7 +47,7 @@ namespace cAlgo
 
         internal static bool IsFinitePositiveNative(double value)
         {
-            return NumericGuards.IsFinitePositiveNative(value);
+            return NumericGuards.IsFinitePositive(value);
         }
 
         internal static bool IsFiniteBounded(
