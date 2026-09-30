@@ -1996,3 +1996,18 @@ No production C# behavior changed.
 ## Roadmap Ordering Recheck — 2026-09-30
 
 Detailed and master separation roadmaps are aligned to the authoritative order **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. Preflight is a no-trade blocking capability gate after repository inventory, not a prerequisite for starting CBOT-0.
+
+## Claude Review Remediation Roadmap — 2026-09-30
+
+Status: DOCUMENTATION-ONLY; blocking Track 11.6 established.
+
+Three supplied review prompts were cross-checked against the current repository. The resulting remediation track is documented in `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`.
+
+Important review corrections:
+- A4 latest-sweep causal claim is only partial; active/unbroken swing semantics and ATR-relative penetration are the valid parts.
+- A5 synchronous news I/O/stale mapping are real issues; the prompt's implication that AccessRights.None inherently blocks HTTP is not accepted as a source-based defect. Current official cTrader documentation states AccessRights.None is sufficient for network functions.
+- B9 historical rendering is expensive on host-bar changes, not literally every Calculate call.
+- C5 item 4 is stale against current source: `_plan.Stop` is updated after successful BE mutation, not on rejection.
+
+No production C# behavior changed.
+Next phase: CR-0 — final audit closure.
