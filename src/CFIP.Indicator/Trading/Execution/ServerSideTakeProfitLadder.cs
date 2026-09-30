@@ -173,6 +173,14 @@ namespace cAlgo
                     RiskFreeLockPips,
                     UseSpreadAwareBreakEven);
 
+            _lastBreakEvenDiagnostic =
+                MoveSlToBreakEven
+                    ? (smartBreakEven.Allowed
+                        ? smartBreakEven.Reason
+                        : "NOT APPLICABLE • " +
+                          smartBreakEven.Reason)
+                    : "DISABLED • MOVE SL TO BREAK EVEN";
+
             try
             {
                 takeProfits =
