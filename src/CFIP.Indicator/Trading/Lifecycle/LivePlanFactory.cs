@@ -20,7 +20,8 @@ namespace cAlgo
                             int createdM5,
                             double volume,
                             ExecutionMode entryMode =
-                                ExecutionMode.BreakoutMarket)
+                                ExecutionMode.BreakoutMarket,
+                            bool bindSignalTrace = false)
                         {
                             double risk =
                                 Math.Abs(
@@ -33,9 +34,10 @@ namespace cAlgo
                                 !IsFinitePositive(risk))
                                 return null;
                 
-                            return new Plan
-                            {
-                                Direction = direction,
+                            Plan plan =
+                                new Plan
+                                {
+                                    Direction = direction,
                                 EntryMode = entryMode,
                                 Entry = NormalizePrice(entry),
                                 IdealEntry = NormalizePrice(entry),
@@ -62,6 +64,18 @@ namespace cAlgo
                                 CalibrationEligible = false,
                                 IsLivePosition = true
                             };
+
+                            if (bindSignalTrace)
+                            {
+                                plan.SignalBarOpenTimeUtcTicks =
+                                    GetSignalBarOpenTimeUtcTicks(
+                                        createdM5);
+                                plan.SignalTraceId =
+                                    BuildSignalTraceId(
+                                        createdM5);
+                            }
+
+                            return plan;
                         }
     }
 }

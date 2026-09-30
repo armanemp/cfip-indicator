@@ -35,6 +35,8 @@ namespace cAlgo
                         public string Tp4Source;
                         public int HtfTargetCount;
                         public int CreatedM5;
+                        public long SignalBarOpenTimeUtcTicks;
+                        public string SignalTraceId;
                         public double OriginalVolume;
 
                         public bool CalibrationEligible;

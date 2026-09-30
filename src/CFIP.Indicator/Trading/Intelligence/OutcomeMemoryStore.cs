@@ -11,11 +11,11 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const string OutcomeMemorySchema = "CFIP-OUTCOME,2";
-        private const string LegacyOutcomeMemorySchema = "CFIP-OUTCOME";
+        private const string PriorOutcomeMemorySchema = "CFIP-OUTCOME";
         private const int OutcomeMemoryMaxAgeDays = 90;
 
         private string _memoryConfigurationFingerprintCache;
-        private string _legacyMemoryConfigurationFingerprintCache;
+        private string _priorMemoryConfigurationFingerprintCache;
         private string OutcomeMemoryKey()
         {
             string symbol =
@@ -35,7 +35,7 @@ namespace cAlgo
                 MemoryConfigurationFingerprint());
         }
 
-        private string LegacyOutcomeMemoryKey()
+        private string PriorOutcomeMemoryKey()
         {
             string symbol =
                 string.IsNullOrWhiteSpace(SymbolName)
@@ -50,7 +50,7 @@ namespace cAlgo
             return OutcomeMemoryIdentityRule.BuildLegacyMemoryKey(
                 symbol,
                 timeframe,
-                LegacyMemoryConfigurationFingerprint());
+                PriorMemoryConfigurationFingerprint());
         }
 
         private string MemoryAccountScopeToken()
@@ -165,18 +165,18 @@ namespace cAlgo
             return _memoryConfigurationFingerprintCache;
         }
 
-        private string LegacyMemoryConfigurationFingerprint()
+        private string PriorMemoryConfigurationFingerprint()
         {
             if (!string.IsNullOrWhiteSpace(
-                    _legacyMemoryConfigurationFingerprintCache))
-                return _legacyMemoryConfigurationFingerprintCache;
+                    _priorMemoryConfigurationFingerprintCache))
+                return _priorMemoryConfigurationFingerprintCache;
 
-            _legacyMemoryConfigurationFingerprintCache =
+            _priorMemoryConfigurationFingerprintCache =
                 OutcomeMemoryIdentityRule.BuildFingerprint(
                     CollectOutcomeMemoryParameters(),
                     false);
 
-            return _legacyMemoryConfigurationFingerprintCache;
+            return _priorMemoryConfigurationFingerprintCache;
         }
 
         private string SerializeOutcomeHistory()
@@ -252,7 +252,7 @@ namespace cAlgo
         {
             try
             {
-                bool legacyMemory =
+                bool priorMemory =
                     false;
 
                 string stored =
@@ -264,10 +264,10 @@ namespace cAlgo
                 {
                     stored =
                         LocalStorage.GetString(
-                            LegacyOutcomeMemoryKey(),
+                            PriorOutcomeMemoryKey(),
                             LocalStorageScope.Type);
 
-                    legacyMemory =
+                    priorMemory =
                         !string.IsNullOrWhiteSpace(stored);
                 }
 
@@ -287,7 +287,7 @@ namespace cAlgo
 
                 string[] lines =
                     stored.Split(
-                        new[] { '\\n' },
+                        new[] { '\n' },
                         StringSplitOptions.RemoveEmptyEntries);
 
                 if (lines.Length == 0)
@@ -302,21 +302,21 @@ namespace cAlgo
                         OutcomeMemorySchema,
                         StringComparison.Ordinal);
 
-                bool legacySchema =
+                bool priorSchema =
                     string.Equals(
                         schema,
-                        LegacyOutcomeMemorySchema,
+                        PriorOutcomeMemorySchema,
                         StringComparison.Ordinal);
 
                 if (!currentSchema &&
-                    !legacySchema)
+                    !priorSchema)
                     return false;
 
                 // A legacy key/snapshot has no account identity. Only adopt a
                 // legacy observation when the current account's broker history
                 // proves that the PositionId belongs to this account.
-                if (legacySchema)
-                    legacyMemory = true;
+                if (priorSchema)
+                    priorMemory = true;
 
                 DateTime cutoff =
                     Server.TimeInUtc.AddDays(
@@ -335,7 +335,7 @@ namespace cAlgo
                             out item))
                         continue;
 
-                    if (legacyMemory &&
+                    if (priorMemory &&
                         !IsLegacyOutcomeOwnedByCurrentAccount(
                             item.PositionId))
                         continue;
@@ -361,7 +361,7 @@ namespace cAlgo
                 TrimOutcomeHistory();
                 RebuildOutcomeAggregates();
 
-                if (legacyMemory &&
+                if (priorMemory &&
                     _outcomeHistory.Count > 0)
                 {
                     PersistOutcomeHistory();

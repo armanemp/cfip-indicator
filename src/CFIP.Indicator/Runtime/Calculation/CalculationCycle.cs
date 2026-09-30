@@ -69,7 +69,8 @@ namespace cAlgo
 
                 ProcessLiveCalculationStages(
                     index,
-                    closedM5);
+                    closedM5,
+                    newClosedBar);
 
                 CompleteRuntimeFaultCycle();
             }

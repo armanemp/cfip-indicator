@@ -113,7 +113,9 @@ namespace cAlgo
                     stop,
                     target,
                     closedM5,
-                    result.Position.VolumeInUnits);
+                    result.Position.VolumeInUnits,
+                    ExecutionMode.BreakoutMarket,
+                    true);
 
             _plan.PositionId =
                 result.Position.Id;

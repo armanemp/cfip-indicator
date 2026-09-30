@@ -41,14 +41,14 @@ check("decision parameters remain included",
       '"Tp1MinimumRR"' not in identity and '"MinimumConfidence"' not in identity)
 check("current memory schema is versioned",
       'OutcomeMemorySchema = "CFIP-OUTCOME,2"' in memory and
-      'LegacyOutcomeMemorySchema = "CFIP-OUTCOME"' in memory)
+      'PriorOutcomeMemorySchema = "CFIP-OUTCOME"' in memory)
 check("new LocalStorage key is account scoped",
       "MemoryAccountScopeToken()" in memory and "BuildMemoryKey(" in memory and
       "Account.Number" in memory and "Account.AccountType" in memory and
       "Account.IsLive" in memory)
 check("legacy migration uses legacy key and schema",
-      "LegacyOutcomeMemoryKey()" in memory and
-      "LegacyMemoryConfigurationFingerprint()" in memory and
+      "PriorOutcomeMemoryKey()" in memory and
+      "PriorMemoryConfigurationFingerprint()" in memory and
       "IsLegacyOutcomeOwnedByCurrentAccount(" in memory)
 check("legacy migration rejects unverified account ownership",
       "History.FindByPositionId(" in memory and "historicalTrades.Length > 0" in memory)

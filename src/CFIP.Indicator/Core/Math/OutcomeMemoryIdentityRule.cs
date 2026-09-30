@@ -210,14 +210,14 @@ namespace cAlgo
         internal static string BuildLegacyMemoryKey(
             string symbol,
             string timeframe,
-            string legacyFingerprint)
+            string migrationFingerprint)
         {
             return "CFIP.OUTCOME." +
-                SanitizeArchivePart(symbol) +
+                SanitizeMemoryIdentityPart(symbol) +
                 "." +
-                SanitizeArchivePart(timeframe) +
+                SanitizeMemoryIdentityPart(timeframe) +
                 "." +
-                (legacyFingerprint ?? "") +
+                (migrationFingerprint ?? "") +
                 ".MEM";
         }
 
@@ -253,7 +253,7 @@ namespace cAlgo
             }
         }
 
-        private static string SanitizeArchivePart(
+        private static string SanitizeMemoryIdentityPart(
             string value)
         {
             if (string.IsNullOrWhiteSpace(value))

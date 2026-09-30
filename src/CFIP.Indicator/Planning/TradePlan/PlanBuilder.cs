@@ -80,6 +80,11 @@ namespace cAlgo
 
             p.Lane = lane;
 
+            p.SignalBarOpenTimeUtcTicks =
+                GetSignalBarOpenTimeUtcTicks(closedM5);
+            p.SignalTraceId =
+                BuildSignalTraceId(closedM5);
+
             BindPlanCalibrationContext(
                 p,
                 _decision,

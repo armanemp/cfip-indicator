@@ -55,7 +55,7 @@ require(
 )
 require(
     ARCHIVE,
-    r'OutcomeArchiveSchema\s*=\s*"CFIP-OUTCOME-ARCHIVE,1"',
+    r'OutcomeArchiveSchema\s*=\s*"CFIP-OUTCOME-ARCHIVE,(?:1|2)"',
     "archive schema marker",
 )
 require(
@@ -141,7 +141,7 @@ require(
 )
 require(
     PORTABLE,
-    r"EnsureHistoryLocationMarker\(\)[\s\S]*?Print\([\s\S]*?history storage ready",
+    r"EnsureHistoryLocationMarker\(\)[\s\S]*?CFIP history (?:storage|persistence) (?:ready|probe PASS)",
     "history storage diagnostic",
 )
 

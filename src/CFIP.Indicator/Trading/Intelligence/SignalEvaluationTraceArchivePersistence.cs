@@ -8,7 +8,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator
     {
-        private const string SignalTraceSchema = "CFIP-SIGNAL-TRACE,2";
+        private const string SignalTraceSchema = "CFIP-SIGNAL-TRACE,3";
 
         private string _signalTraceArchivePrefixCache;
         private string _signalTraceArchivePrefixIdentityCache;
@@ -22,7 +22,8 @@ namespace cAlgo
             "WaveTrendDirection,WaveTrendQuality,DivergenceDirection,DivergenceQuality," +
             "EntryAllowed,TriggerReady,ActionableNow,EntryLocationQuality,EntryTimingQuality,EntryPositionQuality," +
             "EntryDistanceAtr,ActionableTp1RR,PlanRiskAtr,EffectiveTp1RR,RequiredTp1RR,EntryMode,Entry,IdealEntry,Stop,Tp1,Tp2,Tp3,Tp4," +
-            "TraceGate,BlockReason,ActionabilityReason,DecisionReason";
+            "TraceGate,BlockReason,ActionabilityReason,DecisionReason," +
+            "SignalTraceId,GeometryBarOpenTimeUtcTicks,GeometrySource";
 
         private OpportunityLane ResolveSignalTraceLane(
             Decision decision,
@@ -247,6 +248,12 @@ namespace cAlgo
             row.Append(Encode(trace.ActionabilityReason));
             row.Append(',');
             row.Append(Encode(trace.DecisionReason));
+            row.Append(',');
+            row.Append(Encode(trace.SignalTraceId));
+            row.Append(',');
+            row.Append(trace.GeometryBarOpenTimeUtcTicks.ToString(CultureInfo.InvariantCulture));
+            row.Append(',');
+            row.Append(Encode(trace.GeometrySource));
 
             return row.ToString();
         }

@@ -10,7 +10,7 @@ namespace cAlgo
         private const string PortableMemorySnapshotSchema =
             "CFIP-PORTABLE-MEMORY,2";
 
-        private const string LegacyPortableMemorySnapshotSchema =
+        private const string PriorPortableMemorySnapshotSchema =
             "CFIP-PORTABLE-MEMORY,1";
 
         // The indicator is explicitly registered as CFIPIndicator. With
@@ -104,7 +104,7 @@ namespace cAlgo
                 ".txt";
         }
 
-        private string LegacyPortableMemorySnapshotPath()
+        private string PriorPortableMemorySnapshotPath()
         {
             string symbol =
                 SanitizeArchivePart(
@@ -126,7 +126,7 @@ namespace cAlgo
                 "_" +
                 timeframe +
                 "_" +
-                LegacyMemoryConfigurationFingerprint() +
+                PriorMemoryConfigurationFingerprint() +
                 ".txt";
         }
 
@@ -161,6 +161,27 @@ namespace cAlgo
                 Bars == null
                     ? "UNKNOWN"
                     : Bars.TimeFrame.ToString());
+            text.Append(Environment.NewLine);
+
+            text.Append("AccountNumber=");
+            text.Append(
+                Account.Number.ToString(
+                    CultureInfo.InvariantCulture));
+            text.Append(Environment.NewLine);
+
+            text.Append("AccountType=");
+            text.Append(
+                Account.AccountType.ToString());
+            text.Append(Environment.NewLine);
+
+            text.Append("AccountIsLive=");
+            text.Append(
+                Account.IsLive ? "1" : "0");
+            text.Append(Environment.NewLine);
+
+            text.Append("AccountBroker=");
+            text.Append(
+                Account.BrokerName ?? "UNKNOWN");
             text.Append(Environment.NewLine);
 
             text.Append("Fingerprint=");
@@ -219,15 +240,15 @@ namespace cAlgo
                 string path =
                     PortableMemorySnapshotPath();
 
-                bool legacyPath =
+                bool priorPath =
                     false;
 
                 if (!File.Exists(path))
                 {
                     path =
-                        LegacyPortableMemorySnapshotPath();
+                        PriorPortableMemorySnapshotPath();
 
-                    legacyPath = true;
+                    priorPath = true;
                 }
 
                 if (!File.Exists(path))
@@ -253,14 +274,14 @@ namespace cAlgo
                         PortableMemorySnapshotSchema,
                         StringComparison.Ordinal);
 
-                bool legacySchema =
+                bool priorSchema =
                     string.Equals(
                         schema,
-                        LegacyPortableMemorySnapshotSchema,
+                        PriorPortableMemorySnapshotSchema,
                         StringComparison.Ordinal);
 
                 if (!currentSchema &&
-                    !legacySchema)
+                    !priorSchema)
                     return false;
 
                 string fingerprint = "";
@@ -373,10 +394,10 @@ namespace cAlgo
                     // them eligible only when their legacy configuration
                     // fingerprint matches; RestoreOutcomeHistory then applies
                     // broker-history PositionId ownership filtering.
-                    if (!legacyPath ||
+                    if (!priorPath ||
                         !string.Equals(
                             fingerprint,
-                            LegacyMemoryConfigurationFingerprint(),
+                            PriorMemoryConfigurationFingerprint(),
                             StringComparison.Ordinal))
                         return false;
                 }
@@ -394,12 +415,12 @@ namespace cAlgo
                             StringComparison.Ordinal)
                             ? OutcomeMemorySchema
                             : payload.StartsWith(
-                                LegacyOutcomeMemorySchema,
+                                PriorOutcomeMemorySchema,
                                 StringComparison.Ordinal)
-                                ? LegacyOutcomeMemorySchema
+                                ? PriorOutcomeMemorySchema
                                 : "",
-                        legacySchema
-                            ? LegacyOutcomeMemorySchema
+                        priorSchema
+                            ? PriorOutcomeMemorySchema
                             : OutcomeMemorySchema,
                         StringComparison.Ordinal);
 

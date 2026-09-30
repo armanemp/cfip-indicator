@@ -2,6 +2,7 @@ namespace cAlgo
 {
     internal sealed class SignalEvaluationTrace
     {
+        public string SignalTraceId;
         public long BarOpenTimeUtcTicks;
         public long ObservedUtcTicks;
         public int ClosedM5;
@@ -57,6 +58,8 @@ namespace cAlgo
         public double EntryDistanceAtr;
         public double ActionableTp1RR;
         public double PlanRiskAtr;
+        public long GeometryBarOpenTimeUtcTicks;
+        public string GeometrySource;
         public double EffectiveTp1RR;
         public double RequiredTp1RR;
 
