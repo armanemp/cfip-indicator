@@ -15,7 +15,7 @@ namespace cAlgo
         private const int OutcomeMemoryMaxAgeDays = 90;
 
         private string _memoryConfigurationFingerprintCache;
-        private string _legacyMemoryConfigurationFingerprintCache;
+        private string _priorMemoryConfigurationFingerprintCache;
         private string OutcomeMemoryKey()
         {
             string symbol =
@@ -168,15 +168,15 @@ namespace cAlgo
         private string PriorMemoryConfigurationFingerprint()
         {
             if (!string.IsNullOrWhiteSpace(
-                    _legacyMemoryConfigurationFingerprintCache))
-                return _legacyMemoryConfigurationFingerprintCache;
+                    _priorMemoryConfigurationFingerprintCache))
+                return _priorMemoryConfigurationFingerprintCache;
 
-            _legacyMemoryConfigurationFingerprintCache =
+            _priorMemoryConfigurationFingerprintCache =
                 OutcomeMemoryIdentityRule.BuildFingerprint(
                     CollectOutcomeMemoryParameters(),
                     false);
 
-            return _legacyMemoryConfigurationFingerprintCache;
+            return _priorMemoryConfigurationFingerprintCache;
         }
 
         private string SerializeOutcomeHistory()
@@ -252,7 +252,7 @@ namespace cAlgo
         {
             try
             {
-                bool legacyMemory =
+                bool priorMemory =
                     false;
 
                 string stored =
@@ -267,7 +267,7 @@ namespace cAlgo
                             PriorOutcomeMemoryKey(),
                             LocalStorageScope.Type);
 
-                    legacyMemory =
+                    priorMemory =
                         !string.IsNullOrWhiteSpace(stored);
                 }
 
@@ -316,7 +316,7 @@ namespace cAlgo
                 // legacy observation when the current account's broker history
                 // proves that the PositionId belongs to this account.
                 if (legacySchema)
-                    legacyMemory = true;
+                    priorMemory = true;
 
                 DateTime cutoff =
                     Server.TimeInUtc.AddDays(
@@ -335,7 +335,7 @@ namespace cAlgo
                             out item))
                         continue;
 
-                    if (legacyMemory &&
+                    if (priorMemory &&
                         !IsLegacyOutcomeOwnedByCurrentAccount(
                             item.PositionId))
                         continue;
@@ -361,7 +361,7 @@ namespace cAlgo
                 TrimOutcomeHistory();
                 RebuildOutcomeAggregates();
 
-                if (legacyMemory &&
+                if (priorMemory &&
                     _outcomeHistory.Count > 0)
                 {
                     PersistOutcomeHistory();
