@@ -18,11 +18,11 @@ namespace cAlgo
         {
             if (!HasFinitePositiveValue(baselineEquity) ||
                 !HasFinitePositiveValue(currentEquity) ||
-                !IsFinite(baselineUnrealizedNetProfit) ||
-                !IsFinite(currentUnrealizedNetProfit) ||
-                !IsFinite(realizedNetProfit) ||
-                !IsFinite(netCashFlow) ||
-                !IsFinite(maximumDailyLossPercent) ||
+                !IsFiniteDailyLossValue(baselineUnrealizedNetProfit) ||
+                !IsFiniteDailyLossValue(currentUnrealizedNetProfit) ||
+                !IsFiniteDailyLossValue(realizedNetProfit) ||
+                !IsFiniteDailyLossValue(netCashFlow) ||
+                !IsFiniteDailyLossValue(maximumDailyLossPercent) ||
                 maximumDailyLossPercent < 0)
             {
                 return DailyLossEvaluation.Unavailable(
@@ -55,7 +55,7 @@ namespace cAlgo
                 usedEquityFallback = true;
             }
 
-            if (!IsFinite(dailyNetPnl))
+            if (!IsFiniteDailyLossValue(dailyNetPnl))
             {
                 return DailyLossEvaluation.Unavailable(
                     "DAILY LOSS PNL UNAVAILABLE");
@@ -114,7 +114,7 @@ namespace cAlgo
             double baseline)
         {
             if (!HasFinitePositiveValue(baseline) ||
-                !IsFinite(amount))
+                !IsFiniteDailyLossValue(amount))
                 return 0;
 
             return amount /
@@ -125,10 +125,10 @@ namespace cAlgo
         private static bool HasFinitePositiveValue(double value)
         {
             return value > 0 &&
-                   IsFinite(value);
+                   IsFiniteDailyLossValue(value);
         }
 
-        private static bool IsFinite(double value)
+        private static bool IsFiniteDailyLossValue(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
