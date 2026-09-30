@@ -67,9 +67,7 @@
  
                              _calibrationSamples[key]++;
  
-                             if (!double.IsNaN(realizedR) &&
-                                 !double.IsInfinity(realizedR) &&
-                                 realizedR > 0)
+                             if (CalibrationOutcomeRule.IsPositiveRealizedR(realizedR))
                                  _calibrationWins[key]++;
                          }
  
