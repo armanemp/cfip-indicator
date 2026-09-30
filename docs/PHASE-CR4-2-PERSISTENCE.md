@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTED — repository verification assets added; target-terminal verification remains mandatory.
+COMPLETE — PR #103 merged to main; target-terminal verification remains mandatory.
 
 ## Own verification
 
@@ -57,3 +57,5 @@ IMPLEMENTED — repository verification assets added; target-terminal verificati
 ## Completion boundary
 
 Repository implementation is complete after this phase PR merge. CI execution and target-terminal manual evidence must still be recorded honestly; no unverified PASS is claimed.
+
+Main merge: PR #103, commit `05a91cb9764f7ee86fcaaba0d7dede540c4b6e1c`.
