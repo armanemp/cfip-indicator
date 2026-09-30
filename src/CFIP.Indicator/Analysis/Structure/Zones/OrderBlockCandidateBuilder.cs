@@ -36,14 +36,14 @@ namespace cAlgo
                 bars.LowPrices[
                     createdIndex];
             if (!OrderBlockRule.TryGetZone(
-                    direction,
-                    ObUseBodyForZone,
-                    open,
-                    close,
-                    high,
-                    low,
-                    out double zoneLow,
-                    out double zoneHigh))
+                direction,
+                ObUseBodyForZone,
+                open,
+                close,
+                high,
+                low,
+                out double zoneLow,
+                out double zoneHigh))
                 return null;
             double range =
                 high -
@@ -76,8 +76,14 @@ namespace cAlgo
                     out double managedLow,
                     out double managedHigh,
                     out bool partiallyMitigated,
-                    out double remainingRatio))
+                    out double remainingRatio,
+                    out OrderBlockLifecycleState lifecycleState))
                 return null;
+
+            if (lifecycleState ==
+                OrderBlockLifecycleState.Broken)
+                return null;
+
             bool liquiditySweep =
                 HasOrderBlockLiquiditySweep(
                     bars,
@@ -122,7 +128,9 @@ namespace cAlgo
                     createdIndex,
                 Age = currentIndex -
                     createdIndex,
-                Quality = quality
+                Quality = quality,
+                OrderBlockLifecycle =
+                    lifecycleState
             };
         }
     }
