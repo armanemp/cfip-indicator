@@ -15,6 +15,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private bool ExecutePartialClose(
+            int closedM5,
             double percentOfOriginal,
             string tag)
         {
@@ -26,6 +27,15 @@ namespace cAlgo
                 _plan.OriginalVolume <= 0 ||
                 percentOfOriginal <= 0)
                 return true;
+
+            if (!PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    closedM5,
+                    GetPartialTakeProfitLastAttemptM5(tag),
+                    GetPartialTakeProfitLastAttemptStage(tag),
+                    tag))
+            {
+                return false;
+            }
 
             Position position =
                 GetManagedLivePositionForPlan();
@@ -56,6 +66,10 @@ namespace cAlgo
                 remainder < Symbol.VolumeInUnitsMin)
                 closeVolume =
                     position.VolumeInUnits;
+
+            RecordPartialTakeProfitAttempt(
+                closedM5,
+                tag);
 
             try
             {
@@ -106,48 +120,116 @@ namespace cAlgo
 
                         if (breakEvenValid)
                         {
-                            bool breakEvenApplied =
-                                TryModifyStopLoss(
-                                    position,
-                                    position.EntryPrice,
-                                    "PARTIAL BREAK-EVEN");
+                            double riskPips =
+                                Math.Abs(
+                                    position.EntryPrice -
+                                    _plan.Stop) /
+                                Math.Max(
+                                    Symbol.PipSize,
+                                    1e-9);
 
-                            if (breakEvenApplied)
-                            {
-                                _plan.Stop =
-                                    NormalizePrice(
-                                        position.EntryPrice);
+                            double tp1Pips =
+                                Math.Abs(
+                                    _plan.Tp1 -
+                                    position.EntryPrice) /
+                                Math.Max(
+                                    Symbol.PipSize,
+                                    1e-9);
 
-                                _activeBrokerStop =
-                                    _plan.Stop;
+                            double spreadPips =
+                                Math.Max(
+                                    0,
+                                    (Symbol.Ask - Symbol.Bid) /
+                                    Math.Max(
+                                        Symbol.PipSize,
+                                        1e-9));
 
-                                _brokerProtectionRecoveryRequired =
-                                    false;
-                            }
-                            else
-                            {
-                                _plan.Stop =
-                                    NormalizePrice(
-                                        position.EntryPrice);
+                            SmartBreakEvenResult smartBreakEven =
+                                SmartBreakEvenRule.Evaluate(
+                                    riskPips,
+                                    tp1Pips,
+                                    spreadPips,
+                                    BreakEvenTriggerRR,
+                                    BreakEvenBufferPips,
+                                    RiskFreeLockPips,
+                                    UseSpreadAwareBreakEven);
 
-                                _brokerProtectionRecoveryRequired =
-                                    true;
+                            _lastBreakEvenDiagnostic =
+                                smartBreakEven.Allowed
+                                    ? smartBreakEven.Reason
+                                    : "NOT APPLICABLE • " +
+                                      smartBreakEven.Reason;
 
-                                SetLifecycleState(
-                                    LifecycleState.RecoveryRequired,
-                                    "PARTIAL CLOSE • BREAK-EVEN REJECTED");
+                            double breakEvenPrice =
+                                smartBreakEven.Allowed
+                                    ? _plan.Direction == 1
+                                        ? position.EntryPrice +
+                                          smartBreakEven.OffsetPips *
+                                          Symbol.PipSize
+                                        : position.EntryPrice -
+                                          smartBreakEven.OffsetPips *
+                                          Symbol.PipSize
+                                    : position.EntryPrice;
 
-                                SendUnifiedAlert(
-                                    "BREAKEVEN-REJECTED|" +
-                                    position.Id +
-                                    "|" +
-                                    tag,
-                                    "CFIP BREAK-EVEN PROTECTION REJECTED | #" +
-                                    position.Id +
-                                    " | " +
-                                    tag,
+                            bool breakEvenGeometryValid =
+                                IsFinitePositive(breakEvenPrice) &&
+                                IsValidManagedStop(
                                     _plan.Direction,
-                                    true);
+                                    position.EntryPrice,
+                                    market,
+                                    breakEvenPrice);
+
+                            if (breakEvenGeometryValid)
+                            {
+                                bool breakEvenApplied =
+                                    TryModifyStopLoss(
+                                        position,
+                                        NormalizePrice(breakEvenPrice),
+                                        "PARTIAL BREAK-EVEN");
+
+                                if (breakEvenApplied)
+                                {
+                                    // Broker mutation has succeeded; only now may the
+                                    // in-memory plan adopt the broker-confirmed protection.
+                                    _plan.Stop =
+                                        NormalizePrice(
+                                            breakEvenPrice);
+
+                                    _activeBrokerStop =
+                                        _plan.Stop;
+
+                                    _brokerProtectionRecoveryRequired =
+                                        false;
+                                    _lastBreakEvenDiagnostic =
+                                        "APPLIED • " +
+                                        NormalizePrice(
+                                            breakEvenPrice).ToString(
+                                                "R",
+                                                System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                else
+                                {
+                                    // Keep the last known plan stop. A rejected mutation
+                                    // must never manufacture a new protective price.
+                                    _brokerProtectionRecoveryRequired =
+                                        true;
+
+                                    SetLifecycleState(
+                                        LifecycleState.RecoveryRequired,
+                                        "PARTIAL CLOSE • BREAK-EVEN REJECTED");
+
+                                    SendUnifiedAlert(
+                                        "BREAKEVEN-REJECTED|" +
+                                        position.Id +
+                                        "|" +
+                                        tag,
+                                        "CFIP BREAK-EVEN PROTECTION REJECTED | #" +
+                                        position.Id +
+                                        " | " +
+                                        tag,
+                                        _plan.Direction,
+                                        true);
+                                }
                             }
                         }
                     }
@@ -183,6 +265,46 @@ namespace cAlgo
 
             // The broker owns confirmation of the position mutation; no synthetic
             // post-close state is created from the requested volume.
+        }
+        
+        private int GetPartialTakeProfitLastAttemptM5(
+            string tag)
+        {
+            return string.Equals(
+                       tag,
+                       "TP2",
+                       StringComparison.OrdinalIgnoreCase)
+                ? _lastPartialTp2AttemptM5
+                : _lastPartialTp1AttemptM5;
+        }
+
+        private string GetPartialTakeProfitLastAttemptStage(
+            string tag)
+        {
+            return string.Equals(
+                       tag,
+                       "TP2",
+                       StringComparison.OrdinalIgnoreCase)
+                ? "TP2"
+                : "TP1";
+        }
+
+        private void RecordPartialTakeProfitAttempt(
+            int closedM5,
+            string tag)
+        {
+            if (string.Equals(
+                    tag,
+                    "TP2",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                _lastPartialTp2AttemptM5 =
+                    closedM5;
+                return;
+            }
+
+            _lastPartialTp1AttemptM5 =
+                closedM5;
         }
     }
 }

@@ -64,6 +64,14 @@ namespace cAlgo
                     finalTarget))
                 return false;
 
+            if (_activeBrokerTarget > 0 &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    _plan.Direction,
+                    _activeBrokerTarget,
+                    finalTarget,
+                    true))
+                return false;
+
             double tp2Volume =
                 Symbol.NormalizeVolumeInUnits(
                     _plan.OriginalVolume *
@@ -111,6 +119,16 @@ namespace cAlgo
                         new RelativeTakeProfitLastProtection(
                             finalPips));
 
+            if (!PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    closedM5,
+                    _lastServerTpLadderMutationM5,
+                    _lastServerTpLadderMutationKind,
+                    "SERVER-LADDER-AFTER-TP1"))
+                return false;
+
+            _lastServerTpLadderMutationM5 = closedM5;
+            _lastServerTpLadderMutationKind = "SERVER-LADDER-AFTER-TP1";
+
                 if (!TryModifyTakeProfitLadder(
                         position,
                         protections,
@@ -134,6 +152,7 @@ namespace cAlgo
 
         private bool TryAdvanceServerSideTakeProfitLadder(
             Position position,
+            int closedM5,
             double market)
         {
             if (!_serverSideTakeProfitLadderActive ||
@@ -258,6 +277,16 @@ namespace cAlgo
                         new RelativeTakeProfitLastProtection(
                             finalPips));
 
+            if (!PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    closedM5,
+                    _lastServerTpLadderMutationM5,
+                    _lastServerTpLadderMutationKind,
+                    "SERVER-LADDER"))
+                return false;
+
+            _lastServerTpLadderMutationM5 = closedM5;
+            _lastServerTpLadderMutationKind = "SERVER-LADDER";
+
                 if (!TryModifyTakeProfitLadder(
                         position,
                         protections,
@@ -329,7 +358,8 @@ namespace cAlgo
         }
 
         private bool TryCollapseServerSideTakeProfitLadderToFinal(
-            Position position)
+            Position position,
+            int closedM5)
         {
             if (!_serverSideTakeProfitLadderActive ||
                 position == null ||
@@ -374,6 +404,25 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize,
                     1e-9);
+
+            if (_activeBrokerTarget > 0 &&
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    _plan.Direction,
+                    _activeBrokerTarget,
+                    finalTarget,
+                    market,
+                    minimumForwardDistance))
+                return false;
+
+            if (!PartialTakeProfitRetryRule.ShouldAttemptStage(
+                    closedM5,
+                    _lastServerTpLadderMutationM5,
+                    _lastServerTpLadderMutationKind,
+                    "SERVER-LADDER-AFTER-TP2"))
+                return false;
+
+            _lastServerTpLadderMutationM5 = closedM5;
+            _lastServerTpLadderMutationKind = "SERVER-LADDER-AFTER-TP2";
 
             if (!TryModifyTakeProfitPips(
                     position,

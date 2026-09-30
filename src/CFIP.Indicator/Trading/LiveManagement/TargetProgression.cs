@@ -171,6 +171,7 @@ namespace cAlgo
                 if (position != null)
                     TryAdvanceServerSideTakeProfitLadder(
                         position,
+                        closedM5,
                         market);
             }
         }

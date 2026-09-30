@@ -214,13 +214,32 @@ namespace cAlgo
                     continue;
                 }
 
+                int recoveryCreatedM5 =
+                    _m5Bars == null
+                        ? Math.Max(1, closedM5)
+                        : ClosedIndex(
+                            _m5Bars,
+                            position.EntryTime);
+
+                if (recoveryCreatedM5 < 1 ||
+                    (_m5Bars != null &&
+                     recoveryCreatedM5 >= _m5Bars.Count))
+                    recoveryCreatedM5 =
+                        Math.Max(
+                            1,
+                            Math.Min(
+                                closedM5,
+                                _m5Bars == null
+                                    ? closedM5
+                                    : _m5Bars.Count - 2));
+
                 _plan =
                     CreateManagedPlanFromExecution(
                         direction,
                         entry,
                         stop,
                         target,
-                        Math.Max(1, closedM5),
+                        recoveryCreatedM5,
                         position.VolumeInUnits);
 
                 if (_plan == null)
@@ -234,6 +253,9 @@ namespace cAlgo
 
                 _plan.PositionId =
                     position.Id;
+
+                _pendingProtectedStopCandidate =
+                    0;
 
                 _activeBrokerStop =
                     position.StopLoss.HasValue
@@ -320,8 +342,41 @@ namespace cAlgo
                         ? Symbol.Bid
                         : Symbol.Ask;
 
-                _peakPrice =
-                    _lastMarket;
+                double reconstructedPeak;
+                int peakStartM5 =
+                    Math.Max(
+                        1,
+                        recoveryCreatedM5);
+
+                int peakEndM5 =
+                    _m5Bars == null
+                        ? closedM5
+                        : Math.Max(
+                            peakStartM5,
+                            Math.Min(
+                                closedM5,
+                                _m5Bars.Count - 2));
+
+                if (_m5Bars != null &&
+                    PeakPriceReconstructionRule.TryResolve(
+                        direction,
+                        entry,
+                        _lastMarket,
+                        peakStartM5,
+                        peakEndM5,
+                        i => _m5Bars.HighPrices[i],
+                        i => _m5Bars.LowPrices[i],
+                        out reconstructedPeak))
+                {
+                    _peakPrice =
+                        NormalizePrice(
+                            reconstructedPeak);
+                }
+                else
+                {
+                    _peakPrice =
+                        _lastMarket;
+                }
 
                 break;
             }
