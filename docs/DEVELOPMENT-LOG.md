@@ -2243,3 +2243,41 @@ Analysis → Decision → Signal → Alert → Execution → Broker confirmation
 Next phase: CBOT-1 after target-terminal preflight acceptance.
 
 Operator action after merge: git pull --ff-only.
+
+## CR2.7 — WaveTrend mathematical correctness — 2026-09-30
+
+Status: **VERIFIED COMPLETE**
+
+Root-cause hardening:
+- replaced the previous partial MovingAverageType behavior with deterministic implementations for all currently exposed cTrader MA enum values used by WaveTrend;
+- corrected DEMA/TEMA warm-up so dependent EMA state chains are populated from their first valid seed instead of consuming default array values;
+- corrected HMA final weighting so the contiguous raw-HMA window is consumed exactly once with the final WMA weights;
+- corrected WaveTrend readiness to include RSI/MFI/RMI dependencies, both smoothing layers and previous-signal stability;
+- added WaveTrend state invalidation for Bars HistoryLoaded/Reloaded and history-prefix/count changes;
+- documented that WaveTrend MFI uses cTrader TickVolumes and is not an assertion of exchange-level real volume;
+- preserved all public WaveTrend parameter names, types and DefaultValues;
+- kept Decision, Signal, Auto-Trade, Auto-Order, broker mutation and capacity authority unchanged.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS;
+- CR2.7 static audit: PASS;
+- existing CR2.6 and project-wide routine audits: PASS.
+
+Verified implementation head: `181b238a548280fc01a67fb1e3ba8a617f63e42a`.
+Merged via PR #92, merge commit `b021f56c4b75331fb52127547e006f2f8bb287c4`.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. The phase changed only WaveTrend analytical math/readiness/state invalidation and did not bypass any execution safety gate.
+
+Performance/code-cleanliness:
+- MA kernels were split into bounded partial modules to satisfy the existing production module-size architecture limits;
+- repeated calculations remain incrementally cached by WaveTrend engine state;
+- history invalidation clears both WaveTrend arrays and MA calculator state to prevent stale reuse.
+
+Manual boundary:
+- target-terminal replay remains required to verify platform-specific numerical parity for every MA type and to measure any empirical effect on signal quality;
+- no accuracy, win-rate, realized-RR or profitability claim is made from CI alone.
+
+Next phase: **CR2.8 — Historical rendering semantics and cost**.
