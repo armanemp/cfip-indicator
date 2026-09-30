@@ -119,7 +119,7 @@ namespace cAlgo
 
         private string[] InferNewsCurrencies()
         {
-            return EconomicNewsCurrencyRule.Resolve(
+            return EconomicNewsCurrencyRule.ResolveCurrencies(
                 SymbolName,
                 AdditionalNewsCurrencies,
                 AdditionalNewsCurrencies);
