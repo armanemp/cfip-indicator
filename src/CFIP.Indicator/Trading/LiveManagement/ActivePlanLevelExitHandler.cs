@@ -21,6 +21,20 @@ namespace cAlgo
                                     double liveStop =
                                         GetActiveBrokerStopPrice();
                         
+                                    if (_serverSideTakeProfitLadderActive)
+                                    {
+                                        Position serverPosition =
+                                            GetManagedLivePositionForPlan();
+
+                                        if (serverPosition != null)
+                                        {
+                                            ObserveServerSidePartialTakeProfits(
+                                                serverPosition,
+                                                closedM5,
+                                                market);
+                                        }
+                                    }
+
                                     bool hitSl =
                                         IsFinitePositive(liveStop) &&
                                         (_plan.Direction == 1
