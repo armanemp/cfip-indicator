@@ -500,14 +500,40 @@ Next implementation phase: **CR2.3 — Unified indicator-quality thresholds**.
 
 Covers: B4 plus A9.
 
+Status: COMPLETE — merged 2026-09-30 (PR #88, merge commit 98da2030d8e36312ee0c073c1a58889bb405f893).
+
+Implemented:
+- one semantic owner for IndicatorConfluenceQuality and IndicatorConflict execution gates;
+- preserved legacy threshold values while separating setup qualification from submission safety semantics;
+- shared the 62 quality floor across pending continuation and reversal;
+- retained explicit 48/50 Conflict differences because their setup semantics differ;
+- migrated all covered execution callers to the canonical stage-aware rule;
+- added deterministic contracts, static ownership audit and phase documentation.
+
+Verification:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
+
+Target-terminal behavior remains a separate manual acceptance boundary.
+
+## CR2.4 — Pending-order decision arbiter
+
+Covers: B5.
+
 Work:
-- define one semantic source for IndicatorConfluenceQuality and IndicatorConflict gates;
-- keep legacy default behavior initially;
-- expose path-specific policy only when the semantic rule truly differs.
+- define explicit priority between continuation Stop and reversal Limit;
+- prevent both from being simultaneously strong without an explicit winner policy;
+- evaluate range/suitability for the actual direction of each candidate;
+- add cancellation hysteresis;
+- correct side-of-market reference prices where required;
+- review fallback lookback boundaries;
+- preserve distinct cancellation reasons for Daily Loss, circuit, supersession and cleanup.
 
 Acceptance:
-- the same semantic quality test is not 62/58/60 without an explicit documented reason;
-- rejection messages identify the canonical threshold source.
+- one pending direction/policy decision exists per cycle;
+- an invalid continuation Stop cannot silently fall through to an under-validated reversal Limit;
+- pending orders do not oscillate place/cancel because of a one-bar reaction change.
 
 ## CR2.4 — Pending-order decision arbiter
 
@@ -706,7 +732,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR2.3 — Unified indicator-quality thresholds**.
+Current active phase: **CR2.4 — Pending-order decision arbiter**.
 
 ## 8. Completion order and dependencies
 
