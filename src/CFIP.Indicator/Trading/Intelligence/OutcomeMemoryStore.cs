@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Reflection;
 using cAlgo.API;
+using cAlgo.API.Internals;
 
 namespace cAlgo
 {
