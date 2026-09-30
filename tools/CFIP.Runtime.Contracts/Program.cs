@@ -51,6 +51,8 @@ namespace cAlgo
             VerifyTradePlanRegistry();
             VerifyScenarioExecutionPolicy();
             VerifyActionabilityAndDivergenceState();
+            VerifyManagedIdentitySemantics();
+            VerifyReversalProfitThresholdSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -3476,6 +3478,97 @@ namespace cAlgo
                 blocked.DivergenceQuality == 81 &&
                 blocked.DivergenceDirection == -1,
                 "actionability block preserves divergence diagnostics");
+        }
+
+        private static void VerifyManagedIdentitySemantics()
+        {
+            string first;
+            string same;
+            string other;
+
+            Assert(
+                ManagedIdentityRule.TryBuildLabel(
+                    "CFIP-SMART",
+                    "INSTANCE-A",
+                    out first) &&
+                first == "CFIP-SMART|CFIP-I:INSTANCE-A",
+                "managed identity label embeds the cTrader instance identity");
+
+            Assert(
+                ManagedIdentityRule.TryBuildLabel(
+                    " CFIP|SMART ",
+                    "INSTANCE|A",
+                    out first) &&
+                first == "CFIP/SMART|CFIP-I:INSTANCE/A",
+                "managed identity label sanitizes separators deterministically");
+
+            Assert(
+                ManagedIdentityRule.TryBuildLabel(
+                    "CFIP-SMART",
+                    "INSTANCE-A",
+                    out first) &&
+                ManagedIdentityRule.TryBuildLabel(
+                    "CFIP-SMART",
+                    "INSTANCE-A",
+                    out same) &&
+                first == same,
+                "same instance produces stable ownership identity");
+
+            Assert(
+                ManagedIdentityRule.TryBuildLabel(
+                    "CFIP-SMART",
+                    "INSTANCE-A",
+                    out first) &&
+                ManagedIdentityRule.TryBuildLabel(
+                    "CFIP-SMART",
+                    "INSTANCE-B",
+                    out other) &&
+                first != other,
+                "different instances produce isolated ownership identities");
+
+            Assert(
+                !ManagedIdentityRule.TryBuildLabel(
+                    "CFIP-SMART",
+                    "",
+                    out first) &&
+                !ManagedIdentityRule.TryBuildLabel(
+                    "",
+                    "INSTANCE-A",
+                    out first),
+                "missing identity inputs fail closed");
+
+            Assert(
+                ManagedIdentityRule.InstanceMarker == "|CFIP-I:",
+                "managed identity marker is centralized and stable");
+        }
+
+        private static void VerifyReversalProfitThresholdSemantics()
+        {
+            Assert(
+                ReversalProfitThresholdRule.MeetsMinimumNetProfit(0.01, 0),
+                "default reversal threshold retains strictly-positive-profit behavior");
+
+            Assert(
+                !ReversalProfitThresholdRule.MeetsMinimumNetProfit(0, 0),
+                "zero net profit does not satisfy the strict reversal threshold");
+
+            Assert(
+                ReversalProfitThresholdRule.MeetsMinimumNetProfit(10, 5) &&
+                !ReversalProfitThresholdRule.MeetsMinimumNetProfit(5, 5),
+                "configured minimum net profit is a strict lower boundary");
+
+            Assert(
+                !ReversalProfitThresholdRule.MeetsMinimumNetProfit(
+                    double.NaN,
+                    0) &&
+                !ReversalProfitThresholdRule.MeetsMinimumNetProfit(
+                    10,
+                    double.NaN),
+                "non-finite reversal profit inputs fail closed");
+
+            Assert(
+                !ReversalProfitThresholdRule.MeetsMinimumNetProfit(10, -1),
+                "negative configured reversal profit threshold is rejected");
         }
 
         private static void VerifyAggressiveEntryPolicy()

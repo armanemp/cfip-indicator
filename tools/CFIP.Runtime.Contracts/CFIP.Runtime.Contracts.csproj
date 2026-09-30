@@ -29,6 +29,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/VolumeSizingRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ManagedIdentityRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ReversalProfitThresholdRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskAmountCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskPercentPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgQualityRule.cs" />
