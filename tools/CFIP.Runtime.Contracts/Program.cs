@@ -451,7 +451,7 @@ namespace cAlgo
                 DailyLossRule.Evaluate(
                     1000,
                     0,
-                    1480,
+                    1500,
                     0,
                     0,
                     500,
