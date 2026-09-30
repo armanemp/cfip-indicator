@@ -14,17 +14,18 @@ namespace cAlgo
             int index)
         {
             IReadOnlyList<StockQuote> quotes =
-                GetOssQuotes(
+                GetOssStableQuotes(
                     bars,
                     index);
 
             if (quotes == null ||
-                quotes.Count < Math.Max(20, RsiPeriod + 5))
+                quotes.Count < OssIndicatorParameters.RsiHistoryRequired(RsiPeriod))
                 return double.NaN;
 
             var results =
                 StockIndicator.GetRsi(
-                    quotes,Math.Max(2, RsiPeriod))
+                    quotes,
+                    OssIndicatorParameters.SafeRsiPeriod(RsiPeriod))
                     .ToList();
 
             return results.Count == 0 ||
