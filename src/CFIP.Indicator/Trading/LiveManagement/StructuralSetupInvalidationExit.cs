@@ -181,17 +181,20 @@ namespace cAlgo
                                                 LifecycleState.ExitRequested,
                                                 "STRUCTURAL INVALIDATION");
                                 
-                                            if (!TryClosePosition(
+                                            bool closeAccepted =
+                                                TryClosePosition(
                                                     position,
-                                                    "STRUCTURAL INVALIDATION"))
+                                                    "STRUCTURAL INVALIDATION");
+
+                                            if (!closeAccepted)
                                             {
                                                 SetLifecycleState(
                                                     LifecycleState.RecoveryRequired,
                                                     "STRUCTURAL EXIT REJECTED");
-                                
+
                                                 _autoExecutionBlockReason =
                                                     "STRUCTURAL EXIT REJECTED";
-                                
+
                                                 SendUnifiedAlert(
                                                     "STRUCT-INVALID-EXIT-FAILED|" +
                                                     position.Id,
@@ -199,10 +202,16 @@ namespace cAlgo
                                                     position.Id,
                                                     _plan.Direction,
                                                     true);
+
+                                                return false;
                                             }
-                                
-                                            _lastExitM5 = closedM5;
-                                
+
+                                            _lastExitM5 =
+                                                LiveInvalidationRule.RecordExitM5(
+                                                    _lastExitM5,
+                                                    closedM5,
+                                                    closeAccepted);
+
                                             // _plan remains authoritative until OnPositionClosed confirms
                                             // that the broker position is actually gone.
                                             return true;
