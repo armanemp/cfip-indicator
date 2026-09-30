@@ -18,9 +18,7 @@ namespace cAlgo
                                     int closedM5,
                                     double currentMove)
                                 {
-                                    if (!UseFalseSignalGuard ||
-                                        !EnableSoftAdverseRInvalidation ||
-                                        _plan == null ||
+                                    if (_plan == null ||
                                         !_plan.IsLivePosition ||
                                         !IsFinitePositive(_plan.Risk))
                                         return;
@@ -61,7 +59,9 @@ namespace cAlgo
                                         double.IsInfinity(adverseR))
                                         return;
 
-                                    if (currentMove < 0 &&
+                                    if (UseFalseSignalGuard &&
+                                        EnableSoftAdverseRInvalidation &&
+                                        currentMove < 0 &&
                                         adverseR >= softAdverseR &&
                                         barsSincePlan <=
                                         Math.Max(
