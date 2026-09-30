@@ -416,6 +416,7 @@ namespace cAlgo
                     0,
                     3.0,
                     true,
+                    true,
                     false);
 
             Assert(
@@ -435,6 +436,7 @@ namespace cAlgo
                     0,
                     0,
                     3.0,
+                    true,
                     true,
                     false);
 
@@ -506,6 +508,7 @@ namespace cAlgo
                     0,
                     3.0,
                     true,
+                    true,
                     false);
 
             Assert(
@@ -524,6 +527,7 @@ namespace cAlgo
                     0,
                     0,
                     3.0,
+                    true,
                     true,
                     false);
 
