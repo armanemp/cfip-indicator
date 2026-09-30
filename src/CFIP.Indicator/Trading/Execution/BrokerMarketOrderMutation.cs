@@ -21,6 +21,7 @@ namespace cAlgo
         {
             try
             {
+                MarkBrokerStateDirty();
                 return ExecuteMarketOrder(
                     tradeType,
                     symbolName,
@@ -52,6 +53,7 @@ namespace cAlgo
         {
             try
             {
+                MarkBrokerStateDirty();
                 return ExecuteMarketOrder(
                     tradeType,
                     symbolName,
@@ -90,6 +92,7 @@ namespace cAlgo
         {
             try
             {
+                MarkBrokerStateDirty();
                 return ExecuteMarketRangeOrder(
                     tradeType,
                     symbolName,
@@ -129,6 +132,7 @@ namespace cAlgo
         {
             try
             {
+                MarkBrokerStateDirty();
                 return ExecuteMarketRangeOrder(
                     tradeType,
                     symbolName,
