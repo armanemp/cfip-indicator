@@ -55,7 +55,7 @@ checks = {
     ),
     "divergence conflict remains non-directional": (
         "DivergenceResult.CreateConflict(" in div and
-        "Type == "CONFLICT"" in contracts
+        'Type == "CONFLICT"' in contracts
     ),
     "rejection/doji thresholds are canonical": (
         "MinimumBodyPips" in rej and
