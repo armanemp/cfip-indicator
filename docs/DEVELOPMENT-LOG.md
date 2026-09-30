@@ -1984,3 +1984,10 @@ Status: documentation-only; ready for CBOT-Preflight / CBOT-0.
 Final hardening removed duplicate migration-rule sections, corrected numbering, synchronized master/detail ordering, made parameter-by-parameter ownership mandatory for mixed execution groups, made clean solution/project/package wiring part of acceptance, and clarified cBot ownership of final broker-normalized volume.
 
 No production C# behavior changed.
+
+
+## Final Ordering Correction — 2026-09-30
+
+Confirmed authoritative order for local cBot separation: **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. CBOT-0 is source-only inventory and can start without terminal interaction; CBOT-Preflight is the no-trade target-terminal blocking gate before Contracts.
+
+No production C# behavior changed.
