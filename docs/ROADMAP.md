@@ -1984,6 +1984,14 @@ cBot boundary.
 - After cutover, missing/stale/incompatible cBot state fails closed and never reactivates an Indicator fallback.
 - The Indicator remains usable as an analysis/display component when the cBot is absent.
 
+## Hard migration rules
+
+- The legacy Indicator executor can be used only as a repository parity oracle during migration, never as a second live executor.
+- At every live test stage exactly one executor is armed.
+- Missing/stale/incompatible Indicator or cBot state fails closed.
+- Analytical parameters stay with Indicator; broker/account/live-management parameters move to cBot; no duplicate execution controls.
+- No direct broker mutation remains in Indicator after cutover.
+
 ## Required final acceptance
 
 - `CFIP.Contracts` is platform-neutral.
@@ -4240,3 +4248,24 @@ Verification completed before merge:
 Next phase:
 **Track 12A — Mandatory Local cBot Separation**, followed by scenario-aware broker policy only
 through the dedicated cBot execution authority.
+
+
+---
+
+## Track 12A Roadmap Readiness Audit — 2026-09-30
+
+Status: DOCUMENTATION GATE HARDENED AND READY FOR IMPLEMENTATION.
+
+The detailed separation roadmap revision 2.2 and this master Track 12A now share the same mandatory constraints:
+
+- local-only cTrader architecture;
+- CBOT-Preflight as the blocking capability gate;
+- exact method/helper/field dependency closure;
+- parameter ownership migration with no duplicate execution controls;
+- Indicator = analysis/decision/plan; cBot = broker/account/live lifecycle;
+- one live execution authority at every migration stage;
+- final zero broker mutation / zero fallback gate;
+- target-terminal runtime and replay evidence before cutover.
+
+Next implementation work: CBOT-Preflight / CBOT-0.
+No production C# behavior changed by this documentation audit.
