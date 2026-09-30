@@ -4,7 +4,7 @@ Last updated: 2026-09-30
 
 ## Phase closeout
 
-CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d021972db4b3638ff5eb4d7078ab2cb2a. Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
+CR2.4 is verified complete and merged to main. PR #89 merge commit: ac8c526f7ed0887ba990dc9a091c8299e96a6de5. Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
 
 ## Authoritative order
 
@@ -14,7 +14,7 @@ CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d0219
 
 ## Active phase
 
-**CR2.4 — Pending-order decision arbiter (Prompt 2 / B5).**
+**CR2.5 — Lifecycle ordering and outcome aggregation (Prompt 2 / B6 + shared C8).**
 
 ## Completed before this checkpoint
 
@@ -31,6 +31,7 @@ CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d0219
 - CR2.1 structure/CHoCH/MSS/sweep/divergence/rejection semantics
 - CR2.2 reaction/reversal integrity
 - CR2.3 unified indicator-quality thresholds
+- CR2.4 pending-order decision arbiter
 
 ## Rules for every continuation
 
@@ -45,4 +46,4 @@ CR2.2 is verified complete and merged to main. PR #87 merge commit: bdb9b72d0219
 
 ## Next transition
 
-CR2.3 is verified and merged (PR #88, merge commit 98da2030d8e36312ee0c073c1a58889bb405f893). The next implementation response must execute **CR2.4** and only CR2.4. Track 12A remains blocked until CR-FINAL.
+CR2.4 is verified and merged (PR #89, merge commit ac8c526f7ed0887ba990dc9a091c8299e96a6de5). The next implementation response must execute **CR2.5** and only CR2.5. Track 12A remains blocked until CR-FINAL.
