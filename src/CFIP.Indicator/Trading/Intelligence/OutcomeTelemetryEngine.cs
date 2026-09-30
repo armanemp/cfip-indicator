@@ -12,6 +12,45 @@
  
  namespace cAlgo
  {
+     internal readonly struct OutcomeRegistrationResult
+     {
+         public bool Recorded { get; }
+         public bool Profitable { get; }
+         public double NetProfit { get; }
+         public double RealizedR { get; }
+         public int HistoricalTradeCount { get; }
+
+         public OutcomeRegistrationResult(
+             bool recorded,
+             bool profitable,
+             double netProfit,
+             double realizedR,
+             int historicalTradeCount)
+         {
+             Recorded = recorded;
+             Profitable = profitable;
+             NetProfit = netProfit;
+             RealizedR = realizedR;
+             HistoricalTradeCount =
+                 Math.Max(
+                     0,
+                     historicalTradeCount);
+         }
+
+         public static OutcomeRegistrationResult NotRecorded
+         {
+             get
+             {
+                 return new OutcomeRegistrationResult(
+                     false,
+                     false,
+                     0,
+                     0,
+                     0);
+             }
+         }
+     }
+
      public partial class CFIPIndicator : Indicator
      {
          private const int MaxOutcomeHistory = 128;
@@ -71,7 +110,7 @@
                                  _calibrationWins[key]++;
                          }
  
-         private void RecordManagedOutcome(
+         private OutcomeRegistrationResult RecordManagedOutcome(
                              Plan plan,
                              Position position,
                              int closedM5)
@@ -80,7 +119,7 @@
                                  position == null ||
                                  position.Id <= 0 ||
                                  HasRecordedOutcome(position.Id))
-                                 return;
+                                 return OutcomeRegistrationResult.NotRecorded;
 
                              int direction =
                                  position.TradeType == TradeType.Buy
@@ -220,6 +259,16 @@
                                  plan,
                                  profitable);
 
+                             return new OutcomeRegistrationResult(
+                                 true,
+                                 profitable,
+                                 realizedNetProfit,
+                                 realizedR,
+                                 aggregate.Available
+                                     ? aggregate.TradeCount
+                                     : 1);
+
+                             /*
                              ArchiveRuntimeExecution(
                                  "OUTCOME",
                                  closedM5,
@@ -239,6 +288,7 @@
                                  realizedR.ToString(
                                      "F4",
                                      CultureInfo.InvariantCulture));
+                             */
                          }
 
          private HistoricalOutcomeAggregate AggregateHistoricalOutcome(
