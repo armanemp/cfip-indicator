@@ -39,6 +39,9 @@ namespace cAlgo
                                             ? 1
                                             : -1;
                         
+                                    OutcomeRegistrationResult outcome =
+                                        OutcomeRegistrationResult.NotRecorded;
+
                                     if (!_outcomeRegistered)
                                     {
                                         Plan outcomePlan =
@@ -49,7 +52,7 @@ namespace cAlgo
                                                 ? _plan
                                                 : null;
 
-                                        OutcomeRegistrationResult outcome =
+                                        outcome =
                                             EnableOutcomeTelemetry
                                                 ? RecordManagedOutcome(
                                                     outcomePlan,
@@ -67,6 +70,13 @@ namespace cAlgo
                                                 _losses++;
                                         }
                                     }
+
+                                    string closeReason =
+                                        outcome.Recorded
+                                            ? outcome.Profitable
+                                                ? "POSITION CLOSED • PROFIT"
+                                                : "POSITION CLOSED • LOSS"
+                                            : "POSITION CLOSED";
                         
                                     _brokerProtectionRecoveryRequired = false;
                         
@@ -82,9 +92,7 @@ namespace cAlgo
                         
                                         SetLifecycleState(
                                             LifecycleState.Closed,
-                                            args.Position.NetProfit > 0
-                                                ? "POSITION CLOSED • PROFIT"
-                                                : "POSITION CLOSED • LOSS");
+                                            closeReason);
                         
                                         RemovePlanObjects();
                                     }
