@@ -157,6 +157,24 @@ namespace cAlgo
                 private double _dailyStartEquity = 0;
         
                 private bool _dailyLossLimitAlerted = false;
+
+                private double _dailyLossBaselineUnrealizedNetProfit = 0;
+
+                private double _dailyLossRealizedNetProfit = 0;
+
+                private double _dailyLossNetCashFlow = 0;
+
+                private int _dailyLossHistoryCount = -1;
+
+                private int _dailyLossTransactionCount = -1;
+
+                private bool _dailyLossDataReady;
+
+                private bool _dailyLossLocked;
+
+                private string _dailyLossStateReason = "NOT EVALUATED";
+
+                private DateTime _lastDailyLossEvaluationUtc = DateTime.MinValue;
                 private DateTime _lastRestrictionAlertUtc = DateTime.MinValue;
                 private int _lastPendingSignalM5 = -1;
                 private int _lastPendingCleanupM5 = -1;
