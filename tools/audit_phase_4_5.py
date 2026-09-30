@@ -87,7 +87,7 @@ check(
 )
 check(
     "scoring consumes the frame's own normalized regime",
-    "return FrameRegimeResolutionRule.Normalize(" in frame_scoring
+    "return FrameRegimeResolutionRule.NormalizeFrameRegimeValue(" in frame_scoring
     and "frame.Regime" in frame_scoring
     and "return "UNKNOWN";" not in frame_scoring,
 )
