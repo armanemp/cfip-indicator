@@ -1,5 +1,6 @@
 using System;
 using cAlgo.API;
+using cAlgo.API.Internals;
 
 namespace cAlgo
 {
@@ -289,6 +290,19 @@ namespace cAlgo
                 _plan.OriginalVolume <= 0)
                 return;
 
+            if (position.Deals == null)
+                return;
+
+            int dealCount =
+                position.Deals.Count;
+
+            if (dealCount ==
+                _lastServerPartialObservationDealCount)
+                return;
+
+            _lastServerPartialObservationDealCount =
+                dealCount;
+
             double tp1Volume =
                 Symbol.NormalizeVolumeInUnits(
                     _plan.OriginalVolume *
@@ -307,41 +321,29 @@ namespace cAlgo
                 tp2Volume < Symbol.VolumeInUnitsMin)
                 return;
 
-            double afterTp1 =
+            double priceTolerance =
                 Math.Max(
-                    0,
-                    _plan.OriginalVolume -
-                    tp1Volume);
+                    Symbol.PipSize * 2.0,
+                    Symbol.TickSize * 5.0);
 
-            double afterTp2 =
-                Math.Max(
-                    0,
-                    afterTp1 -
-                    tp2Volume);
-
-            double tolerance =
+            double volumeTolerance =
                 Math.Max(
                     Symbol.VolumeInUnitsStep,
-                    Math.Max(
-                        Symbol.VolumeInUnitsMin,
-                        _plan.OriginalVolume * 0.001));
+                    Symbol.VolumeInUnitsMin * 0.5);
 
-            if (_tp1Hit == 0 &&
-                position.VolumeInUnits <=
-                afterTp1 + tolerance)
+            bool tp1Evidence =
+                _tp1Hit == 0 &&
+                HasServerPartialTakeProfitDealEvidence(
+                    position,
+                    1,
+                    _plan.Tp1,
+                    tp1Volume,
+                    priceTolerance,
+                    volumeTolerance);
+
+            if (tp1Evidence)
             {
                 _tp1Hit = 1;
-
-                if (UpdateUnhitTargets)
-                    UpdateUnhitTargetsLive(
-                        closedM5,
-                        market,
-                        true);
-
-                TryAdvanceServerSideTakeProfitLadderAfterTp1(
-                    position,
-                    closedM5,
-                    market);
 
                 if (EnableLevelHitAlerts &&
                     AlertOnLevelHit &&
@@ -358,14 +360,19 @@ namespace cAlgo
                 }
             }
 
-            if (_tp2Hit == 0 &&
-                position.VolumeInUnits <=
-                afterTp2 + tolerance)
+            bool tp2Evidence =
+                _tp2Hit == 0 &&
+                HasServerPartialTakeProfitDealEvidence(
+                    position,
+                    2,
+                    _plan.Tp2,
+                    tp2Volume,
+                    priceTolerance,
+                    volumeTolerance);
+
+            if (tp2Evidence)
             {
                 _tp2Hit = 1;
-
-                TryCollapseServerSideTakeProfitLadderToFinal(
-                    position);
 
                 if (EnableLevelHitAlerts &&
                     AlertOnLevelHit &&
@@ -381,6 +388,64 @@ namespace cAlgo
                         true);
                 }
             }
+        }
+
+        private bool HasServerPartialTakeProfitDealEvidence(
+            Position position,
+            int stage,
+            double expectedPrice,
+            double expectedVolume,
+            double priceTolerance,
+            double volumeTolerance)
+        {
+            if (position == null ||
+                _plan == null ||
+                stage < 1 ||
+                stage > 2 ||
+                !IsFinitePositive(expectedPrice) ||
+                !IsFinitePositive(expectedVolume))
+                return false;
+
+            int direction =
+                position.TradeType == TradeType.Buy
+                    ? 1
+                    : -1;
+
+            double expectedTarget =
+                expectedPrice;
+
+            for (int i = 0;
+                 i < position.Deals.Count;
+                 i++)
+            {
+                Deal deal =
+                    position.Deals[i];
+
+                if (deal == null)
+                    continue;
+
+                int dealDirection =
+                    deal.TradeType == TradeType.Buy
+                        ? 1
+                        : -1;
+
+                if (ServerPartialTakeProfitEvidenceRule.IsMatchingClosingDeal(
+                        position.Id,
+                        direction,
+                        deal.PositionId,
+                        dealDirection,
+                        deal.PositionImpact ==
+                            DealPositionImpact.Closing,
+                        deal.ExecutionPrice,
+                        expectedTarget,
+                        deal.VolumeInUnits,
+                        expectedVolume,
+                        priceTolerance,
+                        volumeTolerance))
+                    return true;
+            }
+
+            return false;
         }
     }
 }
