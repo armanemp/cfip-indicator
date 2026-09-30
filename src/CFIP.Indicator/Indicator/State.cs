@@ -31,7 +31,9 @@ namespace cAlgo
                 private Frame _d1Frame;
                 private Frame _w1Frame;
         
-                private readonly List<Native> _native = new List<Native>();
+                private readonly Dictionary<Bars, Native> _native =
+                    new Dictionary<Bars, Native>(
+                        NativeBarsReferenceComparer.Instance);
                 private readonly SubmissionGate _submissionGate =
                     new SubmissionGate();
                 private readonly HashSet<string> _historicalDrawn = new HashSet<string>();
