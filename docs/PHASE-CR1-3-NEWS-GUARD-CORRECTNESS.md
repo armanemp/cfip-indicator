@@ -64,7 +64,7 @@ making the indicator's analytical engine wait for the network.
 
 A dedicated configurable mapping was added:
 
-`NewsSymbolCurrencyMap`
+`AdditionalNewsCurrencies` (with `SYMBOL=CUR` mapping entries)
 
 Format:
 
