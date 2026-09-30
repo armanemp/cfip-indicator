@@ -9,7 +9,7 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const string OutcomeArchiveDirectory = "History";
-        private const string OutcomeArchiveSchema = "CFIP-OUTCOME-ARCHIVE,1";
+        private const string OutcomeArchiveSchema = "CFIP-OUTCOME-ARCHIVE,2";
 
         private string _outcomeArchivePrefixCache;
         private string _outcomeArchivePrefixIdentityCache;
@@ -180,6 +180,8 @@ namespace cAlgo
             row.Append(o.ServerSideTakeProfitLadderActive ? '1' : '0');
             row.Append(',');
             row.Append(o.ObservedUtcTicks.ToString(CultureInfo.InvariantCulture));
+            row.Append(',');
+            row.Append(Encode(o.SignalTraceId));
 
             return row.ToString();
         }
@@ -314,7 +316,11 @@ namespace cAlgo
                     CalibrationEligible = parts[14] == "1",
                     ProtectionRecoveryAtClose = parts[15] == "1",
                     ServerSideTakeProfitLadderActive = parts[16] == "1",
-                    ObservedUtcTicks = ticks
+                    ObservedUtcTicks = ticks,
+                    SignalTraceId =
+                        parts.Length >= 19
+                            ? Decode(parts[18])
+                            : ""
                 };
 
             return true;
