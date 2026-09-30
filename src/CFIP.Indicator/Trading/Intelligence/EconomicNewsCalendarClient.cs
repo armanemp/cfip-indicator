@@ -502,7 +502,7 @@ namespace cAlgo
             bool blockingEvent = false)
         {
             EconomicNewsFeedState state =
-                EconomicNewsFeedStateRule.Resolve(
+                EconomicNewsFeedStateRule.Evaluate(
                     EnableEconomicNewsCalendar,
                     _economicNewsLastSuccessUtc,
                     utc,
