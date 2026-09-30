@@ -64,6 +64,15 @@ namespace cAlgo
                     finalTarget))
                 return false;
 
+            if (_activeBrokerTarget > 0 &&
+                !LiveExitGeometryRule.ShouldAdvanceLiveTarget(
+                    _plan.Direction,
+                    _activeBrokerTarget,
+                    finalTarget,
+                    market,
+                    minimumForwardDistance))
+                return false;
+
             double tp2Volume =
                 Symbol.NormalizeVolumeInUnits(
                     _plan.OriginalVolume *
