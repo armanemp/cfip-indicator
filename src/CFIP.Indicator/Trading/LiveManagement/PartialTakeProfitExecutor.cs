@@ -37,10 +37,6 @@ namespace cAlgo
                 return false;
             }
 
-            RecordPartialTakeProfitAttempt(
-                closedM5,
-                tag);
-
             Position position =
                 GetManagedLivePositionForPlan();
 
@@ -70,6 +66,10 @@ namespace cAlgo
                 remainder < Symbol.VolumeInUnitsMin)
                 closeVolume =
                     position.VolumeInUnits;
+
+            RecordPartialTakeProfitAttempt(
+                closedM5,
+                tag);
 
             try
             {
