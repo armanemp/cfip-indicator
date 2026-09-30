@@ -56,7 +56,7 @@ The runtime additionally exposes:
 - REFRESHING when an asynchronous request is active;
 - LAST REFRESH FAILED with a bounded error message when the latest refresh failed.
 
-For automatic trading, NEVER_LOADED or STALE is fail-closed when
+For automatic execution (Auto Trading and Auto Orders), NEVER_LOADED or STALE is fail-closed when
 `NewsFailClosedWhenStale` is enabled. This preserves safe behavior without
 making the indicator's analytical engine wait for the network.
 
