@@ -470,7 +470,9 @@ namespace cAlgo
 
                 _calibrationSamples[key]++;
 
-                if (item.Profitable)
+                if (!double.IsNaN(item.RealizedR) &&
+                    !double.IsInfinity(item.RealizedR) &&
+                    item.RealizedR > 0)
                     _calibrationWins[key]++;
             }
         }
