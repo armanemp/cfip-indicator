@@ -1040,7 +1040,7 @@ Current active phase: **CR3.5 — Calibration, outcome and rejection transparenc
 
 Mandatory order:
 
-CR-0 → CR1.1 → CR1.2 → CR1.3 → CR1.4 → CR1.5 → CR1.6 → CR1.7 → CR1.8 → CR1.9 → CR2.1 → CR2.2 → CR2.3 → CR2.4 → CR2.5 → CR2.6 → CR2.7 → CR2.8 → CR2.9 → CR3.1 → CR3.2 → CR3.3 → CR3.4 → CR3.5 → CR-FINAL
+CR-0 → CR1.1 → CR1.2 → CR1.3 → CR1.4 → CR1.5 → CR1.6 → CR1.7 → CR1.8 → CR1.9 → CR2.1 → CR2.2 → CR2.3 → CR2.4 → CR2.5 → CR2.6 → CR2.7 → CR2.8 → CR2.9 → CR3.1 → CR3.2 → CR3.3 → CR3.4 → CR3.5 → CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR-FINAL
 
 Why this order:
 
