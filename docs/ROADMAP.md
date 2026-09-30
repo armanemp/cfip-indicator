@@ -1883,6 +1883,26 @@ Acceptance:
 
 ---
 
+# Track 11.6 — Claude Review Defect Remediation — 2026-09-30
+
+Status: **BLOCKING NEXT QUALITY GATE**
+
+Three external code-review prompts (A1–A12, B1–B12, C1–C9) were audited against the current repository. They are now tracked in:
+
+`docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md`
+
+The review is treated as evidence, not automatic truth. Confirmed defects are scheduled for correction; partial, stale and design-risk items are explicitly constrained so speculative behavior is not introduced.
+
+Mandatory remediation order:
+
+`CR-0 → CR1.1–CR1.9 → CR2.1–CR2.9 → CR3.1–CR3.5 → CR-FINAL`
+
+Track 12A local cBot separation remains the next architectural track after Track 11.6 CR-FINAL.
+
+No production C# behavior is changed by this documentation gate.
+
+---
+
 # Track 12A — Mandatory Local cBot Separation
 
 Status: **BLOCKING NEXT ARCHITECTURAL GATE**
