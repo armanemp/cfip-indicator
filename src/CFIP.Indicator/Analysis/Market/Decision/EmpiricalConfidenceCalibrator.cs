@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace cAlgo
 {
-    internal readonly struct ConfidenceCalibrationKey
+    internal readonly struct ConfidenceCalibrationKey : IEquatable<ConfidenceCalibrationKey>
     {
         public int Direction { get; }
         public OpportunityLane Lane { get; }
@@ -23,6 +23,17 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : regime.Trim().ToUpperInvariant();
             ConfidenceBucket = confidenceBucket;
+        }
+
+        public bool Equals(ConfidenceCalibrationKey other)
+        {
+            return Direction == other.Direction &&
+                   Lane == other.Lane &&
+                   ConfidenceBucket == other.ConfidenceBucket &&
+                   string.Equals(
+                       Regime,
+                       other.Regime,
+                       StringComparison.Ordinal);
         }
 
         public override int GetHashCode()
@@ -48,6 +59,7 @@ namespace cAlgo
         public int Wins { get; }
         public int ConfidenceBucket { get; }
         public double ObservedWinRate { get; }
+        public double AverageRealizedR { get; }
         public string Source { get; }
 
         public EmpiricalCalibrationSnapshot(
@@ -72,10 +84,17 @@ namespace cAlgo
                     observedWinRate,
                     0,
                     1);
+            AverageRealizedR = 0;
             Source =
                 string.IsNullOrWhiteSpace(source)
                     ? "NONE"
                     : source;
+        }
+
+        public EmpiricalCalibrationSnapshot(bool available, int adjustment, int samples, int wins, int confidenceBucket, double observedWinRate, double averageRealizedR, string source)
+            : this(available, adjustment, samples, wins, confidenceBucket, observedWinRate, source)
+        {
+            AverageRealizedR = double.IsNaN(averageRealizedR) || double.IsInfinity(averageRealizedR) ? 0 : averageRealizedR;
         }
 
         public static EmpiricalCalibrationSnapshot None(
@@ -336,6 +355,7 @@ namespace cAlgo
                 snapshot.Wins,
                 snapshot.ConfidenceBucket,
                 snapshot.ObservedWinRate,
+                CalculateAverageRealizedR(outcomes, direction, lane, NormalizeRegime(regime), snapshot.ConfidenceBucket, snapshot.Source, Math.Max(1, recentMaximum)),
                 snapshot.Source + "-RECENT");
         }
 
@@ -480,6 +500,40 @@ namespace cAlgo
             }
 
             return sum;
+        }
+
+        private static double CalculateAverageRealizedR(
+            IList<OutcomeObservation> outcomes,
+            int direction,
+            OpportunityLane lane,
+            string regime,
+            int confidenceBucket,
+            string source,
+            int recentMaximum)
+        {
+            double total = 0;
+            int count = 0;
+            if (outcomes == null)
+                return 0;
+            bool exact = source.StartsWith("EXACT", StringComparison.Ordinal);
+            bool contextual = source.StartsWith("LANE+REGIME", StringComparison.Ordinal);
+            int start = Math.Max(0, outcomes.Count - Math.Max(1, recentMaximum));
+
+            for (int i = start; i < outcomes.Count; i++)
+            {
+                OutcomeObservation observation = outcomes[i];
+                if (observation == null || !observation.CalibrationEligible || observation.Direction != direction)
+                    continue;
+                if (exact && (observation.Lane != lane || !string.Equals(observation.Regime, regime, StringComparison.Ordinal) || ConfidenceBucket(observation.Confidence) != confidenceBucket))
+                    continue;
+                if (contextual && (observation.Lane != lane || !string.Equals(observation.Regime, regime, StringComparison.Ordinal)))
+                    continue;
+                if (double.IsNaN(observation.RealizedR) || double.IsInfinity(observation.RealizedR))
+                    continue;
+                total += observation.RealizedR;
+                count++;
+            }
+            return count > 0 ? total / count : 0;
         }
 
         private static string NormalizeRegime(

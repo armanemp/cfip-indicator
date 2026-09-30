@@ -202,6 +202,8 @@ namespace cAlgo
                 snapshot.Wins;
             decision.EmpiricalCalibrationObservedWinRate =
                 snapshot.ObservedWinRate;
+            decision.EmpiricalCalibrationAverageRealizedR =
+                snapshot.AverageRealizedR;
             decision.EmpiricalCalibrationAdjustment =
                 snapshot.Adjustment;
             decision.EmpiricalCalibrationSource =

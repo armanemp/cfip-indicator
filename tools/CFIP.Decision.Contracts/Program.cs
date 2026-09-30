@@ -10,6 +10,7 @@ namespace cAlgo
             VerifyConsensusSymmetry();
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
+            VerifyConfidenceCalibrationKeyEquality();
             VerifyConfidenceCalibration();
             VerifyContextualConfidenceCalibration();
             VerifyRecentOutcomeCalibration();
@@ -124,6 +125,39 @@ namespace cAlgo
                 calculator.Calculate(50, 0, 0, 0, 0, 50);
 
             Assert(neutralQuality >= 0 && neutralQuality <= 100, "zero-input quality");
+        }
+
+        private static void VerifyConfidenceCalibrationKeyEquality()
+        {
+            ConfidenceCalibrationKey a =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Strategic,
+                    " expansion ",
+                    85);
+
+            ConfidenceCalibrationKey b =
+                new ConfidenceCalibrationKey(
+                    1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    85);
+
+            ConfidenceCalibrationKey c =
+                new ConfidenceCalibrationKey(
+                    -1,
+                    OpportunityLane.Strategic,
+                    "EXPANSION",
+                    85);
+
+            Assert(
+                a.Equals(b) &&
+                a.GetHashCode() == b.GetHashCode(),
+                "calibration key structural equality");
+
+            Assert(
+                !a.Equals(c),
+                "calibration key direction inequality");
         }
 
         private static void VerifyConfidenceCalibration()
@@ -355,6 +389,7 @@ namespace cAlgo
                         Regime = "EXPANSION",
                         Confidence = 85,
                         Profitable = false,
+                        RealizedR = -0.50,
                         CalibrationEligible = true
                     });
             }
@@ -367,10 +402,18 @@ namespace cAlgo
                         PositionId = 100 + i,
                         Direction = 1,
                         Lane = OpportunityLane.Strategic,
-                        EntryMode = ExecutionMode.RetestMarket,
+                        EntryMode =
+                            i == 0
+                                ? ExecutionMode.RetestMarket
+                                : i == 1
+                                    ? ExecutionMode.BreakoutMarket
+                                    : i == 2
+                                        ? ExecutionMode.ContinuationStop
+                                        : ExecutionMode.ReversalLimit,
                         Regime = "EXPANSION",
                         Confidence = 85,
                         Profitable = true,
+                        RealizedR = 1.50,
                         CalibrationEligible = true
                     });
             }
@@ -395,10 +438,12 @@ namespace cAlgo
                 recent.Samples == 4 &&
                 recent.Wins == 4 &&
                 recent.ObservedWinRate == 1.0 &&
+                recent.AverageRealizedR == 1.5 &&
                 recent.Adjustment > 0,
                 "recent exact calibration prefers current lifecycle window");
 
             outcomes[11].Profitable = false;
+            outcomes[11].RealizedR = -0.50;
 
             EmpiricalCalibrationSnapshot changed =
                 calibrator.CalculateRecentContextual(

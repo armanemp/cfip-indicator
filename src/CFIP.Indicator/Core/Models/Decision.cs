@@ -11,6 +11,7 @@ namespace cAlgo
                         public int EmpiricalCalibrationWins;
                         public int EmpiricalCalibrationBucket;
                         public double EmpiricalCalibrationObservedWinRate;
+                        public double EmpiricalCalibrationAverageRealizedR;
                         public string EmpiricalCalibrationSource;
                         public int Edge;
                         public int SmartQuality;
