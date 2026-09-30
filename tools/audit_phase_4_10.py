@@ -47,10 +47,9 @@ expected_native_owner_files = {
     "src/CFIP.Indicator/Analysis/Indicators/MacdIndicator.cs",
     "src/CFIP.Indicator/Analysis/Indicators/NativeIndicatorRegistry.cs",
     "src/CFIP.Indicator/Analysis/Market/MarketFrameEvidence.cs",
-    "src/CFIP.Indicator/Analysis/Market/MarketFrameScoringService.cs",
+
     "src/CFIP.Indicator/Analysis/Market/MacdBiasAnalyzer.cs",
-    "src/CFIP.Indicator/Analysis/Reaction/ReactionAnalyzer.cs",
-    "src/CFIP.Indicator/Analysis/Market/MarketRegimeAnalyzer.cs"
+
 }
 
 
