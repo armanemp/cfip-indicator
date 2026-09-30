@@ -122,7 +122,7 @@ namespace cAlgo
             return EconomicNewsCurrencyRule.Resolve(
                 SymbolName,
                 AdditionalNewsCurrencies,
-                NewsSymbolCurrencyMap);
+                AdditionalNewsCurrencies);
         }
 
         private bool IsNewsEventRelevant(
