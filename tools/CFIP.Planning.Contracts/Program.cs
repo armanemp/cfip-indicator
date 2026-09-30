@@ -386,8 +386,37 @@ namespace cAlgo
                 ExecutionThresholdPolicy.NormalizeLiveReversalStructuralScore(101) == 100,
                 "live reversal structural-score boundary preserves public range");
 
+            Assert(
+                LiveReversalEpisodeRule.IsSameEpisode(
+                    42,
+                    -1,
+                    42,
+                    -1),
+                "same position/direction remains one reversal episode");
+
+            Assert(
+                !LiveReversalEpisodeRule.IsSameEpisode(
+                    42,
+                    -1,
+                    43,
+                    -1),
+                "position change starts a new reversal episode");
+
+            Assert(
+                !LiveReversalEpisodeRule.IsSameEpisode(
+                    42,
+                    1,
+                    42,
+                    -1),
+                "opposite-direction change starts a new reversal episode");
+
+            Assert(
+                LiveReversalEpisodeRule.ShouldEmitDetectionAlert(false) &&
+                !LiveReversalEpisodeRule.ShouldEmitDetectionAlert(true),
+                "reversal detection alert is emitted once per episode");
+
             Console.WriteLine(
-                "D9 live reversal: directional evidence, action semantics and parameter boundaries passed");
+                "D9 live reversal: directional evidence, action semantics, episode semantics and parameter boundaries passed");
         }
 
         private static void VerifyLifecycleTransitions()
