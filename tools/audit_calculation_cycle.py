@@ -85,11 +85,24 @@ if cycle.index("RunCalculationPreparationStage(") > cycle.index(
         "Calculate: preparation must occur before the new closed-bar decision branch"
     )
 
-if cycle.index("RunPreDecisionBrokerReconciliation(") > cycle.index(
+preparation_index = cycle.index(
+    "RunCalculationPreparationStage("
+)
+pre_decision_index = cycle.index(
+    "RunPreDecisionBrokerReconciliation("
+)
+closed_analysis_index = cycle.index(
     "RunClosedBarAnalysisStage("
+)
+
+if not (
+    preparation_index <
+    pre_decision_index <
+    closed_analysis_index
 ):
-    # The Calculate caller must reconcile immediately before new closed-bar analysis.
-    pass
+    errors.append(
+        "Calculate: new closed-bar analysis must occur after preparation and same-cycle broker reconciliation"
+    )
 
 if cycle.index("RunCalculationPreparationStage(") > cycle.index(
     "ProcessWaitingForDataStages("
