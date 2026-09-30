@@ -118,11 +118,19 @@ internal static class IndicatorComparison
                 1e-6,
                 quotes => V2Indicator
                     .GetSuperTrend(quotes, 10, 3)
-                    .Select(x => new IndicatorPoint(x.Date, x.SuperTrend))
+                    .Select(x => new IndicatorPoint(
+                        x.Date,
+                        x.SuperTrend.HasValue
+                            ? (double?)Convert.ToDouble(x.SuperTrend.Value)
+                            : null))
                     .ToList(),
                 bars => bars
                     .ToSuperTrend(10, 3)
-                    .Select(x => new IndicatorPoint(x.Timestamp, x.SuperTrend))
+                    .Select(x => new IndicatorPoint(
+                        x.Timestamp,
+                        x.SuperTrend.HasValue
+                            ? (double?)Convert.ToDouble(x.SuperTrend.Value)
+                            : null))
                     .ToList()),
 
             new MetricDefinition(
