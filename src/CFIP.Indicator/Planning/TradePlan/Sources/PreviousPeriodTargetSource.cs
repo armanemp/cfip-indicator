@@ -38,7 +38,10 @@ namespace cAlgo
                                                     "PREVIOUS_DAY",
                                                     "D1",
                                                     1,
-                                                    PreviousDayWeight);
+                                                    PreviousDayWeight,
+                                                    TargetAgeSemanticsRule.ElapsedMinutes(
+                                                        _d1Bars.OpenTimes[d1],
+                                                        reference));
                                             }
                                 
                                             if (UseDailyWeeklyLiquidity &&
@@ -52,7 +55,10 @@ namespace cAlgo
                                                     "PREVIOUS_WEEK",
                                                     "W1",
                                                     1,
-                                                    PreviousWeekWeight);
+                                                    PreviousWeekWeight,
+                                                    TargetAgeSemanticsRule.ElapsedMinutes(
+                                                        _w1Bars.OpenTimes[w1],
+                                                        reference));
                                             }
                                         }
     }
