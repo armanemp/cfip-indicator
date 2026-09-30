@@ -60,6 +60,7 @@ namespace cAlgo
             VerifyStructuralTimeframeSemantics();
             VerifyReactionQualificationSemantics();
             VerifyIndicatorExecutionQualitySemantics();
+            VerifyPendingDecisionArbiterSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -4117,6 +4118,178 @@ namespace cAlgo
                     100,
                     0).Allowed == false,
                 "unknown indicator gate stage fails closed");
+        }
+
+        private static void VerifyPendingDecisionArbiterSemantics()
+        {
+            Assert(
+                PendingDecisionArbiterRule.ScoreCandidate(
+                    90,
+                    80,
+                    70,
+                    4,
+                    4) >
+                PendingDecisionArbiterRule.ScoreCandidate(
+                    80,
+                    70,
+                    60,
+                    3,
+                    3),
+                "pending candidate score rewards stronger decision evidence deterministically");
+
+            PendingArbiterResult continuationOnly =
+                PendingDecisionArbiterRule.SelectWinner(
+                    true,
+                    1,
+                    80,
+                    false,
+                    -1,
+                    90,
+                    PendingOrderMode.Adaptive);
+
+            Assert(
+                continuationOnly.Choice ==
+                    PendingArbiterChoice.ContinuationStop &&
+                continuationOnly.Direction == 1,
+                "single eligible continuation is selected");
+
+            PendingArbiterResult reversalOnly =
+                PendingDecisionArbiterRule.SelectWinner(
+                    false,
+                    1,
+                    80,
+                    true,
+                    -1,
+                    90,
+                    PendingOrderMode.Adaptive);
+
+            Assert(
+                reversalOnly.Choice ==
+                    PendingArbiterChoice.ReversalLimit &&
+                reversalOnly.Direction == -1,
+                "single eligible reversal is selected");
+
+            PendingArbiterResult bothContinuationWins =
+                PendingDecisionArbiterRule.SelectWinner(
+                    true,
+                    1,
+                    92,
+                    true,
+                    -1,
+                    84,
+                    PendingOrderMode.Both);
+
+            PendingArbiterResult bothReversalWins =
+                PendingDecisionArbiterRule.SelectWinner(
+                    true,
+                    1,
+                    84,
+                    true,
+                    -1,
+                    92,
+                    PendingOrderMode.Both);
+
+            Assert(
+                bothContinuationWins.Choice ==
+                    PendingArbiterChoice.ContinuationStop &&
+                bothReversalWins.Choice ==
+                    PendingArbiterChoice.ReversalLimit,
+                "when both candidates are eligible, quality chooses exactly one winner");
+
+            PendingArbiterResult tie =
+                PendingDecisionArbiterRule.SelectWinner(
+                    true,
+                    1,
+                    88,
+                    true,
+                    -1,
+                    88,
+                    PendingOrderMode.Both);
+
+            Assert(
+                tie.Choice ==
+                    PendingArbiterChoice.ContinuationStop &&
+                tie.Reason.Contains(
+                    "TIE"),
+                "exact candidate ties use one explicit deterministic policy");
+
+            Assert(
+                PendingDecisionArbiterRule.SelectWinner(
+                    true,
+                    1,
+                    100,
+                    true,
+                    -1,
+                    100,
+                    PendingOrderMode.ContinuationStop).Choice ==
+                    PendingArbiterChoice.ContinuationStop &&
+                PendingDecisionArbiterRule.SelectWinner(
+                    true,
+                    1,
+                    100,
+                    true,
+                    -1,
+                    100,
+                    PendingOrderMode.ReversalLimit).Choice ==
+                    PendingArbiterChoice.ReversalLimit,
+                "pending mode constrains the arbiter before quality comparison");
+
+            Assert(
+                PendingDecisionArbiterRule.SelectWinner(
+                    false,
+                    1,
+                    0,
+                    false,
+                    -1,
+                    0,
+                    PendingOrderMode.Both).Choice ==
+                    PendingArbiterChoice.None,
+                "no eligible candidate produces no pending decision");
+
+            Assert(
+                PendingDecisionArbiterRule.IsSameChoice(
+                    PendingArbiterChoice.ContinuationStop,
+                    true) &&
+                !PendingDecisionArbiterRule.IsSameChoice(
+                    PendingArbiterChoice.ContinuationStop,
+                    false) &&
+                PendingDecisionArbiterRule.IsSameChoice(
+                    PendingArbiterChoice.ReversalLimit,
+                    false) &&
+                !PendingDecisionArbiterRule.IsSameChoice(
+                    PendingArbiterChoice.ReversalLimit,
+                    true),
+                "existing pending order type maps unambiguously to its policy choice");
+
+            Assert(
+                !PendingDecisionArbiterRule.ShouldCancelAfterHysteresis(
+                    true,
+                    1,
+                    2) &&
+                PendingDecisionArbiterRule.ShouldCancelAfterHysteresis(
+                    true,
+                    2,
+                    2) &&
+                !PendingDecisionArbiterRule.ShouldCancelAfterHysteresis(
+                    false,
+                    9,
+                    2),
+                "pending cancellation needs two consecutive invalidation bars");
+
+            Assert(
+                PendingDecisionArbiterRule.ScoreCandidate(
+                    90,
+                    90,
+                    90,
+                    8,
+                    8) <= 100 &&
+                PendingDecisionArbiterRule.ScoreCandidate(
+                    0,
+                    0,
+                    0,
+                    0,
+                    0) == 0,
+                "candidate score remains bounded");
         }
 
         private static void Assert(bool condition, string name)
