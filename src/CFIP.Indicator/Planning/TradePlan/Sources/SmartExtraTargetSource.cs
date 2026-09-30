@@ -20,27 +20,33 @@ namespace cAlgo
                                             if (!UseExtendedLiquidityMap ||
                                                 _m5Bars == null)
                                                 return;
-                                
-                                            double forecast =
+                                            List<double> forecasts =
                                                 direction == 1
-                                                    ? FindNextLiquidityAbove(
+                                                    ? FindLiquidityLevelsAbove(
                                                         _m5Bars,
                                                         closedM5,
-                                                        entry)
-                                                    : FindNextLiquidityBelow(
+                                                        entry,
+                                                        atr)
+                                                    : FindLiquidityLevelsBelow(
                                                         _m5Bars,
                                                         closedM5,
-                                                        entry);
-                                
-                                            AddLevel(
-                                                levels,
-                                                forecast,
-                                                "LIQUIDITY_FORECAST",
-                                                "M5",
-                                                0,
-                                                Math.Max(
-                                                    LiquidityPoolWeight,
-                                                    LiquidityTargetMinimumScore));
+                                                        entry,
+                                                        atr);
+
+                                            for (int i = 0;
+                                                 i < forecasts.Count;
+                                                 i++)
+                                            {
+                                                AddLevel(
+                                                    levels,
+                                                    forecasts[i],
+                                                    "LIQUIDITY_FORECAST",
+                                                    "M5",
+                                                    0,
+                                                    Math.Max(
+                                                        LiquidityPoolWeight,
+                                                        LiquidityTargetMinimumScore));
+                                            }
                                 
                                             if (UseSessionLiquidityTargets)
                                             {
