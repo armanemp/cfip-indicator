@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyMtfContextIntegrity();
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
+            VerifyBrokerStateRefreshSemantics();
             VerifyBufferedArchivePersistence();
             VerifyDailyLossSemantics();
             VerifyDailyLossBaselineSemantics();
@@ -406,6 +407,56 @@ namespace cAlgo
                     out startEquity,
                     out baselineFloating),
                 "invalid equity cannot produce a synthetic baseline");
+        }
+
+        private static void VerifyBrokerStateRefreshSemantics()
+        {
+            DateTime now =
+                new DateTime(
+                    2026,
+                    9,
+                    30,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            Assert(
+                BrokerStateRefreshRule.IsRefreshDue(
+                    true,
+                    now,
+                    now,
+                    1000),
+                "dirty broker state always requires reconciliation");
+
+            Assert(
+                BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    DateTime.MinValue,
+                    now,
+                    1000),
+                "broker state without a prior refresh requires reconciliation");
+
+            Assert(
+                !BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    now,
+                    now.AddMilliseconds(999),
+                    1000) &&
+                BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    now,
+                    now.AddMilliseconds(1000),
+                    1000),
+                "broker refresh cadence is bounded by the configured interval");
+
+            Assert(
+                BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    now,
+                    now.AddMilliseconds(-1),
+                    1000),
+                "broker refresh becomes due after clock rollback");
         }
 
         private static void VerifyBufferedArchivePersistence()
