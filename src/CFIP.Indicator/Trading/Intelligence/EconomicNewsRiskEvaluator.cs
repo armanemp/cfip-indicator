@@ -15,7 +15,10 @@ namespace cAlgo
         private CfipEconomicNewsEvent FindBlockingNewsEvent(
             DateTime utc)
         {
-            if (_economicNewsEvents.Count == 0)
+            List<CfipEconomicNewsEvent> events =
+                SnapshotEconomicNewsEvents();
+
+            if (events.Count == 0)
                 return null;
 
             DateTimeOffset now =
@@ -31,11 +34,11 @@ namespace cAlgo
             double bestDistance = double.MaxValue;
 
             for (int i = 0;
-                 i < _economicNewsEvents.Count;
+                 i < events.Count;
                  i++)
             {
                 CfipEconomicNewsEvent item =
-                    _economicNewsEvents[i];
+                    events[i];
 
                 if (item == null ||
                     item.ImpactRank <= 0)
@@ -153,29 +156,97 @@ namespace cAlgo
             if (!ShowNewsRiskStatus)
                 return "";
 
-            if (_economicNewsBlockingEvent != null)
-            {
-                string detail =
-                    FormatNewsRiskReason(
-                        _economicNewsBlockingEvent,
-                        TimeInUtc);
+            DateTime now =
+                TimeInUtc.Kind == DateTimeKind.Utc
+                    ? TimeInUtc
+                    : TimeInUtc.ToUniversalTime();
 
-                return detail;
+            EconomicNewsFeedState state =
+                EconomicNewsFeedStateRule.Resolve(
+                    EnableEconomicNewsCalendar,
+                    GetEconomicNewsLastSuccessUtc(),
+                    now,
+                    MaximumNewsFeedAgeMinutes,
+                    _economicNewsBlockingEvent != null);
+
+            if (state ==
+                EconomicNewsFeedState.BlockingEvent &&
+                _economicNewsBlockingEvent != null)
+            {
+                return FormatNewsRiskReason(
+                    _economicNewsBlockingEvent,
+                    now);
             }
 
-            if (!_economicNewsFetchHealthy &&
-                EnableEconomicNewsCalendar)
+            string status =
+                _economicNewsStatus;
+
+            if (state ==
+                EconomicNewsFeedState.Disabled)
             {
-                return
-                    _economicNewsStatus +
-                    (string.IsNullOrWhiteSpace(
-                        _economicNewsLastError)
-                        ? ""
-                        : " • " +
-                          _economicNewsLastError);
+                status =
+                    "NEWS CALENDAR • DISABLED";
+            }
+            else if (state ==
+                     EconomicNewsFeedState.NeverLoaded)
+            {
+                status =
+                    "NEWS CALENDAR • NEVER LOADED";
+            }
+            else if (state ==
+                     EconomicNewsFeedState.Stale)
+            {
+                status =
+                    "NEWS CALENDAR • STALE";
+            }
+            else if (state ==
+                     EconomicNewsFeedState.Healthy)
+            {
+                status =
+                    "NEWS CALENDAR • HEALTHY • " +
+                    SnapshotEconomicNewsEvents().Count +
+                    " RELEVANT EVENTS";
             }
 
-            return _economicNewsStatus;
+            if (IsEconomicNewsRequestInFlight())
+                status += " • REFRESHING";
+
+            string error =
+                GetEconomicNewsLastError();
+
+            if (!string.IsNullOrWhiteSpace(error))
+                status +=
+                    " • LAST REFRESH FAILED: " +
+                    TruncateNewsError(error);
+
+            return status;
+        }
+
+        private string TruncateNewsError(
+            string error)
+        {
+            if (string.IsNullOrWhiteSpace(error))
+                return "";
+
+            const int maximumLength = 80;
+
+            string normalized =
+                error
+                    .Replace(
+                        "\r",
+                        " ")
+                    .Replace(
+                        "\n",
+                        " ")
+                    .Trim();
+
+            if (normalized.Length <= maximumLength)
+                return normalized;
+
+            return normalized.Substring(
+                       0,
+                       maximumLength) +
+                   "...";
         }
 
         private bool NewsBlocked(
@@ -183,12 +254,16 @@ namespace cAlgo
             out string reason)
         {
             reason = "";
-
             _economicNewsBlockingEvent = null;
+
+            DateTime normalizedUtc =
+                utc.Kind == DateTimeKind.Utc
+                    ? utc
+                    : utc.ToUniversalTime();
 
             // Existing manual UTC blackout remains a deliberate manual override.
             if (TryManualNewsBlackout(
-                    utc))
+                    normalizedUtc))
             {
                 _economicNewsStatus =
                     "NEWS BLACKOUT • MANUAL";
@@ -197,61 +272,65 @@ namespace cAlgo
             }
 
             if (!EnableEconomicNewsCalendar)
+            {
+                UpdateEconomicNewsStatus(
+                    normalizedUtc,
+                    false);
                 return false;
-
-            bool healthy;
-
-            if (_economicNewsLastAttemptUtc ==
-                DateTime.MinValue)
-            {
-                // Network refresh is owned by startup/Timer. Do not block a
-                // decision tick on an external feed request.
-                healthy =
-                    _economicNewsFetchHealthy;
-            }
-            else
-            {
-                healthy =
-                    _economicNewsFetchHealthy;
             }
 
-            if (!healthy &&
+            DateTime lastSuccess =
+                GetEconomicNewsLastSuccessUtc();
+
+            EconomicNewsFeedState feedState =
+                EconomicNewsFeedStateRule.Resolve(
+                    true,
+                    lastSuccess,
+                    normalizedUtc,
+                    MaximumNewsFeedAgeMinutes,
+                    false);
+
+            UpdateEconomicNewsStatus(
+                normalizedUtc,
+                false);
+
+            if ((feedState ==
+                 EconomicNewsFeedState.NeverLoaded ||
+                 feedState ==
+                 EconomicNewsFeedState.Stale) &&
                 NewsFailClosedWhenStale &&
                 AutoTradingEnabled)
             {
-                bool stale =
-                    _economicNewsLastSuccessUtc ==
-                        DateTime.MinValue ||
-                    (utc -
-                     _economicNewsLastSuccessUtc)
-                    .TotalMinutes >
-                    Math.Max(
-                        15,
-                        MaximumNewsFeedAgeMinutes);
+                _economicNewsStatus =
+                    "NEWS CALENDAR • " +
+                    (feedState ==
+                     EconomicNewsFeedState.NeverLoaded
+                        ? "NEVER LOADED"
+                        : "STALE") +
+                    " • AUTO BLOCK";
 
-                if (stale)
-                {
-                    _economicNewsStatus =
-                        "NEWS CALENDAR • STALE • AUTO BLOCK";
-                    reason = "NEWS";
-                    return true;
-                }
+                reason = "NEWS";
+                return true;
             }
 
             CfipEconomicNewsEvent blocking =
                 FindBlockingNewsEvent(
-                    utc);
+                    normalizedUtc);
 
             if (blocking == null)
+            {
+                UpdateEconomicNewsStatus(
+                    normalizedUtc,
+                    false);
                 return false;
+            }
 
             _economicNewsBlockingEvent =
                 blocking;
 
-            _economicNewsStatus =
-                FormatNewsRiskReason(
-                    blocking,
-                    utc);
+            UpdateEconomicNewsStatus(
+                normalizedUtc,
+                true);
 
             reason = "NEWS";
             return true;
