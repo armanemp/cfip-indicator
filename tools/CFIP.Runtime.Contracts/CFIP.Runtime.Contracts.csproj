@@ -77,6 +77,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OutcomeMemoryIdentityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalTraceIdentityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalTraceLineageRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Indicators/External/OssIndicatorParameters.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistence.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/BufferedArchivePersistenceModels.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SessionWindowRule.cs" />
