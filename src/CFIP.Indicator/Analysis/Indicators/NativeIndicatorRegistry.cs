@@ -23,12 +23,15 @@ namespace cAlgo
         {
         }
 
-        public bool Equals(Bars x, Bars y)
+        bool IEqualityComparer<Bars>.Equals(
+            Bars x,
+            Bars y)
         {
             return ReferenceEquals(x, y);
         }
 
-        public int GetHashCode(Bars obj)
+        int IEqualityComparer<Bars>.GetHashCode(
+            Bars obj)
         {
             return
                 obj == null
