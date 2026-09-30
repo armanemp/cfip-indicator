@@ -22,6 +22,7 @@ namespace cAlgo
             VerifyWaveTrendMathematics();
             VerifyHistoricalRenderingSemantics();
             VerifyStructuralStopScoringSemantics();
+            VerifyStructuralStopRiskSemantics();
             VerifyDivergenceThresholdSemantics();
             VerifyRejectionThresholdSemantics();
             VerifyLiveInvalidationSemantics();
@@ -2619,6 +2620,150 @@ namespace cAlgo
                     1.0,
                     -1) == 0,
                 "structural-stop risk scoring is finite and non-negative");
+        }
+
+        private static void VerifyStructuralStopRiskSemantics()
+        {
+            Assert(
+                Math.Abs(
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        0.55,
+                        1.80,
+                        2.25) -
+                    1.80) < 1e-12 &&
+                Math.Abs(
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        2.00,
+                        1.50,
+                        2.25) -
+                    2.00) < 1e-12 &&
+                Math.Abs(
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        2.00,
+                        2.50,
+                        1.75) -
+                    2.00) < 1e-12 &&
+                Math.Abs(
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        2.00,
+                        3.00,
+                        4.00) -
+                    3.00) < 1e-12 &&
+                Math.Abs(
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                        3.00,
+                        2.00,
+                        1.00) -
+                    3.00) < 1e-12,
+                "effective maximum structural-stop risk preserves the Min/Maximum truth table");
+
+            Assert(
+                StructuralStopRiskRule.IsWithinEffectiveMaximumStopRiskAtr(
+                    2.25,
+                    0.55,
+                    1.80,
+                    2.25) &&
+                !StructuralStopRiskRule.IsWithinEffectiveMaximumStopRiskAtr(
+                    2.26,
+                    0.55,
+                    1.80,
+                    2.25) &&
+                !StructuralStopRiskRule.IsWithinEffectiveMaximumStopRiskAtr(
+                    double.NaN,
+                    0.55,
+                    1.80,
+                    2.25),
+                "over-ceiling and non-finite structural-stop risk fails closed at the candidate boundary");
+
+            double buyRiskAtr =
+                Math.Abs(
+                    100.0 -
+                    97.75) /
+                1.0;
+
+            double sellRiskAtr =
+                Math.Abs(
+                    100.0 -
+                    102.25) /
+                1.0;
+
+            Assert(
+                Math.Abs(buyRiskAtr - sellRiskAtr) < 1e-12 &&
+                StructuralStopRiskRule.IsWithinEffectiveMaximumStopRiskAtr(
+                    buyRiskAtr,
+                    0.55,
+                    1.80,
+                    2.25) &&
+                StructuralStopRiskRule.IsWithinEffectiveMaximumStopRiskAtr(
+                    sellRiskAtr,
+                    0.55,
+                    1.80,
+                    2.25),
+                "BUY and SELL structural-stop ceiling acceptance is symmetric");
+
+            PlanRewardRiskQualityResult preferredAboveCeiling =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100.0,
+                    97.74,
+                    110.0,
+                    1.0,
+                    0,
+                    2.0,
+                    3.0,
+                    2.25);
+
+            PlanRewardRiskQualityResult preferredAboveCeilingSell =
+                PlanRewardRiskQualityRule.Evaluate(
+                    -1,
+                    100.0,
+                    102.26,
+                    90.0,
+                    1.0,
+                    0,
+                    2.0,
+                    3.0,
+                    2.25);
+
+            Assert(
+                !preferredAboveCeiling.Allowed &&
+                !preferredAboveCeilingSell.Allowed &&
+                preferredAboveCeiling.Reason.IndexOf(
+                    "STOP RISK TOO HIGH",
+                    StringComparison.OrdinalIgnoreCase) >= 0 &&
+                preferredAboveCeilingSell.Reason.IndexOf(
+                    "STOP RISK TOO HIGH",
+                    StringComparison.OrdinalIgnoreCase) >= 0,
+                "preferred stop risk cannot promote the effective maximum ceiling for BUY or SELL");
+
+            PlanRewardRiskQualityResult exactCeilingBuy =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100.0,
+                    97.75,
+                    108.0,
+                    1.0,
+                    0,
+                    2.0,
+                    3.0,
+                    2.25);
+
+            PlanRewardRiskQualityResult exactCeilingSell =
+                PlanRewardRiskQualityRule.Evaluate(
+                    -1,
+                    100.0,
+                    102.25,
+                    92.0,
+                    1.0,
+                    0,
+                    2.0,
+                    3.0,
+                    2.25);
+
+            Assert(
+                exactCeilingBuy.Allowed &&
+                exactCeilingSell.Allowed,
+                "exact effective structural-stop ceiling remains accepted symmetrically");
         }
 
         private static void VerifyDivergenceThresholdSemantics()
