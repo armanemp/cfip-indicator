@@ -583,5 +583,5 @@ namespace cAlgo
                     0,
                     100);
         }
-
+    }
 }
