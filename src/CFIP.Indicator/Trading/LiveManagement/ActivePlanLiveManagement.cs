@@ -36,20 +36,6 @@ namespace cAlgo
             _pendingProtectedStopCandidate =
                 0;
 
-            if (_serverSideTakeProfitLadderActive)
-            {
-                Position serverPosition =
-                    GetManagedLivePositionForPlan();
-
-                if (serverPosition != null)
-                {
-                    ObserveServerSidePartialTakeProfits(
-                        serverPosition,
-                        closedM5,
-                        market);
-                }
-            }
-
             double favorable =
                 _plan.Direction == 1
                     ? _peakPrice - _plan.Entry
