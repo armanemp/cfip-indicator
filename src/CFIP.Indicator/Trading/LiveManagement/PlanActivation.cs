@@ -59,6 +59,7 @@ namespace cAlgo
                                     _lastServerTpLadderMutationM5 = -1;
                                     _lastServerTpLadderMutationKind = "";
                                     _serverSideTakeProfitLadderActive = false;
+                                    _serverSideTakeProfitLadderOwned = false;
                                     _serverSideBreakEvenActive = false;
                                     _pendingProtectedStopCandidate = 0;
                                     _lastBreakEvenDiagnostic = "NOT EVALUATED";
