@@ -4663,3 +4663,28 @@ Verification boundary:
 - CI does not prove target-terminal broker-history semantics, restart/reconnect behavior or empirical profitability/accuracy improvement.
 
 Next phase: **CR-FINAL — final integration audit and target-terminal acceptance.**
+
+
+## CR-FINAL Repository Integration Gate — 2026-09-30
+
+Status: **REPOSITORY GATE PASS — TARGET-TERMINAL ACCEPTANCE STILL BLOCKING**
+
+Evidence record: `docs/CR-FINAL-2026-09-30.md`
+
+Verified on main commit `c966e4e13271da65905341acb56f901ffabe2789`:
+- Source / Architecture: PASS, run #1857;
+- Runtime Acceptance Contracts: PASS, run #1666;
+- cTrader Compile: PASS, run #1850.
+
+The accumulated source, runtime, compile, optimization and CR3.5 gates pass. This does not certify the live cTrader/broker environment.
+
+Remaining mandatory CR-FINAL evidence:
+- target-terminal CBOT-Preflight P1–P8;
+- broker History/Deal semantics;
+- restart/reconnect behavior;
+- live broker protection/rejection timing;
+- target-terminal chart/panel responsiveness;
+- duplicate-execution prevention under real terminal event ordering.
+
+Therefore Track 12A remains blocked. The next operator action is to run the no-trade CBOT-Preflight procedure from `docs/CBOT-PREFLIGHT.md`.
+
