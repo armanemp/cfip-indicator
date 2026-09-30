@@ -1089,6 +1089,32 @@ Required verification:
 - identify and remove only hidden clamps that violate the public-parameter contract; never tune the public default silently;
 - verify no-position outcome behavior against PositionClosed/OutcomeTelemetry paths.
 
+### CR4.9 / D9 closeout — 2026-10-01
+
+Status: **IMPLEMENTED — repository verification pending on the phase branch.**
+
+Completed:
+- centralized live-reversal direction, directional confidence and action semantics in Core;
+- prevented same-direction reaction/frame evidence from inflating reversal confidence;
+- bounded reversal detection alerts to a position/direction episode;
+- reset reversal-episode state on confirmed `PositionClosed`;
+- separated retained/rejected/requested/confirmed semantics in Auto Trading state;
+- prevented the reversal detector from synthesizing a closed lifecycle or outcome when the managed position is temporarily absent;
+- centralized existing live-reversal parameter bounds without changing public names, types or defaults;
+- added deterministic D9 contracts and `audit_phase_4_9.py` to the accumulated Source/Architecture workflow.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/stop/target or execution threshold tuned;
+- no second decision/execution authority introduced;
+- final closure and outcome remain broker/lifecycle authoritative.
+
+Repository verification:
+- Source/Architecture, Runtime Acceptance and cTrader Compile are pending PR check evidence at phase closeout;
+- target-terminal broker acknowledgement, restart/reconnect and empirical validation remain manual.
+
+Next phase: **CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
+
 ### CR4.10 — Native-indicator defensive safety and registry performance (D10)
 
 Initial review label: **PARTIAL — consumer coverage must be inventoried before code changes.**
