@@ -862,7 +862,7 @@ Manual cTrader evidence:
 
 ### CR4.2 — File/archive path and persistence observability (D2)
 
-Status: **COMPLETE — implementation merged in the CR4.2 phase PR.**
+Status: **COMPLETE — PR #103 merged to main, 2026-09-30; merge commit `05a91cb9764f7ee86fcaaba0d7dede540c4b6e1c`.**
 
 Own verification:
 - cTrader's current .NET 6 restricted-file contract confirms that relative paths are the intended mechanism inside the designated algo folder; no AccessRights change is required by this finding.
