@@ -42,7 +42,8 @@ def main() -> int:
     if duplicates:
         print("DUPLICATES:")
         for name, owners in sorted(duplicates.items()):
-            print(f"- {name} :: {", ".join(owners)}")
+            owner_list = ", ".join(owners)
+            print(f"- {name} :: {owner_list}")
         return 1
 
     if documented_match is None:
