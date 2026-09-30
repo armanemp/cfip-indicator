@@ -4665,6 +4665,37 @@ Verification boundary:
 Next phase: **CR-FINAL — final integration audit and target-terminal acceptance.**
 
 
+## Prompt 4 Remediation Gate — D1–D10 — 2026-09-30
+
+Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+
+The fourth Claude review prompt is now mandatory input to the remediation sequence. Its D1–D10 findings are treated as review hypotheses until independently reconciled against current main source.
+
+Authoritative order is now:
+
+`CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR-FINAL`
+
+Coverage:
+- D1: learning-memory identity, decision-only fingerprinting, account scoping and schema migration;
+- D2: absolute/predictable persistence paths, I/O observability, AccessRights target-terminal verification and hot-path writes;
+- D3: signal-trace temporal lineage and research-only future-outcome linkage;
+- D4: Skender path-dependent indicators, OBV independence, fixed constants and incremental caching;
+- D5: per-timeframe regime semantics;
+- D6: named FrameScoringConstants with current values preserved;
+- D7: TP1–TP4 feasibility, stage rejection telemetry and HTF age semantics;
+- D8: defensive TP1 direction validation;
+- D9: live reversal alert/action/state semantics and hidden-clamp audit;
+- D10: native-indicator readiness/zero safety and NativeIndicatorRegistry performance.
+
+Safety:
+- no public parameter name/type/DefaultValue changes;
+- no default threshold/RR/confidence tuning;
+- no second decision or execution authority;
+- every accepted fix receives deterministic tests and the permanent project-wide routine + optimization audit;
+- target-terminal-only behaviors remain explicitly marked manual.
+
+CR-FINAL is **paused as a final acceptance gate** until CR4.1–CR4.10 are either completed or explicitly documented as verified/deferred with evidence.
+
 ## CR-FINAL Repository Integration Gate — 2026-09-30
 
 Status: **REPOSITORY GATE PASS — TARGET-TERMINAL ACCEPTANCE STILL BLOCKING**
