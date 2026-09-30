@@ -19,10 +19,36 @@ namespace cAlgo
             "PositionId,PendingOrderId,ScenarioEvidence,LocationQuality,WaveTrendQuality," +
             "PolicyAllowed,PolicyReason,ForecastHorizonBars";
 
-        private string RuntimeLogPrefix() {
+        private string RuntimeLogPrefix()
+        {
             if (!string.IsNullOrWhiteSpace(
                     _runtimeLogPrefixCache))
                 return _runtimeLogPrefixCache;
+
+            string symbol =
+                SanitizeArchivePart(
+                    string.IsNullOrWhiteSpace(SymbolName)
+                        ? "UNKNOWN"
+                        : SymbolName);
+
+            string timeframe =
+                SanitizeArchivePart(
+                    Bars == null
+                        ? "UNKNOWN"
+                        : Bars.TimeFrame.ToString());
+
+            _runtimeLogPrefixCache =
+                "CFIP_RuntimeLog_v2_" +
+                symbol +
+                "_" +
+                timeframe +
+                "_" +
+                MemoryConfigurationFingerprint();
+
+            return
+                _runtimeLogPrefixCache;
+        }
+
         private string RuntimeLogPrefix()
         {
             string symbol =
