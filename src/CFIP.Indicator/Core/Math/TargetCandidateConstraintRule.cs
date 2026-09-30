@@ -59,27 +59,27 @@ namespace cAlgo
                 double.IsNaN(target) ||
                 double.IsInfinity(target))
             {
-                return Block(
+                return BlockGeometry(
                     TargetCandidateRejectionReasons.InvalidGeometry);
             }
 
             if ((direction == 1 && target <= entry) ||
                 (direction == -1 && target >= entry))
             {
-                return Block(
+                return BlockGeometry(
                     TargetCandidateRejectionReasons.TargetSideInvalid);
             }
 
             if (requireHtf && !isHtf)
             {
-                return Block(
+                return BlockGeometry(
                     TargetCandidateRejectionReasons.HtfSourceRequired);
             }
 
             if (requireHtf &&
                 htfQuality < minimumHtfQuality)
             {
-                return Block(
+                return BlockGeometry(
                     TargetCandidateRejectionReasons.HtfQualityTooLow);
             }
 
@@ -94,7 +94,7 @@ namespace cAlgo
                 double.IsInfinity(rr) ||
                 rr <= 0)
             {
-                return Block(
+                return BlockGeometry(
                     TargetCandidateRejectionReasons.RewardRiskInvalid);
             }
 
@@ -155,7 +155,7 @@ namespace cAlgo
                 rr);
         }
 
-        private static TargetCandidateConstraintResult Block(
+        private static TargetCandidateConstraintResult BlockGeometry(
             string reason)
         {
             return new TargetCandidateConstraintResult(
