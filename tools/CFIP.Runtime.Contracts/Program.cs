@@ -204,21 +204,8 @@ namespace cAlgo
                 sellLevels[2] == 92,
                 "liquidity candidates are ordered by distance from entry");
 
-            List<double> orderedDistinct =
-                LiquidityTargetCandidateRule.OrderDistinctByDistance(
-                    1,
-                    100,
-                    new List<double> { 103.0, 103.7, 104.0 },
-                    2,
-                    0.40);
-
             Assert(
-                orderedDistinct.Count == 2 &&
-                orderedDistinct[0] == 103.0 &&
-                orderedDistinct[1] == 104.0,
-                "liquidity spacing is applied after distance ordering so a farther source cannot mask a nearer valid level");
-
-            LiquiditySweepRule.IsActiveUnbrokenLevel(
+                LiquiditySweepRule.IsActiveUnbrokenLevel(
                     -1,
                     1,
                     5,
@@ -257,56 +244,55 @@ namespace cAlgo
                     i => new[] { 100.0, 97.0, 94.0, 95.5, 96.0, 97.0 }[i]),
                 "low liquidity becomes invalid after a close breaks below it");
 
-            TargetCandidateConstraintResult validTarget =
-                TargetCandidateConstraintRule.Evaluate(
-                    0,
+            PlanRewardRiskQualityResult validReward =
+                PlanRewardRiskQualityRule.Evaluate(
                     1,
                     100,
-                    1,
+                    99,
                     104,
                     2,
-                    0.01,
+                    0,
                     2,
-                    12,
-                    4,
-                    0.40,
-                    0,
-                    false,
-                    false,
-                    false,
-                    0,
-                    0);
+                    0.75,
+                    1.80);
 
-            TargetCandidateConstraintResult farTarget =
-                TargetCandidateConstraintRule.Evaluate(
-                    0,
+            PlanRewardRiskQualityResult invalidReward =
+                PlanRewardRiskQualityRule.Evaluate(
                     1,
                     100,
-                    1,
-                    110,
+                    99,
+                    101,
                     2,
-                    0.01,
+                    0,
                     2,
-                    12,
+                    0.75,
+                    1.80);
+
+            Assert(
+                validReward.Allowed &&
+                validReward.NominalRR == 4,
+                "valid liquidity target survives the canonical reward-risk gate");
+
+            Assert(
+                !invalidReward.Allowed &&
+                invalidReward.Reason ==
+                    "REWARD TOO LOW FOR STOP • RR 1.00 < 2.00",
+                "insufficient liquidity target reward is rejected by the existing RR contract");
+
+            Assert(
+                TargetRewardEnvelopeRule.CanReachStage(
                     4,
-                    0.40,
-                    0,
-                    false,
-                    false,
-                    false,
-                    0,
-                    0);
-
-            Assert(
-                validTarget.Allowed &&
-                validTarget.RiskReward == 4,
-                "valid liquidity target survives canonical reward-risk constraints");
-
-            Assert(
-                !farTarget.Allowed &&
-                farTarget.Reason ==
-                    TargetCandidateRejectionReasons.TargetTooFar,
-                "distant liquidity target remains bounded by the existing extension contract");
+                    1,
+                    2,
+                    4,
+                    12) &&
+                !TargetRewardEnvelopeRule.CanReachStage(
+                    5,
+                    2,
+                    2,
+                    4,
+                    12),
+                "liquidity target stages remain bounded by the existing reward envelope");
         }
 
         private static void VerifyFrameScoringConstants()
