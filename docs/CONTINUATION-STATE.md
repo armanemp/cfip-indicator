@@ -211,9 +211,39 @@ Safety boundary:
 - no second decision or execution authority introduced;
 - target-terminal timing, replay and empirical signal-quality validation remain manual.
 
+### CR4.7 / D7 closeout — 2026-10-01
+
+CR4.7 was completed on `phase/cr4-7-target-pipeline` and merged to `main` via PR #108, merge commit `2a586ca353f79d6151b9b8375edf46cb94df7880`.
+
+Implementation:
+- one Core owner for target-side/RR/extension/spacing/progression/HTF candidate constraints;
+- deterministic M5 setup-age versus HTF elapsed-age semantics;
+- source-age propagation through HTF, D1/W1 prior-period, pivot and liquidity target sources;
+- bounded `PLAN_TARGET` per-stage rejection telemetry and explicit rejection taxonomy;
+- pre-scan target reward-envelope feasibility detection;
+- dedicated telemetry/stage-feasibility owners keeping `TargetSelector` orchestration-only;
+- deterministic planning fixtures covering TP1–TP4 acceptance, below-minimum RR rejection and BUY/SELL symmetry.
+
+Verification on implementation HEAD `441611a8d1ca513ee332f9a8a006a3f37eb9a727`:
+- Source/Architecture PASS — run #1999;
+- Runtime Acceptance Contracts PASS — run #1808;
+- cTrader Compile PASS — run #1992.
+
+Deterministic evidence:
+- primary TP1–TP4 fixtures: 4/4 accepted;
+- below-minimum-RR fixtures: 4/4 rejected;
+- SELL mirror fixtures: 4/4 accepted;
+- TP4 envelope reachability: 1/4 fixed risk/ATR fixtures.
+
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/SL/target-age tuning;
+- no second decision or execution authority introduced;
+- target-terminal timing, replay and empirical signal-quality/profitability validation remain manual.
+
 ### Next transition
 
-The next implementation response must execute **CR4.7 / D7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics** only.
+The next implementation response must execute **CR4.8 / D8 — TP1 directional defensive validation** only.
 Track 12A remains blocked until CR-FINAL.
 
 ### Prompt 6 remediation insertion — 2026-09-30
@@ -293,4 +323,4 @@ Next phase: **CR4.4 / D4 — Skender/OSS numerical stability and incremental cac
 
 ## Current active phase
 
-CR4.7 / D7 — TP pipeline feasibility, rejection telemetry and HTF-age semantics.
+CR4.8 / D8 — TP1 directional defensive validation.
