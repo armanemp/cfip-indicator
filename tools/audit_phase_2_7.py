@@ -13,7 +13,10 @@ errors = []
 
 engine = read("src/CFIP.Indicator/Analysis/Market/WaveTrendEngine.cs")
 calculator = read("src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.cs")
-readiness = calculator
+base_kernels = read("src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.BaseKernels.cs")
+advanced = read("src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.Advanced.cs")
+readiness = read("src/CFIP.Indicator/Core/Math/WaveTrendReadinessRule.cs")
+all_ma = calculator + base_kernels + advanced
 parameters = read("src/CFIP.Indicator/Indicator/Parameters/26_wave_trend.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
@@ -36,7 +39,7 @@ checks = {
         ]
     ),
     "MA calculator owns all semantics": all(
-        token in calculator
+        token in all_ma
         for token in [
             "case Simple:",
             "case Exponential:",
@@ -52,28 +55,28 @@ checks = {
         ]
     ),
     "EMA and Wilder alpha semantics are explicit": (
-        "2.0 /" in calculator and
-        "(_length + 1.0)" in calculator and
-        "1.0 /" in calculator
+        "2.0 /" in all_ma and
+        "(_length + 1.0)" in all_ma and
+        "1.0 /" in all_ma
     ),
     "DEMA and TEMA dependency depth is explicit": (
         "2 *" in calculator and
         "3 *" in calculator and
-        "CalculateWaveTrendEmaSeries(" in calculator
+        "CalculateWaveTrendEmaSeries(" in advanced
     ),
     "HMA dependency uses sqrt period": (
-        "Math.Sqrt(" in calculator and
-        "halfLength" in calculator
+        "Math.Sqrt(" in advanced and
+        "halfLength" in advanced
     ),
     "KAMA efficiency ratio semantics exist": (
-        "efficiency" in calculator and
-        "fast" in calculator and
-        "slow" in calculator
+        "efficiency" in advanced and
+        "fast" in advanced and
+        "slow" in advanced
     ),
     "VIDYA adaptive efficiency semantics exist": (
-        "CalculateWaveTrendVidya(" in calculator and
-        "alpha" in calculator and
-        "efficiency" in calculator
+        "CalculateWaveTrendVidya(" in advanced and
+        "alpha" in advanced and
+        "efficiency" in advanced
     ),
     "component readiness includes RMI depth": (
         "momentumLength + safeLength - 1" in readiness and
