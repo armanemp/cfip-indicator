@@ -18,7 +18,7 @@ namespace cAlgo
                     bars,
                     index);
 
-            if (quotes == null || quotes.Count < 3)
+            if (quotes == null || quotes.Count < OssIndicatorParameters.ObvMinimumHistory)
                 return double.NaN;
 
             var results =
