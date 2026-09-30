@@ -4962,7 +4962,7 @@ Safety boundary:
 - no synthetic outcome is emitted by reversal detection;
 - target-terminal timing, broker acknowledgement ordering, restart/reconnect behavior and empirical signal-quality/profitability remain manual acceptance boundaries.
 
-**Next phase: CR4.10 / D10 — Native-indicator defensive safety and registry performance.**
+**Next phase: CR5.1 / E1 — Effective maximum structural stop risk and duplicate ceiling removal.**
 
 ### CR4.10 / D10 closeout — 2026-10-01
 
@@ -5001,13 +5001,27 @@ Verification boundary:
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+Status: **CR5.1 / E1 IMPLEMENTED — repository verification pending**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
 Authoritative order:
 
 `CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL`
+
+### CR5.1 / E1 implementation record — 2026-10-01
+
+Implemented on `phase/cr5-1-stop-risk-ceiling`:
+- centralized effective structural-stop ceiling semantics in Core;
+- removed the duplicate caller-side ceiling formula from all nine scoped consumers;
+- enforced the supplied effective maximum as a hard ceiling in reward-risk validation so Preferred Stop Risk ATR cannot promote it;
+- added deterministic runtime contracts for truth-table, BUY/SELL symmetry, candidate early rejection and preferred-above-ceiling behavior;
+- added `audit_phase_5_1.py` after the D10 audit in Source/Architecture.
+
+Safety boundary:
+- public parameter names/types/defaults are unchanged;
+- no default RR/confidence/SL/TP/entry/execution threshold tuning was introduced;
+- target-terminal behavior remains a separate manual acceptance boundary.
 
 Coverage:
 - E1: one canonical effective maximum structural-stop ATR ceiling across all consumers;
