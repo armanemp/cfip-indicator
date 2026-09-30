@@ -302,20 +302,20 @@ namespace cAlgo
                         OutcomeMemorySchema,
                         StringComparison.Ordinal);
 
-                bool legacySchema =
+                bool priorSchema =
                     string.Equals(
                         schema,
                         PriorOutcomeMemorySchema,
                         StringComparison.Ordinal);
 
                 if (!currentSchema &&
-                    !legacySchema)
+                    !priorSchema)
                     return false;
 
                 // A legacy key/snapshot has no account identity. Only adopt a
                 // legacy observation when the current account's broker history
                 // proves that the PositionId belongs to this account.
-                if (legacySchema)
+                if (priorSchema)
                     priorMemory = true;
 
                 DateTime cutoff =
