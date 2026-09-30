@@ -6,16 +6,16 @@ namespace cAlgo
     {
         public const string Unknown = "UNKNOWN";
 
-        public static string Resolve(
+        public static string ResolveSnapshot(
             MarketRegimeSnapshot snapshot)
         {
-            return Resolve(
+            return Normalize(
                 snapshot == null
                     ? null
                     : snapshot.Regime);
         }
 
-        public static string Resolve(
+        public static string Normalize(
             string regime)
         {
             if (string.IsNullOrWhiteSpace(regime))
@@ -43,7 +43,7 @@ namespace cAlgo
         public static bool IsNeutral(
             string regime)
         {
-            return Resolve(regime) == Unknown;
+            return Normalize(regime) == Unknown;
         }
     }
 }
