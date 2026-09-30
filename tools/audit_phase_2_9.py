@@ -22,7 +22,7 @@ project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 
 checks = {
     "unknown structural timeframe still fails closed": (
-        "case "W1":" in resolver and
+        'case "W1":' in resolver and
         "return null;" in resolver and
         "StructuralTimeframeRule.IsSupported(" in resolver
     ),
