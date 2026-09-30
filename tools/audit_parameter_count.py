@@ -31,11 +31,12 @@ def main() -> int:
                 declaration_locations[name] = location
 
     count = len(declaration_locations)
+    parameter_files = sorted(PARAM_ROOT.glob("*.cs"))
     documented_match = DOC_RE.search(README.read_text(encoding="utf-8"))
 
     print("PUBLIC PARAMETER COUNT AUDIT")
     print("=" * 72)
-    print(f"Parameter source files: {len(list(PARAM_ROOT.glob("*.cs")))}")
+    print(f"Parameter source files: {len(parameter_files)}")
     print(f"Unique public parameters: {count}")
 
     if duplicates:
