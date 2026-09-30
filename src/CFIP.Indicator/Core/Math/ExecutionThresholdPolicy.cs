@@ -9,14 +9,6 @@ namespace cAlgo
     /// </summary>
     internal static class ExecutionThresholdPolicy
     {
-        internal const int AutomaticMarketIndicatorConfluenceMinimum = 60;
-        internal const int AutomaticMarketIndicatorConflictMaximum = 52;
-        internal const int PendingSubmissionIndicatorConfluenceMinimum = 58;
-        internal const int PendingSubmissionIndicatorConflictMaximum = 55;
-        internal const int PendingContinuationIndicatorConfluenceMinimum = 62;
-        internal const int PendingContinuationIndicatorConflictMaximum = 48;
-        internal const int PendingReversalIndicatorConfluenceMinimum = 62;
-        internal const int PendingReversalIndicatorConflictMaximum = 50;
 
         internal static int NormalizeDirectionShare(int value)
         {
