@@ -27,6 +27,20 @@ namespace cAlgo
                                     double previousTp2 =
                                         _plan.Tp2;
                         
+                                    if (_serverSideTakeProfitLadderActive)
+                                    {
+                                        Position serverPosition =
+                                            GetManagedLivePositionForPlan();
+
+                                        if (serverPosition != null)
+                                        {
+                                            ObserveServerSidePartialTakeProfits(
+                                                serverPosition,
+                                                closedM5,
+                                                market);
+                                        }
+                                    }
+
                                     double favorable =
                                         _plan.Direction == 1
                                             ? _peakPrice - _plan.Entry
@@ -64,12 +78,12 @@ namespace cAlgo
                                                 protectedStop,
                                                 _plan.Stop))
                                         {
-                                            _plan.Stop =
+                                        {
+                                            _pendingProtectedStopCandidate =
                                                 NormalizePrice(
                                                     protectedStop);
-                        
-                                            RecalculatePlanRR();
                                         }
+}
                         
                                         if (UpdateUnhitTargets &&
                                             peakRR >=
@@ -83,7 +97,30 @@ namespace cAlgo
                                                 structuralUpdate);
                                         }
                         
-                                        if (structuralBarChanged)
+                                                                                Position managedPositionAfterUpdates =
+                                            GetManagedLivePositionForPlan();
+
+                                        if (_serverSideTakeProfitLadderActive &&
+                                            managedPositionAfterUpdates != null)
+                                        {
+                                            if (_tp1Hit != 0 &&
+                                                _tp2Hit == 0)
+                                            {
+                                                TryAdvanceServerSideTakeProfitLadderAfterTp1(
+                                                    managedPositionAfterUpdates,
+                                                    closedM5,
+                                                    market);
+                                            }
+
+                                            if (_tp2Hit != 0)
+                                            {
+                                                TryCollapseServerSideTakeProfitLadderToFinal(
+                                                    managedPositionAfterUpdates,
+                                                    closedM5);
+                                            }
+                                        }
+
+if (structuralBarChanged)
                                             _lastStructuralStopUpdateM5 =
                                                 closedM5;
                                     }
