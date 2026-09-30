@@ -234,6 +234,5 @@ namespace cAlgo
                 emitted++;
             }
         }
-        }
     }
 }
