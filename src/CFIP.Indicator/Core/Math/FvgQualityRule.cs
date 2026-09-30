@@ -19,9 +19,9 @@ namespace cAlgo
             bool higherTimeframeAlignment,
             bool twoBarImbalance)
         {
-            if (!IsFinite(gapAtrRatio) ||
-                !IsFinite(remainingRatio) ||
-                !IsFinite(displacementAtrRatio))
+            if (!IsFiniteFvgQualityInput(gapAtrRatio) ||
+                !IsFiniteFvgQualityInput(remainingRatio) ||
+                !IsFiniteFvgQualityInput(displacementAtrRatio))
                 return 0;
 
             double gapScore =
@@ -67,7 +67,7 @@ namespace cAlgo
                     (int)Math.Round(quality)));
         }
 
-        private static bool IsFinite(double value)
+        private static bool IsFiniteFvgQualityInput(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
@@ -78,7 +78,7 @@ namespace cAlgo
             double minimum,
             double maximum)
         {
-            if (!IsFinite(value))
+            if (!IsFiniteFvgQualityInput(value))
                 return 0;
 
             if (maximum <= minimum)
