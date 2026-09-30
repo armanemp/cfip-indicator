@@ -14,6 +14,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/ExecutionMode.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/PendingOrderMode.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/WaveTrendSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.BaseKernels.cs" />
@@ -75,6 +76,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RewardQualityFloorRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EarlyPredictionScoreRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OutcomeMemoryIdentityRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/FrameRegimeResolutionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalTraceIdentityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalTraceLineageRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Indicators/External/OssIndicatorParameters.cs" />

@@ -162,6 +162,22 @@ Implementation:
 Next phase: **CR4.5 / D5 — Per-timeframe regime semantics.**
 Target-terminal acceptance remains a later manual boundary.
 
+
+### CR4.5 / D5 implementation checkpoint — 2026-10-01
+
+CR4.5 is implemented on branch `phase/cr4-5-per-timeframe-regime`; CI/merge closeout is pending.
+
+Implementation:
+- preserve the existing dedicated M5 regime path;
+- add bounded per-timeframe regime caching for non-M5 Bars series;
+- expose normalized regime, quality and stability on each Frame;
+- make frame scoring consume each frame's own regime;
+- centralize normalization and keep UNKNOWN explicitly neutral;
+- add deterministic BUY/SELL symmetry and UNKNOWN-neutrality contracts;
+- add `audit_phase_4_5.py` to the accumulated Source/Architecture gate.
+
+Next after verified merge: **CR4.6 / D6 — Frame-scoring constant ownership.**
+
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
