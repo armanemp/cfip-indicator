@@ -1439,7 +1439,7 @@ Testing:
 
 ### CR5.7 / E7 closeout — 2026-10-01
 
-Status: **IMPLEMENTED COMPLETE — repository verification pending CI.**
+Status: **VERIFIED COMPLETE — PR #123 merged to `main`; merge commit `d37f6d575595bfacecdff5a5ffb8fc44ba96455a`.**
 
 Source audit finding:
 - the previous WATCH alert emission lived inside chart rendering and its intended early-WATCH condition was unreachable after the renderer returned on `!ActionableNow`;
@@ -1461,8 +1461,11 @@ Safety:
 - blocked signals remain fail-closed at the canonical alert eligibility boundary;
 - target-terminal alert timing, popup/audio delivery, chart/panel behavior, broker lifecycle and empirical signal quality remain manual boundaries.
 
-Required verification now:
-- Source/Architecture, Runtime Acceptance Contracts and cTrader Compile on the E7 branch/PR;
+Repository verification:
+- Source/Architecture PASS — run `36841785497` / job `110302351624`;
+- Runtime Acceptance Contracts PASS — run `36841785708` / job `110302353199`;
+- cTrader Compile PASS — run `36841785507` / job `110302351749`;
+- PR #123 merged to `main` with final implementation head `8d39ad3fb88c75092908121a3cbaa65128f47659`.
 - target-terminal rendering-disabled versus enabled alert equivalence;
 - repeated closed-bar identity/dedup behavior;
 - target-terminal intrabar REACTION timing.
