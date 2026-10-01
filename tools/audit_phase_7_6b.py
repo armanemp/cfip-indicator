@@ -71,7 +71,7 @@ if "public static bool IsInteractive => false;" not in presentation_rule:
     raise SystemExit("G6B canonical presentation rule must be explicitly read-only")
 for token in (
     "string normalizedCaption",
-    '(enabled ? "ON" : "OFF)",
+    'enabled ? "ON" : "OFF"',
 ):
     if token not in presentation_rule:
         raise SystemExit(f"G6B canonical presentation rule missing: {token}")
