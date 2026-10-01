@@ -25,7 +25,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 **CI-05 — FVG lifecycle — 2026-10-01**
 
-Status: **NEXT — specified and ready to implement. CI-04 is verified complete and merged.**
+Status: **IN IMPLEMENTATION — FVG lifecycle semantics and consumer hardening are being implemented and verified. CI-04 is verified complete and merged.**
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
