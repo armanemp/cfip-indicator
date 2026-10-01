@@ -1,6 +1,8 @@
 # CI-11 — Entry geometry and signal-timing audit
 
-Status: implementation candidate on `phase/ci-11-entry-geometry-timing`.
+Status: **VERIFIED COMPLETE — PR #166 merged to `main`; merge commit `56554a7cacbdd17d75e2ab38dcad8692594d138b`.**
+
+Final implementation head: `b7bbf5375a062d82c2883360d3f4e8b61de0ee45`.
 
 ## Objective
 
@@ -51,3 +53,16 @@ Automated verification is intentionally split:
 
 After CI-11 is merged and verified, continue with CI-12 from the Full-Stack
 Calculation & Analytical Integrity track.
+
+## CI-11 closeout — 2026-10-02
+
+- Source/Architecture #2589: **PASS** (workflow 36936440440).
+- Runtime Acceptance Contracts #2398: **PASS** (workflow 36936440406).
+- cTrader Compile #2582: **PASS** (workflow 36936440564).
+- PR #166 merged to `main` as `56554a7cacbdd17d75e2ab38dcad8692594d138b`.
+- An accumulated CI-00 regression in `MarketEntryValidation` was corrected by restoring canonical price-snapshot consumption without changing trading thresholds.
+- The CI-11 static audit was reconciled to the canonical owners and all accumulated audits passed.
+
+No public parameter/default or trading-policy threshold changed. Target-terminal timing/chart synchronization and empirical signal-quality validation remain manual boundaries.
+
+**Next phase: CI-12 — Structural SL audit.**
