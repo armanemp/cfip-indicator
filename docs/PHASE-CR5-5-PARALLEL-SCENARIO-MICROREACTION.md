@@ -1,6 +1,6 @@
 # CR5.5 / E5 — Parallel-scenario computation, candidate ownership and MicroReaction safety
 
-Status: **IMPLEMENTED — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #121; implementation head `5b34afbdc7ed252a3fabc68cdb9859818cb911e6`.**
 
 ## Scope
 
@@ -81,13 +81,19 @@ during the same parallel refresh while preserving the existing target-level cach
 
 No full-history pass or timer-driven duplicate calculation was introduced.
 
+## Verification
+
+Final repository verification on implementation head `5b34afbdc7ed252a3fabc68cdb9859818cb911e6`:
+
+- Source/Architecture: PASS — workflow run `36836762005`, including `audit_phase_5_5.py` and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — workflow run `36836762039`;
+- cTrader Compile: PASS — workflow run `36836762006`.
+
+During closeout, the accumulated Phase 11.4 audit was reconciled to the new Core
+scenario-selection ownership; `audit_phase_11_4.py` now checks the same identity
+and coverage semantics without requiring the removed presentation-layer helpers.
+
 ## Verification boundary
-
-Repository verification must include:
-
-- Source/Architecture accumulated audit chain plus audit_phase_5_5.py;
-- Runtime Acceptance Contracts;
-- cTrader Compile.
 
 Target-terminal behavior remains a manual boundary for:
 
