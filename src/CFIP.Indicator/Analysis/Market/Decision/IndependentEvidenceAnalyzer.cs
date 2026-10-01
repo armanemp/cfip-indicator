@@ -10,12 +10,20 @@ namespace cAlgo
         private int IndependentEvidenceGroupCount(int direction) =>
             IndependentEvidenceGroupCount(_m5Frame, direction);
 
-        private int IndependentEvidence(Frame frame, int direction)
+        private int CalculateIndependentEvidenceForFrame(Frame frame, int direction)
         {
             return IndependentEvidenceFusionRule.CalculateScore(BuildIndependentEvidenceInput(frame, direction));
         }
 
-        private int IndependentEvidenceGroupCount(Frame frame, int direction)
+        private int CountIndependentEvidenceGroupsForFrame(Frame frame, int direction)
+        {
+            return IndependentEvidenceFusionRule.CountGroups(BuildIndependentEvidenceInput(frame, direction));
+        }
+
+        private IndependentEvidenceFusionInput BuildIndependentEvidenceInput
+        }
+
+        private int CountIndependentEvidenceGroupsForFrame(Frame frame, int direction)
         {
             return IndependentEvidenceFusionRule.CountGroups(BuildIndependentEvidenceInput(frame, direction));
         }
