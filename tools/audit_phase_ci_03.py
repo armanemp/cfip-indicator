@@ -37,7 +37,7 @@ continuation = read('docs/CONTINUATION-STATE.md')
 check('single numerical indicator-fusion owner', 'class IndicatorEvidenceFusionRule' in fusion and 'Evaluate(' in fusion)
 check('indicator independence is diagnostic and phenomenon-grouped',
       'class IndicatorEvidenceIndependenceRule' in independence and
-      'CountGroups(' in independence and 'bool trend =' in independence and
+      'CountIndicatorGroups(' in independence and 'bool trend =' in independence and
       'bool momentum =' in independence and 'bool context =' in independence)
 check('trend measurements share one correlated group',
       'input.TrendBull ||' in independence and 'input.TrendBear ||' in independence and
@@ -57,8 +57,8 @@ check('market-frame scoring reuses one fusion input for attribution',
       'IndicatorEvidenceFusionRule.Evaluate(' in scoring and
       'IndicatorEvidenceIndependenceRule.CountGroups(' in scoring)
 check('per-frame independent evidence delegates to the canonical owner',
-      'IndependentEvidence(Frame frame' in analyzer and
-      'IndependentEvidenceGroupCount(Frame frame' in analyzer and
+      'CalculateIndependentEvidenceForFrame(Frame frame' in analyzer and
+      'CountIndependentEvidenceGroupsForFrame(Frame frame' in analyzer and
       'IndependentEvidenceFusionRule.CalculateScore(' in analyzer and
       'IndependentEvidenceFusionRule.CountGroups(' in analyzer)
 check('parallel scenario enrichment removes the duplicate raw counter',
