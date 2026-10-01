@@ -2014,7 +2014,38 @@ Safety:
 - no public parameter/default or trading threshold tuning;
 - no second decision/execution/broker-mutation authority.
 
-**Next phase: CR7.6a.**
+### CR7.6a / G6A closeout — Execution panel presentation freshness — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #146 functional implementation HEAD `b0b19c1a3e7e65110dc1b64d4f8a3bf555b7c54e`.**
+
+Completed:
+- identified the G5 presentation-identity gap without undoing G5 broker-read minimization;
+- centralized execution-facing panel identity in `ExecutionPanelPresentationIdentityRule`;
+- included Auto Trading state/reason, execution telemetry path/state, active scenario, market-suitability score/state/reason and break-even diagnostic in the panel identity;
+- made canonical Auto Trading state/reason changes invalidate the G4 execution/protection snapshot only when they actually change;
+- kept telemetry-only presentation changes from forcing broker-state snapshot invalidation;
+- added deterministic Runtime Acceptance coverage and `audit_phase_7_6a.py`;
+- reconciled accumulated G5 continuity audit so historical phase transitions remain valid as the roadmap advances.
+
+Verification:
+- Source/Architecture: **PASS** — #2327;
+- Runtime Acceptance Contracts: **PASS** — #2136;
+- cTrader Compile: **PASS** — #2320.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold changed;
+- no decision/execution/broker-mutation authority changed;
+- no new broker enumeration or unbounded cache introduced.
+
+Manual boundary:
+- cTrader target-terminal panel refresh timing, scenario/suitability/break-even visual refresh, reconnect/reload and empirical behavior remain manual.
+
+Operator action:
+- after PR #146 is merged, run `git pull --ff-only` on local `main`.
+
+Next phase: **CR7.6b.**
+
 
 ### Prompt 6 completion gate
 
@@ -2029,7 +2060,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR7.4 / G4 — Panel execution/protection state semantics**.
+Current active phase: **CR7.6a / G6A — Execution panel presentation freshness**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 

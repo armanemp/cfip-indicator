@@ -79,14 +79,19 @@ for document, token, name in (
     if token not in document:
         raise SystemExit(f"G5 continuity record missing: {name}")
 
-if "Status: **IMPLEMENTED" not in phase or "CR7.6a" not in phase:
-    raise SystemExit("G5 phase document does not record implementation and next transition")
+if (
+    "Status: **IMPLEMENTED" not in phase and
+    "Status: **VERIFIED COMPLETE" not in phase
+) or "CR7.6a" not in phase:
+    raise SystemExit("G5 phase document does not record implementation and G6A continuation")
 
-if "**Next phase after G5 closeout: CR7.6a.**" not in roadmap:
-    raise SystemExit("G5 roadmap transition is missing")
-
-if "**Next phase: CR7.6a.**" not in continuation or "**Next phase: CR7.6a.**" not in review:
-    raise SystemExit("G5 continuation/remediation transition is missing")
+for document, name in (
+    (roadmap, "ROADMAP G6A continuation"),
+    (continuation, "CONTINUATION G6A continuation"),
+    (review, "remediation G6A continuation"),
+):
+    if "CR7.6a" not in document:
+        raise SystemExit(f"G5 continuity record does not retain G6A transition: {name}")
 
 print("CR7.5 / G5 panel-state freshness audit PASS")
 print("presentation key does not invalidate the canonical state snapshot")

@@ -108,6 +108,7 @@ namespace cAlgo
             VerifyTargetObstacleCacheKeyHashSemantics();
             VerifyBrokerProtectionG1();
             VerifyExecutionProtectionPanelStateFreshnessG5();
+            VerifyExecutionPanelPresentationIdentityG6A();
             VerifyExecutionProtectionPanelStateG4();
 
             Console.WriteLine("Runtime acceptance contracts OK");
@@ -8642,6 +8643,127 @@ namespace cAlgo
                     60,
                     53).Allowed,
                 "F6 indicator actionability thresholds preserve RANGE/TRANSITION and neutral values");
+        }
+
+        private static void VerifyExecutionPanelPresentationIdentityG6A()
+        {
+            string baseline =
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "ARMED",
+                    "AWAITING EXECUTION",
+                    "AUTO",
+                    "ACCEPTED",
+                    "SCENARIO-M5-BUY",
+                    72,
+                    "READY",
+                    "MARKET SUITABLE",
+                    "NOT EVALUATED");
+
+            Assert(
+                baseline ==
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "ARMED",
+                    "AWAITING EXECUTION",
+                    "AUTO",
+                    "ACCEPTED",
+                    "SCENARIO-M5-BUY",
+                    72,
+                    "READY",
+                    "MARKET SUITABLE",
+                    "NOT EVALUATED"),
+                "G6A unchanged execution presentation identity is deterministic");
+
+            Assert(
+                baseline !=
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "EXECUTED",
+                    "AWAITING EXECUTION",
+                    "AUTO",
+                    "ACCEPTED",
+                    "SCENARIO-M5-BUY",
+                    72,
+                    "READY",
+                    "MARKET SUITABLE",
+                    "NOT EVALUATED") &&
+                baseline !=
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "ARMED",
+                    "BLOCKED • RISK",
+                    "AUTO",
+                    "ACCEPTED",
+                    "SCENARIO-M5-BUY",
+                    72,
+                    "READY",
+                    "MARKET SUITABLE",
+                    "NOT EVALUATED"),
+                "G6A auto-trading state/reason changes alter presentation identity");
+
+            Assert(
+                baseline !=
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "ARMED",
+                    "AWAITING EXECUTION",
+                    "RECOVERY",
+                    "REQUIRED",
+                    "SCENARIO-M5-BUY",
+                    72,
+                    "READY",
+                    "MARKET SUITABLE",
+                    "NOT EVALUATED") &&
+                baseline !=
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "ARMED",
+                    "AWAITING EXECUTION",
+                    "AUTO",
+                    "ACCEPTED",
+                    "SCENARIO-M5-SELL",
+                    72,
+                    "READY",
+                    "MARKET SUITABLE",
+                    "NOT EVALUATED"),
+                "G6A telemetry/scenario changes alter presentation identity");
+
+            Assert(
+                baseline !=
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "ARMED",
+                    "AWAITING EXECUTION",
+                    "AUTO",
+                    "ACCEPTED",
+                    "SCENARIO-M5-BUY",
+                    73,
+                    "READY",
+                    "MARKET SUITABLE",
+                    "NOT EVALUATED") &&
+                baseline !=
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    "ARMED",
+                    "AWAITING EXECUTION",
+                    "AUTO",
+                    "ACCEPTED",
+                    "SCENARIO-M5-BUY",
+                    72,
+                    "BLOCKED",
+                    "SPREAD",
+                    "APPLIED  •  LOCKED"),
+                "G6A market-suitability/break-even changes alter presentation identity");
+
+            Assert(
+                ExecutionPanelPresentationIdentityRule.Compose(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    0,
+                    null,
+                    null,
+                    null) ==
+                "|||||0|||",
+                "G6A null presentation fields normalize deterministically");
+
+            Console.WriteLine(
+                "CR7.6a / G6A execution panel presentation identity contract PASS");
         }
 
         private static void VerifyExecutionProtectionPanelStateFreshnessG5()
