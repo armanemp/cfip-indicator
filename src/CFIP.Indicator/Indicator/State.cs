@@ -118,6 +118,7 @@ namespace cAlgo
                 private bool _automaticOrdersEnabledRuntime;
                 private bool _executionRuntimeInitialized;
                 private bool _executionToggleSyncing;
+                private CalculationMarketContext _calculationMarketContext;
 
                 private string _autoExecutionBlockReason
                 {
