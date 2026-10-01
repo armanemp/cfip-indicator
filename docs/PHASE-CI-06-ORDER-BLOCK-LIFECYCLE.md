@@ -88,6 +88,8 @@ Runtime contracts cover:
 
 The phase preserves the existing single audio delivery boundary: `AlertEngine` does not own direct sound playback and `AlertDeliveryProcessor` remains the production playback owner. No alert architecture or sound threshold was changed in CI-06.
 
+The lifecycle helper API uses domain-prefixed names so the repository-wide partial-class method uniqueness verifier cannot confuse it with unrelated mathematical helpers.
+
 The broader routine audit remains:
 
 `Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning`
