@@ -56,7 +56,7 @@ check(
     "FVG lifecycle has one platform-neutral owner",
     "internal static class FvgLifecycleRule" in lifecycle_rule and
     "IsAgeValid(" in lifecycle_rule and
-    "GetMitigationProbe(" in lifecycle_rule and
+    "ResolveFvgMitigationProbe(" in lifecycle_rule and
     "TryApplyMitigationStep(" in lifecycle_rule
 )
 
@@ -108,7 +108,7 @@ mitigation_main = (
 
 check(
     "mitigation uses the canonical lifecycle owner",
-    "FvgLifecycleRule.GetMitigationProbe(" in mitigation_main and
+    "FvgLifecycleRule.ResolveFvgMitigationProbe(" in mitigation_main and
     "FvgLifecycleRule.TryApplyMitigationStep(" in mitigation_main and
     "FvgBreakByWicks" in mitigation_main and
     "FvgInvalidateOnFullFill" in mitigation_main
