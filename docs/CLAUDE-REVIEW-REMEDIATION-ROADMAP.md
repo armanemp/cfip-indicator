@@ -1890,6 +1890,31 @@ Testing:
 - caller does not suppress subsequent protection attempts;
 - BUY/SELL symmetry.
 
+### CR7.1 / G1 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #138 merged to `main` as `b8144c2f1edc62730b7a0723be3746afe6353851`.**
+
+تأیید می‌کنم — G1 was audited and completed on the current execution/protection call chain.
+
+Completed:
+- existing broker-stop health is directionally protective and independent of current-market minimum-distance requirements;
+- new proposed stops retain the existing market-distance validation;
+- healthy existing SLs cannot be replaced by a farther/less protective stop;
+- broker state, bound-plan protection and reconciliation consume the same existing-stop health owner;
+- deterministic G1 runtime contracts and static audit are accumulated;
+- project-integrity duplicate-method detection was corrected to distinguish methods by containing type.
+
+Repository evidence on final G1 head `2f1cb933a2c2407e1fe33302cf72f538f090ba91`:
+- Source/Architecture PASS — #2262;
+- Runtime Acceptance PASS — #2071;
+- cTrader Compile PASS — #2255.
+
+Safety/manual boundary:
+- no public parameter/default or trading-threshold tuning;
+- actual cTrader broker modification/minimum-distance behavior remains manual acceptance.
+
+**Next phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+
 ### Prompt 6 completion gate
 
 CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → **CR-FINAL**
@@ -1903,7 +1928,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR7.1 / G1 — Broker protection must never increase live position risk**.
+Current active phase: **CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 
