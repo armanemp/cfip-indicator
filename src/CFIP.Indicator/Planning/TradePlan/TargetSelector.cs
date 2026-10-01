@@ -13,7 +13,7 @@ namespace cAlgo
             double risk,
             int direction,
             double atr,
-            OpportunityLane lane = OpportunityLane.Strategic)
+            OpportunityLane lane)
         {
             List<Level> selected =
                 new List<Level>
@@ -29,9 +29,19 @@ namespace cAlgo
 
             double rrStep = Math.Max(0.10, StructuralTpRrStep);
 
-            double[] requiredRR = BuildTargetSelectionRequiredRR(rrStep, lane);
+            double[] requiredRR =
+                BuildTargetSelectionRequiredRR(
+                    rrStep,
+                    lane);
 
-            double maximumRR = Math.Max(requiredRR[0], MaximumRewardRR);
+            if (!TargetSelectionRequiredRrRule.IsMonotonicNonDecreasing(
+                    requiredRR))
+                return selected;
+
+            double maximumRR =
+                Math.Max(
+                    requiredRR[0],
+                    MaximumRewardRR);
 
             for (int stage = 0;
                  stage < 4;
