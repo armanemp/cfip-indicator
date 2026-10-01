@@ -115,7 +115,7 @@ namespace cAlgo
                     MarketRegimeIdentity.NormalizeMarketRegime(
                         regimeSnapshot.PreviousRegime);
                 f.RegimeTransition =
-                    MarketRegimeTransitionRule.Resolve(
+                    MarketRegimeTransitionRule.ClassifyTransition(
                         f.PreviousRegime,
                         f.Regime);
                 f.Choppiness =
