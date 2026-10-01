@@ -1915,6 +1915,32 @@ Safety/manual boundary:
 
 **Next phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
 
+### CR7.2 / G2 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #142 merged to `main` as `f983d2fd7eb0baced4b5ff40988e6294b3f5bd28`.**
+
+تأیید می‌کنم — G2 was implemented as semantic/ownership hardening rather than threshold tuning.
+
+Completed:
+- canonical Core trap threshold owner for 0.30 / 0.45 / 0.40;
+- deterministic TRAP rejection reason codes;
+- bounded Retest pre-zone versus post-zone/reaction diagnostics;
+- unchanged Retest block gate and defaults;
+- existing ActionabilityReason path remains the presentation/decision diagnostic authority;
+- deterministic Runtime Acceptance and accumulated Source/Architecture coverage.
+
+Verification:
+- Source/Architecture PASS — #2283;
+- Runtime Acceptance Contracts PASS — #2092;
+- cTrader Compile PASS — #2276.
+
+Safety/manual boundary:
+- no public parameter/default or trading threshold tuning;
+- no new decision/execution authority;
+- target-terminal Retest timing and empirical signal-quality evidence remain manual.
+
+**Next phase: CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
+
 ### Prompt 6 completion gate
 
 CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR7.1 → CR7.2 → CR7.3 → CR7.4 → CR7.5 → CR7.6a → CR7.6b → CR7.6c → CR7.6d → **CR-FINAL**
@@ -1928,7 +1954,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry**.
+Current active phase: **CR7.3 / G3 — Display parameter truth for plan-line thickness/style**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 
