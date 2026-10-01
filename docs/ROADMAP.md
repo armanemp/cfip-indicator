@@ -5599,6 +5599,37 @@ Deterministic tests:
 Manual boundary:
 - actual cTrader `ModifyStopLossPrice` behavior and broker minimum-distance semantics.
 
+### CR7.1 / G1 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #138 merged to `main` as `b8144c2f1edc62730b7a0723be3746afe6353851`.**
+
+تأیید می‌کنم — the existing broker-stop health contract was separated from new-stop market-distance acceptability.
+
+Completed:
+- Core `ManagedStopProtectionRule.IsExistingStopHealthy` now validates an existing SL only for finite price + correct side of Entry;
+- new-stop validation continues to enforce current-market/minimum-distance constraints;
+- broker reconciliation, bound-plan protection and protection-state evaluation now use existing-stop health;
+- `ProtectionProgressionRule` remains the sole guard for replacing a healthy existing stop, preventing risk expansion;
+- `TargetObstacleCacheKey.GetHashCode()` was completed for equality/hash correctness;
+- deterministic BUY/SELL G1 contracts and `audit_phase_7_1.py` were added to the accumulated Source/Architecture gate;
+- the project-integrity duplicate-method audit was corrected to include containing type, so independent `GetHashCode()` overrides are not false positives.
+
+Verification on final G1 head `2f1cb933a2c2407e1fe33302cf72f538f090ba91`:
+- Source/Architecture: **PASS** — run #2262;
+- Runtime Acceptance Contracts: **PASS** — run #2071;
+- cTrader Compile: **PASS** — run #2255.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP/execution threshold tuning;
+- G1 is an explicit safety correction;
+- no second broker-mutation or execution authority introduced.
+
+Manual boundary:
+- actual cTrader `ModifyStopLossPrice` behavior, broker minimum-distance edge cases and restart/reconnect timing remain target-terminal acceptance items.
+
+**Next phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+
 ### CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry
 
 Scope:
@@ -5740,7 +5771,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR7.1 / G1 — Broker protection must never increase live position risk.**
+**CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
 
-CR6.9 / F3 has been verified with fail-closed orphan-position protection. Source/Architecture #2255, Runtime Acceptance #2064 and cTrader Compile #2248 all passed on the implementation head before merge. Prompt 7 G1 is now the next mandatory phase. CR-FINAL remains paused until the remediation sequence and required acceptance evidence are completed.
+CR7.1 / G1 has been verified with fail-closed orphan-position protection. Source/Architecture #2255, Runtime Acceptance #2064 and cTrader Compile #2248 all passed on the implementation head before merge. Prompt 7 G1 is now the next mandatory phase. CR-FINAL remains paused until the remediation sequence and required acceptance evidence are completed.
 
