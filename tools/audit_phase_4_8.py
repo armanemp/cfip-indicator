@@ -76,7 +76,9 @@ check(
 
 check(
     "TargetSelector remains orchestration-only",
-    "TryScoreTargetCandidate(" in selector
+    "TargetLadderSelectionRule.SelectBestPath(" in selector
+    and "TryBuildTargetLadderStageOptions(" in selector
+    and "TryScoreTargetCandidate(" in stage_builder
     and "TargetCandidateConstraintRule" not in selector
     and "!IsValidTarget(" not in selector,
 )
