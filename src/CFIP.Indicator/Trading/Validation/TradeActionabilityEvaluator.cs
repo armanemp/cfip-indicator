@@ -235,21 +235,12 @@ namespace cAlgo
                 liveMode == ExecutionMode.RetestMarket &&
                 insideZone;
 
-            double adverseM5Atr = 0;
-
-            if (closedM5 >= 2)
-            {
-                double m5Move =
-                    _m5Bars.ClosePrices[closedM5] -
-                    _m5Bars.ClosePrices[closedM5 - 2];
-
-                adverseM5Atr =
-                    direction == 1
-                        ? Math.Max(0, -m5Move) /
-                          Math.Max(Symbol.PipSize, atr)
-                        : Math.Max(0, m5Move) /
-                          Math.Max(Symbol.PipSize, atr);
-            }
+            double adverseM5Atr =
+                ResolveAdverseM5Atr(
+                    _m5Bars,
+                    closedM5,
+                    direction,
+                    atr);
 
             bool m5AdverseEvidenceKnown =
                 closedM5 >= 2 &&
@@ -265,42 +256,25 @@ namespace cAlgo
                     execution.ZoneHigh,
                     2);
 
-            double adverseM1Atr = 0;
-            bool m1DirectionConflict = false;
             bool m1AdverseEvidenceKnown =
                 _m1Frame != null &&
                 _m1Frame.Index >= 2 &&
                 _m1Bars != null &&
                 _m1Frame.Index < _m1Bars.Count;
 
-            if (m1AdverseEvidenceKnown)
-            {
-                int m1 = _m1Frame.Index;
-                double m1Atr =
-                    Atr(
+            double adverseM1Atr =
+                m1AdverseEvidenceKnown
+                    ? ResolveAdverseM1Atr(
                         _m1Bars,
-                        m1);
+                        _m1Frame.Index,
+                        direction)
+                    : 0;
 
-                double m1Move =
-                    _m1Bars.ClosePrices[m1] -
-                    _m1Bars.ClosePrices[m1 - 2];
-
-                if (IsFinitePositive(m1Atr))
-                {
-                    adverseM1Atr =
-                        direction == 1
-                            ? Math.Max(0, -m1Move) /
-                              Math.Max(Symbol.PipSize, m1Atr)
-                            : Math.Max(0, m1Move) /
-                              Math.Max(Symbol.PipSize, m1Atr);
-                }
-
-                m1DirectionConflict =
-                    (direction == 1 &&
-                     _m1Frame.Direction == -1) ||
-                    (direction == -1 &&
-                     _m1Frame.Direction == 1);
-            }
+            bool m1DirectionConflict =
+                m1AdverseEvidenceKnown &&
+                IsDirectionConflict(
+                    _m1Frame.Direction,
+                    direction);
 
             m1AdverseEvidenceKnown =
                 m1AdverseEvidenceKnown &&
