@@ -2527,7 +2527,7 @@ Next phase: **CR7.3 / G3 — Display parameter truth for plan-line thickness/sty
 
 ## CR7.3 / G3 — Display parameter truth for plan-line thickness/style — 2026-10-01
 
-Status: **IMPLEMENTATION COMPLETE — pending CI/PR verification**
+Status: **VERIFIED COMPLETE — PR #143 merged to `main` as `6c572643cfc6b9a4ee1083e300ec13607dd2774c`**
 
 Implemented:
 - fixed the hidden forced-one clamp in `PlanLineRenderer.ResolvePlanLineThickness`;
@@ -2537,6 +2537,11 @@ Implemented:
 - added deterministic Runtime Acceptance coverage for 1/2/3 and safe bounds;
 - added `audit_phase_7_3.py` to the accumulated source-check chain;
 - added the phase-specific root-cause/verification document.
+
+Verification:
+- Source/Architecture: PASS — #2295;
+- Runtime Acceptance Contracts: PASS — #2104;
+- cTrader Compile: PASS — #2288.
 
 Routine whole-chain audit:
 Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. G3 is presentation-only and introduces no new decision or execution authority.
