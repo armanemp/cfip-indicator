@@ -10,7 +10,6 @@ namespace cAlgo
     {
         private bool TryScoreTargetCandidate(
             Level candidate,
-            List<Level> selected,
             int closedM5,
             double entry,
             double risk,
