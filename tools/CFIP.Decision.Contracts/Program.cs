@@ -8,6 +8,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyConsensusSymmetry();
+            VerifyDecisionScoreBoundariesAndTraceability();
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
             VerifyTopDownCalibrationAbsoluteStrength();
@@ -168,6 +169,172 @@ namespace cAlgo
             Assert(buy.BuyShare == sell.SellShare, "BUY/SELL share symmetry");
             Assert(buy.SellShare == sell.BuyShare, "SELL/BUY share symmetry");
             Assert(buy.Edge == sell.Edge, "BUY/SELL edge symmetry");
+        }
+
+        private static void VerifyDecisionScoreBoundariesAndTraceability()
+        {
+            DateTime reference = new DateTime(
+                2026,
+                10,
+                2,
+                0,
+                0,
+                0,
+                DateTimeKind.Utc);
+
+            MarketStateFrameSnapshot stateFrame =
+                new MarketStateFrameSnapshot(
+                    "M5",
+                    0,
+                    0,
+                    0,
+                    "UNKNOWN",
+                    0,
+                    0,
+                    "UNKNOWN",
+                    MarketRegimeTransitionRule.Unknown,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0);
+
+            MarketStateSnapshot marketState =
+                new MarketStateSnapshot(
+                    reference,
+                    stateFrame,
+                    stateFrame,
+                    stateFrame,
+                    stateFrame,
+                    stateFrame,
+                    stateFrame,
+                    stateFrame,
+                    stateFrame,
+                    0,
+                    true);
+
+            DecisionEvidenceSnapshot evidence =
+                new DecisionEvidenceSnapshot(
+                    0, 0,
+                    0, 0,
+                    0, 0,
+                    0,
+                    0, 0,
+                    false, false,
+                    false, false,
+                    0, 0,
+                    0, 0);
+
+            DecisionInputSnapshot input =
+                new DecisionInputSnapshot(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    new DecisionFrameContribution(1, 2, 0),
+                    new DecisionFrameContribution(3, 4, 0),
+                    new DecisionFrameContribution(5, 6, 0),
+                    new DecisionFrameContribution(7, 8, 0),
+                    new DecisionFrameContribution(9, 10, 0),
+                    new DecisionFrameContribution(11, 12, 0),
+                    new DecisionFrameContribution(13, 14, 0),
+                    true,
+                    true,
+                    2,
+                    3,
+                    true,
+                    1,
+                    false,
+                    "UNKNOWN",
+                    false,
+                    false,
+                    12,
+                    57,
+                    reference,
+                    0,
+                    marketState,
+                    evidence);
+
+            DecisionScoreSnapshot score =
+                new DecisionScoreCalculator().Calculate(input);
+
+            double expectedBuy =
+                1 + 3 + 5 + 7 + 9 + 11 + 13 + 2 + 6;
+
+            double expectedSell =
+                2 + 4 + 6 + 8 + 10 + 12 + 14 + 3;
+
+            Assert(
+                Math.Abs(score.M5BullContribution - 1) < 1e-12 &&
+                Math.Abs(score.M5BearContribution - 2) < 1e-12 &&
+                Math.Abs(score.M15BullContribution - 3) < 1e-12 &&
+                Math.Abs(score.H4BearContribution - 10) < 1e-12 &&
+                Math.Abs(score.AdvancedConfluenceBuy - 2) < 1e-12 &&
+                Math.Abs(score.PremiumDiscountBuy - 6) < 1e-12,
+                "score snapshot exposes frame/confluence component provenance");
+
+            Assert(
+                Math.Abs(score.Buy - expectedBuy) < 1e-12 &&
+                Math.Abs(score.Sell - expectedSell) < 1e-12 &&
+                Math.Abs(score.AdaptiveRegimeBuy) < 1e-12 &&
+                Math.Abs(score.ConflictPenaltyBuy) < 1e-12 &&
+                Math.Abs(score.ChoppinessFactor - 1.0) < 1e-12,
+                "score trace reconstructs final totals without hidden adjustments");
+
+            DecisionScoreSnapshot choppy =
+                new DecisionScoreCalculator().Calculate(
+                    new DecisionInputSnapshot(
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        new DecisionFrameContribution(10, 5, 0),
+                        new DecisionFrameContribution(0, 0, 0),
+                        new DecisionFrameContribution(0, 0, 0),
+                        new DecisionFrameContribution(0, 0, 0),
+                        new DecisionFrameContribution(0, 0, 0),
+                        new DecisionFrameContribution(0, 0, 0),
+                        new DecisionFrameContribution(0, 0, 0),
+                        false,
+                        false,
+                        0,
+                        0,
+                        false,
+                        0,
+                        false,
+                        "UNKNOWN",
+                        false,
+                        true,
+                        12,
+                        57,
+                        reference,
+                        0,
+                        marketState,
+                        evidence));
+
+            Assert(
+                Math.Abs(choppy.ChoppinessFactor - 0.90) < 1e-12 &&
+                Math.Abs(choppy.Buy - 9.0) < 1e-12 &&
+                Math.Abs(choppy.Sell - 4.5) < 1e-12,
+                "choppiness modifier is explicit and applied symmetrically");
+
+            Assert(
+                double.IsNaN(score.Buy) == false &&
+                double.IsInfinity(score.Buy) == false &&
+                double.IsNaN(score.Sell) == false &&
+                double.IsInfinity(score.Sell) == false,
+                "decision score remains finite");
+
+            Console.WriteLine(
+                "CI-09 score boundary and provenance contracts PASS");
         }
 
         private static void VerifyNeutralQualityIsolation()
