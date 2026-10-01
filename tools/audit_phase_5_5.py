@@ -69,6 +69,8 @@ check(
     "TryBuildParallelScenarioGeometry(" in computation and
     "_parallelGeometryCacheM5" in state and
     "_parallelGeometryCache" in state and
+    "_parallelExecutionModelCache" in state and
+    "TryGetParallelExecutionModel(" in computation and
     "BuildExecutionModel(" in computation and
     "BuildStructuralStop(" in computation,
 )
@@ -78,7 +80,8 @@ check(
     "TryBuildParallelScenarioGeometry(" in parallel and
     "BuildTradeSetupPreviewFromGeometry(" in parallel and
     "BuildExecutionModel(" not in parallel and
-    "BuildTradeSetupPreview(" not in parallel,
+    "BuildTradeSetupPreview(" not in parallel and
+    "geometry.Execution" not in parallel,
 )
 
 check(
@@ -89,7 +92,8 @@ check(
     "double entry =
                 geometry.Entry;" in tactical and
     "double stop =
-                geometry.Stop;" in tactical,
+                geometry.Stop;" in tactical and
+    "geometry.ExecutionQuality" in tactical,
 )
 
 check(
