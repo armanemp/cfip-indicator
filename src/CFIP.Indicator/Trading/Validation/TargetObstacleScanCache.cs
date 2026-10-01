@@ -176,7 +176,7 @@ namespace cAlgo
             if (_entries[slot] != null)
                 Evictions++;
 
-            _entries[slot] = new Entry
+            _entries[slot] = new TargetObstacleScanCacheEntry
             {
                 Bars = bars,
                 Key = key,
