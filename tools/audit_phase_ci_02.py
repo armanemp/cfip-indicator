@@ -182,7 +182,7 @@ check(
 )
 
 required_benchmark_tokens = (
-    "class SkenderProductionParityBenchmark",
+    "class SkenderWarmupParityBenchmark",
     "StableWindowSize = 768",
     "RollingWindowSize = 161",
     "CompareScenario(",
@@ -218,9 +218,16 @@ check(
 )
 
 check(
+    "CI-02 uses one consolidated Track 19 benchmark owner",
+    "SkenderWarmupParityBenchmark" in benchmark
+    and "SkenderProductionParityBenchmark" not in benchmark
+    and "SkenderProductionParityBenchmark" not in benchmark_program,
+)
+
+check(
     "CI-02 benchmark is executed by the benchmark program",
-    "SkenderProductionParityBenchmark.Measure()" in benchmark_program
-    and "productionParity.Passed" in benchmark_program
+    "SkenderWarmupParityBenchmark.Measure()" in benchmark_program
+    and "warmupParity.Passed" in benchmark_program
 )
 
 check(
