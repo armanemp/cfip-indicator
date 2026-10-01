@@ -10,7 +10,8 @@ internal static class BenchmarkReport
         IReadOnlyList<ComparisonResult> comparisons,
         BenchmarkTiming v2Timing,
         BenchmarkTiming v3Timing,
-        QuoteCacheBenchmarkResult quoteCacheTiming)
+        QuoteCacheBenchmarkResult quoteCacheTiming,
+        SkenderWarmupParityBenchmarkResult warmupParity)
     {
         bool passed = comparisons.All(x => x.Passed);
         int scenarioCount =
@@ -108,6 +109,28 @@ internal static class BenchmarkReport
             $"| Incremental append/remove | {quoteCacheTiming.Incremental.TotalMilliseconds:F2} | " +
             $"{quoteCacheTiming.Incremental.MeanMilliseconds:F4} | " +
             $"{quoteCacheTiming.Incremental.MeanAllocatedBytes:N0} |");
+
+        lines.Add(string.Empty);
+        lines.Add("## CR8.3b bounded stable-window numerical parity");
+        lines.Add(string.Empty);
+        lines.Add(
+            "The H3-B benchmark compares the full-prefix Skender path with a bounded " +
+            "768-bar stable window on deterministic 2048-bar fixtures. The safety gate " +
+            "requires finite outputs and zero directional-classification mismatches.");
+        lines.Add(string.Empty);
+        lines.Add("| Metric | Result |");
+        lines.Add("| --- | ---: |");
+        lines.Add($"| Gate | {(warmupParity.Passed ? "PASS" : "FAIL")} |");
+        lines.Add($"| Compared points | {warmupParity.ComparedPoints:N0} |");
+        lines.Add($"| Direction mismatches | {warmupParity.DirectionMismatches:N0} |");
+        lines.Add($"| Non-finite pairs | {warmupParity.NonFinitePairs:N0} |");
+        lines.Add($"| Max absolute error | {FormatError(warmupParity.MaxAbsoluteError)} |");
+        lines.Add($"| Mean absolute error | {FormatError(warmupParity.MeanAbsoluteError)} |");
+        lines.Add($"| RMS error | {FormatError(warmupParity.RootMeanSquareError)} |");
+        lines.Add($"| Full-prefix mean ms/iteration | {warmupParity.FullWindowTiming.MeanMilliseconds:F4} |");
+        lines.Add($"| Bounded-window mean ms/iteration | {warmupParity.BoundedWindowTiming.MeanMilliseconds:F4} |");
+        lines.Add($"| Full-prefix allocated bytes/iteration | {warmupParity.FullWindowTiming.MeanAllocatedBytes:N0} |");
+        lines.Add($"| Bounded-window allocated bytes/iteration | {warmupParity.BoundedWindowTiming.MeanAllocatedBytes:N0} |");
 
         lines.Add(string.Empty);
         lines.Add(
