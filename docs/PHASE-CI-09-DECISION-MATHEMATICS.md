@@ -123,4 +123,11 @@ Static and deterministic contracts prove mathematical/architectural behavior onl
 
 Implementation branch: `phase/ci-09-decision-mathematical-audit`
 
-Repository verification is intentionally reported only after the CI workflow executes on the exact implementation head.
+Repository verification was obtained from the exact implementation head and the phase is merged.
+
+- Source/Architecture #2560: **PASS**;
+- Runtime Acceptance Contracts #2369: **PASS**;
+- cTrader Compile #2553: **PASS**;
+- implementation head: `36df49e0e76d9e07af5a7b1ccb7beb764928cc1a`;
+- merge commit: `58d0ef85b2960ac9c706aad120d5f89ffd377946`;
+- accumulated CI-09 static audit and later repository audits: **PASS**.
