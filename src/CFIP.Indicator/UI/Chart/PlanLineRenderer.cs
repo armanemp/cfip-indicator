@@ -152,17 +152,9 @@ namespace cAlgo
         private int ResolvePlanLineThickness(
             string name)
         {
-            // Signal and plan levels use one fixed thickness by presentation
-            // contract. The public setting remains consumed for compatibility.
-            int configured =
-                Math.Max(
-                    1,
-                    LevelLineThickness);
-
             return
-                Math.Min(
-                    1,
-                    configured);
+                PlanLinePresentationRule.ResolveThickness(
+                    LevelLineThickness);
         }
     }
 }
