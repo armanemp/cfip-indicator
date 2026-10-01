@@ -9,6 +9,10 @@ namespace cAlgo
         private TopDownCalibrationSnapshot EvaluateTopDownCalibration(
             Decision decision)
         {
+            if (_marketStateSnapshot == null)
+                throw new InvalidOperationException(
+                    "Top-down calibration market-state snapshot is missing.");
+
             int strongThreshold =
                 Math.Max(
                     MinimumTimeframeAgreement,
@@ -17,22 +21,20 @@ namespace cAlgo
             return TopDownCalibrationRule.Evaluate(
                 new[]
                 {
-                    _h1Frame == null ? 0 : _h1Frame.Direction,
-                    _h4Frame == null ? 0 : _h4Frame.Direction,
-                    _d1Frame == null ? 0 : _d1Frame.Direction,
-                    SmartWeeklyContext &&
-                    _w1Frame != null
-                        ? _w1Frame.Direction
+                    _marketStateSnapshot.H1.Direction,
+                    _marketStateSnapshot.H4.Direction,
+                    _marketStateSnapshot.D1.Direction,
+                    SmartWeeklyContext
+                        ? _marketStateSnapshot.W1.Direction
                         : 0
                 },
                 new[]
                 {
-                    _h1Frame == null ? 0 : _h1Frame.Quality,
-                    _h4Frame == null ? 0 : _h4Frame.Quality,
-                    _d1Frame == null ? 0 : _d1Frame.Quality,
-                    SmartWeeklyContext &&
-                    _w1Frame != null
-                        ? _w1Frame.Quality
+                    _marketStateSnapshot.H1.Quality,
+                    _marketStateSnapshot.H4.Quality,
+                    _marketStateSnapshot.D1.Quality,
+                    SmartWeeklyContext
+                        ? _marketStateSnapshot.W1.Quality
                         : 0
                 },
                 new double[]
@@ -46,21 +48,21 @@ namespace cAlgo
                 },
                 new[]
                 {
-                    _m30Frame == null ? 0 : _m30Frame.Direction,
-                    _m15Frame == null ? 0 : _m15Frame.Direction
+                    _marketStateSnapshot.M30.Direction,
+                    _marketStateSnapshot.M15.Direction
                 },
                 new[]
                 {
-                    _m30Frame == null ? 0 : _m30Frame.Quality,
-                    _m15Frame == null ? 0 : _m15Frame.Quality
+                    _marketStateSnapshot.M30.Quality,
+                    _marketStateSnapshot.M15.Quality
                 },
                 new double[]
                 {
                     Math.Max(0, M30Weight),
                     Math.Max(0, M15Weight)
                 },
-                _m5Frame == null ? 0 : _m5Frame.Direction,
-                _m5Frame == null ? 0 : _m5Frame.Quality,
+                _marketStateSnapshot.M5.Direction,
+                _marketStateSnapshot.M5.Quality,
                 strongThreshold,
                 decision == null ? 0 : decision.Direction);
         }
