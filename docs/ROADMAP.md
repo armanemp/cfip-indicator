@@ -5254,11 +5254,31 @@ Safety/manual boundary:
 - CR-FINAL remains paused until CR5.6–CR5.8 and CR6.1–CR6.9 are reconciled and
   completed or explicitly documented.
 
+### CR5.6 / E6 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #122**
+
+Completed:
+- Premium/Discount semantics are explicitly owned by a Core midpoint rule; its existing mean-reversion/context contribution remains unchanged at +6 when enabled;
+- LiveBias no longer reads the host chart timeframe and now consumes the canonical closed M5 bar plus reference-time closed-bar validation;
+- Healthy Volatility ATR health is separated from Minimum Trigger Body ATR; the existing defaults 0.85, 1.80 and 0.12 remain unchanged;
+- deterministic contracts cover BUY/SELL symmetry, invalid-input safety, ATR-ratio boundaries, and M5/M15/H1 closed-bar boundaries;
+- E6 static audit is wired immediately after E5;
+- no public parameter name/type/default, RR/confidence/stop/target threshold, or execution authority changed.
+
+Verification on implementation head e930e30d9c82ad279316a41c81116d4ae1e19859:
+- Source/Architecture: PASS — run 36838144439;
+- Runtime Acceptance Contracts: PASS — run 36838144403;
+- cTrader Compile: PASS — run 36838144416.
+
+Manual boundary:
+- target-terminal M5/M15/H1 timing, panel/visual behavior, restart/reconnect and empirical signal quality/profitability remain manual.
+
 ## Current active implementation phase
 
-**CR5.6 / E6 — PremiumDiscount/LiveBias/HealthyVolatility semantic separation and canonical M5 closed-bar consistency.**
+**CR5.7 / E7 — Decision-owned WATCH/REACTION alerts separated from chart rendering.**
 
-CR5.5 / E5 is verified complete; continue from CR5.6. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.6 / E6 is verified complete; continue from CR5.7. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
 
 
 **CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.**
