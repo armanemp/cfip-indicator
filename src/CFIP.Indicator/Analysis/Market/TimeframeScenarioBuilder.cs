@@ -106,7 +106,8 @@ namespace cAlgo
                         closedM5,
                         OpportunityLane.Tactical,
                         frame.Direction,
-                        frame.Quality);
+                        frame.Quality,
+                        names[i]);
 
                 if (candidate == null)
                     continue;
@@ -125,11 +126,7 @@ namespace cAlgo
                 candidate.Id =
                     candidate.ScenarioId;
 
-                candidate.ExecutionPolicyAllowed =
-                    false;
-
-                candidate.ExecutionPolicyReason =
-                    "INDEPENDENT TIMEFRAME • OBSERVE ONLY";
+                candidate.BasePlanTimeframe = "M5";
 
                 candidate.LabelPrefix =
                     "TF-" +
@@ -166,7 +163,10 @@ namespace cAlgo
                     candidate.ExecutionPolicyAllowed
                         ? "TF SCENARIO • READY"
                         : "TF SCENARIO • WATCH • " +
-                          candidate.ExecutionPolicyReason;
+                          (string.IsNullOrWhiteSpace(
+                              candidate.ExecutionPolicyReason)
+                              ? "POLICY BLOCKED"
+                              : candidate.ExecutionPolicyReason);
 
                 AddOpportunityCandidate(
                     candidate);
