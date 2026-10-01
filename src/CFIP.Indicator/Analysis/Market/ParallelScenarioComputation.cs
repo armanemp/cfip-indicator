@@ -22,6 +22,7 @@ namespace cAlgo
             {
                 _parallelGeometryCacheM5 = closedM5;
                 _parallelGeometryCache.Clear();
+                _parallelExecutionModelCache.Clear();
             }
 
             if (_parallelGeometryCache.TryGetValue(
@@ -29,12 +30,12 @@ namespace cAlgo
                     out geometry))
                 return geometry != null;
 
-            ExecutionModel execution =
-                BuildExecutionModel(
-                    closedM5,
-                    direction);
+            ExecutionModel execution;
 
-            if (execution == null)
+            if (!TryGetParallelExecutionModel(
+                    closedM5,
+                    direction,
+                    out execution))
                 return false;
 
             double atr =
@@ -105,7 +106,7 @@ namespace cAlgo
                     Entry = entry,
                     Stop = stop,
                     Risk = risk,
-                    Execution = execution
+                    ExecutionQuality = execution.Quality
                 };
 
             _parallelGeometryCache[direction] =
@@ -113,5 +114,45 @@ namespace cAlgo
 
             return true;
         }
+        private bool TryGetParallelExecutionModel(
+            int closedM5,
+            int direction,
+            out ExecutionModel execution)
+        {
+            execution = null;
+
+            if (_m5Bars == null ||
+                closedM5 < 30 ||
+                closedM5 >= _m5Bars.Count ||
+                (direction != 1 &&
+                 direction != -1))
+                return false;
+
+            if (_parallelGeometryCacheM5 != closedM5)
+            {
+                _parallelGeometryCacheM5 = closedM5;
+                _parallelGeometryCache.Clear();
+                _parallelExecutionModelCache.Clear();
+            }
+
+            if (_parallelExecutionModelCache.TryGetValue(
+                    direction,
+                    out execution))
+                return execution != null;
+
+            execution =
+                BuildExecutionModel(
+                    closedM5,
+                    direction);
+
+            if (execution == null)
+                return false;
+
+            _parallelExecutionModelCache[direction] =
+                execution;
+
+            return true;
+        }
+
     }
 }
