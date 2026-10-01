@@ -1347,24 +1347,39 @@ Verification: Source/Architecture #2589 PASS; Runtime Acceptance Contracts #2398
 
 Completed canonical entry geometry/timing ownership, causal M1 timing, actionability telemetry, and canonical market-entry quote metadata usage. No public parameter/default or trading threshold changed.
 
-Current implementation phase: **CI-12 — Structural SL audit**.
+Current implementation phase: **CI-13 — TP source, target obstacle and TP ladder audit**.
 
-Implementation record:
-- canonical Core StructuralStopGeometryRule / StructuralStopGeometrySnapshot;
+### CI-12 closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE** — PR #167 merged to `main` as `cd10da89ddf8ba9cf1c9da517a3fdc74b6953851`.
+
+Implementation head: `f452b3b8e2892f1773cef5873a051a2b542e72a6`.
+
+Verification:
+- Source/Architecture #2609 PASS (workflow 36939262476);
+- Runtime Acceptance Contracts #2418 PASS (workflow 36939262418);
+- cTrader Compile #2602 PASS (workflow 36939262429);
+- accumulated audits through CI-12 PASS.
+
+Completed:
+- canonical structural-stop geometry owner;
 - candidate selection preserves the exact evaluated stop;
 - duplicate StructuralStopFinalizer removed;
-- canonical planning risk envelope and canonical ATR fallback geometry;
-- lifecycle fallback paths fail closed on invalid geometry/risk;
-- deterministic CI-12 Runtime Contracts and static audit added.
+- canonical planning risk envelope and ATR fallback geometry;
+- fail-closed lifecycle fallback validation;
+- deterministic CI-12 Runtime Contracts/static audit;
+- accumulated historical audits reconciled to the new ownership without weakening safety checks.
 
-Verification pending:
-- Source/Architecture;
-- Runtime Acceptance Contracts;
-- cTrader Compile / Build;
-- manual target-terminal broker/recovery boundary.
+Safety/manual:
+- no public parameter/default or trading threshold tuning;
+- no new decision/plan/broker-mutation authority;
+- broker-confirmed live protection remains authoritative;
+- target-terminal broker/recovery/presentation and empirical signal/outcome checks remain manual.
 
 Phase record: `docs/PHASE-CI-12-STRUCTURAL-SL.md`.
 
-Operator action after CI-12 merge: `git pull --ff-only` on local `main`.
+Operator action: run `git pull --ff-only` on local `main`.
 
-Next phase after merge: **CI-13 — TP source, target obstacle and TP ladder audit**.
+Next phase: **CI-13 — TP source, target obstacle and TP ladder audit**.
+
+Prompt 8 / CR8.4 remains intentionally paused until **CI-FINAL**.
