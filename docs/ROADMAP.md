@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01 through CI-06 verified complete; CI-07 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 through CI-06 verified complete; CI-07 implementation is in progress. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -864,7 +864,27 @@ Manual boundary:
 
 Operator action: after PR #161 is merged, run `git pull --ff-only` on local `main` before starting CI-07.
 
-**Next implementation phase: CI-07 — MTF / regime / market context.**
+### CI-07 implementation record — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on CI-07 branch `phase/ci-07-mtf-regime-context`.**
+
+Completed:
+- hardened `MtfClosedContextCache` against stale reference reuse while preserving bounded same-bar caching;
+- added one platform-neutral `MarketStateSnapshot` carrying all eight timeframe states plus premium/discount and session context;
+- validated exact snapshot reference and MTF index identity at the decision boundary;
+- made regime transitions explicit with one canonical `MarketRegimeTransitionRule` and propagated previous/current transition state through `MarketRegimeSnapshot` and `Frame`;
+- changed suitability to reuse canonical snapshot session/MTF state and the canonical D1 closed index;
+- added deterministic CI-07 runtime contracts and accumulated static audit after CI-06.
+
+Safety/performance:
+- no public parameter/default changed;
+- no score, confidence, RR, Entry, SL/TP, risk or execution threshold tuned;
+- no second decision/execution/broker authority introduced;
+- no unbounded cache or runtime I/O added.
+
+Phase record: `docs/PHASE-CI-07-MTF-REGIME-CONTEXT.md`.
+
+**Next after repository verification: CI-08 — Divergence / WaveTrend / reaction / early signal.**
 
 ### CI-00 closeout — Canonical data / price / time — 2026-10-01
 
