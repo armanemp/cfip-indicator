@@ -89,7 +89,7 @@ namespace cAlgo
                                 ? _plan.Tp4
                                 : 0;
 
-                double best =
+                Level bestLevel =
                     FindImprovedLiveTarget(
                         levels,
                         closedM5,
@@ -101,24 +101,53 @@ namespace cAlgo
                         0,
                         requireHtf);
 
-                if (Math.Abs(
-                        best -
+                if (bestLevel == null ||
+                    !IsFinitePositive(bestLevel.Price) ||
+                    Math.Abs(
+                        bestLevel.Price -
                         current) <
                     Symbol.PipSize)
                     continue;
 
+                double normalizedBest =
+                    NormalizePrice(bestLevel.Price);
+
                 if (stage == 0)
-                    _plan.Tp1 =
-                        NormalizePrice(best);
+                {
+                    _plan.Tp1 = normalizedBest;
+                    ApplyExactTargetMeta(
+                        bestLevel,
+                        _plan.Tp1,
+                        out _plan.Tp1Source,
+                        out _plan.Tp1Quality);
+                }
                 else if (stage == 1)
-                    _plan.Tp2 =
-                        NormalizePrice(best);
+                {
+                    _plan.Tp2 = normalizedBest;
+                    ApplyExactTargetMeta(
+                        bestLevel,
+                        _plan.Tp2,
+                        out _plan.Tp2Source,
+                        out _plan.Tp2Quality);
+                }
                 else if (stage == 2)
-                    _plan.Tp3 =
-                        NormalizePrice(best);
+                {
+                    _plan.Tp3 = normalizedBest;
+                    ApplyExactTargetMeta(
+                        bestLevel,
+                        _plan.Tp3,
+                        out _plan.Tp3Source,
+                        out _plan.Tp3Quality);
+                }
                 else
-                    _plan.Tp4 =
-                        NormalizePrice(best);
+                {
+                    _plan.Tp4 = normalizedBest;
+                    ApplyExactTargetMeta(
+                        bestLevel,
+                        _plan.Tp4,
+                        out _plan.Tp4Source,
+                        out _plan.Tp4Quality);
+                }
 
                 changed = true;
             }
@@ -128,34 +157,6 @@ namespace cAlgo
 
             if (changed)
             {
-                ApplyTargetMeta(
-                    levels,
-                    _plan.Tp1,
-                    atr,
-                    out _plan.Tp1Source,
-                    out _plan.Tp1Quality);
-
-                ApplyTargetMeta(
-                    levels,
-                    _plan.Tp2,
-                    atr,
-                    out _plan.Tp2Source,
-                    out _plan.Tp2Quality);
-
-                ApplyTargetMeta(
-                    levels,
-                    _plan.Tp3,
-                    atr,
-                    out _plan.Tp3Source,
-                    out _plan.Tp3Quality);
-
-                ApplyTargetMeta(
-                    levels,
-                    _plan.Tp4,
-                    atr,
-                    out _plan.Tp4Source,
-                    out _plan.Tp4Quality);
-
                 _plan.HtfTargetCount =
                     CountHtfTargetsInPlan(
                         _plan);
