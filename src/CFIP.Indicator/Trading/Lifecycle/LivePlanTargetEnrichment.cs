@@ -73,6 +73,21 @@ namespace cAlgo
                             double existingTp4 =
                                 _plan.Tp4;
 
+                            string existingTp2Source =
+                                _plan.Tp2Source;
+                            int existingTp2Quality =
+                                _plan.Tp2Quality;
+
+                            string existingTp3Source =
+                                _plan.Tp3Source;
+                            int existingTp3Quality =
+                                _plan.Tp3Quality;
+
+                            string existingTp4Source =
+                                _plan.Tp4Source;
+                            int existingTp4Quality =
+                                _plan.Tp4Quality;
+
                             double candidateTp2 =
                                 FindFurtherLiveTarget(
                                     selected,
@@ -155,24 +170,33 @@ namespace cAlgo
                                 _plan.Tp4 =
                                     NormalizePrice(candidateTp4);
                 
-                            ApplyTargetMeta(
-                                levels,
+                            ApplyResolvedTargetMeta(
+                                selected,
+                                1,
                                 _plan.Tp2,
-                                atr,
+                                existingTp2,
+                                existingTp2Source,
+                                existingTp2Quality,
                                 out _plan.Tp2Source,
                                 out _plan.Tp2Quality);
                 
-                            ApplyTargetMeta(
-                                levels,
+                            ApplyResolvedTargetMeta(
+                                selected,
+                                2,
                                 _plan.Tp3,
-                                atr,
+                                existingTp3,
+                                existingTp3Source,
+                                existingTp3Quality,
                                 out _plan.Tp3Source,
                                 out _plan.Tp3Quality);
                 
-                            ApplyTargetMeta(
-                                levels,
+                            ApplyResolvedTargetMeta(
+                                selected,
+                                3,
                                 _plan.Tp4,
-                                atr,
+                                existingTp4,
+                                existingTp4Source,
+                                existingTp4Quality,
                                 out _plan.Tp4Source,
                                 out _plan.Tp4Quality);
                 
