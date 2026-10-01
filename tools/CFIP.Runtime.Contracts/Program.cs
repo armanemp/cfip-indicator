@@ -1642,28 +1642,28 @@ namespace cAlgo
                 "FVG source age is bounded and never accepts a future current index");
 
             Assert(
-                FvgLifecycleRule.GetMitigationProbe(
+                FvgLifecycleRule.ResolveFvgMitigationProbe(
                     1,
                     100.8,
                     100.4,
                     99.5,
                     101.0,
                     false) == 100.4 &&
-                FvgLifecycleRule.GetMitigationProbe(
+                FvgLifecycleRule.ResolveFvgMitigationProbe(
                     -1,
                     100.4,
                     100.8,
                     99.5,
                     101.0,
                     false) == 100.8 &&
-                FvgLifecycleRule.GetMitigationProbe(
+                FvgLifecycleRule.ResolveFvgMitigationProbe(
                     1,
                     100.8,
                     100.4,
                     99.5,
                     101.0,
                     true) == 99.5 &&
-                FvgLifecycleRule.GetMitigationProbe(
+                FvgLifecycleRule.ResolveFvgMitigationProbe(
                     -1,
                     100.4,
                     100.8,
@@ -1764,7 +1764,7 @@ namespace cAlgo
 
             Assert(
                 double.IsNaN(
-                    FvgLifecycleRule.GetMitigationProbe(
+                    FvgLifecycleRule.ResolveFvgMitigationProbe(
                         0,
                         100,
                         100,
