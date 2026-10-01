@@ -255,20 +255,5 @@ namespace cAlgo
                 : market <= trigger + tolerance;
         }
 
-        private static bool NumericGuards.IsFinitePositive(double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value > 0;
-        }
-
-        private static bool NumericGuards.IsFiniteValue(double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value >= 0;
-        }
     }
 }
