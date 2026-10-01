@@ -1939,7 +1939,23 @@ Safety/manual boundary:
 - no new decision/execution authority;
 - target-terminal Retest timing and empirical signal-quality evidence remain manual.
 
-**Next phase: CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
+### CR7.3 / G3 closeout — 2026-10-01
+
+Status: **IMPLEMENTATION COMPLETE — pending CI/PR verification.**
+
+Completed:
+- `Level Line Thickness` public parameter retained unchanged with its existing 1..3 contract;
+- removed the hidden `Math.Min(1, ...)` behavior that made valid values 2/3 render as 1;
+- added `PlanLinePresentationRule.ResolveThickness` as the single canonical presentation mapping owner;
+- preserved `LineStyle.Solid`;
+- added deterministic runtime contracts and accumulated static audit.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue changed;
+- no trading threshold or decision/execution authority changed;
+- visible target-terminal thickness/style still requires manual cTrader validation.
+
+**Current active phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
 ### Prompt 6 completion gate
 
