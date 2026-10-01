@@ -21,6 +21,9 @@ namespace cAlgo
             ValidateClosedBarAlignment(
                 request);
 
+            ValidateMarketStateSnapshot(
+                request);
+
             return new DecisionInputSnapshot(
                 request.M1Frame,
                 request.M5Frame,
@@ -65,7 +68,29 @@ namespace cAlgo
                 request.MinimumSmartDirectionShare,
                 request.Reference,
                 request.ClosedM5,
+                request.MarketStateSnapshot,
                 request.Evidence);
+        }
+
+        private static void ValidateMarketStateSnapshot(
+            DecisionInputBuildRequest request)
+        {
+            MarketStateSnapshot snapshot =
+                request.MarketStateSnapshot;
+
+            if (snapshot == null ||
+                !snapshot.MatchesReference(request.Reference) ||
+                !snapshot.IsAlignedWithClosedIndices(
+                    request.ClosedContext.M1,
+                    request.ClosedContext.M5,
+                    request.ClosedContext.M15,
+                    request.ClosedContext.M30,
+                    request.ClosedContext.H1,
+                    request.ClosedContext.H4,
+                    request.ClosedContext.D1,
+                    request.ClosedContext.W1))
+                throw new InvalidOperationException(
+                    "Decision input is not bound to the canonical market-state snapshot.");
         }
         private static void ValidateClosedBarAlignment(
             DecisionInputBuildRequest request)
