@@ -5715,25 +5715,25 @@ Verification:
 
 ### CR7.4 / G4 — Panel execution/protection state semantics
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #144 merged after final gate verification.**
 
 Scope completed:
-- added canonical Core execution/protection panel-state semantics;
-- separated Auto Trade/Auto Orders operational state from analysis/reaction readiness;
-- made broker protection presentation reflect broker-confirmed SL/TP state, server TP-ladder ownership and recovery state;
-- routed overview and detailed execution rows through the same state owner;
-- made panel presentation invalidation aware of execution/protection state;
-- added deterministic G4 runtime contracts and a phase-specific static audit.
+- canonical Core execution/protection panel-state semantics;
+- Auto Trade/Auto Orders state separated from decision/reaction readiness;
+- broker protection state reflects broker-confirmed SL/TP, target requirement, server TP-ladder ownership and recovery;
+- overview/detail rows consume one state owner;
+- panel presentation cache invalidates on execution/protection state changes;
+- deterministic G4 runtime contracts and static audit are accumulated.
 
-Safety:
-- no public parameter/default changes;
-- no RR/confidence/SL/TP/execution threshold tuning;
-- no new decision or broker-mutation authority.
+Verification:
+- Source/Architecture: **PASS** — run #2313;
+- Runtime Acceptance Contracts: **PASS** — run #2122;
+- cTrader Compile: **PASS** — run #2306;
+- verified code HEAD: `2465444593afca6b566b17be2234336154fd6f2e`.
 
-Manual boundary:
-- target-terminal panel timing/rendering, broker protection synchronization and restart/reconnect remain manual.
+Safety/manual boundary:
+- no public parameter/default or trading threshold changes;
+- no new decision/execution/broker-mutation authority;
+- target-terminal panel/protection timing remains manual.
 
-**Next phase: CR7.4 / G4 — Panel execution/protection state semantics.**
-
-**Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
-
+**Next phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.**
