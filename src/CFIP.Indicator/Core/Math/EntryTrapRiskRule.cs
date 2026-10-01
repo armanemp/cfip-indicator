@@ -73,55 +73,55 @@ namespace cAlgo
 
             bool extreme =
                 direction == 1
-                    ? rangePosition >= 0.85
-                    : rangePosition <= 0.15;
+                    ? rangePosition >= EntryActionabilityPolicy.LongExtremeRangePosition
+                    : rangePosition <= EntryActionabilityPolicy.ShortExtremeRangePosition;
 
             bool nearExtreme =
                 direction == 1
-                    ? rangePosition >= 0.75
-                    : rangePosition <= 0.25;
+                    ? rangePosition >= EntryActionabilityPolicy.LongNearExtremeRangePosition
+                    : rangePosition <= EntryActionabilityPolicy.ShortNearExtremeRangePosition;
 
             int risk = 0;
 
             if (extreme)
-                risk += 45;
+                risk += EntryActionabilityPolicy.ExtremeLocationRisk;
             else if (nearExtreme)
-                risk += 25;
+                risk += EntryActionabilityPolicy.NearExtremeLocationRisk;
 
             risk +=
                 Math.Min(
-                    28,
+                    EntryActionabilityPolicy.M5AdverseRiskCap,
                     (int)Math.Round(
                         Math.Max(
                             0,
                             m5) *
-                        60));
+                        EntryActionabilityPolicy.M5AdverseRiskAtrWeight));
 
             risk +=
                 Math.Min(
-                    18,
+                    EntryActionabilityPolicy.M1AdverseRiskCap,
                     (int)Math.Round(
                         Math.Max(
                             0,
                             m1) *
-                        45));
+                        EntryActionabilityPolicy.M1AdverseRiskAtrWeight));
 
-            if (divergence >= 86)
-                risk += 32;
-            else if (divergence >= 78)
-                risk += 25;
-            else if (divergence >= 70)
-                risk += 16;
+            if (divergence >= EntryActionabilityPolicy.DivergenceHighQuality)
+                risk += EntryActionabilityPolicy.DivergenceHighRisk;
+            else if (divergence >= EntryActionabilityPolicy.DivergenceMediumQuality)
+                risk += EntryActionabilityPolicy.NearExtremeLocationRisk;
+            else if (divergence >= EntryActionabilityPolicy.DivergenceLowQuality)
+                risk += EntryActionabilityPolicy.DivergenceLowRisk;
 
             if (supportiveHiddenDivergence)
-                risk -= 10;
+                risk -= EntryActionabilityPolicy.SupportiveHiddenDivergenceRiskAdjustment;
 
             bool strongAdverseMomentum =
-                m5 >= 0.45 ||
-                m1 >= 0.40;
+                m5 >= EntryActionabilityPolicy.StrongAdverseM5Atr ||
+                m1 >= EntryActionabilityPolicy.StrongAdverseM1Atr;
 
             if (strongAdverseMomentum)
-                risk = Math.Max(risk, 75);
+                risk = Math.Max(risk, EntryActionabilityPolicy.StrongAdverseRiskFloor);
 
             risk =
                 NumericGuards.ClampInt(
@@ -136,13 +136,13 @@ namespace cAlgo
                 reason =
                     "ADVERSE MOMENTUM";
             }
-            else if (divergence >= 78 &&
+            else if (divergence >= EntryActionabilityPolicy.DivergenceMediumQuality &&
                      extreme)
             {
                 reason =
                     "EXTREME LOCATION + OPPOSING DIVERGENCE";
             }
-            else if (divergence >= 78)
+            else if (divergence >= EntryActionabilityPolicy.DivergenceMediumQuality)
             {
                 reason =
                     "OPPOSING REGULAR DIVERGENCE";
@@ -152,8 +152,8 @@ namespace cAlgo
                 reason =
                     "EXTREME ENTRY LOCATION";
             }
-            else if (m5 >= 0.30 ||
-                     m1 >= 0.45)
+            else if (m5 >= EntryActionabilityPolicy.AdverseM5BlockAtr ||
+                     m1 >= EntryActionabilityPolicy.AdverseM1BlockAtr)
             {
                 reason =
                     "ADVERSE MOMENTUM";
@@ -177,10 +177,10 @@ namespace cAlgo
             return new EntryTrapRiskResult(
                 risk,
                 extreme ||
-                divergence >= 78 ||
+                divergence >= EntryActionabilityPolicy.DivergenceMediumQuality ||
                 risk >= 75 ||
-                m5 >= 0.30 ||
-                m1 >= 0.45,
+                m5 >= EntryActionabilityPolicy.AdverseM5BlockAtr ||
+                m1 >= EntryActionabilityPolicy.AdverseM1BlockAtr,
                 reason);
         }
 

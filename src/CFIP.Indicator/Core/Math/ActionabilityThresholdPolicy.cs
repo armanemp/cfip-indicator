@@ -97,6 +97,10 @@ namespace cAlgo
         public const int UpstreamEntryLocationQualityFloor = 64;
         public const int UpstreamEntryTimingQualityFloor = 64;
         public const int PrecisionEntryQualityFloor = 40;
+        public const int IndicatorMinimumQuality = 60;
+        public const int IndicatorRangeTransitionMinimumQuality = 58;
+        public const int IndicatorMaximumConflict = 52;
+        public const int IndicatorRangeTransitionMaximumConflict = 55;
 
         public const int FinalEntryLocationQualityFloor = 70;
         public const int FinalEntryTimingQualityFloor = 75;

@@ -61,6 +61,9 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RewardPathGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorActionabilityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/VolumeSizingRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ManagedIdentityRule.cs" />

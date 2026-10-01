@@ -46,7 +46,7 @@ namespace cAlgo
 
             if (string.Equals(
                     normalizedRegime,
-                    "COMPRESSION",
+                    MarketRegimeIdentity.Compression,
                     StringComparison.OrdinalIgnoreCase))
                 return IndicatorActionabilityResult.Block(
                     "INDICATOR FUSION • COMPRESSION");
@@ -54,14 +54,14 @@ namespace cAlgo
             int minimumQuality =
                 string.Equals(
                     normalizedRegime,
-                    "RANGE",
+                    MarketRegimeIdentity.Range,
                     StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(
                     normalizedRegime,
-                    "TRANSITION",
+                    MarketRegimeIdentity.Transition,
                     StringComparison.OrdinalIgnoreCase)
-                    ? 58
-                    : 60;
+                    ? ActionabilityThresholdPolicy.IndicatorRangeTransitionMinimumQuality
+                    : ActionabilityThresholdPolicy.IndicatorMinimumQuality;
 
             int maximumConflict =
                 string.Equals(
@@ -72,8 +72,8 @@ namespace cAlgo
                     normalizedRegime,
                     "TRANSITION",
                     StringComparison.OrdinalIgnoreCase)
-                    ? 55
-                    : 52;
+                    ? ActionabilityThresholdPolicy.IndicatorRangeTransitionMaximumConflict
+                    : ActionabilityThresholdPolicy.IndicatorMaximumConflict;
 
             quality =
                 NumericGuards.ClampInt(

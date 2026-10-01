@@ -33,6 +33,7 @@
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionSmartConsensusFilterInput.cs" Link="Decision/DecisionSmartConsensusFilterInput.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionSmartConsensusFilterEvaluator.cs" Link="Decision/DecisionSmartConsensusFilterEvaluator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs" Link="Core/Math/ActionabilityThresholdPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs" Link="Core/Math/EntryActionabilityPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs" Link="Core/Math/ActionableSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs" Link="Core/Math/RangeSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs" Link="Core/Math/IndicatorEvidenceFusionRule.cs" />

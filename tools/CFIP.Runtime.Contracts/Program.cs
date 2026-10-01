@@ -99,6 +99,7 @@ namespace cAlgo
             VerifyOpposingZonePathF1();
             VerifyAggressiveRiskAndFillSemantics();
             VerifyActionabilityThresholdTransparency();
+            VerifyEntryActionabilityF6();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -8099,6 +8100,226 @@ namespace cAlgo
                 trend.ShareThreshold == expansion.ShareThreshold &&
                 trend.EdgeThreshold == expansion.EdgeThreshold,
                 "regime threshold policy is direction-neutral and symmetric");
+        }
+
+        private static void VerifyEntryActionabilityF6()
+        {
+            Assert(
+                EntryActionabilityPolicy.LongExtremeRangePosition == 0.85 &&
+                EntryActionabilityPolicy.ShortExtremeRangePosition == 0.15 &&
+                EntryActionabilityPolicy.LongNearExtremeRangePosition == 0.75 &&
+                EntryActionabilityPolicy.ShortNearExtremeRangePosition == 0.25,
+                "F6 range-location constants preserve established values");
+
+            Assert(
+                EntryActionabilityPolicy.AdverseM5BlockAtr == 0.30 &&
+                EntryActionabilityPolicy.AdverseM1BlockAtr == 0.45 &&
+                EntryActionabilityPolicy.StrongAdverseM5Atr == 0.45 &&
+                EntryActionabilityPolicy.StrongAdverseM1Atr == 0.40 &&
+                EntryActionabilityPolicy.MicroConflictAdverseM1Atr == 0.25 &&
+                EntryActionabilityPolicy.MicroConflictEntryDistanceAtr == 0.10,
+                "F6 adverse-momentum and micro-conflict constants preserve values");
+
+            Assert(
+                EntryActionabilityPolicy.DivergenceLowQuality == 70 &&
+                EntryActionabilityPolicy.DivergenceMediumQuality == 78 &&
+                EntryActionabilityPolicy.DivergenceHighQuality == 86 &&
+                EntryActionabilityPolicy.DivergenceLowRisk == 16 &&
+                EntryActionabilityPolicy.DivergenceMediumRisk == 25 &&
+                EntryActionabilityPolicy.DivergenceHighRisk == 32 &&
+                EntryActionabilityPolicy.SupportiveHiddenDivergenceRiskAdjustment == 10,
+                "F6 divergence constants preserve established values");
+
+            EntryTrapRiskResult buyExtreme =
+                EntryTrapRiskRule.Evaluate(1, 0.85, 0, 0, 0, false);
+            EntryTrapRiskResult sellExtreme =
+                EntryTrapRiskRule.Evaluate(-1, 0.15, 0, 0, 0, false);
+            Assert(
+                buyExtreme.Block &&
+                sellExtreme.Block &&
+                buyExtreme.Risk == sellExtreme.Risk &&
+                buyExtreme.Reason == sellExtreme.Reason,
+                "F6 trap extreme-location semantics are BUY/SELL symmetric");
+
+            EntryTrapRiskResult belowM5 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0.2999, 0, 0, false);
+            EntryTrapRiskResult atM5 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0.30, 0, 0, false);
+            Assert(
+                !belowM5.Block &&
+                atM5.Block &&
+                atM5.Reason == "ADVERSE MOMENTUM",
+                "F6 M5 trap threshold is inclusive at 0.30 ATR");
+
+            EntryTrapRiskResult belowStrongM1 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0.3999, 0, false);
+            EntryTrapRiskResult atStrongM1 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0.40, 0, false);
+            EntryTrapRiskResult atM1BlockThreshold =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0.45, 0, false);
+            Assert(
+                !belowStrongM1.Block &&
+                atStrongM1.Block &&
+                atStrongM1.Reason == "ADVERSE MOMENTUM" &&
+                atM1BlockThreshold.Block,
+                "F6 M1 strong-adverse threshold is inclusive at 0.40 ATR and 0.45 remains blocked");
+
+            EntryTrapRiskResult divergence70 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0, 70, false);
+            EntryTrapRiskResult divergence78 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0, 78, false);
+            Assert(
+                !divergence70.Block &&
+                divergence70.Risk == 16 &&
+                divergence78.Block &&
+                divergence78.Risk == 25,
+                "F6 divergence actionability boundaries preserve values");
+
+            EntryTrapRiskResult neutral =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0, 0, false);
+            EntryTrapRiskResult noHiddenAtNearExtreme =
+                EntryTrapRiskRule.Evaluate(1, 0.75, 0, 0, 0, false);
+            EntryTrapRiskResult hiddenAtNearExtreme =
+                EntryTrapRiskRule.Evaluate(1, 0.75, 0, 0, 0, true);
+            Assert(
+                neutral.Risk == 0 &&
+                !neutral.Block &&
+                noHiddenAtNearExtreme.Risk == 25 &&
+                hiddenAtNearExtreme.Risk == 15 &&
+                !hiddenAtNearExtreme.Block,
+                "F6 supportive hidden divergence reduces trap risk by the established ten-point adjustment");
+
+            EntryTrapRiskResult invalidDirection =
+                EntryTrapRiskRule.Evaluate(0, 0.99, 1, 1, 100, false);
+            Assert(
+                !invalidDirection.Block &&
+                invalidDirection.Risk == 0 &&
+                invalidDirection.Reason == "NONE",
+                "F6 invalid direction fails closed to no-trap state");
+
+            Assert(
+                !EntryActionabilityPolicy.ShouldBlockTrapRisk(
+                    ExecutionMode.BreakoutMarket) &&
+                EntryActionabilityPolicy.ShouldBlockTrapRisk(
+                    ExecutionMode.RetestMarket) &&
+                EntryActionabilityPolicy.ShouldBlockTrapRisk(
+                    ExecutionMode.WaitingForTrigger),
+                "F6 preserves intentional Breakout trap-risk bypass semantics");
+
+            Assert(
+                EntryActionabilityPolicy.IsRetestReady(true, false) &&
+                !EntryActionabilityPolicy.IsRetestReady(true, true) &&
+                !EntryActionabilityPolicy.IsRetestReady(false, false),
+                "F6 Retest mode remains inside-zone and pre-trigger only");
+
+            Assert(
+                EntryActionabilityPolicy.ResolveAnchor(
+                    ExecutionMode.BreakoutMarket,
+                    110,
+                    105,
+                    100) == 110 &&
+                EntryActionabilityPolicy.ResolveAnchor(
+                    ExecutionMode.RetestMarket,
+                    110,
+                    105,
+                    100) == 105 &&
+                EntryActionabilityPolicy.ResolveAnchor(
+                    ExecutionMode.WaitingForTrigger,
+                    110,
+                    105,
+                    100) == 105 &&
+                EntryActionabilityPolicy.ResolveAnchor(
+                    ExecutionMode.RetestMarket,
+                    0,
+                    0,
+                    100) == 100,
+                "F6 anchor selection preserves Breakout/Retest semantics");
+
+            Assert(
+                EntryActionabilityPolicy.ResolveActualEntry(
+                    ExecutionMode.BreakoutMarket,
+                    120,
+                    105) == 120 &&
+                EntryActionabilityPolicy.ResolveActualEntry(
+                    ExecutionMode.RetestMarket,
+                    120,
+                    105) == 120 &&
+                EntryActionabilityPolicy.ResolveActualEntry(
+                    ExecutionMode.WaitingForTrigger,
+                    120,
+                    105) == 105,
+                "F6 actual-entry selection preserves market/waiting semantics");
+
+            Assert(
+                !EntryActionabilityPolicy.IsLate(
+                    ExecutionMode.BreakoutMarket,
+                    0.75,
+                    0,
+                    0.75,
+                    0.45) &&
+                EntryActionabilityPolicy.IsLate(
+                    ExecutionMode.BreakoutMarket,
+                    0.7501,
+                    0,
+                    0.75,
+                    0.45) &&
+                !EntryActionabilityPolicy.IsLate(
+                    ExecutionMode.RetestMarket,
+                    0,
+                    0.45,
+                    0.75,
+                    0.45) &&
+                EntryActionabilityPolicy.IsLate(
+                    ExecutionMode.RetestMarket,
+                    0,
+                    0.4501,
+                    0.75,
+                    0.45),
+                "F6 late-entry boundaries preserve strict-greater semantics");
+
+            Assert(
+                EntryActionabilityPolicy.IsMicroConflict(true, 0.25, 0) &&
+                EntryActionabilityPolicy.IsMicroConflict(true, 0, 0.10) &&
+                !EntryActionabilityPolicy.IsMicroConflict(true, 0.2499, 0.0999) &&
+                !EntryActionabilityPolicy.IsMicroConflict(false, 1, 1),
+                "F6 micro-conflict thresholds preserve existing boundaries");
+
+            Assert(
+                EntryActionabilityPolicy.ResolveTriggerTolerance(0.01, 0.02) == 0.01 &&
+                EntryActionabilityPolicy.ResolveTriggerTolerance(0.001, 0.02) == 0.002,
+                "F6 trigger tolerance preserves tick/pip precedence");
+
+            Assert(
+                EntryActionabilityPolicy.ResolveContinuationStructuralMinimum(2) == 3 &&
+                EntryActionabilityPolicy.ResolveContinuationStructuralMinimum(4) == 4,
+                "F6 continuation structural minimum remains bounded at three");
+
+            Assert(
+                IndicatorActionabilityRule.Evaluate(
+                    MarketRegimeIdentity.Range,
+                    58,
+                    55).Allowed &&
+                !IndicatorActionabilityRule.Evaluate(
+                    MarketRegimeIdentity.Range,
+                    57,
+                    0).Allowed &&
+                !IndicatorActionabilityRule.Evaluate(
+                    MarketRegimeIdentity.Range,
+                    58,
+                    56).Allowed &&
+                IndicatorActionabilityRule.Evaluate(
+                    MarketRegimeIdentity.Trend,
+                    60,
+                    52).Allowed &&
+                !IndicatorActionabilityRule.Evaluate(
+                    MarketRegimeIdentity.Trend,
+                    59,
+                    0).Allowed &&
+                !IndicatorActionabilityRule.Evaluate(
+                    MarketRegimeIdentity.Trend,
+                    60,
+                    53).Allowed,
+                "F6 indicator actionability thresholds preserve RANGE/TRANSITION and neutral values");
         }
 
         private static void Assert(bool condition, string name)

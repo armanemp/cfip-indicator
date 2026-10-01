@@ -76,12 +76,11 @@ namespace cAlgo
             }
 
             double anchor =
-                liveMode == ExecutionMode.BreakoutMarket
-                    ? execution.Trigger
-                    : execution.IdealEntry;
-
-            if (!IsFinitePositive(anchor))
-                anchor = preview.Entry;
+                EntryActionabilityPolicy.ResolveAnchor(
+                    liveMode,
+                    execution.Trigger,
+                    execution.IdealEntry,
+                    preview.Entry);
 
             double entryDistanceAtr =
                 Math.Abs(
@@ -105,9 +104,10 @@ namespace cAlgo
                     distanceFromZone / atr);
 
             double actualEntry =
-                liveMode == ExecutionMode.WaitingForTrigger
-                    ? preview.Entry
-                    : market;
+                EntryActionabilityPolicy.ResolveActualEntry(
+                    liveMode,
+                    market,
+                    preview.Entry);
 
             double risk =
                 Math.Abs(
@@ -224,16 +224,12 @@ namespace cAlgo
                     : 0;
 
             bool late =
-                liveMode ==
-                    ExecutionMode.BreakoutMarket
-                    ? triggerExtensionAtr >
-                      Math.Max(
-                          0.10,
-                          MaximumEntryExtensionAtr)
-                    : entryDistanceAtr >
-                      Math.Max(
-                          0.05,
-                          MaximumEntryDistanceAtr);
+                EntryActionabilityPolicy.IsLate(
+                    liveMode,
+                    triggerExtensionAtr,
+                    entryDistanceAtr,
+                    MaximumEntryExtensionAtr,
+                    MaximumEntryDistanceAtr);
 
             double adverseM5Atr = 0;
 
@@ -378,9 +374,10 @@ namespace cAlgo
             }
 
             bool microConflict =
-                m1DirectionConflict &&
-                (adverseM1Atr >= 0.25 ||
-                 entryDistanceAtr >= 0.10);
+                EntryActionabilityPolicy.IsMicroConflict(
+                    m1DirectionConflict,
+                    adverseM1Atr,
+                    entryDistanceAtr);
 
             int divergenceAdjustment =
                 opposingRegularDivergence
@@ -515,7 +512,8 @@ namespace cAlgo
                     "OPPOSING REGULAR DIVERGENCE");
 
             if (trapRisk.Block &&
-                liveMode != ExecutionMode.BreakoutMarket)
+                EntryActionabilityPolicy.ShouldBlockTrapRisk(
+                    liveMode))
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
