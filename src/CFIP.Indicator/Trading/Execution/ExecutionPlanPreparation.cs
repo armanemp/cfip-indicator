@@ -36,6 +36,9 @@ namespace cAlgo
                                     entry,
                                     atr);
                 
+                            OpportunityLane lane =
+                                ResolvePlanTargetSelectionLane();
+
                             List<Level> selected =
                                 SelectTargets(
                                     levels,
@@ -43,7 +46,8 @@ namespace cAlgo
                                     entry,
                                     risk,
                                     direction,
-                                    atr);
+                                    atr,
+                                    lane);
                 
                             int stageIndex =
                                 ClampInt(
@@ -67,29 +71,37 @@ namespace cAlgo
                                         selected[i].Price);
                             }
                 
+                            double rrStep =
+                                Math.Max(
+                                    0.10,
+                                    StructuralTpRrStep);
+
+                            double[] requiredRR =
+                                BuildTargetSelectionRequiredRR(
+                                    rrStep,
+                                    lane);
+
                             double fallbackRR =
                                 stageIndex == 0
                                     ? Math.Max(
                                         FallbackTp1RR,
-                                        MinimumRequiredRR())
+                                        requiredRR[0])
                                     : stageIndex == 1
                                         ? Math.Max(
                                             FallbackTp2RR,
-                                            Tp2MinimumRR)
+                                            requiredRR[1])
                                         : stageIndex == 2
                                             ? Math.Max(
                                                 FallbackTp3RR,
-                                                Tp3MinimumRR)
+                                                requiredRR[2])
                                             : Math.Max(
                                                 FallbackTp4RR,
-                                                Tp4MinimumRR);
+                                                requiredRR[3]);
                 
                             bool requiresHtf =
                                 RequiresHtfRewardForTargetStage(
                                     stageIndex,
-                                    _plan == null
-                                        ? OpportunityLane.Strategic
-                                        : _plan.Lane);
+                                    lane);
                 
                             if (AllowSyntheticTargetFallback &&
                                 !requiresHtf &&
