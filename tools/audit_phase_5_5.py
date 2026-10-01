@@ -76,12 +76,13 @@ check(
 )
 
 check(
-    "candidate materialization consumes shared geometry instead of rebuilding execution/stop",
+    "candidate materialization consumes shared geometry without rebuilding execution/stop",
     "TryBuildParallelScenarioGeometry(" in parallel and
-    "BuildTradeSetupPreviewFromGeometry(" in parallel and
+    "TryGetParallelScenarioPreview(" in parallel and
     "BuildExecutionModel(" not in parallel and
     "BuildTradeSetupPreview(" not in parallel and
-    "geometry.Execution" not in parallel,
+    "geometry.Execution" not in parallel and
+    "BuildTradeSetupPreviewFromGeometry(" in preview,
 )
 
 check(
