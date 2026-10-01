@@ -8,6 +8,7 @@ Date: 2026-10-01
 
 - Preserve the existing public `Level Line Thickness` parameter.
 - Make configured values 1, 2 and 3 produce actual chart line thickness 1, 2 and 3.
+- Contract statement: values 1/2/3 produce actual thickness 1/2/3.
 - Preserve the current `Solid` plan-line style.
 - Avoid changing signal, risk, target or execution thresholds.
 
