@@ -362,9 +362,8 @@ namespace cAlgo
                 High = (decimal)bars.HighPrices[index],
                 Low = (decimal)bars.LowPrices[index],
                 Close = (decimal)bars.ClosePrices[index],
-                Volume = Math.Max(
-                    0m,
-                    (decimal)bars.TickVolumes[index])
+                Volume = OssQuoteProjectionRule.NormalizeVolume(
+                    bars.TickVolumes[index])
             };
         }
 
