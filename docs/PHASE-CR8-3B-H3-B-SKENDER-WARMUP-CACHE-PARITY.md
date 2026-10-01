@@ -4,7 +4,7 @@ Date: 2026-10-01
 
 ## Status
 
-**IMPLEMENTED — repository verification pending CI and benchmark execution.**
+**VERIFIED COMPLETE — PR #152; final implementation head `b0ddaabed9723515d50ac183592f1eb7d56b5942`; merged to `main` as `db52531a5fe333d2645cdd5f63ac33844d01f8e0`.**
 
 ## Scope completed
 
@@ -51,6 +51,13 @@ The deterministic safety gate requires:
 CI validates repository behavior. Target-terminal startup latency, actual
 cTrader CPU/memory behavior, history reload behavior and empirical
 signal/outcome quality remain manual acceptance items.
+
+## Repository verification
+
+- Source / Architecture: **PASS** — final H3-B head.
+- Runtime Acceptance Contracts: **PASS** — final H3-B head.
+- cTrader Compile / Build: **PASS** — final H3-B head.
+- OSS indicator benchmark: **PASS** — final H3-B head.
 
 ## Next phase
 
