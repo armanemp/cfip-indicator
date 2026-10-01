@@ -1334,3 +1334,18 @@ Operator action after merge: `git pull --ff-only` on local `main`.
 
 Current implementation phase: **CI-10 closed**.
 Next phase after merge: **CI-11 — Entry geometry and signal-timing audit**.
+
+### CI-11 closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE** — PR #166 merged to `main` as `56554a7cacbdd17d75e2ab38dcad8692594d138b`.
+
+Implementation head: `b7bbf5375a062d82c2883360d3f4e8b61de0ee45`.
+
+Verification: Source/Architecture #2589 PASS; Runtime Acceptance Contracts #2398 PASS; cTrader Compile #2582 PASS. Accumulated audits through CI-11 PASS.
+
+Completed canonical entry geometry/timing ownership, causal M1 timing, actionability telemetry, and canonical market-entry quote metadata usage. No public parameter/default or trading threshold changed.
+
+Current implementation phase: **CI-11 closed**.
+Next phase: **CI-12 — Structural SL audit**.
+
+Operator action: `git pull --ff-only` on local `main`.
