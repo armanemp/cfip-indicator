@@ -62,7 +62,7 @@ namespace cAlgo
                     ? trigger
                     : ideal;
 
-            return IsFinitePositive(anchor)
+            return HasPositiveFiniteValue(anchor)
                 ? anchor
                 : fallback;
         }
@@ -111,8 +111,8 @@ namespace cAlgo
             double tickSize,
             double pipSize)
         {
-            double safeTick = IsFiniteNonNegative(tickSize) ? tickSize : 0;
-            double safePip = IsFiniteNonNegative(pipSize) ? pipSize : 0;
+            double safeTick = HasNonNegativeFiniteValue(tickSize) ? tickSize : 0;
+            double safePip = HasNonNegativeFiniteValue(pipSize) ? pipSize : 0;
 
             return Math.Max(
                 safeTick,
@@ -127,7 +127,7 @@ namespace cAlgo
                 configuredMinimum);
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool HasPositiveFiniteValue(double value)
         {
             return
                 !double.IsNaN(value) &&
@@ -135,7 +135,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool HasNonNegativeFiniteValue(double value)
         {
             return
                 !double.IsNaN(value) &&
