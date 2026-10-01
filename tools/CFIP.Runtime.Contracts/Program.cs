@@ -3047,7 +3047,7 @@ namespace cAlgo
                     m1NextOpen,
                     m5Open,
                     m5NextOpen,
-                    Utc(12, 4, 30)),
+                    new DateTime(2026, 1, 1, 12, 4, 30, DateTimeKind.Utc)),
                 "CI-10 an unclosed M1 bar cannot become a trigger");
 
             Assert(
