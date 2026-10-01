@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01, CI-02 and CI-03 verified complete; CI-04 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01, CI-02 and CI-03 verified complete; CI-04 is in implementation. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
