@@ -24,6 +24,19 @@ namespace cAlgo
 
     internal static class WaveTrendEvidenceRule
     {
+        internal static int NormalizeMinimumQuality(
+            int minimumQuality)
+        {
+            return Math.Max(40, Math.Min(100, minimumQuality));
+        }
+
+        internal static bool MeetsMinimumQuality(
+            int quality,
+            int minimumQuality)
+        {
+            return quality >= NormalizeMinimumQuality(minimumQuality);
+        }
+
         internal static WaveTrendEvidenceResult Evaluate(
             WaveTrendSnapshot snapshot,
             int minimumQuality)
@@ -87,9 +100,8 @@ namespace cAlgo
 
             bool strongBull =
                 bull &&
-                quality >=
-                Math.Max(
-                    40,
+                MeetsMinimumQuality(
+                    quality,
                     minimumQuality);
 
             bool strongBear =

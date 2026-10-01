@@ -131,6 +131,31 @@ Manual boundary remains target-terminal MTF boundary timing, reconnect/history r
 
 **Next phase after verification: CI-08 — Divergence / WaveTrend / reaction / early signal.**
 
+
+### CI-08 implementation status — Divergence / WaveTrend / reaction / early signal
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending CI**
+
+Completed:
+- canonical `DivergenceThresholdRule.StrongConflictQuality` ownership;
+- configured `MinimumWaveTrendQuality` propagation through indicator fusion and provenance;
+- canonical WaveTrend TickVolume MFI contribution semantics with zero-volume = zero flow;
+- explicit `ReactionTimingRule` boundary between live observation and closed confirmation;
+- early prediction remains a downstream preview state and does not mutate authoritative Decision/Plan/lifecycle state;
+- WATCH/REACTION alert delivery remains decision-owned and uses the unified alert transport;
+- deterministic Runtime Contracts plus `audit_phase_ci_08.py` are wired after CI-07.
+
+Phase record: `docs/PHASE-CI-08-DIVERGENCE-WAVETREND-REACTION-EARLY.md`.
+
+Verification targets:
+- Source / Architecture;
+- Runtime Acceptance Contracts;
+- cTrader Compile / Build.
+
+Manual boundary remains target-terminal WaveTrend numerical parity, intrabar timing, popup/audio latency, panel/chart responsiveness and empirical signal-quality validation.
+
+**Next phase after CI-08 verification: CI-09 — Decision engine mathematical audit.**
+
 ### Historical remediation closeouts
 
 ### CR6.6 / F7 closeout — 2026-10-01

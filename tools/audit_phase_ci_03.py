@@ -45,7 +45,8 @@ check('trend measurements share one correlated group',
 check('momentum measurements share one correlated group',
       'input.MomentumBull ||' in independence and 'input.MomentumBear ||' in independence and
       'input.UseMacd' in independence and 'input.Rsi >= 55' in independence and
-      'input.WaveTrendQuality >= 58' in independence)
+      'WaveTrendEvidenceRule.MeetsMinimumQuality(' in independence and
+      'input.MinimumWaveTrendQuality' in independence)
 check('context measurements obey optional switches',
       'input.UseVwap' in independence and 'input.UseVolume' in independence and
       'input.UseHealthyVolatility' in independence)

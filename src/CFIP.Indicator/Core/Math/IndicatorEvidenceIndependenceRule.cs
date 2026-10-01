@@ -21,7 +21,9 @@ namespace cAlgo
             bool momentum = input.MomentumBull || input.MomentumBear ||
                             (input.UseMacd && (input.MacdBull || input.MacdBear)) ||
                             input.Rsi >= 55 || input.Rsi <= 45 ||
-                            (input.WaveTrendQuality >= 58 &&
+                            (WaveTrendEvidenceRule.MeetsMinimumQuality(
+                                 input.WaveTrendQuality,
+                                 input.MinimumWaveTrendQuality) &&
                              (input.WaveTrendDirection != 0 ||
                               input.WaveTrendBullCross || input.WaveTrendBearCross ||
                               input.WaveTrendOversold || input.WaveTrendOverbought));

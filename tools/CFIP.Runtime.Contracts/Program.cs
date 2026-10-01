@@ -35,6 +35,7 @@ namespace cAlgo
             VerifyMicroReactionClosedBarSemantics();
             VerifyMtfContextIntegrity();
             VerifyCi07MarketStateSemantics();
+            VerifyCi08DivergenceWaveTrendReactionEarlySignal();
             VerifyCanonicalMarketContext();
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
@@ -646,6 +647,7 @@ namespace cAlgo
                     0.30,
                     1,
                     70,
+                            58,
                     0,
                     0,
                     false,
@@ -689,6 +691,7 @@ namespace cAlgo
                     -0.30,
                     -1,
                     70,
+                            58,
                     0,
                     0,
                     false,
@@ -742,6 +745,7 @@ namespace cAlgo
                         0.30,
                         1,
                         70,
+                            58,
                         0,
                         0,
                         false,
@@ -782,6 +786,7 @@ namespace cAlgo
                         0.30,
                         1,
                         70,
+                            58,
                         0,
                         0,
                         false,
@@ -823,6 +828,7 @@ namespace cAlgo
                     useVolume, useMacd, useVwap, useHealthyVolatility, 4,
                     adx, adxMinimum, rsi, dmiBias, emaSlopeAtr,
                     waveTrendDirection, waveTrendQuality,
+                            58,
                     divergenceDirection, divergenceQuality,
                     false, false, false, false,
                     ossBullVotes, 0, ossIndicatorCount, 4, 3);
@@ -2118,6 +2124,7 @@ namespace cAlgo
                         0,
                         0,
                         0,
+                            58,
                         0,
                         0,
                         false,
@@ -2163,6 +2170,7 @@ namespace cAlgo
                         0,
                         0,
                         0,
+                            58,
                         0,
                         0,
                         false,
@@ -4585,6 +4593,158 @@ namespace cAlgo
             Assert(
                 !incomplete.HasPrimaryDecisionHistory,
                 "insufficient closed history blocked");
+        }
+
+        private static void VerifyCi08DivergenceWaveTrendReactionEarlySignal()
+        {
+            Assert(
+                DivergenceThresholdRule.StrongConflictQuality == 70 &&
+                DivergenceThresholdRule.MeetsStrongConflictQuality(70) &&
+                !DivergenceThresholdRule.MeetsStrongConflictQuality(69),
+                "CI-08 divergence strong-conflict threshold has one canonical owner");
+
+            Assert(
+                WaveTrendEvidenceRule.NormalizeMinimumQuality(30) == 40 &&
+                WaveTrendEvidenceRule.NormalizeMinimumQuality(58) == 58 &&
+                WaveTrendEvidenceRule.NormalizeMinimumQuality(120) == 100,
+                "CI-08 WaveTrend minimum evidence quality normalizes deterministically");
+
+            double positiveFlow;
+            double negativeFlow;
+
+            Assert(
+                WaveTrendMoneyFlowRule.TryCalculateContribution(
+                    105,
+                    100,
+                    10,
+                    out positiveFlow,
+                    out negativeFlow) &&
+                positiveFlow == 1050 &&
+                negativeFlow == 0,
+                "CI-08 WaveTrend MFI assigns rising-price flow to the positive bucket");
+
+            Assert(
+                WaveTrendMoneyFlowRule.TryCalculateContribution(
+                    95,
+                    100,
+                    10,
+                    out positiveFlow,
+                    out negativeFlow) &&
+                positiveFlow == 0 &&
+                negativeFlow == 950,
+                "CI-08 WaveTrend MFI assigns falling-price flow to the negative bucket");
+
+            Assert(
+                WaveTrendMoneyFlowRule.TryCalculateContribution(
+                    105,
+                    100,
+                    0,
+                    out positiveFlow,
+                    out negativeFlow) &&
+                positiveFlow == 0 &&
+                negativeFlow == 0,
+                "CI-08 zero tick volume contributes no synthetic money flow");
+
+            Assert(
+                !WaveTrendMoneyFlowRule.TryCalculateContribution(
+                    105,
+                    100,
+                    -1,
+                    out positiveFlow,
+                    out negativeFlow),
+                "CI-08 negative tick volume fails closed");
+
+            IndicatorEvidenceFusionResult configuredWaveTrend =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "UNKNOWN",
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false, false, false,
+                        6, 25, 20,
+                        50, 0, 0,
+                        1, 50, 40,
+                        0, 0,
+                        false, false,
+                        false, false,
+                        0, 0, 0, 4, 3));
+
+            IndicatorEvidenceFusionResult rejectedWaveTrend =
+                IndicatorEvidenceFusionRule.Evaluate(
+                    new IndicatorEvidenceFusionInput(
+                        "UNKNOWN",
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false, false, false,
+                        6, 25, 20,
+                        50, 0, 0,
+                        1, 50, 58,
+                        0, 0,
+                        false, false,
+                        false, false,
+                        0, 0, 0, 4, 3));
+
+            Assert(
+                configuredWaveTrend.BullBonus > 0 &&
+                rejectedWaveTrend.BullBonus == 0,
+                "CI-08 WaveTrend fusion respects configured minimum quality instead of a hidden 58 floor");
+
+            int configuredGroups =
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(
+                    new IndicatorEvidenceFusionInput(
+                        "UNKNOWN",
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false, false, false,
+                        6, 25, 20,
+                        50, 0, 0,
+                        1, 50, 40,
+                        0, 0,
+                        false, false,
+                        false, false,
+                        0, 0, 0, 4, 3));
+
+            int blockedGroups =
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(
+                    new IndicatorEvidenceFusionInput(
+                        "UNKNOWN",
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false, false, false,
+                        6, 25, 20,
+                        50, 0, 0,
+                        1, 50, 58,
+                        0, 0,
+                        false, false,
+                        false, false,
+                        0, 0, 0, 4, 3));
+
+            Assert(
+                configuredGroups == 1 &&
+                blockedGroups == 0,
+                "CI-08 WaveTrend indicator-group provenance uses the same configured quality floor");
+
+            Assert(
+                ReactionTimingRule.IsSeparatedObservationAndConfirmation(100, 99) &&
+                !ReactionTimingRule.IsSeparatedObservationAndConfirmation(100, 100) &&
+                !ReactionTimingRule.IsSeparatedObservationAndConfirmation(99, 100),
+                "CI-08 live reaction and closed confirmation remain temporally separated");
         }
 
         private static void VerifyCi07MarketStateSemantics()

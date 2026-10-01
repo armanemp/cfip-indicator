@@ -216,12 +216,14 @@ check(
         "Current implementation phase: CI-05",
         "Current implementation phase: CI-06",
         "Current implementation phase: CI-07",
+        "Current implementation phase: CI-08",
     )) and
     any(marker in continuation for marker in (
         "**CI-04 — Structure / swing / liquidity semantics",
         "**CI-05 — FVG lifecycle",
         "**CI-06 — Order Block lifecycle",
         "**CI-07 — Market regime, MTF and context audit",
+        "CI-08 implementation status — Divergence / WaveTrend / reaction / early signal",
     ))
 )
 

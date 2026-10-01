@@ -1936,6 +1936,8 @@ namespace cAlgo
                         6, 25, 20,
                         61, 1.25, 0.20,
                         1, 74,
+
+                            58,
                         0, 0,
                         true, false,
                         false, false,
@@ -1962,6 +1964,8 @@ namespace cAlgo
                         6, 25, 20,
                         50, 0, 0,
                         0, 0,
+
+                            58,
                         0, 0,
                         false, false,
                         false, false,
@@ -1986,6 +1990,8 @@ namespace cAlgo
                         6, 25, 20,
                         36, -0.30, -0.05,
                         1, 76,
+
+                            58,
                         0, 0,
                         true, false,
                         true, false,
