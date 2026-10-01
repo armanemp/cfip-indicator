@@ -136,9 +136,22 @@ check(
 
 check(
     "CI-08 roadmap/continuation transition is recorded",
-    "Current implementation phase: CI-08" in roadmap and
+    "CI-08 implementation record" in roadmap and
+    any(marker in roadmap for marker in (
+        "Current implementation phase: CI-08",
+        "Current implementation phase: CI-09",
+        "Current implementation phase: CI-10",
+        "Current implementation phase: CI-11",
+        "Current implementation phase: CI-12",
+    )) and
     "CI-08 implementation status" in continuation and
-    "CI-09" in continuation
+    any(marker in continuation for marker in (
+        "**CI-08 —",
+        "Current implementation phase: **CI-09",
+        "Current implementation phase: **CI-10",
+        "Current implementation phase: **CI-11",
+        "Current implementation phase: **CI-12",
+    ))
 )
 
 print("CI-08 DIVERGENCE / WAVETREND / REACTION / EARLY SIGNAL SUMMARY")

@@ -178,6 +178,10 @@ check(
         "Current implementation phase: CI-06",
         "Current implementation phase: CI-07",
         "Current implementation phase: CI-08",
+        "Current implementation phase: CI-09",
+        "Current implementation phase: CI-10",
+        "Current implementation phase: CI-11",
+        "Current implementation phase: CI-12",
     )) and
     any(marker in continuation for marker in (
         "**CI-05 — FVG lifecycle",
@@ -185,6 +189,10 @@ check(
         "**CI-07 — Market regime, MTF and context audit",
         "**CI-08 — Divergence, WaveTrend, reaction and early-signal audit",
         "**CI-07 — MTF / regime / market context",
+        "Current implementation phase: **CI-09",
+        "Current implementation phase: **CI-10",
+        "Current implementation phase: **CI-11",
+        "Current implementation phase: **CI-12",
     ))
 )
 

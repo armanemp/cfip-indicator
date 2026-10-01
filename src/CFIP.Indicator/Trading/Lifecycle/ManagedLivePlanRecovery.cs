@@ -107,19 +107,46 @@ namespace cAlgo
                         entry,
                         stop))
                     {
-                        double fallbackRisk =
-                            atr *
-                            Math.Max(
-                                0.10,
-                                FallbackSlAtr);
+                        StructuralStopGeometrySnapshot fallbackGeometry =
+                            StructuralStopGeometryRule.EvaluateFallback(
+                                direction,
+                                entry,
+                                atr,
+                                Math.Max(0.10, FallbackSlAtr),
+                                Symbol.TickSize,
+                                Symbol.Digits);
 
                         stop =
-                            direction == 1
-                                ? entry - fallbackRisk
-                                : entry + fallbackRisk;
+                            fallbackGeometry.IsValid
+                                ? fallbackGeometry.Stop
+                                : 0;
 
-                        stop =
-                            NormalizePrice(stop);
+                        if (IsFinitePositive(stop))
+                        {
+                            double riskAtr =
+                                Math.Abs(entry - stop) /
+                                Math.Max(Symbol.PipSize, atr);
+
+                            double spread =
+                                Math.Max(
+                                    0,
+                                    Symbol.Ask - Symbol.Bid);
+
+                            if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                                    riskAtr,
+                                    atr,
+                                    MinimumSlAtr,
+                                    MaximumSlAtr,
+                                    MaximumStructuralStopAtr,
+                                    spread,
+                                    Symbol.PipSize,
+                                    MaximumSpreadToStopRiskRatio) ||
+                                !IsValidStop(
+                                    direction,
+                                    entry,
+                                    stop))
+                                stop = 0;
+                        }
                     }
                 }
 

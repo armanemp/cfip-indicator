@@ -251,12 +251,19 @@ namespace cAlgo
                                             p.StopLoss) &&
                                         AllowExecutionFrameStopFallback)
                                     {
+                                        StructuralStopGeometrySnapshot fallbackGeometry =
+                                            StructuralStopGeometryRule.EvaluateFallback(
+                                                p.Direction,
+                                                p.Entry,
+                                                atr,
+                                                FallbackSlAtr,
+                                                Symbol.TickSize,
+                                                Symbol.Digits);
+
                                         p.StopLoss =
-                                            p.Direction == 1
-                                                ? p.Entry -
-                                                  atr * FallbackSlAtr
-                                                : p.Entry +
-                                                  atr * FallbackSlAtr;
+                                            fallbackGeometry.IsValid
+                                                ? fallbackGeometry.Stop
+                                                : 0;
                                     }
                         
                                     double risk =

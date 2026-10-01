@@ -101,14 +101,20 @@ namespace cAlgo
                 if (RequireStructuralStop)
                     return false;
 
+                StructuralStopGeometrySnapshot fallbackGeometry =
+                    StructuralStopGeometryRule.EvaluateFallback(
+                        direction,
+                        entry,
+                        atr,
+                        FallbackSlAtr,
+                        Symbol.TickSize,
+                        Symbol.Digits);
+
+                if (!fallbackGeometry.IsValid)
+                    return false;
+
                 stop =
-                    direction == 1
-                        ? entry -
-                          atr *
-                          FallbackSlAtr
-                        : entry +
-                          atr *
-                          FallbackSlAtr;
+                    fallbackGeometry.Stop;
 
                 stopSource =
                     "ATR FALLBACK";
@@ -157,27 +163,22 @@ namespace cAlgo
                     Symbol.Ask -
                     Symbol.Bid);
 
-            double minimumRisk =
+            double riskAtr =
+                risk /
                 Math.Max(
-                    Math.Max(
-                        0.05,
-                        MinimumSlAtr) *
-                    atr,
-                    spread /
-                    Math.Max(
-                        0.02,
-                        MaximumSpreadToStopRiskRatio));
-
-            double maximumRisk =
-                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
-                        MinimumSlAtr,
-                        MaximumSlAtr,
-                        MaximumStructuralStopAtr) *
-                atr;
+                    Symbol.PipSize,
+                    atr);
 
             return
-                risk >= minimumRisk &&
-                risk <= maximumRisk;
+                StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                    riskAtr,
+                    atr,
+                    MinimumSlAtr,
+                    MaximumSlAtr,
+                    MaximumStructuralStopAtr,
+                    spread,
+                    Symbol.PipSize,
+                    MaximumSpreadToStopRiskRatio);
         }
     }
 }

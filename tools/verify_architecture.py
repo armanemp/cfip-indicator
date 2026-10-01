@@ -611,6 +611,7 @@ expected_models = {
     "EntrySignalTiming",
     "CanonicalPriceSnapshot",
     "MarketStateFrameSnapshot", "MarketStateSnapshot",
+    "StructuralStopGeometrySnapshot",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
@@ -1856,36 +1857,6 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
-# Structural-stop selection ownership.
-STRUCTURAL_STOP_SELECTOR = ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateSelector.cs"
-STRUCTURAL_STOP_SELECTOR_CODE = STRUCTURAL_STOP_SELECTOR.read_text(encoding="utf-8")
-if STRUCTURAL_STOP_SELECTOR.stat().st_size > 4096:
-    raise SystemExit("StructuralStopCandidateSelector.cs must remain a selection orchestration boundary")
-for token in (
-    "TrySelectBestStructuralStopCandidate(",
-    "MaterializeStructuralStop(",
-):
-    if token not in STRUCTURAL_STOP_SELECTOR_CODE:
-        raise SystemExit(f"Structural-stop orchestration call missing: {token}")
-for declaration in (
-    "private bool TrySelectBestStructuralStopCandidate(",
-    "private double MaterializeStructuralStop(",
-):
-    if declaration in STRUCTURAL_STOP_SELECTOR_CODE:
-        raise SystemExit(f"StructuralStopCandidateSelector retains extracted responsibility: {declaration}")
-for path, token in (
-    (
-        ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateEvaluator.cs",
-        "TrySelectBestStructuralStopCandidate("
-    ),
-    (
-        ROOT / "Planning" / "TradePlan" / "StructuralStopFinalizer.cs",
-        "MaterializeStructuralStop("
-    ),
-):
-    if not path.exists() or token not in path.read_text(encoding="utf-8"):
-        raise SystemExit(f"Structural-stop owner missing: {path}")
-
 # FVG lifecycle ownership.
 FVG_LIFECYCLE_RULE = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
 FVG_LIFECYCLE_RULE_CODE = FVG_LIFECYCLE_RULE.read_text(encoding="utf-8")
@@ -1932,22 +1903,37 @@ STRUCTURAL_STOP_SELECTOR = ROOT / "Planning" / "TradePlan" / "StructuralStopCand
 STRUCTURAL_STOP_SELECTOR_CODE = STRUCTURAL_STOP_SELECTOR.read_text(encoding="utf-8")
 if STRUCTURAL_STOP_SELECTOR.stat().st_size > 4096:
     raise SystemExit("StructuralStopCandidateSelector.cs must remain a thin orchestration boundary")
-for token in (
-    "TrySelectBestStructuralStopCandidate(",
-    "MaterializeStructuralStop(",
-):
-    if token not in STRUCTURAL_STOP_SELECTOR_CODE:
-        raise SystemExit(f"Structural-stop selector orchestration call missing: {token}")
+if "TrySelectBestStructuralStopCandidate(" not in STRUCTURAL_STOP_SELECTOR_CODE:
+    raise SystemExit("Structural-stop selector orchestration call missing")
 if "private bool TrySelectBestStructuralStopCandidate(" in STRUCTURAL_STOP_SELECTOR_CODE:
     raise SystemExit("StructuralStopCandidateSelector retains candidate evaluation")
-if "private double MaterializeStructuralStop(" in STRUCTURAL_STOP_SELECTOR_CODE:
-    raise SystemExit("StructuralStopCandidateSelector retains stop finalization")
-for path, token in {
-    ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateEvaluator.cs": "TrySelectBestStructuralStopCandidate(",
-    ROOT / "Planning" / "TradePlan" / "StructuralStopFinalizer.cs": "MaterializeStructuralStop(",
-}.items():
-    if not path.exists() or token not in path.read_text(encoding="utf-8"):
-        raise SystemExit(f"Structural-stop owner missing: {path}")
+if "MaterializeStructuralStop(" in STRUCTURAL_STOP_SELECTOR_CODE:
+    raise SystemExit("StructuralStopCandidateSelector retains duplicate stop materialization")
+
+STRUCTURAL_STOP_EVALUATOR = ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateEvaluator.cs"
+STRUCTURAL_STOP_EVALUATOR_CODE = STRUCTURAL_STOP_EVALUATOR.read_text(encoding="utf-8")
+if "TrySelectBestStructuralStopCandidate(" not in STRUCTURAL_STOP_EVALUATOR_CODE:
+    raise SystemExit("Structural-stop candidate evaluator missing")
+if "StructuralStopGeometryRule.Evaluate(" not in STRUCTURAL_STOP_EVALUATOR_CODE:
+    raise SystemExit("Structural-stop evaluator must consume canonical geometry owner")
+if "IsValidStop(" not in STRUCTURAL_STOP_EVALUATOR_CODE:
+    raise SystemExit("Structural-stop evaluator must retain broker-distance adapter validation")
+
+STRUCTURAL_STOP_GEOMETRY = ROOT / "Core" / "Math" / "StructuralStopGeometryRule.cs"
+STRUCTURAL_STOP_GEOMETRY_CODE = STRUCTURAL_STOP_GEOMETRY.read_text(encoding="utf-8")
+if "class StructuralStopGeometryRule" not in STRUCTURAL_STOP_GEOMETRY_CODE:
+    raise SystemExit("Canonical structural stop geometry owner missing")
+for token in (
+    "Evaluate(",
+    "EvaluateFallback(",
+    "ResolveBufferAtr(",
+):
+    if token not in STRUCTURAL_STOP_GEOMETRY_CODE:
+        raise SystemExit(f"Structural-stop geometry owner missing: {token}")
+
+STRUCTURAL_STOP_FINALIZER = ROOT / "Planning" / "TradePlan" / "StructuralStopFinalizer.cs"
+if STRUCTURAL_STOP_FINALIZER.exists():
+    raise SystemExit("Obsolete duplicate structural stop finalizer must remain removed")
 
 # Plan-integrity ownership.
 PLAN_INTEGRITY = ROOT / "Planning" / "TradePlan" / "PlanIntegrityValidator.cs"
@@ -2005,6 +1991,7 @@ OBSOLETE_PRODUCTION_PATHS = (
     ROOT / "Trading" / "Validation" / "RewardPathValidation.cs",
     ROOT / "Trading" / "Validation" / "DecisionGateValidation.cs",
     ROOT / "Trading" / "Intelligence" / "DecisionFeatures.cs",
+    ROOT / "Planning" / "TradePlan" / "StructuralStopFinalizer.cs",
 )
 for obsolete_path in OBSOLETE_PRODUCTION_PATHS:
     if obsolete_path.exists():

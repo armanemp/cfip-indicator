@@ -782,7 +782,9 @@ Safety/manual boundary:
 Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Current active phase
-Current active phase: **CR8.4 / H4 — next Prompt 8 remediation phase.**
+Current active phase: **CI-12 — Structural SL audit.**
+
+Prompt 8 / CR8.4 remains intentionally paused until **CI-FINAL**. After CI-FINAL, resume the existing Prompt 8 sequence at CR8.4/H4.
 
 
 ### CR6.4 / F5 closeout — 2026-10-01
@@ -1345,7 +1347,24 @@ Verification: Source/Architecture #2589 PASS; Runtime Acceptance Contracts #2398
 
 Completed canonical entry geometry/timing ownership, causal M1 timing, actionability telemetry, and canonical market-entry quote metadata usage. No public parameter/default or trading threshold changed.
 
-Current implementation phase: **CI-11 closed**.
-Next phase: **CI-12 — Structural SL audit**.
+Current implementation phase: **CI-12 — Structural SL audit**.
 
-Operator action: `git pull --ff-only` on local `main`.
+Implementation record:
+- canonical Core StructuralStopGeometryRule / StructuralStopGeometrySnapshot;
+- candidate selection preserves the exact evaluated stop;
+- duplicate StructuralStopFinalizer removed;
+- canonical planning risk envelope and canonical ATR fallback geometry;
+- lifecycle fallback paths fail closed on invalid geometry/risk;
+- deterministic CI-12 Runtime Contracts and static audit added.
+
+Verification pending:
+- Source/Architecture;
+- Runtime Acceptance Contracts;
+- cTrader Compile / Build;
+- manual target-terminal broker/recovery boundary.
+
+Phase record: `docs/PHASE-CI-12-STRUCTURAL-SL.md`.
+
+Operator action after CI-12 merge: `git pull --ff-only` on local `main`.
+
+Next phase after merge: **CI-13 — TP source, target obstacle and TP ladder audit**.

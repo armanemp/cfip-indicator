@@ -14,21 +14,18 @@ namespace cAlgo
             double entry,
             double atr,
             out Level best,
+            out double bestStop,
             out string source,
             out int quality)
         {
             best = null;
+            bestStop = 0;
             source = "NONE";
             quality = 0;
 
-            double minRiskAtr =
-                Math.Max(
-                    0.05,
-                    MinimumSlAtr);
-
-            double maxRiskAtr =
+            double maximumRiskAtr =
                 StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
-                    minRiskAtr,
+                    Math.Max(0.05, MinimumSlAtr),
                     MaximumSlAtr,
                     MaximumStructuralStopAtr);
 
@@ -38,19 +35,10 @@ namespace cAlgo
                     Symbol.Ask -
                     Symbol.Bid);
 
-            minRiskAtr =
-                Math.Max(
-                    minRiskAtr,
-                    (spread /
-                     Math.Max(
-                         Symbol.PipSize,
-                         atr)) /
-                    Math.Max(
-                        0.02,
-                        MaximumSpreadToStopRiskRatio));
-
             double bestScore =
                 double.MinValue;
+
+            double selectedStop = 0;
 
             string bestSource =
                 "NONE";
@@ -80,45 +68,42 @@ namespace cAlgo
                 if (!IsFinitePositive(frameAtr))
                     continue;
 
-                double buffer =
-                    frameAtr *
-                    Math.Max(
-                        0.02,
-                        candidate.Timeframe == "M5"
-                            ? StopBufferAtr
-                            : Math.Max(
-                                StopBufferAtr,
-                                HtfStopBufferAtr));
-
-                double stop =
-                    direction == 1
-                        ? candidate.Price - buffer
-                        : candidate.Price + buffer;
-
-                stop =
-                    NormalizePrice(
-                        stop);
-
-                if (!IsValidStop(
+                StructuralStopGeometrySnapshot geometry =
+                    StructuralStopGeometryRule.Evaluate(
                         direction,
                         entry,
-                        stop))
-                    continue;
-
-                double risk =
-                    Math.Abs(
-                        entry -
-                        stop);
-
-                double riskAtr =
-                    risk /
-                    Math.Max(
+                        candidate.Price,
+                        frameAtr,
+                        atr,
                         Symbol.PipSize,
-                        atr);
+                        candidate.Timeframe,
+                        StopBufferAtr,
+                        HtfStopBufferAtr,
+                        Symbol.TickSize,
+                        Symbol.Digits);
 
-                if (riskAtr < minRiskAtr ||
-                    riskAtr > maxRiskAtr)
+                if (!geometry.IsValid ||
+                    !IsValidStop(
+                        direction,
+                        entry,
+                        geometry.Stop))
                     continue;
+
+                double risk = geometry.Risk;
+                double riskAtr = geometry.RiskAtr;
+
+                if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                        riskAtr,
+                        atr,
+                        MinimumSlAtr,
+                        MaximumSlAtr,
+                        MaximumStructuralStopAtr,
+                        spread,
+                        Symbol.PipSize,
+                        MaximumSpreadToStopRiskRatio))
+                    continue;
+
+                double stop = geometry.Stop;
 
                 double bestTp1RR =
                     EstimateBestTp1RRForStop(
@@ -150,7 +135,7 @@ namespace cAlgo
                                     ? "UNKNOWN"
                                     : _decision.Regime)),
                         PreferredStopRiskAtr,
-                        maxRiskAtr);
+                        maximumRiskAtr);
 
                 if (!rewardRisk.Allowed)
                     continue;
@@ -176,6 +161,7 @@ namespace cAlgo
                 {
                     bestScore = score;
                     best = candidate;
+                    selectedStop = stop;
                     bestQuality =
                         ClampInt(
                             (int)Math.Round(
@@ -195,6 +181,7 @@ namespace cAlgo
 
             source = bestSource;
             quality = bestQuality;
+            bestStop = selectedStop;
             return true;
         }
 

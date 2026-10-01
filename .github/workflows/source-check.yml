@@ -94,6 +94,7 @@ jobs:
       - run: python tools/audit_phase_ci_09.py
       - run: python tools/audit_phase_ci_10.py
       - run: python tools/audit_phase_ci_11.py
+      - run: python tools/audit_phase_ci_12.py
       - run: python tools/audit_phase_11_2.py
       - run: python tools/audit_phase_11_3.py
       - run: python tools/audit_phase_11_4.py

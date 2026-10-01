@@ -29,15 +29,12 @@ namespace cAlgo
                     entry,
                     atr,
                     out Level best,
+                    out double selectedStop,
                     out source,
                     out quality))
                 return 0;
 
-            return MaterializeStructuralStop(
-                best,
-                closedM5,
-                direction,
-                atr);
+            return selectedStop;
         }
     }
 }
