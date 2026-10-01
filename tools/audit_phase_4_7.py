@@ -100,7 +100,10 @@ check(
     and "OBSTACLE_EQ" in reasons
     and "OBSTACLE_OPPOSING_ZONE" in reasons
     and "OBSTACLE_HTF_ZONE" in reasons
-    and "TargetCandidateRejectionReasons.M5Obstacle" in evaluator
+    and (
+        "TargetCandidateRejectionReasons.M5Obstacle" in evaluator
+        or "m5Obstacle.Reason" in evaluator
+    )
     and "TargetCandidateRejectionReasons.EqualHighLowObstacle" in validator
     and "TargetCandidateRejectionReasons.OpposingZoneObstacle" in evaluator
     and "TargetCandidateRejectionReasons.HtfZoneObstacle" in evaluator
