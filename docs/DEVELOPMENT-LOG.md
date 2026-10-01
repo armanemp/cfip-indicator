@@ -2775,3 +2775,18 @@ Safety/performance audit:
 - H3-B is explicitly reserved for warm-up-window, bounded computation, cache and numerical-parity work.
 
 Next phase: **CR8.3b / H3-B**.
+
+## CI-09 — Decision engine mathematical audit — 2026-10-02
+
+Branch: `phase/ci-09-decision-mathematical-audit`
+
+Implemented a narrow mathematical-integrity correction without policy retuning:
+- exact 50/50 consensus is neutral;
+- non-finite consensus inputs fail closed;
+- adaptive conflict penalties cannot create a side bias at equal score;
+- canonical decision score components are exposed in `DecisionScoreSnapshot` for provenance;
+- non-finite frame/advanced numeric contributions fail closed;
+- deterministic Decision Contracts reconstruct the score and verify symmetric modifiers;
+- `audit_phase_ci_09.py` is accumulated after CI-08.
+
+No public parameter/default, confidence/RR/SL/TP/risk/execution threshold or broker authority was changed. Empirical signal-quality remains a target-terminal/replay concern.
