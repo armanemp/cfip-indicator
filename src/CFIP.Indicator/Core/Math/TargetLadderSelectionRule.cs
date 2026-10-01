@@ -25,9 +25,9 @@ namespace cAlgo
                 CreateEmptySelection(stages == null ? 0 : stages.Length);
 
             if ((direction != 1 && direction != -1) ||
-                !IsFinite(entry) ||
+                !IsFiniteLadderValue(entry) ||
                 entry <= 0 ||
-                !IsFinite(minimumSpacing) ||
+                !IsFiniteLadderValue(minimumSpacing) ||
                 minimumSpacing < 0 ||
                 stages == null ||
                 stages.Length == 0)
@@ -265,12 +265,12 @@ namespace cAlgo
             TargetLadderOption option)
         {
             return option.CandidateIndex >= 0 &&
-                   IsFinite(option.Price) &&
+                   IsFiniteLadderValue(option.Price) &&
                    option.Price > 0 &&
-                   IsFinite(option.Score);
+                   IsFiniteLadderValue(option.Score);
         }
 
-        private static bool IsFinite(double value)
+        private static bool IsFiniteLadderValue(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
