@@ -181,14 +181,11 @@ namespace cAlgo
             double ideal,
             double fallback)
         {
-            double anchor =
-                mode == ExecutionMode.BreakoutMarket
-                    ? trigger
-                    : ideal;
-
-            return IsFinitePositive(anchor)
-                ? anchor
-                : fallback;
+            return EntryActionabilityPolicy.ResolveAnchor(
+                mode,
+                trigger,
+                ideal,
+                fallback);
         }
 
         public static bool IsLate(
