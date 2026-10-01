@@ -80,7 +80,7 @@ check(
 
 check(
     "candidate builder enforces canonical age before materialization",
-    "OrderBlockLifecycleRule.IsAgeValid(" in builder and
+    "OrderBlockLifecycleRule.IsOrderBlockAgeValid(" in builder and
     "MaximumZoneAgeBars" in builder and
     "currentIndex >= bars.Count" in builder
 )
@@ -102,9 +102,9 @@ check(
 
 check(
     "mitigation delegates all lifecycle transitions",
-    "OrderBlockLifecycleRule.ResolveMitigationProbe(" in mitigation and
-    "OrderBlockLifecycleRule.TryApplyPartialMitigation(" in mitigation and
-    "OrderBlockLifecycleRule.Classify(" in mitigation and
+    "OrderBlockLifecycleRule.ResolveOrderBlockMitigationProbe(" in mitigation and
+    "OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(" in mitigation and
+    "OrderBlockLifecycleRule.ClassifyOrderBlockLifecycle(" in mitigation and
     "OrderBlockLifecycleRule.MinimumRetainedRatio" in mitigation
 )
 
@@ -170,10 +170,10 @@ check(
 
 check(
     "runtime contracts exercise lifecycle states and stale-age boundary",
-    "OrderBlockLifecycleRule.ResolveMitigationProbe(" in contracts and
-    "OrderBlockLifecycleRule.TryApplyPartialMitigation(" in contracts and
-    "OrderBlockLifecycleRule.Classify(" in contracts and
-    "OrderBlockLifecycleRule.IsAgeValid(" in contracts
+    "OrderBlockLifecycleRule.ResolveOrderBlockMitigationProbe(" in contracts and
+    "OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(" in contracts and
+    "OrderBlockLifecycleRule.ClassifyOrderBlockLifecycle(" in contracts and
+    "OrderBlockLifecycleRule.IsOrderBlockAgeValid(" in contracts
 )
 
 check(
