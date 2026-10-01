@@ -21,7 +21,7 @@ renderer = read("src/CFIP.Indicator/UI/Popup/PopupRenderer.cs")
 processor = read("src/CFIP.Indicator/UI/Popup/PopupQueueProcessor.cs")
 remover = read("src/CFIP.Indicator/UI/Popup/PopupRemover.cs")
 initialization = read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
-queue = read("src/CFIP.Indicator/Core/Runtime/PopupAlertQueue.cs")
+queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
@@ -51,7 +51,7 @@ checks = {
         "EnsureExecutionRuntimeState();" in sync
     ),
     "popup queue is owned by runtime state": (
-        "PopupAlertQueue(16)" in state and
+        "AlertDeliveryQueue(16)" in state and
         "_popupCritical" in state
     ),
     "popup queue is bounded": (
@@ -67,7 +67,7 @@ checks = {
         "return false;" in queue
     ),
     "alert engine queues popups instead of overwriting the live control": (
-        "_popupAlertQueue.Enqueue(" in alerts and
+        "_alertDeliveryQueue.Enqueue(" in alerts and
         "ShowPopup(message)" not in alerts
     ),
     "popup renderer tracks priority": (
@@ -77,7 +77,7 @@ checks = {
     ),
     "popup processor is the only queue-to-render handoff": (
         "ShowPopup(next.Message, next.Critical)" in processor and
-        "_popupAlertQueue.TryPeek" in processor
+        "_alertDeliveryQueue.TryPeek" in processor
     ),
     "critical queued alert may preempt a normal active popup": (
         "if (popupActive && !next.Critical)" in processor
@@ -86,19 +86,19 @@ checks = {
         "_popupCritical = false;" in remover
     ),
     "popup queue is drained outside Calculate": (
-        "RemoveExpiredPopup();\n                ProcessQueuedPopups();\n                HandleRuntimeHeartbeat();" in initialization
+        "RemoveExpiredPopup();\n                HandleRuntimeHeartbeat();\n                ProcessQueuedAlertDelivery();" in initialization
     ),
     "popup queue is cleared on destroy": (
-        "_popupAlertQueue.ClearPendingAlerts();" in initialization
+        "_alertDeliveryQueue.ClearPendingAlerts();" in initialization
     ),
     "deterministic re-arm runtime contract is registered": (
         "VerifyRuntimeExplicitRearmSemantics();" in contracts
     ),
     "deterministic popup queue runtime contract is registered": (
-        "VerifyPopupAlertQueueSemantics();" in contracts
+        "VerifyAlertDeliveryQueueSemantics();" in contracts
     ),
     "popup queue is included in runtime contract build": (
-        "Core/Runtime/PopupAlertQueue.cs" in runtime_project
+        "Core/Runtime/AlertDeliveryQueue.cs" in runtime_project
     ),
     "CR3.4 static gate is wired into CI": (
         "python tools/audit_phase_3_4.py" in workflow
