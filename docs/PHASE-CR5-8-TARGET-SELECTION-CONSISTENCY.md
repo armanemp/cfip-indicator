@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation phase complete pending repository CI acceptance.
+VERIFIED COMPLETE — PR #124 merged to `main`; merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`.
 
 Branch: `phase/cr5-8-target-selection-consistency`
 
@@ -79,6 +79,16 @@ Added:
 - named-constant value checks;
 - accumulated static audit `tools/audit_phase_5_8.py`;
 - runtime-contract project inclusion for the new Core rule.
+
+## Verification
+
+Final implementation head: `51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`.
+
+- Source / Architecture: PASS — run `36844545898` / workflow #2160.
+- Runtime Acceptance Contracts: PASS — run `36844545976` / workflow #1969.
+- cTrader Compile: PASS — run `36844546002` / workflow #2153.
+- Accumulated Phase 11.4 and E6 continuity audits were reconciled with the
+  current E8 ownership model; the complete Source/Architecture chain passed.
 
 ## Safety boundary
 
