@@ -70,12 +70,16 @@ internal static class Program
                 rebuildQuotes,
                 incrementalQuotes);
 
+        SkenderWarmupParityBenchmarkResult warmupParity =
+            SkenderWarmupParityBenchmark.Measure();
+
         string report =
             BenchmarkReport.Format(
                 comparisons,
                 v2Timing,
                 v3Timing,
-                quoteCacheTiming);
+                quoteCacheTiming,
+                warmupParity);
 
         Console.WriteLine(report);
 
@@ -91,13 +95,14 @@ internal static class Program
             comparisons.All(x => x.Passed) &&
             comparisons.Count ==
                 BenchmarkFixtures.ScenarioNames.Count *
-                IndicatorComparison.Definitions.Count;
+                IndicatorComparison.Definitions.Count &&
+            warmupParity.Passed;
 
         Console.WriteLine();
         Console.WriteLine(
             passed
-                ? "TRACK 19.1 COMPLETE: FacioQuo numerical comparison passed."
-                : "TRACK 19.1 FAILED: numerical parity regression detected.");
+                ? "TRACK 19.1 + CR8.3b COMPLETE: OSS numerical benchmark passed."
+                : "OSS numerical benchmark FAILED: a deterministic parity gate failed.");
 
         return passed ? 0 : 1;
     }
