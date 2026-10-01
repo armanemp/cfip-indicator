@@ -699,6 +699,68 @@ marked as a research milestone that may be completed early.
 
 ---
 
+# Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
+
+Status: **planned — blocks continuation of ordinary refinement phases until CI-FINAL closes.**
+
+This track is introduced after the 2026-10-01 deep review of the Trigger →
+Entry → SL → TP chain. It intentionally expands the audit upstream so
+correctness is established from raw market data and indicator calculations
+through analysis, decision, trigger, trade-plan geometry and broker execution.
+
+The authoritative detailed specification is:
+`docs/PHASE-CI-FULL-STACK-CALCULATION-ANALYTICAL-INTEGRITY.md`
+
+The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
+blocking correctness gate inserted before the next unfinished refinement phase.
+
+Sequence:
+
+```
+CI-00  Canonical data / price / time semantics
+  ↓
+CI-01  Native/primitives indicator mathematics
+  ↓
+CI-02  OSS numerical parity / warm-up / cache
+  ↓
+CI-03  Indicator fusion / correlation / evidence independence
+  ↓
+CI-04  Structure / swing / liquidity semantics
+  ↓
+CI-05  FVG lifecycle
+  ↓
+CI-06  Order Block lifecycle
+  ↓
+CI-07  MTF / regime / market context
+  ↓
+CI-08  Divergence / WaveTrend / reaction / early signal
+  ↓
+CI-09  Decision engine mathematics
+  ↓
+CI-10  Trigger + M1 lifecycle
+  ↓
+CI-11  Entry geometry + signal latency
+  ↓
+CI-12  Structural SL
+  ↓
+CI-13  TP sources + obstacle path + TP ladder
+  ↓
+CI-14  Canonical Risk / Reward / RR
+  ↓
+CI-15  End-to-end execution geometry / broker boundary
+  ↓
+CI-16  Deterministic replay + counterexamples + latency
+  ↓
+CI-17  Target-terminal cTrader validation
+  ↓
+CI-FINAL  Full-stack certification
+```
+
+Mandatory principle:
+
+`No threshold/weight tuning is accepted as a substitute for correcting a
+mathematical, semantic, provenance or timing defect.`
+
 # Track 0 — Baseline and clean-state verification
 
 ## Phase 0.1 — Repository truth synchronization
@@ -6001,4 +6063,4 @@ Verification on final implementation head `b0ddaabed9723515d50ac183592f1eb7d56b5
 
 Operator action after merge: run `git pull --ff-only` on local `main` before continuing.
 
-Next specified phase: **CR8.4 / H4**.
+**Continuation gate:** CR8.4 / H4 is intentionally deferred until **CI-FINAL — Full-Stack Calculation Integrity Certification** is complete. Prompt 8 is paused, not renumbered; after CI-FINAL, resume the existing Prompt 8 sequence at CR8.4 / H4.
