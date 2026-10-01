@@ -43,6 +43,33 @@ delegate arithmetic/normalization to those owners. This keeps measurement
 logic separate from platform adapters and prevents a second formula authority
 from appearing in downstream decision or execution code.
 
+
+### OSS numerical and cache ownership
+
+Production Skender 2.7.3 remains the single OSS numerical implementation boundary.
+Fixed Skender settings are owned by `OssIndicatorSettings.Default`; configured
+RSI/MACD periods and minimum-history semantics remain in
+`OssIndicatorParameters`.
+
+`OssIndicatorWarmupPolicy` owns the bounded 768-bar stable window for
+path-dependent adapters. The existing 161-bar rolling window remains the
+bounded input for window-local adapters.
+
+`OssQuoteWindowRule` owns first-index, window-count and rebuild decisions.
+`OssQuoteProjectionRule` owns finite/non-negative quote-volume normalization.
+`OssQuoteSeriesCache` owns the adapter-local cache instance, while
+HistoryLoaded/Reloaded events are the explicit history-replacement invalidation
+boundary.
+
+Stable adapter outputs are allowed documented recursive convergence error after
+bounded truncation; CI compares finite outputs, directional classification and
+publishes max/mean/RMS error. Window-local adapter outputs are expected to match
+the full-prefix last value within the deterministic 1e-12 gate.
+
+Zero-volume source observations remain zero-volume. They are never converted to
+an artificial unit weight.
+
+
 ### Canonical calculation-market context
 
 The calculation runtime owns one `CalculationMarketContext` per live calculation
