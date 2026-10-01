@@ -30,7 +30,7 @@ namespace cAlgo
                                         AdoptServerSideTakeProfitLadder(
                                             planPosition);
 
-                                        bool brokerStopHealthy =
+                                        bool brokerStopValid =
                                             planPosition.StopLoss.HasValue &&
                                             IsExistingManagedStopHealthy(
                                                 direction,
@@ -82,7 +82,7 @@ namespace cAlgo
                                                 atr);
 
                                         bool stopConfirmed =
-                                            brokerStopHealthy;
+                                            brokerStopValid;
 
                                         bool serverLadderTargetValid =
                                             _serverSideTakeProfitLadderActive &&
@@ -112,7 +112,7 @@ namespace cAlgo
                                             double normalizedStop =
                                                 NormalizePrice(desiredStop);
 
-                                            if (!brokerStopHealthy ||
+                                            if (!brokerStopValid ||
                                                 Math.Abs(
                                                     planPosition.StopLoss.Value -
                                                     normalizedStop) >=
@@ -121,7 +121,7 @@ namespace cAlgo
                                                     Symbol.PipSize * 0.25))
                                             {
                                                 bool shouldAdvance =
-                                                    !brokerStopHealthy ||
+                                                    !brokerStopValid ||
                                                     ProtectionProgressionRule.ShouldAdvanceStop(
                                                         direction,
                                                         NormalizePrice(planPosition.StopLoss.Value),
@@ -166,7 +166,7 @@ namespace cAlgo
                                         if (stopConfirmed)
                                         {
                                             if (!stopMutationSucceeded &&
-                                                brokerStopHealthy &&
+                                                brokerStopValid &&
                                                 planPosition.StopLoss.HasValue)
                                             {
                                                 _plan.Stop =
