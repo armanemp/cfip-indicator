@@ -9447,15 +9447,15 @@ namespace cAlgo
                     1,
                     0.80,
                     0.40) &&
-                !MacdBiasRule.IsDirectional(
+                !MacdBiasRule.IsMacdDirectional(
                     1,
                     0.40,
                     0.80) &&
-                MacdBiasRule.IsDirectional(
+                MacdBiasRule.IsMacdDirectional(
                     -1,
                     -0.80,
                     -0.40) &&
-                !MacdBiasRule.IsDirectional(
+                !MacdBiasRule.IsMacdDirectional(
                     -1,
                     -0.40,
                     -0.80),
@@ -9468,7 +9468,7 @@ namespace cAlgo
                 !RangeEfficiencyRule.HasRangeEnoughHistory(
                     19,
                     20) &&
-                RangeEfficiencyRule.HasEnoughHistory(
+                RangeEfficiencyRule.HasRangeEnoughHistory(
                     20,
                     20),
                 "RangeEfficiency requires the full configured interval window");
@@ -9494,7 +9494,7 @@ namespace cAlgo
                 !ChoppinessIndexRule.HasChoppinessEnoughHistory(
                     18,
                     20) &&
-                ChoppinessIndexRule.HasEnoughHistory(
+                ChoppinessIndexRule.HasChoppinessEnoughHistory(
                     19,
                     20),
                 "Choppiness requires the full configured bar window");
@@ -9518,15 +9518,15 @@ namespace cAlgo
                     101,
                     100,
                     1) &&
-                !VwapBiasRule.IsDirectional(
+                !VwapBiasRule.IsVwapDirectional(
                     99,
                     100,
                     1) &&
-                VwapBiasRule.IsDirectional(
+                VwapBiasRule.IsVwapDirectional(
                     99,
                     100,
                     -1) &&
-                !VwapBiasRule.IsDirectional(
+                !VwapBiasRule.IsVwapDirectional(
                     101,
                     100,
                     -1),
