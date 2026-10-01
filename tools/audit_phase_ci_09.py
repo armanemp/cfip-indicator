@@ -97,11 +97,13 @@ check(
 
 check(
     "quality coefficients form explicit normalized weighted sums",
-    "strongestShare * 0.25" in quality and
-    "timeframeAgreement * 0.20" in quality and
-    "independentEvidence * 12.5" in quality and
-    "structuralConfirmations * 16.0" in quality and
-    "indicatorConfluenceQuality, 0, 100" in quality
+    "strongestShare, 0, 100) * 0.25" in quality and
+    "timeframeAgreement, 0, 100) * 0.20" in quality and
+    "normalizedIndependentEvidence * 0.20" in quality and
+    "normalizedStructural * 0.15" in quality and
+    "regimeQuality, 0, 100) * 0.10" in quality and
+    "effectiveRetestQuality * 0.10" in quality and
+    "indicatorConfluenceQuality, 0, 100) * 0.10" in quality
 )
 
 check(
@@ -128,11 +130,14 @@ check(
 )
 
 check(
-    "thresholds consume canonical decision values instead of recomputing score math",
-    "decision.Confidence" in threshold and
-    "decision.Edge" in threshold and
-    "decision.SmartQuality" in threshold and
-    "decision.TimeframeAgreement" in threshold
+    "threshold filters consume canonical decision fields at one explicit mapping boundary",
+    "new DecisionThresholdFilterInput(" in filters and
+    "decision == null ? 0 : decision.Confidence" in filters and
+    "decision == null ? 0 : decision.Edge" in filters and
+    "decision == null ? 0 : decision.SmartQuality" in filters and
+    "decision == null ? 0 : decision.TimeframeAgreement" in filters and
+    "input.Confidence < input.MinimumConfidence" in threshold and
+    "input.Edge < input.MinimumEdge" in threshold
 )
 
 check(
@@ -162,7 +167,7 @@ check(
     "CI-09 continuity is recorded without losing CI-08 historical marker",
     "CI-08 implementation record" in roadmap and
     "Current implementation phase: CI-09" in roadmap and
-    "CI-09 implementation status" in continuation
+    "CI-09 implementation record" in continuation
 )
 
 print("CI-09 DECISION ENGINE MATHEMATICAL INTEGRITY SUMMARY")
