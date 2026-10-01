@@ -97,11 +97,15 @@ check(
 check(
     "obstacle failures have explicit stage rejection reasons",
     "OBSTACLE_SWING" in reasons
+    and "OBSTACLE_EQ" in reasons
     and "OBSTACLE_OPPOSING_ZONE" in reasons
     and "OBSTACLE_HTF_ZONE" in reasons
     and "TargetCandidateRejectionReasons.M5Obstacle" in evaluator
+    and "TargetCandidateRejectionReasons.EqualHighLowObstacle" in validator
     and "TargetCandidateRejectionReasons.OpposingZoneObstacle" in evaluator
-    and "TargetCandidateRejectionReasons.HtfZoneObstacle" in evaluator,
+    and "TargetCandidateRejectionReasons.HtfZoneObstacle" in evaluator
+    and "TargetObstacleEvaluation" in validator
+    and "EvaluateTargetObstacle(" in validator,
 )
 check(
     "unreachable stages are identified before the candidate scan",
