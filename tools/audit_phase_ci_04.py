@@ -29,6 +29,7 @@ frame_scoring = read("src/CFIP.Indicator/Analysis/Market/MarketFrameScoringServi
 struct_confirm = read("src/CFIP.Indicator/Analysis/Market/Decision/StructuralConfirmationAnalyzer.cs")
 context_alerts = read("src/CFIP.Indicator/Trading/Alerts/ContextAlertEmitter.cs")
 alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
+alert_event = read("src/CFIP.Indicator/Core/Runtime/AlertDelivery.cs")
 alert_queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
 alert_processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
@@ -139,6 +140,12 @@ check(
 )
 
 check(
+    "alert delivery event has a dedicated file owner",
+    "internal struct AlertDelivery" in alert_event and
+    "internal struct AlertDelivery" not in alert_queue
+)
+
+check(
     "alert delivery queue remains bounded and priority-aware",
     "_capacity" in alert_queue and
     "if (delivery.Critical)" in alert_queue and
@@ -187,7 +194,8 @@ check(
 check(
     "deterministic alert-delivery queue contract is wired",
     "VerifyAlertDeliveryQueueSemantics();" in runtime and
-    "AlertDeliveryQueue.cs" in runtime_project
+    "AlertDeliveryQueue.cs" in runtime_project and
+    "AlertDelivery.cs" in runtime_project
 )
 
 check(
