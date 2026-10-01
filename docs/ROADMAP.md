@@ -5713,5 +5713,25 @@ Verification:
 - Runtime Acceptance Contracts: **PASS** — run #2104;
 - cTrader Compile: **PASS** — run #2288.
 
-**Next phase: CR7.4 / G4 — Panel execution/protection state semantics.**
+### CR7.4 / G4 — Panel execution/protection state semantics
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Scope completed:
+- added canonical Core execution/protection panel-state semantics;
+- separated Auto Trade/Auto Orders operational state from analysis/reaction readiness;
+- made broker protection presentation reflect broker-confirmed SL/TP state, server TP-ladder ownership and recovery state;
+- routed overview and detailed execution rows through the same state owner;
+- made panel presentation invalidation aware of execution/protection state;
+- added deterministic G4 runtime contracts and a phase-specific static audit.
+
+Safety:
+- no public parameter/default changes;
+- no RR/confidence/SL/TP/execution threshold tuning;
+- no new decision or broker-mutation authority.
+
+Manual boundary:
+- target-terminal panel timing/rendering, broker protection synchronization and restart/reconnect remain manual.
+
+**Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
