@@ -53,6 +53,12 @@ namespace cAlgo
             _lastMtfClosedContext =
                 mtf;
 
+            _calculationMarketContext =
+                BuildCalculationMarketContext(
+                    indexOrLastBar(),
+                    reference,
+                    mtf);
+
             RefreshClosedM1Frame(
                 mtf.M1);
 
