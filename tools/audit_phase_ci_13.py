@@ -37,6 +37,15 @@ materialization = read(
 builder = read(
     "src/CFIP.Indicator/Planning/TradePlan/PlanBuilder.cs"
 )
+execution_rebuild = read(
+    "src/CFIP.Indicator/Trading/Execution/ExecutionPlanPreparation.cs"
+)
+live_fill_reconcile = read(
+    "src/CFIP.Indicator/Trading/Lifecycle/LiveFillExitReconciler.cs"
+)
+live_enrichment = read(
+    "src/CFIP.Indicator/Trading/Lifecycle/LivePlanTargetEnrichment.cs"
+)
 target_builder = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs"
 )
@@ -113,6 +122,37 @@ check(
     "plan metadata no longer infers source from all candidates",
     "ApplyTargetMeta(" not in materialization and
     "List<Level> candidates" not in materialization,
+)
+
+check(
+    "target metadata has one resolver and no proximity-based production owner",
+    metadata.count("ApplyResolvedTargetMeta(") >= 2 and
+    "ApplyTargetMeta(" not in metadata and
+    "List<Level> candidates" not in metadata and
+    "atr * 0.15" not in metadata,
+)
+
+check(
+    "execution rebuild binds TP metadata to selected ladder provenance",
+    "ApplySelectedTargetMeta(" in execution_rebuild and
+    "selected" in execution_rebuild and
+    "ApplyTargetMeta(" not in execution_rebuild,
+)
+
+check(
+    "live-fill reconciliation preserves prior provenance or uses selected source",
+    "ApplyResolvedTargetMeta(" in live_fill_reconcile and
+    "referencePlan?.Tp1Source" in live_fill_reconcile and
+    "ApplyTargetMeta(" not in live_fill_reconcile,
+)
+
+check(
+    "live target enrichment preserves prior provenance or binds selected source",
+    "ApplyResolvedTargetMeta(" in live_enrichment and
+    "existingTp2Source" in live_enrichment and
+    "existingTp3Source" in live_enrichment and
+    "existingTp4Source" in live_enrichment and
+    "ApplyTargetMeta(" not in live_enrichment,
 )
 
 check(
