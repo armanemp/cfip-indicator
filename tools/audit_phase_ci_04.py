@@ -215,15 +215,16 @@ check(
 
 calculate_start = calc_cycle.rfind("public override void Calculate(")
 calculate_body = calc_cycle[calculate_start:] if calculate_start >= 0 else calc_cycle
+live_stage = calculate_body.find("ProcessLiveCalculationStages(")
+delivery_stage = calculate_body.find("ProcessQueuedAlertDelivery();", live_stage)
+completion_stage = calculate_body.rfind("CompleteRuntimeFaultCycle();")
 
 check(
     "Calculate drains alert delivery only after live calculation/presentation",
-    "ProcessLiveCalculationStages(" in calculate_body and
-    "ProcessQueuedAlertDelivery();" in calculate_body and
-    "CompleteRuntimeFaultCycle();" in calculate_body and
-    calculate_body.index("ProcessLiveCalculationStages(") <
-    calculate_body.index("ProcessQueuedAlertDelivery();") <
-    calculate_body.index("CompleteRuntimeFaultCycle();")
+    live_stage >= 0 and
+    delivery_stage >= 0 and
+    completion_stage >= 0 and
+    live_stage < delivery_stage < completion_stage
 )
 
 print("CI-04 STRUCTURE / SWING / LIQUIDITY / ALERT SYNC SUMMARY")
