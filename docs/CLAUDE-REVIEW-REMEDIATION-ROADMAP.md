@@ -1982,7 +1982,34 @@ Manual boundary:
 Historical continuity marker retained for G3 audit:
 > **Current active phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
-**Current active phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.**
+### CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization
+
+Initial state: **SCOPE REQUIRED** after verified G4.
+
+Status: **IMPLEMENTED — repository verification pending.**
+
+Finding confirmed:
+- `BuildPanelPresentationKey` invalidated the G4 execution/protection snapshot on every
+  key calculation, defeating cross-refresh cache reuse.
+
+Implemented boundary:
+- presentation is read-only with respect to cache freshness;
+- broker dirty events and due broker refresh invalidate the snapshot;
+- runtime/lifecycle state changes invalidate centrally;
+- direct block/recovery/server-ladder assignments are guarded against stale derived panel state;
+- the existing one-second broker-state refresh remains the bounded stale-state backstop.
+
+Verification:
+- deterministic G5 Runtime Acceptance contract;
+- dedicated `audit_phase_7_5.py`;
+- accumulated Source/Architecture, Runtime Acceptance and cTrader Compile;
+- target-terminal panel/reconnect responsiveness remains manual.
+
+Safety:
+- no public parameter/default or trading threshold tuning;
+- no second decision/execution/broker-mutation authority.
+
+**Next phase: CR7.6a.**
 
 ### Prompt 6 completion gate
 

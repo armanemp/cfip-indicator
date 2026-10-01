@@ -21,6 +21,7 @@ namespace cAlgo
         private void MarkBrokerStateDirty()
         {
             _brokerStateDirty = true;
+            InvalidatePanelExecutionProtectionStateCache();
         }
 
         private void SynchronizeLiveBrokerState()
@@ -36,6 +37,11 @@ namespace cAlgo
             {
                 return;
             }
+
+            // Bound panel freshness even if the terminal does not surface a
+            // lifecycle event: a due broker refresh invalidates the snapshot
+            // before authoritative broker facts are read again.
+            InvalidatePanelExecutionProtectionStateCache();
 
             _activeBrokerStop = 0;
             _activeBrokerTarget = 0;

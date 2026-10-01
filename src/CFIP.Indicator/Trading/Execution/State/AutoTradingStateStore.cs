@@ -30,15 +30,20 @@ namespace cAlgo
                                             ? ""
                                             : reason.Trim();
 
-                                    if (!string.Equals(
+                                    bool changed =
+                                        !string.Equals(
                                             previousState,
                                             _autoTradingState,
                                             StringComparison.OrdinalIgnoreCase) ||
                                         !string.Equals(
                                             previousReason,
                                             _autoTradingReason,
-                                            StringComparison.OrdinalIgnoreCase))
+                                            StringComparison.OrdinalIgnoreCase);
+
+                                    if (changed)
                                     {
+                                        InvalidatePanelExecutionProtectionStateCache();
+
                                         ArchiveRuntimeExecution(
                                             "AUTO_STATE",
                                             Math.Max(
@@ -123,21 +128,35 @@ namespace cAlgo
 
                                 private void SetAutoTradingRuntimeState(bool enabled, string reason)
                                 {
+                                    bool changed =
+                                        _autoTradingEnabledRuntime != enabled;
+
                                     _autoTradingEnabledRuntime = enabled;
                                     _autoExecutionBlockReason =
                                         string.IsNullOrWhiteSpace(reason)
                                             ? (enabled ? "NOT EVALUATED" : "DISABLED")
                                             : reason;
+
+                                    if (changed)
+                                        InvalidatePanelExecutionProtectionStateCache();
+
                                     SyncQuickExecutionControls();
                                 }
 
         private void SetAutomaticOrdersRuntimeState(bool enabled, string reason)
                                 {
+                                    bool changed =
+                                        _automaticOrdersEnabledRuntime != enabled;
+
                                     _automaticOrdersEnabledRuntime = enabled;
                                     _autoOrdersBlockReason =
                                         string.IsNullOrWhiteSpace(reason)
                                             ? (enabled ? "NOT EVALUATED" : "DISABLED")
                                             : reason;
+
+                                    if (changed)
+                                        InvalidatePanelExecutionProtectionStateCache();
+
                                     SyncQuickExecutionControls();
                                 }
     }

@@ -28,7 +28,8 @@ namespace cAlgo
         private string BuildPanelPresentationKey(
             SignalVisualSnapshot snapshot)
         {
-            InvalidatePanelExecutionProtectionStateCache();
+            // Presentation-key construction is read-only. G5 invalidates the
+            // canonical state snapshot only when an authoritative input changes.
             EnsurePanelExecutionProtectionStateCache();
 
             if (snapshot == null)

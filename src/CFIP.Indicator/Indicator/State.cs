@@ -97,7 +97,7 @@ namespace cAlgo
                 private int _lastServerPartialObservationDealCount = -1;
                 private int _lastServerTpLadderMutationM5 = -1;
                 private string _lastServerTpLadderMutationKind = "";
-                private bool _serverSideTakeProfitLadderActive;
+                private bool _serverSideTakeProfitLadderActiveValue;
                 private bool _serverSideTakeProfitLadderOwned;
                 private bool _serverSideBreakEvenActive;
                 private bool _slHit;
@@ -110,14 +110,82 @@ namespace cAlgo
                 private bool _initializationReady;
                 private string _autoTradingState = "OFF";
                 private string _autoTradingReason = "DISABLED";
-                private string _autoExecutionBlockReason = "NOT EVALUATED";
-                private string _autoOrdersBlockReason = "NOT EVALUATED";
+                private string _autoExecutionBlockReasonValue = "NOT EVALUATED";
+                private string _autoOrdersBlockReasonValue = "NOT EVALUATED";
                 private DateTime _lastAutoTradeAttemptUtc = DateTime.MinValue;
                 private DateTime _lastAutoOrderAttemptUtc = DateTime.MinValue;
                 private bool _autoTradingEnabledRuntime;
                 private bool _automaticOrdersEnabledRuntime;
                 private bool _executionRuntimeInitialized;
                 private bool _executionToggleSyncing;
+
+                private string _autoExecutionBlockReason
+                {
+                    get => _autoExecutionBlockReasonValue;
+                    set
+                    {
+                        string next =
+                            string.IsNullOrWhiteSpace(value)
+                                ? "NOT EVALUATED"
+                                : value;
+
+                        if (string.Equals(
+                                _autoExecutionBlockReasonValue,
+                                next,
+                                StringComparison.Ordinal))
+                            return;
+
+                        _autoExecutionBlockReasonValue = next;
+                        InvalidatePanelExecutionProtectionStateCache();
+                    }
+                }
+
+                private string _autoOrdersBlockReason
+                {
+                    get => _autoOrdersBlockReasonValue;
+                    set
+                    {
+                        string next =
+                            string.IsNullOrWhiteSpace(value)
+                                ? "NOT EVALUATED"
+                                : value;
+
+                        if (string.Equals(
+                                _autoOrdersBlockReasonValue,
+                                next,
+                                StringComparison.Ordinal))
+                            return;
+
+                        _autoOrdersBlockReasonValue = next;
+                        InvalidatePanelExecutionProtectionStateCache();
+                    }
+                }
+
+                private bool _serverSideTakeProfitLadderActive
+                {
+                    get => _serverSideTakeProfitLadderActiveValue;
+                    set
+                    {
+                        if (_serverSideTakeProfitLadderActiveValue == value)
+                            return;
+
+                        _serverSideTakeProfitLadderActiveValue = value;
+                        InvalidatePanelExecutionProtectionStateCache();
+                    }
+                }
+
+                private bool _brokerProtectionRecoveryRequired
+                {
+                    get => _brokerProtectionRecoveryRequiredValue;
+                    set
+                    {
+                        if (_brokerProtectionRecoveryRequiredValue == value)
+                            return;
+
+                        _brokerProtectionRecoveryRequiredValue = value;
+                        InvalidatePanelExecutionProtectionStateCache();
+                    }
+                }
                 private bool _lastConfiguredAutoTrading;
                 private bool _lastConfiguredAutomaticOrders;
                 private bool _outcomeTelemetryTimedOut;
@@ -134,7 +202,7 @@ namespace cAlgo
                 private string _lifecycleReason =
                     "INITIALIZING";
         
-                private bool _brokerProtectionRecoveryRequired;
+                private bool _brokerProtectionRecoveryRequiredValue;
         
                 // Public cTrader parameters are configuration inputs. These private
                 // flags are the single runtime authority used by execution, panel

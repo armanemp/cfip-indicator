@@ -17,11 +17,23 @@ namespace cAlgo
                                     LifecycleState previous =
                                         _lifecycleState;
 
-                                    _lifecycleState = state;
-                                    _lifecycleReason =
+                                    string nextReason =
                                         string.IsNullOrWhiteSpace(reason)
                                             ? state.ToString().ToUpperInvariant()
                                             : reason;
+
+                                    bool changed =
+                                        previous != state ||
+                                        !string.Equals(
+                                            _lifecycleReason,
+                                            nextReason,
+                                            StringComparison.Ordinal);
+
+                                    _lifecycleState = state;
+                                    _lifecycleReason = nextReason;
+
+                                    if (changed)
+                                        InvalidatePanelExecutionProtectionStateCache();
 
                                     if (previous != state &&
                                         (state == LifecycleState.RecoveryRequired ||

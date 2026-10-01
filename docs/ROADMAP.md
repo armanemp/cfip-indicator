@@ -5737,4 +5737,29 @@ Safety/manual boundary:
 - no new decision/execution/broker-mutation authority;
 - target-terminal panel/protection timing remains manual.
 
-**Next phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.**
+### CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization
+
+Status: **IMPLEMENTED — repository verification pending.**
+
+Scope:
+- remove unconditional G4 cache invalidation from the presentation-key builder;
+- drive invalidation from authoritative runtime, lifecycle and broker-state changes;
+- guard direct block/recovery/server-TP-ladder mutations from bypassing snapshot invalidation;
+- retain the existing one-second broker-state refresh as the stale-state backstop;
+- preserve broker enumeration inside the canonical G4 panel-state snapshot owner;
+- add deterministic runtime coverage and the accumulated G5 static audit.
+
+Root cause confirmed from `main`:
+- `BuildPanelPresentationKey` invalidated the G4 panel snapshot before every key calculation;
+- the snapshot therefore did not persist across unchanged panel refresh attempts.
+
+Safety/performance boundary:
+- no public parameter/default changes;
+- no RR/confidence/entry/SL/TP/risk/execution threshold tuning;
+- no new decision/execution/broker-mutation authority;
+- no new broker enumeration;
+- unchanged broker refresh interval remains the freshness backstop.
+
+Repository implementation is on branch `phase/cr7-5-g5-panel-state-freshness`; verification follows through the three repository gates.
+
+**Next phase after G5 closeout: CR7.6a.**
