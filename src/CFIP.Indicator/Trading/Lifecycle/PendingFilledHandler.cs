@@ -60,7 +60,9 @@ namespace cAlgo
             }
 
             Plan priorPlan =
-                _plan;
+                _pendingOrderPlanSnapshot != null
+                    ? _pendingOrderPlanSnapshot
+                    : _plan;
 
             double stop;
             double target;
@@ -126,6 +128,59 @@ namespace cAlgo
 
             _plan.IsLivePosition = true;
 
+            bool fillReconciled =
+                ReconcileLivePlanToActualFill(
+                    args.Position,
+                    closedM5,
+                    priorPlan);
+
+            if (!fillReconciled)
+            {
+                _brokerProtectionRecoveryRequired = true;
+                SetLifecycleState(
+                    LifecycleState.RecoveryRequired,
+                    "PENDING FILL • ABSOLUTE EXIT RECONCILIATION FAILED");
+
+                _autoExecutionBlockReason =
+                    "PENDING FILL • ABSOLUTE EXIT RECONCILIATION FAILED";
+
+                SendUnifiedAlert(
+                    "PENDING-FILL-RECONCILIATION-FAILED|" +
+                    args.Position.Id,
+                    "CFIP PENDING FILL • EXIT RECONCILIATION FAILED | #" +
+                    args.Position.Id,
+                    direction,
+                    true);
+
+                return;
+            }
+
+            stop = _plan.Stop;
+            target =
+                AutoTarget(
+                    _plan,
+                    EffectiveAutoTpStage());
+
+            protectionMissing =
+                !args.Position.StopLoss.HasValue ||
+                !IsFinitePositive(
+                    args.Position.StopLoss.Value) ||
+                !IsValidManagedStop(
+                    direction,
+                    args.Position.EntryPrice,
+                    Symbol.Bid > 0 && direction == 1
+                        ? Symbol.Bid
+                        : Symbol.Ask,
+                    args.Position.StopLoss.Value) ||
+                (!_serverSideTakeProfitLadderActive &&
+                 (!args.Position.TakeProfit.HasValue ||
+                  !IsFinitePositive(
+                      args.Position.TakeProfit.Value) ||
+                  !IsValidTarget(
+                      direction,
+                      args.Position.EntryPrice,
+                      args.Position.TakeProfit.Value)));
+
             ApplyPendingFillProtection(
                 args.Position,
                 stop,
@@ -134,6 +189,9 @@ namespace cAlgo
                 protectionMissing);
 
             EnrichLivePlanTargets(closedM5);
+
+            if (!_brokerProtectionRecoveryRequired)
+                ClearPendingOrderPlanSnapshot();
 
             SendUnifiedAlert(
                 "PENDING-FILLED|" +
