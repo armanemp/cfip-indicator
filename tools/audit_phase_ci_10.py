@@ -166,9 +166,9 @@ check(
 
 check(
     "CI-10 continuity and phase record are documented",
-    "CI-10 implementation record" in roadmap and
     "CI-10 — Trigger and trigger-lifecycle audit" in roadmap and
-    "CI-10 implementation record" in continuation
+    "CI-10 implementation record" in continuation and
+    "PHASE-CI-10-TRIGGER-LIFECYCLE.md" in roadmap
 )
 
 print("CI-10 TRIGGER / TRIGGER-LIFECYCLE INTEGRITY SUMMARY")
