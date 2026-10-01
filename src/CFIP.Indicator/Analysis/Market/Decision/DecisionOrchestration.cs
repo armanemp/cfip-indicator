@@ -17,7 +17,6 @@ namespace cAlgo
                 new DecisionReasonBuilder();
 
         private Decision BuildDecision(
-            int chartIndex,
             int closedM5,
             DateTime reference,
             MtfClosedContext closedContext)
