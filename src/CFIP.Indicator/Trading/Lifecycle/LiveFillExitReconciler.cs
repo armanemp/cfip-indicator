@@ -12,7 +12,8 @@ namespace cAlgo
             int direction,
             double actualEntry,
             double atr,
-            Position position)
+            Position position,
+            Plan absoluteReferencePlan = null)
         {
             if (_plan == null ||
                 position == null ||
@@ -29,11 +30,38 @@ namespace cAlgo
             if (!IsFinitePositive(market))
                 return false;
 
-            double oldStop = _plan.Stop;
-            double oldTp1 = _plan.Tp1;
-            double oldTp2 = _plan.Tp2;
-            double oldTp3 = _plan.Tp3;
-            double oldTp4 = _plan.Tp4;
+            Plan referencePlan =
+                absoluteReferencePlan ?? _plan;
+
+            double oldStop =
+                referencePlan != null &&
+                IsFinitePositive(referencePlan.Stop)
+                    ? referencePlan.Stop
+                    : _plan.Stop;
+
+            double oldTp1 =
+                referencePlan != null &&
+                IsFinitePositive(referencePlan.Tp1)
+                    ? referencePlan.Tp1
+                    : _plan.Tp1;
+
+            double oldTp2 =
+                referencePlan != null &&
+                IsFinitePositive(referencePlan.Tp2)
+                    ? referencePlan.Tp2
+                    : _plan.Tp2;
+
+            double oldTp3 =
+                referencePlan != null &&
+                IsFinitePositive(referencePlan.Tp3)
+                    ? referencePlan.Tp3
+                    : _plan.Tp3;
+
+            double oldTp4 =
+                referencePlan != null &&
+                IsFinitePositive(referencePlan.Tp4)
+                    ? referencePlan.Tp4
+                    : _plan.Tp4;
 
             string stopSource =
                 _plan.StopSource ?? "";
@@ -49,14 +77,37 @@ namespace cAlgo
                     out string structuralStopSource,
                     out int structuralStopQuality);
 
-            double candidateStop = oldStop;
+            double minimumStopDistance =
+                Math.Max(
+                    Symbol.TickSize,
+                    MinimumProtectionDistancePriceForDirection(
+                        direction));
+
+            double brokerStop =
+                position.StopLoss.HasValue
+                    ? position.StopLoss.Value
+                    : 0;
+
+            PendingFillExitResolution stopResolution =
+                PendingFillExitResolutionRule.ResolveProtectiveStop(
+                    direction,
+                    actualEntry,
+                    market,
+                    oldStop,
+                    brokerStop,
+                    minimumStopDistance);
+
+            double candidateStop =
+                stopResolution.Allowed
+                    ? NormalizePrice(stopResolution.Price)
+                    : oldStop;
 
             bool oldStopManaged =
                 IsValidManagedStop(
                     direction,
                     actualEntry,
                     market,
-                    oldStop);
+                    candidateStop);
 
             bool structuralStopManaged =
                 IsValidManagedStop(
@@ -131,11 +182,35 @@ namespace cAlgo
                     atr,
                     _plan.Lane);
 
+            double targetSpacing =
+                MinimumLiveTargetDistancePrice(
+                    direction,
+                    atr);
+
+            double brokerTarget =
+                position.TakeProfit.HasValue
+                    ? position.TakeProfit.Value
+                    : 0;
+
+            PendingFillExitResolution targetResolution =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    direction,
+                    actualEntry,
+                    market,
+                    oldTp1,
+                    brokerTarget,
+                    targetSpacing);
+
+            double reconciledTp1 =
+                targetResolution.Allowed
+                    ? targetResolution.Price
+                    : oldTp1;
+
             double candidateTp1 =
                 SelectLiveFillTarget(
                     selected,
                     0,
-                    oldTp1,
+                    reconciledTp1,
                     actualEntry,
                     market,
                     direction,
