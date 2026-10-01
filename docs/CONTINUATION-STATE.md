@@ -23,9 +23,9 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-04 — Structure / swing / liquidity semantics — 2026-10-01**
+**CI-05 — FVG lifecycle — 2026-10-01**
 
-Status: **IN IMPLEMENTATION — structure/liquidity semantics and alert-delivery synchronization are being hardened and verified.**
+Status: **NEXT — specified and ready to implement. CI-04 is verified complete and merged.**
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
@@ -36,6 +36,31 @@ CI-03 repository verification:
 - cTrader Compile/Build PASS — workflow run 36914354223.
 
 **Next implementation phase: CI-04 — Structure / swing / liquidity semantics.**
+
+### CI-04 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #158 merged to `main` as `111fc315c39df3a42923e0841fb444402593bcb1`.**
+
+Completed:
+- canonical swing plateau, confirmation and structural break freshness;
+- repeated re-break rejection for already-crossed confirmed levels;
+- active/unbroken liquidity sweep validation with BUY/SELL symmetry;
+- canonical Structure/MSS/CHOCH event de-duplication;
+- unified bounded alert delivery queue for sound and popup;
+- popup-before-sound ordering on the same queued event at calculation/timer delivery boundaries;
+- direct sound ownership removed from `AlertEngine`;
+- explicit restriction diagnostics restored as configuration-gated alert delivery;
+- deterministic Runtime Acceptance and accumulated CI-04 static audit wired after CI-03.
+
+Verification on final PR head `6fc30590e1a041669b4430d3dbc90645b96f30b3`:
+- Source/Architecture PASS — run #2464;
+- Runtime Acceptance Contracts PASS — run #2273;
+- cTrader Compile PASS — run #2457.
+
+Manual boundary: actual cTrader audio latency/render synchronization, burst behavior,
+external callback timing and replay-level structural event rates remain pending target-terminal validation.
+
+**Next implementation phase: CI-05 — FVG lifecycle.**
 
 ### Historical remediation closeouts
 
