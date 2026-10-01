@@ -145,6 +145,7 @@ namespace cAlgo
                                         now,
                                         playSound,
                                         soundType,
+                                        soundType.ToString(),
                                         SoundFilePath,
                                         showPopup));
                             }
