@@ -89,6 +89,24 @@ namespace cAlgo
             _plan.PositionId =
                 args.Position.Id;
 
+            if (priorPlan != null)
+            {
+                _plan.Lane = priorPlan.Lane;
+                _plan.EntryMode = priorPlan.EntryMode;
+                _plan.IdealEntry = priorPlan.IdealEntry;
+                _plan.EntryZoneLow = priorPlan.EntryZoneLow;
+                _plan.EntryZoneHigh = priorPlan.EntryZoneHigh;
+                _plan.EntryTrigger = priorPlan.EntryTrigger;
+                _plan.EntryInvalidation = priorPlan.EntryInvalidation;
+                _plan.EntryQuality = priorPlan.EntryQuality;
+                _plan.EntrySource = priorPlan.EntrySource;
+                _plan.CreatedM5 = priorPlan.CreatedM5;
+                _plan.SignalBarOpenTimeUtcTicks =
+                    priorPlan.SignalBarOpenTimeUtcTicks;
+                _plan.SignalTraceId =
+                    priorPlan.SignalTraceId;
+            }
+
             AdoptServerSideTakeProfitLadder(
                 args.Position);
 
