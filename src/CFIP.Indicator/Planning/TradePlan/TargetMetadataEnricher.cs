@@ -13,63 +13,67 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ApplyTargetMeta(
-            List<Level> candidates,
+        private void ApplyResolvedTargetMeta(
+            List<Level> selected,
+            int stage,
             double target,
-            double atr,
+            double previousTarget,
+            string previousSource,
+            int previousQuality,
             out string source,
             out int quality)
         {
-            source =
-                target > 0
-                    ? "RR"
-                    : "";
+            source = "";
+            quality = 0;
 
-            quality =
-                target > 0
-                    ? 55
-                    : 0;
-
-            if (target <= 0 ||
-                candidates == null ||
-                atr <= 0)
+            if (!IsFinitePositive(target))
                 return;
 
-            Level best = null;
-            double bestDistance = double.MaxValue;
+            Level selectedSource =
+                selected != null &&
+                stage >= 0 &&
+                stage < selected.Count
+                    ? selected[stage]
+                    : null;
 
-            for (int i = 0; i < candidates.Count; i++)
-            {
-                Level candidate =
-                    candidates[i];
-
-                if (candidate == null)
-                    continue;
-
-                double distance =
-                    Math.Abs(
-                        candidate.Price -
-                        target);
-
-                if (distance <= atr * 0.15 &&
-                    distance < bestDistance)
-                {
-                    best =
-                        candidate;
-
-                    bestDistance =
-                        distance;
-                }
-            }
-
-            if (best != null)
+            if (selectedSource != null &&
+                IsFinitePositive(selectedSource.Price) &&
+                Math.Abs(
+                    selectedSource.Price -
+                    target) <=
+                Math.Max(
+                    Symbol.TickSize,
+                    Symbol.PipSize * 0.25))
             {
                 source =
-                    BuildTargetSourceIdentity(best);
+                    BuildTargetSourceIdentity(
+                        selectedSource);
 
                 quality =
-                    CalculateTargetQuality(best);
+                    CalculateTargetQuality(
+                        selectedSource);
+
+                return;
             }
+
+            if (IsFinitePositive(previousTarget) &&
+                Math.Abs(
+                    previousTarget -
+                    target) <=
+                Math.Max(
+                    Symbol.TickSize,
+                    Symbol.PipSize * 0.25) &&
+                !string.IsNullOrWhiteSpace(previousSource))
+            {
+                source = previousSource;
+                quality = ClampInt(previousQuality, 0, 100);
+                return;
+            }
+
+            // A resolved target without an authoritative selected source is
+            // explicitly synthetic. Never infer a real source from proximity.
+            source = "SYNTHETIC_RR";
+            quality = 55;
         }
 
         private void ApplySelectedTargetMeta(
