@@ -74,11 +74,10 @@ private bool ClosedBarTriggerReady(
                                         index);
                 
                             int requiredTrigger =
-                                UsePrecisionExecutionModel
-                                    ? Math.Max(
-                                        LiveTriggerScore,
-                                        PrecisionTriggerScore)
-                                    : LiveTriggerScore;
+                                TriggerThresholdRule.ResolveRequiredScore(
+                                    UsePrecisionExecutionModel,
+                                    LiveTriggerScore,
+                                    PrecisionTriggerScore);
                 
                             double breakLevel =
                                 direction == 1
@@ -140,8 +139,9 @@ private bool ClosedBarTriggerReady(
                             }
                 
                             return
-                                trigger >=
-                                requiredTrigger &&
+                                TriggerThresholdRule.IsScoreReady(
+                                    trigger,
+                                    requiredTrigger) &&
                                 breakReady;
                         }
     }

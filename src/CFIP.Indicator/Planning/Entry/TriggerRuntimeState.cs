@@ -13,6 +13,7 @@ namespace cAlgo
         public bool Ready;
         public bool Latched;
         public int ConfirmedM1 = -1;
+        public long ConfirmationRevision;
         public string Reason = "WAITING";
         public DateTime UpdatedUtc = DateTime.MinValue;
 

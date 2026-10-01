@@ -6339,4 +6339,31 @@ Phase record: `docs/PHASE-CI-09-DECISION-MATHEMATICS.md`.
 
 Verification is recorded above from the exact GitHub workflow results for implementation head `36df49e0e76d9e07af5a7b1ccb7beb764928cc1a`. Target-terminal replay remains the empirical boundary.
 
-**Next phase after CI-09 verification: CI-10 — Gate/threshold semantic audit.**
+
+
+### CI-10 — Trigger and trigger-lifecycle audit — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — automated verification pending on the exact implementation head.**
+
+Completed:
+- canonical TriggerThresholdRule for Live/Precision trigger-score resolution and fail-closed score readiness;
+- canonical TriggerLifecycleRule for M5/direction reset identity, live-M1 causal-window eligibility, one-time confirmation recording and TriggerReady propagation;
+- live M1 confirmation restricted to the currently-forming M5 after the selected closed-M5 decision;
+- explicit monotonic ConfirmationRevision with confirmation expiry on decision-M5/direction reset;
+- trigger runtime state refresh now preserves the previous closed-M1 index for correct frame rebuild decisions;
+- fresh-trigger evidence remains prior-bar based and direct displacement override remains scoped to the existing fresh-M5 exception;
+- deterministic CI-10 runtime contracts and tools/audit_phase_ci_10.py added and wired immediately after CI-09.
+
+Safety/performance:
+- no public parameter name/type/DefaultValue changed;
+- no trigger, displacement, fresh-evidence, RR, confidence, Entry, SL, TP, risk or execution threshold tuned;
+- no second decision/plan/broker-mutation authority introduced;
+- no broker enumeration, network I/O or unbounded cache added.
+
+Verification:
+- no CI-10 PASS is claimed until the exact branch head passes Source/Architecture, Runtime Acceptance and cTrader Compile workflows.
+
+Phase record: docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md.
+
+**Current implementation phase: CI-10 — Trigger and trigger-lifecycle audit.**
+**Next phase after CI-10 verification: CI-11 — Entry geometry and signal-timing audit.**

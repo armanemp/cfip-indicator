@@ -2795,3 +2795,24 @@ No public parameter/default, confidence/RR/SL/TP/risk/execution threshold or bro
 
 PR #164 merged to `main` as `58d0ef85b2960ac9c706aad120d5f89ffd377946`.
 Final verification: Source/Architecture #2560 PASS; Runtime Acceptance Contracts #2369 PASS; cTrader Compile #2553 PASS. The accumulated CI-09 static audit passed. Next phase: **CI-10 — Gate/threshold semantic audit**.
+
+## 2026-10-02 — CI-10 Trigger / Trigger-Lifecycle Audit
+
+CI-10 implementation moved trigger-threshold and trigger-lifecycle semantics behind canonical Core owners.
+
+Completed:
+- added TriggerThresholdRule for Live/Precision trigger-score resolution and fail-closed readiness;
+- added TriggerLifecycleRule for active-M5 M1 confirmation eligibility, M5/direction reset identity, one-time confirmation recording and TriggerReady propagation;
+- prevented live runtime from accepting an M1 bar belonging to the already-closed decision M5;
+- added monotonic TriggerRuntimeState.ConfirmationRevision and explicit confirmation expiry/reset behavior;
+- corrected M1 runtime frame-refresh state ordering so the previous closed-M1 index is compared before it is replaced;
+- added deterministic CI-10 Runtime Acceptance coverage;
+- added tools/audit_phase_ci_10.py and accumulated it immediately after CI-09 in Source/Architecture workflow;
+- reconciled the accumulated architecture audit with the canonical trigger-threshold owner;
+- updated ROADMAP.md, CONTINUATION-STATE.md and the CI-10 phase record.
+
+Verification status:
+- Runtime Acceptance was observed PASS for the initial CI-10 head;
+- Source/Architecture initially failed on the pre-CI-10 legacy threshold assertion in verify_architecture.py; that audit was reconciled to the canonical owner;
+- a new exact-head verification cycle is required before CI-10 can be marked VERIFIED.
+

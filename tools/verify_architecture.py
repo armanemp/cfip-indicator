@@ -109,7 +109,7 @@ for token in (
     "body < atr * minimumBodyAtr",
     "range > atr * maximumRangeAtr",
     "location < minimumCloseLocation",
-    "triggerScore >= requiredTrigger",
+    "TriggerThresholdRule.IsScoreReady(",
 ):
     if token not in m1_rule_code:
         raise SystemExit(f"M1 trigger rule missing deterministic condition: {token}")
@@ -2769,8 +2769,8 @@ if re.search(
     re.DOTALL,
 ):
     raise SystemExit("Phase 7.1: Live/precision trigger threshold is hidden behind a hard floor of 4")
-if "trigger >=\n                                requiredTrigger" not in TRIGGER_READY_CODE:
-    raise SystemExit("Phase 7.1: trigger threshold must consume the effective user-facing requiredTrigger")
+if "TriggerThresholdRule.IsScoreReady(" not in TRIGGER_READY_CODE:
+    raise SystemExit("Phase 7.1: trigger threshold must consume the canonical effective user-facing requiredTrigger")
 
 LIVE_TARGET = ROOT / "Trading" / "LiveManagement" / "LiveTargetCandidateEvaluator.cs"
 LIVE_TARGET_CODE = LIVE_TARGET.read_text(encoding="utf-8")
