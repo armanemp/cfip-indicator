@@ -1970,7 +1970,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR7.3 / G3 — Display parameter truth for plan-line thickness/style**.
+Current active phase: **CR7.4 / G4 — Panel execution/protection state semantics**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 
