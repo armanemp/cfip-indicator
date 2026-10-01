@@ -25,12 +25,13 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 **CI-03 — Indicator fusion / correlation / evidence independence — 2026-10-01**
 
-Status: **IMPLEMENTED — final repository gates pending.**
+Status: **VERIFIED COMPLETE — PR #157 merged pending closeout.**
 
 Current implementation branch:
 `phase/ci-03-indicator-fusion-evidence-independence`
 
 CI-02 is verified complete and merged to `main` as `863d759cc4e520cb8193312669e74224646a8f45`.
+CI-03 is verified complete on PR #157; final implementation head `feb87be7620326cc6af92077d6089ec63d94b28b`.
 Final CI-02 implementation head: `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`.
 
 CI-02 repository verification:
