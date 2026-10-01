@@ -231,6 +231,9 @@ namespace cAlgo
                         CreatedM5 = _plan.CreatedM5,
                         Entry = _plan.Entry,
                         IdealEntry = _plan.IdealEntry,
+                        ZoneLow = _plan.EntryZoneLow,
+                        ZoneHigh = _plan.EntryZoneHigh,
+                        ZoneTolerance = _plan.EntryZoneTolerance,
                         Trigger = _plan.EntryTrigger,
                         Invalidation = _plan.EntryInvalidation,
                         Stop = _plan.Stop,
@@ -346,6 +349,9 @@ namespace cAlgo
                 result.DivergenceType;
             _decision.ActionabilityReason =
                 reason;
+
+            UpdateEntrySignalTiming(
+                closedM5);
         }
 
         private void ResetLiveActionability(

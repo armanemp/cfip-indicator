@@ -54,6 +54,8 @@ namespace cAlgo
                                         NormalizePrice(low);
                                     model.ZoneHigh =
                                         NormalizePrice(high);
+                                    model.ZoneTolerance =
+                                        Math.Max(0, tolerance);
                                     model.IdealEntry =
                                         NormalizePrice(ideal);
                                     model.Trigger =

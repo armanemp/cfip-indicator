@@ -370,6 +370,14 @@ namespace cAlgo
                 private readonly AggressiveEntryPolicy _aggressiveEntryPolicy =
                     new AggressiveEntryPolicy();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+
+                // CI-11 timing state: one measurement per causal decision/M1
+                // confirmation identity. This is observability only and does not
+                // participate in trading eligibility.
+                private int _entryTimingM5 = -1;
+                private int _entryTimingDirection = 0;
+                private EntrySignalTiming _entrySignalTiming =
+                    EntrySignalTiming.NotMeasured();
         private string _lastPanelPresentationKey = "";
         private int _panelLiveRow = -1;
         private int _panelPositionRow = -1;

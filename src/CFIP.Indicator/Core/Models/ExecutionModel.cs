@@ -8,6 +8,7 @@ namespace cAlgo
                         public double ActualEntry;
                         public double ZoneLow;
                         public double ZoneHigh;
+                        public double ZoneTolerance;
                         public double Trigger;
                         public double Invalidation;
                         public int Quality;

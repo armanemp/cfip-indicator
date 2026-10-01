@@ -36,78 +36,46 @@ namespace cAlgo
                 return TradeActionabilityResult.Blocked(
                     "QUOTE UNAVAILABLE");
 
-            bool insideZone =
-                market >= execution.ZoneLow &&
-                market <= execution.ZoneHigh;
-
-            bool triggerReached =
-                IsTriggerReached(
-                    direction,
-                    market,
-                    execution.Trigger);
-
             bool continuation =
                 IsContinuationExecutionContext(direction);
 
-            bool qualityReady =
-                !RequirePrecisionEntry ||
-                execution.Quality >=
-                ActionabilityThresholdPolicy.EffectivePrecisionEntryQualityFloor(
-                    MinimumEntryQuality);
-
-            ExecutionMode liveMode;
-
-            if (triggerReached &&
-                AllowPrecisionBreakoutEntry)
-            {
-                liveMode = ExecutionMode.BreakoutMarket;
-            }
-            else if (continuation)
-            {
-                liveMode = ExecutionMode.WaitingForTrigger;
-            }
-            else if (insideZone)
-            {
-                liveMode = ExecutionMode.RetestMarket;
-            }
-            else
-            {
-                liveMode = ExecutionMode.None;
-            }
-
-            double anchor =
-                EntryActionabilityPolicy.ResolveAnchor(
-                    liveMode,
-                    execution.Trigger,
+            EntryGeometrySnapshot geometry =
+                EntryGeometryRule.Evaluate(
+                    direction,
+                    ExecutionMode.None,
+                    market,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    execution.ZoneTolerance,
                     execution.IdealEntry,
-                    preview.Entry);
+                    execution.Trigger,
+                    preview.Entry,
+                    atr,
+                    Symbol.TickSize,
+                    Symbol.PipSize,
+                    AllowPrecisionBreakoutEntry,
+                    continuation,
+                    MaximumEntryExtensionAtr,
+                    MaximumEntryDistanceAtr);
+
+            if (!geometry.IsValid)
+                return TradeActionabilityResult.Blocked(
+                    geometry.Reason);
+
+            bool insideZone =
+                geometry.InsideZone;
+
+            ExecutionMode liveMode =
+                geometry.Mode;
 
             double entryDistanceAtr =
-                Math.Abs(
-                    market - anchor) /
-                atr;
-
-            double distanceFromZone =
-                insideZone
-                    ? 0
-                    : direction == 1
-                        ? market < execution.ZoneLow
-                            ? execution.ZoneLow - market
-                            : market - execution.ZoneHigh
-                        : market > execution.ZoneHigh
-                            ? market - execution.ZoneHigh
-                            : execution.ZoneLow - market;
+                geometry.EntryDistanceAtr;
 
             double zoneDistanceAtr =
-                Math.Max(
-                    0,
-                    distanceFromZone / atr);
+                geometry.ZoneDistanceAtr;
 
             double actualEntry =
-                EntryActionabilityPolicy.ResolveActualEntry(
-                    liveMode,
-                    market,
-                    preview.Entry);
+                geometry.ActualEntry;
 
             double risk =
                 Math.Abs(
@@ -125,6 +93,12 @@ namespace cAlgo
                         actualEntry) /
                       risk
                     : 0;
+
+            bool qualityReady =
+                !RequirePrecisionEntry ||
+                execution.Quality >=
+                ActionabilityThresholdPolicy.EffectivePrecisionEntryQualityFloor(
+                    MinimumEntryQuality);
 
             PlanRewardRiskQualityResult rewardRisk =
                 PlanRewardRiskQualityRule.Evaluate(
@@ -210,26 +184,10 @@ namespace cAlgo
                         entryDistanceAtr * 45));
 
             double triggerExtensionAtr =
-                liveMode ==
-                    ExecutionMode.BreakoutMarket &&
-                IsFinitePositive(execution.Trigger) &&
-                ((direction == 1 &&
-                  market > execution.Trigger) ||
-                 (direction == -1 &&
-                  market < execution.Trigger))
-                    ? Math.Abs(
-                        market -
-                        execution.Trigger) /
-                      atr
-                    : 0;
+                geometry.TriggerExtensionAtr;
 
             bool late =
-                EntryActionabilityPolicy.IsLate(
-                    liveMode,
-                    triggerExtensionAtr,
-                    entryDistanceAtr,
-                    MaximumEntryExtensionAtr,
-                    MaximumEntryDistanceAtr);
+                geometry.IsLate;
 
             bool retestTrapContext =
                 liveMode == ExecutionMode.RetestMarket &&

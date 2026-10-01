@@ -13,6 +13,7 @@ namespace cAlgo
         public bool Ready;
         public bool Latched;
         public int ConfirmedM1 = -1;
+        public DateTime ConfirmationUtc = DateTime.MinValue;
         public long ConfirmationRevision;
         public string Reason = "WAITING";
         public DateTime UpdatedUtc = DateTime.MinValue;
@@ -30,6 +31,7 @@ namespace cAlgo
             Ready = false;
             Latched = false;
             ConfirmedM1 = -1;
+            ConfirmationUtc = DateTime.MinValue;
             Reason = "WAITING";
             UpdatedUtc = DateTime.MinValue;
         }

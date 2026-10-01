@@ -34,23 +34,24 @@ namespace cAlgo
                                             closedM5,
                                             direction);
 
-                                    bool inside =
-                                        market >= low - tolerance &&
-                                        market <= high + tolerance;
-
-                                    bool triggerReached =
-                                        IsTriggerReached(
+                                    EntryGeometrySnapshot geometry =
+                                        EntryGeometryRule.Evaluate(
                                             direction,
+                                            ExecutionMode.None,
                                             market,
-                                            model.Trigger);
-
-                                    bool continuation =
-                                        IsContinuationExecutionContext(direction);
-
-                                    bool retestReady =
-                                        EntryActionabilityPolicy.IsRetestReady(
-                                            inside,
-                                            triggerReached);
+                                            low,
+                                            high,
+                                            tolerance,
+                                            ideal,
+                                            model.Trigger,
+                                            0,
+                                            atr,
+                                            Symbol.TickSize,
+                                            Symbol.PipSize,
+                                            AllowPrecisionBreakoutEntry,
+                                            IsContinuationExecutionContext(direction),
+                                            MaximumEntryExtensionAtr,
+                                            MaximumEntryDistanceAtr);
 
                                     bool qualityReady =
                                         !RequirePrecisionEntry ||
@@ -59,62 +60,21 @@ namespace cAlgo
                                             EntryActionabilityPolicy.ExecutionZoneQualityFloor,
                                             MinimumEntryQuality);
 
-                                    if (triggerReached &&
-                                        AllowPrecisionBreakoutEntry)
-                                    {
-                                        model.Mode =
-                                            ExecutionMode.BreakoutMarket;
-                        
-                                        model.ActualEntry =
-                                            market;
-                        
-                                        model.Ready =
-                                            qualityReady &&
-                                            Math.Abs(
-                                                market -
-                                                model.Trigger) <=
-                                            atr *
-                                            Math.Max(
-                                                EntryActionabilityPolicy.BreakoutLateExtensionFloorAtr,
-                                                MaximumEntryExtensionAtr);
-                                    }
-                                    else if (continuation)
-                                    {
-                                        model.Mode =
-                                            ExecutionMode.WaitingForTrigger;
-                        
-                                        model.ActualEntry = 0;
-                                        model.Ready = false;
-                                    }
-                                    else if (retestReady)
-                                    {
-                                        model.Mode =
-                                            ExecutionMode.RetestMarket;
-                        
-                                        model.ActualEntry =
-                                            market;
-                        
-                                        model.Ready =
-                                            qualityReady &&
-                                            Math.Abs(
-                                                market -
-                                                model.IdealEntry) <=
-                                            atr *
-                                            Math.Max(
-                                                EntryActionabilityPolicy.RetestLateDistanceFloorAtr,
-                                                MaximumEntryDistanceAtr) &&
-                                            (retest >= MinimumRetestQuality ||
-                                             !RequireRetestQuality);
-                                    }
-                                    else
-                                    {
-                                        model.Mode =
-                                            ExecutionMode.None;
-                        
-                                        model.ActualEntry = 0;
-                                        model.Ready = false;
-                                    }
-                        
+                                    model.ZoneTolerance =
+                                        geometry.ZoneTolerance;
+                                    model.Mode =
+                                        geometry.Mode;
+                                    model.ActualEntry =
+                                        geometry.ActualEntry;
+                                    model.Ready =
+                                        qualityReady &&
+                                        !geometry.IsLate &&
+                                        ((geometry.Mode ==
+                                          ExecutionMode.BreakoutMarket) ||
+                                         (geometry.Mode ==
+                                          ExecutionMode.RetestMarket &&
+                                          (retest >= MinimumRetestQuality ||
+                                           !RequireRetestQuality)));
                                     model.Quality = quality;
                                     model.Source = source;
                         

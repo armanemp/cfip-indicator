@@ -32,14 +32,28 @@ namespace cAlgo
                                         reason = "INVALID MARKET";
                                         return false;
                                     }
-                        
+
+                                    CanonicalPriceSnapshot priceSnapshot =
+                                        GetCanonicalPriceSnapshot();
+
+                                    if (priceSnapshot == null ||
+                                        !priceSnapshot.IsQuoteValid ||
+                                        !IsFinitePositive(priceSnapshot.TickSize) ||
+                                        !IsFinitePositive(priceSnapshot.PipSize))
+                                    {
+                                        reason = "INVALID CANONICAL PRICE";
+                                        return false;
+                                    }
+
                                     if (plan.EntryMode ==
                                         ExecutionMode.BreakoutMarket)
                                     {
-                                        if (!IsTriggerReached(
+                                        if (!EntryGeometryRule.IsTriggerReached(
                                                 plan.Direction,
                                                 market,
-                                                plan.EntryTrigger))
+                                                plan.EntryTrigger,
+                                                priceSnapshot.TickSize,
+                                                priceSnapshot.PipSize))
                                         {
                                             reason = "WAITING FOR TRIGGER";
                                             return false;
@@ -51,28 +65,11 @@ namespace cAlgo
                                     if (plan.EntryMode ==
                                         ExecutionMode.RetestMarket)
                                     {
-                                        CanonicalPriceSnapshot priceSnapshot =
-                            GetCanonicalPriceSnapshot();
-
-                        if (priceSnapshot == null ||
-                            !priceSnapshot.IsQuoteValid)
-                        {
-                            reason =
-                                "NO CANONICAL MARKET QUOTE";
-                            return false;
-                        }
-
-                        double tolerance =
-                            Math.Max(
-                                priceSnapshot.TickSize,
-                                Math.Max(
-                                    priceSnapshot.PipSize,
-                                    priceSnapshot.Spread));
-                        
-                                        if (market <
-                                                plan.EntryZoneLow - tolerance ||
-                                            market >
-                                                plan.EntryZoneHigh + tolerance)
+                                        if (!EntryGeometryRule.IsInsideZone(
+                                                market,
+                                                plan.EntryZoneLow,
+                                                plan.EntryZoneHigh,
+                                                plan.EntryZoneTolerance))
                                         {
                                             reason = "OUTSIDE RETEST ZONE";
                                             return false;
@@ -99,6 +96,18 @@ namespace cAlgo
                 !IsFinitePositive(plan.Entry))
             {
                 reason = "INVALID FILL";
+                return false;
+            }
+
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsQuoteValid ||
+                !IsFinitePositive(priceSnapshot.TickSize) ||
+                !IsFinitePositive(priceSnapshot.PipSize))
+            {
+                reason = "INVALID CANONICAL PRICE";
                 return false;
             }
 
@@ -130,10 +139,12 @@ namespace cAlgo
                     return false;
                 }
 
-                if (!IsTriggerReached(
+                if (!EntryGeometryRule.IsTriggerReached(
                         plan.Direction,
                         fillPrice,
-                        plan.EntryTrigger))
+                        plan.EntryTrigger,
+                        priceSnapshot.TickSize,
+                        priceSnapshot.PipSize))
                 {
                     reason =
                         "BREAKOUT FILL • SLIPPAGE ACCEPTED";

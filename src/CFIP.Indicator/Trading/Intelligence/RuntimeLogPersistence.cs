@@ -253,6 +253,52 @@ namespace cAlgo
                     : (DateTime?)null);
         }
 
+        private void ArchiveRuntimeEntrySignalTiming(
+            int m5,
+            int direction,
+            EntrySignalTiming timing,
+            string traceId)
+        {
+            if (!timing.Measured)
+                return;
+
+            ArchiveRuntimeEvent(
+                "ACTIONABILITY_TIMING",
+                m5,
+                "SIGNAL",
+                "MEASURED",
+                "CAUSAL_UTC_TICKS=" +
+                timing.CausalEventUtcTicks.ToString(
+                    CultureInfo.InvariantCulture) +
+                ";ACTIONABLE_UTC_TICKS=" +
+                timing.ActionableUtcTicks.ToString(
+                    CultureInfo.InvariantCulture) +
+                ";LATENCY_MS=" +
+                timing.LatencyMilliseconds.ToString(
+                    CultureInfo.InvariantCulture),
+                string.IsNullOrWhiteSpace(traceId)
+                    ? "MAIN"
+                    : traceId,
+                "ENTRY",
+                direction,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                _decision == null ? 0 : _decision.Confidence,
+                _decision == null ? 0 : _decision.SmartQuality,
+                true,
+                0,
+                0,
+                timing.Measured
+                    ? new DateTime(
+                        timing.ActionableUtcTicks,
+                        DateTimeKind.Utc)
+                    : (DateTime?)null);
+        }
+
         private void ArchiveRuntimePrediction(
             Prediction prediction,
             int closedM5)

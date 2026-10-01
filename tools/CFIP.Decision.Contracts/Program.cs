@@ -33,8 +33,187 @@ namespace cAlgo
             VerifyIndicatorEvidenceFusion();
             VerifyIndicatorActionability();
             VerifySmartBreakEven();
+            VerifyEntryGeometry();
+            VerifyEntrySignalTiming();
 
             Console.WriteLine("Decision contracts OK");
+        }
+
+        private static void VerifyEntryGeometry()
+        {
+            EntryGeometrySnapshot retest =
+                EntryGeometryRule.Evaluate(
+                    1,
+                    ExecutionMode.None,
+                    100.08,
+                    99.00,
+                    100.00,
+                    0.10,
+                    100.00,
+                    101.00,
+                    100.00,
+                    1.00,
+                    0.01,
+                    0.10,
+                    true,
+                    false,
+                    0.75,
+                    0.50);
+
+            Assert(
+                retest.Mode == ExecutionMode.RetestMarket &&
+                retest.InsideZone &&
+                !retest.TriggerReached &&
+                !retest.IsLate &&
+                Math.Abs(retest.ActualEntry - retest.Market) < 1e-12,
+                "BUY retest geometry uses the canonical tolerant zone");
+
+            EntryGeometrySnapshot breakout =
+                EntryGeometryRule.Evaluate(
+                    -1,
+                    ExecutionMode.None,
+                    98.995,
+                    99.00,
+                    100.00,
+                    0.02,
+                    99.50,
+                    99.00,
+                    99.60,
+                    1.00,
+                    0.01,
+                    0.10,
+                    true,
+                    false,
+                    0.75,
+                    0.50);
+
+            Assert(
+                breakout.Mode == ExecutionMode.BreakoutMarket &&
+                breakout.TriggerReached &&
+                breakout.Anchor == 99.00 &&
+                !breakout.IsLate,
+                "SELL breakout geometry is directionally symmetric");
+
+            EntryGeometrySnapshot lateBreakout =
+                EntryGeometryRule.Evaluate(
+                    1,
+                    ExecutionMode.None,
+                    102.00,
+                    99.00,
+                    100.00,
+                    0.10,
+                    99.50,
+                    100.00,
+                    99.50,
+                    1.00,
+                    0.01,
+                    0.10,
+                    true,
+                    false,
+                    0.75,
+                    0.50);
+
+            Assert(
+                lateBreakout.Mode == ExecutionMode.BreakoutMarket &&
+                Math.Abs(lateBreakout.TriggerExtensionAtr - 2.0) < 1e-12 &&
+                lateBreakout.IsLate,
+                "breakout late state is derived from trigger extension");
+
+            EntryGeometrySnapshot lateRetest =
+                EntryGeometryRule.Evaluate(
+                    -1,
+                    ExecutionMode.None,
+                    99.00,
+                    98.00,
+                    99.20,
+                    0.05,
+                    98.20,
+                    97.50,
+                    98.20,
+                    1.00,
+                    0.01,
+                    0.10,
+                    false,
+                    false,
+                    0.75,
+                    0.50);
+
+            Assert(
+                lateRetest.Mode == ExecutionMode.RetestMarket &&
+                Math.Abs(lateRetest.EntryDistanceAtr - 0.8) < 1e-12 &&
+                lateRetest.IsLate,
+                "retest late state is derived from ideal-entry distance");
+
+            EntryGeometrySnapshot waiting =
+                EntryGeometryRule.Evaluate(
+                    1,
+                    ExecutionMode.None,
+                    102.00,
+                    99.00,
+                    100.00,
+                    0.10,
+                    99.50,
+                    101.00,
+                    99.50,
+                    1.00,
+                    0.01,
+                    0.10,
+                    false,
+                    true,
+                    0.75,
+                    0.50);
+
+            Assert(
+                waiting.Mode == ExecutionMode.WaitingForTrigger &&
+                waiting.ActualEntry == 99.50 &&
+                !waiting.IsLate,
+                "continuation state waits for a trigger without inheriting retest-late logic");
+        }
+
+        private static void VerifyEntrySignalTiming()
+        {
+            DateTime causal =
+                new DateTime(
+                    2026,
+                    10,
+                    1,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            DateTime actionable =
+                causal.AddMilliseconds(1250);
+
+            EntrySignalTiming measured =
+                EntrySignalTimingRule.Measure(
+                    causal,
+                    actionable);
+
+            Assert(
+                measured.Measured &&
+                measured.LatencyMilliseconds == 1250 &&
+                measured.CausalEventUtcTicks == causal.Ticks &&
+                measured.ActionableUtcTicks == actionable.Ticks,
+                "signal latency is measured from the causal event");
+
+            EntrySignalTiming reversed =
+                EntrySignalTimingRule.Measure(
+                    actionable,
+                    causal);
+
+            Assert(
+                !reversed.Measured,
+                "negative signal latency fails closed");
+
+            EntrySignalTiming missing =
+                EntrySignalTimingRule.Measure(
+                    DateTime.MinValue,
+                    actionable);
+
+            Assert(
+                !missing.Measured,
+                "missing causal timestamps are not treated as zero-latency");
         }
 
         private static void VerifyTopDownCalibrationAbsoluteStrength()

@@ -38,6 +38,10 @@
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionSmartConsensusFilterInput.cs" Link="Decision/DecisionSmartConsensusFilterInput.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionSmartConsensusFilterEvaluator.cs" Link="Decision/DecisionSmartConsensusFilterEvaluator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs" Link="Core/Math/ActionabilityThresholdPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/EntryGeometrySnapshot.cs" Link="Core/Models/EntryGeometrySnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryGeometryRule.cs" Link="Core/Math/EntryGeometryRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/EntrySignalTiming.cs" Link="Core/Models/EntrySignalTiming.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/EntrySignalTimingRule.cs" Link="Core/Math/EntrySignalTimingRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs" Link="Core/Math/EntryActionabilityPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs" Link="Core/Math/ActionableSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs" Link="Core/Math/RangeSignalQualityRule.cs" />

@@ -75,7 +75,8 @@ namespace cAlgo
                     EntryMode = execution.Mode,
                     EntryTrigger = execution.Trigger,
                     EntryZoneLow = execution.ZoneLow,
-                    EntryZoneHigh = execution.ZoneHigh
+                    EntryZoneHigh = execution.ZoneHigh,
+                    EntryZoneTolerance = execution.ZoneTolerance
                 };
 
             string executionReason;
@@ -114,13 +115,32 @@ namespace cAlgo
                 stopQuality = 50;
             }
 
+            EntryGeometrySnapshot planGeometry =
+                EntryGeometryRule.Evaluate(
+                    direction,
+                    execution.Mode,
+                    entry,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    execution.ZoneTolerance,
+                    execution.IdealEntry,
+                    execution.Trigger,
+                    entry,
+                    atr,
+                    Symbol.TickSize,
+                    Symbol.PipSize,
+                    AllowPrecisionBreakoutEntry,
+                    false,
+                    MaximumEntryExtensionAtr,
+                    MaximumEntryDistanceAtr);
+
+            if (!planGeometry.IsValid ||
+                planGeometry.Mode != execution.Mode ||
+                !IsFinitePositive(planGeometry.ActualEntry))
+                return false;
+
             if (AvoidLateEntry &&
-                Math.Abs(
-                    entry -
-                    _m5Bars.ClosePrices[
-                        closedM5]) >
-                atr *
-                MaximumEntryExtensionAtr)
+                planGeometry.IsLate)
                 return false;
 
             risk =
