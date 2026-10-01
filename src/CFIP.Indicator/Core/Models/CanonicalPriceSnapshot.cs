@@ -167,7 +167,7 @@ namespace cAlgo
                    value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsFiniteNonNegativeCanonicalDistance(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
