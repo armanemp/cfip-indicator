@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IN IMPLEMENTATION — verification pending final CI gates.**
+Status: **VERIFIED COMPLETE — PR #158 merged to `main` as `111fc315c39df3a42923e0841fb444402593bcb1`.**
 
 ## Objective
 
@@ -161,3 +161,18 @@ Target-terminal validation remains required for:
 - broker/event callbacks that occur outside Calculate;
 - replay-level structural event frequency and missed/repeated break rates.
 
+
+## Final repository verification
+
+PR #158 final head: `6fc30590e1a041669b4430d3dbc90645b96f30b3`.
+
+- Source / Architecture: **PASS** — run #2464;
+- Runtime Acceptance Contracts: **PASS** — run #2273;
+- cTrader Compile: **PASS** — run #2457;
+- merge commit: `111fc315c39df3a42923e0841fb444402593bcb1`.
+
+The implementation correction specifically aligns the sound cue and popup to the
+same queued alert event and delivery boundary. No production threshold or public
+parameter contract was changed.
+
+**Next phase: CI-05 — FVG lifecycle.**
