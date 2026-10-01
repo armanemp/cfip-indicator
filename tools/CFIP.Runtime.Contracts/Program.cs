@@ -96,6 +96,7 @@ namespace cAlgo
             VerifyDirectionalBiasTimeframeSemantics();
             VerifyWatchReactionAlertSemantics();
             VerifyOpposingZonePathF1();
+            VerifyAggressiveRiskAndFillSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -6044,6 +6045,166 @@ namespace cAlgo
                 !StructuralTimeframeRule.IsSupported("") &&
                 !StructuralTimeframeRule.IsSupported("  "),
                 "unknown structural timeframes fail explicitly");
+        }
+
+        private static void VerifyAggressiveRiskAndFillSemantics()
+        {
+            PlanRewardRiskQualityResult buyAccepted =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100.0,
+                    99.0,
+                    102.0,
+                    1.0,
+                    0.0,
+                    1.0,
+                    0.25,
+                    1.80);
+
+            PlanRewardRiskQualityResult sellAccepted =
+                PlanRewardRiskQualityRule.Evaluate(
+                    -1,
+                    100.0,
+                    101.0,
+                    98.0,
+                    1.0,
+                    0.0,
+                    1.0,
+                    0.25,
+                    1.80);
+
+            Assert(
+                buyAccepted.Allowed &&
+                sellAccepted.Allowed,
+                "aggressive pre-trade reward/risk guard accepts valid BUY/SELL geometry");
+
+            PlanRewardRiskQualityResult buyLowRr =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100.0,
+                    99.0,
+                    100.8,
+                    1.0,
+                    0.0,
+                    1.0,
+                    0.25,
+                    1.80);
+
+            PlanRewardRiskQualityResult sellLowRr =
+                PlanRewardRiskQualityRule.Evaluate(
+                    -1,
+                    100.0,
+                    101.0,
+                    99.2,
+                    1.0,
+                    0.0,
+                    1.0,
+                    0.25,
+                    1.80);
+
+            Assert(
+                !buyLowRr.Allowed &&
+                !sellLowRr.Allowed &&
+                buyLowRr.Reason.StartsWith("REWARD TOO LOW") &&
+                sellLowRr.Reason.StartsWith("REWARD TOO LOW"),
+                "aggressive pre-trade guard rejects sub-minimum RR symmetrically");
+
+            PlanRewardRiskQualityResult buyWideStop =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100.0,
+                    98.0,
+                    104.0,
+                    1.0,
+                    0.0,
+                    1.0,
+                    0.25,
+                    1.80);
+
+            PlanRewardRiskQualityResult sellWideStop =
+                PlanRewardRiskQualityRule.Evaluate(
+                    -1,
+                    100.0,
+                    102.0,
+                    96.0,
+                    1.0,
+                    0.0,
+                    1.0,
+                    0.25,
+                    1.80);
+
+            Assert(
+                !buyWideStop.Allowed &&
+                !sellWideStop.Allowed &&
+                buyWideStop.Reason.StartsWith("STOP RISK TOO HIGH") &&
+                sellWideStop.Reason.StartsWith("STOP RISK TOO HIGH"),
+                "aggressive pre-trade guard rejects stop risk above the canonical effective ceiling");
+
+            Assert(
+                PriceProtectionRule.ValidateStop(
+                    1,
+                    100.0,
+                    99.0,
+                    0.10) &&
+                PriceProtectionRule.ValidateTarget(
+                    1,
+                    100.0,
+                    102.0,
+                    0.10) &&
+                PriceProtectionRule.ValidateStop(
+                    -1,
+                    100.0,
+                    101.0,
+                    0.10) &&
+                PriceProtectionRule.ValidateTarget(
+                    -1,
+                    100.0,
+                    98.0,
+                    0.10) &&
+                !PriceProtectionRule.ValidateStop(
+                    1,
+                    100.0,
+                    101.0,
+                    0.10) &&
+                !PriceProtectionRule.ValidateTarget(
+                    -1,
+                    100.0,
+                    102.0,
+                    0.10),
+                "actual-fill managed-plan exit geometry remains directionally valid and symmetric");
+
+            AggressiveEntryPolicy policy =
+                new AggressiveEntryPolicy();
+
+            DateTime t =
+                new DateTime(
+                    2026,
+                    1,
+                    1,
+                    12,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            Assert(
+                !policy.ObserveReactionSample(
+                    300,
+                    1,
+                    true,
+                    t) &&
+                policy.ObserveReactionSample(
+                    300,
+                    1,
+                    true,
+                    t.AddSeconds(1)),
+                "aggressive qualification can arm before execution");
+
+            policy.ResetQualification();
+
+            Assert(
+                !policy.IsQualified &&
+                policy.QualifyingSamples == 0,
+                "aggressive qualification cleanup resets the arm state deterministically");
         }
 
         private static void VerifyAggressiveEntryPolicy()

@@ -9,6 +9,9 @@ namespace cAlgo
             int closedM5,
             TradeType tradeType,
             double entry,
+            double atr,
+            double stop,
+            double target,
             double volume,
             out string reason)
         {
@@ -66,49 +69,66 @@ namespace cAlgo
                 return false;
             }
 
-            if (!IsFinitePositive(entry))
+            int expectedDirection =
+                tradeType == TradeType.Buy
+                    ? 1
+                    : -1;
+
+            if (_reaction.Direction != expectedDirection)
             {
                 reason =
-                    "AGGRESSIVE • INVALID LIVE ENTRY";
+                    "AGGRESSIVE • REACTION/TRADE DIRECTION MISMATCH";
                 return false;
             }
 
-            if (_plan != null)
+            if (AggressiveRequireSmartAgreement &&
+                (_decision == null ||
+                 _decision.Direction != _reaction.Direction ||
+                 _decision.SmartQuality < AggressiveMinimumSmartQuality))
             {
-                double atr =
-                    Atr(
-                        _m5Bars,
-                        closedM5);
+                reason =
+                    "AGGRESSIVE • SMART AGREEMENT DIRECTION";
+                return false;
+            }
 
-                PlanRewardRiskQualityResult rewardRisk =
-                    PlanRewardRiskQualityRule.Evaluate(
-                        tradeType == TradeType.Buy ? 1 : -1,
-                        entry,
-                        _plan.Stop,
-                        _plan.Tp1,
-                        atr,
-                        Math.Max(
-                            0,
-                            Symbol.Ask - Symbol.Bid),
-                        Math.Max(
-                            Tp1MinimumRR,
-                            MinimumRequiredRRForRegime(
-                                _decision == null
-                                    ? "UNKNOWN"
-                                    : _decision.Regime)),
-                        PreferredStopRiskAtr,
-                        StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
-                        MinimumSlAtr,
-                        MaximumSlAtr,
-                        MaximumStructuralStopAtr));
+            if (!IsFinitePositive(entry) ||
+                !IsFinitePositive(atr) ||
+                !IsFinitePositive(stop) ||
+                !IsFinitePositive(target))
+            {
+                reason =
+                    "AGGRESSIVE • INVALID EXECUTION GEOMETRY";
+                return false;
+            }
 
-                if (!rewardRisk.Allowed)
-                {
-                    reason =
-                        "AGGRESSIVE • REWARD/RISK • " +
-                        rewardRisk.Reason;
-                    return false;
-                }
+            PlanRewardRiskQualityResult rewardRisk =
+                PlanRewardRiskQualityRule.Evaluate(
+                    expectedDirection,
+                    entry,
+                    stop,
+                    target,
+                    atr,
+                    Math.Max(
+                        0,
+                        Symbol.Ask - Symbol.Bid),
+                    Math.Max(
+                        Tp1MinimumRR,
+                        MinimumRequiredRRForRegime(
+                            _decision == null
+                                ? "UNKNOWN"
+                                : _decision.Regime)),
+                    PreferredStopRiskAtr,
+                    StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
+                    MinimumSlAtr,
+                    MaximumSlAtr,
+                    MaximumStructuralStopAtr));
+
+            if (!rewardRisk.Allowed)
+            {
+                reason =
+                    "AGGRESSIVE • REWARD/RISK • " +
+                    rewardRisk.Reason;
+                return false;
             }
 
             return true;

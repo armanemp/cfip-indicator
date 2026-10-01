@@ -252,11 +252,23 @@ Safety boundary:
 - no second decision or execution authority introduced;
 - target-terminal timing, replay and empirical signal-quality/profitability validation remain manual.
 
-### Next transition
+### CR6.1 / F1 closeout — 2026-10-01
 
-The next implementation response must execute **CR6.1 / F1 — Opposing FVG/OB
-target-path direction, mitigation and obstacle caching** only. Track 12A and
-CR-FINAL remain blocked until the full Prompt 6 chain is closed.
+CR6.1 / F1 was completed and merged to `main` via PR #127, merge commit
+`a7a03a4403a7c6681f95ac0b053344144e933b6e`.
+
+Repository gates on the final F1 head:
+- Source/Architecture PASS — run #2180;
+- Runtime Acceptance Contracts PASS — run #1989;
+- cTrader Compile PASS — run #2173.
+
+### Current implementation phase
+
+**CR6.3 / F4 — Effective-threshold transparency and hidden additive margins.**
+
+F2 was completed and verified on branch
+`phase/cr6-2-f2-aggressive-risk-fill`; PR #128 is ready for merge after the
+three repository gates passed.
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.

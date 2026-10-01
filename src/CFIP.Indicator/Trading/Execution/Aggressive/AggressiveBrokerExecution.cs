@@ -41,6 +41,9 @@ if (!TryValidateAggressiveFinalExecution(
 closedM5,
 type,
 entry,
+atr,
+stop,
+target,
 volume,
 out string guardReason))
 {

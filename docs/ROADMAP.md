@@ -5330,7 +5330,7 @@ Safety/manual boundary:
 
 ### CR6.1 / F1 closeout — 2026-10-01
 
-Status: **VERIFIED COMPLETE — PR #127 pending merge.**
+Status: **VERIFIED COMPLETE — PR #127 merged to `main`; merge commit `a7a03a4403a7c6681f95ac0b053344144e933b6e`.**
 
 Completed:
 - canonical Core `RewardPathGeometryRule` now owns opposing-zone direction and target-path geometry;
@@ -5359,6 +5359,42 @@ Manual boundary:
 - empirical signal-quality/profitability impact remains unvalidated.
 
 **Next phase: CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
+
+### CR6.2 / F2 closeout — 2026-10-01
+
+CR6.2 / F2 is **VERIFIED COMPLETE — PR #128**, final implementation head
+`3d7d819343c00135c4b0b9eb7ffa2dfa2b19a452`.
+
+Completed:
+- canonical `PlanRewardRiskQualityRule` is now evaluated on the actual
+  aggressive pre-submission Entry/ATR/SL/TP geometry;
+- the unreachable `_plan != null` dependency was removed from the final
+  aggressive reward/risk guard;
+- reaction/trade direction consistency is enforced at the final guard, while
+  `AggressiveRequireSmartAgreement` remains the explicit decision/reaction
+  policy;
+- accepted aggressive fills seed the managed plan from actual-fill-derived
+  exit geometry;
+- post-fill reconciliation is fail-closed and mandatory before publishing
+  `LivePosition`;
+- final post-fill Entry/SL/TP geometry is revalidated;
+- existing PositionClosed cleanup remains the lifecycle authority;
+- deterministic F2 Runtime Contracts and `audit_phase_6_2.py` are wired into
+  the accumulated CI audit chain.
+
+Verification:
+- Source/Architecture PASS — run #2183;
+- Runtime Acceptance Contracts PASS — run #1992;
+- cTrader Compile PASS — run #2176.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP/execution threshold was retuned;
+- no decision or execution authority changed;
+- actual cTrader fill divergence, broker protection/rejection timing,
+  restart/reconnect and terminal UI remain manual acceptance boundaries.
+
+**Next phase: CR6.3 / F4 — Effective-threshold transparency and hidden additive margins.**
 
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
