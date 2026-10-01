@@ -12,9 +12,9 @@ namespace cAlgo
             positiveFlow = 0;
             negativeFlow = 0;
 
-            if (!IsFiniteNonNegative(typical) ||
-                !IsFiniteNonNegative(previousTypical) ||
-                !IsFiniteNonNegative(tickVolume))
+            if (!IsFiniteNonNegativeFlowInput(typical) ||
+                !IsFiniteNonNegativeFlowInput(previousTypical) ||
+                !IsFiniteNonNegativeFlowInput(tickVolume))
                 return false;
 
             if (tickVolume <= 0 ||
@@ -22,7 +22,7 @@ namespace cAlgo
                 return true;
 
             double money = typical * tickVolume;
-            if (!IsFiniteNonNegative(money))
+            if (!IsFiniteNonNegativeFlowInput(money))
                 return false;
 
             if (typical > previousTypical)
@@ -33,7 +33,7 @@ namespace cAlgo
             return true;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsFiniteNonNegativeFlowInput(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
