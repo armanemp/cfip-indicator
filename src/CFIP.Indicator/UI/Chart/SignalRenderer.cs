@@ -41,7 +41,11 @@ namespace cAlgo
                         Bars.Count - 1,
                         hostBar));
 
-            if (snapshot.PendingOrder)
+            bool signalPresentationAllowed =
+                !snapshot.PendingOrder &&
+                !snapshot.LivePosition;
+
+            if (!signalPresentationAllowed)
             {
                 Chart.RemoveObject(P + "WATCH_ARROW");
                 Chart.RemoveObject(P + "REACTION_ARROW");
