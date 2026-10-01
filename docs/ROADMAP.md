@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01 through CI-06 verified complete; CI-07 implementation is in progress. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 through CI-07 verified complete. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -866,7 +866,7 @@ Operator action: after PR #161 is merged, run `git pull --ff-only` on local `mai
 
 ### CI-07 implementation record — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on CI-07 branch `phase/ci-07-mtf-regime-context`.**
+Status: **VERIFIED COMPLETE — merged to `main` in PR #162 at merge commit `73511c84ff3072cdbdab8487b0d4331b52c789b1`. Automated Runtime Acceptance (#2333), cTrader compile (#2517), and Source/Architecture (#2524) substantive checks passed on the final CI-07 implementation head `73f9a175ffb6a9bcdb90814d1fae3d6b75403eaf`.**
 
 Completed:
 - hardened `MtfClosedContextCache` against stale reference reuse while preserving bounded same-bar caching;
