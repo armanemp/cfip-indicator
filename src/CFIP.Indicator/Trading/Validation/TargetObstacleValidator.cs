@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -16,9 +17,7 @@ namespace cAlgo
             double obstacleDistanceAtr)
         {
             Blocked = blocked;
-            Reason = reason ??
-                TargetCandidateRejectionReasons.InvalidGeometry;
-
+            Reason = reason ?? TargetCandidateRejectionReasons.InvalidGeometry;
             ObstacleDistanceAtr =
                 double.IsNaN(obstacleDistanceAtr) ||
                 double.IsInfinity(obstacleDistanceAtr) ||
@@ -30,6 +29,9 @@ namespace cAlgo
 
     public partial class CFIPIndicator : Indicator
     {
+        private readonly TargetObstacleScanCache _targetObstacleScanCache =
+            new TargetObstacleScanCache();
+
         private bool HasTargetObstacle(
             Bars bars,
             int index,
@@ -60,83 +62,53 @@ namespace cAlgo
                 atr <= 0 ||
                 !IsFinitePositive(entry) ||
                 !IsFinitePositive(target) ||
-                (direction != 1 &&
-                 direction != -1))
+                (direction != 1 && direction != -1))
                 return new TargetObstacleEvaluation(
                     false,
                     TargetCandidateRejectionReasons.InvalidGeometry,
                     -1);
 
             double clearance =
-                atr *
-                Math.Max(
-                    TargetClearanceAtr,
-                    TargetObstacleBufferAtr);
+                atr * Math.Max(TargetClearanceAtr, TargetObstacleBufferAtr);
 
             int strength =
-                Math.Max(
-                    1,
-                    Math.Min(
-                        SwingStrength,
-                        3));
+                Math.Max(1, Math.Min(SwingStrength, 3));
 
             int start =
                 Math.Max(
                     strength + 1,
-                    index -
-                    Math.Max(
-                        5,
-                        TargetObstacleLookbackBars));
+                    index - Math.Max(5, TargetObstacleLookbackBars));
 
             int last =
                 Math.Max(
                     start,
-                    index -
-                    strength -
-                    1);
+                    index - strength - 1);
 
-            for (int i = start;
-                 i <= last;
-                 i++)
+            TargetObstacleScanSnapshot snapshot =
+                GetTargetObstacleScanSnapshot(
+                    bars,
+                    index,
+                    direction,
+                    atr,
+                    strength);
+
+            TargetObstacleSwingPoint[] swingPoints =
+                snapshot.SwingPoints;
+
+            for (int i = 0; i < swingPoints.Length; i++)
             {
-                bool swing = true;
+                TargetObstacleSwingPoint point =
+                    swingPoints[i];
 
-                for (int j = 1;
-                     j <= strength;
-                     j++)
-                {
-                    if (direction == 1)
-                    {
-                        if (bars.HighPrices[i] <=
-                            bars.HighPrices[i - j] ||
-                            bars.HighPrices[i] <=
-                            bars.HighPrices[i + j])
-                        {
-                            swing = false;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (bars.LowPrices[i] >=
-                            bars.LowPrices[i - j] ||
-                            bars.LowPrices[i] >=
-                            bars.LowPrices[i + j])
-                        {
-                            swing = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (!swing)
+                if (point.Index < start ||
+                    point.Index > last)
                     continue;
+
+                double level =
+                    point.Level;
 
                 if (direction == 1)
                 {
-                    double level =
-                        bars.HighPrices[i];
-
                     if (level > entry &&
                         level < target - clearance)
                     {
@@ -148,9 +120,6 @@ namespace cAlgo
                 }
                 else
                 {
-                    double level =
-                        bars.LowPrices[i];
-
                     if (level < entry &&
                         level > target + clearance)
                     {
@@ -164,43 +133,35 @@ namespace cAlgo
 
             if (UseEqualHighLow)
             {
-                double liquidityLevel =
-                    direction == 1
-                        ? FindEqualHigh(
-                            bars,
-                            index,
-                            entry,
-                            atr)
-                        : FindEqualLow(
-                            bars,
-                            index,
-                            entry,
-                            atr);
+                TargetObstacleEqualPair[] pairs =
+                    snapshot.EqualPairs;
 
-                if (direction == 1 &&
-                    liquidityLevel > entry &&
-                    liquidityLevel <
-                    target - clearance)
+                for (int i = 0; i < pairs.Length; i++)
                 {
-                    return new TargetObstacleEvaluation(
-                        true,
-                        TargetCandidateRejectionReasons.EqualHighLowObstacle,
-                        Math.Abs(
-                            liquidityLevel - entry) /
-                        atr);
-                }
+                    TargetObstacleEqualPair pair =
+                        pairs[i];
 
-                if (direction == -1 &&
-                    liquidityLevel < entry &&
-                    liquidityLevel >
-                    target + clearance)
-                {
-                    return new TargetObstacleEvaluation(
-                        true,
-                        TargetCandidateRejectionReasons.EqualHighLowObstacle,
-                        Math.Abs(
-                            liquidityLevel - entry) /
-                        atr);
+                    if (direction == 1 &&
+                        pair.FirstLevel > entry &&
+                        pair.SecondLevel > entry &&
+                        pair.ResolvedLevel < target - clearance)
+                    {
+                        return new TargetObstacleEvaluation(
+                            true,
+                            TargetCandidateRejectionReasons.EqualHighLowObstacle,
+                            Math.Abs(pair.ResolvedLevel - entry) / atr);
+                    }
+
+                    if (direction == -1 &&
+                        pair.FirstLevel < entry &&
+                        pair.SecondLevel < entry &&
+                        pair.ResolvedLevel > target + clearance)
+                    {
+                        return new TargetObstacleEvaluation(
+                            true,
+                            TargetCandidateRejectionReasons.EqualHighLowObstacle,
+                            Math.Abs(pair.ResolvedLevel - entry) / atr);
+                    }
                 }
             }
 
@@ -208,6 +169,247 @@ namespace cAlgo
                 false,
                 string.Empty,
                 -1);
+        }
+
+        private TargetObstacleScanSnapshot GetTargetObstacleScanSnapshot(
+            Bars bars,
+            int index,
+            int direction,
+            double atr,
+            int strength)
+        {
+            double equalityTolerance =
+                Math.Max(
+                    Symbol.PipSize * 2,
+                    atr * Math.Max(0.02, EqualLevelToleranceAtr));
+
+            TargetObstacleCacheKey key =
+                new TargetObstacleCacheKey(
+                    bars.Count,
+                    index,
+                    bars.OpenTimes[index].Ticks,
+                    direction,
+                    strength,
+                    TargetObstacleLookbackBars,
+                    LiquidityLookback,
+                    UseEqualHighLow,
+                    equalityTolerance,
+                    Symbol.PipSize);
+
+            TargetObstacleScanSnapshot snapshot;
+
+            if (_targetObstacleScanCache.TryGetSnapshot(
+                    bars,
+                    key,
+                    out snapshot))
+                return snapshot;
+
+            snapshot =
+                BuildTargetObstacleScanSnapshot(
+                    bars,
+                    index,
+                    direction,
+                    strength,
+                    equalityTolerance);
+
+            _targetObstacleScanCache.StoreSnapshot(
+                bars,
+                key,
+                snapshot);
+
+            return snapshot;
+        }
+
+        private TargetObstacleScanSnapshot BuildTargetObstacleScanSnapshot(
+            Bars bars,
+            int index,
+            int direction,
+            int strength,
+            double equalityTolerance)
+        {
+            if (bars == null ||
+                index < 8 ||
+                index >= bars.Count ||
+                !TargetObstacleCachePolicy.IsSupportedDirection(direction))
+                return TargetObstacleScanSnapshot.Empty;
+
+            int targetStart =
+                Math.Max(
+                    strength + 1,
+                    index - Math.Max(5, TargetObstacleLookbackBars));
+
+            int targetLast =
+                Math.Max(
+                    targetStart,
+                    index - strength - 1);
+
+            int liquidityStart =
+                Math.Max(
+                    SwingStrength,
+                    index - LiquidityLookback);
+
+            int liquidityLast =
+                Math.Min(
+                    index - SwingStrength,
+                    bars.Count - SwingStrength - 1);
+
+            int first =
+                Math.Min(
+                    targetStart,
+                    liquidityStart);
+
+            int last =
+                Math.Max(
+                    targetLast,
+                    liquidityLast);
+
+            List<TargetObstacleSwingPoint> swings =
+                new List<TargetObstacleSwingPoint>();
+
+            List<TargetObstacleSwingPoint> liquidityPoints =
+                new List<TargetObstacleSwingPoint>();
+
+            for (int i = first;
+                 i <= last;
+                 i++)
+            {
+                if (i >= targetStart &&
+                    i <= targetLast &&
+                    IsTargetObstacleSwing(
+                        bars,
+                        i,
+                        strength,
+                        direction))
+                {
+                    double level =
+                        direction == 1
+                            ? bars.HighPrices[i]
+                            : bars.LowPrices[i];
+
+                    swings.Add(
+                        new TargetObstacleSwingPoint(
+                            i,
+                            level));
+                }
+
+                if (UseEqualHighLow &&
+                    i >= liquidityStart &&
+                    i <= liquidityLast)
+                {
+                    int plateauStart;
+                    int plateauEnd;
+                    double level;
+
+                    bool canonical =
+                        direction == 1
+                            ? IsCanonicalSwingHigh(
+                                bars,
+                                i,
+                                index,
+                                SwingStrength,
+                                out plateauStart,
+                                out plateauEnd,
+                                out level)
+                            : IsCanonicalSwingLow(
+                                bars,
+                                i,
+                                index,
+                                SwingStrength,
+                                out plateauStart,
+                                out plateauEnd,
+                                out level);
+
+                    if (canonical)
+                    {
+                        liquidityPoints.Add(
+                            new TargetObstacleSwingPoint(
+                                i,
+                                level));
+                    }
+                }
+            }
+
+            List<TargetObstacleEqualPair> pairs =
+                new List<TargetObstacleEqualPair>();
+
+            if (UseEqualHighLow &&
+                !double.IsNaN(equalityTolerance) &&
+                !double.IsInfinity(equalityTolerance))
+            {
+                List<double> priorLevels =
+                    new List<double>();
+
+                for (int i = 0;
+                     i < liquidityPoints.Count;
+                     i++)
+                {
+                    double level =
+                        liquidityPoints[i].Level;
+
+                    for (int j = 0;
+                         j < priorLevels.Count;
+                         j++)
+                    {
+                        if (!SwingPlateauRule.IsWithinAnchor(
+                                priorLevels[j],
+                                level,
+                                equalityTolerance))
+                            continue;
+
+                        pairs.Add(
+                            direction == 1
+                                ? new TargetObstacleEqualPair(
+                                    priorLevels[j],
+                                    level,
+                                    Math.Max(
+                                        priorLevels[j],
+                                        level))
+                                : new TargetObstacleEqualPair(
+                                    priorLevels[j],
+                                    level,
+                                    Math.Min(
+                                        priorLevels[j],
+                                        level)));
+                    }
+
+                    priorLevels.Add(level);
+                }
+            }
+
+            return new TargetObstacleScanSnapshot(
+                swings.ToArray(),
+                pairs.ToArray());
+        }
+
+        private static bool IsTargetObstacleSwing(
+            Bars bars,
+            int index,
+            int strength,
+            int direction)
+        {
+            for (int j = 1;
+                 j <= strength;
+                 j++)
+            {
+                if (direction == 1)
+                {
+                    if (bars.HighPrices[index] <=
+                            bars.HighPrices[index - j] ||
+                        bars.HighPrices[index] <=
+                            bars.HighPrices[index + j])
+                        return false;
+                }
+                else
+                {
+                    if (bars.LowPrices[index] >=
+                            bars.LowPrices[index - j] ||
+                        bars.LowPrices[index] >=
+                            bars.LowPrices[index + j])
+                        return false;
+                }
+            }
+
+            return true;
         }
     }
 }

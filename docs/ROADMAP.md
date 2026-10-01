@@ -5693,7 +5693,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
+**CR6.9 / F3 — Orphaned managed-position protection.**
 
 CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
 
