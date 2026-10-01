@@ -666,7 +666,111 @@ Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL
 
 ## Current active phase
 
-**CR7.1 / G1 — Broker protection must never increase live position risk.**
+### CR6.4 / F5 closeout — 2026-10-01
 
-CR6.9 / F3 is implemented. The next mandatory remediation is Prompt 7 G1; CR-FINAL remains blocked until the required remediation and acceptance evidence are complete.
+CR6.4 / F5 is **VERIFIED COMPLETE on branch phase/cr6-4-f5-smart-regime-identity**, implementation commit 1182b45479881557b2f75d0aee5230cba8970753.
 
+Implementation:
+- MarketRegimeIdentity is the canonical regime identity/normalization owner;
+- MarketRegimeClassifier emits only TREND, EXPANSION, RANGE, TRANSITION, HIGH_VOLATILITY, COMPRESSION or UNKNOWN;
+- FrameRegimeResolutionRule delegates normalization to the canonical identity owner;
+- SmartThresholdPolicyRule owns the existing adaptive threshold adjustments;
+- the unreachable REVERSAL branch is removed without threshold retuning;
+- deterministic runtime coverage verifies every canonical regime, UNKNOWN/future safety, legacy numeric adjustments, disabled adaptation and direction-neutral symmetry;
+- audit_phase_6_4.py is accumulated in Source/Architecture CI.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue, threshold, RR, confidence or execution policy changed;
+- no second decision/execution authority introduced;
+- target-terminal timing/presentation, restart/reconnect and empirical signal-quality/profitability remain manual.
+
+Next phase: **CR6.5 / F6 — Trap-risk/trigger exceptions and actionability constant ownership.**
+### CR6.5 / F6 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #131 head `01db0f46f2a19597be5428a62a230ebf67a7f36c`.**
+
+تأیید می‌کنم — CR6.5/F6 با ممیزی مستقل مسیر فعلی و بدون تغییر در قرارداد عمومی پارامترها یا tuning عددی تکمیل شد.
+
+Completed:
+- ایجاد مالک Core واحد `EntryActionabilityPolicy` برای ثابت‌ها و semantics مربوط به trap-risk، range-location، divergence، adverse momentum، micro-conflict، trigger tolerance، anchor و late-entry؛
+- مهاجرت `EntryTrapRiskRule`, `TradeActionabilityEvaluator`, `ExecutionModeResolver` و `TriggerGate` به owner واحد، بدون تغییر مقادیر مؤثر؛
+- انتقال آستانه‌های actionability مربوط به indicator fusion به `ActionabilityThresholdPolicy` و canonicalization هویت‌های regime؛
+- تأیید اینکه Breakout به‌صورت آگاهانه trap-risk block را bypass می‌کند و این سیاست در F6 به رفتار جدید تبدیل نشده است؛
+- تأیید اینکه Retest می‌تواند در resolver محلی، در-zone و پیش از trigger دیده شود، اما مسیر canonical plan همچنان `Decision.TriggerReady` را enforce می‌کند؛
+- تأیید تفاوت anchor، actual-entry و late-entry بین Breakout و Retest و حفظ trigger tolerance موجود؛
+- افزودن Runtime Acceptance Contract و `audit_phase_6_5.py` به زنجیره audit انباشته؛
+- اصلاح مستقل چند خطای verification که در حین CI آشکار شد: duplicate helper names، missing Decision.Contracts include، و دو assertion/audit اشتباه در F6.
+
+Verification:
+- Source/Architecture: **PASS** — run `36856702821`، شامل `audit_phase_6_5.py` و auditهای انباشته؛
+- Runtime Acceptance Contracts: **PASS** — run `36856702812`؛
+- cTrader Compile/Build: **PASS** — run `36856702767`.
+
+Safety/manual boundary:
+- هیچ `[Parameter]` name/type/`DefaultValue` تغییر نکرد؛
+- هیچ RR/confidence/SL/TP یا execution threshold برای tuning تغییر نکرد؛
+- هیچ decision یا execution authority جدید ایجاد نشد؛
+- Breakout trap bypass عمداً حفظ شد؛
+- trigger contract و Retest semantics عمداً حفظ شد؛
+- target-terminal timing، panel/chart presentation، broker lifecycle، restart/reconnect و empirical signal-quality/profitability همچنان manual acceptance هستند.
+
+**Next phase: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
+
+
+Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
+CR-FINAL. **Current: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
+
+CR5.1 through CR5.8 are verified complete. CR5.8 / E8 was merged to main via
+PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
+E1–E8 is closed at repository level. CR6.1 / F1 and CR6.2 / F2 are verified
+complete, and CR6.3 / F4 is verified complete on PR #129 with all three
+repository gates PASS on commit
+`5dd9a8a8bb0fb8172ac40b7336ce86e0bb5c3c2a`. CR-FINAL remains paused until
+CR6.1–CR6.9 are completed or explicitly documented as verified/deferred with
+evidence. Target-terminal acceptance remains required afterward.
+
+### CR5.7 / E7 closeout
+
+CR5.7 / E7 is **VERIFIED COMPLETE on PR #123**; implementation head
+`8d39ad3fb88c75092908121a3cbaa65128f47659`, merged to `main` via commit
+`d37f6d575595bfacecdff5a5ffb8fc44ba96455a`.
+
+Implementation record:
+- WATCH/REACTION alert qualification and emission are decision-owned rather than renderer-owned;
+- Core `WatchReactionAlertRule` is the sole owner of early-WATCH thresholds,
+  eligibility semantics and deterministic alert identities;
+- the existing confidence floor 60 and allowance 4 are preserved;
+- live REACTION cadence remains intact after `UpdateLiveReaction`;
+- chart rendering remains presentation-only for these alerts;
+- deterministic Runtime Contract coverage and the E7 static audit are wired.
+
+Repository verification at merge:
+- Source/Architecture PASS — run `36841785497`;
+- Runtime Acceptance Contracts PASS — run `36841785708`;
+- cTrader Compile PASS — run `36841785507`.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue or RR/confidence/stop/target threshold changed;
+- no decision or execution authority duplication introduced;
+- target-terminal alert timing, popup/audio delivery, panel/chart behavior,
+  broker lifecycle and empirical signal-quality validation remain manual.
+
+### CR5.8 / E8 closeout
+
+CR5.8 / E8 is verified complete. Final implementation head was
+`51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`.
+
+Verification:
+- Source / Architecture: PASS — run `36844545898` / workflow #2160.
+- Runtime Acceptance Contracts: PASS — run `36844545976` / workflow #1969.
+- cTrader Compile: PASS — run `36844546002` / workflow #2153.
+
+Completed hardening included canonical required-RR ownership, monotonic TP-stage
+ordering, explicit lane propagation, internal constant ownership, and
+reconciliation of accumulated Phase 11.4 and E6 continuity audits.
+
+### Next transition
+
+The next implementation response must execute **CR6.5 / F6 — Trap-risk/trigger
+exceptions and actionability constant ownership** only. Track 12A and CR-FINAL
+remain blocked until the full Prompt 6 chain is closed.

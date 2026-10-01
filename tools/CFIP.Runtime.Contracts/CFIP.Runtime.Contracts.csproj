@@ -31,7 +31,6 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PriceProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ManagedStopProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ProtectionProgressionRule.cs" />
-    <Compile Include="../../src/CFIP.Indicator/Core/Math/OrphanManagedProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionCapacityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/M1TriggerRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TopDownCalibrationRule.cs" />

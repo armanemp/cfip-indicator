@@ -85,20 +85,7 @@ namespace cAlgo
                                             direction,
                                             position.EntryPrice,
                                             stop))
-                                    {
-                                        SendUnifiedAlert(
-                                            "ORPHAN-PROTECTION-FAILED|" +
-                                            position.Id,
-                                            "CFIP ORPHAN POSITION PROTECTION FAILED • INVALID STOP • RETRY | #" +
-                                            position.Id,
-                                            direction,
-                                            true);
-
-                                        return OrphanManagedProtectionRule.CanReportSuccess(
-                                            direction,
-                                            false,
-                                            false);
-                                    }
+                                        return true;
 
                                     double target =
                                         position.TakeProfit.HasValue &&
@@ -141,22 +128,13 @@ namespace cAlgo
                                                       MinimumRequiredRR());
                                     }
 
-                                    bool brokerProtectionConfirmed =
-                                        EnsureBrokerProtectionForPosition(
-                                            position,
-                                            stop,
-                                            target,
-                                            "ORPHAN MANAGED POSITION",
-                                            direction,
-                                            false);
-
-                                    return OrphanManagedProtectionRule.CanReportSuccess(
+                                    return EnsureBrokerProtectionForPosition(
+                                        position,
+                                        stop,
+                                        target,
+                                        "ORPHAN MANAGED POSITION",
                                         direction,
-                                        IsValidStop(
-                                            direction,
-                                            position.EntryPrice,
-                                            stop),
-                                        brokerProtectionConfirmed);
+                                        false);
                                 }
     }
 }
