@@ -5345,7 +5345,7 @@ namespace cAlgo
             string predictiveScorerPath = Path.Combine("src", "CFIP.Indicator", "Planning", "Execution", "PredictivePendingCandidateScorer.cs");
             string reversalLimitPath = Path.Combine("src", "CFIP.Indicator", "Trading", "Pending", "Placement", "ReversalLimitPreparation.cs");
             string controlFactoryPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsFactory.cs");
-            string controlHandlersPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionToggleHandlers.cs");
+            string controlPresentationRulePath = Path.Combine("src", "CFIP.Indicator", "Core", "Math", "ExecutionControlPresentationRule.cs");
             string controlSyncPath = Path.Combine("src", "CFIP.Indicator", "UI", "Controls", "ExecutionControlsSynchronizer.cs");
 
             Assert(
@@ -5364,7 +5364,7 @@ namespace cAlgo
                 File.Exists(predictiveScorerPath) &&
                 File.Exists(reversalLimitPath) &&
                 File.Exists(controlFactoryPath) &&
-                File.Exists(controlHandlersPath) &&
+                File.Exists(controlPresentationRulePath) &&
                 File.Exists(controlSyncPath),
                 "visual/control sources exist");
 
@@ -5383,7 +5383,7 @@ namespace cAlgo
             string predictiveScorer = File.ReadAllText(predictiveScorerPath);
             string reversalLimit = File.ReadAllText(reversalLimitPath);
             string controlFactory = File.ReadAllText(controlFactoryPath);
-            string controlHandlers = File.ReadAllText(controlHandlersPath);
+            string controlPresentationRule = File.ReadAllText(controlPresentationRulePath);
             string controlSync = File.ReadAllText(controlSyncPath);
 
             Assert(
@@ -5467,20 +5467,22 @@ namespace cAlgo
 
             Assert(
                 controlFactory.Contains("CreateExecutionToggle(") &&
-                controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
-                controlFactory.Contains("_automaticOrdersQuickToggle.Click +="),
-                "execution controls are interactive canonical toggle surfaces");
+                controlFactory.Contains("IsEnabled = false") &&
+                !controlFactory.Contains("_autoTradingQuickToggle.Click +=") &&
+                !controlFactory.Contains("_automaticOrdersQuickToggle.Click +=") &&
+                controlFactory.Contains("ExecutionControlPresentationRule.ComposeStatusText("),
+                "execution controls are status-only presentation surfaces");
 
             Assert(
-                controlHandlers.Contains("ApplyAutoTradingQuickToggleClick(") &&
-                controlHandlers.Contains("ApplyAutomaticOrdersQuickToggleClick(") &&
-                controlHandlers.Contains("SetAutoTradingRuntimeState(") &&
-                controlHandlers.Contains("SetAutomaticOrdersRuntimeState("),
-                "execution UI controls are bound to canonical runtime setters");
+                controlPresentationRule.Contains("public static bool IsInteractive => false;") &&
+                controlPresentationRule.Contains("ComposeStatusText("),
+                "execution-control interaction/presentation policy is canonical and read-only");
 
             Assert(
-                controlSync.Contains("_executionToggleSyncing = true"),
-                "execution control synchronization is guarded against operator-event recursion");
+                controlSync.Contains("_executionToggleSyncing = true") &&
+                controlSync.Contains("EnsureExecutionRuntimeState();") &&
+                controlSync.Contains("ExecutionControlPresentationRule.IsInteractive"),
+                "execution control synchronization is guarded and uses canonical settings/runtime state");
 
             int pendingExecution =
                 calculationStage.IndexOf(
