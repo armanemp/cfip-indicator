@@ -2580,3 +2580,28 @@ Safety:
 Manual boundary:
 - cTrader target-terminal panel/reconnect/protection timing remains manual.
 
+## CR7.4 / G4 closeout — Panel execution/protection state semantics — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #144.**
+
+Completed:
+- canonical ExecutionProtectionPanelStateRule;
+- explicit execution states Disabled / Armed / Ready / Active / Blocked / RecoveryRequired;
+- broker-protection states Off / NoLivePosition / Protected / RecoveryRequired;
+- overview/detail rows consume the same state owner;
+- Auto Trade state/color no longer infers operational readiness from decision/reaction evidence;
+- shared panel execution/protection snapshot avoids repeated broker enumeration;
+- deterministic G4 runtime contract, dedicated audit and accumulated audit coverage.
+
+Verification:
+- Source/Architecture PASS — #2313;
+- Runtime Acceptance Contracts PASS — #2122;
+- cTrader Compile PASS — #2306.
+
+Safety/manual boundary:
+- no public parameter/default or trading threshold changes;
+- no new decision/execution/broker-mutation authority;
+- target-terminal panel/protection timing and restart/reconnect remain manual.
+
+Next phase: **CR7.5 / G5 — scope definition required before implementation; no documented G5 scope is currently present.**
+
