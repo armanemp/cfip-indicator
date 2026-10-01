@@ -27,6 +27,7 @@ action_policy = read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
 risk_rule = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs")
 evaluator = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
 decision = read("src/CFIP.Indicator/Core/Models/Decision.cs")
+orchestration = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
 reason_builder = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionReasonBuilder.cs")
 panel = read("src/CFIP.Indicator/UI/Panel/Rows/PanelDecisionRowsRenderer.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
@@ -91,7 +92,7 @@ check(
 check(
     "ActionabilityReason remains the single panel-visible diagnostic channel",
     "public string ActionabilityReason;" in decision and
-    "actionability.Reason" in decision and
+    "actionability.Reason" in orchestration and
     "_decision.ActionabilityReason" in panel
 )
 
