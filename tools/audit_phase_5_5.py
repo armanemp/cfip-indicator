@@ -29,7 +29,7 @@ micro_rule = read(
     "src/CFIP.Indicator/Core/Math/MicroReactionSafetyRule.cs"
 )
 geometry = read(
-    "src/CFIP.Indicator/Core/Models/ParallelScenarioGeometry.cs"
+    "src/CFIP.Indicator/Core/Math/ParallelScenarioGeometry.cs"
 )
 computation = read(
     "src/CFIP.Indicator/Analysis/Market/ParallelScenarioComputation.cs"
