@@ -11,7 +11,8 @@ internal static class BenchmarkReport
         BenchmarkTiming v2Timing,
         BenchmarkTiming v3Timing,
         QuoteCacheBenchmarkResult quoteCacheTiming,
-        SkenderWarmupParityBenchmarkResult warmupParity)
+        SkenderWarmupParityBenchmarkResult warmupParity,
+        SkenderProductionParityBenchmarkResult productionParity)
     {
         bool passed = comparisons.All(x => x.Passed);
         int scenarioCount =
@@ -133,10 +134,34 @@ internal static class BenchmarkReport
         lines.Add($"| Bounded-window allocated bytes/iteration | {warmupParity.BoundedWindowTiming.MeanAllocatedBytes:N0} |");
 
         lines.Add(string.Empty);
+        lines.Add("## CI-02 production Skender boundary parity");
+        lines.Add(string.Empty);
         lines.Add(
-            passed
-                ? "Numerical parity gate: **PASS**. This phase does not promote v3 into the production cTrader assembly."
-                : "Numerical parity gate: **FAIL**. Promotion remains blocked and the failing metrics must be investigated.");
+            "This gate compares the production adapter semantics against a canonical "
+            + "full-prefix Skender calculation. Stable recursive adapters use 768 bars; "
+            + "window-local adapters use the bounded 161-bar rolling window.");
+        lines.Add(string.Empty);
+        lines.Add("| Metric | Result |");
+        lines.Add("| --- | ---: |");
+        lines.Add($"| Gate | {(productionParity.Passed ? "PASS" : "FAIL")} |");
+        lines.Add($"| Compared points | {productionParity.ComparedPoints:N0} |");
+        lines.Add($"| Direction mismatches | {productionParity.DirectionMismatches:N0} |");
+        lines.Add($"| Non-finite pairs | {productionParity.NonFinitePairs:N0} |");
+        lines.Add($"| Rolling exact mismatches | {productionParity.ExactMismatches:N0} |");
+        lines.Add($"| Stable max absolute error | {FormatError(productionParity.MaxStableError)} |");
+        lines.Add($"| Stable mean absolute error | {FormatError(productionParity.MeanStableError)} |");
+        lines.Add($"| Stable RMS error | {FormatError(productionParity.RootMeanSquareStableError)} |");
+        lines.Add($"| Rolling max absolute error | {FormatError(productionParity.MaxRollingError)} |");
+        lines.Add($"| Full-prefix mean ms/iteration | {productionParity.FullPrefixTiming.MeanMilliseconds:F4} |");
+        lines.Add($"| Bounded-window mean ms/iteration | {productionParity.BoundedWindowTiming.MeanMilliseconds:F4} |");
+        lines.Add($"| Full-prefix allocated bytes/iteration | {productionParity.FullPrefixTiming.MeanAllocatedBytes:N0} |");
+        lines.Add($"| Bounded-window allocated bytes/iteration | {productionParity.BoundedWindowTiming.MeanAllocatedBytes:N0} |");
+
+        lines.Add(string.Empty);
+        lines.Add(
+            passed && productionParity.Passed
+                ? "OSS numerical parity gate: **PASS**. FacioQuo remains research-only and production Skender semantics remain bounded."
+                : "OSS numerical parity gate: **FAIL**. Promotion remains blocked and the failing OSS comparisons must be investigated.");
 
         return string.Join(Environment.NewLine, lines);
     }
