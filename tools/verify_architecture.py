@@ -2432,8 +2432,8 @@ BROKER_PROTECTION_STATE = ROOT / "Trading" / "Lifecycle" / "BrokerProtectionStat
 BROKER_PROTECTION_STATE_CODE = BROKER_PROTECTION_STATE.read_text(encoding="utf-8")
 if "EvaluateBrokerProtection(" not in BROKER_STATE_CODE:
     raise SystemExit("Broker state snapshot must consume shared protection evaluation")
-if "IsValidManagedStop(" not in BROKER_PROTECTION_STATE_CODE:
-    raise SystemExit("Shared broker protection state must validate SL against current market")
+if "IsExistingManagedStopHealthy(" not in BROKER_PROTECTION_STATE_CODE:
+    raise SystemExit("Shared broker protection state must validate existing SL directionally")
 if "IsValidTarget(" not in BROKER_PROTECTION_STATE_CODE:
     raise SystemExit("Shared broker protection state must validate TP directionality")
 if "LifecycleState.RecoveryRequired" not in BROKER_STATE_CODE:
