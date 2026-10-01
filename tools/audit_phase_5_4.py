@@ -63,10 +63,12 @@ phase_doc = read("docs/PHASE-CR5-4-PENDING-FILL-ABSOLUTE-RECONCILIATION.md")
 
 check(
     "pending Stop/Limit placement preserves an absolute snapshot from ExecutionIntent",
-    "CapturePendingOrderPlanSnapshot(pendingIntent, closedM5, atr)" in stop_placement and
-    "CapturePendingOrderPlanSnapshot(pendingIntent, closedM5, atr)" in limit_placement and
-    "_plan = null" in stop_placement and
-    "_plan = null" in limit_placement,
+    "Plan pendingSnapshot" in stop_placement and
+    "Plan pendingSnapshot" in limit_placement and
+    "_pendingOrderPlanSnapshot = pendingSnapshot" in stop_placement and
+    "_pendingOrderPlanSnapshot = pendingSnapshot" in limit_placement and
+    "CapturePendingOrderPlanSnapshot(" in stop_placement and
+    "CapturePendingOrderPlanSnapshot(" in limit_placement,
 )
 
 check(
