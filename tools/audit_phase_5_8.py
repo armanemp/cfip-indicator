@@ -109,6 +109,7 @@ check(
     calls_with_last_lane(execution, "SelectTargets") and
     calls_with_last_lane(live_enrichment, "SelectTargets") and
     calls_with_last_lane(live_reconcile, "SelectTargets") and
+    calls_with_last_lane(read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs"), "SelectTargets") and
     calls_with_last_lane(prediction, "SelectTargets") and
     calls_with_last_lane(preview, "SelectTargets") and
     calls_with_last_lane(plan_builder, "SelectTargets"),
@@ -117,6 +118,8 @@ check(
 check(
     "all known SelectTarget callers explicitly propagate lane",
     calls_with_last_lane(execution, "SelectTarget") and
+    calls_with_last_lane(read("src/CFIP.Indicator/Planning/TradePlan/PlanTargetPreparation.cs"), "SelectTarget") and
+    calls_with_last_lane(read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs"), "SelectTarget") and
     calls_with_last_lane(prediction, "SelectTarget") and
     calls_with_last_lane(preview, "SelectTarget"),
 )
