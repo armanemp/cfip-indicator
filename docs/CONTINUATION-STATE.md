@@ -23,9 +23,9 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
+Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR5.6 / E6 — PremiumDiscount/LiveBias/HealthyVolatility semantic separation and canonical M5 closed-bar consistency.**
 
-CR4.1 through CR4.10, CR5.1 and CR5.2 are now recorded as completed on main. The repository-side CR-FINAL gate remains paused until CR5.3–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
+CR4.1 through CR4.10 and CR5.1 through CR5.5 are now recorded as completed/verified. CR5.5 is implemented and verified on PR #121 but is not yet merged to main. The repository-side CR-FINAL gate remains paused until CR5.3–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
 
 ## Completed before this checkpoint
 
@@ -491,6 +491,36 @@ Manual boundary remains:
 - rejection timing;
 - restart/reconnect;
 - empirical signal quality/profitability.
+
+### CR5.5 / E5 closeout — 2026-10-01
+
+CR5.5 / E5 is **VERIFIED COMPLETE on PR #121**; implementation head
+`5b34afbdc7ed252a3fabc68cdb9859818cb911e6`.
+
+Implementation record:
+- shared closed-M5 execution/entry/stop/risk geometry is cached once per active M5
+  and direction; platform-specific ExecutionModel state remains separate from
+  the runtime-neutral Core geometry;
+- tactical parallel evaluation and candidate materialization share that geometry;
+- TradePlanRegistry is the authoritative parallel candidate owner;
+- Core `ParallelScenarioSelectionRule` owns identity, coverage, replacement and
+  display selection;
+- MicroReaction parallel presentation is fail-closed on exact closed-M5 identity,
+  matching direction, closed confirmation and the existing strong-quality floor;
+- Decision records `ReactionConfirmedM5` and `ReactionConfirmedDirection`;
+- deterministic E5 runtime contracts and static audit are wired;
+- accumulated Phase 11.4 audit was reconciled to the Core scenario-selection owner.
+
+Verification:
+- Source/Architecture PASS — workflow run `36836762005`;
+- Runtime Acceptance Contracts PASS — workflow run `36836762039`;
+- cTrader Compile PASS — workflow run `36836762006`.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue or default trading threshold changed;
+- no second decision/execution authority introduced;
+- target-terminal intrabar timing, panel presentation, broker lifecycle,
+  restart/reconnect and empirical signal-quality/profitability remain manual.
 
 ## Current active phase
 
