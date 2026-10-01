@@ -1294,7 +1294,33 @@ Testing:
 
 ### CR5.4 — Pending-order post-fill absolute SL/TP reconciliation (E4)
 
-Initial review label: **PARTIAL / NEEDS SOURCE VERIFICATION — pending fill semantics depend on broker reconciliation path.**
+Status: **VERIFIED COMPLETE — PR #120 merged to `main`; merge commit `782bca41cd37071c79f2cdfa12f712cefc045c8c`.**
+
+Repository evidence on final implementation head `6d89f010fa6d292d201ef79e37af5b162438f854`:
+- Source/Architecture: PASS — run `36795710379` / workflow #2096, including `audit_phase_5_4.py` and accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — run `36795710374` / workflow #1905;
+- cTrader Compile: PASS — run `36795710377` / workflow #2089.
+
+Implementation/safety:
+- pending Stop/Limit orders now preserve their absolute Entry/SL/TP intent across placement;
+- snapshot construction is fail-closed and is based on `ExecutionIntent`;
+- actual broker fill is reconciled against the preserved absolute plan before managed-plan adoption;
+- more-protective broker SL and more-progressive broker TP are retained;
+- Advanced/server-side TP protection is rebuilt from the reconciled absolute ladder and actual fill;
+- `PositionOpened` event-order inversion cannot bypass an outstanding pending snapshot;
+- cancellation clears stale snapshot state;
+- failed reconciliation remains `RecoveryRequired`;
+- the accumulated CR2.5 lifecycle-ordering audit was updated to match the new pending-snapshot invariant;
+- no public parameter/default, RR/confidence/stop/target/actionability/execution threshold or decision/execution authority changed.
+
+Manual boundary remains:
+- actual Stop/Limit fill-price divergence;
+- broker-side final SL/TP and Advanced Protection ladder behavior;
+- rejection timing;
+- restart/reconnect;
+- empirical signal-quality/profitability.
+
+**Next transition: CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.**
 
 Scope:
 - `BrokerPendingOrderPlacement`;
@@ -1668,7 +1694,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR5.4 — Pending-order post-fill absolute SL/TP reconciliation (E4)**.
+Current active phase: **CR5.5 — Parallel-scenario computation/candidate ownership and MicroReaction safety (E5)**.
 
 ## 8. Completion order and dependencies
 
