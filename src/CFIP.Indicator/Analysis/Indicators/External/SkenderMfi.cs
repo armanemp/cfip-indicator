@@ -25,7 +25,7 @@ namespace cAlgo
             var results =
                 StockIndicator.GetMfi(
                     quotes,
-                    OssIndicatorParameters.MfiPeriod)
+                    OssIndicatorSettings.Default.MfiPeriod)
                     .ToList();
 
             return results.Count == 0 ||
