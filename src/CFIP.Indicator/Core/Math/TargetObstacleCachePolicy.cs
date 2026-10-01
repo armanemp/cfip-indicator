@@ -58,8 +58,6 @@ namespace cAlgo
             return obj is TargetObstacleCacheKey &&
                    Equals((TargetObstacleCacheKey)obj);
         }
-
-        }
     }
 
     internal static class TargetObstacleCachePolicy
