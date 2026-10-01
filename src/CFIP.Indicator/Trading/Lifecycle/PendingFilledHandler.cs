@@ -96,6 +96,7 @@ namespace cAlgo
                 _plan.IdealEntry = priorPlan.IdealEntry;
                 _plan.EntryZoneLow = priorPlan.EntryZoneLow;
                 _plan.EntryZoneHigh = priorPlan.EntryZoneHigh;
+                _plan.EntryZoneTolerance = priorPlan.EntryZoneTolerance;
                 _plan.EntryTrigger = priorPlan.EntryTrigger;
                 _plan.EntryInvalidation = priorPlan.EntryInvalidation;
                 _plan.EntryQuality = priorPlan.EntryQuality;
