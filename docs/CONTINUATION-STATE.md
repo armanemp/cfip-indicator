@@ -948,7 +948,7 @@ Next phase: **CR7.6c.**
 
 ### CR8.1 / H1 implementation record — 2026-10-01
 
-Status: **IMPLEMENTED on phase/cr8-1-h1-directional-fill-acceptance; repository gate verification pending.**
+Status: **VERIFIED COMPLETE — PR #149 merged to `main`.**
 
 تأیید می‌کنم — the execution-fill chain was rechecked before the H1 correction.
 
@@ -974,6 +974,11 @@ Sequence continuity:
 - CR7.6c/G6C is referenced historically but has no authoritative scope/branch on the audited 2026-10-01 main tree;
 - therefore no speculative G6C implementation was inserted;
 - next specified phase is **CR8.2 / H2 — Top-Down alignment must include absolute strength**.
+
+Verification on final implementation HEAD `f51c842c4778d99428ab583a2bae7cb7839e17e2`:
+- Source/Architecture PASS — #2348;
+- Runtime Acceptance Contracts PASS — #2157;
+- cTrader Compile PASS — #2341.
 
 Operator action after merge:
 - run `git pull --ff-only` on local `main` before continuing to H2.
