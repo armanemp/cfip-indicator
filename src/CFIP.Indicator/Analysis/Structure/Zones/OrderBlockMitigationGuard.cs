@@ -47,7 +47,7 @@ namespace cAlgo
                      j++)
                 {
                     double probe =
-                        OrderBlockRule.GetMitigationProbe(
+                        OrderBlockLifecycleRule.ResolveMitigationProbe(
                             direction,
                             bars.OpenPrices[j],
                             bars.ClosePrices[j],
@@ -60,7 +60,7 @@ namespace cAlgo
                     bool changed;
                     double nextRatio;
 
-                    if (!OrderBlockRule.TryApplyOrderBlockPartialMitigation(
+                    if (!OrderBlockLifecycleRule.TryApplyPartialMitigation(
                             direction,
                             managedLow,
                             managedHigh,
@@ -80,7 +80,7 @@ namespace cAlgo
                         changed;
 
                     if (nextRatio <=
-                        OrderBlockRule.MinimumRetainedRatio)
+                        OrderBlockLifecycleRule.MinimumRetainedRatio)
                     {
                         lifecycleState =
                             OrderBlockLifecycleState.Broken;
@@ -95,7 +95,7 @@ namespace cAlgo
                 originalWidth;
 
             lifecycleState =
-                OrderBlockRule.ClassifyLifecycle(
+                OrderBlockLifecycleRule.Classify(
                     partiallyMitigated,
                     remainingRatio);
 
@@ -104,7 +104,7 @@ namespace cAlgo
                 OrderBlockLifecycleState.Broken &&
                 managedHigh > managedLow &&
                 remainingRatio >
-                OrderBlockRule.MinimumRetainedRatio;
+                OrderBlockLifecycleRule.MinimumRetainedRatio;
         }
     }
 }
