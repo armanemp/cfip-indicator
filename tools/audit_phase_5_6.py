@@ -43,6 +43,9 @@ project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/ROADMAP.md")
 phase_doc = read("docs/PHASE-CR5-6-DIRECTIONAL-BIAS-TIMEFRAME.md")
+current_phase_doc = read(
+    "docs/PHASE-CR5-8-TARGET-SELECTION-CONSISTENCY.md"
+)
 continuation = read("docs/CONTINUATION-STATE.md")
 
 
