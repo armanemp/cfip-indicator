@@ -32,6 +32,9 @@ validator = read(
     "src/CFIP.Indicator/Trading/Validation/TargetObstacleValidator.cs"
 )
 selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
+stage_builder = read(
+    "src/CFIP.Indicator/Planning/TradePlan/TargetLadderStageCandidateBuilder.cs"
+)
 telemetry = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetStageRejectionTelemetry.cs"
 )
@@ -115,7 +118,7 @@ check(
 )
 check(
     "unreachable stages are identified before the candidate scan",
-    "TryValidateTargetStageFeasibility(" in selector
+    "TryValidateTargetStageFeasibility(" in stage_builder
     and "TargetRewardEnvelopeRule.CanReachStage(" in stage_gate
     and "STAGE_UNREACHABLE_BY_EXTENSION" in reasons,
 )
@@ -127,7 +130,8 @@ check(
 )
 check(
     "target-source merge preserves elapsed age",
-    "match.SourceAgeMinutes" in merger,
+    "match.SourceAgeMinutes =" not in merger
+    and "Preserve match.Price, Kind, Timeframe, Age and" in merger,
 )
 check(
     "plan-level reward rejection telemetry remains intact",
