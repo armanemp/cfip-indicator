@@ -4130,14 +4130,14 @@ namespace cAlgo
                 "Order Block structure break uses explicit creation-ATR threshold");
 
             Assert(
-                OrderBlockLifecycleRule.ResolveMitigationProbe(
+                OrderBlockLifecycleRule.ResolveOrderBlockMitigationProbe(
                     1, 100, 101, 103, 99, false) == 100 &&
-                OrderBlockLifecycleRule.ResolveMitigationProbe(
+                OrderBlockLifecycleRule.ResolveOrderBlockMitigationProbe(
                     -1, 100, 101, 103, 99, true) == 103,
                 "Order Block wick/body probe semantics are directional");
 
             Assert(
-                OrderBlockLifecycleRule.TryApplyPartialMitigation(
+                OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(
                     1, 99, 103, 101, 0.01,
                     out low, out high, out partial,
                     out remainingRatio,
@@ -4149,7 +4149,7 @@ namespace cAlgo
                 "bullish Order Block partial mitigation moves upper boundary and marks the zone mitigated");
 
             Assert(
-                OrderBlockLifecycleRule.TryApplyPartialMitigation(
+                OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(
                     -1, 99, 103, 101, 0.01,
                     out low, out high, out partial,
                     out remainingRatio,
@@ -4161,11 +4161,11 @@ namespace cAlgo
                 "bearish Order Block partial mitigation moves lower boundary and remains directionally symmetric");
 
             Assert(
-                OrderBlockLifecycleRule.Classify(false, 1.0) ==
+                OrderBlockLifecycleRule.ClassifyOrderBlockLifecycle(false, 1.0) ==
                     OrderBlockLifecycleState.Fresh &&
-                OrderBlockLifecycleRule.Classify(true, 0.5) ==
+                OrderBlockLifecycleRule.ClassifyOrderBlockLifecycle(true, 0.5) ==
                     OrderBlockLifecycleState.Mitigated &&
-                OrderBlockLifecycleRule.Classify(
+                OrderBlockLifecycleRule.ClassifyOrderBlockLifecycle(
                     true,
                     OrderBlockLifecycleRule.MinimumRetainedRatio) ==
                     OrderBlockLifecycleState.Broken,
@@ -4183,21 +4183,21 @@ namespace cAlgo
                 "Order Block selection accepts only the intended side of market");
 
             Assert(
-                OrderBlockLifecycleRule.IsFullyMitigated(1, 99, 103, 99) &&
-                OrderBlockLifecycleRule.IsFullyMitigated(-1, 99, 103, 103) &&
-                !OrderBlockLifecycleRule.IsFullyMitigated(
+                OrderBlockLifecycleRule.IsOrderBlockFullyMitigated(1, 99, 103, 99) &&
+                OrderBlockLifecycleRule.IsOrderBlockFullyMitigated(-1, 99, 103, 103) &&
+                !OrderBlockLifecycleRule.IsOrderBlockFullyMitigated(
                     1, 99, 103, 99.01),
                 "Order Block full-fill boundary is symmetric");
 
             Assert(
-                !OrderBlockLifecycleRule.TryApplyPartialMitigation(
+                !OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(
                     1, 99, 103, 99, 0.01,
                     out low, out high, out partial,
                     out remainingRatio,
                     out lifecycleState) &&
                 lifecycleState ==
                     OrderBlockLifecycleState.Broken &&
-                !OrderBlockLifecycleRule.TryApplyPartialMitigation(
+                !OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(
                     -1, 99, 103, 103, 0.01,
                     out low, out high, out partial,
                     out remainingRatio,
@@ -4207,10 +4207,10 @@ namespace cAlgo
                 "fully mitigated Order Blocks are explicitly broken and cannot remain active");
 
             Assert(
-                OrderBlockLifecycleRule.IsAgeValid(10, 20, 10) &&
-                !OrderBlockLifecycleRule.IsAgeValid(10, 21, 10) &&
-                !OrderBlockLifecycleRule.IsAgeValid(21, 20, 10) &&
-                !OrderBlockLifecycleRule.IsAgeValid(-1, 20, 10),
+                OrderBlockLifecycleRule.IsOrderBlockAgeValid(10, 20, 10) &&
+                !OrderBlockLifecycleRule.IsOrderBlockAgeValid(10, 21, 10) &&
+                !OrderBlockLifecycleRule.IsOrderBlockAgeValid(21, 20, 10) &&
+                !OrderBlockLifecycleRule.IsOrderBlockAgeValid(-1, 20, 10),
                 "Order Block age is bounded, non-future and fail-closed");
 
             Assert(
