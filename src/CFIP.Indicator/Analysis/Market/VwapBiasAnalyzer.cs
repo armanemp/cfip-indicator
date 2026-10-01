@@ -74,7 +74,7 @@ namespace cAlgo
                                 priceVolume /
                                 volume;
 
-                            return VwapBiasRule.IsDirectional(
+                            return VwapBiasRule.IsVwapDirectional(
                                 bars.ClosePrices[index],
                                 vwap,
                                 direction);
