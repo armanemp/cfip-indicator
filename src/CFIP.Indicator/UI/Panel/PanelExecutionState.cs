@@ -109,7 +109,11 @@ namespace cAlgo
             ExecutionPanelStateKind state =
                 ExecutionProtectionPanelStateRule.ResolveAutoOrders(
                     AutomaticOrdersEnabled,
-                    managedPending != null,
+                    managedPending != null ||
+                    string.Equals(
+                        reason,
+                        "ORDER PLACED",
+                        StringComparison.OrdinalIgnoreCase),
                     readyToPlace,
                     blocked,
                     recoveryRequired);
