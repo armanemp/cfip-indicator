@@ -724,6 +724,38 @@ validation remains a manual acceptance boundary; this continuity marker keeps
 the review issue mapped into the current roadmap without changing production
 trading policy.
 
+## CR4.6 / D6 — Frame-scoring constant ownership
+
+CR4.6 implementation complete: frame-scoring literals remain under the single
+Core constant owner without numerical tuning. Target-terminal timing, replay and
+empirical signal-quality validation remain manual boundaries.
+
+## CR4.7 / D7 — TP pipeline feasibility and telemetry
+
+CR4.7 implementation complete: target-stage feasibility, age, geometry and
+bounded rejection telemetry remain under their canonical planning owners. No
+public parameter/default or RR tuning was introduced; target-terminal validation
+remains manual.
+
+## CR4.8 / D8 — TP1 directional defensive validation
+
+CR4.8 implementation complete: TP1 direction and reward-integrity validation use
+the canonical target protection rules. No trading threshold tuning or second
+decision authority was introduced; target-terminal validation remains manual.
+
+## CR4.9 / D9 — Live reversal action and alert semantics
+
+CR4.9 implementation complete: live reversal action/alert ownership remains
+canonical and directionally symmetric. No public parameter/default or RR tuning
+was introduced; target-terminal replay remains a manual acceptance boundary.
+
+## CR4.10 / D10 — Native indicator safety and registry performance
+
+CR4.10 / D10 implementation complete: native indicator ownership/safety and
+registry lookup boundaries are preserved, with benchmark coverage. No public
+parameter/default or RR tuning was introduced; target-terminal validation remains
+manual. The next certification transition is CR-FINAL.
+
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
 Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
