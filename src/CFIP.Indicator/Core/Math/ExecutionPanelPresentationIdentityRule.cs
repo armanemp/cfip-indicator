@@ -15,18 +15,18 @@ namespace cAlgo
         {
             return string.Join(
                 "|",
-                Normalize(autoTradingState),
-                Normalize(autoTradingReason),
-                Normalize(executionTelemetryPath),
-                Normalize(executionTelemetryState),
-                Normalize(activeExecutionScenarioId),
+                NormalizePanelIdentityField(autoTradingState),
+                NormalizePanelIdentityField(autoTradingReason),
+                NormalizePanelIdentityField(executionTelemetryPath),
+                NormalizePanelIdentityField(executionTelemetryState),
+                NormalizePanelIdentityField(activeExecutionScenarioId),
                 marketSuitabilityScore.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                Normalize(marketSuitabilityState),
-                Normalize(marketSuitabilityReason),
-                Normalize(breakEvenDiagnostic));
+                NormalizePanelIdentityField(marketSuitabilityState),
+                NormalizePanelIdentityField(marketSuitabilityReason),
+                NormalizePanelIdentityField(breakEvenDiagnostic));
         }
 
-        private static string Normalize(string value)
+        private static string NormalizePanelIdentityField(string value)
         {
             return value ?? string.Empty;
         }
