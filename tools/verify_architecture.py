@@ -188,7 +188,7 @@ for token in (
     "TryGetZone(",
     "MeetsDisplacement(",
     "BreaksStructure(",
-    "ResolveFvgMitigationProbe(",
+    "GetMitigationProbe(",
     "IsFullyMitigated(",
     "TryApplyOrderBlockPartialMitigation(",
     "OrderBlockIdentity(",
