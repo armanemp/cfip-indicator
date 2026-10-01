@@ -166,12 +166,18 @@ namespace cAlgo
                 topDown.HtfDirection;
             decision.HtfAlignment =
                 topDown.HtfAlignment;
+            decision.HtfAbsoluteStrength =
+                topDown.HtfAbsoluteStrength;
             decision.MidframeDirection =
                 topDown.MidDirection;
             decision.MidframeAlignment =
                 topDown.MidAlignment;
+            decision.MidframeAbsoluteStrength =
+                topDown.MidAbsoluteStrength;
             decision.EntryFrameAlignment =
                 topDown.EntryAlignment;
+            decision.EntryFrameAbsoluteStrength =
+                topDown.EntryAbsoluteStrength;
             decision.TopDownEligible =
                 topDown.Eligible;
             decision.TopDownStage =

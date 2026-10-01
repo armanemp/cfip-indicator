@@ -18,9 +18,12 @@ namespace cAlgo
                         public int TimeframeAgreement;
                         public int HtfAnchorDirection;
                         public int HtfAlignment;
+                        public int HtfAbsoluteStrength;
                         public int MidframeDirection;
                         public int MidframeAlignment;
+                        public int MidframeAbsoluteStrength;
                         public int EntryFrameAlignment;
+                        public int EntryFrameAbsoluteStrength;
                         public bool TopDownEligible;
                         public string TopDownStage;
                         public int IndependentEvidence;
