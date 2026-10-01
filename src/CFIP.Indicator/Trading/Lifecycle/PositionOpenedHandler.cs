@@ -46,7 +46,8 @@ namespace cAlgo
 
                                     _outcomeRegistered = false;
 
-                                    if (!boundToActivePlan)
+                                    if (!boundToActivePlan &&
+                                        _pendingOrderPlanSnapshot == null)
                                     {
                                         // Broker event ordering is not an application-level
                                         // ordering guarantee. If PositionOpened arrives before
@@ -124,8 +125,12 @@ namespace cAlgo
                                             true;
 
                                         SetLifecycleState(
-                                            LifecycleState.RecoveryRequired,
-                                            "POSITION OPENED • PLAN BINDING PENDING");
+                                            _pendingOrderPlanSnapshot != null
+                                                ? LifecycleState.PendingOrder
+                                                : LifecycleState.RecoveryRequired,
+                                            _pendingOrderPlanSnapshot != null
+                                                ? "POSITION OPENED • WAITING PENDING FILL RECONCILIATION"
+                                                : "POSITION OPENED • PLAN BINDING PENDING");
                                     }
                         
                                     SendUnifiedAlert(
