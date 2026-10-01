@@ -251,8 +251,18 @@ namespace cAlgo
                                             p.StopLoss) &&
                                         AllowExecutionFrameStopFallback)
                                     {
+                                        StructuralStopGeometrySnapshot fallbackGeometry =
+                                            StructuralStopGeometryRule.EvaluateFallback(
+                                                p.Direction,
+                                                p.Entry,
+                                                atr,
+                                                FallbackSlAtr,
+                                                Symbol.TickSize,
+                                                Symbol.Digits);
+
                                         p.StopLoss =
-                                            p.Direction == 1
+                                            fallbackGeometry.IsValid
+                                                ? fallbackGeometry.Stop
                                                 : 0;
                                     }
                         
