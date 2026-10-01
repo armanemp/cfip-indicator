@@ -825,4 +825,12 @@ Verification:
 - Runtime Acceptance Contracts: PASS — #2104;
 - cTrader Compile: PASS — #2288.
 
+## CR7.4 / G4 — panel execution/protection state semantics
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+The panel now has one Core state owner for Auto Trade, Auto Orders and broker-protection presentation. Operational state is derived from runtime/lifecycle/broker facts rather than decision/reaction readiness. Deterministic G4 runtime contracts and a phase-specific static audit are wired.
+
+Manual cTrader validation remains required for live panel transitions, broker SL/TP synchronization, TP-ladder observation and restart/reconnect timing.
+
 **Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
