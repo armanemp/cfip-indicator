@@ -5843,3 +5843,65 @@ Manual cTrader boundary:
   reconnect/reload and responsiveness remain manual.
 
 **Next phase after G6B closeout: CR7.6c.**
+
+## Prompt 8 Remediation Gate — H1–H6 — 2026-10-01
+
+Status: **ACTIVE REMEDIATION TRACK — H1 VERIFIED ON IMPLEMENTATION BRANCH; MERGE VERIFICATION PENDING.**
+
+Prompt 8 is the next fully specified remediation sequence after Prompt 7.
+It does not reopen or renumber Prompt 4, Prompt 5, Prompt 6 or Prompt 7.
+
+Authoritative order:
+
+`CR8.1/H1 → CR8.2/H2 → CR8.3a/H3-A → CR8.3b/H3-B → CR8.4/H4 → CR8.5a/H5-A → CR8.5b/H5-B → CR8.6/H6 → CR-FINAL`
+
+### CR8.1 / H1 closeout — directional execution-fill acceptance
+
+Status: **IMPLEMENTED — verification pending on final branch HEAD.**
+
+Required phase confirmation:
+- «تأیید می‌کنم» — verified the fill chain through
+  `ValidateActualMarketFill`, `IsExecutableFillPrice`,
+  `AggressiveAcceptedFillHandler` and
+  `AutomaticMarketFillReconciliation`.
+
+Completed:
+- Core `ExecutionFillAcceptanceRule.IsAcceptable` is now direction-aware and
+  owns the single execution-fill envelope;
+- favorable BUY fills below requested entry and favorable SELL fills above
+  requested entry are accepted when the caller enables the explicit
+  `allowFavorable` policy;
+- only adverse movement is bounded by ATR and
+  `MaximumEntryExtensionAtr`;
+- Automatic Market and intent validation consume the same Core rule;
+- the duplicate Aggressive absolute-distance envelope was removed;
+- Automatic Market validates the broker fill before actual-fill reconciliation
+  and before `LivePosition` publication;
+- post-fill reconciliation failure is fail-closed.
+
+Behavior change:
+- favorable fills that were previously rejected by the symmetric envelope are
+  now accepted;
+- no public parameter name/type/`DefaultValue` or numerical trading default
+  was changed.
+
+Verification added:
+- deterministic BUY/SELL favorable, adverse-boundary and invalid-input
+  Runtime Contracts;
+- `tools/audit_phase_8_1.py` accumulated in Source/Architecture CI.
+
+Performance/code-cleanliness:
+- one duplicated Aggressive fill-distance calculation was removed;
+- no new broker enumeration, unbounded cache or second execution authority.
+
+نیاز به تست دستی در cTrader:
+- real fill timing/gaps, broker rejection and post-rejection close behavior;
+- Automatic Market/Aggressive lifecycle ordering;
+- startup/reload/reconnect and panel/chart state around execution.
+
+Sequence continuity:
+- Prompt 7 G6B is closed on `main`;
+- the roadmap references CR7.6c/G6C, but no authoritative G6C scope or
+  implementation branch was present on the 2026-10-01 `main` HEAD, so no
+  speculative G6C behavior was invented;
+- next specified phase is **CR8.2 / H2 — Top-Down alignment must include absolute strength**.
