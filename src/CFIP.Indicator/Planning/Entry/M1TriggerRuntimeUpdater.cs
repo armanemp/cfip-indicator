@@ -46,8 +46,10 @@ namespace cAlgo
                     _m1Bars,
                     reference);
 
+            int previousClosedM1 =
+                _triggerRuntime.ClosedM1;
+
             _triggerRuntime.LiveM5Window = liveM5;
-            _triggerRuntime.ClosedM1 = closedM1;
             _triggerRuntime.Direction =
                 _decision.Direction;
 
@@ -101,7 +103,7 @@ namespace cAlgo
 
                 if (_decision != null)
                     _decision.TriggerReady =
-                        _triggerRuntime.Latched;
+                        _triggerRuntime.Ready;
 
                 return;
             }
@@ -172,7 +174,7 @@ namespace cAlgo
                 return;
             }
 
-            if (_triggerRuntime.ClosedM1 != closedM1 ||
+            if (previousClosedM1 != closedM1 ||
                 _m1Frame == null ||
                 _m1Frame.Index != closedM1)
             {
@@ -190,7 +192,10 @@ namespace cAlgo
             if (atr <= 0)
             {
                 _triggerRuntime.Ready =
-                    _triggerRuntime.Latched;
+                    TriggerLifecycleRule.IsConfirmed(
+                        m5Ready,
+                        UseM1Trigger,
+                        _triggerRuntime.Latched);
                 _triggerRuntime.Reason =
                     "M1 ATR UNAVAILABLE";
                 _triggerRuntime.UpdatedUtc = reference;
@@ -201,6 +206,8 @@ namespace cAlgo
 
                 return;
             }
+
+            _triggerRuntime.ClosedM1 = closedM1;
 
             int score =
                 _decision.Direction == 1
@@ -228,7 +235,10 @@ namespace cAlgo
             if (end < start)
             {
                 _triggerRuntime.Ready =
-                    _triggerRuntime.Latched;
+                    TriggerLifecycleRule.IsConfirmed(
+                        m5Ready,
+                        UseM1Trigger,
+                        _triggerRuntime.Latched);
                 _triggerRuntime.Reason =
                     "M1 MICROSTRUCTURE WARMUP";
                 _triggerRuntime.UpdatedUtc = reference;
@@ -271,9 +281,14 @@ namespace cAlgo
 
             _triggerRuntime.Score = score;
             _triggerRuntime.RequiredScore = required;
-            _triggerRuntime.Ready = ready;
+            _triggerRuntime.Ready =
+                TriggerLifecycleRule.IsConfirmed(
+                    m5Ready,
+                    UseM1Trigger,
+                    _triggerRuntime.Latched || ready);
+
             _triggerRuntime.Reason =
-                ready
+                _triggerRuntime.Ready
                     ? "M1 TRIGGER CONFIRMED"
                     : "M1 TRIGGER WAIT";
             _triggerRuntime.UpdatedUtc = reference;
