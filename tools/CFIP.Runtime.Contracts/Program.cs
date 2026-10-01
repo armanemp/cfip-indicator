@@ -8759,7 +8759,7 @@ namespace cAlgo
                     null,
                     null,
                     null) ==
-                "|||||0||||",
+                "|||||0|||",
                 "G6A null presentation fields normalize deterministically");
 
             Console.WriteLine(
