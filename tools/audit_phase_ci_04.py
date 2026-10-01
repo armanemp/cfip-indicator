@@ -68,7 +68,7 @@ check(
 
 check(
     "confirmed structure/MSS breaks cannot reuse an already-broken threshold",
-    "IsFreshConfirmedBreak(" in struct_rule and
+    "IsFreshBreak(" in struct_rule and
     "previouslyBroken" in struct_rule and
     "plateauEnd" in structure_analyzer and
     structure_analyzer.count("IsFreshConfirmedBreak(") >= 4
@@ -186,7 +186,7 @@ check(
 
 check(
     "deterministic structural regression contracts are wired",
-    "IsFreshConfirmedBreak(" in runtime and
+    "StructuralEventRule.IsFreshBreak(" in runtime and
     "bullish re-break" in runtime and
     "bearish re-break" in runtime
 )
