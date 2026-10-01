@@ -5514,6 +5514,31 @@ Verification boundary:
 
 **Next phase: CR6.8 / F9 — Target-obstacle scan performance and cache reuse.**
 
+### CR6.8 / F9 closeout — 2026-10-01
+
+Status: **IMPLEMENTED — bounded target-obstacle scan reuse is established without changing target-selection semantics.**
+
+Completed:
+- Core `TargetObstacleCacheKey` captures Bars/history/index/direction and materially relevant scan inputs.
+- bounded 16-entry `TargetObstacleScanCache` reuses M5 swing/equality structural extraction across repeated target candidates;
+- same-Bars new-bar/history-size/open-time invalidation plus `HistoryLoaded`/`Reloaded` invalidation prevents stale snapshots;
+- candidate-specific Entry/Target clearance remains live on every candidate;
+- existing F1 opposing-zone cache remains the sole zone-path candidate cache;
+- deterministic Planning Contracts, F9 static audit and reference benchmark were added;
+- cTrader Compile and Runtime Acceptance passed on the corrected F9 HEAD; Source/Architecture reached the F9 audit with only audit-assertion alignment outstanding at this checkpoint.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no obstacle/RR/confidence/SL/TP/execution threshold changed;
+- no second target-selection or broker-execution authority introduced.
+
+Verification boundary:
+- final Source/Architecture F9 gate must pass on the latest HEAD before merge;
+- reference benchmark is structural-work evidence, not a cTrader terminal latency claim;
+- terminal replay/new-bar/history-reload and empirical signal-quality remain manual acceptance boundaries.
+
+**Next phase: CR6.9 / F3 — Orphaned managed-position protection.**
+
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**

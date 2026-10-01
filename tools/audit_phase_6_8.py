@@ -50,7 +50,7 @@ check(
 check(
     "cache capacity is fixed and bounded",
     "MaximumEntries = 16" in policy and
-    "new Entry[TargetObstacleCachePolicy.MaximumEntries]" in cache
+    "new TargetObstacleScanCacheEntry[TargetObstacleCachePolicy.MaximumEntries]" in cache
 )
 
 check(
@@ -78,7 +78,7 @@ check(
     "HistoryLoaded and Reloaded invalidate the affected Bars cache",
     "HistoryLoaded +=" in cache and
     "Reloaded +=" in cache and
-    "InvalidateBars" in cache
+    "InvalidateTargetObstacleBars" in cache
 )
 
 check(
