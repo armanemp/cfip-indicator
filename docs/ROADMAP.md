@@ -5456,7 +5456,33 @@ Safety/manual boundary:
 - trigger contract و Retest semantics عمداً حفظ شد؛
 - target-terminal timing، panel/chart presentation، broker lifecycle، restart/reconnect و empirical signal-quality/profitability همچنان manual acceptance هستند.
 
-**Next phase: CR6.6 / F7 — Independent-timeframe scenario semantics and duplicate-policy owners.**
+**Next phase: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
+
+### CR6.6 / F7 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — independent timeframe candidates are explicitly classified as observations over the canonical M5 plan geometry, and scenario execution policy now has one owner.**
+
+Implementation:
+- M15/M30/H1/H4/D1/W1 candidates retain their timeframe identity and evidence, but explicitly declare BasePlanTimeframe = "M5";
+- Entry/Stop/TP geometry for timeframe annotations continues to come from the shared closed-M5 parallel scenario path; no false claim of independent timeframe plans was introduced;
+- same closed-M5/lane/direction preview construction is cached and reused, avoiding repeated full target/plan-preview work for same-base timeframe annotations;
+- the former Analysis and Trading ScenarioExecutionPolicy owners were removed;
+- Core ScenarioExecutionPolicyRule now owns candidate eligibility and execution authorization together;
+- independent timeframe scenarios remain structurally evaluable but are explicitly OBSERVE-ONLY TF SCENARIO;
+- display stage/reason consumes the same policy result used for execution authorization;
+- deterministic F7 runtime contracts and accumulated static audit are wired.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP/actionability/execution threshold was tuned;
+- no second decision or execution authority introduced;
+- no separate broker execution path introduced.
+
+Verification boundary:
+- repository source/architecture and runtime contract evidence is deterministic once CI runs;
+- cTrader target-terminal timing, live scenario presentation, broker lifecycle, replay and empirical signal-quality remain manual.
+
+**Next phase: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
 
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
