@@ -78,9 +78,7 @@ namespace cAlgo
                     0,
                     Math.Min(
                         100,
-                        geometry.Execution == null
-                            ? 0
-                            : geometry.Execution.Quality));
+                        geometry.ExecutionQuality));
 
             List<Level> levels =
                 BuildTargetLevels(
