@@ -912,7 +912,7 @@ Phase document: `docs/PHASE-CI-12-STRUCTURAL-SL.md`
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
+Status: **active — CI-00 through CI-12 verified complete; CI-13 is the active blocking phase and CI-FINAL remains the final certification gate.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -967,4 +967,42 @@ Manual boundary:
 Phase record: `docs/PHASE-CI-12-STRUCTURAL-SL.md`.
 
 **Next phase: CI-13 — TP source, target obstacle and TP ladder audit.**
+
+### CI-13 implementation record — 2026-10-02
+
+Status: **IMPLEMENTED — repository verification corrected and re-running on final audit contract.**
+
+Implementation branch:
+`phase/ci-13-tp-source-obstacle-ladder`
+
+Production implementation head:
+`db48e116731e48c91f250ce77b966044dd96df63`
+
+Audit-contract correction commit:
+`7cc30bba42dd5280bd79118d8ba497660a216923`
+
+Completed:
+- coherent global TP1..TP4 ladder path selection over already validated stage candidates;
+- exact target-source provenance preserved through clustering and plan materialization;
+- exact selected-source TP metadata reused by execution rebuild and live-target progression;
+- explicit `SYNTHETIC_RR` provenance for synthetic fallback;
+- canonical opposing-zone and HTF target-path obstacle validation retained;
+- deterministic BUY/SELL, termination and invalid-direction planning contracts;
+- CI-13 accumulated Source/Architecture audit wired into the repository gate;
+- final audit false-positive corrected so roadmap continuation is checked semantically rather than by broad token presence.
+
+Repository gates on the pre-correction implementation head:
+- Runtime Acceptance Contracts #2461: **PASS**;
+- cTrader Compile #2645: **PASS**;
+- Source/Architecture #2652: **FAILED only on the CI-13 roadmap-marker false positive**; all preceding accumulated checks through CI-12 passed.
+
+The final audit correction is non-production logic and does not alter trading behavior or public parameters.
+
+Safety/manual boundary:
+- no public parameter/default or RR/confidence/entry/SL/TP/risk/execution threshold was retuned;
+- no second decision/plan/broker-mutation authority introduced;
+- target-terminal replay, panel/chart rendering, broker lifecycle and empirical TP/signal-quality validation remain manual acceptance boundaries.
+
+**Current implementation phase: CI-13 — TP source, target obstacle and TP ladder audit.**
+**Next phase: CI-14 — Canonical risk/reward and protection mathematics.**
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
