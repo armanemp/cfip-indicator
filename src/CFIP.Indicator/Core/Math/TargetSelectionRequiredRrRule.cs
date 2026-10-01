@@ -5,8 +5,7 @@ namespace cAlgo
 {
     /// <summary>
     /// Canonical required-RR ladder used by every target-selection context.
-    /// This rule is intentionally platform-neutral so the ordering invariant
-    /// can be tested without the cTrader host.
+    /// Platform-neutral so the ordering invariant is directly contract-tested.
     /// </summary>
     internal static class TargetSelectionRequiredRrRule
     {
@@ -18,13 +17,17 @@ namespace cAlgo
             double tp3MinimumRR,
             double tp4MinimumRR,
             double minimumRequiredRR,
-            double minimumTradeRR,
             double tacticalOpportunityMinimumRR)
         {
-            double step = Math.Max(0.10, rrStep);
+            double step =
+                Math.Max(
+                    0.10,
+                    rrStep);
 
             double canonicalMinimum =
-                Math.Max(0, minimumRequiredRR);
+                Math.Max(
+                    0,
+                    minimumRequiredRR);
 
             double tp1 =
                 IsTacticalLane(lane)
@@ -38,20 +41,10 @@ namespace cAlgo
                                 0,
                                 tacticalOpportunityMinimumRR)))
                     : Math.Max(
-                        Math.Max(0, tp1MinimumRR),
-                        IsFinite(minimumTradeRR)
-                            ? Math.Max(0, Math.Min(minimumTradeRR, double.MaxValue))
-                            : canonicalMinimum);
-
-            // Strategic plans retain the existing TP1 contract:
-            // max(TP1 minimum, canonical MinimumRequiredRR).
-            if (!IsTacticalLane(lane))
-            {
-                tp1 =
-                    Math.Max(
-                        Math.Max(0, tp1MinimumRR),
+                        Math.Max(
+                            0,
+                            tp1MinimumRR),
                         canonicalMinimum);
-            }
 
             double tp2 =
                 Math.Max(
@@ -80,17 +73,22 @@ namespace cAlgo
         public static bool IsMonotonicNonDecreasing(
             IReadOnlyList<double> requiredRR)
         {
-            if (requiredRR == null || requiredRR.Count != 4)
+            if (requiredRR == null ||
+                requiredRR.Count != 4)
                 return false;
 
             double previous = 0;
 
-            for (int i = 0; i < requiredRR.Count; i++)
+            for (int i = 0;
+                 i < requiredRR.Count;
+                 i++)
             {
-                double current = requiredRR[i];
+                double current =
+                    requiredRR[i];
 
                 if (!IsFiniteNonNegative(current) ||
-                    (i > 0 && current < previous))
+                    (i > 0 &&
+                     current < previous))
                     return false;
 
                 previous = current;
@@ -117,7 +115,8 @@ namespace cAlgo
         private static bool IsFiniteNonNegative(
             double value)
         {
-            return IsFinite(value) && value >= 0;
+            return IsFinite(value) &&
+                   value >= 0;
         }
     }
 }
