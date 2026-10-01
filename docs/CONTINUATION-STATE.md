@@ -672,7 +672,7 @@ Safety/manual boundary:
 Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Current active phase
-Current active phase: **CR7.6b — next Prompt 7 remediation phase.**
+Current active phase: **CR7.6c — next Prompt 7 remediation phase.**
 
 
 ### CR6.4 / F5 closeout — 2026-10-01
@@ -910,5 +910,38 @@ Manual boundary:
 Operator action:
 - after PR #146 is merged, run `git pull --ff-only` on local `main`.
 
-Next phase: **CR7.6b.**
+Next phase: **CR7.6c.**
 
+
+
+## CR7.6b / G6B closeout — Execution-control truth and single UI authority — 2026-10-01
+
+Status: **VERIFIED COMPLETE — implementation head `7832f47c05117f66686adf659fd92670dcb14ba8`.**
+
+Completed:
+- restored AUTO TRADE / AUTO ORDERS to status-only panel surfaces;
+- removed the legacy in-panel execution mutation handler;
+- centralized execution-control presentation and the non-interactive policy in Core;
+- preserved `EnsureExecutionRuntimeState()` as the canonical settings → runtime synchronization boundary;
+- reconciled accumulated architecture/project-integrity/CR3.4 audits with the status-only contract;
+- added deterministic G6B Runtime Acceptance and Source/Architecture audit coverage.
+
+Verification:
+- Source/Architecture PASS — #2339;
+- Runtime Acceptance Contracts PASS — #2148;
+- cTrader Compile PASS — #2332.
+
+Safety:
+- no public parameter/default or trading threshold changes;
+- no RR/confidence/entry/SL/TP/risk tuning;
+- no new decision or broker-mutation authority;
+- no new broker enumeration or unbounded cache.
+
+Manual boundary:
+- target-terminal click behavior, startup/reload synchronization, disabled-control readability,
+  responsiveness and reconnect/reload remain manual.
+
+Operator action:
+- after PR #148 is merged, run `git pull --ff-only` on local `main`.
+
+Next phase: **CR7.6c.**
