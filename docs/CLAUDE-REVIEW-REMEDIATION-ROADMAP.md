@@ -1955,36 +1955,34 @@ Safety/manual boundary:
 - no trading threshold or decision/execution authority changed;
 - visible target-terminal thickness/style still requires manual cTrader validation.
 
-### CR7.4 / G4 — Panel execution/protection state semantics
+### CR7.4 / G4 closeout — Panel execution/protection state semantics
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #144.**
 
-Finding:
-- Auto Trade presentation could infer operational readiness from decision/reaction/plan evidence;
-- Auto Protection presentation could report configuration scope without explicitly exposing broker-confirmed protection health.
+Completed:
+- canonical Core panel execution/protection state owner;
+- Auto Trade and Auto Orders operational state is based on runtime/lifecycle state and actual managed action state, not decision/reaction readiness;
+- broker protection state is based on broker-confirmed SL/TP geometry, target requirement, server-side TP-ladder ownership and recovery state;
+- shared panel snapshot removes repeated broker enumeration across the three new state surfaces;
+- deterministic G4 runtime contract and accumulated static audit pass.
 
-Implemented:
-- canonical Core execution/protection panel-state rule;
-- explicit Auto Trade/Auto Orders operational states;
-- broker-confirmed SL/TP and server TP-ladder protection states;
-- shared state consumption by overview/detail panel rows;
-- presentation-key invalidation for execution/protection state;
-- deterministic G4 runtime contracts and phase audit.
+Verification:
+- Source/Architecture PASS — #2313;
+- Runtime Acceptance Contracts PASS — #2122;
+- cTrader Compile PASS — #2306;
+- verified implementation HEAD: 2465444593afca6b566b17be2234336154fd6f2e.
 
 Safety:
-- no public parameters/defaults or trading thresholds changed;
+- no public parameter/default or trading threshold changes;
 - no new decision/execution/broker-mutation authority.
 
 Manual boundary:
-- target-terminal panel transition, broker protection timing, TP ladder observation and restart/reconnect remain manual.
+- target-terminal cTrader panel/protection/reconnect behavior remains manual.
 
-**Current active phase: CR7.4 / G4 — Panel execution/protection state semantics.**
+Historical continuity marker retained for G3 audit:
+> **Current active phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
-
-Verification:
-- Source/Architecture: PASS — #2295;
-- Runtime Acceptance Contracts: PASS — #2104;
-- cTrader Compile: PASS — #2288.
+**Current active phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.**
 
 ### Prompt 6 completion gate
 
