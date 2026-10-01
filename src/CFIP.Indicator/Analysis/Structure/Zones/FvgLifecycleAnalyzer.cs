@@ -19,7 +19,13 @@ namespace cAlgo
             if (bars == null ||
                 createdIndex < 0 ||
                 currentIndex < createdIndex ||
-                low >= high)
+                low >= high ||
+                !FvgLifecycleRule.IsAgeValid(
+                    createdIndex,
+                    currentIndex,
+                    Math.Max(
+                        0,
+                        MaximumZoneAgeBars)))
                 return null;
 
             if (!TryApplyFvgMitigation(
