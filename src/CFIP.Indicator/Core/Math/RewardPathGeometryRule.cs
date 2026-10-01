@@ -8,6 +8,17 @@ namespace cAlgo
     /// </summary>
     internal static class RewardPathGeometryRule
     {
+        public static bool IsOpposingZoneDirection(
+            int tradeDirection,
+            int zoneDirection)
+        {
+            return
+                (tradeDirection == 1 ||
+                 tradeDirection == -1) &&
+                (zoneDirection == 1 ||
+                 zoneDirection == -1) &&
+                zoneDirection == -tradeDirection;
+        }
         public static bool BlocksRewardPath(
             double low,
             double high,
