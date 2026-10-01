@@ -80,6 +80,16 @@ an artificial unit weight.
 Parallel timeframe scenario enrichment reuses the canonical per-frame evidence owner and must not maintain a second raw boolean counter.
 
 Indicator-group count is provenance only; existing decision quality, confidence and actionability authorities remain unchanged.
+### FVG lifecycle ownership
+
+FVG geometry remains owned by `FvgRule`; bounded source age, body/wick mitigation
+probe semantics and the full-fill retention/invalidation decision are owned by
+platform-neutral `FvgLifecycleRule`. `FvgLifecycleAnalyzer` remains an orchestration
+boundary that materializes the managed `Zone` after the canonical lifecycle
+transition. All FVG consumers (detection, predictive pending, OB/FVG confluence
+and reward-path obstacles) therefore consume the same geometry and lifecycle
+semantics rather than reimplementing fill or age rules.
+
 ### Structural event and alert-delivery ownership
 
 Canonical swing plateaus are owned by `SwingPlateauRule`. Structure, MSS and
