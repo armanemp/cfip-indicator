@@ -57,11 +57,11 @@ check(
         "OrderBlockLifecycleState.Mitigated",
         "OrderBlockLifecycleState.Broken",
         "MinimumRetainedRatio",
-        "IsAgeValid(",
-        "ResolveMitigationProbe(",
-        "IsFullyMitigated(",
-        "TryApplyPartialMitigation(",
-        "Classify(",
+        "IsOrderBlockAgeValid(",
+        "ResolveOrderBlockMitigationProbe(",
+        "IsOrderBlockFullyMitigated(",
+        "TryApplyOrderBlockPartialMitigation(",
+        "ClassifyOrderBlockLifecycle(",
     ))
 )
 
@@ -71,9 +71,9 @@ check(
         "OrderBlockLifecycleState.Fresh",
         "OrderBlockLifecycleState.Mitigated",
         "OrderBlockLifecycleState.Broken",
-        "ResolveMitigationProbe(",
-        "IsFullyMitigated(",
-        "TryApplyPartialMitigation(",
+        "ResolveOrderBlockMitigationProbe(",
+        "IsOrderBlockFullyMitigated(",
+        "TryApplyOrderBlockPartialMitigation(",
         "ClassifyLifecycle(",
     ))
 )
