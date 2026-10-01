@@ -37,6 +37,63 @@ namespace cAlgo
                   currentClose < threshold;
         }
 
+        public static bool IsFreshConfirmedBreak(
+            int direction,
+            int confirmationIndex,
+            int currentIndex,
+            double level,
+            double atr,
+            double breakAtr,
+            Func<int, double> closeAt)
+        {
+            if ((direction != 1 && direction != -1) ||
+                confirmationIndex < 0 ||
+                currentIndex <= confirmationIndex ||
+                !IsFinitePositiveStructuralInput(level) ||
+                !IsFinitePositiveStructuralInput(atr) ||
+                !IsFiniteNonNegativeStructuralInput(breakAtr) ||
+                closeAt == null)
+                return false;
+
+            double threshold =
+                direction == 1
+                    ? level + atr * breakAtr
+                    : level - atr * breakAtr;
+
+            double previousClose =
+                closeAt(currentIndex - 1);
+            double currentClose =
+                closeAt(currentIndex);
+
+            if (!IsFiniteStructuralInput(previousClose) ||
+                !IsFiniteStructuralInput(currentClose))
+                return false;
+
+            for (int i = confirmationIndex + 1;
+                 i < currentIndex;
+                 i++)
+            {
+                double priorClose = closeAt(i);
+
+                if (!IsFiniteStructuralInput(priorClose))
+                    return false;
+
+                bool previouslyBroken =
+                    direction == 1
+                        ? priorClose > threshold
+                        : priorClose < threshold;
+
+                if (previouslyBroken)
+                    return false;
+            }
+
+            return direction == 1
+                ? previousClose <= threshold &&
+                  currentClose > threshold
+                : previousClose >= threshold &&
+                  currentClose < threshold;
+        }
+
         public static bool IsChangeOfCharacter(
             int direction,
             bool priorOppositeStructure,
