@@ -21,21 +21,25 @@ namespace cAlgo
                             if (!UseVwapBias ||
                                 bars == null ||
                                 index < 0 ||
-                                index >= bars.Count ||
-                                index < Math.Max(1, VwapLookbackBars - 1))
+                                index >= bars.Count)
                                 return false;
-                
-                            int first =
+
+                            int length =
                                 Math.Max(
-                                    0,
-                                    index -
-                                    Math.Max(
-                                        10,
-                                        VwapLookbackBars - 1));
-                
+                                    10,
+                                    VwapLookbackBars);
+
+                            if (index < length - 1)
+                                return false;
+
+                            int first =
+                                index -
+                                length +
+                                1;
+
                             double priceVolume = 0;
                             double volume = 0;
-                
+
                             for (int i = first;
                                  i <= index;
                                  i++)
@@ -45,33 +49,35 @@ namespace cAlgo
                                      bars.LowPrices[i] +
                                      bars.ClosePrices[i]) /
                                     3.0;
-                
+
                                 double v =
                                     Math.Max(
                                         0,
                                         bars.TickVolumes[i]);
-                
-                                priceVolume +=
-                                    typical *
-                                    v;
-                
-                                volume +=
-                                    v;
+
+                                priceVolume =
+                                    VwapBiasRule.AccumulatePriceVolume(
+                                        priceVolume,
+                                        typical,
+                                        v);
+
+                                volume =
+                                    VwapBiasRule.AccumulateVolume(
+                                        volume,
+                                        v);
                             }
-                
+
                             if (volume <= 0)
                                 return false;
-                
+
                             double vwap =
                                 priceVolume /
                                 volume;
-                
-                            return
-                                direction == 1
-                                    ? bars.ClosePrices[index] >
-                                      vwap
-                                    : bars.ClosePrices[index] <
-                                      vwap;
+
+                            return VwapBiasRule.IsDirectional(
+                                bars.ClosePrices[index],
+                                vwap,
+                                direction);
                         }
     }
 }
