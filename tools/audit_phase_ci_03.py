@@ -55,15 +55,15 @@ check('divergence and aggregate OSS are not independent groups',
 check('market-frame scoring reuses one fusion input for attribution',
       'IndicatorEvidenceFusionInput indicatorFusionInput' in scoring and
       'IndicatorEvidenceFusionRule.Evaluate(' in scoring and
-      'IndicatorEvidenceIndependenceRule.CountGroups(' in scoring)
+      'IndicatorEvidenceIndependenceRule.CountIndicatorGroups(' in scoring)
 check('per-frame independent evidence delegates to the canonical owner',
       'CalculateIndependentEvidenceForFrame(Frame frame' in analyzer and
       'CountIndependentEvidenceGroupsForFrame(Frame frame' in analyzer and
       'IndependentEvidenceFusionRule.CalculateScore(' in analyzer and
       'IndependentEvidenceFusionRule.CountGroups(' in analyzer)
 check('parallel scenario enrichment removes the duplicate raw counter',
-      'IndependentEvidence(frame, direction)' in scenario and
-      'IndependentEvidenceGroupCount(frame, direction)' in scenario and
+      'CalculateIndependentEvidenceForFrame(frame, direction)' in scenario and
+      'CountIndependentEvidenceGroupsForFrame(frame, direction)' in scenario and
       'LocationEvidenceRule.Evaluate(' in scenario and
       'independent++' not in scenario and 'frame.MssBull' not in scenario and
       'frame.ChochBull' not in scenario and 'frame.MssBear' not in scenario and
