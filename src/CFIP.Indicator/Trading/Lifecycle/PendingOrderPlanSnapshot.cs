@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace cAlgo
 {
     public partial class CFIPIndicator
