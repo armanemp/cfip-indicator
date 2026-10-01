@@ -212,6 +212,38 @@ Acceptance:
 - every consumer knows whether it uses the current closed value, prior closed
   value or live value.
 
+#### CI-01 implementation record
+
+Status: **implemented on branch phase/ci-01-primitive-indicator-integrity; final gate pending.**
+
+Completed correctness work:
+
+- retained cTrader-native ATR, ADX/DMI, EMA and RSI as the only production
+  implementations of those standard indicators;
+- aligned DMI +DI/-DI readiness with the same configured warm-up contract used
+  by the other native frame inputs;
+- made the existing two-EMA MACD feature explicit as MACD-line bias instead of
+  calling that value a histogram;
+- centralized DMI, MACD-line bias, RangeEfficiency, Choppiness, VWAP and Volume
+  Expansion arithmetic in dedicated pure mathematical owners;
+- corrected RangeEfficiency so numerator and denominator use the same number of
+  close-change intervals and the configured period is never silently shortened;
+- corrected Choppiness to require the full configured bar window;
+- corrected VWAP to use exactly the configured number of bars and zero weight for
+  zero-volume samples;
+- corrected Volume Expansion to use actual bar range rather than a pip-size
+  floor;
+- added deterministic contract coverage for formulas, boundaries and BUY/SELL
+  symmetry;
+- added a CI-01 static audit to the accumulated Source/Architecture workflow.
+
+Explicit non-changes:
+
+- no score/weight/threshold tuning;
+- no new MACD signal-period parameter;
+- no replacement of native cTrader indicator mathematics by a second live engine;
+- no FVG/OB/structure/decision/execution changes.
+
 ### CI-02 — OSS numerical parity, warm-up and cache audit
 
 Audit Skender adapters and caches, including:
