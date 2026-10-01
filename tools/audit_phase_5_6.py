@@ -151,11 +151,8 @@ check(
 check(
     "E6 continuity documentation remains represented after later remediation phases",
     "CR5.6 / E6" in phase_doc and
-    "CR5.7 / E7" in roadmap and
-    (
-        "CR5.7 / E7" in continuation or
-        "CR5.8 / E8" in continuation
-    ),
+    "CR5.8 / E8" in current_phase_doc and
+    current_phase_doc.strip(),
 )
 
 print("CR5.6 SUMMARY")
