@@ -19,6 +19,9 @@ def check(name: str, condition: bool) -> None:
 selector = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs"
 )
+stage_builder = read(
+    "src/CFIP.Indicator/Planning/TradePlan/TargetLadderStageCandidateBuilder.cs"
+)
 evaluator = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetCandidateEvaluator.cs"
 )
@@ -56,7 +59,13 @@ roadmap = read("docs/ROADMAP.md")
 check(
     "TargetSelector delegates coherent path selection",
     "TargetLadderSelectionRule.SelectBestPath(" in selector and
-    "new TargetLadderOption(" in selector,
+    "TryBuildTargetLadderStageOptions(" in selector,
+)
+
+check(
+    "ladder stage builder owns target candidate collection",
+    "TryScoreTargetCandidate(" in stage_builder and
+    "new TargetLadderOption(" in stage_builder,
 )
 
 check(
@@ -152,7 +161,8 @@ check(
 check(
     "CI-13 ladder contracts are executable",
     "VerifyTargetLadderSelection();" in contracts and
-    "TargetLadderSelectionRule.SelectBestPath(" in contracts,
+    "TargetLadderSelectionRule.SelectBestPath(" in contracts and
+    "VerifyTargetLadderSelection();" in contracts,
 )
 
 check(
