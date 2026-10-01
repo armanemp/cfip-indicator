@@ -216,7 +216,7 @@ for token in (
         raise SystemExit(f"Order Block evidence must consume canonical qualification math: {token}")
 
 for token in (
-    "OrderBlockRule.ResolveFvgMitigationProbe(",
+    "OrderBlockRule.GetMitigationProbe(",
     "OrderBlockRule.TryApplyOrderBlockPartialMitigation(",
     "remainingRatio",
 ):
