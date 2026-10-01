@@ -5681,23 +5681,34 @@ Manual boundary:
 - cTrader panel/chart rendering;
 - empirical Retest signal-quality/profitability effects remain manual acceptance items.
 
-**Next phase: CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
+### CR7.3 / G3 closeout — 2026-10-01
 
-### CR7.3 / G3 — Display parameter truth for plan-line thickness/style
+Status: **VERIFIED COMPLETE — implementation branch `phase/cr7-3-g3-line-thickness-truth`; pending PR/CI closeout.**
 
-Scope:
-- make `Level Line Thickness` values 1/2/3 produce actual thickness 1/2/3;
-- preserve the current Solid line behavior;
-- do not rename or remove the existing public parameter.
+Scope completed:
+- preserved the public `Level Line Thickness` parameter unchanged;
+- corrected the hidden display clamp that forced valid values 2 and 3 down to thickness 1;
+- introduced canonical `PlanLinePresentationRule.ResolveThickness` as the single presentation-mapping owner;
+- preserved `LineStyle.Solid` as the only plan-line style;
+- added deterministic Runtime Acceptance coverage for thickness 1/2/3 plus bounded invalid-input behavior;
+- added accumulated `audit_phase_7_3.py` after G2.
 
-Deterministic tests:
-- thickness 1 → 1;
-- thickness 2 → 2;
-- thickness 3 → 3.
+Deterministic contract:
+- 1 → 1;
+- 2 → 2;
+- 3 → 3;
+- out-of-contract 0 → 1 and 4 → 3.
 
-Style behavior:
-- keep Solid as the current default/behavior unless a separate approved parameter
-  design is justified.
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP/execution threshold changed;
+- no decision or execution authority changed;
+- no second trading engine introduced.
+
+Manual boundary:
+- target-terminal cTrader rendering still requires hands-on validation of visible thickness 1/2/3 and preserved Solid style.
+
+**Next phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
 ### CR7.4 / G4 — Panel execution/protection state semantics
 
