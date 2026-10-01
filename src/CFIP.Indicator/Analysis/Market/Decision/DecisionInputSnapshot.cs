@@ -37,6 +37,7 @@ namespace cAlgo
 
         public DateTime Reference { get; }
         public int ClosedM5 { get; }
+        public MarketStateSnapshot MarketStateSnapshot { get; }
 
         public DecisionEvidenceSnapshot Evidence { get; }
 
@@ -70,6 +71,7 @@ namespace cAlgo
             int minimumSmartDirectionShare,
             DateTime reference,
             int closedM5,
+            MarketStateSnapshot marketStateSnapshot,
             DecisionEvidenceSnapshot evidence)
         {
             M1Frame = m1Frame;
@@ -108,6 +110,9 @@ namespace cAlgo
             MinimumSmartDirectionShare = minimumSmartDirectionShare;
             Reference = reference;
             ClosedM5 = closedM5;
+            MarketStateSnapshot =
+                marketStateSnapshot ??
+                throw new ArgumentNullException(nameof(marketStateSnapshot));
 
             Evidence = evidence ?? throw new ArgumentNullException(nameof(evidence));
         }

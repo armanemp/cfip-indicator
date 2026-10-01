@@ -74,6 +74,8 @@ namespace cAlgo
                         public string Regime;
                         public int RegimeQuality;
                         public int RegimeStability;
+                        public string PreviousRegime;
+                        public string RegimeTransition;
                         public int OssBullVotes;
                         public int OssBearVotes;
                         public int OssIndicatorCount;

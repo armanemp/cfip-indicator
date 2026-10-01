@@ -182,8 +182,7 @@ namespace cAlgo
                                     _m5Bars))
                             {
                                 MarketRegimeSnapshot active =
-                                    GetActiveM5Regime(
-                                        index);
+                                    GetActiveM5Regime(index);
 
                                 return active == null
                                     ? MarketRegimeIdentity.Unknown
@@ -208,8 +207,7 @@ namespace cAlgo
                                     _m5Bars))
                             {
                                 MarketRegimeSnapshot active =
-                                    GetActiveM5Regime(
-                                        index);
+                                    GetActiveM5Regime(index);
 
                                 if (active != null)
                                     return active.Quality;

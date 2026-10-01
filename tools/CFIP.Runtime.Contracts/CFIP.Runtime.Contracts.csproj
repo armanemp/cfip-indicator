@@ -15,8 +15,11 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/PendingOrderMode.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/WaveTrendSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketStateFrameSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketStateSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeClassificationInput.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeIdentity.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeTransitionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeClassifier.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SmartThresholdPolicyRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendEvidenceRule.cs" />

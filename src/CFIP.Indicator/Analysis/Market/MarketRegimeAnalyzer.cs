@@ -31,6 +31,11 @@ namespace cAlgo
                         bars,
                         index);
 
+                ApplyRegimeTransition(
+                    bars,
+                    index,
+                    nonM5Snapshot);
+
                 _marketRegimeFrameCache.StoreSnapshot(
                     bars,
                     index,
@@ -70,6 +75,15 @@ namespace cAlgo
                     stability++;
             }
 
+            snapshot.PreviousRegime =
+                previous == null
+                    ? MarketRegimeIdentity.Unknown
+                    : previous.Regime;
+            snapshot.RegimeTransition =
+                MarketRegimeTransitionRule.ClassifyTransition(
+                    snapshot.PreviousRegime,
+                    snapshot.Regime);
+
             snapshot.Stability =
                 Math.Max(
                     1,
@@ -78,6 +92,39 @@ namespace cAlgo
                         stability));
 
             return snapshot;
+        }
+
+        private void ApplyRegimeTransition(
+            Bars bars,
+            int index,
+            MarketRegimeSnapshot snapshot)
+        {
+            if (snapshot == null)
+                return;
+
+            if (index <= 40)
+            {
+                snapshot.PreviousRegime = MarketRegimeIdentity.Unknown;
+                snapshot.RegimeTransition =
+                    MarketRegimeTransitionRule.ClassifyTransition(
+                        MarketRegimeIdentity.Unknown,
+                        snapshot.Regime);
+                return;
+            }
+
+            MarketRegimeSnapshot previous =
+                AnalyzeMarketRegimeCore(
+                    bars,
+                    index - 1);
+
+            snapshot.PreviousRegime =
+                previous == null
+                    ? MarketRegimeIdentity.Unknown
+                    : previous.Regime;
+            snapshot.RegimeTransition =
+                MarketRegimeTransitionRule.ClassifyTransition(
+                    snapshot.PreviousRegime,
+                    snapshot.Regime);
         }
 
         private MarketRegimeSnapshot GetM5RegimeCoreSnapshot(

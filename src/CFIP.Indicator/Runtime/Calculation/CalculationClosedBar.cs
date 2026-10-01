@@ -91,6 +91,25 @@ namespace cAlgo
                         w1Index)
                     : null;
 
+            _marketStateSnapshot =
+                BuildMarketStateSnapshot(
+                    reference,
+                    mtf);
+
+            if (_marketStateSnapshot == null ||
+                !_marketStateSnapshot.MatchesReference(reference) ||
+                !_marketStateSnapshot.IsAlignedWithClosedIndices(
+                    mtf.M1,
+                    mtf.M5,
+                    mtf.M15,
+                    mtf.M30,
+                    mtf.H1,
+                    mtf.H4,
+                    mtf.D1,
+                    mtf.W1))
+                throw new InvalidOperationException(
+                    "Canonical market-state snapshot is missing or misaligned.");
+
             _decision =
                 BuildDecision(
                     closedM5,
