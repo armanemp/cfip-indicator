@@ -33,6 +33,7 @@ namespace cAlgo
             VerifyParallelScenarioSelectionSemantics();
             VerifyMicroReactionClosedBarSemantics();
             VerifyMtfContextIntegrity();
+            VerifyCanonicalMarketContext();
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
             VerifyNativeIndicatorReadinessSemantics();
@@ -4317,6 +4318,127 @@ namespace cAlgo
             Assert(
                 !incomplete.HasPrimaryDecisionHistory,
                 "insufficient closed history blocked");
+        }
+
+        private static void VerifyCanonicalMarketContext()
+        {
+            DateTime signalReference =
+                Utc(12, 5);
+
+            DateTime quoteObserved =
+                Utc(12, 5);
+
+            CanonicalPriceSnapshot pipPrice =
+                CanonicalPriceSnapshot.Create(
+                    quoteObserved,
+                    100.0000,
+                    100.0002,
+                    0.0001,
+                    0.00001,
+                    5,
+                    BrokerDistanceUnit.Pips,
+                    3,
+                    4);
+
+            Assert(
+                pipPrice.IsQuoteValid &&
+                pipPrice.Bid == 100.0000 &&
+                pipPrice.Ask == 100.0002 &&
+                pipPrice.ExecutableBuyPrice == 100.0002 &&
+                pipPrice.ExecutableSellPrice == 100.0000,
+                "canonical quote preserves BUY/SELL executable prices");
+
+            Assert(
+                Math.Abs(pipPrice.Midpoint - 100.0001) < 1e-12 &&
+                Math.Abs(pipPrice.Spread - 0.0002) < 1e-12 &&
+                Math.Abs(pipPrice.SpreadPips - 2.0) < 1e-12,
+                "canonical quote derives midpoint and spread once");
+
+            Assert(
+                Math.Abs(
+                    pipPrice.GetMinimumStopDistancePrice(1) -
+                    0.0003) < 1e-12 &&
+                Math.Abs(
+                    pipPrice.GetMinimumTakeProfitDistancePrice(-1) -
+                    0.0004) < 1e-12,
+                "pip broker distances convert to price distance consistently");
+
+            CanonicalPriceSnapshot percentagePrice =
+                CanonicalPriceSnapshot.Create(
+                    quoteObserved,
+                    100.0,
+                    100.5,
+                    0.1,
+                    0.01,
+                    2,
+                    BrokerDistanceUnit.Percentage,
+                    0.1,
+                    0.2);
+
+            Assert(
+                percentagePrice.HasBrokerDistanceMetadata &&
+                Math.Abs(
+                    percentagePrice.GetMinimumStopDistancePrice(1) -
+                    0.1005) < 1e-12 &&
+                Math.Abs(
+                    percentagePrice.GetMinimumTakeProfitDistancePrice(-1) -
+                    0.2) < 1e-12,
+                "percentage broker distances use the executable reference price");
+
+            CanonicalPriceSnapshot invalidQuote =
+                CanonicalPriceSnapshot.Create(
+                    quoteObserved,
+                    100.5,
+                    100.0,
+                    0.1,
+                    0.01,
+                    2,
+                    BrokerDistanceUnit.Pips,
+                    1,
+                    1);
+
+            Assert(
+                !invalidQuote.IsQuoteValid &&
+                invalidQuote.GetExecutablePrice(1) == 0 &&
+                invalidQuote.GetExecutablePrice(-1) == 0,
+                "invalid crossed quote cannot become an executable price");
+
+            MtfClosedContext closedContext =
+                new MtfClosedContext(
+                    signalReference,
+                    101,
+                    605,
+                    41,
+                    31,
+                    31,
+                    30,
+                    3,
+                    1);
+
+            CalculationMarketContext calculationContext =
+                new CalculationMarketContext(
+                    999,
+                    signalReference,
+                    quoteObserved,
+                    pipPrice,
+                    closedContext);
+
+            Assert(
+                calculationContext.HostIndex == 999 &&
+                calculationContext.SignalReferenceUtc == signalReference &&
+                calculationContext.QuoteObservedUtc == quoteObserved &&
+                calculationContext.AtrM5Index == 101 &&
+                calculationContext.AtrM1Index == 605 &&
+                ReferenceEquals(
+                    calculationContext.Price,
+                    pipPrice) &&
+                ReferenceEquals(
+                    calculationContext.ClosedBars,
+                    closedContext),
+                "calculation context keeps price, time and canonical MTF indices together");
+
+            Console.WriteLine(
+                "CI-00 canonical market context contract PASS");
         }
 
         private static void VerifyClosedBarReferenceContract()
