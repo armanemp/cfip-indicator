@@ -80,7 +80,7 @@ check(
 check(
     "regime transition has one pure owner",
     "internal static class MarketRegimeTransitionRule" in transition and
-    "MarketRegimeTransitionRule.Resolve(" in transition and
+    "MarketRegimeTransitionRule.ClassifyTransition(" in transition and
     sum("class MarketRegimeTransitionRule" in p.read_text(encoding="utf-8")
         for p in production_files) == 1
 )
