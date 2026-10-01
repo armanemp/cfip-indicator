@@ -79,7 +79,7 @@ namespace cAlgo
                                             1,
                                             _m5Bars.Count - 2));
 
-                            bool currentStopHealthy =
+                            bool currentStopValid =
                                 position.StopLoss.HasValue &&
                                 IsExistingManagedStopHealthy(
                                     direction,
@@ -94,7 +94,7 @@ namespace cAlgo
                                     stop);
 
                             bool stopOk =
-                                currentStopHealthy;
+                                currentStopValid;
 
                             if (!stopOk &&
                                 desiredStopValid)
@@ -105,7 +105,7 @@ namespace cAlgo
                                         NormalizePrice(stop),
                                         context + " • SL");
                             }
-                            else if (currentStopHealthy &&
+                            else if (currentStopValid &&
                                      desiredStopValid)
                             {
                                 double currentStop =
