@@ -1809,7 +1809,7 @@ if TARGET_SELECTOR.stat().st_size > 4096:
     raise SystemExit("TargetSelector.cs must remain a thin stage-orchestration boundary")
 for token in (
     "BuildTargetSelectionRequiredRR(",
-    "FindPreviousSelectedTargetPrice(",
+    "TargetLadderSelectionRule.SelectBestPath(",
     "RequiresHtfRewardForTargetStage(",
     "TryScoreTargetCandidate(",
 ):
