@@ -18,7 +18,7 @@ presentation_rule = read("Core/Math/ExecutionControlPresentationRule.cs")
 runtime_program = Path("tools/CFIP.Runtime.Contracts/Program.cs").read_text(encoding="utf-8")
 runtime_csproj = Path("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj").read_text(encoding="utf-8")
 workflow = Path(".github/workflows/source-check.yml").read_text(encoding="utf-8")
-production_source = "\\n".join(
+production_source = "\n".join(
     path.read_text(encoding="utf-8")
     for path in ROOT.rglob("*.cs")
 )
@@ -71,7 +71,7 @@ if "public static bool IsInteractive => false;" not in presentation_rule:
     raise SystemExit("G6B canonical presentation rule must be explicitly read-only")
 for token in (
     "string normalizedCaption",
-    "(enabled ? "ON" : "OFF")",
+    '(enabled ? "ON" : "OFF)",
 ):
     if token not in presentation_rule:
         raise SystemExit(f"G6B canonical presentation rule missing: {token}")
