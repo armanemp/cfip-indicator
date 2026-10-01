@@ -290,6 +290,8 @@ namespace cAlgo
                     independentEvidence,
                 IndependentEvidenceGroupCount =
                     independentEvidenceGroups,
+                IndicatorIndependentEvidenceGroupCount =
+                    _m5Frame == null ? 0 : _m5Frame.IndicatorIndependentEvidenceGroupCount,
                 Quality = Math.Max(
                     0,
                     Math.Min(

@@ -158,6 +158,9 @@ namespace cAlgo
                     : IndependentEvidenceGroupCount(
                         decision.Direction);
 
+            decision.IndicatorIndependentEvidenceGroupCount =
+                _m5Frame == null ? 0 : _m5Frame.IndicatorIndependentEvidenceGroupCount;
+
             TopDownCalibrationSnapshot topDown =
                 EvaluateTopDownCalibration(
                     decision);

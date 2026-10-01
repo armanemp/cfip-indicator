@@ -113,60 +113,31 @@ namespace cAlgo
                 ref bear,
                 ref evidence);
 
+            IndicatorEvidenceFusionInput indicatorFusionInput =
+                new IndicatorEvidenceFusionInput(
+                    ResolveFrameRegime(f), f.TrendBull, f.TrendBear,
+                    f.MomentumBull, f.MomentumBear, f.MacdBull, f.MacdBear,
+                    f.VwapBull, f.VwapBear, f.VolumeBull, f.VolumeBear,
+                    f.VolatilityBull, f.VolatilityBear,
+                    UseVolumeExpansionEvidence, UseMacdEvidence,
+                    UseVwapEvidence, UseHealthyVolatilityEvidence,
+                    WaveTrendEvidenceWeight, f.Adx, AdxMinimum, f.Rsi,
+                    DmiBias(bars, index), UseEmaSlope ? f.EmaSlopeAtr : 0,
+                    f.WaveTrendDirection, f.WaveTrendQuality,
+                    f.DivergenceDirection, f.DivergenceQuality,
+                    f.WaveTrendBullCross, f.WaveTrendBearCross,
+                    f.WaveTrendOversold, f.WaveTrendOverbought,
+                    f.OssBullVotes, f.OssBearVotes, f.OssIndicatorCount,
+                    OssConfluenceWeight, MinimumOssIndicatorAgreement);
+
             IndicatorEvidenceFusionResult indicatorFusion =
-                IndicatorEvidenceFusionRule.Evaluate(
-                    new IndicatorEvidenceFusionInput(
-                        ResolveFrameRegime(f),
-                        f.TrendBull,
-                        f.TrendBear,
-                        f.MomentumBull,
-                        f.MomentumBear,
-                        f.MacdBull,
-                        f.MacdBear,
-                        f.VwapBull,
-                        f.VwapBear,
-                        f.VolumeBull,
-                        f.VolumeBear,
-                        f.VolatilityBull,
-                        f.VolatilityBear,
-                        UseVolumeExpansionEvidence,
-                        UseMacdEvidence,
-                        UseVwapEvidence,
-                        UseHealthyVolatilityEvidence,
-                        WaveTrendEvidenceWeight,
-                        f.Adx,
-                        AdxMinimum,
-                        f.Rsi,
-                        DmiBias(
-                            bars,
-                            index),
-                        UseEmaSlope
-                            ? f.EmaSlopeAtr
-                            : 0,
-                        f.WaveTrendDirection,
-                        f.WaveTrendQuality,
-                        f.DivergenceDirection,
-                        f.DivergenceQuality,
-                        f.WaveTrendBullCross,
-                        f.WaveTrendBearCross,
-                        f.WaveTrendOversold,
-                        f.WaveTrendOverbought,
-                        f.OssBullVotes,
-                        f.OssBearVotes,
-                        f.OssIndicatorCount,
-                        OssConfluenceWeight,
-                        MinimumOssIndicatorAgreement));
+                IndicatorEvidenceFusionRule.Evaluate(indicatorFusionInput);
 
-            bull +=
-                indicatorFusion.BullBonus;
-            bear +=
-                indicatorFusion.BearBonus;
+            f.IndicatorIndependentEvidenceGroupCount =
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(indicatorFusionInput);
 
-            f.IndicatorConfluenceQuality =
-                indicatorFusion.Quality;
-            f.IndicatorConflict =
-                indicatorFusion.Conflict;
-
+            f.IndicatorConfluenceQuality = indicatorFusion.Quality;
+            f.IndicatorConflict = indicatorFusion.Conflict;
             if (indicatorFusion.Conflict >= FrameScoringConstants.ConflictPenaltyThreshold)
             {
                 if (bull >= bear)

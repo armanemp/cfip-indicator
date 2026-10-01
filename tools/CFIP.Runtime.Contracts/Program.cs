@@ -44,6 +44,7 @@ namespace cAlgo
             VerifyStructuralStopRiskCeilingSemantics();
             VerifyLiquidityTargetCandidateSemantics();
             VerifyIndependentEvidenceGroupSemantics();
+            VerifyCi03IndicatorEvidenceIndependence();
             VerifyPendingFillExitResolutionSemantics();
             VerifyBrokerStateRefreshSemantics();
             VerifyBufferedArchivePersistence();
@@ -799,6 +800,103 @@ namespace cAlgo
                 throw new InvalidOperationException(
                     "UNKNOWN must remain explicitly neutral in regime weighting.");
             }
+        }
+
+        private static void VerifyCi03IndicatorEvidenceIndependence()
+        {
+            IndicatorEvidenceFusionInput Build(
+                bool trend = false, bool momentum = false, bool macd = false,
+                bool vwap = false, bool volume = false, bool volatility = false,
+                bool useMacd = false, bool useVwap = false, bool useVolume = false,
+                bool useHealthyVolatility = false, double adx = 0,
+                double adxMinimum = 20, double rsi = 50, double dmiBias = 0,
+                double emaSlopeAtr = 0, int waveTrendDirection = 0,
+                int waveTrendQuality = 0, int divergenceDirection = 0,
+                int divergenceQuality = 0, int ossBullVotes = 0,
+                int ossIndicatorCount = 0)
+            {
+                return new IndicatorEvidenceFusionInput(
+                    "UNKNOWN", trend, false, momentum, false, macd, false,
+                    vwap, false, volume, false, volatility, false,
+                    useVolume, useMacd, useVwap, useHealthyVolatility, 4,
+                    adx, adxMinimum, rsi, dmiBias, emaSlopeAtr,
+                    waveTrendDirection, waveTrendQuality,
+                    divergenceDirection, divergenceQuality,
+                    false, false, false, false,
+                    ossBullVotes, 0, ossIndicatorCount, 4, 3);
+            }
+
+            Assert(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(
+                    Build(trend: true, momentum: true, macd: true, vwap: true,
+                          volume: true, volatility: true, useMacd: true,
+                          useVwap: true, useVolume: true,
+                          useHealthyVolatility: true, adx: 30, rsi: 60,
+                          dmiBias: 1, emaSlopeAtr: 0.20,
+                          waveTrendDirection: 1, waveTrendQuality: 80)) == 3,
+                "CI-03 correlated trend/momentum/context measurements collapse to three indicator groups");
+
+            Assert(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(macd: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(macd: true, useMacd: true)) == 1,
+                "CI-03 disabled/enabled MACD affects only its momentum-group presence");
+
+            Assert(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(vwap: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(vwap: true, useVwap: true)) == 1,
+                "CI-03 disabled/enabled VWAP affects only its context-group presence");
+
+            Assert(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volume: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volume: true, useVolume: true)) == 1,
+                "CI-03 disabled/enabled volume affects only its context-group presence");
+
+            Assert(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volatility: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volatility: true, useHealthyVolatility: true)) == 1,
+                "CI-03 disabled/enabled healthy-volatility affects only its context-group presence");
+
+            Assert(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(
+                    Build(divergenceDirection: 1, divergenceQuality: 90,
+                          ossBullVotes: 4, ossIndicatorCount: 4)) == 0,
+                "CI-03 divergence and aggregate OSS measurements remain non-independent");
+
+            IndicatorEvidenceFusionResult disabledMacd =
+                IndicatorEvidenceFusionRule.Evaluate(Build(macd: true));
+            IndicatorEvidenceFusionResult enabledMacd =
+                IndicatorEvidenceFusionRule.Evaluate(Build(macd: true, useMacd: true));
+            Assert(
+                disabledMacd.BullBonus == 0 && disabledMacd.BearBonus == 0 &&
+                enabledMacd.BullBonus > 0,
+                "CI-03 disabling MACD removes only MACD directional contribution");
+
+            IndicatorEvidenceFusionResult disabledVwap =
+                IndicatorEvidenceFusionRule.Evaluate(Build(vwap: true));
+            IndicatorEvidenceFusionResult enabledVwap =
+                IndicatorEvidenceFusionRule.Evaluate(Build(vwap: true, useVwap: true));
+            Assert(
+                disabledVwap.BullBonus == 0 && disabledVwap.BearBonus == 0 &&
+                enabledVwap.BullBonus > 0,
+                "CI-03 disabling VWAP removes only VWAP directional contribution");
+
+            IndicatorEvidenceFusionResult disabledVolume =
+                IndicatorEvidenceFusionRule.Evaluate(Build(volume: true));
+            IndicatorEvidenceFusionResult enabledVolume =
+                IndicatorEvidenceFusionRule.Evaluate(Build(volume: true, useVolume: true));
+            Assert(
+                disabledVolume.BullBonus == 0 && disabledVolume.BearBonus == 0 &&
+                enabledVolume.BullBonus > 0,
+                "CI-03 disabling volume removes only volume directional contribution");
+
+            IndicatorEvidenceFusionResult disabledVolatility =
+                IndicatorEvidenceFusionRule.Evaluate(Build(volatility: true));
+            IndicatorEvidenceFusionResult enabledVolatility =
+                IndicatorEvidenceFusionRule.Evaluate(Build(volatility: true, useHealthyVolatility: true));
+            Assert(
+                disabledVolatility.BullBonus == 0 && disabledVolatility.BearBonus == 0 &&
+                enabledVolatility.BullBonus > 0,
+                "CI-03 disabling healthy volatility removes only volatility directional contribution");
         }
 
         private static void VerifyOutcomeMemoryIdentitySemantics()
