@@ -570,9 +570,29 @@ Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL
 
 ## Current active phase
 
+### CR6.4 / F5 closeout — 2026-10-01
+
+CR6.4 / F5 is **VERIFIED COMPLETE on branch phase/cr6-4-f5-smart-regime-identity**, implementation commit 1182b45479881557b2f75d0aee5230cba8970753.
+
+Implementation:
+- MarketRegimeIdentity is the canonical regime identity/normalization owner;
+- MarketRegimeClassifier emits only TREND, EXPANSION, RANGE, TRANSITION, HIGH_VOLATILITY, COMPRESSION or UNKNOWN;
+- FrameRegimeResolutionRule delegates normalization to the canonical identity owner;
+- SmartThresholdPolicyRule owns the existing adaptive threshold adjustments;
+- the unreachable REVERSAL branch is removed without threshold retuning;
+- deterministic runtime coverage verifies every canonical regime, UNKNOWN/future safety, legacy numeric adjustments, disabled adaptation and direction-neutral symmetry;
+- audit_phase_6_4.py is accumulated in Source/Architecture CI.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue, threshold, RR, confidence or execution policy changed;
+- no second decision/execution authority introduced;
+- target-terminal timing/presentation, restart/reconnect and empirical signal-quality/profitability remain manual.
+
+Next phase: **CR6.5 / F6 — Trap-risk/trigger exceptions and actionability constant ownership.**
+
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
-CR-FINAL. **Current: CR6.4 / F5 — Smart-threshold regime identity and hidden
-REVERSAL dead path.**
+CR-FINAL. **Current: CR6.5 / F6 — Trap-risk/trigger exceptions and actionability
+constant ownership.**
 
 CR5.1 through CR5.8 are verified complete. CR5.8 / E8 was merged to main via
 PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
@@ -625,6 +645,6 @@ reconciliation of accumulated Phase 11.4 and E6 continuity audits.
 
 ### Next transition
 
-The next implementation response must execute **CR6.1 / F1 — Opposing FVG/OB
-target-path direction, mitigation and obstacle caching** only. Track 12A and
-CR-FINAL remain blocked until the full Prompt 6 chain is closed.
+The next implementation response must execute **CR6.5 / F6 — Trap-risk/trigger
+exceptions and actionability constant ownership** only. Track 12A and CR-FINAL
+remain blocked until the full Prompt 6 chain is closed.

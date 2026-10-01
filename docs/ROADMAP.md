@@ -5400,6 +5400,33 @@ PR #129 was verified with Source/Architecture, Runtime Acceptance Contracts, and
 
 **Next phase: CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
+### CR6.4 / F5 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — smart-threshold regime identity and the unreachable REVERSAL branch are reconciled.**
+
+Completed:
+- canonical MarketRegimeIdentity constants now own the six classifier states plus UNKNOWN;
+- regime normalization is centralized in the same identity owner;
+- MarketRegimeClassifier and reviewed regime consumers no longer duplicate the regime vocabulary;
+- adaptive Smart Threshold adjustment is owned by platform-neutral SmartThresholdPolicyRule;
+- the unreachable REVERSAL Smart Threshold branch is removed because the canonical classifier has no REVERSAL state;
+- existing TREND/EXPANSION/RANGE/COMPRESSION numerical adjustments are preserved;
+- HIGH_VOLATILITY, TRANSITION, UNKNOWN and future values retain the base threshold path;
+- deterministic F5 Runtime Contracts and audit_phase_6_4.py are wired into the accumulated verification chain.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no default threshold, RR, confidence or execution policy changed;
+- no second decision or execution authority introduced;
+- REVERSAL remains an execution/reversal semantic elsewhere and is not a market-regime identifier.
+
+Repository/manual boundary:
+- Source/Architecture, Runtime Acceptance Contracts and cTrader Compile are repository gates;
+- target-terminal regime timing/presentation, restart/reconnect and empirical signal-quality/profitability remain manual acceptance items.
+
+**Next phase: CR6.5 / F6 — Trap-risk/trigger exceptions and actionability constant ownership.**
+
+
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
@@ -5579,7 +5606,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
+**CR6.5 / F6 — Trap-risk/trigger exceptions and actionability constant ownership.**
 
 CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
 
