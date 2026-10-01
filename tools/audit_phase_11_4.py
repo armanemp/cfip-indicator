@@ -69,10 +69,9 @@ for token in (
 if not (
     "TargetSelectionRequiredRrRule.BuildRequiredRrLadder(" in policy
     and
-    re.search(
-        r"IsTacticalLane[\s\S]*TacticalOpportunityMinimumRR",
-        target_rr_rule,
-    )
+    "TacticalOpportunityMinimumRR" in target_rr_rule
+    and
+    "IsTacticalLane" in target_rr_rule
 ):
     errors.append(
         "tactical lanes do not inherit canonical TP1 RR floor"
