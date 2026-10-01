@@ -5009,7 +5009,7 @@ Verification boundary:
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **IN PROGRESS — CR5.1 and CR5.2 VERIFIED COMPLETE; CR5.3 NEXT.**
+Status: **IN PROGRESS — CR5.1, CR5.2 and CR5.3 VERIFIED COMPLETE; CR5.4 NEXT.**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -5157,8 +5157,37 @@ Safety/manual boundary:
 **Next phase: CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
 
 
+### CR5.3 / E3 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #119 merged to `main`; merge commit `96530088a4216eb4a3f8caae9595987d98c0a27e`.**
+
+Completed:
+- centralized the established independent-evidence score and the new independent-group count under Core `IndependentEvidenceFusionRule`;
+- defined four independent evidence families: Structural, Location, Trend-Momentum and Context;
+- ensured correlated observations inside one family count as one independent group;
+- exposed selected-direction group count on `Decision` and both score/group provenance on `TradeOpportunityCandidate`;
+- migrated Decision Contracts and Runtime Contracts to the canonical Core owner;
+- removed the duplicate Analysis-layer `IndependentEvidenceFusionCalculator`;
+- added deterministic E3 contracts and `audit_phase_5_3.py` to the accumulated Source/Architecture gate.
+
+Repository verification on PR #119 head `90207194fcb94768ade28d42f40d6e393b97fad2`:
+- Source/Architecture: PASS — run `36793867203` / workflow #2083;
+- Runtime Acceptance Contracts: PASS — run `36793867170` / workflow #1892;
+- cTrader Compile: PASS — run `36793867168` / workflow #2076.
+
+Safety/manual boundary:
+- no public parameter name/type/default changed;
+- no RR/confidence/SL/TP/actionability/execution threshold tuning;
+- the established 0–8 independent-evidence score behavior was preserved;
+- independent-group count is diagnostic/provenance state and is not a new trading filter;
+- no decision or execution authority changed;
+- target-terminal timing, broker lifecycle, restart/reconnect and empirical signal-quality/profitability remain manual.
+
+**Next phase: CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation.**
+
+
 ## Current active implementation phase
 
-**CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.**
+**CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation.**
 
-CR5.2 / E2 is verified complete and merged; continue from CR5.3. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.3 / E3 is verified complete and merged; continue from CR5.4. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
