@@ -155,11 +155,37 @@ namespace cAlgo
                 return;
             }
 
+            EnrichLivePlanTargets(closedM5);
+
             stop = _plan.Stop;
             target =
                 AutoTarget(
                     _plan,
                     EffectiveAutoTpStage());
+
+            if (_serverSideTakeProfitLadderActive &&
+                !ReconcilePendingFillServerProtection(
+                    args.Position,
+                    target))
+            {
+                _brokerProtectionRecoveryRequired = true;
+                SetLifecycleState(
+                    LifecycleState.RecoveryRequired,
+                    "PENDING FILL • ABSOLUTE TP LADDER RECONCILIATION FAILED");
+
+                _autoExecutionBlockReason =
+                    "PENDING FILL • ABSOLUTE TP LADDER RECONCILIATION FAILED";
+
+                SendUnifiedAlert(
+                    "PENDING-FILL-LADDER-RECONCILIATION-FAILED|" +
+                    args.Position.Id,
+                    "CFIP PENDING FILL • TP LADDER RECONCILIATION FAILED | #" +
+                    args.Position.Id,
+                    direction,
+                    true);
+
+                return;
+            }
 
             protectionMissing =
                 !args.Position.StopLoss.HasValue ||
@@ -187,8 +213,6 @@ namespace cAlgo
                 target,
                 direction,
                 protectionMissing);
-
-            EnrichLivePlanTargets(closedM5);
 
             if (!_brokerProtectionRecoveryRequired)
                 ClearPendingOrderPlanSnapshot();
