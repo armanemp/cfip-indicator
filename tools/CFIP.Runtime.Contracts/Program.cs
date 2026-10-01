@@ -6141,31 +6141,37 @@ namespace cAlgo
                 "aggressive pre-trade guard rejects stop risk above the canonical effective ceiling");
 
             Assert(
-                ExecutionPlanGeometryRule.Evaluate(
+                PriceProtectionRule.ValidateStop(
                     1,
                     100.0,
                     99.0,
+                    0.10) &&
+                PriceProtectionRule.ValidateTarget(
+                    1,
+                    100.0,
                     102.0,
-                    0.50).Allowed &&
-                ExecutionPlanGeometryRule.Evaluate(
+                    0.10) &&
+                PriceProtectionRule.ValidateStop(
                     -1,
                     100.0,
                     101.0,
+                    0.10) &&
+                PriceProtectionRule.ValidateTarget(
+                    -1,
+                    100.0,
                     98.0,
-                    0.50).Allowed &&
-                !ExecutionPlanGeometryRule.Evaluate(
+                    0.10) &&
+                !PriceProtectionRule.ValidateStop(
                     1,
                     100.0,
                     101.0,
-                    102.0,
-                    0.50).Allowed &&
-                !ExecutionPlanGeometryRule.Evaluate(
+                    0.10) &&
+                !PriceProtectionRule.ValidateTarget(
                     -1,
                     100.0,
-                    99.0,
-                    98.0,
-                    0.50).Allowed,
-                "actual-fill managed-plan geometry remains directionally valid and symmetric");
+                    102.0,
+                    0.10),
+                "actual-fill managed-plan exit geometry remains directionally valid and symmetric");
 
             AggressiveEntryPolicy policy =
                 new AggressiveEntryPolicy();
