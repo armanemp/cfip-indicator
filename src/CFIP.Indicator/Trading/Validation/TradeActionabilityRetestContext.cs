@@ -53,5 +53,67 @@ namespace cAlgo
 
             return true;
         }
+
+        private double ResolveAdverseM5Atr(
+            Bars bars,
+            int index,
+            int direction,
+            double atr)
+        {
+            if (bars == null ||
+                index < 2 ||
+                index >= bars.Count ||
+                !IsFinitePositive(atr))
+                return 0;
+
+            double move =
+                bars.ClosePrices[index] -
+                bars.ClosePrices[index - 2];
+
+            return
+                direction == 1
+                    ? Math.Max(0, -move) /
+                      Math.Max(Symbol.PipSize, atr)
+                    : Math.Max(0, move) /
+                      Math.Max(Symbol.PipSize, atr);
+        }
+
+        private double ResolveAdverseM1Atr(
+            Bars bars,
+            int index,
+            int direction)
+        {
+            if (bars == null ||
+                index < 2 ||
+                index >= bars.Count)
+                return 0;
+
+            double atr = Atr(bars, index);
+            if (!IsFinitePositive(atr))
+                return 0;
+
+            double move =
+                bars.ClosePrices[index] -
+                bars.ClosePrices[index - 2];
+
+            return
+                direction == 1
+                    ? Math.Max(0, -move) /
+                      Math.Max(Symbol.PipSize, atr)
+                    : Math.Max(0, move) /
+                      Math.Max(Symbol.PipSize, atr);
+        }
+
+        private static bool IsDirectionConflict(
+            int frameDirection,
+            int requestedDirection)
+        {
+            return
+                (requestedDirection == 1 &&
+                 frameDirection == -1) ||
+                (requestedDirection == -1 &&
+                 frameDirection == 1);
+        }
+
     }
 }
