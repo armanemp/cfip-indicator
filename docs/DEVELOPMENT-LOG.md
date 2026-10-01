@@ -4,7 +4,7 @@ This file records implementation history so development can resume safely in a n
 
 ## 2026-10-02 — CI-07 MTF / Regime / Market Context
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending on the CI-07 branch.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #162 (merge commit `73511c84ff3072cdbdab8487b0d4331b52c789b1`). Runtime Acceptance #2333, cTrader compile #2517, and Source/Architecture #2524 passed on final CI-07 head.**
 
 Implemented:
 - reference-aware `MtfClosedContextCache` with next-bar boundary checks and exact-reference re-materialization;
