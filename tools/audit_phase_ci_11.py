@@ -95,7 +95,7 @@ check(
     "market execution uses canonical trigger/zone predicates",
     "EntryGeometryRule.IsTriggerReached(" in market_entry and
     "EntryGeometryRule.IsInsideZone(" in market_entry and
-    "GetCanonicalPriceSnapshot()" not in market_entry
+    "GetCanonicalPriceSnapshot()" in market_entry
 )
 
 check(
@@ -106,7 +106,7 @@ check(
 
 check(
     "legacy actionability late API is only a compatibility facade",
-    "return EntryGeometryRule.IsLate(" in read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
+    "return EntryGeometryRule.EvaluateLate(" in read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
 )
 
 check(
