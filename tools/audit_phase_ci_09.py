@@ -60,7 +60,8 @@ check(
     "preConflictSell =" in score and
     "conflictPenaltyBuy" in score and
     "conflictPenaltySell" in score and
-    "choppinessFactor = 0.90" in score
+    "ResolveChoppinessFactor(" in score and
+    "? 0.90" in score
 )
 
 check(
