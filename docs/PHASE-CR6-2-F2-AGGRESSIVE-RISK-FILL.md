@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — verification pending on final branch head.**
+Status: **VERIFIED COMPLETE — PR #128 merged after all three repository gates passed.**
 
 ## Required phase confirmation
 
@@ -48,6 +48,14 @@ fill reconciliation path were checked before the correction.
   `LivePosition` is published.
 - Post-close cleanup remains under the existing `PositionClosedHandler`; no
   second lifecycle owner was introduced.
+
+## Repository verification
+
+Implementation head: `3d7d819343c00135c4b0b9eb7ffa2dfa2b19a452`.
+- Source/Architecture: PASS — run #2183.
+- Runtime Acceptance Contracts: PASS — run #1992.
+- cTrader Compile: PASS — run #2176.
+- `audit_phase_6_2.py`: PASS within Source/Architecture.
 
 ## Deterministic verification added
 
