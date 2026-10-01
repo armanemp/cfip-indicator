@@ -73,13 +73,17 @@ internal static class Program
         SkenderWarmupParityBenchmarkResult warmupParity =
             SkenderWarmupParityBenchmark.Measure();
 
+        SkenderProductionParityBenchmarkResult productionParity =
+            SkenderProductionParityBenchmark.Measure();
+
         string report =
             BenchmarkReport.Format(
                 comparisons,
                 v2Timing,
                 v3Timing,
                 quoteCacheTiming,
-                warmupParity);
+                warmupParity,
+                productionParity);
 
         Console.WriteLine(report);
 
@@ -96,12 +100,13 @@ internal static class Program
             comparisons.Count ==
                 BenchmarkFixtures.ScenarioNames.Count *
                 IndicatorComparison.Definitions.Count &&
-            warmupParity.Passed;
+            warmupParity.Passed &&
+            productionParity.Passed;
 
         Console.WriteLine();
         Console.WriteLine(
             passed
-                ? "TRACK 19.1 + CR8.3b COMPLETE: OSS numerical benchmark passed."
+                ? "TRACK 19.1 + CR8.3b + CI-02 COMPLETE: OSS numerical benchmark passed."
                 : "OSS numerical benchmark FAILED: a deterministic parity gate failed.");
 
         return passed ? 0 : 1;
