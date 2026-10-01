@@ -78,15 +78,9 @@ namespace cAlgo
                     0,
                     Math.Min(
                         100,
-                        _m5Frame == null
+                        geometry.Execution == null
                             ? 0
-                            : (direction == 1
-                                ? Math.Max(
-                                    _m5Frame.FvgBullQuality,
-                                    _m5Frame.ObBullQuality)
-                                : Math.Max(
-                                    _m5Frame.FvgBearQuality,
-                                    _m5Frame.ObBearQuality))));
+                            : geometry.Execution.Quality));
 
             List<Level> levels =
                 BuildTargetLevels(
