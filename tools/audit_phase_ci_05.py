@@ -169,7 +169,7 @@ check(
 
 check(
     "CI-05 is the active continuation phase",
-    "**CI-05 — FVG lifecycle" in roadmap and
+    "Current implementation phase: CI-05 — FVG lifecycle" in roadmap and
     "**CI-05 — FVG lifecycle" in continuation
 )
 
