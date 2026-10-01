@@ -202,7 +202,7 @@ for forbidden in (
     "OrderBlockLifecycleState.Mitigated",
     "OrderBlockLifecycleState.Broken",
     "GetMitigationProbe(",
-    "IsFullyMitigated(",
+    "IsOrderBlockFullyMitigated(",
     "TryApplyOrderBlockPartialMitigation(",
     "ClassifyLifecycle(",
 ):
@@ -216,11 +216,11 @@ for token in (
     "OrderBlockLifecycleState.Mitigated",
     "OrderBlockLifecycleState.Broken",
     "MinimumRetainedRatio",
-    "IsAgeValid(",
-    "ResolveMitigationProbe(",
-    "IsFullyMitigated(",
-    "TryApplyPartialMitigation(",
-    "Classify(",
+    "IsOrderBlockAgeValid(",
+    "ResolveOrderBlockMitigationProbe(",
+    "IsOrderBlockFullyMitigated(",
+    "TryApplyOrderBlockPartialMitigation(",
+    "ClassifyOrderBlockLifecycle(",
 ):
     if token not in ob_lifecycle_rule_code:
         raise SystemExit(
@@ -340,7 +340,7 @@ for token in (
     "MeetsMinimumGap(",
     "IsOverlapInclusive(",
     "IsFullyFilled(",
-    "TryApplyPartialMitigation(",
+    "TryApplyOrderBlockPartialMitigation(",
     "Identity(",
     "low < high",
 ):
@@ -348,7 +348,7 @@ for token in (
         raise SystemExit(f"FVG mathematical rule missing deterministic owner: {token}")
 
 for token in (
-    "IsAgeValid(",
+    "IsOrderBlockAgeValid(",
     "ResolveFvgMitigationProbe(",
     "TryApplyMitigationStep(",
     "return !invalidateOnFullFill;",
@@ -1887,7 +1887,7 @@ for path, token in (
 FVG_LIFECYCLE_RULE = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
 FVG_LIFECYCLE_RULE_CODE = FVG_LIFECYCLE_RULE.read_text(encoding="utf-8")
 for token in (
-    "IsAgeValid(",
+    "IsOrderBlockAgeValid(",
     "ResolveFvgMitigationProbe(",
     "TryApplyMitigationStep(",
     "return !invalidateOnFullFill;",
