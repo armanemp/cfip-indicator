@@ -112,10 +112,16 @@ if "EnableAutoTrading" not in initialization or "EnableAutomaticOrders" not in i
 if "EnsureExecutionRuntimeState()" not in initialization:
     raise SystemExit("Execution settings must retain a canonical runtime synchronization boundary")
 
+presentation_rule = read("Core/Math/PlanLinePresentationRule.cs")
+
 if "return LineStyle.Solid" not in line:
     raise SystemExit("Plan lines must remain Solid")
-if "return\n                Math.Min(" not in line:
-    raise SystemExit("Plan signal line thickness must remain fixed at one")
+if "PlanLinePresentationRule.ResolveThickness(" not in line:
+    raise SystemExit("Plan signal line thickness must use the canonical presentation rule")
+if "MinimumThickness = 1" not in presentation_rule or "MaximumThickness = 3" not in presentation_rule:
+    raise SystemExit("Plan signal line thickness must preserve the public 1..3 contract")
+if "Math.Min(1" in line:
+    raise SystemExit("Plan signal line renderer must not force thickness back to one")
 if "line.Thickness =\n                                            1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
     raise SystemExit("Prediction signal line thickness must remain fixed at one")
 if "RenderCompactPlanLabel(" in alert_renderer or '"ALERT "' in alert_renderer:
