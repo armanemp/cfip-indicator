@@ -89,8 +89,7 @@ namespace cAlgo
 
             EnrichPlanTargetMetadata(
                 p,
-                candidates,
-                atr);
+                selected);
 
             if (RequirePlanIntegrity &&
                 !ValidatePlanIntegrity(

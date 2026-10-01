@@ -255,15 +255,34 @@ namespace cAlgo
                             _plan.Tp4 = IsValidTarget(direction, executionEntry, tp4)
                                 ? NormalizePrice(tp4) : 0;
                 
-                            ApplyTargetMeta(levels, _plan.Tp1, atr,
-                                out _plan.Tp1Source, out _plan.Tp1Quality);
-                            ApplyTargetMeta(levels, _plan.Tp2, atr,
-                                out _plan.Tp2Source, out _plan.Tp2Quality);
-                            ApplyTargetMeta(levels, _plan.Tp3, atr,
-                                out _plan.Tp3Source, out _plan.Tp3Quality);
-                            ApplyTargetMeta(levels, _plan.Tp4, atr,
-                                out _plan.Tp4Source, out _plan.Tp4Quality);
-                
+                            ApplySelectedTargetMeta(
+                                selected,
+                                0,
+                                _plan.Tp1,
+                                out _plan.Tp1Source,
+                                out _plan.Tp1Quality);
+
+                            ApplySelectedTargetMeta(
+                                selected,
+                                1,
+                                _plan.Tp2,
+                                out _plan.Tp2Source,
+                                out _plan.Tp2Quality);
+
+                            ApplySelectedTargetMeta(
+                                selected,
+                                2,
+                                _plan.Tp3,
+                                out _plan.Tp3Source,
+                                out _plan.Tp3Quality);
+
+                            ApplySelectedTargetMeta(
+                                selected,
+                                3,
+                                _plan.Tp4,
+                                out _plan.Tp4Source,
+                                out _plan.Tp4Quality);
+
                             _plan.HtfTargetCount = CountHtfTargetsInPlan(_plan);
                             _runtimeTpStageIndex = -1;
                             _runtimeTpStagePlanCreatedM5 = -1;

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -10,7 +8,6 @@ namespace cAlgo
     {
         private bool TryScoreTargetCandidate(
             Level candidate,
-            List<Level> selected,
             int closedM5,
             double entry,
             double risk,
@@ -72,21 +69,6 @@ namespace cAlgo
                         minimumCandidateRR,
                         MinimumHtfTargetRR);
 
-            double spacing =
-                atr *
-                Math.Max(
-                    0.05,
-                    MinimumTpSpacingAtr);
-
-            bool spacingConflict =
-                selected.Any(
-                    x =>
-                        x != null &&
-                        Math.Abs(
-                            x.Price -
-                            candidate.Price) <=
-                        spacing * 0.50);
-
             TargetCandidateConstraintResult constraint =
                 TargetCandidateConstraintRule.Evaluate(
                     stage,
@@ -101,7 +83,7 @@ namespace cAlgo
                     MaximumTargetExtensionAtr,
                     MinimumTpSpacingAtr,
                     previous,
-                    spacingConflict,
+                    false,
                     requireHtf,
                     htf,
                     (int)Math.Round(candidate.Score),

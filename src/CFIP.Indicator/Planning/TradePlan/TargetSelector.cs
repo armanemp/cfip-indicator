@@ -15,11 +15,10 @@ namespace cAlgo
             double atr,
             OpportunityLane lane)
         {
-            List<Level> selected =
-                new List<Level>
-                {
-                    null, null, null, null
-                };
+            List<Level> selected = new List<Level>
+            {
+                null, null, null, null
+            };
 
             if (levels == null ||
                 levels.Count == 0 ||
@@ -27,11 +26,9 @@ namespace cAlgo
                 atr <= 0)
                 return selected;
 
-            double rrStep = Math.Max(0.10, StructuralTpRrStep);
-
             double[] requiredRR =
                 BuildTargetSelectionRequiredRR(
-                    rrStep,
+                    Math.Max(0.10, StructuralTpRrStep),
                     lane);
 
             if (!TargetSelectionRequiredRrRule.IsMonotonicNonDecreasing(
@@ -39,97 +36,45 @@ namespace cAlgo
                 return selected;
 
             double maximumRR =
-                Math.Max(
-                    requiredRR[0],
-                    MaximumRewardRR);
+                Math.Max(requiredRR[0], MaximumRewardRR);
+
+            if (!TryBuildTargetLadderStageOptions(
+                    levels,
+                    closedM5,
+                    entry,
+                    risk,
+                    direction,
+                    atr,
+                    lane,
+                    requiredRR,
+                    maximumRR,
+                    out List<TargetLadderOption>[] stageOptions))
+                return selected;
+
+            int[] selectedIndices =
+                TargetLadderSelectionRule.SelectBestPath(
+                    direction,
+                    entry,
+                    atr * Math.Max(0.05, MinimumTpSpacingAtr),
+                    stageOptions);
+
+            if (selectedIndices.Length == 0 ||
+                selectedIndices[0] < 0)
+                return selected;
 
             for (int stage = 0;
-                 stage < 4;
+                 stage < selectedIndices.Length &&
+                 stage < selected.Count;
                  stage++)
             {
-                Dictionary<string, int> rejectionCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+                int index = selectedIndices[stage];
 
-                if (!TryValidateTargetStageFeasibility(requiredRR[stage], maximumRR, risk, atr, out string stageRejectionReason))
-                {
-                    AddTargetRejectionCount(
-                        rejectionCounts,
-                        stageRejectionReason);
-                    RecordTargetStageRejections(
-                        closedM5,
-                        stage,
-                        rejectionCounts);
-                    continue;
-                }
-
-                double previous = FindPreviousSelectedTargetPrice(selected, stage, entry);
-
-                bool requireHtf = RequiresHtfRewardForTargetStage(stage, lane);
-
-                Level best = null;
-                double bestScore =
-                    double.MinValue;
-
-                for (int i = 0;
-                     i < levels.Count;
-                     i++)
-                {
-                    Level candidate =
-                        levels[i];
-
-                    if (!TryScoreTargetCandidate(
-                            candidate,
-                            selected,
-                            closedM5,
-                            entry,
-                            risk,
-                            direction,
-                            atr,
-                            requiredRR[stage],
-                            maximumRR,
-                            previous,
-                            requireHtf,
-                            stage,
-                            out double score,
-                            out string rejectionReason))
-                    {
-                        AddTargetRejectionCount(
-                            rejectionCounts,
-                            rejectionReason);
-                        continue;
-                    }
-
-                    if (score > bestScore)
-                    {
-                        bestScore =
-                            score;
-                        best =
-                            candidate;
-                    }
-                }
-
-                if (best != null)
-                {
-                    selected[stage] =
-                        best;
-                }
-                else
-                {
-                    if (rejectionCounts.Count == 0)
-                    {
-                        AddTargetRejectionCount(
-                            rejectionCounts,
-                            TargetCandidateRejectionReasons.InvalidGeometry);
-                    }
-
-                    RecordTargetStageRejections(
-                        closedM5,
-                        stage,
-                        rejectionCounts);
-                }
+                if (index >= 0 &&
+                    index < levels.Count)
+                    selected[stage] = levels[index];
             }
 
             return selected;
         }
-
     }
 }

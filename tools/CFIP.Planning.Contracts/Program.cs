@@ -22,6 +22,7 @@ namespace cAlgo
             VerifyTargetPipelineD7();
             VerifyTargetObstacleCachePolicyF9();
             VerifyTargetSelectionConsistency();
+            VerifyTargetLadderSelection();
             VerifyLiveReversalD9();
             Console.WriteLine("Planning contracts OK");
         }
@@ -498,6 +499,101 @@ namespace cAlgo
                 " lane/fixture ladders, named constants, BUY/SELL symmetry passed");
         }
 
+
+
+        private static void VerifyTargetLadderSelection()
+        {
+            IReadOnlyList<TargetLadderOption>[] buyStages =
+            {
+                new List<TargetLadderOption>
+                {
+                    new TargetLadderOption(0, 103.0, 100.0),
+                    new TargetLadderOption(1, 102.0, 95.0)
+                },
+                new List<TargetLadderOption>
+                {
+                    new TargetLadderOption(2, 102.5, 100.0)
+                },
+                new List<TargetLadderOption>()
+            };
+
+            int[] buy =
+                TargetLadderSelectionRule.SelectBestPath(
+                    1,
+                    100.0,
+                    0.25,
+                    buyStages);
+
+            Assert(
+                buy.Length == 3 &&
+                buy[0] == 1 &&
+                buy[1] == 2 &&
+                buy[2] == -1,
+                "CI-13 global BUY ladder selection");
+
+            IReadOnlyList<TargetLadderOption>[] sellStages =
+            {
+                new List<TargetLadderOption>
+                {
+                    new TargetLadderOption(0, 97.0, 100.0),
+                    new TargetLadderOption(1, 98.0, 95.0)
+                },
+                new List<TargetLadderOption>
+                {
+                    new TargetLadderOption(2, 97.5, 100.0)
+                },
+                new List<TargetLadderOption>()
+            };
+
+            int[] sell =
+                TargetLadderSelectionRule.SelectBestPath(
+                    -1,
+                    100.0,
+                    0.25,
+                    sellStages);
+
+            Assert(
+                sell.Length == 3 &&
+                sell[0] == 1 &&
+                sell[1] == 2 &&
+                sell[2] == -1,
+                "CI-13 global SELL ladder symmetry");
+
+            IReadOnlyList<TargetLadderOption>[] singleStage =
+            {
+                new List<TargetLadderOption>
+                {
+                    new TargetLadderOption(4, 101.0, 40.0)
+                }
+            };
+
+            int[] single =
+                TargetLadderSelectionRule.SelectBestPath(
+                    1,
+                    100.0,
+                    0.25,
+                    singleStage);
+
+            Assert(
+                single.Length == 1 &&
+                single[0] == 4,
+                "CI-13 single-stage ladder remains valid");
+
+            int[] invalidDirection =
+                TargetLadderSelectionRule.SelectBestPath(
+                    0,
+                    100.0,
+                    0.25,
+                    singleStage);
+
+            Assert(
+                invalidDirection.Length == 1 &&
+                invalidDirection[0] == -1,
+                "CI-13 invalid direction fails closed");
+
+            Console.WriteLine(
+                "CI-13 coherent TP ladder contracts: global path selection, termination and BUY/SELL symmetry passed");
+        }
 
         private static void VerifyLiveReversalD9()
         {

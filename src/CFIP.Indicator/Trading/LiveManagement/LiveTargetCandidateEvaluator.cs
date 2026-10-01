@@ -8,7 +8,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double FindImprovedLiveTarget(
+        private Level FindImprovedLiveTarget(
             List<Level> levels,
             int closedM5,
             double current,
@@ -28,7 +28,7 @@ namespace cAlgo
                     _plan.Direction,
                     atr);
 
-            double best = current;
+            Level best = null;
             double bestScore = double.MinValue;
 
             for (int i = 0;
@@ -71,7 +71,7 @@ namespace cAlgo
                 if (score > bestScore)
                 {
                     bestScore = score;
-                    best = level.Price;
+                    best = level;
                 }
             }
 

@@ -333,31 +333,43 @@ namespace cAlgo
                 ? NormalizePrice(candidateTp4)
                 : 0;
 
-            ApplyTargetMeta(
-                levels,
+            ApplyResolvedTargetMeta(
+                selected,
+                0,
                 _plan.Tp1,
-                atr,
+                oldTp1,
+                referencePlan?.Tp1Source,
+                referencePlan?.Tp1Quality ?? 0,
                 out _plan.Tp1Source,
                 out _plan.Tp1Quality);
 
-            ApplyTargetMeta(
-                levels,
+            ApplyResolvedTargetMeta(
+                selected,
+                1,
                 _plan.Tp2,
-                atr,
+                oldTp2,
+                referencePlan?.Tp2Source,
+                referencePlan?.Tp2Quality ?? 0,
                 out _plan.Tp2Source,
                 out _plan.Tp2Quality);
 
-            ApplyTargetMeta(
-                levels,
+            ApplyResolvedTargetMeta(
+                selected,
+                2,
                 _plan.Tp3,
-                atr,
+                oldTp3,
+                referencePlan?.Tp3Source,
+                referencePlan?.Tp3Quality ?? 0,
                 out _plan.Tp3Source,
                 out _plan.Tp3Quality);
 
-            ApplyTargetMeta(
-                levels,
+            ApplyResolvedTargetMeta(
+                selected,
+                3,
                 _plan.Tp4,
-                atr,
+                oldTp4,
+                referencePlan?.Tp4Source,
+                referencePlan?.Tp4Quality ?? 0,
                 out _plan.Tp4Source,
                 out _plan.Tp4Quality);
 

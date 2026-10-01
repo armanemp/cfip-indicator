@@ -160,34 +160,33 @@ namespace cAlgo
 
         private void EnrichPlanTargetMetadata(
             Plan p,
-            List<Level> candidates,
-            double atr)
+            List<Level> selected)
         {
-            ApplyTargetMeta(
-                candidates,
+            ApplySelectedTargetMeta(
+                selected,
+                0,
                 p.Tp1,
-                atr,
                 out p.Tp1Source,
                 out p.Tp1Quality);
 
-            ApplyTargetMeta(
-                candidates,
+            ApplySelectedTargetMeta(
+                selected,
+                1,
                 p.Tp2,
-                atr,
                 out p.Tp2Source,
                 out p.Tp2Quality);
 
-            ApplyTargetMeta(
-                candidates,
+            ApplySelectedTargetMeta(
+                selected,
+                2,
                 p.Tp3,
-                atr,
                 out p.Tp3Source,
                 out p.Tp3Quality);
 
-            ApplyTargetMeta(
-                candidates,
+            ApplySelectedTargetMeta(
+                selected,
+                3,
                 p.Tp4,
-                atr,
                 out p.Tp4Source,
                 out p.Tp4Quality);
 

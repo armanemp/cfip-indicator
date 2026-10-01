@@ -63,15 +63,10 @@ private List<Level> MergeLevels(
                                                         1,
                                                         current.Hits);
                                 
-                                                match.Price =
-                                                    NormalizePrice(
-                                                        (match.Price *
-                                                         matchHits +
-                                                         current.Price *
-                                                         currentHits) /
-                                                        (matchHits +
-                                                         currentHits));
-                                
+                                                // The first source is the authoritative representative because
+                                                // BuildTargetLevels orders inputs by descending source score.
+                                                // Confluence updates score/hits only; it must never fabricate a
+                                                // price or overwrite source provenance.
                                                 match.Score =
                                                     Clamp(
                                                         Math.Max(
@@ -90,28 +85,8 @@ private List<Level> MergeLevels(
                                                     matchHits +
                                                     currentHits;
                                 
-                                                match.Age =
-                                                    Math.Min(
-                                                        match.Age,
-                                                        current.Age);
-                                
-                                                if (current.Timeframe == "M15" ||
-                                                    current.Timeframe == "M30" ||
-                                                    current.Timeframe == "H1" ||
-                                                    current.Timeframe == "H4" ||
-                                                    current.Timeframe == "D1" ||
-                                                    current.Timeframe == "W1")
-                                                {
-                                                    match.Timeframe =
-                                                        current.Timeframe;
-                                                    match.SourceAgeMinutes =
-                                                        current.SourceAgeMinutes;
-                                                }
-                                
-                                                if (match.Kind == "SWING" &&
-                                                    current.Kind != "SWING")
-                                                    match.Kind =
-                                                        current.Kind;
+                                                // Preserve match.Price, Kind, Timeframe, Age and
+                                                // SourceAgeMinutes from the authoritative source.
                                             }
                                 
                                             return

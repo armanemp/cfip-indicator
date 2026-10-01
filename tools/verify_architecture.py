@@ -1809,15 +1809,15 @@ if TARGET_SELECTOR.stat().st_size > 4096:
     raise SystemExit("TargetSelector.cs must remain a thin stage-orchestration boundary")
 for token in (
     "BuildTargetSelectionRequiredRR(",
-    "FindPreviousSelectedTargetPrice(",
-    "RequiresHtfRewardForTargetStage(",
-    "TryScoreTargetCandidate(",
+    "TargetLadderSelectionRule.SelectBestPath(",
+    "TryBuildTargetLadderStageOptions("
 ):
     if token not in TARGET_SELECTOR_CODE:
         raise SystemExit(f"TargetSelector orchestration call missing: {token}")
 for required_path in (
     ROOT / "Planning" / "TradePlan" / "TargetSelectionPolicy.cs",
     ROOT / "Planning" / "TradePlan" / "TargetCandidateEvaluator.cs",
+    ROOT / "Planning" / "TradePlan" / "TargetLadderStageCandidateBuilder.cs",
 ):
     if not required_path.exists():
         raise SystemExit(f"Target selection owner missing: {required_path}")
@@ -1825,7 +1825,7 @@ for declaration in (
     "private double[] BuildTargetSelectionRequiredRR(",
     "private double FindPreviousSelectedTargetPrice(",
     "private bool RequiresHtfRewardForTargetStage(",
-    "private bool TryScoreTargetCandidate(",
+    "private bool TryBuildTargetLadderStageOptions("
 ):
     if declaration in TARGET_SELECTOR_CODE:
         raise SystemExit(f"TargetSelector retains extracted responsibility: {declaration}")
@@ -2289,7 +2289,7 @@ for token in (
     if token not in TARGET_PROGRESSION_CODE:
         raise SystemExit(f"TargetProgression orchestration call missing: {token}")
 for declaration in (
-    "private double FindImprovedLiveTarget(",
+    "private Level FindImprovedLiveTarget(",
     "private bool IsEligibleLiveTarget(",
     "private bool IsImprovedLiveTarget(",
     "private double CalculateLiveTargetScore(",

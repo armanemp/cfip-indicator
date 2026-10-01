@@ -31,6 +31,9 @@ constraints = read(
 selector = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs"
 )
+stage_builder = read(
+    "src/CFIP.Indicator/Planning/TradePlan/TargetLadderStageCandidateBuilder.cs"
+)
 materialization = read(
     "src/CFIP.Indicator/Planning/TradePlan/PlanMaterialization.cs"
 )
@@ -76,7 +79,9 @@ check(
 
 check(
     "TargetSelector remains orchestration-only",
-    "TryScoreTargetCandidate(" in selector
+    "TargetLadderSelectionRule.SelectBestPath(" in selector
+    and "TryBuildTargetLadderStageOptions(" in selector
+    and "TryScoreTargetCandidate(" in stage_builder
     and "TargetCandidateConstraintRule" not in selector
     and "!IsValidTarget(" not in selector,
 )

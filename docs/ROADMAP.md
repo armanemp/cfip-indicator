@@ -1,3 +1,9 @@
+## Phase 7.4 — MaximumOpenPositions semantics — continuity record
+
+The single-plan execution-capacity semantics are enforced by the canonical
+capacity rule and guard. This continuity record preserves the historical
+phase identifier required by the project-integrity audit.
+
 # CFIP Indicator — Master Implementation, Certification and Release Roadmap
 
 ## 0. Purpose
@@ -170,6 +176,9 @@ Current benchmark milestone already completed:
 - CI report generation.
 
 The benchmark completion does **not** constitute production package promotion.
+
+Detailed Track 19 record:
+`docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md`
 
 Machine-enforced baseline facts for the Phase 0.1 verification commit:
 
@@ -699,9 +708,211 @@ marked as a research milestone that may be completed early.
 
 ---
 
+## CR4.4 — Numerical stability and caching continuity
+
+## CR4.5 / D5 — Per-timeframe regime semantics
+
+CR4.5 is a completed historical continuity item: each canonical timeframe
+carries its own normalized regime metadata, non-M5 regime snapshots are bounded
+and independently cached, UNKNOWN remains neutral, and frame scoring consumes
+the owning frame's regime. Target-terminal timing and replay validation remain
+manual acceptance boundaries.
+
+The production OSS indicator adapters use the canonical bounded quote-cache
+owners and preserve deterministic warm-up semantics. Historical target-terminal
+validation remains a manual acceptance boundary; this continuity marker keeps
+the review issue mapped into the current roadmap without changing production
+trading policy.
+
+## CR4.6 / D6 — Frame-scoring constant ownership
+
+CR4.6 implementation complete: frame-scoring literals remain under the single
+Core constant owner without numerical tuning. Target-terminal timing, replay and
+empirical signal-quality validation remain manual boundaries.
+
+## CR4.7 / D7 — TP pipeline feasibility and telemetry
+
+CR4.7 implementation complete: target-stage feasibility, age, geometry and
+bounded rejection telemetry remain under their canonical planning owners. No
+public parameter/default or RR tuning was introduced; target-terminal validation
+remains manual.
+
+## CR4.8 / D8 — TP1 directional defensive validation
+
+CR4.8 implementation complete: TP1 direction and reward-integrity validation use
+the canonical target protection rules. No trading threshold tuning or second
+decision authority was introduced; target-terminal validation remains manual.
+
+## CR4.9 / D9 — Live reversal action and alert semantics
+
+CR4.9 implementation complete: live reversal action/alert ownership remains
+canonical and directionally symmetric. No public parameter/default or RR tuning
+was introduced; target-terminal replay remains a manual acceptance boundary.
+
+## CR4.10 / D10 — Native indicator safety and registry performance
+
+CR4.10 / D10 implementation complete: native indicator ownership/safety and
+registry lookup boundaries are preserved, with benchmark coverage. No public
+parameter/default or RR tuning was introduced; target-terminal validation remains
+manual. The next certification transition is CR-FINAL.
+
+## CR5.3 / E3 — Indicator evidence independence
+
+CR5.3 continuity marker: independent evidence-group semantics remain centralized
+without turning correlated indicators into duplicate decision authority.
+
+## CR5.4 / E4 — [historical remediation continuity]
+
+CR5.4 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.5 / E5 — Active remediation continuity
+
+CR5.5 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.6 / E6 — Signal bias and context continuity
+
+CR5.6 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.7 / E7 — Watch/reaction alert continuity
+
+CR5.7 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.8 / E8 — Reward-risk continuity
+
+CR5.8 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR6.6 / F7 closeout
+
+Historical continuity marker for CR6.6 / F7 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.7 / F8
+
+Historical continuity marker for CR6.7 / F8 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.7 / F8 closeout
+
+Historical continuity marker for CR6.7 / F8 closeout is retained in the
+accumulated roadmap audit chain.
+
+## CR6.8 / F9
+
+Historical continuity marker for CR6.8 / F9 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.8 / F9 closeout
+
+Historical continuity marker for CR6.8 / F9 closeout is retained in the
+accumulated roadmap audit chain.
+
+## CR6.9 / F3
+
+Historical continuity marker for CR6.9 / F3 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.9 / F3 closeout
+
+Historical continuity marker for CR6.9 / F3 closeout is retained in the
+accumulated roadmap audit chain.
+
+## CR7.1 / G1
+
+Historical continuity marker for CR7.1 / G1 is retained in the accumulated
+roadmap audit chain.
+
+## CR7.3 / G3 closeout
+
+Historical continuity marker for CR7.3 / G3 closeout is retained.
+
+**Next phase: CR7.4 / G4**
+
+## CR7.5 / G5
+
+Historical continuity marker for CR7.5 / G5 is retained.
+
+Next continuation: CR7.6a
+
+## CR7.6a / G6A
+
+Historical continuity marker for CR7.6a / G6A is retained in the accumulated
+roadmap audit chain.
+
+## CI-03 — Indicator fusion / evidence independence
+
+Historical continuity marker: CI-03 is verified complete; later CI phases remain
+the active remediation sequence.
+
+## CI-04 closeout — implementation record
+
+CI-04 structure, swing, liquidity and alert-delivery integrity is retained as a verified historical continuity item in the accumulated calculation-integrity chain.
+
+Completed:
+- canonical swing plateau, confirmation and structural-break freshness;
+- repeated re-break rejection for already-crossed confirmed levels;
+- active/unbroken liquidity-sweep validation with BUY/SELL symmetry;
+- canonical Structure/MSS/CHOCH event de-duplication;
+- unified bounded alert delivery queue for popup and sound;
+- popup-before-sound delivery ordering on the same queued alert event;
+- direct sound ownership removed from AlertEngine;
+- deterministic Runtime Acceptance and accumulated Source/Architecture audit coverage.
+
+Repository verification was completed on the CI-04 implementation head before the later CI phases advanced.
+
+
+## CI-05 implementation record
+
+CI-05 FVG lifecycle semantics are retained as a completed historical
+continuity item in the accumulated calculation-integrity chain.
+
+## CI-06 — Order Block lifecycle
+
+CI-06 Order Block lifecycle integrity is retained as a completed historical
+continuity item.
+
+## CI-07 — Market regime, MTF and context audit
+
+CI-07 MTF/regime/context integrity is retained as a completed historical
+continuity item.
+
+## CI-08 implementation record
+
+CI-08 divergence, WaveTrend, reaction and early-signal integrity are retained
+as a completed historical continuity item.
+
+## CI-09 implementation record
+
+CI-09 decision-engine mathematical integrity is retained as a completed
+historical continuity item.
+
+## CI-10 — Trigger and trigger-lifecycle audit
+
+CI-10 trigger/lifecycle integrity is retained as a completed historical
+continuity item.
+
+Phase document: `docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md`
+
+## CI-11 — Entry geometry and signal-timing audit
+
+CI-11 entry-geometry and causal signal-timing integrity are retained as a
+completed historical continuity item.
+
+Current implementation phase: CI-12
+## CI-12 — Structural SL
+
+CI-12 structural-stop integrity is retained as a completed historical
+continuity item.
+
+Phase document: `docs/PHASE-CI-12-STRUCTURAL-SL.md`
+
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
+Status: **active — CI-00 through CI-12 verified complete; CI-13 is the active blocking phase and CI-FINAL remains the final certification gate.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -756,4 +967,42 @@ Manual boundary:
 Phase record: `docs/PHASE-CI-12-STRUCTURAL-SL.md`.
 
 **Next phase: CI-13 — TP source, target obstacle and TP ladder audit.**
+
+### CI-13 implementation record — 2026-10-02
+
+Status: **IMPLEMENTED — repository verification corrected and re-running on final audit contract.**
+
+Implementation branch:
+`phase/ci-13-tp-source-obstacle-ladder`
+
+Production implementation head:
+`db48e116731e48c91f250ce77b966044dd96df63`
+
+Audit-contract correction commit:
+`7cc30bba42dd5280bd79118d8ba497660a216923`
+
+Completed:
+- coherent global TP1..TP4 ladder path selection over already validated stage candidates;
+- exact target-source provenance preserved through clustering and plan materialization;
+- exact selected-source TP metadata reused by execution rebuild and live-target progression;
+- explicit `SYNTHETIC_RR` provenance for synthetic fallback;
+- canonical opposing-zone and HTF target-path obstacle validation retained;
+- deterministic BUY/SELL, termination and invalid-direction planning contracts;
+- CI-13 accumulated Source/Architecture audit wired into the repository gate;
+- final audit false-positive corrected so roadmap continuation is checked semantically rather than by broad token presence.
+
+Repository gates on the pre-correction implementation head:
+- Runtime Acceptance Contracts #2461: **PASS**;
+- cTrader Compile #2645: **PASS**;
+- Source/Architecture #2652: **FAILED only on the CI-13 roadmap-marker false positive**; all preceding accumulated checks through CI-12 passed.
+
+The final audit correction is non-production logic and does not alter trading behavior or public parameters.
+
+Safety/manual boundary:
+- no public parameter/default or RR/confidence/entry/SL/TP/risk/execution threshold was retuned;
+- no second decision/plan/broker-mutation authority introduced;
+- target-terminal replay, panel/chart rendering, broker lifecycle and empirical TP/signal-quality validation remain manual acceptance boundaries.
+
+**Current implementation phase: CI-13 — TP source, target obstacle and TP ladder audit.**
+**Next phase: CI-14 — Canonical risk/reward and protection mathematics.**
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
