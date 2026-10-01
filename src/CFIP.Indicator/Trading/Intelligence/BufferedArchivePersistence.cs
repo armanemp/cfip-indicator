@@ -83,7 +83,7 @@ namespace cAlgo
             {
                 return File.Exists(path);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 RegisterReadFailure(ex);
                 return false;
