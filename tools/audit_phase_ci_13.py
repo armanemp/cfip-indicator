@@ -46,6 +46,12 @@ live_fill_reconcile = read(
 live_enrichment = read(
     "src/CFIP.Indicator/Trading/Lifecycle/LivePlanTargetEnrichment.cs"
 )
+live_target_candidate = read(
+    "src/CFIP.Indicator/Trading/LiveManagement/LiveTargetCandidateEvaluator.cs"
+)
+live_target_progression = read(
+    "src/CFIP.Indicator/Trading/LiveManagement/TargetProgression.cs"
+)
 target_builder = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs"
 )
@@ -153,6 +159,19 @@ check(
     "existingTp3Source" in live_enrichment and
     "existingTp4Source" in live_enrichment and
     "ApplyTargetMeta(" not in live_enrichment,
+)
+
+check(
+    "live target candidate evaluator returns the exact selected source object",
+    "private Level FindImprovedLiveTarget(" in live_target_candidate and
+    "best = level;" in live_target_candidate,
+)
+
+check(
+    "live target progression records exact source provenance without legacy inference",
+    "Level bestLevel" in live_target_progression and
+    "ApplyExactTargetMeta(" in live_target_progression and
+    "ApplyTargetMeta(" not in live_target_progression,
 )
 
 check(
