@@ -290,6 +290,11 @@ namespace cAlgo
                 _triggerRuntime.Latched = true;
                 _triggerRuntime.ConfirmedM1 =
                     closedM1;
+                _triggerRuntime.ConfirmationUtc =
+                    ResolveClosedBarBoundaryUtc(
+                        _m1Bars,
+                        closedM1,
+                        reference);
                 _triggerRuntime.ConfirmationRevision++;
             }
 
@@ -307,6 +312,19 @@ namespace cAlgo
 
             _decision.TriggerReady =
                 _triggerRuntime.Ready;
+        }
+
+        private DateTime ResolveClosedBarBoundaryUtc(
+            Bars bars,
+            int closedIndex,
+            DateTime fallback)
+        {
+            if (bars != null &&
+                closedIndex >= 0 &&
+                closedIndex + 1 < bars.Count)
+                return bars.OpenTimes[closedIndex + 1];
+
+            return fallback;
         }
 
         private int FindContainingBarIndex(
