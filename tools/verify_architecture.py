@@ -237,6 +237,7 @@ if "OrderBlockRule.OrderBlockIdentity(" not in ob_builder_code:
 
 # Phase 8.3 — canonical FVG mathematics and lifecycle ownership.
 fvg_rule = ROOT / "Core" / "Math" / "FvgRule.cs"
+fvg_lifecycle_rule = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
 fvg_detection = ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs"
 fvg_lifecycle = ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs"
 fvg_mitigation = ROOT / "Analysis" / "Structure" / "Zones" / "FvgMitigationEvaluator.cs"
@@ -246,6 +247,7 @@ zone_model = ROOT / "Core" / "Models" / "Zone.cs"
 
 for required in (
     fvg_rule,
+    fvg_lifecycle_rule,
     fvg_detection,
     fvg_lifecycle,
     fvg_mitigation,
@@ -257,6 +259,7 @@ for required in (
         raise SystemExit(f"Phase 8.3 FVG owner is missing: {required}")
 
 fvg_rule_code = fvg_rule.read_text(encoding="utf-8")
+fvg_lifecycle_rule_code = fvg_lifecycle_rule.read_text(encoding="utf-8")
 fvg_detection_code = fvg_detection.read_text(encoding="utf-8")
 fvg_lifecycle_code = fvg_lifecycle.read_text(encoding="utf-8")
 fvg_mitigation_code = fvg_mitigation.read_text(encoding="utf-8")
@@ -276,6 +279,15 @@ for token in (
 ):
     if token not in fvg_rule_code:
         raise SystemExit(f"FVG mathematical rule missing deterministic owner: {token}")
+
+for token in (
+    "IsAgeValid(",
+    "ResolveFvgMitigationProbe(",
+    "TryApplyMitigationStep(",
+    "return !invalidateOnFullFill;",
+):
+    if token not in fvg_lifecycle_rule_code:
+        raise SystemExit(f"FVG lifecycle rule missing deterministic owner: {token}")
 
 for token in (
     "double creationAtr",
@@ -299,13 +311,24 @@ for token in (
         raise SystemExit(f"FVG lifecycle missing stable source identity: {token}")
 
 for token in (
-    "FvgRule.IsFullyFilled(",
-    "FvgRule.TryApplyPartialMitigation(",
+    "FvgLifecycleRule.ResolveFvgMitigationProbe(",
+    "FvgLifecycleRule.TryApplyMitigationStep(",
     "FvgBreakByWicks",
     "FvgInvalidateOnFullFill",
 ):
     if token not in fvg_mitigation_code:
-        raise SystemExit(f"FVG mitigation missing canonical boundary semantics: {token}")
+        raise SystemExit(f"FVG mitigation must consume canonical lifecycle semantics: {token}")
+
+try_apply_region_end = fvg_mitigation_code.find("    private bool IsZoneFullyMitigated(")
+try_apply_region = (
+    fvg_mitigation_code[:try_apply_region_end]
+    if try_apply_region_end >= 0
+    else fvg_mitigation_code
+)
+if "FvgRule.IsFullyFilled(" in try_apply_region:
+    raise SystemExit("FVG mitigation main loop must delegate full-fill decisions")
+if "FvgRule.TryApplyPartialMitigation(" in try_apply_region:
+    raise SystemExit("FVG mitigation main loop must delegate partial-fill decisions")
 
 if "atr)" not in fvg_quality_code or "gap /" not in fvg_quality_code:
     raise SystemExit("FVG quality must consume creation-gap and ATR normalization")
@@ -1794,6 +1817,17 @@ for path, token in (
         raise SystemExit(f"Structural-stop owner missing: {path}")
 
 # FVG lifecycle ownership.
+FVG_LIFECYCLE_RULE = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
+FVG_LIFECYCLE_RULE_CODE = FVG_LIFECYCLE_RULE.read_text(encoding="utf-8")
+for token in (
+    "IsAgeValid(",
+    "ResolveFvgMitigationProbe(",
+    "TryApplyMitigationStep(",
+    "return !invalidateOnFullFill;",
+):
+    if token not in FVG_LIFECYCLE_RULE_CODE:
+        raise SystemExit(f"Canonical FVG lifecycle rule missing: {token}")
+
 FVG_LIFECYCLE = ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs"
 FVG_LIFECYCLE_CODE = FVG_LIFECYCLE.read_text(encoding="utf-8")
 if FVG_LIFECYCLE.stat().st_size > 8192:

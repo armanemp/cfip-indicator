@@ -70,6 +70,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorExecutionQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PendingDecisionArbiterRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgLifecycleRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RewardPathGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs" />

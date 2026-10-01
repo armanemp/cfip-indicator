@@ -716,7 +716,7 @@ blocking correctness gate inserted before the next unfinished refinement phase.
 
 **Current implementation phase: CI-05 — FVG lifecycle.**
 
-Status: **NEXT — specified and ready to implement after CI-04 closeout.**
+Status: **IN IMPLEMENTATION — FVG detection, mitigation, age, invalidation/retention and all active-zone consumers are being hardened.**
 
 Sequence:
 
@@ -802,6 +802,22 @@ Manual boundary remains:
 
 Operator action after merge: run `git pull --ff-only` on local `main` before starting CI-05.
 
+
+### CI-05 implementation record — 2026-10-01
+
+Status: **IN IMPLEMENTATION — lifecycle correction and consumer hardening are under repository verification.**
+
+Scope:
+- canonical FVG lifecycle ownership for source age and body/wick mitigation probes;
+- explicit full-fill invalidation versus retention semantics using the existing safety parameter;
+- bounded managed-zone age enforcement before any downstream consumer receives the zone;
+- deterministic Runtime Acceptance coverage and accumulated `audit_phase_ci_05.py`;
+- consumer audit across market-frame evidence, predictive pending, OB/FVG confluence and reward-path obstacles.
+
+No public parameter name/type/DefaultValue or trading threshold is changed. No score,
+confidence, RR, Entry, SL/TP, risk or execution policy is retuned.
+
+**Target next transition after verification: CI-06 — Order Block lifecycle.**
 **Next phase: CI-05 — FVG lifecycle.**
 
 ### CI-00 closeout — Canonical data / price / time — 2026-10-01
