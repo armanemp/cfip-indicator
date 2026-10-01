@@ -368,7 +368,6 @@ namespace cAlgo
 
                 if (!TryScoreTargetCandidate(
                         candidate,
-                        new List<Level>(),
                         closedM5,
                         entry,
                         risk,
