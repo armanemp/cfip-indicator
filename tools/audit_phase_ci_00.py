@@ -100,8 +100,7 @@ check(
 
 check(
     "runtime state has exactly one canonical market-context slot",
-    "_calculationMarketContext" in state
-    and state.count("_calculationMarketContext") >= 1,
+    state.count("private CalculationMarketContext _calculationMarketContext;") == 1,
 )
 
 checks = [
