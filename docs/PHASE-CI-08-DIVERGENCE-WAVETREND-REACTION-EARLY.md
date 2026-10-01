@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending CI**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #163**
 
 ## Scope
 
@@ -53,6 +53,15 @@ Added `tools/audit_phase_ci_08.py` and wired it immediately after CI-07 in the S
 - No decision or broker-mutation authority was introduced or duplicated.
 - WaveTrend MFI adds no full-history scan beyond the existing length window.
 - Reaction timing adds only O(1) boundary validation.
+
+## Repository verification
+
+Final verification passed on the merged phase head before PR #163 merge:
+
+- Source / Architecture checks: workflow run **#2545** — PASS.
+- Runtime Acceptance Contracts: workflow run **#2354** — PASS.
+- cTrader Compile: workflow run **#2538** — PASS.
+- PR **#163** merged to `main` with merge commit `8b82074ad5bff8a2a9e3ccdd626f4ca5afb61874`.
 
 ## Manual boundary
 

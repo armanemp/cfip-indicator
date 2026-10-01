@@ -716,7 +716,7 @@ blocking correctness gate inserted before the next unfinished refinement phase.
 
 **Current implementation phase: CI-08 — Divergence / WaveTrend / reaction / early signal.**
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending CI.**
+Status: **VERIFIED COMPLETE — PR #163 merged to `main`.**
 
 Sequence:
 
@@ -6292,7 +6292,7 @@ Operator action after merge: run `git pull --ff-only` on local `main` before con
 **Continuation gate:** CR8.4 / H4 is intentionally deferred until **CI-FINAL — Full-Stack Calculation Integrity Certification** is complete. Prompt 8 is paused, not renumbered; after CI-FINAL, resume the existing Prompt 8 sequence at CR8.4 / H4.
 ### CI-08 implementation record — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending CI**
+Status: **VERIFIED COMPLETE — PR #163 merged to `main`**
 
 Completed:
 - canonical divergence strong-conflict threshold ownership;
@@ -6303,5 +6303,7 @@ Completed:
 - deterministic Runtime Contracts and accumulated CI-08 static audit.
 
 Phase record: `docs/PHASE-CI-08-DIVERGENCE-WAVETREND-REACTION-EARLY.md`.
+
+**Verification: Source/Architecture #2545 PASS; Runtime #2354 PASS; cTrader Compile #2538 PASS; merge `8b82074ad5bff8a2a9e3ccdd626f4ca5afb61874`.**
 
 **Next phase: CI-09 — Decision engine mathematical audit.**

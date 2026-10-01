@@ -134,7 +134,7 @@ Manual boundary remains target-terminal MTF boundary timing, reconnect/history r
 
 ### CI-08 implementation status — Divergence / WaveTrend / reaction / early signal
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending CI**
+Status: **VERIFIED COMPLETE — PR #163 merged to `main`**
 
 Completed:
 - canonical `DivergenceThresholdRule.StrongConflictQuality` ownership;
@@ -155,6 +155,8 @@ Verification targets:
 Manual boundary remains target-terminal WaveTrend numerical parity, intrabar timing, popup/audio latency, panel/chart responsiveness and empirical signal-quality validation.
 
 **Next phase after CI-08 verification: CI-09 — Decision engine mathematical audit.**
+
+Repository verification for CI-08: Source/Architecture #2545 PASS; Runtime #2354 PASS; cTrader Compile #2538 PASS; PR #163 merged with `8b82074ad5bff8a2a9e3ccdd626f4ca5afb61874`.
 
 ### Historical remediation closeouts
 
