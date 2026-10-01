@@ -23,14 +23,9 @@ namespace cAlgo
             source = "NONE";
             quality = 0;
 
-            double configuredMinimumRiskAtr =
-                Math.Max(
-                    0.05,
-                    MinimumSlAtr);
-
             double maximumRiskAtr =
                 StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
-                    configuredMinimumRiskAtr,
+                    Math.Max(0.05, MinimumSlAtr),
                     MaximumSlAtr,
                     MaximumStructuralStopAtr);
 
@@ -39,17 +34,6 @@ namespace cAlgo
                     0,
                     Symbol.Ask -
                     Symbol.Bid);
-
-            double minimumRiskAtr =
-                Math.Max(
-                    configuredMinimumRiskAtr,
-                    (spread /
-                     Math.Max(
-                         Symbol.PipSize,
-                         atr)) /
-                    Math.Max(
-                        0.02,
-                        MaximumSpreadToStopRiskRatio));
 
             double bestScore =
                 double.MinValue;
@@ -151,7 +135,7 @@ namespace cAlgo
                                     ? "UNKNOWN"
                                     : _decision.Regime)),
                         PreferredStopRiskAtr,
-                        maxRiskAtr);
+                        maximumRiskAtr);
 
                 if (!rewardRisk.Allowed)
                     continue;
