@@ -23,14 +23,14 @@ namespace cAlgo
             source = "NONE";
             quality = 0;
 
-            double minRiskAtr =
+            double configuredMinimumRiskAtr =
                 Math.Max(
                     0.05,
                     MinimumSlAtr);
 
-            double maxRiskAtr =
+            double maximumRiskAtr =
                 StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
-                    minRiskAtr,
+                    configuredMinimumRiskAtr,
                     MaximumSlAtr,
                     MaximumStructuralStopAtr);
 
@@ -40,9 +40,9 @@ namespace cAlgo
                     Symbol.Ask -
                     Symbol.Bid);
 
-            minRiskAtr =
+            double minimumRiskAtr =
                 Math.Max(
-                    minRiskAtr,
+                    configuredMinimumRiskAtr,
                     (spread /
                      Math.Max(
                          Symbol.PipSize,
@@ -91,6 +91,7 @@ namespace cAlgo
                         candidate.Price,
                         frameAtr,
                         atr,
+                        Symbol.PipSize,
                         candidate.Timeframe,
                         StopBufferAtr,
                         HtfStopBufferAtr,
@@ -107,8 +108,15 @@ namespace cAlgo
                 double risk = geometry.Risk;
                 double riskAtr = geometry.RiskAtr;
 
-                if (riskAtr < minRiskAtr ||
-                    riskAtr > maxRiskAtr)
+                if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                        riskAtr,
+                        atr,
+                        MinimumSlAtr,
+                        MaximumSlAtr,
+                        MaximumStructuralStopAtr,
+                        spread,
+                        Symbol.PipSize,
+                        MaximumSpreadToStopRiskRatio))
                     continue;
 
                 double stop = geometry.Stop;
