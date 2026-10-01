@@ -2060,7 +2060,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR7.6a / G6A — Execution panel presentation freshness**.
+Current active phase: **CR7.6b — next Prompt 7 remediation phase**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 
