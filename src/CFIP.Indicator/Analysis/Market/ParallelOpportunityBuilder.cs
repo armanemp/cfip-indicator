@@ -102,13 +102,6 @@ namespace cAlgo
 
             TrimOpportunityCandidates();
 
-            for (int i = 0;
-                 i < _opportunityCandidates.Count;
-                 i++)
-            {
-                _tradePlanRegistry.Upsert(
-                    _opportunityCandidates[i]);
-            }
         }
 
         private bool ShouldPresentOpportunityCandidate(
