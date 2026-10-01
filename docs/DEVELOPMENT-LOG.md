@@ -2455,3 +2455,54 @@ Manual cTrader boundary:
 Next phase: **CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety**.
 
 Operator action after merge: `git pull --ff-only`.
+
+
+## CR7.1 / G1 — Broker protection must never increase live position risk — 2026-10-01
+
+Status: **VERIFIED COMPLETE**
+
+Root causes:
+- TargetObstacleCacheKey overrode Equals without GetHashCode, producing compiler warning CS0659 and violating the dictionary-key equality contract;
+- existing broker SL health was coupled to live market/minimum-distance acceptance, so a directionally protective near-market SL could be treated as invalid and replaced with a farther stop;
+- the bound-plan and broker-state protection paths shared the same semantic ambiguity;
+- the project-integrity audit treated same-named methods in independent types as duplicates.
+
+Implemented:
+- added deterministic TargetObstacleCacheKey.GetHashCode() covering every equality field;
+- added Core ManagedStopProtectionRule.IsExistingStopHealthy for existing directionally protective broker stops;
+- retained ManagedStopProtectionRule.Validate for new-stop market/minimum-distance acceptance;
+- migrated broker reconciliation, bound-plan protection and broker-state evaluation to existing-stop health;
+- retained ProtectionProgressionRule as the sole replacement/progression guard;
+- added deterministic BUY/SELL G1 runtime contracts plus cache-key hash contracts;
+- added and accumulated tools/audit_phase_7_1.py;
+- corrected tools/audit_project_integrity.py to make duplicate-method detection containing-type-aware.
+
+Verification on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91:
+- Source/Architecture: PASS — run 36868297463 / workflow #2262;
+- Runtime Acceptance Contracts: PASS — run 36868297578 / workflow #2071;
+- cTrader Compile: PASS — run 36868297556 / workflow #2255.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP or execution threshold tuned;
+- no second decision/execution authority or broker mutation owner introduced;
+- invalid/wrong-sided stops remain fail-closed;
+- an existing correctly-sided SL cannot be replaced by a farther stop merely because it is close to market.
+
+Project-wide routine audit / optimization:
+- full Source/Architecture accumulated chain passed on the final code HEAD;
+- no new allocation-heavy runtime path or persistence/network work was added;
+- the new Core rule is platform-neutral and keeps current live protection branching intact;
+- the corrected integrity audit now avoids false-positive duplicate-method detection.
+
+Manual cTrader boundary:
+- actual broker ModifyStopLossPrice acceptance/rejection and minimum-distance behavior;
+- restart/reconnect ordering;
+- target-terminal panel/runtime behavior;
+- empirical signal-quality/profitability.
+
+Phase record: docs/PHASE-CR7-1-G1-BROKER-PROTECTION-RISK-NON-EXPANSION.md
+
+Next phase: **CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+
+Operator action after merge: git pull --ff-only.
