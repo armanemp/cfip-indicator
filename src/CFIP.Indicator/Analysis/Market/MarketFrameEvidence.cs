@@ -111,6 +111,13 @@ namespace cAlgo
                         Math.Min(
                             3,
                             regimeSnapshot.Stability));
+                f.PreviousRegime =
+                    MarketRegimeIdentity.NormalizeMarketRegime(
+                        regimeSnapshot.PreviousRegime);
+                f.RegimeTransition =
+                    MarketRegimeTransitionRule.Resolve(
+                        f.PreviousRegime,
+                        f.Regime);
                 f.Choppiness =
                     regimeSnapshot.Choppiness;
                 f.AtrRatio =
@@ -128,6 +135,8 @@ namespace cAlgo
                     FrameRegimeResolutionRule.Unknown;
                 f.RegimeQuality = 0;
                 f.RegimeStability = 0;
+                f.PreviousRegime = MarketRegimeIdentity.Unknown;
+                f.RegimeTransition = MarketRegimeTransitionRule.Unknown;
             }
 
 
