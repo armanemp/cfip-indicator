@@ -121,18 +121,18 @@ internal static class BenchmarkReport
         lines.Add("| Metric | Result |");
         lines.Add("| --- | ---: |");
         lines.Add($"| Gate | {(warmupParity.Passed ? "PASS" : "FAIL")} |");
-        lines.Add($"| Compared points | {productionParity.ComparedPoints:N0} |");
-        lines.Add($"| Direction mismatches | {productionParity.DirectionMismatches:N0} |");
-        lines.Add($"| Non-finite pairs | {productionParity.NonFinitePairs:N0} |");
-        lines.Add($"| Rolling exact mismatches | {productionParity.ExactMismatches:N0} |");
-        lines.Add($"| Stable max absolute error | {FormatError(productionParity.MaxStableError)} |");
-        lines.Add($"| Stable mean absolute error | {FormatError(productionParity.MeanStableError)} |");
-        lines.Add($"| Stable RMS error | {FormatError(productionParity.RootMeanSquareStableError)} |");
-        lines.Add($"| Rolling max absolute error | {FormatError(productionParity.MaxRollingError)} |");
-        lines.Add($"| Full-prefix mean ms/iteration | {productionParity.FullPrefixTiming.MeanMilliseconds:F4} |");
-        lines.Add($"| Bounded-window mean ms/iteration | {productionParity.BoundedWindowTiming.MeanMilliseconds:F4} |");
-        lines.Add($"| Full-prefix allocated bytes/iteration | {productionParity.FullPrefixTiming.MeanAllocatedBytes:N0} |");
-        lines.Add($"| Bounded-window allocated bytes/iteration | {productionParity.BoundedWindowTiming.MeanAllocatedBytes:N0} |");
+        lines.Add($"| Compared points | {warmupParity.ComparedPoints:N0} |");
+        lines.Add($"| Direction mismatches | {warmupParity.DirectionMismatches:N0} |");
+        lines.Add($"| Non-finite pairs | {warmupParity.NonFinitePairs:N0} |");
+        lines.Add($"| Rolling exact mismatches | {warmupParity.ExactMismatches:N0} |");
+        lines.Add($"| Stable max absolute error | {FormatError(warmupParity.MaxStableError)} |");
+        lines.Add($"| Stable mean absolute error | {FormatError(warmupParity.MeanStableError)} |");
+        lines.Add($"| Stable RMS error | {FormatError(warmupParity.RootMeanSquareStableError)} |");
+        lines.Add($"| Rolling max absolute error | {FormatError(warmupParity.MaxRollingError)} |");
+        lines.Add($"| Full-prefix mean ms/iteration | {warmupParity.FullPrefixTiming.MeanMilliseconds:F4} |");
+        lines.Add($"| Bounded-window mean ms/iteration | {warmupParity.BoundedWindowTiming.MeanMilliseconds:F4} |");
+        lines.Add($"| Full-prefix allocated bytes/iteration | {warmupParity.FullPrefixTiming.MeanAllocatedBytes:N0} |");
+        lines.Add($"| Bounded-window allocated bytes/iteration | {warmupParity.BoundedWindowTiming.MeanAllocatedBytes:N0} |");
 
         lines.Add(string.Empty);
         lines.Add(
