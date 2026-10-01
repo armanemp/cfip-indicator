@@ -25,17 +25,18 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 **CI-03 — Indicator fusion / correlation / evidence independence — 2026-10-01**
 
-Status: **VERIFIED COMPLETE — PR #156 merged to `main` as `863d759cc4e520cb8193312669e74224646a8f45`.**
+Status: **NEXT — specified and ready to implement.**
 
-Final implementation head: `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`.
+CI-02 is verified complete and merged to `main` as `863d759cc4e520cb8193312669e74224646a8f45`.
+Final CI-02 implementation head: `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`.
 
-Repository verification:
+CI-02 repository verification:
 - Source/Architecture PASS — workflow run 36909965454;
 - Runtime Acceptance Contracts PASS — workflow run 36909965513;
 - cTrader Compile/Build PASS — workflow run 36909965368;
 - OSS indicator benchmark PASS — workflow run 36909965470.
 
-**Next phase: CI-03 — Indicator fusion / correlation / evidence independence.**
+**Next implementation phase: CI-03 — Indicator fusion / correlation / evidence independence.**
 
 ### Historical remediation closeouts
 
