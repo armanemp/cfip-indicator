@@ -8,8 +8,8 @@ namespace cAlgo
             if (candidate == null || frame == null || (direction != 1 && direction != -1))
                 return;
 
-            candidate.IndependentEvidenceScore = IndependentEvidence(frame, direction);
-            candidate.IndependentEvidenceGroupCount = IndependentEvidenceGroupCount(frame, direction);
+            candidate.IndependentEvidenceScore = CalculateIndependentEvidenceForFrame(frame, direction);
+            candidate.IndependentEvidenceGroupCount = CountIndependentEvidenceGroupsForFrame(frame, direction);
 
             LocationEvidenceScore location = direction == 1
                 ? LocationEvidenceRule.Evaluate(frame.FvgBull, frame.FvgBullQuality, frame.ObBull, frame.ObBullQuality, frame.FvgObBullConfluence)
