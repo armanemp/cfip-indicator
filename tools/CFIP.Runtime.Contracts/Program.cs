@@ -67,6 +67,7 @@ namespace cAlgo
             VerifyUnifiedSubmissionGate();
             VerifyVisualAndExecutionControls();
             VerifyResponsivePanelRuntime();
+            VerifyDirectionalExecutionFillAcceptance();
             VerifyAggressiveEntryPolicy();
             VerifyTradePlanRegistry();
             VerifyScenarioExecutionPolicy();
@@ -4465,34 +4466,42 @@ namespace cAlgo
         {
             Assert(
                 ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
                     100,
                     102,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "BUY-side fill inside envelope");
 
             Assert(
                 ExecutionFillAcceptanceRule.IsAcceptable(
+                    -1,
                     100,
                     98,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "SELL-side mirrored fill inside envelope");
 
             Assert(
                 !ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
                     100,
                     103,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "BUY-side fill outside envelope");
 
             Assert(
                 !ExecutionFillAcceptanceRule.IsAcceptable(
+                    -1,
                     100,
                     97,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "SELL-side mirrored fill outside envelope");
         }
 
@@ -6425,6 +6434,109 @@ namespace cAlgo
                 !policy.IsQualified &&
                 policy.QualifyingSamples == 0,
                 "aggressive qualification cleanup resets the arm state deterministically");
+        }
+
+        private static void VerifyDirectionalExecutionFillAcceptance()
+        {
+            Assert(
+                ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
+                    100.0,
+                    99.5,
+                    1.0,
+                    0.50,
+                    true),
+                "BUY favorable fill is accepted");
+
+            Assert(
+                !ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
+                    100.0,
+                    100.5,
+                    1.0,
+                    0.25,
+                    true),
+                "BUY adverse fill beyond envelope is rejected");
+
+            Assert(
+                ExecutionFillAcceptanceRule.IsAcceptable(
+                    -1,
+                    100.0,
+                    100.5,
+                    1.0,
+                    0.50,
+                    true),
+                "SELL favorable fill is accepted");
+
+            Assert(
+                !ExecutionFillAcceptanceRule.IsAcceptable(
+                    -1,
+                    100.0,
+                    99.5,
+                    1.0,
+                    0.25,
+                    true),
+                "SELL adverse fill beyond envelope is rejected");
+
+            Assert(
+                ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
+                    100.0,
+                    100.50,
+                    1.0,
+                    0.50,
+                    true),
+                "BUY adverse boundary is accepted");
+
+            Assert(
+                ExecutionFillAcceptanceRule.IsAcceptable(
+                    -1,
+                    100.0,
+                    99.50,
+                    1.0,
+                    0.50,
+                    true),
+                "SELL adverse boundary is accepted");
+
+            Assert(
+                !ExecutionFillAcceptanceRule.IsAcceptable(
+                    0,
+                    100.0,
+                    100.0,
+                    1.0,
+                    0.50,
+                    true),
+                "invalid direction fails closed");
+
+            Assert(
+                !ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
+                    100.0,
+                    100.0,
+                    0.0,
+                    0.50,
+                    true),
+                "invalid ATR fails closed");
+
+            Assert(
+                !ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
+                    100.0,
+                    100.0,
+                    1.0,
+                    double.NaN,
+                    true),
+                "invalid envelope fails closed");
+
+            Assert(
+                ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
+                    100.0,
+                    99.5,
+                    1.0,
+                    0.50,
+                    false) == false,
+                "favorable fill requires explicit allowFavorable policy");
         }
 
         private static void VerifyAggressiveEntryPolicy()

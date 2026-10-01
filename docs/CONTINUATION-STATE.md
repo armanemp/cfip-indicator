@@ -945,3 +945,41 @@ Operator action:
 - after PR #148 is merged, run `git pull --ff-only` on local `main`.
 
 Next phase: **CR7.6c.**
+
+### CR8.1 / H1 implementation record — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #149 merged to `main`.**
+
+تأیید می‌کنم — the execution-fill chain was rechecked before the H1 correction.
+
+Completed:
+- canonical `ExecutionFillAcceptanceRule.IsAcceptable(direction, requestedEntry, actualFill, atr, maxAdverseExtensionAtr, allowFavorable)`;
+- favorable BUY below requested and favorable SELL above requested are accepted when enabled;
+- adverse fill distance alone is bounded by the ATR envelope;
+- `ValidateActualMarketFill` and Automatic Market consume the same Core owner;
+- duplicate Aggressive absolute-distance checking removed;
+- Automatic Market validates the actual fill before fill reconciliation and before publishing `LivePosition`;
+- post-fill reconciliation failure is fail-closed;
+- deterministic Runtime Acceptance and `audit_phase_8_1.py` added and wired into Source/Architecture CI.
+
+Behavior boundary:
+- favorable-fill acceptance is an intentional H1 behavior correction;
+- no public parameter name/type/`DefaultValue` or numerical trading default changed.
+
+Manual cTrader boundary:
+- actual fill timing/gaps, broker rejection/close behavior, live lifecycle ordering, panel/chart behavior and reconnect/reload remain manual.
+
+Sequence continuity:
+- G6B is closed on `main`;
+- CR7.6c/G6C is referenced historically but has no authoritative scope/branch on the audited 2026-10-01 main tree;
+- therefore no speculative G6C implementation was inserted;
+- next specified phase is **CR8.2 / H2 — Top-Down alignment must include absolute strength**.
+
+Verification on final implementation HEAD `f51c842c4778d99428ab583a2bae7cb7839e17e2`:
+- Source/Architecture PASS — #2348;
+- Runtime Acceptance Contracts PASS — #2157;
+- cTrader Compile PASS — #2341.
+
+Operator action after merge:
+- run `git pull --ff-only` on local `main` before continuing to H2.
+

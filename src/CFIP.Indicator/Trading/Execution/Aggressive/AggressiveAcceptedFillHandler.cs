@@ -1,4 +1,3 @@
-using System;
 using cAlgo.API;
 
 namespace cAlgo
@@ -169,50 +168,6 @@ namespace cAlgo
                     "AGGRESSIVE-POST-FILL-PLAN-INVALID|" +
                     result.Position.Id,
                     "CFIP AGGRESSIVE POST-FILL MANAGED PLAN GEOMETRY INVALID | #" +
-                    result.Position.Id,
-                    _reaction.Direction,
-                    true);
-
-                return false;
-            }
-
-            double maximumFillDistance =
-                Math.Max(
-                    Symbol.TickSize * 2,
-                    Math.Max(
-                        Symbol.PipSize * 0.5,
-                        Math.Max(
-                            (Symbol.Ask - Symbol.Bid) * 2,
-                            atr *
-                            Math.Max(
-                                0.10,
-                                MaximumEntryExtensionAtr))));
-
-            if (Math.Abs(
-                    result.Position.EntryPrice -
-                    entry) >
-                maximumFillDistance)
-            {
-                SetLifecycleState(
-                    LifecycleState.ExitRequested,
-                    "AGGRESSIVE FILL MISMATCH");
-
-                bool closed =
-                    TryClosePosition(
-                        result.Position,
-                        "AGGRESSIVE FILL MISMATCH");
-
-                if (!closed)
-                {
-                    SetLifecycleState(
-                        LifecycleState.RecoveryRequired,
-                        "AGGRESSIVE FILL MISMATCH • CLOSE REJECTED");
-                }
-
-                SendUnifiedAlert(
-                    "FILL-MISMATCH|" +
-                    result.Position.Id,
-                    "CFIP AGGRESSIVE FILL OUTSIDE EXECUTION ENVELOPE | #" +
                     result.Position.Id,
                     _reaction.Direction,
                     true);

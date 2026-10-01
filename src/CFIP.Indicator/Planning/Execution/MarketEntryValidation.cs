@@ -77,72 +77,70 @@ namespace cAlgo
                                 }
         
         private bool IsExecutableFillPrice(
-                                    Plan plan,
-                                    double fillPrice,
-                                    out string reason)
-                                {
-                                    reason = "OK";
-                        
-                                    if (plan == null ||
-                                        !IsFinitePositive(fillPrice))
-                                    {
-                                        reason = "INVALID FILL";
-                                        return false;
-                                    }
-                        
-                                    if (plan.EntryMode ==
-                                        ExecutionMode.BreakoutMarket)
-                                    {
-                                        if (!IsFinitePositive(
-                                                plan.EntryTrigger))
-                                        {
-                                            reason = "MISSING BREAKOUT TRIGGER";
-                                            return false;
-                                        }
-                        
-                                        double tolerance =
-                                            Math.Max(
-                                                Symbol.TickSize * 2,
-                                                Math.Max(
-                                                    Symbol.PipSize * 0.5,
-                                                    (Symbol.Ask - Symbol.Bid) * 2));
-                        
-                                        bool acceptable =
-                                            plan.Direction == 1
-                                                ? fillPrice >=
-                                                  plan.EntryTrigger - tolerance
-                                                : fillPrice <=
-                                                  plan.EntryTrigger + tolerance;
-                        
-                                        if (!acceptable)
-                                        {
-                                            reason =
-                                                "BROKER FILL FAR FROM TRIGGER";
-                                            return false;
-                                        }
-                        
-                                        if (!IsTriggerReached(
-                                                plan.Direction,
-                                                fillPrice,
-                                                plan.EntryTrigger))
-                                        {
-                                            reason =
-                                                "BREAKOUT FILL • SLIPPAGE ACCEPTED";
-                                        }
-                        
-                                        return true;
-                                    }
-                        
-                                    if (plan.EntryMode ==
-                                        ExecutionMode.RetestMarket)
-                                        return IsExecutableMarketEntry(
-                                            plan,
-                                            fillPrice,
-                                            out reason);
-                        
-                                    reason =
-                                        "INVALID EXECUTION MODE";
-                                    return false;
-                                }
+            Plan plan,
+            double fillPrice,
+            out string reason)
+        {
+            reason = "OK";
+
+            if (plan == null ||
+                !IsFinitePositive(fillPrice) ||
+                !IsFinitePositive(plan.Entry))
+            {
+                reason = "INVALID FILL";
+                return false;
+            }
+
+            double fillAtr =
+                Atr(
+                    _m5Bars,
+                    plan.CreatedM5);
+
+            if (!ExecutionFillAcceptanceRule.IsAcceptable(
+                plan.Direction,
+                plan.Entry,
+                fillPrice,
+                fillAtr,
+                MaximumEntryExtensionAtr,
+                true))
+            {
+                reason =
+                    "BROKER FILL OUTSIDE EXECUTION ENVELOPE";
+                return false;
+            }
+
+            if (plan.EntryMode ==
+                ExecutionMode.BreakoutMarket)
+            {
+                if (!IsFinitePositive(
+                        plan.EntryTrigger))
+                {
+                    reason = "MISSING BREAKOUT TRIGGER";
+                    return false;
+                }
+
+                if (!IsTriggerReached(
+                        plan.Direction,
+                        fillPrice,
+                        plan.EntryTrigger))
+                {
+                    reason =
+                        "BREAKOUT FILL • SLIPPAGE ACCEPTED";
+                }
+
+                return true;
+            }
+
+            if (plan.EntryMode ==
+                ExecutionMode.RetestMarket)
+                return IsExecutableMarketEntry(
+                    plan,
+                    fillPrice,
+                    out reason);
+
+            reason =
+                "INVALID EXECUTION MODE";
+            return false;
+        }
     }
 }

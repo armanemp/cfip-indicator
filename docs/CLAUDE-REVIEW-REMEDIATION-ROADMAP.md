@@ -2089,6 +2089,16 @@ At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` 
 
 Current active phase: **CR7.6b — next Prompt 7 remediation phase**.
 
+### Prompt 8 continuity override — 2026-10-01
+
+The Prompt 7 G6B implementation is closed on main. The historical CR7.6c/G6C marker has no authoritative implementation scope on the audited main tree. Prompt 8 is the next fully specified remediation sequence and is now being executed one phase at a time:
+
+CR8.1/H1 → CR8.2/H2 → CR8.3a/H3-A → CR8.3b/H3-B → CR8.4/H4 → CR8.5a/H5-A → CR8.5b/H5-B → CR8.6/H6 → CR-FINAL
+
+Current active implementation phase: **CR8.2 / H2 — Top-Down alignment must include absolute strength.**
+
+CR8.1/H1 is verified complete on PR #149 with Source/Architecture #2348, Runtime Acceptance #2157 and cTrader Compile #2341.
+
 ## 7.4 CR6.3 / F4 completion checkpoint
 
 CR6.3 / F4 is **verified complete** on 2026-10-01 via PR #129. The effective actionability thresholds and hidden additive margins are now owned by `ActionabilityThresholdPolicy`, the panel exposes effective thresholds, `ActionableNow` is documented as post-final-gate state, and the existing public parameter/default contract was preserved.
