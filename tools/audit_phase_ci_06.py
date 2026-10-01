@@ -82,7 +82,7 @@ check(
     "candidate builder enforces canonical age before materialization",
     "OrderBlockLifecycleRule.IsOrderBlockAgeValid(" in builder and
     "MaximumZoneAgeBars" in builder and
-    "currentIndex >= bars.Count" in builder
+    "currentIndex <= createdIndex" in builder
 )
 
 check(
