@@ -10,7 +10,7 @@ CI-01 establishes mathematical and readiness contracts for the production primit
 
 The cTrader-native ATR, ADX/DMI, EMA and RSI implementations remain platform indicator authorities. The production code does not reimplement their internal smoothing algorithms.
 
-The documented cTrader API confirms that ATR is exposed as AverageTrueRange, DirectionalMovementSystem exposes ADX/+DI/-DI and supports a moving-average type, EMA is exposed as ExponentialMovingAverage, RSI is a Wilder oscillator bounded to 0..100, and MACD CrossOver separately defines MACD line, signal line and histogram. citeturn387692search5turn884220search3turn884220search1turn387692search0turn873802search1
+The documented cTrader API confirms that ATR is exposed as AverageTrueRange, DirectionalMovementSystem exposes ADX/+DI/-DI and supports a moving-average type, EMA is exposed as ExponentialMovingAverage, RSI is a Wilder oscillator bounded to 0..100, and MACD CrossOver separately defines MACD line, signal line and histogram. 
 
 The current CFIP MACD feature intentionally uses only the fast/slow EMA difference because the existing public parameter surface contains only fast and slow periods. It is therefore named and tested as MACD-line bias, not as a MACD signal-line crossover or histogram implementation.
 
