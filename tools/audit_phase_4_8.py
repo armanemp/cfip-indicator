@@ -31,6 +31,9 @@ constraints = read(
 selector = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs"
 )
+stage_builder = read(
+    "src/CFIP.Indicator/Planning/TradePlan/TargetLadderStageCandidateBuilder.cs"
+)
 materialization = read(
     "src/CFIP.Indicator/Planning/TradePlan/PlanMaterialization.cs"
 )
