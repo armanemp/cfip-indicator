@@ -244,6 +244,42 @@ Explicit non-changes:
 - no replacement of native cTrader indicator mathematics by a second live engine;
 - no FVG/OB/structure/decision/execution changes.
 
+#### CI-02 implementation record
+
+Status: **implemented on branch `phase/ci-02-oss-parity-warmup-cache`; final repository gates pending.**
+
+Completed correctness and architecture work:
+
+- kept `OssIndicatorSettings` as the fixed-setting authority and
+  `OssIndicatorParameters` as the configured-period/minimum-history authority;
+- added canonical `OssQuoteWindowRule` for bounded window geometry and
+  deterministic rebuild decisions;
+- added canonical `OssQuoteProjectionRule` for finite/non-negative quote-volume
+  normalization;
+- preserved the 768-bar stable window for recursive/path-dependent Skender
+  adapters and the existing 161-bar rolling window for window-local adapters;
+- retained first/last stable-window fingerprints and HistoryLoaded/Reloaded
+  invalidation;
+- removed artificial unit volume from zero-volume source observations;
+- added runtime contracts for window movement, bounds and quote-volume
+  normalization;
+- extended the deterministic OSS parity benchmark to all production Skender
+  indicator families, both stable and rolling boundaries, OBV direction and
+  zero-volume fixtures;
+- added full-prefix versus bounded runtime/allocation measurement;
+- accumulated `audit_phase_ci_02.py` after CI-01 in Source/Architecture CI.
+
+Acceptance boundary:
+
+- stable recursive indicators must remain finite and directionally equivalent
+  to full-prefix references while max/mean/RMS error is measured;
+- window-local indicators must match full-prefix terminal output within the
+  deterministic 1e-12 gate;
+- FacioQuo remains research-only and production package ownership is unchanged.
+
+No parameter, confidence, score, RR, risk, SL/TP, decision or execution-policy
+tuning is part of CI-02.
+
 ### CI-02 — OSS numerical parity, warm-up and cache audit
 
 Audit Skender adapters and caches, including:
