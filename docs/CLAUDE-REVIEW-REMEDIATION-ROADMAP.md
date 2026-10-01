@@ -1955,6 +1955,29 @@ Safety/manual boundary:
 - no trading threshold or decision/execution authority changed;
 - visible target-terminal thickness/style still requires manual cTrader validation.
 
+### CR7.4 / G4 — Panel execution/protection state semantics
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Finding:
+- Auto Trade presentation could infer operational readiness from decision/reaction/plan evidence;
+- Auto Protection presentation could report configuration scope without explicitly exposing broker-confirmed protection health.
+
+Implemented:
+- canonical Core execution/protection panel-state rule;
+- explicit Auto Trade/Auto Orders operational states;
+- broker-confirmed SL/TP and server TP-ladder protection states;
+- shared state consumption by overview/detail panel rows;
+- presentation-key invalidation for execution/protection state;
+- deterministic G4 runtime contracts and phase audit.
+
+Safety:
+- no public parameters/defaults or trading thresholds changed;
+- no new decision/execution/broker-mutation authority.
+
+Manual boundary:
+- target-terminal panel transition, broker protection timing, TP ladder observation and restart/reconnect remain manual.
+
 **Current active phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
 
