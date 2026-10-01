@@ -50,8 +50,8 @@ namespace cAlgo
             MinimumTakeProfitDistanceRaw = minimumTakeProfitDistanceRaw;
 
             IsQuoteValid =
-                IsFinitePositive(bid) &&
-                IsFinitePositive(ask) &&
+                IsFinitePositiveCanonicalPrice(bid) &&
+                IsFinitePositiveCanonicalPrice(ask) &&
                 ask >= bid;
 
             Midpoint =
@@ -66,7 +66,7 @@ namespace cAlgo
 
             SpreadPips =
                 IsQuoteValid &&
-                IsFinitePositive(pipSize)
+                IsFinitePositiveCanonicalPrice(pipSize)
                     ? Spread / pipSize
                     : 0;
 
@@ -82,15 +82,15 @@ namespace cAlgo
 
             HasBrokerDistanceMetadata =
                 BrokerDistanceUnit != BrokerDistanceUnit.Unknown &&
-                IsFiniteNonNegative(
+                IsFiniteNonNegativeCanonicalDistance(
                     MinimumStopDistanceRaw) &&
                 IsFiniteNonNegative(
                     MinimumTakeProfitDistanceRaw) &&
                 (BrokerDistanceUnit != BrokerDistanceUnit.Pips ||
-                 IsFinitePositive(pipSize));
+                 IsFinitePositiveCanonicalPrice(pipSize));
         }
 
-        public static CanonicalPriceSnapshot Create(
+        public static CanonicalPriceSnapshot CreateCanonicalSnapshot(
             DateTime observedUtc,
             double bid,
             double ask,
@@ -145,7 +145,7 @@ namespace cAlgo
         {
             if (!HasBrokerDistanceMetadata ||
                 raw < 0 ||
-                !IsFinitePositive(referencePrice))
+                !IsFinitePositiveCanonicalPrice(referencePrice))
                 return 0;
 
             if (BrokerDistanceUnit == BrokerDistanceUnit.Pips)
@@ -160,7 +160,7 @@ namespace cAlgo
         }
 
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveCanonicalPrice(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
