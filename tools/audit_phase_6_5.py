@@ -48,10 +48,6 @@ for token in (
     "ShortExtremeRangePosition = 0.15",
     "LongNearExtremeRangePosition = 0.75",
     "ShortNearExtremeRangePosition = 0.25",
-    "AdverseM5BlockAtr = 0.30",
-    "AdverseM1BlockAtr = 0.45",
-    "StrongAdverseM5Atr = 0.45",
-    "StrongAdverseM1Atr = 0.40",
     "MicroConflictAdverseM1Atr = 0.25",
     "MicroConflictEntryDistanceAtr = 0.10",
     "TriggerPipToleranceFraction = 0.10",
@@ -64,24 +60,16 @@ for token in (
     "public static bool IsLate(",
     "public static bool IsMicroConflict(",
 ):
-    check("F6 trap threshold owner: " + token, token in trap_policy)
-check("F6 compatibility alias: " + token, token in policy or token in trap_policy)
+    check("F6 actionability policy owner: " + token, token in policy)
 
 for token in (
-    "EntryActionabilityPolicy.LongExtremeRangePosition",
-    "EntryActionabilityPolicy.ShortExtremeRangePosition",
-    "EntryActionabilityPolicy.LongNearExtremeRangePosition",
-    "EntryActionabilityPolicy.ShortNearExtremeRangePosition",
-    "EntryActionabilityPolicy.M5AdverseRiskCap",
-    "EntryActionabilityPolicy.M1AdverseRiskCap",
-    "EntryActionabilityPolicy.DivergenceHighQuality",
-    "EntryActionabilityPolicy.DivergenceMediumQuality",
-    "EntryActionabilityPolicy.DivergenceLowQuality",
-    "EntryTrapRiskPolicy.StrongAdverseRiskFloor",
-    "EntryTrapRiskPolicy.AdverseM5BlockAtr",
-    "EntryTrapRiskPolicy.AdverseM1BlockAtr",
+    "AdverseM5BlockAtr = 0.30",
+    "AdverseM1BlockAtr = 0.45",
+    "StrongAdverseM5Atr = 0.45",
+    "StrongAdverseM1Atr = 0.40",
+    "StrongAdverseRiskFloor = 75",
 ):
-    check("trap rule consumes canonical F6 policy: " + token, token in trap or token in trap_policy)
+    check("F6 trap threshold owner: " + token, token in trap_policy)
 
 for literal in ("0.85", "0.15", "0.75", "0.25"):
     check("trap rule has no duplicated range literal " + literal, literal not in trap)
