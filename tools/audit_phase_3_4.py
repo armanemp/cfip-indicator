@@ -50,23 +50,23 @@ checks = {
         "_executionToggleSyncing = true" in sync and
         "EnsureExecutionRuntimeState();" in sync
     ),
-    "popup queue is owned by runtime state": (
+    "alert delivery queue is owned by runtime state": (
         "AlertDeliveryQueue(16)" in state and
         "_popupCritical" in state
     ),
-    "popup queue is bounded": (
+    "alert delivery queue is bounded": (
         "_capacity" in queue and
         "return false;" in queue
     ),
-    "critical popup alerts have priority": (
+    "critical alert deliveries have priority": (
         "if (_critical.Count > 0)" in queue and
-        "if (critical)" in queue
+        "if (delivery.Critical)" in queue
     ),
-    "normal popup overflow cannot grow the queue": (
+    "normal alert overflow cannot grow the queue": (
         "else" in queue and
         "return false;" in queue
     ),
-    "alert engine queues popups instead of overwriting the live control": (
+    "alert engine queues one delivery event": (
         "_alertDeliveryQueue.Enqueue(" in alerts and
         "ShowPopup(message)" not in alerts
     ),
@@ -75,7 +75,7 @@ checks = {
         "bool critical)" in renderer and
         "_popupCritical =\n                                critical;" in renderer
     ),
-    "popup processor is the only queue-to-render handoff": (
+    "alert delivery processor is the only queue-to-render handoff": (
         "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor and
         "_alertDeliveryQueue.TryPeek" in processor
     ),
@@ -85,19 +85,19 @@ checks = {
     "popup priority resets on removal": (
         "_popupCritical = false;" in remover
     ),
-    "popup queue is drained outside Calculate": (
+    "alert delivery queue is drained at runtime boundaries": (
         "RemoveExpiredPopup();\n                HandleRuntimeHeartbeat();\n                ProcessQueuedAlertDelivery();" in initialization
     ),
-    "popup queue is cleared on destroy": (
+    "alert delivery queue is cleared on destroy": (
         "_alertDeliveryQueue.ClearPendingAlerts();" in initialization
     ),
     "deterministic re-arm runtime contract is registered": (
         "VerifyRuntimeExplicitRearmSemantics();" in contracts
     ),
-    "deterministic popup queue runtime contract is registered": (
+    "deterministic alert delivery runtime contract is registered": (
         "VerifyAlertDeliveryQueueSemantics();" in contracts
     ),
-    "popup queue is included in runtime contract build": (
+    "alert delivery queue is included in runtime contract build": (
         "Core/Runtime/AlertDeliveryQueue.cs" in runtime_project
     ),
     "CR3.4 static gate is wired into CI": (
@@ -113,7 +113,7 @@ for name, ok in checks.items():
 # The handler must never reintroduce a parameter-dependent re-arm branch.
 # The queue itself must remain platform-neutral.
 if "cAlgo.API" in queue or "Indicator" in queue or "Chart." in queue:
-    print("FAIL | popup queue has a platform/UI dependency")
+    print("FAIL | alert delivery queue has a platform/UI dependency")
     errors.append("popup queue has a platform/UI dependency")
 
 # There should be one production popup render owner, plus the queue processor.
