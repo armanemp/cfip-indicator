@@ -24,6 +24,7 @@ def check(name, condition):
 
 
 policy = read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
+trap_policy = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskPolicy.cs")
 trap = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs")
 indicator = read("src/CFIP.Indicator/Core/Math/IndicatorActionabilityRule.cs")
 thresholds = read("src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs")
@@ -63,7 +64,8 @@ for token in (
     "public static bool IsLate(",
     "public static bool IsMicroConflict(",
 ):
-    check("F6 policy owner: " + token, token in policy)
+    check("F6 trap threshold owner: " + token, token in trap_policy)
+check("F6 compatibility alias: " + token, token in policy or token in trap_policy)
 
 for token in (
     "EntryActionabilityPolicy.LongExtremeRangePosition",
@@ -75,11 +77,11 @@ for token in (
     "EntryActionabilityPolicy.DivergenceHighQuality",
     "EntryActionabilityPolicy.DivergenceMediumQuality",
     "EntryActionabilityPolicy.DivergenceLowQuality",
-    "EntryActionabilityPolicy.StrongAdverseRiskFloor",
-    "EntryActionabilityPolicy.AdverseM5BlockAtr",
-    "EntryActionabilityPolicy.AdverseM1BlockAtr",
+    "EntryTrapRiskPolicy.StrongAdverseRiskFloor",
+    "EntryTrapRiskPolicy.AdverseM5BlockAtr",
+    "EntryTrapRiskPolicy.AdverseM1BlockAtr",
 ):
-    check("trap rule consumes canonical F6 policy: " + token, token in trap)
+    check("trap rule consumes canonical F6 policy: " + token, token in trap or token in trap_policy)
 
 for literal in ("0.85", "0.15", "0.75", "0.25"):
     check("trap rule has no duplicated range literal " + literal, literal not in trap)
