@@ -2726,3 +2726,36 @@ Verification:
 - cTrader Compile PASS — 36892859090.
 
 Next phase: **CR8.3a / H3-A**.
+
+
+## CR8.3a / H3-A — Skender settings ownership — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #151 implementation head `b19e3366b0115d79a6e6a61b79af310ac64bbdd7`.**
+
+Root cause / audit finding:
+- fixed production Skender settings were distributed through `OssIndicatorParameters`, mixing immutable indicator defaults with cache/history/safety policy;
+- this made the settings ownership boundary less explicit and allowed accumulated OSS-audit rules to depend on the wrong owner.
+
+Implemented:
+- added immutable Core `OssIndicatorSettings.Default`;
+- centralized MACD signal, Bollinger, MFI, Stochastic, SuperTrend, Aroon, CCI and Parabolic SAR fixed settings;
+- migrated all affected Skender adapters;
+- preserved parameter-driven RSI and MACD fast/slow semantics;
+- added Planning/Runtime deterministic default-preservation contracts;
+- added and accumulated `audit_phase_8_3a.py`;
+- reconciled `audit_phase_4_4.py` with the new owner;
+- added phase record `docs/PHASE-CR8-3A-H3-A-SKENDER-SETTINGS.md`.
+
+Verification:
+- Source / Architecture: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile / Build: PASS.
+
+Safety/performance audit:
+- public parameter name/type/DefaultValue unchanged;
+- no trading threshold, RR, confidence, risk, entry, SL or TP tuning;
+- no decision or execution authority changed;
+- no new broker enumeration, runtime I/O or unbounded cache;
+- H3-B is explicitly reserved for warm-up-window, bounded computation, cache and numerical-parity work.
+
+Next phase: **CR8.3b / H3-B**.
