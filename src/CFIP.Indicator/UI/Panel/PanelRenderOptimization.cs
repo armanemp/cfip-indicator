@@ -28,6 +28,9 @@ namespace cAlgo
         private string BuildPanelPresentationKey(
             SignalVisualSnapshot snapshot)
         {
+            InvalidatePanelExecutionProtectionStateCache();
+            EnsurePanelExecutionProtectionStateCache();
+
             if (snapshot == null)
             {
                 return
