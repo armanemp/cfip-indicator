@@ -80,7 +80,7 @@ checks = {
         "_alertDeliveryQueue.TryPeek" in processor
     ),
     "critical queued alert may preempt a normal active popup": (
-        "if (popupActive && !next.Critical)" in processor
+        "if (next.ShowPopup &&\n                popupActive &&\n                !next.Critical)" in processor
     ),
     "popup priority resets on removal": (
         "_popupCritical = false;" in remover
@@ -129,7 +129,7 @@ for path in (ROOT / "src/CFIP.Indicator").rglob("*.cs"):
     relative = path.relative_to(ROOT).as_posix()
     if relative in {
         "src/CFIP.Indicator/UI/Popup/PopupRenderer.cs",
-        "src/CFIP.Indicator/UI/Popup/PopupQueueProcessor.cs",
+        "src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs",
     }:
         continue
     if "ShowPopup(" in path.read_text(encoding="utf-8"):
