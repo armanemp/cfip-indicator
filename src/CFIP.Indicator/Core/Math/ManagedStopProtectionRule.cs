@@ -4,6 +4,21 @@ namespace cAlgo
 {
     internal static class ManagedStopProtectionRule
     {
+        public static bool IsExistingStopHealthy(
+            int direction,
+            double entry,
+            double stop)
+        {
+            if ((direction != 1 && direction != -1) ||
+                !IsPositiveFinitePrice(entry) ||
+                !IsPositiveFinitePrice(stop))
+                return false;
+
+            return direction == 1
+                ? stop < entry
+                : stop > entry;
+        }
+
         public static bool Validate(
             int direction,
             double entry,
