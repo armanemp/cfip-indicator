@@ -159,10 +159,12 @@ namespace cAlgo
         public static ActionabilityThresholdSnapshot ResolveFinal(
             int minimumConfidence,
             int minimumSmartQuality,
+            int smartQualityThreshold,
             int minimumTimeframeAgreement,
             int minimumIndependentEvidence,
             int minimumStructuralConfirmations,
             int minimumEntryLocationQuality,
+            int configuredMinimumEntryQuality,
             double minimumTp1RR)
         {
             int finalMinimumConfidence =
@@ -176,7 +178,7 @@ namespace cAlgo
                     FinalSmartQualityCap,
                     Math.Max(
                         minimumSmartQuality,
-                        minimumSmartQuality) +
+                        smartQualityThreshold) +
                     FinalSmartQualityMargin);
 
             int finalMinimumTimeframeAgreement =
@@ -210,7 +212,7 @@ namespace cAlgo
 
             return new ActionabilityThresholdSnapshot(
                 EffectiveUpstreamEntryLocationQuality(
-                    minimumEntryLocationQuality),
+                    configuredMinimumEntryQuality),
                 EffectiveUpstreamEntryTimingQuality(),
                 finalMinimumConfidence,
                 finalMinimumSmartQuality,
