@@ -5299,9 +5299,37 @@ Repository verification boundary:
 
 **Next phase: CR5.8 / E8 — Small constant ownership and TargetSelection consistency.**
 
+### CR5.8 / E8 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #124 merged to `main`; merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`.**
+
+Completed:
+- named the existing internal reward-risk floor/margin constants without changing their values;
+- centralized TP1..TP4 required-RR construction in Core `TargetSelectionRequiredRrRule`;
+- enforced cumulative non-decreasing TP2 → TP3 → TP4 required-RR ordering;
+- removed silent Strategic lane defaults from target-selection entry points;
+- propagated the explicit `OpportunityLane` through all current target-selection callers;
+- reused the canonical ladder for execution fallback floors;
+- added deterministic four-lane ordering and BUY/SELL symmetry contracts;
+- reconciled accumulated Phase 11.4 tactical-RR and E6 continuity audits with the current ownership model;
+- strengthened E8 static ownership checks so duplicate internal constants cannot return.
+
+Verification on final implementation head `51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`:
+- Source / Architecture: PASS — run `36844545898` / workflow #2160.
+- Runtime Acceptance Contracts: PASS — run `36844545976` / workflow #1969.
+- cTrader Compile: PASS — run `36844546002` / workflow #2153.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue changed;
+- no default RR/confidence/stop/target threshold was retuned;
+- no decision or execution authority changed;
+- target-terminal timing, broker lifecycle, restart/reconnect and empirical signal-quality/profitability remain manual.
+
+**Next phase: CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
+
 ## Current active implementation phase
 
-**CR5.8 / E8 — Small constant ownership and TargetSelection consistency.**
+**CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
 
-CR5.7 / E7 is verified complete and merged to `main` via PR #123. The next implementation phase is E8. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
 
