@@ -83,7 +83,7 @@ namespace cAlgo
             {
                 return File.Exists(path);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 RegisterReadFailure(ex);
                 return false;
@@ -429,7 +429,7 @@ namespace cAlgo
                             file.Path);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Preserve all lines when disk I/O fails. Requeue by not
                     // removing anything; the next Timer heartbeat can retry.
