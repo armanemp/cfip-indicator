@@ -465,10 +465,37 @@ Manual boundary remains:
 - restart/reconnect;
 - empirical signal-quality/profitability.
 
+### CR5.4 / E4 closeout — 2026-10-01
+
+CR5.4 / E4 is **VERIFIED COMPLETE** and merged to `main` via PR #120, merge commit `782bca41cd37071c79f2cdfa12f712cefc045c8c`.
+
+Repository verification on final implementation head `6d89f010fa6d292d201ef79e37af5b162438f854`:
+- Source/Architecture: PASS — run `36795710379` / workflow #2096, including `audit_phase_5_4.py` and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — run `36795710374` / workflow #1905;
+- cTrader Compile: PASS — run `36795710377` / workflow #2089.
+
+Implementation/safety:
+- preserved absolute pending Stop/Limit Entry/SL/TP intent across placement;
+- fail-closed snapshot creation and post-fill reconciliation;
+- reconciled actual broker fill against the original absolute plan;
+- preserved safer broker SL and more progressive broker TP;
+- resynced Advanced/server-side TP protection from the reconciled absolute ladder;
+- protected against PositionOpened event-order inversion;
+- cleared stale snapshot state on cancellation;
+- failed reconciliation remains RecoveryRequired;
+- no public parameter/default, RR/confidence/stop/target/actionability/execution threshold or decision/execution authority changed.
+
+Manual boundary remains:
+- actual Stop/Limit fill divergence;
+- broker-side final protection and Advanced Protection ladder;
+- rejection timing;
+- restart/reconnect;
+- empirical signal quality/profitability.
+
 ## Current active phase
 
-CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation.
+CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.
 
 ### Next transition
 
-Execute CR5.4 / E4 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
+Execute CR5.5 / E5 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
