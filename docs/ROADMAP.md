@@ -5846,7 +5846,7 @@ Manual cTrader boundary:
 
 ## Prompt 8 Remediation Gate — H1–H6 — 2026-10-01
 
-Status: **ACTIVE REMEDIATION TRACK — H1 VERIFIED ON IMPLEMENTATION BRANCH; MERGE VERIFICATION PENDING.**
+Status: **ACTIVE REMEDIATION TRACK — CR8.1/H1 VERIFIED COMPLETE; CR8.2/H2 NEXT.**
 
 Prompt 8 is the next fully specified remediation sequence after Prompt 7.
 It does not reopen or renumber Prompt 4, Prompt 5, Prompt 6 or Prompt 7.
@@ -5857,7 +5857,7 @@ Authoritative order:
 
 ### CR8.1 / H1 closeout — directional execution-fill acceptance
 
-Status: **IMPLEMENTED — verification pending on final branch HEAD.**
+Status: **VERIFIED COMPLETE — PR #149 merged to `main`.**
 
 Required phase confirmation:
 - «تأیید می‌کنم» — verified the fill chain through
@@ -5885,10 +5885,12 @@ Behavior change:
 - no public parameter name/type/`DefaultValue` or numerical trading default
   was changed.
 
-Verification added:
-- deterministic BUY/SELL favorable, adverse-boundary and invalid-input
-  Runtime Contracts;
-- `tools/audit_phase_8_1.py` accumulated in Source/Architecture CI.
+Verification:
+- Source/Architecture PASS — run #2348;
+- Runtime Acceptance Contracts PASS — run #2157;
+- cTrader Compile PASS — run #2341;
+- deterministic H1 Runtime Contracts PASS;
+- `tools/audit_phase_8_1.py` PASS and accumulated in Source/Architecture CI.
 
 Performance/code-cleanliness:
 - one duplicated Aggressive fill-distance calculation was removed;
