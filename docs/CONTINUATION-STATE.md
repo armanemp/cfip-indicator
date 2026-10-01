@@ -774,3 +774,19 @@ reconciliation of accumulated Phase 11.4 and E6 continuity audits.
 The next implementation response must execute **CR6.5 / F6 — Trap-risk/trigger
 exceptions and actionability constant ownership** only. Track 12A and CR-FINAL
 remain blocked until the full Prompt 6 chain is closed.
+
+
+## CR7.1 / G1 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #138 merged to main as `b8144c2f1edc62730b7a0723be3746afe6353851`.**
+
+تأیید می‌کنم — existing broker-stop health is now distinct from new-stop market-distance acceptability, and healthy broker SL progression is protective-only.
+
+Verification:
+- Source/Architecture PASS — run #2262;
+- Runtime Acceptance Contracts PASS — run #2071;
+- cTrader Compile PASS — run #2255.
+
+The Source/Architecture failure discovered during G1 was an audit false-positive on independent `GetHashCode()` overrides; the duplicate-method audit now keys by containing type.
+
+**Current phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
