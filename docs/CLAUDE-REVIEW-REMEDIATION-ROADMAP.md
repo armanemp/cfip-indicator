@@ -1672,6 +1672,37 @@ Testing:
 - anchor/late-entry symmetry;
 - parameter/default preservation.
 
+### CR6.5 / F6 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #131 head `01db0f46f2a19597be5428a62a230ebf67a7f36c`.**
+
+تأیید می‌کنم — CR6.5/F6 با ممیزی مستقل مسیر فعلی و بدون تغییر در قرارداد عمومی پارامترها یا tuning عددی تکمیل شد.
+
+Completed:
+- ایجاد مالک Core واحد `EntryActionabilityPolicy` برای ثابت‌ها و semantics مربوط به trap-risk، range-location، divergence، adverse momentum، micro-conflict، trigger tolerance، anchor و late-entry؛
+- مهاجرت `EntryTrapRiskRule`, `TradeActionabilityEvaluator`, `ExecutionModeResolver` و `TriggerGate` به owner واحد، بدون تغییر مقادیر مؤثر؛
+- انتقال آستانه‌های actionability مربوط به indicator fusion به `ActionabilityThresholdPolicy` و canonicalization هویت‌های regime؛
+- تأیید اینکه Breakout به‌صورت آگاهانه trap-risk block را bypass می‌کند و این سیاست در F6 به رفتار جدید تبدیل نشده است؛
+- تأیید اینکه Retest می‌تواند در resolver محلی، در-zone و پیش از trigger دیده شود، اما مسیر canonical plan همچنان `Decision.TriggerReady` را enforce می‌کند؛
+- تأیید تفاوت anchor، actual-entry و late-entry بین Breakout و Retest و حفظ trigger tolerance موجود؛
+- افزودن Runtime Acceptance Contract و `audit_phase_6_5.py` به زنجیره audit انباشته؛
+- اصلاح مستقل چند خطای verification که در حین CI آشکار شد: duplicate helper names، missing Decision.Contracts include، و دو assertion/audit اشتباه در F6.
+
+Verification:
+- Source/Architecture: **PASS** — run `36856702821`، شامل `audit_phase_6_5.py` و auditهای انباشته؛
+- Runtime Acceptance Contracts: **PASS** — run `36856702812`؛
+- cTrader Compile/Build: **PASS** — run `36856702767`.
+
+Safety/manual boundary:
+- هیچ `[Parameter]` name/type/`DefaultValue` تغییر نکرد؛
+- هیچ RR/confidence/SL/TP یا execution threshold برای tuning تغییر نکرد؛
+- هیچ decision یا execution authority جدید ایجاد نشد؛
+- Breakout trap bypass عمداً حفظ شد؛
+- trigger contract و Retest semantics عمداً حفظ شد؛
+- target-terminal timing، panel/chart presentation، broker lifecycle، restart/reconnect و empirical signal-quality/profitability همچنان manual acceptance هستند.
+
+**Next phase: CR6.6 / F7 — Independent-timeframe scenario semantics and duplicate-policy owners.**
+
 ### CR6.6 — Independent-timeframe scenario semantics and duplicate-policy owners (F7)
 
 Initial review label: **CONFIRMED / MEDIUM — current candidates appear to reuse the M5 plan; exact source must be audited before semantic reclassification.**
@@ -1777,7 +1808,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR6.5 / F6 — Trap-risk/trigger exceptions and actionability constant ownership**.
+Current active phase: **CR6.6 / F7 — Independent-timeframe scenario semantics and duplicate-policy owners**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 
