@@ -6312,7 +6312,13 @@ Phase record: `docs/PHASE-CI-08-DIVERGENCE-WAVETREND-REACTION-EARLY.md`.
 
 **Current implementation phase: CI-09 — Decision engine mathematical audit.**
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending on the exact feature head.**
+Status: **VERIFIED COMPLETE — PR #164 merged to `main`; merge commit `58d0ef85b2960ac9c706aad120d5f89ffd377946`.**
+
+Final verification on implementation head `36df49e0e76d9e07af5a7b1ccb7beb764928cc1a`:
+- Source/Architecture #2560: **PASS**;
+- Runtime Acceptance Contracts #2369: **PASS**;
+- cTrader Compile #2553: **PASS**;
+- accumulated repository audits, including CI-09: **PASS**.
 
 Implemented:
 - exact BUY/SELL consensus ties are neutral rather than BUY-biased;
