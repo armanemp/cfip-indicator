@@ -30,18 +30,17 @@ namespace cAlgo
                 quotes.Count < OssIndicatorParameters.MacdHistoryRequired(MacdFastPeriod, MacdSlowPeriod))
                 return double.NaN;
 
-            var results =
+            var last =
                 StockIndicator.GetMacd(
                     quotes,
                     fast,
                     slow,
                     OssIndicatorSettings.Default.MacdSignalPeriod)
-                    .ToList();
+                    .LastOrDefault();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].Histogram.HasValue
+            return last == null || !last.Histogram.HasValue
                 ? double.NaN
-                : results[results.Count - 1].Histogram.Value;
+                : last.Histogram.Value;
         }
     }
 }
