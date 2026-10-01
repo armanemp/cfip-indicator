@@ -70,7 +70,8 @@ check(
     "same-Bars new-bar/history contexts are invalidated",
     "IsObsoleteSameBars" in policy and
     "InvalidateObsoleteSameBars" in cache and
-    "ReferenceEquals(entry.Bars, bars)" in cache
+    "ReferenceEquals(entry.Bars, bars)" in cache and
+    "InvalidateTargetObstacleBars" in cache
 )
 
 check(

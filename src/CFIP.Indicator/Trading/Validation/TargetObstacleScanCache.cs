@@ -187,7 +187,7 @@ namespace cAlgo
             Builds++;
         }
 
-        public void Clear()
+        public void Reset()
         {
             for (int i = 0; i < _entries.Length; i++)
                 _entries[i] = null;
@@ -209,16 +209,16 @@ namespace cAlgo
         private void TargetObstacleCache_BarsHistoryLoaded(
             BarsHistoryLoadedEventArgs args)
         {
-            InvalidateBars(args == null ? null : args.Bars);
+            InvalidateTargetObstacleBars(args == null ? null : args.Bars);
         }
 
         private void TargetObstacleCache_BarsReloaded(
             BarsHistoryLoadedEventArgs args)
         {
-            InvalidateBars(args == null ? null : args.Bars);
+            InvalidateTargetObstacleBars(args == null ? null : args.Bars);
         }
 
-        private void InvalidateBars(Bars bars)
+        private void InvalidateTargetObstacleBars(Bars bars)
         {
             if (bars == null)
                 return;
