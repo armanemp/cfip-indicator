@@ -5769,4 +5769,34 @@ Verification on final implementation head `1a2572e2f72e8842640e9c1cbea88e6868f05
 
 Merged via PR #145 as `e2674b9800159ba1266639ad96a374f622aff555`.
 
-**Next phase after G5 closeout: CR7.6a.**
+## CR7.6a / G6A — Execution panel presentation freshness
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Scope/root cause:
+- G5 correctly made panel cache freshness event-driven and bounded, but the panel presentation
+  key still omitted mutable execution-facing values already rendered by the panel;
+- `SetAutoTradingState` changed canonical Auto Trade state/reason without invalidating the G4
+  execution/protection snapshot.
+
+Implemented:
+- added Core `ExecutionPanelPresentationIdentityRule` as the single owner of the
+  execution-facing presentation identity;
+- the presentation key now includes Auto Trade state/reason, execution telemetry path/state,
+  active execution scenario, market-suitability score/state/reason and break-even diagnostic;
+- `SetAutoTradingState` invalidates the canonical G4 snapshot only when state/reason changes;
+- telemetry remains presentation-only and does not force a broker-state refresh;
+- added deterministic Runtime Acceptance coverage and `audit_phase_7_6a.py`;
+- wired the G6A audit into Source/Architecture CI.
+
+Safety/performance:
+- no public parameter name/type/`DefaultValue` changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold changed;
+- no decision or broker-mutation authority changed;
+- no new broker enumeration or unbounded cache introduced.
+
+Manual cTrader boundary:
+- target-terminal panel refresh timing, scenario/suitability/break-even visual updates,
+  reconnect/reload and responsiveness remain manual.
+
+**Next phase after G6A closeout: CR7.6b.**
