@@ -162,6 +162,17 @@ namespace cAlgo
                 minimumDistance);
         }
 
+        private bool IsExistingManagedStopHealthy(
+            int direction,
+            double entry,
+            double stop)
+        {
+            return ManagedStopProtectionRule.IsExistingStopHealthy(
+                direction,
+                entry,
+                stop);
+        }
+
         private bool IsValidManagedStop(
             int direction,
             double entry,
