@@ -115,7 +115,7 @@ namespace cAlgo
                     Entry = entry,
                     Stop = stop,
                     Risk = risk,
-                    Execution = execution
+                    ExecutionQuality = execution.Quality
                 };
 
             return true;
