@@ -28,6 +28,9 @@ constraints = read("src/CFIP.Indicator/Core/Math/TargetCandidateConstraintRule.c
 envelope = read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs")
 reasons = read("src/CFIP.Indicator/Core/Math/TargetCandidateRejectionReasons.cs")
 evaluator = read("src/CFIP.Indicator/Planning/TradePlan/TargetCandidateEvaluator.cs")
+validator = read(
+    "src/CFIP.Indicator/Trading/Validation/TargetObstacleValidator.cs"
+)
 selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
 telemetry = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetStageRejectionTelemetry.cs"
