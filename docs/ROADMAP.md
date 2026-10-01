@@ -5009,7 +5009,7 @@ Verification boundary:
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **IN PROGRESS — CR5.1, CR5.2 and CR5.3 VERIFIED COMPLETE; CR5.4 NEXT.**
+Status: **IN PROGRESS — CR5.1 through CR5.4 VERIFIED COMPLETE; CR5.5 NEXT.**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -5186,8 +5186,40 @@ Safety/manual boundary:
 **Next phase: CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation.**
 
 
+### CR5.4 / E4 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #120 merged to `main`; merge commit `782bca41cd37071c79f2cdfa12f712cefc045c8c`.**
+
+Completed:
+- preserved the absolute pending Stop/Limit Entry/SL/TP intent across successful pending placement;
+- made pending snapshot creation fail-closed when the executable absolute plan cannot be reconstructed;
+- reconciled the broker-filled actual entry against the preserved absolute plan before final managed-plan adoption;
+- retained a broker SL when it is more protective and a broker TP when it is more progressive;
+- rebuilt Advanced/server-side TP protection from the reconciled absolute ladder and actual fill price, then re-confirmed broker ownership;
+- prevented `PositionOpened` event-order inversion from bypassing an outstanding pending snapshot;
+- cleared stale pending snapshot state on cancellation;
+- kept failed reconciliation in `RecoveryRequired` so execution/protection cannot be reported as healthy;
+- added deterministic positive/negative fill-divergence, BUY/SELL symmetry, broker-protection, rejection and lifecycle-idempotency contracts;
+- added and wired `audit_phase_5_4.py`;
+- reconciled the accumulated CR2.5 lifecycle-ordering audit with the new pending-snapshot invariant.
+
+Repository verification on final implementation head `6d89f010fa6d292d201ef79e37af5b162438f854`:
+- Source/Architecture: PASS — run `36795710379` / workflow #2096;
+- Runtime Acceptance Contracts: PASS — run `36795710374` / workflow #1905;
+- cTrader Compile: PASS — run `36795710377` / workflow #2089.
+
+Safety/manual boundary:
+- no public parameter name/type/default changed;
+- no RR, confidence, stop, target or execution threshold was tuned;
+- no second decision or broker execution authority introduced;
+- broker-confirmed state remains authoritative;
+- target-terminal verification is still required for actual Stop/Limit fill-price divergence, broker-side final SL/TP, Advanced Protection ladder behavior, rejection timing and restart/reconnect lifecycle.
+
+**Next phase: CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.**
+
+
 ## Current active implementation phase
 
-**CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation.**
+**CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.**
 
-CR5.3 / E3 is verified complete and merged; continue from CR5.4. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.4 / E4 is verified complete and merged; continue from CR5.5. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
