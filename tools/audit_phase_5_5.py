@@ -87,12 +87,9 @@ check(
 check(
     "tactical parallel assessment consumes the same shared geometry",
     "TryBuildParallelScenarioGeometry(" in tactical and
-    "double atr =
-                geometry.Atr;" in tactical and
-    "double entry =
-                geometry.Entry;" in tactical and
-    "double stop =
-                geometry.Stop;" in tactical and
+    "geometry.Atr" in tactical and
+    "geometry.Entry" in tactical and
+    "geometry.Stop" in tactical and
     "geometry.ExecutionQuality" in tactical,
 )
 
