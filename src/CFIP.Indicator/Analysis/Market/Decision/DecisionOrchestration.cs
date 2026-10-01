@@ -30,10 +30,14 @@ namespace cAlgo
                     "Decision closed-bar context is missing or inconsistent.");
             }
 
+            if (_marketStateSnapshot == null ||
+                !_marketStateSnapshot.MatchesReference(reference) ||
+                _marketStateSnapshot.M5.ClosedIndex != closedM5)
+                throw new InvalidOperationException(
+                    "Decision market-state snapshot is missing or inconsistent.");
+
             string regime =
-                DetectRegime(
-                    _m5Bars,
-                    closedM5);
+                _marketStateSnapshot.M5.Regime;
 
             DecisionInputBuildRequest request =
                 new DecisionInputBuildRequest
@@ -74,14 +78,12 @@ namespace cAlgo
                     UsePremiumDiscount =
                         UsePremiumDiscount,
                     PremiumDiscountBias =
-                        UsePremiumDiscount
-                            ? PremiumDiscountBias(
-                                _m5Bars,
-                                closedM5)
-                            : 0,
+                        _marketStateSnapshot.PremiumDiscountBias,
                     UseM1Trigger = UseM1Trigger,
 
                     Regime = regime,
+                    MarketStateSnapshot =
+                        _marketStateSnapshot,
                     AdaptiveRegimeWeighting =
                         AdaptiveRegimeWeighting,
                     UseHistoricalChoppinessGuard =
@@ -103,10 +105,7 @@ namespace cAlgo
                             IndependentEvidence(-1),
                             StructuralConfirmations(1),
                             StructuralConfirmations(-1),
-                            RegimeQuality(
-                                regime,
-                                _m5Bars,
-                                closedM5),
+                            _marketStateSnapshot.M5.RegimeQuality,
                             RetestQuality(
                                 _m5Bars,
                                 closedM5,
