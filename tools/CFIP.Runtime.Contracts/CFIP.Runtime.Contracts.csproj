@@ -119,6 +119,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EarlyPredictionScoreRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OutcomeMemoryIdentityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceIndependenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FrameRegimeResolutionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FrameScoringConstants.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalTraceIdentityRule.cs" />
