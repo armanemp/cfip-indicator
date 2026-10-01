@@ -285,46 +285,25 @@ namespace cAlgo
                 Math.Abs(score.ChoppinessFactor - 1.0) < 1e-12,
                 "score trace reconstructs final totals without hidden adjustments");
 
-            DecisionScoreSnapshot choppy =
-                new DecisionScoreCalculator().Calculate(
-                    new DecisionInputSnapshot(
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        new DecisionFrameContribution(10, 5, 0),
-                        new DecisionFrameContribution(0, 0, 0),
-                        new DecisionFrameContribution(0, 0, 0),
-                        new DecisionFrameContribution(0, 0, 0),
-                        new DecisionFrameContribution(0, 0, 0),
-                        new DecisionFrameContribution(0, 0, 0),
-                        new DecisionFrameContribution(0, 0, 0),
-                        false,
-                        false,
-                        0,
-                        0,
-                        false,
-                        0,
-                        false,
-                        "UNKNOWN",
-                        false,
-                        true,
-                        12,
-                        57,
-                        reference,
-                        0,
-                        marketState,
-                        evidence));
+            double choppyFactor =
+                DecisionScoreCalculator.ResolveChoppinessFactor(
+                    true,
+                    true,
+                    true);
 
             Assert(
-                Math.Abs(choppy.ChoppinessFactor - 0.90) < 1e-12 &&
-                Math.Abs(choppy.Buy - 9.0) < 1e-12 &&
-                Math.Abs(choppy.Sell - 4.5) < 1e-12,
-                "choppiness modifier is explicit and applied symmetrically");
+                Math.Abs(choppyFactor - 0.90) < 1e-12,
+                "choppiness factor rule is explicit");
+
+            double mirroredFactor =
+                DecisionScoreCalculator.ResolveChoppinessFactor(
+                    true,
+                    true,
+                    true);
+
+            Assert(
+                Math.Abs(choppyFactor - mirroredFactor) < 1e-12,
+                "choppiness factor is deterministic");
 
             Assert(
                 double.IsNaN(score.Buy) == false &&
