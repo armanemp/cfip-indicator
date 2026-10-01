@@ -524,13 +524,26 @@ Safety/manual boundary:
 
 ## Current active phase
 
-CR5.7 / E7 — Decision-owned WATCH/REACTION alerts separated from chart rendering.
+CR5.8 / E8 — Small constant ownership and TargetSelection consistency.
 
-CR5.6 / E6 is verified complete on PR #122. Implementation head was e930e30d9c82ad279316a41c81116d4ae1e19859; repository verification passed on that head:
-- Source/Architecture run 36838144439;
-- Runtime Acceptance Contracts run 36838144403;
-- cTrader Compile run 36838144416.
+CR5.7 / E7 is implemented on branch `phase/cr5-7-e7-watch-reaction-alerts`.
+Repository CI verification is pending. CR-FINAL remains paused until CR5.7,
+CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented.
+
+### CR5.7 / E7 implementation record
+
+- Added Core `WatchReactionAlertRule` for WATCH/REACTION qualification and deterministic identities.
+- Moved WATCH/REACTION alert emission out of `SignalRenderer.RenderWatchAndReaction` into the decision-alert runtime stage.
+- Preserved live REACTION intrabar cadence by running alert evaluation after `UpdateLiveReaction` and before presentation.
+- Removed chart-rendering ownership from alert qualification; the renderer is presentation-only.
+- Named the existing early-WATCH confidence floor 60 and gap 4 without changing values.
+- Added deterministic Runtime Contract coverage and `audit_phase_5_7.py`.
+- Added phase document `docs/PHASE-CR5-7-WATCH-REACTION-ALERTS.md`.
+
+Safety/manual boundary:
+- no public parameter identity/default, RR/confidence/stop/target threshold, or execution authority changed;
+- target-terminal alert timing, popup/audio behavior, panel/chart behavior, broker lifecycle and empirical signal-quality validation remain manual.
 
 ### Next transition
 
-Execute CR5.7 / E7 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
+Execute CR5.8 / E8 only after E7 repository verification is green. Do not start Track 12A before CR-FINAL.
