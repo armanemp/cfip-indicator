@@ -46,8 +46,8 @@ namespace cAlgo
             TickSize = tickSize;
             Digits = Math.Max(0, digits);
             BrokerDistanceUnit = brokerDistanceUnit;
-            MinimumStopDistanceRaw = NormalizeNonNegative(minimumStopDistanceRaw);
-            MinimumTakeProfitDistanceRaw = NormalizeNonNegative(minimumTakeProfitDistanceRaw);
+            MinimumStopDistanceRaw = minimumStopDistanceRaw;
+            MinimumTakeProfitDistanceRaw = minimumTakeProfitDistanceRaw;
 
             IsQuoteValid =
                 IsFinitePositive(bid) &&
@@ -82,6 +82,7 @@ namespace cAlgo
 
             HasBrokerDistanceMetadata =
                 BrokerDistanceUnit != BrokerDistanceUnit.Unknown &&
+                IsFinitePositive(pipSize) &&
                 IsFiniteNonNegative(
                     MinimumStopDistanceRaw) &&
                 IsFiniteNonNegative(
@@ -157,12 +158,6 @@ namespace cAlgo
             return 0;
         }
 
-        private static double NormalizeNonNegative(double value)
-        {
-            return IsFiniteNonNegative(value)
-                ? value
-                : 0;
-        }
 
         private static bool IsFinitePositive(double value)
         {
