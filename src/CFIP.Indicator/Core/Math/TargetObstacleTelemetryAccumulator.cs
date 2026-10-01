@@ -18,13 +18,13 @@ namespace cAlgo
             double obstacleDistanceAtr,
             double maximumTargetExtensionAtr)
         {
-            if (!IsFinitePositive(targetDistanceAtr))
+            if (!IsFinitePositiveDistance(targetDistanceAtr))
                 return;
 
             double extension =
                 Math.Max(
                     1.0,
-                    IsFinitePositive(maximumTargetExtensionAtr)
+                    IsFinitePositiveDistance(maximumTargetExtensionAtr)
                         ? maximumTargetExtensionAtr
                         : 1.0);
 
@@ -109,7 +109,7 @@ namespace cAlgo
             return summary;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveDistance(double value)
         {
             return
                 !double.IsNaN(value) &&
