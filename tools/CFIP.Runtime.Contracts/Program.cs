@@ -4329,7 +4329,7 @@ namespace cAlgo
                 Utc(12, 5);
 
             CanonicalPriceSnapshot pipPrice =
-                CanonicalPriceSnapshot.Create(
+                CanonicalPriceSnapshot.CreateCanonicalSnapshot(
                     quoteObserved,
                     100.0000,
                     100.0002,
@@ -4364,7 +4364,7 @@ namespace cAlgo
                 "pip broker distances convert to price distance consistently");
 
             CanonicalPriceSnapshot percentagePrice =
-                CanonicalPriceSnapshot.Create(
+                CanonicalPriceSnapshot.CreateCanonicalSnapshot(
                     quoteObserved,
                     100.0,
                     100.5,
@@ -4386,7 +4386,7 @@ namespace cAlgo
                 "percentage broker distances use the executable reference price");
 
             CanonicalPriceSnapshot invalidQuote =
-                CanonicalPriceSnapshot.Create(
+                CanonicalPriceSnapshot.CreateCanonicalSnapshot(
                     quoteObserved,
                     100.5,
                     100.0,
