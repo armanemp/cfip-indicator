@@ -58,6 +58,248 @@ namespace cAlgo
             };
         }
 
+        private Plan CapturePendingOrderPlanSnapshot(
+            ExecutionIntent intent,
+            int closedM5,
+            double atr)
+        {
+            if (intent == null ||
+                (intent.Direction != 1 &&
+                 intent.Direction != -1) ||
+                !IsFinitePositive(intent.RequestedEntry) ||
+                !IsFinitePositive(intent.Stop) ||
+                !IsFinitePositive(intent.Target) ||
+                closedM5 < 1 ||
+                atr <= 0)
+                return null;
+
+            double entry = intent.RequestedEntry;
+            double risk = Math.Abs(entry - intent.Stop);
+
+            if (!IsFinitePositive(risk))
+                return null;
+
+            OpportunityLane lane =
+                intent.Kind == ExecutionIntentKind.Limit
+                    ? OpportunityLane.MicroReaction
+                    : ResolveContinuationPendingLane(intent.Direction);
+
+            List<Level> levels =
+                BuildTargetLevels(
+                    closedM5,
+                    intent.Direction,
+                    entry,
+                    atr);
+
+            List<Level> selected =
+                SelectTargets(
+                    levels,
+                    closedM5,
+                    entry,
+                    Math.Max(Symbol.PipSize, risk),
+                    intent.Direction,
+                    atr,
+                    lane);
+
+            double tp1 =
+                SelectTarget(
+                    selected,
+                    0,
+                    entry,
+                    risk,
+                    intent.Direction,
+                    Math.Max(
+                        FallbackTp1RR,
+                        MinimumRequiredRR()),
+                    lane);
+
+            double tp2 =
+                SelectTarget(
+                    selected,
+                    1,
+                    entry,
+                    risk,
+                    intent.Direction,
+                    Math.Max(
+                        FallbackTp2RR,
+                        Tp2MinimumRR));
+
+            double tp3 =
+                SelectTarget(
+                    selected,
+                    2,
+                    entry,
+                    risk,
+                    intent.Direction,
+                    Math.Max(
+                        FallbackTp3RR,
+                        Tp3MinimumRR));
+
+            double tp4 =
+                SelectTarget(
+                    selected,
+                    3,
+                    entry,
+                    risk,
+                    intent.Direction,
+                    Math.Max(
+                        FallbackTp4RR,
+                        Tp4MinimumRR));
+
+            int configuredStage =
+                ClampInt(
+                    (int)EffectiveAutoTpStage(),
+                    0,
+                    3);
+
+            switch (configuredStage)
+            {
+                case 0:
+                    tp1 = intent.Target;
+                    break;
+                case 1:
+                    tp2 = intent.Target;
+                    break;
+                case 2:
+                    tp3 = intent.Target;
+                    break;
+                default:
+                    tp4 = intent.Target;
+                    break;
+            }
+
+            if (!IsFinitePositive(tp1))
+                tp1 = intent.Target;
+
+            if (!LiveExitGeometryRule.IsProgressiveTargetLadder(
+                    intent.Direction,
+                    entry,
+                    tp1,
+                    tp2,
+                    tp3,
+                    tp4))
+            {
+                if (configuredStage == 0)
+                {
+                    tp2 = tp2 > 0
+                        ? tp2
+                        : 0;
+                    tp3 = tp3 > 0
+                        ? tp3
+                        : 0;
+                    tp4 = tp4 > 0
+                        ? tp4
+                        : 0;
+                }
+            }
+
+            return new Plan
+            {
+                Direction = intent.Direction,
+                Lane = lane,
+                EntryMode =
+                    intent.Kind == ExecutionIntentKind.Stop
+                        ? ExecutionMode.ContinuationStop
+                        : ExecutionMode.ReversalLimit,
+                Entry = NormalizePrice(entry),
+                IdealEntry = NormalizePrice(entry),
+                EntryTrigger = NormalizePrice(intent.Trigger),
+                EntryZoneLow = NormalizePrice(intent.ZoneLow),
+                EntryZoneHigh = NormalizePrice(intent.ZoneHigh),
+                Stop = NormalizePrice(intent.Stop),
+                Tp1 = IsFinitePositive(tp1)
+                    ? NormalizePrice(tp1)
+                    : 0,
+                Tp2 = IsFinitePositive(tp2)
+                    ? NormalizePrice(tp2)
+                    : 0,
+                Tp3 = IsFinitePositive(tp3)
+                    ? NormalizePrice(tp3)
+                    : 0,
+                Tp4 = IsFinitePositive(tp4)
+                    ? NormalizePrice(tp4)
+                    : 0,
+                Risk = Math.Max(
+                    Symbol.PipSize,
+                    risk),
+                Tp1RR =
+                    IsFinitePositive(tp1)
+                        ? Math.Abs(tp1 - entry) / risk
+                        : 0,
+                Tp2RR =
+                    IsFinitePositive(tp2)
+                        ? Math.Abs(tp2 - entry) / risk
+                        : 0,
+                Tp3RR =
+                    IsFinitePositive(tp3)
+                        ? Math.Abs(tp3 - entry) / risk
+                        : 0,
+                Tp4RR =
+                    IsFinitePositive(tp4)
+                        ? Math.Abs(tp4 - entry) / risk
+                        : 0,
+                StopQuality = 100,
+                Tp1Quality = 100,
+                Tp2Quality = 100,
+                Tp3Quality = 100,
+                Tp4Quality = 100,
+                StopSource = "PENDING ABSOLUTE SNAPSHOT",
+                Tp1Source = "PENDING ABSOLUTE SNAPSHOT",
+                Tp2Source = "PENDING ABSOLUTE SNAPSHOT",
+                Tp3Source = "PENDING ABSOLUTE SNAPSHOT",
+                Tp4Source = "PENDING ABSOLUTE SNAPSHOT",
+                CreatedM5 = intent.CreatedM5 > 0
+                    ? intent.CreatedM5
+                    : closedM5,
+                OriginalVolume = intent.Volume,
+                CalibrationEligible =
+                    _decision != null &&
+                    _decision.EntryAllowed,
+                CalibrationDirection =
+                    intent.Direction,
+                CalibrationLane = lane,
+                CalibrationRegime =
+                    _decision == null
+                        ? "UNKNOWN"
+                        : _decision.Regime,
+                CalibrationConfidence =
+                    _decision == null
+                        ? 0
+                        : _decision.Confidence,
+                CalibrationBucket =
+                    _decision == null
+                        ? 0
+                        : Math.Max(
+                            0,
+                            _decision.Confidence / 5),
+                IsLivePosition = false,
+                PositionId = 0
+            };
+        }
+
+        private OpportunityLane ResolveContinuationPendingLane(
+            int direction)
+        {
+            if (_decision != null &&
+                _decision.Direction == direction &&
+                _decision.TopDownEligible &&
+                string.Equals(
+                    _decision.TopDownStage,
+                    "ENTRY CALIBRATED",
+                    StringComparison.OrdinalIgnoreCase))
+                return OpportunityLane.Strategic;
+
+            if (_decision != null &&
+                _decision.Direction == direction &&
+                (_decision.TacticalOpportunityLane ==
+                 OpportunityLane.Tactical ||
+                 _decision.TacticalOpportunityLane ==
+                 OpportunityLane.CounterHtfTactical))
+                return _decision.TacticalOpportunityLane;
+
+            return OpportunityLane.Tactical;
+        }
+
         private void ClearPendingOrderPlanSnapshot()
         {
             _pendingOrderPlanSnapshot = null;
