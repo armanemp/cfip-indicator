@@ -103,9 +103,6 @@ namespace cAlgo
 
             _aggressiveEntryPolicy.ResetQualification();
 
-            _autoExecutionBlockReason =
-                "EXECUTED";
-
             _plan =
                 CreateManagedPlanFromExecution(
                     _reaction.Direction,
@@ -179,13 +176,6 @@ namespace cAlgo
                 return false;
             }
 
-            SetLifecycleState(
-                LifecycleState.LivePosition,
-                "AGGRESSIVE ENTRY • FILLED");
-
-            _autoExecutionBlockReason =
-                "EXECUTED";
-
             double maximumFillDistance =
                 Math.Max(
                     Symbol.TickSize * 2,
@@ -229,6 +219,13 @@ namespace cAlgo
 
                 return false;
             }
+
+            SetLifecycleState(
+                LifecycleState.LivePosition,
+                "AGGRESSIVE ENTRY • FILLED");
+
+            _autoExecutionBlockReason =
+                "EXECUTED";
 
             EnrichLivePlanTargets(
                 closedM5);
