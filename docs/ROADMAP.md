@@ -848,6 +848,23 @@ roadmap audit chain.
 Historical continuity marker: CI-03 is verified complete; later CI phases remain
 the active remediation sequence.
 
+## CI-04 implementation record / closeout
+
+CI-04 structure, swing, liquidity and alert-delivery integrity is retained as a verified historical continuity item in the accumulated calculation-integrity chain.
+
+Completed:
+- canonical swing plateau, confirmation and structural-break freshness;
+- repeated re-break rejection for already-crossed confirmed levels;
+- active/unbroken liquidity-sweep validation with BUY/SELL symmetry;
+- canonical Structure/MSS/CHOCH event de-duplication;
+- unified bounded alert delivery queue for popup and sound;
+- popup-before-sound delivery ordering on the same queued alert event;
+- direct sound ownership removed from AlertEngine;
+- deterministic Runtime Acceptance and accumulated Source/Architecture audit coverage.
+
+Repository verification was completed on the CI-04 implementation head before the later CI phases advanced.
+
+
 ## CI-05 implementation record
 
 CI-05 FVG lifecycle semantics are retained as a completed historical
