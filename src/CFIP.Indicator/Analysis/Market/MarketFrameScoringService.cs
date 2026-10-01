@@ -134,7 +134,7 @@ namespace cAlgo
                 IndicatorEvidenceFusionRule.Evaluate(indicatorFusionInput);
 
             f.IndicatorIndependentEvidenceGroupCount =
-                IndicatorEvidenceIndependenceRule.CountGroups(indicatorFusionInput);
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(indicatorFusionInput);
 
             f.IndicatorConfluenceQuality = indicatorFusion.Quality;
             f.IndicatorConflict = indicatorFusion.Conflict;
