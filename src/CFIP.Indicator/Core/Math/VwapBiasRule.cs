@@ -2,7 +2,7 @@ namespace cAlgo
 {
     internal static class VwapBiasRule
     {
-        public static bool IsDirectional(
+        public static bool IsVwapDirectional(
             double close,
             double vwap,
             int direction)
