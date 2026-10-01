@@ -127,13 +127,13 @@ namespace cAlgo
                     candidate.Direction != plan.Direction)
                     continue;
 
-                if (!IsClose(candidate.Entry, plan.Entry, tolerance) ||
-                    !IsClose(candidate.Stop, plan.Stop, tolerance) ||
-                    !IsClose(candidate.Tp1, plan.Tp1, tolerance))
+                if (!IsScenarioPriceClose(candidate.Entry, plan.Entry, tolerance) ||
+                    !IsScenarioPriceClose(candidate.Stop, plan.Stop, tolerance) ||
+                    !IsScenarioPriceClose(candidate.Tp1, plan.Tp1, tolerance))
                     continue;
 
                 if (selected == null ||
-                    Compare(candidate, selected) < 0)
+                    CompareScenarioPriority(candidate, selected) < 0)
                     selected = candidate;
             }
 
@@ -178,7 +178,7 @@ namespace cAlgo
                     continue;
 
                 if (selected == null ||
-                    Compare(candidate, selected) < 0)
+                    CompareScenarioPriority(candidate, selected) < 0)
                     selected = candidate;
             }
 
@@ -225,7 +225,7 @@ namespace cAlgo
                 reason);
         }
 
-        private static bool IsClose(
+        private static bool IsScenarioPriceClose(
             double left,
             double right,
             double tolerance)
@@ -238,7 +238,7 @@ namespace cAlgo
                 Math.Abs(left - right) <= tolerance;
         }
 
-        private static int Compare(
+        private static int CompareScenarioPriority(
             TradeOpportunityCandidate left,
             TradeOpportunityCandidate right)
         {
