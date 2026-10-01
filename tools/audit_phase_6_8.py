@@ -83,7 +83,6 @@ check(
 check(
     "EvaluateTargetObstacle consumes a snapshot instead of rescanning equality levels per candidate",
     "GetTargetObstacleScanSnapshot(" in validator and
-    "GetTargetObstacleScanSnapshot(" in validator and
     "IsTargetObstacleSwing(" in builder and
     "FindEqualHigh(" not in validator and
     "FindEqualLow(" not in validator

@@ -2,7 +2,9 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — repository verification pending CI closeout.**
+Status: **IMPLEMENTED — repository verification is rerunning on the corrected latest HEAD.**
+
+CI correction log: the first F9 compile attempt exposed an `Entry` construction reference left behind after the architecture refactor; it was corrected to `TargetObstacleScanCacheEntry` without changing behavior.
 
 ## Required phase confirmation
 
