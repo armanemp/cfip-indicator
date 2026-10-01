@@ -26,11 +26,11 @@ namespace cAlgo
             double target,
             double clearance)
         {
-            if (!Finite(low) ||
-                !Finite(high) ||
-                !FinitePositive(entry) ||
-                !FinitePositive(target) ||
-                !FiniteNonNegative(clearance) ||
+            if (!IsFiniteRewardPathValue(low) ||
+                !IsFiniteRewardPathValue(high) ||
+                !IsFinitePositiveRewardPathValue(entry) ||
+                !IsFinitePositiveRewardPathValue(target) ||
+                !IsFiniteNonNegativeRewardPathValue(clearance) ||
                 low >= high)
                 return false;
 
@@ -67,21 +67,21 @@ namespace cAlgo
                 pathHigh - clearance;
         }
 
-        private static bool Finite(double value)
+        private static bool IsFiniteRewardPathValue(double value)
         {
             return
                 !double.IsNaN(value) &&
                 !double.IsInfinity(value);
         }
 
-        private static bool FinitePositive(double value)
+        private static bool IsFinitePositiveRewardPathValue(double value)
         {
             return
                 Finite(value) &&
                 value > 0;
         }
 
-        private static bool FiniteNonNegative(double value)
+        private static bool IsFiniteNonNegativeRewardPathValue(double value)
         {
             return
                 Finite(value) &&
