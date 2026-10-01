@@ -31,9 +31,11 @@ checks = {
         "_processedKeys.Add(key)" in guard and
         "if (!_processedKeys.Add(key))" in guard
     ),
-    "position-open event tolerates ordering": (
-        "if (!boundToActivePlan)" in opened and
-        "RecoverManagedLivePlan(" in opened
+    "position-open event tolerates ordering without bypassing pending-fill reconciliation": (
+        "if (!boundToActivePlan &&" in opened and
+        "_pendingOrderPlanSnapshot == null" in opened and
+        "RecoverManagedLivePlan(" in opened and
+        "WAITING PENDING FILL RECONCILIATION" in opened
     ),
     "position-open recovery is managed-only": (
         "IsManagedPosition(args.Position)" in opened and
