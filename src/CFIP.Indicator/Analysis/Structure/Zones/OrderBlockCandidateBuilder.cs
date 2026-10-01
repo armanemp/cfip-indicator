@@ -1,6 +1,5 @@
 using System;
 using cAlgo.API;
-using cAlgo.API.Internals;
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
@@ -15,7 +14,8 @@ namespace cAlgo
             if (bars == null ||
                 createdIndex < 2 ||
                 currentIndex <= createdIndex ||
-                atr <= 0)
+                atr <= 0 ||
+                !OrderBlockLifecycleRule.IsOrderBlockAgeValid(createdIndex, currentIndex, MaximumZoneAgeBars))
                 return null;
             double creationAtr =
                 Atr(

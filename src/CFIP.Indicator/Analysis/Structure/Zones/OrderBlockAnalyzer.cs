@@ -72,16 +72,6 @@ namespace cAlgo
                      i >= first;
                      i--)
                 {
-                    bool opposite =
-                        direction == 1
-                            ? bars.ClosePrices[i] <
-                              bars.OpenPrices[i]
-                            : bars.ClosePrices[i] >
-                              bars.OpenPrices[i];
-
-                    if (!opposite)
-                        continue;
-
                     Zone candidate =
                         BuildOrderBlockCandidate(
                             bars,

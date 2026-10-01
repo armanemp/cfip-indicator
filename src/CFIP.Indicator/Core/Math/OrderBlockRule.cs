@@ -2,21 +2,13 @@ using System;
 
 namespace cAlgo
 {
-    internal enum OrderBlockLifecycleState
-    {
-        Fresh,
-        Mitigated,
-        Broken
-    }
-
     /// <summary>
-    /// Deterministic mathematical owner for Order Block source geometry,
-    /// structural qualification and lifecycle boundaries.
+    /// Deterministic mathematical owner for Order Block source geometry and
+    /// structural qualification. Lifecycle transitions are owned separately
+    /// by OrderBlockLifecycleRule.
     /// </summary>
     internal static class OrderBlockRule
     {
-        public const double MinimumRetainedRatio = 0.05;
-
         public static bool IsOppositeSourceCandle(
             int direction,
             double open,
@@ -104,19 +96,6 @@ namespace cAlgo
                 : zoneLow >= market - tolerance;
         }
 
-        public static OrderBlockLifecycleState ClassifyLifecycle(
-            bool partiallyMitigated,
-            double remainingRatio)
-        {
-            if (!Finite(remainingRatio) ||
-                remainingRatio <= MinimumRetainedRatio)
-                return OrderBlockLifecycleState.Broken;
-
-            return partiallyMitigated
-                ? OrderBlockLifecycleState.Mitigated
-                : OrderBlockLifecycleState.Fresh;
-        }
-
         public static bool MeetsDisplacement(
             int direction,
             double open,
@@ -172,133 +151,6 @@ namespace cAlgo
                 : close <
                   priorExtreme -
                   threshold;
-        }
-
-        public static double GetMitigationProbe(
-            int direction,
-            double open,
-            double close,
-            double high,
-            double low,
-            bool breakByWicks)
-        {
-            if (direction == 1)
-                return breakByWicks
-                    ? low
-                    : Math.Min(
-                        open,
-                        close);
-
-            if (direction == -1)
-                return breakByWicks
-                    ? high
-                    : Math.Max(
-                        open,
-                        close);
-
-            return double.NaN;
-        }
-
-        public static bool IsFullyMitigated(
-            int direction,
-            double zoneLow,
-            double zoneHigh,
-            double probe)
-        {
-            if (!IsValidDirection(direction) ||
-                !IsValidOrderBlockGeometry(
-                    zoneLow,
-                    zoneHigh) ||
-                !Finite(probe))
-                return false;
-
-            return direction == 1
-                ? probe <= zoneLow
-                : probe >= zoneHigh;
-        }
-
-        public static bool TryApplyOrderBlockPartialMitigation(
-            int direction,
-            double zoneLow,
-            double zoneHigh,
-            double probe,
-            double tickSize,
-            out double managedLow,
-            out double managedHigh,
-            out bool partiallyMitigated,
-            out double remainingRatio,
-            out OrderBlockLifecycleState lifecycleState)
-        {
-            managedLow = zoneLow;
-            managedHigh = zoneHigh;
-            partiallyMitigated = false;
-            remainingRatio = 0;
-            lifecycleState = OrderBlockLifecycleState.Broken;
-
-            if (!IsValidDirection(direction) ||
-                !IsValidOrderBlockGeometry(
-                    zoneLow,
-                    zoneHigh) ||
-                !Finite(probe) ||
-                !FinitePositiveOrderBlockValue(tickSize))
-                return false;
-
-            if (IsFullyMitigated(
-                direction,
-                zoneLow,
-                zoneHigh,
-                probe))
-            {
-                lifecycleState =
-                    OrderBlockLifecycleState.Broken;
-                return false;
-            }
-
-            if (direction == 1 &&
-                probe < managedHigh)
-            {
-                managedHigh =
-                    Math.Max(
-                        managedLow,
-                        probe);
-                partiallyMitigated = true;
-            }
-            else if (direction == -1 &&
-                     probe > managedLow)
-            {
-                managedLow =
-                    Math.Min(
-                        managedHigh,
-                        probe);
-                partiallyMitigated = true;
-            }
-
-            double originalWidth =
-                zoneHigh -
-                zoneLow;
-
-            double managedWidth =
-                managedHigh -
-                managedLow;
-
-            remainingRatio =
-                managedWidth /
-                Math.Max(
-                    tickSize,
-                    originalWidth);
-
-            lifecycleState =
-                ClassifyLifecycle(
-                    partiallyMitigated,
-                    remainingRatio);
-
-            if (lifecycleState ==
-                OrderBlockLifecycleState.Broken)
-                return false;
-
-            return managedLow < managedHigh &&
-                   managedWidth >
-                   tickSize;
         }
 
         public static string OrderBlockIdentity(
