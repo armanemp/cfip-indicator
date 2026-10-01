@@ -222,6 +222,7 @@ namespace cAlgo
             int closedIndex =
                 live - 1;
 
+            int confirmedDirection = 0;
             int confirmedQuality = 0;
             int confirmedEvidence = 0;
             bool confirmedContext = false;
@@ -235,26 +236,77 @@ namespace cAlgo
 
                 if (closedAtr > 0)
                 {
-                    bool confirmedCounterMove;
-                    bool confirmedQualifyingZone;
-                    bool confirmedSwingInteraction;
-                    bool confirmedZonePresent;
+                    int confirmedBuyQuality;
+                    int confirmedBuyEvidence;
+                    bool confirmedBuyContext;
+                    bool confirmedBuyCounterMove;
+                    bool confirmedBuyQualifyingZone;
+                    bool confirmedBuySwingInteraction;
+                    bool confirmedBuyZonePresent;
+
+                    int confirmedSellQuality;
+                    int confirmedSellEvidence;
+                    bool confirmedSellContext;
+                    bool confirmedSellCounterMove;
+                    bool confirmedSellQualifyingZone;
+                    bool confirmedSellSwingInteraction;
+                    bool confirmedSellZonePresent;
 
                     ReversalQuality(
                         _m5Bars,
                         closedIndex,
-                        direction,
+                        1,
                         closedAtr,
-                        out confirmedQuality,
-                        out confirmedEvidence,
-                        out confirmedContext,
-                        out confirmedCounterMove,
-                        out confirmedQualifyingZone,
-                        out confirmedSwingInteraction,
-                        out confirmedZonePresent);
+                        out confirmedBuyQuality,
+                        out confirmedBuyEvidence,
+                        out confirmedBuyContext,
+                        out confirmedBuyCounterMove,
+                        out confirmedBuyQualifyingZone,
+                        out confirmedBuySwingInteraction,
+                        out confirmedBuyZonePresent);
+
+                    ReversalQuality(
+                        _m5Bars,
+                        closedIndex,
+                        -1,
+                        closedAtr,
+                        out confirmedSellQuality,
+                        out confirmedSellEvidence,
+                        out confirmedSellContext,
+                        out confirmedSellCounterMove,
+                        out confirmedSellQualifyingZone,
+                        out confirmedSellSwingInteraction,
+                        out confirmedSellZonePresent);
+
+                    confirmedDirection =
+                        ReactionQualificationRule.ResolveDirection(
+                            confirmedBuyQuality,
+                            confirmedSellQuality);
+
+                    if (confirmedDirection == direction)
+                    {
+                        confirmedQuality =
+                            confirmedDirection == 1
+                                ? confirmedBuyQuality
+                                : confirmedSellQuality;
+
+                        confirmedEvidence =
+                            confirmedDirection == 1
+                                ? confirmedBuyEvidence
+                                : confirmedSellEvidence;
+
+                        confirmedContext =
+                            confirmedDirection == 1
+                                ? confirmedBuyContext
+                                : confirmedSellContext;
+                    }
                 }
             }
 
+            d.ReactionConfirmedM5 =
+                closedIndex;
+            d.ReactionConfirmedDirection =
+                confirmedDirection;
             d.ReactionConfirmedQuality =
                 confirmedQuality;
             d.ReactionConfirmedEvidence =
@@ -264,7 +316,8 @@ namespace cAlgo
             d.ReactionClosedBarConfirmed =
                 ReactionQualificationRule.IsClosedBarConfirmed(
                     closedIndex,
-                    closedIndex);
+                    closedIndex) &&
+                confirmedDirection == direction;
 
             d.TriggerReady =
                 ReactionQualificationRule.IsQualified(

@@ -30,6 +30,8 @@ namespace cAlgo
             VerifyEarlyPredictionScoreSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
+            VerifyParallelScenarioSelectionSemantics();
+            VerifyMicroReactionClosedBarSemantics();
             VerifyMtfContextIntegrity();
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
@@ -3900,6 +3902,215 @@ namespace cAlgo
                     false,
                     false) == 0,
                 "non-finite Order Block quality inputs fail closed");
+        }
+
+        private static void VerifyParallelScenarioSelectionSemantics()
+        {
+            TradeOpportunityCandidate m5Buy =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-M5-BUY",
+                    SourceTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 100,
+                    Quality = 82,
+                    Tp1RR = 2.1,
+                    ActionableNow = true,
+                    Entry = 100,
+                    Risk = 2
+                };
+
+            TradeOpportunityCandidate h1Buy =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-H1-BUY",
+                    SourceTimeframe = "H1",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 100,
+                    Quality = 90,
+                    Tp1RR = 2.5,
+                    ActionableNow = true,
+                    Entry = 100.5,
+                    Risk = 2
+                };
+
+            Assert(
+                ParallelScenarioSelectionRule.GetScenarioIdentity(m5Buy) ==
+                "TF-M5-BUY" &&
+                ParallelScenarioSelectionRule.GetScenarioIdentity(h1Buy) ==
+                "TF-H1-BUY",
+                "parallel scenario identity is explicit and timeframe-scoped");
+
+            Assert(
+                ParallelScenarioSelectionRule.CoverageKey(m5Buy) !=
+                ParallelScenarioSelectionRule.CoverageKey(h1Buy),
+                "different source timeframes remain independent coverage");
+
+            TradeOpportunityCandidate stronger =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-M5-BUY",
+                    SourceTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 100,
+                    Quality = 88,
+                    Tp1RR = 2.1,
+                    ActionableNow = true,
+                    Entry = 100.01,
+                    Risk = 2
+                };
+
+            Assert(
+                ParallelScenarioSelectionRule.ShouldReplace(
+                    m5Buy,
+                    stronger,
+                    0.10),
+                "same-identity close-geometry candidate replaces only on higher display priority");
+
+            TradeOpportunityCandidate olderGeometry =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-M5-BUY",
+                    SourceTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 99,
+                    Quality = 95,
+                    Tp1RR = 3.0,
+                    ActionableNow = true,
+                    Entry = 106,
+                    Risk = 2
+                };
+
+            Assert(
+                !ParallelScenarioSelectionRule.ShouldReplace(
+                    stronger,
+                    olderGeometry,
+                    0.10),
+                "older materially different geometry cannot replace the current scenario");
+
+            TradeOpportunityCandidate newerGeometry =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-M5-BUY",
+                    SourceTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 101,
+                    Quality = 75,
+                    Tp1RR = 1.9,
+                    ActionableNow = false,
+                    Entry = 106,
+                    Risk = 2
+                };
+
+            Assert(
+                ParallelScenarioSelectionRule.ShouldReplace(
+                    stronger,
+                    newerGeometry,
+                    0.10),
+                "newer materially different geometry replaces stale same-identity state");
+
+            IReadOnlyList<TradeOpportunityCandidate> selected =
+                ParallelScenarioSelectionRule.SelectForDisplay(
+                    new[]
+                    {
+                        m5Buy,
+                        h1Buy,
+                        new TradeOpportunityCandidate
+                        {
+                            ScenarioId = "TF-M5-SELL",
+                            SourceTimeframe = "M5",
+                            Lane = OpportunityLane.Tactical,
+                            Direction = -1,
+                            CreatedM5 = 100,
+                            Quality = 80,
+                            Tp1RR = 2.2,
+                            ActionableNow = true,
+                            Entry = 100,
+                            Risk = 2
+                        }
+                    },
+                    2);
+
+            Assert(
+                selected.Count == 2 &&
+                ParallelScenarioSelectionRule.CoverageKey(selected[0]) !=
+                ParallelScenarioSelectionRule.CoverageKey(selected[1]),
+                "display selection preserves distinct scenario coverage under a visible-count limit");
+
+            Assert(
+                ParallelScenarioSelectionRule.SelectForDisplay(
+                    new[]
+                    {
+                        m5Buy,
+                        h1Buy
+                    },
+                    8).Count == 2,
+                "display selection retains all independent scenarios below the limit");
+        }
+
+        private static void VerifyMicroReactionClosedBarSemantics()
+        {
+            Assert(
+                MicroReactionSafetyRule.IsClosedBarSafe(
+                    100,
+                    100,
+                    1,
+                    1,
+                    82,
+                    true,
+                    80),
+                "MicroReaction accepts an exact matching confirmed closed bar");
+
+            Assert(
+                !MicroReactionSafetyRule.IsClosedBarSafe(
+                    100,
+                    99,
+                    1,
+                    1,
+                    95,
+                    true,
+                    80) &&
+                !MicroReactionSafetyRule.IsClosedBarSafe(
+                    100,
+                    100,
+                    1,
+                    -1,
+                    95,
+                    true,
+                    80) &&
+                !MicroReactionSafetyRule.IsClosedBarSafe(
+                    100,
+                    100,
+                    1,
+                    1,
+                    79,
+                    true,
+                    80) &&
+                !MicroReactionSafetyRule.IsClosedBarSafe(
+                    100,
+                    100,
+                    1,
+                    1,
+                    95,
+                    false,
+                    80),
+                "MicroReaction rejects stale bars, direction mismatch, weak confirmed quality and unconfirmed state");
+
+            Assert(
+                !MicroReactionSafetyRule.IsClosedBarSafe(
+                    100,
+                    100,
+                    0,
+                    0,
+                    100,
+                    true,
+                    80),
+                "neutral reaction direction fails closed");
         }
 
         private static void VerifyMtfContextIntegrity()

@@ -176,131 +176,17 @@ namespace cAlgo
             }
         }
 
-        private int OpportunityDisplayPriority(
-            TradeOpportunityCandidate candidate)
-        {
-            if (candidate == null)
-                return int.MinValue;
-
-            int lanePriority;
-
-            switch (candidate.Lane)
-            {
-                case OpportunityLane.Strategic:
-                    lanePriority = 4000;
-                    break;
-
-                case OpportunityLane.CounterHtfTactical:
-                    lanePriority = 3200;
-                    break;
-
-                case OpportunityLane.MicroReaction:
-                    lanePriority = 3000;
-                    break;
-
-                default:
-                    lanePriority =
-                        string.IsNullOrWhiteSpace(
-                            candidate.SourceTimeframe)
-                            ? 2600
-                            : 2800;
-                    break;
-            }
-
-            return
-                lanePriority +
-                Math.Max(
-                    0,
-                    Math.Min(
-                        100,
-                        candidate.Quality));
-        }
-
         private void TrimOpportunityCandidates()
         {
-            int maximum =
-                Math.Max(
-                    1,
+            _opportunityCandidates.Clear();
+
+            IReadOnlyList<TradeOpportunityCandidate> selected =
+                _tradePlanRegistry.SelectScenariosForDisplay(
                     MaximumVisibleOpportunities);
 
-            _opportunityCandidates.Sort(
-                (left, right) =>
-                    OpportunityDisplayPriority(right)
-                    .CompareTo(
-                        OpportunityDisplayPriority(left)));
-
-            if (_opportunityCandidates.Count <= maximum)
-                return;
-
-            // Preserve scenario coverage first, then fill remaining slots by
-            // canonical display priority. Different TF directions remain
-            // independent; only the same scenario identity competes for one slot.
-            List<TradeOpportunityCandidate> selected =
-                new List<TradeOpportunityCandidate>();
-
-            System.Collections.Generic.HashSet<string> covered =
-                new System.Collections.Generic.HashSet<string>(
-                    StringComparer.OrdinalIgnoreCase);
-
-            for (int i = 0;
-                 i < _opportunityCandidates.Count &&
-                 selected.Count < maximum;
-                 i++)
-            {
-                TradeOpportunityCandidate candidate =
-                    _opportunityCandidates[i];
-
-                if (candidate == null)
-                    continue;
-
-                string coverageKey =
-                    ScenarioCoverageKey(candidate);
-
-                if (string.IsNullOrWhiteSpace(coverageKey) ||
-                    covered.Contains(coverageKey))
-                    continue;
-
-                selected.Add(candidate);
-                covered.Add(coverageKey);
-            }
-
-            for (int i = 0;
-                 i < _opportunityCandidates.Count &&
-                 selected.Count < maximum;
-                 i++)
-            {
-                TradeOpportunityCandidate candidate =
-                    _opportunityCandidates[i];
-
-                if (candidate == null ||
-                    selected.Contains(candidate))
-                    continue;
-
-                selected.Add(candidate);
-            }
-
-            _opportunityCandidates.Clear();
-            _opportunityCandidates.AddRange(selected);
+            _opportunityCandidates.AddRange(
+                selected);
         }
 
-        private string ScenarioCoverageKey(
-            TradeOpportunityCandidate candidate)
-        {
-            if (candidate == null)
-                return string.Empty;
-
-            string source =
-                string.IsNullOrWhiteSpace(
-                    candidate.SourceTimeframe)
-                    ? "LANE"
-                    : candidate.SourceTimeframe.Trim();
-
-            return
-                source +
-                "|" +
-                (int)candidate.Lane +
-                "|" +
-                candidate.Direction;
-        }
     }
 }

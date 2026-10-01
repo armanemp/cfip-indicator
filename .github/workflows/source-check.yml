@@ -58,6 +58,7 @@ jobs:
       - run: python tools/audit_phase_5_2.py
       - run: python tools/audit_phase_5_3.py
       - run: python tools/audit_phase_5_4.py
+      - run: python tools/audit_phase_5_5.py
       - run: python tools/audit_phase_11_2.py
       - run: python tools/audit_phase_11_3.py
       - run: python tools/audit_phase_11_4.py

@@ -5009,7 +5009,7 @@ Verification boundary:
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **IN PROGRESS — CR5.1 through CR5.4 VERIFIED COMPLETE; CR5.5 NEXT.**
+Status: **IN PROGRESS — CR5.1 through CR5.5 VERIFIED COMPLETE; CR5.6 NEXT.**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -5215,10 +5215,51 @@ Safety/manual boundary:
 - broker-confirmed state remains authoritative;
 - target-terminal verification is still required for actual Stop/Limit fill-price divergence, broker-side final SL/TP, Advanced Protection ladder behavior, rejection timing and restart/reconnect lifecycle.
 
-**Next phase: CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.**
+**Next phase: CR5.6 / E6 — PremiumDiscount/LiveBias/HealthyVolatility semantic separation and canonical M5 closed-bar consistency.**
 
+
+### CR5.5 / E5 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #121; implementation head `5b34afbdc7ed252a3fabc68cdb9859818cb911e6`.**
+
+Completed:
+- shared closed-M5 execution/entry/stop/risk geometry is cached once per active M5
+  and direction; the platform-specific ExecutionModel remains in a separate
+  bounded indicator cache while the Core geometry stays runtime-neutral;
+- tactical parallel evaluation and candidate materialization consume the same
+  geometry, removing duplicated execution-zone and structural-stop work for the
+  same closed M5/direction;
+- TradePlanRegistry owns parallel candidate replacement and the presentation
+  list is now only a deterministic snapshot;
+- Core `ParallelScenarioSelectionRule` owns scenario identity, coverage,
+  replacement and visible-scenario selection;
+- MicroReaction parallel presentation requires exact closed-M5 identity, matching
+  direction, closed-bar confirmation and the existing `LiveReactionStrongThreshold`;
+- Decision records the exact confirmed reaction M5/direction, resolved independently
+  from the live intrabar reaction state;
+- deterministic E5 runtime contracts and `audit_phase_5_5.py` are wired into CI;
+- accumulated Phase 11.4 audit was reconciled to the new Core scenario-selection
+  ownership without changing its reward-risk contract;
+- no public parameter name/type/DefaultValue, default RR/confidence/stop/target
+  threshold or decision/execution authority changed.
+
+Verification on final implementation head:
+- Source/Architecture: PASS — workflow run `36836762005`;
+- Runtime Acceptance Contracts: PASS — workflow run `36836762039`;
+- cTrader Compile: PASS — workflow run `36836762006`.
+
+Safety/manual boundary:
+- target-terminal intrabar/closed-bar timing, panel presentation, broker lifecycle,
+  restart/reconnect and empirical signal-quality/profitability remain manual;
+- CR-FINAL remains paused until CR5.6–CR5.8 and CR6.1–CR6.9 are reconciled and
+  completed or explicitly documented.
 
 ## Current active implementation phase
+
+**CR5.6 / E6 — PremiumDiscount/LiveBias/HealthyVolatility semantic separation and canonical M5 closed-bar consistency.**
+
+CR5.5 / E5 is verified complete; continue from CR5.6. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+
 
 **CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.**
 

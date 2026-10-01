@@ -57,6 +57,8 @@ namespace cAlgo
                         public bool ReactionHasSwingInteraction;
                         public bool ReactionZonePresent;
                         public bool ReactionClosedBarConfirmed;
+                        public int ReactionConfirmedDirection;
+                        public int ReactionConfirmedM5;
                         public bool ReactionConfirmedHasContext;
                         public int ReactionConfirmedQuality;
                         public int ReactionConfirmedEvidence;

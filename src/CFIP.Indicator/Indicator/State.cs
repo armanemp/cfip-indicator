@@ -54,6 +54,11 @@ namespace cAlgo
                 private readonly TradePlanRegistry _tradePlanRegistry =
                     new TradePlanRegistry();
                 private int _lastOpportunityCandidatesM5 = -1;
+                private int _parallelGeometryCacheM5 = -1;
+                private readonly Dictionary<int, ParallelScenarioGeometry> _parallelGeometryCache =
+                    new Dictionary<int, ParallelScenarioGeometry>();
+                private readonly Dictionary<int, ExecutionModel> _parallelExecutionModelCache =
+                    new Dictionary<int, ExecutionModel>();
 
                 // Target-level construction is shared by all same-M5 scenario
                 // evaluations for a direction. Cache the deterministic closed-bar

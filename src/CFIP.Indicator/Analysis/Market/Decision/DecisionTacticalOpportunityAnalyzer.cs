@@ -50,67 +50,35 @@ namespace cAlgo
                     0,
                     0);
 
-            if (!TryBuildExecutionZone(
+            ParallelScenarioGeometry geometry;
+
+            if (!TryBuildParallelScenarioGeometry(
                     closedM5,
                     direction,
-                    out double atr,
-                    out _,
-                    out double low,
-                    out double high,
-                    out double ideal,
-                    out _,
-                    out _,
-                    out _,
-                    out int zoneQuality))
+                    out geometry))
                 return new TacticalOpportunityResult(
                     false,
-                    OpportunityLane.Tactical,
+                    direction == _m5Frame.Direction
+                        ? OpportunityLane.Tactical
+                        : OpportunityLane.CounterHtfTactical,
                     0,
                     0);
 
+            double atr =
+                geometry.Atr;
             double entry =
-                NormalizePrice(
-                    IsFinitePositive(ideal)
-                        ? ideal
-                        : (low + high) * 0.50);
-
-            if (!IsFinitePositive(entry))
-                return new TacticalOpportunityResult(
-                    false,
-                    OpportunityLane.Tactical,
-                    0,
-                    0);
-
+                geometry.Entry;
             double stop =
-                BuildStructuralStop(
-                    closedM5,
-                    direction,
-                    entry,
-                    atr,
-                    out _,
-                    out _);
-
-            if (!IsValidStop(
-                    direction,
-                    entry,
-                    stop))
-                return new TacticalOpportunityResult(
-                    false,
-                    OpportunityLane.Tactical,
-                    0,
-                    0);
-
+                geometry.Stop;
             double risk =
-                Math.Abs(
-                    entry -
-                    stop);
+                geometry.Risk;
 
-            if (!IsFinitePositive(risk))
-                return new TacticalOpportunityResult(
-                    false,
-                    OpportunityLane.Tactical,
+            int zoneQuality =
+                Math.Max(
                     0,
-                    0);
+                    Math.Min(
+                        100,
+                        geometry.ExecutionQuality));
 
             List<Level> levels =
                 BuildTargetLevels(
