@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IN IMPLEMENTATION — repository verification pending final CI gates.**
+Status: **VERIFIED COMPLETE — PR #159 merged to `main` as `cfb8116b248340c07a0c4b813cf1c4d41550f24c`.**
 
 ## Objective
 
@@ -134,3 +134,16 @@ Target-terminal/replay remains required for:
 - actual panel/chart representation;
 - predictive pending return-point behavior;
 - reward-path impact in target-terminal replay.
+
+## Final repository verification
+
+Final PR head: `008ecf50f54e2cfadfeaf9b7030e17b452b0fb7e`.
+
+- Source / Architecture: **PASS** — run #2481;
+- Runtime Acceptance Contracts: **PASS** — run #2290;
+- cTrader Compile / Build: **PASS** — run #2474;
+- merge commit: `cfb8116b248340c07a0c4b813cf1c4d41550f24c`.
+
+Operator action: run `git pull --ff-only` on local `main` before starting CI-06.
+
+**Next phase: CI-06 — Order Block lifecycle.**
