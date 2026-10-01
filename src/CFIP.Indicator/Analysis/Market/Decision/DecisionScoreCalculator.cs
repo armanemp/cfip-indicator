@@ -143,18 +143,14 @@ namespace cAlgo
                 preConflictSell -
                 conflictPenaltySell;
 
-            double choppinessFactor = 1.0;
+            double choppinessFactor =
+                ResolveChoppinessFactor(
+                    input.UseHistoricalChoppinessGuard,
+                    input.M5Frame != null && input.M5Frame.Choppy,
+                    input.M15Frame != null && input.M15Frame.Choppy);
 
-            if (input.UseHistoricalChoppinessGuard &&
-                input.M5Frame != null &&
-                input.M15Frame != null &&
-                input.M5Frame.Choppy &&
-                input.M15Frame.Choppy)
-            {
-                choppinessFactor = 0.90;
-                buy *= choppinessFactor;
-                sell *= choppinessFactor;
-            }
+            buy *= choppinessFactor;
+            sell *= choppinessFactor;
 
             return new DecisionScoreSnapshot(
                 buy,
@@ -182,6 +178,16 @@ namespace cAlgo
                 conflictPenaltyBuy,
                 conflictPenaltySell,
                 choppinessFactor);
+        }
+
+        internal static double ResolveChoppinessFactor(
+            bool guardEnabled,
+            bool m5Choppy,
+            bool m15Choppy)
+        {
+            return guardEnabled && m5Choppy && m15Choppy
+                ? 0.90
+                : 1.0;
         }
 
         private static double SafeNonNegative(double value)
