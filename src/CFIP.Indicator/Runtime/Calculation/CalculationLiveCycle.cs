@@ -349,6 +349,9 @@ namespace cAlgo
                 result.DivergenceType;
             _decision.ActionabilityReason =
                 reason;
+
+            UpdateEntrySignalTiming(
+                closedM5);
         }
 
         private void ResetLiveActionability(
