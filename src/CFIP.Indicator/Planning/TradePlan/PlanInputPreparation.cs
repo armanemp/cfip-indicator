@@ -101,14 +101,20 @@ namespace cAlgo
                 if (RequireStructuralStop)
                     return false;
 
+                StructuralStopGeometrySnapshot fallbackGeometry =
+                    StructuralStopGeometryRule.EvaluateFallback(
+                        direction,
+                        entry,
+                        atr,
+                        FallbackSlAtr,
+                        Symbol.TickSize,
+                        Symbol.Digits);
+
+                if (!fallbackGeometry.IsValid)
+                    return false;
+
                 stop =
-                    direction == 1
-                        ? entry -
-                          atr *
-                          FallbackSlAtr
-                        : entry +
-                          atr *
-                          FallbackSlAtr;
+                    fallbackGeometry.Stop;
 
                 stopSource =
                     "ATR FALLBACK";
@@ -175,9 +181,22 @@ namespace cAlgo
                         MaximumStructuralStopAtr) *
                 atr;
 
+            double riskAtr =
+                risk /
+                Math.Max(
+                    Symbol.PipSize,
+                    atr);
+
             return
-                risk >= minimumRisk &&
-                risk <= maximumRisk;
+                StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                    riskAtr,
+                    atr,
+                    MinimumSlAtr,
+                    MaximumSlAtr,
+                    MaximumStructuralStopAtr,
+                    spread,
+                    Symbol.PipSize,
+                    MaximumSpreadToStopRiskRatio);
         }
     }
 }
