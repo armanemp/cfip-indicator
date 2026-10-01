@@ -107,7 +107,7 @@ check(
 )
 check(
     "ActionableNow is finalized only after the final gate",
-    "decision.ActionableNow = actionability.Actionable;" in orchestration and
+    "decision.ActionableNow =\n                        actionability.Actionable;" in orchestration and
     "EvaluateFinalActionableSignalQuality(" in orchestration and
     "decision.ActionableNow = false;" in orchestration
 )
