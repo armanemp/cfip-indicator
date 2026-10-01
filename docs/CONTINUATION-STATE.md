@@ -22,6 +22,26 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 3. Only after CR-FINAL: local cBot separation Track 12A.
 
 ## Active phase
+### CR6.9 / F3 closeout — 2026-10-01
+
+Status: **IMPLEMENTED — repository CI verification pending on the final F3 head.**
+
+**تأیید می‌کنم** — the orphan invalid-stop success path was corrected fail-closed.
+
+Implementation:
+- invalid stop no longer reports success;
+- explicit orphan-protection diagnostic is emitted;
+- Core success invariant requires valid direction + stop + broker confirmation;
+- caller enters `RecoveryRequired` on failure;
+- failure does not update `_lastBrokerModifyUtc`.
+
+Safety:
+- no public parameter/default/threshold tuning;
+- no second broker mutation owner;
+- only the F3 safety correction is changed.
+
+**Next phase: CR7.1 / G1 — Broker protection must never increase live position risk.**
+
 
 ### CR6.6 / F7 closeout — 2026-10-01
 

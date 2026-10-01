@@ -83,7 +83,15 @@ namespace cAlgo
                                         if (!ProtectOrphanManagedPosition(
                                                 position,
                                                 closedM5))
+                                        {
+                                            _brokerProtectionRecoveryRequired = true;
+
+                                            SetLifecycleState(
+                                                LifecycleState.RecoveryRequired,
+                                                "ORPHAN MANAGED POSITION • PROTECTION FAILED • RETRY");
+
                                             return;
+                                        }
 
                                         _lastBrokerModifyUtc =
                                             TimeInUtc;

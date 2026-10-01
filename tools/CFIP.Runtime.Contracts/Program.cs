@@ -102,11 +102,70 @@ namespace cAlgo
             VerifyEntryActionabilityF6();
             VerifyIndependentTimeframeScenarioSemanticsF7();
             VerifyTargetObstacleTelemetryF8();
+            VerifyOrphanManagedProtectionF3();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
 
 
+
+
+        private static void VerifyOrphanManagedProtectionF3()
+        {
+            Assert(
+                !OrphanManagedProtectionRule.CanReportSuccess(
+                    1,
+                    false,
+                    true),
+                "F3 BUY invalid computed stop can never report protection success");
+
+            Assert(
+                !OrphanManagedProtectionRule.CanReportSuccess(
+                    -1,
+                    false,
+                    true),
+                "F3 SELL invalid computed stop can never report protection success");
+
+            Assert(
+                !OrphanManagedProtectionRule.CanReportSuccess(
+                    1,
+                    true,
+                    false) &&
+                !OrphanManagedProtectionRule.CanReportSuccess(
+                    -1,
+                    true,
+                    false),
+                "F3 broker protection rejection can never report success for BUY or SELL");
+
+            Assert(
+                !OrphanManagedProtectionRule.CanReportSuccess(
+                    1,
+                    false,
+                    false) &&
+                !OrphanManagedProtectionRule.CanReportSuccess(
+                    -1,
+                    false,
+                    false),
+                "F3 all-invalid protection state is fail-closed symmetrically");
+
+            Assert(
+                OrphanManagedProtectionRule.CanReportSuccess(
+                    1,
+                    true,
+                    true) &&
+                OrphanManagedProtectionRule.CanReportSuccess(
+                    -1,
+                    true,
+                    true),
+                "F3 only valid stop plus broker confirmation may report success for BUY and SELL");
+
+            Assert(
+                !OrphanManagedProtectionRule.CanReportSuccess(
+                    0,
+                    true,
+                    true),
+                "F3 invalid direction is fail-closed");
+        }
 
 
         private static void VerifyTargetObstacleTelemetryF8()
