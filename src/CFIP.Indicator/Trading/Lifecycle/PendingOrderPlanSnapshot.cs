@@ -116,6 +116,13 @@ namespace cAlgo
                         MinimumRequiredRR()),
                     lane);
 
+            double[] requiredRR =
+                BuildTargetSelectionRequiredRR(
+                    Math.Max(
+                        0.10,
+                        StructuralTpRrStep),
+                    lane);
+
             double tp2 =
                 SelectTarget(
                     selected,
@@ -125,7 +132,8 @@ namespace cAlgo
                     intent.Direction,
                     Math.Max(
                         FallbackTp2RR,
-                        Tp2MinimumRR));
+                        requiredRR[1]),
+                    lane);
 
             double tp3 =
                 SelectTarget(
@@ -136,7 +144,8 @@ namespace cAlgo
                     intent.Direction,
                     Math.Max(
                         FallbackTp3RR,
-                        Tp3MinimumRR));
+                        requiredRR[2]),
+                    lane);
 
             double tp4 =
                 SelectTarget(
@@ -147,7 +156,8 @@ namespace cAlgo
                     intent.Direction,
                     Math.Max(
                         FallbackTp4RR,
-                        Tp4MinimumRR));
+                        requiredRR[3]),
+                    lane);
 
             int configuredStage =
                 ClampInt(
