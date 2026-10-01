@@ -11,34 +11,6 @@ namespace cAlgo
     {
         public static bool IsFreshBreak(
             int direction,
-            double previousClose,
-            double currentClose,
-            double level,
-            double atr,
-            double breakAtr)
-        {
-            if ((direction != 1 && direction != -1) ||
-                !IsFiniteStructuralInput(previousClose) ||
-                !IsFiniteStructuralInput(currentClose) ||
-                !IsFinitePositiveStructuralInput(level) ||
-                !IsFinitePositiveStructuralInput(atr) ||
-                !IsFiniteNonNegativeStructuralInput(breakAtr))
-                return false;
-
-            double threshold =
-                direction == 1
-                    ? level + atr * breakAtr
-                    : level - atr * breakAtr;
-
-            return direction == 1
-                ? previousClose <= threshold &&
-                  currentClose > threshold
-                : previousClose >= threshold &&
-                  currentClose < threshold;
-        }
-
-        public static bool IsFreshConfirmedBreak(
-            int direction,
             int confirmationIndex,
             int currentIndex,
             double level,
