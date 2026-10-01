@@ -144,7 +144,6 @@ namespace cAlgo
                                         critical,
                                         now,
                                         playSound,
-                                        soundType,
                                         soundType.ToString(),
                                         SoundFilePath,
                                         showPopup));
