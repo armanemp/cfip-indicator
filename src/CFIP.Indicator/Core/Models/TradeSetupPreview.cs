@@ -10,6 +10,9 @@ namespace cAlgo
 
         public double Entry;
         public double IdealEntry;
+        public double ZoneLow;
+        public double ZoneHigh;
+        public double ZoneTolerance;
         public double Trigger;
         public double Invalidation;
         public double Stop;
