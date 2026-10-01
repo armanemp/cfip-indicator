@@ -263,9 +263,11 @@ Completed correctness and architecture work:
 - removed artificial unit volume from zero-volume source observations;
 - added runtime contracts for window movement, bounds and quote-volume
   normalization;
-- extended the deterministic OSS parity benchmark to all production Skender
-  indicator families, both stable and rolling boundaries, OBV direction and
-  zero-volume fixtures;
+- consolidated the existing H3-B deterministic benchmark into one Track 19
+  OSS parity owner covering all production Skender indicator families,
+  stable/rolling boundaries, OBV direction and zero-volume fixtures;
+- removed the duplicate CI-02 benchmark module so numerical parity has one
+  benchmark execution authority;
 - added full-prefix versus bounded runtime/allocation measurement;
 - accumulated `audit_phase_ci_02.py` after CI-01 in Source/Architecture CI.
 
