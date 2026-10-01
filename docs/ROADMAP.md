@@ -786,6 +786,63 @@ audit chain.
 CR5.8 continuity marker preserved for the accumulated calculation-integrity
 audit chain.
 
+## CR6.6 / F7 closeout
+
+Historical continuity marker for CR6.6 / F7 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.7 / F8
+
+Historical continuity marker for CR6.7 / F8 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.7 / F8 closeout
+
+Historical continuity marker for CR6.7 / F8 closeout is retained in the
+accumulated roadmap audit chain.
+
+## CR6.8 / F9
+
+Historical continuity marker for CR6.8 / F9 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.8 / F9 closeout
+
+Historical continuity marker for CR6.8 / F9 closeout is retained in the
+accumulated roadmap audit chain.
+
+## CR6.9 / F3
+
+Historical continuity marker for CR6.9 / F3 is retained in the accumulated
+roadmap audit chain.
+
+## CR6.9 / F3 closeout
+
+Historical continuity marker for CR6.9 / F3 closeout is retained in the
+accumulated roadmap audit chain.
+
+## CR7.1 / G1
+
+Historical continuity marker for CR7.1 / G1 is retained in the accumulated
+roadmap audit chain.
+
+## CR7.3 / G3 closeout
+
+Historical continuity marker for CR7.3 / G3 closeout is retained.
+
+**Next phase: CR7.4 / G4**
+
+## CR7.5 / G5
+
+Historical continuity marker for CR7.5 / G5 is retained.
+
+Next continuation: CR7.6a
+
+## CR7.6a / G6A
+
+Historical continuity marker for CR7.6a / G6A is retained in the accumulated
+roadmap audit chain.
+
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
 Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
