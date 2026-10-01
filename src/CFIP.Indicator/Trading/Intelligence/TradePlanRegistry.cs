@@ -30,10 +30,6 @@ namespace cAlgo
                 string.IsNullOrWhiteSpace(candidate.Id))
                 return false;
 
-            string identity =
-                ParallelScenarioSelectionRule.Identity(
-                    candidate);
-
             string existingKey = null;
             TradeOpportunityCandidate existing = null;
 
@@ -56,13 +52,12 @@ namespace cAlgo
                     candidate,
                     Math.Max(
                         0,
-                        basePriceTolerance) +
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            existing.Risk,
-                            candidate.Risk) *
-                        0.10)))
+                        Math.Max(
+                            basePriceTolerance,
+                            Math.Min(
+                                existing.Risk,
+                                candidate.Risk) *
+                            0.10))))
                 return false;
 
             if (existingKey != null &&
