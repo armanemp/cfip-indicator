@@ -131,6 +131,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/SubmissionGate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/AggressiveEntryPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/CanonicalPriceSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Runtime/Calculation/CalculationMarketContext.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Plan.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetObstacleTelemetryAccumulator.cs" />
