@@ -231,6 +231,23 @@ namespace cAlgo
                     MaximumEntryExtensionAtr,
                     MaximumEntryDistanceAtr);
 
+            bool retestTrapContext =
+                liveMode == ExecutionMode.RetestMarket &&
+                insideZone;
+
+            bool m5AdverseEvidenceKnown =
+                closedM5 >= 2;
+
+            bool m5AdversePreZone =
+                retestTrapContext &&
+                m5AdverseEvidenceKnown &&
+                IsAdverseWindowPreZone(
+                    _m5Bars,
+                    closedM5,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    2);
+
             double adverseM5Atr = 0;
 
             if (closedM5 >= 2)
@@ -249,11 +266,22 @@ namespace cAlgo
 
             double adverseM1Atr = 0;
             bool m1DirectionConflict = false;
-
-            if (_m1Frame != null &&
+            bool m1AdverseEvidenceKnown =
+                _m1Frame != null &&
                 _m1Frame.Index >= 2 &&
                 _m1Bars != null &&
-                _m1Frame.Index < _m1Bars.Count)
+                _m1Frame.Index < _m1Bars.Count;
+            bool m1AdversePreZone =
+                retestTrapContext &&
+                m1AdverseEvidenceKnown &&
+                IsAdverseWindowPreZone(
+                    _m1Bars,
+                    _m1Frame.Index,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    2);
+
+            if (m1AdverseEvidenceKnown)
             {
                 int m1 = _m1Frame.Index;
                 double m1Atr =
@@ -343,7 +371,13 @@ namespace cAlgo
                     opposingRegularDivergence
                         ? divergence.Quality
                         : 0,
-                    supportiveHiddenDivergence);
+                    supportiveHiddenDivergence,
+                    retestTrapContext,
+                    insideZone,
+                    m5AdversePreZone,
+                    m1AdversePreZone,
+                    m5AdverseEvidenceKnown ||
+                    m1AdverseEvidenceKnown);
 
 
             // Live actionability must consume the same indicator-fusion quality
@@ -524,7 +558,9 @@ namespace cAlgo
                     divergence.Quality,
                     divergence.Direction,
                     divergence.Type,
-                    trapRisk.Reason);
+                    EntryTrapRiskPolicy.FormatPresentationReason(
+                        trapRisk.Reason,
+                        trapRisk.Context));
 
             if (locationQuality <
                 ActionabilityThresholdPolicy.EffectiveUpstreamEntryLocationQuality(
@@ -568,6 +604,54 @@ namespace cAlgo
                 supportiveHiddenDivergence
                     ? "ACTIONABLE • HIDDEN DIVERGENCE CONFIRM"
                     : "ACTIONABLE");
+        }
+
+        private bool IsAdverseWindowPreZone(
+            Bars bars,
+            int index,
+            double zoneLow,
+            double zoneHigh,
+            int lookbackBars)
+        {
+            if (bars == null ||
+                index < lookbackBars ||
+                index >= bars.Count)
+                return false;
+
+            if (double.IsNaN(zoneLow) ||
+                double.IsInfinity(zoneLow) ||
+                double.IsNaN(zoneHigh) ||
+                double.IsInfinity(zoneHigh))
+                return false;
+
+            double low =
+                Math.Min(
+                    zoneLow,
+                    zoneHigh);
+            double high =
+                Math.Max(
+                    zoneLow,
+                    zoneHigh);
+
+            for (int i = index - lookbackBars;
+                 i <= index;
+                 i++)
+            {
+                double barLow = bars.LowPrices[i];
+                double barHigh = bars.HighPrices[i];
+
+                if (double.IsNaN(barLow) ||
+                    double.IsInfinity(barLow) ||
+                    double.IsNaN(barHigh) ||
+                    double.IsInfinity(barHigh))
+                    return false;
+
+                if (barHigh >= low &&
+                    barLow <= high)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
