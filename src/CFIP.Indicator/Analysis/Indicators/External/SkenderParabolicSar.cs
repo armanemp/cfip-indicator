@@ -21,17 +21,16 @@ namespace cAlgo
             if (quotes == null || quotes.Count < OssIndicatorParameters.ParabolicSarMinimumHistory)
                 return double.NaN;
 
-            var results =
+            var last =
                 StockIndicator.GetParabolicSar(
                     quotes,
                     OssIndicatorSettings.Default.ParabolicSarAccelerationFactor,
                     OssIndicatorSettings.Default.ParabolicSarMaximumAccelerationFactor)
-                    .ToList();
+                    .LastOrDefault();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].Sar.HasValue
+            return last == null || !last.Sar.HasValue
                 ? double.NaN
-                : results[results.Count - 1].Sar.Value;
+                : last.Sar.Value;
         }
     }
 }
