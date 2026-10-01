@@ -23,32 +23,31 @@ namespace cAlgo
             double maximumEntryDistanceAtr)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(market) ||
-                !IsFinitePositive(atr) ||
-                !IsFinitePositive(zoneLow) ||
-                !IsFinitePositive(zoneHigh) ||
+                !NumericGuards.IsFinitePositive(market) ||
+                !NumericGuards.IsFinitePositive(atr) ||
+                !NumericGuards.IsFinitePositive(zoneLow) ||
+                !NumericGuards.IsFinitePositive(zoneHigh) ||
                 zoneHigh < zoneLow)
                 return EntryGeometrySnapshot.Invalid("INVALID ENTRY GEOMETRY");
 
             double safeTolerance =
                 Math.Max(
                     0,
-                    IsFiniteNonNegative(zoneTolerance)
-                        ? zoneTolerance
-                        : 0);
+                    NumericGuards.IsFiniteValue(zoneTolerance) && zoneTolerance >= 0 ? zoneTolerance
+                         : 0);
 
             double safeIdeal =
-                IsFinitePositive(idealEntry)
+                NumericGuards.IsFinitePositive(idealEntry)
                     ? idealEntry
                     : 0;
 
             double safeTrigger =
-                IsFinitePositive(trigger)
+                NumericGuards.IsFinitePositive(trigger)
                     ? trigger
                     : 0;
 
             double safeFallback =
-                IsFinitePositive(fallbackEntry)
+                NumericGuards.IsFinitePositive(fallbackEntry)
                     ? fallbackEntry
                     : safeIdeal;
 
@@ -101,14 +100,14 @@ namespace cAlgo
                 mode = ExecutionMode.RetestMarket;
 
             double anchor =
-                ResolveAnchor(
+                EntryAnchor(
                     mode,
                     safeTrigger,
                     safeIdeal,
                     safeFallback);
 
             double entryDistanceAtr =
-                IsFinitePositive(anchor)
+                NumericGuards.IsFinitePositive(anchor)
                     ? Math.Abs(market - anchor) / atr
                     : 0;
 
@@ -138,7 +137,7 @@ namespace cAlgo
                     : 0;
 
             bool late =
-                IsLate(
+                EvaluateLate(
                     mode,
                     triggerExtensionAtr,
                     entryDistanceAtr,
@@ -175,7 +174,7 @@ namespace cAlgo
                 reason);
         }
 
-        public static double ResolveAnchor(
+        public static double EntryAnchor(
             ExecutionMode mode,
             double trigger,
             double ideal,
@@ -188,7 +187,7 @@ namespace cAlgo
                 fallback);
         }
 
-        public static bool IsLate(
+        public static bool EvaluateLate(
             ExecutionMode mode,
             double triggerExtensionAtr,
             double entryDistanceAtr,
@@ -203,16 +202,14 @@ namespace cAlgo
                 return triggerExtensionAtr >
                     Math.Max(
                         EntryActionabilityPolicy.BreakoutLateExtensionFloorAtr,
-                        IsFiniteNonNegative(maximumExtensionAtr)
-                            ? maximumExtensionAtr
-                            : 0);
+                        NumericGuards.IsFiniteValue(maximumExtensionAtr) && maximumExtensionAtr >= 0 ? maximumExtensionAtr
+                             : 0);
 
             return entryDistanceAtr >
                 Math.Max(
                     EntryActionabilityPolicy.RetestLateDistanceFloorAtr,
-                    IsFiniteNonNegative(maximumDistanceAtr)
-                        ? maximumDistanceAtr
-                        : 0);
+                    NumericGuards.IsFiniteValue(maximumDistanceAtr) && maximumDistanceAtr >= 0 ? maximumDistanceAtr
+                         : 0);
         }
 
         public static bool IsInsideZone(
@@ -221,16 +218,15 @@ namespace cAlgo
             double zoneHigh,
             double zoneTolerance)
         {
-            if (!IsFinitePositive(market) ||
-                !IsFinitePositive(zoneLow) ||
-                !IsFinitePositive(zoneHigh) ||
+            if (!NumericGuards.IsFinitePositive(market) ||
+                !NumericGuards.IsFinitePositive(zoneLow) ||
+                !NumericGuards.IsFinitePositive(zoneHigh) ||
                 zoneHigh < zoneLow)
                 return false;
 
             double tolerance =
-                IsFiniteNonNegative(zoneTolerance)
-                    ? zoneTolerance
-                    : 0;
+                NumericGuards.IsFiniteValue(zoneTolerance) && zoneTolerance >= 0 ? zoneTolerance
+                     : 0;
 
             return
                 market >= zoneLow - tolerance &&
@@ -245,8 +241,8 @@ namespace cAlgo
             double pipSize)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(market) ||
-                !IsFinitePositive(trigger))
+                !NumericGuards.IsFinitePositive(market) ||
+                !NumericGuards.IsFinitePositive(trigger))
                 return false;
 
             double tolerance =
@@ -259,7 +255,7 @@ namespace cAlgo
                 : market <= trigger + tolerance;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool NumericGuards.IsFinitePositive(double value)
         {
             return
                 !double.IsNaN(value) &&
@@ -267,7 +263,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool NumericGuards.IsFiniteValue(double value)
         {
             return
                 !double.IsNaN(value) &&
