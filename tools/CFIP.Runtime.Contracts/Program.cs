@@ -38,6 +38,7 @@ namespace cAlgo
             VerifyCalculationReadinessSemantics();
             VerifyNativeIndicatorReadinessSemantics();
             VerifyPrimitiveIndicatorMathematics();
+            VerifyOssQuoteProjectionSemantics();
             VerifyOssQuoteWindowSemantics();
             VerifyOssWarmupPolicy();
             VerifyStructuralStopRiskCeilingSemantics();
@@ -9566,6 +9567,30 @@ namespace cAlgo
 
             Console.WriteLine(
                 "CI-01 primitive indicator mathematics contracts PASS");
+        }
+
+        private static void VerifyOssQuoteProjectionSemantics()
+        {
+            Assert(
+                OssQuoteProjectionRule.NormalizeVolume(
+                    0) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    -1) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    25.5) == 25.5m,
+                "OSS quote volume normalization preserves positive values and zero");
+
+            Assert(
+                OssQuoteProjectionRule.NormalizeVolume(
+                    double.NaN) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    double.PositiveInfinity) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    double.NegativeInfinity) == 0m,
+                "OSS quote volume normalization is finite and fail-closed");
+
+            Console.WriteLine(
+                "CI-02 OSS quote projection semantics contracts PASS");
         }
 
         private static void VerifyOssQuoteWindowSemantics()
