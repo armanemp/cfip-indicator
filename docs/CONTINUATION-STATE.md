@@ -22,33 +22,17 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 3. Only after CR-FINAL: local cBot separation Track 12A.
 
 ## Active phase
-### CI-02 — OSS numerical parity / warm-up / cache — 2026-10-01
 
-Status: **VERIFIED COMPLETE — Source/Architecture #2262, Runtime Acceptance #2071 and cTrader Compile #2255 passed on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91; merged via PR #138 as b8144c2f1edc62730b7a0723be3746afe6353851.**
+**CI-02 — OSS numerical parity / warm-up / cache — 2026-10-01**
 
-**تأیید می‌کنم** — G1 prevents live risk expansion by separating existing broker-stop health from new-stop acceptability.
+Status: **IMPLEMENTED — final repository gates pending.**
 
-Implementation:
-- TargetObstacleCacheKey.GetHashCode() now covers all equality fields, removing CS0659;
-- existing-stop directionality is owned by ManagedStopProtectionRule.IsExistingStopHealthy;
-- new SL candidates still use live market/minimum-distance validation;
-- broker reconciliation, bound-plan protection and broker-state evaluation consume the correct existing-stop health semantics;
-- ProtectionProgressionRule remains the only authority allowed to replace an already healthy stop;
-- deterministic G1/hash runtime contracts and accumulated static audit are wired;
-- audit_project_integrity.py now distinguishes methods by containing type.
+Current implementation branch:
+`phase/ci-02-oss-parity-warmup-cache`
 
-Verification:
-- Source/Architecture PASS — run 36868297463 / workflow #2262;
-- Runtime Acceptance PASS — run 36868297578 / workflow #2071;
-- cTrader Compile PASS — run 36868297556 / workflow #2255.
+Repository gates and benchmark must pass before CI-02 is marked VERIFIED COMPLETE.
 
-Manual boundary:
-- target-terminal broker stop modification and broker minimum-distance behavior;
-- restart/reconnect and live panel/runtime behavior;
-- empirical signal-quality/profitability remain manual.
-
-**Historical transition after G1: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
-
+### Historical remediation closeouts
 
 ### CR6.6 / F7 closeout — 2026-10-01
 
