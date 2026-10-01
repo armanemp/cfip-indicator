@@ -2399,3 +2399,59 @@ CI does not prove target-terminal broker timing, live network rejection behavior
 Phase record: docs/PHASE-CR3-1-LIVE-INVALIDATION.md
 
 Next phase: CR3.2 — Decision gate and early prediction semantics (C3/C4).
+
+
+
+## CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation — 2026-10-01
+
+Status: **VERIFIED COMPLETE**
+
+Root cause:
+- successful pending Stop/Limit placement cleared `_plan`, while the executable
+  Entry/SL/TP geometry remained only in `ExecutionIntent`;
+- `PendingFilledHandler` could therefore rebuild the live plan from the eventual
+  broker fill and allow relative broker protection to become the effective
+  geometry after slippage/gap;
+- `PositionOpened` could also arrive before `PendingFilled` and reconstruct
+  managed state too early.
+
+Implemented:
+- preserved an absolute pending-plan snapshot from `ExecutionIntent`;
+- fail-closed pending placement when the absolute snapshot cannot be constructed;
+- reconciled the actual broker fill against the preserved absolute plan before
+  final managed-plan adoption;
+- retained broker-confirmed SL when it is more protective and TP when it is more
+  progressive;
+- rebuilt Advanced/server-side TP protection from the reconciled absolute ladder
+  and actual fill price;
+- protected the pending snapshot from `PositionOpened` event-order inversion;
+- cleared stale snapshot state on pending cancellation;
+- kept failed reconciliation in `RecoveryRequired`;
+- added deterministic positive/negative fill-divergence, BUY/SELL symmetry,
+  broker-protection, rejection and idempotency contracts;
+- added `audit_phase_5_4.py`;
+- reconciled the accumulated CR2.5 lifecycle-ordering audit with the new pending
+  snapshot invariant.
+
+Verification on final implementation head
+`6d89f010fa6d292d201ef79e37af5b162438f854`:
+- Source/Architecture: PASS — run `36795710379` / workflow #2096;
+- Runtime Acceptance Contracts: PASS — run `36795710374` / workflow #1905;
+- cTrader Compile: PASS — run `36795710377` / workflow #2089.
+
+Safety:
+- no public parameter name/type/default changed;
+- no RR/confidence/stop/target/execution threshold tuned;
+- no second decision or broker-execution authority introduced;
+- broker-confirmed state remains authoritative.
+
+Manual cTrader boundary:
+- actual Stop/Limit fill-price divergence;
+- broker-side final SL/TP and Advanced Protection ladder behavior;
+- rejection timing;
+- restart/reconnect;
+- empirical signal-quality/profitability.
+
+Next phase: **CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety**.
+
+Operator action after merge: `git pull --ff-only`.
