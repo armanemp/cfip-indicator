@@ -340,7 +340,7 @@ for token in (
     "MeetsMinimumGap(",
     "IsOverlapInclusive(",
     "IsFullyFilled(",
-    "TryApplyOrderBlockPartialMitigation(",
+    "TryApplyPartialMitigation(",
     "Identity(",
     "low < high",
 ):
@@ -348,7 +348,7 @@ for token in (
         raise SystemExit(f"FVG mathematical rule missing deterministic owner: {token}")
 
 for token in (
-    "IsOrderBlockAgeValid(",
+    "IsAgeValid(",
     "ResolveFvgMitigationProbe(",
     "TryApplyMitigationStep(",
     "return !invalidateOnFullFill;",
