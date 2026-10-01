@@ -188,7 +188,7 @@ for token in (
     "TryGetZone(",
     "MeetsDisplacement(",
     "BreaksStructure(",
-    "GetMitigationProbe(",
+    "ResolveFvgMitigationProbe(",
     "IsFullyMitigated(",
     "TryApplyOrderBlockPartialMitigation(",
     "OrderBlockIdentity(",
@@ -216,7 +216,7 @@ for token in (
         raise SystemExit(f"Order Block evidence must consume canonical qualification math: {token}")
 
 for token in (
-    "OrderBlockRule.GetMitigationProbe(",
+    "OrderBlockRule.ResolveFvgMitigationProbe(",
     "OrderBlockRule.TryApplyOrderBlockPartialMitigation(",
     "remainingRatio",
 ):
@@ -282,7 +282,7 @@ for token in (
 
 for token in (
     "IsAgeValid(",
-    "GetMitigationProbe(",
+    "ResolveFvgMitigationProbe(",
     "TryApplyMitigationStep(",
     "return !invalidateOnFullFill;",
 ):
@@ -311,7 +311,7 @@ for token in (
         raise SystemExit(f"FVG lifecycle missing stable source identity: {token}")
 
 for token in (
-    "FvgLifecycleRule.GetMitigationProbe(",
+    "FvgLifecycleRule.ResolveFvgMitigationProbe(",
     "FvgLifecycleRule.TryApplyMitigationStep(",
     "FvgBreakByWicks",
     "FvgInvalidateOnFullFill",
@@ -1821,7 +1821,7 @@ FVG_LIFECYCLE_RULE = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
 FVG_LIFECYCLE_RULE_CODE = FVG_LIFECYCLE_RULE.read_text(encoding="utf-8")
 for token in (
     "IsAgeValid(",
-    "GetMitigationProbe(",
+    "ResolveFvgMitigationProbe(",
     "TryApplyMitigationStep(",
     "return !invalidateOnFullFill;",
 ):
