@@ -25,7 +25,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 **CI-07 — MTF / regime / market context — 2026-10-02**
 
-Status: **IMPLEMENTATION IN PROGRESS — CI-07 branch `phase/ci-07-mtf-regime-context` contains the complete implementation; repository verification is the remaining closeout step.**
+Status: **VERIFIED COMPLETE — CI-07 merged to `main` in PR #162, merge commit `73511c84ff3072cdbdab8487b0d4331b52c789b1`.**
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
@@ -115,7 +115,7 @@ Operator action:
 
 ### CI-07 implementation status — MTF / regime / market context
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — automated Runtime Acceptance #2333, cTrader compile #2517, and Source/Architecture #2524 passed the final CI-07 implementation head.**
 
 Completed:
 - fixed stale MTF cache reference reuse by making cache hits reference-aware and re-materializing the exact current reference;
