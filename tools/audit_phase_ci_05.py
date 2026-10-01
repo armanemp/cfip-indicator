@@ -169,9 +169,22 @@ check(
 )
 
 check(
-    "CI-05 is the active continuation phase",
-    "Current implementation phase: CI-05 — FVG lifecycle" in roadmap and
-    "**CI-05 — FVG lifecycle" in continuation
+    "CI-05 remains recorded while the CI track advances",
+    "CI-05" in roadmap and
+    "CI-05 implementation record" in roadmap and
+    "CI-05 final closeout" in continuation and
+    any(marker in roadmap for marker in (
+        "Current implementation phase: CI-05",
+        "Current implementation phase: CI-06",
+        "Current implementation phase: CI-07",
+        "Current implementation phase: CI-08",
+    )) and
+    any(marker in continuation for marker in (
+        "**CI-05 — FVG lifecycle",
+        "**CI-06 — Order Block lifecycle",
+        "**CI-07 — Market regime, MTF and context audit",
+        "**CI-08 — Divergence, WaveTrend, reaction and early-signal audit",
+    ))
 )
 
 # No second production FVG lifecycle class is permitted.
