@@ -6408,5 +6408,34 @@ Phase record: `docs/PHASE-CI-11-ENTRY-GEOMETRY-TIMING.md`.
 
 Operator action: run `git pull --ff-only` on local `main` before continuing.
 
-**Current implementation phase: CI-11 is closed.**
-**Next phase: CI-12 — Structural SL audit.**
+**Current implementation phase: CI-12 — Structural SL audit.**
+
+### CI-12 implementation record — 2026-10-02
+
+Status: **IMPLEMENTATION IN PROGRESS on `phase/ci-12-structural-sl-audit`.**
+
+Implemented so far:
+- canonical Core structural-stop geometry snapshot/rule;
+- one evaluated stop value carried through candidate selection without a second materialization pass;
+- obsolete duplicate StructuralStopFinalizer removed;
+- canonical planning stop-risk envelope preserving configured maximum independently from spread-derived minimum;
+- canonical ATR fallback geometry across plan/preview/parallel/lifecycle/prediction paths;
+- fail-closed fallback risk validation in pending-fill, startup-recovery and orphan-protection paths;
+- deterministic CI-12 Runtime Contracts and static audit;
+- CI-12 audit wired after CI-11.
+
+Safety:
+- no public parameter/default or trading threshold tuning;
+- no decision, plan or broker-mutation authority added;
+- existing broker-confirmed live protection remains authoritative.
+
+Verification still required:
+- Source/Architecture;
+- Runtime Acceptance Contracts;
+- cTrader Compile / Build;
+- manual target-terminal broker-distance/recovery boundary.
+
+Phase record: `docs/PHASE-CI-12-STRUCTURAL-SL.md`.
+
+**Next phase after CI-12 closeout: CI-13 — TP source, target obstacle and TP ladder audit.**
+**Prompt 8 / CR8.4 remains paused until CI-FINAL.**
