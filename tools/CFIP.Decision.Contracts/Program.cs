@@ -115,7 +115,7 @@ namespace cAlgo
 
             Assert(
                 lateBreakout.Mode == ExecutionMode.BreakoutMarket &&
-                lateBreakout.TriggerExtensionAtr == 2.0 &&
+                Math.Abs(lateBreakout.TriggerExtensionAtr - 2.0) < 1e-12 &&
                 lateBreakout.IsLate,
                 "breakout late state is derived from trigger extension");
 
@@ -140,7 +140,7 @@ namespace cAlgo
 
             Assert(
                 lateRetest.Mode == ExecutionMode.RetestMarket &&
-                lateRetest.EntryDistanceAtr == 0.8 &&
+                Math.Abs(lateRetest.EntryDistanceAtr - 0.8) < 1e-12 &&
                 lateRetest.IsLate,
                 "retest late state is derived from ideal-entry distance");
 
