@@ -48,7 +48,7 @@ namespace cAlgo
                     value));
         }
 
-        public static bool HasEnoughHistory(
+        public static bool HasChoppinessEnoughHistory(
             int index,
             int period)
         {
