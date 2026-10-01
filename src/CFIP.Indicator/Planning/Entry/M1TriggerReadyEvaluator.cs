@@ -63,11 +63,10 @@ namespace cAlgo
                         : 0;
 
             int requiredTrigger =
-                UsePrecisionExecutionModel
-                    ? Math.Max(
-                        LiveTriggerScore,
-                        PrecisionTriggerScore)
-                    : LiveTriggerScore;
+                TriggerThresholdRule.ResolveRequiredScore(
+                    UsePrecisionExecutionModel,
+                    LiveTriggerScore,
+                    PrecisionTriggerScore);
 
             int microLookback =
                 Math.Max(
