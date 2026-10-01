@@ -453,6 +453,16 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
+                    ProcessDecisionOwnedWatchReactionAlerts(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "WATCH/REACTION ALERTS");
+
+            RunCalculationStage(
+                () =>
+                {
                     RenderCalculationState(
                         index,
                         closedM5);
