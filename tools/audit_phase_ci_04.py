@@ -213,8 +213,8 @@ check(
     "CI-04 — Structure / swing / liquidity semantics" in continuation
 )
 
-const calculate_start = calc_cycle.rfind("public void Calculate(");
-const calculate_body = calc_cycle[calculate_start:] if calculate_start >= 0 else calc_cycle;
+calculate_start = calc_cycle.rfind("public override void Calculate(")
+calculate_body = calc_cycle[calculate_start:] if calculate_start >= 0 else calc_cycle
 
 check(
     "Calculate drains alert delivery only after live calculation/presentation",
