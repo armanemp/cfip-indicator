@@ -36,6 +36,7 @@ Date: 2026-10-01
 ## Safety / scope boundary
 
 No public parameter name/type/DefaultValue changed.
+- Audit contract wording: no public parameter name/type/DefaultValue changed.
 No trading threshold or execution authority changed.
 No second decision/execution authority was introduced.
 
