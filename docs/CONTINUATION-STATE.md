@@ -538,6 +538,32 @@ E1–E8 is closed at repository level. CR-FINAL remains paused until CR6.1–CR6
 are completed or explicitly documented as verified/deferred with evidence.
 Target-terminal acceptance remains required afterward.
 
+### CR5.7 / E7 closeout
+
+CR5.7 / E7 is **VERIFIED COMPLETE on PR #123**; implementation head
+`8d39ad3fb88c75092908121a3cbaa65128f47659`, merged to `main` via commit
+`d37f6d575595bfacecdff5a5ffb8fc44ba96455a`.
+
+Implementation record:
+- WATCH/REACTION alert qualification and emission are decision-owned rather than renderer-owned;
+- Core `WatchReactionAlertRule` is the sole owner of early-WATCH thresholds,
+  eligibility semantics and deterministic alert identities;
+- the existing confidence floor 60 and allowance 4 are preserved;
+- live REACTION cadence remains intact after `UpdateLiveReaction`;
+- chart rendering remains presentation-only for these alerts;
+- deterministic Runtime Contract coverage and the E7 static audit are wired.
+
+Repository verification at merge:
+- Source/Architecture PASS — run `36841785497`;
+- Runtime Acceptance Contracts PASS — run `36841785708`;
+- cTrader Compile PASS — run `36841785507`.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue or RR/confidence/stop/target threshold changed;
+- no decision or execution authority duplication introduced;
+- target-terminal alert timing, popup/audio delivery, panel/chart behavior,
+  broker lifecycle and empirical signal-quality validation remain manual.
+
 ### CR5.8 / E8 closeout
 
 CR5.8 / E8 is verified complete. Final implementation head was
