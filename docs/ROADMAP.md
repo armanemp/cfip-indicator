@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01, CI-02 and CI-03 verified complete; CI-04 is in implementation. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 through CI-04 verified complete; CI-05 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -714,10 +714,9 @@ The authoritative detailed specification is:
 The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
 blocking correctness gate inserted before the next unfinished refinement phase.
 
-**Current implementation phase: CI-04 — Structure / swing / liquidity semantics.**
+**Current implementation phase: CI-05 — FVG lifecycle.**
 
-Status: **IN IMPLEMENTATION — structural freshness, swing/liquidity validity, and
-cross-channel alert delivery synchronization are being hardened before merge.**
+Status: **NEXT — specified and ready to implement after CI-04 closeout.**
 
 Cross-cutting alert correction included in this phase:
 - one bounded AlertDeliveryQueue owns sound + popup delivery;
@@ -772,6 +771,43 @@ Mandatory principle:
 
 `No threshold/weight tuning is accepted as a substitute for correcting a
 mathematical, semantic, provenance or timing defect.`
+
+### CI-04 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #158 merged to `main` as `111fc315c39df3a42923e0841fb444402593bcb1`.**
+
+Completed:
+- canonical swing plateau and confirmed-structure freshness semantics;
+- repeated re-break rejection against the same confirmed structural threshold;
+- active/unbroken liquidity validation and direction symmetry;
+- canonical Structure/MSS/CHOCH evidence de-duplication;
+- one bounded `AlertDeliveryQueue` as the runtime owner for sound + popup delivery;
+- calculation and timer delivery boundaries consume the same queue;
+- popup presentation is updated before the corresponding sound cue at the same delivery boundary;
+- direct `Notifications.PlaySound` ownership was removed from `AlertEngine`;
+- same-causal BOS/MSS/CHOCH alerts collapse to one user-facing structural event;
+- explicit restriction diagnostics remain configuration-gated without creating trade side effects;
+- accumulated CI-04 static audit and deterministic Runtime Acceptance coverage added and wired after CI-03.
+
+Repository verification on PR #158 head `6fc30590e1a041669b4430d3dbc90645b96f30b3`:
+- Source / Architecture: **PASS** — run #2464;
+- Runtime Acceptance Contracts: **PASS** — run #2273;
+- cTrader Compile: **PASS** — run #2457.
+
+Safety/performance:
+- no public parameter name/type/DefaultValue changed;
+- no confidence/score/weight, RR, Entry, SL, TP, risk or execution-policy threshold was tuned;
+- no second decision or execution authority was introduced;
+- the alert queue remains bounded and platform-neutral;
+- the old popup-only queue/processor path was removed instead of retained as a compatibility alias.
+
+Manual boundary remains:
+- target-terminal sound latency vs rendered chart state;
+- heavy-load popup/audio timing and alert bursts;
+- callback-driven alerts outside Calculate;
+- replay-level structural event frequency and missed/repeated break rates.
+
+**Next phase: CI-05 — FVG lifecycle.**
 
 ### CI-00 closeout — Canonical data / price / time — 2026-10-01
 
