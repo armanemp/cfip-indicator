@@ -1,6 +1,6 @@
 # CR5.3 / E3 — Independent-evidence group counting for parallel opportunities
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — repository acceptance closed 2026-10-01.**
 
 ## Scope
 
@@ -72,11 +72,13 @@ small fixed evidence vector and does not add market-history scans.
 
 ## Verification boundary
 
-Repository verification must pass:
+Repository verification completed on PR #119 head 90207194fcb94768ade28d42f40d6e393b97fad2:
 
-- Source/Architecture, including audit_phase_5_3.py;
-- Runtime Acceptance Contracts;
-- cTrader Compile.
+- Source/Architecture — PASS — run 36793867203 / workflow #2083, including audit_phase_5_3.py and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts — PASS — run 36793867170 / workflow #1892;
+- cTrader Compile — PASS — run 36793867168 / workflow #2076.
+
+PR #119 was merged to main as merge commit 96530088a4216eb4a3f8caae9595987d98c0a27e.
 
 Target-terminal startup/readiness, panel behavior, broker lifecycle, restart/
 reconnect and empirical signal-quality/outcome validation remain manual and are
@@ -84,5 +86,5 @@ not inferred from repository CI.
 
 ## Transition
 
-After repository verification passes, the next phase is CR5.4 / E4 —
+After repository verification, the next phase is CR5.4 / E4 —
 Pending-order post-fill absolute SL/TP reconciliation.
