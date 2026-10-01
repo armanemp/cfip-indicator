@@ -35,7 +35,7 @@ CI-03 repository verification:
 - Runtime Acceptance Contracts PASS — workflow run 36914354097;
 - cTrader Compile/Build PASS — workflow run 36914354223.
 
-**Next implementation phase: CI-04 — Structure / swing / liquidity semantics.**
+CI-04 was the immediately preceding implementation phase and is now verified complete and merged.
 
 ### CI-04 closeout — 2026-10-01
 
@@ -59,6 +59,8 @@ Verification on final PR head `6fc30590e1a041669b4430d3dbc90645b96f30b3`:
 
 Manual boundary: actual cTrader audio latency/render synchronization, burst behavior,
 external callback timing and replay-level structural event rates remain pending target-terminal validation.
+
+**Operator action: run `git pull --ff-only` on local `main` before starting CI-05.**
 
 **Next implementation phase: CI-05 — FVG lifecycle.**
 
