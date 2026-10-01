@@ -672,6 +672,8 @@ Safety/manual boundary:
 Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Current active phase
+Current active phase: **CR7.6b — next Prompt 7 remediation phase.**
+
 
 ### CR6.4 / F5 closeout — 2026-10-01
 
