@@ -171,6 +171,9 @@ Current benchmark milestone already completed:
 
 The benchmark completion does **not** constitute production package promotion.
 
+Detailed Track 19 record:
+`docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md`
+
 Machine-enforced baseline facts for the Phase 0.1 verification commit:
 
 - 398 production C# source files;
