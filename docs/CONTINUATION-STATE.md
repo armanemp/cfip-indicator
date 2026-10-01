@@ -253,9 +253,9 @@ Safety boundary:
 
 ### Next transition
 
-The next implementation response must execute **CR4.8 / D8 — TP1 directional defensive validation** only.
-Track 12A remains blocked until CR-FINAL.
-
+The next implementation response must execute **CR6.1 / F1 — Opposing FVG/OB
+target-path direction, mitigation and obstacle caching** only. Track 12A and
+CR-FINAL remain blocked until the full Prompt 6 chain is closed.
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
@@ -527,11 +527,15 @@ Safety/manual boundary:
 
 ## Current active phase
 
-CR5.8 / E8 — Small constant ownership and TargetSelection consistency.
+Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
+CR-FINAL. **Current: CR6.1 / F1 — Opposing FVG/OB target-path direction,
+mitigation and obstacle caching.**
 
-CR5.7 / E7 is verified complete and merged to `main` via PR #123, merge commit `d37f6d575595bfacecdff5a5ffb8fc44ba96455a`. Final implementation head was `8d39ad3fb88c75092908121a3cbaa65128f47659`. CR-FINAL remains paused until CR5.7,
-CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented.
-
+CR5.1 through CR5.8 are verified complete. CR5.8 / E8 was merged to main via
+PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
+E1–E8 is closed at repository level. CR-FINAL remains paused until CR6.1–CR6.9
+are completed or explicitly documented as verified/deferred with evidence.
+Target-terminal acceptance remains required afterward.
 ### CR5.7 / E7 implementation record
 
 - Added Core `WatchReactionAlertRule` for WATCH/REACTION qualification and deterministic identities.
