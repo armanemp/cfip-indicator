@@ -8,8 +8,8 @@ namespace cAlgo
             double diPlus,
             double diMinus)
         {
-            if (!IsFiniteNonNegative(diPlus) ||
-                !IsFiniteNonNegative(diMinus))
+            if (!IsDmiFiniteNonNegative(diPlus) ||
+                !IsDmiFiniteNonNegative(diMinus))
                 return 0;
 
             double total = diPlus + diMinus;
@@ -24,7 +24,7 @@ namespace cAlgo
                     (diPlus - diMinus) / total));
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsDmiFiniteNonNegative(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
