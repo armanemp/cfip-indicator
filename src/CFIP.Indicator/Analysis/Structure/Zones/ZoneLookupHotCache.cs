@@ -20,6 +20,10 @@ namespace cAlgo
             new Dictionary<string, Zone[]>(
                 StringComparer.Ordinal);
 
+        private readonly Dictionary<string, Zone[]> _cachedOpposingZonePathObstacles =
+            new Dictionary<string, Zone[]>(
+                StringComparer.Ordinal);
+
         private void ResetZoneLookupCacheIfNeeded(
             Bars bars,
             int index)
@@ -38,6 +42,7 @@ namespace cAlgo
 
             _cachedFvgCandidates.Clear();
             _cachedObCandidates.Clear();
+            _cachedOpposingZonePathObstacles.Clear();
         }
 
         private bool TryGetCachedFvgCandidates(
@@ -55,7 +60,7 @@ namespace cAlgo
         {
             _cachedFvgCandidates[key] =
                 zones == null
-                    ? new Zone[0]
+                    ? Array.Empty<Zone>()
                     : zones.ToArray();
         }
 
@@ -74,8 +79,32 @@ namespace cAlgo
         {
             _cachedObCandidates[key] =
                 zones == null
-                    ? new Zone[0]
+                    ? Array.Empty<Zone>()
                     : zones.ToArray();
+        }
+
+        private bool TryGetCachedOpposingZonePathObstacles(
+            string key,
+            out Zone[] zones)
+        {
+            return _cachedOpposingZonePathObstacles.TryGetValue(
+                key,
+                out zones);
+        }
+
+        private Zone[] StoreCachedOpposingZonePathObstacles(
+            string key,
+            List<Zone> zones)
+        {
+            Zone[] snapshot =
+                zones == null
+                    ? Array.Empty<Zone>()
+                    : zones.ToArray();
+
+            _cachedOpposingZonePathObstacles[key] =
+                snapshot;
+
+            return snapshot;
         }
     }
 }
