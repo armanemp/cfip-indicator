@@ -13,8 +13,8 @@ namespace cAlgo
         {
             if (!directional ||
                 !priceResult ||
-                !IsFiniteNonNegative(currentVolume) ||
-                !IsFinitePositive(averageVolume))
+                !IsVolumeFiniteNonNegative(currentVolume) ||
+                !IsVolumeFinitePositive(averageVolume))
                 return false;
 
             double ratio =
@@ -26,14 +26,14 @@ namespace cAlgo
                    averageVolume * ratio;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsVolumeFinitePositive(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
                    value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsVolumeFiniteNonNegative(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
