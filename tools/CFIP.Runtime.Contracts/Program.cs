@@ -37,6 +37,7 @@ namespace cAlgo
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
             VerifyNativeIndicatorReadinessSemantics();
+            VerifyPrimitiveIndicatorMathematics();
             VerifyOssWarmupPolicy();
             VerifyStructuralStopRiskCeilingSemantics();
             VerifyLiquidityTargetCandidateSemantics();
@@ -9422,6 +9423,149 @@ namespace cAlgo
                 "G1 invalid direction is fail-closed");
         }
 
+
+        private static void VerifyPrimitiveIndicatorMathematics()
+        {
+            Assert(
+                Math.Abs(
+                    DmiBiasRule.Calculate(
+                        30,
+                        10) -
+                    0.5) < 1e-12 &&
+                Math.Abs(
+                    DmiBiasRule.Calculate(
+                        10,
+                        30) +
+                    0.5) < 1e-12 &&
+                DmiBiasRule.Calculate(
+                    double.NaN,
+                    10) == 0,
+                "DMI bias is normalized, finite and directionally symmetric");
+
+            Assert(
+                MacdBiasRule.IsDirectional(
+                    1,
+                    0.80,
+                    0.40) &&
+                !MacdBiasRule.IsDirectional(
+                    1,
+                    0.40,
+                    0.80) &&
+                MacdBiasRule.IsDirectional(
+                    -1,
+                    -0.80,
+                    -0.40) &&
+                !MacdBiasRule.IsDirectional(
+                    -1,
+                    -0.40,
+                    -0.80),
+                "MACD-line bias is directionally symmetric without histogram mislabeling");
+
+            Assert(
+                RangeEfficiencyRule.ResolveFirstCloseIndex(
+                    50,
+                    20) == 30 &&
+                !RangeEfficiencyRule.HasEnoughHistory(
+                    19,
+                    20) &&
+                RangeEfficiencyRule.HasEnoughHistory(
+                    20,
+                    20),
+                "RangeEfficiency requires the full configured interval window");
+
+            Assert(
+                Math.Abs(
+                    RangeEfficiencyRule.Evaluate(
+                        4,
+                        8) -
+                    0.5) < 1e-12 &&
+                RangeEfficiencyRule.Evaluate(
+                    8,
+                    4) == 1 &&
+                RangeEfficiencyRule.Evaluate(
+                    1,
+                    0) == 0,
+                "RangeEfficiency uses one coherent net-move/path ratio");
+
+            Assert(
+                ChoppinessIndexRule.ResolveFirstBarIndex(
+                    50,
+                    20) == 31 &&
+                !ChoppinessIndexRule.HasEnoughHistory(
+                    18,
+                    20) &&
+                ChoppinessIndexRule.HasEnoughHistory(
+                    19,
+                    20),
+                "Choppiness requires the full configured bar window");
+
+            double expectedChoppiness =
+                100.0 *
+                Math.Log10(10.0 / 5.0) /
+                Math.Log10(10.0);
+
+            Assert(
+                Math.Abs(
+                    ChoppinessIndexRule.Evaluate(
+                        10,
+                        5,
+                        10) -
+                    expectedChoppiness) < 1e-12,
+                "Choppiness implements the canonical logarithmic ratio");
+
+            Assert(
+                VwapBiasRule.IsDirectional(
+                    101,
+                    100,
+                    1) &&
+                !VwapBiasRule.IsDirectional(
+                    99,
+                    100,
+                    1) &&
+                VwapBiasRule.IsDirectional(
+                    99,
+                    100,
+                    -1) &&
+                !VwapBiasRule.IsDirectional(
+                    101,
+                    100,
+                    -1),
+                "VWAP directional bias is mirrored");
+
+            Assert(
+                VwapBiasRule.AccumulateVolume(
+                    5,
+                    0) == 5 &&
+                VwapBiasRule.AccumulatePriceVolume(
+                    7,
+                    100,
+                    0) == 7,
+                "VWAP zero-volume samples do not receive artificial unit weight");
+
+            Assert(
+                VolumeExpansionRule.IsExpanded(
+                    true,
+                    true,
+                    120,
+                    100,
+                    1.10) &&
+                !VolumeExpansionRule.IsExpanded(
+                    true,
+                    true,
+                    109,
+                    100,
+                    1.10) &&
+                !VolumeExpansionRule.IsExpanded(
+                    true,
+                    false,
+                    120,
+                    100,
+                    1.10),
+                "volume expansion requires both price structure and configured volume ratio");
+
+            Console.WriteLine(
+                "CI-01 primitive indicator mathematics contracts PASS");
+        }
 
         private static void VerifyOssWarmupPolicy()
         {
