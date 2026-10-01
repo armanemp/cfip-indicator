@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — awaiting repository gate verification and merge**
+Status: **COMPLETE — verified on 2026-10-01; ready for merge**
 
 ## Objective
 
@@ -90,11 +90,12 @@ second broker state authority.
 
 ## Verification
 
-Required repository gates:
+Repository gate verification on implementation head `420b2390413df99f7ac14c16e73f0f456edc9665`:
 
-- Source / Architecture;
-- Runtime Acceptance Contracts;
-- cTrader Compile / Build.
+- Source / Architecture: PASS — workflow run 2391;
+- Runtime Acceptance Contracts: PASS — workflow run 2200;
+- cTrader Compile / Build: PASS — workflow run 2384.
+- CI-00 phase audit: PASS as step 73 of Source / Architecture run 2391.
 
 Target-terminal and live-broker validation remain later acceptance layers in the
 CI track, especially CI-15 through CI-17.
