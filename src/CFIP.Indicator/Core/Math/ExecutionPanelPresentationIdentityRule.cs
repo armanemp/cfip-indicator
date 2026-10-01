@@ -20,7 +20,7 @@ namespace cAlgo
                 Normalize(executionTelemetryPath),
                 Normalize(executionTelemetryState),
                 Normalize(activeExecutionScenarioId),
-                marketSuitabilityScore.ToString(),
+                marketSuitabilityScore.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 Normalize(marketSuitabilityState),
                 Normalize(marketSuitabilityReason),
                 Normalize(breakEvenDiagnostic));
