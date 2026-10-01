@@ -18,6 +18,8 @@ namespace cAlgo
         public double EmaSpreadAtr { get; }
         public double EmaSlopeAtr { get; }
         public double RangeEfficiency { get; }
+        public double Adx { get; }
+        public double RangeWidthAtr { get; }
 
         public MarketStateFrameSnapshot(
             string timeframe,
@@ -33,7 +35,9 @@ namespace cAlgo
             double atrRatio,
             double emaSpreadAtr,
             double emaSlopeAtr,
-            double rangeEfficiency)
+            double rangeEfficiency,
+            double adx,
+            double rangeWidthAtr)
         {
             Timeframe =
                 string.IsNullOrWhiteSpace(timeframe)
@@ -61,6 +65,8 @@ namespace cAlgo
             EmaSpreadAtr = emaSpreadAtr;
             EmaSlopeAtr = emaSlopeAtr;
             RangeEfficiency = rangeEfficiency;
+            Adx = adx;
+            RangeWidthAtr = rangeWidthAtr;
         }
     }
 }
