@@ -16,6 +16,19 @@ namespace cAlgo
 
             TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
             double entry = direction == 1 ? Symbol.Bid : Symbol.Ask;
+            Plan pendingSnapshot =
+                CapturePendingOrderPlanSnapshot(
+                    pendingIntent,
+                    closedM5,
+                    atr);
+
+            if (pendingSnapshot == null)
+            {
+                _autoOrdersBlockReason =
+                    "PENDING • ABSOLUTE PLAN SNAPSHOT UNAVAILABLE";
+                return false;
+            }
+
             string reason;
             if (!ValidatePendingSubmission(pendingIntent, type, entry, volume, "PENDING LIMIT • ", out reason))
             { _autoOrdersBlockReason = reason; return false; }
@@ -50,7 +63,7 @@ namespace cAlgo
                     return false;
                 }
 
-                _pendingOrderPlanSnapshot = CapturePendingOrderPlanSnapshot(pendingIntent, closedM5, atr); _lastPendingSignalM5 = closedM5; _plan = null; _executionModel = null; RemovePlanObjects();
+                _pendingOrderPlanSnapshot = pendingSnapshot; _lastPendingSignalM5 = closedM5; _plan = null; _executionModel = null; RemovePlanObjects();
                 ReportConfirmedPendingOrderPlacement(result.PendingOrder, direction, closedM5, "LIMIT");
                 return true;
             }
