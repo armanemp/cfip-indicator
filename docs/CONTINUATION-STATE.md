@@ -529,31 +529,24 @@ Safety/manual boundary:
 ## Current active phase
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
-CR-FINAL. **Current: CR6.1 / F1 — Opposing FVG/OB target-path direction,
-mitigation and obstacle caching.**
+CR-FINAL. CR5.1 through CR5.8 are verified complete.
 
-CR5.1 through CR5.8 are verified complete. CR5.8 / E8 was merged to main via
-PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
-E1–E8 is closed at repository level. CR-FINAL remains paused until CR6.1–CR6.9
-are completed or explicitly documented as verified/deferred with evidence.
-Target-terminal acceptance remains required afterward.
+### CR6.1 / F1 implementation record
 
-### CR5.8 / E8 closeout
+CR6.1 / F1 is implemented on branch `phase/cr6-1-opposing-zone-path`.
+Target-path obstacle scanning now resolves the opposite zone direction once,
+reuses the existing managed FVG/OB candidate caches, and preserves mitigation
+and lifecycle ownership in the existing zone builders.
 
-CR5.8 / E8 is verified complete. Final implementation head was
-`51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`.
+Deterministic Runtime Contracts and the accumulated Source/Architecture audit
+cover the F1 invariants.
 
-Verification:
-- Source / Architecture: PASS — run `36844545898` / workflow #2160.
-- Runtime Acceptance Contracts: PASS — run `36844545976` / workflow #1969.
-- cTrader Compile: PASS — run `36844546002` / workflow #2153.
-
-Completed hardening included canonical required-RR ownership, monotonic TP-stage
-ordering, explicit lane propagation, internal constant ownership, and
-reconciliation of accumulated Phase 11.4 and E6 continuity audits.
+No public parameter/default or trading threshold changed, and no decision or
+execution authority changed.
 
 ### Next transition
 
-The next implementation response must execute **CR6.1 / F1 — Opposing FVG/OB
-target-path direction, mitigation and obstacle caching** only. Track 12A and
-CR-FINAL remain blocked until the full Prompt 6 chain is closed.
+After CR6.1 repository verification/merge, the next implementation response must
+execute **CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency
+and actual-fill plan reconciliation** only. CR-FINAL and Track 12A remain blocked
+until the full CR6 chain is closed.

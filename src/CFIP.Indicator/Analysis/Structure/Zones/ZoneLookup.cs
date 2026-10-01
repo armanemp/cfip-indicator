@@ -53,33 +53,40 @@ namespace cAlgo
                                     int direction,
                                     double atr)
                                 {
+                                    int opposingDirection =
+                                        RewardPathObstacleRule.OpposingDirection(
+                                            direction);
+
+                                    if (opposingDirection == 0)
+                                        return null;
+
                                     Zone fvg =
                                         FindNearestFvg(
                                             bars,
                                             index,
-                                            direction,
+                                            opposingDirection,
                                             atr);
-                        
+
                                     Zone ob =
                                         FindNearestOrderBlock(
                                             bars,
                                             index,
-                                            direction,
+                                            opposingDirection,
                                             atr);
-                        
+
                                     if (fvg == null)
                                         return ob;
-                        
+
                                     if (ob == null)
                                         return fvg;
-                        
+
                                     return
                                         ob.Quality >=
                                         fvg.Quality
                                             ? ob
                                             : fvg;
                                 }
-        
+
         private double DistanceToZone(
                                     double price,
                                     Zone zone)

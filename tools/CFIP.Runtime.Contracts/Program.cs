@@ -11,6 +11,7 @@ namespace cAlgo
             VerifyM1TriggerSemantics();
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
+            VerifyRewardPathObstacleSemantics();
             VerifyFvgQualitySemantics();
             VerifyExecutionThresholdSemantics();
             VerifyVolumeSizingSemantics();
@@ -101,6 +102,69 @@ namespace cAlgo
 
 
 
+
+        private static void VerifyRewardPathObstacleSemantics()
+        {
+            Assert(
+                RewardPathObstacleRule.OpposingDirection(1) == -1 &&
+                RewardPathObstacleRule.OpposingDirection(-1) == 1 &&
+                RewardPathObstacleRule.OpposingDirection(0) == 0,
+                "opposing direction is deterministic and symmetric");
+
+            Assert(
+                RewardPathObstacleRule.IsOpposingZone(1, -1) &&
+                RewardPathObstacleRule.IsOpposingZone(-1, 1) &&
+                !RewardPathObstacleRule.IsOpposingZone(1, 1) &&
+                !RewardPathObstacleRule.IsOpposingZone(-1, -1),
+                "only opposite-direction FVG/OB zones qualify");
+
+            double managedLow;
+            double managedHigh;
+
+            Assert(
+                FvgRule.TryApplyPartialMitigation(
+                    1,
+                    103,
+                    105,
+                    104,
+                    0.01,
+                    out managedLow,
+                    out managedHigh) &&
+                managedLow == 103 &&
+                managedHigh == 104,
+                "managed FVG mitigation remains deterministic");
+
+            Assert(
+                FvgRule.IsFullyFilled(
+                    1,
+                    103,
+                    105,
+                    102),
+                "fully mitigated FVG remains identifiable");
+
+            double obLow;
+            double obHigh;
+            bool partiallyMitigated;
+            double remainingRatio;
+            OrderBlockLifecycleState lifecycleState;
+
+            Assert(
+                OrderBlockRule.TryApplyOrderBlockPartialMitigation(
+                    -1,
+                    95,
+                    97,
+                    96,
+                    0.01,
+                    out obLow,
+                    out obHigh,
+                    out partiallyMitigated,
+                    out remainingRatio,
+                    out lifecycleState) &&
+                partiallyMitigated &&
+                lifecycleState ==
+                    OrderBlockLifecycleState.Mitigated,
+                "managed OB mitigation/lifecycle remains deterministic");
+        }
 
         private static void VerifyStructuralStopRiskCeilingSemantics()
         {

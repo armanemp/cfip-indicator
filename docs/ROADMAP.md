@@ -5504,9 +5504,29 @@ not proven defective:
 
 These are not treated as bugs until independently verified.
 
+## CR6.1 / F1 closeout — 2026-10-01
+
+Status: **IMPLEMENTED ON BRANCH — PR PENDING CI/MERGE**
+
+Completed:
+- Core opposite-direction ownership for target-path FVG/OB obstacles;
+- corrected opposing FVG/OB direction in the obstacle scanner;
+- reused the existing managed FVG/OB candidate caches;
+- preserved canonical FVG mitigation and OB lifecycle ownership;
+- corrected `FindNearestOpposingZone` direction;
+- added deterministic F1 contracts and accumulated static audit.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP threshold was retuned;
+- no decision/execution authority changed;
+- cTrader/broker behavior remains a manual acceptance boundary.
+
+**Next phase: CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
+
 ## Current active implementation phase
 
-**CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
+**CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
 
-CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
+CR6.1 / F1 is implemented on branch `phase/cr6-1-opposing-zone-path`; repository verification/merge remains pending. Prompt 6 continues through F2–F9 and CR-FINAL remains paused.
 

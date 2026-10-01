@@ -21,93 +21,99 @@ namespace cAlgo
                 !IsFinitePositive(target))
                 return false;
 
-            int first =
-                Math.Max(
-                    2,
-                    index -
-                    Math.Max(
-                        5,
-                        TargetObstacleLookbackBars));
-
             double clearance =
                 atr *
                 Math.Max(
                     TargetClearanceAtr,
                     TargetObstacleBufferAtr);
 
-            for (int i = first;
-                 i <= index - 1;
-                 i++)
+            int opposingDirection =
+                RewardPathObstacleRule.OpposingDirection(
+                    direction);
+
+            if (opposingDirection == 0)
+                return false;
+
+            if (UseFvg)
             {
-                if (direction == 1)
+                FindNearestFvg(
+                    bars,
+                    index,
+                    opposingDirection,
+                    atr,
+                    false,
+                    entry);
+
+                Zone[] fvgCandidates;
+
+                if (TryGetCachedFvgCandidates(
+                        opposingDirection.ToString() + "|0",
+                        out fvgCandidates))
                 {
-                    double gap =
-                        bars.LowPrices[i] -
-                        bars.HighPrices[i - 2];
-
-                    if (gap >=
-                        atr *
-                        MinimumFvgAtr)
+                    for (int i = 0;
+                         i < fvgCandidates.Length;
+                         i++)
                     {
-                        double low =
-                            bars.HighPrices[i - 2];
+                        Zone candidate =
+                            fvgCandidates[i];
 
-                        double high =
-                            bars.LowPrices[i];
+                        if (candidate == null ||
+                            !RewardPathObstacleRule.IsOpposingZone(
+                                direction,
+                                candidate.Direction))
+                            continue;
 
                         if (ZoneBlocksRewardPath(
-                                low,
-                                high,
+                                candidate.Low,
+                                candidate.High,
                                 entry,
                                 target,
                                 clearance))
                             return true;
                     }
                 }
-                else
+            }
+
+            if (UseOrderBlock)
+            {
+                FindNearestOrderBlock(
+                    bars,
+                    index,
+                    opposingDirection,
+                    atr,
+                    entry,
+                    false);
+
+                Zone[] obCandidates;
+
+                if (TryGetCachedObCandidates(
+                        opposingDirection.ToString() + "|0",
+                        out obCandidates))
                 {
-                    double gap =
-                        bars.LowPrices[i - 2] -
-                        bars.HighPrices[i];
-
-                    if (gap >=
-                        atr *
-                        MinimumFvgAtr)
+                    for (int i = 0;
+                         i < obCandidates.Length;
+                         i++)
                     {
-                        double low =
-                            bars.HighPrices[i];
+                        Zone candidate =
+                            obCandidates[i];
 
-                        double high =
-                            bars.LowPrices[i - 2];
+                        if (candidate == null ||
+                            candidate.OrderBlockLifecycle ==
+                            OrderBlockLifecycleState.Broken ||
+                            candidate.OrderBlockLifecycle == null ||
+                            !RewardPathObstacleRule.IsOpposingZone(
+                                direction,
+                                candidate.Direction))
+                            continue;
 
                         if (ZoneBlocksRewardPath(
-                                low,
-                                high,
+                                candidate.Low,
+                                candidate.High,
                                 entry,
                                 target,
                                 clearance))
                             return true;
                     }
-                }
-
-                if (UseOrderBlock)
-                {
-                    Zone oppositeOb =
-                        BuildOrderBlockCandidate(
-                            bars,
-                            i,
-                            index,
-                            -direction,
-                            atr);
-
-                    if (oppositeOb != null &&
-                        ZoneBlocksRewardPath(
-                            oppositeOb.Low,
-                            oppositeOb.High,
-                            entry,
-                            target,
-                            clearance))
-                        return true;
                 }
             }
 
