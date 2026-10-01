@@ -37,7 +37,7 @@ check(
     "brokerProtectionConfirmed;" in policy
 )
 
-invalid_block = orphan.split("if (!IsValidStop(", 1)[1].split("double target", 1)[0] if "if (!IsValidStop(" in orphan else ""
+invalid_block = orphan.rsplit("if (!IsValidStop(", 1)[1].split("double target", 1)[0] if "if (!IsValidStop(" in orphan else ""
 check(
     "invalid computed/fallback stop cannot report success",
     "ORPHAN-PROTECTION-FAILED" in invalid_block and
