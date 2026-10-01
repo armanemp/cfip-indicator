@@ -56,7 +56,7 @@ namespace cAlgo
                                 set.MacdFast.Result[previousIndex] -
                                 set.MacdSlow.Result[previousIndex];
 
-                            return MacdBiasRule.IsDirectional(
+                            return MacdBiasRule.IsMacdDirectional(
                                 direction,
                                 macdLine,
                                 previousMacdLine);
