@@ -110,7 +110,9 @@ namespace cAlgo
                 !displacement)
                 return false;
 
-            return triggerScore >= requiredTrigger;
+            return TriggerThresholdRule.IsScoreReady(
+                triggerScore,
+                requiredTrigger);
         }
     }
 }
