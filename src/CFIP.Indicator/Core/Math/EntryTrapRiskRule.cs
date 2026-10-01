@@ -7,11 +7,13 @@ namespace cAlgo
         public int Risk { get; }
         public bool Block { get; }
         public string Reason { get; }
+        public string Context { get; }
 
         public EntryTrapRiskResult(
             int risk,
             bool block,
-            string reason)
+            string reason,
+            string context = "NONE")
         {
             Risk = NumericGuards.ClampInt(risk, 0, 100);
             Block = block;
@@ -19,6 +21,10 @@ namespace cAlgo
                 string.IsNullOrWhiteSpace(reason)
                     ? "NONE"
                     : reason;
+            Context =
+                string.IsNullOrWhiteSpace(context)
+                    ? "NONE"
+                    : context;
         }
 
         public static EntryTrapRiskResult CreateNoTrapRisk()
@@ -38,7 +44,12 @@ namespace cAlgo
             double adverseM5Atr,
             double adverseM1Atr,
             int opposingRegularDivergenceQuality,
-            bool supportiveHiddenDivergence)
+            bool supportiveHiddenDivergence,
+            bool isRetest,
+            bool insideZone,
+            bool adverseM5PreZone,
+            bool adverseM1PreZone,
+            bool adverseEvidenceKnown)
         {
             if (direction != 1 &&
                 direction != -1)
@@ -90,21 +101,21 @@ namespace cAlgo
 
             risk +=
                 Math.Min(
-                    EntryActionabilityPolicy.M5AdverseRiskCap,
+                    EntryTrapRiskPolicy.M5AdverseRiskCap,
                     (int)Math.Round(
                         Math.Max(
                             0,
                             m5) *
-                        EntryActionabilityPolicy.M5AdverseRiskAtrWeight));
+                        EntryTrapRiskPolicy.M5AdverseRiskAtrWeight));
 
             risk +=
                 Math.Min(
-                    EntryActionabilityPolicy.M1AdverseRiskCap,
+                    EntryTrapRiskPolicy.M1AdverseRiskCap,
                     (int)Math.Round(
                         Math.Max(
                             0,
                             m1) *
-                        EntryActionabilityPolicy.M1AdverseRiskAtrWeight));
+                        EntryTrapRiskPolicy.M1AdverseRiskAtrWeight));
 
             if (divergence >= EntryActionabilityPolicy.DivergenceHighQuality)
                 risk += EntryActionabilityPolicy.DivergenceHighRisk;
@@ -117,11 +128,11 @@ namespace cAlgo
                 risk -= EntryActionabilityPolicy.SupportiveHiddenDivergenceRiskAdjustment;
 
             bool strongAdverseMomentum =
-                m5 >= EntryActionabilityPolicy.StrongAdverseM5Atr ||
-                m1 >= EntryActionabilityPolicy.StrongAdverseM1Atr;
+                m5 >= EntryTrapRiskPolicy.StrongAdverseM5Atr ||
+                m1 >= EntryTrapRiskPolicy.StrongAdverseM1Atr;
 
             if (strongAdverseMomentum)
-                risk = Math.Max(risk, EntryActionabilityPolicy.StrongAdverseRiskFloor);
+                risk = Math.Max(risk, EntryTrapRiskPolicy.StrongAdverseRiskFloor);
 
             risk =
                 NumericGuards.ClampInt(
@@ -152,8 +163,8 @@ namespace cAlgo
                 reason =
                     "EXTREME ENTRY LOCATION";
             }
-            else if (m5 >= EntryActionabilityPolicy.AdverseM5BlockAtr ||
-                     m1 >= EntryActionabilityPolicy.AdverseM1BlockAtr)
+            else if (m5 >= EntryTrapRiskPolicy.AdverseM5BlockAtr ||
+                     m1 >= EntryTrapRiskPolicy.AdverseM1BlockAtr)
             {
                 reason =
                     "ADVERSE MOMENTUM";
@@ -174,14 +185,38 @@ namespace cAlgo
                     "NONE";
             }
 
-            return new EntryTrapRiskResult(
-                risk,
+            bool block =
                 extreme ||
                 divergence >= EntryActionabilityPolicy.DivergenceMediumQuality ||
-                risk >= 75 ||
-                m5 >= EntryActionabilityPolicy.AdverseM5BlockAtr ||
-                m1 >= EntryActionabilityPolicy.AdverseM1BlockAtr,
-                reason);
+                risk >= EntryTrapRiskPolicy.StrongAdverseRiskFloor ||
+                m5 >= EntryTrapRiskPolicy.AdverseM5BlockAtr ||
+                m1 >= EntryTrapRiskPolicy.AdverseM1BlockAtr;
+
+            if (block)
+            {
+                reason =
+                    EntryTrapRiskPolicy.ResolveBlockReason(
+                        extreme,
+                        divergence,
+                        EntryActionabilityPolicy.DivergenceMediumQuality,
+                        m5,
+                        m1,
+                        risk);
+            }
+
+            string context =
+                EntryTrapRiskPolicy.ResolveRetestContext(
+                    isRetest,
+                    insideZone,
+                    adverseM5PreZone,
+                    adverseM1PreZone,
+                    adverseEvidenceKnown);
+
+            return new EntryTrapRiskResult(
+                risk,
+                block,
+                reason,
+                context);
         }
 
         private static bool IsValidAdverseAtrValue(
