@@ -175,4 +175,6 @@ The implementation correction specifically aligns the sound cue and popup to the
 same queued alert event and delivery boundary. No production threshold or public
 parameter contract was changed.
 
+Operator action: run `git pull --ff-only` on local `main` before starting CI-05.
+
 **Next phase: CI-05 — FVG lifecycle.**
