@@ -1302,4 +1302,31 @@ Verification rule:
 - Source/Architecture, Runtime Acceptance and cTrader Compile are reported only from workflow results for the exact implementation head;
 - target-terminal replay and empirical signal-quality remain manual boundaries.
 
-Next phase after CI-09 verification: **CI-10 — Gate/threshold semantic audit.**
+
+
+### CI-10 implementation record — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch phase/ci-10-trigger-lifecycle-audit.**
+
+Completed:
+- canonical trigger threshold ownership;
+- canonical trigger lifecycle ownership;
+- live M1 confirmation restricted to the currently-forming M5 after the decision M5;
+- monotonic M1 confirmation revision with explicit reset/expiry semantics;
+- M1 runtime state refresh corrected to compare the previous closed-M1 index before replacing it;
+- direct-displacement override and fresh-trigger evidence semantics audited without retuning;
+- deterministic Runtime Acceptance coverage and accumulated audit_phase_ci_10.py.
+
+Safety:
+- no public parameter/default or trading threshold changes;
+- no decision/plan/broker-mutation authority changes;
+- no new broker/network path or unbounded cache.
+
+Verification rule:
+- report CI-10 as VERIFIED only from workflow results for the exact branch head;
+- target-terminal replay, chart/panel timing and empirical signal-quality remain manual boundaries.
+
+Phase record: docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md.
+
+Current implementation phase: **CI-10 — Trigger and trigger-lifecycle audit**.
+Next phase after verification/merge: **CI-11 — Entry geometry and signal-timing audit**.
