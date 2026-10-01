@@ -95,9 +95,11 @@ check(
 )
 
 check(
-    "entry envelope is checked before aggressive fill is finalized",
-    "maximumFillDistance" in fill and
-    "AGGRESSIVE FILL OUTSIDE EXECUTION ENVELOPE" in fill,
+    "aggressive accepted-fill validation remains owned by the pre-existing canonical validation chain",
+    "ValidateActualMarketFill(" in fill and
+    "AGGRESSIVE FILL OUTSIDE EXECUTION ENVELOPE" in fill and
+    "maximumFillDistance" not in fill and
+    "Math.Abs(" not in fill,
 )
 
 check(
