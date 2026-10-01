@@ -1844,8 +1844,8 @@ namespace cAlgo
             Assert(
                 behindMarket.Allowed &&
                 behindMarket.Price == 112 &&
-                behindMarket.Source == "BROKER MORE PROGRESSIVE",
-                "a planned BUY TP already behind market cannot be restored over a safe broker target");
+                behindMarket.Source == "BROKER CONFIRMED TARGET",
+                "a planned BUY TP already behind market falls back to the safe broker target");
 
             PendingFillExitResolution buyStop =
                 PendingFillExitResolutionRule.ResolveProtectiveStop(
