@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — verification pending CI.**
+Status: **IN IMPLEMENTATION — verification pending final CI gates.**
 
 ## Objective
 
