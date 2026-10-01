@@ -91,10 +91,11 @@ check(
 )
 
 check(
-    "obsolete execution-toggle synchronization state is removed",
-    "_executionToggleSyncing" not in state and
-    "_executionToggleSyncing" not in sync and
-    "IsInteractive" in sync,
+    "execution-toggle synchronization state is read and guarded",
+    "_executionToggleSyncing" in state and
+    "if (_executionToggleSyncing)" in sync and
+    "_executionToggleSyncing = true" in sync and
+    "_executionToggleSyncing = false" in sync,
 )
 
 print("CR8.2 / H2 SUMMARY")

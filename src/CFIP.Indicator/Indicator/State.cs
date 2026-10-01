@@ -117,6 +117,7 @@ namespace cAlgo
                 private bool _autoTradingEnabledRuntime;
                 private bool _automaticOrdersEnabledRuntime;
                 private bool _executionRuntimeInitialized;
+                private bool _executionToggleSyncing;
 
                 private string _autoExecutionBlockReason
                 {
