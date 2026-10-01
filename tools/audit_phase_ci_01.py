@@ -122,7 +122,7 @@ check(
     "Volume expansion uses actual bar range rather than pip-scale distortion",
     "double currentRange" in volume and
     "bars.HighPrices[index] -" in volume and
-    "Math.Max(1.0" in volume and
+    "Math.Max(1.0" in volume_rule and
     "VolumeExpansionRule.IsExpanded(" in volume,
 )
 
