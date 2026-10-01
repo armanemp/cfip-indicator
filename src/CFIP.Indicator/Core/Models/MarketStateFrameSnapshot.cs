@@ -36,8 +36,8 @@ namespace cAlgo
             double emaSpreadAtr,
             double emaSlopeAtr,
             double rangeEfficiency,
-            double adx,
-            double rangeWidthAtr)
+            double adx = 0,
+            double rangeWidthAtr = 0)
         {
             Timeframe =
                 string.IsNullOrWhiteSpace(timeframe)
