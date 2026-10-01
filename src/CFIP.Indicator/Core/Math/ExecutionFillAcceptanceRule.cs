@@ -5,30 +5,48 @@ namespace cAlgo
     internal static class ExecutionFillAcceptanceRule
     {
         public static bool IsAcceptable(
+            int direction,
             double requestedEntry,
             double actualFill,
             double atr,
-            double maximumExtensionAtr)
+            double maxAdverseExtensionAtr,
+            bool allowFavorable)
         {
-            if (!IsPositiveFiniteValue(requestedEntry) ||
+            if ((direction != 1 && direction != -1) ||
+                !IsPositiveFiniteValue(requestedEntry) ||
                 !IsPositiveFiniteValue(actualFill) ||
                 !IsPositiveFiniteValue(atr) ||
-                double.IsNaN(maximumExtensionAtr) ||
-                double.IsInfinity(maximumExtensionAtr))
+                double.IsNaN(maxAdverseExtensionAtr) ||
+                double.IsInfinity(maxAdverseExtensionAtr) ||
+                maxAdverseExtensionAtr < 0)
                 return false;
 
-            double allowedDistance =
+            bool favorable =
+                direction == 1
+                    ? actualFill < requestedEntry
+                    : actualFill > requestedEntry;
+
+            if (allowFavorable && favorable)
+                return true;
+
+            double allowedAdverseDistance =
                 atr *
                 Math.Max(
                     0.10,
-                    maximumExtensionAtr);
+                    maxAdverseExtensionAtr);
 
-            return
-                !double.IsNaN(allowedDistance) &&
-                !double.IsInfinity(allowedDistance) &&
-                allowedDistance > 0 &&
-                Math.Abs(actualFill - requestedEntry) <=
-                allowedDistance;
+            if (!IsPositiveFiniteValue(allowedAdverseDistance))
+                return false;
+
+            double adverseDistance =
+                direction == 1
+                    ? actualFill - requestedEntry
+                    : requestedEntry - actualFill;
+
+            if (adverseDistance < 0)
+                return allowFavorable;
+
+            return adverseDistance <= allowedAdverseDistance;
         }
 
         private static bool IsPositiveFiniteValue(double value)
