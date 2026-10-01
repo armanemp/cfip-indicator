@@ -4,9 +4,6 @@ namespace cAlgo
 {
     internal static class OssIndicatorWarmupPolicy
     {
-        // Fixed, non-public safety/performance boundary for the path-dependent
-        // Skender v2 adapters. The current public parameter envelope fits inside
-        // this window while keeping the historical prefix bounded.
         internal const int StableQuoteWindowSize = 768;
 
         internal const int RsiConvergenceMargin = 100;
