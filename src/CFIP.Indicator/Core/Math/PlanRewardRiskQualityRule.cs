@@ -96,7 +96,7 @@ namespace cAlgo
 
             double maximum =
                 Math.Max(
-                    Math.Max(preferred, 0.50),
+                    Math.Max(preferred, MaximumStopRiskAtrFloor),
                     maximumStopRiskAtr);
 
             if (riskAtr > maximum)
