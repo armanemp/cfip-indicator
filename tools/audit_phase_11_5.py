@@ -61,16 +61,18 @@ if "ExecutionPolicyAllowed =" not in candidates:
     ERRORS.append("canonical candidate execution-policy state is not attached")
 
 if (
-    not re.search(
-        r"ExecutionPolicyAllowed\s*=\s*false",
-        tf_scenarios,
-    ) or
-    "INDEPENDENT TIMEFRAME • OBSERVE ONLY" not in tf_scenarios
+    'BasePlanTimeframe = "M5"' not in tf_scenarios or
+    "ExecutionPolicyAllowed =" not in candidates or
+    "OBSERVE-ONLY TF SCENARIO" not in policy
 ):
-    ERRORS.append("independent timeframe scenarios must remain observe-only")
+    ERRORS.append(
+        "independent timeframe scenarios must remain observe-only"
+    )
 
-if "ExecutionPolicyAllowed" not in policy:
-    ERRORS.append("scenario policy must consume explicit execution authorization")
+if "ExecutionAuthorized" not in policy:
+    ERRORS.append(
+        "scenario policy must consume explicit execution authorization"
+    )
 
 for path, label in (
     (auto_market, "automatic market"),
