@@ -6370,5 +6370,43 @@ Phase record: `docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md`.
 
 Operator action after merge: run `git pull --ff-only` on local `main` before continuing.
 
-**Current implementation phase: CI-10 is closed.**
-**Next phase: CI-11 — Entry geometry and signal-timing audit.**
+### CI-11 — Entry geometry and signal-timing audit — 2026-10-02
+
+Status: **VERIFIED COMPLETE — PR #166 merged to `main`; merge commit `56554a7cacbdd17d75e2ab38dcad8692594d138b`.**
+
+Final implementation head:
+`b7bbf5375a062d82c2883360d3f4e8b61de0ee45`
+
+Verification on that exact implementation head:
+- Source/Architecture #2589: **PASS** (workflow 36936440440);
+- Runtime Acceptance Contracts #2398: **PASS** (workflow 36936440406);
+- cTrader Compile #2582: **PASS** (workflow 36936440564);
+- accumulated repository audits, including CI-00 through CI-11: **PASS**.
+
+Completed:
+- canonical `EntryGeometryRule` + `EntryGeometrySnapshot` now own execution-zone membership, trigger reachability, anchor, actual entry, distance, extension and late-state composition;
+- execution mode resolution, live actionability, plan preparation and plan-market validation consume the same geometry contract;
+- structural zone tolerance is carried through ExecutionModel, Plan, pending-fill state and presentation preview;
+- market-entry validation uses canonical trigger/zone predicates and the canonical price snapshot for tick/pip metadata;
+- M1 confirmation records its causal closed-M1 boundary and first ActionableNow latency is measured from that causal event;
+- `ACTIONABILITY_TIMING` telemetry is persisted as observability only;
+- deterministic Decision Contracts cover BUY/SELL symmetry, tolerant zones, breakout/retest late states, continuation waiting and negative-latency fail-closed behavior;
+- accumulated CI-00 and CI-11 audit contracts were reconciled so the canonical price owner and canonical geometry owner remain consistent.
+
+Safety/performance:
+- no public parameter name/type/DefaultValue changed;
+- no trading, RR, confidence, Entry, SL, TP, risk or execution threshold was tuned;
+- no second decision/plan/broker-mutation authority was introduced;
+- no unbounded cache, broker enumeration, network I/O or new persistence hot path was added;
+- timing telemetry does not become a trading gate.
+
+Manual boundary:
+- target-terminal timing/chart synchronization, reconnect/reload responsiveness and empirical historical signal/outcome validation remain manual acceptance items;
+- CI-11 makes no profitability or win-rate claim.
+
+Phase record: `docs/PHASE-CI-11-ENTRY-GEOMETRY-TIMING.md`.
+
+Operator action: run `git pull --ff-only` on local `main` before continuing.
+
+**Current implementation phase: CI-11 is closed.**
+**Next phase: CI-12 — Structural SL audit.**
