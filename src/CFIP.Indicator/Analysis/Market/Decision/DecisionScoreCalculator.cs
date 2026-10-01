@@ -9,6 +9,32 @@ namespace cAlgo
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
 
+            return Calculate(
+                new DecisionScoreInput(
+                    input.M5Contribution,
+                    input.M15Contribution,
+                    input.M30Contribution,
+                    input.H1Contribution,
+                    input.H4Contribution,
+                    input.D1Contribution,
+                    input.W1Contribution,
+                    input.SmartWeeklyContext,
+                    input.UseAdvancedConfluence,
+                    input.AdvancedConfluenceBuy,
+                    input.AdvancedConfluenceSell,
+                    input.UsePremiumDiscount,
+                    input.PremiumDiscountBias,
+                    input.AdaptiveRegimeWeighting,
+                    input.UseHistoricalChoppinessGuard,
+                    input.M5Frame == null ? 0 : input.M5Frame.Direction,
+                    input.M5Frame == null ? 0 : input.M5Frame.IndicatorConfluenceQuality,
+                    input.M5Frame == null ? 0 : input.M5Frame.IndicatorConflict,
+                    input.M5Frame != null && input.M5Frame.Choppy,
+                    input.M15Frame != null && input.M15Frame.Choppy));
+        }
+
+        public DecisionScoreSnapshot Calculate(DecisionScoreInput input)
+        {
             double m5Bull = SafeNonNegative(input.M5Contribution.Bull);
             double m5Bear = SafeNonNegative(input.M5Contribution.Bear);
             double m15Bull = SafeNonNegative(input.M15Contribution.Bull);
@@ -52,6 +78,7 @@ namespace cAlgo
 
             double adaptiveBuy = 0;
             double adaptiveSell = 0;
+
             double preConflictBuy =
                 m5Bull +
                 m15Bull +
@@ -81,31 +108,30 @@ namespace cAlgo
             // Its closed-bar evidence is consumed by DecisionEvaluator after
             // higher-timeframe directional consensus has been established.
 
-            if (input.AdaptiveRegimeWeighting &&
-                input.M5Frame != null)
+            if (input.AdaptiveRegimeWeighting)
             {
                 int fusionQuality =
                     NumericGuards.ClampInt(
-                        input.M5Frame.IndicatorConfluenceQuality,
+                        input.M5IndicatorConfluenceQuality,
                         0,
                         100);
 
                 int conflict =
                     NumericGuards.ClampInt(
-                        input.M5Frame.IndicatorConflict,
+                        input.M5IndicatorConflict,
                         0,
                         100);
 
                 if (fusionQuality >= 72 &&
                     conflict < 38 &&
-                    input.M5Frame.Direction != 0)
+                    input.M5Direction != 0)
                 {
                     double bonus =
                         Math.Min(
                             3.0,
                             (fusionQuality - 70) / 8.0);
 
-                    if (input.M5Frame.Direction == 1)
+                    if (input.M5Direction == 1)
                         adaptiveBuy = bonus;
                     else
                         adaptiveSell = bonus;
@@ -128,7 +154,7 @@ namespace cAlgo
                     else
                     {
                         // A perfectly balanced conflict has no direction to
-                        // penalize. Apply the same reduction to both sides.
+                        // penalize. Apply the same bounded reduction to both.
                         conflictPenaltyBuy = penalty;
                         conflictPenaltySell = penalty;
                     }
@@ -146,8 +172,8 @@ namespace cAlgo
             double choppinessFactor =
                 ResolveChoppinessFactor(
                     input.UseHistoricalChoppinessGuard,
-                    input.M5Frame != null && input.M5Frame.Choppy,
-                    input.M15Frame != null && input.M15Frame.Choppy);
+                    input.M5Choppy,
+                    input.M15Choppy);
 
             buy *= choppinessFactor;
             sell *= choppinessFactor;
