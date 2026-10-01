@@ -22,25 +22,32 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 3. Only after CR-FINAL: local cBot separation Track 12A.
 
 ## Active phase
-### CR6.9 / F3 closeout — 2026-10-01
+### CR7.1 / G1 closeout — 2026-10-01
 
-Status: **VERIFIED COMPLETE — Source/Architecture #2255, Runtime Acceptance #2064 and cTrader Compile #2248 passed on F3 implementation head `9b408ff7bcea45b03015e0b81f2e65a76c995b63`; merged via PR #137.**
+Status: **VERIFIED COMPLETE — Source/Architecture #2262, Runtime Acceptance #2071 and cTrader Compile #2255 passed on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91; merged via PR #138 as b8144c2f1edc62730b7a0723be3746afe6353851.**
 
-**تأیید می‌کنم** — the orphan invalid-stop success path was corrected fail-closed.
+**تأیید می‌کنم** — G1 prevents live risk expansion by separating existing broker-stop health from new-stop acceptability.
 
 Implementation:
-- invalid stop no longer reports success;
-- explicit orphan-protection diagnostic is emitted;
-- Core success invariant requires valid direction + stop + broker confirmation;
-- caller enters `RecoveryRequired` on failure;
-- failure does not update `_lastBrokerModifyUtc`.
+- TargetObstacleCacheKey.GetHashCode() now covers all equality fields, removing CS0659;
+- existing-stop directionality is owned by ManagedStopProtectionRule.IsExistingStopHealthy;
+- new SL candidates still use live market/minimum-distance validation;
+- broker reconciliation, bound-plan protection and broker-state evaluation consume the correct existing-stop health semantics;
+- ProtectionProgressionRule remains the only authority allowed to replace an already healthy stop;
+- deterministic G1/hash runtime contracts and accumulated static audit are wired;
+- audit_project_integrity.py now distinguishes methods by containing type.
 
-Safety:
-- no public parameter/default/threshold tuning;
-- no second broker mutation owner;
-- only the F3 safety correction is changed.
+Verification:
+- Source/Architecture PASS — run 36868297463 / workflow #2262;
+- Runtime Acceptance PASS — run 36868297578 / workflow #2071;
+- cTrader Compile PASS — run 36868297556 / workflow #2255.
 
-**Next phase: CR7.1 / G1 — Broker protection must never increase live position risk.**
+Manual boundary:
+- target-terminal broker stop modification and broker minimum-distance behavior;
+- restart/reconnect and live panel/runtime behavior;
+- empirical signal-quality/profitability remain manual.
+
+**Current phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
 
 
 ### CR6.6 / F7 closeout — 2026-10-01
