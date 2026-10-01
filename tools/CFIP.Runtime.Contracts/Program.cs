@@ -11,6 +11,7 @@ namespace cAlgo
             VerifyM1TriggerSemantics();
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
+            VerifyFvgLifecycleSemantics();
             VerifyFvgQualitySemantics();
             VerifyExecutionThresholdSemantics();
             VerifyVolumeSizingSemantics();
@@ -1617,6 +1618,163 @@ namespace cAlgo
                 FvgRule.Identity(1, 42, false) !=
                 FvgRule.Identity(-1, 42, false),
                 "FVG identity separates direction and 3-bar/2-bar source variants");
+        }
+
+        private static void VerifyFvgLifecycleSemantics()
+        {
+            Assert(
+                FvgLifecycleRule.IsAgeValid(
+                    10,
+                    10,
+                    0) &&
+                FvgLifecycleRule.IsAgeValid(
+                    10,
+                    50,
+                    40) &&
+                !FvgLifecycleRule.IsAgeValid(
+                    10,
+                    51,
+                    40) &&
+                !FvgLifecycleRule.IsAgeValid(
+                    10,
+                    9,
+                    40),
+                "FVG source age is bounded and never accepts a future current index");
+
+            Assert(
+                FvgLifecycleRule.GetMitigationProbe(
+                    1,
+                    100.8,
+                    100.4,
+                    99.5,
+                    101.0,
+                    false) == 100.4 &&
+                FvgLifecycleRule.GetMitigationProbe(
+                    -1,
+                    100.4,
+                    100.8,
+                    99.5,
+                    101.0,
+                    false) == 100.8 &&
+                FvgLifecycleRule.GetMitigationProbe(
+                    1,
+                    100.8,
+                    100.4,
+                    99.5,
+                    101.0,
+                    true) == 99.5 &&
+                FvgLifecycleRule.GetMitigationProbe(
+                    -1,
+                    100.4,
+                    100.8,
+                    99.5,
+                    101.0,
+                    true) == 101.0,
+                "FVG mitigation probe is directionally symmetric for body and wick policies");
+
+            double low;
+            double high;
+            bool full;
+
+            Assert(
+                FvgLifecycleRule.TryApplyMitigationStep(
+                    1,
+                    100,
+                    101,
+                    100.50,
+                    0.01,
+                    true,
+                    out low,
+                    out high,
+                    out full) &&
+                !full &&
+                low == 100 &&
+                high == 100.50,
+                "bullish FVG partial mitigation moves only the upper boundary");
+
+            Assert(
+                FvgLifecycleRule.TryApplyMitigationStep(
+                    -1,
+                    100,
+                    101,
+                    100.50,
+                    0.01,
+                    true,
+                    out low,
+                    out high,
+                    out full) &&
+                !full &&
+                low == 100.50 &&
+                high == 101,
+                "bearish FVG partial mitigation moves only the lower boundary");
+
+            Assert(
+                !FvgLifecycleRule.TryApplyMitigationStep(
+                    1,
+                    100,
+                    101,
+                    99.99,
+                    0.01,
+                    true,
+                    out low,
+                    out high,
+                    out full) &&
+                full &&
+                !FvgLifecycleRule.TryApplyMitigationStep(
+                    -1,
+                    100,
+                    101,
+                    101.01,
+                    0.01,
+                    true,
+                    out low,
+                    out high,
+                    out full) &&
+                full,
+                "full FVG fill invalidates both directions when safety invalidation is enabled");
+
+            Assert(
+                FvgLifecycleRule.TryApplyMitigationStep(
+                    1,
+                    100,
+                    101,
+                    99.99,
+                    0.01,
+                    false,
+                    out low,
+                    out high,
+                    out full) &&
+                full &&
+                low == 100 &&
+                high == 101 &&
+                FvgLifecycleRule.TryApplyMitigationStep(
+                    -1,
+                    100,
+                    101,
+                    101.01,
+                    0.01,
+                    false,
+                    out low,
+                    out high,
+                    out full) &&
+                full &&
+                low == 100 &&
+                high == 101,
+                "disabled full-fill invalidation retains canonical source geometry");
+
+            Assert(
+                double.IsNaN(
+                    FvgLifecycleRule.GetMitigationProbe(
+                        0,
+                        100,
+                        100,
+                        99,
+                        101,
+                        false)),
+                "invalid FVG mitigation direction fails closed");
+
+            Console.WriteLine(
+                "CI-05 FVG lifecycle semantics contracts PASS");
         }
 
         private static void VerifyFvgQualitySemantics()
