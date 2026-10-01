@@ -365,6 +365,7 @@ namespace cAlgo
                 private string _marketSuitabilityReason = "NOT EVALUATED";
                 private DateTime _lastMarketSuitabilityUtc = DateTime.MinValue;
                 private MtfClosedContext _lastMtfClosedContext;
+                private MarketStateSnapshot _marketStateSnapshot;
                 private readonly MtfClosedContextCache _mtfClosedContextCache = new MtfClosedContextCache();
                 private readonly AggressiveEntryPolicy _aggressiveEntryPolicy =
                     new AggressiveEntryPolicy();
