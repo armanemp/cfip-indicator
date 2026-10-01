@@ -27,12 +27,9 @@ namespace cAlgo
 
             brokerStopValid =
                 position.StopLoss.HasValue &&
-                IsFinitePositive(
-                    position.StopLoss.Value) &&
-                IsValidManagedStop(
+                IsExistingManagedStopHealthy(
                     direction,
                     position.EntryPrice,
-                    market,
                     position.StopLoss.Value);
 
             brokerTargetValid =

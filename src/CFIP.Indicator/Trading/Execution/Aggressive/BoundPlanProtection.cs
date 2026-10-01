@@ -32,12 +32,9 @@ namespace cAlgo
 
                                         bool brokerStopValid =
                                             planPosition.StopLoss.HasValue &&
-                                            IsFinitePositive(
-                                                planPosition.StopLoss.Value) &&
-                                            IsValidManagedStop(
+                                            IsExistingManagedStopHealthy(
                                                 direction,
                                                 planPosition.EntryPrice,
-                                                market,
                                                 planPosition.StopLoss.Value);
 
                                         double atr =
