@@ -58,6 +58,11 @@ expected_scope = {
     "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs",
     "src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs",
     "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs",
+    "src/CFIP.Indicator/Analysis/Market/ParallelScenarioComputation.cs",
+    "src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs",
+    "src/CFIP.Indicator/Trading/Execution/Aggressive/OrphanManagedProtection.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/ManagedLivePlanRecovery.cs",
+    "src/CFIP.Indicator/Trading/Lifecycle/PendingFillPlanBuilder.cs",
 }
 
 consumer_set = {p for p, _ in dual_consumers}
@@ -98,8 +103,8 @@ check(
 )
 check(
     "structural-stop candidates reject over-ceiling risk at candidate boundary",
-    "riskAtr > maxRiskAtr" in candidate and
-    "EffectiveMaximumStopRiskAtr(" in candidate,
+    ("StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(" in candidate and
+     "EffectiveMaximumStopRiskAtr(" in candidate),
 )
 
 parameter_content = read(parameter_file)
