@@ -6,26 +6,6 @@ namespace cAlgo
     {
         internal const int RollingQuoteWindowSize = 161;
 
-        internal const int MacdSignalPeriod = 9;
-
-        internal const int BollingerPeriod = 20;
-        internal const double BollingerStandardDeviations = 2.0;
-
-        internal const int MfiPeriod = 14;
-
-        internal const int StochLookbackPeriod = 14;
-        internal const int StochSignalPeriod = 3;
-        internal const int StochSmoothPeriod = 3;
-
-        internal const int SuperTrendPeriod = 10;
-        internal const double SuperTrendMultiplier = 3.0;
-
-        internal const int AroonPeriod = 25;
-        internal const int CciPeriod = 20;
-
-        internal const double ParabolicSarAccelerationFactor = 0.02;
-        internal const double ParabolicSarMaximumAccelerationFactor = 0.20;
-
         internal const int RsiMinimumHistory = 20;
         internal const int BollingerMinimumHistory = 40;
         internal const int MfiMinimumHistory = 40;
