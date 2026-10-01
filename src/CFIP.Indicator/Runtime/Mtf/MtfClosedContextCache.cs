@@ -34,6 +34,7 @@ namespace cAlgo
             Bars h4,
             Bars d1,
             Bars w1,
+            DateTime reference,
             out MtfClosedContext context)
         {
             if (_context != null &&
@@ -52,9 +53,18 @@ namespace cAlgo
                 _h1Count == Count(h1) &&
                 _h4Count == Count(h4) &&
                 _d1Count == Count(d1) &&
-                _w1Count == Count(w1))
+                _w1Count == Count(w1) &&
+                reference >= _context.Reference &&
+                IsReferenceStable(_m1, _m1Count, _context.M1, reference) &&
+                IsReferenceStable(_m5, _m5Count, _context.M5, reference) &&
+                IsReferenceStable(_m15, _m15Count, _context.M15, reference) &&
+                IsReferenceStable(_m30, _m30Count, _context.M30, reference) &&
+                IsReferenceStable(_h1, _h1Count, _context.H1, reference) &&
+                IsReferenceStable(_h4, _h4Count, _context.H4, reference) &&
+                IsReferenceStable(_d1, _d1Count, _context.D1, reference) &&
+                IsReferenceStable(_w1, _w1Count, _context.W1, reference))
             {
-                context = _context;
+                context = _context.WithReference(reference);
                 return true;
             }
 
@@ -116,6 +126,23 @@ namespace cAlgo
             _d1Count = -1;
             _w1Count = -1;
             _context = null;
+        }
+
+        private static bool IsReferenceStable(
+            Bars bars,
+            int count,
+            int closedIndex,
+            DateTime reference)
+        {
+            if (closedIndex < 0)
+                return true;
+
+            if (bars == null ||
+                count < 2 ||
+                closedIndex >= count - 1)
+                return false;
+
+            return bars.OpenTimes[closedIndex + 1] > reference;
         }
 
         private static int Count(Bars bars)
