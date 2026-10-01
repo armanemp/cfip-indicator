@@ -1306,7 +1306,12 @@ Verification rule:
 
 ### CI-10 implementation record — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch phase/ci-10-trigger-lifecycle-audit.**
+Status: **VERIFIED COMPLETE — PR #165 merged to `main`; merge commit `ed8fadb2e8af2ca5e0250c72de955e5659d8bdaa`.**
+
+Final verification on implementation head `699cc1dd9c6e58a6df9bbd730b75ee37f7ce93f7`:
+- Source/Architecture #2571: **PASS**;
+- Runtime Acceptance Contracts #2380: **PASS**;
+- cTrader Compile #2564: **PASS**.
 
 Completed:
 - canonical trigger threshold ownership;
@@ -1315,18 +1320,17 @@ Completed:
 - monotonic M1 confirmation revision with explicit reset/expiry semantics;
 - M1 runtime state refresh corrected to compare the previous closed-M1 index before replacing it;
 - direct-displacement override and fresh-trigger evidence semantics audited without retuning;
-- deterministic Runtime Acceptance coverage and accumulated audit_phase_ci_10.py.
+- deterministic Runtime Acceptance coverage and accumulated `audit_phase_ci_10.py`;
+- legacy architecture threshold guards reconciled to the canonical trigger owner.
 
 Safety:
 - no public parameter/default or trading threshold changes;
 - no decision/plan/broker-mutation authority changes;
 - no new broker/network path or unbounded cache.
 
-Verification rule:
-- report CI-10 as VERIFIED only from workflow results for the exact branch head;
-- target-terminal replay, chart/panel timing and empirical signal-quality remain manual boundaries.
+Phase record: `docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md`.
 
-Phase record: docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md.
+Operator action after merge: `git pull --ff-only` on local `main`.
 
-Current implementation phase: **CI-10 — Trigger and trigger-lifecycle audit**.
-Next phase after verification/merge: **CI-11 — Entry geometry and signal-timing audit**.
+Current implementation phase: **CI-10 closed**.
+Next phase after merge: **CI-11 — Entry geometry and signal-timing audit**.
