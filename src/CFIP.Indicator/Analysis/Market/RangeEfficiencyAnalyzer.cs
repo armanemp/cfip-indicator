@@ -20,7 +20,7 @@ namespace cAlgo
                     10,
                     period);
 
-            if (!RangeEfficiencyRule.HasEnoughHistory(
+            if (!RangeEfficiencyRule.HasRangeEnoughHistory(
                     index,
                     length))
                 return 0;
