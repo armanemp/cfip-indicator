@@ -214,7 +214,7 @@ for token in (
     "GetAutoTradingPanelState()",
     "GetAutoOrdersPanelState()",
     "GetAutoProtectionPanelState()",
-    "_brokerProtectionRecoveryRequired ? "1" : "0"",
+    "_brokerProtectionRecoveryRequired",
 ):
     if token not in g4_panel_key:
         raise SystemExit(f"G4 panel presentation cache key missing state: {token}")
