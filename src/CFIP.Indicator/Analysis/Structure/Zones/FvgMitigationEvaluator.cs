@@ -37,7 +37,7 @@ namespace cAlgo
                      i++)
                 {
                     double probe =
-                        FvgLifecycleRule.GetMitigationProbe(
+                        FvgLifecycleRule.ResolveFvgMitigationProbe(
                             direction,
                             bars.OpenPrices[i],
                             bars.ClosePrices[i],
@@ -125,7 +125,7 @@ namespace cAlgo
                  i++)
             {
                 double fillPrice =
-                    FvgLifecycleRule.GetMitigationProbe(
+                    FvgLifecycleRule.ResolveFvgMitigationProbe(
                         direction,
                         bars.OpenPrices[i],
                         bars.ClosePrices[i],
