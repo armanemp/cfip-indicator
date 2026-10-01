@@ -10,6 +10,7 @@ namespace cAlgo
             VerifyConsensusSymmetry();
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
+            VerifyTopDownCalibrationAbsoluteStrength();
             VerifyConfidenceCalibrationKeyEquality();
             VerifyConfidenceCalibration();
             VerifyContextualConfidenceCalibration();
@@ -35,6 +36,122 @@ namespace cAlgo
             Console.WriteLine("Decision contracts OK");
         }
 
+        private static void VerifyTopDownCalibrationAbsoluteStrength()
+        {
+            TopDownCalibrationSnapshot weakAligned =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1 },
+                    new[] { 40, 35, 45 },
+                    new[] { 1.0, 1.0, 1.0 },
+                    new[] { 1, 1 },
+                    new[] { 80, 80 },
+                    new[] { 1.0, 1.0 },
+                    1, 80, 75, 1);
+            Assert(
+                weakAligned.HtfAlignment == 100 &&
+                weakAligned.HtfAbsoluteStrength == 40 &&
+                !weakAligned.HtfStrong &&
+                weakAligned.Stage == "HTF MIXED",
+                "perfect HTF alignment does not imply strong absolute strength");
+
+            TopDownCalibrationSnapshot strongAligned =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1 },
+                    new[] { 80, 75, 85 },
+                    new[] { 1.0, 1.0, 1.0 },
+                    new[] { 1, 1 },
+                    new[] { 80, 80 },
+                    new[] { 1.0, 1.0 },
+                    1, 80, 75, 1);
+            Assert(
+                strongAligned.HtfAlignment == 100 &&
+                strongAligned.HtfAbsoluteStrength == 80 &&
+                strongAligned.HtfStrong &&
+                strongAligned.Eligible &&
+                strongAligned.Stage == "ENTRY CALIBRATED",
+                "strong HTF alignment requires absolute strength");
+
+            TopDownCalibrationSnapshot weakCounterFrame =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1 },
+                    new[] { 80, 80, 80 },
+                    new[] { 1.0, 1.0, 1.0 },
+                    new[] { -1, -1 },
+                    new[] { 40, 45 },
+                    new[] { 1.0, 1.0 },
+                    1, 80, 75, 1);
+            Assert(
+                weakCounterFrame.MidAlignment == 100 &&
+                weakCounterFrame.MidAbsoluteStrength == 43 &&
+                weakCounterFrame.Eligible &&
+                weakCounterFrame.Stage == "MIDFRAME CALIBRATION",
+                "weak counter-frame alignment cannot override a strong anchor");
+
+            TopDownCalibrationSnapshot strongCounterFrame =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1 },
+                    new[] { 80, 80, 80 },
+                    new[] { 1.0, 1.0, 1.0 },
+                    new[] { -1, -1 },
+                    new[] { 80, 75 },
+                    new[] { 1.0, 1.0 },
+                    1, 80, 75, 1);
+            Assert(
+                strongCounterFrame.MidAlignment == 100 &&
+                strongCounterFrame.MidAbsoluteStrength == 78 &&
+                !strongCounterFrame.Eligible &&
+                strongCounterFrame.Stage == "MIDFRAME CONFLICT",
+                "strong counter-frame alignment plus strength blocks");
+
+            TopDownCalibrationSnapshot weakEntryConflict =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1 },
+                    new[] { 80, 80, 80 },
+                    new[] { 1.0, 1.0, 1.0 },
+                    new[] { 1, 1 },
+                    new[] { 80, 80 },
+                    new[] { 1.0, 1.0 },
+                    -1, 40, 75, 1);
+            Assert(
+                weakEntryConflict.EntryAlignment == 0 &&
+                weakEntryConflict.EntryAbsoluteStrength == 40 &&
+                weakEntryConflict.Eligible,
+                "weak entry conflict does not override a strong anchor");
+
+            TopDownCalibrationSnapshot strongEntryConflict =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1 },
+                    new[] { 80, 80, 80 },
+                    new[] { 1.0, 1.0, 1.0 },
+                    new[] { 1, 1 },
+                    new[] { 80, 80 },
+                    new[] { 1.0, 1.0 },
+                    -1, 80, 75, 1);
+            Assert(
+                strongEntryConflict.EntryAlignment == 0 &&
+                strongEntryConflict.EntryAbsoluteStrength == 80 &&
+                !strongEntryConflict.Eligible &&
+                strongEntryConflict.Stage == "ENTRY CONFLICT",
+                "strong entry conflict blocks a strong anchor");
+
+            TopDownCalibrationSnapshot repeat =
+                TopDownCalibrationRule.Evaluate(
+                    new[] { 1, 1, 1 },
+                    new[] { 80, 75, 85 },
+                    new[] { 1.0, 1.0, 1.0 },
+                    new[] { 1, 1 },
+                    new[] { 80, 80 },
+                    new[] { 1.0, 1.0 },
+                    1, 80, 75, 1);
+            Assert(
+                repeat.HtfAlignment == strongAligned.HtfAlignment &&
+                repeat.HtfAbsoluteStrength == strongAligned.HtfAbsoluteStrength &&
+                repeat.MidAlignment == strongAligned.MidAlignment &&
+                repeat.MidAbsoluteStrength == strongAligned.MidAbsoluteStrength &&
+                repeat.EntryAbsoluteStrength == strongAligned.EntryAbsoluteStrength &&
+                repeat.Stage == strongAligned.Stage,
+                "top-down absolute-strength evaluation is deterministic");
+        }
         private static void VerifyConsensusSymmetry()
         {
             DecisionConsensusCalculator calculator =

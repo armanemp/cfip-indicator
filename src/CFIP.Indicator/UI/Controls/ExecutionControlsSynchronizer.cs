@@ -14,6 +14,9 @@ namespace cAlgo
         {
             EnsureExecutionRuntimeState();
 
+            if (_executionToggleSyncing)
+                return;
+
             _executionToggleSyncing = true;
 
             try

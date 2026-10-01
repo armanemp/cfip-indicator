@@ -120,12 +120,18 @@ namespace cAlgo
                                                         _decision.HtfAnchorDirection +
                                                         "/" +
                                                         _decision.HtfAlignment +
+                                                        "/S" +
+                                                        _decision.HtfAbsoluteStrength +
                                                         "  •  MID " +
                                                         _decision.MidframeDirection +
                                                         "/" +
                                                         _decision.MidframeAlignment +
+                                                        "/S" +
+                                                        _decision.MidframeAbsoluteStrength +
                                                         "  •  ENTRY " +
-                                                        _decision.EntryFrameAlignment,
+                                                        _decision.EntryFrameAlignment +
+                                                        "/S" +
+                                                        _decision.EntryFrameAbsoluteStrength,
                                                         _decision.TopDownEligible &&
                                                         string.Equals(
                                                             _decision.TopDownStage,

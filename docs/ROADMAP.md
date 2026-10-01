@@ -3413,7 +3413,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: Phase 8.1 — M1 trigger correctness**
+**NEXT: CR8.3a/H3-A**
 
 Then proceed in dependency order:
 
@@ -5846,7 +5846,7 @@ Manual cTrader boundary:
 
 ## Prompt 8 Remediation Gate — H1–H6 — 2026-10-01
 
-Status: **ACTIVE REMEDIATION TRACK — CR8.1/H1 VERIFIED COMPLETE; CR8.2/H2 NEXT.**
+Status: **ACTIVE REMEDIATION TRACK — CR8.2/H2 VERIFIED COMPLETE; CR8.3a/H3-A NEXT.**
 
 Prompt 8 is the next fully specified remediation sequence after Prompt 7.
 It does not reopen or renumber Prompt 4, Prompt 5, Prompt 6 or Prompt 7.
@@ -5901,9 +5901,42 @@ Performance/code-cleanliness:
 - Automatic Market/Aggressive lifecycle ordering;
 - startup/reload/reconnect and panel/chart state around execution.
 
+### CR8.2 / H2 closeout — Top-Down absolute strength
+
+Status: **VERIFIED COMPLETE — PR #150; final implementation HEAD 675283b82e345a86b1a6094e7b7ad66ec3632b84.**
+
+Completed:
+- canonical TopDownCalibrationGroupResult now exposes bounded AbsoluteStrength;
+- absolute strength is the weighted average quality of the dominant-direction frames;
+- HTF strong status requires both existing relative alignment and absolute strength;
+- opposing mid-frame and entry evidence can block a strong anchor only when that opposing evidence is itself sufficiently strong;
+- Decision and panel presentation expose the canonical HTF, mid-frame and entry absolute-strength diagnostics;
+- the status-only execution-control synchronizer now reads its existing guard state, eliminating the CS0414 warning without removing the architecture-required guard;
+- Decision Contracts cover weak aligned evidence, strong alignment, weak opposing evidence, strong opposing evidence, entry conflict and deterministic repeatability;
+- audit_phase_8_2.py is accumulated in Source/Architecture CI.
+
+Safety/performance:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold was retuned;
+- no broker mutation path or decision authority was added;
+- no unbounded cache or additional hot-path broker enumeration was introduced;
+- the user-reported CS0414 warning is removed by making the existing guard a real re-entrancy guard.
+
+Verification on final implementation HEAD:
+- Source/Architecture PASS — workflow run 36892859244;
+- Runtime Acceptance Contracts PASS — workflow run 36892859151;
+- cTrader Compile PASS — workflow run 36892859090.
+
+Manual cTrader boundary:
+- target-terminal top-down timing/presentation, replay distribution and empirical signal quality remain manual;
+- the phase makes no profitability or win-rate claim.
+
+Next specified phase: **CR8.3a / H3-A**.
+
 Sequence continuity:
 - Prompt 7 G6B is closed on `main`;
 - the roadmap references CR7.6c/G6C, but no authoritative G6C scope or
   implementation branch was present on the 2026-10-01 `main` HEAD, so no
   speculative G6C behavior was invented;
-- next specified phase is **CR8.2 / H2 — Top-Down alignment must include absolute strength**.
+- CR8.2/H2 is verified complete on PR #150 with all three repository gates passing on final implementation HEAD.
+- next specified phase is **CR8.3a / H3-A**.
