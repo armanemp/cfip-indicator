@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using cAlgo.API;
 
 namespace cAlgo
@@ -94,7 +93,6 @@ namespace cAlgo
             {
                 if (!TryScoreTargetCandidate(
                         levels[i],
-                        new List<Level>(),
                         closedM5,
                         entry,
                         risk,
