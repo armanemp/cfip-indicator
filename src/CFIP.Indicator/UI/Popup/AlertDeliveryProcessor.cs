@@ -52,8 +52,25 @@ namespace cAlgo
                     }
                     else
                     {
-                        Notifications.PlaySound(
-                            next.SoundType);
+                        SoundType soundType;
+
+                        if (Enum.TryParse<SoundType>(
+                                next.SoundTypeName,
+                                true,
+                                out soundType))
+                        {
+                            Notifications.PlaySound(
+                                soundType);
+                        }
+                        else
+                        {
+                            Print(
+                                "CFIP unknown semantic sound cue [{0}], using configured fallback.",
+                                next.SoundTypeName);
+
+                            Notifications.PlaySound(
+                                AlertSoundType);
+                        }
                     }
                 }
                 catch (Exception ex)
