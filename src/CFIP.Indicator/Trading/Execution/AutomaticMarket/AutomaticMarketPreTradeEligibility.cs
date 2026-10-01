@@ -316,11 +316,24 @@ namespace cAlgo
 
             if (_plan != null)
             {
+                CanonicalPriceSnapshot priceSnapshot =
+                    GetCanonicalPriceSnapshot();
+
+                if (priceSnapshot == null ||
+                    !priceSnapshot.IsQuoteValid)
+                {
+                    _autoExecutionBlockReason =
+                        "INVALID CANONICAL MARKET QUOTE";
+                    SetAutoTradingState(
+                        "BLOCKED",
+                        _autoExecutionBlockReason);
+                    return false;
+                }
+
                 double liveEntry =
                     NormalizePrice(
-                        _plan.Direction == 1
-                            ? Symbol.Ask
-                            : Symbol.Bid);
+                        priceSnapshot.GetExecutablePrice(
+                            _plan.Direction));
 
                 ExecutionPlanGeometryResult geometry =
                     ExecutionPlanGeometryRule.Evaluate(
