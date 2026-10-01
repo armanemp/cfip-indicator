@@ -124,18 +124,13 @@ namespace cAlgo
                     get => _autoExecutionBlockReasonValue;
                     set
                     {
-                        string next =
-                            string.IsNullOrWhiteSpace(value)
-                                ? "NOT EVALUATED"
-                                : value;
-
                         if (string.Equals(
                                 _autoExecutionBlockReasonValue,
-                                next,
+                                value,
                                 StringComparison.Ordinal))
                             return;
 
-                        _autoExecutionBlockReasonValue = next;
+                        _autoExecutionBlockReasonValue = value;
                         InvalidatePanelExecutionProtectionStateCache();
                     }
                 }
@@ -145,18 +140,13 @@ namespace cAlgo
                     get => _autoOrdersBlockReasonValue;
                     set
                     {
-                        string next =
-                            string.IsNullOrWhiteSpace(value)
-                                ? "NOT EVALUATED"
-                                : value;
-
                         if (string.Equals(
                                 _autoOrdersBlockReasonValue,
-                                next,
+                                value,
                                 StringComparison.Ordinal))
                             return;
 
-                        _autoOrdersBlockReasonValue = next;
+                        _autoOrdersBlockReasonValue = value;
                         InvalidatePanelExecutionProtectionStateCache();
                     }
                 }

@@ -30,20 +30,15 @@ namespace cAlgo
                                             ? ""
                                             : reason.Trim();
 
-                                    bool changed =
-                                        !string.Equals(
+                                    if (!string.Equals(
                                             previousState,
                                             _autoTradingState,
                                             StringComparison.OrdinalIgnoreCase) ||
                                         !string.Equals(
                                             previousReason,
                                             _autoTradingReason,
-                                            StringComparison.OrdinalIgnoreCase);
-
-                                    if (changed)
+                                            StringComparison.OrdinalIgnoreCase))
                                     {
-                                        InvalidatePanelExecutionProtectionStateCache();
-
                                         ArchiveRuntimeExecution(
                                             "AUTO_STATE",
                                             Math.Max(
