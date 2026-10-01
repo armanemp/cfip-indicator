@@ -1386,3 +1386,24 @@ Operator action: run `git pull --ff-only` on local `main`.
 Next phase: **CI-13 — TP source, target obstacle and TP ladder audit**.
 
 Prompt 8 / CR8.4 remains intentionally paused until **CI-FINAL**.
+
+
+### CI-13 closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — PR #168 merged to `main` as `1f397134508e0f8c6d3bba1e1809d2ff255c39d3`.**
+
+Implementation head: `db48e116731e48c91f250ce77b966044dd96df63`.
+
+Final audit/documentation head: `0cb7945854ff4dfca1e0e57728b87b6ce220972d`.
+
+Verification:
+- Source/Architecture: **PASS** — workflow run `36943488081`;
+- Runtime Acceptance Contracts: **PASS** — workflow run `36943488030`;
+- cTrader Compile: **PASS** — workflow run `36943488065`;
+- accumulated audits through CI-13: **PASS**.
+
+CI-13 closed the TP source/provenance, target-obstacle and coherent TP1..TP4 ladder ownership seam. No public parameter/default or trading threshold was tuned.
+
+The next blocking implementation phase is **CI-14 — Canonical risk/reward and protection mathematics**.
+
+The user's reported cross-component symptoms remain an explicit empirical acceptance concern: CI-14 must remove RR-semantic drift first; CI-15 must trace exact Entry/SL/TP through every execution path; CI-16 must use deterministic counterexamples to distinguish genuinely missing analytical evidence from downstream gating or synchronization loss; CI-17 then validates the same semantics on the target cTrader terminal.
