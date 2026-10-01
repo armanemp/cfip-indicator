@@ -526,8 +526,7 @@ Safety/manual boundary:
 
 CR5.8 / E8 — Small constant ownership and TargetSelection consistency.
 
-CR5.7 / E7 is implemented on branch `phase/cr5-7-e7-watch-reaction-alerts`.
-Repository CI verification is pending. CR-FINAL remains paused until CR5.7,
+CR5.7 / E7 is verified complete and merged to `main` via PR #123, merge commit `d37f6d575595bfacecdff5a5ffb8fc44ba96455a`. Final implementation head was `8d39ad3fb88c75092908121a3cbaa65128f47659`. CR-FINAL remains paused until CR5.7,
 CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented.
 
 ### CR5.7 / E7 implementation record
@@ -546,4 +545,4 @@ Safety/manual boundary:
 
 ### Next transition
 
-Execute CR5.8 / E8 only after E7 repository verification is green. Do not start Track 12A before CR-FINAL.
+Execute CR5.8 / E8 next. E7 repository verification is green and merged. Do not start Track 12A before CR-FINAL.
