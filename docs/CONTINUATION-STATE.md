@@ -23,9 +23,9 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-05 — FVG lifecycle — 2026-10-01**
+**CI-06 — Order Block lifecycle — 2026-10-01**
 
-Status: **IN IMPLEMENTATION — FVG lifecycle semantics and consumer hardening are being implemented and verified. CI-04 is verified complete and merged.**
+Status: **NEXT — specified and ready to implement. CI-05 is verified complete and merged.**
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
@@ -60,7 +60,33 @@ Verification on final PR head `6fc30590e1a041669b4430d3dbc90645b96f30b3`:
 Manual boundary: actual cTrader audio latency/render synchronization, burst behavior,
 external callback timing and replay-level structural event rates remain pending target-terminal validation.
 
-**Operator action: run `git pull --ff-only` on local `main` before starting CI-05.**
+### CI-05 final closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #159 merged to `main` as `cfb8116b248340c07a0c4b813cf1c4d41550f24c`.**
+
+Final PR head:
+`008ecf50f54e2cfadfeaf9b7030e17b452b0fb7e`
+
+Repository verification:
+- Source/Architecture PASS — run #2481;
+- Runtime Acceptance Contracts PASS — run #2290;
+- cTrader Compile/Build PASS — run #2474.
+
+Completed:
+- canonical FVG lifecycle ownership for source age and mitigation probes;
+- explicit full-fill retention/invalidation semantics using existing policy;
+- stale FVG rejection before managed-zone materialization;
+- deterministic FVG lifecycle contracts;
+- CI-05 static audit wired and accumulated;
+- accumulated CI-03/CI-04 state audits reconciled for forward continuation.
+
+Manual boundary:
+- target-terminal/replay validation remains required for actual live MTF timing, mitigation,
+  pending-zone presentation, reward-path interaction and empirical signal quality.
+
+**Operator action: run `git pull --ff-only` on local `main` before starting CI-06.**
+
+**Next implementation phase: CI-06 — Order Block lifecycle.**
 
 **Next implementation phase: CI-05 — FVG lifecycle.**
 
