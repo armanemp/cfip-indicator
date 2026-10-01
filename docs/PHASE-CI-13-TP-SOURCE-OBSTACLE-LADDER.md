@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTED — repository verification pending merge**
+Status: **VERIFIED COMPLETE — PR #168 merged to `main`**
 
 ## Scope
 
