@@ -5805,4 +5805,41 @@ Manual cTrader boundary:
 - target-terminal panel refresh timing, scenario/suitability/break-even visual updates,
   reconnect/reload and responsiveness remain manual.
 
-**Next phase after G6A closeout: CR7.6b.**
+## CR7.6b / G6B — Execution-control truth and single UI authority
+
+Status: **VERIFIED COMPLETE — implementation head `7832f47c05117f66686adf659fd92670dcb14ba8` passed all three repository gates.**
+
+Scope/root cause:
+- the 2026-09-29 execution-status contract made AUTO TRADE / AUTO ORDERS status-only because
+  public cTrader Indicator parameters are the execution configuration authority;
+- later panel code had reintroduced click handlers that mutated private runtime flags, creating
+  a second UI-owned execution state.
+
+Implemented:
+- removed `ExecutionToggleHandlers.cs` and its in-panel execution mutation path;
+- kept the modern ToggleButton presentation while making the execution status surfaces explicitly
+  non-interactive;
+- added the platform-neutral Core `ExecutionControlPresentationRule` as the single owner of
+  status text and the read-only interaction policy;
+- made `ExecutionControlsSynchronizer` re-apply the read-only state while continuing to consume
+  `EnsureExecutionRuntimeState()` as the settings → runtime synchronization boundary;
+- reconciled accumulated architecture, project-integrity and CR3.4 audits with the status-only
+  contract instead of weakening the underlying execution-state safety model;
+- added deterministic Runtime Acceptance coverage and dedicated `audit_phase_7_6b.py`.
+
+Safety/performance:
+- no public parameter name/type/`DefaultValue` changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold changed;
+- no decision or broker-mutation authority changed;
+- no new broker enumeration or unbounded cache introduced.
+
+Verification:
+- Source/Architecture: **PASS** — #2339;
+- Runtime Acceptance Contracts: **PASS** — #2148;
+- cTrader Compile: **PASS** — #2332.
+
+Manual cTrader boundary:
+- target-terminal click behavior, startup/reload synchronization, disabled-control readability,
+  reconnect/reload and responsiveness remain manual.
+
+**Next phase after G6B closeout: CR7.6c.**
