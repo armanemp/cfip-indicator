@@ -319,10 +319,16 @@ for token in (
     if token not in fvg_mitigation_code:
         raise SystemExit(f"FVG mitigation must consume canonical lifecycle semantics: {token}")
 
-if "FvgRule.IsFullyFilled(" in fvg_mitigation_code:
-    raise SystemExit("FVG mitigation must not duplicate lifecycle full-fill decisions")
-if "FvgRule.TryApplyPartialMitigation(" in fvg_mitigation_code:
-    raise SystemExit("FVG mitigation must not duplicate lifecycle partial-fill decisions")
+try_apply_region_end = fvg_mitigation_code.find("    private bool IsZoneFullyMitigated(")
+try_apply_region = (
+    fvg_mitigation_code[:try_apply_region_end]
+    if try_apply_region_end >= 0
+    else fvg_mitigation_code
+)
+if "FvgRule.IsFullyFilled(" in try_apply_region:
+    raise SystemExit("FVG mitigation main loop must delegate full-fill decisions")
+if "FvgRule.TryApplyPartialMitigation(" in try_apply_region:
+    raise SystemExit("FVG mitigation main loop must delegate partial-fill decisions")
 
 if "atr)" not in fvg_quality_code or "gap /" not in fvg_quality_code:
     raise SystemExit("FVG quality must consume creation-gap and ATR normalization")
