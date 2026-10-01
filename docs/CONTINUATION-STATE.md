@@ -264,7 +264,7 @@ Repository gates on the final F1 head:
 
 ### Current implementation phase
 
-**CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
+**CR6.6 / F7 — Independent-timeframe scenario semantics and duplicate-policy owners.**
 
 F4 was completed and verified on branch
 `phase/cr6-3-f4-threshold-transparency`; PR #129 passed Source/Architecture,
