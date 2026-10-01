@@ -19,8 +19,8 @@ namespace cAlgo
             double netMove,
             double absolutePath)
         {
-            if (!IsFiniteNonNegative(netMove) ||
-                !IsFiniteNonNegative(absolutePath) ||
+            if (!IsRangeFiniteNonNegative(netMove) ||
+                !IsRangeFiniteNonNegative(absolutePath) ||
                 absolutePath <= 0)
                 return 0;
 
@@ -39,7 +39,7 @@ namespace cAlgo
                 index >= Math.Max(1, period);
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsRangeFiniteNonNegative(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
