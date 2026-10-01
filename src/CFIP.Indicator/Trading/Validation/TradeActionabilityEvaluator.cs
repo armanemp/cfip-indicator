@@ -52,8 +52,7 @@ namespace cAlgo
             bool qualityReady =
                 !RequirePrecisionEntry ||
                 execution.Quality >=
-                Math.Max(
-                    40,
+                ActionabilityThresholdPolicy.EffectivePrecisionEntryQualityFloor(
                     MinimumEntryQuality);
 
             ExecutionMode liveMode;
@@ -530,9 +529,8 @@ namespace cAlgo
                     trapRisk.Reason);
 
             if (locationQuality <
-                Math.Max(
-                    MinimumEntryQuality,
-                    64))
+                ActionabilityThresholdPolicy.EffectiveUpstreamEntryLocationQuality(
+                    MinimumEntryQuality))
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
@@ -545,7 +543,8 @@ namespace cAlgo
                     divergence.Type,
                     "ENTRY LOCATION QUALITY");
 
-            if (timingQuality < 64)
+            if (timingQuality <
+                ActionabilityThresholdPolicy.EffectiveUpstreamEntryTimingQuality())
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
