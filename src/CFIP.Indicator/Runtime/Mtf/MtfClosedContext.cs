@@ -36,6 +36,21 @@ namespace cAlgo
             W1 = w1;
         }
 
+        public MtfClosedContext WithReference(
+            DateTime reference)
+        {
+            return new MtfClosedContext(
+                reference,
+                M5,
+                M1,
+                M15,
+                M30,
+                H1,
+                H4,
+                D1,
+                W1);
+        }
+
         public bool HasPrimaryDecisionHistory
         {
             get
