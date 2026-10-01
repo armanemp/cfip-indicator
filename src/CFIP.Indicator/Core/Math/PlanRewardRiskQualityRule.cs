@@ -30,6 +30,15 @@ namespace cAlgo
 
     internal static class PlanRewardRiskQualityRule
     {
+        // Named internal policy constants: fixed safety floors/margins only.
+        // Their values are preserved from the pre-E8 implementation.
+        internal const double BaseMinimumRrFloor = 0.50;
+        internal const double PreferredStopRiskAtrFloor = 0.25;
+        internal const double MaximumStopRiskAtrFloor = 0.50;
+        internal const double AdaptiveStopExcessRrCap = 0.50;
+        internal const double AdaptiveStopExcessRrMultiplier = 0.25;
+        internal const double EffectiveRrBaseFactor = 0.90;
+        internal const double EffectiveRrAbsoluteReduction = 0.15;
         public static PlanRewardRiskQualityResult Evaluate(
             int direction,
             double entry,
@@ -80,10 +89,10 @@ namespace cAlgo
                 return CreateRewardRiskBlocked("RISK ATR INVALID");
 
             double boundedBase =
-                Math.Max(0.50, baseMinimumRR);
+                Math.Max(BaseMinimumRrFloor, baseMinimumRR);
 
             double preferred =
-                Math.Max(0.25, preferredStopRiskAtr);
+                Math.Max(PreferredStopRiskAtrFloor, preferredStopRiskAtr);
 
             double maximum =
                 Math.Max(
@@ -110,8 +119,8 @@ namespace cAlgo
             double adaptiveRequired =
                 boundedBase +
                 Math.Min(
-                    0.50,
-                    stopExcess * 0.25);
+                    AdaptiveStopExcessRrCap,
+                    stopExcess * AdaptiveStopExcessRrMultiplier);
 
             double nominalRR =
                 reward / risk;
@@ -146,8 +155,8 @@ namespace cAlgo
 
             double minimumEffectiveRR =
                 Math.Max(
-                    boundedBase * 0.90,
-                    boundedBase - 0.15);
+                    boundedBase * EffectiveRrBaseFactor,
+                    boundedBase - EffectiveRrAbsoluteReduction);
 
             if (effectiveRR < minimumEffectiveRR)
             {
