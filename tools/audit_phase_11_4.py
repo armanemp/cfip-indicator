@@ -83,9 +83,7 @@ if "PlanRewardRiskQualityRule.Evaluate(" not in parallel:
     errors.append("parallel candidate construction does not consume reward-risk rule")
 
 if (
-    "ParallelScenarioSelectionRule.GetScenarioIdentity(" not in parallel_registry
-    if False
-    else "GetScenarioIdentity(" not in parallel_selection
+    "GetScenarioIdentity(" not in parallel_selection
     or "SameIdentity(" not in parallel_selection
 ):
     errors.append("parallel scenario identity isolation missing")
