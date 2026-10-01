@@ -84,7 +84,7 @@ namespace cAlgo
                 BrokerDistanceUnit != BrokerDistanceUnit.Unknown &&
                 IsFiniteNonNegativeCanonicalDistance(
                     MinimumStopDistanceRaw) &&
-                IsFiniteNonNegative(
+                IsFiniteNonNegativeCanonicalDistance(
                     MinimumTakeProfitDistanceRaw) &&
                 (BrokerDistanceUnit != BrokerDistanceUnit.Pips ||
                  IsFinitePositiveCanonicalPrice(pipSize));
