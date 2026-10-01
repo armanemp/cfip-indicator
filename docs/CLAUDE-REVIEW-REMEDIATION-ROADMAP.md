@@ -2087,7 +2087,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR7.6b — next Prompt 7 remediation phase**.
+Current active phase: **CI-12 — Structural SL audit**. CI-FINAL remains the gate before resuming the paused Prompt 8 sequence.
 
 ### Prompt 8 continuity override — 2026-10-01
 
@@ -2095,7 +2095,9 @@ The Prompt 7 G6B implementation is closed on main. The historical CR7.6c/G6C mar
 
 CR8.1/H1 → CR8.2/H2 → CR8.3a/H3-A → CR8.3b/H3-B → CR8.4/H4 → CR8.5a/H5-A → CR8.5b/H5-B → CR8.6/H6 → CR-FINAL
 
-Current active implementation phase: **CR8.3b / H3-B — next Prompt 8 remediation phase.**
+Current active implementation phase: **CI-12 — Structural SL audit**.
+
+Prompt 8 / CR8.4 is intentionally paused until **CI-FINAL**; after CI-FINAL, resume the existing Prompt 8 sequence at CR8.4/H4.
 
 CR8.1/H1 is verified complete on PR #149 with Source/Architecture #2348, Runtime Acceptance #2157 and cTrader Compile #2341.
 
