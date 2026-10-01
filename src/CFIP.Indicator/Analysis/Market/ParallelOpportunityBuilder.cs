@@ -76,9 +76,14 @@ namespace cAlgo
             }
 
             if (_reaction != null &&
-                _reaction.Direction != 0 &&
-                _reaction.Confidence >=
-                LiveReactionStrongThreshold &&
+                MicroReactionSafetyRule.IsClosedBarSafe(
+                    closedM5,
+                    _reaction.ReactionConfirmedM5,
+                    _reaction.Direction,
+                    _reaction.ReactionConfirmedDirection,
+                    _reaction.ReactionConfirmedQuality,
+                    _reaction.ReactionClosedBarConfirmed,
+                    LiveReactionStrongThreshold) &&
                 _m5Frame.Direction !=
                 _reaction.Direction)
             {
@@ -87,7 +92,7 @@ namespace cAlgo
                         closedM5,
                         OpportunityLane.MicroReaction,
                         _reaction.Direction,
-                        _reaction.Confidence);
+                        _reaction.ReactionConfirmedQuality);
 
                 if (reaction != null &&
                     ShouldPresentOpportunityCandidate(
@@ -391,75 +396,11 @@ namespace cAlgo
             if (candidate == null)
                 return;
 
-            string candidateIdentity =
-                ScenarioIdentity(candidate);
-
-            for (int i = 0;
-                 i < _opportunityCandidates.Count;
-                 i++)
-            {
-                TradeOpportunityCandidate existing =
-                    _opportunityCandidates[i];
-
-                if (existing == null)
-                    continue;
-
-                string existingIdentity =
-                    ScenarioIdentity(existing);
-
-                // Different timeframe/lane scenarios are intentionally distinct,
-                // even when their proposed price is close. Only the exact same
-                // scenario identity may be collapsed.
-                if (!string.Equals(
-                        existingIdentity,
-                        candidateIdentity,
-                        StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                double distance = Math.Abs(
-                    existing.Entry -
-                    candidate.Entry);
-
-                if (distance < Math.Max(
-                        Symbol.PipSize * 2,
-                        Math.Min(
-                            existing.Risk,
-                            candidate.Risk) * 0.10))
-                {
-                    if (OpportunityDisplayPriority(candidate) >
-                        OpportunityDisplayPriority(existing))
-                        _opportunityCandidates[i] = candidate;
-
-                    return;
-                }
-
-                // Same identity but materially different geometry: keep the
-                // newest closed-bar candidate rather than accidentally retaining
-                // stale entry/SL/TP levels.
-                if (candidate.CreatedM5 >= existing.CreatedM5)
-                    _opportunityCandidates[i] = candidate;
-
-                return;
-            }
-
-            _opportunityCandidates.Add(candidate);
-        }
-
-        private string ScenarioIdentity(
-            TradeOpportunityCandidate candidate)
-        {
-            if (candidate == null)
-                return string.Empty;
-
-            if (!string.IsNullOrWhiteSpace(candidate.ScenarioId))
-                return candidate.ScenarioId.Trim();
-
-            return
-                (candidate.SourceTimeframe ?? "NONE") +
-                "|" +
-                (int)candidate.Lane +
-                "|" +
-                candidate.Direction;
+            _tradePlanRegistry.UpsertScenario(
+                candidate,
+                Math.Max(
+                    Symbol.PipSize * 2,
+                    0));
         }
 
     }
