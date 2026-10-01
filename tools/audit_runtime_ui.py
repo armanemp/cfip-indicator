@@ -123,19 +123,19 @@ if "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
 if "DefaultValue = false)]\n        public bool PopupCriticalOnly" not in popup_core:
     raise SystemExit("Popup must default to show valid alerts, not critical-only")
 
-popup_queue = read("Core/Runtime/PopupAlertQueue.cs")
-popup_processor = read("UI/Popup/PopupQueueProcessor.cs")
-if "PopupAlertQueue(16)" not in state:
+alert_queue = read("Core/Runtime/AlertDeliveryQueue.cs")
+alert_processor = read("UI/Popup/AlertDeliveryProcessor.cs")
+if "AlertDeliveryQueue(16)" not in state:
     raise SystemExit("Popup queue must have a fixed bounded capacity")
-if "_popupAlertQueue.Enqueue(" not in alert_engine:
+if "_alertDeliveryQueue.Enqueue(" not in alert_engine:
     raise SystemExit("Alerts must enter the bounded popup queue")
-if "ShowPopup(next.Message, next.Critical)" not in popup_processor:
+if "ShowPopup(\n                    next.Message,\n                    next.Critical)" not in alert_processor:
     raise SystemExit("Popup processor must be the only queued-to-render handoff")
-if "RemoveExpiredPopup();\n                ProcessQueuedPopups();" not in initialization:
+if "RemoveExpiredPopup();\n                HandleRuntimeHeartbeat();\n                ProcessQueuedAlertDelivery();" not in initialization:
     raise SystemExit("Popup queue must be drained at the timer boundary")
-if "_normal.Dequeue()" not in popup_queue or "if (critical)" not in popup_queue:
+if "_normal.Dequeue()" not in alert_queue or "if (delivery.Critical)" not in alert_queue:
     raise SystemExit("Popup queue must prefer critical alerts over normal alerts")
-if "ShowPopup(message)" in alert_engine:
+if "ShowPopup(" in alert_engine:
     raise SystemExit("Alert hot path must not directly overwrite popup presentation")
 
 if "return Color.White" not in labels_renderer:

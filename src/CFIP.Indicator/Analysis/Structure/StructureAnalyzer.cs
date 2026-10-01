@@ -16,111 +16,159 @@ namespace cAlgo
     {
         // ============================================================
                 
-                        private bool BullStructure(
-                            Bars bars,
-                            int index,
-                            double atr)
-                        {
-                            if (bars == null ||
-                                index < 1)
-                                return false;
+        private bool BullStructure(
+            Bars bars,
+            int index,
+            double atr)
+        {
+            if (bars == null ||
+                index < 1)
+                return false;
 
-                            double swing =
-                                FindSwingHigh(
-                                    bars,
-                                    index,
-                                    SwingStrength,
-                                    1);
+            int plateauStart;
+            int plateauEnd;
+            double swing;
 
-                            return
-                                StructuralEventRule.IsFreshBreak(
-                                    1,
-                                    bars.ClosePrices[index - 1],
-                                    bars.ClosePrices[index],
-                                    swing,
-                                    atr,
-                                    StructureBreakAtr);
-                        }
-        
+            if (!TryFindLatestSwingHigh(
+                    bars,
+                    index,
+                    SwingStrength,
+                    out plateauStart,
+                    out plateauEnd,
+                    out swing))
+                return false;
+
+            int confirmationIndex =
+                plateauEnd +
+                Math.Max(
+                    1,
+                    SwingStrength);
+
+            return StructuralEventRule.IsFreshBreak(
+                1,
+                confirmationIndex,
+                index,
+                swing,
+                atr,
+                StructureBreakAtr,
+                i => bars.ClosePrices[i]);
+        }
+
         private bool BearStructure(
-                            Bars bars,
-                            int index,
-                            double atr)
-                        {
-                            if (bars == null ||
-                                index < 1)
-                                return false;
+            Bars bars,
+            int index,
+            double atr)
+        {
+            if (bars == null ||
+                index < 1)
+                return false;
 
-                            double swing =
-                                FindSwingLow(
-                                    bars,
-                                    index,
-                                    SwingStrength,
-                                    1);
+            int plateauStart;
+            int plateauEnd;
+            double swing;
 
-                            return
-                                StructuralEventRule.IsFreshBreak(
-                                    -1,
-                                    bars.ClosePrices[index - 1],
-                                    bars.ClosePrices[index],
-                                    swing,
-                                    atr,
-                                    StructureBreakAtr);
-                        }
-        
+            if (!TryFindLatestSwingLow(
+                    bars,
+                    index,
+                    SwingStrength,
+                    out plateauStart,
+                    out plateauEnd,
+                    out swing))
+                return false;
+
+            int confirmationIndex =
+                plateauEnd +
+                Math.Max(
+                    1,
+                    SwingStrength);
+
+            return StructuralEventRule.IsFreshBreak(
+                -1,
+                confirmationIndex,
+                index,
+                swing,
+                atr,
+                StructureBreakAtr,
+                i => bars.ClosePrices[i]);
+        }
+
         private bool BullMss(
-                            Bars bars,
-                            int index,
-                            double atr)
-                        {
-                            if (!UseMssChoch ||
-                                bars == null ||
-                                index < 2)
-                                return false;
+            Bars bars,
+            int index,
+            double atr)
+        {
+            if (!UseMssChoch ||
+                bars == null ||
+                index < 2)
+                return false;
 
-                            double previous =
-                                FindSwingHigh(
-                                    bars,
-                                    index - 1,
-                                    SwingStrength,
-                                    1);
+            int plateauStart;
+            int plateauEnd;
+            double previous;
 
-                            return
-                                StructuralEventRule.IsFreshBreak(
-                                    1,
-                                    bars.ClosePrices[index - 1],
-                                    bars.ClosePrices[index],
-                                    previous,
-                                    atr,
-                                    StructureBreakAtr);
-                        }
-        
+            if (!TryFindLatestSwingHigh(
+                    bars,
+                    index - 1,
+                    SwingStrength,
+                    out plateauStart,
+                    out plateauEnd,
+                    out previous))
+                return false;
+
+            int confirmationIndex =
+                plateauEnd +
+                Math.Max(
+                    1,
+                    SwingStrength);
+
+            return StructuralEventRule.IsFreshBreak(
+                1,
+                confirmationIndex,
+                index,
+                previous,
+                atr,
+                StructureBreakAtr,
+                i => bars.ClosePrices[i]);
+        }
+
         private bool BearMss(
-                            Bars bars,
-                            int index,
-                            double atr)
-                        {
-                            if (!UseMssChoch ||
-                                bars == null ||
-                                index < 2)
-                                return false;
+            Bars bars,
+            int index,
+            double atr)
+        {
+            if (!UseMssChoch ||
+                bars == null ||
+                index < 2)
+                return false;
 
-                            double previous =
-                                FindSwingLow(
-                                    bars,
-                                    index - 1,
-                                    SwingStrength,
-                                    1);
+            int plateauStart;
+            int plateauEnd;
+            double previous;
 
-                            return
-                                StructuralEventRule.IsFreshBreak(
-                                    -1,
-                                    bars.ClosePrices[index - 1],
-                                    bars.ClosePrices[index],
-                                    previous,
-                                    atr,
-                                    StructureBreakAtr);
-                        }
+            if (!TryFindLatestSwingLow(
+                    bars,
+                    index - 1,
+                    SwingStrength,
+                    out plateauStart,
+                    out plateauEnd,
+                    out previous))
+                return false;
+
+            int confirmationIndex =
+                plateauEnd +
+                Math.Max(
+                    1,
+                    SwingStrength);
+
+            return StructuralEventRule.IsFreshBreak(
+                -1,
+                confirmationIndex,
+                index,
+                previous,
+                atr,
+                StructureBreakAtr,
+                i => bars.ClosePrices[i]);
+        }
         
         private bool BullChoch(
                             Bars bars,

@@ -80,6 +80,30 @@ an artificial unit weight.
 Parallel timeframe scenario enrichment reuses the canonical per-frame evidence owner and must not maintain a second raw boolean counter.
 
 Indicator-group count is provenance only; existing decision quality, confidence and actionability authorities remain unchanged.
+### Structural event and alert-delivery ownership
+
+Canonical swing plateaus are owned by `SwingPlateauRule`. Structure, MSS and
+CHOCH consume confirmed swing state through `StructuralEventRule`; a break is
+fresh only while no earlier closed bar after swing confirmation has already
+crossed the same structural threshold. `StructuralEvidenceRule` collapses
+same-causal Structure/MSS/CHOCH labels so they cannot become duplicate evidence
+or duplicate user-facing structural alert events.
+
+Liquidity sweeps consume the canonical confirmed swing and
+`LiquiditySweepRule.IsActiveUnbrokenLevel`; prior closes can invalidate a
+liquidity level before the sweep bar, preventing stale-level reuse.
+
+`AlertDeliveryQueue` is the single bounded runtime queue for audible and popup
+alert delivery. `AlertEngine` creates one event and never directly plays a
+sound or overwrites popup UI. Calculation and timer boundaries drain the same
+queue. The delivery processor updates the popup surface first and then emits
+the sound cue, keeping the two user-facing channels on one event boundary.
+Platform sound-type resolution occurs only at that cTrader delivery boundary.
+
+Explicit entry-restriction notifications are diagnostic alerts, not trade/signal
+creation; they remain subject to their configured alert controls. A blocked
+candidate still cannot create an actionable signal or trade side effect.
+
 ### Canonical calculation-market context
 
 The calculation runtime owns one `CalculationMarketContext` per live calculation

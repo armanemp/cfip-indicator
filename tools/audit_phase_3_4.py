@@ -18,10 +18,10 @@ sync = read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 renderer = read("src/CFIP.Indicator/UI/Popup/PopupRenderer.cs")
-processor = read("src/CFIP.Indicator/UI/Popup/PopupQueueProcessor.cs")
+processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
 remover = read("src/CFIP.Indicator/UI/Popup/PopupRemover.cs")
 initialization = read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
-queue = read("src/CFIP.Indicator/Core/Runtime/PopupAlertQueue.cs")
+queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
@@ -50,24 +50,24 @@ checks = {
         "_executionToggleSyncing = true" in sync and
         "EnsureExecutionRuntimeState();" in sync
     ),
-    "popup queue is owned by runtime state": (
-        "PopupAlertQueue(16)" in state and
+    "alert delivery queue is owned by runtime state": (
+        "AlertDeliveryQueue(16)" in state and
         "_popupCritical" in state
     ),
-    "popup queue is bounded": (
+    "alert delivery queue is bounded": (
         "_capacity" in queue and
         "return false;" in queue
     ),
-    "critical popup alerts have priority": (
+    "critical alert deliveries have priority": (
         "if (_critical.Count > 0)" in queue and
-        "if (critical)" in queue
+        "if (delivery.Critical)" in queue
     ),
-    "normal popup overflow cannot grow the queue": (
+    "normal alert overflow cannot grow the queue": (
         "else" in queue and
         "return false;" in queue
     ),
-    "alert engine queues popups instead of overwriting the live control": (
-        "_popupAlertQueue.Enqueue(" in alerts and
+    "alert engine queues one delivery event": (
+        "_alertDeliveryQueue.Enqueue(" in alerts and
         "ShowPopup(message)" not in alerts
     ),
     "popup renderer tracks priority": (
@@ -75,30 +75,32 @@ checks = {
         "bool critical)" in renderer and
         "_popupCritical =\n                                critical;" in renderer
     ),
-    "popup processor is the only queue-to-render handoff": (
-        "ShowPopup(next.Message, next.Critical)" in processor and
-        "_popupAlertQueue.TryPeek" in processor
+    "alert delivery processor is the only queue-to-render handoff": (
+        "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor and
+        "_alertDeliveryQueue.TryPeek" in processor
     ),
-    "critical queued alert may preempt a normal active popup": (
-        "if (popupActive && !next.Critical)" in processor
+    "queued alert replaces prior popup at one delivery boundary": (
+        "if (next.ShowPopup)" in processor and
+        "if (_popup != null)" in processor and
+        "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor
     ),
     "popup priority resets on removal": (
         "_popupCritical = false;" in remover
     ),
-    "popup queue is drained outside Calculate": (
-        "RemoveExpiredPopup();\n                ProcessQueuedPopups();\n                HandleRuntimeHeartbeat();" in initialization
+    "alert delivery queue is drained at runtime boundaries": (
+        "RemoveExpiredPopup();\n                HandleRuntimeHeartbeat();\n                ProcessQueuedAlertDelivery();" in initialization
     ),
-    "popup queue is cleared on destroy": (
-        "_popupAlertQueue.ClearPendingAlerts();" in initialization
+    "alert delivery queue is cleared on destroy": (
+        "_alertDeliveryQueue.ClearPendingAlerts();" in initialization
     ),
     "deterministic re-arm runtime contract is registered": (
         "VerifyRuntimeExplicitRearmSemantics();" in contracts
     ),
-    "deterministic popup queue runtime contract is registered": (
-        "VerifyPopupAlertQueueSemantics();" in contracts
+    "deterministic alert delivery runtime contract is registered": (
+        "VerifyAlertDeliveryQueueSemantics();" in contracts
     ),
-    "popup queue is included in runtime contract build": (
-        "Core/Runtime/PopupAlertQueue.cs" in runtime_project
+    "alert delivery queue is included in runtime contract build": (
+        "Core/Runtime/AlertDeliveryQueue.cs" in runtime_project
     ),
     "CR3.4 static gate is wired into CI": (
         "python tools/audit_phase_3_4.py" in workflow
@@ -113,7 +115,7 @@ for name, ok in checks.items():
 # The handler must never reintroduce a parameter-dependent re-arm branch.
 # The queue itself must remain platform-neutral.
 if "cAlgo.API" in queue or "Indicator" in queue or "Chart." in queue:
-    print("FAIL | popup queue has a platform/UI dependency")
+    print("FAIL | alert delivery queue has a platform/UI dependency")
     errors.append("popup queue has a platform/UI dependency")
 
 # There should be one production popup render owner, plus the queue processor.
@@ -121,7 +123,7 @@ production = "\n".join(
     p.read_text(encoding="utf-8")
     for p in (ROOT / "src/CFIP.Indicator").rglob("*.cs")
 )
-if production.count("ShowPopup(next.Message, next.Critical)") != 1:
+if production.count("ShowPopup(\n                    next.Message,\n                    next.Critical)") != 1:
     print("FAIL | queued popup render handoff count is not exactly one")
     errors.append("queued popup render handoff count is not exactly one")
 
@@ -129,7 +131,7 @@ for path in (ROOT / "src/CFIP.Indicator").rglob("*.cs"):
     relative = path.relative_to(ROOT).as_posix()
     if relative in {
         "src/CFIP.Indicator/UI/Popup/PopupRenderer.cs",
-        "src/CFIP.Indicator/UI/Popup/PopupQueueProcessor.cs",
+        "src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs",
     }:
         continue
     if "ShowPopup(" in path.read_text(encoding="utf-8"):

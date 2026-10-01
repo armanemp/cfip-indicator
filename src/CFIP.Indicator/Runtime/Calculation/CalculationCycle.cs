@@ -72,6 +72,8 @@ namespace cAlgo
                     closedM5,
                     newClosedBar);
 
+                ProcessQueuedAlertDelivery();
+
                 CompleteRuntimeFaultCycle();
             }
             catch (OutOfMemoryException)

@@ -25,74 +25,100 @@ namespace cAlgo
                             _lastContextM5 =
                                 closedM5;
                 
-                            if (AlertOnBos &&
-                                (_m5Frame.StructureBull ||
-                                 _m5Frame.StructureBear))
+                            bool structuralBull =
+                                _m5Frame.StructureBull ||
+                                _m5Frame.MssBull ||
+                                _m5Frame.ChochBull;
+
+                            bool structuralBear =
+                                _m5Frame.StructureBear ||
+                                _m5Frame.MssBear ||
+                                _m5Frame.ChochBear;
+
+                            int structuralDirection =
+                                structuralBull && !structuralBear
+                                    ? 1
+                                    : structuralBear && !structuralBull
+                                        ? -1
+                                        : 0;
+
+                            if (structuralDirection != 0 &&
+                                (StructuralEvidenceRule.HasCanonicalStructuralEvent(
+                                     structuralDirection == 1
+                                         ? _m5Frame.StructureBull
+                                         : _m5Frame.StructureBear,
+                                     structuralDirection == 1
+                                         ? _m5Frame.MssBull
+                                         : _m5Frame.MssBear,
+                                     structuralDirection == 1
+                                         ? _m5Frame.ChochBull
+                                         : _m5Frame.ChochBear)))
                             {
-                                if (ShowContextEventMarker)
+                                bool sendBos =
+                                    AlertOnBos &&
+                                    (structuralDirection == 1
+                                        ? _m5Frame.StructureBull
+                                        : _m5Frame.StructureBear);
+
+                                bool sendMssChoch =
+                                    AlertOnMssChoch &&
+                                    (structuralDirection == 1
+                                        ? _m5Frame.MssBull ||
+                                          _m5Frame.ChochBull
+                                        : _m5Frame.MssBear ||
+                                          _m5Frame.ChochBear);
+
+                                // Structure/MSS/CHOCH are labels of one causal
+                                // break. Emit one user-facing event even when
+                                // several labels are simultaneously true.
+                                if (sendBos || sendMssChoch)
                                 {
-                                    int bar =
-                                        MapM5ToChart(
-                                            closedM5,
-                                            Bars.Count - 1);
-                
-                                    DrawIcon(
-                                        P + "BOS_MARKER",
-                                        _m5Frame.StructureBull
-                                            ? ChartIconType.UpArrow
-                                            : ChartIconType.DownArrow,
-                                        bar,
-                                        _m5Frame.StructureBull
-                                            ? Bars.LowPrices[bar]
-                                            : Bars.HighPrices[bar],
-                                        _m5Frame.StructureBull
-                                            ? BuyArrowColor
-                                            : SellArrowColor);
+                                    if (ShowContextEventMarker &&
+                                        sendBos)
+                                    {
+                                        int bar =
+                                            MapM5ToChart(
+                                                closedM5,
+                                                Bars.Count - 1);
+
+                                        DrawIcon(
+                                            P + "BOS_MARKER",
+                                            structuralDirection == 1
+                                                ? ChartIconType.UpArrow
+                                                : ChartIconType.DownArrow,
+                                            bar,
+                                            structuralDirection == 1
+                                                ? Bars.LowPrices[bar]
+                                                : Bars.HighPrices[bar],
+                                            structuralDirection == 1
+                                                ? BuyArrowColor
+                                                : SellArrowColor);
+                                    }
+
+                                    string alertType =
+                                        sendBos
+                                            ? "BOS"
+                                            : "MSS";
+
+                                    SendUnifiedAlert(
+                                        alertType +
+                                        "|" +
+                                        closedM5 +
+                                        "|" +
+                                        structuralDirection,
+                                        "CFIP " +
+                                        (sendBos
+                                            ? "BOS"
+                                            : "MSS/CHOCH") +
+                                        " | " +
+                                        (structuralDirection == 1
+                                            ? "BUY"
+                                            : "SELL"),
+                                        structuralDirection,
+                                        false);
                                 }
-                
-                                int direction =
-                                    _m5Frame.StructureBull
-                                        ? 1
-                                        : -1;
-                
-                                SendUnifiedAlert(
-                                    "BOS|" +
-                                    closedM5 +
-                                    "|" +
-                                    direction,
-                                    "CFIP BOS | " +
-                                    (direction == 1
-                                        ? "BUY"
-                                        : "SELL"),
-                                    direction,
-                                    false);
                             }
-                
-                            if (AlertOnMssChoch &&
-                                (_m5Frame.MssBull ||
-                                 _m5Frame.MssBear ||
-                                 _m5Frame.ChochBull ||
-                                 _m5Frame.ChochBear))
-                            {
-                                int direction =
-                                    _m5Frame.MssBull ||
-                                    _m5Frame.ChochBull
-                                        ? 1
-                                        : -1;
-                
-                                SendUnifiedAlert(
-                                    "MSS|" +
-                                    closedM5 +
-                                    "|" +
-                                    direction,
-                                    "CFIP MSS/CHOCH | " +
-                                    (direction == 1
-                                        ? "BUY"
-                                        : "SELL"),
-                                    direction,
-                                    false);
-                            }
-                
+
                             if (AlertOnLiquiditySweep &&
                                 (_m5Frame.LiquidityBull ||
                                  _m5Frame.LiquidityBear))

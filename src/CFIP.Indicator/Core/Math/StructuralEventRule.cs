@@ -11,24 +11,53 @@ namespace cAlgo
     {
         public static bool IsFreshBreak(
             int direction,
-            double previousClose,
-            double currentClose,
+            int confirmationIndex,
+            int currentIndex,
             double level,
             double atr,
-            double breakAtr)
+            double breakAtr,
+            Func<int, double> closeAt)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFiniteStructuralInput(previousClose) ||
-                !IsFiniteStructuralInput(currentClose) ||
+                confirmationIndex < 0 ||
+                currentIndex <= confirmationIndex ||
                 !IsFinitePositiveStructuralInput(level) ||
                 !IsFinitePositiveStructuralInput(atr) ||
-                !IsFiniteNonNegativeStructuralInput(breakAtr))
+                !IsFiniteNonNegativeStructuralInput(breakAtr) ||
+                closeAt == null)
                 return false;
 
             double threshold =
                 direction == 1
                     ? level + atr * breakAtr
                     : level - atr * breakAtr;
+
+            double previousClose =
+                closeAt(currentIndex - 1);
+            double currentClose =
+                closeAt(currentIndex);
+
+            if (!IsFiniteStructuralInput(previousClose) ||
+                !IsFiniteStructuralInput(currentClose))
+                return false;
+
+            for (int i = confirmationIndex + 1;
+                 i < currentIndex;
+                 i++)
+            {
+                double priorClose = closeAt(i);
+
+                if (!IsFiniteStructuralInput(priorClose))
+                    return false;
+
+                bool previouslyBroken =
+                    direction == 1
+                        ? priorClose > threshold
+                        : priorClose < threshold;
+
+                if (previouslyBroken)
+                    return false;
+            }
 
             return direction == 1
                 ? previousClose <= threshold &&

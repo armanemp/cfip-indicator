@@ -24,14 +24,14 @@ namespace cAlgo
                                     message))
                                 return;
 
-                            // Blocked candidates are deliberately silent. A rejected
-                            // signal must behave as though it never existed: no sound,
-                            // popup, email or visual-alert side effect.
-                            if (key.StartsWith(
-                                    "RESTRICT|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                message.StartsWith(
+                            // A blocked candidate does not create a trade/signal
+                            // side effect. An explicitly configured restriction alert
+                            // is a user-facing diagnostic event and remains deliverable.
+                            if (message.StartsWith(
                                     "CFIP ENTRY BLOCKED",
+                                    StringComparison.OrdinalIgnoreCase) &&
+                                !key.StartsWith(
+                                    "RESTRICT|",
                                     StringComparison.OrdinalIgnoreCase))
                                 return;
                 
@@ -115,32 +115,40 @@ namespace cAlgo
                                 direction,
                                 now);
                 
-                            if (EnableSoundAlerts)
+                            bool playSound =
+                                EnableSoundAlerts;
+
+                            SoundType soundType =
+                                ResolveAlertSoundType(
+                                    key,
+                                    critical);
+
+                            bool restrictionPopup =
+                                restrictionAlert &&
+                                ShowEntryRestrictionPopup;
+
+                            bool showPopup =
+                                ShowPopupAlerts &&
+                                (restrictionPopup ||
+                                 (!restrictionAlert &&
+                                  (!PopupCriticalOnly ||
+                                   critical)));
+
+                            if (playSound ||
+                                showPopup)
                             {
-                                try
-                                {
-                                    if (!string.IsNullOrWhiteSpace(
-                                            SoundFilePath))
-                                    {
-                                        Notifications.PlaySound(
-                                            SoundFilePath);
-                                    }
-                                    else
-                                    {
-                                        Notifications.PlaySound(
-                                            ResolveAlertSoundType(
-                                                key,
-                                                critical));
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Print(
-                                        "CFIP sound alert failed: {0}",
-                                        ex.Message);
-                                }
+                                _alertDeliveryQueue.Enqueue(
+                                    new AlertDelivery(
+                                        key,
+                                        message,
+                                        critical,
+                                        now,
+                                        playSound,
+                                        soundType.ToString(),
+                                        SoundFilePath,
+                                        showPopup));
                             }
-                
+
                             if (EnableEmailAlerts &&
                                 !string.IsNullOrWhiteSpace(
                                     SenderEmail) &&
@@ -164,21 +172,7 @@ namespace cAlgo
                                 }
                             }
                 
-                            bool restrictionPopup =
-                                restrictionAlert &&
-                                ShowEntryRestrictionPopup;
-                
-                            if (ShowPopupAlerts &&
-                                (restrictionPopup ||
-                                 (!restrictionAlert &&
-                                  (!PopupCriticalOnly ||
-                                   critical))))
-                            {
-                                _popupAlertQueue.Enqueue(
-                                    message,
-                                    critical,
-                                    now);
-                            }
+
                         }
 
         private bool IsVisualSignalAlertKey(

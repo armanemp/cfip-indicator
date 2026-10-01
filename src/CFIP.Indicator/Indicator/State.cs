@@ -300,8 +300,8 @@ namespace cAlgo
                 private ToggleButton _autoTradingQuickToggle;
                 private ToggleButton _automaticOrdersQuickToggle;
         
-                private readonly PopupAlertQueue _popupAlertQueue =
-                    new PopupAlertQueue(16);
+                private readonly AlertDeliveryQueue _alertDeliveryQueue =
+                    new AlertDeliveryQueue(16);
                 private bool _popupCritical;
 
                 private Border _popup;

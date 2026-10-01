@@ -82,9 +82,11 @@ check('runtime CI-03 contracts are wired',
 check('CI-03 audit is accumulated immediately after CI-02',
       'audit_phase_ci_02.py' in workflow and 'audit_phase_ci_03.py' in workflow and
       workflow.index('audit_phase_ci_03.py') > workflow.index('audit_phase_ci_02.py'))
-check('CI-03 is the active documented phase',
-      'CI-03 — Indicator fusion / correlation / evidence independence' in roadmap and
-      'CI-03 — Indicator fusion / correlation / evidence independence' in continuation)
+check('CI-03 remains recorded as completed while CI-04 is active',
+      'CI-03' in roadmap and
+      'CI-03 is verified complete and merged to `main` via PR #157' in continuation and
+      'CI-04 is in implementation' in roadmap and
+      'CI-04 — Structure / swing / liquidity semantics' in continuation)
 
 print('CI-03 INDICATOR FUSION / EVIDENCE INDEPENDENCE SUMMARY')
 print('=' * 72)
