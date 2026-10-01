@@ -51,6 +51,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/M1TriggerRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TriggerThresholdRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TriggerLifecycleRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Planning/Entry/TriggerRuntimeState.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TopDownCalibrationRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TopDownCalibrationGroupResult.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SwingPlateauRule.cs" />
