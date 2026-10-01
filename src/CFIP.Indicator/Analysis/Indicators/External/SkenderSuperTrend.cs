@@ -22,17 +22,16 @@ namespace cAlgo
                 quotes.Count < OssIndicatorParameters.SuperTrendMinimumHistory)
                 return double.NaN;
 
-            var results =
+            var last =
                 StockIndicator.GetSuperTrend(
                     quotes,
                     OssIndicatorSettings.Default.SuperTrendPeriod,
                     OssIndicatorSettings.Default.SuperTrendMultiplier)
-                    .ToList();
+                    .LastOrDefault();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].SuperTrend.HasValue
+            return last == null || !last.SuperTrend.HasValue
                 ? double.NaN
-                : (double)results[results.Count - 1].SuperTrend.Value;
+                : (double)last.SuperTrend.Value;
         }
     }
 }
