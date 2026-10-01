@@ -18,6 +18,8 @@ namespace cAlgo
                 private Bars _d1Bars;
                 private Bars _w1Bars;
         
+                private MarketRegimeSnapshot _m5RegimeSnapshot;
+                private int _m5RegimeSnapshotIndex = -1;
                 private readonly M5RegimeCoreCache _m5RegimeCoreCache = new M5RegimeCoreCache();
 
                 private Frame _m1Frame;
