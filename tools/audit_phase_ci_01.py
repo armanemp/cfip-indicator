@@ -23,6 +23,10 @@ def check(name, condition):
         errors.append(name)
 
 
+def has_pattern(text, pattern):
+    return re.search(pattern, text, re.MULTILINE | re.DOTALL) is not None
+
+
 atr = read("src/CFIP.Indicator/Analysis/Indicators/AverageTrueRange.cs")
 adx = read("src/CFIP.Indicator/Analysis/Indicators/AverageDirectionalIndex.cs")
 dmi = read("src/CFIP.Indicator/Analysis/Indicators/DirectionalMovementIndex.cs")
@@ -114,7 +118,10 @@ check(
     "VWAP uses exactly N bars and never invents volume for zero-volume samples",
     "int length" in vwap and
     "index - length + 1" in vwap and
-    "Math.Max(0" in vwap and
+    has_pattern(
+        vwap,
+        r"Math\.Max\s*\(\s*0\s*,\s*bars\.TickVolumes\[i\]"
+    ) and
     "VwapBiasRule.AccumulateVolume(" in vwap,
 )
 
@@ -122,7 +129,10 @@ check(
     "Volume expansion uses actual bar range rather than pip-scale distortion",
     "double currentRange" in volume and
     "bars.HighPrices[index] -" in volume and
-    "Math.Max(1.0" in volume_rule and
+    has_pattern(
+        volume_rule,
+        r"Math\.Max\s*\(\s*1\.0\s*,\s*expansionRatio\s*\)"
+    ) and
     "VolumeExpansionRule.IsExpanded(" in volume,
 )
 
