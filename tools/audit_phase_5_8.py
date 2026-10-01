@@ -57,7 +57,7 @@ def calls_with_last_lane(source, method_name):
 check(
     "E8 centralizes required RR construction in one Core rule",
     "class TargetSelectionRequiredRrRule" in rr_rule and
-    "TargetSelectionRequiredRrRule.Build(" in policy and
+    "TargetSelectionRequiredRrRule.BuildRequiredRrLadder(" in policy and
     "TargetSelectionRequiredRrRule.cs" in contract_project,
 )
 
