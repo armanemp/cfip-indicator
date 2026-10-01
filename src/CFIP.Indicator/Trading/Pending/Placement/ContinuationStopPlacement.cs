@@ -50,7 +50,7 @@ namespace cAlgo
                     return false;
                 }
 
-                _lastPendingSignalM5 = closedM5; _plan = null; _executionModel = null; RemovePlanObjects();
+                _pendingOrderPlanSnapshot = CapturePendingOrderPlanSnapshot(); _lastPendingSignalM5 = closedM5; _plan = null; _executionModel = null; RemovePlanObjects();
                 ReportConfirmedPendingOrderPlacement(result.PendingOrder, direction, closedM5, "STOP");
                 return true;
             }
