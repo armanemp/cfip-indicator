@@ -15,8 +15,6 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private bool _panelExecutionProtectionStateCached;
-        private Position _panelExecutionManagedPosition;
-        private PendingOrder _panelExecutionManagedPending;
         private ExecutionPanelStateKind _panelAutoTradingState;
         private ExecutionPanelStateKind _panelAutoOrdersState;
         private ProtectionPanelStateKind _panelProtectionState;
@@ -36,12 +34,6 @@ namespace cAlgo
 
             PendingOrder managedPending =
                 GetManagedPendingOrder();
-
-            _panelExecutionManagedPosition =
-                managedPosition;
-
-            _panelExecutionManagedPending =
-                managedPending;
 
             string executionReason =
                 _autoExecutionBlockReason ?? "";
