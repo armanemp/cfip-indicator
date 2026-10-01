@@ -108,8 +108,7 @@ check(
 check(
     "market-state snapshot is built once before decision evaluation",
     "BuildMarketStateSnapshot(" in closed_stage and
-    "_marketStateSnapshot =
-                BuildMarketStateSnapshot(" in closed_stage and
+    "_marketStateSnapshot =\n                BuildMarketStateSnapshot(" in closed_stage and
     "_marketStateSnapshot == null" in closed_stage
 )
 
