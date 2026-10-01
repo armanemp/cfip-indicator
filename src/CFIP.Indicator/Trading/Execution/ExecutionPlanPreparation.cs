@@ -256,28 +256,28 @@ namespace cAlgo
                                 ? NormalizePrice(tp4) : 0;
                 
                             ApplySelectedTargetMeta(
-                                new List<Level>(selected),
+                                selected,
                                 0,
                                 _plan.Tp1,
                                 out _plan.Tp1Source,
                                 out _plan.Tp1Quality);
 
                             ApplySelectedTargetMeta(
-                                new List<Level>(selected),
+                                selected,
                                 1,
                                 _plan.Tp2,
                                 out _plan.Tp2Source,
                                 out _plan.Tp2Quality);
 
                             ApplySelectedTargetMeta(
-                                new List<Level>(selected),
+                                selected,
                                 2,
                                 _plan.Tp3,
                                 out _plan.Tp3Source,
                                 out _plan.Tp3Quality);
 
                             ApplySelectedTargetMeta(
-                                new List<Level>(selected),
+                                selected,
                                 3,
                                 _plan.Tp4,
                                 out _plan.Tp4Source,
