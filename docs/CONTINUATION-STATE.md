@@ -524,8 +524,8 @@ Safety/manual boundary:
 
 ## Current active phase
 
-CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.
+CR5.6 / E6 — Directional-bias semantics and canonical M5 closed-bar consistency.
 
 ### Next transition
 
-Execute CR5.5 / E5 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
+Execute CR5.6 / E6 only; after repository verification advance to CR5.7 / E7. CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
