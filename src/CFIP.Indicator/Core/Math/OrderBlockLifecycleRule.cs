@@ -18,7 +18,7 @@ namespace cAlgo
     {
         public const double MinimumRetainedRatio = 0.05;
 
-        public static bool IsAgeValid(
+        public static bool IsOrderBlockAgeValid(
             int createdIndex,
             int currentIndex,
             int maximumAgeBars)
@@ -29,11 +29,11 @@ namespace cAlgo
                    currentIndex - createdIndex <= maximumAgeBars;
         }
 
-        public static OrderBlockLifecycleState Classify(
+        public static OrderBlockLifecycleState ClassifyOrderBlockLifecycle(
             bool partiallyMitigated,
             double remainingRatio)
         {
-            if (!IsFinite(remainingRatio) ||
+            if (!IsFiniteOrderBlockLifecycleValue(remainingRatio) ||
                 remainingRatio <= MinimumRetainedRatio)
                 return OrderBlockLifecycleState.Broken;
 
@@ -42,7 +42,7 @@ namespace cAlgo
                 : OrderBlockLifecycleState.Fresh;
         }
 
-        public static double ResolveMitigationProbe(
+        public static double ResolveOrderBlockMitigationProbe(
             int direction,
             double open,
             double close,
@@ -53,10 +53,10 @@ namespace cAlgo
             if (direction != 1 && direction != -1)
                 return double.NaN;
 
-            if (!IsFinite(open) ||
-                !IsFinite(close) ||
-                !IsFinite(high) ||
-                !IsFinite(low))
+            if (!IsFiniteOrderBlockLifecycleValue(open) ||
+                !IsFiniteOrderBlockLifecycleValue(close) ||
+                !IsFiniteOrderBlockLifecycleValue(high) ||
+                !IsFiniteOrderBlockLifecycleValue(low))
                 return double.NaN;
 
             return direction == 1
@@ -68,15 +68,15 @@ namespace cAlgo
                     : Math.Max(open, close));
         }
 
-        public static bool IsFullyMitigated(
+        public static bool IsOrderBlockFullyMitigated(
             int direction,
             double zoneLow,
             double zoneHigh,
             double probe)
         {
-            if (!IsValidDirection(direction) ||
-                !IsValidGeometry(zoneLow, zoneHigh) ||
-                !IsFinite(probe))
+            if (!IsValidOrderBlockLifecycleDirection(direction) ||
+                !IsValidOrderBlockLifecycleGeometry(zoneLow, zoneHigh) ||
+                !IsFiniteOrderBlockLifecycleValue(probe))
                 return false;
 
             return direction == 1
@@ -84,7 +84,7 @@ namespace cAlgo
                 : probe >= zoneHigh;
         }
 
-        public static bool TryApplyPartialMitigation(
+        public static bool TryApplyOrderBlockPartialMitigation(
             int direction,
             double zoneLow,
             double zoneHigh,
@@ -102,13 +102,13 @@ namespace cAlgo
             remainingRatio = 0;
             lifecycleState = OrderBlockLifecycleState.Broken;
 
-            if (!IsValidDirection(direction) ||
-                !IsValidGeometry(zoneLow, zoneHigh) ||
-                !IsFinitePositive(probe) ||
-                !IsFinitePositive(tickSize))
+            if (!IsValidOrderBlockLifecycleDirection(direction) ||
+                !IsValidOrderBlockLifecycleGeometry(zoneLow, zoneHigh) ||
+                !IsFinitePositiveOrderBlockLifecycleValue(probe) ||
+                !IsFinitePositiveOrderBlockLifecycleValue(tickSize))
                 return false;
 
-            if (IsFullyMitigated(
+            if (IsOrderBlockFullyMitigated(
                     direction,
                     zoneLow,
                     zoneHigh,
@@ -149,7 +149,7 @@ namespace cAlgo
                     originalWidth);
 
             lifecycleState =
-                Classify(
+                ClassifyOrderBlockLifecycle(
                     partiallyMitigated,
                     remainingRatio);
 
@@ -161,29 +161,29 @@ namespace cAlgo
                    managedWidth > tickSize;
         }
 
-        private static bool IsValidGeometry(
+        private static bool IsValidOrderBlockLifecycleGeometry(
             double low,
             double high)
         {
             return
-                IsFinite(low) &&
-                IsFinite(high) &&
+                IsFiniteOrderBlockLifecycleValue(low) &&
+                IsFiniteOrderBlockLifecycleValue(high) &&
                 low < high;
         }
 
-        private static bool IsValidDirection(int direction)
+        private static bool IsValidOrderBlockLifecycleDirection(int direction)
         {
             return direction == 1 || direction == -1;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveOrderBlockLifecycleValue(double value)
         {
             return
-                IsFinite(value) &&
+                IsFiniteOrderBlockLifecycleValue(value) &&
                 value > 0;
         }
 
-        private static bool IsFinite(double value)
+        private static bool IsFiniteOrderBlockLifecycleValue(double value)
         {
             return
                 !double.IsNaN(value) &&
