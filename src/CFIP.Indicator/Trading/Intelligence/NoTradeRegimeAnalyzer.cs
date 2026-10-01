@@ -22,12 +22,12 @@ namespace cAlgo
                                 return true;
                 
                             if (BlockCompressionRegime &&
-                                regime == "COMPRESSION")
+                                regime == MarketRegimeIdentity.Compression)
                                 return true;
                 
                             if (BlockWeakRangeTransition &&
-                                (regime == "RANGE" ||
-                                 regime == "TRANSITION") &&
+                                (regime == MarketRegimeIdentity.Range ||
+                                 regime == MarketRegimeIdentity.Transition) &&
                                 quality <
                                 SmartRegimeQualityFloor)
                                 return true;

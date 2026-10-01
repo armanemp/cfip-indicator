@@ -377,7 +377,7 @@ namespace cAlgo
 
             if (string.Equals(
                     regime,
-                    "TREND",
+                    MarketRegimeIdentity.Trend,
                     StringComparison.OrdinalIgnoreCase))
             {
                 trendWeight = 1.30;
@@ -386,7 +386,7 @@ namespace cAlgo
             }
             else if (string.Equals(
                          regime,
-                         "EXPANSION",
+                         MarketRegimeIdentity.Expansion,
                          StringComparison.OrdinalIgnoreCase))
             {
                 trendWeight = 1.05;
@@ -395,7 +395,7 @@ namespace cAlgo
             }
             else if (string.Equals(
                          regime,
-                         "RANGE",
+                         MarketRegimeIdentity.Range,
                          StringComparison.OrdinalIgnoreCase))
             {
                 trendWeight = 0.60;
@@ -404,7 +404,7 @@ namespace cAlgo
             }
             else if (string.Equals(
                          regime,
-                         "TRANSITION",
+                         MarketRegimeIdentity.Transition,
                          StringComparison.OrdinalIgnoreCase))
             {
                 trendWeight = 0.80;
@@ -413,7 +413,7 @@ namespace cAlgo
             }
             else if (string.Equals(
                          regime,
-                         "HIGH_VOLATILITY",
+                         MarketRegimeIdentity.HighVolatility,
                          StringComparison.OrdinalIgnoreCase))
             {
                 trendWeight = 0.90;
@@ -422,7 +422,7 @@ namespace cAlgo
             }
             else if (string.Equals(
                          regime,
-                         "COMPRESSION",
+                         MarketRegimeIdentity.Compression,
                          StringComparison.OrdinalIgnoreCase))
             {
                 trendWeight = 0.50;

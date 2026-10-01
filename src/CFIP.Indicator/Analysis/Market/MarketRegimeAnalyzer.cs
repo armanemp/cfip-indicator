@@ -113,7 +113,7 @@ namespace cAlgo
             MarketRegimeSnapshot snapshot =
                 new MarketRegimeSnapshot
                 {
-                    Regime = "UNKNOWN",
+                    Regime = MarketRegimeIdentity.Unknown,
                     Quality = 35,
                     Direction = 0,
                     Choppiness = 100,

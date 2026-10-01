@@ -1622,6 +1622,30 @@ Testing:
 - unknown/future values fail safely;
 - BUY/SELL symmetry.
 
+### CR6.4 / F5 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — repository implementation completed without threshold tuning.**
+
+Reconciled:
+- the canonical classifier has six market regimes plus UNKNOWN; REVERSAL is not a classifier state;
+- MarketRegimeIdentity now centralizes regime identifiers and normalization;
+- Smart Threshold adaptation is platform-neutral and consumes the same identity vocabulary;
+- the dead REVERSAL Smart Threshold branch is removed;
+- unknown/future regime values fail safely to the base threshold path;
+- reviewed regime consumers were migrated to canonical identities;
+- deterministic contracts cover all six regimes and current numeric behavior;
+- the accumulated Source/Architecture gate includes F5.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no default smart/regime threshold, RR, confidence or execution policy changed;
+- no second decision or regime authority introduced.
+
+Verification boundary:
+- repository CI supplies source/compile/contract evidence;
+- target-terminal runtime and empirical signal-quality validation remain manual.
+
+Next phase: **CR6.5 / F6 — Trap-risk/trigger exceptions and actionability constant ownership.**
 ### CR6.5 — Trap-risk/trigger exceptions and actionability constant ownership (F6)
 
 Initial review label: **DESIGN RISK + PARTIAL SEMANTIC FINDING — must distinguish intentional breakout policy from accidental bypass.**
@@ -1753,7 +1777,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path**.
+Current active phase: **CR6.5 / F6 — Trap-risk/trigger exceptions and actionability constant ownership**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 

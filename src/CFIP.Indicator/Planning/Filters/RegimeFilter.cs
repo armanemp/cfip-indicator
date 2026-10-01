@@ -186,7 +186,7 @@ namespace cAlgo
                                         index);
 
                                 return active == null
-                                    ? "UNKNOWN"
+                                    ? MarketRegimeIdentity.Unknown
                                     : active.Regime;
                             }
 

@@ -42,6 +42,9 @@ frame_cache = read(
 resolution_rule = read(
     "src/CFIP.Indicator/Core/Math/FrameRegimeResolutionRule.cs"
 )
+regime_identity = read(
+    "src/CFIP.Indicator/Core/Math/MarketRegimeIdentity.cs"
+)
 fusion = read(
     "src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs"
 )
@@ -99,21 +102,34 @@ check(
 )
 check(
     "UNKNOWN regime is explicitly neutral",
-    'public const string Unknown = "UNKNOWN";' in resolution_rule
-    and "UNKNOWN is intentionally neutral" in fusion
-    and "double trendWeight = 1.0;" in fusion
-    and "double momentumWeight = 1.0;" in fusion
-    and "double contextWeight = 1.0;" in fusion,
+    (
+        ('public const string Unknown = "UNKNOWN";' in resolution_rule
+         or 'public const string Unknown = "UNKNOWN";' in regime_identity)
+        and "UNKNOWN is intentionally neutral" in fusion
+        and "double trendWeight = 1.0;" in fusion
+        and "double momentumWeight = 1.0;" in fusion
+        and "double contextWeight = 1.0;" in fusion
+    ),
 )
 check(
     "recognized regime names are normalized symmetrically",
-    "ToUpperInvariant()" in resolution_rule
-    and "TREND" in resolution_rule
-    and "EXPANSION" in resolution_rule
-    and "RANGE" in resolution_rule
-    and "TRANSITION" in resolution_rule
-    and "HIGH_VOLATILITY" in resolution_rule
-    and "COMPRESSION" in resolution_rule,
+    (
+        ("ToUpperInvariant()" in resolution_rule and
+         "TREND" in resolution_rule and
+         "EXPANSION" in resolution_rule and
+         "RANGE" in resolution_rule and
+         "TRANSITION" in resolution_rule and
+         "HIGH_VOLATILITY" in resolution_rule and
+         "COMPRESSION" in resolution_rule)
+        or
+        ("ToUpperInvariant()" in regime_identity and
+         "MarketRegimeIdentity.Trend" in fusion and
+         "MarketRegimeIdentity.Expansion" in fusion and
+         "MarketRegimeIdentity.Range" in fusion and
+         "MarketRegimeIdentity.Transition" in fusion and
+         "MarketRegimeIdentity.HighVolatility" in fusion and
+         "MarketRegimeIdentity.Compression" in fusion)
+    ),
 )
 check(
     "all canonical MTF frames are analyzed independently",
