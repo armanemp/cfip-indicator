@@ -76,7 +76,9 @@ check(
     "WaveTrend MFI uses canonical non-synthetic tick-volume semantics",
     "WaveTrendMoneyFlowRule.TryCalculateContribution(" in wt_engine and
     "Math.Max(\n                        1.0,\n                        _bars.TickVolumes[j])" not in wt_engine and
-    "zero tick volume" in wt_money.lower()
+    "tickVolume <= 0" in wt_money and
+    "positiveFlow = 0" in wt_money and
+    "negativeFlow = 0" in wt_money
 )
 
 check(
