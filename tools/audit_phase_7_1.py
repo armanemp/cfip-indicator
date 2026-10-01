@@ -55,9 +55,9 @@ check(
 
 check(
     "coordinator preserves an existing protective SL when it is too close to market",
-    "bool currentStopHealthy" in coordinator and
+    "bool currentStopValid" in coordinator and
     "IsExistingManagedStopHealthy(" in coordinator and
-    "else if (currentStopHealthy &&" in coordinator
+    "else if (currentStopValid &&" in coordinator
 )
 
 check(
@@ -67,7 +67,7 @@ check(
 
 check(
     "bound-plan protection keeps an existing healthy SL authoritative",
-    "bool brokerStopHealthy" in bound and
+    "bool brokerStopValid" in bound and
     "IsExistingManagedStopHealthy(" in bound and
     "ProtectionProgressionRule.ShouldAdvanceStop(" in bound
 )
