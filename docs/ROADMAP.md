@@ -714,6 +714,18 @@ The authoritative detailed specification is:
 The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
 blocking correctness gate inserted before the next unfinished refinement phase.
 
+**Current implementation phase: CI-04 — Structure / swing / liquidity semantics.**
+
+Status: **IN IMPLEMENTATION — structural freshness, swing/liquidity validity, and
+cross-channel alert delivery synchronization are being hardened before merge.**
+
+Cross-cutting alert correction included in this phase:
+- one bounded AlertDeliveryQueue owns sound + popup delivery;
+- the same queued event drives popup presentation and its sound cue;
+- popup replacement and sound emission occur at one delivery boundary;
+- direct Notifications.PlaySound ownership is removed from AlertEngine;
+- same-causal BOS/MSS/CHOCH alert duplication is collapsed.
+
 Sequence:
 
 ```
