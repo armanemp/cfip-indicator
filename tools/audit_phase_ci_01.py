@@ -117,7 +117,10 @@ check(
 check(
     "VWAP uses exactly N bars and never invents volume for zero-volume samples",
     "int length" in vwap and
-    "index - length + 1" in vwap and
+    has_pattern(
+        vwap,
+        r"index\s*-\s*length\s*\+\s*1"
+    ) and
     has_pattern(
         vwap,
         r"Math\.Max\s*\(\s*0\s*,\s*bars\.TickVolumes\[i\]"
