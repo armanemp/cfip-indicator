@@ -1850,7 +1850,7 @@ Verification boundary:
 
 ### CR6.9 / F3 closeout — 2026-10-01
 
-Status: **IMPLEMENTED — repository CI verification pending on the final F3 head.**
+Status: **VERIFIED COMPLETE — Source/Architecture #2255, Runtime Acceptance #2064 and cTrader Compile #2248 passed on F3 implementation head `9b408ff7bcea45b03015e0b81f2e65a76c995b63`; merged via PR #137.**
 
 **تأیید می‌کنم** — the invalid-stop success path in `OrphanManagedProtection.ProtectOrphanManagedPosition` has been corrected fail-closed.
 

@@ -5541,7 +5541,7 @@ Verification boundary:
 
 ### CR6.9 / F3 closeout — 2026-10-01
 
-Status: **IMPLEMENTED — repository CI verification pending on the final F3 head.**
+Status: **VERIFIED COMPLETE — Source/Architecture #2255, Runtime Acceptance #2064 and cTrader Compile #2248 passed on F3 implementation head `9b408ff7bcea45b03015e0b81f2e65a76c995b63`; merged via PR #137.**
 
 **تأیید می‌کنم** — F3 invalid-stop success reporting was corrected fail-closed.
 
@@ -5742,5 +5742,5 @@ These are not treated as bugs until independently verified.
 
 **CR7.1 / G1 — Broker protection must never increase live position risk.**
 
-CR6.9 / F3 has been implemented with fail-closed orphan-position protection. Prompt 7 G1 is now the next mandatory phase. CR-FINAL remains paused until the remediation sequence and required acceptance evidence are completed.
+CR6.9 / F3 has been verified with fail-closed orphan-position protection. Source/Architecture #2255, Runtime Acceptance #2064 and cTrader Compile #2248 all passed on the implementation head before merge. Prompt 7 G1 is now the next mandatory phase. CR-FINAL remains paused until the remediation sequence and required acceptance evidence are completed.
 
