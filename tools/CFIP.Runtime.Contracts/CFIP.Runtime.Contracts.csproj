@@ -44,6 +44,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RejectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ReactionQualificationRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/MicroReactionSafetyRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorExecutionQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PendingDecisionArbiterRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Plan.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Execution/ScenarioExecutionPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/ParallelScenarioGeometry.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/DivergenceResult.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeActionabilityResult.cs" />
