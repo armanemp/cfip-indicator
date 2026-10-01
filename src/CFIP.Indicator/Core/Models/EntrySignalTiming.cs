@@ -11,17 +11,17 @@ namespace cAlgo
 
         public EntrySignalTiming(
             bool measured,
-            long causalEventUtcTicks,
-            long actionableUtcTicks,
-            long latencyMilliseconds)
+            long causalEventUtcTicksValue,
+            long actionableUtcTicksValue,
+            long latencyMillisecondsValue)
         {
             Measured = measured;
-            CausalEventUtcTicks = causalEventUtcTicks;
-            ActionableUtcTicks = actionableUtc;
+            CausalEventUtcTicks = causalEventUtcTicksValue;
+            ActionableUtcTicks = actionableUtcTicksValue;
             LatencyMilliseconds =
-                latencyMilliseconds < 0
+                latencyMillisecondsValue < 0
                     ? 0
-                    : latencyMilliseconds;
+                    : latencyMillisecondsValue;
         }
 
         public static EntrySignalTiming NotMeasured()
