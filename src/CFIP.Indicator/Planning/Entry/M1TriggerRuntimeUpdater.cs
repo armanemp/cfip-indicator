@@ -132,7 +132,7 @@ namespace cAlgo
 
                 if (_decision != null)
                     _decision.TriggerReady =
-                        _triggerRuntime.Latched;
+                        _triggerRuntime.Ready;
 
                 return;
             }
@@ -281,17 +281,6 @@ namespace cAlgo
 
             _triggerRuntime.Score = score;
             _triggerRuntime.RequiredScore = required;
-            _triggerRuntime.Ready =
-                TriggerLifecycleRule.IsConfirmed(
-                    m5Ready,
-                    UseM1Trigger,
-                    _triggerRuntime.Latched || ready);
-
-            _triggerRuntime.Reason =
-                _triggerRuntime.Ready
-                    ? "M1 TRIGGER CONFIRMED"
-                    : "M1 TRIGGER WAIT";
-            _triggerRuntime.UpdatedUtc = reference;
 
             if (TriggerLifecycleRule.ShouldRecordNewConfirmation(
                     _triggerRuntime.ConfirmedM1,
@@ -309,6 +298,12 @@ namespace cAlgo
                     m5Ready,
                     UseM1Trigger,
                     _triggerRuntime.Latched);
+
+            _triggerRuntime.Reason =
+                _triggerRuntime.Ready
+                    ? "M1 TRIGGER CONFIRMED"
+                    : "M1 TRIGGER WAIT";
+            _triggerRuntime.UpdatedUtc = reference;
 
             _decision.TriggerReady =
                 _triggerRuntime.Ready;
