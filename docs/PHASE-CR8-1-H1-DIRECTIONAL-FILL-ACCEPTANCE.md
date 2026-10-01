@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — verification pending on the final implementation HEAD.**
+Status: **VERIFIED COMPLETE — PR #149 merged to `main`.**
 
 ## Required phase confirmation
 
@@ -93,6 +93,15 @@ authority was introduced.
 - automatic-market and aggressive live lifecycle ordering;
 - startup/reload/reconnect and panel/chart presentation around execution state.
 
+## Verification
+
+Final implementation HEAD: `f51c842c4778d99428ab583a2bae7cb7839e17e2`.
+- Source/Architecture: **PASS** — run #2348.
+- Runtime Acceptance Contracts: **PASS** — run #2157.
+- cTrader Compile: **PASS** — run #2341.
+
+The accumulated Source/Architecture chain also passed the reconciled historical F2 audit and the new `audit_phase_8_1.py` H1 gate.
+
 ## Sequence continuity
 
 Prompt 7 G6B is closed on `main`. The repository contains a roadmap
@@ -101,5 +110,6 @@ branch exists on the 2026-10-01 `main` HEAD. Prompt 8 provides the next fully
 specified remediation sequence; H1 is implemented here without inventing a
 G6C behavioral contract.
 
-Next specified phase: **CR8.2 / H2 — Top-Down alignment must include absolute
-strength.**
+Merged on 2026-10-01 via PR #149, merge commit recorded in the continuation state/PR history.
+
+Next specified phase: **CR8.2 / H2 — Top-Down alignment must include absolute strength.**
