@@ -5276,7 +5276,7 @@ Manual boundary:
 
 ### CR5.7 / E7 closeout — 2026-10-01
 
-Status: **IMPLEMENTED COMPLETE — repository verification pending CI.**
+Status: **VERIFIED COMPLETE — PR #123 merged to `main`; merge commit `d37f6d575595bfacecdff5a5ffb8fc44ba96455a`.**
 
 Completed:
 - moved WATCH/REACTION alert qualification and emission out of `UI/Chart/SignalRenderer.RenderWatchAndReaction` into the runtime decision-alert boundary;
@@ -5290,7 +5290,10 @@ Completed:
 - recorded the E7 root cause and safety boundary in `docs/PHASE-CR5-7-WATCH-REACTION-ALERTS.md`.
 
 Repository verification boundary:
-- CI Source/Architecture, Runtime Acceptance Contracts and cTrader Compile are pending on the E7 branch/PR;
+- Source/Architecture: PASS — run `36841785497` / job `110302351624`;
+- Runtime Acceptance Contracts: PASS — run `36841785708` / job `110302353199`;
+- cTrader Compile: PASS — run `36841785507` / job `110302351749`;
+- the final E7 implementation head was `8d39ad3fb88c75092908121a3cbaa65128f47659`; PR #123 merged successfully to `main`.
 - target-terminal alert timing, popup/audio delivery, panel/chart behavior, broker lifecycle and empirical signal-quality behavior remain manual acceptance items;
 - no public parameter name/type/default, RR/confidence/stop/target threshold or decision/execution authority was changed.
 
@@ -5300,5 +5303,5 @@ Repository verification boundary:
 
 **CR5.8 / E8 — Small constant ownership and TargetSelection consistency.**
 
-CR5.7 / E7 is implemented and recorded above; complete repository CI verification for E7 before treating the phase as formally verified. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.7 / E7 is verified complete and merged to `main` via PR #123. The next implementation phase is E8. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
 
