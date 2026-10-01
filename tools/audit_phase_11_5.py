@@ -6,7 +6,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-POLICY = ROOT / "src/CFIP.Indicator/Trading/Execution/ScenarioExecutionPolicy.cs"
+POLICY = ROOT / "src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs"
 CANDIDATES = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
 TF_SCENARIOS = ROOT / "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
 SUBMISSION_ID = ROOT / "src/CFIP.Indicator/Core/Execution/SubmissionAttemptIdentity.cs"
@@ -47,11 +47,12 @@ runtime_project = read(RUNTIME_PROJECT)
 runtime_contracts = read(RUNTIME_CONTRACTS)
 
 for token in (
-    "IsCanonicalCandidateEligible(",
-    "IsExecutionAuthorizedCandidate(",
+    "class ScenarioExecutionPolicyRule",
+    "Evaluate(",
     "TryResolvePlanScenario(",
     "TryResolveDirectionScenario(",
     "CanonicalScenarioId(",
+    "ExecutionAuthorized",
 ):
     if token not in policy:
         ERRORS.append("scenario execution policy missing: " + token)
@@ -111,8 +112,8 @@ if "SCENARIO " not in panel or "_activeExecutionScenarioId" not in panel:
 if "MaximumRetainedStates" not in submission_gate:
     ERRORS.append("shared submission gate ownership must remain intact")
 
-if "ScenarioExecutionPolicy.cs" not in runtime_project:
-    ERRORS.append("runtime contracts project does not include scenario execution policy")
+if "Core/Math/ScenarioExecutionPolicyRule.cs" not in runtime_project:
+    ERRORS.append("runtime contracts project does not include canonical scenario execution policy")
 
 if "VerifyScenarioExecutionPolicy()" not in runtime_contracts:
     ERRORS.append("runtime contracts do not execute Phase 11.5 scenario checks")
