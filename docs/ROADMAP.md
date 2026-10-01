@@ -5514,6 +5514,31 @@ Verification boundary:
 
 **Next phase: CR6.8 / F9 — Target-obstacle scan performance and cache reuse.**
 
+### CR6.8 / F9 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD.**
+
+Completed:
+- Core `TargetObstacleCacheKey` captures Bars/history/index/direction and materially relevant scan inputs.
+- bounded 16-entry `TargetObstacleScanCache` reuses M5 swing/equality structural extraction across repeated target candidates;
+- same-Bars new-bar/history-size/open-time invalidation plus `HistoryLoaded`/`Reloaded` invalidation prevents stale snapshots;
+- candidate-specific Entry/Target clearance remains live on every candidate;
+- existing F1 opposing-zone cache remains the sole zone-path candidate cache;
+- deterministic Planning Contracts, F9 static audit and reference benchmark were added;
+- Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no obstacle/RR/confidence/SL/TP/execution threshold changed;
+- no second target-selection or broker-execution authority introduced.
+
+Verification boundary:
+- Source/Architecture #2246 passed the accumulated repository gate through F9 before merge;
+- reference benchmark is structural-work evidence, not a cTrader terminal latency claim;
+- terminal replay/new-bar/history-reload and empirical signal-quality remain manual acceptance boundaries.
+
+**Next phase: CR6.9 / F3 — Orphaned managed-position protection.**
+
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
@@ -5693,7 +5718,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
+**CR6.9 / F3 — Orphaned managed-position protection.**
 
 CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
 

@@ -79,8 +79,28 @@ Verification boundary:
 
 **Next phase: CR6.8 / F9 — Target-obstacle scan performance and cache reuse.**
 
+### CR6.8 / F9 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD.**
+
+Completed:
+- `TargetObstacleCacheKey` in Core captures Bars/history/index/direction and materially relevant scan inputs.
+- `TargetObstacleScanCache` is bounded to 16 entries and reuses one M5 swing/equality snapshot across repeated target candidates.
+- history reload/new closed-bar invalidation is explicit through Bars events plus same-Bars context invalidation.
+- target-specific Entry/Target clearance remains evaluated on every candidate.
+- existing F1 opposing-zone cache remains the sole zone-path candidate cache for M5 and M15/M30/H1/H4.
+- deterministic planning contracts, F9 static audit and reference benchmark were added.
+- no public parameter/default, target-selection authority, RR/confidence/SL/TP threshold or broker mutation path changed.
+
+Verification boundary:
+- Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD before merge.
+- the reference benchmark is platform-neutral structural-work evidence, not a terminal latency measurement.
+- target-terminal replay, history reload/new-bar behavior and empirical outcome/signal-quality evidence remain manual.
+
+**Next phase: CR6.9 / F3 — Orphaned managed-position protection.**
+
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before CR-FINAL.
-**Current: CR6.8 / F9 — Target-obstacle scan performance and cache reuse.**
+**Current: CR6.9 / F3 — Orphaned managed-position protection.**
 
 CR5.1 through CR5.8 are verified complete at repository level. CR5.8 was merged
 to `main` via PR #124 with merge commit
@@ -130,7 +150,7 @@ remains required afterward.
 
 ## Next transition
 
-The next implementation response must execute **CR6.8 / F9 only**.
+The next implementation response must execute **CR6.9 / F3 only**.
 Track 12A and CR-FINAL remain blocked until the full Prompt 6 chain is closed.
 ## CR3.2 implementation record
 

@@ -1828,6 +1828,26 @@ Testing:
 - history/index/direction changes invalidate appropriately;
 - BUY/SELL symmetry.
 
+### CR6.8 / F9 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD.**
+
+Completed:
+- `TargetObstacleCacheKey` in Core captures Bars/history/index/direction and materially relevant scan inputs.
+- `TargetObstacleScanCache` is bounded to 16 entries and reuses one M5 swing/equality snapshot across repeated target candidates.
+- history reload/new closed-bar invalidation is explicit through Bars events plus same-Bars context invalidation.
+- target-specific Entry/Target clearance remains evaluated on every candidate.
+- existing F1 opposing-zone cache remains the sole zone-path candidate cache for M5 and M15/M30/H1/H4.
+- deterministic planning contracts, F9 static audit and reference benchmark were added.
+- no public parameter/default, target-selection authority, RR/confidence/SL/TP threshold or broker mutation path changed.
+
+Verification boundary:
+- Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD before merge.
+- the reference benchmark is platform-neutral structural-work evidence, not a terminal latency measurement.
+- target-terminal replay, history reload/new-bar behavior and empirical outcome/signal-quality evidence remain manual.
+
+**Next phase: CR6.9 / F3 — Orphaned managed-position protection.**
+
 ### CR6.9 — Orphaned managed-position protection (F3)
 
 Initial review label: **CONFIRMED / MEDIUM — invalid-stop success result is a concrete safety invariant violation.**
@@ -1864,7 +1884,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR6.8 / F9 — Target-obstacle scan performance and cache reuse**.
+Current active phase: **CR6.9 / F3 — Orphaned managed-position protection**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 

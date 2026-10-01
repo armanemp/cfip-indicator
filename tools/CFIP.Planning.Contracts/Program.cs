@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
             VerifyTargetPipelineD7();
+            VerifyTargetObstacleCachePolicyF9();
             VerifyTargetSelectionConsistency();
             VerifyLiveReversalD9();
             Console.WriteLine("Planning contracts OK");
@@ -965,6 +966,90 @@ namespace cAlgo
                 "belowMin=" + belowRejected.ToString() + "/4, " +
                 "sellMirror=" + sellAccepted.ToString() + "/4, " +
                 "tp4Reachable=" + observedTp4Reachable.ToString() + "/4");
+        }
+
+
+        private static void VerifyTargetObstacleCachePolicyF9()
+        {
+            TargetObstacleCacheKey baseKey =
+                new TargetObstacleCacheKey(
+                    1000,
+                    500,
+                    123456789,
+                    1,
+                    2,
+                    180,
+                    80,
+                    true,
+                    0.10,
+                    0.01);
+
+            Assert(
+                TargetObstacleCachePolicy.MaximumEntries == 16,
+                "F9 target-obstacle cache is bounded");
+
+            Assert(
+                TargetObstacleCachePolicy.IsSupportedDirection(1) &&
+                TargetObstacleCachePolicy.IsSupportedDirection(-1) &&
+                !TargetObstacleCachePolicy.IsSupportedDirection(0),
+                "F9 cache direction validation");
+
+            Assert(
+                baseKey.Equals(baseKey),
+                "F9 identical cache key is stable");
+
+            Assert(
+                !baseKey.Equals(
+                    new TargetObstacleCacheKey(
+                        1000, 501, 123456789, 1, 2, 180, 80, true, 0.10, 0.01)),
+                "F9 closed-index participates in cache identity");
+
+            Assert(
+                !baseKey.Equals(
+                    new TargetObstacleCacheKey(
+                        1000, 500, 123456789, -1, 2, 180, 80, true, 0.10, 0.01)),
+                "F9 BUY/SELL direction participates in cache identity");
+
+            Assert(
+                !baseKey.Equals(
+                    new TargetObstacleCacheKey(
+                        1000, 500, 123456789, 1, 2, 180, 80, true, 0.15, 0.01)),
+                "F9 ATR-derived equality tolerance participates in cache identity");
+
+            Assert(
+                !baseKey.Equals(
+                    new TargetObstacleCacheKey(
+                        1001, 500, 123456789, 1, 2, 180, 80, true, 0.10, 0.01)),
+                "F9 history-size participates in cache identity");
+
+            TargetObstacleCacheKey nextBar =
+                new TargetObstacleCacheKey(
+                    1001,
+                    501,
+                    123456790,
+                    1,
+                    2,
+                    180,
+                    80,
+                    true,
+                    0.10,
+                    0.01);
+
+            Assert(
+                TargetObstacleCachePolicy.IsObsoleteSameBars(
+                    baseKey,
+                    nextBar),
+                "F9 new closed bar invalidates same-bars cache entries");
+
+            Assert(
+                !TargetObstacleCachePolicy.IsObsoleteSameBars(
+                    baseKey,
+                    new TargetObstacleCacheKey(
+                        1000, 500, 123456789, 1, 2, 180, 80, true, 0.10, 0.01)),
+                "F9 unchanged closed-bar context remains reusable");
+
+            Console.WriteLine(
+                "F9 target-obstacle cache key/invalidation contracts passed");
         }
 
 
