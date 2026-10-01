@@ -40,7 +40,7 @@ namespace cAlgo
         public static bool IsKnown(
             string regime)
         {
-            return Normalize(regime) != Unknown;
+            return NormalizeMarketRegime(regime) != Unknown;
         }
     }
 }
