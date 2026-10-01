@@ -32,6 +32,7 @@ internal static class SkenderProductionParityBenchmark
     internal static SkenderProductionParityBenchmarkResult Measure()
     {
         int comparedPoints = 0;
+        int stableComparedPoints = 0;
         int directionMismatches = 0;
         int nonFinitePairs = 0;
         int exactMismatches = 0;
@@ -47,14 +48,11 @@ internal static class SkenderProductionParityBenchmark
                     scenario,
                     ExtendedBarCount);
 
-            IReadOnlyList<V2Quote> zeroVolumeVariant =
-                BuildZeroVolumeVariant(
-                    source);
-
             CompareScenario(
                 scenario,
                 source,
                 ref comparedPoints,
+                ref stableComparedPoints,
                 ref directionMismatches,
                 ref nonFinitePairs,
                 ref exactMismatches,
@@ -65,8 +63,9 @@ internal static class SkenderProductionParityBenchmark
 
             CompareScenario(
                 scenario + "_ZERO_VOLUME",
-                zeroVolumeVariant,
+                BuildZeroVolumeVariant(source),
                 ref comparedPoints,
+                ref stableComparedPoints,
                 ref directionMismatches,
                 ref nonFinitePairs,
                 ref exactMismatches,
@@ -77,34 +76,35 @@ internal static class SkenderProductionParityBenchmark
         }
 
         BenchmarkTiming fullPrefixTiming =
-            MeasureTiming(
-                false);
+            MeasureTiming(false);
 
         BenchmarkTiming boundedWindowTiming =
-            MeasureTiming(
-                true);
+            MeasureTiming(true);
 
         double meanStableError =
-            comparedPoints == 0
+            stableComparedPoints == 0
                 ? double.NaN
-                : stableErrorSum / comparedPoints;
+                : stableErrorSum / stableComparedPoints;
 
         double rmsStableError =
-            comparedPoints == 0
+            stableComparedPoints == 0
                 ? double.NaN
                 : Math.Sqrt(
                     stableErrorSquaredSum /
-                    comparedPoints);
+                    stableComparedPoints);
 
         bool passed =
             comparedPoints > 0 &&
+            stableComparedPoints > 0 &&
             directionMismatches == 0 &&
             nonFinitePairs == 0 &&
             exactMismatches == 0 &&
             double.IsFinite(maxStableError) &&
             double.IsFinite(meanStableError) &&
             double.IsFinite(rmsStableError) &&
-            double.IsFinite(maxRollingError);
+            double.IsFinite(maxRollingError) &&
+            fullPrefixTiming.MeanMilliseconds > 0 &&
+            boundedWindowTiming.MeanMilliseconds > 0;
 
         return new SkenderProductionParityBenchmarkResult(
             passed,
@@ -124,6 +124,7 @@ internal static class SkenderProductionParityBenchmark
         string scenario,
         IReadOnlyList<V2Quote> source,
         ref int comparedPoints,
+        ref int stableComparedPoints,
         ref int directionMismatches,
         ref int nonFinitePairs,
         ref int exactMismatches,
@@ -165,13 +166,12 @@ internal static class SkenderProductionParityBenchmark
                 source[checkpoint].Date;
 
             CompareStableValue(
-                scenario,
-                "RSI",
                 expectedDate,
                 EvaluateRsi(fullPrefix),
                 EvaluateRsi(stable),
                 50,
                 ref comparedPoints,
+                ref stableComparedPoints,
                 ref directionMismatches,
                 ref nonFinitePairs,
                 ref maxStableError,
@@ -179,13 +179,12 @@ internal static class SkenderProductionParityBenchmark
                 ref stableErrorSquaredSum);
 
             CompareStableValue(
-                scenario,
-                "MACD Histogram",
                 expectedDate,
                 EvaluateMacd(fullPrefix),
                 EvaluateMacd(stable),
                 0,
                 ref comparedPoints,
+                ref stableComparedPoints,
                 ref directionMismatches,
                 ref nonFinitePairs,
                 ref maxStableError,
@@ -196,13 +195,12 @@ internal static class SkenderProductionParityBenchmark
                 (double)source[checkpoint].Close;
 
             CompareStablePriceRelative(
-                scenario,
-                "SuperTrend",
                 expectedDate,
                 close,
                 EvaluateSuperTrend(fullPrefix),
                 EvaluateSuperTrend(stable),
                 ref comparedPoints,
+                ref stableComparedPoints,
                 ref directionMismatches,
                 ref nonFinitePairs,
                 ref maxStableError,
@@ -210,13 +208,12 @@ internal static class SkenderProductionParityBenchmark
                 ref stableErrorSquaredSum);
 
             CompareStablePriceRelative(
-                scenario,
-                "Parabolic SAR",
                 expectedDate,
                 close,
                 EvaluateParabolicSar(fullPrefix),
                 EvaluateParabolicSar(stable),
                 ref comparedPoints,
+                ref stableComparedPoints,
                 ref directionMismatches,
                 ref nonFinitePairs,
                 ref maxStableError,
@@ -224,8 +221,6 @@ internal static class SkenderProductionParityBenchmark
                 ref stableErrorSquaredSum);
 
             CompareRollingValue(
-                scenario,
-                "Bollinger PercentB",
                 expectedDate,
                 EvaluateBollinger(fullPrefix, false),
                 EvaluateBollinger(rolling, false),
@@ -235,8 +230,6 @@ internal static class SkenderProductionParityBenchmark
                 ref maxRollingError);
 
             CompareRollingValue(
-                scenario,
-                "Bollinger Width",
                 expectedDate,
                 EvaluateBollinger(fullPrefix, true),
                 EvaluateBollinger(rolling, true),
@@ -246,8 +239,6 @@ internal static class SkenderProductionParityBenchmark
                 ref maxRollingError);
 
             CompareRollingValue(
-                scenario,
-                "MFI",
                 expectedDate,
                 EvaluateMfi(fullPrefix),
                 EvaluateMfi(rolling),
@@ -257,8 +248,6 @@ internal static class SkenderProductionParityBenchmark
                 ref maxRollingError);
 
             CompareRollingValue(
-                scenario,
-                "Stochastic K",
                 expectedDate,
                 EvaluateStoch(fullPrefix, true),
                 EvaluateStoch(rolling, true),
@@ -268,8 +257,6 @@ internal static class SkenderProductionParityBenchmark
                 ref maxRollingError);
 
             CompareRollingValue(
-                scenario,
-                "Stochastic D",
                 expectedDate,
                 EvaluateStoch(fullPrefix, false),
                 EvaluateStoch(rolling, false),
@@ -279,8 +266,6 @@ internal static class SkenderProductionParityBenchmark
                 ref maxRollingError);
 
             CompareRollingValue(
-                scenario,
-                "Aroon Oscillator",
                 expectedDate,
                 EvaluateAroon(fullPrefix),
                 EvaluateAroon(rolling),
@@ -290,8 +275,6 @@ internal static class SkenderProductionParityBenchmark
                 ref maxRollingError);
 
             CompareRollingValue(
-                scenario,
-                "CCI",
                 expectedDate,
                 EvaluateCci(fullPrefix),
                 EvaluateCci(rolling),
@@ -301,8 +284,6 @@ internal static class SkenderProductionParityBenchmark
                 ref maxRollingError);
 
             CompareObvDirection(
-                scenario,
-                expectedDate,
                 EvaluateObvDirection(fullPrefix),
                 EvaluateObvDirection(rolling),
                 ref comparedPoints,
@@ -312,13 +293,12 @@ internal static class SkenderProductionParityBenchmark
     }
 
     private static void CompareStableValue(
-        string scenario,
-        string metric,
         DateTime expectedDate,
         double fullValue,
         double boundedValue,
         double neutral,
         ref int comparedPoints,
+        ref int stableComparedPoints,
         ref int directionMismatches,
         ref int nonFinitePairs,
         ref double maxError,
@@ -333,6 +313,7 @@ internal static class SkenderProductionParityBenchmark
         }
 
         comparedPoints++;
+        stableComparedPoints++;
 
         int fullDirection =
             Math.Sign(
@@ -362,13 +343,12 @@ internal static class SkenderProductionParityBenchmark
     }
 
     private static void CompareStablePriceRelative(
-        string scenario,
-        string metric,
         DateTime expectedDate,
         double close,
         double fullValue,
         double boundedValue,
         ref int comparedPoints,
+        ref int stableComparedPoints,
         ref int directionMismatches,
         ref int nonFinitePairs,
         ref double maxError,
@@ -383,6 +363,7 @@ internal static class SkenderProductionParityBenchmark
         }
 
         comparedPoints++;
+        stableComparedPoints++;
 
         int fullDirection =
             Math.Sign(
@@ -412,22 +393,16 @@ internal static class SkenderProductionParityBenchmark
     }
 
     private static void CompareRollingValue(
-        string scenario,
-        string metric,
         DateTime expectedDate,
-        IndicatorPoint full,
-        IndicatorPoint bounded,
+        double fullValue,
+        double boundedValue,
         ref int comparedPoints,
         ref int nonFinitePairs,
         ref int exactMismatches,
         ref double maxError)
     {
-        if (full.Timestamp != expectedDate ||
-            bounded.Timestamp != expectedDate ||
-            !full.Value.HasValue ||
-            !bounded.Value.HasValue ||
-            !double.IsFinite(full.Value.Value) ||
-            !double.IsFinite(bounded.Value.Value))
+        if (!double.IsFinite(fullValue) ||
+            !double.IsFinite(boundedValue))
         {
             nonFinitePairs++;
             return;
@@ -437,8 +412,8 @@ internal static class SkenderProductionParityBenchmark
 
         double error =
             Math.Abs(
-                full.Value.Value -
-                bounded.Value.Value);
+                fullValue -
+                boundedValue);
 
         maxError =
             Math.Max(
@@ -450,8 +425,6 @@ internal static class SkenderProductionParityBenchmark
     }
 
     private static void CompareObvDirection(
-        string scenario,
-        DateTime expectedDate,
         int fullDirection,
         int boundedDirection,
         ref int comparedPoints,
@@ -475,9 +448,7 @@ internal static class SkenderProductionParityBenchmark
         IReadOnlyList<V2Quote> quotes)
     {
         return V2Indicator
-                   .GetRsi(
-                       quotes,
-                       14)
+                   .GetRsi(quotes, 14)
                    .LastOrDefault()
                    ?.Rsi ??
                double.NaN;
@@ -487,11 +458,7 @@ internal static class SkenderProductionParityBenchmark
         IReadOnlyList<V2Quote> quotes)
     {
         return V2Indicator
-                   .GetMacd(
-                       quotes,
-                       12,
-                       26,
-                       9)
+                   .GetMacd(quotes, 12, 26, 9)
                    .LastOrDefault()
                    ?.Histogram ??
                double.NaN;
@@ -503,10 +470,7 @@ internal static class SkenderProductionParityBenchmark
     {
         var last =
             V2Indicator
-                .GetBollingerBands(
-                    quotes,
-                    20,
-                    2)
+                .GetBollingerBands(quotes, 20, 2)
                 .LastOrDefault();
 
         if (last == null)
@@ -521,9 +485,7 @@ internal static class SkenderProductionParityBenchmark
         IReadOnlyList<V2Quote> quotes)
     {
         return V2Indicator
-                   .GetMfi(
-                       quotes,
-                       14)
+                   .GetMfi(quotes, 14)
                    .LastOrDefault()
                    ?.Mfi ??
                double.NaN;
@@ -535,11 +497,7 @@ internal static class SkenderProductionParityBenchmark
     {
         var last =
             V2Indicator
-                .GetStoch(
-                    quotes,
-                    14,
-                    3,
-                    3)
+                .GetStoch(quotes, 14, 3, 3)
                 .LastOrDefault();
 
         if (last == null)
@@ -555,10 +513,7 @@ internal static class SkenderProductionParityBenchmark
     {
         var last =
             V2Indicator
-                .GetSuperTrend(
-                    quotes,
-                    10,
-                    3)
+                .GetSuperTrend(quotes, 10, 3)
                 .LastOrDefault();
 
         return last == null || !last.SuperTrend.HasValue
@@ -570,9 +525,7 @@ internal static class SkenderProductionParityBenchmark
         IReadOnlyList<V2Quote> quotes)
     {
         return V2Indicator
-                   .GetAroon(
-                       quotes,
-                       25)
+                   .GetAroon(quotes, 25)
                    .LastOrDefault()
                    ?.Oscillator ??
                double.NaN;
@@ -582,15 +535,13 @@ internal static class SkenderProductionParityBenchmark
         IReadOnlyList<V2Quote> quotes)
     {
         return V2Indicator
-                   .GetCci(
-                       quotes,
-                       20)
+                   .GetCci(quotes, 20)
                    .LastOrDefault()
                    ?.Cci ??
                double.NaN;
     }
 
-    private static double EvaluateObvDirection(
+    private static int EvaluateObvDirection(
         IReadOnlyList<V2Quote> quotes)
     {
         bool hasCurrent = false;
@@ -619,10 +570,7 @@ internal static class SkenderProductionParityBenchmark
     {
         var last =
             V2Indicator
-                .GetParabolicSar(
-                    quotes,
-                    0.02,
-                    0.20)
+                .GetParabolicSar(quotes, 0.02, 0.20)
                 .LastOrDefault();
 
         return last == null || !last.Sar.HasValue
@@ -641,8 +589,7 @@ internal static class SkenderProductionParityBenchmark
              i < source.Count;
              i++)
         {
-            V2Quote sourceQuote =
-                source[i];
+            V2Quote sourceQuote = source[i];
 
             bool zeroVolume =
                 i % 17 == 0 ||
@@ -715,95 +662,88 @@ internal static class SkenderProductionParityBenchmark
 
         foreach (int checkpoint in Checkpoints)
         {
-            int windowSize =
-                bounded
-                    ? RollingWindowSize
-                    : checkpoint + 1;
-
-            int firstIndex =
-                Math.Max(
-                    0,
-                    checkpoint -
-                    windowSize +
-                    1);
-
-            IReadOnlyList<V2Quote> input =
+            IReadOnlyList<V2Quote> fullPrefix =
                 source
-                    .Skip(firstIndex)
-                    .Take(windowSize)
+                    .Take(checkpoint + 1)
                     .ToList();
 
-            if (bounded)
-            {
-                _ = V2Indicator.GetRsi(
-                    input,
-                    14)
-                    .LastOrDefault();
+            IReadOnlyList<V2Quote> stableInput =
+                bounded
+                    ? source
+                        .Skip(
+                            checkpoint -
+                            StableWindowSize +
+                            1)
+                        .Take(StableWindowSize)
+                        .ToList()
+                    : fullPrefix;
 
-                _ = V2Indicator.GetMacd(
-                    input,
-                    12,
-                    26,
-                    9)
-                    .LastOrDefault();
+            IReadOnlyList<V2Quote> rollingInput =
+                bounded
+                    ? source
+                        .Skip(
+                            checkpoint -
+                            RollingWindowSize +
+                            1)
+                        .Take(RollingWindowSize)
+                        .ToList()
+                    : fullPrefix;
 
-                _ = V2Indicator.GetSuperTrend(
-                    input,
-                    10,
-                    3)
-                    .LastOrDefault();
+            _ = V2Indicator.GetRsi(
+                stableInput,
+                14)
+                .LastOrDefault();
 
-                _ = V2Indicator.GetParabolicSar(
-                    input,
-                    0.02,
-                    0.20)
-                    .LastOrDefault();
+            _ = V2Indicator.GetMacd(
+                stableInput,
+                12,
+                26,
+                9)
+                .LastOrDefault();
 
-                _ = V2Indicator.GetBollingerBands(
-                    input,
-                    20,
-                    2)
-                    .LastOrDefault();
+            _ = V2Indicator.GetSuperTrend(
+                stableInput,
+                10,
+                3)
+                .LastOrDefault();
 
-                _ = V2Indicator.GetMfi(
-                    input,
-                    14)
-                    .LastOrDefault();
+            _ = V2Indicator.GetParabolicSar(
+                stableInput,
+                0.02,
+                0.20)
+                .LastOrDefault();
 
-                _ = V2Indicator.GetStoch(
-                    input,
-                    14,
-                    3,
-                    3)
-                    .LastOrDefault();
+            _ = V2Indicator.GetBollingerBands(
+                rollingInput,
+                20,
+                2)
+                .LastOrDefault();
 
-                _ = V2Indicator.GetAroon(
-                    input,
-                    25)
-                    .LastOrDefault();
+            _ = V2Indicator.GetMfi(
+                rollingInput,
+                14)
+                .LastOrDefault();
 
-                _ = V2Indicator.GetCci(
-                    input,
-                    20)
-                    .LastOrDefault();
+            _ = V2Indicator.GetStoch(
+                rollingInput,
+                14,
+                3,
+                3)
+                .LastOrDefault();
 
-                _ = V2Indicator.GetObv(
-                    input)
-                    .LastOrDefault();
-            }
-            else
-            {
-                _ = V2Indicator.GetRsi(input, 14).LastOrDefault();
-                _ = V2Indicator.GetMacd(input, 12, 26, 9).LastOrDefault();
-                _ = V2Indicator.GetSuperTrend(input, 10, 3).LastOrDefault();
-                _ = V2Indicator.GetParabolicSar(input, 0.02, 0.20).LastOrDefault();
-                _ = V2Indicator.GetBollingerBands(input, 20, 2).LastOrDefault();
-                _ = V2Indicator.GetMfi(input, 14).LastOrDefault();
-                _ = V2Indicator.GetStoch(input, 14, 3, 3).LastOrDefault();
-                _ = V2Indicator.GetAroon(input, 25).LastOrDefault();
-                _ = V2Indicator.GetCci(input, 20).LastOrDefault();
-                _ = V2Indicator.GetObv(input).LastOrDefault();
-            }
+            _ = V2Indicator.GetAroon(
+                rollingInput,
+                25)
+                .LastOrDefault();
+
+            _ = V2Indicator.GetCci(
+                rollingInput,
+                20)
+                .LastOrDefault();
+
+            _ = V2Indicator.GetObv(
+                rollingInput)
+                .LastOrDefault();
         }
     }
 }
