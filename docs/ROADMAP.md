@@ -5327,6 +5327,39 @@ Safety/manual boundary:
 
 **Next phase: CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
 
+
+### CR6.1 / F1 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #127 pending merge.**
+
+Completed:
+- canonical Core `RewardPathGeometryRule` now owns opposing-zone direction and target-path geometry;
+- obsolete Trading-layer reward-path geometry owner removed and the architecture gate migrated to the Core owner;
+- opposing FVG and OB obstacle construction consistently uses `opposingDirection = -direction`;
+- FVG obstacles are materialized through the canonical managed FVG lifecycle, so fully mitigated FVGs are excluded before entering the obstacle cache;
+- broken Order Blocks remain excluded through the existing OB lifecycle state;
+- opposing-zone candidates are cached per Bars/index/direction while entry/target-specific path geometry remains evaluated per target;
+- M15/M30/H1/H4 higher-timeframe scans consume the same canonical F1 path;
+- deterministic Runtime Contract coverage and `audit_phase_6_1.py` were added and wired into Source/Architecture CI;
+- public parameter name/type/DefaultValue, RR/confidence/SL/TP thresholds and decision/execution authority were unchanged.
+
+Behavior corrections:
+- same-direction FVGs can no longer be treated as opposing reward-path obstacles;
+- fully mitigated FVGs no longer block the reward path;
+- FVG gap qualification on this obstacle path now follows the canonical creation-bar ATR semantics.
+
+Repository verification on final implementation head `b37ebf00bbd835d7cab8a192842752be7238d703`:
+- Source/Architecture: PASS — workflow run #2177;
+- Runtime Acceptance Contracts: PASS — workflow run #1986;
+- cTrader Compile: PASS — workflow run #2170;
+- F1 static audit: PASS.
+
+Manual boundary:
+- target-terminal replay/live verification of M15/M30/H1/H4 zone-path behavior, mitigated-zone exclusion, warm-cache timing and unchanged chart/panel behavior remains required;
+- empirical signal-quality/profitability impact remains unvalidated.
+
+**Next phase: CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
+
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
@@ -5506,7 +5539,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
+**CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
 
 CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
 
