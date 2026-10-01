@@ -158,7 +158,8 @@ namespace cAlgo
             int closedM5,
             OpportunityLane lane,
             int direction,
-            int quality)
+            int quality,
+            string sourceTimeframe = null)
         {
             if (direction != 1 &&
                 direction != -1)
@@ -180,12 +181,14 @@ namespace cAlgo
                     out execution))
                 return null;
 
-            TradeSetupPreview preview =
-                BuildTradeSetupPreviewFromGeometry(
+            TradeSetupPreview preview;
+            if (!TryGetParallelScenarioPreview(
                     closedM5,
                     execution,
                     lane,
-                    geometry);
+                    geometry,
+                    out preview))
+                return null;
 
             if (preview == null ||
                 !IsFinitePositive(preview.Stop) ||
@@ -327,22 +330,34 @@ namespace cAlgo
                 ActionabilityReason =
                     actionability.Reason,
                 ScenarioId =
-                    BuildCanonicalScenarioId(
-                        lane,
-                        direction)
+                    string.IsNullOrWhiteSpace(sourceTimeframe)
+                        ? BuildCanonicalScenarioId(
+                            lane,
+                            direction)
+                        : "TF-" +
+                          sourceTimeframe.Trim() +
+                          "-" +
+                          (direction == 1
+                              ? "BUY"
+                              : "SELL"),
+                SourceTimeframe =
+                    string.IsNullOrWhiteSpace(sourceTimeframe)
+                        ? null
+                        : sourceTimeframe.Trim(),
+                BasePlanTimeframe = "M5"
             };
 
-            string executionPolicyReason;
-
-            candidate.ExecutionPolicyAllowed =
-                ScenarioExecutionPolicy.IsCanonicalCandidateEligible(
+            ScenarioExecutionPolicyResult policy =
+                ScenarioExecutionPolicyRule.Evaluate(
                     candidate,
                     _decision,
-                    lane,
-                    out executionPolicyReason);
+                    lane);
+
+            candidate.ExecutionPolicyAllowed =
+                policy.ExecutionAuthorized;
 
             candidate.ExecutionPolicyReason =
-                executionPolicyReason;
+                policy.ExecutionReason;
 
             return candidate;
         }
