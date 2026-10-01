@@ -25,7 +25,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 **CI-07 — MTF / regime / market context — 2026-10-02**
 
-Status: **NEXT — specified and ready to implement. CI-06 is verified complete and merged in PR #161.**
+Status: **IMPLEMENTATION IN PROGRESS — CI-07 branch `phase/ci-07-mtf-regime-context` contains the complete implementation; repository verification is the remaining closeout step.**
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
@@ -113,7 +113,23 @@ Manual boundary:
 Operator action:
 **After PR #161 is merged, run `git pull --ff-only` on local `main` before starting CI-07.**
 
-**Next implementation phase: CI-07 — MTF / regime / market context.**
+### CI-07 implementation status — MTF / regime / market context
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Completed:
+- fixed stale MTF cache reference reuse by making cache hits reference-aware and re-materializing the exact current reference;
+- added canonical `MarketStateSnapshot` for M1/M5/M15/M30/H1/H4/D1/W1, premium/discount and session context;
+- decision input now requires the same market-state snapshot and exact MTF alignment;
+- added explicit previous-regime and `STABLE` / `CHANGED` / `INITIAL` / `UNKNOWN` transition semantics;
+- suitability now consumes canonical snapshot session/MTF direction state and the canonical D1 closed index;
+- added CI-07 deterministic Runtime Acceptance and accumulated static audit.
+
+Phase record: `docs/PHASE-CI-07-MTF-REGIME-CONTEXT.md`.
+
+Manual boundary remains target-terminal MTF boundary timing, reconnect/history reload, panel/chart responsiveness, session presentation timing and empirical regime/signal validation.
+
+**Next phase after verification: CI-08 — Divergence / WaveTrend / reaction / early signal.**
 
 ### Historical remediation closeouts
 
