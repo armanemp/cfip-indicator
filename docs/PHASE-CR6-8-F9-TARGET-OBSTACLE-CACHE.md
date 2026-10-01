@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — repository verification is rerunning on the corrected latest HEAD.**
+Status: **VERIFIED COMPLETE — Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 all passed on the final F9 HEAD.**
 
 CI correction log: the first F9 compile attempt exposed an `Entry` construction reference left behind after the architecture refactor; it was corrected to `TargetObstacleScanCacheEntry` without changing behavior.
 
@@ -47,7 +47,7 @@ Performance/code-cleanliness audit confirms the optimization is bounded, invalid
 
 ## Verification boundary
 
-Repository CI must provide Source/Architecture, Runtime Acceptance Contracts and cTrader Compile/Build before the phase is called repository-verified. The reference benchmark is platform-neutral and is not a claim about cTrader terminal latency.
+Repository CI verification is complete: Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD. The reference benchmark is platform-neutral and is not a claim about cTrader terminal latency.
 
 Manual cTrader acceptance remains required for target-terminal timing/presentation, replay around new-bar and history-reload events, real CPU/memory behavior, and confirmation that broker lifecycle/execution behavior is unchanged.
 

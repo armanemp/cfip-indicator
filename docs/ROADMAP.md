@@ -5516,7 +5516,7 @@ Verification boundary:
 
 ### CR6.8 / F9 closeout — 2026-10-01
 
-Status: **IMPLEMENTED — bounded target-obstacle scan reuse is established without changing target-selection semantics.**
+Status: **VERIFIED COMPLETE — Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD.**
 
 Completed:
 - Core `TargetObstacleCacheKey` captures Bars/history/index/direction and materially relevant scan inputs.
@@ -5525,7 +5525,7 @@ Completed:
 - candidate-specific Entry/Target clearance remains live on every candidate;
 - existing F1 opposing-zone cache remains the sole zone-path candidate cache;
 - deterministic Planning Contracts, F9 static audit and reference benchmark were added;
-- cTrader Compile and Runtime Acceptance passed on the corrected F9 HEAD; Source/Architecture reached the F9 audit with only audit-assertion alignment outstanding at this checkpoint.
+- Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD.
 
 Safety:
 - no public parameter name/type/DefaultValue changed;
@@ -5533,7 +5533,7 @@ Safety:
 - no second target-selection or broker-execution authority introduced.
 
 Verification boundary:
-- final Source/Architecture F9 gate must pass on the latest HEAD before merge;
+- Source/Architecture #2246 passed the accumulated repository gate through F9 before merge;
 - reference benchmark is structural-work evidence, not a cTrader terminal latency claim;
 - terminal replay/new-bar/history-reload and empirical signal-quality remain manual acceptance boundaries.
 

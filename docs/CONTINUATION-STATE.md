@@ -81,7 +81,7 @@ Verification boundary:
 
 ### CR6.8 / F9 closeout — 2026-10-01
 
-Status: **IMPLEMENTED — bounded target-obstacle scan reuse is established without changing target-selection semantics.**
+Status: **VERIFIED COMPLETE — Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD.**
 
 Completed:
 - `TargetObstacleCacheKey` in Core captures Bars/history/index/direction and materially relevant scan inputs.
@@ -93,7 +93,7 @@ Completed:
 - no public parameter/default, target-selection authority, RR/confidence/SL/TP threshold or broker mutation path changed.
 
 Verification boundary:
-- branch/repository CI must supply Source/Architecture, Runtime Acceptance and cTrader Compile evidence before merge.
+- Source/Architecture #2246, Runtime Acceptance #2055 and cTrader Compile #2239 passed on the final F9 HEAD before merge.
 - the reference benchmark is platform-neutral structural-work evidence, not a terminal latency measurement.
 - target-terminal replay, history reload/new-bar behavior and empirical outcome/signal-quality evidence remain manual.
 
