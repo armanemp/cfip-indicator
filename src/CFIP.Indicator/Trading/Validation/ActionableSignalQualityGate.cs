@@ -52,7 +52,7 @@ namespace cAlgo
                     thresholds.FinalMinimumEntryLocationQuality,
                     thresholds.FinalMinimumEntryTimingQuality,
                     thresholds.FinalMinimumEntryPositionQuality,
-                    minimumTp1RR));
+                    thresholds.FinalMinimumTp1RR));
         }
     }
 }
