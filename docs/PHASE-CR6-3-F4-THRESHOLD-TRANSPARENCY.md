@@ -30,7 +30,7 @@ Affected owners:
 
 - Added one platform-neutral `ActionabilityThresholdPolicy` owner with a deterministic effective-threshold snapshot.
 - Preserved current values:
-  - upstream entry location/timing: 64/64;
+  - upstream hard floors: 64/64; with the existing default `Minimum Entry Quality=72`, the effective staged defaults are 72/64;
   - precision-entry floor: 40;
   - final entry location/timing/position: 70/75/70;
   - final confidence margin: +4;
