@@ -100,7 +100,7 @@ check(
 check(
     "Decision reason builder carries actionability reason into the composed reason",
     "decision.ActionabilityReason" in reason_builder and
-    'reason += ' in reason_builder
+    "decision.ActionabilityReason;" in reason_builder
 )
 
 check(
