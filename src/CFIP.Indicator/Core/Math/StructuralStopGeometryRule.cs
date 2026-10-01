@@ -28,13 +28,13 @@ namespace cAlgo
             double tickSize,
             int digits)
         {
-            if (!IsFinitePositive(entry) ||
-                !IsFinitePositive(sourcePrice) ||
-                !IsFinitePositive(frameAtr) ||
-                !IsFinitePositive(riskReferenceAtr) ||
+            if (!IsValidFiniteValue(entry) ||
+                !IsValidFiniteValue(sourcePrice) ||
+                !IsValidFiniteValue(frameAtr) ||
+                !IsValidFiniteValue(riskReferenceAtr) ||
                 (direction != 1 && direction != -1))
             {
-                return StructuralStopGeometrySnapshot.Invalid(
+                return StructuralStopGeometrySnapshot.CreateInvalid(
                     direction,
                     entry,
                     sourcePrice,
@@ -60,9 +60,9 @@ namespace cAlgo
                     tickSize,
                     digits);
 
-            if (!IsFinitePositive(stop))
+            if (!IsValidFiniteValue(stop))
             {
-                return StructuralStopGeometrySnapshot.Invalid(
+                return StructuralStopGeometrySnapshot.CreateInvalid(
                     direction,
                     entry,
                     sourcePrice,
@@ -78,7 +78,7 @@ namespace cAlgo
 
             if (!protectiveSide)
             {
-                return StructuralStopGeometrySnapshot.Invalid(
+                return StructuralStopGeometrySnapshot.CreateInvalid(
                     direction,
                     entry,
                     sourcePrice,
@@ -98,10 +98,10 @@ namespace cAlgo
                         tickSize,
                         1e-9));
 
-            if (!IsFinitePositive(risk) ||
-                !IsFinitePositive(riskAtr))
+            if (!IsValidFiniteValue(risk) ||
+                !IsValidFiniteValue(riskAtr))
             {
-                return StructuralStopGeometrySnapshot.Invalid(
+                return StructuralStopGeometrySnapshot.CreateInvalid(
                     direction,
                     entry,
                     sourcePrice,
@@ -132,12 +132,12 @@ namespace cAlgo
             double tickSize,
             int digits)
         {
-            if (!IsFinitePositive(entry) ||
-                !IsFinitePositive(atr) ||
-                !IsFinitePositive(fallbackAtr) ||
+            if (!IsValidFiniteValue(entry) ||
+                !IsValidFiniteValue(atr) ||
+                !IsValidFiniteValue(fallbackAtr) ||
                 (direction != 1 && direction != -1))
             {
-                return StructuralStopGeometrySnapshot.Invalid(
+                return StructuralStopGeometrySnapshot.CreateInvalid(
                     direction,
                     entry,
                     0,
@@ -157,9 +157,9 @@ namespace cAlgo
                     tickSize,
                     digits);
 
-            if (!IsFinitePositive(stop))
+            if (!IsValidFiniteValue(stop))
             {
-                return StructuralStopGeometrySnapshot.Invalid(
+                return StructuralStopGeometrySnapshot.CreateInvalid(
                     direction,
                     entry,
                     0,
@@ -175,7 +175,7 @@ namespace cAlgo
 
             if (!protectiveSide)
             {
-                return StructuralStopGeometrySnapshot.Invalid(
+                return StructuralStopGeometrySnapshot.CreateInvalid(
                     direction,
                     entry,
                     0,
@@ -236,10 +236,10 @@ namespace cAlgo
             double tickSize,
             int digits)
         {
-            if (!IsFinitePositive(price))
+            if (!IsValidFiniteValue(price))
                 return 0;
 
-            if (IsFinitePositive(tickSize))
+            if (IsValidFiniteValue(tickSize))
             {
                 price =
                     Math.Round(
@@ -253,7 +253,7 @@ namespace cAlgo
                 Math.Max(0, digits));
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsValidFiniteValue(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
