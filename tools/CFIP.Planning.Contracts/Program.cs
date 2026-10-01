@@ -324,19 +324,19 @@ namespace cAlgo
             {
                 new[]
                 {
-                    0.10, 2.00, 3.20, 4.80, 6.50, 2.00, 2.40
+                    0.10, 2.00, 3.20, 4.80, 6.50, 2.00, 2.00, 2.40
                 },
                 new[]
                 {
-                    0.25, 1.00, 1.00, 1.00, 1.00, 2.50, 1.50
+                    0.25, 1.00, 1.00, 1.00, 1.00, 2.50, 2.00, 1.50
                 },
                 new[]
                 {
-                    0.10, 2.00, 1.20, 1.30, 1.40, 2.10, 3.00
+                    0.10, 2.00, 1.20, 1.30, 1.40, 2.10, 2.00, 3.00
                 },
                 new[]
                 {
-                    0.40, 4.00, 2.00, 2.00, 2.00, 3.50, 2.25
+                    0.40, 4.00, 2.00, 2.00, 2.00, 3.50, 3.50, 2.25
                 }
             };
 
@@ -361,7 +361,8 @@ namespace cAlgo
                             f[3],
                             f[4],
                             f[5],
-                            f[6]);
+                            f[6],
+                            f[7]);
 
                     Assert(
                         TargetSelectionRequiredRrRule.IsMonotonicNonDecreasing(
@@ -426,6 +427,25 @@ namespace cAlgo
                 tacticalInversion[2] == 2.20 &&
                 tacticalInversion[3] == 2.30,
                 "E8 tactical RR ordering cannot invert");
+
+            double strategicTradeFloor =
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                    0.10,
+                    OpportunityLane.Strategic,
+                    2.00,
+                    3.20,
+                    4.80,
+                    6.50,
+                    2.00,
+                    3.25,
+                    2.00);
+
+            Assert(
+                strategicTradeFloor[0] == 3.25 &&
+                strategicTradeFloor[1] == 3.35 &&
+                strategicTradeFloor[2] == 4.80 &&
+                strategicTradeFloor[3] == 6.50,
+                "E8 MinimumTradeRR remains an active strategic floor");
 
             Console.WriteLine(
                 "E8 target-selection contracts: " +
