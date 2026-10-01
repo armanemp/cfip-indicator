@@ -7,7 +7,7 @@ namespace cAlgo
         public const string Stable = "STABLE";
         public const string Changed = "CHANGED";
 
-        public static string Resolve(
+        public static string ClassifyTransition(
             string previousRegime,
             string currentRegime)
         {
@@ -34,7 +34,7 @@ namespace cAlgo
             string previousRegime,
             string currentRegime)
         {
-            return Resolve(
+            return ClassifyTransition(
                 previousRegime,
                 currentRegime) == Changed;
         }
