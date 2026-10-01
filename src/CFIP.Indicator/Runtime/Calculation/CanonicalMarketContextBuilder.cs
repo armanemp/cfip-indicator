@@ -27,7 +27,7 @@ namespace cAlgo
                         : BrokerDistanceUnit.Unknown;
 
             CanonicalPriceSnapshot price =
-                CanonicalPriceSnapshot.Create(
+                CanonicalPriceSnapshot.CreateCanonicalSnapshot(
                     quoteObservedUtc,
                     Symbol.Bid,
                     Symbol.Ask,
