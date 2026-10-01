@@ -109,7 +109,7 @@ for token in (
     "body < atr * minimumBodyAtr",
     "range > atr * maximumRangeAtr",
     "location < minimumCloseLocation",
-    "triggerScore >= requiredTrigger",
+    "TriggerThresholdRule.IsScoreReady(",
 ):
     if token not in m1_rule_code:
         raise SystemExit(f"M1 trigger rule missing deterministic condition: {token}")
