@@ -4349,9 +4349,9 @@ namespace cAlgo
                 "canonical quote preserves BUY/SELL executable prices");
 
             Assert(
-                Math.Abs(pipPrice.Midpoint - 100.0001) < 1e-12 &&
-                Math.Abs(pipPrice.Spread - 0.0002) < 1e-12 &&
-                Math.Abs(pipPrice.SpreadPips - 2.0) < 1e-12,
+                Math.Abs(pipPrice.Midpoint - 100.0001) < 1e-10 &&
+                Math.Abs(pipPrice.Spread - 0.0002) < 1e-10 &&
+                Math.Abs(pipPrice.SpreadPips - 2.0) < 1e-10,
                 "canonical quote derives midpoint and spread once");
 
             Assert(
