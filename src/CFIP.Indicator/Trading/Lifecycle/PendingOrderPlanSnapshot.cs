@@ -120,14 +120,7 @@ namespace cAlgo
                     intent.Direction,
                     Math.Max(
                         FallbackTp1RR,
-                        MinimumRequiredRR()),
-                    lane);
-
-            double[] requiredRR =
-                BuildTargetSelectionRequiredRR(
-                    Math.Max(
-                        0.10,
-                        StructuralTpRrStep),
+                        requiredRR[0]),
                     lane);
 
             double tp2 =
