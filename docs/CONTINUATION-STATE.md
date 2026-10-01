@@ -810,7 +810,7 @@ Verification:
 
 ## CR7.3 / G3 closeout — 2026-10-01
 
-Status: **IMPLEMENTATION COMPLETE — pending CI/PR verification.**
+Status: **VERIFIED COMPLETE — PR #143 merged to `main` as `6c572643cfc6b9a4ee1083e300ec13607dd2774c`.**
 
 Completed:
 - valid `Level Line Thickness` values 1/2/3 now map to actual thickness 1/2/3;
@@ -818,5 +818,11 @@ Completed:
 - thickness mapping is owned by `PlanLinePresentationRule`;
 - Solid line style remains unchanged;
 - deterministic runtime and static acceptance coverage added.
+
+
+Verification:
+- Source/Architecture: PASS — #2295;
+- Runtime Acceptance Contracts: PASS — #2104;
+- cTrader Compile: PASS — #2288.
 
 **Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
