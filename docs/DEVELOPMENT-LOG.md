@@ -2605,3 +2605,39 @@ Safety/manual boundary:
 
 Next phase: **CR7.5 / G5 — scope definition required before implementation; no documented G5 scope is currently present.**
 
+
+
+## CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization — 2026-10-01
+
+Status: **IMPLEMENTED — repository verification pending**
+
+Scope/root cause:
+- G4's canonical panel execution/protection snapshot was invalidated unconditionally by
+  `BuildPanelPresentationKey`, which could repeat managed Position/Pending enumeration and
+  protection evaluation across unchanged panel refresh attempts.
+
+Implementation:
+- removed presentation-key-driven invalidation;
+- broker dirty events invalidate the panel snapshot immediately;
+- due broker refresh invalidates it as the one-second freshness backstop;
+- runtime/lifecycle state changes invalidate centrally;
+- direct block-reason, recovery and server-TP-ladder state changes are guarded so stale
+  derived panel state cannot survive those mutations;
+- added deterministic G5 Runtime Acceptance coverage and `audit_phase_7_5.py`.
+
+Safety/performance:
+- no public parameter name/type/default changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold changed;
+- no decision/execution/broker-mutation authority changed;
+- unchanged broker refresh semantics remain authoritative.
+
+Verification:
+- repository gates are pending after branch creation:
+  Source/Architecture + accumulated audits,
+  Runtime Acceptance Contracts, and cTrader Compile.
+- target-terminal panel responsiveness, broker event timing and reconnect/reload remain manual.
+
+Operator action after merge:
+- run `git pull --ff-only` on local `main`.
+
+Next phase: **CR7.6a.**

@@ -846,4 +846,31 @@ Manual boundary:
 Historical G4 marker retained for previous continuity audits:
 Current phase at implementation start was CR7.4 / G4.
 
-**Current phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.**
+Historical G4 continuity marker retained for accumulated G3 verification:
+**Current phase: CR7.4 / G4**
+
+### CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization — 2026-10-01
+
+Status: **IMPLEMENTED — repository verification pending.**
+
+Source finding:
+- G4 cache invalidation was embedded in `BuildPanelPresentationKey`, causing repeated
+  managed broker-state reads during unchanged panel refresh attempts.
+
+Implemented:
+- presentation-key construction is now read-only for the canonical G4 snapshot;
+- broker dirty events invalidate immediately;
+- due broker refresh invalidates as the one-second freshness backstop;
+- runtime/lifecycle setters invalidate on state changes;
+- direct block/recovery/server-TP-ladder state mutations are guarded against stale panel state;
+- deterministic G5 Runtime Acceptance and Source/Architecture audit coverage are wired.
+
+Safety:
+- no public parameter/default or trading threshold changed;
+- no decision/execution/broker-mutation authority added;
+- no execution path changed.
+
+Manual boundary:
+- target-terminal panel responsiveness, broker event timing and reconnect/reload remain manual.
+
+**Next phase: CR7.6a.**

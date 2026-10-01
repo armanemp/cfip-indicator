@@ -107,6 +107,7 @@ namespace cAlgo
             VerifyPlanLineThicknessG3();
             VerifyTargetObstacleCacheKeyHashSemantics();
             VerifyBrokerProtectionG1();
+            VerifyExecutionProtectionPanelStateFreshnessG5();
             VerifyExecutionProtectionPanelStateG4();
 
             Console.WriteLine("Runtime acceptance contracts OK");
@@ -8641,6 +8642,59 @@ namespace cAlgo
                     60,
                     53).Allowed,
                 "F6 indicator actionability thresholds preserve RANGE/TRANSITION and neutral values");
+        }
+
+        private static void VerifyExecutionProtectionPanelStateFreshnessG5()
+        {
+            DateTime baseline =
+                new DateTime(
+                    2026,
+                    10,
+                    1,
+                    0,
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            Assert(
+                BrokerStateRefreshRule.IsRefreshDue(
+                    true,
+                    baseline,
+                    baseline.AddMilliseconds(1),
+                    1000),
+                "G5 dirty broker state forces immediate refresh");
+
+            Assert(
+                BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    DateTime.MinValue,
+                    baseline,
+                    1000),
+                "G5 never-refreshed broker state is immediately due");
+
+            Assert(
+                !BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    baseline,
+                    baseline.AddMilliseconds(999),
+                    1000),
+                "G5 unchanged broker state stays cacheable before refresh interval");
+
+            Assert(
+                BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    baseline,
+                    baseline.AddMilliseconds(1000),
+                    1000),
+                "G5 broker refresh occurs at the bounded freshness interval");
+
+            Assert(
+                BrokerStateRefreshRule.IsRefreshDue(
+                    false,
+                    baseline.AddSeconds(1),
+                    baseline,
+                    1000),
+                "G5 clock regression refreshes instead of serving stale broker state");
         }
 
         private static void VerifyExecutionProtectionPanelStateG4()
