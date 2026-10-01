@@ -5330,7 +5330,7 @@ Safety/manual boundary:
 
 ### CR6.1 / F1 closeout — 2026-10-01
 
-Status: **VERIFIED COMPLETE — PR #127 pending merge.**
+Status: **VERIFIED COMPLETE — PR #127 merged to `main`; merge commit `a7a03a4403a7c6681f95ac0b053344144e933b6e`.**
 
 Completed:
 - canonical Core `RewardPathGeometryRule` now owns opposing-zone direction and target-path geometry;
