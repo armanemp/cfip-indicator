@@ -41,10 +41,10 @@ check(
     "public const double StrongAdverseM5Atr = 0.45;" in policy and
     "public const double StrongAdverseM1Atr = 0.40;" in policy and
     "public const int StrongAdverseRiskFloor = 75;" in policy and
-    "AdverseM5BlockAtr" not in action_policy and
-    "AdverseM1BlockAtr" not in action_policy and
-    "StrongAdverseM5Atr" not in action_policy and
-    "StrongAdverseM1Atr" not in action_policy
+    "AdverseM5BlockAtr = EntryTrapRiskPolicy.AdverseM5BlockAtr" in action_policy and
+    "AdverseM1BlockAtr = EntryTrapRiskPolicy.AdverseM1BlockAtr" in action_policy and
+    "StrongAdverseM5Atr = EntryTrapRiskPolicy.StrongAdverseM5Atr" in action_policy and
+    "StrongAdverseM1Atr = EntryTrapRiskPolicy.StrongAdverseM1Atr" in action_policy
 )
 
 check(
