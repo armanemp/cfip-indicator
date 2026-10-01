@@ -846,4 +846,4 @@ Manual boundary:
 Historical G4 marker retained for previous continuity audits:
 Current phase at implementation start was CR7.4 / G4.
 
-**Current phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.****Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
+**Current phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.**
