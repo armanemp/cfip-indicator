@@ -644,11 +644,11 @@ Safety/manual boundary:
 - trigger contract و Retest semantics عمداً حفظ شد؛
 - target-terminal timing، panel/chart presentation، broker lifecycle، restart/reconnect و empirical signal-quality/profitability همچنان manual acceptance هستند.
 
-**Next phase: CR6.6 / F7 — Independent-timeframe scenario semantics and duplicate-policy owners.**
+**Next phase: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
 
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
-CR-FINAL. **Current: CR6.6 / F7 — Independent-timeframe scenario semantics and duplicate-policy owners.**
+CR-FINAL. **Current: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
 
 CR5.1 through CR5.8 are verified complete. CR5.8 / E8 was merged to main via
 PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
