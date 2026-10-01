@@ -2,6 +2,7 @@
 """Static acceptance gate for CR6.2 / F2 aggressive risk and fill-plan semantics."""
 
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
