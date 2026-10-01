@@ -66,6 +66,7 @@ namespace cAlgo
                 _triggerRuntime.Ready = m5Ready;
                 _triggerRuntime.Latched = m5Ready;
                 _triggerRuntime.ConfirmedM1 = -1;
+                _triggerRuntime.ConfirmationUtc = DateTime.MinValue;
                 _triggerRuntime.Reason =
                     m5Ready
                         ? "M5 TRIGGER READY"
@@ -83,6 +84,7 @@ namespace cAlgo
                 _triggerRuntime.Ready = false;
                 _triggerRuntime.Latched = false;
                 _triggerRuntime.ConfirmedM1 = -1;
+                _triggerRuntime.ConfirmationUtc = DateTime.MinValue;
                 _triggerRuntime.Reason = "M5 TRIGGER";
                 _triggerRuntime.UpdatedUtc = reference;
 
