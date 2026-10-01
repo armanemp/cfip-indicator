@@ -21,7 +21,7 @@ namespace cAlgo
 
     internal static class SmartThresholdPolicyRule
     {
-        public static SmartThresholdResolution Resolve(
+        public static SmartThresholdResolution ResolveSmartThresholds(
             string regime,
             bool adaptiveSmartThresholds,
             int minimumSmartQuality,

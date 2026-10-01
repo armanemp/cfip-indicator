@@ -7941,7 +7941,7 @@ namespace cAlgo
                     "classifier regime is known: " + regime);
 
                 SmartThresholdResolution adaptive =
-                    SmartThresholdPolicyRule.Resolve(
+                    SmartThresholdPolicyRule.ResolveSmartThresholds(
                         regime,
                         true,
                         70,
@@ -7960,7 +7960,7 @@ namespace cAlgo
             }
 
             SmartThresholdResolution trend =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.Trend,
                     true,
                     70,
@@ -7969,7 +7969,7 @@ namespace cAlgo
                     6);
 
             SmartThresholdResolution expansion =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.Expansion,
                     true,
                     70,
@@ -7978,7 +7978,7 @@ namespace cAlgo
                     6);
 
             SmartThresholdResolution range =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.Range,
                     true,
                     70,
@@ -7987,7 +7987,7 @@ namespace cAlgo
                     6);
 
             SmartThresholdResolution compression =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.Compression,
                     true,
                     70,
@@ -7996,7 +7996,7 @@ namespace cAlgo
                     6);
 
             SmartThresholdResolution highVolatility =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.HighVolatility,
                     true,
                     70,
@@ -8005,7 +8005,7 @@ namespace cAlgo
                     6);
 
             SmartThresholdResolution transition =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.Transition,
                     true,
                     70,
@@ -8014,7 +8014,7 @@ namespace cAlgo
                     6);
 
             SmartThresholdResolution unknown =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.Unknown,
                     true,
                     70,
@@ -8023,7 +8023,7 @@ namespace cAlgo
                     6);
 
             SmartThresholdResolution future =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     "FUTURE_REGIME",
                     true,
                     70,
@@ -8071,16 +8071,16 @@ namespace cAlgo
                 "UNKNOWN/future regime values fail safely to the base thresholds");
 
             Assert(
-                MarketRegimeIdentity.Normalize(" trend ") ==
+                MarketRegimeIdentity.NormalizeMarketRegime(" trend ") ==
                     MarketRegimeIdentity.Trend &&
-                MarketRegimeIdentity.Normalize("EXPANSION") ==
+                MarketRegimeIdentity.NormalizeMarketRegime("EXPANSION") ==
                     MarketRegimeIdentity.Expansion &&
-                MarketRegimeIdentity.Normalize("REVERSAL") ==
+                MarketRegimeIdentity.NormalizeMarketRegime("REVERSAL") ==
                     MarketRegimeIdentity.Unknown,
                 "regime identity normalization excludes legacy REVERSAL");
 
             SmartThresholdResolution adaptiveOff =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     MarketRegimeIdentity.Range,
                     false,
                     70,

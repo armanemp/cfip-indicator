@@ -14,7 +14,7 @@ namespace cAlgo
             out int edgeThreshold)
         {
             SmartThresholdResolution thresholds =
-                SmartThresholdPolicyRule.Resolve(
+                SmartThresholdPolicyRule.ResolveSmartThresholds(
                     regime,
                     AdaptiveSmartThresholds,
                     MinimumSmartQuality,

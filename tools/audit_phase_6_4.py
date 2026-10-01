@@ -49,7 +49,7 @@ for name, token in (
 
 check(
     "identity owns normalization",
-    "public static string Normalize(" in identity and
+    "public static string NormalizeMarketRegime(" in identity and
     "default:" in identity and
     "return Unknown;" in identity
 )
@@ -74,13 +74,13 @@ check(
 
 check(
     "frame regime resolution delegates to the canonical identity owner",
-    "MarketRegimeIdentity.Normalize(regime)" in frame and
+    "MarketRegimeIdentity.NormalizeMarketRegime(regime)" in frame and
     "MarketRegimeIdentity.Unknown" in frame
 )
 
 check(
     "adaptive smart thresholds delegate to one platform-neutral policy owner",
-    "SmartThresholdPolicyRule.Resolve(" in smart and
+    "SmartThresholdPolicyRule.ResolveSmartThresholds(" in smart and
     "GetAdaptiveSmartThresholds(" in smart
 )
 

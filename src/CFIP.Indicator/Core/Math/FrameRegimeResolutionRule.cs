@@ -16,7 +16,7 @@ namespace cAlgo
         public static string NormalizeFrameRegimeValue(
             string regime)
         {
-            return MarketRegimeIdentity.Normalize(regime);
+            return MarketRegimeIdentity.NormalizeMarketRegime(regime);
         }
 
         public static bool IsNeutral(

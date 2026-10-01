@@ -12,7 +12,7 @@ namespace cAlgo
         public const string HighVolatility = "HIGH_VOLATILITY";
         public const string Compression = "COMPRESSION";
 
-        public static string Normalize(
+        public static string NormalizeMarketRegime(
             string regime)
         {
             if (string.IsNullOrWhiteSpace(regime))
