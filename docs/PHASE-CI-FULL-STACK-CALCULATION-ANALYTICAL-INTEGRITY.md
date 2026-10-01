@@ -165,6 +165,25 @@ Acceptance:
   reference bar and reference time;
 - no implicit use of a different quote/index remains.
 
+#### CI-00 implementation record
+
+CI-00 establishes `CanonicalPriceSnapshot` as the calculation-level owner for
+current quote geometry. `CalculationMarketContext` composes this snapshot with
+the existing `MtfClosedContext`, so MTF ownership is not duplicated.
+
+The cTrader `Symbol` adapter is isolated in
+`CanonicalMarketContextBuilder.cs`. It converts the broker's minimum-distance
+unit into an explicit platform-neutral representation and records the terminal
+observation time as `QuoteObservedUtc`.
+
+High-risk planning/execution consumers now use this context for executable
+BUY/SELL price, spread, pip conversion, tick/digits normalization and retest
+market tolerance.
+
+Deterministic Runtime Acceptance contracts and the phase-specific static audit
+are included. Target-terminal broker semantics are intentionally deferred to the
+later CI-15 through CI-17 phases.
+
 ### CI-01 — Primitive indicator mathematical audit
 
 Audit each native indicator implementation and every direct consumer for:
