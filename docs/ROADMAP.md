@@ -5649,6 +5649,40 @@ Required Core/test ownership:
 Behavior-change gate:
 - no Retest exemption or threshold retuning is authorized by the roadmap alone.
 
+### CR7.2 / G2 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #142 merged to `main` as `f983d2fd7eb0baced4b5ff40988e6294b3f5bd28`.**
+
+تأیید می‌کنم — the Retest/trap-risk chain was hardened without changing the existing block thresholds or introducing a Retest exemption.
+
+Completed:
+- canonical Core ownership for the existing 0.30 / 0.45 / 0.40 ATR adverse-momentum boundaries;
+- deterministic rejection taxonomy: `TRAP_ADVERSE_M5`, `TRAP_ADVERSE_M1`, `TRAP_EXTREME`, `TRAP_DIVERGENCE`;
+- bounded classification of recent adverse movement as pre-zone versus post-zone/reaction context;
+- existing Retest block behavior preserved;
+- Decision → ActionabilityReason → composed reason → panel diagnostic path preserved as the single authority;
+- legacy six-argument trap-rule contract retained for accumulated F6 verification;
+- architecture refactor moved Retest/adverse helper work out of oversized validation modules;
+- accumulated F6 audit reconciled with the new canonical trap policy owner.
+
+Verification on final G2 head `94e8154e3ec5107bb984be228aed874ba2e1e27c`:
+- Source/Architecture: **PASS** — run #2283;
+- Runtime Acceptance Contracts: **PASS** — run #2092;
+- cTrader Compile: **PASS** — run #2276.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP/execution threshold retuned;
+- no second decision or execution authority introduced;
+- diagnostic context does not alter the `Block` result.
+
+Manual boundary:
+- target-terminal Retest intrabar/zone interaction timing;
+- cTrader panel/chart rendering;
+- empirical Retest signal-quality/profitability effects remain manual acceptance items.
+
+**Next phase: CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
+
 ### CR7.3 / G3 — Display parameter truth for plan-line thickness/style
 
 Scope:
@@ -5771,7 +5805,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+**CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
 
-CR7.1 / G1 is verified complete and merged to main via PR #138 as b8144c2f1edc62730b7a0723be3746afe6353851. Source/Architecture #2262, Runtime Acceptance #2071 and cTrader Compile #2255 passed on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91. CR-FINAL remains paused until the remaining Prompt 7 phases and required acceptance evidence are completed.
+CR7.2 / G2 is verified complete and merged to main via PR #142 as `f983d2fd7eb0baced4b5ff40988e6294b3f5bd28`. Source/Architecture #2283, Runtime Acceptance #2092 and cTrader Compile #2276 passed on final G2 code HEAD `94e8154e3ec5107bb984be228aed874ba2e1e27c`. CR7.1 / G1 / G1 is verified complete and merged to main via PR #138 as b8144c2f1edc62730b7a0723be3746afe6353851. Source/Architecture #2262, Runtime Acceptance #2071 and cTrader Compile #2255 passed on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91. CR-FINAL remains paused until the remaining Prompt 7 phases and required acceptance evidence are completed.
 
