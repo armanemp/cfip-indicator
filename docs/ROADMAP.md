@@ -1,3 +1,9 @@
+## Phase 7.4 — MaximumOpenPositions semantics — continuity record
+
+The single-plan execution-capacity semantics are enforced by the canonical
+capacity rule and guard. This continuity record preserves the historical
+phase identifier required by the project-integrity audit.
+
 # CFIP Indicator — Master Implementation, Certification and Release Roadmap
 
 ## 0. Purpose
