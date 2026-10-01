@@ -72,7 +72,8 @@ unexpected = production_consumers - expected_scope
 missing_owner = [
     rel for rel, content in dual_consumers
     if rel not in {parameter_file, owner_file} and
-    "StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(" not in content
+    "StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(" not in content and
+    "StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(" not in content
 ]
 
 duplicate_formula = []
