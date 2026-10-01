@@ -83,43 +83,15 @@ namespace cAlgo
             out string source,
             out int quality)
         {
-            source = "";
-            quality = 0;
-
-            if (!IsFinitePositive(target))
-                return;
-
-            Level selectedSource =
-                selected != null &&
-                stage >= 0 &&
-                stage < selected.Count
-                    ? selected[stage]
-                    : null;
-
-            if (selectedSource != null &&
-                IsFinitePositive(selectedSource.Price) &&
-                Math.Abs(
-                    selectedSource.Price -
-                    target) <=
-                Math.Max(
-                    Symbol.TickSize,
-                    Symbol.PipSize * 0.25))
-            {
-                source =
-                    BuildTargetSourceIdentity(
-                        selectedSource);
-
-                quality =
-                    CalculateTargetQuality(
-                        selectedSource);
-
-                return;
-            }
-
-            // A target without a selected source is the deliberate RR fallback.
-            // Never infer a real source merely because another level is nearby.
-            source = "SYNTHETIC_RR";
-            quality = 55;
+            ApplyResolvedTargetMeta(
+                selected,
+                stage,
+                target,
+                0,
+                "",
+                0,
+                out source,
+                out quality);
         }
 
         private string BuildTargetSourceIdentity(
