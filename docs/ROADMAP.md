@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01 through CI-07 verified complete. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -714,7 +714,7 @@ The authoritative detailed specification is:
 The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
 blocking correctness gate inserted before the next unfinished refinement phase.
 
-**Current implementation phase: CI-08 — Divergence / WaveTrend / reaction / early signal.**
+**Current implementation phase: CI-12 — Structural SL audit.**
 
 Status: **VERIFIED COMPLETE — PR #163 merged to `main`.**
 
