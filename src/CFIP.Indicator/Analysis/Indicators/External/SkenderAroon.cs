@@ -24,7 +24,7 @@ namespace cAlgo
             var results =
                 StockIndicator.GetAroon(
                     quotes,
-                    OssIndicatorParameters.AroonPeriod)
+                    OssIndicatorSettings.Default.AroonPeriod)
                     .ToList();
 
             return results.Count == 0 ||
