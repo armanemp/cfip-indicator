@@ -848,7 +848,7 @@ roadmap audit chain.
 Historical continuity marker: CI-03 is verified complete; later CI phases remain
 the active remediation sequence.
 
-## CI-04 implementation record / closeout
+## CI-04 closeout — implementation record
 
 CI-04 structure, swing, liquidity and alert-delivery integrity is retained as a verified historical continuity item in the accumulated calculation-integrity chain.
 
