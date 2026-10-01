@@ -161,7 +161,9 @@ namespace cAlgo
             int minimumSmartQuality,
             int smartQualityThreshold,
             int minimumTimeframeAgreement,
+            int smartMinimumTimeframeAgreement,
             int minimumIndependentEvidence,
+            int smartMinimumIndependentEvidence,
             int minimumStructuralConfirmations,
             int minimumEntryLocationQuality,
             int configuredMinimumEntryQuality,
@@ -184,13 +186,17 @@ namespace cAlgo
             int finalMinimumTimeframeAgreement =
                 Math.Min(
                     FinalTimeframeAgreementCap,
-                    minimumTimeframeAgreement +
+                    Math.Max(
+                        minimumTimeframeAgreement,
+                        smartMinimumTimeframeAgreement) +
                     FinalTimeframeAgreementMargin);
 
             int finalMinimumIndependentEvidence =
                 Math.Min(
                     FinalEvidenceCap,
-                    minimumIndependentEvidence +
+                    Math.Max(
+                        minimumIndependentEvidence,
+                        smartMinimumIndependentEvidence) +
                     FinalIndependentEvidenceMargin);
 
             int finalMinimumStructuralConfirmations =
