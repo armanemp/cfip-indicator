@@ -109,8 +109,7 @@ namespace cAlgo
                         risk);
 
                 double minimumPlanRR =
-                    MinimumPlanRiskReward(
-                        lane);
+                    requiredRR[0];
 
                 if (!IsFinitePositive(tp1RR) ||
                     !IsFinitePositive(minimumPlanRR) ||

@@ -50,7 +50,8 @@ namespace cAlgo
                                         Symbol.PipSize,
                                         _plan.Risk),
                                     _plan.Direction,
-                                    atr);
+                                    atr,
+                                    _plan.Lane);
                 
                             double market =
                                 _plan.Direction == 1

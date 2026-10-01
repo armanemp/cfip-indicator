@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
             VerifyTargetPipelineD7();
+            VerifyTargetSelectionConsistency();
             VerifyLiveReversalD9();
             Console.WriteLine("Planning contracts OK");
         }
@@ -266,6 +267,192 @@ namespace cAlgo
             Console.WriteLine(
                 "D8 TP1 directional defence: BUY/SELL valid and wrong-side fixtures passed");
         }
+
+        private static void VerifyTargetSelectionConsistency()
+        {
+            Assert(
+                Math.Abs(
+                    PlanRewardRiskQualityRule.BaseMinimumRrFloor -
+                    0.50) < 1e-12,
+                "E8 base RR floor constant");
+
+            Assert(
+                Math.Abs(
+                    PlanRewardRiskQualityRule.PreferredStopRiskAtrFloor -
+                    0.25) < 1e-12,
+                "E8 preferred stop ATR floor constant");
+
+            Assert(
+                Math.Abs(
+                    PlanRewardRiskQualityRule.MaximumStopRiskAtrFloor -
+                    0.50) < 1e-12,
+                "E8 maximum stop ATR floor constant");
+
+            Assert(
+                Math.Abs(
+                    PlanRewardRiskQualityRule.AdaptiveStopExcessRrCap -
+                    0.50) < 1e-12,
+                "E8 adaptive RR cap constant");
+
+            Assert(
+                Math.Abs(
+                    PlanRewardRiskQualityRule.AdaptiveStopExcessRrMultiplier -
+                    0.25) < 1e-12,
+                "E8 adaptive RR multiplier constant");
+
+            Assert(
+                Math.Abs(
+                    PlanRewardRiskQualityRule.EffectiveRrBaseFactor -
+                    0.90) < 1e-12,
+                "E8 effective RR factor constant");
+
+            Assert(
+                Math.Abs(
+                    PlanRewardRiskQualityRule.EffectiveRrAbsoluteReduction -
+                    0.15) < 1e-12,
+                "E8 effective RR reduction constant");
+
+            OpportunityLane[] lanes =
+            {
+                OpportunityLane.Strategic,
+                OpportunityLane.Tactical,
+                OpportunityLane.CounterHtfTactical,
+                OpportunityLane.MicroReaction
+            };
+
+            double[][] fixtures =
+            {
+                new[]
+                {
+                    0.10, 2.00, 3.20, 4.80, 6.50, 2.00, 2.00, 2.40
+                },
+                new[]
+                {
+                    0.25, 1.00, 1.00, 1.00, 1.00, 2.50, 2.00, 1.50
+                },
+                new[]
+                {
+                    0.10, 2.00, 1.20, 1.30, 1.40, 2.10, 2.00, 3.00
+                },
+                new[]
+                {
+                    0.40, 4.00, 2.00, 2.00, 2.00, 3.50, 3.50, 2.25
+                }
+            };
+
+            int checkedLadders = 0;
+
+            for (int fixture = 0;
+                 fixture < fixtures.Length;
+                 fixture++)
+            {
+                double[] f = fixtures[fixture];
+
+                for (int laneIndex = 0;
+                     laneIndex < lanes.Length;
+                     laneIndex++)
+                {
+                    double[] requiredRR =
+                        TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                            f[0],
+                            lanes[laneIndex],
+                            f[1],
+                            f[2],
+                            f[3],
+                            f[4],
+                            f[5],
+                            f[6],
+                            f[7]);
+
+                    Assert(
+                        TargetSelectionRequiredRrRule.IsMonotonicNonDecreasing(
+                            requiredRR),
+                        "E8 required RR monotonicity lane " +
+                        lanes[laneIndex].ToString() +
+                        " fixture " +
+                        fixture.ToString());
+
+                    for (int stage = 1;
+                         stage < 4;
+                         stage++)
+                    {
+                        Assert(
+                            requiredRR[stage] >=
+                            requiredRR[stage - 1],
+                            "E8 TP" +
+                            (stage + 1).ToString() +
+                            " does not invert previous stage");
+                    }
+
+                    for (int stage = 0;
+                         stage < 4;
+                         stage++)
+                    {
+                        double rr = requiredRR[stage];
+
+                        Assert(
+                            TargetProgressionRule.IsValid(
+                                1,
+                                100,
+                                100 + rr) ==
+                            TargetProgressionRule.IsValid(
+                                -1,
+                                100,
+                                100 - rr),
+                            "E8 BUY/SELL target symmetry lane " +
+                            lanes[laneIndex].ToString() +
+                            " stage " +
+                            (stage + 1).ToString());
+                    }
+
+                    checkedLadders++;
+                }
+            }
+
+            double[] tacticalInversion =
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                    0.10,
+                    OpportunityLane.Tactical,
+                    2.00,
+                    1.00,
+                    1.00,
+                    1.00,
+                    2.00,
+                    1.50,
+                    1.00);
+
+            Assert(
+                Math.Abs(tacticalInversion[0] - 2.00) < 1e-12 &&
+                Math.Abs(tacticalInversion[1] - 2.10) < 1e-12 &&
+                Math.Abs(tacticalInversion[2] - 2.20) < 1e-12 &&
+                Math.Abs(tacticalInversion[3] - 2.30) < 1e-12,
+                "E8 tactical RR ordering cannot invert");
+
+            double[] strategicTradeFloor =
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                    0.10,
+                    OpportunityLane.Strategic,
+                    2.00,
+                    3.20,
+                    4.80,
+                    6.50,
+                    2.00,
+                    3.25,
+                    2.00);
+
+            Assert(
+                strategicTradeFloor[0] == 3.25 &&
+                strategicTradeFloor[1] == 3.35 &&
+                strategicTradeFloor[2] == 4.80 &&
+                strategicTradeFloor[3] == 6.50,
+                "E8 MinimumTradeRR remains an active strategic floor");
+
+            Console.WriteLine(
+                "E8 target-selection contracts: " +
+                checkedLadders.ToString() +
+                " lane/fixture ladders, named constants, BUY/SELL symmetry passed");
+        }
+
 
         private static void VerifyLiveReversalD9()
         {

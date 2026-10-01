@@ -23,10 +23,14 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-Prompt 4, Prompt 5 and Prompt 6 are now mandatory remediation tracks before CR-FINAL. **Current: CR5.6 / E6 — PremiumDiscount/LiveBias/HealthyVolatility semantic separation and canonical M5 closed-bar consistency.**
+Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before CR-FINAL.
+**Current: CR5.8 / E8 — Small constant ownership and TargetSelection consistency.**
 
-CR4.1 through CR4.10 and CR5.1 through CR5.5 are now recorded as completed/verified. CR5.5 is implemented and verified on PR #121 but is not yet merged to main. The repository-side CR-FINAL gate remains paused until CR5.3–CR5.8 and CR6.1–CR6.9 are reconciled and completed or explicitly documented as verified/deferred. Target-terminal acceptance remains required afterward.
-
+CR5.1 through CR5.7 are verified complete. CR5.8 is implemented on
+`phase/cr5-8-target-selection-consistency` and is under CI acceptance via PR
+#124. CR-FINAL remains paused until CR5.8 and CR6.1–CR6.9 are completed or
+explicitly documented as verified/deferred with evidence. Target-terminal
+acceptance remains required afterward.
 ## Completed before this checkpoint
 
 - CR-0 audit gate
@@ -69,9 +73,8 @@ CR4.1 through CR4.10 and CR5.1 through CR5.5 are now recorded as completed/verif
 
 ## Next transition
 
-CR3.5 is closed. Prompt 4 D1–D10 is now inserted before CR-FINAL. The next implementation response must execute **CR4.1 only**. Track 12A remains blocked.
-
-
+After CR5.8 closes, the next implementation response must execute **CR6.1 / F1 only**.
+Track 12A and CR-FINAL remain blocked until the full Prompt 6 chain is closed.
 ## CR3.2 implementation record
 
 - C3: the former proxy expected-value heuristic now has an explicit Reward Quality Floor semantic owner in Core math; numerical behavior for valid inputs and public parameter defaults were preserved.

@@ -6,64 +6,43 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private double[] BuildTargetSelectionRequiredRR(
-            double rrStep,
-            OpportunityLane lane = OpportunityLane.Strategic)
+        private OpportunityLane ResolvePlanTargetSelectionLane()
         {
-            double adaptiveTp1RR =
-                lane == OpportunityLane.Tactical ||
-                lane == OpportunityLane.CounterHtfTactical ||
-                lane == OpportunityLane.MicroReaction
-                    ? MinimumPlanRiskReward(lane)
-                    : Math.Max(
-                        Tp1MinimumRR,
-                        MinimumRequiredRR());
+            if (_plan != null)
+                return _plan.Lane;
 
-            return new[]
-            {
-                adaptiveTp1RR,
-                Math.Max(
-                    Tp2MinimumRR,
-                    adaptiveTp1RR + rrStep),
-                Math.Max(
-                    Tp3MinimumRR,
-                    Tp2MinimumRR + rrStep),
-                Math.Max(
-                    Tp4MinimumRR,
-                    Tp3MinimumRR + rrStep)
-            };
+            bool topDownCalibrated =
+                _decision != null &&
+                _decision.TopDownEligible &&
+                string.Equals(
+                    _decision.TopDownStage,
+                    "ENTRY CALIBRATED",
+                    StringComparison.OrdinalIgnoreCase);
+
+            return topDownCalibrated
+                ? OpportunityLane.Strategic
+                : OpportunityLane.Tactical;
         }
 
-        private double MinimumPlanRiskReward(
+        private double[] BuildTargetSelectionRequiredRR(
+            double rrStep,
             OpportunityLane lane)
         {
-            double canonicalMinimum =
-                MinimumRequiredRR();
-
-            if (lane == OpportunityLane.Tactical ||
-                lane == OpportunityLane.CounterHtfTactical ||
-                lane == OpportunityLane.MicroReaction)
-            {
-                // Parallel lanes must not bypass the canonical TP1 reward
-                // contract. Their lane-specific RR is allowed to be stricter,
-                // never weaker, than the main plan floor.
-                return Math.Max(
-                    Math.Max(
-                        Tp1MinimumRR,
-                        canonicalMinimum),
-                    Math.Max(
-                        1.0,
-                        TacticalOpportunityMinimumRR));
-            }
-
-            return Math.Max(
+            return TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                rrStep,
+                lane,
+                Tp1MinimumRR,
+                Tp2MinimumRR,
+                Tp3MinimumRR,
+                Tp4MinimumRR,
+                MinimumRequiredRR(),
                 MinimumTradeRR,
-                canonicalMinimum);
+                TacticalOpportunityMinimumRR);
         }
 
         private bool RequiresHtfRewardForTargetStage(
             int stage,
-            OpportunityLane lane = OpportunityLane.Strategic)
+            OpportunityLane lane)
         {
             bool topDownCalibrated =
                 _decision != null &&

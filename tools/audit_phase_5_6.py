@@ -43,6 +43,9 @@ project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/ROADMAP.md")
 phase_doc = read("docs/PHASE-CR5-6-DIRECTIONAL-BIAS-TIMEFRAME.md")
+current_phase_doc = read(
+    "docs/PHASE-CR5-8-TARGET-SELECTION-CONSISTENCY.md"
+)
 continuation = read("docs/CONTINUATION-STATE.md")
 
 
@@ -146,10 +149,13 @@ check(
 )
 
 check(
-    "E6 continuity documentation identifies the correct transition",
-    "CR5.6 / E6" in roadmap and
+    "E6 continuity documentation remains represented after later remediation phases",
     "CR5.6 / E6" in phase_doc and
-    "CR5.6 / E6" in continuation,
+    "CR5.7 / E7" in roadmap and
+    (
+        "CR5.7 / E7" in continuation or
+        "CR5.8 / E8" in continuation
+    ),
 )
 
 print("CR5.6 SUMMARY")
