@@ -86,7 +86,7 @@ Manual boundary:
 
 **Operator action: run `git pull --ff-only` on local `main` before starting CI-06.**
 
-**Next implementation phase: CI-07 — MTF / regime / market context.**
+**Next implementation phase: CI-08 — Divergence / WaveTrend / reaction / early signal.**
 
 
 ### CI-06 closeout — Order Block lifecycle — 2026-10-02
@@ -111,7 +111,7 @@ Manual boundary:
 - target-terminal MTF/OB timing, live mitigation/retest, sound latency, panel/chart responsiveness, broker lifecycle and empirical signal/outcome validation remain manual.
 
 Operator action:
-**After PR #161 is merged, run `git pull --ff-only` on local `main` before starting CI-07.**
+**After PR #162 has been merged, run `git pull --ff-only` on local `main` before starting CI-08.**
 
 ### CI-07 implementation status — MTF / regime / market context
 
