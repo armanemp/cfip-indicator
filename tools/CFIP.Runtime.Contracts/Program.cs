@@ -100,6 +100,7 @@ namespace cAlgo
             VerifyAggressiveRiskAndFillSemantics();
             VerifyActionabilityThresholdTransparency();
             VerifyEntryActionabilityF6();
+            VerifyIndependentTimeframeScenarioSemanticsF7();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -5556,64 +5557,74 @@ namespace cAlgo
                     CreatedM5 = 100,
                     Quality = 90,
                     Tp1RR = 3.0,
-                    ActionableNow = true,
-                    ExecutionPolicyAllowed = true
+                    ActionableNow = true
                 };
 
-            TradeOpportunityCandidate tactical =
-                new TradeOpportunityCandidate
-                {
-                    ScenarioId = "CANONICAL-TACTICAL-BUY",
-                    Lane = OpportunityLane.Tactical,
-                    Direction = 1,
-                    CreatedM5 = 100,
-                    Quality = 84,
-                    Tp1RR = 2.5,
-                    ActionableNow = true,
-                    ExecutionPolicyAllowed = true
-                };
+            ScenarioExecutionPolicyResult strategicPolicy =
+                ScenarioExecutionPolicyRule.Evaluate(
+                    strategic,
+                    decision,
+                    OpportunityLane.Strategic);
+
+            Assert(
+                strategicPolicy.CandidateEligible &&
+                strategicPolicy.ExecutionAuthorized &&
+                strategicPolicy.ExecutionReason ==
+                    "CANONICAL SCENARIO EXECUTION AUTHORIZED",
+                "canonical scenario policy authorizes an aligned actionable candidate");
 
             TradeOpportunityCandidate independent =
                 new TradeOpportunityCandidate
                 {
                     ScenarioId = "TF-H1-BUY",
                     SourceTimeframe = "H1",
+                    BasePlanTimeframe = "M5",
                     Lane = OpportunityLane.Tactical,
                     Direction = 1,
                     CreatedM5 = 100,
                     Quality = 96,
                     Tp1RR = 4.0,
-                    ActionableNow = true,
-                    ExecutionPolicyAllowed = false,
-                    ExecutionPolicyReason =
-                        "INDEPENDENT TIMEFRAME • OBSERVE ONLY"
+                    ActionableNow = true
                 };
 
-            string reason;
-
-            Assert(
-                ScenarioExecutionPolicy.IsCanonicalCandidateEligible(
-                    strategic,
-                    decision,
-                    OpportunityLane.Strategic,
-                    out reason),
-                "canonical strategic scenario may be execution-eligible");
-
-            Assert(
-                ScenarioExecutionPolicy.IsCanonicalCandidateEligible(
+            ScenarioExecutionPolicyResult independentPolicy =
+                ScenarioExecutionPolicyRule.Evaluate(
                     independent,
                     decision,
-                    OpportunityLane.Tactical,
-                    out reason),
-                "independent timeframe candidate can still be structurally evaluated");
+                    OpportunityLane.Tactical);
 
             Assert(
-                !ScenarioExecutionPolicy.IsExecutionAuthorizedCandidate(
-                    independent,
+                independentPolicy.CandidateEligible &&
+                !independentPolicy.ExecutionAuthorized &&
+                independentPolicy.ExecutionReason ==
+                    "OBSERVE-ONLY TF SCENARIO",
+                "independent timeframe scenario remains structurally evaluable but observe-only for execution");
+
+            Assert(
+                independent.BasePlanTimeframe == "M5",
+                "timeframe scenario explicitly declares M5 as its canonical plan geometry base");
+
+            TradeOpportunityCandidate mismatch =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "CANONICAL-TACTICAL-SELL",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = -1,
+                    ActionableNow = true
+                };
+
+            ScenarioExecutionPolicyResult mismatchPolicy =
+                ScenarioExecutionPolicyRule.Evaluate(
+                    mismatch,
                     decision,
-                    OpportunityLane.Tactical,
-                    out reason),
-                "independent timeframe scenario cannot authorize broker execution");
+                    OpportunityLane.Tactical);
+
+            Assert(
+                !mismatchPolicy.CandidateEligible &&
+                !mismatchPolicy.ExecutionAuthorized &&
+                mismatchPolicy.ExecutionReason ==
+                    "SCENARIO / DECISION DIRECTION MISMATCH",
+                "direction mismatch blocks both candidate eligibility and execution");
 
             Plan plan =
                 new Plan
@@ -5626,18 +5637,23 @@ namespace cAlgo
                     Tp1 = 104
                 };
 
-            tactical.Entry = 100;
-            tactical.Stop = 98;
-            tactical.Tp1 = 104;
-
-            strategic.Entry = 101;
-            strategic.Stop = 98;
-            strategic.Tp1 = 105;
-
-            TradeOpportunityCandidate selected;
+            TradeOpportunityCandidate tactical =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "CANONICAL-TACTICAL-BUY",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 100,
+                    Quality = 84,
+                    Tp1RR = 2.5,
+                    ActionableNow = true,
+                    Entry = 100,
+                    Stop = 98,
+                    Tp1 = 104
+                };
 
             Assert(
-                ScenarioExecutionPolicy.TryResolvePlanScenario(
+                ScenarioExecutionPolicyRule.TryResolvePlanScenario(
                     new[]
                     {
                         strategic,
@@ -5647,39 +5663,102 @@ namespace cAlgo
                     plan,
                     decision,
                     0.001,
-                    out selected,
-                    out reason) &&
-                selected == tactical,
-                "plan scenario resolution selects the exact lane and geometry");
+                    out TradeOpportunityCandidate selected,
+                    out string reason) &&
+                selected == tactical &&
+                reason ==
+                    "SCENARIO MATCHED • CANONICAL-TACTICAL-BUY",
+                "plan scenario resolution uses the single canonical execution policy owner");
 
             decision.ActionableNow = false;
 
-            Assert(
-                !ScenarioExecutionPolicy.IsCanonicalCandidateEligible(
+            ScenarioExecutionPolicyResult blockedPolicy =
+                ScenarioExecutionPolicyRule.Evaluate(
                     tactical,
                     decision,
-                    OpportunityLane.Tactical,
-                    out reason),
-                "non-actionable canonical state cannot authorize a scenario");
-
-            SubmissionAttemptIdentity scopedA =
-                new SubmissionAttemptIdentity(
-                    "EURUSD|100|1",
-                    "AutomaticMarket|100|1|CANONICAL-TACTICAL-BUY",
-                    ExecutionSubmissionPath.AutomaticMarket,
-                    "CANONICAL-TACTICAL-BUY");
-
-            SubmissionAttemptIdentity scopedB =
-                new SubmissionAttemptIdentity(
-                    "EURUSD|100|1",
-                    "AutomaticMarket|100|1|CANONICAL-HTF-BUY",
-                    ExecutionSubmissionPath.AutomaticMarket,
-                    "CANONICAL-HTF-BUY");
+                    OpportunityLane.Tactical);
 
             Assert(
-                scopedA.CanonicalKey != scopedB.CanonicalKey &&
-                scopedA.ScenarioId != scopedB.ScenarioId,
-                "submission retry state is isolated by scenario identity");
+                !blockedPolicy.CandidateEligible &&
+                !blockedPolicy.ExecutionAuthorized &&
+                blockedPolicy.ExecutionReason ==
+                    "CANONICAL DECISION NOT ACTIONABLE",
+                "non-actionable canonical state cannot authorize a scenario");
+        }
+
+        private static void VerifyIndependentTimeframeScenarioSemanticsF7()
+        {
+            TradeOpportunityCandidate h1 =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-H1-BUY",
+                    SourceTimeframe = "H1",
+                    BasePlanTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 200,
+                    Quality = 90,
+                    ActionableNow = true
+                };
+
+            TradeOpportunityCandidate h4 =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-H4-BUY",
+                    SourceTimeframe = "H4",
+                    BasePlanTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 200,
+                    Quality = 89,
+                    ActionableNow = true
+                };
+
+            Assert(
+                h1.SourceTimeframe != h4.SourceTimeframe &&
+                h1.BasePlanTimeframe == "M5" &&
+                h4.BasePlanTimeframe == "M5" &&
+                h1.ScenarioId != h4.ScenarioId,
+                "same-direction timeframe annotations remain distinct without claiming independent plan geometry");
+
+            Assert(
+                ParallelScenarioSelectionRule.GetScenarioIdentity(h1) !=
+                ParallelScenarioSelectionRule.GetScenarioIdentity(h4) &&
+                ParallelScenarioSelectionRule.CoverageKey(h1) !=
+                ParallelScenarioSelectionRule.CoverageKey(h4),
+                "timeframe identity and coverage preserve simultaneous distinct frame scenarios");
+
+            TradeOpportunityCandidate h1Duplicate =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-H1-BUY",
+                    SourceTimeframe = "H1",
+                    BasePlanTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 200,
+                    Quality = 95,
+                    ActionableNow = true
+                };
+
+            Assert(
+                ParallelScenarioSelectionRule.SameIdentity(
+                    h1,
+                    h1Duplicate) &&
+                ParallelScenarioSelectionRule.ShouldReplace(
+                    h1,
+                    h1Duplicate,
+                    0.01),
+                "duplicate timeframe annotation is replaced deterministically by the higher-priority observation");
+
+            Assert(
+                ParallelScenarioSelectionRule.SameIdentity(
+                    h1,
+                    h1Duplicate) &&
+                !ParallelScenarioSelectionRule.SameIdentity(
+                    h1,
+                    h4),
+                "selection identity prevents cross-timeframe accidental deduplication");
         }
 
         private static void VerifyActionabilityAndDivergenceState()
