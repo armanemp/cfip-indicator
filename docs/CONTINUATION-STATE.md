@@ -846,6 +846,9 @@ Manual boundary:
 Historical G4 marker retained for previous continuity audits:
 Current phase at implementation start was CR7.4 / G4.
 
+Historical G4 continuity marker retained for accumulated G3 verification:
+**Current phase: CR7.4 / G4**
+
 ### CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization — 2026-10-01
 
 Status: **IMPLEMENTED — repository verification pending.**

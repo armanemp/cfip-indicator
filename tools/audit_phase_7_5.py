@@ -16,6 +16,11 @@ life = read("Trading/Execution/State/LifecycleStateStore.cs")
 state = read("Indicator/State.cs")
 program = Path("tools/CFIP.Runtime.Contracts/Program.cs").read_text(encoding="utf-8")
 workflow = Path(".github/workflows/source-check.yml").read_text(encoding="utf-8")
+roadmap = Path("docs/ROADMAP.md").read_text(encoding="utf-8")
+continuation = Path("docs/CONTINUATION-STATE.md").read_text(encoding="utf-8")
+review = Path("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md").read_text(encoding="utf-8")
+development = Path("docs/DEVELOPMENT-LOG.md").read_text(encoding="utf-8")
+phase = Path("docs/PHASE-CR7-5-G5-PANEL-STATE-FRESHNESS.md").read_text(encoding="utf-8")
 
 build = panel.split("private string BuildPanelPresentationKey(", 1)[1].split("private string PriceKey(", 1)[0]
 if "InvalidatePanelExecutionProtectionStateCache();" in build:
@@ -55,6 +60,24 @@ if "VerifyExecutionProtectionPanelStateFreshnessG5();" not in program:
 
 if "python tools/audit_phase_7_5.py" not in workflow:
     raise SystemExit("G5 static audit is not in Source/Architecture CI")
+
+for document, token, name in (
+    (roadmap, "CR7.5 / G5", "ROADMAP G5 scope"),
+    (continuation, "CR7.5 / G5", "CONTINUATION G5 scope"),
+    (review, "CR7.5 / G5", "remediation G5 scope"),
+    (development, "CR7.5 / G5", "development log G5 entry"),
+):
+    if token not in document:
+        raise SystemExit(f"G5 continuity record missing: {name}")
+
+if "Status: **IMPLEMENTED" not in phase or "CR7.6a" not in phase:
+    raise SystemExit("G5 phase document does not record implementation and next transition")
+
+if "**Next phase after G5 closeout: CR7.6a.**" not in roadmap:
+    raise SystemExit("G5 roadmap transition is missing")
+
+if "**Next phase: CR7.6a.**" not in continuation or "**Next phase: CR7.6a.**" not in review:
+    raise SystemExit("G5 continuation/remediation transition is missing")
 
 print("CR7.5 / G5 panel-state freshness audit PASS")
 print("presentation key does not invalidate the canonical state snapshot")
