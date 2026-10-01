@@ -3937,9 +3937,9 @@ namespace cAlgo
                 };
 
             Assert(
-                ParallelScenarioSelectionRule.Identity(m5Buy) ==
+                ParallelScenarioSelectionRule.GetScenarioIdentity(m5Buy) ==
                 "TF-M5-BUY" &&
-                ParallelScenarioSelectionRule.Identity(h1Buy) ==
+                ParallelScenarioSelectionRule.GetScenarioIdentity(h1Buy) ==
                 "TF-H1-BUY",
                 "parallel scenario identity is explicit and timeframe-scoped");
 
