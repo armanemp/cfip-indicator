@@ -55,20 +55,10 @@ check(
 
 check(
     "opposing direction is computed once and used by FVG and OB builders",
-    "int opposingDirection =
-                -direction;" in scanner and
-    "FvgRule.TryGetThreeBarGap(
-                            opposingDirection," in scanner and
-    "BuildManagedFvgZone(
-                                bars,
-                                i,
-                                index,
-                                opposingDirection," in scanner and
-    "BuildOrderBlockCandidate(
-                            bars,
-                            i,
-                            index,
-                            opposingDirection," in scanner,
+    "int opposingDirection =\n                -direction;" in scanner and
+    "FvgRule.TryGetThreeBarGap(\n                            opposingDirection," in scanner and
+    "BuildManagedFvgZone(\n                                bars,\n                                i,\n                                index,\n                                opposingDirection," in scanner and
+    "BuildOrderBlockCandidate(\n                            bars,\n                            i,\n                            index,\n                            opposingDirection," in scanner,
 )
 
 check(
@@ -80,10 +70,8 @@ check(
 
 check(
     "raw pre-mitigation FVG path scan was removed",
-    "bars.LowPrices[i] -
-                        bars.HighPrices[i - 2]" not in scanner and
-    "bars.LowPrices[i - 2] -
-                        bars.HighPrices[i]" not in scanner,
+    "bars.LowPrices[i] -\n                        bars.HighPrices[i - 2]" not in scanner and
+    "bars.LowPrices[i - 2] -\n                        bars.HighPrices[i]" not in scanner,
 )
 
 check(
@@ -103,9 +91,7 @@ check(
 check(
     "target-specific path geometry is evaluated after cache retrieval",
     "RewardPathGeometryRule.BlocksRewardPath(" in scanner and
-    "entry,
-                        target,
-                        clearance" in scanner,
+    "entry,\n                        target,\n                        clearance" in scanner,
 )
 
 check(
