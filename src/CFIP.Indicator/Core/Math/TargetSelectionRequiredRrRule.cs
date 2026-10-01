@@ -9,7 +9,7 @@ namespace cAlgo
     /// </summary>
     internal static class TargetSelectionRequiredRrRule
     {
-        public static double[] Build(
+        public static double[] BuildRequiredRrLadder(
             double rrStep,
             OpportunityLane lane,
             double tp1MinimumRR,
@@ -86,7 +86,7 @@ namespace cAlgo
                 double current =
                     requiredRR[i];
 
-                if (!IsFiniteNonNegative(current) ||
+                if (!IsFiniteNonNegativeRequiredRr(current) ||
                     (i > 0 &&
                      current < previous))
                     return false;
@@ -105,17 +105,17 @@ namespace cAlgo
                    lane == OpportunityLane.MicroReaction;
         }
 
-        private static bool IsFinite(
+        private static bool IsFiniteRequiredRr(
             double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
         }
 
-        private static bool IsFiniteNonNegative(
+        private static bool IsFiniteNonNegativeRequiredRr(
             double value)
         {
-            return IsFinite(value) &&
+            return IsFiniteRequiredRr(value) &&
                    value >= 0;
         }
     }
