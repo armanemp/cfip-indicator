@@ -267,8 +267,9 @@ Repository gates on the final F1 head:
 **CR6.3 / F4 — Effective-threshold transparency and hidden additive margins.**
 
 F2 was completed and verified on branch
-`phase/cr6-2-f2-aggressive-risk-fill`; PR #128 is ready for merge after the
-three repository gates passed.
+`phase/cr6-2-f2-aggressive-risk-fill`; PR #128 was merged to `main` via merge
+commit `217911ac5f484d156b8640f27f2a928b9622280b`. Three repository gates passed
+on the final pre-merge head.
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.

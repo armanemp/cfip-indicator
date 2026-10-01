@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **VERIFIED COMPLETE — PR #128 merged after all three repository gates passed.**
+Status: **VERIFIED COMPLETE — PR #128 merged to `main`; merge commit `217911ac5f484d156b8640f27f2a928b9622280b`.**
 
 ## Required phase confirmation
 
