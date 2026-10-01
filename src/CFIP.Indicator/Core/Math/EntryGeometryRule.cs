@@ -55,7 +55,7 @@ namespace cAlgo
             double triggerTolerance =
                 Math.Max(
                     0,
-                    ResolveTriggerTolerance(
+                    EntryActionabilityPolicy.ResolveTriggerTolerance(
                         tickSize,
                         pipSize));
 
@@ -205,14 +205,14 @@ namespace cAlgo
             if (mode == ExecutionMode.BreakoutMarket)
                 return triggerExtensionAtr >
                     Math.Max(
-                        0.10,
+                        EntryActionabilityPolicy.BreakoutLateExtensionFloorAtr,
                         IsFiniteNonNegative(maximumExtensionAtr)
                             ? maximumExtensionAtr
                             : 0);
 
             return entryDistanceAtr >
                 Math.Max(
-                    0.05,
+                    EntryActionabilityPolicy.RetestLateDistanceFloorAtr,
                     IsFiniteNonNegative(maximumDistanceAtr)
                         ? maximumDistanceAtr
                         : 0);
@@ -260,24 +260,6 @@ namespace cAlgo
             return direction == 1
                 ? market >= trigger - tolerance
                 : market <= trigger + tolerance;
-        }
-
-        private static double ResolveTriggerTolerance(
-            double tickSize,
-            double pipSize)
-        {
-            double safeTick =
-                IsFiniteNonNegative(tickSize)
-                    ? tickSize
-                    : 0;
-            double safePip =
-                IsFiniteNonNegative(pipSize)
-                    ? pipSize
-                    : 0;
-
-            return Math.Max(
-                safeTick,
-                safePip * 0.10);
         }
 
         private static bool IsFinitePositive(double value)
