@@ -51,12 +51,22 @@ namespace cAlgo
                                     if (plan.EntryMode ==
                                         ExecutionMode.RetestMarket)
                                     {
-                                        double tolerance =
-                                            Math.Max(
-                                                Symbol.TickSize,
-                                                Math.Max(
-                                                    Symbol.PipSize,
-                                                    Symbol.Ask - Symbol.Bid));
+                                        CanonicalPriceSnapshot priceSnapshot =
+                            GetCanonicalPriceSnapshot();
+
+                        if (priceSnapshot == null ||
+                            !priceSnapshot.IsQuoteValid)
+                        {
+                            reason = "NO CANONICAL MARKET QUOTE";
+                            return false;
+                        }
+
+                        double tolerance =
+                            Math.Max(
+                                priceSnapshot.TickSize,
+                                Math.Max(
+                                    priceSnapshot.PipSize,
+                                    priceSnapshot.Spread));
                         
                                         if (market <
                                                 plan.EntryZoneLow - tolerance ||
