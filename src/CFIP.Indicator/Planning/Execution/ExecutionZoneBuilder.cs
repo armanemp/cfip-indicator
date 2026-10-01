@@ -43,11 +43,16 @@ namespace cAlgo
             if (atr <= 0)
                 return false;
 
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsQuoteValid)
+                return false;
+
             market =
                 NormalizePrice(
-                    direction == 1
-                        ? Symbol.Ask
-                        : Symbol.Bid);
+                    priceSnapshot.GetExecutablePrice(direction));
 
             if (!TrySelectExecutionZoneCandidate(
                     closedM5,

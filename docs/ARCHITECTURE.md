@@ -22,6 +22,27 @@ The source tree is organized by responsibility and artifact ownership.
 
 The cTrader host remains a single `CFIPIndicator` partial type solely for platform compatibility. Partial files are implementation units, not alternative engines.
 
+### Canonical calculation-market context
+
+The calculation runtime owns one `CalculationMarketContext` per live calculation
+cycle. It composes the existing `MtfClosedContext` with one
+`CanonicalPriceSnapshot`.
+
+`CanonicalMarketContextBuilder.cs` is the cTrader-to-core adapter for current
+Bid/Ask, executable BUY/SELL prices, spread, pip/tick scale, digits, broker
+minimum-distance metadata and terminal observation time. Downstream planning and
+execution consumers must read this context rather than reconstruct the same
+quote semantics independently.
+
+The context is refreshed independently of readiness-probe throttling. Therefore
+closed-bar/MFT cache stability does not imply quote stability, and a stable
+closed-bar decision may still be evaluated against the latest observed
+executable quote at the live execution boundary.
+
+The quote observation timestamp is intentionally distinct from the signal
+reference timestamp. `Server.TimeInUtc` is recorded as terminal observation
+time; it is not represented as an exchange-event timestamp.
+
 ## Runtime authority
 
 The calculation entrypoint is a thin orchestration boundary. Calculate() delegates preparation, newly-closed-bar analysis, decision alerts, live-cycle state/execution, and final presentation to dedicated runtime modules. It must not contain analytical, execution, lifecycle, or rendering business logic directly.

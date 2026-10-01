@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **planned — blocks continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-00 complete; CI-01 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -760,6 +760,42 @@ Mandatory principle:
 
 `No threshold/weight tuning is accepted as a substitute for correcting a
 mathematical, semantic, provenance or timing defect.`
+
+### CI-00 closeout — Canonical data / price / time — 2026-10-01
+
+Status: **COMPLETE — PR #154 verified and merged.**
+
+Completed:
+
+- introduced one canonical `CanonicalPriceSnapshot` for Bid, Ask, executable
+  BUY/SELL prices, midpoint, spread, pip/tick scale and broker-distance metadata;
+- preserved `MtfClosedContext` as the sole closed-MTF index owner and composed it
+  into `CalculationMarketContext`;
+- bound signal-reference time, quote-observation time and host-bar context in one
+  calculation object;
+- refreshed the quote snapshot independently of readiness-probe throttling so
+  live execution consumers cannot accidentally reuse an old quote merely because
+  the closed MTF context is unchanged;
+- migrated high-risk execution/planning consumers away from direct Bid/Ask
+  reconstruction;
+- added deterministic Runtime Acceptance coverage for directional executable
+  prices, spread, broker-distance conversion, invalid quotes and combined
+  price/time/MTF context;
+- added `tools/audit_phase_ci_00.py` and accumulated it in Source/Architecture CI;
+- recorded the implementation boundary in
+  `docs/PHASE-CI-00-CANONICAL-DATA-PRICE-TIME.md`.
+
+Verification on implementation head `420b2390413df99f7ac14c16e73f0f456edc9665`:
+
+- Source / Architecture: PASS — run 2391;
+- Runtime Acceptance Contracts: PASS — run 2200;
+- cTrader Compile / Build: PASS — run 2384;
+- CI-00 phase audit: PASS — Source/Architecture step 73.
+
+No public parameter name/type/default, trading threshold, confidence, RR, SL/TP
+policy or execution policy was tuned in CI-00.
+
+Next specified phase: **CI-01 — Primitive Indicator Mathematical Audit**.
 
 # Track 0 — Baseline and clean-state verification
 

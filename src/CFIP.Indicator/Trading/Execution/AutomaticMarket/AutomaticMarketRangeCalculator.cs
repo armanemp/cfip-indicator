@@ -9,10 +9,15 @@ namespace cAlgo
             int closedM5,
             double basePrice)
         {
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
             if (_m5Bars == null ||
                 closedM5 < 1 ||
                 !IsFinitePositive(basePrice) ||
-                !IsFinitePositive(Symbol.PipSize))
+                priceSnapshot == null ||
+                !priceSnapshot.IsQuoteValid ||
+                !IsFinitePositive(priceSnapshot.PipSize))
                 return 0;
 
             double atr =
@@ -26,13 +31,10 @@ namespace cAlgo
             double spread =
                 Math.Max(
                     0,
-                    Symbol.Ask - Symbol.Bid);
+                    priceSnapshot.Spread);
 
             double spreadPips =
-                spread /
-                Math.Max(
-                    Symbol.PipSize,
-                    1e-9);
+                priceSnapshot.SpreadPips;
 
             double atrPips =
                 atr /

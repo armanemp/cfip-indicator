@@ -17,11 +17,17 @@ namespace cAlgo
             if (checkSpread &&
                 UseSpreadFilter)
             {
+                CanonicalPriceSnapshot priceSnapshot =
+                    GetCanonicalPriceSnapshot();
+
+                if (priceSnapshot == null ||
+                    !priceSnapshot.IsQuoteValid)
+                    return false;
+
                 double spread =
                     Math.Max(
                         0,
-                        Symbol.Ask -
-                        Symbol.Bid);
+                        priceSnapshot.Spread);
 
                 if (spread > 0 &&
                     plan.Risk > 0 &&
