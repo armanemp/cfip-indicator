@@ -77,6 +77,8 @@ namespace cAlgo
                     1,
                     0,
                     0,
+                    0,
+                    0,
                     0);
             }
 
@@ -94,7 +96,9 @@ namespace cAlgo
                 frame.AtrRatio,
                 frame.EmaSpreadAtr,
                 frame.EmaSlopeAtr,
-                frame.RangeEfficiency);
+                frame.RangeEfficiency,
+                frame.Adx,
+                frame.RangeWidthAtr);
         }
     }
 }
