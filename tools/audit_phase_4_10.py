@@ -125,7 +125,7 @@ check(
     "ADX/DMI non-finite data remains fail-closed",
     "NativeIndicatorReadinessRule.IsIndexedSeriesReady(" in adx and
     "DmiBiasRule.Calculate(" in dmi and
-    "IsFiniteNonNegative(" in read(
+    "IsDmiFiniteNonNegative(" in read(
         "src/CFIP.Indicator/Core/Math/DmiBiasRule.cs"
     ),
 )
