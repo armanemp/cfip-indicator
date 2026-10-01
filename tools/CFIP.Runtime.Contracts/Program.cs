@@ -107,6 +107,7 @@ namespace cAlgo
             VerifyPlanLineThicknessG3();
             VerifyTargetObstacleCacheKeyHashSemantics();
             VerifyBrokerProtectionG1();
+            VerifyExecutionProtectionPanelStateG4();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -8640,6 +8641,220 @@ namespace cAlgo
                     60,
                     53).Allowed,
                 "F6 indicator actionability thresholds preserve RANGE/TRANSITION and neutral values");
+        }
+
+        private static void VerifyExecutionProtectionPanelStateG4()
+        {
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoTrading(
+                    false,
+                    false,
+                    false,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Disabled,
+                "G4 Auto Trade disabled state is OFF");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoTrading(
+                    true,
+                    false,
+                    false,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Armed,
+                "G4 Auto Trade enabled without a live action is ARMED");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoTrading(
+                    true,
+                    false,
+                    true,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Ready,
+                "G4 Auto Trade readiness is distinct from analysis readiness");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoTrading(
+                    true,
+                    false,
+                    false,
+                    true,
+                    false) ==
+                    ExecutionPanelStateKind.Blocked,
+                "G4 Auto Trade blocked state is explicit");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoTrading(
+                    true,
+                    true,
+                    true,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Active,
+                "G4 live Auto Trade state is ACTIVE");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoTrading(
+                    true,
+                    true,
+                    true,
+                    false,
+                    true) ==
+                    ExecutionPanelStateKind.RecoveryRequired,
+                "G4 recovery state overrides active Auto Trade state");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoOrders(
+                    false,
+                    false,
+                    false,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Disabled,
+                "G4 Auto Orders disabled state is OFF");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoOrders(
+                    true,
+                    false,
+                    false,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Armed,
+                "G4 Auto Orders enabled without a pending order is ARMED");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoOrders(
+                    true,
+                    false,
+                    true,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Ready,
+                "G4 Auto Orders READY state is explicit");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveAutoOrders(
+                    true,
+                    true,
+                    false,
+                    false,
+                    false) ==
+                    ExecutionPanelStateKind.Active,
+                "G4 managed pending order makes Auto Orders ACTIVE");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false) ==
+                    ProtectionPanelStateKind.Off,
+                "G4 unconfigured protection with no live position is OFF");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false) ==
+                    ProtectionPanelStateKind.NoLivePosition,
+                "G4 configured protection without a live position is explicit");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false) ==
+                    ProtectionPanelStateKind.Protected,
+                "G4 valid broker SL/TP is PROTECTED");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false) ==
+                    ProtectionPanelStateKind.Protected,
+                "G4 TP is not required when target synchronization is disabled");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    true,
+                    false) ==
+                    ProtectionPanelStateKind.Protected,
+                "G4 server-owned TP ladder satisfies target protection");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false) ==
+                    ProtectionPanelStateKind.RecoveryRequired,
+                "G4 missing required broker TP is RECOVERY REQUIRED");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    true,
+                    false,
+                    true,
+                    true,
+                    false,
+                    false) ==
+                    ProtectionPanelStateKind.RecoveryRequired,
+                "G4 invalid broker SL is RECOVERY REQUIRED");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    true) ==
+                    ProtectionPanelStateKind.RecoveryRequired,
+                "G4 explicit recovery state remains RECOVERY REQUIRED");
+
+            Assert(
+                ExecutionProtectionPanelStateRule.ResolveProtection(
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false) ==
+                    ExecutionProtectionPanelStateKind.Protected,
+                "G4 broker-protection rule is independent of BUY/SELL analysis readiness");
+
+            Console.WriteLine(
+                "CR7.4 / G4 panel execution/protection state contract PASS");
         }
 
         private static void VerifyPlanLineThicknessG3()
