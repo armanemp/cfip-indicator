@@ -5009,7 +5009,7 @@ Verification boundary:
 
 ## Prompt 5 Remediation Gate — E1–E8 — 2026-09-30
 
-Status: **IN PROGRESS — CR5.1 through CR5.5 VERIFIED COMPLETE; CR5.6 NEXT.**
+Status: **IN PROGRESS — CR5.1 through CR5.7 VERIFIED COMPLETE; CR5.8 NEXT.**
 
 Prompt 5 is now a mandatory remediation track after Prompt 4 and before CR-FINAL. The E1–E8 findings are review hypotheses until independently verified against current main source, deterministic contracts/replay, and target-terminal behavior where required.
 
@@ -5273,6 +5273,28 @@ Verification on implementation head e930e30d9c82ad279316a41c81116d4ae1e19859:
 
 Manual boundary:
 - target-terminal M5/M15/H1 timing, panel/visual behavior, restart/reconnect and empirical signal quality/profitability remain manual.
+
+### CR5.7 / E7 closeout — 2026-10-01
+
+Status: **IMPLEMENTED COMPLETE — repository verification pending CI.**
+
+Completed:
+- moved WATCH/REACTION alert qualification and emission out of `UI/Chart/SignalRenderer.RenderWatchAndReaction` into the runtime decision-alert boundary;
+- added the platform-neutral Core `WatchReactionAlertRule` as the single owner of early-WATCH threshold semantics, WATCH eligibility, REACTION eligibility and deterministic alert identities;
+- named the existing early-WATCH confidence floor `60` and allowance `4` without changing their values;
+- preserved live REACTION intrabar evaluation cadence after `UpdateLiveReaction`, while removing its dependency on chart rendering;
+- made `SignalRenderer` presentation-only for WATCH/REACTION alerts;
+- made `SignalPresentationRenderer.IsStrongWatchSnapshot` reuse the canonical Core watch rule instead of duplicating qualification thresholds;
+- added deterministic Runtime Contract coverage for threshold, blocked-state, plan/pending/live-state, BUY/SELL symmetry and deterministic alert identity semantics;
+- added and wired `audit_phase_5_7.py` immediately after E6;
+- recorded the E7 root cause and safety boundary in `docs/PHASE-CR5-7-WATCH-REACTION-ALERTS.md`.
+
+Repository verification boundary:
+- CI Source/Architecture, Runtime Acceptance Contracts and cTrader Compile are pending on the E7 branch/PR;
+- target-terminal alert timing, popup/audio delivery, panel/chart behavior, broker lifecycle and empirical signal-quality behavior remain manual acceptance items;
+- no public parameter name/type/default, RR/confidence/stop/target threshold or decision/execution authority was changed.
+
+**Next phase: CR5.8 / E8 — Small constant ownership and TargetSelection consistency.**
 
 ## Current active implementation phase
 
