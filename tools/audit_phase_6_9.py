@@ -2,7 +2,6 @@
 """Static acceptance gate for CR6.9 / F3 orphan managed-position protection."""
 
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,10 +52,11 @@ check(
     "brokerProtectionConfirmed);" in orphan
 )
 
-failure_block = re.search(
-    r"if \\(!ProtectOrphanManagedPosition\\((.*?)_lastBrokerModifyUtc",
-    caller,
-    re.S,
+failure_block = (
+    caller.split("if (!ProtectOrphanManagedPosition(", 1)[1]
+    .split("_lastBrokerModifyUtc", 1)[0]
+    if "if (!ProtectOrphanManagedPosition(" in caller
+    else ""
 )
 check(
     "caller enters RecoveryRequired on orphan protection failure",
@@ -67,8 +67,8 @@ check(
 
 check(
     "failure path does not update broker-modify timestamp before retry",
-    failure_block is not None and
-    "_lastBrokerModifyUtc =" not in failure_block.group(1)
+    bool(failure_block) and
+    "_lastBrokerModifyUtc =" not in failure_block
 )
 
 check(
