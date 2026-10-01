@@ -7,6 +7,12 @@ ROOT = Path(__file__).resolve().parents[1]
 errors = []
 
 
+production_source = "\n".join(
+    p.read_text(encoding="utf-8")
+    for p in (ROOT / "src/CFIP.Indicator").rglob("*.cs")
+)
+
+
 def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
@@ -128,6 +134,12 @@ check(
     "plan metadata no longer infers source from all candidates",
     "ApplyTargetMeta(" not in materialization and
     "List<Level> candidates" not in materialization,
+)
+
+check(
+    "no legacy TP metadata owner or caller survives in production",
+    "ApplyTargetMeta(" not in production_source and
+    "private double FindImprovedLiveTarget(" not in production_source,
 )
 
 check(
