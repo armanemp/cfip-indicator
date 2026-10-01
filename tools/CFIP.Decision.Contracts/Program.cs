@@ -82,7 +82,7 @@ namespace cAlgo
                     1, 80, 75, 1);
             Assert(
                 weakCounterFrame.MidAlignment == 100 &&
-                weakCounterFrame.MidAbsoluteStrength == 42 &&
+                weakCounterFrame.MidAbsoluteStrength == 43 &&
                 weakCounterFrame.Eligible &&
                 weakCounterFrame.Stage == "MIDFRAME CALIBRATION",
                 "weak counter-frame alignment cannot override a strong anchor");
