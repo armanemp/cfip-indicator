@@ -31,7 +31,7 @@ namespace cAlgo
                     netMove / absolutePath));
         }
 
-        public static bool HasEnoughHistory(
+        public static bool HasRangeEnoughHistory(
             int index,
             int period)
         {
