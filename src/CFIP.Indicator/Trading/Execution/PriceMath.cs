@@ -18,20 +18,33 @@ namespace cAlgo
                         {
                             if (!IsFinitePositive(price))
                                 return 0;
-                
-                            if (Symbol.TickSize > 0)
+
+                            CanonicalPriceSnapshot market =
+                                GetCanonicalPriceSnapshot();
+
+                            double tickSize =
+                                market == null
+                                    ? Symbol.TickSize
+                                    : market.TickSize;
+
+                            int digits =
+                                market == null
+                                    ? Symbol.Digits
+                                    : market.Digits;
+
+                            if (tickSize > 0)
                             {
                                 price =
                                     Math.Round(
                                         price /
-                                        Symbol.TickSize,
+                                        tickSize,
                                         MidpointRounding.AwayFromZero) *
-                                    Symbol.TickSize;
+                                    tickSize;
                             }
-                
+
                             return Math.Round(
                                 price,
-                                Symbol.Digits);
+                                digits);
                         }
         
         private string Price(
