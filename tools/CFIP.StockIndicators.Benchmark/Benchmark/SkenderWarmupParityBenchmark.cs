@@ -49,6 +49,11 @@ internal static class SkenderWarmupParityBenchmark
                     StableQuoteWindowSize +
                     1;
 
+                IReadOnlyList<V2Quote> fullPrefix =
+                    quotes
+                        .Take(checkpoint + 1)
+                        .ToList();
+
                 IReadOnlyList<V2Quote> bounded =
                     quotes
                         .Skip(firstIndex)
@@ -59,7 +64,7 @@ internal static class SkenderWarmupParityBenchmark
                     (double)quotes[checkpoint].Close;
 
                 CompareRsi(
-                    quotes,
+                    fullPrefix,
                     bounded,
                     ref comparedPoints,
                     ref directionMismatches,
