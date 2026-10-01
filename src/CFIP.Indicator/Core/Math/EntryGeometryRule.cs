@@ -250,7 +250,7 @@ namespace cAlgo
                 return false;
 
             double tolerance =
-                ResolveTriggerTolerance(
+                EntryActionabilityPolicy.ResolveTriggerTolerance(
                     tickSize,
                     pipSize);
 
