@@ -1917,7 +1917,7 @@ Safety/manual boundary:
 
 ### Prompt 6 completion gate
 
-CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → **CR-FINAL**
+CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR7.1 → CR7.2 → CR7.3 → CR7.4 → CR7.5 → CR7.6a → CR7.6b → CR7.6c → CR7.6d → **CR-FINAL**
 
 CR-FINAL cannot be considered complete while any F-item remains unverified, deferred without an explicit reason, or blocked by missing deterministic/replay/target-terminal evidence.
 
