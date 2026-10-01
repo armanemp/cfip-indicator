@@ -7789,9 +7789,9 @@ namespace cAlgo
                     2.00);
 
             Assert(
-                defaults.UpstreamEntryLocationQuality == 64 &&
+                defaults.UpstreamEntryLocationQuality == 72 &&
                 defaults.UpstreamEntryTimingQuality == 64,
-                "actionability upstream entry floors remain 64/64");
+                "actionability upstream effective defaults remain 72/64 above the named 64/64 hard floors");
 
             Assert(
                 defaults.FinalMinimumConfidence == 76 &&
