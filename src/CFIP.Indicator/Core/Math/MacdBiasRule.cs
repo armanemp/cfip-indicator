@@ -4,7 +4,7 @@ namespace cAlgo
 {
     internal static class MacdBiasRule
     {
-        public static bool IsDirectional(
+        public static bool IsMacdDirectional(
             int direction,
             double macdLine,
             double previousMacdLine)
@@ -13,8 +13,8 @@ namespace cAlgo
                 direction != -1)
                 return false;
 
-            if (!IsFinite(macdLine) ||
-                !IsFinite(previousMacdLine))
+            if (!IsMacdFinite(macdLine) ||
+                !IsMacdFinite(previousMacdLine))
                 return false;
 
             return direction == 1
@@ -24,7 +24,7 @@ namespace cAlgo
                   macdLine <= previousMacdLine;
         }
 
-        private static bool IsFinite(double value)
+        private static bool IsMacdFinite(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value);
