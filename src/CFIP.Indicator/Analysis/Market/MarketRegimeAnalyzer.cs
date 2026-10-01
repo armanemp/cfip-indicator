@@ -106,7 +106,7 @@ namespace cAlgo
             {
                 snapshot.PreviousRegime = MarketRegimeIdentity.Unknown;
                 snapshot.RegimeTransition =
-                    MarketRegimeTransitionRule.Resolve(
+                    MarketRegimeTransitionRule.ClassifyTransition(
                         MarketRegimeIdentity.Unknown,
                         snapshot.Regime);
                 return;
@@ -122,7 +122,7 @@ namespace cAlgo
                     ? MarketRegimeIdentity.Unknown
                     : previous.Regime;
             snapshot.RegimeTransition =
-                MarketRegimeTransitionRule.Resolve(
+                MarketRegimeTransitionRule.ClassifyTransition(
                     snapshot.PreviousRegime,
                     snapshot.Regime);
         }
