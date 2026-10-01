@@ -9336,7 +9336,7 @@ namespace cAlgo
                     14,
                     26,
                     9,
-                    10) >= 359,
+                    10) == 285,
                 "H3-B default warm-up includes MACD convergence margin");
 
             Console.WriteLine(
