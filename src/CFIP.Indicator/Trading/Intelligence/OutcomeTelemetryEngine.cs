@@ -313,8 +313,6 @@
                                     MaxExecutionTelemetryHistory)
                                  _executionTelemetryHistory.RemoveAt(0);
 
-                             InvalidatePanelExecutionProtectionStateCache();
-
                              ArchiveRuntimeExecution(
                                  path,
                                  m5,
