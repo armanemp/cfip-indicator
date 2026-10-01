@@ -25,21 +25,9 @@ namespace cAlgo
             AddPanelRow(
                 ref slot,
                 "AUTO EXEC  " +
-                (AutoTradingEnabled
-                    ? "ON"
-                    : "OFF") +
-                "  •  " +
-                CompactText(
-                    _autoExecutionBlockReason,
-                    72),
-                AutoTradingEnabled &&
-                string.Equals(
-                    _autoExecutionBlockReason,
-                    "READY TO SUBMIT",
-                    StringComparison.OrdinalIgnoreCase)
-                    ? TpLineColor
-                    : PanelSecondaryTextColor,
-                false,
+                GetAutoTradingPanelState(),
+                GetAutoTradingPanelColor(),
+                true,
                 contentWidth);
 
             AddPanelRow(
@@ -117,20 +105,8 @@ namespace cAlgo
             AddPanelRow(
                 ref slot,
                 "AUTO ORDERS  " +
-                (AutomaticOrdersEnabled
-                    ? "ON"
-                    : "OFF") +
-                "  •  " +
-                CompactText(
-                    _autoOrdersBlockReason,
-                    72),
-                AutomaticOrdersEnabled &&
-                string.Equals(
-                    _autoOrdersBlockReason,
-                    "ORDER PLACED",
-                    StringComparison.OrdinalIgnoreCase)
-                    ? TpLineColor
-                    : PanelSecondaryTextColor,
+                GetAutoOrdersPanelState(),
+                GetAutoOrdersPanelColor(),
                 false,
                 contentWidth);
 

@@ -28,6 +28,9 @@ namespace cAlgo
         private string BuildPanelPresentationKey(
             SignalVisualSnapshot snapshot)
         {
+            InvalidatePanelExecutionProtectionStateCache();
+            EnsurePanelExecutionProtectionStateCache();
+
             if (snapshot == null)
             {
                 return
@@ -69,7 +72,11 @@ namespace cAlgo
                 _autoTradingState ?? "",
                 _autoTradingReason ?? "",
                 _autoExecutionBlockReason ?? "",
-                _autoOrdersBlockReason ?? "");
+                _autoOrdersBlockReason ?? "",
+                GetAutoTradingPanelState(),
+                GetAutoOrdersPanelState(),
+                GetAutoProtectionPanelState(),
+                _brokerProtectionRecoveryRequired ? "1" : "0");
         }
 
         private string PriceKey(

@@ -825,4 +825,25 @@ Verification:
 - Runtime Acceptance Contracts: PASS — #2104;
 - cTrader Compile: PASS — #2288.
 
-**Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
+## CR7.4 / G4 closeout — panel execution/protection state semantics
+
+Status: **VERIFIED COMPLETE — PR #144; code HEAD 2465444593afca6b566b17be2234336154fd6f2e.**
+
+Verification:
+- Source/Architecture PASS — #2313;
+- Runtime Acceptance Contracts PASS — #2122;
+- cTrader Compile PASS — #2306.
+
+Completed:
+- one canonical Core state owner for Auto Trade, Auto Orders and broker protection presentation;
+- operational state is derived from runtime/lifecycle/broker facts, not analysis/reaction readiness;
+- broker-confirmed SL/TP and server TP-ladder semantics are displayed explicitly;
+- shared panel-state snapshot avoids repeated broker enumeration for the three new state surfaces.
+
+Manual boundary:
+- target-terminal cTrader panel transitions, broker synchronization, TP-ladder observation and restart/reconnect remain manual.
+
+Historical G4 marker retained for previous continuity audits:
+Current phase at implementation start was CR7.4 / G4.
+
+**Current phase: CR7.5 / G5 — scope definition is required before implementation; no G5 scope is currently recorded in the remediation roadmap.****Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
