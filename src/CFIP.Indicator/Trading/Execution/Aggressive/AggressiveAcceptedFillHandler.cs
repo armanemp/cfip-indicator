@@ -110,8 +110,8 @@ namespace cAlgo
                 CreateManagedPlanFromExecution(
                     _reaction.Direction,
                     result.Position.EntryPrice,
-                    stop,
-                    target,
+                    actualStop,
+                    actualTarget,
                     closedM5,
                     result.Position.VolumeInUnits,
                     ExecutionMode.BreakoutMarket,
@@ -124,9 +124,64 @@ namespace cAlgo
                 LifecycleState.LivePosition,
                 "AGGRESSIVE ENTRY • FILLED");
 
-            ReconcileLivePlanToActualFill(
-                result.Position,
-                closedM5);
+            bool fillPlanReconciled =
+                ReconcileLivePlanToActualFill(
+                    result.Position,
+                    closedM5);
+
+            if (!fillPlanReconciled)
+            {
+                _brokerProtectionRecoveryRequired = true;
+                SetLifecycleState(
+                    LifecycleState.RecoveryRequired,
+                    "AGGRESSIVE POST-FILL RECONCILIATION FAILED");
+
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE POST-FILL RECONCILIATION FAILED";
+
+                SendUnifiedAlert(
+                    "AGGRESSIVE-POST-FILL-RECONCILIATION-FAILED|" +
+                    result.Position.Id,
+                    "CFIP AGGRESSIVE POST-FILL EXIT RECONCILIATION FAILED | #" +
+                    result.Position.Id,
+                    _reaction.Direction,
+                    true);
+
+                return false;
+            }
+
+            actualStop =
+                _plan.Stop;
+
+            actualTarget =
+                AutoTarget(
+                    _plan,
+                    EffectiveAutoTpStage());
+
+            if (!IsExecutionPlanConsistent(
+                    _reaction.Direction,
+                    _plan.Entry,
+                    actualStop,
+                    actualTarget))
+            {
+                _brokerProtectionRecoveryRequired = true;
+                SetLifecycleState(
+                    LifecycleState.RecoveryRequired,
+                    "AGGRESSIVE POST-FILL PLAN GEOMETRY INVALID");
+
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE POST-FILL PLAN GEOMETRY INVALID";
+
+                SendUnifiedAlert(
+                    "AGGRESSIVE-POST-FILL-PLAN-INVALID|" +
+                    result.Position.Id,
+                    "CFIP AGGRESSIVE POST-FILL MANAGED PLAN GEOMETRY INVALID | #" +
+                    result.Position.Id,
+                    _reaction.Direction,
+                    true);
+
+                return false;
+            }
 
             double maximumFillDistance =
                 Math.Max(
