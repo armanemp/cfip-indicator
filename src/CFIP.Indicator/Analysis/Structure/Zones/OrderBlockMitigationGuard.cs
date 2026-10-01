@@ -47,7 +47,7 @@ namespace cAlgo
                      j++)
                 {
                     double probe =
-                        OrderBlockLifecycleRule.ResolveMitigationProbe(
+                        OrderBlockLifecycleRule.ResolveOrderBlockMitigationProbe(
                             direction,
                             bars.OpenPrices[j],
                             bars.ClosePrices[j],
@@ -60,7 +60,7 @@ namespace cAlgo
                     bool changed;
                     double nextRatio;
 
-                    if (!OrderBlockLifecycleRule.TryApplyPartialMitigation(
+                    if (!OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(
                             direction,
                             managedLow,
                             managedHigh,
@@ -95,7 +95,7 @@ namespace cAlgo
                 originalWidth;
 
             lifecycleState =
-                OrderBlockLifecycleRule.Classify(
+                OrderBlockLifecycleRule.ClassifyOrderBlockLifecycle(
                     partiallyMitigated,
                     remainingRatio);
 
