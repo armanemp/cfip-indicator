@@ -26,6 +26,7 @@ policy = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskPolicy.cs")
 action_policy = read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
 risk_rule = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs")
 evaluator = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+retest_context = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityRetestContext.cs")
 decision = read("src/CFIP.Indicator/Core/Models/Decision.cs")
 orchestration = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
 reason_builder = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionReasonBuilder.cs")
@@ -75,10 +76,10 @@ check(
 
 check(
     "Retest pre-zone classifier is bounded to the recent adverse window",
-    "IsAdverseWindowPreZone(" in evaluator and
-    "index - lookbackBars" in evaluator and
-    "barHigh >= low" in evaluator and
-    "barLow <= high" in evaluator
+    "IsAdverseWindowPreZone(" in retest_context and
+    "index - lookbackBars" in retest_context and
+    "barHigh >= low" in retest_context and
+    "barLow <= high" in retest_context
 )
 
 check(
