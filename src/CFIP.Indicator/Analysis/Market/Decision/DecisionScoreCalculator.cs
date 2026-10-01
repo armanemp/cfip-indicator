@@ -4,35 +4,6 @@ namespace cAlgo
 {
     internal sealed class DecisionScoreCalculator
     {
-        public DecisionScoreSnapshot Calculate(DecisionInputSnapshot input)
-        {
-            if (input == null)
-                throw new ArgumentNullException(nameof(input));
-
-            return Calculate(
-                new DecisionScoreInput(
-                    input.M5Contribution,
-                    input.M15Contribution,
-                    input.M30Contribution,
-                    input.H1Contribution,
-                    input.H4Contribution,
-                    input.D1Contribution,
-                    input.W1Contribution,
-                    input.SmartWeeklyContext,
-                    input.UseAdvancedConfluence,
-                    input.AdvancedConfluenceBuy,
-                    input.AdvancedConfluenceSell,
-                    input.UsePremiumDiscount,
-                    input.PremiumDiscountBias,
-                    input.AdaptiveRegimeWeighting,
-                    input.UseHistoricalChoppinessGuard,
-                    input.M5Frame == null ? 0 : input.M5Frame.Direction,
-                    input.M5Frame == null ? 0 : input.M5Frame.IndicatorConfluenceQuality,
-                    input.M5Frame == null ? 0 : input.M5Frame.IndicatorConflict,
-                    input.M5Frame != null && input.M5Frame.Choppy,
-                    input.M15Frame != null && input.M15Frame.Choppy));
-        }
-
         public DecisionScoreSnapshot Calculate(DecisionScoreInput input)
         {
             double m5Bull = SafeNonNegative(input.M5Contribution.Bull);
