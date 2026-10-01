@@ -81,6 +81,8 @@ check(
     "BaseMinimumRrFloor = 0.50" in reward and
     "PreferredStopRiskAtrFloor = 0.25" in reward and
     "MaximumStopRiskAtrFloor = 0.50" in reward and
+    "Math.Max(preferred, MaximumStopRiskAtrFloor)" in reward and
+    "Math.Max(preferred, 0.50)" not in reward and
     "AdaptiveStopExcessRrCap = 0.50" in reward and
     "AdaptiveStopExcessRrMultiplier = 0.25" in reward and
     "EffectiveRrBaseFactor = 0.90" in reward and
