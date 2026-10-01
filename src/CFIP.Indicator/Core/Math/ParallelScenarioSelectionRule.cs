@@ -5,7 +5,7 @@ namespace cAlgo
 {
     internal static class ParallelScenarioSelectionRule
     {
-        internal static string Identity(
+        internal static string GetScenarioIdentity(
             TradeOpportunityCandidate candidate)
         {
             if (candidate == null)
@@ -85,10 +85,10 @@ namespace cAlgo
             TradeOpportunityCandidate right)
         {
             return
-                !string.IsNullOrWhiteSpace(Identity(left)) &&
+                !string.IsNullOrWhiteSpace(GetScenarioIdentity(left)) &&
                 string.Equals(
-                    Identity(left),
-                    Identity(right),
+                    GetScenarioIdentity(left),
+                    GetScenarioIdentity(right),
                     StringComparison.OrdinalIgnoreCase);
         }
 
@@ -229,8 +229,8 @@ namespace cAlgo
                 return created;
 
             return string.CompareOrdinal(
-                Identity(left),
-                Identity(right));
+                GetScenarioIdentity(left),
+                GetScenarioIdentity(right));
         }
 
         private static bool IsFinite(double value)
