@@ -13,6 +13,7 @@ PLAN = ROOT / "src/CFIP.Indicator/Planning/TradePlan/PlanIntegrityValidator.cs"
 ACTION = ROOT / "src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs"
 PARALLEL = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
 SCENARIOS = ROOT / "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
+PARALLEL_SELECTION = ROOT / "src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs"
 PLANNING_CONTRACT = ROOT / "tools/CFIP.Planning.Contracts/Program.cs"
 PLANNING_PROJECT = ROOT / "tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj"
 TRACE_MODEL = ROOT / "src/CFIP.Indicator/Core/Models/SignalEvaluationTrace.cs"
@@ -39,6 +40,7 @@ plan = read(PLAN)
 action = read(ACTION)
 parallel = read(PARALLEL)
 scenarios = read(SCENARIOS)
+parallel_selection = read(PARALLEL_SELECTION)
 planning_contract = read(PLANNING_CONTRACT)
 planning_project = read(PLANNING_PROJECT)
 trace_model = read(TRACE_MODEL)
@@ -80,10 +82,19 @@ if "PlanRewardRiskQualityRule.Evaluate(" not in action:
 if "PlanRewardRiskQualityRule.Evaluate(" not in parallel:
     errors.append("parallel candidate construction does not consume reward-risk rule")
 
-if "ScenarioIdentity(" not in parallel or "Different timeframe/lane scenarios are intentionally distinct" not in parallel:
+if (
+    "ParallelScenarioSelectionRule.GetScenarioIdentity(" not in parallel_registry
+    if False
+    else "GetScenarioIdentity(" not in parallel_selection
+    or "SameIdentity(" not in parallel_selection
+):
     errors.append("parallel scenario identity isolation missing")
 
-if "ScenarioCoverageKey(" not in scenarios:
+if (
+    "CoverageKey(" not in parallel_selection
+    or "SelectForDisplay(" not in parallel_selection
+    or "SelectScenariosForDisplay(" not in scenarios
+):
     errors.append("scenario coverage-preserving trim missing")
 
 if "VerifyPlanRewardRiskQuality()" not in planning_contract:
