@@ -7,6 +7,6 @@ namespace cAlgo
         public double Entry;
         public double Stop;
         public double Risk;
-        public ExecutionModel Execution;
+        public int ExecutionQuality;
     }
 }
