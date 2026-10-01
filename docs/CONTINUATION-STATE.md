@@ -47,7 +47,7 @@ Manual boundary:
 - restart/reconnect and live panel/runtime behavior;
 - empirical signal-quality/profitability remain manual.
 
-**Current phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+**Historical transition after G1: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
 
 
 ### CR6.6 / F7 closeout — 2026-10-01
@@ -796,7 +796,7 @@ Verification:
 
 The Source/Architecture failure discovered during G1 was an audit false-positive on independent `GetHashCode()` overrides; the duplicate-method audit now keys by containing type.
 
-**Current phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+**Historical transition after G1: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
 
 
 ## CR7.2 / G2 closeout — 2026-10-01
