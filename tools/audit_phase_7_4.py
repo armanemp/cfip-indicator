@@ -16,6 +16,7 @@ optimization = read("UI/Panel/PanelRenderOptimization.cs")
 state = read("Indicator/State.cs")
 program_path = Path("tools/CFIP.Runtime.Contracts/Program.cs")
 program = program_path.read_text(encoding="utf-8")
+runtime_csproj = Path("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj").read_text(encoding="utf-8")
 
 for token in (
     "enum ExecutionPanelStateKind",
@@ -86,6 +87,8 @@ for field in (
 
 if "VerifyExecutionProtectionPanelStateG4();" not in program:
     raise SystemExit("G4 runtime contract is not invoked")
+if "ExecutionProtectionPanelStateRule.cs" not in runtime_csproj:
+    raise SystemExit("G4 runtime contract project must compile the new Core state rule")
 
 print("CR7.4 / G4 panel execution/protection state audit PASS")
 print("Execution panel state: canonical runtime/lifecycle semantics")
