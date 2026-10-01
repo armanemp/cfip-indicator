@@ -141,9 +141,14 @@ namespace cAlgo
                           names[i];
 
                 candidate.Stage =
-                    candidate.ActionableNow
+                    candidate.ActionableNow &&
+                    candidate.ExecutionPolicyAllowed
                         ? "TF SCENARIO • READY"
-                        : "TF SCENARIO • WATCH";
+                        : "TF SCENARIO • WATCH • " +
+                          (string.IsNullOrWhiteSpace(
+                              candidate.ExecutionPolicyReason)
+                              ? "POLICY BLOCKED"
+                              : candidate.ExecutionPolicyReason);
 
                 EnrichScenarioEvidence(
                     candidate,
