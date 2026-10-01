@@ -79,8 +79,10 @@ checks = {
         "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor and
         "_alertDeliveryQueue.TryPeek" in processor
     ),
-    "critical queued alert may preempt a normal active popup": (
-        "if (next.ShowPopup &&\n                popupActive &&\n                !next.Critical)" in processor
+    "queued alert replaces prior popup at one delivery boundary": (
+        "if (next.ShowPopup)" in processor and
+        "if (_popup != null)" in processor and
+        "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor
     ),
     "popup priority resets on removal": (
         "_popupCritical = false;" in remover
