@@ -38,7 +38,7 @@ owner for the TP1..TP4 required-RR ladder.
 
 The lane-specific TP1 rule remains unchanged:
 
-- Strategic: `max(TP1 minimum, MinimumRequiredRR)`
+- Strategic: `max(TP1 minimum, MinimumRequiredRR, MinimumTradeRR)`
 - Tactical / CounterHtfTactical / MicroReaction:
   `max(TP1 minimum, MinimumRequiredRR, 1.0, TacticalOpportunityMinimumRR)`
 
@@ -57,7 +57,7 @@ be followed by a smaller TP3/TP4 requirement.
 
 `SelectTargets` and `SelectTarget` no longer default their lane silently.
 
-Current contexts now pass a lane explicitly:
+Current contexts now pass a lane explicitly, including PlanTargetPreparation and PendingOrderPlanSnapshot:
 
 - PlanBuilder: canonical plan-lane resolver;
 - ExecutionPlanPreparation: one resolved lane reused for selection and fallback;
@@ -82,7 +82,7 @@ Added:
 
 ## Verification
 
-Final implementation head: `51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`.
+Final implementation head: `51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593` (PR #124 merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`).
 
 - Source / Architecture: PASS — run `36844545898` / workflow #2160.
 - Runtime Acceptance Contracts: PASS — run `36844545976` / workflow #1969.
