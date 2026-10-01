@@ -6356,7 +6356,7 @@ namespace cAlgo
             };
 
             Assert(
-                !StructuralEventRule.IsFreshConfirmedBreak(
+                !StructuralEventRule.IsFreshBreak(
                     1,
                     0,
                     3,
