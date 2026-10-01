@@ -5733,7 +5733,7 @@ Safety:
 Manual boundary:
 - target-terminal panel timing/rendering, broker protection synchronization and restart/reconnect remain manual.
 
-Next phase: **CR7.4 / G4 — Panel execution/protection state semantics.**
+**Next phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
 **Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
