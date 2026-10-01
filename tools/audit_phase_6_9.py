@@ -46,6 +46,12 @@ check(
 )
 
 check(
+    "orphan fallback uses canonical structural geometry",
+    "StructuralStopGeometryRule.EvaluateFallback(" in orphan and
+    "StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(" in orphan
+)
+
+check(
     "broker confirmation remains part of the orphan success invariant",
     "bool brokerProtectionConfirmed" in orphan and
     "EnsureBrokerProtectionForPosition(" in orphan and
@@ -77,10 +83,10 @@ check(
 )
 
 check(
-    "BUY/SELL fallback stop construction remains symmetric",
+    "BUY/SELL fallback stop construction remains symmetric through the canonical owner",
     "direction == 1" in orphan and
-    "position.EntryPrice - fallbackRisk" in orphan and
-    "position.EntryPrice + fallbackRisk" in orphan
+    "StructuralStopGeometryRule.EvaluateFallback(" in orphan and
+    "FallbackSlAtr" in orphan
 )
 
 check(
