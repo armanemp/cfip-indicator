@@ -827,7 +827,7 @@ namespace cAlgo
             }
 
             Assert(
-                IndicatorEvidenceIndependenceRule.CountGroups(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(
                     Build(trend: true, momentum: true, macd: true, vwap: true,
                           volume: true, volatility: true, useMacd: true,
                           useVwap: true, useVolume: true,
@@ -837,27 +837,27 @@ namespace cAlgo
                 "CI-03 correlated trend/momentum/context measurements collapse to three indicator groups");
 
             Assert(
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(macd: true)) == 0 &&
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(macd: true, useMacd: true)) == 1,
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(macd: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(macd: true, useMacd: true)) == 1,
                 "CI-03 disabled/enabled MACD affects only its momentum-group presence");
 
             Assert(
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(vwap: true)) == 0 &&
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(vwap: true, useVwap: true)) == 1,
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(vwap: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(vwap: true, useVwap: true)) == 1,
                 "CI-03 disabled/enabled VWAP affects only its context-group presence");
 
             Assert(
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(volume: true)) == 0 &&
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(volume: true, useVolume: true)) == 1,
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volume: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volume: true, useVolume: true)) == 1,
                 "CI-03 disabled/enabled volume affects only its context-group presence");
 
             Assert(
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(volatility: true)) == 0 &&
-                IndicatorEvidenceIndependenceRule.CountGroups(Build(volatility: true, useHealthyVolatility: true)) == 1,
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volatility: true)) == 0 &&
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(Build(volatility: true, useHealthyVolatility: true)) == 1,
                 "CI-03 disabled/enabled healthy-volatility affects only its context-group presence");
 
             Assert(
-                IndicatorEvidenceIndependenceRule.CountGroups(
+                IndicatorEvidenceIndependenceRule.CountIndicatorGroups(
                     Build(divergenceDirection: 1, divergenceQuality: 90,
                           ossBullVotes: 4, ossIndicatorCount: 4)) == 0,
                 "CI-03 divergence and aggregate OSS measurements remain non-independent");
