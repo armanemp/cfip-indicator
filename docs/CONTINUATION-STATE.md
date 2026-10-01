@@ -264,11 +264,11 @@ Repository gates on the final F1 head:
 
 ### Current implementation phase
 
-**CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and
-actual-fill plan reconciliation.**
+**CR6.3 / F4 — Effective-threshold transparency and hidden additive margins.**
 
-F2 is active on branch
-`phase/cr6-2-f2-aggressive-risk-fill`.
+F2 was completed and verified on branch
+`phase/cr6-2-f2-aggressive-risk-fill`; PR #128 is ready for merge after the
+three repository gates passed.
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
