@@ -69,7 +69,7 @@ for token in (
 if not (
     "TargetSelectionRequiredRrRule.BuildRequiredRrLadder(" in policy
     and
-    "TacticalOpportunityMinimumRR" in target_rr_rule
+    "tacticalOpportunityMinimumRR" in target_rr_rule
     and
     "IsTacticalLane" in target_rr_rule
 ):
