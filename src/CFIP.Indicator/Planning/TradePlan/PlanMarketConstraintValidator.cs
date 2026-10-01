@@ -38,14 +38,36 @@ namespace cAlgo
                     return false;
             }
 
-            if (Math.Abs(
-                    plan.Entry -
-                    referenceEntry) >
-                atr *
-                Math.Max(
-                    0.10,
-                    MaximumEntryExtensionAtr))
-                return false;
+            if (plan.EntryMode ==
+                    ExecutionMode.BreakoutMarket ||
+                plan.EntryMode ==
+                    ExecutionMode.RetestMarket)
+            {
+                EntryGeometrySnapshot geometry =
+                    EntryGeometryRule.Evaluate(
+                        plan.Direction,
+                        plan.EntryMode,
+                        referenceEntry,
+                        plan.EntryZoneLow,
+                        plan.EntryZoneHigh,
+                        plan.EntryZoneTolerance,
+                        plan.IdealEntry,
+                        plan.EntryTrigger,
+                        plan.Entry,
+                        atr,
+                        Symbol.TickSize,
+                        Symbol.PipSize,
+                        plan.EntryMode ==
+                            ExecutionMode.BreakoutMarket,
+                        false,
+                        MaximumEntryExtensionAtr,
+                        MaximumEntryDistanceAtr);
+
+                if (!geometry.IsValid ||
+                    geometry.Mode != plan.EntryMode ||
+                    geometry.IsLate)
+                    return false;
+            }
 
             if (MinimumSmartTargetQualityForTp1 > 0 &&
                 plan.Tp1Quality > 0 &&
