@@ -23,7 +23,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-02 — OSS numerical parity / warm-up / cache — 2026-10-01**
+**CI-03 — Indicator fusion / correlation / evidence independence — 2026-10-01**
 
 Status: **VERIFIED COMPLETE — PR #156 merged to `main` as `863d759cc4e520cb8193312669e74224646a8f45`.**
 
