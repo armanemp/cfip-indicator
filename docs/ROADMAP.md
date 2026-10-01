@@ -5298,11 +5298,7 @@ Repository verification boundary:
 
 ## Current active implementation phase
 
-**CR5.7 / E7 — Decision-owned WATCH/REACTION alerts separated from chart rendering.**
+**CR5.8 / E8 — Small constant ownership and TargetSelection consistency.**
 
-CR5.6 / E6 is verified complete; continue from CR5.7. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
+CR5.7 / E7 is implemented and recorded above; complete repository CI verification for E7 before treating the phase as formally verified. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
 
-
-**CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety.**
-
-CR5.4 / E4 is verified complete and merged; continue from CR5.5. CR-FINAL remains paused until the mandatory Prompt 5 and Prompt 6 sequences are closed.
