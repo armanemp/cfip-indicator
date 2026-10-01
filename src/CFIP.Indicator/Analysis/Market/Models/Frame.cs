@@ -66,6 +66,7 @@ namespace cAlgo
                         public double Choppiness;
                         public int IndicatorConfluenceQuality;
                         public int IndicatorConflict;
+                        public int IndicatorIndependentEvidenceGroupCount;
                         public double AtrRatio;
                         public double EmaSpreadAtr;
                         public double EmaSlopeAtr;
