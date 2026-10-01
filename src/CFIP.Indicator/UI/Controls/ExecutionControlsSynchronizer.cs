@@ -24,9 +24,12 @@ namespace cAlgo
                         AutoTradingEnabled;
 
                     _autoTradingQuickToggle.Text =
-                        AutoTradingEnabled
-                            ? "AUTO TRADE • ON"
-                            : "AUTO TRADE • OFF";
+                        ExecutionControlPresentationRule.ComposeStatusText(
+                            "AUTO TRADE",
+                            AutoTradingEnabled);
+
+                    _autoTradingQuickToggle.IsEnabled =
+                        ExecutionControlPresentationRule.IsInteractive;
 
                     _autoTradingQuickToggle.BackgroundColor =
                         Color.FromArgb(
@@ -50,9 +53,12 @@ namespace cAlgo
                         AutomaticOrdersEnabled;
 
                     _automaticOrdersQuickToggle.Text =
-                        AutomaticOrdersEnabled
-                            ? "AUTO ORDERS • ON"
-                            : "AUTO ORDERS • OFF";
+                        ExecutionControlPresentationRule.ComposeStatusText(
+                            "AUTO ORDERS",
+                            AutomaticOrdersEnabled);
+
+                    _automaticOrdersQuickToggle.IsEnabled =
+                        ExecutionControlPresentationRule.IsInteractive;
 
                     _automaticOrdersQuickToggle.BackgroundColor =
                         Color.FromArgb(
