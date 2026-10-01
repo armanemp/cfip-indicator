@@ -51,7 +51,12 @@ namespace cAlgo
 
                 if (options == null ||
                     options.Count == 0)
-                    return empty;
+                {
+                    if (stage == 0)
+                        return empty;
+
+                    break;
+                }
 
                 best[stage] =
                     new double[options.Count];
