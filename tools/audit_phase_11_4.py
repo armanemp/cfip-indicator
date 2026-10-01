@@ -7,6 +7,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 RULE = ROOT / "src/CFIP.Indicator/Core/Math/PlanRewardRiskQualityRule.cs"
+TARGET_RR_RULE = ROOT / "src/CFIP.Indicator/Core/Math/TargetSelectionRequiredRrRule.cs"
 POLICY = ROOT / "src/CFIP.Indicator/Planning/TradePlan/TargetSelectionPolicy.cs"
 STOP = ROOT / "src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateEvaluator.cs"
 PLAN = ROOT / "src/CFIP.Indicator/Planning/TradePlan/PlanIntegrityValidator.cs"
@@ -34,6 +35,7 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 rule = read(RULE)
+target_rr_rule = read(TARGET_RR_RULE)
 policy = read(POLICY)
 stop = read(STOP)
 plan = read(PLAN)
@@ -64,11 +66,17 @@ for token in (
     if token not in rule:
         errors.append("reward-risk rule missing: " + token)
 
-if not re.search(
-    r"Math\.Max\(\s*Math\.Max\(\s*Tp1MinimumRR[\s\S]*TacticalOpportunityMinimumRR",
-    policy,
+if not (
+    "TargetSelectionRequiredRrRule.BuildRequiredRrLadder(" in policy
+    and
+    re.search(
+        r"IsTacticalLane[\s\S]*TacticalOpportunityMinimumRR",
+        target_rr_rule,
+    )
 ):
-    errors.append("tactical lanes do not inherit canonical TP1 RR floor")
+    errors.append(
+        "tactical lanes do not inherit canonical TP1 RR floor"
+    )
 
 if "EstimateBestTp1RRForStop(" not in stop or "PlanRewardRiskQualityRule.Evaluate(" not in stop:
     errors.append("structural stop selection is not reward-path aware")
