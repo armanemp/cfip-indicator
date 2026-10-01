@@ -135,23 +135,26 @@ check(
     "rolling adapters avoid per-call result materialization",
     all(
         (
-            filename == "SkenderObv.cs"
-            and "foreach (var result in StockIndicator.GetObv(quotes))" in read(
+            (
+                (
+                    filename == "SkenderObv.cs"
+                    and "foreach (var result in StockIndicator.GetObv(quotes))" in read(
+                        "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
+                    )
+                    and "previous = current;" in read(
+                        "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
+                    )
+                )
+                or (
+                    filename != "SkenderObv.cs"
+                    and ".LastOrDefault()" in read(
+                        "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
+                    )
+                )
+            )
+            and ".ToList()" not in read(
                 "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
             )
-            and "previous = current;" in read(
-                "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
-            )
-        )
-        or (
-            filename != "SkenderObv.cs"
-            and ".LastOrDefault()" in read(
-                "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
-            )
-        )
-    )
-        and ".ToList()" not in read(
-            "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
         )
         for filename in rolling_adapters
     )
