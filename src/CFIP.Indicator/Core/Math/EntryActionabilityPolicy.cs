@@ -85,7 +85,7 @@ namespace cAlgo
         {
             // CI-11 keeps this legacy API as a compatibility facade. The
             // mathematical late-state owner is EntryGeometryRule.
-            return EntryGeometryRule.IsLate(
+            return EntryGeometryRule.EvaluateLate(
                 mode,
                 triggerExtensionAtr,
                 entryDistanceAtr,
