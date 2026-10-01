@@ -7,11 +7,6 @@ namespace cAlgo
         public const double StrongAdverseM5Atr = 0.45;
         public const double StrongAdverseM1Atr = 0.40;
         public const int StrongAdverseRiskFloor = 75;
-        public const int M5AdverseRiskCap = 28;
-        public const double M5AdverseRiskAtrWeight = 60;
-        public const int M1AdverseRiskCap = 18;
-        public const double M1AdverseRiskAtrWeight = 45;
-
         public const string AdverseM5Reason = "TRAP_ADVERSE_M5";
         public const string AdverseM1Reason = "TRAP_ADVERSE_M1";
         public const string ExtremeReason = "TRAP_EXTREME";
@@ -80,7 +75,16 @@ namespace cAlgo
             if (string.IsNullOrWhiteSpace(reason))
                 return "NOT EVALUATED";
 
-            if (string.IsNullOrWhiteSpace(context) ||
+            bool hasAdverseReason =
+                reason.IndexOf(
+                    AdverseM5Reason,
+                    System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf(
+                    AdverseM1Reason,
+                    System.StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (!hasAdverseReason ||
+                string.IsNullOrWhiteSpace(context) ||
                 string.Equals(
                     context,
                     "NON_RETEST",
