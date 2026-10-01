@@ -59,7 +59,9 @@ popup update → sound`
 
 Calculation cycles drain the queue after calculation/presentation; timer-owned
 alerts drain it after timer supervision. Only the delivery processor owns
-`Notifications.PlaySound`.
+`Notifications.PlaySound`. A queued alert is not held behind the previous
+popup: the current event replaces the popup at the same delivery boundary, then
+its sound cue is emitted from that exact event.
 
 ### 4. Explicit restriction alerts were accidentally dead
 
