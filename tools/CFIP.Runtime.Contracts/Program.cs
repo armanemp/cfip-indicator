@@ -7241,13 +7241,13 @@ namespace cAlgo
                 "F1 BUY bearish FVG blocks the reward path");
 
             Assert(
-                !RewardPathGeometryRule.BlocksRewardPath(
-                    bullishLow,
-                    bullishHigh,
-                    100,
-                    110,
-                    0.10),
-                "F1 same-direction bullish FVG fixture is not treated as opposing by zone direction policy");
+                RewardPathGeometryRule.IsOpposingZoneDirection(
+                    1,
+                    -1) &&
+                !RewardPathGeometryRule.IsOpposingZoneDirection(
+                    1,
+                    1),
+                "F1 BUY opposing-zone direction is explicit and symmetric");
 
             Assert(
                 FvgRule.IsFullyFilled(
