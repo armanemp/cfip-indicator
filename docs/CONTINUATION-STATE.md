@@ -672,7 +672,7 @@ Safety/manual boundary:
 Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Current active phase
-Current active phase: **CR8.3a / H3-A — next Prompt 8 remediation phase.**
+Current active phase: **CR8.3b / H3-B — next Prompt 8 remediation phase.**
 
 
 ### CR6.4 / F5 closeout — 2026-10-01
@@ -1007,3 +1007,31 @@ Safety/manual boundary:
 - target-terminal replay and empirical signal-quality remain manual.
 
 Next phase: **CR8.3a / H3-A**.
+
+
+## CR8.3a / H3-A closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #151 implementation head `b19e3366b0115d79a6e6a61b79af310ac64bbdd7`.**
+
+Completed:
+- fixed production Skender settings centralized under immutable Core `OssIndicatorSettings.Default`;
+- moved fixed MACD signal, Bollinger, MFI, Stochastic, SuperTrend, Aroon, CCI and Parabolic SAR values out of `OssIndicatorParameters`;
+- affected Skender adapters migrated to the canonical settings owner;
+- RSI and MACD fast/slow remain parameter-driven;
+- Planning/Runtime contracts and H3-A static audit preserve and verify all existing defaults;
+- accumulated CR4.4 audit reconciled;
+- phase-specific record added at `docs/PHASE-CR8-3A-H3-A-SKENDER-SETTINGS.md`.
+
+Repository verification on `b19e3366b0115d79a6e6a61b79af310ac64bbdd7`:
+- Source / Architecture: **PASS**;
+- Runtime Acceptance Contracts: **PASS**;
+- cTrader Compile / Build: **PASS**.
+
+Safety/performance boundary:
+- public parameter contract unchanged;
+- no trading threshold/RR/confidence/risk/execution tuning;
+- no decision or broker-mutation authority changed;
+- no unbounded cache or runtime I/O introduced;
+- H3-B warm-up, bounded computation, cache design and numerical parity remain separate work.
+
+**Next implementation phase: CR8.3b / H3-B.**
