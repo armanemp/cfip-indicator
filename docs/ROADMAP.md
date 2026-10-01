@@ -6307,3 +6307,30 @@ Phase record: `docs/PHASE-CI-08-DIVERGENCE-WAVETREND-REACTION-EARLY.md`.
 **Verification: Source/Architecture #2545 PASS; Runtime #2354 PASS; cTrader Compile #2538 PASS; merge `8b82074ad5bff8a2a9e3ccdd626f4ca5afb61874`.**
 
 **Next phase: CI-09 — Decision engine mathematical audit.**
+
+## CI-09 — Decision Engine Mathematical Audit — 2026-10-02
+
+**Current implementation phase: CI-09 — Decision engine mathematical audit.**
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending on the exact feature head.**
+
+Implemented:
+- exact BUY/SELL consensus ties are neutral rather than BUY-biased;
+- consensus rejects non-finite BUY/SELL/temperature inputs fail-closed and uses the finite-safe exponent clamp;
+- adaptive-regime conflict reduction is symmetric at exact score ties;
+- canonical DecisionScoreSnapshot now exposes per-timeframe, confluence, premium/discount, adaptive, conflict and choppiness components for traceability;
+- non-finite frame/advanced score inputs fail closed before consensus;
+- deterministic Decision Contracts cover score reconstruction, symmetric choppiness and score finiteness;
+- dedicated CI-09 static audit is accumulated immediately after CI-08.
+
+Safety/performance boundary:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold was tuned;
+- no new decision or broker-mutation authority was introduced;
+- no history loop, persistence I/O, broker enumeration or unbounded cache was added.
+
+Phase record: `docs/PHASE-CI-09-DECISION-MATHEMATICS.md`.
+
+Verification will be recorded only from the exact GitHub workflow results for this implementation head. Target-terminal replay remains the empirical boundary.
+
+**Next phase after CI-09 verification: CI-10 — Gate/threshold semantic audit.**
