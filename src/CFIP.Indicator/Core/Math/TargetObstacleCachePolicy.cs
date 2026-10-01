@@ -58,6 +58,25 @@ namespace cAlgo
             return obj is TargetObstacleCacheKey &&
                    Equals((TargetObstacleCacheKey)obj);
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + BarCount;
+                hash = hash * 31 + Index;
+                hash = hash * 31 + OpenTimeTicks.GetHashCode();
+                hash = hash * 31 + Direction;
+                hash = hash * 31 + SwingStrength;
+                hash = hash * 31 + TargetLookbackBars;
+                hash = hash * 31 + LiquidityLookback;
+                hash = hash * 31 + UseEqualHighLow.GetHashCode();
+                hash = hash * 31 + EqualityTolerance.GetHashCode();
+                hash = hash * 31 + PipSize.GetHashCode();
+                return hash;
+            }
+        }
     }
 
     internal static class TargetObstacleCachePolicy
