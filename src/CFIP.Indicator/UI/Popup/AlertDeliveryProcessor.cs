@@ -15,16 +15,6 @@ namespace cAlgo
             if (!_alertDeliveryQueue.TryPeek(out next))
                 return;
 
-            bool popupActive =
-                _popup != null &&
-                (KeepPopupUntilNextAlert ||
-                 _popupUntilUtc > TimeInUtc);
-
-            if (next.ShowPopup &&
-                popupActive &&
-                !next.Critical)
-                return;
-
             if (!_alertDeliveryQueue.TryDequeue(out next))
                 return;
 
