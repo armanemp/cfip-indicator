@@ -101,12 +101,81 @@ namespace cAlgo
             VerifyActionabilityThresholdTransparency();
             VerifyEntryActionabilityF6();
             VerifyIndependentTimeframeScenarioSemanticsF7();
+            VerifyTargetObstacleTelemetryF8();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
 
 
 
+
+        private static void VerifyTargetObstacleTelemetryF8()
+        {
+            TargetObstacleTelemetryAccumulator telemetry =
+                new TargetObstacleTelemetryAccumulator();
+
+            telemetry.Observe(
+                0.80,
+                0.40,
+                4.0);
+
+            telemetry.Observe(
+                3.20,
+                1.20,
+                4.0);
+
+            Assert(
+                telemetry.Count == 2 &&
+                telemetry.MinTargetDistanceAtr == 0.80 &&
+                telemetry.MaxTargetDistanceAtr == 3.20 &&
+                telemetry.MinObstacleDistanceAtr == 0.40 &&
+                telemetry.MaxObstacleDistanceAtr == 1.20 &&
+                telemetry.MinTargetExtensionPercent == 20.0 &&
+                telemetry.MaxTargetExtensionPercent == 80.0,
+                "target obstacle telemetry aggregates target/obstacle distance in ATR and existing extension-envelope percentage");
+
+            Assert(
+                telemetry.FormatSummary() ==
+                    "TARGET_ATR_MIN=0.80 • TARGET_ATR_MAX=3.20 • EXT_PCT_MIN=20.0 • EXT_PCT_MAX=80.0 • OBSTACLE_ATR_MIN=0.40 • OBSTACLE_ATR_MAX=1.20",
+                "target obstacle telemetry summary is deterministic and culture-neutral");
+
+            telemetry.Observe(
+                double.NaN,
+                0.50,
+                4.0);
+
+            Assert(
+                telemetry.Count == 2,
+                "invalid obstacle observation does not contaminate bounded telemetry");
+
+            TargetObstacleTelemetryAccumulator missingObstacle =
+                new TargetObstacleTelemetryAccumulator();
+
+            missingObstacle.Observe(
+                2.0,
+                -1,
+                4.0);
+
+            Assert(
+                missingObstacle.Count == 1 &&
+                missingObstacle.MinTargetDistanceAtr == 2.0 &&
+                double.IsPositiveInfinity(
+                    missingObstacle.MinObstacleDistanceAtr) &&
+                missingObstacle.FormatSummary() ==
+                    "TARGET_ATR_MIN=2.00 • TARGET_ATR_MAX=2.00 • EXT_PCT_MIN=50.0 • EXT_PCT_MAX=50.0",
+                "zone-only obstacle telemetry retains target-distance evidence without inventing obstacle distance");
+
+            Assert(
+                TargetCandidateRejectionReasons.M5Obstacle ==
+                    "OBSTACLE_SWING" &&
+                TargetCandidateRejectionReasons.EqualHighLowObstacle ==
+                    "OBSTACLE_EQ" &&
+                TargetCandidateRejectionReasons.OpposingZoneObstacle ==
+                    "OBSTACLE_OPPOSING_ZONE" &&
+                TargetCandidateRejectionReasons.HtfZoneObstacle ==
+                    "OBSTACLE_HTF_ZONE",
+                "target obstacle rejection taxonomy preserves swing, equality, opposing-zone and HTF-zone categories");
+        }
 
         private static void VerifyStructuralStopRiskCeilingSemantics()
         {
