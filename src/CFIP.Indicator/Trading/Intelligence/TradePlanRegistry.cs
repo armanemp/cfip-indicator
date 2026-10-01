@@ -22,6 +22,60 @@ namespace cAlgo
             _entries[candidate.Id] = candidate;
         }
 
+        public bool UpsertScenario(
+            TradeOpportunityCandidate candidate,
+            double basePriceTolerance)
+        {
+            if (candidate == null ||
+                string.IsNullOrWhiteSpace(candidate.Id))
+                return false;
+
+            string identity =
+                ParallelScenarioSelectionRule.Identity(
+                    candidate);
+
+            string existingKey = null;
+            TradeOpportunityCandidate existing = null;
+
+            foreach (KeyValuePair<string, TradeOpportunityCandidate> pair
+                     in _entries)
+            {
+                if (ParallelScenarioSelectionRule.SameIdentity(
+                        pair.Value,
+                        candidate))
+                {
+                    existingKey = pair.Key;
+                    existing = pair.Value;
+                    break;
+                }
+            }
+
+            if (existing != null &&
+                !ParallelScenarioSelectionRule.ShouldReplace(
+                    existing,
+                    candidate,
+                    Math.Max(
+                        0,
+                        basePriceTolerance) +
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            existing.Risk,
+                            candidate.Risk) *
+                        0.10)))
+                return false;
+
+            if (existingKey != null &&
+                !string.Equals(
+                    existingKey,
+                    candidate.Id,
+                    StringComparison.OrdinalIgnoreCase))
+                _entries.Remove(existingKey);
+
+            _entries[candidate.Id] = candidate;
+            return true;
+        }
+
         public bool TryGetCandidate(
             string id,
             out TradeOpportunityCandidate candidate)
@@ -137,6 +191,14 @@ namespace cAlgo
                 default:
                     return 0;
             }
+        }
+
+        public IReadOnlyList<TradeOpportunityCandidate> SelectScenariosForDisplay(
+            int maximumVisible)
+        {
+            return ParallelScenarioSelectionRule.SelectForDisplay(
+                Snapshot(),
+                maximumVisible);
         }
 
         public bool Contains(
