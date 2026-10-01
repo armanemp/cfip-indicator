@@ -163,24 +163,6 @@ namespace cAlgo
                     Symbol.Ask -
                     Symbol.Bid);
 
-            double minimumRisk =
-                Math.Max(
-                    Math.Max(
-                        0.05,
-                        MinimumSlAtr) *
-                    atr,
-                    spread /
-                    Math.Max(
-                        0.02,
-                        MaximumSpreadToStopRiskRatio));
-
-            double maximumRisk =
-                StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
-                        MinimumSlAtr,
-                        MaximumSlAtr,
-                        MaximumStructuralStopAtr) *
-                atr;
-
             double riskAtr =
                 risk /
                 Math.Max(
