@@ -117,46 +117,82 @@ namespace cAlgo
             double rr =
                 constraint.RiskReward;
 
-            if (RejectTargetObstacle &&
-                HasTargetObstacle(
-                    _m5Bars,
-                    closedM5,
-                    direction,
-                    entry,
-                    candidate.Price,
-                    atr))
+            if (RejectTargetObstacle)
             {
-                rejectionReason =
-                    TargetCandidateRejectionReasons.M5Obstacle;
-                return false;
-            }
+                TargetObstacleEvaluation m5Obstacle =
+                    EvaluateTargetObstacle(
+                        _m5Bars,
+                        closedM5,
+                        direction,
+                        entry,
+                        candidate.Price,
+                        atr);
 
-            if (RejectTargetObstacle &&
-                HasOpposingZonePathObstacle(
-                    _m5Bars,
-                    closedM5,
-                    direction,
-                    entry,
-                    candidate.Price,
-                    atr))
-            {
-                rejectionReason =
-                    TargetCandidateRejectionReasons.OpposingZoneObstacle;
-                return false;
-            }
+                if (m5Obstacle.Blocked)
+                {
+                    RecordTargetObstacleObservation(
+                        closedM5,
+                        stage,
+                        m5Obstacle.Reason,
+                        distance /
+                        Math.Max(
+                            Symbol.PipSize,
+                            atr),
+                        m5Obstacle.ObstacleDistanceAtr,
+                        MaximumTargetExtensionAtr);
 
-            if (stage >= 1 &&
-                RejectTargetObstacle &&
-                HasHigherTfZonePathObstacle(
-                    _m5Bars.OpenTimes[
-                        closedM5],
-                    direction,
-                    entry,
-                    candidate.Price))
-            {
-                rejectionReason =
-                    TargetCandidateRejectionReasons.HtfZoneObstacle;
-                return false;
+                    rejectionReason =
+                        m5Obstacle.Reason;
+                    return false;
+                }
+
+                if (HasOpposingZonePathObstacle(
+                        _m5Bars,
+                        closedM5,
+                        direction,
+                        entry,
+                        candidate.Price,
+                        atr))
+                {
+                    RecordTargetObstacleObservation(
+                        closedM5,
+                        stage,
+                        TargetCandidateRejectionReasons.OpposingZoneObstacle,
+                        distance /
+                        Math.Max(
+                            Symbol.PipSize,
+                            atr),
+                        -1,
+                        MaximumTargetExtensionAtr);
+
+                    rejectionReason =
+                        TargetCandidateRejectionReasons.OpposingZoneObstacle;
+                    return false;
+                }
+
+                if (stage >= 1 &&
+                    HasHigherTfZonePathObstacle(
+                        _m5Bars.OpenTimes[
+                            closedM5],
+                        direction,
+                        entry,
+                        candidate.Price))
+                {
+                    RecordTargetObstacleObservation(
+                        closedM5,
+                        stage,
+                        TargetCandidateRejectionReasons.HtfZoneObstacle,
+                        distance /
+                        Math.Max(
+                            Symbol.PipSize,
+                            atr),
+                        -1,
+                        MaximumTargetExtensionAtr);
+
+                    rejectionReason =
+                        TargetCandidateRejectionReasons.HtfZoneObstacle;
+                    return false;
+                }
             }
 
             double normalizedDistance =
