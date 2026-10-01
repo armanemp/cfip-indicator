@@ -20,7 +20,7 @@ namespace cAlgo
             double minimumTrendSpreadAtr)
         {
             if (input == null)
-                return "UNKNOWN";
+                return MarketRegimeIdentity.Unknown;
 
             bool microRange =
                 input.RangeWidthAtr <=
@@ -58,7 +58,7 @@ namespace cAlgo
                         0.35,
                         rangeEfficiencyThreshold)))
             {
-                return "COMPRESSION";
+                return MarketRegimeIdentity.Compression;
             }
 
             if (input.AtrRatio >=
@@ -74,7 +74,7 @@ namespace cAlgo
                         55,
                         rangeChoppinessThreshold)))
             {
-                return "HIGH_VOLATILITY";
+                return MarketRegimeIdentity.HighVolatility;
             }
 
             if (input.Adx <
@@ -90,7 +90,7 @@ namespace cAlgo
                         0.30,
                         rangeEfficiencyThreshold))
             {
-                return "RANGE";
+                return MarketRegimeIdentity.Range;
             }
 
             if (input.AtrRatio >=
@@ -106,7 +106,7 @@ namespace cAlgo
                         0.30,
                         minimumTrendEfficiency)))
             {
-                return "EXPANSION";
+                return MarketRegimeIdentity.Expansion;
             }
 
             if (input.Adx >=
@@ -126,10 +126,10 @@ namespace cAlgo
                         0.20,
                         minimumTrendSpreadAtr))
             {
-                return "TREND";
+                return MarketRegimeIdentity.Trend;
             }
 
-            return "TRANSITION";
+            return MarketRegimeIdentity.Transition;
         }
 
         public static int Quality(
@@ -143,7 +143,7 @@ namespace cAlgo
 
             switch (regime)
             {
-                case "TREND":
+                case MarketRegimeIdentity.Trend:
                     quality =
                         (int)Math.Round(
                             48 +
@@ -159,7 +159,7 @@ namespace cAlgo
                                 input.EmaSpreadAtr * 8));
                     break;
 
-                case "EXPANSION":
+                case MarketRegimeIdentity.Expansion:
                     quality =
                         (int)Math.Round(
                             55 +
@@ -172,7 +172,7 @@ namespace cAlgo
                                 input.Choppiness - 45) * 0.50);
                     break;
 
-                case "RANGE":
+                case MarketRegimeIdentity.Range:
                     quality =
                         (int)Math.Round(
                             32 +
@@ -185,11 +185,11 @@ namespace cAlgo
                                 input.RangeEfficiency) * 15);
                     break;
 
-                case "COMPRESSION":
+                case MarketRegimeIdentity.Compression:
                     quality = 22;
                     break;
 
-                case "HIGH_VOLATILITY":
+                case MarketRegimeIdentity.HighVolatility:
                     quality =
                         (int)Math.Round(
                             34 +
@@ -202,7 +202,7 @@ namespace cAlgo
                                 input.AtrRatio - 1.50) * 12);
                     break;
 
-                case "TRANSITION":
+                case MarketRegimeIdentity.Transition:
                     quality =
                         (int)Math.Round(
                             40 +

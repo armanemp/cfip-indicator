@@ -1,10 +1,8 @@
-using System;
-
 namespace cAlgo
 {
     internal static class FrameRegimeResolutionRule
     {
-        public const string Unknown = "UNKNOWN";
+        public const string Unknown = MarketRegimeIdentity.Unknown;
 
         public static string ResolveFrameSnapshotRegime(
             MarketRegimeSnapshot snapshot)
@@ -18,26 +16,7 @@ namespace cAlgo
         public static string NormalizeFrameRegimeValue(
             string regime)
         {
-            if (string.IsNullOrWhiteSpace(regime))
-                return Unknown;
-
-            switch (regime.Trim().ToUpperInvariant())
-            {
-                case "TREND":
-                    return "TREND";
-                case "EXPANSION":
-                    return "EXPANSION";
-                case "RANGE":
-                    return "RANGE";
-                case "TRANSITION":
-                    return "TRANSITION";
-                case "HIGH_VOLATILITY":
-                    return "HIGH_VOLATILITY";
-                case "COMPRESSION":
-                    return "COMPRESSION";
-                default:
-                    return Unknown;
-            }
+            return MarketRegimeIdentity.Normalize(regime);
         }
 
         public static bool IsNeutral(

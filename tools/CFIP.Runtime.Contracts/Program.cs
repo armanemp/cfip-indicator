@@ -91,6 +91,7 @@ namespace cAlgo
             VerifyPersistenceHealthSemantics();
             VerifySignalTraceLineageSemantics();
             VerifyFrameRegimeSemantics();
+            VerifySmartThresholdRegimeSemantics();
             VerifyFrameScoringConstants();
             VerifyOssIndicatorParameters();
             VerifyDirectionalBiasTimeframeSemantics();
@@ -7919,6 +7920,185 @@ namespace cAlgo
                     defaults.RecoveryTp1RRFloor -
                     2.35) < 1e-12,
                 "quality-recovery RR margin remains 0.35 above the effective minimum");
+        }
+
+        private static void VerifySmartThresholdRegimeSemantics()
+        {
+            string[] expectedRegimes =
+            {
+                MarketRegimeIdentity.Trend,
+                MarketRegimeIdentity.Expansion,
+                MarketRegimeIdentity.Range,
+                MarketRegimeIdentity.Compression,
+                MarketRegimeIdentity.HighVolatility,
+                MarketRegimeIdentity.Transition
+            };
+
+            foreach (string regime in expectedRegimes)
+            {
+                Assert(
+                    MarketRegimeIdentity.IsKnown(regime),
+                    "classifier regime is known: " + regime);
+
+                SmartThresholdResolution adaptive =
+                    SmartThresholdPolicyRule.Resolve(
+                        regime,
+                        true,
+                        70,
+                        60,
+                        10,
+                        6);
+
+                Assert(
+                    adaptive.QualityThreshold >= 40 &&
+                    adaptive.QualityThreshold <= 95 &&
+                    adaptive.ShareThreshold >= 50 &&
+                    adaptive.ShareThreshold <= 95 &&
+                    adaptive.EdgeThreshold >= 4 &&
+                    adaptive.EdgeThreshold <= 30,
+                    "adaptive threshold result is bounded for regime: " + regime);
+            }
+
+            SmartThresholdResolution trend =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.Trend,
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            SmartThresholdResolution expansion =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.Expansion,
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            SmartThresholdResolution range =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.Range,
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            SmartThresholdResolution compression =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.Compression,
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            SmartThresholdResolution highVolatility =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.HighVolatility,
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            SmartThresholdResolution transition =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.Transition,
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            SmartThresholdResolution unknown =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.Unknown,
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            SmartThresholdResolution future =
+                SmartThresholdPolicyRule.Resolve(
+                    "FUTURE_REGIME",
+                    true,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            Assert(
+                trend.QualityThreshold == 64 &&
+                trend.ShareThreshold == 58 &&
+                trend.EdgeThreshold == 8 &&
+                expansion.QualityThreshold == 64 &&
+                expansion.ShareThreshold == 58 &&
+                expansion.EdgeThreshold == 8,
+                "TREND/EXPANSION adaptive branch preserves legacy -buffer defaults");
+
+            Assert(
+                range.QualityThreshold == 73 &&
+                range.ShareThreshold == 62 &&
+                range.EdgeThreshold == 12,
+                "RANGE adaptive branch preserves legacy +buffer defaults");
+
+            Assert(
+                compression.QualityThreshold == 76 &&
+                compression.ShareThreshold == 63 &&
+                compression.EdgeThreshold == 13,
+                "COMPRESSION adaptive branch preserves legacy +buffer defaults");
+
+            Assert(
+                highVolatility.QualityThreshold == 70 &&
+                highVolatility.ShareThreshold == 60 &&
+                highVolatility.EdgeThreshold == 10 &&
+                transition.QualityThreshold == 70 &&
+                transition.ShareThreshold == 60 &&
+                transition.EdgeThreshold == 10,
+                "HIGH_VOLATILITY/TRANSITION remain neutral adaptive branches");
+
+            Assert(
+                unknown.QualityThreshold == 70 &&
+                unknown.ShareThreshold == 60 &&
+                unknown.EdgeThreshold == 10 &&
+                future.QualityThreshold == 70 &&
+                future.ShareThreshold == 60 &&
+                future.EdgeThreshold == 10,
+                "UNKNOWN/future regime values fail safely to the base thresholds");
+
+            Assert(
+                MarketRegimeIdentity.Normalize(" trend ") ==
+                    MarketRegimeIdentity.Trend &&
+                MarketRegimeIdentity.Normalize("EXPANSION") ==
+                    MarketRegimeIdentity.Expansion &&
+                MarketRegimeIdentity.Normalize("REVERSAL") ==
+                    MarketRegimeIdentity.Unknown,
+                "regime identity normalization excludes legacy REVERSAL");
+
+            SmartThresholdResolution adaptiveOff =
+                SmartThresholdPolicyRule.Resolve(
+                    MarketRegimeIdentity.Range,
+                    false,
+                    70,
+                    60,
+                    10,
+                    6);
+
+            Assert(
+                adaptiveOff.QualityThreshold == 70 &&
+                adaptiveOff.ShareThreshold == 60 &&
+                adaptiveOff.EdgeThreshold == 10,
+                "Adaptive Smart Thresholds=false preserves configured thresholds");
+
+            Assert(
+                trend.QualityThreshold == expansion.QualityThreshold &&
+                trend.ShareThreshold == expansion.ShareThreshold &&
+                trend.EdgeThreshold == expansion.EdgeThreshold,
+                "regime threshold policy is direction-neutral and symmetric");
         }
 
         private static void Assert(bool condition, string name)
