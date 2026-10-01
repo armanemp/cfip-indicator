@@ -65,9 +65,6 @@ namespace cAlgo
             bool insideZone =
                 geometry.InsideZone;
 
-            bool triggerReached =
-                geometry.TriggerReached;
-
             ExecutionMode liveMode =
                 geometry.Mode;
 
@@ -79,6 +76,23 @@ namespace cAlgo
 
             double actualEntry =
                 geometry.ActualEntry;
+
+            double risk =
+                Math.Abs(
+                    actualEntry -
+                    preview.Stop);
+
+            if (!IsFinitePositive(risk))
+                return TradeActionabilityResult.Blocked(
+                    "RISK UNAVAILABLE");
+
+            double tp1RR =
+                IsFinitePositive(preview.Tp1)
+                    ? Math.Abs(
+                        preview.Tp1 -
+                        actualEntry) /
+                      risk
+                    : 0;
 
             PlanRewardRiskQualityResult rewardRisk =
                 PlanRewardRiskQualityRule.Evaluate(
