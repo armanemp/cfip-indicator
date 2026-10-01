@@ -10,8 +10,8 @@ namespace cAlgo
             if (!CanRunAutomaticEntry())
             { ApplyRuntimeEntryGate(); return false; }
 
-            int direction; double targetEntry, stop, target, volume; ExecutionIntent pendingIntent;
-            if (!TryPrepareReversalLimit(closedM5, out direction, out _, out targetEntry, out stop, out target, out _, out _, out volume, out pendingIntent))
+            int direction; double atr, targetEntry, stop, target, volume; ExecutionIntent pendingIntent;
+            if (!TryPrepareReversalLimit(closedM5, out direction, out atr, out targetEntry, out stop, out target, out _, out _, out volume, out pendingIntent))
                 return false;
 
             TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
