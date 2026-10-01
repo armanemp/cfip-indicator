@@ -18,7 +18,7 @@ sync = read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 renderer = read("src/CFIP.Indicator/UI/Popup/PopupRenderer.cs")
-processor = read("src/CFIP.Indicator/UI/Popup/PopupQueueProcessor.cs")
+processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
 remover = read("src/CFIP.Indicator/UI/Popup/PopupRemover.cs")
 initialization = read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
 queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
@@ -76,7 +76,7 @@ checks = {
         "_popupCritical =\n                                critical;" in renderer
     ),
     "popup processor is the only queue-to-render handoff": (
-        "ShowPopup(next.Message, next.Critical)" in processor and
+        "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor and
         "_alertDeliveryQueue.TryPeek" in processor
     ),
     "critical queued alert may preempt a normal active popup": (
@@ -121,7 +121,7 @@ production = "\n".join(
     p.read_text(encoding="utf-8")
     for p in (ROOT / "src/CFIP.Indicator").rglob("*.cs")
 )
-if production.count("ShowPopup(next.Message, next.Critical)") != 1:
+if production.count("ShowPopup(\n                    next.Message,\n                    next.Critical)") != 1:
     print("FAIL | queued popup render handoff count is not exactly one")
     errors.append("queued popup render handoff count is not exactly one")
 
