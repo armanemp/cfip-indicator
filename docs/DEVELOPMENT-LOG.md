@@ -2489,3 +2489,37 @@ Manual boundary:
 Actual cTrader `ModifyStopLossPrice`, broker minimum-distance behavior and restart/reconnect remain manual acceptance.
 
 Next phase: **CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+
+
+## CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry — 2026-10-01
+
+Status: **VERIFIED COMPLETE**
+
+تأیید می‌کنم — G2 was completed without changing Retest thresholds, defaults or execution authority.
+
+Implemented:
+- canonical Core trap threshold ownership;
+- deterministic TRAP_ADVERSE_M5 / TRAP_ADVERSE_M1 / TRAP_EXTREME / TRAP_DIVERGENCE reasons;
+- bounded pre-zone/post-zone Retest diagnostics;
+- preserved legacy F6 trap-rule compatibility contract;
+- isolated Retest/adverse calculations from oversized validation modules;
+- accumulated G2 static audit.
+
+Verification:
+- Source/Architecture PASS — #2283;
+- Runtime Acceptance Contracts PASS — #2092;
+- cTrader Compile PASS — #2276;
+- PR #142 merged as `f983d2fd7eb0baced4b5ff40988e6294b3f5bd28`.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No second decision/execution authority or unrelated trading behavior was introduced.
+
+Performance/code-cleanliness:
+- validation module size was kept below the repository architecture ceiling by isolating Retest/adverse helpers;
+- no new unbounded state or hot-path scan was introduced;
+- canonical policy ownership reduced duplicated threshold literals.
+
+Manual boundary:
+Target-terminal Retest intrabar/zone timing and empirical signal-quality/profitability validation remain manual.
+
+Next phase: **CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
