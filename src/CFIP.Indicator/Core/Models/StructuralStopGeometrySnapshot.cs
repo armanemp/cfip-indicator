@@ -44,7 +44,7 @@ namespace cAlgo
                 : reason;
         }
 
-        public static StructuralStopGeometrySnapshot Invalid(
+        public static StructuralStopGeometrySnapshot CreateInvalid(
             int direction,
             double entry,
             double sourcePrice,
