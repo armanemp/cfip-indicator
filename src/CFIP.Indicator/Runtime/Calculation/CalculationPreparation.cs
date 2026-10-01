@@ -55,7 +55,7 @@ namespace cAlgo
 
             _calculationMarketContext =
                 BuildCalculationMarketContext(
-                    indexOrLastBar(),
+                    Bars == null ? -1 : Bars.Count - 1,
                     reference,
                     mtf);
 
