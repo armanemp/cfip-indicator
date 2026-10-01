@@ -1811,6 +1811,17 @@ for path, token in (
         raise SystemExit(f"Structural-stop owner missing: {path}")
 
 # FVG lifecycle ownership.
+FVG_LIFECYCLE_RULE = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
+FVG_LIFECYCLE_RULE_CODE = FVG_LIFECYCLE_RULE.read_text(encoding="utf-8")
+for token in (
+    "IsAgeValid(",
+    "GetMitigationProbe(",
+    "TryApplyMitigationStep(",
+    "return !invalidateOnFullFill;",
+):
+    if token not in FVG_LIFECYCLE_RULE_CODE:
+        raise SystemExit(f"Canonical FVG lifecycle rule missing: {token}")
+
 FVG_LIFECYCLE = ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs"
 FVG_LIFECYCLE_CODE = FVG_LIFECYCLE.read_text(encoding="utf-8")
 if FVG_LIFECYCLE.stat().st_size > 8192:
