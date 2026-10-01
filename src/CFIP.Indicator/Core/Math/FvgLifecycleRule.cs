@@ -19,7 +19,7 @@ namespace cAlgo
                    currentIndex - createdIndex <= maximumAgeBars;
         }
 
-        public static double GetMitigationProbe(
+        public static double ResolveFvgMitigationProbe(
             int direction,
             double open,
             double close,
@@ -56,11 +56,11 @@ namespace cAlgo
             fullyFilled = false;
 
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(zoneLow) ||
-                !IsFinitePositive(zoneHigh) ||
+                !IsFinitePositiveFvgLifecycleValue(zoneLow) ||
+                !IsFinitePositiveFvgLifecycleValue(zoneHigh) ||
                 zoneLow >= zoneHigh ||
-                !IsFinitePositive(probe) ||
-                !IsFinitePositive(tickSize))
+                !IsFinitePositiveFvgLifecycleValue(probe) ||
+                !IsFinitePositiveFvgLifecycleValue(tickSize))
                 return false;
 
             fullyFilled =
@@ -96,7 +96,7 @@ namespace cAlgo
                    managedHigh - managedLow > tickSize;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveFvgLifecycleValue(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
