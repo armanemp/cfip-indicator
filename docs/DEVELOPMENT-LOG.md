@@ -2703,3 +2703,26 @@ Operator action after merge:
 Next phase: **CR7.6c.**
 
 
+
+## CR8.2 / H2 closeout — Top-Down absolute strength — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #150; final implementation HEAD 675283b82e345a86b1a6094e7b7ad66ec3632b84.**
+
+Root cause:
+- relative top-down alignment could be high even when the aligned timeframe quality was weak;
+- weak opposing lower-timeframe evidence could be treated as a conflict without sufficient absolute strength.
+
+Completed:
+- added canonical dominant-direction absolute strength to top-down group evaluation;
+- required alignment plus absolute strength for a strong HTF anchor;
+- required sufficient absolute strength for opposing mid/entry conflict blocking;
+- exposed H2 diagnostics through Decision and panel;
+- added deterministic Decision Contracts and accumulated static audit;
+- resolved CS0414 by turning the existing execution-toggle flag into an actual re-entrancy guard.
+
+Verification:
+- Source/Architecture PASS — 36892859244;
+- Runtime Acceptance Contracts PASS — 36892859151;
+- cTrader Compile PASS — 36892859090.
+
+Next phase: **CR8.3a / H3-A**.

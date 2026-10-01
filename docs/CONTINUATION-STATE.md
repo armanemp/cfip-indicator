@@ -672,7 +672,7 @@ Safety/manual boundary:
 Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Current active phase
-Current active phase: **CR7.6c — next Prompt 7 remediation phase.**
+Current active phase: **CR8.3a / H3-A — next Prompt 8 remediation phase.**
 
 
 ### CR6.4 / F5 closeout — 2026-10-01
@@ -983,3 +983,27 @@ Verification on final implementation HEAD `f51c842c4778d99428ab583a2bae7cb7839e1
 Operator action after merge:
 - run `git pull --ff-only` on local `main` before continuing to H2.
 
+
+## CR8.2 / H2 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #150; final implementation HEAD 675283b82e345a86b1a6094e7b7ad66ec3632b84.**
+
+Implementation:
+- TopDownCalibrationRule now separates relative alignment from dominant-direction absolute strength;
+- HTF permission requires both dimensions under the existing bounded threshold;
+- weak opposing mid/entry evidence no longer blocks a strong HTF anchor, while sufficiently strong opposing evidence still can;
+- Decision/panel diagnostics use the same canonical values;
+- the existing execution-toggle synchronization guard is now read as a re-entrancy guard, resolving CS0414 without weakening architecture rules;
+- H2 runtime contracts and audit_phase_8_2.py are accumulated.
+
+Verification:
+- Source/Architecture PASS — 36892859244;
+- Runtime Acceptance Contracts PASS — 36892859151;
+- cTrader Compile PASS — 36892859090.
+
+Safety/manual boundary:
+- no public parameter/default or trading threshold changed;
+- no execution/broker-mutation authority changed;
+- target-terminal replay and empirical signal-quality remain manual.
+
+Next phase: **CR8.3a / H3-A**.
