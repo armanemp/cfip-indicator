@@ -21,6 +21,149 @@ namespace cAlgo
                 closedM5);
         }
 
+        private void ProcessDecisionOwnedWatchReactionAlerts(
+            int closedM5)
+        {
+            // WATCH/REACTION alerts are analysis/alert state, not chart state.
+            // They must be evaluated even when chart presentation is disabled,
+            // skipped or optimized away.
+            if (_decision == null ||
+                !_brokerStateReconciledThisCycle)
+                return;
+
+            RefreshLiveDecisionActionability(
+                closedM5);
+
+            ProcessDecisionOwnedWatchAlert(
+                closedM5);
+
+            ProcessDecisionOwnedReactionAlert();
+        }
+
+        private void ProcessDecisionOwnedWatchAlert(
+            int closedM5)
+        {
+            bool hasPlan =
+                _plan != null;
+
+            bool hasPendingOrder =
+                GetManagedPendingOrder() != null;
+
+            bool hasLivePosition =
+                _plan != null &&
+                _plan.IsLivePosition;
+
+            if (_lastEarlyAlertM5 ==
+                    closedM5 ||
+                !WatchReactionAlertRule.IsWatchAlertEligible(
+                    AlertOnEarlyWatch,
+                    _decision.EntryAllowed,
+                    _decision.ActionableNow,
+                    hasPlan,
+                    hasPendingOrder,
+                    hasLivePosition,
+                    _decision.Direction,
+                    _decision.Confidence,
+                    _decision.SmartQuality,
+                    _decision.TimeframeAgreement,
+                    _decision.IndependentEvidence,
+                    _decision.StructuralConfirmations,
+                    MinimumConfidence,
+                    MinimumSmartQuality,
+                    SmartQualityThreshold,
+                    MinimumTimeframeAgreement,
+                    SmartMinimumTimeframeAgreement,
+                    MinimumIndependentEvidence,
+                    MinimumStructuralConfirmations))
+                return;
+
+            int direction =
+                _decision.Direction;
+
+            string directionText =
+                direction == 1
+                    ? "BUY"
+                    : "SELL";
+
+            SendUnifiedAlert(
+                WatchReactionAlertRule.BuildWatchAlertKey(
+                    closedM5,
+                    direction),
+                "CFIP " +
+                directionText +
+                " WATCH | CONF " +
+                _decision.Confidence +
+                " | SMART " +
+                _decision.SmartQuality +
+                " | " +
+                _decision.Reason,
+                direction,
+                false);
+
+            _lastEarlyAlertM5 =
+                closedM5;
+        }
+
+        private void ProcessDecisionOwnedReactionAlert()
+        {
+            if (_reaction == null ||
+                _m5Bars == null ||
+                _m5Bars.Count < 10)
+                return;
+
+            int reactionM5 =
+                _m5Bars.Count - 1;
+
+            bool hasPlan =
+                _plan != null;
+
+            bool hasPendingOrder =
+                GetManagedPendingOrder() != null;
+
+            bool hasLivePosition =
+                _plan != null &&
+                _plan.IsLivePosition;
+
+            bool rangeAllowed =
+                IsRangeSignalVisualAllowed(
+                    reactionM5,
+                    _reaction.Direction,
+                    _reaction.Confidence,
+                    _reaction.SmartQuality,
+                    _reaction.Edge,
+                    _reaction.IndependentEvidence,
+                    StructuralConfirmations(
+                        _reaction.Direction));
+
+            if (_lastReactionAlertBar ==
+                    reactionM5 ||
+                !WatchReactionAlertRule.IsReactionAlertEligible(
+                    AlertOnReaction,
+                    AlertOnLiveReaction,
+                    _reaction.EntryAllowed,
+                    hasPlan,
+                    hasPendingOrder,
+                    hasLivePosition,
+                    rangeAllowed,
+                    _reaction.Direction,
+                    _reaction.Confidence,
+                    _reaction.IndependentEvidence,
+                    LiveReactionStrongThreshold,
+                    MinimumLiveReactionEvidence))
+                return;
+
+            SendUnifiedAlert(
+                WatchReactionAlertRule.BuildReactionAlertKey(
+                    reactionM5,
+                    _reaction.Direction),
+                _reaction.Reason,
+                _reaction.Direction,
+                false);
+
+            _lastReactionAlertBar =
+                reactionM5;
+        }
+
         private void ProcessCanonicalActionableEntryAlert(
             int closedM5)
         {

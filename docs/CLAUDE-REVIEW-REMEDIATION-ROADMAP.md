@@ -1437,6 +1437,38 @@ Testing:
 - repeated closed-bar alert identity remains deterministic and bounded;
 - BUY/SELL symmetry.
 
+### CR5.7 / E7 closeout — 2026-10-01
+
+Status: **IMPLEMENTED COMPLETE — repository verification pending CI.**
+
+Source audit finding:
+- the previous WATCH alert emission lived inside chart rendering and its intended early-WATCH condition was unreachable after the renderer returned on `!ActionableNow`;
+- REACTION alert emission was likewise coupled to renderer execution and `ShowReactionArrow` presentation state.
+
+Implementation:
+- added Core `WatchReactionAlertRule` as the single owner for WATCH/REACTION qualification, the established early-WATCH confidence floor/gap (60/4), and deterministic alert identity;
+- moved WATCH/REACTION alert qualification and emission into the runtime decision-alert boundary;
+- preserved intrabar REACTION cadence by evaluating alerts after `UpdateLiveReaction` and before presentation;
+- made `SignalRenderer` presentation-only for WATCH/REACTION alerts;
+- reused the Core WATCH rule from presentation instead of duplicating its threshold logic;
+- added deterministic Runtime Contract coverage for threshold semantics, blocked/plan/pending/live guards, BUY/SELL symmetry and alert identity;
+- added `tools/audit_phase_5_7.py` immediately after E6 in the accumulated Source/Architecture gate;
+- recorded the implementation and safety boundary in `docs/PHASE-CR5-7-WATCH-REACTION-ALERTS.md`.
+
+Safety:
+- no public parameter name/type/`DefaultValue` changed;
+- no RR/confidence/SL/TP/execution threshold was tuned;
+- blocked signals remain fail-closed at the canonical alert eligibility boundary;
+- target-terminal alert timing, popup/audio delivery, chart/panel behavior, broker lifecycle and empirical signal quality remain manual boundaries.
+
+Required verification now:
+- Source/Architecture, Runtime Acceptance Contracts and cTrader Compile on the E7 branch/PR;
+- target-terminal rendering-disabled versus enabled alert equivalence;
+- repeated closed-bar identity/dedup behavior;
+- target-terminal intrabar REACTION timing.
+
+**Next phase: CR5.8 / E8 — Small constant ownership and TargetSelection consistency.**
+
 ### CR5.8 — Small constant ownership and TargetSelection consistency (E8)
 
 Initial review label: **CONFIRMED/PARTIAL — structural cleanup plus targeted semantic tests.**
@@ -1708,7 +1740,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR5.5 — Parallel-scenario computation/candidate ownership and MicroReaction safety (E5)**.
+Current active phase: **CR5.8 — Small constant ownership and TargetSelection consistency (E8)**.
 
 ## 8. Completion order and dependencies
 

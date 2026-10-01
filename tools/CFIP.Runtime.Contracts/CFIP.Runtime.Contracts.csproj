@@ -45,6 +45,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ReactionQualificationRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MicroReactionSafetyRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/WatchReactionAlertRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PremiumDiscountBiasRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveM5BiasRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/HealthyVolatilityRule.cs" />

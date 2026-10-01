@@ -94,6 +94,7 @@ namespace cAlgo
             VerifyFrameScoringConstants();
             VerifyOssIndicatorParameters();
             VerifyDirectionalBiasTimeframeSemantics();
+            VerifyWatchReactionAlertSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -7188,6 +7189,311 @@ namespace cAlgo
                     Utc(10, 14),
                     i => m5[i]),
                 "unfinished M5 bar cannot be used as live-bias confirmation");
+        }
+
+        private static void VerifyWatchReactionAlertSemantics()
+        {
+            Assert(
+                WatchReactionAlertRule.ResolveEarlyWatchMinimumConfidence(82) == 78 &&
+                WatchReactionAlertRule.ResolveEarlyWatchMinimumConfidence(60) == 60 &&
+                WatchReactionAlertRule.ResolveEarlyWatchMinimumConfidence(63) == 60,
+                "early WATCH keeps the established 60-floor and 4-point confidence gap");
+
+            Assert(
+                WatchReactionAlertRule.IsStrongWatch(
+                    1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2) &&
+                WatchReactionAlertRule.IsStrongWatch(
+                    -1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2),
+                "strong WATCH qualification is BUY/SELL symmetric");
+
+            Assert(
+                !WatchReactionAlertRule.IsStrongWatch(
+                    1,
+                    77,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2) &&
+                !WatchReactionAlertRule.IsStrongWatch(
+                    1,
+                    78,
+                    64,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2),
+                "WATCH rejects sub-threshold confidence and smart quality");
+
+            Assert(
+                WatchReactionAlertRule.IsWatchAlertEligible(
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2) &&
+                !WatchReactionAlertRule.IsWatchAlertEligible(
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2) &&
+                !WatchReactionAlertRule.IsWatchAlertEligible(
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2),
+                "WATCH alert requires an allowed, non-actionable decision and enabled alerting");
+
+            Assert(
+                !WatchReactionAlertRule.IsWatchAlertEligible(
+                    true,
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2) &&
+                !WatchReactionAlertRule.IsWatchAlertEligible(
+                    true,
+                    true,
+                    false,
+                    false,
+                    true,
+                    false,
+                    1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2) &&
+                !WatchReactionAlertRule.IsWatchAlertEligible(
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    1,
+                    78,
+                    70,
+                    6,
+                    3,
+                    2,
+                    82,
+                    65,
+                    60,
+                    5,
+                    4,
+                    3,
+                    2),
+                "WATCH alert is suppressed by an existing plan, pending order or live position");
+
+            Assert(
+                WatchReactionAlertRule.IsReactionAlertEligible(
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    1,
+                    82,
+                    3,
+                    80,
+                    2) &&
+                WatchReactionAlertRule.IsReactionAlertEligible(
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    -1,
+                    82,
+                    3,
+                    80,
+                    2),
+                "REACTION alert qualification is BUY/SELL symmetric");
+
+            Assert(
+                !WatchReactionAlertRule.IsReactionAlertEligible(
+                    false,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    1,
+                    82,
+                    3,
+                    80,
+                    2) &&
+                !WatchReactionAlertRule.IsReactionAlertEligible(
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    1,
+                    82,
+                    3,
+                    80,
+                    2) &&
+                !WatchReactionAlertRule.IsReactionAlertEligible(
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    true,
+                    1,
+                    82,
+                    3,
+                    80,
+                    2) &&
+                !WatchReactionAlertRule.IsReactionAlertEligible(
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    true,
+                    1,
+                    82,
+                    3,
+                    80,
+                    2) &&
+                !WatchReactionAlertRule.IsReactionAlertEligible(
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    1,
+                    82,
+                    3,
+                    80,
+                    2),
+                "REACTION alert is closed by disabled alerting, live-reaction disablement, blocked state, existing plan or invalid range state");
+
+            Assert(
+                WatchReactionAlertRule.BuildWatchAlertKey(100, 1) ==
+                    WatchReactionAlertRule.BuildWatchAlertKey(100, 1) &&
+                WatchReactionAlertRule.BuildReactionAlertKey(100, 1) ==
+                    WatchReactionAlertRule.BuildReactionAlertKey(100, 1) &&
+                WatchReactionAlertRule.BuildWatchAlertKey(100, 1) !=
+                    WatchReactionAlertRule.BuildWatchAlertKey(100, -1) &&
+                WatchReactionAlertRule.BuildReactionAlertKey(100, 1) !=
+                    WatchReactionAlertRule.BuildReactionAlertKey(100, -1),
+                "WATCH/REACTION alert identities are deterministic and direction-distinct");
         }
 
         private static void Assert(bool condition, string name)
