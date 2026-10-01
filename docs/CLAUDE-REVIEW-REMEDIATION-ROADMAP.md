@@ -1941,7 +1941,7 @@ Safety/manual boundary:
 
 ### CR7.3 / G3 closeout — 2026-10-01
 
-Status: **IMPLEMENTATION COMPLETE — pending CI/PR verification.**
+Status: **VERIFIED COMPLETE — PR #143 merged to `main` as `6c572643cfc6b9a4ee1083e300ec13607dd2774c`.**
 
 Completed:
 - `Level Line Thickness` public parameter retained unchanged with its existing 1..3 contract;
@@ -1956,6 +1956,12 @@ Safety/manual boundary:
 - visible target-terminal thickness/style still requires manual cTrader validation.
 
 **Current active phase: CR7.4 / G4 — Panel execution/protection state semantics.**
+
+
+Verification:
+- Source/Architecture: PASS — #2295;
+- Runtime Acceptance Contracts: PASS — #2104;
+- cTrader Compile: PASS — #2288.
 
 ### Prompt 6 completion gate
 
