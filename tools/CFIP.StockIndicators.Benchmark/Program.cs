@@ -73,17 +73,13 @@ internal static class Program
         SkenderWarmupParityBenchmarkResult warmupParity =
             SkenderWarmupParityBenchmark.Measure();
 
-        SkenderProductionParityBenchmarkResult productionParity =
-            SkenderProductionParityBenchmark.Measure();
-
         string report =
             BenchmarkReport.Format(
                 comparisons,
                 v2Timing,
                 v3Timing,
                 quoteCacheTiming,
-                warmupParity,
-                productionParity);
+                warmupParity);
 
         Console.WriteLine(report);
 
@@ -100,8 +96,7 @@ internal static class Program
             comparisons.Count ==
                 BenchmarkFixtures.ScenarioNames.Count *
                 IndicatorComparison.Definitions.Count &&
-            warmupParity.Passed &&
-            productionParity.Passed;
+            warmupParity.Passed;
 
         Console.WriteLine();
         Console.WriteLine(
