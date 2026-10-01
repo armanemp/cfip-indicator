@@ -110,6 +110,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralStopRiskRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveInvalidationRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FalseSignalAdverseRRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Runtime/AlertDelivery.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SmartBreakEvenRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PartialTakeProfitRetryRule.cs" />
