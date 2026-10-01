@@ -8,6 +8,7 @@ namespace cAlgo
         public string BasePlanTimeframe;
         public int IndependentEvidenceScore;
         public int IndependentEvidenceGroupCount;
+        public int IndicatorIndependentEvidenceGroupCount;
         public int LocationConfluenceScore;
         public int WaveTrendQuality;
         public bool ExecutionPolicyAllowed;
