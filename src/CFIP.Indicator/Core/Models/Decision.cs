@@ -48,6 +48,7 @@ namespace cAlgo
                         public int EntryPositionQuality;
                         public int IndicatorConfluenceQuality;
                         public int IndicatorConflict;
+                        public int IndicatorIndependentEvidenceGroupCount;
                         public double EntryDistanceAtr;
                         public double ActionableTp1RR;
                         public int DivergenceDirection;
