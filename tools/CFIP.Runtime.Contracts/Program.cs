@@ -8151,15 +8151,18 @@ namespace cAlgo
                 atM5.Reason == "ADVERSE MOMENTUM",
                 "F6 M5 trap threshold is inclusive at 0.30 ATR");
 
-            EntryTrapRiskResult belowM1 =
-                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0.4499, 0, false);
-            EntryTrapRiskResult atM1 =
+            EntryTrapRiskResult belowStrongM1 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0.3999, 0, false);
+            EntryTrapRiskResult atStrongM1 =
+                EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0.40, 0, false);
+            EntryTrapRiskResult atM1BlockThreshold =
                 EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0.45, 0, false);
             Assert(
-                !belowM1.Block &&
-                atM1.Block &&
-                atM1.Reason == "ADVERSE MOMENTUM",
-                "F6 M1 trap threshold is inclusive at 0.45 ATR");
+                !belowStrongM1.Block &&
+                atStrongM1.Block &&
+                atStrongM1.Reason == "ADVERSE MOMENTUM" &&
+                atM1BlockThreshold.Block,
+                "F6 M1 strong-adverse threshold is inclusive at 0.40 ATR and 0.45 remains blocked");
 
             EntryTrapRiskResult divergence70 =
                 EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0, 70, false);
@@ -8174,15 +8177,17 @@ namespace cAlgo
 
             EntryTrapRiskResult neutral =
                 EntryTrapRiskRule.Evaluate(1, 0.50, 0, 0, 0, false);
-            EntryTrapRiskResult hidden =
-                EntryTrapRiskRule.Evaluate(1, 0.70, 0, 0, 0, true);
+            EntryTrapRiskResult noHiddenAtNearExtreme =
+                EntryTrapRiskRule.Evaluate(1, 0.75, 0, 0, 0, false);
+            EntryTrapRiskResult hiddenAtNearExtreme =
+                EntryTrapRiskRule.Evaluate(1, 0.75, 0, 0, 0, true);
             Assert(
                 neutral.Risk == 0 &&
                 !neutral.Block &&
-                hidden.Risk == 0 &&
-                !hidden.Block &&
-                hidden.Reason == "SUPPORTIVE HIDDEN DIVERGENCE",
-                "F6 neutral/supportive hidden-divergence behavior remains fail-safe");
+                noHiddenAtNearExtreme.Risk == 25 &&
+                hiddenAtNearExtreme.Risk == 15 &&
+                !hiddenAtNearExtreme.Block,
+                "F6 supportive hidden divergence reduces trap risk by the established ten-point adjustment");
 
             EntryTrapRiskResult invalidDirection =
                 EntryTrapRiskRule.Evaluate(0, 0.99, 1, 1, 100, false);
