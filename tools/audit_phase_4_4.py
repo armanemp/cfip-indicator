@@ -167,7 +167,7 @@ check(
     "cache invalidation detects series replacement and cached-prefix mutation",
     "!ReferenceEquals(cache.Bars, bars)" in cache
     and "MatchesFirstBar(" in cache
-    and "MatchesStableLastBar(" in cache,
+    and "MatchesStableWindowBoundaries(" in cache,
 )
 check(
     "OBV remains available but is no longer counted as confluence evidence",
