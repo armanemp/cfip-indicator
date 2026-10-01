@@ -117,8 +117,7 @@ check(
     "_marketStateSnapshot.M5.Regime" in decision and
     "_marketStateSnapshot.PremiumDiscountBias" in decision and
     "_marketStateSnapshot.M5.RegimeQuality" in decision and
-    "MarketStateSnapshot =
-                        _marketStateSnapshot" in decision
+    "MarketStateSnapshot =\n                        _marketStateSnapshot" in decision
 )
 
 check(
