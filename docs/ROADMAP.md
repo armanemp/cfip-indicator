@@ -833,8 +833,11 @@ Completed implementation:
 - removed artificial conversion of zero volume to unit volume;
 - added runtime contracts for initial/append/rebuild window semantics, bounds and
   quote-volume normalization;
-- expanded the OSS benchmark to cover all production Skender families, stable
-  and rolling parity, OBV direction and deterministic zero-volume variants;
+- consolidated the existing H3-B OSS benchmark under one Track 19 benchmark
+  owner, covering all production Skender families, stable/rolling parity, OBV
+  direction and deterministic zero-volume variants;
+- removed the duplicate CI-02 benchmark module and added explicit terminal-date
+  alignment to the parity benchmark;
 - kept the existing FacioQuo research-only boundary unchanged;
 - accumulated the CI-02 static audit after CI-01.
 
