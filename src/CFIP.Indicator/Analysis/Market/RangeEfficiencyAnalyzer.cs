@@ -11,24 +11,30 @@ namespace cAlgo
             int period)
         {
             if (bars == null ||
-                index < 2)
+                index < 0 ||
+                index >= bars.Count)
                 return 0;
 
             int length =
                 Math.Max(
                     10,
-                    Math.Min(
-                        period,
-                        index));
+                    period);
+
+            if (!RangeEfficiencyRule.HasEnoughHistory(
+                    index,
+                    length))
+                return 0;
 
             int first =
-                Math.Max(
-                    1,
-                    index - length + 1);
+                RangeEfficiencyRule.ResolveFirstCloseIndex(
+                    index,
+                    length);
 
             double path = 0;
 
-            for (int i = first; i <= index; i++)
+            for (int i = first + 1;
+                 i <= index;
+                 i++)
             {
                 path +=
                     Math.Abs(
@@ -42,13 +48,11 @@ namespace cAlgo
             double net =
                 Math.Abs(
                     bars.ClosePrices[index] -
-                    bars.ClosePrices[first - 1]);
+                    bars.ClosePrices[first]);
 
-            return Math.Max(
-                0,
-                Math.Min(
-                    1,
-                    net / path));
+            return RangeEfficiencyRule.Evaluate(
+                net,
+                path);
         }
     }
 }
