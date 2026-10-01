@@ -18,6 +18,10 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/OpportunityLane.cs" Link="Core/Enums/OpportunityLane.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/ExecutionMode.cs" Link="Core/Enums/ExecutionMode.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" Link="Core/Models/Decision.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketStateFrameSnapshot.cs" Link="Core/Models/MarketStateFrameSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketStateSnapshot.cs" Link="Core/Models/MarketStateSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeTransitionRule.cs" Link="Core/Math/MarketRegimeTransitionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshot.cs" Link="Decision/DecisionInputSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TopDownCalibrationGroupResult.cs" Link="Core/Math/TopDownCalibrationGroupResult.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TopDownCalibrationRule.cs" Link="Core/Math/TopDownCalibrationRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvidenceSnapshot.cs" Link="Decision/DecisionEvidenceSnapshot.cs" />
