@@ -36,7 +36,6 @@ namespace cAlgo
                 Tp3MinimumRR,
                 Tp4MinimumRR,
                 MinimumRequiredRR(),
-                MinimumTradeRR,
                 TacticalOpportunityMinimumRR);
         }
 
