@@ -60,7 +60,7 @@ namespace cAlgo
                     false,
                     false);
 
-            string legacyReason =
+            string compatibilityReason =
                 result.Reason.IndexOf(
                     EntryTrapRiskPolicy.AdverseM5Reason,
                     StringComparison.OrdinalIgnoreCase) >= 0 ||
@@ -88,10 +88,17 @@ namespace cAlgo
             return new EntryTrapRiskResult(
                 result.Risk,
                 result.Block,
-                legacyReason);
+                compatibilityReason);
         }
 
-
+        internal static EntryTrapRiskResult Evaluate(
+            int direction,
+            double rangePosition,
+            double adverseM5Atr,
+            double adverseM1Atr,
+            int opposingRegularDivergenceQuality,
+            bool supportiveHiddenDivergence,
+            bool isRetest,
             bool insideZone,
             bool adverseM5PreZone,
             bool adverseM1PreZone,
