@@ -28,7 +28,7 @@ namespace cAlgo
             double rrStep,
             OpportunityLane lane)
         {
-            return TargetSelectionRequiredRrRule.Build(
+            return TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
                 rrStep,
                 lane,
                 Tp1MinimumRR,
