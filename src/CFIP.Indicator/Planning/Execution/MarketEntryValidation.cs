@@ -115,10 +115,12 @@ namespace cAlgo
                     return false;
                 }
 
-                if (!IsTriggerReached(
+                if (!EntryGeometryRule.IsTriggerReached(
                         plan.Direction,
                         fillPrice,
-                        plan.EntryTrigger))
+                        plan.EntryTrigger,
+                        Symbol.TickSize,
+                        Symbol.PipSize))
                 {
                     reason =
                         "BREAKOUT FILL • SLIPPAGE ACCEPTED";
