@@ -428,7 +428,7 @@ namespace cAlgo
                 tacticalInversion[3] == 2.30,
                 "E8 tactical RR ordering cannot invert");
 
-            double strategicTradeFloor =
+            double[] strategicTradeFloor =
                 TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
                     0.10,
                     OpportunityLane.Strategic,
