@@ -5484,6 +5484,36 @@ Verification boundary:
 
 **Next phase: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
 
+### CR6.7 / F8 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — target-obstacle rejection telemetry now distinguishes swing/equality/zone classes and quantifies target distance without changing target-selection defaults.**
+
+Implementation:
+- M5 target-obstacle evaluation now returns a structured observation while preserving the existing boolean rejection behavior;
+- ordinary swing obstruction remains `OBSTACLE_SWING`;
+- equal-high/low liquidity obstruction is now separated as `OBSTACLE_EQ`;
+- opposing-zone and HTF-zone categories remain distinct as `OBSTACLE_OPPOSING_ZONE` and `OBSTACLE_HTF_ZONE`;
+- obstacle rejection telemetry aggregates target distance in ATR, target position as a percentage of the existing Maximum Target Extension ATR envelope, and known obstacle distance in ATR;
+- zone/HTF telemetry records target-distance evidence without fabricating a precise obstacle depth;
+- telemetry storage is bounded per closed M5 and deduplicated per target stage/reason using the existing PLAN_TARGET channel;
+- deterministic F8 runtime contracts and the accumulated static audit are wired.
+
+Finding:
+- the current defaults already reject any qualifying M5 swing/equality strictly between Entry and Target minus the existing clearance; therefore farther valid targets can accumulate more obstacle rejections simply because they expose more path, but this phase does **not** retune or exempt distant targets;
+- the new telemetry provides the evidence needed to quantify that relationship during replay before any future behavioral change.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no MaximumTargetExtensionAtr, TargetClearanceAtr, RejectTargetObstacle, RR, SL/TP or scoring threshold changed;
+- no alternate target-selection authority introduced;
+- no broker mutation path introduced.
+
+Verification boundary:
+- repository source, compile and runtime contract evidence is deterministic once CI passes;
+- real-market obstacle frequency, replay distribution and target-survival conclusions remain evidence/manual work.
+
+**Next phase: CR6.8 / F9 — Target-obstacle scan performance and cache reuse.**
+
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
