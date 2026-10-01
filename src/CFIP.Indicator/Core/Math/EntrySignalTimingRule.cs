@@ -5,22 +5,22 @@ namespace cAlgo
     internal static class EntrySignalTimingRule
     {
         public static EntrySignalTiming Measure(
-            DateTime causalEventUtc,
-            DateTime actionableUtc)
+            DateTime causalUtc,
+            DateTime actionableUtcValue)
         {
-            if (causalEventUtc == DateTime.MinValue ||
-                actionableUtc == DateTime.MinValue)
+            if (causalUtc == DateTime.MinValue ||
+                actionableUtcValue == DateTime.MinValue)
                 return EntrySignalTiming.NotMeasured();
 
             DateTime causal =
-                causalEventUtc.Kind == DateTimeKind.Utc
-                    ? causalEventUtc
-                    : causalEventUtc.ToUniversalTime();
+                causalUtc.Kind == DateTimeKind.Utc
+                    ? causalUtc
+                    : causalUtc.ToUniversalTime();
 
             DateTime actionable =
-                actionableUtc.Kind == DateTimeKind.Utc
-                    ? actionableUtc
-                    : actionableUtc.ToUniversalTime();
+                actionableUtcValue.Kind == DateTimeKind.Utc
+                    ? actionableUtcValue
+                    : actionableUtcValue.ToUniversalTime();
 
             if (actionable < causal)
                 return EntrySignalTiming.NotMeasured();
