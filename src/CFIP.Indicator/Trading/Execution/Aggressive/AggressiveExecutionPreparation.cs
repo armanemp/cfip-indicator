@@ -105,7 +105,9 @@ namespace cAlgo
                 Math.Abs(
                     target -
                     entry) /
-                Symbol.PipSize;
+                Math.Max(
+                    priceSnapshot.PipSize,
+                    1e-9);
 
             double effectiveStopPips =
                 stopPips;
@@ -114,11 +116,7 @@ namespace cAlgo
                 effectiveStopPips +=
                     Math.Max(
                         0,
-                        (Symbol.Ask -
-                         Symbol.Bid) /
-                        Math.Max(
-                            Symbol.PipSize,
-                            1e-9));
+                        priceSnapshot.SpreadPips);
 
             volume =
                 CalculateAggressiveVolume(
