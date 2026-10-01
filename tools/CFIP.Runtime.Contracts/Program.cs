@@ -1770,6 +1770,165 @@ namespace cAlgo
                 "RSI above the existing directional threshold remains an intentional evidence input");
         }
 
+        private static void VerifyPendingFillExitResolutionSemantics()
+        {
+            PendingFillExitResolution buyAbsolute =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    1,
+                    102,
+                    103,
+                    120,
+                    112,
+                    1);
+
+            Assert(
+                buyAbsolute.Allowed &&
+                buyAbsolute.Price == 120 &&
+                buyAbsolute.Source == "ABSOLUTE PLAN TARGET",
+                "BUY positive-slippage fill restores the absolute planned TP when it is more progressive");
+
+            PendingFillExitResolution buyNegative =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    1,
+                    98,
+                    99,
+                    120,
+                    108,
+                    1);
+
+            Assert(
+                buyNegative.Allowed &&
+                buyNegative.Price == 120,
+                "BUY negative-slippage fill preserves the same absolute planned TP");
+
+            PendingFillExitResolution brokerProgressive =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    1,
+                    102,
+                    103,
+                    120,
+                    125,
+                    1);
+
+            Assert(
+                brokerProgressive.Allowed &&
+                brokerProgressive.Price == 125 &&
+                brokerProgressive.Source == "BROKER MORE PROGRESSIVE",
+                "BUY broker target remains authoritative when it is more progressive");
+
+            PendingFillExitResolution sellAbsolute =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    -1,
+                    98,
+                    97,
+                    80,
+                    88,
+                    1);
+
+            Assert(
+                sellAbsolute.Allowed &&
+                sellAbsolute.Price == 80 &&
+                sellAbsolute.Source == "ABSOLUTE PLAN TARGET",
+                "SELL positive-side fill preserves the absolute planned TP");
+
+            PendingFillExitResolution behindMarket =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    1,
+                    102,
+                    106,
+                    105,
+                    112,
+                    1);
+
+            Assert(
+                behindMarket.Allowed &&
+                behindMarket.Price == 112 &&
+                behindMarket.Source == "BROKER MORE PROGRESSIVE",
+                "a planned BUY TP already behind market cannot be restored over a safe broker target");
+
+            PendingFillExitResolution buyStop =
+                PendingFillExitResolutionRule.ResolveProtectiveStop(
+                    1,
+                    102,
+                    103,
+                    95,
+                    97,
+                    1);
+
+            Assert(
+                buyStop.Allowed &&
+                buyStop.Price == 97 &&
+                buyStop.Source == "BROKER MORE PROTECTIVE",
+                "BUY broker stop is retained when more protective after fill");
+
+            PendingFillExitResolution sellStop =
+                PendingFillExitResolutionRule.ResolveProtectiveStop(
+                    -1,
+                    98,
+                    97,
+                    105,
+                    103,
+                    1);
+
+            Assert(
+                sellStop.Allowed &&
+                sellStop.Price == 103 &&
+                sellStop.Source == "BROKER MORE PROTECTIVE",
+                "SELL broker stop is retained when more protective after fill");
+
+            PendingFillExitResolution brokerOnlyStop =
+                PendingFillExitResolutionRule.ResolveProtectiveStop(
+                    1,
+                    102,
+                    103,
+                    0,
+                    97,
+                    1);
+
+            Assert(
+                brokerOnlyStop.Allowed &&
+                brokerOnlyStop.Price == 97 &&
+                brokerOnlyStop.Source == "BROKER CONFIRMED STOP",
+                "broker-confirmed stop can close the protection gap when the plan stop is invalid");
+
+            PendingFillExitResolution unsafeTarget =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    1,
+                    102,
+                    116,
+                    110,
+                    112,
+                    1);
+
+            Assert(
+                !unsafeTarget.Allowed,
+                "no forward-safe absolute or broker TP fails closed");
+
+            PendingFillExitResolution repeat =
+                PendingFillExitResolutionRule.ResolveProgressiveTarget(
+                    1,
+                    102,
+                    103,
+                    120,
+                    112,
+                    1);
+
+            Assert(
+                repeat.Allowed &&
+                repeat.Price == buyAbsolute.Price &&
+                repeat.Source == buyAbsolute.Source,
+                "pending-fill exit resolution is deterministic and idempotent");
+
+            LifecycleEventIdempotencyGuard guard =
+                new LifecycleEventIdempotencyGuard();
+
+            Assert(
+                guard.TryBegin("PENDING_FILLED", 501) &&
+                !guard.TryBegin("PENDING_FILLED", 501) &&
+                guard.TryBegin("PENDING_FILLED", 502),
+                "pending-fill lifecycle event is idempotent per broker pending-order identity");
+        }
+
         private static void VerifyBrokerStateRefreshSemantics()
         {
             DateTime now =
