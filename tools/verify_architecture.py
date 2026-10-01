@@ -2289,7 +2289,7 @@ for token in (
     if token not in TARGET_PROGRESSION_CODE:
         raise SystemExit(f"TargetProgression orchestration call missing: {token}")
 for declaration in (
-    "private double FindImprovedLiveTarget(",
+    "private Level FindImprovedLiveTarget(",
     "private bool IsEligibleLiveTarget(",
     "private bool IsImprovedLiveTarget(",
     "private double CalculateLiveTargetScore(",
