@@ -1476,6 +1476,8 @@ Repository verification:
 
 Initial review label: **CONFIRMED/PARTIAL — structural cleanup plus targeted semantic tests.**
 
+Status: **VERIFIED COMPLETE — PR #124 merged to `main` on 2026-10-01.**
+
 Scope:
 - `PlanRewardRiskQualityRule` internal adaptive-RR constants;
 - `TargetSelectionPolicy.BuildTargetSelectionRequiredRR`;
@@ -1494,6 +1496,14 @@ Testing:
 - lane matrix;
 - caller consistency contract;
 - BUY/SELL symmetry.
+
+
+Verification:
+- Source/Architecture PASS — run 36844545898;
+- Runtime Acceptance Contracts PASS — run 36844545976;
+- cTrader Compile PASS — run 36844546002;
+- merge commit: `03a569d6a18f1b6cbc3524dabc24ea713439c325`;
+- final implementation head: `51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`.
 
 ### Prompt 5 completion gate
 
