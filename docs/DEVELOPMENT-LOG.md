@@ -2672,5 +2672,34 @@ Manual boundary:
 Operator action:
 - after PR #146 is merged, run `git pull --ff-only` on local `main`.
 
-Next phase: **CR7.6b.**
+Next phase: **CR7.6c.**
+
+## CR7.6b / G6B closeout — Execution-control truth and single UI authority — 2026-10-01
+
+Status: **VERIFIED COMPLETE — implementation head `7832f47c05117f66686adf659fd92670dcb14ba8`.**
+
+Completed:
+- restored AUTO TRADE / AUTO ORDERS as status-only panel presentation;
+- removed the legacy in-panel execution mutation path;
+- centralized execution-control presentation/read-only policy in Core;
+- preserved `EnsureExecutionRuntimeState()` as the canonical settings → runtime synchronization boundary;
+- reconciled accumulated architecture, project-integrity and CR3.4 audits;
+- added deterministic G6B runtime and static audit coverage.
+
+Verification:
+- Source/Architecture PASS — #2339;
+- Runtime Acceptance Contracts PASS — #2148;
+- cTrader Compile PASS — #2332.
+
+Safety/manual boundary:
+- no public parameter/default or trading threshold changes;
+- no RR/confidence/entry/SL/TP/risk tuning;
+- no new decision/execution/broker-mutation authority;
+- target-terminal click behavior, startup/reload synchronization, responsiveness and reconnect/reload remain manual.
+
+Operator action after merge:
+- run `git pull --ff-only` on local `main`.
+
+Next phase: **CR7.6c.**
+
 
