@@ -12,15 +12,16 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void ReconcileLivePlanToActualFill(
+        private bool ReconcileLivePlanToActualFill(
                                     Position position,
-                                    int closedM5)
+                                    int closedM5,
+                                    Plan absoluteReferencePlan = null)
                                 {
                                     if (_plan == null ||
                                         position == null ||
                                         _m5Bars == null ||
                                         closedM5 < 20)
-                                        return;
+                                        return false;
                         
                                     int direction =
                                         position.TradeType == TradeType.Buy
@@ -32,7 +33,7 @@ namespace cAlgo
                                             position.EntryPrice);
                         
                                     if (!IsFinitePositive(actualEntry))
-                                        return;
+                                        return false;
                         
                                     double atr =
                                         Atr(
@@ -40,7 +41,7 @@ namespace cAlgo
                                             closedM5);
                         
                                     if (atr <= 0)
-                                        return;
+                                        return false;
                         
                                     _plan.Entry =
                                         actualEntry;
@@ -54,8 +55,9 @@ namespace cAlgo
                                             direction,
                                             actualEntry,
                                             atr,
-                                            position))
-                                        return;
+                                            position,
+                                            absoluteReferencePlan))
+                                        return true;
 
                                     _brokerProtectionRecoveryRequired = true;
                                     SetLifecycleState(
@@ -65,7 +67,7 @@ namespace cAlgo
                                     _autoExecutionBlockReason =
                                         "LIVE FILL • EXIT GEOMETRY RECONCILIATION FAILED";
 
-                                    return;
+                                    return false;
 
                                 }
     }
