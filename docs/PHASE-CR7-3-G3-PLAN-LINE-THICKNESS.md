@@ -4,6 +4,9 @@ Status: **VERIFIED COMPLETE**
 
 Date: 2026-10-01
 
+Merge: PR #143 → `main` as `6c572643cfc6b9a4ee1083e300ec13607dd2774c`.
+Verification: Source/Architecture #2295 PASS; Runtime Acceptance #2104 PASS; cTrader Compile #2288 PASS.
+
 ## Scope
 
 - Preserve the existing public `Level Line Thickness` parameter.
