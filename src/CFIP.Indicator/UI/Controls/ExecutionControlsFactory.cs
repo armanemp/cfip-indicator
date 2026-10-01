@@ -37,14 +37,8 @@ namespace cAlgo
                     "AUTO ORDERS",
                     TriggerLineColor);
 
-            // ToggleButton state is the operator event boundary. The handler
-            // changes only the canonical runtime authority; synchronizer refreshes
-            // the visual control under _executionToggleSyncing guard.
-            _autoTradingQuickToggle.Click +=
-                ApplyAutoTradingQuickToggleClick;
-
-            _automaticOrdersQuickToggle.Click +=
-                ApplyAutomaticOrdersQuickToggleClick;
+            // Status-only surfaces. Public cTrader parameters remain the
+            // authoritative execution settings; the panel never mutates them.
 
             _quickExecutionStack.AddChild(
                 _autoTradingQuickToggle);
@@ -62,9 +56,9 @@ namespace cAlgo
                 new ToggleButton
                 {
                     Text =
-                        isChecked
-                            ? caption + "  •  ON"
-                            : caption + "  •  OFF",
+                        ExecutionControlPresentationRule.ComposeStatusText(
+                            caption,
+                            isChecked),
                     Width = 170,
                     Height = QuickExecutionButtonHeight,
                     IsChecked = isChecked,
@@ -96,7 +90,7 @@ namespace cAlgo
                             Math.Max(
                                 5,
                                 PanelCornerRadius)),
-                    IsEnabled = true
+                    IsEnabled = false
                 };
         }
     }
