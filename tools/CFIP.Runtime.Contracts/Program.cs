@@ -9,6 +9,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyM1TriggerSemantics();
+            VerifyCi10TriggerLifecycle();
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
             VerifyFvgLifecycleSemantics();
@@ -2962,6 +2963,160 @@ namespace cAlgo
                 normalized.Length == 1 &&
                 normalized[0] == "USD",
                 "broker symbol punctuation does not break configured mapping");
+        }
+
+
+        private static void VerifyCi10TriggerLifecycle()
+        {
+            Assert(
+                TriggerThresholdRule.ResolveRequiredScore(
+                    false,
+                    4,
+                    5) == 4 &&
+                TriggerThresholdRule.ResolveRequiredScore(
+                    true,
+                    4,
+                    5) == 5 &&
+                TriggerThresholdRule.ResolveRequiredScore(
+                    true,
+                    5,
+                    4) == 5,
+                "CI-10 trigger threshold owner preserves the existing live/precision max policy");
+
+            Assert(
+                TriggerThresholdRule.ResolveRequiredScore(
+                    false,
+                    0,
+                    5) == 0 &&
+                TriggerThresholdRule.ResolveRequiredScore(
+                    true,
+                    4,
+                    1) == 0 &&
+                !TriggerThresholdRule.IsScoreReady(
+                    7,
+                    4) &&
+                !TriggerThresholdRule.IsScoreReady(
+                    4,
+                    0),
+                "CI-10 invalid trigger threshold inputs fail closed");
+
+            DateTime m5Open = Utc(12, 0);
+            DateTime m5NextOpen = Utc(12, 5);
+            DateTime m1Open = Utc(12, 4);
+            DateTime m1NextOpen = Utc(12, 5);
+
+            Assert(
+                TriggerLifecycleRule.CanEvaluateLiveM1Confirmation(
+                    10,
+                    11,
+                    11,
+                    m1Open,
+                    m1NextOpen,
+                    m5Open,
+                    m5NextOpen,
+                    Utc(12, 5)),
+                "CI-10 newly closed M1 confirmation is evaluated only inside the active next M5 window");
+
+            Assert(
+                !TriggerLifecycleRule.CanEvaluateLiveM1Confirmation(
+                    10,
+                    11,
+                    10,
+                    m1Open,
+                    m1NextOpen,
+                    m5Open,
+                    m5NextOpen,
+                    Utc(12, 5)) &&
+                !TriggerLifecycleRule.CanEvaluateLiveM1Confirmation(
+                    10,
+                    10,
+                    10,
+                    m1Open,
+                    m1NextOpen,
+                    m5Open,
+                    m5NextOpen,
+                    Utc(12, 5)),
+                "CI-10 stale/expired M1 confirmations cannot be accepted after the causal M5 window");
+
+            Assert(
+                !TriggerLifecycleRule.CanEvaluateLiveM1Confirmation(
+                    10,
+                    11,
+                    11,
+                    m1Open,
+                    m1NextOpen,
+                    m5Open,
+                    m5NextOpen,
+                    Utc(12, 4, 30)),
+                "CI-10 an unclosed M1 bar cannot become a trigger");
+
+            Assert(
+                TriggerLifecycleRule.ShouldReset(
+                    10,
+                    1,
+                    11,
+                    1) &&
+                TriggerLifecycleRule.ShouldReset(
+                    10,
+                    1,
+                    10,
+                    -1) &&
+                !TriggerLifecycleRule.ShouldReset(
+                    10,
+                    1,
+                    10,
+                    1),
+                "CI-10 trigger runtime resets on M5-window or direction identity change");
+
+            Assert(
+                TriggerLifecycleRule.ShouldRecordNewConfirmation(
+                    -1,
+                    11,
+                    true) &&
+                !TriggerLifecycleRule.ShouldRecordNewConfirmation(
+                    11,
+                    11,
+                    true) &&
+                !TriggerLifecycleRule.ShouldRecordNewConfirmation(
+                    -1,
+                    11,
+                    false),
+                "CI-10 M1 confirmation revision advances only for a new ready causal bar");
+
+            Assert(
+                TriggerLifecycleRule.IsConfirmed(
+                    true,
+                    false,
+                    false) &&
+                TriggerLifecycleRule.IsConfirmed(
+                    true,
+                    true,
+                    true) &&
+                !TriggerLifecycleRule.IsConfirmed(
+                    true,
+                    true,
+                    false) &&
+                !TriggerLifecycleRule.IsConfirmed(
+                    false,
+                    true,
+                    true),
+                "CI-10 confirmed TriggerReady propagation preserves M5 and optional M1 gates");
+
+            TriggerRuntimeState runtime = new TriggerRuntimeState();
+            runtime.ConfirmationRevision = 7;
+            runtime.ConfirmedM1 = 11;
+            runtime.Reset(
+                12,
+                1);
+
+            Assert(
+                runtime.ConfirmationRevision == 7 &&
+                runtime.ConfirmedM1 == -1 &&
+                runtime.DecisionM5 == 12 &&
+                runtime.Direction == 1,
+                "CI-10 trigger reset expires the prior M1 confirmation without rewinding the monotonic revision");
+            
+            Console.WriteLine("CI-10 trigger lifecycle contracts PASS");
         }
 
         private static void VerifyM1TriggerSemantics()
