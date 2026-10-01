@@ -607,6 +607,8 @@ expected_models = {
     "DivergenceResult", "DivergenceCandidate",
     "TradeActionabilityResult",
     "SignalEvaluationTrace",
+    "EntryGeometrySnapshot",
+    "EntrySignalTiming",
     "CanonicalPriceSnapshot",
     "MarketStateFrameSnapshot", "MarketStateSnapshot",
 }
