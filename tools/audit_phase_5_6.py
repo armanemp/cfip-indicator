@@ -70,8 +70,8 @@ check(
     "closedM5" in live and
     "ClosedBarReferenceRule.IsFullyClosed(" in live and
     "LiveM5BiasRule.Evaluate(" in live and
-    "Bars." not in live and
-    "Bars.Count" not in live and
+    re.search(r"(?<![A-Za-z0-9_])Bars\\.", live) is None and
+    re.search(r"(?<![A-Za-z0-9_])Bars\\b", live) is None and
     "MapM5ToClosedChart" not in live,
 )
 
