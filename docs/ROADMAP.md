@@ -5739,7 +5739,7 @@ Safety/manual boundary:
 
 ### CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization
 
-Status: **IMPLEMENTED — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #145 merged to `main` as `e2674b9800159ba1266639ad96a374f622aff555`.**
 
 Scope:
 - remove unconditional G4 cache invalidation from the presentation-key builder;
@@ -5760,6 +5760,13 @@ Safety/performance boundary:
 - no new broker enumeration;
 - unchanged broker refresh interval remains the freshness backstop.
 
-Repository implementation is on branch `phase/cr7-5-g5-panel-state-freshness`; verification follows through the three repository gates.
+Repository implementation was completed on branch `phase/cr7-5-g5-panel-state-freshness`.
+
+Verification on final implementation head `1a2572e2f72e8842640e9c1cbea88e6868f05354`:
+- Source/Architecture: **PASS** — #2321;
+- Runtime Acceptance Contracts: **PASS** — #2130;
+- cTrader Compile: **PASS** — #2314.
+
+Merged via PR #145 as `e2674b9800159ba1266639ad96a374f622aff555`.
 
 **Next phase after G5 closeout: CR7.6a.**

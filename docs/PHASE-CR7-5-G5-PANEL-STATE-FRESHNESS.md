@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #145 merged to `main` as `e2674b9800159ba1266639ad96a374f622aff555`.**
 
 ## Scope definition
 
@@ -64,7 +64,14 @@ and pending paths continue to use their existing authorities.
 
 ## Deterministic verification
 
-The G5 Runtime Acceptance contract verifies the bounded broker refresh semantics:
+The G5 Runtime Acceptance contract verifies the bounded broker refresh semantics.
+
+Repository verification on final implementation head `1a2572e2f72e8842640e9c1cbea88e6868f05354`:
+- Source/Architecture: **PASS** — run #2321;
+- Runtime Acceptance Contracts: **PASS** — run #2130;
+- cTrader Compile: **PASS** — run #2314.
+
+PR #145 was then merged to `main` as `e2674b9800159ba1266639ad96a374f622aff555`.
 
 - dirty state refreshes immediately;
 - never-refreshed state refreshes immediately;

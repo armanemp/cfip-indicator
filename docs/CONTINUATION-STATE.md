@@ -851,7 +851,12 @@ Historical G4 continuity marker retained for accumulated G3 verification:
 
 ### CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization — 2026-10-01
 
-Status: **IMPLEMENTED — repository verification pending.**
+Status: **VERIFIED COMPLETE — PR #145 merged to `main` as `e2674b9800159ba1266639ad96a374f622aff555`.**
+
+Repository verification on implementation head `1a2572e2f72e8842640e9c1cbea88e6868f05354`:
+- Source/Architecture PASS — #2321;
+- Runtime Acceptance Contracts PASS — #2130;
+- cTrader Compile PASS — #2314.
 
 Source finding:
 - G4 cache invalidation was embedded in `BuildPanelPresentationKey`, causing repeated

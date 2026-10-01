@@ -2609,7 +2609,7 @@ Next phase: **CR7.5 / G5 — scope definition required before implementation; no
 
 ## CR7.5 / G5 — Panel execution/protection state freshness and broker-read minimization — 2026-10-01
 
-Status: **IMPLEMENTED — repository verification pending**
+Status: **VERIFIED COMPLETE — PR #145 merged to `main` as `e2674b9800159ba1266639ad96a374f622aff555`**
 
 Scope/root cause:
 - G4's canonical panel execution/protection snapshot was invalidated unconditionally by
@@ -2632,10 +2632,12 @@ Safety/performance:
 - unchanged broker refresh semantics remain authoritative.
 
 Verification:
-- repository gates are pending after branch creation:
-  Source/Architecture + accumulated audits,
-  Runtime Acceptance Contracts, and cTrader Compile.
-- target-terminal panel responsiveness, broker event timing and reconnect/reload remain manual.
+- Source/Architecture: PASS — #2321;
+- Runtime Acceptance Contracts: PASS — #2130;
+- cTrader Compile: PASS — #2314;
+- PR #145 merged to `main` as `e2674b9800159ba1266639ad96a374f622aff555`.
+
+Target-terminal panel responsiveness, broker event timing and reconnect/reload remain manual.
 
 Operator action after merge:
 - run `git pull --ff-only` on local `main`.
