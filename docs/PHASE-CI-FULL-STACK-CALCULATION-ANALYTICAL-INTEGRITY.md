@@ -246,7 +246,7 @@ Explicit non-changes:
 
 #### CI-02 implementation record
 
-Status: **implemented on branch `phase/ci-02-oss-parity-warmup-cache`; final repository gates pending.**
+Status: **VERIFIED COMPLETE — implementation head `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`; PR #156.**
 
 Completed correctness and architecture work:
 
@@ -281,6 +281,14 @@ Acceptance boundary:
 
 No parameter, confidence, score, RR, risk, SL/TP, decision or execution-policy
 tuning is part of CI-02.
+
+Verification on the final CI-02 implementation head:
+- Source / Architecture: PASS — workflow run 36909965454;
+- Runtime Acceptance Contracts: PASS — workflow run 36909965513;
+- cTrader Compile / Build: PASS — workflow run 36909965368;
+- OSS benchmark: PASS — workflow run 36909965470;
+- deterministic OSS parity: 384 compared points with zero direction/non-finite/
+  rolling-exact mismatches.
 
 ### CI-02 — OSS numerical parity, warm-up and cache audit
 

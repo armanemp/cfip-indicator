@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01 complete/merged; CI-02 implemented and awaiting final repository gates. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 and CI-02 verified complete; CI-03 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -816,7 +816,7 @@ Verification boundary:
 
 ### CI-02 — OSS numerical parity / warm-up / cache — 2026-10-01
 
-Status: **IMPLEMENTED — final repository gates pending.**
+Status: **VERIFIED COMPLETE — final implementation head `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`.**
 
 Completed implementation:
 
@@ -851,14 +851,16 @@ Acceptance implemented:
 
 Repository verification boundary:
 
-- Source / Architecture, Runtime Acceptance and cTrader Compile/Build are still
-  required from the CI environment before marking this phase VERIFIED COMPLETE.
-- OSS benchmark workflow is already present and will execute the enhanced
-  production-boundary benchmark on the pull request.
+- Source / Architecture: **PASS** — workflow run 36909965454 / Source step 75 (`audit_phase_ci_02.py`).
+- Runtime Acceptance Contracts: **PASS** — workflow run 36909965513.
+- cTrader Compile/Build: **PASS** — workflow run 36909965368.
+- OSS benchmark: **PASS** — workflow run 36909965470 / run #92.
 - Target-terminal cache/history behavior and live performance remain manual.
 
-Next specified phase after CI-02 closeout:
-**CI-03 — Indicator fusion / correlation / evidence independence.**
+Next specified phase: **CI-03 — Indicator fusion / correlation / evidence independence.**
+
+Manual boundary remains: target-terminal cache/history replacement behavior,
+live CPU/memory characteristics and empirical signal-quality remain manual acceptance items.
 
 # Track 0 — Baseline and clean-state verification
 
