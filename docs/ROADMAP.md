@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01 through CI-05 verified complete; CI-06 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 through CI-06 verified complete; CI-07 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -714,9 +714,9 @@ The authoritative detailed specification is:
 The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
 blocking correctness gate inserted before the next unfinished refinement phase.
 
-**Current implementation phase: CI-06 — Order Block lifecycle.**
+**Current implementation phase: CI-07 — MTF / regime / market context.**
 
-Status: **NEXT — specified and ready to implement after CI-05 closeout.**
+Status: **NEXT — specified and ready to implement after CI-06 closeout.**
 
 Sequence:
 
@@ -832,8 +832,39 @@ Manual boundary:
 - target-terminal/replay validation of live MTF FVG timing, mitigation, pending-zone presentation,
   reward-path interaction and empirical signal quality remains required.
 
-**Target next transition after verification: CI-06 — Order Block lifecycle.**
-**Next phase: CI-05 — FVG lifecycle.**
+**Target next transition after verification: CI-07 — MTF / regime / market context.**
+
+### CI-06 closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — PR #161; implementation head `d177761f65e9a350b91c68479e9d70737c8bcefb`.**
+
+Completed:
+- separated canonical Order Block source geometry/qualification from lifecycle state;
+- added one lifecycle owner for Fresh / Mitigated / Broken, mitigation probes, partial mitigation and source-age validity;
+- enforced stale/future Order Block rejection at the canonical candidate-materialization boundary;
+- removed the duplicated opposite-source-candle definition from `OrderBlockAnalyzer`;
+- preserved deterministic `Zone.Id` provenance and direct managed-zone geometry for Entry-zone, Target, Structural Stop, predictive pending and reward-path consumers;
+- added deterministic bullish/bearish lifecycle, displacement, structure-break, mitigation, full-fill and stale-age runtime contracts;
+- added accumulated CI-06 static acceptance audit;
+- preserved the single alert delivery owner and same-event popup-before-sound ordering; no alert threshold was retuned.
+
+Verification on final implementation head:
+- Source / Architecture: **PASS** — run #2501;
+- Runtime Acceptance Contracts: **PASS** — run #2310;
+- cTrader Compile/Build: **PASS** — run #2494.
+
+Safety/performance:
+- no public parameter name/type/DefaultValue changed;
+- no confidence/score/weight, RR, Entry, SL, TP, risk or execution-policy threshold was tuned;
+- no second decision, execution or broker-mutation authority was introduced;
+- no unbounded production cache or runtime I/O was added.
+
+Manual boundary:
+- target-terminal OB/MTF timing, live mitigation/retest timing, alert sound latency, panel/chart responsiveness, broker lifecycle and empirical signal-quality/outcome validation remain manual.
+
+Operator action: after PR #161 is merged, run `git pull --ff-only` on local `main` before starting CI-07.
+
+**Next implementation phase: CI-07 — MTF / regime / market context.**
 
 ### CI-00 closeout — Canonical data / price / time — 2026-10-01
 
