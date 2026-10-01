@@ -184,6 +184,7 @@ check(
         "**CI-06 — Order Block lifecycle",
         "**CI-07 — Market regime, MTF and context audit",
         "**CI-08 — Divergence, WaveTrend, reaction and early-signal audit",
+        "**CI-07 — MTF / regime / market context",
     ))
 )
 
