@@ -147,9 +147,9 @@ namespace cAlgo
             if (candidate.Lane != OpportunityLane.CounterHtfTactical &&
                 candidate.Lane != OpportunityLane.MicroReaction)
                 minimumQuality =
-                    Math.Min(
-                        95,
-                        minimumQuality + 3);
+                    ActionabilityThresholdPolicy.ApplyParallelCandidateQualityMargin(
+                        minimumQuality,
+                        true);
 
             return candidate.Quality >= minimumQuality;
         }
