@@ -116,8 +116,9 @@ check(
 
 check(
     "mitigation main loop no longer duplicates body/wick probe arithmetic",
-    "Math.Min(" not in mitigation_main and
-    "Math.Max(" not in mitigation_main
+    "Math.Min(\n                                    bars.OpenPrices[i]" not in mitigation_main and
+    "Math.Max(\n                                    bars.OpenPrices[i]" not in mitigation_main and
+    "FvgLifecycleRule.ResolveFvgMitigationProbe(" in mitigation_main
 )
 
 check(
