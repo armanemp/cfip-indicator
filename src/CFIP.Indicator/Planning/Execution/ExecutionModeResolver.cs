@@ -48,8 +48,9 @@ namespace cAlgo
                                         IsContinuationExecutionContext(direction);
 
                                     bool retestReady =
-                                        inside &&
-                                        !triggerReached;
+                                        EntryActionabilityPolicy.IsRetestReady(
+                                            inside,
+                                            triggerReached);
 
                                     bool qualityReady =
                                         !RequirePrecisionEntry ||
@@ -74,7 +75,7 @@ namespace cAlgo
                                                 model.Trigger) <=
                                             atr *
                                             Math.Max(
-                                                0.10,
+                                                EntryActionabilityPolicy.BreakoutLateExtensionFloorAtr,
                                                 MaximumEntryExtensionAtr);
                                     }
                                     else if (continuation)
@@ -100,7 +101,7 @@ namespace cAlgo
                                                 model.IdealEntry) <=
                                             atr *
                                             Math.Max(
-                                                0.05,
+                                                EntryActionabilityPolicy.RetestLateDistanceFloorAtr,
                                                 MaximumEntryDistanceAtr) &&
                                             (retest >= MinimumRetestQuality ||
                                              !RequireRetestQuality);

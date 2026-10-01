@@ -114,7 +114,7 @@ namespace cAlgo
                 risk += 16;
 
             if (supportiveHiddenDivergence)
-                risk -= 10;
+                risk -= EntryActionabilityPolicy.SupportiveHiddenDivergenceRiskAdjustment;
 
             bool strongAdverseMomentum =
                 m5 >= 0.45 ||

@@ -26,9 +26,9 @@ namespace cAlgo
                                         return false;
                         
                                     double tolerance =
-                                        Math.Max(
+                                        EntryActionabilityPolicy.ResolveTriggerTolerance(
                                             Symbol.TickSize,
-                                            Symbol.PipSize * 0.10);
+                                            Symbol.PipSize);
                         
                                     return direction == 1
                                         ? market >= trigger - tolerance
@@ -68,8 +68,7 @@ namespace cAlgo
                                         m15Compatible &&
                                         (trendRegime ||
                                          _decision.StructuralConfirmations >=
-                                         Math.Max(
-                                             3,
+                                         EntryActionabilityPolicy.ResolveContinuationStructuralMinimum(
                                              MinimumStructuralConfirmations));
                                 }
         
