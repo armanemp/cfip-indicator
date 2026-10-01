@@ -5773,5 +5773,5 @@ These are not treated as bugs until independently verified.
 
 **CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
 
-CR7.1 / G1 has been verified with fail-closed orphan-position protection. Source/Architecture #2255, Runtime Acceptance #2064 and cTrader Compile #2248 all passed on the implementation head before merge. Prompt 7 G1 is now the next mandatory phase. CR-FINAL remains paused until the remediation sequence and required acceptance evidence are completed.
+CR7.1 / G1 is verified complete and merged to main via PR #138 as b8144c2f1edc62730b7a0723be3746afe6353851. Source/Architecture #2262, Runtime Acceptance #2071 and cTrader Compile #2255 passed on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91. CR-FINAL remains paused until the remaining Prompt 7 phases and required acceptance evidence are completed.
 
