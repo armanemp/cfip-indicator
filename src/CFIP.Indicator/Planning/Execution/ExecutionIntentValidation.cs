@@ -97,10 +97,12 @@ namespace cAlgo
             }
 
             if (!ExecutionFillAcceptanceRule.IsAcceptable(
+                intent.Direction,
                 intent.RequestedEntry,
                 actualFill,
                 atr,
-                MaximumEntryExtensionAtr))
+                MaximumEntryExtensionAtr,
+                true))
             {
                 reason =
                     !IsFinitePositive(actualFill) ||
