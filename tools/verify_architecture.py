@@ -3314,7 +3314,7 @@ for token in (
 act_code = actionability_evaluator.read_text(encoding="utf-8")
 decision_code = decision_model.read_text(encoding="utf-8")
 for token in (
-    "IsTriggerReached(",
+    "EntryGeometryRule.Evaluate(",
     "MaximumEntryExtensionAtr",
     "MaximumEntryDistanceAtr",
     "Tp1MinimumRR",
