@@ -29,6 +29,7 @@ namespace cAlgo
         public double EmaSlopeAtr { get; }
         public int WaveTrendDirection { get; }
         public int WaveTrendQuality { get; }
+        public int MinimumWaveTrendQuality { get; }
         public int DivergenceDirection { get; }
         public int DivergenceQuality { get; }
         public bool WaveTrendBullCross { get; }
@@ -67,6 +68,7 @@ namespace cAlgo
             double emaSlopeAtr,
             int waveTrendDirection,
             int waveTrendQuality,
+            int minimumWaveTrendQuality,
             int divergenceDirection,
             int divergenceQuality,
             bool waveTrendBullCross,
@@ -106,6 +108,7 @@ namespace cAlgo
             EmaSlopeAtr = emaSlopeAtr;
             WaveTrendDirection = waveTrendDirection;
             WaveTrendQuality = waveTrendQuality;
+            MinimumWaveTrendQuality = minimumWaveTrendQuality;
             DivergenceDirection = divergenceDirection;
             DivergenceQuality = Math.Max(0, divergenceQuality);
             WaveTrendBullCross = waveTrendBullCross;
@@ -175,7 +178,9 @@ namespace cAlgo
             if (input.Rsi >= 55) momentumBull += 0.75;
             else if (input.Rsi <= 45) momentumBear += 0.75;
 
-            if (input.WaveTrendQuality >= 58)
+            if (WaveTrendEvidenceRule.MeetsMinimumQuality(
+                    input.WaveTrendQuality,
+                    input.MinimumWaveTrendQuality))
             {
                 double waveWeight =
                     Math.Min(
@@ -229,7 +234,8 @@ namespace cAlgo
                 ref contextBull,
                 ref contextBear);
 
-            if (input.DivergenceQuality >= 70)
+            if (DivergenceThresholdRule.MeetsStrongConflictQuality(
+                    input.DivergenceQuality))
             {
                 if (input.DivergenceDirection == -1)
                     momentumBull =

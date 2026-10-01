@@ -124,6 +124,7 @@ namespace cAlgo
                     WaveTrendEvidenceWeight, f.Adx, AdxMinimum, f.Rsi,
                     DmiBias(bars, index), UseEmaSlope ? f.EmaSlopeAtr : 0,
                     f.WaveTrendDirection, f.WaveTrendQuality,
+                    MinimumWaveTrendQuality,
                     f.DivergenceDirection, f.DivergenceQuality,
                     f.WaveTrendBullCross, f.WaveTrendBearCross,
                     f.WaveTrendOversold, f.WaveTrendOverbought,

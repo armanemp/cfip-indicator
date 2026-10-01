@@ -400,29 +400,19 @@ namespace cAlgo
                 double previousTypical =
                     _typical[j - 1];
 
-                double tickVolume =
-                    Math.Max(
-                        1.0,
-                        _bars.TickVolumes[j]);
+                double positiveFlow;
+                double negativeFlow;
 
-                double money =
-                    typical *
-                    tickVolume;
-
-                if (!IsFiniteWaveTrendValue(
-                        typical) ||
-                    !IsFiniteWaveTrendValue(
-                        previousTypical) ||
-                    !IsFiniteWaveTrendValue(
-                        money))
+                if (!WaveTrendMoneyFlowRule.TryCalculateContribution(
+                        typical,
+                        previousTypical,
+                        _bars.TickVolumes[j],
+                        out positiveFlow,
+                        out negativeFlow))
                     return double.NaN;
 
-                if (typical >
-                    previousTypical)
-                    positive += money;
-                else if (typical <
-                         previousTypical)
-                    negative += money;
+                positive += positiveFlow;
+                negative += negativeFlow;
             }
 
             if (negative <= 0)

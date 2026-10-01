@@ -714,9 +714,9 @@ The authoritative detailed specification is:
 The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
 blocking correctness gate inserted before the next unfinished refinement phase.
 
-**Current implementation phase: CI-07 — MTF / regime / market context.**
+**Current implementation phase: CI-08 — Divergence / WaveTrend / reaction / early signal.**
 
-Status: **NEXT — specified and ready to implement after CI-06 closeout.**
+Status: **IMPLEMENTATION COMPLETE — repository verification pending CI.**
 
 Sequence:
 
@@ -6290,3 +6290,18 @@ Verification on final implementation head `b0ddaabed9723515d50ac183592f1eb7d56b5
 Operator action after merge: run `git pull --ff-only` on local `main` before continuing.
 
 **Continuation gate:** CR8.4 / H4 is intentionally deferred until **CI-FINAL — Full-Stack Calculation Integrity Certification** is complete. Prompt 8 is paused, not renumbered; after CI-FINAL, resume the existing Prompt 8 sequence at CR8.4 / H4.
+### CI-08 implementation record — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending CI**
+
+Completed:
+- canonical divergence strong-conflict threshold ownership;
+- configured WaveTrend minimum-quality propagation into fusion/provenance;
+- zero-TickVolume WaveTrend MFI semantics without synthetic volume;
+- explicit live-reaction / closed-confirmation timing boundary;
+- early-prediction state separation and decision-owned WATCH/REACTION alert audit;
+- deterministic Runtime Contracts and accumulated CI-08 static audit.
+
+Phase record: `docs/PHASE-CI-08-DIVERGENCE-WAVETREND-REACTION-EARLY.md`.
+
+**Next phase: CI-09 — Decision engine mathematical audit.**

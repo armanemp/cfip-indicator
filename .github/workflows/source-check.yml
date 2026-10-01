@@ -90,6 +90,7 @@ jobs:
       - run: python tools/audit_phase_ci_05.py
       - run: python tools/audit_phase_ci_06.py
       - run: python tools/audit_phase_ci_07.py
+      - run: python tools/audit_phase_ci_08.py
       - run: python tools/audit_phase_11_2.py
       - run: python tools/audit_phase_11_3.py
       - run: python tools/audit_phase_11_4.py

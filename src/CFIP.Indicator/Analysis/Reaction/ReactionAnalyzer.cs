@@ -23,6 +23,12 @@ namespace cAlgo
                 return new Decision();
 
             int live = _m5Bars.Count - 1;
+            int closedIndex = live - 1;
+
+            if (!ReactionTimingRule.IsSeparatedObservationAndConfirmation(
+                    live,
+                    closedIndex))
+                return new Decision();
 
             double atr =
                 Atr(
@@ -219,9 +225,6 @@ namespace cAlgo
                  regime.Regime == "HIGH_VOLATILITY"))
                 requiredReactionEvidence++;
 
-            int closedIndex =
-                live - 1;
-
             int confirmedDirection = 0;
             int confirmedQuality = 0;
             int confirmedEvidence = 0;
@@ -314,8 +317,8 @@ namespace cAlgo
             d.ReactionConfirmedHasContext =
                 confirmedContext;
             d.ReactionClosedBarConfirmed =
-                ReactionQualificationRule.IsClosedBarConfirmed(
-                    closedIndex,
+                ReactionTimingRule.IsSeparatedObservationAndConfirmation(
+                    live,
                     closedIndex) &&
                 confirmedDirection == direction;
 

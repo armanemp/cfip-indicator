@@ -11,6 +11,7 @@ namespace cAlgo
     {
         public const int MinimumQuality = 55;
         public const int ConflictQualityMargin = 10;
+        public const int StrongConflictQuality = 70;
 
         public const double RegularPriceAtr = 0.10;
         public const double HiddenPriceAtr = 0.08;
@@ -30,6 +31,12 @@ namespace cAlgo
         public const int OscillatorAgreementContribution = 9;
         public const int RegularTypeBonus = 7;
         public const int HiddenTypeBonus = 3;
+
+        public static bool MeetsStrongConflictQuality(
+            int quality)
+        {
+            return quality >= StrongConflictQuality;
+        }
 
         public static double MinimumRegularPriceExcursion(double atr)
         {
