@@ -97,6 +97,7 @@ namespace cAlgo
             VerifyWatchReactionAlertSemantics();
             VerifyOpposingZonePathF1();
             VerifyAggressiveRiskAndFillSemantics();
+            VerifyActionabilityThresholdTransparency();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -7769,6 +7770,155 @@ namespace cAlgo
                 WatchReactionAlertRule.BuildReactionAlertKey(100, 1) !=
                     WatchReactionAlertRule.BuildReactionAlertKey(100, -1),
                 "WATCH/REACTION alert identities are deterministic and direction-distinct");
+        }
+
+        private static void VerifyActionabilityThresholdTransparency()
+        {
+            ActionabilityThresholdSnapshot defaults =
+                ActionabilityThresholdPolicy.ResolveFinal(
+                    72,
+                    70,
+                    70,
+                    72,
+                    72,
+                    4,
+                    4,
+                    4,
+                    64,
+                    72,
+                    2.00);
+
+            Assert(
+                defaults.UpstreamEntryLocationQuality == 64 &&
+                defaults.UpstreamEntryTimingQuality == 64,
+                "actionability upstream entry floors remain 64/64");
+
+            Assert(
+                defaults.FinalMinimumConfidence == 76 &&
+                defaults.FinalMinimumSmartQuality == 73 &&
+                defaults.FinalMinimumTimeframeAgreement == 75 &&
+                defaults.FinalMinimumIndependentEvidence == 5 &&
+                defaults.FinalMinimumStructuralConfirmations == 5,
+                "actionability final confidence/quality/evidence margins preserve current effective defaults");
+
+            Assert(
+                defaults.FinalMinimumEntryLocationQuality == 70 &&
+                defaults.FinalMinimumEntryTimingQuality == 75 &&
+                defaults.FinalMinimumEntryPositionQuality == 70 &&
+                Math.Abs(defaults.FinalMinimumTp1RR - 2.00) < 1e-12,
+                "actionability final entry and RR floors preserve current effective defaults");
+
+            ActionabilityThresholdSnapshot smartOverrides =
+                ActionabilityThresholdPolicy.ResolveFinal(
+                    72,
+                    70,
+                    70,
+                    60,
+                    84,
+                    4,
+                    6,
+                    4,
+                    64,
+                    72,
+                    2.00);
+
+            Assert(
+                smartOverrides.FinalMinimumTimeframeAgreement == 87 &&
+                smartOverrides.FinalMinimumIndependentEvidence == 7,
+                "smart minimums retain precedence over lower base thresholds");
+
+            ActionabilityThresholdSnapshot capped =
+                ActionabilityThresholdPolicy.ResolveFinal(
+                    99,
+                    95,
+                    95,
+                    99,
+                    99,
+                    8,
+                    8,
+                    8,
+                    95,
+                    40,
+                    2.00);
+
+            Assert(
+                capped.FinalMinimumConfidence == 99 &&
+                capped.FinalMinimumSmartQuality == 95 &&
+                capped.FinalMinimumTimeframeAgreement == 100 &&
+                capped.FinalMinimumIndependentEvidence == 8 &&
+                capped.FinalMinimumStructuralConfirmations == 8,
+                "actionability threshold caps remain bounded");
+
+            Assert(
+                ActionabilityThresholdPolicy.EffectiveUpstreamEntryLocationQuality(40) == 64 &&
+                ActionabilityThresholdPolicy.EffectivePrecisionEntryQualityFloor(35) == 40 &&
+                ActionabilityThresholdPolicy.ApplyParallelCandidateQualityMargin(70, true) == 73 &&
+                ActionabilityThresholdPolicy.ApplyParallelCandidateQualityMargin(70, false) == 70,
+                "staged and parallel actionability threshold helpers are deterministic");
+
+            ActionableSignalQualityResult accepted =
+                ActionableSignalQualityRule.Evaluate(
+                    new ActionableSignalQualityInput(
+                        76,
+                        73,
+                        75,
+                        5,
+                        5,
+                        70,
+                        75,
+                        70,
+                        2.00,
+                        defaults.FinalMinimumConfidence,
+                        defaults.FinalMinimumSmartQuality,
+                        defaults.FinalMinimumTimeframeAgreement,
+                        defaults.FinalMinimumIndependentEvidence,
+                        defaults.FinalMinimumStructuralConfirmations,
+                        defaults.FinalMinimumEntryLocationQuality,
+                        defaults.FinalMinimumEntryTimingQuality,
+                        defaults.FinalMinimumEntryPositionQuality,
+                        defaults.FinalMinimumTp1RR));
+
+            ActionableSignalQualityResult belowFinalTiming =
+                ActionableSignalQualityRule.Evaluate(
+                    new ActionableSignalQualityInput(
+                        76,
+                        73,
+                        75,
+                        5,
+                        5,
+                        70,
+                        74,
+                        70,
+                        2.00,
+                        defaults.FinalMinimumConfidence,
+                        defaults.FinalMinimumSmartQuality,
+                        defaults.FinalMinimumTimeframeAgreement,
+                        defaults.FinalMinimumIndependentEvidence,
+                        defaults.FinalMinimumStructuralConfirmations,
+                        defaults.FinalMinimumEntryLocationQuality,
+                        defaults.FinalMinimumEntryTimingQuality,
+                        defaults.FinalMinimumEntryPositionQuality,
+                        defaults.FinalMinimumTp1RR));
+
+            Assert(
+                accepted.Allowed &&
+                !belowFinalTiming.Allowed &&
+                belowFinalTiming.Reason ==
+                    "SIGNAL QUALITY • TIMING",
+                "final actionability threshold application is deterministic at the acceptance boundary");
+
+            Assert(
+                defaults.FinalMinimumEntryLocationQuality ==
+                    defaults.FinalMinimumEntryPositionQuality &&
+                defaults.FinalMinimumEntryTimingQuality >=
+                    defaults.FinalMinimumEntryLocationQuality,
+                "entry quality floors remain direction-neutral and ordered");
+
+            Assert(
+                Math.Abs(
+                    defaults.RecoveryTp1RRFloor -
+                    2.35) < 1e-12,
+                "quality-recovery RR margin remains 0.35 above the effective minimum");
         }
 
         private static void Assert(bool condition, string name)
