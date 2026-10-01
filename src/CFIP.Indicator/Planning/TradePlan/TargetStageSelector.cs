@@ -20,7 +20,7 @@ private double SelectTarget(
                                             double risk,
                                             int direction,
                                             double alternateRR,
-                                            OpportunityLane lane = OpportunityLane.Strategic)
+                                            OpportunityLane lane)
                                         {
                                             if (selected != null &&
                                                 position < selected.Count &&
