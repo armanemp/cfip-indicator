@@ -148,46 +148,17 @@ namespace cAlgo
                                 100);
                         }
         
-        private MarketRegimeSnapshot GetActiveM5Regime(
-                            int index)
-                        {
-                            if (_m5Bars == null ||
-                                index < 0)
-                                return null;
-
-                            if (_m5RegimeSnapshot != null &&
-                                _m5RegimeSnapshotIndex == index)
-                                return _m5RegimeSnapshot;
-
-                            MarketRegimeSnapshot snapshot =
-                                AnalyzeMarketRegime(
-                                    _m5Bars,
-                                    index);
-
-                            _m5RegimeSnapshot =
-                                snapshot;
-
-                            _m5RegimeSnapshotIndex =
-                                index;
-
-                            return snapshot;
-                        }
-
         private string DetectRegime(
                             Bars bars,
                             int index)
                         {
                             if (ReferenceEquals(
                                     bars,
-                                    _m5Bars))
+                                    _m5Bars) &&
+                                _marketStateSnapshot != null &&
+                                _marketStateSnapshot.M5.ClosedIndex == index)
                             {
-                                MarketRegimeSnapshot active =
-                                    GetActiveM5Regime(
-                                        index);
-
-                                return active == null
-                                    ? MarketRegimeIdentity.Unknown
-                                    : active.Regime;
+                                return _marketStateSnapshot.M5.Regime;
                             }
 
                             MarketRegimeSnapshot snapshot =
@@ -205,14 +176,11 @@ namespace cAlgo
                         {
                             if (ReferenceEquals(
                                     bars,
-                                    _m5Bars))
+                                    _m5Bars) &&
+                                _marketStateSnapshot != null &&
+                                _marketStateSnapshot.M5.ClosedIndex == index)
                             {
-                                MarketRegimeSnapshot active =
-                                    GetActiveM5Regime(
-                                        index);
-
-                                if (active != null)
-                                    return active.Quality;
+                                return _marketStateSnapshot.M5.RegimeQuality;
                             }
 
                             MarketRegimeSnapshot snapshot =
