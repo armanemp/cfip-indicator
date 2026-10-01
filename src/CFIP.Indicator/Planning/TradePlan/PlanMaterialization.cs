@@ -56,6 +56,12 @@ namespace cAlgo
                             ? 0
                             : NormalizePrice(
                                 execution.ZoneHigh),
+                    EntryZoneTolerance =
+                        execution == null
+                            ? 0
+                            : Math.Max(
+                                0,
+                                execution.ZoneTolerance),
                     EntryTrigger =
                         execution == null
                             ? 0
