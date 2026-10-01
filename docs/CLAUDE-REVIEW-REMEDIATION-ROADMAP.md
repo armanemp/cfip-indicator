@@ -1253,7 +1253,27 @@ Testing:
 
 ### CR5.3 — Independent-evidence group counting for parallel opportunities (E3)
 
-Initial review label: **CONFIRMED / MEDIUM — independence naming and evidence inflation require consumer audit.**
+Status: **VERIFIED COMPLETE — PR #119 merged to `main`; merge commit `96530088a4216eb4a3f8caae9595987d98c0a27e`.**
+
+Repository evidence:
+- Source/Architecture: PASS — run `36793867203` / workflow #2083, including `audit_phase_5_3.py` and accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — run `36793867170` / workflow #1892;
+- cTrader Compile: PASS — run `36793867168` / workflow #2076.
+
+Implementation/safety:
+- centralized established independent-evidence score and independent-family group counting in Core `IndependentEvidenceFusionRule`;
+- four families are Structural, Location, Trend-Momentum and Context;
+- correlated observations inside one family count as one independent group;
+- `Decision` and `TradeOpportunityCandidate` expose group-count provenance separately from the unchanged 0–8 behavior-driving score;
+- duplicate Analysis-layer `IndependentEvidenceFusionCalculator` removed;
+- no public parameter/default, RR/confidence/stop/target/actionability/execution threshold or decision/execution authority changed.
+
+Manual boundary remains:
+- target-terminal timing/readiness/panel behavior;
+- broker lifecycle and restart/reconnect;
+- empirical signal-quality/profitability.
+
+**Next transition: CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation.**
 
 Scope:
 - `ScenarioExecutionPolicy.EnrichScenarioEvidence`;
@@ -1648,7 +1668,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR5.3 — Independent-evidence group counting for parallel opportunities (E3)**.
+Current active phase: **CR5.4 — Pending-order post-fill absolute SL/TP reconciliation (E4)**.
 
 ## 8. Completion order and dependencies
 
