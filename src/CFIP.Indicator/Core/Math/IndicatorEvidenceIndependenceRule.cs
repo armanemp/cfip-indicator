@@ -10,7 +10,7 @@ namespace cAlgo
     /// </summary>
     internal static class IndicatorEvidenceIndependenceRule
     {
-        internal static int CountGroups(IndicatorEvidenceFusionInput input)
+        internal static int CountIndicatorGroups(IndicatorEvidenceFusionInput input)
         {
             int groups = 0;
             bool trend = input.TrendBull || input.TrendBear ||
