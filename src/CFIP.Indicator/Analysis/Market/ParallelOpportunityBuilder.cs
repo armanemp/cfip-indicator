@@ -166,19 +166,23 @@ namespace cAlgo
                 direction != -1)
                 return null;
 
-            ExecutionModel execution =
-                BuildExecutionModel(
-                    closedM5,
-                    direction);
+            ParallelScenarioGeometry geometry;
 
-            if (execution == null)
+            if (!TryBuildParallelScenarioGeometry(
+                    closedM5,
+                    direction,
+                    out geometry))
                 return null;
 
+            ExecutionModel execution =
+                geometry.Execution;
+
             TradeSetupPreview preview =
-                BuildTradeSetupPreview(
+                BuildTradeSetupPreviewFromGeometry(
                     closedM5,
                     execution,
-                    lane);
+                    lane,
+                    geometry);
 
             if (preview == null ||
                 !IsFinitePositive(preview.Stop) ||
