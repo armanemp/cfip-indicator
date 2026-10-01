@@ -14,162 +14,93 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private string GetAutoTradingPanelState()
+        private bool _panelExecutionProtectionStateCached;
+        private Position _panelExecutionManagedPosition;
+        private PendingOrder _panelExecutionManagedPending;
+        private ExecutionPanelStateKind _panelAutoTradingState;
+        private ExecutionPanelStateKind _panelAutoOrdersState;
+        private ProtectionPanelStateKind _panelProtectionState;
+
+        private void InvalidatePanelExecutionProtectionStateCache()
         {
-            Position managedPosition =
-                GetManagedPosition();
-
-            string runtimeState =
-                _autoTradingState ?? "";
-
-            string runtimeReason =
-                _autoExecutionBlockReason ?? "";
-
-            bool recoveryRequired =
-                IsPanelExecutionRecoveryRequired(
-                    runtimeState,
-                    runtimeReason);
-
-            bool readyToSubmit =
-                string.Equals(
-                    runtimeReason,
-                    "READY TO SUBMIT",
-                    StringComparison.OrdinalIgnoreCase);
-
-            bool blocked =
-                IsPanelExecutionBlockedReason(
-                    runtimeReason,
-                    "AWAITING EXECUTION");
-
-            ExecutionPanelStateKind state =
-                ExecutionProtectionPanelStateRule.ResolveAutoTrading(
-                    AutoTradingEnabled,
-                    managedPosition != null,
-                    readyToSubmit,
-                    blocked,
-                    recoveryRequired);
-
-            return FormatExecutionPanelState(
-                state,
-                runtimeReason,
-                "READY TO SUBMIT");
+            _panelExecutionProtectionStateCached = false;
         }
 
-        private Color GetAutoTradingPanelColor()
+        private void EnsurePanelExecutionProtectionStateCache()
         {
+            if (_panelExecutionProtectionStateCached)
+                return;
+
             Position managedPosition =
                 GetManagedPosition();
 
-            ExecutionPanelStateKind state =
+            PendingOrder managedPending =
+                GetManagedPendingOrder();
+
+            _panelExecutionManagedPosition =
+                managedPosition;
+
+            _panelExecutionManagedPending =
+                managedPending;
+
+            string executionReason =
+                _autoExecutionBlockReason ?? "";
+
+            string ordersReason =
+                _autoOrdersBlockReason ?? "";
+
+            _panelAutoTradingState =
                 ExecutionProtectionPanelStateRule.ResolveAutoTrading(
                     AutoTradingEnabled,
                     managedPosition != null,
                     string.Equals(
-                        _autoExecutionBlockReason,
+                        executionReason,
                         "READY TO SUBMIT",
                         StringComparison.OrdinalIgnoreCase),
                     IsPanelExecutionBlockedReason(
-                        _autoExecutionBlockReason,
+                        executionReason,
                         "AWAITING EXECUTION"),
                     IsPanelExecutionRecoveryRequired(
                         _autoTradingState,
-                        _autoExecutionBlockReason));
+                        executionReason));
 
-            return ExecutionPanelStateColor(state);
-        }
-
-        private string GetAutoOrdersPanelState()
-        {
-            PendingOrder managedPending =
-                GetManagedPendingOrder();
-
-            string reason =
-                _autoOrdersBlockReason ?? "";
-
-            bool recoveryRequired =
-                IsPanelExecutionRecoveryRequired(
-                    _autoTradingState,
-                    reason);
-
-            bool readyToPlace =
-                string.Equals(
-                    reason,
-                    "READY TO PLACE",
-                    StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(
-                    reason,
-                    "READY TO SUBMIT",
-                    StringComparison.OrdinalIgnoreCase);
-
-            bool blocked =
-                IsPanelExecutionBlockedReason(
-                    reason,
-                    "AWAITING ORDER SETUP");
-
-            ExecutionPanelStateKind state =
+            _panelAutoOrdersState =
                 ExecutionProtectionPanelStateRule.ResolveAutoOrders(
                     AutomaticOrdersEnabled,
                     managedPending != null ||
                     string.Equals(
-                        reason,
-                        "ORDER PLACED",
-                        StringComparison.OrdinalIgnoreCase),
-                    readyToPlace,
-                    blocked,
-                    recoveryRequired);
-
-            return FormatExecutionPanelState(
-                state,
-                reason,
-                "READY TO PLACE");
-        }
-
-        private Color GetAutoOrdersPanelColor()
-        {
-            PendingOrder managedPending =
-                GetManagedPendingOrder();
-
-            ExecutionPanelStateKind state =
-                ExecutionProtectionPanelStateRule.ResolveAutoOrders(
-                    AutomaticOrdersEnabled,
-                    managedPending != null ||
-                    string.Equals(
-                        _autoOrdersBlockReason,
+                        ordersReason,
                         "ORDER PLACED",
                         StringComparison.OrdinalIgnoreCase),
                     string.Equals(
-                        _autoOrdersBlockReason,
+                        ordersReason,
                         "READY TO PLACE",
                         StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(
-                        _autoOrdersBlockReason,
+                        ordersReason,
                         "READY TO SUBMIT",
                         StringComparison.OrdinalIgnoreCase),
                     IsPanelExecutionBlockedReason(
-                        _autoOrdersBlockReason,
+                        ordersReason,
                         "AWAITING ORDER SETUP"),
                     IsPanelExecutionRecoveryRequired(
                         _autoTradingState,
-                        _autoOrdersBlockReason));
-
-            return ExecutionPanelStateColor(state);
-        }
-
-        private string GetAutoProtectionPanelState()
-        {
-            Position managedPosition =
-                GetManagedPosition();
+                        ordersReason));
 
             bool livePosition =
                 managedPosition != null;
+
+            int protectionDirection =
+                livePosition &&
+                managedPosition.TradeType == TradeType.Buy
+                    ? 1
+                    : -1;
 
             bool brokerStopValid =
                 livePosition &&
                 managedPosition.StopLoss.HasValue &&
                 IsExistingManagedStopHealthy(
-                    managedPosition.TradeType == TradeType.Buy
-                        ? 1
-                        : -1,
+                    protectionDirection,
                     managedPosition.EntryPrice,
                     managedPosition.StopLoss.Value);
 
@@ -183,9 +114,7 @@ namespace cAlgo
                 IsFinitePositive(
                     managedPosition.TakeProfit.Value) &&
                 IsValidTarget(
-                    managedPosition.TradeType == TradeType.Buy
-                        ? 1
-                        : -1,
+                    protectionDirection,
                     managedPosition.EntryPrice,
                     managedPosition.TakeProfit.Value);
 
@@ -194,13 +123,10 @@ namespace cAlgo
                 SyncBrokerTakeProfit &&
                 !serverLadderActive;
 
-            bool monitoringConfigured =
-                AutoBrokerProtection ||
-                AutoProtectBrokerPositions;
-
-            ProtectionPanelStateKind state =
+            _panelProtectionState =
                 ExecutionProtectionPanelStateRule.ResolveProtection(
-                    monitoringConfigured,
+                    AutoBrokerProtection ||
+                    AutoProtectBrokerPositions,
                     livePosition,
                     brokerStopValid,
                     targetRequired,
@@ -208,72 +134,77 @@ namespace cAlgo
                     serverLadderActive,
                     _brokerProtectionRecoveryRequired);
 
+            _panelExecutionProtectionStateCached = true;
+        }
+
+        private string GetAutoTradingPanelState()
+        {
+            EnsurePanelExecutionProtectionStateCache();
+
+            return FormatExecutionPanelState(
+                _panelAutoTradingState,
+                _autoExecutionBlockReason,
+                "READY TO SUBMIT");
+        }
+        
+        private Color GetAutoTradingPanelColor()
+        {
+            EnsurePanelExecutionProtectionStateCache();
+            return ExecutionPanelStateColor(
+                _panelAutoTradingState);
+        }
+        
+        private string GetAutoOrdersPanelState()
+        {
+            EnsurePanelExecutionProtectionStateCache();
+
+            return FormatExecutionPanelState(
+                _panelAutoOrdersState,
+                _autoOrdersBlockReason,
+                "READY TO PLACE");
+        }
+        
+        private Color GetAutoOrdersPanelColor()
+        {
+            EnsurePanelExecutionProtectionStateCache();
+            return ExecutionPanelStateColor(
+                _panelAutoOrdersState);
+        }
+        
+        private string GetAutoProtectionPanelState()
+        {
+            EnsurePanelExecutionProtectionStateCache();
+
             return
-                state == ProtectionPanelStateKind.Off
+                _panelProtectionState ==
+                    ProtectionPanelStateKind.Off
                     ? "OFF"
-                    : state == ProtectionPanelStateKind.NoLivePosition
+                    : _panelProtectionState ==
+                        ProtectionPanelStateKind.NoLivePosition
                         ? "READY • NO LIVE POSITION"
-                        : state == ProtectionPanelStateKind.Protected
+                        : _panelProtectionState ==
+                            ProtectionPanelStateKind.Protected
                             ? "PROTECTED"
                             : "RECOVERY REQUIRED";
         }
-
+        
         private Color GetAutoProtectionPanelColor()
         {
-            Position managedPosition =
-                GetManagedPosition();
+            EnsurePanelExecutionProtectionStateCache();
 
-            bool livePosition =
-                managedPosition != null;
-
-            bool brokerStopValid =
-                livePosition &&
-                managedPosition.StopLoss.HasValue &&
-                IsExistingManagedStopHealthy(
-                    managedPosition.TradeType == TradeType.Buy
-                        ? 1
-                        : -1,
-                    managedPosition.EntryPrice,
-                    managedPosition.StopLoss.Value);
-
-            bool serverLadderActive =
-                livePosition &&
-                _serverSideTakeProfitLadderActive;
-
-            bool brokerTargetValid =
-                livePosition &&
-                managedPosition.TakeProfit.HasValue &&
-                IsFinitePositive(
-                    managedPosition.TakeProfit.Value) &&
-                IsValidTarget(
-                    managedPosition.TradeType == TradeType.Buy
-                        ? 1
-                        : -1,
-                    managedPosition.EntryPrice,
-                    managedPosition.TakeProfit.Value);
-
-            ProtectionPanelStateKind state =
-                ExecutionProtectionPanelStateRule.ResolveProtection(
-                    AutoBrokerProtection ||
-                    AutoProtectBrokerPositions,
-                    livePosition,
-                    brokerStopValid,
-                    livePosition &&
-                    SyncBrokerTakeProfit &&
-                    !serverLadderActive,
-                    brokerTargetValid,
-                    serverLadderActive,
-                    _brokerProtectionRecoveryRequired);
-
-            return state == ProtectionPanelStateKind.Protected
-                ? TpLineColor
-                : state == ProtectionPanelStateKind.RecoveryRequired
-                    ? SlLineColor
-                    : state == ProtectionPanelStateKind.Off
-                        ? PanelMutedTextColor
-                        : PanelAccentColor;
+            return
+                _panelProtectionState ==
+                    ProtectionPanelStateKind.Protected
+                    ? TpLineColor
+                    : _panelProtectionState ==
+                        ProtectionPanelStateKind.RecoveryRequired
+                        ? SlLineColor
+                        : _panelProtectionState ==
+                            ProtectionPanelStateKind.Off
+                            ? PanelMutedTextColor
+                            : PanelAccentColor;
         }
-
+        
         private string GetExecutionRelationText(
             ExecutionModel model,
             double entry)
