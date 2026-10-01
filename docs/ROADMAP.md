@@ -795,9 +795,6 @@ Acceptance targets:
 
 Next specified phase: **CI-02 — OSS numerical parity / warm-up / cache audit**.
 
-
-Status: **COMPLETE — PR #154 verified and merged.**
-
 Completed:
 
 - introduced one canonical `CanonicalPriceSnapshot` for Bid, Ask, executable
