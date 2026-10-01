@@ -88,6 +88,9 @@ for relative, token in (
         fail(f"Canonical capacity guard missing from {relative}")
 
 # 2) Exact duplicate method signatures across partial production files.
+# Include the containing type in the key. A method such as GetHashCode() is
+# valid in multiple independent types; only duplicate declarations within the
+# same containing type are an architectural collision.
 method_re = re.compile(
     r'\b(?:public|private|protected|internal)\s+'
     r'(?:static\s+|virtual\s+|override\s+|async\s+|sealed\s+|readonly\s+)*'
@@ -95,11 +98,44 @@ method_re = re.compile(
     r'([A-Za-z_]\w*)\s*\(([^)]*)\)\s*\{',
     re.S,
 )
+type_re = re.compile(
+    r'\b(?:class|struct|interface|enum|record(?:\s+(?:class|struct))?)\s+'
+    r'([A-Za-z_]\w*)\b[^{};]*\{',
+    re.S,
+)
+
+
+def containing_type(source: str, method_start: int) -> str:
+    method_depth = source[:method_start].count("{") - source[:method_start].count("}")
+    best = ""
+    best_open = -1
+
+    for match in type_re.finditer(source):
+        open_brace = source.find("{", match.start(), match.end())
+        if open_brace < 0 or open_brace >= method_start:
+            continue
+
+        open_depth = (
+            source[:open_brace].count("{") -
+            source[:open_brace].count("}")
+        )
+        if method_depth == open_depth + 1 and open_brace > best_open:
+            best = match.group(1)
+            best_open = open_brace
+
+    return best or "<unknown-type>"
+
+
 method_defs = defaultdict(list)
 for p, text in texts.items():
-    for name, params in method_re.findall(text):
+    for match in method_re.finditer(text):
+        name, params = match.groups()
         normalized_params = re.sub(r'\b[A-Za-z_]\w*\s*(?=,|$)', "", params.strip())
-        signature = (name, re.sub(r"\s+", " ", normalized_params))
+        signature = (
+            containing_type(text, match.start()),
+            name,
+            re.sub(r"\s+", " ", normalized_params),
+        )
         method_defs[signature].append(str(p.relative_to(ROOT)))
 
 duplicate_methods = {
@@ -107,8 +143,8 @@ duplicate_methods = {
 }
 if duplicate_methods:
     print("EXACT DUPLICATE METHOD SIGNATURES")
-    for (name, sig), owners in sorted(duplicate_methods.items()):
-        print(f"- {name}({sig}) -> {owners}")
+    for (type_name, name, sig), owners in sorted(duplicate_methods.items()):
+        print(f"- {type_name}.{name}({sig}) -> {owners}")
     fail(f"Found {len(duplicate_methods)} exact duplicate production method signatures")
 
 # 3) Canonical visual pipeline invariants.
