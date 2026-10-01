@@ -23,6 +23,7 @@ namespace cAlgo
                 _parallelGeometryCacheM5 = closedM5;
                 _parallelGeometryCache.Clear();
                 _parallelExecutionModelCache.Clear();
+                _parallelPreviewCache.Clear();
             }
 
             if (_parallelGeometryCache.TryGetValue(
@@ -133,6 +134,7 @@ namespace cAlgo
                 _parallelGeometryCacheM5 = closedM5;
                 _parallelGeometryCache.Clear();
                 _parallelExecutionModelCache.Clear();
+                _parallelPreviewCache.Clear();
             }
 
             if (_parallelExecutionModelCache.TryGetValue(
