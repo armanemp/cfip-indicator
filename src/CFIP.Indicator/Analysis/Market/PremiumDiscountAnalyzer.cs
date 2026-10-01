@@ -40,21 +40,10 @@ namespace cAlgo
                                         StructureLookback),
                                     index);
                 
-                            if (high <= low)
-                                return 0;
-                
-                            double midpoint =
-                                (high + low) * 0.5;
-                
-                            if (bars.ClosePrices[index] <
-                                midpoint)
-                                return 1;
-                
-                            if (bars.ClosePrices[index] >
-                                midpoint)
-                                return -1;
-                
-                            return 0;
+                            return PremiumDiscountBiasRule.Evaluate(
+                                bars.ClosePrices[index],
+                                high,
+                                low);
                         }
     }
 }
