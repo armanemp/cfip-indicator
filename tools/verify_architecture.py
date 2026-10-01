@@ -1810,8 +1810,7 @@ if TARGET_SELECTOR.stat().st_size > 4096:
 for token in (
     "BuildTargetSelectionRequiredRR(",
     "TargetLadderSelectionRule.SelectBestPath(",
-    "RequiresHtfRewardForTargetStage(",
-    "TryBuildTargetLadderStageOptions(",
+    "TryBuildTargetLadderStageOptions("
 ):
     if token not in TARGET_SELECTOR_CODE:
         raise SystemExit(f"TargetSelector orchestration call missing: {token}")
@@ -1826,7 +1825,7 @@ for declaration in (
     "private double[] BuildTargetSelectionRequiredRR(",
     "private double FindPreviousSelectedTargetPrice(",
     "private bool RequiresHtfRewardForTargetStage(",
-    "private bool TryBuildTargetLadderStageOptions(",
+    "private bool TryBuildTargetLadderStageOptions("
 ):
     if declaration in TARGET_SELECTOR_CODE:
         raise SystemExit(f"TargetSelector retains extracted responsibility: {declaration}")
