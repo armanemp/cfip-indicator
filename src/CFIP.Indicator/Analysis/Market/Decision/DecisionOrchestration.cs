@@ -17,7 +17,6 @@ namespace cAlgo
                 new DecisionReasonBuilder();
 
         private Decision BuildDecision(
-            int chartIndex,
             int closedM5,
             DateTime reference,
             MtfClosedContext closedContext)
@@ -30,11 +29,6 @@ namespace cAlgo
                 throw new InvalidOperationException(
                     "Decision closed-bar context is missing or inconsistent.");
             }
-
-            int closedChartIndex =
-                MapM5ToClosedChart(
-                    closedM5,
-                    chartIndex);
 
             string regime =
                 DetectRegime(
@@ -66,13 +60,15 @@ namespace cAlgo
                     AdvancedConfluenceBuy =
                         UseAdvancedConfluence
                             ? LiveBias(
-                                closedChartIndex,
+                                closedM5,
+                                reference,
                                 1)
                             : 0,
                     AdvancedConfluenceSell =
                         UseAdvancedConfluence
                             ? LiveBias(
-                                closedChartIndex,
+                                closedM5,
+                                reference,
                                 -1)
                             : 0,
                     UsePremiumDiscount =

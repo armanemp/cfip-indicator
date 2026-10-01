@@ -93,6 +93,7 @@ namespace cAlgo
             VerifyFrameRegimeSemantics();
             VerifyFrameScoringConstants();
             VerifyOssIndicatorParameters();
+            VerifyDirectionalBiasTimeframeSemantics();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -7104,6 +7105,89 @@ namespace cAlgo
                 !queue.Enqueue("", false, now) &&
                 queue.Count == 3,
                 "popup queue rejects empty messages without changing bounded state");
+        }
+
+        private static void VerifyDirectionalBiasTimeframeSemantics()
+        {
+            Assert(
+                PremiumDiscountBiasRule.Evaluate(99, 110, 90) == 1 &&
+                PremiumDiscountBiasRule.Evaluate(101, 110, 90) == -1 &&
+                PremiumDiscountBiasRule.Evaluate(100, 110, 90) == 0,
+                "premium/discount bias remains a neutral midpoint context with mean-reversion direction");
+
+            Assert(
+                PremiumDiscountBiasRule.Evaluate(double.NaN, 110, 90) == 0 &&
+                PremiumDiscountBiasRule.Evaluate(100, 90, 90) == 0,
+                "premium/discount bias fails closed on invalid geometry");
+
+            Assert(
+                LiveM5BiasRule.Evaluate(105, 103, 101, 1) == 5 &&
+                LiveM5BiasRule.Evaluate(97, 99, 101, -1) == 5 &&
+                LiveM5BiasRule.Evaluate(105, 103, 101, -1) == 0 &&
+                LiveM5BiasRule.Evaluate(97, 99, 101, 1) == 0,
+                "closed-M5 live bias is BUY/SELL symmetric and direction-specific");
+
+            Assert(
+                LiveM5BiasRule.Evaluate(105, 103, 101, 0) == 0 &&
+                LiveM5BiasRule.Evaluate(double.NaN, 103, 101, 1) == 0,
+                "closed-M5 live bias fails closed on invalid inputs");
+
+            Assert(
+                HealthyVolatilityRule.IsHealthy(0.85, 1.00, 0.85, 1.80) &&
+                HealthyVolatilityRule.IsHealthy(1.80, 1.00, 0.85, 1.80) &&
+                !HealthyVolatilityRule.IsHealthy(0.84, 1.00, 0.85, 1.80) &&
+                !HealthyVolatilityRule.IsHealthy(1.81, 1.00, 0.85, 1.80),
+                "healthy-volatility uses the configured ATR ratio envelope only");
+
+            DateTime[] m5 = new[]
+            {
+                Utc(10, 0),
+                Utc(10, 5),
+                Utc(10, 10),
+                Utc(10, 15)
+            };
+
+            DateTime[] m15 = new[]
+            {
+                Utc(10, 0),
+                Utc(10, 15),
+                Utc(10, 30),
+                Utc(10, 45)
+            };
+
+            DateTime[] h1 = new[]
+            {
+                Utc(10, 0),
+                Utc(11, 0),
+                Utc(12, 0),
+                Utc(13, 0)
+            };
+
+            Assert(
+                ClosedBarReferenceRule.IsFullyClosed(
+                    m5.Length,
+                    2,
+                    Utc(10, 15),
+                    i => m5[i]) &&
+                ClosedBarReferenceRule.IsFullyClosed(
+                    m15.Length,
+                    2,
+                    Utc(10, 45),
+                    i => m15[i]) &&
+                ClosedBarReferenceRule.IsFullyClosed(
+                    h1.Length,
+                    2,
+                    Utc(13, 0),
+                    i => h1[i]),
+                "M5/M15/H1 closed-bar fixtures share the same fully-closed boundary");
+
+            Assert(
+                !ClosedBarReferenceRule.IsFullyClosed(
+                    m5.Length,
+                    2,
+                    Utc(10, 14),
+                    i => m5[i]),
+                "unfinished M5 bar cannot be used as live-bias confirmation");
         }
 
         private static void Assert(bool condition, string name)

@@ -345,17 +345,20 @@ namespace cAlgo
                     index,
                     -1);
 
-            f.VolatilityBull =
+            bool healthyVolatility =
                 HasHealthyVolatility(
                     bars,
-                    index,
-                    1);
+                    index);
+
+            f.VolatilityBull =
+                healthyVolatility &&
+                bars.ClosePrices[index] >
+                bars.OpenPrices[index];
 
             f.VolatilityBear =
-                HasHealthyVolatility(
-                    bars,
-                    index,
-                    -1);
+                healthyVolatility &&
+                bars.ClosePrices[index] <
+                bars.OpenPrices[index];
 
             f.Choppy =
                 UseHistoricalChoppinessGuard &&

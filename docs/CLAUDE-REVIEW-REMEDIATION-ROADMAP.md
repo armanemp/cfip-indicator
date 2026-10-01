@@ -1401,6 +1401,20 @@ Testing:
 - trend/premium and mean-reversion cases;
 - volatility-health independence from trigger-body threshold.
 
+### CR5.6 / E6 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #122**
+
+The E6 directional-bias/timeframe remediation is closed:
+- Premium/Discount keeps its established midpoint mean-reversion/context semantics and +6 participation;
+- LiveBias is now canonical closed-M5 based rather than host-chart based;
+- Healthy Volatility uses ATR health only, with trigger-body confirmation remaining in entry/trigger semantics;
+- public parameter/default values and thresholds are preserved;
+- deterministic E6 runtime contracts and static audit are wired;
+- Source/Architecture, Runtime Acceptance Contracts and cTrader Compile all passed on implementation head e930e30d9c82ad279316a41c81116d4ae1e19859.
+
+Manual target-terminal timing, panel behavior and empirical signal-quality validation remain outside CI claims.
+
 ### CR5.7 — Decision-owned WATCH/REACTION alerts separated from chart rendering (E7)
 
 Initial review label: **PARTIAL / MEDIUM — exact render/alert coupling and fixed thresholds must be source-audited.**
