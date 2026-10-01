@@ -14,6 +14,7 @@ namespace cAlgo
                 P + "REACTION_ARROW");
 
             if (ShowEarlyArrow &&
+                ShowEarlyWatch &&
                 IsStrongWatchSnapshot(snapshot) &&
                 visualDirection != 0)
             {
