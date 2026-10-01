@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01 through CI-04 verified complete; CI-05 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 through CI-05 verified complete; CI-06 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -714,9 +714,9 @@ The authoritative detailed specification is:
 The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
 blocking correctness gate inserted before the next unfinished refinement phase.
 
-**Current implementation phase: CI-05 — FVG lifecycle.**
+**Current implementation phase: CI-06 — Order Block lifecycle.**
 
-Status: **IN IMPLEMENTATION — FVG detection, mitigation, age, invalidation/retention and all active-zone consumers are being hardened.**
+Status: **NEXT — specified and ready to implement after CI-05 closeout.**
 
 Sequence:
 
@@ -800,12 +800,12 @@ Manual boundary remains:
 - callback-driven alerts outside Calculate;
 - replay-level structural event frequency and missed/repeated break rates.
 
-Operator action after merge: run `git pull --ff-only` on local `main` before starting CI-05.
+Operator action: run `git pull --ff-only` on local `main` before starting CI-06.
 
 
 ### CI-05 implementation record — 2026-10-01
 
-Status: **IN IMPLEMENTATION — lifecycle correction and consumer hardening are under repository verification.**
+Status: **VERIFIED COMPLETE — PR #159 merged to `main` as `cfb8116b248340c07a0c4b813cf1c4d41550f24c`.**
 
 Scope:
 - canonical FVG lifecycle ownership for source age and body/wick mitigation probes;
@@ -816,6 +816,21 @@ Scope:
 
 No public parameter name/type/DefaultValue or trading threshold is changed. No score,
 confidence, RR, Entry, SL/TP, risk or execution policy is retuned.
+
+Verification on final PR head `008ecf50f54e2cfadfeaf9b7030e17b452b0fb7e`:
+- Source / Architecture: **PASS** — run #2481;
+- Runtime Acceptance Contracts: **PASS** — run #2290;
+- cTrader Compile / Build: **PASS** — run #2474.
+
+Completed findings:
+- full-fill retention now respects the existing `FvgInvalidateOnFullFill` setting;
+- source age is enforced before managed FVG materialization;
+- mitigation body/wick probe and lifecycle transition ownership is canonical;
+- accumulated CI-03/CI-04 audits were made forward-compatible with later CI phases.
+
+Manual boundary:
+- target-terminal/replay validation of live MTF FVG timing, mitigation, pending-zone presentation,
+  reward-path interaction and empirical signal quality remains required.
 
 **Target next transition after verification: CI-06 — Order Block lifecycle.**
 **Next phase: CI-05 — FVG lifecycle.**
