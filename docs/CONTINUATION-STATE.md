@@ -571,14 +571,17 @@ Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL
 ## Current active phase
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
-CR-FINAL. **Current: CR6.1 / F1 — Opposing FVG/OB target-path direction,
-mitigation and obstacle caching.**
+CR-FINAL. **Current: CR6.4 / F5 — Smart-threshold regime identity and hidden
+REVERSAL dead path.**
 
 CR5.1 through CR5.8 are verified complete. CR5.8 / E8 was merged to main via
 PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
-E1–E8 is closed at repository level. CR-FINAL remains paused until CR6.1–CR6.9
-are completed or explicitly documented as verified/deferred with evidence.
-Target-terminal acceptance remains required afterward.
+E1–E8 is closed at repository level. CR6.1 / F1 and CR6.2 / F2 are verified
+complete, and CR6.3 / F4 is verified complete on PR #129 with all three
+repository gates PASS on commit
+`5dd9a8a8bb0fb8172ac40b7336ce86e0bb5c3c2a`. CR-FINAL remains paused until
+CR6.1–CR6.9 are completed or explicitly documented as verified/deferred with
+evidence. Target-terminal acceptance remains required afterward.
 
 ### CR5.7 / E7 closeout
 
