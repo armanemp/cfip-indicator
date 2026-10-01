@@ -2215,7 +2215,7 @@ for required_path in (
 # Reward-path validation boundary.
 REWARD_PATH_FILES = (
     ROOT / "Trading" / "Validation" / "RewardPathZoneObstacleScanner.cs",
-    ROOT / "Trading" / "Validation" / "RewardPathGeometryRule.cs",
+    ROOT / "Core" / "Math" / "RewardPathGeometryRule.cs",
     ROOT / "Trading" / "Validation" / "TargetObstacleValidator.cs",
     ROOT / "Trading" / "Validation" / "HigherTfRewardPathValidator.cs",
     ROOT / "Trading" / "Validation" / "HtfTargetPresenceValidator.cs",
@@ -2223,11 +2223,13 @@ REWARD_PATH_FILES = (
 for required_path in REWARD_PATH_FILES:
     if not required_path.exists():
         raise SystemExit(f"Reward-path owner missing: {required_path}")
+if (ROOT / "Trading" / "Validation" / "RewardPathGeometryRule.cs").exists():
+    raise SystemExit("Legacy Trading reward-path geometry owner must not remain")
 if (ROOT / "Trading" / "Validation" / "RewardPathValidation.cs").exists():
     raise SystemExit("Obsolete RewardPathValidation.cs must not return")
 for path, declarations in {
     REWARD_PATH_FILES[0]: ("private bool HasOpposingZonePathObstacle(",),
-    REWARD_PATH_FILES[1]: ("private bool ZoneBlocksRewardPath(",),
+    REWARD_PATH_FILES[1]: ("public static bool BlocksRewardPath(",),
     REWARD_PATH_FILES[2]: ("private bool HasTargetObstacle(",),
     REWARD_PATH_FILES[3]: ("private bool HasHigherTfZonePathObstacle(",),
     REWARD_PATH_FILES[4]: ("private bool HasAnyHtfTargetLevel(",),

@@ -24,7 +24,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 ## Active phase
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before CR-FINAL.
-**Current: CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
+**Current: CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
 
 CR5.1 through CR5.8 are verified complete at repository level. CR5.8 was merged
 to `main` via PR #124 with merge commit
@@ -526,6 +526,35 @@ Safety/manual boundary:
 - target-terminal intrabar timing, panel presentation, broker lifecycle,
   restart/reconnect and empirical signal-quality/profitability remain manual.
 
+### CR6.1 / F1 closeout — 2026-10-01
+
+CR6.1 / F1 is **VERIFIED COMPLETE on PR #127**, implementation head
+`b37ebf00bbd835d7cab8a192842752be7238d703`.
+
+Implementation record:
+- canonical Core `RewardPathGeometryRule` owns opposing-zone direction and target-path geometry;
+- FVG/OB obstacle creation consistently uses `-direction`;
+- managed FVG lifecycle/mitigation is applied before obstacle caching;
+- fully mitigated FVGs and broken OBs are excluded;
+- candidate obstacle snapshots are cached per Bars/index/direction while
+  target-specific geometry remains live;
+- higher-timeframe M15/M30/H1/H4 reward-path checks share the same owner;
+- deterministic F1 runtime contracts and the accumulated static audit are wired.
+
+Verification:
+- Source/Architecture PASS — run #2177;
+- Runtime Acceptance Contracts PASS — run #1986;
+- cTrader Compile PASS — run #2170;
+- F1 static audit PASS.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue or RR/confidence/SL/TP threshold changed;
+- no decision/execution authority changed;
+- target-terminal replay, zone mitigation timing, warm-cache behavior and empirical
+  signal-quality/profitability remain manual.
+
+Next phase: **CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
+
 ## Current active phase
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
@@ -537,6 +566,32 @@ PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
 E1–E8 is closed at repository level. CR-FINAL remains paused until CR6.1–CR6.9
 are completed or explicitly documented as verified/deferred with evidence.
 Target-terminal acceptance remains required afterward.
+
+### CR5.7 / E7 closeout
+
+CR5.7 / E7 is **VERIFIED COMPLETE on PR #123**; implementation head
+`8d39ad3fb88c75092908121a3cbaa65128f47659`, merged to `main` via commit
+`d37f6d575595bfacecdff5a5ffb8fc44ba96455a`.
+
+Implementation record:
+- WATCH/REACTION alert qualification and emission are decision-owned rather than renderer-owned;
+- Core `WatchReactionAlertRule` is the sole owner of early-WATCH thresholds,
+  eligibility semantics and deterministic alert identities;
+- the existing confidence floor 60 and allowance 4 are preserved;
+- live REACTION cadence remains intact after `UpdateLiveReaction`;
+- chart rendering remains presentation-only for these alerts;
+- deterministic Runtime Contract coverage and the E7 static audit are wired.
+
+Repository verification at merge:
+- Source/Architecture PASS — run `36841785497`;
+- Runtime Acceptance Contracts PASS — run `36841785708`;
+- cTrader Compile PASS — run `36841785507`.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue or RR/confidence/stop/target threshold changed;
+- no decision or execution authority duplication introduced;
+- target-terminal alert timing, popup/audio delivery, panel/chart behavior,
+  broker lifecycle and empirical signal-quality validation remain manual.
 
 ### CR5.8 / E8 closeout
 
