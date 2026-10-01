@@ -10,15 +10,20 @@ namespace cAlgo
             int closedM5,
             DateTime reference)
         {
-            if (_triggerRuntime.DecisionM5 != closedM5 ||
-                _triggerRuntime.Direction !=
-                    (_decision == null ? 0 : _decision.Direction))
+            int decisionDirection =
+                _decision == null
+                    ? 0
+                    : _decision.Direction;
+
+            if (TriggerLifecycleRule.ShouldReset(
+                    _triggerRuntime.DecisionM5,
+                    _triggerRuntime.Direction,
+                    closedM5,
+                    decisionDirection))
             {
                 _triggerRuntime.Reset(
                     closedM5,
-                    _decision == null
-                        ? 0
-                        : _decision.Direction);
+                    decisionDirection);
             }
 
             if (_decision == null ||
@@ -112,12 +117,13 @@ namespace cAlgo
                     _m5Bars,
                     m1Open);
 
-            if (parentM5 < 0 ||
-                (parentM5 != closedM5 &&
-                 parentM5 != liveM5))
+            if (parentM5 < 0)
             {
                 _triggerRuntime.Ready =
-                    _triggerRuntime.Latched;
+                    TriggerLifecycleRule.IsConfirmed(
+                        m5Ready,
+                        UseM1Trigger,
+                        _triggerRuntime.Latched);
                 _triggerRuntime.Reason =
                     "M1 OUTSIDE TRIGGER WINDOW";
                 _triggerRuntime.UpdatedUtc = reference;
@@ -138,7 +144,10 @@ namespace cAlgo
                     : m5Open.AddMinutes(5);
 
             bool inside =
-                M1TriggerRule.IsClosedM1InsideM5Window(
+                TriggerLifecycleRule.CanEvaluateLiveM1Confirmation(
+                    closedM5,
+                    liveM5,
+                    parentM5,
                     m1Open,
                     m1NextOpen,
                     m5Open,
@@ -148,7 +157,10 @@ namespace cAlgo
             if (!inside)
             {
                 _triggerRuntime.Ready =
-                    _triggerRuntime.Latched;
+                    TriggerLifecycleRule.IsConfirmed(
+                        m5Ready,
+                        UseM1Trigger,
+                        _triggerRuntime.Latched);
                 _triggerRuntime.Reason =
                     "M1 WINDOW NOT CLOSED";
                 _triggerRuntime.UpdatedUtc = reference;
@@ -200,11 +212,10 @@ namespace cAlgo
                         closedM1);
 
             int required =
-                UsePrecisionExecutionModel
-                    ? Math.Max(
-                        LiveTriggerScore,
-                        PrecisionTriggerScore)
-                    : LiveTriggerScore;
+                TriggerThresholdRule.ResolveRequiredScore(
+                    UsePrecisionExecutionModel,
+                    LiveTriggerScore,
+                    PrecisionTriggerScore);
 
             int start =
                 Math.Max(
@@ -267,15 +278,25 @@ namespace cAlgo
                     : "M1 TRIGGER WAIT";
             _triggerRuntime.UpdatedUtc = reference;
 
-            if (ready)
+            if (TriggerLifecycleRule.ShouldRecordNewConfirmation(
+                    _triggerRuntime.ConfirmedM1,
+                    closedM1,
+                    ready))
             {
                 _triggerRuntime.Latched = true;
                 _triggerRuntime.ConfirmedM1 =
                     closedM1;
+                _triggerRuntime.ConfirmationRevision++;
             }
 
+            _triggerRuntime.Ready =
+                TriggerLifecycleRule.IsConfirmed(
+                    m5Ready,
+                    UseM1Trigger,
+                    _triggerRuntime.Latched);
+
             _decision.TriggerReady =
-                _triggerRuntime.Latched;
+                _triggerRuntime.Ready;
         }
 
         private int FindContainingBarIndex(
