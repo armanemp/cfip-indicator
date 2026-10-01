@@ -30,7 +30,7 @@ internal readonly record struct SkenderWarmupParityBenchmarkResult(
 
 internal static class SkenderWarmupParityBenchmark
 {
-    internal const int StableWindowSize = 768;
+    internal const int StableQuoteWindowSize = 768;
     internal const int RollingWindowSize = 161;
     internal const int ExtendedBarCount = 2048;
 
@@ -156,9 +156,9 @@ internal static class SkenderWarmupParityBenchmark
                 source
                     .Skip(
                         checkpoint -
-                        StableWindowSize +
+                        StableQuoteWindowSize +
                         1)
-                    .Take(StableWindowSize)
+                    .Take(StableQuoteWindowSize)
                     .ToList();
 
             IReadOnlyList<V2Quote> rolling =
@@ -688,9 +688,9 @@ internal static class SkenderWarmupParityBenchmark
                     ? source
                         .Skip(
                             checkpoint -
-                            StableWindowSize +
+                            StableQuoteWindowSize +
                             1)
-                        .Take(StableWindowSize)
+                        .Take(StableQuoteWindowSize)
                         .ToList()
                     : fullPrefix;
 
