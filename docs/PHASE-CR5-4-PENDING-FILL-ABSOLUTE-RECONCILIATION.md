@@ -1,6 +1,6 @@
 # CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — repository acceptance closed 2026-10-01.**
 
 ## Scope
 
@@ -83,11 +83,14 @@ submission, not on every calculation/tick.
 
 ## Verification boundary
 
-Repository verification must pass:
+Repository verification completed on PR #120 final head `6d89f010fa6d292d201ef79e37af5b162438f854`:
 
-- Source/Architecture, including `audit_phase_5_4.py`;
-- Runtime Acceptance Contracts;
-- cTrader Compile.
+- Source/Architecture: PASS — run `36795710379` / workflow #2096, including `audit_phase_5_4.py` and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — run `36795710374` / workflow #1905;
+- cTrader Compile: PASS — run `36795710377` / workflow #2089.
+
+PR #120 was merged to `main` as merge commit
+`782bca41cd37071c79f2cdfa12f712cefc045c8c`.
 
 Target-terminal manual checks remain required for:
 
@@ -96,7 +99,11 @@ Target-terminal manual checks remain required for:
 - Advanced Protection ladder behavior;
 - rejection timing and restart/reconnect lifecycle.
 
+The existing CR2.5 lifecycle-ordering audit was reconciled with the new
+pending-snapshot invariant: `PositionOpened` may not reconstruct a managed
+position while an outstanding pending-fill snapshot exists.
+
 ## Transition
 
-After repository verification passes, the next phase is **CR5.5 / E5 —
+After repository verification, the next phase is **CR5.5 / E5 —
 Parallel-scenario computation/candidate ownership and MicroReaction safety**.
