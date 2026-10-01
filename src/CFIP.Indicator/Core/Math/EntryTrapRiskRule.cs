@@ -178,7 +178,7 @@ namespace cAlgo
                 m1 >= EntryTrapRiskPolicy.StrongAdverseM1Atr;
 
             if (strongAdverseMomentum)
-                risk = Math.Max(risk, EntryActionabilityPolicy.StrongAdverseRiskFloor);
+                risk = Math.Max(risk, EntryTrapRiskPolicy.StrongAdverseRiskFloor);
 
             risk =
                 NumericGuards.ClampInt(
@@ -209,8 +209,8 @@ namespace cAlgo
                 reason =
                     "EXTREME ENTRY LOCATION";
             }
-            else if (m5 >= EntryActionabilityPolicy.AdverseM5BlockAtr ||
-                     m1 >= EntryActionabilityPolicy.AdverseM1BlockAtr)
+            else if (m5 >= EntryTrapRiskPolicy.AdverseM5BlockAtr ||
+                     m1 >= EntryTrapRiskPolicy.AdverseM1BlockAtr)
             {
                 reason =
                     "ADVERSE MOMENTUM";
@@ -234,9 +234,9 @@ namespace cAlgo
             bool block =
                 extreme ||
                 divergence >= EntryActionabilityPolicy.DivergenceMediumQuality ||
-                risk >= EntryActionabilityPolicy.StrongAdverseRiskFloor ||
-                m5 >= EntryActionabilityPolicy.AdverseM5BlockAtr ||
-                m1 >= EntryActionabilityPolicy.AdverseM1BlockAtr;
+                risk >= EntryTrapRiskPolicy.StrongAdverseRiskFloor ||
+                m5 >= EntryTrapRiskPolicy.AdverseM5BlockAtr ||
+                m1 >= EntryTrapRiskPolicy.AdverseM1BlockAtr;
 
             if (block)
             {
