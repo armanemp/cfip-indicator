@@ -111,12 +111,12 @@ internal static class BenchmarkReport
             $"{quoteCacheTiming.Incremental.MeanAllocatedBytes:N0} |");
 
         lines.Add(string.Empty);
-        lines.Add("## CR8.3b bounded stable-window numerical parity");
+        lines.Add("## CI-02 production Skender boundary parity");
         lines.Add(string.Empty);
         lines.Add(
-            "The H3-B benchmark compares the full-prefix Skender path with a bounded " +
-            "768-bar stable window on deterministic 2048-bar fixtures. The safety gate " +
-            "requires finite outputs and zero directional-classification mismatches.");
+            "This is the consolidated CR8.3b bounded stable-window numerical parity " +
+            "benchmark and CI-02 production-boundary gate. It compares canonical " +
+            "full-prefix Skender calculations with bounded stable and rolling windows.");
         lines.Add(string.Empty);
         lines.Add("| Metric | Result |");
         lines.Add("| --- | ---: |");
@@ -124,19 +124,21 @@ internal static class BenchmarkReport
         lines.Add($"| Compared points | {warmupParity.ComparedPoints:N0} |");
         lines.Add($"| Direction mismatches | {warmupParity.DirectionMismatches:N0} |");
         lines.Add($"| Non-finite pairs | {warmupParity.NonFinitePairs:N0} |");
-        lines.Add($"| Max absolute error | {FormatError(warmupParity.MaxAbsoluteError)} |");
-        lines.Add($"| Mean absolute error | {FormatError(warmupParity.MeanAbsoluteError)} |");
-        lines.Add($"| RMS error | {FormatError(warmupParity.RootMeanSquareError)} |");
-        lines.Add($"| Full-prefix mean ms/iteration | {warmupParity.FullWindowTiming.MeanMilliseconds:F4} |");
+        lines.Add($"| Rolling exact mismatches | {warmupParity.ExactMismatches:N0} |");
+        lines.Add($"| Stable max absolute error | {FormatError(warmupParity.MaxStableError)} |");
+        lines.Add($"| Stable mean absolute error | {FormatError(warmupParity.MeanStableError)} |");
+        lines.Add($"| Stable RMS error | {FormatError(warmupParity.RootMeanSquareStableError)} |");
+        lines.Add($"| Rolling max absolute error | {FormatError(warmupParity.MaxRollingError)} |");
+        lines.Add($"| Full-prefix mean ms/iteration | {warmupParity.FullPrefixTiming.MeanMilliseconds:F4} |");
         lines.Add($"| Bounded-window mean ms/iteration | {warmupParity.BoundedWindowTiming.MeanMilliseconds:F4} |");
-        lines.Add($"| Full-prefix allocated bytes/iteration | {warmupParity.FullWindowTiming.MeanAllocatedBytes:N0} |");
+        lines.Add($"| Full-prefix allocated bytes/iteration | {warmupParity.FullPrefixTiming.MeanAllocatedBytes:N0} |");
         lines.Add($"| Bounded-window allocated bytes/iteration | {warmupParity.BoundedWindowTiming.MeanAllocatedBytes:N0} |");
 
         lines.Add(string.Empty);
         lines.Add(
-            passed
-                ? "Numerical parity gate: **PASS**. This phase does not promote v3 into the production cTrader assembly."
-                : "Numerical parity gate: **FAIL**. Promotion remains blocked and the failing metrics must be investigated.");
+            passed && warmupParity.Passed
+                ? "OSS numerical parity gate: **PASS**. FacioQuo remains research-only and the single production Skender boundary benchmark remains bounded."
+                : "OSS numerical parity gate: **FAIL**. Promotion remains blocked and the failing OSS comparisons must be investigated.");
 
         return string.Join(Environment.NewLine, lines);
     }

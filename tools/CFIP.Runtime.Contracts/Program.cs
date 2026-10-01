@@ -38,6 +38,8 @@ namespace cAlgo
             VerifyCalculationReadinessSemantics();
             VerifyNativeIndicatorReadinessSemantics();
             VerifyPrimitiveIndicatorMathematics();
+            VerifyOssQuoteProjectionSemantics();
+            VerifyOssQuoteWindowSemantics();
             VerifyOssWarmupPolicy();
             VerifyStructuralStopRiskCeilingSemantics();
             VerifyLiquidityTargetCandidateSemantics();
@@ -9565,6 +9567,111 @@ namespace cAlgo
 
             Console.WriteLine(
                 "CI-01 primitive indicator mathematics contracts PASS");
+        }
+
+        private static void VerifyOssQuoteProjectionSemantics()
+        {
+            Assert(
+                OssQuoteProjectionRule.NormalizeVolume(
+                    0) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    -1) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    25.5) == 25.5m,
+                "OSS quote volume normalization preserves positive values and zero");
+
+            Assert(
+                OssQuoteProjectionRule.NormalizeVolume(
+                    double.NaN) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    double.PositiveInfinity) == 0m &&
+                OssQuoteProjectionRule.NormalizeVolume(
+                    double.NegativeInfinity) == 0m,
+                "OSS quote volume normalization is finite and fail-closed");
+
+            Console.WriteLine(
+                "CI-02 OSS quote projection semantics contracts PASS");
+        }
+
+        private static void VerifyOssQuoteWindowSemantics()
+        {
+            Assert(
+                OssQuoteWindowRule.ResolveFirstIndex(
+                    100,
+                    161) == 0 &&
+                OssQuoteWindowRule.ResolveWindowCount(
+                    100,
+                    161) == 101,
+                "OSS rolling window keeps all available bars before the cap");
+
+            Assert(
+                OssQuoteWindowRule.ResolveFirstIndex(
+                    160,
+                    161) == 0 &&
+                OssQuoteWindowRule.ResolveWindowCount(
+                    160,
+                    161) == 161 &&
+                OssQuoteWindowRule.ResolveFirstIndex(
+                    161,
+                    161) == 1 &&
+                OssQuoteWindowRule.ResolveWindowCount(
+                    161,
+                    161) == 161,
+                "OSS rolling window becomes exactly bounded at the configured size");
+
+            Assert(
+                OssQuoteWindowRule.RequiresRebuild(
+                    160,
+                    0,
+                    -1,
+                    -1) &&
+                !OssQuoteWindowRule.RequiresRebuild(
+                    161,
+                    1,
+                    160,
+                    0) &&
+                !OssQuoteWindowRule.RequiresRebuild(
+                    160,
+                    0,
+                    159,
+                    0),
+                "OSS cache allows initial construction and one-bar append without rebuild");
+
+            Assert(
+                OssQuoteWindowRule.RequiresRebuild(
+                    162,
+                    2,
+                    160,
+                    0) &&
+                OssQuoteWindowRule.RequiresRebuild(
+                    159,
+                    0,
+                    160,
+                    0) &&
+                OssQuoteWindowRule.RequiresRebuild(
+                    162,
+                    3,
+                    161,
+                    1),
+                "OSS cache rebuilds on skipped, backward or non-contiguous window movement");
+
+            Assert(
+                OssQuoteWindowRule.IsBoundedCount(
+                    768,
+                    768) &&
+                OssQuoteWindowRule.IsBoundedCount(
+                    161,
+                    161) &&
+                !OssQuoteWindowRule.IsBoundedCount(
+                    769,
+                    768) &&
+                !OssQuoteWindowRule.IsBoundedCount(
+                    -1,
+                    768),
+                "OSS cached quote collections remain bounded");
+
+            Console.WriteLine(
+                "CI-02 OSS quote-window semantics contracts PASS");
         }
 
         private static void VerifyOssWarmupPolicy()

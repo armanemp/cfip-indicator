@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-01 implemented; final repository gates pending. CI-02 is next after CI-01 merge. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 and CI-02 verified complete; CI-03 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -765,67 +765,102 @@ mathematical, semantic, provenance or timing defect.`
 
 Status: **COMPLETE — PR #154 verified and merged.**
 
-### CI-01 — Primitive indicator mathematical audit — 2026-10-01
-
-
-Status: **IMPLEMENTED — final repository gate pending.**
-
 Completed:
 
-- native ATR/ADX-DMI/EMA/RSI ownership retained at the cTrader indicator boundary;
-- DMI warm-up/readiness aligned with the canonical native readiness rule;
-- MACD-line bias semantics made explicit;
-- DMI, MACD-line bias, RangeEfficiency, Choppiness, VWAP and Volume Expansion
-  formulas moved to dedicated pure mathematical owners;
-- corrected RangeEfficiency interval mismatch;
-- removed silent period shortening from RangeEfficiency and Choppiness;
-- corrected VWAP zero-volume weighting and exact-window semantics;
-- removed pip-scale distortion from Volume Expansion bar range;
-- deterministic Runtime Acceptance coverage added;
-- CI-01 static audit accumulated in Source/Architecture CI;
-- no threshold/weight/strategy tuning performed.
+- one canonical `CanonicalPriceSnapshot` owns Bid, Ask, executable BUY/SELL
+  prices, midpoint, spread, pip/tick scale and broker-distance metadata;
+- existing `MtfClosedContext` remains the sole closed-MTF index owner;
+- `CalculationMarketContext` composes quote/time/MTF state without duplicating
+  ownership;
+- high-risk planning/execution consumers use the canonical market context;
+- deterministic Runtime Acceptance and Source/Architecture coverage were added.
 
-Acceptance targets:
-
-- full configured windows only;
-- finite and bounded outputs;
-- explicit mirror symmetry;
-- no duplicate primitive formula owners;
-- no fabricated values from unavailable data.
-
-Next specified phase: **CI-02 — OSS numerical parity / warm-up / cache audit**.
-
-Completed:
-
-- introduced one canonical `CanonicalPriceSnapshot` for Bid, Ask, executable
-  BUY/SELL prices, midpoint, spread, pip/tick scale and broker-distance metadata;
-- preserved `MtfClosedContext` as the sole closed-MTF index owner and composed it
-  into `CalculationMarketContext`;
-- bound signal-reference time, quote-observation time and host-bar context in one
-  calculation object;
-- refreshed the quote snapshot independently of readiness-probe throttling so
-  live execution consumers cannot accidentally reuse an old quote merely because
-  the closed MTF context is unchanged;
-- migrated high-risk execution/planning consumers away from direct Bid/Ask
-  reconstruction;
-- added deterministic Runtime Acceptance coverage for directional executable
-  prices, spread, broker-distance conversion, invalid quotes and combined
-  price/time/MTF context;
-- added `tools/audit_phase_ci_00.py` and accumulated it in Source/Architecture CI;
-- recorded the implementation boundary in
-  `docs/PHASE-CI-00-CANONICAL-DATA-PRICE-TIME.md`.
-
-Verification on implementation head `420b2390413df99f7ac14c16e73f0f456edc9665`:
+Verification:
 
 - Source / Architecture: PASS — run 2391;
 - Runtime Acceptance Contracts: PASS — run 2200;
 - cTrader Compile / Build: PASS — run 2384;
 - CI-00 phase audit: PASS — Source/Architecture step 73.
 
-No public parameter name/type/default, trading threshold, confidence, RR, SL/TP
-policy or execution policy was tuned in CI-00.
+No public parameter, trading threshold, confidence, RR, SL/TP or execution policy
+was tuned.
 
-Next specified phase: **CI-01 — Primitive Indicator Mathematical Audit**.
+### CI-01 closeout — Primitive indicator mathematical audit — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #155 merged to `main` as `c52d7c7b5cafbd354b63432c03174156f76c611c`.**
+
+Completed:
+
+- retained cTrader-native ATR/ADX-DMI/EMA/RSI as the standard-indicator
+  authorities;
+- aligned DMI warm-up/readiness with the canonical native readiness rule;
+- made the existing two-EMA feature explicit as MACD-line bias;
+- centralized DMI, MACD-line bias, RangeEfficiency, Choppiness, VWAP and
+  Volume Expansion arithmetic in dedicated pure owners;
+- corrected RangeEfficiency interval semantics and removed silent period
+  shortening;
+- corrected Choppiness full-window semantics;
+- corrected VWAP exact-window and zero-volume behavior;
+- removed pip-scale distortion from Volume Expansion range geometry;
+- added deterministic Runtime Acceptance contracts and an accumulated static audit;
+- corrected one CI-01 audit false-positive and cleaned the roadmap continuity
+  record without changing production trading behavior.
+
+Verification boundary:
+
+- implementation was merged after the repository merge operation;
+- the available GitHub connector did not expose a workflow/check result for the
+  corrected CI-01 head, so this record does not invent a fresh PASS claim;
+- target-terminal cTrader timing, replay and empirical signal-quality remain
+  manual acceptance items.
+
+### CI-02 — OSS numerical parity / warm-up / cache — 2026-10-01
+
+Status: **VERIFIED COMPLETE — final implementation head `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`.**
+
+Completed implementation:
+
+- added pure `OssQuoteWindowRule` for canonical stable/rolling window geometry
+  and rebuild decisions;
+- added pure `OssQuoteProjectionRule` for finite, non-negative OSS quote-volume
+  normalization;
+- preserved fixed Skender settings under `OssIndicatorSettings.Default`;
+- kept the stable/path-dependent adapter window bounded at 768 bars;
+- kept window-local adapters bounded by the existing 161-bar rolling window;
+- centralized stable/rolling first-index and rebuild logic in the new window owner;
+- retained first/last stable-window boundary fingerprints;
+- retained HistoryLoaded/Reloaded invalidation;
+- removed artificial conversion of zero volume to unit volume;
+- added runtime contracts for initial/append/rebuild window semantics, bounds and
+  quote-volume normalization;
+- consolidated the existing H3-B OSS benchmark under one Track 19 benchmark
+  owner, covering all production Skender families, stable/rolling parity, OBV
+  direction and deterministic zero-volume variants;
+- removed the duplicate CI-02 benchmark module and added explicit terminal-date
+  alignment to the parity benchmark;
+- kept the existing FacioQuo research-only boundary unchanged;
+- accumulated the CI-02 static audit after CI-01.
+
+Acceptance implemented:
+
+- stable recursive adapters require finite outputs and zero directional-classification
+  mismatches against full-prefix references while publishing max/mean/RMS error;
+- rolling adapters require exact output agreement within 1e-12;
+- benchmark records full-prefix versus bounded runtime/allocation;
+- no public parameter or trading-policy tuning is introduced.
+
+Repository verification boundary:
+
+- Source / Architecture: **PASS** — workflow run 36909965454 / Source step 75 (`audit_phase_ci_02.py`).
+- Runtime Acceptance Contracts: **PASS** — workflow run 36909965513.
+- cTrader Compile/Build: **PASS** — workflow run 36909965368.
+- OSS benchmark: **PASS** — workflow run 36909965470 / run #92.
+- Target-terminal cache/history behavior and live performance remain manual.
+
+Next specified phase: **CI-03 — Indicator fusion / correlation / evidence independence.**
+
+Manual boundary remains: target-terminal cache/history replacement behavior,
+live CPU/memory characteristics and empirical signal-quality remain manual acceptance items.
 
 # Track 0 — Baseline and clean-state verification
 

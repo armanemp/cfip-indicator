@@ -22,33 +22,20 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 3. Only after CR-FINAL: local cBot separation Track 12A.
 
 ## Active phase
-### CR7.1 / G1 closeout — 2026-10-01
 
-Status: **VERIFIED COMPLETE — Source/Architecture #2262, Runtime Acceptance #2071 and cTrader Compile #2255 passed on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91; merged via PR #138 as b8144c2f1edc62730b7a0723be3746afe6353851.**
+**CI-02 — OSS numerical parity / warm-up / cache — 2026-10-01**
 
-**تأیید می‌کنم** — G1 prevents live risk expansion by separating existing broker-stop health from new-stop acceptability.
+Status: **VERIFIED COMPLETE — implementation head `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`; PR #156 ready to merge.**
 
-Implementation:
-- TargetObstacleCacheKey.GetHashCode() now covers all equality fields, removing CS0659;
-- existing-stop directionality is owned by ManagedStopProtectionRule.IsExistingStopHealthy;
-- new SL candidates still use live market/minimum-distance validation;
-- broker reconciliation, bound-plan protection and broker-state evaluation consume the correct existing-stop health semantics;
-- ProtectionProgressionRule remains the only authority allowed to replace an already healthy stop;
-- deterministic G1/hash runtime contracts and accumulated static audit are wired;
-- audit_project_integrity.py now distinguishes methods by containing type.
+Repository verification:
+- Source/Architecture PASS — workflow run 36909965454;
+- Runtime Acceptance Contracts PASS — workflow run 36909965513;
+- cTrader Compile/Build PASS — workflow run 36909965368;
+- OSS indicator benchmark PASS — workflow run 36909965470.
 
-Verification:
-- Source/Architecture PASS — run 36868297463 / workflow #2262;
-- Runtime Acceptance PASS — run 36868297578 / workflow #2071;
-- cTrader Compile PASS — run 36868297556 / workflow #2255.
+**Next phase: CI-03 — Indicator fusion / correlation / evidence independence.**
 
-Manual boundary:
-- target-terminal broker stop modification and broker minimum-distance behavior;
-- restart/reconnect and live panel/runtime behavior;
-- empirical signal-quality/profitability remain manual.
-
-**Historical transition after G1: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
-
+### Historical remediation closeouts
 
 ### CR6.6 / F7 closeout — 2026-10-01
 
@@ -1067,3 +1054,83 @@ Verification on final implementation head `b0ddaabed9723515d50ac183592f1eb7d56b5
 Operator action after merge: run `git pull --ff-only` on local `main` before continuing.
 
 Next specified phase: **CR8.4 / H4**.
+
+
+## CI integrity-track continuation — 2026-10-01
+
+### CI-01 closeout
+
+CI-01 was completed on branch
+`phase/ci-01-primitive-indicator-integrity` and merged to `main` via PR #155,
+merge commit `c52d7c7b5cafbd354b63432c03174156f76c611c`.
+
+The phase corrected primitive indicator mathematics/readiness without changing
+public parameters or trading-policy thresholds. A final audit false-positive
+was corrected before merge.
+
+### CI-02 implementation boundary
+
+Current implementation branch:
+`phase/ci-02-oss-parity-warmup-cache`
+
+Implemented:
+
+- canonical OSS quote-window owner;
+- canonical finite/non-negative OSS quote-volume normalization;
+- stable 768-bar and rolling 161-bar bounded cache semantics;
+- HistoryLoaded/Reloaded invalidation;
+- stable first/last boundary fingerprints;
+- runtime contracts for cache movement/bounds and quote-volume normalization;
+- one consolidated production-boundary Skender parity benchmark (the existing
+  H3-B owner) across stable and rolling indicator families;
+- duplicate CI-02 benchmark module removed; terminal timestamp alignment is now
+  an explicit parity assertion;
+- deterministic zero-volume benchmark fixtures;
+- runtime/allocation measurement;
+- CI-02 static audit accumulated after CI-01.
+
+Current implementation head is still on the feature branch and has not yet been
+merged.
+
+Repository gate status for the current CI-02 head:
+
+- Source/Architecture: pending actual CI result;
+- Runtime Acceptance Contracts: pending actual CI result;
+- cTrader Compile/Build: pending actual CI result;
+- OSS benchmark: pending actual benchmark workflow result.
+
+No PASS is claimed without a workflow result.
+
+**Next phase after CI-02 verification: CI-03 — Indicator fusion / correlation /
+evidence independence.**
+
+Operator action after CI-02 merge:
+`git pull --ff-only` on local `main`.
+
+Target-terminal cache behavior, history replacement behavior, live performance
+and empirical signal-quality remain manual acceptance boundaries.
+
+
+
+### CI-02 closeout — 2026-10-01
+
+CI-02 completed the OSS numerical parity / warm-up / bounded-cache audit on the
+feature branch `phase/ci-02-oss-parity-warmup-cache`.
+
+A final repository issue found during acceptance was tooling drift: the CI-02
+static audit still referenced the superseded `SkenderProductionParityBenchmark`
+filename, while the existing H3-B benchmark had intentionally been consolidated
+under `SkenderWarmupParityBenchmark`. The benchmark report also referenced the
+obsolete local result name. Both were corrected without changing production
+trading behavior.
+
+Final benchmark result: 384 compared points, 0 directional mismatches, 0
+non-finite pairs, 0 rolling exact mismatches; stable max/mean/RMS error were all
+zero on the deterministic fixtures. Full-prefix timing averaged 21.2374 ms and
+bounded-window timing 7.1466 ms; allocations were 11,303,818 vs 3,875,106 bytes
+per iteration.
+
+No public parameter, confidence, score, RR, SL/TP, risk or execution-policy
+threshold was tuned. FacioQuo remains research-only.
+
+**Next specified phase: CI-03 — Indicator fusion / correlation / evidence independence.**

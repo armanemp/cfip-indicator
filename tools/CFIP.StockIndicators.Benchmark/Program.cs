@@ -101,7 +101,7 @@ internal static class Program
         Console.WriteLine();
         Console.WriteLine(
             passed
-                ? "TRACK 19.1 + CR8.3b COMPLETE: OSS numerical benchmark passed."
+                ? "TRACK 19.1 + CR8.3b + CI-02 COMPLETE: OSS numerical benchmark passed."
                 : "OSS numerical benchmark FAILED: a deterministic parity gate failed.");
 
         return passed ? 0 : 1;

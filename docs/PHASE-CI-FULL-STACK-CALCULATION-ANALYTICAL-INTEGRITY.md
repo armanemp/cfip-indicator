@@ -244,6 +244,52 @@ Explicit non-changes:
 - no replacement of native cTrader indicator mathematics by a second live engine;
 - no FVG/OB/structure/decision/execution changes.
 
+#### CI-02 implementation record
+
+Status: **VERIFIED COMPLETE — implementation head `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`; PR #156.**
+
+Completed correctness and architecture work:
+
+- kept `OssIndicatorSettings` as the fixed-setting authority and
+  `OssIndicatorParameters` as the configured-period/minimum-history authority;
+- added canonical `OssQuoteWindowRule` for bounded window geometry and
+  deterministic rebuild decisions;
+- added canonical `OssQuoteProjectionRule` for finite/non-negative quote-volume
+  normalization;
+- preserved the 768-bar stable window for recursive/path-dependent Skender
+  adapters and the existing 161-bar rolling window for window-local adapters;
+- retained first/last stable-window fingerprints and HistoryLoaded/Reloaded
+  invalidation;
+- removed artificial unit volume from zero-volume source observations;
+- added runtime contracts for window movement, bounds and quote-volume
+  normalization;
+- consolidated the existing H3-B deterministic benchmark into one Track 19
+  OSS parity owner covering all production Skender indicator families,
+  stable/rolling boundaries, OBV direction and zero-volume fixtures;
+- removed the duplicate CI-02 benchmark module so numerical parity has one
+  benchmark execution authority;
+- added full-prefix versus bounded runtime/allocation measurement;
+- accumulated `audit_phase_ci_02.py` after CI-01 in Source/Architecture CI.
+
+Acceptance boundary:
+
+- stable recursive indicators must remain finite and directionally equivalent
+  to full-prefix references while max/mean/RMS error is measured;
+- window-local indicators must match full-prefix terminal output within the
+  deterministic 1e-12 gate;
+- FacioQuo remains research-only and production package ownership is unchanged.
+
+No parameter, confidence, score, RR, risk, SL/TP, decision or execution-policy
+tuning is part of CI-02.
+
+Verification on the final CI-02 implementation head:
+- Source / Architecture: PASS — workflow run 36909965454;
+- Runtime Acceptance Contracts: PASS — workflow run 36909965513;
+- cTrader Compile / Build: PASS — workflow run 36909965368;
+- OSS benchmark: PASS — workflow run 36909965470;
+- deterministic OSS parity: 384 compared points with zero direction/non-finite/
+  rolling-exact mismatches.
+
 ### CI-02 — OSS numerical parity, warm-up and cache audit
 
 Audit Skender adapters and caches, including:

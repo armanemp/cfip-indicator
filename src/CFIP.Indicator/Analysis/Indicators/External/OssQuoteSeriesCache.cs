@@ -233,21 +233,16 @@ namespace cAlgo
                         OssIndicatorWarmupPolicy.StableQuoteWindowSize);
 
             int expectedFirstIndex =
-                Math.Max(
-                    0,
-                    closedIndex -
-                    OssIndicatorWarmupPolicy.StableQuoteWindowSize +
-                    1);
+                OssQuoteWindowRule.ResolveFirstIndex(
+                    closedIndex,
+                    OssIndicatorWarmupPolicy.StableQuoteWindowSize);
 
             bool rebuild =
-                cache.StableClosedIndex < 0 ||
-                closedIndex < cache.StableClosedIndex ||
-                cache.StableFirstIndex < 0 ||
-                expectedFirstIndex < cache.StableFirstIndex ||
-                expectedFirstIndex >
-                    cache.StableFirstIndex + 1 ||
-                closedIndex >
-                    cache.StableClosedIndex + 1;
+                OssQuoteWindowRule.RequiresRebuild(
+                    closedIndex,
+                    expectedFirstIndex,
+                    cache.StableClosedIndex,
+                    cache.StableFirstIndex);
 
             if (rebuild)
             {
@@ -314,15 +309,15 @@ namespace cAlgo
                         OssIndicatorParameters.RollingQuoteWindowSize);
 
             int expectedFirstIndex =
-                Math.Max(
-                    0,
-                    closedIndex -
-                    OssIndicatorParameters.RollingQuoteWindowSize +
-                    1);
+                OssQuoteWindowRule.ResolveFirstIndex(
+                    closedIndex,
+                    OssIndicatorParameters.RollingQuoteWindowSize);
 
-            if (closedIndex < cache.RollingClosedIndex ||
-                expectedFirstIndex < cache.RollingFirstIndex ||
-                expectedFirstIndex > cache.RollingClosedIndex + 1)
+            if (OssQuoteWindowRule.RequiresRebuild(
+                    closedIndex,
+                    expectedFirstIndex,
+                    cache.RollingClosedIndex,
+                    cache.RollingFirstIndex))
             {
                 cache.RollingQuotes.Clear();
                 cache.RollingFirstIndex = expectedFirstIndex;
@@ -367,9 +362,8 @@ namespace cAlgo
                 High = (decimal)bars.HighPrices[index],
                 Low = (decimal)bars.LowPrices[index],
                 Close = (decimal)bars.ClosePrices[index],
-                Volume = Math.Max(
-                    1m,
-                    (decimal)bars.TickVolumes[index])
+                Volume = OssQuoteProjectionRule.NormalizeVolume(
+                    bars.TickVolumes[index])
             };
         }
 
