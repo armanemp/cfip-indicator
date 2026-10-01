@@ -31,11 +31,6 @@ namespace cAlgo
                     "Decision closed-bar context is missing or inconsistent.");
             }
 
-            int closedChartIndex =
-                MapM5ToClosedChart(
-                    closedM5,
-                    chartIndex);
-
             string regime =
                 DetectRegime(
                     _m5Bars,
@@ -66,13 +61,15 @@ namespace cAlgo
                     AdvancedConfluenceBuy =
                         UseAdvancedConfluence
                             ? LiveBias(
-                                closedChartIndex,
+                                closedM5,
+                                reference,
                                 1)
                             : 0,
                     AdvancedConfluenceSell =
                         UseAdvancedConfluence
                             ? LiveBias(
-                                closedChartIndex,
+                                closedM5,
+                                reference,
                                 -1)
                             : 0,
                     UsePremiumDiscount =
