@@ -166,7 +166,7 @@ check(
 check(
     "CI-12 phase documentation is recorded",
     "CI-12 — Structural SL" in roadmap and
-    "CI-12 implementation record" in continuation and
+    "Current implementation phase: **CI-12 — Structural SL audit.**" in continuation and
     "PHASE-CI-12-STRUCTURAL-SL.md" in roadmap and
     "PHASE-CI-12-STRUCTURAL-SL.md" in continuation
 )
