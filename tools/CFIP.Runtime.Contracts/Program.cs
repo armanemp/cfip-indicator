@@ -9443,7 +9443,7 @@ namespace cAlgo
                 "DMI bias is normalized, finite and directionally symmetric");
 
             Assert(
-                MacdBiasRule.IsDirectional(
+                MacdBiasRule.IsMacdDirectional(
                     1,
                     0.80,
                     0.40) &&
@@ -9465,7 +9465,7 @@ namespace cAlgo
                 RangeEfficiencyRule.ResolveFirstCloseIndex(
                     50,
                     20) == 30 &&
-                !RangeEfficiencyRule.HasEnoughHistory(
+                !RangeEfficiencyRule.HasRangeEnoughHistory(
                     19,
                     20) &&
                 RangeEfficiencyRule.HasEnoughHistory(
@@ -9491,7 +9491,7 @@ namespace cAlgo
                 ChoppinessIndexRule.ResolveFirstBarIndex(
                     50,
                     20) == 31 &&
-                !ChoppinessIndexRule.HasEnoughHistory(
+                !ChoppinessIndexRule.HasChoppinessEnoughHistory(
                     18,
                     20) &&
                 ChoppinessIndexRule.HasEnoughHistory(
@@ -9514,7 +9514,7 @@ namespace cAlgo
                 "Choppiness implements the canonical logarithmic ratio");
 
             Assert(
-                VwapBiasRule.IsDirectional(
+                VwapBiasRule.IsVwapDirectional(
                     101,
                     100,
                     1) &&
