@@ -5708,5 +5708,10 @@ Safety:
 Manual boundary:
 - target-terminal cTrader rendering still requires hands-on validation of visible thickness 1/2/3 and preserved Solid style.
 
+Verification:
+- Source/Architecture: **PASS** — run #2295;
+- Runtime Acceptance Contracts: **PASS** — run #2104;
+- cTrader Compile: **PASS** — run #2288.
+
 **Next phase: CR7.4 / G4 — Panel execution/protection state semantics.**
 
