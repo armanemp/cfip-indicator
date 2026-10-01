@@ -68,7 +68,7 @@ namespace cAlgo
             VerifyRuntimeStageIsolation();
             VerifyRuntimeFaultStateMachine();
             VerifyRuntimeExplicitRearmSemantics();
-            VerifyPopupAlertQueueSemantics();
+            VerifyAlertDeliveryQueueSemantics();
             VerifyClosedBarRetryPolicy();
             VerifyUnifiedSubmissionGate();
             VerifyVisualAndExecutionControls();
@@ -6346,6 +6346,79 @@ namespace cAlgo
                     20,
                     25),
                 "structural event identity separates type and direction");
+
+            double[] bullishRebreak =
+            {
+                100.10,
+                100.70,
+                100.40,
+                100.60
+            };
+
+            Assert(
+                !StructuralEventRule.IsFreshConfirmedBreak(
+                    1,
+                    0,
+                    3,
+                    100.0,
+                    1.0,
+                    0.50,
+                    i => bullishRebreak[i]),
+                "bullish re-break after an earlier close above the same structural threshold is not a new event");
+
+            double[] bearishRebreak =
+            {
+                99.90,
+                99.30,
+                99.60,
+                99.40
+            };
+
+            Assert(
+                !StructuralEventRule.IsFreshConfirmedBreak(
+                    -1,
+                    0,
+                    3,
+                    100.0,
+                    1.0,
+                    0.50,
+                    i => bearishRebreak[i]),
+                "bearish re-break after an earlier close below the same structural threshold is not a new event");
+
+            double[] bullishFresh =
+            {
+                100.10,
+                100.40,
+                100.45,
+                100.60
+            };
+
+            double[] bearishFresh =
+            {
+                99.90,
+                99.60,
+                99.55,
+                99.40
+            };
+
+            Assert(
+                StructuralEventRule.IsFreshConfirmedBreak(
+                    1,
+                    0,
+                    3,
+                    100.0,
+                    1.0,
+                    0.50,
+                    i => bullishFresh[i]) &&
+                StructuralEventRule.IsFreshConfirmedBreak(
+                    -1,
+                    0,
+                    3,
+                    100.0,
+                    1.0,
+                    0.50,
+                    i => bearishFresh[i]),
+                "fresh structural breaks remain symmetric when neither side has previously broken the threshold");
         }
 
         private static void VerifyLiquiditySweepSemantics()
@@ -7771,61 +7844,142 @@ namespace cAlgo
                 "degraded runtime cannot be re-armed before recovery");
         }
 
-        private static void VerifyPopupAlertQueueSemantics()
+        private static void VerifyAlertDeliveryQueueSemantics()
         {
             DateTime now = Utc(12, 0);
-            PopupAlertQueue queue = new PopupAlertQueue(3);
+            AlertDeliveryQueue queue =
+                new AlertDeliveryQueue(3);
+
+            AlertDelivery normal1 =
+                new AlertDelivery(
+                    "NORMAL|1",
+                    "normal-1",
+                    false,
+                    now,
+                    true,
+                    "Announcement",
+                    "",
+                    true);
+
+            AlertDelivery normal2 =
+                new AlertDelivery(
+                    "NORMAL|2",
+                    "normal-2",
+                    false,
+                    now,
+                    true,
+                    "Announcement",
+                    "",
+                    true);
+
+            AlertDelivery critical =
+                new AlertDelivery(
+                    "CRITICAL|1",
+                    "critical-1",
+                    true,
+                    now,
+                    true,
+                    "Confirmation",
+                    "",
+                    true);
 
             Assert(
-                queue.Enqueue("normal-1", false, now) &&
-                queue.Enqueue("normal-2", false, now),
-                "popup queue accepts normal alerts");
+                queue.Enqueue(normal1) &&
+                queue.Enqueue(normal2),
+                "alert delivery queue accepts normal alerts");
 
             Assert(
-                queue.Enqueue("critical-1", true, now) &&
+                queue.Enqueue(critical) &&
                 queue.Count == 3,
-                "popup queue remains bounded when a critical alert arrives");
+                "alert delivery queue remains bounded when a critical alert arrives");
 
-            PopupAlert alert;
+            AlertDelivery alert;
             Assert(
                 queue.TryDequeue(out alert) &&
                 alert.Critical &&
-                alert.Message == "critical-1",
-                "critical popup alert is delivered before normal alerts");
+                alert.Message == "critical-1" &&
+                alert.PlaySound &&
+                alert.ShowPopup,
+                "critical alert delivery is prioritized with audio and popup intent intact");
 
             Assert(
                 queue.TryDequeue(out alert) &&
                 alert.Message == "normal-1" &&
                 !alert.Critical,
-                "normal popup FIFO order is preserved after critical priority");
+                "normal alert FIFO order is preserved after critical priority");
 
-            queue = new PopupAlertQueue(3);
+            queue = new AlertDeliveryQueue(3);
+
             Assert(
-                queue.Enqueue("normal-1", false, now) &&
-                queue.Enqueue("normal-2", false, now) &&
-                queue.Enqueue("normal-3", false, now) &&
-                !queue.Enqueue("normal-4", false, now) &&
+                queue.Enqueue(normal1) &&
+                queue.Enqueue(normal2) &&
+                queue.Enqueue(
+                    new AlertDelivery(
+                        "NORMAL|3",
+                        "normal-3",
+                        false,
+                        now,
+                        true,
+                        "Announcement",
+                        "",
+                        false)) &&
+                !queue.Enqueue(
+                    new AlertDelivery(
+                        "NORMAL|4",
+                        "normal-4",
+                        false,
+                        now,
+                        true,
+                        "Announcement",
+                        "",
+                        true)) &&
                 queue.Count == 3,
-                "normal popup overflow is bounded and drops new low-priority work");
+                "normal alert overflow is bounded and drops new low-priority work");
 
-            queue = new PopupAlertQueue(3);
-            queue.Enqueue("normal-1", false, now);
-            queue.Enqueue("normal-2", false, now);
-            queue.Enqueue("normal-3", false, now);
+            queue = new AlertDeliveryQueue(3);
+            queue.Enqueue(normal1);
+            queue.Enqueue(normal2);
+            queue.Enqueue(
+                new AlertDelivery(
+                    "NORMAL|3",
+                    "normal-3",
+                    false,
+                    now,
+                    true,
+                    "Announcement",
+                    "",
+                    true));
 
             Assert(
-                queue.Enqueue("critical-2", true, now) &&
+                queue.Enqueue(
+                    new AlertDelivery(
+                        "CRITICAL|2",
+                        "critical-2",
+                        true,
+                        now,
+                        true,
+                        "Confirmation",
+                        "",
+                        true)) &&
                 queue.Count == 3 &&
                 queue.TryPeek(out alert) &&
                 alert.Critical,
-                "critical popup overflow evicts lower-priority work first");
+                "critical overflow evicts lower-priority work first");
 
             Assert(
-                !queue.Enqueue("", false, now) &&
+                !queue.Enqueue(
+                    new AlertDelivery(
+                        "EMPTY",
+                        "",
+                        false,
+                        now,
+                        true,
+                        "Announcement",
+                        "",
+                        true)) &&
                 queue.Count == 3,
-                "popup queue rejects empty messages without changing bounded state");
+                "alert delivery queue rejects empty messages without changing bounded state");
         }
-
         private static void VerifyDirectionalBiasTimeframeSemantics()
         {
             Assert(
