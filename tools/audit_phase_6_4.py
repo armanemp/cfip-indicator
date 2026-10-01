@@ -100,8 +100,8 @@ check(
 
 check(
     "HIGH_VOLATILITY and TRANSITION remain explicit neutral branches",
-    "MarketRegimeIdentity.HighVolatility" in smart_rule and
-    "MarketRegimeIdentity.Transition" in smart_rule and
+    "public const string HighVolatility = \"HIGH_VOLATILITY\";" in identity and
+    "public const string Transition = \"TRANSITION\";" in identity and
     "case MarketRegimeIdentity.HighVolatility" not in smart_rule and
     "case MarketRegimeIdentity.Transition" not in smart_rule
 )
