@@ -84,7 +84,9 @@ check(
 check(
     "liquidity sweeps require an active unbroken structural level",
     "LiquiditySweepRule.IsActiveUnbrokenLevel(" in liquidity_analyzer and
-    "confirmationIndex = " in liquidity_analyzer
+    "TryFindLatestSwingLow(" in liquidity_analyzer and
+    "TryFindLatestSwingHigh(" in liquidity_analyzer and
+    "confirmationIndex" in liquidity_analyzer
 )
 
 check(
@@ -114,12 +116,12 @@ check(
     "audio has one production delivery owner",
     "Notifications.PlaySound(" not in alert_engine and
     production.count("Notifications.PlaySound(") == alert_processor.count("Notifications.PlaySound(") and
-    alert_processor.count("Notifications.PlaySound(") == 2
+    alert_processor.count("Notifications.PlaySound(") == 3
 )
 
 check(
     "sound cue is resolved only at the cTrader delivery boundary",
-    "SoundTypeName" in alert_queue and
+    "SoundTypeName" in alert_event and
     "Enum.TryParse<SoundType>(" in alert_processor and
     "soundType.ToString()" in alert_engine
 )
@@ -211,12 +213,17 @@ check(
     "CI-04 — Structure / swing / liquidity semantics" in continuation
 )
 
+const calculate_start = calc_cycle.rfind("public void Calculate(");
+const calculate_body = calc_cycle[calculate_start:] if calculate_start >= 0 else calc_cycle;
+
 check(
     "Calculate drains alert delivery only after live calculation/presentation",
-    "ProcessLiveCalculationStages(" in calc_cycle and
-    calc_cycle.index("ProcessLiveCalculationStages(") <
-    calc_cycle.index("ProcessQueuedAlertDelivery();") <
-    calc_cycle.index("CompleteRuntimeFaultCycle();")
+    "ProcessLiveCalculationStages(" in calculate_body and
+    "ProcessQueuedAlertDelivery();" in calculate_body and
+    "CompleteRuntimeFaultCycle();" in calculate_body and
+    calculate_body.index("ProcessLiveCalculationStages(") <
+    calculate_body.index("ProcessQueuedAlertDelivery();") <
+    calculate_body.index("CompleteRuntimeFaultCycle();")
 )
 
 print("CI-04 STRUCTURE / SWING / LIQUIDITY / ALERT SYNC SUMMARY")
