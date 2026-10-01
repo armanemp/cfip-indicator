@@ -6,9 +6,65 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const int MaxTargetStageTelemetryReasonsPerM5 = 24;
+        private const int MaxTargetObstacleTelemetryReasonBucketsPerM5 = 8;
+
         private int _targetStageTelemetryM5 = int.MinValue;
         private HashSet<string> _targetStageTelemetryKeys =
             new HashSet<string>(StringComparer.Ordinal);
+
+        private Dictionary<string, TargetObstacleTelemetryAccumulator>
+            _targetObstacleTelemetry =
+                new Dictionary<string, TargetObstacleTelemetryAccumulator>(
+                    StringComparer.Ordinal);
+
+        private void RecordTargetObstacleObservation(
+            int closedM5,
+            int stage,
+            string reason,
+            double targetDistanceAtr,
+            double obstacleDistanceAtr,
+            double maximumTargetExtensionAtr)
+        {
+            if (!EnableOutcomeTelemetry ||
+                string.IsNullOrWhiteSpace(reason))
+                return;
+
+            if (_targetStageTelemetryM5 != closedM5)
+            {
+                _targetStageTelemetryM5 =
+                    closedM5;
+                _targetStageTelemetryKeys.Clear();
+                _targetObstacleTelemetry.Clear();
+            }
+
+            string key =
+                "TP" +
+                (stage + 1).ToString() +
+                "|" +
+                reason.Trim();
+
+            TargetObstacleTelemetryAccumulator accumulator;
+
+            if (!_targetObstacleTelemetry.TryGetValue(
+                    key,
+                    out accumulator))
+            {
+                if (_targetObstacleTelemetry.Count >=
+                    MaxTargetObstacleTelemetryReasonBucketsPerM5)
+                    return;
+
+                accumulator =
+                    new TargetObstacleTelemetryAccumulator();
+
+                _targetObstacleTelemetry[key] =
+                    accumulator;
+            }
+
+            accumulator.Observe(
+                targetDistanceAtr,
+                obstacleDistanceAtr,
+                maximumTargetExtensionAtr);
+        }
 
         private static void AddTargetRejectionCount(
             Dictionary<string, int> counts,
@@ -87,15 +143,39 @@ namespace cAlgo
                 int count =
                     counts[reason];
 
+                string message =
+                    reason +
+                    " • COUNT=" +
+                    count.ToString();
+
+                string obstacleKey =
+                    "TP" +
+                    (stage + 1).ToString() +
+                    "|" +
+                    reason;
+
+                TargetObstacleTelemetryAccumulator obstacleTelemetry;
+
+                if (_targetObstacleTelemetry.TryGetValue(
+                        obstacleKey,
+                        out obstacleTelemetry))
+                {
+                    string summary =
+                        obstacleTelemetry.FormatSummary();
+
+                    if (!string.IsNullOrWhiteSpace(summary))
+                        message +=
+                            " • " +
+                            summary;
+                }
+
                 RecordExecutionTelemetryHistory(
                     "PLAN_TARGET",
                     closedM5,
                     "TP" +
                     (stage + 1).ToString() +
                     " REJECTED",
-                    reason +
-                    " • COUNT=" +
-                    count.ToString());
+                    message);
 
                 emitted++;
             }

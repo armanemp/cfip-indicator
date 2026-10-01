@@ -124,6 +124,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Plan.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetObstacleTelemetryAccumulator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateRejectionReasons.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ParallelScenarioGeometry.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/DivergenceResult.cs" />

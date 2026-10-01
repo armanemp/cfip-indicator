@@ -4,9 +4,50 @@ using cAlgo.API.Internals;
 
 namespace cAlgo
 {
+    internal readonly struct TargetObstacleEvaluation
+    {
+        public bool Blocked { get; }
+        public string Reason { get; }
+        public double ObstacleDistanceAtr { get; }
+
+        public TargetObstacleEvaluation(
+            bool blocked,
+            string reason,
+            double obstacleDistanceAtr)
+        {
+            Blocked = blocked;
+            Reason = reason ??
+                TargetCandidateRejectionReasons.InvalidGeometry;
+
+            ObstacleDistanceAtr =
+                double.IsNaN(obstacleDistanceAtr) ||
+                double.IsInfinity(obstacleDistanceAtr) ||
+                obstacleDistanceAtr < 0
+                    ? -1
+                    : obstacleDistanceAtr;
+        }
+    }
+
     public partial class CFIPIndicator : Indicator
     {
         private bool HasTargetObstacle(
+            Bars bars,
+            int index,
+            int direction,
+            double entry,
+            double target,
+            double atr)
+        {
+            return EvaluateTargetObstacle(
+                bars,
+                index,
+                direction,
+                entry,
+                target,
+                atr).Blocked;
+        }
+
+        private TargetObstacleEvaluation EvaluateTargetObstacle(
             Bars bars,
             int index,
             int direction,
@@ -18,8 +59,13 @@ namespace cAlgo
                 index < 8 ||
                 atr <= 0 ||
                 !IsFinitePositive(entry) ||
-                !IsFinitePositive(target))
-                return false;
+                !IsFinitePositive(target) ||
+                (direction != 1 &&
+                 direction != -1))
+                return new TargetObstacleEvaluation(
+                    false,
+                    TargetCandidateRejectionReasons.InvalidGeometry,
+                    -1);
 
             double clearance =
                 atr *
@@ -93,7 +139,12 @@ namespace cAlgo
 
                     if (level > entry &&
                         level < target - clearance)
-                        return true;
+                    {
+                        return new TargetObstacleEvaluation(
+                            true,
+                            TargetCandidateRejectionReasons.M5Obstacle,
+                            Math.Abs(level - entry) / atr);
+                    }
                 }
                 else
                 {
@@ -102,7 +153,12 @@ namespace cAlgo
 
                     if (level < entry &&
                         level > target + clearance)
-                        return true;
+                    {
+                        return new TargetObstacleEvaluation(
+                            true,
+                            TargetCandidateRejectionReasons.M5Obstacle,
+                            Math.Abs(level - entry) / atr);
+                    }
                 }
             }
 
@@ -125,16 +181,33 @@ namespace cAlgo
                     liquidityLevel > entry &&
                     liquidityLevel <
                     target - clearance)
-                    return true;
+                {
+                    return new TargetObstacleEvaluation(
+                        true,
+                        TargetCandidateRejectionReasons.EqualHighLowObstacle,
+                        Math.Abs(
+                            liquidityLevel - entry) /
+                        atr);
+                }
 
                 if (direction == -1 &&
                     liquidityLevel < entry &&
                     liquidityLevel >
                     target + clearance)
-                    return true;
+                {
+                    return new TargetObstacleEvaluation(
+                        true,
+                        TargetCandidateRejectionReasons.EqualHighLowObstacle,
+                        Math.Abs(
+                            liquidityLevel - entry) /
+                        atr);
+                }
             }
 
-            return false;
+            return new TargetObstacleEvaluation(
+                false,
+                string.Empty,
+                -1);
         }
     }
 }

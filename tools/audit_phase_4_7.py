@@ -28,6 +28,9 @@ constraints = read("src/CFIP.Indicator/Core/Math/TargetCandidateConstraintRule.c
 envelope = read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs")
 reasons = read("src/CFIP.Indicator/Core/Math/TargetCandidateRejectionReasons.cs")
 evaluator = read("src/CFIP.Indicator/Planning/TradePlan/TargetCandidateEvaluator.cs")
+validator = read(
+    "src/CFIP.Indicator/Trading/Validation/TargetObstacleValidator.cs"
+)
 selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
 telemetry = read(
     "src/CFIP.Indicator/Planning/TradePlan/TargetStageRejectionTelemetry.cs"
@@ -97,11 +100,18 @@ check(
 check(
     "obstacle failures have explicit stage rejection reasons",
     "OBSTACLE_SWING" in reasons
+    and "OBSTACLE_EQ" in reasons
     and "OBSTACLE_OPPOSING_ZONE" in reasons
     and "OBSTACLE_HTF_ZONE" in reasons
-    and "TargetCandidateRejectionReasons.M5Obstacle" in evaluator
+    and (
+        "TargetCandidateRejectionReasons.M5Obstacle" in evaluator
+        or "m5Obstacle.Reason" in evaluator
+    )
+    and "TargetCandidateRejectionReasons.EqualHighLowObstacle" in validator
     and "TargetCandidateRejectionReasons.OpposingZoneObstacle" in evaluator
-    and "TargetCandidateRejectionReasons.HtfZoneObstacle" in evaluator,
+    and "TargetCandidateRejectionReasons.HtfZoneObstacle" in evaluator
+    and "TargetObstacleEvaluation" in validator
+    and "EvaluateTargetObstacle(" in validator,
 )
 check(
     "unreachable stages are identified before the candidate scan",
