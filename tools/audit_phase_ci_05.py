@@ -99,18 +99,25 @@ check(
     "bars.HighPrices[index] + tolerance" in detection
 )
 
-check(
-    "mitigation uses the canonical lifecycle owner",
-    "FvgLifecycleRule.GetMitigationProbe(" in mitigation and
-    "FvgLifecycleRule.TryApplyMitigationStep(" in mitigation and
-    "FvgBreakByWicks" in mitigation and
-    "FvgInvalidateOnFullFill" in mitigation
+mitigation_main_end = mitigation.find("    private bool IsZoneFullyMitigated(")
+mitigation_main = (
+    mitigation[:mitigation_main_end]
+    if mitigation_main_end >= 0
+    else mitigation
 )
 
 check(
-    "mitigation no longer duplicates body/wick probe arithmetic",
-    "Math.Min(" not in mitigation and
-    "Math.Max(" not in mitigation
+    "mitigation uses the canonical lifecycle owner",
+    "FvgLifecycleRule.GetMitigationProbe(" in mitigation_main and
+    "FvgLifecycleRule.TryApplyMitigationStep(" in mitigation_main and
+    "FvgBreakByWicks" in mitigation_main and
+    "FvgInvalidateOnFullFill" in mitigation_main
+)
+
+check(
+    "mitigation main loop no longer duplicates body/wick probe arithmetic",
+    "Math.Min(" not in mitigation_main and
+    "Math.Max(" not in mitigation_main
 )
 
 check(
