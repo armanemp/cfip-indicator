@@ -29,7 +29,6 @@ limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 state = read("Indicator/State.cs")
 factory = read("UI/Controls/ExecutionControlsFactory.cs")
 sync = read("UI/Controls/ExecutionControlsSynchronizer.cs")
-handlers = read("UI/Controls/ExecutionToggleHandlers.cs")
 initialization = read("Runtime/Initialization/RuntimeInitialization.cs")
 
 production_source = "\n".join(
@@ -40,8 +39,7 @@ production_source = "\n".join(
 for required in (
     "_autoTradingQuickToggle",
     "_automaticOrdersQuickToggle",
-    "ApplyAutoTradingQuickToggleClick",
-    "ApplyAutomaticOrdersQuickToggleClick",
+    "_executionToggleSyncing",
 ):
     if required not in production_source:
         raise SystemExit(f"Functional execution-control owner missing: {required}")
@@ -70,47 +68,33 @@ for field in (
         raise SystemExit(f"Functional execution-control field missing: {field}")
 
 if "CreateExecutionToggle(" not in factory:
-    raise SystemExit("Execution controls must be real operator ToggleButton surfaces")
-for token in (
-    "_autoTradingQuickToggle.Click +=",
-    "_automaticOrdersQuickToggle.Click +=",
-):
-    if token not in factory:
-        raise SystemExit(f"Execution toggle event owner missing: {token}")
+    raise SystemExit("Execution status surfaces must use the shared ToggleButton presentation factory")
+if "_autoTradingQuickToggle.Click +=" in factory or "_automaticOrdersQuickToggle.Click +=" in factory:
+    raise SystemExit("Execution status surfaces must not register click handlers")
+if "IsEnabled = false" not in factory:
+    raise SystemExit("Execution status surfaces must be explicitly disabled")
+if "ExecutionControlPresentationRule.ComposeStatusText(" not in factory:
+    raise SystemExit("Execution control text must use the canonical presentation rule")
+
 if "_executionToggleSyncing = true" not in sync:
     raise SystemExit("Execution controls must guard programmatic visual synchronization")
-
 if "EnsureExecutionRuntimeState();" not in sync:
     raise SystemExit("Execution status synchronization must consume canonical runtime/settings state")
 if "SyncQuickExecutionControls(" not in sync:
     raise SystemExit("Execution controls must have a dedicated synchronization boundary")
-
-for required in (
-    "ApplyAutoTradingQuickToggleClick",
-    "ApplyAutomaticOrdersQuickToggleClick",
-):
-    if required not in handlers:
-        raise SystemExit(f"Execution UI click handler missing: {required}")
-
-if "RequestExplicitRearm()" not in handlers:
-    raise SystemExit("Auto Trade quick enable must use the canonical runtime re-arm contract")
-if "EnableAutoTrading" in handlers:
-    raise SystemExit("Auto Trade quick re-arm must not depend on the public Indicator parameter state")
-if "RequestExplicitRearm()" not in state and "RequestExplicitRearm()" not in handlers:
-    raise SystemExit("Explicit runtime re-arm owner is missing")
-
-
-for required_setter in (
-    "SetAutoTradingRuntimeState",
-    "SetAutomaticOrdersRuntimeState",
-):
-    if required_setter not in handlers:
-        raise SystemExit(f"Execution UI handler must call canonical runtime setter: {required_setter}")
+if "ExecutionControlPresentationRule.ComposeStatusText(" not in sync:
+    raise SystemExit("Execution control synchronization must consume the canonical presentation rule")
+if "ExecutionControlPresentationRule.IsInteractive" not in sync:
+    raise SystemExit("Execution control synchronization must enforce the read-only interaction contract")
 
 if "EnableAutoTrading" not in initialization or "EnableAutomaticOrders" not in initialization:
     raise SystemExit("Execution status settings must be sourced from the public cTrader parameters")
 if "EnsureExecutionRuntimeState()" not in initialization:
     raise SystemExit("Execution settings must retain a canonical runtime synchronization boundary")
+if "ExecutionControlPresentationRule.IsInteractive" not in production_source:
+    raise SystemExit("Execution status interaction policy must have a canonical owner")
+if "ApplyAutoTradingQuickToggleClick" in production_source or "ApplyAutomaticOrdersQuickToggleClick" in production_source:
+    raise SystemExit("Legacy interactive execution toggle handlers must be absent")
 
 presentation_rule = read("Core/Math/PlanLinePresentationRule.cs")
 
@@ -194,5 +178,5 @@ if "TryPlaceLimitOrderWithTakeProfitLadder" not in limit_mutation:
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
 print("Pending lines: no M5 mapping dependency")
-print("AUTO TRADE/AUTO ORDERS: interactive runtime controls bound to canonical execution state")
-print("Execution status: synchronized from canonical settings/runtime state")
+print("AUTO TRADE/AUTO ORDERS: status-only surfaces bound to canonical settings/runtime state")
+print("Execution status: synchronized from canonical settings/runtime state without a UI mutation path")
