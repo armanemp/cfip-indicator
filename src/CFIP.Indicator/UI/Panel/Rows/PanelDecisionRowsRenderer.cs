@@ -147,10 +147,8 @@ namespace cAlgo
                                                         contentWidth,
                                                         direction);
 
-                                                    MarketStateFrameSnapshot regime =
-                                                        _marketStateSnapshot == null
-                                                            ? null
-                                                            : _marketStateSnapshot.M5;
+                                                    MarketRegimeSnapshot regime =
+                                                        _m5RegimeSnapshot;
 
                                                     string regimeMetrics =
                                                         regime == null
@@ -166,7 +164,7 @@ namespace cAlgo
                                                               "  •  RANGE " +
                                                               Math.Round(regime.RangeWidthAtr, 2) +
                                                               "ATR  •  STAB " +
-                                                              regime.RegimeStability;
+                                                              regime.Stability;
 
                                                     AddPanelRow(
                                                         ref slot,
