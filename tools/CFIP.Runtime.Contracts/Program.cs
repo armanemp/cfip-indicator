@@ -103,6 +103,8 @@ namespace cAlgo
             VerifyIndependentTimeframeScenarioSemanticsF7();
             VerifyTargetObstacleTelemetryF8();
             VerifyOrphanManagedProtectionF3();
+            VerifyTargetObstacleCacheKeyHashSemantics();
+            VerifyBrokerProtectionG1();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -8528,6 +8530,112 @@ namespace cAlgo
                     53).Allowed,
                 "F6 indicator actionability thresholds preserve RANGE/TRANSITION and neutral values");
         }
+
+        private static void VerifyTargetObstacleCacheKeyHashSemantics()
+        {
+            TargetObstacleCacheKey first =
+                new TargetObstacleCacheKey(
+                    800,
+                    798,
+                    638316000000000000L,
+                    1,
+                    3,
+                    64,
+                    32,
+                    true,
+                    0.10,
+                    0.0001);
+
+            TargetObstacleCacheKey equal =
+                new TargetObstacleCacheKey(
+                    800,
+                    798,
+                    638316000000000000L,
+                    1,
+                    3,
+                    64,
+                    32,
+                    true,
+                    0.10,
+                    0.0001);
+
+            TargetObstacleCacheKey differentDirection =
+                new TargetObstacleCacheKey(
+                    800,
+                    798,
+                    638316000000000000L,
+                    -1,
+                    3,
+                    64,
+                    32,
+                    true,
+                    0.10,
+                    0.0001);
+
+            Assert(
+                first.Equals(equal) &&
+                first.GetHashCode() == equal.GetHashCode(),
+                "TargetObstacleCacheKey equal values must produce equal hashes");
+
+            Assert(
+                !first.Equals(differentDirection),
+                "TargetObstacleCacheKey direction participates in equality");
+        }
+
+        private static void VerifyBrokerProtectionG1()
+        {
+            Assert(
+                ManagedStopProtectionRule.IsExistingStopHealthy(
+                    1,
+                    100.0,
+                    99.9999),
+                "G1 BUY near-market existing stop remains directionally protective");
+
+            Assert(
+                ManagedStopProtectionRule.IsExistingStopHealthy(
+                    -1,
+                    100.0,
+                    100.0001),
+                "G1 SELL near-market existing stop remains directionally protective");
+
+            Assert(
+                !ManagedStopProtectionRule.IsExistingStopHealthy(
+                    1,
+                    100.0,
+                    100.0001) &&
+                !ManagedStopProtectionRule.IsExistingStopHealthy(
+                    -1,
+                    100.0,
+                    99.9999),
+                "G1 wrong-sided existing stops are not healthy");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    99.0,
+                    99.5) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    99.0,
+                    98.5) &&
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    101.0,
+                    100.5) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    101.0,
+                    101.5),
+                "G1 existing-stop replacement remains protective-only for BUY/SELL");
+
+            Assert(
+                !ManagedStopProtectionRule.IsExistingStopHealthy(
+                    0,
+                    100.0,
+                    99.0),
+                "G1 invalid direction is fail-closed");
+        }
+
 
         private static void Assert(bool condition, string name)
         {
