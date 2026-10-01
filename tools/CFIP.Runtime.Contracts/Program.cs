@@ -8850,7 +8850,7 @@ namespace cAlgo
                     true,
                     false,
                     false) ==
-                    ExecutionProtectionPanelStateKind.Protected,
+                    ProtectionPanelStateKind.Protected,
                 "G4 broker-protection rule is independent of BUY/SELL analysis readiness");
 
             Console.WriteLine(
