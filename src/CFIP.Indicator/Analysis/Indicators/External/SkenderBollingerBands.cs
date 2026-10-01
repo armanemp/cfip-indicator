@@ -27,17 +27,15 @@ namespace cAlgo
                 quotes.Count < OssIndicatorParameters.BollingerMinimumHistory)
                 return false;
 
-            var results =
+            var last =
                 StockIndicator.GetBollingerBands(
                     quotes,
                     OssIndicatorSettings.Default.BollingerPeriod,
                     OssIndicatorSettings.Default.BollingerStandardDeviations)
-                    .ToList();
+                    .LastOrDefault();
 
-            if (results.Count == 0)
+            if (last == null)
                 return false;
-
-            var last = results[results.Count - 1];
 
             if (last.PercentB.HasValue)
                 percentB = last.PercentB.Value;
