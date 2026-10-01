@@ -4663,13 +4663,13 @@ namespace cAlgo
                 "CI-07 snapshot carries regime transition, premium/discount and session context");
 
             Assert(
-                MarketRegimeTransitionRule.Resolve("TREND", "TREND") ==
+                MarketRegimeTransitionRule.ClassifyTransition("TREND", "TREND") ==
                     MarketRegimeTransitionRule.Stable &&
-                MarketRegimeTransitionRule.Resolve("TREND", "RANGE") ==
+                MarketRegimeTransitionRule.ClassifyTransition("TREND", "RANGE") ==
                     MarketRegimeTransitionRule.Changed &&
-                MarketRegimeTransitionRule.Resolve(null, "TREND") ==
+                MarketRegimeTransitionRule.ClassifyTransition(null, "TREND") ==
                     MarketRegimeTransitionRule.Initial &&
-                MarketRegimeTransitionRule.Resolve("TREND", "bad") ==
+                MarketRegimeTransitionRule.ClassifyTransition("TREND", "bad") ==
                     MarketRegimeTransitionRule.Unknown,
                 "CI-07 regime transition classification is deterministic and fail-closed");
 
