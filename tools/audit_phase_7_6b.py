@@ -18,8 +18,7 @@ presentation_rule = read("Core/Math/ExecutionControlPresentationRule.cs")
 runtime_program = Path("tools/CFIP.Runtime.Contracts/Program.cs").read_text(encoding="utf-8")
 runtime_csproj = Path("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj").read_text(encoding="utf-8")
 workflow = Path(".github/workflows/source-check.yml").read_text(encoding="utf-8")
-production_source = "
-".join(
+production_source = "\\n".join(
     path.read_text(encoding="utf-8")
     for path in ROOT.rglob("*.cs")
 )
@@ -42,11 +41,6 @@ for token in (
 ):
     if token in factory:
         raise SystemExit(f"G6B status-only execution surface still has a click handler: {token}")
-
-if "ExecutionControlPresentationRule.IsInteractive" not in factory:
-    # Factory fixes interaction at construction time; the synchronizer is the
-    # authoritative runtime re-application boundary.
-    pass
 
 for token in (
     "EnsureExecutionRuntimeState();",
