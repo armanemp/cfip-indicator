@@ -34,6 +34,7 @@ namespace cAlgo
             VerifyParallelScenarioSelectionSemantics();
             VerifyMicroReactionClosedBarSemantics();
             VerifyMtfContextIntegrity();
+            VerifyCi07MarketStateSemantics();
             VerifyCanonicalMarketContext();
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
@@ -4584,6 +4585,110 @@ namespace cAlgo
             Assert(
                 !incomplete.HasPrimaryDecisionHistory,
                 "insufficient closed history blocked");
+        }
+
+        private static void VerifyCi07MarketStateSemantics()
+        {
+            DateTime reference =
+                new DateTime(
+                    2026,
+                    10,
+                    2,
+                    12,
+                    5,
+                    30,
+                    DateTimeKind.Utc);
+
+            MarketStateFrameSnapshot m1 =
+                new MarketStateFrameSnapshot(
+                    "M1", 605, 1, 81, "TREND", 76, 3,
+                    "TREND", "STABLE", 38, 1.05, 0.32, 0.10, 0.62);
+            MarketStateFrameSnapshot m5 =
+                new MarketStateFrameSnapshot(
+                    "M5", 101, 1, 86, "EXPANSION", 82, 1,
+                    "TREND", "CHANGED", 42, 1.31, 0.44, 0.18, 0.71);
+            MarketStateFrameSnapshot m15 =
+                new MarketStateFrameSnapshot(
+                    "M15", 41, 1, 78, "TREND", 74, 3,
+                    "TREND", "STABLE", 35, 1.08, 0.40, 0.12, 0.68);
+            MarketStateFrameSnapshot m30 =
+                new MarketStateFrameSnapshot(
+                    "M30", 31, 1, 73, "TREND", 70, 3,
+                    "EXPANSION", "CHANGED", 34, 1.16, 0.47, 0.14, 0.64);
+            MarketStateFrameSnapshot h1 =
+                new MarketStateFrameSnapshot(
+                    "H1", 31, 1, 69, "TREND", 68, 3,
+                    "TREND", "STABLE", 31, 1.02, 0.51, 0.09, 0.66);
+            MarketStateFrameSnapshot h4 =
+                new MarketStateFrameSnapshot(
+                    "H4", 30, 1, 71, "TREND", 72, 3,
+                    "TREND", "STABLE", 29, 0.98, 0.55, 0.08, 0.63);
+            MarketStateFrameSnapshot d1 =
+                new MarketStateFrameSnapshot(
+                    "D1", 3, 0, 55, "RANGE", 51, 2,
+                    "RANGE", "STABLE", 58, 0.93, 0.12, 0.01, 0.31);
+            MarketStateFrameSnapshot w1 =
+                new MarketStateFrameSnapshot(
+                    "W1", 1, 0, 48, "UNKNOWN", 0, 0,
+                    "UNKNOWN", "UNKNOWN", 0, 1.0, 0, 0, 0);
+
+            MarketStateSnapshot state =
+                new MarketStateSnapshot(
+                    reference,
+                    m1, m5, m15, m30, h1, h4, d1, w1,
+                    1,
+                    true);
+
+            Assert(
+                state.MatchesReference(reference) &&
+                !state.MatchesReference(reference.AddSeconds(1)),
+                "CI-07 snapshot preserves exact reference identity");
+
+            Assert(
+                state.IsAlignedWithClosedIndices(
+                    605, 101, 41, 31, 31, 30, 3, 1),
+                "CI-07 snapshot preserves all eight canonical MTF indices");
+
+            Assert(
+                !state.IsAlignedWithClosedIndices(
+                    605, 100, 41, 31, 31, 30, 3, 1),
+                "CI-07 snapshot rejects a future/misaligned M5 index");
+
+            Assert(
+                state.M5.Regime == "EXPANSION" &&
+                state.M5.PreviousRegime == "TREND" &&
+                state.M5.RegimeTransition == "CHANGED" &&
+                state.PremiumDiscountBias == 1 &&
+                state.SessionOpen,
+                "CI-07 snapshot carries regime transition, premium/discount and session context");
+
+            Assert(
+                MarketRegimeTransitionRule.Resolve("TREND", "TREND") ==
+                    MarketRegimeTransitionRule.Stable &&
+                MarketRegimeTransitionRule.Resolve("TREND", "RANGE") ==
+                    MarketRegimeTransitionRule.Changed &&
+                MarketRegimeTransitionRule.Resolve(null, "TREND") ==
+                    MarketRegimeTransitionRule.Initial &&
+                MarketRegimeTransitionRule.Resolve("TREND", "bad") ==
+                    MarketRegimeTransitionRule.Unknown,
+                "CI-07 regime transition classification is deterministic and fail-closed");
+
+            MarketStateFrameSnapshot normalized =
+                new MarketStateFrameSnapshot(
+                    "m5", 101, 9, 120, "bad", 120, 9,
+                    "bad", null, double.NaN, double.PositiveInfinity,
+                    double.NaN, double.NaN, double.NaN);
+
+            Assert(
+                normalized.Timeframe == "M5" &&
+                normalized.Direction == 0 &&
+                normalized.Quality == 100 &&
+                normalized.Regime == MarketRegimeIdentity.Unknown &&
+                normalized.RegimeQuality == 100 &&
+                normalized.RegimeStability == 3 &&
+                normalized.PreviousRegime == MarketRegimeIdentity.Unknown &&
+                normalized.RegimeTransition == MarketRegimeTransitionRule.Unknown,
+                "CI-07 frame snapshot normalizes invalid state without inventing direction");
         }
 
         private static void VerifyCanonicalMarketContext()
