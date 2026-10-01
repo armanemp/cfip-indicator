@@ -46,6 +46,7 @@ namespace cAlgo
             VerifyOssQuoteWindowSemantics();
             VerifyOssWarmupPolicy();
             VerifyStructuralStopRiskCeilingSemantics();
+            VerifyStructuralStopGeometryCi12();
             VerifyLiquidityTargetCandidateSemantics();
             VerifyIndependentEvidenceGroupSemantics();
             VerifyCi03IndicatorEvidenceIndependence();
@@ -254,6 +255,184 @@ namespace cAlgo
                     "OBSTACLE_HTF_ZONE",
                 "target obstacle rejection taxonomy preserves swing, equality, opposing-zone and HTF-zone categories");
         }
+
+        private static void VerifyStructuralStopGeometryCi12()
+        {
+            Assert(
+                StructuralStopGeometryRule.ResolveBufferAtr(
+                    "M5",
+                    0.10,
+                    0.15) == 0.10 &&
+                StructuralStopGeometryRule.ResolveBufferAtr(
+                    "H1",
+                    0.10,
+                    0.15) == 0.15,
+                "structural stop buffer uses M5 and HTF semantics without drift");
+
+            StructuralStopGeometrySnapshot buy =
+                StructuralStopGeometryRule.Evaluate(
+                    1,
+                    100,
+                    100,
+                    2,
+                    2,
+                    0.01,
+                    "M5",
+                    0.10,
+                    0.15,
+                    0.01,
+                    2);
+
+            StructuralStopGeometrySnapshot sell =
+                StructuralStopGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    100,
+                    2,
+                    2,
+                    0.01,
+                    "M5",
+                    0.10,
+                    0.15,
+                    0.01,
+                    2);
+
+            Assert(
+                buy.IsValid &&
+                sell.IsValid &&
+                buy.Stop == 99.80 &&
+                sell.Stop == 100.20 &&
+                buy.RiskAtr == sell.RiskAtr,
+                "BUY/SELL structural stop geometry is mirrored and normalized deterministically");
+
+            StructuralStopGeometrySnapshot roundedBuy =
+                StructuralStopGeometryRule.Evaluate(
+                    1,
+                    100,
+                    100,
+                    2,
+                    2,
+                    0.01,
+                    "M5",
+                    0.10,
+                    0.15,
+                    0.25,
+                    2);
+
+            StructuralStopGeometrySnapshot roundedSell =
+                StructuralStopGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    100,
+                    2,
+                    2,
+                    0.01,
+                    "M5",
+                    0.10,
+                    0.15,
+                    0.25,
+                    2);
+
+            Assert(
+                roundedBuy.Stop == 99.75 &&
+                roundedSell.Stop == 100.25 &&
+                Math.Abs(
+                    roundedBuy.Risk -
+                    roundedSell.Risk) < 1e-9,
+                "tick-size normalization preserves mirrored structural risk");
+
+            Assert(
+                !StructuralStopGeometryRule.Evaluate(
+                    1,
+                    100,
+                    101,
+                    2,
+                    2,
+                    0.01,
+                    "M5",
+                    0.10,
+                    0.15,
+                    0.01,
+                    2).IsValid &&
+                !StructuralStopGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    99,
+                    2,
+                    2,
+                    0.01,
+                    "M5",
+                    0.10,
+                    0.15,
+                    0.01,
+                    2).IsValid,
+                "structural stop cannot cross to the non-protective side");
+
+            StructuralStopGeometrySnapshot fallbackBuy =
+                StructuralStopGeometryRule.EvaluateFallback(
+                    1,
+                    100,
+                    2,
+                    1,
+                    0.01,
+                    2);
+
+            StructuralStopGeometrySnapshot fallbackSell =
+                StructuralStopGeometryRule.EvaluateFallback(
+                    -1,
+                    100,
+                    2,
+                    1,
+                    0.01,
+                    2);
+
+            Assert(
+                fallbackBuy.IsValid &&
+                fallbackSell.IsValid &&
+                fallbackBuy.Stop == 98 &&
+                fallbackSell.Stop == 102 &&
+                fallbackBuy.RiskAtr == fallbackSell.RiskAtr &&
+                fallbackBuy.Reason == "FALLBACK" &&
+                fallbackSell.Reason == "FALLBACK",
+                "fallback structural stop geometry is canonical and symmetric");
+
+            Assert(
+                StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                    1.80,
+                    1.0,
+                    0.55,
+                    1.80,
+                    2.25,
+                    0.20,
+                    0.01,
+                    0.50) &&
+                !StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                    1.81,
+                    1.0,
+                    0.55,
+                    1.80,
+                    2.25,
+                    0.20,
+                    0.01,
+                    0.50),
+                "planning stop risk remains bounded by the configured maximum");
+
+            Assert(
+                !StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                    1.80,
+                    1.0,
+                    0.55,
+                    1.80,
+                    2.25,
+                    2.0,
+                    0.01,
+                    1.0),
+                "spread pressure cannot raise the configured maximum stop-risk ceiling");
+
+            Console.WriteLine(
+                "CI-12 structural stop geometry and risk contracts PASS");
+        }
+
 
         private static void VerifyStructuralStopRiskCeilingSemantics()
         {
