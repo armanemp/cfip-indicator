@@ -1,6 +1,13 @@
 # CR5.6 / E6 — Directional-bias semantics and timeframe consistency
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending**
+Status: **VERIFIED COMPLETE — PR #122**
+
+Implementation head before documentation closeout: e930e30d9c82ad279316a41c81116d4ae1e19859.
+
+Verification on that implementation head:
+- Source/Architecture: PASS — workflow run 36838144439;
+- Runtime Acceptance Contracts: PASS — workflow run 36838144403;
+- cTrader Compile: PASS — workflow run 36838144416.
 
 ## Scope
 
