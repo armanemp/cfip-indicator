@@ -21,6 +21,7 @@ namespace cAlgo
                 IdealEntry = _plan.IdealEntry,
                 EntryZoneLow = _plan.EntryZoneLow,
                 EntryZoneHigh = _plan.EntryZoneHigh,
+                EntryZoneTolerance = _plan.EntryZoneTolerance,
                 EntryTrigger = _plan.EntryTrigger,
                 EntryInvalidation = _plan.EntryInvalidation,
                 EntryQuality = _plan.EntryQuality,
@@ -219,6 +220,7 @@ namespace cAlgo
                 EntryTrigger = NormalizePrice(intent.Trigger),
                 EntryZoneLow = NormalizePrice(intent.ZoneLow),
                 EntryZoneHigh = NormalizePrice(intent.ZoneHigh),
+                EntryZoneTolerance = 0,
                 Stop = NormalizePrice(intent.Stop),
                 Tp1 = IsFinitePositive(tp1)
                     ? NormalizePrice(tp1)
