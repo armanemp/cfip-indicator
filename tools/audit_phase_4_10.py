@@ -124,8 +124,10 @@ check(
 check(
     "ADX/DMI non-finite data remains fail-closed",
     "NativeIndicatorReadinessRule.IsIndexedSeriesReady(" in adx and
-    "double.IsNaN(value)" in adx and
-    "total <= 0" in dmi,
+    "DmiBiasRule.Calculate(" in dmi and
+    "IsDmiFiniteNonNegative(" in read(
+        "src/CFIP.Indicator/Core/Math/DmiBiasRule.cs"
+    ),
 )
 check(
     "EMA and MACD prior-sample reads are readiness bounded",

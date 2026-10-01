@@ -20,7 +20,8 @@ namespace cAlgo
                         {
                             if (!UseVolumeExpansion ||
                                 bars == null ||
-                                index < 25)
+                                index < 20 ||
+                                index >= bars.Count)
                                 return false;
 
                             double averageVolume = 0;
@@ -60,10 +61,11 @@ namespace cAlgo
                                 return false;
 
                             double currentRange =
-                                Math.Max(
-                                    Symbol.PipSize,
-                                    bars.HighPrices[index] -
-                                    bars.LowPrices[index]);
+                                bars.HighPrices[index] -
+                                bars.LowPrices[index];
+
+                            if (currentRange <= 0)
+                                return false;
 
                             double currentBody =
                                 Math.Abs(
@@ -99,12 +101,11 @@ namespace cAlgo
                                     : closeLocation >= 0.65);
 
                             return
-                                directional &&
-                                priceResult &&
-                                bars.TickVolumes[index] >=
-                                averageVolume *
-                                Math.Max(
-                                    1.0,
+                                VolumeExpansionRule.IsExpanded(
+                                    directional,
+                                    priceResult,
+                                    bars.TickVolumes[index],
+                                    averageVolume,
                                     VolumeExpansionRatio);
                         }
     }

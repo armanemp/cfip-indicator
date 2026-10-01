@@ -701,7 +701,7 @@ marked as a research milestone that may be completed early.
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-00 complete; CI-01 is next. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
+Status: **active — CI-01 implemented; final repository gates pending. CI-02 is next after CI-01 merge. The track continues to block continuation of ordinary refinement phases until CI-FINAL closes.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -764,6 +764,36 @@ mathematical, semantic, provenance or timing defect.`
 ### CI-00 closeout — Canonical data / price / time — 2026-10-01
 
 Status: **COMPLETE — PR #154 verified and merged.**
+
+### CI-01 — Primitive indicator mathematical audit — 2026-10-01
+
+
+Status: **IMPLEMENTED — final repository gate pending.**
+
+Completed:
+
+- native ATR/ADX-DMI/EMA/RSI ownership retained at the cTrader indicator boundary;
+- DMI warm-up/readiness aligned with the canonical native readiness rule;
+- MACD-line bias semantics made explicit;
+- DMI, MACD-line bias, RangeEfficiency, Choppiness, VWAP and Volume Expansion
+  formulas moved to dedicated pure mathematical owners;
+- corrected RangeEfficiency interval mismatch;
+- removed silent period shortening from RangeEfficiency and Choppiness;
+- corrected VWAP zero-volume weighting and exact-window semantics;
+- removed pip-scale distortion from Volume Expansion bar range;
+- deterministic Runtime Acceptance coverage added;
+- CI-01 static audit accumulated in Source/Architecture CI;
+- no threshold/weight/strategy tuning performed.
+
+Acceptance targets:
+
+- full configured windows only;
+- finite and bounded outputs;
+- explicit mirror symmetry;
+- no duplicate primitive formula owners;
+- no fabricated values from unavailable data.
+
+Next specified phase: **CI-02 — OSS numerical parity / warm-up / cache audit**.
 
 Completed:
 

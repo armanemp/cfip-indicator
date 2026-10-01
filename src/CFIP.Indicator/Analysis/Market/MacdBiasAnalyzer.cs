@@ -1,5 +1,7 @@
 // CFIP Indicator — MacdBiasAnalyzer.cs
 // Single-responsibility analysis module.
+// This feature is intentionally a two-EMA MACD-line bias. The parameter
+// surface currently defines only fast/slow periods; no signal-line crossover is used.
 
 using System;
 using System.Collections.Generic;
@@ -43,31 +45,21 @@ namespace cAlgo
                                         MacdSlowPeriod)))
                                 return false;
                 
-                            double histogram =
+                            double macdLine =
                                 set.MacdFast.Result[index] -
                                 set.MacdSlow.Result[index];
-                
+
                             int previousIndex =
-                                Math.Max(
-                                    0,
-                                    index - 2);
-                
-                            double previous =
+                                index - 2;
+
+                            double previousMacdLine =
                                 set.MacdFast.Result[previousIndex] -
                                 set.MacdSlow.Result[previousIndex];
-                
-                            if (double.IsNaN(histogram) ||
-                                double.IsInfinity(histogram) ||
-                                double.IsNaN(previous) ||
-                                double.IsInfinity(previous))
-                                return false;
-                
-                            return
-                                direction == 1
-                                    ? histogram > 0 &&
-                                      histogram >= previous
-                                    : histogram < 0 &&
-                                      histogram <= previous;
+
+                            return MacdBiasRule.IsMacdDirectional(
+                                direction,
+                                macdLine,
+                                previousMacdLine);
                         }
     }
 }

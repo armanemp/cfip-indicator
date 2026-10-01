@@ -22,6 +22,27 @@ The source tree is organized by responsibility and artifact ownership.
 
 The cTrader host remains a single `CFIPIndicator` partial type solely for platform compatibility. Partial files are implementation units, not alternative engines.
 
+### Primitive indicator mathematical ownership
+
+Standard ATR, ADX/DMI, EMA and RSI calculations are delegated to the cTrader
+native indicator boundary; production code does not maintain a competing
+second implementation of those standard formulas.
+
+CFIP-specific primitive transformations have explicit pure owners under
+Core/Math:
+
+- DmiBiasRule;
+- MacdBiasRule;
+- RangeEfficiencyRule;
+- ChoppinessIndexRule;
+- VwapBiasRule;
+- VolumeExpansionRule.
+
+Analyzers perform only data-window selection and platform data access, then
+delegate arithmetic/normalization to those owners. This keeps measurement
+logic separate from platform adapters and prevents a second formula authority
+from appearing in downstream decision or execution code.
+
 ### Canonical calculation-market context
 
 The calculation runtime owns one `CalculationMarketContext` per live calculation

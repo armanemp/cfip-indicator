@@ -11,18 +11,24 @@ namespace cAlgo
             int period)
         {
             if (bars == null ||
-                index < 2)
+                index < 0 ||
+                index >= bars.Count)
                 return 100;
 
             int length =
                 Math.Max(
                     10,
-                    Math.Min(
-                        period,
-                        index + 1));
+                    period);
+
+            if (!ChoppinessIndexRule.HasChoppinessEnoughHistory(
+                    index,
+                    length))
+                return 100;
 
             int first =
-                index - length + 1;
+                ChoppinessIndexRule.ResolveFirstBarIndex(
+                    index,
+                    length);
 
             double trueRangeSum = 0;
             double highest = double.MinValue;
@@ -65,21 +71,10 @@ namespace cAlgo
                 trueRangeSum <= 0)
                 return 100;
 
-            double value =
-                100.0 *
-                Math.Log10(
-                    trueRangeSum /
-                    range) /
-                Math.Log10(
-                    Math.Max(
-                        2,
-                        length));
-
-            return Math.Max(
-                0,
-                Math.Min(
-                    100,
-                    value));
+            return ChoppinessIndexRule.Evaluate(
+                trueRangeSum,
+                range,
+                length);
         }
 
     }
