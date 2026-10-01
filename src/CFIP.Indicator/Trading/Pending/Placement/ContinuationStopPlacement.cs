@@ -10,7 +10,8 @@ namespace cAlgo
             if (!CanRunAutomaticEntry())
             { ApplyRuntimeEntryGate(); return false; }
 
-            int direction; double atr, trigger, stop, target, volume; ExecutionIntent pendingIntent;
+            int direction; double trigger, stop, target, volume; ExecutionIntent pendingIntent;
+            double atr = 0;
             if (!TryPrepareContinuationStop(closedM5, out direction, out atr, out trigger, out stop, out target, out _, out _, out volume, out pendingIntent))
                 return false;
 
