@@ -12,6 +12,7 @@ namespace cAlgo
             VerifyRiskPercentBounds();
             VerifyRiskAmount();
             VerifyMarginUsage();
+            VerifyOssIndicatorSettings();
 
             VerifyStopTargetProtection();
             VerifyTp1DirectionalDefence();
@@ -103,7 +104,50 @@ namespace cAlgo
             Assert(
                 MarginUsagePolicy.CalculateAllowedPercent(120, 0) == 100,
                 "margin ceiling");
-        }        private static void VerifyStopTargetProtection()
+        }        private static void VerifyOssIndicatorSettings()
+        {
+            OssIndicatorSettings settings =
+                OssIndicatorSettings.Default;
+
+            Assert(
+                settings.MacdSignalPeriod == 9,
+                "H3-A MACD signal period default");
+
+            Assert(
+                settings.BollingerPeriod == 20 &&
+                Math.Abs(settings.BollingerStandardDeviations - 2.0) < 1e-12,
+                "H3-A Bollinger defaults");
+
+            Assert(
+                settings.MfiPeriod == 14,
+                "H3-A MFI period default");
+
+            Assert(
+                settings.StochLookbackPeriod == 14 &&
+                settings.StochSignalPeriod == 3 &&
+                settings.StochSmoothPeriod == 3,
+                "H3-A Stochastic defaults");
+
+            Assert(
+                settings.SuperTrendPeriod == 10 &&
+                Math.Abs(settings.SuperTrendMultiplier - 3.0) < 1e-12,
+                "H3-A SuperTrend defaults");
+
+            Assert(
+                settings.AroonPeriod == 25 &&
+                settings.CciPeriod == 20,
+                "H3-A Aroon/CCI defaults");
+
+            Assert(
+                Math.Abs(settings.ParabolicSarAccelerationFactor - 0.02) < 1e-12 &&
+                Math.Abs(settings.ParabolicSarMaximumAccelerationFactor - 0.20) < 1e-12,
+                "H3-A Parabolic SAR defaults");
+
+            Console.WriteLine(
+                "H3-A Skender settings defaults: all legacy values preserved");
+        }
+
+        private static void VerifyStopTargetProtection()
         {
             Assert(
                 PriceProtectionRule.ValidateStop(1, 100, 98, 1),

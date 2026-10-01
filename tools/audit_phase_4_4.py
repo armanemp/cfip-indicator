@@ -25,6 +25,7 @@ def check(name: str, condition: bool) -> None:
 parameters = read(
     "src/CFIP.Indicator/Analysis/Indicators/External/OssIndicatorParameters.cs"
 )
+settings = read("src/CFIP.Indicator/Core/Math/OssIndicatorSettings.cs")
 cache = read(
     "src/CFIP.Indicator/Analysis/Indicators/External/OssQuoteSeriesCache.cs"
 )
@@ -50,14 +51,33 @@ check(
 )
 check(
     "fixed OSS periods and factors are centralized",
-    "BollingerPeriod = 20" in parameters
-    and "MfiPeriod = 14" in parameters
-    and "StochLookbackPeriod = 14" in parameters
-    and "SuperTrendPeriod = 10" in parameters
-    and "AroonPeriod = 25" in parameters
-    and "CciPeriod = 20" in parameters
-    and "ParabolicSarAccelerationFactor = 0.02" in parameters
-    and "ParabolicSarMaximumAccelerationFactor = 0.20" in parameters,
+    "internal sealed class OssIndicatorSettings" in settings
+    and "MacdSignalPeriod = 9" in settings
+    and "BollingerPeriod = 20" in settings
+    and "BollingerStandardDeviations = 2.0" in settings
+    and "MfiPeriod = 14" in settings
+    and "StochLookbackPeriod = 14" in settings
+    and "StochSignalPeriod = 3" in settings
+    and "StochSmoothPeriod = 3" in settings
+    and "SuperTrendPeriod = 10" in settings
+    and "SuperTrendMultiplier = 3.0" in settings
+    and "AroonPeriod = 25" in settings
+    and "CciPeriod = 20" in settings
+    and "ParabolicSarAccelerationFactor = 0.02" in settings
+    and "ParabolicSarMaximumAccelerationFactor = 0.20" in settings
+    and "MacdSignalPeriod" not in parameters
+    and "BollingerPeriod" not in parameters
+    and "BollingerStandardDeviations" not in parameters
+    and "MfiPeriod" not in parameters
+    and "StochLookbackPeriod" not in parameters
+    and "StochSignalPeriod" not in parameters
+    and "StochSmoothPeriod" not in parameters
+    and "SuperTrendPeriod" not in parameters
+    and "SuperTrendMultiplier" not in parameters
+    and "AroonPeriod" not in parameters
+    and "CciPeriod" not in parameters
+    and "ParabolicSarAccelerationFactor" not in parameters
+    and "ParabolicSarMaximumAccelerationFactor" not in parameters,
 )
 check(
     "current warm-up contracts are centralized",

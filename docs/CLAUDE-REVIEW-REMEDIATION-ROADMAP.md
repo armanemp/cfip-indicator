@@ -2095,7 +2095,7 @@ The Prompt 7 G6B implementation is closed on main. The historical CR7.6c/G6C mar
 
 CR8.1/H1 → CR8.2/H2 → CR8.3a/H3-A → CR8.3b/H3-B → CR8.4/H4 → CR8.5a/H5-A → CR8.5b/H5-B → CR8.6/H6 → CR-FINAL
 
-Current active implementation phase: **CR8.3a / H3-A — next Prompt 8 remediation phase.**
+Current active implementation phase: **CR8.3b / H3-B — next Prompt 8 remediation phase.**
 
 CR8.1/H1 is verified complete on PR #149 with Source/Architecture #2348, Runtime Acceptance #2157 and cTrader Compile #2341.
 
@@ -2232,3 +2232,30 @@ This is especially important for:
 - stop-width preferences;
 - early-prediction weights;
 - calibration adjustments.
+
+
+### CR8.3a / H3-A closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #151, implementation head `b19e3366b0115d79a6e6a61b79af310ac64bbdd7`.**
+
+Completed:
+- one immutable Core `OssIndicatorSettings.Default` owns the fixed production Skender settings;
+- fixed defaults were removed from `OssIndicatorParameters`, which retains cache/history/safety settings;
+- all affected Skender adapters consume the canonical owner;
+- RSI and MACD fast/slow remain parameter-driven;
+- deterministic Planning/Runtime contracts and `audit_phase_8_3a.py` cover ownership and preserved values;
+- the accumulated CR4.4 settings audit was reconciled;
+- phase completion is recorded in `docs/PHASE-CR8-3A-H3-A-SKENDER-SETTINGS.md`.
+
+Verification:
+- Source / Architecture: **PASS**;
+- Runtime Acceptance Contracts: **PASS**;
+- cTrader Compile / Build: **PASS**.
+
+Safety:
+- public parameter names/types/DefaultValues unchanged;
+- no trading/RR/confidence/entry/SL/TP/risk/execution tuning;
+- no decision or broker-execution authority changed;
+- H3-B warm-up/bounded-computation/cache/parity work remains separate.
+
+**Next implementation phase: CR8.3b / H3-B.**

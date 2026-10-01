@@ -30,9 +30,9 @@ namespace cAlgo
             var results =
                 StockIndicator.GetStoch(
                     quotes,
-                    OssIndicatorParameters.StochLookbackPeriod,
-                    OssIndicatorParameters.StochSignalPeriod,
-                    OssIndicatorParameters.StochSmoothPeriod)
+                    OssIndicatorSettings.Default.StochLookbackPeriod,
+                    OssIndicatorSettings.Default.StochSignalPeriod,
+                    OssIndicatorSettings.Default.StochSmoothPeriod)
                     .ToList();
 
             if (results.Count == 0)

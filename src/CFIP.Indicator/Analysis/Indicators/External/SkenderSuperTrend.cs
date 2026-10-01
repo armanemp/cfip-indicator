@@ -25,8 +25,8 @@ namespace cAlgo
             var results =
                 StockIndicator.GetSuperTrend(
                     quotes,
-                    OssIndicatorParameters.SuperTrendPeriod,
-                    OssIndicatorParameters.SuperTrendMultiplier)
+                    OssIndicatorSettings.Default.SuperTrendPeriod,
+                    OssIndicatorSettings.Default.SuperTrendMultiplier)
                     .ToList();
 
             return results.Count == 0 ||

@@ -30,8 +30,8 @@ namespace cAlgo
             var results =
                 StockIndicator.GetBollingerBands(
                     quotes,
-                    OssIndicatorParameters.BollingerPeriod,
-                    OssIndicatorParameters.BollingerStandardDeviations)
+                    OssIndicatorSettings.Default.BollingerPeriod,
+                    OssIndicatorSettings.Default.BollingerStandardDeviations)
                     .ToList();
 
             if (results.Count == 0)

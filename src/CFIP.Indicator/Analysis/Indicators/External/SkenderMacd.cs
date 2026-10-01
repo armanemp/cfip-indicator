@@ -35,7 +35,7 @@ namespace cAlgo
                     quotes,
                     fast,
                     slow,
-                    OssIndicatorParameters.MacdSignalPeriod)
+                    OssIndicatorSettings.Default.MacdSignalPeriod)
                     .ToList();
 
             return results.Count == 0 ||

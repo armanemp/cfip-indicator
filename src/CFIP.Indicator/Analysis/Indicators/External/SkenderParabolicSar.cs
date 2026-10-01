@@ -24,8 +24,8 @@ namespace cAlgo
             var results =
                 StockIndicator.GetParabolicSar(
                     quotes,
-                    OssIndicatorParameters.ParabolicSarAccelerationFactor,
-                    OssIndicatorParameters.ParabolicSarMaximumAccelerationFactor)
+                    OssIndicatorSettings.Default.ParabolicSarAccelerationFactor,
+                    OssIndicatorSettings.Default.ParabolicSarMaximumAccelerationFactor)
                     .ToList();
 
             return results.Count == 0 ||

@@ -3413,7 +3413,7 @@ The current research milestone Track 19.1 and the completed safety-first phases 
 
 Deep project audit continuity record: `docs/DEEP-AUDIT-2026-09-29.md`. The certification sequence continues from the next dependency below.
 
-**NEXT: CR8.3a/H3-A**
+**NEXT: CR8.3b/H3-B**
 
 Then proceed in dependency order:
 
@@ -5846,7 +5846,7 @@ Manual cTrader boundary:
 
 ## Prompt 8 Remediation Gate — H1–H6 — 2026-10-01
 
-Status: **ACTIVE REMEDIATION TRACK — CR8.2/H2 VERIFIED COMPLETE; CR8.3a/H3-A NEXT.**
+Status: **ACTIVE REMEDIATION TRACK — CR8.3a/H3-A VERIFIED COMPLETE; CR8.3b/H3-B NEXT.**
 
 Prompt 8 is the next fully specified remediation sequence after Prompt 7.
 It does not reopen or renumber Prompt 4, Prompt 5, Prompt 6 or Prompt 7.
@@ -5931,7 +5931,7 @@ Manual cTrader boundary:
 - target-terminal top-down timing/presentation, replay distribution and empirical signal quality remain manual;
 - the phase makes no profitability or win-rate claim.
 
-Next specified phase: **CR8.3a / H3-A**.
+Next specified phase: **CR8.3b / H3-B**.
 
 Sequence continuity:
 - Prompt 7 G6B is closed on `main`;
@@ -5940,3 +5940,33 @@ Sequence continuity:
   speculative G6C behavior was invented;
 - CR8.2/H2 is verified complete on PR #150 with all three repository gates passing on final implementation HEAD.
 - next specified phase is **CR8.3a / H3-A**.
+
+
+### CR8.3a / H3-A closeout — Skender settings ownership — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #151 implementation head `b19e3366b0115d79a6e6a61b79af310ac64bbdd7`.**
+
+Completed:
+- centralized all fixed production Skender settings under immutable Core `OssIndicatorSettings.Default`;
+- removed those fixed defaults from `OssIndicatorParameters`, leaving cache/history and safety semantics there;
+- migrated Aroon, Bollinger Bands, CCI, MACD signal, MFI, Parabolic SAR, Stochastic and SuperTrend adapters;
+- preserved RSI and MACD fast/slow values as parameter-driven inputs exactly as before;
+- added deterministic Planning/Runtime contract coverage for all preserved defaults;
+- added `tools/audit_phase_8_3a.py` and accumulated it after H2 in Source/Architecture CI;
+- reconciled the accumulated CR4.4 fixed-settings audit with the new owner;
+- added the phase-specific completion record `docs/PHASE-CR8-3A-H3-A-SKENDER-SETTINGS.md`.
+
+Verification on the H3-A implementation head:
+- Source / Architecture: **PASS**;
+- Runtime Acceptance Contracts: **PASS**;
+- cTrader Compile / Build: **PASS**.
+
+Safety/performance boundary:
+- no public parameter name, type or DefaultValue changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold tuned;
+- no decision or broker-mutation authority changed;
+- no unbounded cache, network/file I/O or new broker enumeration introduced;
+- H3-B warm-up-window, bounded-computation, cache-design and numerical-parity optimization are explicitly deferred to the next phase;
+- target-terminal timing/parity and empirical signal-quality remain manual acceptance items.
+
+**Next phase: CR8.3b / H3-B — Skender warm-up, bounded computation, cache design and numerical-parity optimization.**

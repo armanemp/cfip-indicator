@@ -528,26 +528,26 @@ namespace cAlgo
         private static void VerifyOssIndicatorParameters()
         {
             if (OssIndicatorParameters.RollingQuoteWindowSize != 161 ||
-                OssIndicatorParameters.MacdSignalPeriod != 9 ||
-                OssIndicatorParameters.BollingerPeriod != 20 ||
+                OssIndicatorSettings.Default.MacdSignalPeriod != 9 ||
+                OssIndicatorSettings.Default.BollingerPeriod != 20 ||
                 Math.Abs(
-                    OssIndicatorParameters.BollingerStandardDeviations -
+                    OssIndicatorSettings.Default.BollingerStandardDeviations -
                     2.0) > 1e-12 ||
-                OssIndicatorParameters.MfiPeriod != 14 ||
-                OssIndicatorParameters.StochLookbackPeriod != 14 ||
-                OssIndicatorParameters.StochSignalPeriod != 3 ||
-                OssIndicatorParameters.StochSmoothPeriod != 3 ||
-                OssIndicatorParameters.SuperTrendPeriod != 10 ||
+                OssIndicatorSettings.Default.MfiPeriod != 14 ||
+                OssIndicatorSettings.Default.StochLookbackPeriod != 14 ||
+                OssIndicatorSettings.Default.StochSignalPeriod != 3 ||
+                OssIndicatorSettings.Default.StochSmoothPeriod != 3 ||
+                OssIndicatorSettings.Default.SuperTrendPeriod != 10 ||
                 Math.Abs(
-                    OssIndicatorParameters.SuperTrendMultiplier -
+                    OssIndicatorSettings.Default.SuperTrendMultiplier -
                     3.0) > 1e-12 ||
-                OssIndicatorParameters.AroonPeriod != 25 ||
-                OssIndicatorParameters.CciPeriod != 20 ||
+                OssIndicatorSettings.Default.AroonPeriod != 25 ||
+                OssIndicatorSettings.Default.CciPeriod != 20 ||
                 Math.Abs(
-                    OssIndicatorParameters.ParabolicSarAccelerationFactor -
+                    OssIndicatorSettings.Default.ParabolicSarAccelerationFactor -
                     0.02) > 1e-12 ||
                 Math.Abs(
-                    OssIndicatorParameters.ParabolicSarMaximumAccelerationFactor -
+                    OssIndicatorSettings.Default.ParabolicSarMaximumAccelerationFactor -
                     0.20) > 1e-12 ||
                 OssIndicatorParameters.RsiMinimumHistory != 20 ||
                 OssIndicatorParameters.BollingerMinimumHistory != 40 ||
