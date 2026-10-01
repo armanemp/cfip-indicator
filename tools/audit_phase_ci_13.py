@@ -248,9 +248,14 @@ check(
 )
 
 check(
-    "roadmap contains CI-13 and CI-14 continuation markers",
-    "CI-13" in roadmap and
-    "CI-14" in roadmap,
+    "roadmap records CI-13 as the current implementation phase",
+    "Current implementation phase: **CI-13" in roadmap,
+)
+
+check(
+    "roadmap records CI-14 as the next phase",
+    "Next phase: **CI-14 — Canonical risk/reward and protection mathematics."
+    in roadmap,
 )
 
 if errors:
