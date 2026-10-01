@@ -83,16 +83,14 @@ namespace cAlgo
             double maximumExtensionAtr,
             double maximumDistanceAtr)
         {
-            if (mode == ExecutionMode.BreakoutMarket)
-                return triggerExtensionAtr >
-                    Math.Max(
-                        BreakoutLateExtensionFloorAtr,
-                        maximumExtensionAtr);
-
-            return entryDistanceAtr >
-                Math.Max(
-                    RetestLateDistanceFloorAtr,
-                    maximumDistanceAtr);
+            // CI-11 keeps this legacy API as a compatibility facade. The
+            // mathematical late-state owner is EntryGeometryRule.
+            return EntryGeometryRule.IsLate(
+                mode,
+                triggerExtensionAtr,
+                entryDistanceAtr,
+                maximumExtensionAtr,
+                maximumDistanceAtr);
         }
 
         public static bool IsMicroConflict(
