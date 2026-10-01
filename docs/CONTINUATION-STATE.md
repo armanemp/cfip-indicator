@@ -442,10 +442,33 @@ Manual boundary remains:
 - restart/reconnect;
 - empirical signal-quality/profitability.
 
+### CR5.3 / E3 closeout — 2026-10-01
+
+CR5.3 / E3 is **VERIFIED COMPLETE** and merged to `main` via PR #119, merge commit `96530088a4216eb4a3f8caae9595987d98c0a27e`.
+
+Repository verification:
+- Source/Architecture: PASS — run `36793867203` / workflow #2083, including `audit_phase_5_3.py` and the accumulated routine/optimization audits;
+- Runtime Acceptance Contracts: PASS — run `36793867170` / workflow #1892;
+- cTrader Compile: PASS — run `36793867168` / workflow #2076.
+
+Implementation/safety:
+- one Core owner for the established independent-evidence score and independent-family group counting;
+- four families: Structural, Location, Trend-Momentum and Context;
+- correlated observations inside a family count as one group;
+- decision and parallel candidates expose group-count provenance separately from the unchanged 0–8 behavior-driving score;
+- duplicate Analysis-layer calculator removed;
+- no public parameter/default, RR/confidence/stop/target/actionability/execution threshold or decision/execution authority changed.
+
+Manual boundary remains:
+- target-terminal startup/readiness/panel timing;
+- broker lifecycle ordering;
+- restart/reconnect;
+- empirical signal-quality/profitability.
+
 ## Current active phase
 
-CR5.3 / E3 — Independent-evidence group counting for parallel opportunities.
+CR5.4 / E4 — Pending-order post-fill absolute SL/TP reconciliation.
 
 ### Next transition
 
-Execute CR5.3 / E3 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
+Execute CR5.4 / E4 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
