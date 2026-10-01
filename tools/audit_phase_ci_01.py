@@ -91,7 +91,7 @@ check(
     "MacdSlow" in macd_init and
     "double macdLine" in macd_bias and
     "previousMacdLine" in macd_bias and
-    "MacdBiasRule.IsDirectional(" in macd_bias and
+    "MacdBiasRule.IsMacdDirectional(" in macd_bias and
     "histogram" not in macd_bias,
 )
 
@@ -106,7 +106,7 @@ check(
 check(
     "Choppiness uses the complete configured bar window",
     "ChoppinessIndexRule.ResolveFirstBarIndex(" in chop and
-    "ChoppinessIndexRule.HasEnoughHistory(" in chop and
+    "ChoppinessIndexRule.HasChoppinessEnoughHistory(" in chop and
     "Math.Min" not in chop,
 )
 
