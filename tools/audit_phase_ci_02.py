@@ -33,7 +33,7 @@ runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.cspr
 workflow = read(".github/workflows/source-check.yml")
 benchmark_workflow = read(".github/workflows/oss-benchmark.yml")
 benchmark = read(
-    "tools/CFIP.StockIndicators.Benchmark/Benchmark/SkenderProductionParityBenchmark.cs"
+    "tools/CFIP.StockIndicators.Benchmark/Benchmark/SkenderWarmupParityBenchmark.cs"
 )
 benchmark_program = read("tools/CFIP.StockIndicators.Benchmark/Program.cs")
 benchmark_report = read("tools/CFIP.StockIndicators.Benchmark/Benchmark/BenchmarkReport.cs")
