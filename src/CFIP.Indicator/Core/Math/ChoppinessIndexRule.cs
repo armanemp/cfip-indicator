@@ -20,15 +20,15 @@ namespace cAlgo
             double range,
             int period)
         {
-            if (!IsFinitePositive(trueRangeSum) ||
-                !IsFinitePositive(range) ||
+            if (!IsChoppinessFinitePositive(trueRangeSum) ||
+                !IsChoppinessFinitePositive(range) ||
                 period < 2)
                 return 100;
 
             double denominator =
                 Math.Log10(period);
 
-            if (!IsFinitePositive(denominator))
+            if (!IsChoppinessFinitePositive(denominator))
                 return 100;
 
             double value =
@@ -56,7 +56,7 @@ namespace cAlgo
                 index >= Math.Max(1, period - 1);
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsChoppinessFinitePositive(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
