@@ -60,35 +60,24 @@ namespace cAlgo
         private bool IsStrongWatchSnapshot(
             SignalVisualSnapshot snapshot)
         {
-            if (snapshot == null ||
-                (snapshot.AuthoritativeDirection != 1 &&
-                 snapshot.AuthoritativeDirection != -1))
+            if (snapshot == null)
                 return false;
 
-            int minimumConfidence =
-                Math.Max(
-                    60,
-                    MinimumConfidence - 4);
-
-            int minimumSmartQuality =
-                Math.Max(
-                    MinimumSmartQuality,
-                    SmartQualityThreshold);
-
-            int minimumTimeframeAgreement =
-                Math.Max(
-                    MinimumTimeframeAgreement,
-                    SmartMinimumTimeframeAgreement);
-
-            return
-                snapshot.Confidence >= minimumConfidence &&
-                snapshot.SmartQuality >= minimumSmartQuality &&
-                snapshot.TimeframeAgreement >=
-                    minimumTimeframeAgreement &&
-                snapshot.IndependentEvidence >=
-                    MinimumIndependentEvidence &&
-                snapshot.StructuralConfirmations >=
-                    MinimumStructuralConfirmations;
+            return WatchReactionAlertRule.IsStrongWatch(
+                snapshot.AuthoritativeDirection,
+                snapshot.Confidence,
+                snapshot.SmartQuality,
+                snapshot.TimeframeAgreement,
+                snapshot.IndependentEvidence,
+                snapshot.StructuralConfirmations,
+                MinimumConfidence,
+                MinimumSmartQuality,
+                SmartQualityThreshold,
+                MinimumTimeframeAgreement,
+                SmartMinimumTimeframeAgreement,
+                MinimumIndependentEvidence,
+                MinimumStructuralConfirmations);
         }
+
     }
 }
