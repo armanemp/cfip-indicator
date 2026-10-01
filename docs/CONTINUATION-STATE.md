@@ -1,6 +1,6 @@
 # CFIP — Cross-Chat Continuation State
 
-Last updated: 2026-10-02 00:xx Asia/Baku
+Last updated: 2026-10-02 Asia/Baku
 
 ## Phase closeout
 
