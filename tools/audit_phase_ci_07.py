@@ -80,7 +80,7 @@ check(
 check(
     "regime transition has one pure owner",
     transition.count("internal static class MarketRegimeTransitionRule") == 1 and
-    transition.count("ClassifyTransition(") == 1
+    transition.count("public static string ClassifyTransition(") == 1
 )
 
 check(
