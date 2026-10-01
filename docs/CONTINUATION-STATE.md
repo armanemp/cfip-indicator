@@ -797,3 +797,17 @@ Verification:
 The Source/Architecture failure discovered during G1 was an audit false-positive on independent `GetHashCode()` overrides; the duplicate-method audit now keys by containing type.
 
 **Current phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+
+
+## CR7.2 / G2 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — PR #142 merged to main as `f983d2fd7eb0baced4b5ff40988e6294b3f5bd28`.**
+
+تأیید می‌کنم — G2 preserved the established Retest/trap block behavior and added only canonical rejection taxonomy plus bounded pre-zone/post-zone diagnostics.
+
+Verification:
+- Source/Architecture PASS — #2283;
+- Runtime Acceptance Contracts PASS — #2092;
+- cTrader Compile PASS — #2276.
+
+**Current phase: CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
