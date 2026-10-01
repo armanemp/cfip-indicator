@@ -57,7 +57,8 @@ namespace cAlgo
                         if (priceSnapshot == null ||
                             !priceSnapshot.IsQuoteValid)
                         {
-                            reason = "NO CANONICAL MARKET QUOTE";
+                            reason =
+                                "NO CANONICAL MARKET QUOTE";
                             return false;
                         }
 
