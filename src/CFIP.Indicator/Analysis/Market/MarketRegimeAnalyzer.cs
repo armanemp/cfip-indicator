@@ -80,7 +80,7 @@ namespace cAlgo
                     ? MarketRegimeIdentity.Unknown
                     : previous.Regime;
             snapshot.RegimeTransition =
-                MarketRegimeTransitionRule.Resolve(
+                MarketRegimeTransitionRule.ClassifyTransition(
                     snapshot.PreviousRegime,
                     snapshot.Regime);
 
