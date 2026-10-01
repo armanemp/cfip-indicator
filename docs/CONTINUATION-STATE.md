@@ -1351,6 +1351,9 @@ Current implementation phase: **CI-13 — TP source, target obstacle and TP ladd
 
 ### CI-12 closeout — 2026-10-02
 
+Current implementation phase: **CI-12 — Structural SL audit**.
+
+
 Status: **VERIFIED COMPLETE** — PR #167 merged to `main` as `cd10da89ddf8ba9cf1c9da517a3fdc74b6953851`.
 
 Implementation head: `f452b3b8e2892f1773cef5873a051a2b542e72a6`.
