@@ -111,7 +111,7 @@ check(
 
 check(
     "deterministic identity, replacement and coverage semantics are Core-owned",
-    "Identity(" in selection and
+    "GetScenarioIdentity(" in selection and
     "CoverageKey(" in selection and
     "ShouldReplace(" in selection and
     "SelectForDisplay(" in selection and
