@@ -18,7 +18,6 @@ namespace cAlgo
                 atr <= 0 ||
                 !OrderBlockLifecycleRule.IsOrderBlockAgeValid(createdIndex, currentIndex, MaximumZoneAgeBars))
                 return null;
-
             double creationAtr =
                 Atr(
                     bars,
