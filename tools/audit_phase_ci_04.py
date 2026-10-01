@@ -71,7 +71,7 @@ check(
     "IsFreshBreak(" in struct_rule and
     "previouslyBroken" in struct_rule and
     "plateauEnd" in structure_analyzer and
-    structure_analyzer.count("IsFreshConfirmedBreak(") >= 4
+    structure_analyzer.count("StructuralEventRule.IsFreshBreak(") >= 4
 )
 
 check(
