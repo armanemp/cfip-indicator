@@ -37,29 +37,29 @@ namespace cAlgo
             OpportunityLane expectedLane)
         {
             if (candidate == null)
-                return Block("NO SCENARIO");
+                return BlockScenarioExecutionPolicy("NO SCENARIO");
 
             if (decision == null ||
                 decision.Direction == 0)
-                return Block("NO CANONICAL DECISION");
+                return BlockScenarioExecutionPolicy("NO CANONICAL DECISION");
 
             if (candidate.Direction != decision.Direction)
-                return Block("SCENARIO / DECISION DIRECTION MISMATCH");
+                return BlockScenarioExecutionPolicy("SCENARIO / DECISION DIRECTION MISMATCH");
 
             if (candidate.Lane != expectedLane)
-                return Block("SCENARIO / PLAN LANE MISMATCH");
+                return BlockScenarioExecutionPolicy("SCENARIO / PLAN LANE MISMATCH");
 
             if (!decision.EntryAllowed)
-                return Block("CANONICAL DECISION BLOCKED");
+                return BlockScenarioExecutionPolicy("CANONICAL DECISION BLOCKED");
 
             if (!decision.TriggerReady)
-                return Block("CANONICAL TRIGGER NOT READY");
+                return BlockScenarioExecutionPolicy("CANONICAL TRIGGER NOT READY");
 
             if (!decision.ActionableNow)
-                return Block("CANONICAL DECISION NOT ACTIONABLE");
+                return BlockScenarioExecutionPolicy("CANONICAL DECISION NOT ACTIONABLE");
 
             if (!candidate.ActionableNow)
-                return Block(
+                return BlockScenarioExecutionPolicy(
                     string.IsNullOrWhiteSpace(candidate.ActionabilityReason)
                         ? "SCENARIO NOT ACTIONABLE"
                         : candidate.ActionabilityReason);
@@ -216,7 +216,7 @@ namespace cAlgo
                     : "SELL");
         }
 
-        private static ScenarioExecutionPolicyResult Block(string reason)
+        private static ScenarioExecutionPolicyResult BlockScenarioExecutionPolicy(string reason)
         {
             return new ScenarioExecutionPolicyResult(
                 false,
