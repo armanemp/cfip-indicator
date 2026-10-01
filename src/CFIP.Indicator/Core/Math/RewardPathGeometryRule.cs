@@ -76,15 +76,13 @@ namespace cAlgo
 
         private static bool IsFinitePositiveRewardPathValue(double value)
         {
-            return
-                Finite(value) &&
+            return IsFiniteRewardPathValue(value) &&
                 value > 0;
         }
 
         private static bool IsFiniteNonNegativeRewardPathValue(double value)
         {
-            return
-                Finite(value) &&
+            return IsFiniteRewardPathValue(value) &&
                 value >= 0;
         }
     }
