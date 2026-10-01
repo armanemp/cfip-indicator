@@ -15,7 +15,12 @@ namespace cAlgo
             if (bars == null ||
                 createdIndex < 2 ||
                 currentIndex <= createdIndex ||
-                atr <= 0)
+                currentIndex >= bars.Count ||
+                atr <= 0 ||
+                !OrderBlockLifecycleRule.IsAgeValid(
+                    createdIndex,
+                    currentIndex,
+                    MaximumZoneAgeBars))
                 return null;
             double creationAtr =
                 Atr(
