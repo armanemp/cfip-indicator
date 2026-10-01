@@ -43,31 +43,43 @@ namespace cAlgo
                     requiredRR[0],
                     MaximumRewardRR);
 
+            double minimumSpacing =
+                atr *
+                Math.Max(
+                    0.05,
+                    MinimumTpSpacingAtr);
+
+            List<TargetLadderOption>[] stageOptions =
+                new List<TargetLadderOption>[4];
+
             for (int stage = 0;
                  stage < 4;
                  stage++)
             {
-                Dictionary<string, int> rejectionCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+                Dictionary<string, int> rejectionCounts =
+                    new Dictionary<string, int>(StringComparer.Ordinal);
 
-                if (!TryValidateTargetStageFeasibility(requiredRR[stage], maximumRR, risk, atr, out string stageRejectionReason))
+                if (!TryValidateTargetStageFeasibility(
+                        requiredRR[stage],
+                        maximumRR,
+                        risk,
+                        atr,
+                        out string stageRejectionReason))
                 {
                     AddTargetRejectionCount(
                         rejectionCounts,
                         stageRejectionReason);
+
                     RecordTargetStageRejections(
                         closedM5,
                         stage,
                         rejectionCounts);
-                    continue;
+
+                    break;
                 }
 
-                double previous = FindPreviousSelectedTargetPrice(selected, stage, entry);
-
-                bool requireHtf = RequiresHtfRewardForTargetStage(stage, lane);
-
-                Level best = null;
-                double bestScore =
-                    double.MinValue;
+                List<TargetLadderOption> options =
+                    new List<TargetLadderOption>();
 
                 for (int i = 0;
                      i < levels.Count;
@@ -78,7 +90,6 @@ namespace cAlgo
 
                     if (!TryScoreTargetCandidate(
                             candidate,
-                            selected,
                             closedM5,
                             entry,
                             risk,
@@ -86,8 +97,10 @@ namespace cAlgo
                             atr,
                             requiredRR[stage],
                             maximumRR,
-                            previous,
-                            requireHtf,
+                            entry,
+                            RequiresHtfRewardForTargetStage(
+                                stage,
+                                lane),
                             stage,
                             out double score,
                             out string rejectionReason))
@@ -98,21 +111,14 @@ namespace cAlgo
                         continue;
                     }
 
-                    if (score > bestScore)
-                    {
-                        bestScore =
-                            score;
-                        best =
-                            candidate;
-                    }
+                    options.Add(
+                        new TargetLadderOption(
+                            i,
+                            candidate.Price,
+                            score));
                 }
 
-                if (best != null)
-                {
-                    selected[stage] =
-                        best;
-                }
-                else
+                if (options.Count == 0)
                 {
                     if (rejectionCounts.Count == 0)
                     {
@@ -125,11 +131,41 @@ namespace cAlgo
                         closedM5,
                         stage,
                         rejectionCounts);
+
+                    break;
                 }
+
+                stageOptions[stage] =
+                    options;
+            }
+
+            int[] selectedIndices =
+                TargetLadderSelectionRule.SelectBestPath(
+                    direction,
+                    entry,
+                    minimumSpacing,
+                    stageOptions);
+
+            if (selectedIndices.Length == 0 ||
+                selectedIndices[0] < 0)
+                return selected;
+
+            for (int stage = 0;
+                 stage < selectedIndices.Length;
+                 stage++)
+            {
+                int index =
+                    selectedIndices[stage];
+
+                if (index < 0 ||
+                    index >= levels.Count)
+                    continue;
+
+                selected[stage] =
+                    levels[index];
             }
 
             return selected;
         }
-
     }
 }
