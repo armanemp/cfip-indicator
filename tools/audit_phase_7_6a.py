@@ -72,15 +72,15 @@ if "InvalidatePanelExecutionProtectionStateCache();" in method:
 
 for token in (
     "public static string Compose(",
-    "Normalize(autoTradingState)",
-    "Normalize(autoTradingReason)",
-    "Normalize(executionTelemetryPath)",
-    "Normalize(executionTelemetryState)",
-    "Normalize(activeExecutionScenarioId)",
+    "NormalizePanelIdentityField(autoTradingState)",
+    "NormalizePanelIdentityField(autoTradingReason)",
+    "NormalizePanelIdentityField(executionTelemetryPath)",
+    "NormalizePanelIdentityField(executionTelemetryState)",
+    "NormalizePanelIdentityField(activeExecutionScenarioId)",
     "marketSuitabilityScore",
-    "Normalize(marketSuitabilityState)",
-    "Normalize(marketSuitabilityReason)",
-    "Normalize(breakEvenDiagnostic)",
+    "NormalizePanelIdentityField(marketSuitabilityState)",
+    "NormalizePanelIdentityField(marketSuitabilityReason)",
+    "NormalizePanelIdentityField(breakEvenDiagnostic)",
 ):
     if token not in identity:
         raise SystemExit(f"G6A canonical identity owner missing: {token}")
