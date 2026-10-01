@@ -4,7 +4,7 @@ Date: 2026-10-01
 
 ## Status
 
-**IMPLEMENTED — final repository gates pending.**
+**VERIFIED COMPLETE — PR #157, final implementation head `feb87be7620326cc6af92077d6089ec63d94b28b`.**
 
 ## Objective
 
@@ -66,6 +66,24 @@ CI-03 does not change thresholds, weights, execution authority or broker mutatio
 
 Target-terminal timing, replay cohorts, empirical signal quality and realized
 trading outcomes remain manual/replay acceptance items.
+
+## Next phase
+
+**CI-04 — Structure / swing / liquidity semantics audit.**
+
+## Verification
+
+- Source / Architecture: **PASS** — workflow run `36914068345`.
+- Runtime Acceptance Contracts: **PASS** — workflow run `36914068399`.
+- cTrader Compile / Build: **PASS** — workflow run `36914068401`.
+- CI-03 static audit: **PASS** — accumulated as `audit_phase_ci_03.py` after CI-02.
+- No public parameter/API/DefaultValue or trading-policy threshold was changed.
+
+## Final repair during acceptance
+
+The accumulated architecture verifier rejected overloaded/global helper names introduced by the
+new frame-scoped evidence API. The helpers were renamed to unique owners and the runtime/static
+contracts were aligned. No production decision threshold or numerical fusion weight changed.
 
 ## Next phase
 
