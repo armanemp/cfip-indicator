@@ -183,7 +183,7 @@ check(
 
 required_benchmark_tokens = (
     "class SkenderWarmupParityBenchmark",
-    "StableWindowSize = 768",
+    "StableQuoteWindowSize = 768",
     "RollingWindowSize = 161",
     "CompareScenario(",
     "BuildZeroVolumeVariant(",
