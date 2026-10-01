@@ -17,6 +17,7 @@ namespace cAlgo
             double tp3MinimumRR,
             double tp4MinimumRR,
             double minimumRequiredRR,
+            double minimumTradeRR,
             double tacticalOpportunityMinimumRR)
         {
             double step =
@@ -42,9 +43,13 @@ namespace cAlgo
                                 tacticalOpportunityMinimumRR)))
                     : Math.Max(
                         Math.Max(
+                            Math.Max(
+                                0,
+                                tp1MinimumRR),
+                            canonicalMinimum),
+                        Math.Max(
                             0,
-                            tp1MinimumRR),
-                        canonicalMinimum);
+                            minimumTradeRR));
 
             double tp2 =
                 Math.Max(
