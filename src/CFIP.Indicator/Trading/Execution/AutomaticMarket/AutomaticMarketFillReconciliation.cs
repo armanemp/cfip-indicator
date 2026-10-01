@@ -11,23 +11,11 @@ namespace cAlgo
         {            _lastAutoM5 =
                 closedM5;
 
-            _autoExecutionBlockReason =
-                "EXECUTED";
-
             _plan.OriginalVolume =
                 result.Position.VolumeInUnits;
 
-            _plan.IsLivePosition = true;
             _plan.PositionId =
                 result.Position.Id;
-
-            SetLifecycleState(
-                LifecycleState.LivePosition,
-                "MARKET ENTRY • FILLED");
-
-            ReconcileLivePlanToActualFill(
-                result.Position,
-                closedM5);
 
             string fillExecutionReason;
 
@@ -72,6 +60,33 @@ namespace cAlgo
 
                 return false;
             }
+
+            bool fillPlanReconciled =
+                ReconcileLivePlanToActualFill(
+                    result.Position,
+                    closedM5);
+
+            if (!fillPlanReconciled)
+            {
+                _brokerProtectionRecoveryRequired = true;
+                SetLifecycleState(
+                    LifecycleState.RecoveryRequired,
+                    "MARKET POST-FILL RECONCILIATION FAILED");
+
+                _autoExecutionBlockReason =
+                    "MARKET POST-FILL RECONCILIATION FAILED";
+
+                return false;
+            }
+
+            _plan.IsLivePosition = true;
+
+            SetLifecycleState(
+                LifecycleState.LivePosition,
+                "MARKET ENTRY • FILLED");
+
+            _autoExecutionBlockReason =
+                "EXECUTED";
 
             return true;
         }
