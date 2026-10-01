@@ -3240,8 +3240,13 @@ parallel_code = parallel_builder.read_text(encoding="utf-8")
 for token in ("Dictionary<string, TradeOpportunityCandidate>", "Upsert(", "Snapshot()"):
     if token not in registry_code:
         raise SystemExit(f"Multi-plan registry contract missing: {token}")
-if "_tradePlanRegistry.Upsert(" not in parallel_code:
-    raise SystemExit("Parallel opportunity builder must register every materialized candidate")
+if (
+    "_tradePlanRegistry.Upsert(" not in parallel_code and
+    "_tradePlanRegistry.UpsertScenario(" not in parallel_code
+):
+    raise SystemExit(
+        "Parallel opportunity builder must register every materialized candidate"
+    )
 
 visual_code = visual_builder.read_text(encoding="utf-8")
 alert_code = alert_calc.read_text(encoding="utf-8")
