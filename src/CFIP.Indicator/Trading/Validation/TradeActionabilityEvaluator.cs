@@ -94,6 +94,12 @@ namespace cAlgo
                       risk
                     : 0;
 
+            bool qualityReady =
+                !RequirePrecisionEntry ||
+                execution.Quality >=
+                ActionabilityThresholdPolicy.EffectivePrecisionEntryQualityFloor(
+                    MinimumEntryQuality);
+
             PlanRewardRiskQualityResult rewardRisk =
                 PlanRewardRiskQualityRule.Evaluate(
                     direction,
