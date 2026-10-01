@@ -69,3 +69,20 @@ Static CI-01 audit verifies that corrected consumers are bound to their canonica
 **CI-02 — OSS numerical parity / warm-up / cache audit**
 
 The next phase must start from the merged CI-01 main commit and continue the same one-owner/no-duplicate rule. Do not resume Prompt 8 refinement before CI-FINAL.
+
+## Repository-gate correction — 2026-10-01
+
+During final review of the implementation branch, the CI-01 static audit had one
+false-positive assertion: the Volume Expansion ratio-floor assertion was checked
+against the analyzer instead of its canonical VolumeExpansionRule owner. The
+audit now checks the rule owner.
+
+The CI-01 section in docs/ROADMAP.md was also corrected so the CI-00 closeout
+status remains under CI-00 and CI-01 has its own independent status block.
+
+No production trading behavior or public parameter contract changed as part of
+these gate corrections.
+
+Repository workflow verification for the corrected head is still pending from
+the GitHub Actions/cTrader environment; no PASS is claimed here without an
+actual workflow result.
