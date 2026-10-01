@@ -353,7 +353,7 @@ namespace cAlgo
                      laneIndex++)
                 {
                     double[] requiredRR =
-                        TargetSelectionRequiredRrRule.Build(
+                        TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
                             f[0],
                             lanes[laneIndex],
                             f[1],
@@ -409,7 +409,7 @@ namespace cAlgo
             }
 
             double[] tacticalInversion =
-                TargetSelectionRequiredRrRule.Build(
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
                     0.10,
                     OpportunityLane.Tactical,
                     2.00,
