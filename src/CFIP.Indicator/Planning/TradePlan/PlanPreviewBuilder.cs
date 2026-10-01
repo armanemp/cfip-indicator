@@ -18,21 +18,53 @@ namespace cAlgo
                 closedM5 < 30)
                 return null;
 
-            double atr = Atr(_m5Bars, closedM5);
-            if (!IsFinitePositive(atr))
+            ParallelScenarioGeometry geometry;
+
+            if (!TryBuildScenarioGeometry(
+                    closedM5,
+                    execution,
+                    out geometry))
                 return null;
 
-            // A setup preview is a structural forecast, not a live-price tracker.
-            // Keep its anchor at the model's ideal/future level. Aggressive market
-            // execution receives the actual quote only when a live Plan is created.
+            return BuildTradeSetupPreviewFromGeometry(
+                closedM5,
+                execution,
+                lane,
+                geometry);
+        }
+
+        private bool TryBuildScenarioGeometry(
+            int closedM5,
+            ExecutionModel execution,
+            out ParallelScenarioGeometry geometry)
+        {
+            geometry = null;
+
+            if (_m5Bars == null ||
+                execution == null ||
+                (execution.Direction != 1 &&
+                 execution.Direction != -1) ||
+                closedM5 < 30)
+                return false;
+
+            double atr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            if (!IsFinitePositive(atr))
+                return false;
+
             double entry =
                 IsFinitePositive(execution.IdealEntry)
                     ? execution.IdealEntry
                     : execution.ActualEntry;
-            if (!IsFinitePositive(entry))
-                return null;
 
-            entry = NormalizePrice(entry);
+            if (!IsFinitePositive(entry))
+                return false;
+
+            entry =
+                NormalizePrice(entry);
 
             double stop =
                 BuildStructuralStop(
@@ -43,7 +75,10 @@ namespace cAlgo
                     out _,
                     out _);
 
-            if (!IsValidStop(execution.Direction, entry, stop))
+            if (!IsValidStop(
+                    execution.Direction,
+                    entry,
+                    stop))
             {
                 stop =
                     IsValidStop(
@@ -54,15 +89,56 @@ namespace cAlgo
                         : execution.Direction == 1
                             ? entry - atr * FallbackSlAtr
                             : entry + atr * FallbackSlAtr;
-                stop = NormalizePrice(stop);
+
+                stop =
+                    NormalizePrice(stop);
             }
 
-            if (!IsValidStop(execution.Direction, entry, stop))
+            if (!IsValidStop(
+                    execution.Direction,
+                    entry,
+                    stop))
+                return false;
+
+            double risk =
+                Math.Abs(
+                    entry - stop);
+
+            if (!IsFinitePositive(risk))
+                return false;
+
+            geometry =
+                new ParallelScenarioGeometry
+                {
+                    Direction = execution.Direction,
+                    Atr = atr,
+                    Entry = entry,
+                    Stop = stop,
+                    Risk = risk,
+                    Execution = execution
+                };
+
+            return true;
+        }
+
+        private TradeSetupPreview BuildTradeSetupPreviewFromGeometry(
+            int closedM5,
+            ExecutionModel execution,
+            OpportunityLane lane,
+            ParallelScenarioGeometry geometry)
+        {
+            if (geometry == null ||
+                execution == null)
                 return null;
 
-            double risk = Math.Abs(entry - stop);
-            if (!IsFinitePositive(risk))
-                return null;
+            double atr =
+                geometry.Atr;
+            double entry =
+                geometry.Entry;
+            double stop =
+                geometry.Stop;
+            double risk =
+                geometry.Risk;
 
             List<Level> candidates =
                 BuildTargetLevels(
