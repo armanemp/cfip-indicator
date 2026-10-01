@@ -69,7 +69,11 @@ namespace cAlgo
                 _autoTradingState ?? "",
                 _autoTradingReason ?? "",
                 _autoExecutionBlockReason ?? "",
-                _autoOrdersBlockReason ?? "");
+                _autoOrdersBlockReason ?? "",
+                GetAutoTradingPanelState(),
+                GetAutoOrdersPanelState(),
+                GetAutoProtectionPanelState(),
+                _brokerProtectionRecoveryRequired ? "1" : "0");
         }
 
         private string PriceKey(
