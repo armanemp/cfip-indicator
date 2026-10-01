@@ -208,9 +208,21 @@ check(
 )
 
 check(
-    "CI-04 is the active documented phase before closeout",
-    "CI-04 — Structure / swing / liquidity semantics" in roadmap and
-    "CI-04 — Structure / swing / liquidity semantics" in continuation
+    "CI-04 remains recorded while the CI track advances",
+    "CI-04 closeout" in roadmap and
+    "CI-04 closeout" in continuation and
+    any(marker in roadmap for marker in (
+        "Current implementation phase: CI-04",
+        "Current implementation phase: CI-05",
+        "Current implementation phase: CI-06",
+        "Current implementation phase: CI-07",
+    )) and
+    any(marker in continuation for marker in (
+        "**CI-04 — Structure / swing / liquidity semantics",
+        "**CI-05 — FVG lifecycle",
+        "**CI-06 — Order Block lifecycle",
+        "**CI-07 — Market regime, MTF and context audit",
+    ))
 )
 
 calculate_start = calc_cycle.rfind("public override void Calculate(")
