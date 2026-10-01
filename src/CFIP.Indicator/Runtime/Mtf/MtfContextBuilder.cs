@@ -38,6 +38,7 @@ namespace cAlgo
                                             _h4Bars,
                                             _d1Bars,
                                             _w1Bars,
+                                            reference,
                                             out MtfClosedContext cached))
                                         return cached;
 
