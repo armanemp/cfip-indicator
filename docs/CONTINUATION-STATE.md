@@ -23,7 +23,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-07 — MTF / regime / market context — 2026-10-02**
+**CI-13 — TP source, target obstacle and coherent TP ladder integrity — continuation from CI-12.**
 
 Status: **VERIFIED COMPLETE — CI-07 merged to `main` in PR #162, merge commit `73511c84ff3072cdbdab8487b0d4331b52c789b1`.**
 
