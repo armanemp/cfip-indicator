@@ -23,6 +23,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeClassifier.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SmartThresholdPolicyRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendEvidenceRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendMoneyFlowRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.BaseKernels.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WaveTrendMovingAverageCalculator.Advanced.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RejectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ReactionQualificationRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ReactionTimingRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MicroReactionSafetyRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/WatchReactionAlertRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PremiumDiscountBiasRule.cs" />
