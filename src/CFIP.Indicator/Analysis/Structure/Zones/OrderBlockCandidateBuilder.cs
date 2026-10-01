@@ -17,7 +17,7 @@ namespace cAlgo
                 currentIndex <= createdIndex ||
                 currentIndex >= bars.Count ||
                 atr <= 0 ||
-                !OrderBlockLifecycleRule.IsAgeValid(
+                !OrderBlockLifecycleRule.IsOrderBlockAgeValid(
                     createdIndex,
                     currentIndex,
                     MaximumZoneAgeBars))
