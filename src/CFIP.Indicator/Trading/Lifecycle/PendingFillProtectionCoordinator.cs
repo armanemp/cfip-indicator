@@ -10,6 +10,40 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private bool ReconcilePendingFillServerProtection(
+            Position position,
+            double finalTarget)
+        {
+            if (position == null)
+                return false;
+
+            if (!_serverSideTakeProfitLadderActive &&
+                !_serverSideTakeProfitLadderOwned)
+                return true;
+
+            if (!IsFinitePositive(finalTarget))
+                return false;
+
+            RelativeTakeProfitProtections protections;
+            StopLossBreakEven stopLossBreakEven;
+
+            if (!TryBuildServerSideTakeProfitLadder(
+                    position.EntryPrice,
+                    finalTarget,
+                    position.VolumeInUnits,
+                    out protections,
+                    out stopLossBreakEven))
+                return false;
+
+            if (!TryModifyTakeProfitLadder(
+                    position,
+                    protections,
+                    "PENDING FILL • ABSOLUTE TP LADDER"))
+                return false;
+
+            return AdoptServerSideTakeProfitLadder(position);
+        }
+
         private void ApplyPendingFillProtection(
             Position position,
             double stop,
