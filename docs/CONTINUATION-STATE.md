@@ -1,6 +1,6 @@
 # CFIP — Cross-Chat Continuation State
 
-Last updated: 2026-10-01 22:29 Asia/Baku
+Last updated: 2026-10-02 00:xx Asia/Baku
 
 ## Phase closeout
 
@@ -23,9 +23,9 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-06 — Order Block lifecycle — 2026-10-01**
+**CI-07 — MTF / regime / market context — 2026-10-02**
 
-Status: **NEXT — specified and ready to implement. CI-05 is verified complete and merged.**
+Status: **NEXT — specified and ready to implement. CI-06 is verified complete and merged in PR #161.**
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
@@ -86,9 +86,34 @@ Manual boundary:
 
 **Operator action: run `git pull --ff-only` on local `main` before starting CI-06.**
 
-**Next implementation phase: CI-06 — Order Block lifecycle.**
+**Next implementation phase: CI-07 — MTF / regime / market context.**
 
-**Next implementation phase: CI-05 — FVG lifecycle.**
+
+### CI-06 closeout — Order Block lifecycle — 2026-10-02
+
+Status: **VERIFIED COMPLETE — PR #161; implementation head `d177761f65e9a350b91c68479e9d70737c8bcefb`.**
+
+Completed:
+- canonical Order Block source geometry/qualification remains owned by `OrderBlockRule`;
+- lifecycle state, mitigation probes, partial mitigation, full-fill invalidation and source age are owned by `OrderBlockLifecycleRule`;
+- stale/future OB candidates are rejected at the canonical materialization boundary;
+- duplicated opposite-source-candle logic was removed from `OrderBlockAnalyzer`;
+- deterministic `Zone.Id` provenance and direct managed-zone geometry are preserved through Entry, Target, Structural Stop, predictive pending and reward-path consumers;
+- deterministic runtime contracts and accumulated CI-06 static audit were added;
+- centralized alert sound/popup delivery remains unchanged and is still owned by the unified queue/delivery processor.
+
+Repository verification:
+- Source / Architecture PASS — run #2501;
+- Runtime Acceptance Contracts PASS — run #2310;
+- cTrader Compile PASS — run #2494.
+
+Manual boundary:
+- target-terminal MTF/OB timing, live mitigation/retest, sound latency, panel/chart responsiveness, broker lifecycle and empirical signal/outcome validation remain manual.
+
+Operator action:
+**After PR #161 is merged, run `git pull --ff-only` on local `main` before starting CI-07.**
+
+**Next implementation phase: CI-07 — MTF / regime / market context.**
 
 ### Historical remediation closeouts
 
