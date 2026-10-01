@@ -27,19 +27,19 @@ namespace cAlgo
                 quotes.Count < OssIndicatorParameters.StochMinimumHistory)
                 return;
 
-            var results =
+            var last =
                 StockIndicator.GetStoch(
                     quotes,
                     OssIndicatorSettings.Default.StochLookbackPeriod,
                     OssIndicatorSettings.Default.StochSignalPeriod,
                     OssIndicatorSettings.Default.StochSmoothPeriod)
-                    .ToList();
+                    .LastOrDefault();
 
-            if (results.Count == 0)
+            if (last == null)
                 return;
 
-            k = results[results.Count - 1].K ?? 0;
-            d = results[results.Count - 1].D ?? 0;
+            k = last.K ?? 0;
+            d = last.D ?? 0;
         }
     }
 }
