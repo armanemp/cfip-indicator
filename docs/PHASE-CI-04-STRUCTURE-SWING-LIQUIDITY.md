@@ -25,7 +25,7 @@ previous/current close pair. When price had already crossed the same structural
 threshold on an earlier closed bar and later retraced, the same source swing
 could become eligible again as if it were a fresh break.
 
-The fix adds `IsFreshConfirmedBreak`, which requires:
+The fix consolidates the enhanced contract under the canonical `IsFreshBreak` owner, which requires:
 
 - a confirmed structural source swing;
 - no earlier closed bar after source confirmation that already crossed the
