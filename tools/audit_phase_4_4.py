@@ -87,7 +87,7 @@ check(
     and "ParabolicSarMinimumHistory = 60" in parameters,
 )
 check(
-    "path-dependent indicators use stable-prefix history",
+    "path-dependent indicators use bounded stable-window history",
     "GetOssStableQuotes(" in cache
     and "GetOssStableQuotes(" in read(
         "src/CFIP.Indicator/Analysis/Indicators/External/SkenderRsi.cs"
@@ -121,12 +121,14 @@ check(
     ),
 )
 check(
-    "OSS quote cache reuses the stable prefix and advances incrementally",
+    "OSS quote cache reuses a bounded stable window and advances incrementally",
     "StableQuotes" in cache_entry
     and "RollingQuotes" in cache_entry
     and "for (int i = startIndex;" in cache
     and "cache.StableQuotes.Add" in cache
-    and "cache.RollingQuotes.Add" in cache,
+    and "cache.StableQuotes.Count >" in cache
+    and "cache.RollingQuotes.Add" in cache
+    and "StableQuoteWindowSize" in cache,
 )
 check(
     "rolling cache is bounded and advances by append/remove",
