@@ -5970,3 +5970,27 @@ Safety/performance boundary:
 - target-terminal timing/parity and empirical signal-quality remain manual acceptance items.
 
 **Next phase: CR8.3b / H3-B — Skender warm-up, bounded computation, cache design and numerical-parity optimization.**
+
+
+### CR8.3b / H3-B implementation record — 2026-10-01
+
+Status: **IMPLEMENTED — awaiting repository gate verification.**
+
+Completed in branch `phase/cr8-3b-h3-b-skender-warmup-cache-parity`:
+- bounded stable Skender quote window at 768 bars;
+- incremental stable-window cache with first/last boundary fingerprints;
+- removal of stable-prefix copies;
+- removal of per-call Skender result-list materialization;
+- deterministic Runtime Contract coverage for the warm-up policy;
+- deterministic 2048-bar full-prefix versus bounded-window parity/performance benchmark;
+- new `audit_phase_8_3b.py` accumulated after H3-A;
+- accumulated CR4.4 audit semantics reconciled to the bounded stable window.
+
+Safety boundary:
+- no public parameter name/type/DefaultValue changed;
+- no trading/RR/confidence/entry/SL/TP/risk/execution threshold tuned;
+- no decision or broker-mutation authority changed;
+- FacioQuo remains research-only;
+- target-terminal timing, live performance and empirical signal quality remain manual acceptance items.
+
+Next specified phase after H3-B verification: **CR8.4 / H4**.
