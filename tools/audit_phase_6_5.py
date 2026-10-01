@@ -117,7 +117,6 @@ for token in (
     "EntryActionabilityPolicy.ExecutionZoneQualityFloor",
     "EntryActionabilityPolicy.BreakoutLateExtensionFloorAtr",
     "EntryActionabilityPolicy.RetestLateDistanceFloorAtr",
-    "EntryActionabilityPolicy.ResolveContinuationStructuralMinimum(",
 ):
     check("execution mode resolver consumes F6 policy: " + token, token in resolver)
 
@@ -127,13 +126,18 @@ check(
 )
 
 check(
+    "trigger continuation structural minimum is centrally owned",
+    "EntryActionabilityPolicy.ResolveContinuationStructuralMinimum(" in trigger,
+)
+
+check(
     "canonical plan creation still requires confirmed trigger",
     "_decision.TriggerReady" in plan_gate and
     "if (!_decision.TriggerReady)" in plan_gate,
 )
 
 retest_match = re.search(
-    r"if (plan\.EntryMode ==\s*ExecutionMode\.RetestMarket\)(.*?)return true;",
+    r"if \(plan\.EntryMode ==\s*ExecutionMode\.RetestMarket\)(.*?)return true;",
     market_entry,
     re.S,
 )

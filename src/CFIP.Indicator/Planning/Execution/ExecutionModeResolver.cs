@@ -56,7 +56,7 @@ namespace cAlgo
                                         !RequirePrecisionEntry ||
                                         quality >=
                                         Math.Max(
-                                            40,
+                                            EntryActionabilityPolicy.ExecutionZoneQualityFloor,
                                             MinimumEntryQuality);
 
                                     if (triggerReached &&
