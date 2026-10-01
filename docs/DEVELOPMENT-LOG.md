@@ -2455,3 +2455,37 @@ Manual cTrader boundary:
 Next phase: **CR5.5 / E5 — Parallel-scenario computation/candidate ownership and MicroReaction safety**.
 
 Operator action after merge: `git pull --ff-only`.
+
+
+## CR7.1 / G1 — Broker protection must never increase live position risk — 2026-10-01
+
+Status: **VERIFIED COMPLETE**
+
+تأیید می‌کنم — the G1 safety finding was confirmed against the live protection call chain and corrected without tuning trading thresholds.
+
+Implemented:
+- split existing-stop directional health from new-stop market/minimum-distance validation;
+- preserved current protective SL when a near-market stop is still correctly sided;
+- retained `ProtectionProgressionRule` as the only healthy-stop replacement guard;
+- hardened BoundPlanProtection and BrokerProtectionStateEvaluator to the same Core owner;
+- completed `TargetObstacleCacheKey.GetHashCode()` and corrected the project-integrity audit false-positive by scoping duplicate signatures to containing type;
+- added deterministic G1 Runtime Acceptance coverage and `audit_phase_7_1.py`.
+
+Verification:
+- Source/Architecture PASS — #2262;
+- Runtime Acceptance Contracts PASS — #2071;
+- cTrader Compile PASS — #2255;
+- merged PR #138 as `b8144c2f1edc62730b7a0723be3746afe6353851`.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. No second decision/execution authority or unrelated behavior change was introduced.
+
+Performance/code-cleanliness:
+- the correction removes an architectural audit false-positive instead of weakening the duplicate-method gate;
+- existing-stop checks are now a direct Core predicate rather than reusing the wrong market-distance semantics;
+- no new hot-path loop or unbounded state was introduced.
+
+Manual boundary:
+Actual cTrader `ModifyStopLossPrice`, broker minimum-distance behavior and restart/reconnect remain manual acceptance.
+
+Next phase: **CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
