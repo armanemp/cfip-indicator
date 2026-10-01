@@ -27,25 +27,30 @@ namespace cAlgo
             bool blocked,
             bool recoveryRequired)
         {
-            if (!enabled)
-                return ExecutionPanelStateKind.Disabled;
-
-            if (recoveryRequired)
-                return ExecutionPanelStateKind.RecoveryRequired;
-
-            if (active)
-                return ExecutionPanelStateKind.Active;
-
-            if (blocked)
-                return ExecutionPanelStateKind.Blocked;
-
-            if (ready)
-                return ExecutionPanelStateKind.Ready;
-
-            return ExecutionPanelStateKind.Armed;
+            return ResolveExecutionState(
+                enabled,
+                active,
+                ready,
+                blocked,
+                recoveryRequired);
         }
 
         public static ExecutionPanelStateKind ResolveAutoOrders(
+            bool enabled,
+            bool active,
+            bool ready,
+            bool blocked,
+            bool recoveryRequired)
+        {
+            return ResolveExecutionState(
+                enabled,
+                active,
+                ready,
+                blocked,
+                recoveryRequired);
+        }
+
+        private static ExecutionPanelStateKind ResolveExecutionState(
             bool enabled,
             bool active,
             bool ready,
@@ -99,3 +104,4 @@ namespace cAlgo
         }
     }
 }
+
