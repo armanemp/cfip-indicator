@@ -18,174 +18,109 @@ namespace cAlgo
             int chartIndex,
             int closedM5,
             SignalVisualSnapshot snapshot)
-                        {
-                            ClearWatchObjects();
-                
-                            if (Bars == null ||
-                                Bars.Count < 2 ||
-                                snapshot == null)
-                                return;
+        {
+            ClearWatchObjects();
 
-                            bool decisionReady =
-                                snapshot.DecisionReady;
+            if (Bars == null ||
+                Bars.Count < 2 ||
+                snapshot == null)
+                return;
 
-                            bool reactionReady =
-                                snapshot.ReactionReady;
+            int visualDirection =
+                snapshot.AuthoritativeDirection;
 
-                            int visualDirection =
-                                snapshot.AuthoritativeDirection;
+            int hostBar =
+                MapM5ToChart(
+                    closedM5,
+                    chartIndex);
 
-                            int hostBar =
-                                MapM5ToChart(
-                                    closedM5,
-                                    chartIndex);
+            hostBar =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        hostBar));
 
-                            hostBar =
-                                Math.Max(
-                                    0,
-                                    Math.Min(
-                                        Bars.Count - 1,
-                                        hostBar));
+            if (snapshot.PendingOrder)
+            {
+                Chart.RemoveObject(P + "WATCH_ARROW");
+                Chart.RemoveObject(P + "REACTION_ARROW");
+                return;
+            }
 
-                            if (snapshot.PendingOrder)
-                            {
-                                Chart.RemoveObject(P + "WATCH_ARROW");
-                                Chart.RemoveObject(P + "REACTION_ARROW");
-                                return;
-                            }
+            if (!snapshot.ActionableNow)
+            {
+                RenderNonActionableWatchState(
+                    snapshot,
+                    visualDirection,
+                    hostBar);
+                return;
+            }
 
-                            if (!snapshot.ActionableNow)
-                            {
-                                RenderNonActionableWatchState(
-                                    snapshot,
-                                    visualDirection,
-                                    hostBar);
-                                return;
-                            }
+            if (visualDirection == 0)
+            {
+                Chart.RemoveObject(P + "WATCH_ARROW");
+                Chart.RemoveObject(P + "REACTION_ARROW");
+                return;
+            }
 
-                            if (visualDirection == 0)
-                            {
-                                Chart.RemoveObject(P + "WATCH_ARROW");
-                                Chart.RemoveObject(P + "REACTION_ARROW");
-                                return;
-                            }
+            int arrowBar =
+                hostBar;
 
-                            int arrowBar =
-                                hostBar;
-                
-                            double atr =
-                                Atr(
-                                    Bars,
-                                    Math.Max(
-                                        1,
-                                        Math.Min(
-                                            Bars.Count - 1,
-                                            arrowBar)));
-                
-                            double offset =
-                                Math.Max(
-                                    Symbol.PipSize *
-                                    Math.Max(
-                                        0.5,
-                                        MinimumArrowOffsetPips),
-                                    atr *
-                                    Math.Max(
-                                        0.02,
-                                        ArrowOffsetAtr));
-                
-                            string arrowState =
-                                "CONFIRMED";
-                
-                            bool showCurrentStateArrow =
-                                ShowSignalArrow;
+            double atr =
+                Atr(
+                    Bars,
+                    Math.Max(
+                        1,
+                        Math.Min(
+                            Bars.Count - 1,
+                            arrowBar)));
 
-                            if (showCurrentStateArrow)
-                            {
-                                DrawIcon(
-                                    P + "WATCH_ARROW",
-                                    visualDirection == 1
-                                        ? ChartIconType.UpArrow
-                                        : ChartIconType.DownArrow,
-                                    arrowBar,
-                                    visualDirection == 1
-                                        ? Bars.LowPrices[arrowBar] - offset
-                                        : Bars.HighPrices[arrowBar] + offset,
-                                    SignalArrowColorFor(
-                                        visualDirection,
-                                        arrowState));
-                            }
-                            else
-                            {
-                                Chart.RemoveObject(
-                                    P + "WATCH_ARROW");
-                            }
-                
-                            Chart.RemoveObject(
-                                P + "REACTION_ARROW");
-                
-                            if (!snapshot.PendingOrder &&
-                                !snapshot.LivePosition &&
-                                snapshot.DecisionDirection != 0 &&
-                                !decisionReady &&
-                                ShowEarlyWatch &&
-                                AlertOnEarlyWatch &&
-                                snapshot.Confidence >=
-                                Math.Max(
-                                    60,
-                                    MinimumConfidence - 4) &&
-                                snapshot.Confidence <
-                                MinimumConfidence &&
-                                IsStrongWatchSnapshot(
-                                    snapshot) &&
-                                _lastEarlyAlertM5 !=
-                                closedM5)
-                            {
-                                SendUnifiedAlert(
-                                    "WATCH|" +
-                                    closedM5 +
-                                    "|" +
-                                    snapshot.DecisionDirection,
-                                    "CFIP " +
-                                    (snapshot.DecisionDirection == 1
-                                        ? "BUY"
-                                        : "SELL") +
-                                    " WATCH | CONF " +
-                                    snapshot.Confidence +
-                                    " | SMART " +
-                                    snapshot.SmartQuality +
-                                    " | " +
-                                    snapshot.DecisionReason,
-                                    snapshot.DecisionDirection,
-                                    false);
-                
-                                _lastEarlyAlertM5 =
-                                    closedM5;
-                            }
-                
-                            if (!snapshot.PendingOrder &&
-                                !snapshot.LivePosition &&
-                                reactionReady &&
-                                AlertOnReaction &&
-                                AlertOnLiveReaction &&
-                                _lastReactionAlertBar !=
-                                snapshot.ArrowM5Index)
-                            {
-                                SendUnifiedAlert(
-                                    "REACTION|" +
-                                    snapshot.ArrowM5Index,
-                                    snapshot.ReactionReason,
-                                    snapshot.ReactionDirection,
-                                    false);
-                
-                                _lastReactionAlertBar =
-                                    snapshot.ArrowM5Index;
-                            }
-                
+            double offset =
+                Math.Max(
+                    Symbol.PipSize *
+                    Math.Max(
+                        0.5,
+                        MinimumArrowOffsetPips),
+                    atr *
+                    Math.Max(
+                        0.02,
+                        ArrowOffsetAtr));
 
-                            _lastVisualDirection =
-                                visualDirection;
-                        }
-        
+            string arrowState =
+                "CONFIRMED";
+
+            bool showCurrentStateArrow =
+                ShowSignalArrow;
+
+            if (showCurrentStateArrow)
+            {
+                DrawIcon(
+                    P + "WATCH_ARROW",
+                    visualDirection == 1
+                        ? ChartIconType.UpArrow
+                        : ChartIconType.DownArrow,
+                    arrowBar,
+                    visualDirection == 1
+                        ? Bars.LowPrices[arrowBar] - offset
+                        : Bars.HighPrices[arrowBar] + offset,
+                    SignalArrowColorFor(
+                        visualDirection,
+                        arrowState));
+            }
+            else
+            {
+                Chart.RemoveObject(
+                    P + "WATCH_ARROW");
+            }
+
+            Chart.RemoveObject(
+                P + "REACTION_ARROW");
+
+            _lastVisualDirection =
+                visualDirection;
+        }
+
         private void RenderTriggerRuntimeMarker(
                             SignalVisualSnapshot snapshot)
                         {
