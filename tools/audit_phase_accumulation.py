@@ -24,6 +24,7 @@ protection = read("Trading/LiveManagement/ProtectionManager.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 partial_tp = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
 line = read("UI/Chart/PlanLineRenderer.cs")
+line_presentation_rule = read("Core/Math/PlanLinePresentationRule.cs")
 labels = read("UI/Chart/PlanLabelRenderer.cs")
 prediction_line = read("UI/Chart/PredictionLineRenderer.cs")
 alert_renderer = read("UI/Chart/AlertSignalRenderer.cs")
@@ -130,10 +131,14 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
 
 if "return Color.White" not in labels:
     raise SystemExit("level labels must use white text")
-if "return\n                Math.Min(" not in line:
-    raise SystemExit("plan signal line thickness must be fixed at one")
+if "PlanLinePresentationRule.ResolveThickness(" not in line:
+    raise SystemExit("plan signal line thickness must use the canonical presentation rule")
+if "MinimumThickness = 1" not in line_presentation_rule or "MaximumThickness = 3" not in line_presentation_rule:
+    raise SystemExit("plan signal line thickness must preserve the public 1..3 contract")
+if "Math.Min(1" in line:
+    raise SystemExit("plan signal line renderer must not force valid thickness back to one")
 if "line.Thickness" not in prediction_line or "1;" not in prediction_line:
-    raise SystemExit("prediction signal line thickness must be fixed at one")
+    raise SystemExit("prediction signal line thickness must remain fixed at one")
 if "RenderCompactPlanLabel(" in alert_renderer:
     raise SystemExit("legacy alert chart-label rendering remains")
 if '"ALERT "' in alert_renderer:
@@ -167,6 +172,7 @@ print("Automatic market / aggressive / pending paths: shared submission + server
 print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
+print("Plan Level Line Thickness: truthful 1/2/3 mapping")
 print("All level label text: White / background-free")
 print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")

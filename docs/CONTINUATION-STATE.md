@@ -803,11 +803,20 @@ The Source/Architecture failure discovered during G1 was an audit false-positive
 
 Status: **VERIFIED COMPLETE — PR #142 merged to main as `f983d2fd7eb0baced4b5ff40988e6294b3f5bd28`.**
 
-تأیید می‌کنم — G2 preserved the established Retest/trap block behavior and added only canonical rejection taxonomy plus bounded pre-zone/post-zone diagnostics.
-
 Verification:
 - Source/Architecture PASS — #2283;
 - Runtime Acceptance Contracts PASS — #2092;
 - cTrader Compile PASS — #2276.
 
-**Current phase: CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
+## CR7.3 / G3 closeout — 2026-10-01
+
+Status: **IMPLEMENTATION COMPLETE — pending CI/PR verification.**
+
+Completed:
+- valid `Level Line Thickness` values 1/2/3 now map to actual thickness 1/2/3;
+- the former forced-one clamp was removed from the renderer;
+- thickness mapping is owned by `PlanLinePresentationRule`;
+- Solid line style remains unchanged;
+- deterministic runtime and static acceptance coverage added.
+
+**Current phase: CR7.4 / G4 — Panel execution/protection state semantics.**

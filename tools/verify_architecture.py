@@ -1017,6 +1017,7 @@ VISUAL_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
 VISUAL_CALC = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 VISUAL_LINE_RENDERER = ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"
+VISUAL_LINE_PRESENTATION_RULE = ROOT / "Core" / "Math" / "PlanLinePresentationRule.cs"
 VISUAL_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 VISUAL_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 VISUAL_LABEL_REMOVER = ROOT / "UI" / "Chart" / "PlanLabelRemover.cs"
@@ -1031,6 +1032,7 @@ for required_path in (
     VISUAL_CALC,
     VISUAL_PLAN_RENDERER,
     VISUAL_LINE_RENDERER,
+    VISUAL_LINE_PRESENTATION_RULE,
     CONTROL_FACTORY,
     CONTROL_HANDLERS,
 ):
@@ -1044,6 +1046,7 @@ visual_builder_code = VISUAL_BUILDER.read_text(encoding="utf-8")
 visual_calc_code = VISUAL_CALC.read_text(encoding="utf-8")
 visual_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
 visual_line_code = VISUAL_LINE_RENDERER.read_text(encoding="utf-8")
+visual_line_presentation_rule_code = VISUAL_LINE_PRESENTATION_RULE.read_text(encoding="utf-8")
 plan_label_renderer_code = VISUAL_LABEL_RENDERER.read_text(encoding="utf-8")
 plan_label_coordinator_code = VISUAL_LABEL_COORDINATOR.read_text(encoding="utf-8")
 plan_label_remover_code = VISUAL_LABEL_REMOVER.read_text(encoding="utf-8")
@@ -1408,8 +1411,14 @@ if "return LineStyle.Solid" not in visual_line_code:
     raise SystemExit("All compact signal/plan level lines must use Solid style")
 if "ResolvePlanLineThickness(" not in visual_line_code:
     raise SystemExit("Plan-level thickness resolver is missing")
-if "Math.Min(" not in visual_line_code or "LevelLineThickness" not in visual_line_code:
-    raise SystemExit("Plan-level thickness contract must remain explicitly fixed at one")
+if "PlanLinePresentationRule.ResolveThickness(" not in visual_line_code:
+    raise SystemExit("Plan-level thickness must consume the canonical presentation rule")
+if "MinimumThickness = 1" not in visual_line_presentation_rule_code:
+    raise SystemExit("Plan-line presentation rule must preserve minimum thickness 1")
+if "MaximumThickness = 3" not in visual_line_presentation_rule_code:
+    raise SystemExit("Plan-line presentation rule must preserve maximum thickness 3")
+if "Math.Min(1" in visual_line_code:
+    raise SystemExit("Plan-line renderer must not force configured thickness back to one")
 
 # Runtime UI responsiveness hotfix contract.
 PANEL_VISIBILITY = ROOT / "UI" / "Panel" / "PanelVisibility.cs"

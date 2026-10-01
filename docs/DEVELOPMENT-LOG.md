@@ -2523,3 +2523,32 @@ Manual boundary:
 Target-terminal Retest intrabar/zone timing and empirical signal-quality/profitability validation remain manual.
 
 Next phase: **CR7.3 / G3 — Display parameter truth for plan-line thickness/style.**
+
+
+## CR7.3 / G3 — Display parameter truth for plan-line thickness/style — 2026-10-01
+
+Status: **IMPLEMENTATION COMPLETE — pending CI/PR verification**
+
+Implemented:
+- fixed the hidden forced-one clamp in `PlanLineRenderer.ResolvePlanLineThickness`;
+- added canonical `PlanLinePresentationRule.ResolveThickness`;
+- preserved the public `Level Line Thickness` parameter and its 1..3 contract;
+- preserved `LineStyle.Solid`;
+- added deterministic Runtime Acceptance coverage for 1/2/3 and safe bounds;
+- added `audit_phase_7_3.py` to the accumulated source-check chain;
+- added the phase-specific root-cause/verification document.
+
+Routine whole-chain audit:
+Analysis → Decision → Signal → Alert → Execution → Broker confirmation → Protection/Lifecycle → Outcome → Learning was reviewed. G3 is presentation-only and introduces no new decision or execution authority.
+
+Performance/code-cleanliness:
+- removed the incorrect renderer-level forced-one clamp;
+- kept thickness normalization as a bounded, single-owner presentation rule;
+- no new hot-path loop, state store or market-data scan was introduced.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP/execution threshold changed;
+- target-terminal cTrader visual verification of thickness 1/2/3 and Solid style remains manual.
+
+Next phase: **CR7.4 / G4 — Panel execution/protection state semantics.**
