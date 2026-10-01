@@ -82,7 +82,7 @@ namespace cAlgo
                     1,
                     SwingStrength);
 
-            return StructuralEventRule.IsFreshConfirmedBreak(
+            return StructuralEventRule.IsFreshBreak(
                 -1,
                 confirmationIndex,
                 index,
@@ -121,7 +121,7 @@ namespace cAlgo
                     1,
                     SwingStrength);
 
-            return StructuralEventRule.IsFreshConfirmedBreak(
+            return StructuralEventRule.IsFreshBreak(
                 1,
                 confirmationIndex,
                 index,
@@ -160,7 +160,7 @@ namespace cAlgo
                     1,
                     SwingStrength);
 
-            return StructuralEventRule.IsFreshConfirmedBreak(
+            return StructuralEventRule.IsFreshBreak(
                 -1,
                 confirmationIndex,
                 index,
