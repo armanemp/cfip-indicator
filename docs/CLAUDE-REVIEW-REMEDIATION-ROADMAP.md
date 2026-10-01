@@ -1865,7 +1865,36 @@ Safety/manual boundary:
 - no alternate broker mutation owner;
 - target-terminal broker/restart behavior remains manual acceptance.
 
-**Next phase: CR7.1 / G1 — Broker protection must never increase live position risk.**
+### CR7.1 / G1 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — Source/Architecture #2262, Runtime Acceptance #2071 and cTrader Compile #2255 passed on final G1 code HEAD 2f1cb933a2c2407e1fe33302cf72f538f090ba91; PR #138.**
+
+**تأیید می‌کنم** — G1 is closed with the required safety exception only.
+
+Completed:
+- TargetObstacleCacheKey now implements GetHashCode() using all equality fields, removing the reported CS0659 warning;
+- ManagedStopProtectionRule now separates existing-stop health from new-stop market-distance acceptance;
+- BrokerProtectionCoordinator, BoundPlanProtection and BrokerProtectionStateEvaluator no longer treat a correctly-sided near-market existing SL as missing/invalid solely because of current broker distance;
+- ProtectionProgressionRule remains the single stop-replacement guard;
+- deterministic BUY/SELL protection contracts and accumulated G1 static audit are wired;
+- audit_project_integrity.py was corrected to make duplicate-method detection type-aware after the independent GetHashCode() methods exposed a false-positive in that audit.
+
+Safety:
+- no public parameter identity/default changed;
+- no RR/confidence/SL/TP/execution threshold tuning;
+- no alternate broker mutation path or decision authority introduced.
+
+Verification:
+- Source/Architecture: PASS — run 36868297463 / workflow #2262;
+- Runtime Acceptance: PASS — run 36868297578 / workflow #2071;
+- cTrader Compile: PASS — run 36868297556 / workflow #2255.
+
+Manual boundary:
+- target-terminal broker modification/rejection semantics, restart/reconnect, live cTrader behavior and empirical trading outcomes remain manual.
+
+**Next phase: CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry.**
+
+
 
 ### CR6.9 — Orphaned managed-position protection (F3)
 
@@ -1892,7 +1921,7 @@ Testing:
 
 ### Prompt 6 completion gate
 
-CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → **CR-FINAL**
+CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR7.1 → CR7.2 → CR7.3 → CR7.4 → CR7.5 → CR7.6a → CR7.6b → CR7.6c → CR7.6d → **CR-FINAL**
 
 CR-FINAL cannot be considered complete while any F-item remains unverified, deferred without an explicit reason, or blocked by missing deterministic/replay/target-terminal evidence.
 
@@ -1903,7 +1932,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR7.1 / G1 — Broker protection must never increase live position risk**.
+Current active phase: **CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 
