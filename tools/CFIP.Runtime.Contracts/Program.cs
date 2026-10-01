@@ -109,6 +109,7 @@ namespace cAlgo
             VerifyBrokerProtectionG1();
             VerifyExecutionProtectionPanelStateFreshnessG5();
             VerifyExecutionPanelPresentationIdentityG6A();
+            VerifyExecutionControlPresentationG6B();
             VerifyExecutionProtectionPanelStateG4();
 
             Console.WriteLine("Runtime acceptance contracts OK");
@@ -8817,6 +8818,38 @@ namespace cAlgo
                     baseline,
                     1000),
                 "G5 clock regression refreshes instead of serving stale broker state");
+        }
+
+        private static void VerifyExecutionControlPresentationG6B()
+        {
+            Assert(
+                !ExecutionControlPresentationRule.IsInteractive,
+                "G6B execution controls are status-only and cannot own execution mutations");
+
+            Assert(
+                ExecutionControlPresentationRule.ComposeStatusText(
+                    "AUTO TRADE",
+                    true) ==
+                "AUTO TRADE  •  ON" &&
+                ExecutionControlPresentationRule.ComposeStatusText(
+                    "AUTO ORDERS",
+                    false) ==
+                "AUTO ORDERS  •  OFF",
+                "G6B execution-control status text is deterministic and reflects canonical state");
+
+            Assert(
+                ExecutionControlPresentationRule.ComposeStatusText(
+                    null,
+                    true) ==
+                "EXECUTION  •  ON" &&
+                ExecutionControlPresentationRule.ComposeStatusText(
+                    "  ",
+                    false) ==
+                "EXECUTION  •  OFF",
+                "G6B blank captions normalize deterministically");
+
+            Console.WriteLine(
+                "CR7.6b / G6B execution-control presentation contract PASS");
         }
 
         private static void VerifyExecutionProtectionPanelStateG4()
