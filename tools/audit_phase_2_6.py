@@ -13,6 +13,7 @@ errors = []
 quality = read("src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockQualityCalculator.cs")
 quality_rule = read("src/CFIP.Indicator/Core/Math/OrderBlockQualityRule.cs")
 rule = read("src/CFIP.Indicator/Core/Math/OrderBlockRule.cs")
+lifecycle = read("src/CFIP.Indicator/Core/Math/OrderBlockLifecycleRule.cs")
 candidate = read("src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockCandidateBuilder.cs")
 analyzer = read("src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockAnalyzer.cs")
 mitigation = read("src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockMitigationGuard.cs")
@@ -52,17 +53,17 @@ checks = {
         "zoneLow >= market - tolerance" in rule
     ),
     "lifecycle has fresh mitigated broken states": (
-        "OrderBlockLifecycleState.Fresh" in rule and
-        "OrderBlockLifecycleState.Mitigated" in rule and
-        "OrderBlockLifecycleState.Broken" in rule
+        "OrderBlockLifecycleState.Fresh" in lifecycle and
+        "OrderBlockLifecycleState.Mitigated" in lifecycle and
+        "OrderBlockLifecycleState.Broken" in lifecycle
     ),
     "active candidate records lifecycle": (
         "out OrderBlockLifecycleState lifecycleState" in candidate and
         "OrderBlockLifecycle =" in candidate
     ),
     "broken candidates cannot survive mitigation": (
-        "ClassifyLifecycle(" in mitigation and
-        "MinimumRetainedRatio" in mitigation and
+        "OrderBlockLifecycleRule.Classify(" in mitigation and
+        "OrderBlockLifecycleRule.MinimumRetainedRatio" in mitigation and
         "Broken" in mitigation
     ),
     "selection enforces side and active lifecycle": (
@@ -86,7 +87,8 @@ checks = {
     ),
     "runtime project links CR2.6 math": (
         "OrderBlockQualityRule.cs" in project and
-        "OrderBlockRule.cs" in project
+        "OrderBlockRule.cs" in project and
+        "OrderBlockLifecycleRule.cs" in project
     ),
 }
 
