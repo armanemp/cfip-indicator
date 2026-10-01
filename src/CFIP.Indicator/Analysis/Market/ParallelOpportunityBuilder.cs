@@ -172,8 +172,13 @@ namespace cAlgo
                     out geometry))
                 return null;
 
-            ExecutionModel execution =
-                geometry.Execution;
+            ExecutionModel execution;
+
+            if (!TryGetParallelExecutionModel(
+                    closedM5,
+                    direction,
+                    out execution))
+                return null;
 
             TradeSetupPreview preview =
                 BuildTradeSetupPreviewFromGeometry(
