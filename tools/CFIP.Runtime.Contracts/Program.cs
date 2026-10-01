@@ -36,6 +36,7 @@ namespace cAlgo
             VerifyNativeIndicatorReadinessSemantics();
             VerifyStructuralStopRiskCeilingSemantics();
             VerifyLiquidityTargetCandidateSemantics();
+            VerifyIndependentEvidenceGroupSemantics();
             VerifyBrokerStateRefreshSemantics();
             VerifyBufferedArchivePersistence();
             VerifyDailyLossSemantics();
@@ -3336,6 +3337,134 @@ namespace cAlgo
                 counterStrong.Allowed &&
                 counterStrong.Lane == OpportunityLane.CounterHtfTactical,
                 "very strong LTF RR opportunity can survive a strong HTF conflict");
+        }
+
+        private static void VerifyIndependentEvidenceGroupSemantics()
+        {
+            IndependentEvidenceFusionInput structuralOnly =
+                new IndependentEvidenceFusionInput(
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false);
+
+            Assert(
+                IndependentEvidenceFusionRule.CountGroups(structuralOnly) == 1,
+                "correlated Structure/MSS/CHOCH/Displacement evidence belongs to one structural group");
+
+            Assert(
+                IndependentEvidenceFusionRule.CalculateScore(structuralOnly) == 2,
+                "legacy structural evidence score remains numerically unchanged");
+
+            IndependentEvidenceFusionInput locationOnly =
+                new IndependentEvidenceFusionInput(
+                    false,
+                    false,
+                    false,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false);
+
+            Assert(
+                IndependentEvidenceFusionRule.CountGroups(locationOnly) == 1,
+                "Liquidity/FVG/OrderBlock evidence belongs to one location group");
+
+            IndependentEvidenceFusionInput allGroups =
+                new IndependentEvidenceFusionInput(
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true);
+
+            Assert(
+                IndependentEvidenceFusionRule.CountGroups(allGroups) == 4,
+                "all independent evidence families resolve to exactly four groups");
+
+            IndependentEvidenceFusionInput buyProjection =
+                new IndependentEvidenceFusionInput(
+                    true,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false);
+
+            IndependentEvidenceFusionInput sellProjection =
+                new IndependentEvidenceFusionInput(
+                    false,
+                    true,
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true,
+                    true,
+                    false);
+
+            Assert(
+                IndependentEvidenceFusionRule.CountGroups(buyProjection) == 4 &&
+                IndependentEvidenceFusionRule.CountGroups(sellProjection) == 4,
+                "BUY/SELL directional projections preserve identical independent-family semantics");
+
+            Assert(
+                IndependentEvidenceFusionRule.CountGroups(
+                    new IndependentEvidenceFusionInput(
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false)) == 0,
+                "no evidence produces zero independent groups");
         }
 
         private static void VerifyProtectionProgressionSemantics()

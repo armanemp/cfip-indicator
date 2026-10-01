@@ -2,6 +2,13 @@ using System;
 
 namespace cAlgo
 {
+    /// <summary>
+    /// Canonical independent-evidence fusion owner.
+    ///
+    /// The legacy numerical score remains unchanged for decision compatibility.
+    /// Independent group count is a separate diagnostic semantic: correlated
+    /// features inside one evidence family count as one independent group.
+    /// </summary>
     internal readonly struct IndependentEvidenceFusionInput
     {
         public bool Structure { get; }
@@ -52,9 +59,9 @@ namespace cAlgo
         }
     }
 
-    internal sealed class IndependentEvidenceFusionCalculator
+    internal static class IndependentEvidenceFusionRule
     {
-        public int Calculate(
+        public static int CalculateScore(
             IndependentEvidenceFusionInput input)
         {
             double structural =
@@ -95,6 +102,36 @@ namespace cAlgo
                     context),
                 0,
                 8);
+        }
+
+        public static int CountGroups(
+            IndependentEvidenceFusionInput input)
+        {
+            int groups = 0;
+
+            if (input.Structure ||
+                input.Transition ||
+                input.Displacement)
+                groups++;
+
+            if (input.Liquidity ||
+                input.Fvg ||
+                input.OrderBlock)
+                groups++;
+
+            if (input.Trend ||
+                input.Momentum ||
+                input.Macd ||
+                input.Vwap)
+                groups++;
+
+            if (input.Volume ||
+                input.Volatility ||
+                input.Rejection ||
+                input.EqualLevel)
+                groups++;
+
+            return groups;
         }
 
         private static double CappedContribution(

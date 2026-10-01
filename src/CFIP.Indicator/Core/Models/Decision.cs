@@ -24,6 +24,7 @@ namespace cAlgo
                         public bool TopDownEligible;
                         public string TopDownStage;
                         public int IndependentEvidence;
+                        public int IndependentEvidenceGroupCount;
                         public int StructuralConfirmations;
                         public int RetestQuality;
                         public int BuyShare;

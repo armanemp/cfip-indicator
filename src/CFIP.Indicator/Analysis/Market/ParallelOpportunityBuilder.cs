@@ -260,6 +260,12 @@ namespace cAlgo
             if (!rewardRisk.Allowed)
                 return null;
 
+            int independentEvidence =
+                IndependentEvidence(direction);
+
+            int independentEvidenceGroups =
+                IndependentEvidenceGroupCount(direction);
+
             TradeOpportunityCandidate candidate =
                 new TradeOpportunityCandidate
             {
@@ -270,6 +276,10 @@ namespace cAlgo
                 Lane = lane,
                 Direction = direction,
                 CreatedM5 = closedM5,
+                IndependentEvidenceScore =
+                    independentEvidence,
+                IndependentEvidenceGroupCount =
+                    independentEvidenceGroups,
                 Quality = Math.Max(
                     0,
                     Math.Min(

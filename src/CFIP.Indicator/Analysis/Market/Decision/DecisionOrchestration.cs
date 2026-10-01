@@ -156,6 +156,12 @@ namespace cAlgo
                     _decisionInputSnapshotFactory.Create(
                         request));
 
+            decision.IndependentEvidenceGroupCount =
+                decision.Direction == 0
+                    ? 0
+                    : IndependentEvidenceGroupCount(
+                        decision.Direction);
+
             TopDownCalibrationSnapshot topDown =
                 EvaluateTopDownCalibration(
                     decision);

@@ -6,6 +6,7 @@ namespace cAlgo
         public string ScenarioId;
         public string SourceTimeframe;
         public int IndependentEvidenceScore;
+        public int IndependentEvidenceGroupCount;
         public int LocationConfluenceScore;
         public int WaveTrendQuality;
         public bool ExecutionPolicyAllowed;
