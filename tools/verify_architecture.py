@@ -1887,7 +1887,7 @@ for path, token in (
 FVG_LIFECYCLE_RULE = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
 FVG_LIFECYCLE_RULE_CODE = FVG_LIFECYCLE_RULE.read_text(encoding="utf-8")
 for token in (
-    "IsOrderBlockAgeValid(",
+    "IsAgeValid(",
     "ResolveFvgMitigationProbe(",
     "TryApplyMitigationStep(",
     "return !invalidateOnFullFill;",
