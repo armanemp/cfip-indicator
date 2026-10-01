@@ -38,9 +38,18 @@ ensure = panel_state.split("private void EnsurePanelExecutionProtectionStateCach
 if "GetManagedPosition()" not in ensure or "GetManagedPendingOrder()" not in ensure:
     raise SystemExit("G5 broker enumeration must remain inside the canonical G4 snapshot owner")
 
-for source in (auto, life):
-    if "InvalidatePanelExecutionProtectionStateCache();" not in source:
-        raise SystemExit("G5 runtime/lifecycle state owner is missing panel invalidation")
+lifecycle_method = life.split(
+    "private void SetLifecycleState(",
+    1,
+)[1]
+
+if "if (previous != state)" not in lifecycle_method or    "InvalidatePanelExecutionProtectionStateCache();" not in lifecycle_method:
+    raise SystemExit(
+        "G5 lifecycle state changes must invalidate the canonical panel snapshot"
+    )
+
+if "InvalidatePanelExecutionProtectionStateCache();" not in auto:
+    raise SystemExit("G5 runtime state owner is missing panel invalidation")
 
 for token in (
     "private string _autoExecutionBlockReasonValue",

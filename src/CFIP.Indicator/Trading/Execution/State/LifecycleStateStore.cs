@@ -25,6 +25,9 @@ namespace cAlgo
                                     _lifecycleState = state;
                                     _lifecycleReason = nextReason;
 
+                                    if (previous != state)
+                                        InvalidatePanelExecutionProtectionStateCache();
+
                                     if (previous != state &&
                                         (state == LifecycleState.RecoveryRequired ||
                                          (previous == LifecycleState.RecoveryRequired &&
