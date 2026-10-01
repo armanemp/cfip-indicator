@@ -422,10 +422,10 @@ namespace cAlgo
                     1.00);
 
             Assert(
-                tacticalInversion[0] == 2.00 &&
-                tacticalInversion[1] == 2.10 &&
-                tacticalInversion[2] == 2.20 &&
-                tacticalInversion[3] == 2.30,
+                Math.Abs(tacticalInversion[0] - 2.00) < 1e-12 &&
+                Math.Abs(tacticalInversion[1] - 2.10) < 1e-12 &&
+                Math.Abs(tacticalInversion[2] - 2.20) < 1e-12 &&
+                Math.Abs(tacticalInversion[3] - 2.30) < 1e-12,
                 "E8 tactical RR ordering cannot invert");
 
             double[] strategicTradeFloor =
