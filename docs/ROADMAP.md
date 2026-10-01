@@ -710,6 +710,14 @@ marked as a research milestone that may be completed early.
 
 ## CR4.4 — Numerical stability and caching continuity
 
+## CR4.5 / D5 — Per-timeframe regime semantics
+
+CR4.5 is a completed historical continuity item: each canonical timeframe
+carries its own normalized regime metadata, non-M5 regime snapshots are bounded
+and independently cached, UNKNOWN remains neutral, and frame scoring consumes
+the owning frame's regime. Target-terminal timing and replay validation remain
+manual acceptance boundaries.
+
 The production OSS indicator adapters use the canonical bounded quote-cache
 owners and preserve deterministic warm-up semantics. Historical target-terminal
 validation remains a manual acceptance boundary; this continuity marker keeps
