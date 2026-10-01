@@ -4,31 +4,30 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private int IndependentEvidence(int direction) =>
-            IndependentEvidence(_m5Frame, direction);
+        private int IndependentEvidence(int direction)
+        {
+            return CalculateIndependentEvidenceForFrame(_m5Frame, direction);
+        }
 
-        private int IndependentEvidenceGroupCount(int direction) =>
-            IndependentEvidenceGroupCount(_m5Frame, direction);
+        private int IndependentEvidenceGroupCount(int direction)
+        {
+            return CountIndependentEvidenceGroupsForFrame(_m5Frame, direction);
+        }
 
         private int CalculateIndependentEvidenceForFrame(Frame frame, int direction)
         {
-            return IndependentEvidenceFusionRule.CalculateScore(BuildIndependentEvidenceInput(frame, direction));
+            return IndependentEvidenceFusionRule.CalculateScore(
+                BuildIndependentEvidenceInput(frame, direction));
         }
 
         private int CountIndependentEvidenceGroupsForFrame(Frame frame, int direction)
         {
-            return IndependentEvidenceFusionRule.CountGroups(BuildIndependentEvidenceInput(frame, direction));
+            return IndependentEvidenceFusionRule.CountGroups(
+                BuildIndependentEvidenceInput(frame, direction));
         }
 
-        private IndependentEvidenceFusionInput BuildIndependentEvidenceInput
-        }
-
-        private int CountIndependentEvidenceGroupsForFrame(Frame frame, int direction)
-        {
-            return IndependentEvidenceFusionRule.CountGroups(BuildIndependentEvidenceInput(frame, direction));
-        }
-
-        private IndependentEvidenceFusionInput BuildIndependentEvidenceInput(Frame frame, int direction)
+        private IndependentEvidenceFusionInput BuildIndependentEvidenceInput(
+            Frame frame, int direction)
         {
             if (frame == null || (direction != 1 && direction != -1))
                 return new IndependentEvidenceFusionInput(
