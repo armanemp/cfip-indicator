@@ -21,6 +21,7 @@ namespace cAlgo
             double sourcePrice,
             double frameAtr,
             double riskReferenceAtr,
+            double pipSize,
             string timeframe,
             double stopBufferAtr,
             double htfStopBufferAtr,
