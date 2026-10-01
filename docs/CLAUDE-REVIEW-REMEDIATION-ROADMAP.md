@@ -1753,7 +1753,15 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR6.3 / F4 — Effective-threshold transparency and hidden additive margins**.
+Current active phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path**.
+
+## 7.4 CR6.3 / F4 completion checkpoint
+
+CR6.3 / F4 is **verified complete** on 2026-10-01 via PR #129. The effective actionability thresholds and hidden additive margins are now owned by `ActionabilityThresholdPolicy`, the panel exposes effective thresholds, `ActionableNow` is documented as post-final-gate state, and the existing public parameter/default contract was preserved.
+
+Verification on commit `5dd9a8a8bb0fb8172ac40b7336ce86e0bb5c3c2a`: Source/Architecture PASS, Runtime Acceptance Contracts PASS, cTrader Compile PASS.
+
+Next implementation phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path**.
 
 ## 8. Completion order and dependencies
 

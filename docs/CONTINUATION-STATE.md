@@ -24,7 +24,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 ## Active phase
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before CR-FINAL.
-**Current: CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
+**Current: CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 CR5.1 through CR5.8 are verified complete at repository level. CR5.8 was merged
 to `main` via PR #124 with merge commit
@@ -264,12 +264,12 @@ Repository gates on the final F1 head:
 
 ### Current implementation phase
 
-**CR6.3 / F4 — Effective-threshold transparency and hidden additive margins.**
+**CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
-F2 was completed and verified on branch
-`phase/cr6-2-f2-aggressive-risk-fill`; PR #128 was merged to `main` via merge
-commit `217911ac5f484d156b8640f27f2a928b9622280b`. Three repository gates passed
-on the final pre-merge head.
+F4 was completed and verified on branch
+`phase/cr6-3-f4-threshold-transparency`; PR #129 passed Source/Architecture,
+Runtime Acceptance Contracts, and cTrader Compile on commit
+`5dd9a8a8bb0fb8172ac40b7336ce86e0bb5c3c2a`.
 ### Prompt 6 remediation insertion — 2026-09-30
 
 Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
@@ -566,19 +566,22 @@ Safety/manual boundary:
 - target-terminal replay, zone mitigation timing, warm-cache behavior and empirical
   signal-quality/profitability remain manual.
 
-Next phase: **CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
+Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Current active phase
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before
-CR-FINAL. **Current: CR6.1 / F1 — Opposing FVG/OB target-path direction,
-mitigation and obstacle caching.**
+CR-FINAL. **Current: CR6.4 / F5 — Smart-threshold regime identity and hidden
+REVERSAL dead path.**
 
 CR5.1 through CR5.8 are verified complete. CR5.8 / E8 was merged to main via
 PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
-E1–E8 is closed at repository level. CR-FINAL remains paused until CR6.1–CR6.9
-are completed or explicitly documented as verified/deferred with evidence.
-Target-terminal acceptance remains required afterward.
+E1–E8 is closed at repository level. CR6.1 / F1 and CR6.2 / F2 are verified
+complete, and CR6.3 / F4 is verified complete on PR #129 with all three
+repository gates PASS on commit
+`5dd9a8a8bb0fb8172ac40b7336ce86e0bb5c3c2a`. CR-FINAL remains paused until
+CR6.1–CR6.9 are completed or explicitly documented as verified/deferred with
+evidence. Target-terminal acceptance remains required afterward.
 
 ### CR5.7 / E7 closeout
 

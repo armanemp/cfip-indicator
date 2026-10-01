@@ -92,6 +92,53 @@ namespace cAlgo
                 false,
                 contentWidth);
 
+            ActionabilityThresholdSnapshot actionabilityThresholds =
+                ActionabilityThresholdPolicy.ResolveFinal(
+                    MinimumConfidence,
+                    MinimumSmartQuality,
+                    SmartQualityThreshold,
+                    MinimumTimeframeAgreement,
+                    SmartMinimumTimeframeAgreement,
+                    MinimumIndependentEvidence,
+                    SmartMinimumIndependentEvidence,
+                    MinimumStructuralConfirmations,
+                    MinimumEntryLocationQuality,
+                    MinimumEntryQuality,
+                    Math.Max(
+                        Tp1MinimumRR,
+                        MinimumRequiredRRForRegime(
+                            _decision == null
+                                ? "UNKNOWN"
+                                : _decision.Regime)));
+
+            AddPanelRow(
+                ref slot,
+                "ACTIONABILITY  PRE L/T " +
+                actionabilityThresholds.UpstreamEntryLocationQuality +
+                "/" +
+                actionabilityThresholds.UpstreamEntryTimingQuality +
+                "  •  FINAL C/S/MTF " +
+                actionabilityThresholds.FinalMinimumConfidence +
+                "/" +
+                actionabilityThresholds.FinalMinimumSmartQuality +
+                "/" +
+                actionabilityThresholds.FinalMinimumTimeframeAgreement +
+                "  •  E/ST " +
+                actionabilityThresholds.FinalMinimumIndependentEvidence +
+                "/" +
+                actionabilityThresholds.FinalMinimumStructuralConfirmations +
+                "  •  ENTRY L/T/P " +
+                actionabilityThresholds.FinalMinimumEntryLocationQuality +
+                "/" +
+                actionabilityThresholds.FinalMinimumEntryTimingQuality +
+                "/" +
+                actionabilityThresholds.FinalMinimumEntryPositionQuality +
+                "  •  RR " +
+                actionabilityThresholds.FinalMinimumTp1RR.ToString("F2"),
+                PanelSecondaryTextColor,
+                false,
+                contentWidth);
+
             if (ShowEngineStatus)
             {
                 AddPanelRow(

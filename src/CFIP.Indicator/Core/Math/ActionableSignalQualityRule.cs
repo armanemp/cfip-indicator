@@ -168,7 +168,8 @@ namespace cAlgo
                     input.MinimumEntryLocationQuality,
                     Math.Min(
                         input.MinimumEntryTimingQuality,
-                        input.MinimumEntryPositionQuality)) - 8;
+                        input.MinimumEntryPositionQuality)) -
+                ActionabilityThresholdPolicy.QualityRecoveryDeficitAllowance;
 
             int deficientQuality =
                 Math.Min(
@@ -179,26 +180,32 @@ namespace cAlgo
 
             int confidenceFloor =
                 Math.Min(
-                    99,
-                    input.MinimumConfidence + 5);
+                    ActionabilityThresholdPolicy.FinalConfidenceCap,
+                    input.MinimumConfidence +
+                    ActionabilityThresholdPolicy.RecoveryConfidenceMargin);
             int smartFloor =
                 Math.Min(
-                    100,
-                    input.MinimumSmartQuality + 5);
+                    ActionabilityThresholdPolicy.RecoverySmartQualityCap,
+                    input.MinimumSmartQuality +
+                    ActionabilityThresholdPolicy.RecoverySmartQualityMargin);
             int timeframeFloor =
                 Math.Min(
-                    100,
-                    input.MinimumTimeframeAgreement + 3);
+                    ActionabilityThresholdPolicy.RecoveryTimeframeAgreementCap,
+                    input.MinimumTimeframeAgreement +
+                    ActionabilityThresholdPolicy.RecoveryTimeframeAgreementMargin);
             int evidenceFloor =
                 Math.Min(
-                    8,
-                    input.MinimumIndependentEvidence + 1);
+                    ActionabilityThresholdPolicy.FinalEvidenceCap,
+                    input.MinimumIndependentEvidence +
+                    ActionabilityThresholdPolicy.RecoveryIndependentEvidenceMargin);
             int structureFloor =
                 Math.Min(
-                    8,
-                    input.MinimumStructuralConfirmations + 1);
+                    ActionabilityThresholdPolicy.FinalStructureCap,
+                    input.MinimumStructuralConfirmations +
+                    ActionabilityThresholdPolicy.RecoveryStructuralConfirmationsMargin);
             double rrFloor =
-                input.MinimumTp1RR + 0.35;
+                input.MinimumTp1RR +
+                ActionabilityThresholdPolicy.RecoveryTp1RrMargin;
 
             return
                 deficientQuality >= minimumDeficientQuality &&
