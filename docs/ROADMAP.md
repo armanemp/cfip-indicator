@@ -5539,6 +5539,28 @@ Verification boundary:
 
 **Next phase: CR6.9 / F3 — Orphaned managed-position protection.**
 
+### CR6.9 / F3 closeout — 2026-10-01
+
+Status: **IMPLEMENTED — repository CI verification pending on the final F3 head.**
+
+**تأیید می‌کنم** — F3 invalid-stop success reporting was corrected fail-closed.
+
+Completed:
+- invalid orphan stop candidate now fails and emits a clear diagnostic;
+- Core `OrphanManagedProtectionRule` is the single success invariant;
+- caller enters `RecoveryRequired` on failure;
+- failed protection does not update `_lastBrokerModifyUtc`;
+- deterministic Runtime Contract and accumulated static audit were added;
+- no public parameter/default/trading threshold or broker mutation ownership changed.
+
+Safety/manual boundary:
+- only the explicit F3 safety correction is changed;
+- target-terminal broker rejection timing and restart/reconnect behavior remain manual acceptance.
+
+**Next phase: CR7.1 / G1 — Broker protection must never increase live position risk.**
+
+
+
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
 Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
@@ -5718,7 +5740,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR6.9 / F3 — Orphaned managed-position protection.**
+**CR7.1 / G1 — Broker protection must never increase live position risk.**
 
-CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
+CR6.9 / F3 has been implemented with fail-closed orphan-position protection. Prompt 7 G1 is now the next mandatory phase. CR-FINAL remains paused until the remediation sequence and required acceptance evidence are completed.
 
