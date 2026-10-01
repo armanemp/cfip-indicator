@@ -248,13 +248,14 @@ check(
 )
 
 check(
-    "roadmap records CI-13 as the current implementation phase",
-    "Current implementation phase: **CI-13" in roadmap,
+    "roadmap records the CI-13 implementation section",
+    "### CI-13 implementation record" in roadmap and
+    "Current implementation phase: CI-13" in roadmap,
 )
 
 check(
     "roadmap records CI-14 as the next phase",
-    "Next phase: **CI-14 — Canonical risk/reward and protection mathematics."
+    "Next phase: CI-14 — Canonical risk/reward and protection mathematics."
     in roadmap,
 )
 
