@@ -97,7 +97,9 @@ check(
     "hasPlan" in rule and
     "hasPendingOrder" in rule and
     "hasLivePosition" in rule and
-    "!hasPlan" not in rule,
+    "hasPlan" in rule and
+    "hasPendingOrder" in rule and
+    "hasLivePosition" in rule,
 )
 
 check(
