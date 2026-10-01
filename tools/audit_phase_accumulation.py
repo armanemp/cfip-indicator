@@ -83,10 +83,16 @@ telemetry = read("Trading/Execution/SubmissionGateCoordinator.cs")
 outcome_telemetry = read("Trading/Intelligence/OutcomeTelemetryEngine.cs")
 outcome_model = read("Trading/Intelligence/OutcomeObservation.cs")
 
+policy = read("Core/Math/ActionabilityThresholdPolicy.cs")
+
 if "AllowsQualityRecovery(" not in quality_rule:
     raise SystemExit("high-quality signal recovery gate is missing")
-if "locationQuality <" not in evaluator or "timingQuality < 64" not in evaluator:
-    raise SystemExit("actionability staging recovery boundary is missing")
+if "ActionabilityThresholdPolicy.QualityRecoveryDeficitAllowance" not in quality_rule:
+    raise SystemExit("quality-recovery threshold ownership is missing")
+if "EffectiveUpstreamEntryLocationQuality(" not in evaluator or "EffectiveUpstreamEntryTimingQuality()" not in evaluator:
+    raise SystemExit("actionability staging threshold ownership is missing")
+if "UpstreamEntryLocationQualityFloor = 64" not in policy or "UpstreamEntryTimingQualityFloor = 64" not in policy:
+    raise SystemExit("actionability upstream 64/64 threshold owner is missing")
 if "RecordExecutionTelemetry(" not in telemetry or "RecordExecutionTelemetryFailure(" not in telemetry:
     raise SystemExit("broker submission telemetry owner is missing")
 if "RecordExecutionTelemetryHistory(" not in telemetry:
