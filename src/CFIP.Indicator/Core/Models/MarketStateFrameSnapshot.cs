@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     internal sealed class MarketStateFrameSnapshot
