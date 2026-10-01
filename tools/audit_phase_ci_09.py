@@ -37,6 +37,8 @@ continuation = read("docs/CONTINUATION-STATE.md")
 check(
     "score has one executable owner and explicit component provenance",
     "class DecisionScoreCalculator" in score and
+    "Calculate(DecisionScoreInput input)" in score and
+    "Calculate(DecisionInputSnapshot input)" not in score and
     score.count("new DecisionScoreSnapshot(") == 1 and
     all(token in score_snapshot for token in (
         "M5BullContribution", "M15BullContribution",
