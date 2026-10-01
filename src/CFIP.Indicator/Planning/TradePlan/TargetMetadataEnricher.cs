@@ -13,6 +13,41 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private void ApplyExactTargetMeta(
+            Level selectedSource,
+            double target,
+            out string source,
+            out int quality)
+        {
+            source = "";
+            quality = 0;
+
+            if (!IsFinitePositive(target))
+                return;
+
+            if (selectedSource != null &&
+                IsFinitePositive(selectedSource.Price) &&
+                Math.Abs(
+                    selectedSource.Price -
+                    target) <=
+                Math.Max(
+                    Symbol.TickSize,
+                    Symbol.PipSize * 0.25))
+            {
+                source =
+                    BuildTargetSourceIdentity(
+                        selectedSource);
+
+                quality =
+                    CalculateTargetQuality(
+                        selectedSource);
+                return;
+            }
+
+            source = "SYNTHETIC_RR";
+            quality = 55;
+        }
+
         private void ApplyResolvedTargetMeta(
             List<Level> selected,
             int stage,
@@ -37,23 +72,17 @@ namespace cAlgo
                     : null;
 
             if (selectedSource != null &&
-                IsFinitePositive(selectedSource.Price) &&
-                Math.Abs(
-                    selectedSource.Price -
-                    target) <=
-                Math.Max(
-                    Symbol.TickSize,
-                    Symbol.PipSize * 0.25))
+                IsFinitePositive(selectedSource.Price))
             {
-                source =
-                    BuildTargetSourceIdentity(
-                        selectedSource);
+                ApplyExactTargetMeta(
+                    selectedSource,
+                    target,
+                    out source,
+                    out quality);
 
-                quality =
-                    CalculateTargetQuality(
-                        selectedSource);
-
-                return;
+                if (!string.IsNullOrWhiteSpace(source) &&
+                    source != "SYNTHETIC_RR")
+                    return;
             }
 
             if (IsFinitePositive(previousTarget) &&
