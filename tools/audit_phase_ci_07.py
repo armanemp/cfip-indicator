@@ -79,10 +79,12 @@ check(
 
 check(
     "regime transition has one pure owner",
-    "internal static class MarketRegimeTransitionRule" in transition and
-    "MarketRegimeTransitionRule.ClassifyTransition(" in transition and
-    sum("class MarketRegimeTransitionRule" in p.read_text(encoding="utf-8")
-        for p in production_files) == 1
+    transition.count("internal static class MarketRegimeTransitionRule") == 1 and
+    transition.count("ClassifyTransition(") == 1 and
+    sum(
+        len(re.findall(r"\bclass\s+MarketRegimeTransitionRule\b", p.read_text(encoding="utf-8")))
+        for p in production_files
+    ) == 1
 )
 
 check(
@@ -90,7 +92,7 @@ check(
     "PreviousRegime" in regime_model and
     "RegimeTransition" in regime_model and
     "ApplyRegimeTransition(" in regime and
-    "MarketRegimeTransitionRule.Resolve(" in regime and
+    "MarketRegimeTransitionRule.ClassifyTransition(" in regime and
     "PreviousRegime" in frame and
     "RegimeTransition" in frame and
     "RegimeTransition" in frame_evidence
@@ -142,7 +144,7 @@ check(
     "runtime contracts register CI-07 determinism",
     "VerifyCi07MarketStateSemantics();" in runtime and
     "CI-07 snapshot preserves exact reference identity" in runtime and
-    "MarketRegimeTransitionRule.Resolve" in runtime and
+    "MarketRegimeTransitionRule.ClassifyTransition" in runtime and
     "MarketStateSnapshot.cs" in runtime_project and
     "MarketRegimeTransitionRule.cs" in runtime_project
 )
