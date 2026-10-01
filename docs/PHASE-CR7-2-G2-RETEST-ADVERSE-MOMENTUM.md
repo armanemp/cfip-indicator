@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-Status: **IMPLEMENTED — repository verification pending**
+Status: **VERIFIED COMPLETE — PR #142 merged to `main` as `f983d2fd7eb0baced4b5ff40988e6294b3f5bd28`.**
 
 ## Phase acknowledgement
 
@@ -32,7 +32,10 @@ The existing six-argument EntryTrapRiskRule.Evaluate overload remains available 
 
 ## Verification boundary
 
-CI must pass Source/Architecture, Runtime Acceptance Contracts and cTrader Compile. Target-terminal intrabar timing, actual zone interaction and empirical Retest signal-quality effects remain manual acceptance items.
+Repository verification on final G2 head `94e8154e3ec5107bb984be228aed874ba2e1e27c`:
+- Source/Architecture: **PASS** — #2283;
+- Runtime Acceptance Contracts: **PASS** — #2092;
+- cTrader Compile: **PASS** — #2276. Target-terminal intrabar timing, actual zone interaction and empirical Retest signal-quality effects remain manual acceptance items.
 
 ## Next phase
 
