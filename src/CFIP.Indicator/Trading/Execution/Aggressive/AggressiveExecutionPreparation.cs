@@ -25,11 +25,21 @@ namespace cAlgo
             tpPips = 0;
             volume = 0;
 
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsQuoteValid)
+            {
+                _autoExecutionBlockReason =
+                    "AGGRESSIVE • INVALID MARKET QUOTE";
+                return false;
+            }
+
             entry =
                 NormalizePrice(
-                    _reaction.Direction == 1
-                        ? Symbol.Ask
-                        : Symbol.Bid);
+                    priceSnapshot.GetExecutablePrice(
+                        _reaction.Direction));
 
             atr =
                 Atr(
@@ -87,7 +97,9 @@ namespace cAlgo
                 Math.Abs(
                     entry -
                     stop) /
-                Symbol.PipSize;
+                Math.Max(
+                    priceSnapshot.PipSize,
+                    1e-9);
 
             tpPips =
                 Math.Abs(
