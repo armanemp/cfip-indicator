@@ -120,10 +120,6 @@ namespace cAlgo
             _plan.PositionId =
                 result.Position.Id;
 
-            SetLifecycleState(
-                LifecycleState.LivePosition,
-                "AGGRESSIVE ENTRY • FILLED");
-
             bool fillPlanReconciled =
                 ReconcileLivePlanToActualFill(
                     result.Position,
@@ -182,6 +178,13 @@ namespace cAlgo
 
                 return false;
             }
+
+            SetLifecycleState(
+                LifecycleState.LivePosition,
+                "AGGRESSIVE ENTRY • FILLED");
+
+            _autoExecutionBlockReason =
+                "EXECUTED";
 
             double maximumFillDistance =
                 Math.Max(
