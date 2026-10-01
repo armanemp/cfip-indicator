@@ -39,6 +39,8 @@ namespace cAlgo
                                             _autoTradingReason,
                                             StringComparison.OrdinalIgnoreCase))
                                     {
+                                        InvalidatePanelExecutionProtectionStateCache();
+
                                         ArchiveRuntimeExecution(
                                             "AUTO_STATE",
                                             Math.Max(
