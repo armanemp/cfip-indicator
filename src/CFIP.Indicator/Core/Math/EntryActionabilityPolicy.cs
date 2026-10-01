@@ -25,13 +25,6 @@ namespace cAlgo
         public const int DivergenceHighRisk = 32;
         public const int SupportiveHiddenDivergenceRiskAdjustment = 10;
 
-        public const double StrongAdverseM5Atr = 0.45;
-        public const double StrongAdverseM1Atr = 0.40;
-        public const int StrongAdverseRiskFloor = 75;
-
-        public const double AdverseM5BlockAtr = 0.30;
-        public const double AdverseM1BlockAtr = 0.45;
-
         public const int ExecutionZoneQualityFloor = 40;
         public const int ContinuationStructuralConfirmationsFloor = 3;
 
