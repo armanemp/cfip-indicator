@@ -25,6 +25,15 @@ namespace cAlgo
             DateTime now =
                 Server.TimeInUtc;
 
+            if (_lastMtfClosedContext != null)
+            {
+                _calculationMarketContext =
+                    BuildCalculationMarketContext(
+                        Bars.Count - 1,
+                        now,
+                        _lastMtfClosedContext);
+            }
+
             if (!ShouldProbeCalculationReadiness(
                     now))
                 return false;
