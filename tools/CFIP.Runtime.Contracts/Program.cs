@@ -6259,45 +6259,87 @@ namespace cAlgo
 
         private static void VerifyStructuralEventSemantics()
         {
+            double[] bullishFresh =
+            {
+                100.10,
+                100.40,
+                100.60
+            };
+
+            double[] bearishFresh =
+            {
+                99.90,
+                99.60,
+                99.40
+            };
+
             Assert(
                 StructuralEventRule.IsFreshBreak(
                     1,
-                    100.50,
-                    100.60,
+                    0,
+                    2,
                     100.0,
                     1.0,
-                    0.50),
-                "bullish structural break is a fresh threshold crossing");
+                    0.50,
+                    i => bullishFresh[i]) &&
+                StructuralEventRule.IsFreshBreak(
+                    -1,
+                    0,
+                    2,
+                    100.0,
+                    1.0,
+                    0.50,
+                    i => bearishFresh[i]),
+                "fresh bullish and bearish structural breaks are directionally symmetric");
+
+            double[] bullishRebreak =
+            {
+                100.10,
+                100.70,
+                100.40,
+                100.60
+            };
 
             Assert(
                 !StructuralEventRule.IsFreshBreak(
                     1,
-                    100.60,
-                    100.70,
+                    0,
+                    3,
                     100.0,
                     1.0,
-                    0.50),
-                "bullish structural break does not repeat after the level is already broken");
+                    0.50,
+                    i => bullishRebreak[i]),
+                "bullish re-break after an earlier close above the same structural threshold is not a new event");
 
-            Assert(
-                StructuralEventRule.IsFreshBreak(
-                    -1,
-                    99.50,
-                    99.40,
-                    100.0,
-                    1.0,
-                    0.50),
-                "bearish structural break is a fresh threshold crossing");
+            double[] bearishRebreak =
+            {
+                99.90,
+                99.30,
+                99.60,
+                99.40
+            };
 
             Assert(
                 !StructuralEventRule.IsFreshBreak(
                     -1,
-                    99.40,
-                    99.30,
+                    0,
+                    3,
                     100.0,
                     1.0,
-                    0.50),
-                "bearish structural break does not repeat after the level is already broken");
+                    0.50,
+                    i => bearishRebreak[i]),
+                "bearish re-break after an earlier close below the same structural threshold is not a new event");
+
+            Assert(
+                !StructuralEventRule.IsFreshBreak(
+                    0,
+                    0,
+                    2,
+                    100.0,
+                    1.0,
+                    0.50,
+                    i => bullishFresh[i]),
+                "invalid structural direction fails closed");
 
             Assert(
                 StructuralEventRule.IsChangeOfCharacter(
@@ -6346,81 +6388,7 @@ namespace cAlgo
                     20,
                     25),
                 "structural event identity separates type and direction");
-
-            double[] bullishRebreak =
-            {
-                100.10,
-                100.70,
-                100.40,
-                100.60
-            };
-
-            Assert(
-                !StructuralEventRule.IsFreshBreak(
-                    1,
-                    0,
-                    3,
-                    100.0,
-                    1.0,
-                    0.50,
-                    i => bullishRebreak[i]),
-                "bullish re-break after an earlier close above the same structural threshold is not a new event");
-
-            double[] bearishRebreak =
-            {
-                99.90,
-                99.30,
-                99.60,
-                99.40
-            };
-
-            Assert(
-                !StructuralEventRule.IsFreshConfirmedBreak(
-                    -1,
-                    0,
-                    3,
-                    100.0,
-                    1.0,
-                    0.50,
-                    i => bearishRebreak[i]),
-                "bearish re-break after an earlier close below the same structural threshold is not a new event");
-
-            double[] bullishFresh =
-            {
-                100.10,
-                100.40,
-                100.45,
-                100.60
-            };
-
-            double[] bearishFresh =
-            {
-                99.90,
-                99.60,
-                99.55,
-                99.40
-            };
-
-            Assert(
-                StructuralEventRule.IsFreshConfirmedBreak(
-                    1,
-                    0,
-                    3,
-                    100.0,
-                    1.0,
-                    0.50,
-                    i => bullishFresh[i]) &&
-                StructuralEventRule.IsFreshConfirmedBreak(
-                    -1,
-                    0,
-                    3,
-                    100.0,
-                    1.0,
-                    0.50,
-                    i => bearishFresh[i]),
-                "fresh structural breaks remain symmetric when neither side has previously broken the threshold");
         }
-
         private static void VerifyLiquiditySweepSemantics()
         {
             double[] intact =
