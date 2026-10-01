@@ -672,7 +672,7 @@ Safety/manual boundary:
 Next phase: **CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Current active phase
-Current active phase: **CR8.3b / H3-B — next Prompt 8 remediation phase.**
+Current active phase: **CR8.4 / H4 — next Prompt 8 remediation phase.**
 
 
 ### CR6.4 / F5 closeout — 2026-10-01
@@ -1039,7 +1039,7 @@ Safety/performance boundary:
 
 ### CR8.3b / H3-B implementation record — 2026-10-01
 
-Status: **IMPLEMENTED — awaiting repository gate verification.**
+Status: **VERIFIED COMPLETE — PR #152; final implementation head `b0ddaabed9723515d50ac183592f1eb7d56b5942`; merged as `db52531a5fe333d2645cdd5f63ac33844d01f8e0`.**
 
 Completed in branch `phase/cr8-3b-h3-b-skender-warmup-cache-parity`:
 - bounded stable Skender quote window at 768 bars;
@@ -1058,4 +1058,12 @@ Safety boundary:
 - FacioQuo remains research-only;
 - target-terminal timing, live performance and empirical signal quality remain manual acceptance items.
 
-Next specified phase after H3-B verification: **CR8.4 / H4**.
+Verification on final implementation head `b0ddaabed9723515d50ac183592f1eb7d56b5942`:
+- Source / Architecture: **PASS**;
+- Runtime Acceptance Contracts: **PASS**;
+- cTrader Compile / Build: **PASS**;
+- OSS indicator benchmark: **PASS**.
+
+Operator action after merge: run `git pull --ff-only` on local `main` before continuing.
+
+Next specified phase: **CR8.4 / H4**.
