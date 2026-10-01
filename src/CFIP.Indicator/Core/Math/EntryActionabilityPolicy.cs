@@ -25,19 +25,18 @@ namespace cAlgo
         public const int DivergenceHighRisk = 32;
         public const int SupportiveHiddenDivergenceRiskAdjustment = 10;
 
-        public const double StrongAdverseM5Atr = 0.45;
-        public const double StrongAdverseM1Atr = 0.40;
-        public const int StrongAdverseRiskFloor = 75;
-
-        public const double AdverseM5BlockAtr = 0.30;
-        public const double AdverseM1BlockAtr = 0.45;
-
         public const int ExecutionZoneQualityFloor = 40;
         public const int ContinuationStructuralConfirmationsFloor = 3;
 
         public const double TriggerPipToleranceFraction = 0.10;
         public const double BreakoutLateExtensionFloorAtr = 0.10;
         public const double RetestLateDistanceFloorAtr = 0.05;
+        public const double StrongAdverseM5Atr = EntryTrapRiskPolicy.StrongAdverseM5Atr;
+        public const double StrongAdverseM1Atr = EntryTrapRiskPolicy.StrongAdverseM1Atr;
+        public const int StrongAdverseRiskFloor = EntryTrapRiskPolicy.StrongAdverseRiskFloor;
+        public const double AdverseM5BlockAtr = EntryTrapRiskPolicy.AdverseM5BlockAtr;
+        public const double AdverseM1BlockAtr = EntryTrapRiskPolicy.AdverseM1BlockAtr;
+
         public const double MicroConflictAdverseM1Atr = 0.25;
         public const double MicroConflictEntryDistanceAtr = 0.10;
 

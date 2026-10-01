@@ -103,6 +103,7 @@ namespace cAlgo
             VerifyIndependentTimeframeScenarioSemanticsF7();
             VerifyTargetObstacleTelemetryF8();
             VerifyOrphanManagedProtectionF3();
+            VerifyEntryTrapRiskG2();
             VerifyTargetObstacleCacheKeyHashSemantics();
             VerifyBrokerProtectionG1();
 
@@ -8311,6 +8312,115 @@ namespace cAlgo
                 "regime threshold policy is direction-neutral and symmetric");
         }
 
+        private static void VerifyEntryTrapRiskG2()
+        {
+            Assert(
+                EntryTrapRiskPolicy.ResolveBlockReason(
+                    false,
+                    0,
+                    78,
+                    0.30,
+                    0,
+                    18) == EntryTrapRiskPolicy.AdverseM5Reason,
+                "G2 M5 adverse threshold resolves to TRAP_ADVERSE_M5");
+
+            Assert(
+                EntryTrapRiskPolicy.ResolveBlockReason(
+                    false,
+                    0,
+                    78,
+                    0,
+                    0.40,
+                    75) == EntryTrapRiskPolicy.AdverseM1Reason,
+                "G2 strong M1 adverse threshold resolves to TRAP_ADVERSE_M1");
+
+            Assert(
+                EntryTrapRiskPolicy.ResolveBlockReason(
+                    true,
+                    0,
+                    78,
+                    0,
+                    0,
+                    45) == EntryTrapRiskPolicy.ExtremeReason,
+                "G2 extreme location resolves to TRAP_EXTREME");
+
+            Assert(
+                EntryTrapRiskPolicy.ResolveBlockReason(
+                    false,
+                    78,
+                    78,
+                    0,
+                    0,
+                    25) == EntryTrapRiskPolicy.DivergenceReason,
+                "G2 opposing divergence resolves to TRAP_DIVERGENCE");
+
+            Assert(
+                EntryTrapRiskPolicy.ResolveRetestContext(
+                    true,
+                    true,
+                    true,
+                    false,
+                    true) == "RETEST PRE-ZONE M5",
+                "G2 Retest pre-zone M5 context is explicit");
+
+            Assert(
+                EntryTrapRiskPolicy.ResolveRetestContext(
+                    true,
+                    true,
+                    false,
+                    false,
+                    true) == "RETEST POST-ZONE/REACTION",
+                "G2 Retest post-zone reaction context is explicit");
+
+            Assert(
+                EntryTrapRiskPolicy.ResolveRetestContext(
+                    false,
+                    false,
+                    true,
+                    true,
+                    true) == "NON_RETEST",
+                "G2 non-Retest context never claims Retest semantics");
+
+            EntryTrapRiskResult m5 =
+                EntryTrapRiskRule.Evaluate(
+                    1,
+                    0.50,
+                    0.30,
+                    0,
+                    0,
+                    false,
+                    true,
+                    true,
+                    true,
+                    false,
+                    true);
+
+            Assert(
+                m5.Block &&
+                m5.Reason == EntryTrapRiskPolicy.AdverseM5Reason &&
+                m5.Context == "RETEST PRE-ZONE M5",
+                "G2 EntryTrapRiskRule preserves M5 block and pre-zone context");
+
+            EntryTrapRiskResult m1 =
+                EntryTrapRiskRule.Evaluate(
+                    -1,
+                    0.50,
+                    0,
+                    0.40,
+                    0,
+                    false,
+                    true,
+                    true,
+                    false,
+                    true,
+                    true);
+
+            Assert(
+                m1.Block &&
+                m1.Reason == EntryTrapRiskPolicy.AdverseM1Reason &&
+                m1.Context == "RETEST PRE-ZONE M1",
+                "G2 EntryTrapRiskRule preserves strong M1 block and context");
+        }
         private static void VerifyEntryActionabilityF6()
         {
             Assert(

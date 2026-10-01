@@ -231,56 +231,64 @@ namespace cAlgo
                     MaximumEntryExtensionAtr,
                     MaximumEntryDistanceAtr);
 
-            double adverseM5Atr = 0;
+            bool retestTrapContext =
+                liveMode == ExecutionMode.RetestMarket &&
+                insideZone;
 
-            if (closedM5 >= 2)
-            {
-                double m5Move =
-                    _m5Bars.ClosePrices[closedM5] -
-                    _m5Bars.ClosePrices[closedM5 - 2];
+            double adverseM5Atr =
+                ResolveAdverseM5Atr(
+                    _m5Bars,
+                    closedM5,
+                    direction,
+                    atr);
 
-                adverseM5Atr =
-                    direction == 1
-                        ? Math.Max(0, -m5Move) /
-                          Math.Max(Symbol.PipSize, atr)
-                        : Math.Max(0, m5Move) /
-                          Math.Max(Symbol.PipSize, atr);
-            }
+            bool m5AdverseEvidenceKnown =
+                closedM5 >= 2 &&
+                adverseM5Atr > 0;
 
-            double adverseM1Atr = 0;
-            bool m1DirectionConflict = false;
+            bool m5AdversePreZone =
+                retestTrapContext &&
+                m5AdverseEvidenceKnown &&
+                IsAdverseWindowPreZone(
+                    _m5Bars,
+                    closedM5,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    2);
 
-            if (_m1Frame != null &&
+            bool m1AdverseEvidenceKnown =
+                _m1Frame != null &&
                 _m1Frame.Index >= 2 &&
                 _m1Bars != null &&
-                _m1Frame.Index < _m1Bars.Count)
-            {
-                int m1 = _m1Frame.Index;
-                double m1Atr =
-                    Atr(
+                _m1Frame.Index < _m1Bars.Count;
+
+            double adverseM1Atr =
+                m1AdverseEvidenceKnown
+                    ? ResolveAdverseM1Atr(
                         _m1Bars,
-                        m1);
+                        _m1Frame.Index,
+                        direction)
+                    : 0;
 
-                double m1Move =
-                    _m1Bars.ClosePrices[m1] -
-                    _m1Bars.ClosePrices[m1 - 2];
+            bool m1DirectionConflict =
+                m1AdverseEvidenceKnown &&
+                IsDirectionConflict(
+                    _m1Frame.Direction,
+                    direction);
 
-                if (IsFinitePositive(m1Atr))
-                {
-                    adverseM1Atr =
-                        direction == 1
-                            ? Math.Max(0, -m1Move) /
-                              Math.Max(Symbol.PipSize, m1Atr)
-                            : Math.Max(0, m1Move) /
-                              Math.Max(Symbol.PipSize, m1Atr);
-                }
+            m1AdverseEvidenceKnown =
+                m1AdverseEvidenceKnown &&
+                adverseM1Atr > 0;
 
-                m1DirectionConflict =
-                    (direction == 1 &&
-                     _m1Frame.Direction == -1) ||
-                    (direction == -1 &&
-                     _m1Frame.Direction == 1);
-            }
+            bool m1AdversePreZone =
+                retestTrapContext &&
+                m1AdverseEvidenceKnown &&
+                IsAdverseWindowPreZone(
+                    _m1Bars,
+                    _m1Frame.Index,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    2);
 
             double rangeHigh = double.MinValue;
             double rangeLow = double.MaxValue;
@@ -343,7 +351,13 @@ namespace cAlgo
                     opposingRegularDivergence
                         ? divergence.Quality
                         : 0,
-                    supportiveHiddenDivergence);
+                    supportiveHiddenDivergence,
+                    retestTrapContext,
+                    insideZone,
+                    m5AdversePreZone,
+                    m1AdversePreZone,
+                    m5AdverseEvidenceKnown ||
+                    m1AdverseEvidenceKnown);
 
 
             // Live actionability must consume the same indicator-fusion quality
@@ -524,7 +538,9 @@ namespace cAlgo
                     divergence.Quality,
                     divergence.Direction,
                     divergence.Type,
-                    trapRisk.Reason);
+                    EntryTrapRiskPolicy.FormatPresentationReason(
+                        trapRisk.Reason,
+                        trapRisk.Context));
 
             if (locationQuality <
                 ActionabilityThresholdPolicy.EffectiveUpstreamEntryLocationQuality(
@@ -569,5 +585,6 @@ namespace cAlgo
                     ? "ACTIONABLE • HIDDEN DIVERGENCE CONFIRM"
                     : "ACTIONABLE");
         }
+
     }
 }

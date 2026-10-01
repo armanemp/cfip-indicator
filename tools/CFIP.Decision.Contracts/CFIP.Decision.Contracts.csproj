@@ -44,6 +44,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ProtectionProgressionRule.cs" Link="Core/Math/ProtectionProgressionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" Link="Planning/TradePlan/TargetProgressionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs" Link="Core/Math/EntryTrapRiskRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryTrapRiskPolicy.cs" Link="Core/Math/EntryTrapRiskPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorActionabilityRule.cs" Link="Core/Math/IndicatorActionabilityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SmartBreakEvenRule.cs" Link="Core/Math/SmartBreakEvenRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalVisualLifecycleRule.cs" Link="Core/Math/SignalVisualLifecycleRule.cs" />
