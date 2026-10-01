@@ -104,6 +104,13 @@ namespace cAlgo
                     atr,
                     lane);
 
+            double[] requiredRR =
+                BuildTargetSelectionRequiredRR(
+                    Math.Max(
+                        0.10,
+                        StructuralTpRrStep),
+                    lane);
+
             double tp1 =
                 SelectTarget(
                     selected,
