@@ -718,13 +718,6 @@ blocking correctness gate inserted before the next unfinished refinement phase.
 
 Status: **NEXT — specified and ready to implement after CI-04 closeout.**
 
-Cross-cutting alert correction included in this phase:
-- one bounded AlertDeliveryQueue owns sound + popup delivery;
-- the same queued event drives popup presentation and its sound cue;
-- popup replacement and sound emission occur at one delivery boundary;
-- direct Notifications.PlaySound ownership is removed from AlertEngine;
-- same-causal BOS/MSS/CHOCH alert duplication is collapsed.
-
 Sequence:
 
 ```
@@ -806,6 +799,8 @@ Manual boundary remains:
 - heavy-load popup/audio timing and alert bursts;
 - callback-driven alerts outside Calculate;
 - replay-level structural event frequency and missed/repeated break rates.
+
+Operator action after merge: run `git pull --ff-only` on local `main` before starting CI-05.
 
 **Next phase: CI-05 — FVG lifecycle.**
 
