@@ -235,19 +235,6 @@ namespace cAlgo
                 liveMode == ExecutionMode.RetestMarket &&
                 insideZone;
 
-            bool m5AdverseEvidenceKnown =
-                closedM5 >= 2;
-
-            bool m5AdversePreZone =
-                retestTrapContext &&
-                m5AdverseEvidenceKnown &&
-                IsAdverseWindowPreZone(
-                    _m5Bars,
-                    closedM5,
-                    execution.ZoneLow,
-                    execution.ZoneHigh,
-                    2);
-
             double adverseM5Atr = 0;
 
             if (closedM5 >= 2)
@@ -264,6 +251,20 @@ namespace cAlgo
                           Math.Max(Symbol.PipSize, atr);
             }
 
+            bool m5AdverseEvidenceKnown =
+                closedM5 >= 2 &&
+                adverseM5Atr > 0;
+
+            bool m5AdversePreZone =
+                retestTrapContext &&
+                m5AdverseEvidenceKnown &&
+                IsAdverseWindowPreZone(
+                    _m5Bars,
+                    closedM5,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    2);
+
             double adverseM1Atr = 0;
             bool m1DirectionConflict = false;
             bool m1AdverseEvidenceKnown =
@@ -271,15 +272,6 @@ namespace cAlgo
                 _m1Frame.Index >= 2 &&
                 _m1Bars != null &&
                 _m1Frame.Index < _m1Bars.Count;
-            bool m1AdversePreZone =
-                retestTrapContext &&
-                m1AdverseEvidenceKnown &&
-                IsAdverseWindowPreZone(
-                    _m1Bars,
-                    _m1Frame.Index,
-                    execution.ZoneLow,
-                    execution.ZoneHigh,
-                    2);
 
             if (m1AdverseEvidenceKnown)
             {
@@ -309,6 +301,20 @@ namespace cAlgo
                     (direction == -1 &&
                      _m1Frame.Direction == 1);
             }
+
+            m1AdverseEvidenceKnown =
+                m1AdverseEvidenceKnown &&
+                adverseM1Atr > 0;
+
+            bool m1AdversePreZone =
+                retestTrapContext &&
+                m1AdverseEvidenceKnown &&
+                IsAdverseWindowPreZone(
+                    _m1Bars,
+                    _m1Frame.Index,
+                    execution.ZoneLow,
+                    execution.ZoneHigh,
+                    2);
 
             double rangeHigh = double.MinValue;
             double rangeLow = double.MaxValue;
