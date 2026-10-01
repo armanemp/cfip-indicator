@@ -45,8 +45,9 @@ namespace cAlgo
                     obstacles[i];
 
                 if (obstacle == null ||
-                    obstacle.Direction !=
-                    -direction)
+                    !RewardPathGeometryRule.IsOpposingZoneDirection(
+                        direction,
+                        obstacle.Direction))
                     continue;
 
                 if (RewardPathGeometryRule.BlocksRewardPath(
