@@ -145,8 +145,8 @@ namespace cAlgo
             double stop)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(entry) ||
-                !IsFinitePositive(stop))
+                !IsFinitePricePositive(entry) ||
+                !IsFinitePricePositive(stop))
                 return false;
 
             return direction == 1
@@ -154,7 +154,7 @@ namespace cAlgo
                 : stop > entry;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePricePositive(double value)
         {
             return
                 !double.IsNaN(value) &&
