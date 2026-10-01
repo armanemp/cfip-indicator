@@ -4,9 +4,9 @@ Date: 2026-10-02
 
 ## Status
 
-**IMPLEMENTATION IN PROGRESS on phase/ci-12-structural-sl-audit.**
+**VERIFIED COMPLETE — merged to `main` via PR #167.**
 
-This phase is the blocking next step after CI-11. Prompt 8 / CR8.4 remains
+This phase was the blocking next step after CI-11. Prompt 8 / CR8.4 remains
 paused until CI-FINAL, as required by the full-stack calculation-integrity
 sequence.
 
@@ -129,3 +129,27 @@ After CI-12 is fully verified and merged, continue with CI-13 — TP source,
 target obstacle and TP ladder audit.
 
 Prompt 8 / CR8.4 remains paused until CI-FINAL.
+
+## CI-12 closeout — 2026-10-02
+
+Implementation head: `f452b3b8e2892f1773cef5873a051a2b542e72a6`
+
+Merge: PR #167 → `cd10da89ddf8ba9cf1c9da517a3fdc74b6953851`.
+
+Repository verification:
+- Source/Architecture #2609 PASS;
+- Runtime Acceptance Contracts #2418 PASS;
+- cTrader Compile #2602 PASS;
+- accumulated audits through CI-12 PASS.
+
+Manual target-terminal boundary remains:
+- broker-specific stop-distance behavior;
+- startup/reconnect recovery;
+- actual order/fill protection;
+- chart/panel presentation and empirical signal/outcome validation.
+
+No public parameter/default or trading threshold was tuned, and no new
+decision/plan/broker-mutation authority was introduced.
+
+Next phase: **CI-13 — TP source, target obstacle and TP ladder audit**.
+Prompt 8 / CR8.4 remains intentionally paused until **CI-FINAL**.
