@@ -25,6 +25,7 @@ def check(name: str, condition: bool) -> None:
 settings = read("src/CFIP.Indicator/Core/Math/OssIndicatorSettings.cs")
 warmup = read("src/CFIP.Indicator/Core/Math/OssIndicatorWarmupPolicy.cs")
 window_rule = read("src/CFIP.Indicator/Core/Math/OssQuoteWindowRule.cs")
+projection_rule = read("src/CFIP.Indicator/Core/Math/OssQuoteProjectionRule.cs")
 cache = read("src/CFIP.Indicator/Analysis/Indicators/External/OssQuoteSeriesCache.cs")
 entry = read("src/CFIP.Indicator/Analysis/Indicators/External/OssQuoteCacheEntry.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
@@ -69,6 +70,14 @@ check(
     and "ResolveFirstIndex(" in window_rule
     and "RequiresRebuild(" in window_rule
     and "IsBoundedCount(" in window_rule
+)
+
+check(
+    "OSS quote-volume normalization has one pure owner",
+    "class OssQuoteProjectionRule" in projection_rule
+    and "NormalizeVolume(" in projection_rule
+    and "double.IsNaN(volume)" in projection_rule
+    and "double.IsInfinity(volume)" in projection_rule
 )
 
 check(
@@ -137,7 +146,7 @@ check(
 
 check(
     "zero-volume source values are not promoted to artificial unit volume",
-    "Math.Max(0m," in cache
+    "OssQuoteProjectionRule.NormalizeVolume(" in cache
     and "Math.Max(1m," not in cache
 )
 check(
@@ -148,9 +157,12 @@ check(
 
 check(
     "runtime contracts execute canonical OSS window semantics",
-    "VerifyOssQuoteWindowSemantics();" in runtime
+    "VerifyOssQuoteProjectionSemantics();" in runtime
+    and "VerifyOssQuoteWindowSemantics();" in runtime
     and "OssQuoteWindowRule.cs" in runtime_project
+    and "OssQuoteProjectionRule.cs" in runtime_project
     and "CI-02 OSS quote-window semantics contracts PASS" in runtime
+    and "CI-02 OSS quote projection semantics contracts PASS" in runtime
 )
 
 required_benchmark_tokens = (
