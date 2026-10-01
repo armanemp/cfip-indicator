@@ -31,6 +31,8 @@ namespace cAlgo
                                             args.PendingOrder.Id))
                                         return;
                         
+                                    ClearPendingOrderPlanSnapshot();
+
                                     PendingOrder remaining =
                                         GetManagedPendingOrder();
                         
