@@ -20,7 +20,7 @@ namespace cAlgo
                     10,
                     period);
 
-            if (!ChoppinessIndexRule.HasEnoughHistory(
+            if (!ChoppinessIndexRule.HasChoppinessEnoughHistory(
                     index,
                     length))
                 return 100;
