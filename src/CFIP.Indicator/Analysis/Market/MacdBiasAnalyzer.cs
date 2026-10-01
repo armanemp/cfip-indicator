@@ -1,7 +1,7 @@
 // CFIP Indicator — MacdBiasAnalyzer.cs
 // Single-responsibility analysis module.
-// This feature is intentionally a two-EMA MACD-line bias, not a MACD signal-line
-// crossover. The parameter surface currently defines only fast/slow periods.
+// This feature is intentionally a two-EMA MACD-line bias. The parameter
+// surface currently defines only fast/slow periods; no signal-line crossover is used.
 
 using System;
 using System.Collections.Generic;
