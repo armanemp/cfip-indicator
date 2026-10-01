@@ -135,9 +135,7 @@ namespace cAlgo
                         stage,
                         m5Obstacle.Reason,
                         distance /
-                        Math.Max(
-                            Symbol.PipSize,
-                            atr),
+                        atr,
                         m5Obstacle.ObstacleDistanceAtr,
                         MaximumTargetExtensionAtr);
 
@@ -159,9 +157,7 @@ namespace cAlgo
                         stage,
                         TargetCandidateRejectionReasons.OpposingZoneObstacle,
                         distance /
-                        Math.Max(
-                            Symbol.PipSize,
-                            atr),
+                        atr,
                         -1,
                         MaximumTargetExtensionAtr);
 
@@ -183,9 +179,7 @@ namespace cAlgo
                         stage,
                         TargetCandidateRejectionReasons.HtfZoneObstacle,
                         distance /
-                        Math.Max(
-                            Symbol.PipSize,
-                            atr),
+                        atr,
                         -1,
                         MaximumTargetExtensionAtr);
 
