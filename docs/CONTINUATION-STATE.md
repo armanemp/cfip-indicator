@@ -1,6 +1,6 @@
 # CFIP — Cross-Chat Continuation State
 
-Last updated: 2026-10-01
+Last updated: 2026-10-01 22:19 Asia/Baku
 
 ## Phase closeout
 
@@ -25,7 +25,9 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 **CI-02 — OSS numerical parity / warm-up / cache — 2026-10-01**
 
-Status: **VERIFIED COMPLETE — implementation head `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`; PR #156 ready to merge.**
+Status: **VERIFIED COMPLETE — PR #156 merged to `main` as `863d759cc4e520cb8193312669e74224646a8f45`.**
+
+Final implementation head: `c3720853edbcf5c04bb1f5cbf1e9533f39e87a4e`.
 
 Repository verification:
 - Source/Architecture PASS — workflow run 36909965454;
