@@ -232,7 +232,7 @@ for token in (
     "createdIndex",
     "TryBuildOrderBlockImpulseEvidence(",
     "TryApplyOrderBlockMitigation(",
-    "OrderBlockLifecycleRule.IsAgeValid(",
+    "OrderBlockLifecycleRule.IsOrderBlockAgeValid(",
     "OrderBlockRule.TryGetZone(",
     "OrderBlockRule.OrderBlockIdentity(",
 ):
@@ -252,8 +252,8 @@ for token in (
         raise SystemExit(f"Order Block evidence must consume canonical qualification math: {token}")
 
 for token in (
-    "OrderBlockLifecycleRule.ResolveMitigationProbe(",
-    "OrderBlockLifecycleRule.TryApplyPartialMitigation(",
+    "OrderBlockLifecycleRule.ResolveOrderBlockMitigationProbe(",
+    "OrderBlockLifecycleRule.TryApplyOrderBlockPartialMitigation(",
     "OrderBlockLifecycleRule.MinimumRetainedRatio",
 ):
     if token not in ob_mitigation_code:
@@ -299,7 +299,7 @@ for relative, tokens in ob_consumers.items():
             )
 
 # Stale OBs must be rejected before any consumer can materialize the zone.
-if "MaximumZoneAgeBars" not in ob_builder_code or "OrderBlockLifecycleRule.IsAgeValid(" not in ob_builder_code:
+if "MaximumZoneAgeBars" not in ob_builder_code or "OrderBlockLifecycleRule.IsOrderBlockAgeValid(" not in ob_builder_code:
     raise SystemExit("Order Block stale-age contract must be enforced at the canonical builder boundary")
 
 # Phase 8.3 — canonical FVG mathematics and lifecycle ownership.
