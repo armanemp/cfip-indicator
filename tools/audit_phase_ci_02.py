@@ -149,6 +149,7 @@ check(
                 "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
             )
         )
+    )
         and ".ToList()" not in read(
             "src/CFIP.Indicator/Analysis/Indicators/External/" + filename
         )
