@@ -2,6 +2,7 @@
 """Static acceptance gate for CR6.4 / F5 smart-threshold regime identity."""
 
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +21,10 @@ def check(name, condition):
     print(f"{'PASS' if condition else 'FAIL'} | {name}")
     if not condition:
         errors.append(name)
+
+
+def normalized(source):
+    return re.sub(r"\s+", " ", source).strip()
 
 
 identity = read("src/CFIP.Indicator/Core/Math/MarketRegimeIdentity.cs")
@@ -140,6 +145,7 @@ check(
 )
 
 # The adaptive rule must preserve the current numerical behavior.
+smart_rule_normalized = normalized(smart_rule)
 for token in (
     "Math.Max(1, b / 3)",
     "Math.Max(1, b / 2)",
@@ -147,7 +153,10 @@ for token in (
     "qualityThreshold += Math.Max(1, b / 2)",
     "qualityThreshold += b",
 ):
-    check("legacy adaptive behavior preserved: " + token, token in smart_rule)
+    check(
+        "legacy adaptive behavior preserved: " + token,
+        token in smart_rule_normalized,
+    )
 
 print("CR6.4 SUMMARY")
 print("=" * 72)
