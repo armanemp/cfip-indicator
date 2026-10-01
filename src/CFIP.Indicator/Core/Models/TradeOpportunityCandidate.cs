@@ -5,6 +5,7 @@ namespace cAlgo
         public string Id;
         public string ScenarioId;
         public string SourceTimeframe;
+        public string BasePlanTimeframe;
         public int IndependentEvidenceScore;
         public int IndependentEvidenceGroupCount;
         public int LocationConfluenceScore;
