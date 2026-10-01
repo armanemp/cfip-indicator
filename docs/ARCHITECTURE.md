@@ -70,6 +70,16 @@ Zero-volume source observations remain zero-volume. They are never converted to
 an artificial unit weight.
 
 
+
+### Indicator fusion and evidence-independence ownership
+
+`IndicatorEvidenceFusionRule` is the single numerical owner for indicator-derived directional bonus, confluence quality and conflict.
+
+`IndicatorEvidenceIndependenceRule` is diagnostic/provenance only. It groups correlated measurements into Trend, Momentum and Context. Divergence is a modifier and aggregate OSS consensus is not an independent vote.
+
+Parallel timeframe scenario enrichment reuses the canonical per-frame evidence owner and must not maintain a second raw boolean counter.
+
+Indicator-group count is provenance only; existing decision quality, confidence and actionability authorities remain unchanged.
 ### Canonical calculation-market context
 
 The calculation runtime owns one `CalculationMarketContext` per live calculation
