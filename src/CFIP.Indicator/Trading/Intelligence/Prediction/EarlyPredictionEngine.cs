@@ -274,6 +274,9 @@ namespace cAlgo
                                             p.Entry,
                                             atr);
                         
+                                    OpportunityLane lane =
+                                        OpportunityLane.Strategic;
+
                                     List<Level> selected =
                                         SelectTargets(
                                             candidates,
@@ -281,7 +284,8 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            atr);
+                                            atr,
+                                            lane);
                         
                                     p.Target1 =
                                         SelectTarget(
@@ -290,7 +294,8 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp1MinimumRR);
+                                            Tp1MinimumRR,
+                                            lane);
                         
                                     p.Target2 =
                                         SelectTarget(
@@ -299,7 +304,8 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp2MinimumRR);
+                                            Tp2MinimumRR,
+                                            lane);
                         
                                     p.Target3 =
                                         SelectTarget(
@@ -308,7 +314,8 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp3MinimumRR);
+                                            Tp3MinimumRR,
+                                            lane);
                         
                                     p.Target4 =
                                         SelectTarget(
@@ -317,7 +324,8 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp4MinimumRR);
+                                            Tp4MinimumRR,
+                                            lane);
                         
                                     p.Target =
                                         p.Target1;
