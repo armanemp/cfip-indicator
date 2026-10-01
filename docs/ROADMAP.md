@@ -708,6 +708,14 @@ marked as a research milestone that may be completed early.
 
 ---
 
+## CR4.4 — Numerical stability and caching continuity
+
+The production OSS indicator adapters use the canonical bounded quote-cache
+owners and preserve deterministic warm-up semantics. Historical target-terminal
+validation remains a manual acceptance boundary; this continuity marker keeps
+the review issue mapped into the current roadmap without changing production
+trading policy.
+
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
 Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
