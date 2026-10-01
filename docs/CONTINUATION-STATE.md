@@ -536,20 +536,23 @@ PR #124, merge commit `03a569d6a18f1b6cbc3524dabc24ea713439c325`. Prompt 5
 E1–E8 is closed at repository level. CR-FINAL remains paused until CR6.1–CR6.9
 are completed or explicitly documented as verified/deferred with evidence.
 Target-terminal acceptance remains required afterward.
-### CR5.7 / E7 implementation record
 
-- Added Core `WatchReactionAlertRule` for WATCH/REACTION qualification and deterministic identities.
-- Moved WATCH/REACTION alert emission out of `SignalRenderer.RenderWatchAndReaction` into the decision-alert runtime stage.
-- Preserved live REACTION intrabar cadence by running alert evaluation after `UpdateLiveReaction` and before presentation.
-- Removed chart-rendering ownership from alert qualification; the renderer is presentation-only.
-- Named the existing early-WATCH confidence floor 60 and gap 4 without changing values.
-- Added deterministic Runtime Contract coverage and `audit_phase_5_7.py`.
-- Added phase document `docs/PHASE-CR5-7-WATCH-REACTION-ALERTS.md`.
+### CR5.8 / E8 closeout
 
-Safety/manual boundary:
-- no public parameter identity/default, RR/confidence/stop/target threshold, or execution authority changed;
-- target-terminal alert timing, popup/audio behavior, panel/chart behavior, broker lifecycle and empirical signal-quality validation remain manual.
+CR5.8 / E8 is verified complete. Final implementation head was
+`51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`.
+
+Verification:
+- Source / Architecture: PASS — run `36844545898` / workflow #2160.
+- Runtime Acceptance Contracts: PASS — run `36844545976` / workflow #1969.
+- cTrader Compile: PASS — run `36844546002` / workflow #2153.
+
+Completed hardening included canonical required-RR ownership, monotonic TP-stage
+ordering, explicit lane propagation, internal constant ownership, and
+reconciliation of accumulated Phase 11.4 and E6 continuity audits.
 
 ### Next transition
 
-Execute CR5.8 / E8 next. E7 repository verification is green and merged. Do not start Track 12A before CR-FINAL.
+The next implementation response must execute **CR6.1 / F1 — Opposing FVG/OB
+target-path direction, mitigation and obstacle caching** only. Track 12A and
+CR-FINAL remain blocked until the full Prompt 6 chain is closed.
