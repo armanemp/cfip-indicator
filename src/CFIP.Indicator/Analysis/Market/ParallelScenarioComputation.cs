@@ -72,18 +72,29 @@ namespace cAlgo
                     entry,
                     stop))
             {
-                stop =
-                    IsValidStop(
+                if (IsValidStop(
                         direction,
                         entry,
-                        execution.Invalidation)
-                        ? execution.Invalidation
-                        : direction == 1
-                            ? entry - atr * FallbackSlAtr
-                            : entry + atr * FallbackSlAtr;
+                        execution.Invalidation))
+                {
+                    stop = execution.Invalidation;
+                }
+                else
+                {
+                    StructuralStopGeometrySnapshot fallbackGeometry =
+                        StructuralStopGeometryRule.EvaluateFallback(
+                            direction,
+                            entry,
+                            atr,
+                            FallbackSlAtr,
+                            Symbol.TickSize,
+                            Symbol.Digits);
 
-                stop =
-                    NormalizePrice(stop);
+                    if (!fallbackGeometry.IsValid)
+                        return false;
+
+                    stop = fallbackGeometry.Stop;
+                }
             }
 
             if (!IsValidStop(
