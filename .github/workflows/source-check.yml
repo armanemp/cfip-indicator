@@ -80,6 +80,7 @@ jobs:
       - run: python tools/audit_phase_7_6b.py
       - run: python tools/audit_phase_8_1.py
       - run: python tools/audit_phase_8_2.py
+      - run: python tools/audit_phase_8_3a.py
       - run: python tools/audit_phase_11_2.py
       - run: python tools/audit_phase_11_3.py
       - run: python tools/audit_phase_11_4.py
