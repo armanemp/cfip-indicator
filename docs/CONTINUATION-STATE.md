@@ -23,8 +23,34 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
+### CR6.6 / F7 closeout — 2026-10-01
+
+Status: **VERIFIED COMPLETE — independent timeframe candidates are explicitly classified as observations over the canonical M5 plan geometry, and scenario execution policy now has one owner.**
+
+Implementation:
+- M15/M30/H1/H4/D1/W1 candidates retain their timeframe identity and evidence, but explicitly declare BasePlanTimeframe = "M5";
+- Entry/Stop/TP geometry for timeframe annotations continues to come from the shared closed-M5 parallel scenario path; no false claim of independent timeframe plans was introduced;
+- same closed-M5/lane/direction preview construction is cached and reused, avoiding repeated full target/plan-preview work for same-base timeframe annotations;
+- the former Analysis and Trading ScenarioExecutionPolicy owners were removed;
+- Core ScenarioExecutionPolicyRule now owns candidate eligibility and execution authorization together;
+- independent timeframe scenarios remain structurally evaluable but are explicitly OBSERVE-ONLY TF SCENARIO;
+- display stage/reason consumes the same policy result used for execution authorization;
+- deterministic F7 runtime contracts and accumulated static audit are wired.
+
+Safety:
+- no public parameter name/type/DefaultValue changed;
+- no RR/confidence/SL/TP/actionability/execution threshold was tuned;
+- no second decision or execution authority introduced;
+- no separate broker execution path introduced.
+
+Verification boundary:
+- repository source/architecture and runtime contract evidence is deterministic once CI runs;
+- cTrader target-terminal timing, live scenario presentation, broker lifecycle, replay and empirical signal-quality remain manual.
+
+**Next phase: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
+
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before CR-FINAL.
-**Current: CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
+**Current: CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
 
 CR5.1 through CR5.8 are verified complete at repository level. CR5.8 was merged
 to `main` via PR #124 with merge commit
@@ -264,7 +290,7 @@ Repository gates on the final F1 head:
 
 ### Current implementation phase
 
-**CR6.6 / F7 — Independent-timeframe scenario semantics and duplicate-policy owners.**
+**CR6.7 / F8 — Target-obstacle rejection telemetry and distant-target semantics.**
 
 F4 was completed and verified on branch
 `phase/cr6-3-f4-threshold-transparency`; PR #129 passed Source/Architecture,
