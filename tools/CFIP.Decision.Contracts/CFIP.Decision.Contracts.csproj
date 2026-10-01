@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" Link="Core/Math/NumericGuards.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeIdentity.cs" Link="Core/Math/MarketRegimeIdentity.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeClassifier.cs" Link="Core/Math/MarketRegimeClassifier.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeClassificationInput.cs" Link="Core/Models/MarketRegimeClassificationInput.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeSnapshot.cs" Link="Core/Models/MarketRegimeSnapshot.cs" />
