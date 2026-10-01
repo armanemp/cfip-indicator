@@ -24,7 +24,7 @@ namespace cAlgo
             var results =
                 StockIndicator.GetCci(
                     quotes,
-                    OssIndicatorParameters.CciPeriod)
+                    OssIndicatorSettings.Default.CciPeriod)
                     .ToList();
 
             return results.Count == 0 ||
