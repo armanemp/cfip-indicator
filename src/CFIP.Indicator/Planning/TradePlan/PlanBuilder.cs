@@ -30,14 +30,7 @@ namespace cAlgo
                     atr);
 
             OpportunityLane lane =
-                _decision != null &&
-                _decision.TopDownEligible &&
-                string.Equals(
-                    _decision.TopDownStage,
-                    "ENTRY CALIBRATED",
-                    StringComparison.OrdinalIgnoreCase)
-                    ? OpportunityLane.Strategic
-                    : OpportunityLane.Tactical;
+                ResolvePlanTargetSelectionLane();
 
             List<Level> selected =
                 SelectTargets(
