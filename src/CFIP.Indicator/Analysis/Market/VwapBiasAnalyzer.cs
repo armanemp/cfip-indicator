@@ -20,7 +20,9 @@ namespace cAlgo
                         {
                             if (!UseVwapBias ||
                                 bars == null ||
-                                index < 20)
+                                index < 0 ||
+                                index >= bars.Count ||
+                                index < Math.Max(1, VwapLookbackBars - 1))
                                 return false;
                 
                             int first =
@@ -46,7 +48,7 @@ namespace cAlgo
                 
                                 double v =
                                     Math.Max(
-                                        1.0,
+                                        0,
                                         bars.TickVolumes[i]);
                 
                                 priceVolume +=
