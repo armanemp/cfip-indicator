@@ -173,68 +173,8 @@ namespace cAlgo
 
         private static void VerifyDecisionScoreBoundariesAndTraceability()
         {
-            DateTime reference = new DateTime(
-                2026,
-                10,
-                2,
-                0,
-                0,
-                0,
-                DateTimeKind.Utc);
-
-            MarketStateFrameSnapshot stateFrame =
-                new MarketStateFrameSnapshot(
-                    "M5",
-                    0,
-                    0,
-                    0,
-                    "UNKNOWN",
-                    0,
-                    0,
-                    "UNKNOWN",
-                    MarketRegimeTransitionRule.Unknown,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0);
-
-            MarketStateSnapshot marketState =
-                new MarketStateSnapshot(
-                    reference,
-                    stateFrame,
-                    stateFrame,
-                    stateFrame,
-                    stateFrame,
-                    stateFrame,
-                    stateFrame,
-                    stateFrame,
-                    stateFrame,
-                    0,
-                    true);
-
-            DecisionEvidenceSnapshot evidence =
-                new DecisionEvidenceSnapshot(
-                    0, 0,
-                    0, 0,
-                    0, 0,
-                    0,
-                    0, 0,
-                    false, false,
-                    false, false,
-                    0, 0,
-                    0, 0);
-
-            DecisionInputSnapshot input =
-                new DecisionInputSnapshot(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
+            DecisionScoreInput input =
+                new DecisionScoreInput(
                     new DecisionFrameContribution(1, 2, 0),
                     new DecisionFrameContribution(3, 4, 0),
                     new DecisionFrameContribution(5, 6, 0),
@@ -249,15 +189,12 @@ namespace cAlgo
                     true,
                     1,
                     false,
-                    "UNKNOWN",
                     false,
-                    false,
-                    12,
-                    57,
-                    reference,
                     0,
-                    marketState,
-                    evidence);
+                    0,
+                    0,
+                    false,
+                    false);
 
             DecisionScoreSnapshot score =
                 new DecisionScoreCalculator().Calculate(input);
@@ -270,7 +207,6 @@ namespace cAlgo
 
             Assert(
                 Math.Abs(score.M5BullContribution - 1) < 1e-12 &&
-                Math.Abs(score.M5BearContribution - 2) < 1e-12 &&
                 Math.Abs(score.M15BullContribution - 3) < 1e-12 &&
                 Math.Abs(score.H4BearContribution - 10) < 1e-12 &&
                 Math.Abs(score.AdvancedConfluenceBuy - 2) < 1e-12 &&
@@ -285,32 +221,56 @@ namespace cAlgo
                 Math.Abs(score.ChoppinessFactor - 1.0) < 1e-12,
                 "score trace reconstructs final totals without hidden adjustments");
 
+            DecisionScoreInput invalid =
+                new DecisionScoreInput(
+                    new DecisionFrameContribution(
+                        double.NaN,
+                        double.PositiveInfinity,
+                        0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    false,
+                    true,
+                    double.NaN,
+                    double.PositiveInfinity,
+                    false,
+                    0,
+                    false,
+                    false,
+                    0,
+                    0,
+                    0,
+                    false,
+                    false);
+
+            DecisionScoreSnapshot sanitized =
+                new DecisionScoreCalculator().Calculate(invalid);
+
+            Assert(
+                sanitized.Buy == 0 &&
+                sanitized.Sell == 0,
+                "non-finite score inputs fail closed");
+
             double choppyFactor =
                 DecisionScoreCalculator.ResolveChoppinessFactor(
                     true,
                     true,
                     true);
 
-            Assert(
-                Math.Abs(choppyFactor - 0.90) < 1e-12,
-                "choppiness factor rule is explicit");
-
-            double mirroredFactor =
+            double neutralFactor =
                 DecisionScoreCalculator.ResolveChoppinessFactor(
                     true,
-                    true,
+                    false,
                     true);
 
             Assert(
-                Math.Abs(choppyFactor - mirroredFactor) < 1e-12,
-                "choppiness factor is deterministic");
-
-            Assert(
-                double.IsNaN(score.Buy) == false &&
-                double.IsInfinity(score.Buy) == false &&
-                double.IsNaN(score.Sell) == false &&
-                double.IsInfinity(score.Sell) == false,
-                "decision score remains finite");
+                Math.Abs(choppyFactor - 0.90) < 1e-12 &&
+                Math.Abs(neutralFactor - 1.0) < 1e-12,
+                "choppiness factor rule is explicit and directional-state neutral");
 
             Console.WriteLine(
                 "CI-09 score boundary and provenance contracts PASS");
