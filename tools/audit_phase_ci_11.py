@@ -46,7 +46,7 @@ roadmap = read("docs/ROADMAP.md")
 
 check(
     "canonical entry geometry model/rule exist with all required concepts",
-    "class EntryGeometrySnapshot" in geometry_model and
+    "EntryGeometrySnapshot" in geometry_model and "struct EntryGeometrySnapshot" in geometry_model and
     "class EntryGeometryRule" in geometry_rule and
     "ZoneLow" in geometry_model and
     "ZoneHigh" in geometry_model and
@@ -118,7 +118,7 @@ check(
 
 check(
     "signal timing is measured from causal event to first actionable event",
-    "class EntrySignalTiming" in timing_model and
+    "EntrySignalTiming" in timing_model and "struct EntrySignalTiming" in timing_model and
     "class EntrySignalTimingRule" in timing_rule and
     "EntrySignalTimingRule.Measure(" in timing_runtime and
     "ResolveEntrySignalCausalEventUtc(" in timing_runtime and
