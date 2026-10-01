@@ -2,6 +2,22 @@
 
 This file records implementation history so development can resume safely in a new chat without reconstructing prior work from conversation history.
 
+## 2026-10-02 — CI-07 MTF / Regime / Market Context
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending on the CI-07 branch.**
+
+Implemented:
+- reference-aware `MtfClosedContextCache` with next-bar boundary checks and exact-reference re-materialization;
+- one platform-neutral `MarketStateSnapshot` for all eight MTF frame states, premium/discount and session context;
+- decision-boundary validation of market-state reference and all eight closed indices;
+- explicit regime-transition ownership and propagation;
+- canonical snapshot consumption by decision and suitability paths;
+- deterministic CI-07 Runtime Acceptance and Source/Architecture static audit wiring.
+
+No public parameter/default or trading threshold was changed. No new decision, execution or broker-mutation authority was introduced.
+
+Phase record: `docs/PHASE-CI-07-MTF-REGIME-CONTEXT.md`.
+
 ## Continuity rules
 
 - `docs/ROADMAP.md` is authoritative for the next phase.
