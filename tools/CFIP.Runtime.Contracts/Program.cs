@@ -37,6 +37,7 @@ namespace cAlgo
             VerifyStructuralStopRiskCeilingSemantics();
             VerifyLiquidityTargetCandidateSemantics();
             VerifyIndependentEvidenceGroupSemantics();
+            VerifyPendingFillExitResolutionSemantics();
             VerifyBrokerStateRefreshSemantics();
             VerifyBufferedArchivePersistence();
             VerifyDailyLossSemantics();
