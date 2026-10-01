@@ -91,14 +91,8 @@ namespace cAlgo
                         w1Index)
                     : null;
 
-            int decisionChartIndex =
-                MapM5ToClosedChart(
-                    closedM5,
-                    hostIndex);
-
             _decision =
                 BuildDecision(
-                    decisionChartIndex,
                     closedM5,
                     reference,
                     mtf);
