@@ -1276,7 +1276,9 @@ Next specified phase: **CI-04 — Structure / swing / liquidity semantics audit.
 
 ### CI-09 implementation record — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — pending repository workflow verification on the exact feature head.**
+Status: **VERIFIED COMPLETE — PR #164 merged to `main`; merge commit `58d0ef85b2960ac9c706aad120d5f89ffd377946`.**
+
+Final verification on implementation head `36df49e0e76d9e07af5a7b1ccb7beb764928cc1a`: Source/Architecture #2560 PASS; Runtime #2369 PASS; cTrader Compile #2553 PASS.
 
 Branch: `phase/ci-09-decision-mathematical-audit`
 
