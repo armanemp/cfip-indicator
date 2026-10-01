@@ -843,6 +843,11 @@ Next continuation: CR7.6a
 Historical continuity marker for CR7.6a / G6A is retained in the accumulated
 roadmap audit chain.
 
+## CI-03 — Indicator fusion / evidence independence
+
+Historical continuity marker: CI-03 is verified complete; later CI phases remain
+the active remediation sequence.
+
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
 Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
