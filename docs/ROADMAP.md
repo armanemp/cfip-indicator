@@ -6337,6 +6337,6 @@ Safety/performance boundary:
 
 Phase record: `docs/PHASE-CI-09-DECISION-MATHEMATICS.md`.
 
-Verification will be recorded only from the exact GitHub workflow results for this implementation head. Target-terminal replay remains the empirical boundary.
+Verification is recorded above from the exact GitHub workflow results for implementation head `36df49e0e76d9e07af5a7b1ccb7beb764928cc1a`. Target-terminal replay remains the empirical boundary.
 
 **Next phase after CI-09 verification: CI-10 — Gate/threshold semantic audit.**
