@@ -6,6 +6,42 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private bool TryGetParallelScenarioPreview(
+            int closedM5,
+            ExecutionModel execution,
+            OpportunityLane lane,
+            ParallelScenarioGeometry geometry,
+            out TradeSetupPreview preview)
+        {
+            preview = null;
+
+            if (execution == null ||
+                geometry == null)
+                return false;
+
+            int cacheKey =
+                ((int)lane * 2) +
+                (execution.Direction == 1 ? 1 : 0);
+
+            if (_parallelPreviewCache.TryGetValue(
+                    cacheKey,
+                    out preview))
+                return preview != null;
+
+            preview =
+                BuildTradeSetupPreviewFromGeometry(
+                    closedM5,
+                    execution,
+                    lane,
+                    geometry);
+
+            if (preview == null)
+                return false;
+
+            _parallelPreviewCache[cacheKey] = preview;
+            return true;
+        }
+
         private TradeSetupPreview BuildTradeSetupPreview(
             int closedM5,
             ExecutionModel execution,

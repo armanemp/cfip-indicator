@@ -123,7 +123,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Execution/AggressiveEntryPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Decision.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/Plan.cs" />
-    <Compile Include="../../src/CFIP.Indicator/Trading/Execution/ScenarioExecutionPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ParallelScenarioGeometry.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/DivergenceResult.cs" />

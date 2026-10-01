@@ -88,7 +88,7 @@ namespace cAlgo
             TradeOpportunityCandidate selected;
             string reason;
 
-            if (ScenarioExecutionPolicy.TryResolvePlanScenario(
+            if (ScenarioExecutionPolicyRule.TryResolvePlanScenario(
                     _tradePlanRegistry.Snapshot(),
                     _plan,
                     _decision,
@@ -105,7 +105,7 @@ namespace cAlgo
             }
 
             return
-                ScenarioExecutionPolicy.CanonicalScenarioId(
+                ScenarioExecutionPolicyRule.CanonicalScenarioId(
                     _plan);
         }
 
@@ -114,7 +114,7 @@ namespace cAlgo
         {
             TradeOpportunityCandidate selected;
 
-            if (ScenarioExecutionPolicy.TryResolveDirectionScenario(
+            if (ScenarioExecutionPolicyRule.TryResolveDirectionScenario(
                     _tradePlanRegistry.Snapshot(),
                     _decision,
                     direction,
