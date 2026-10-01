@@ -1811,13 +1811,14 @@ for token in (
     "BuildTargetSelectionRequiredRR(",
     "TargetLadderSelectionRule.SelectBestPath(",
     "RequiresHtfRewardForTargetStage(",
-    "TryScoreTargetCandidate(",
+    "TryBuildTargetLadderStageOptions(",
 ):
     if token not in TARGET_SELECTOR_CODE:
         raise SystemExit(f"TargetSelector orchestration call missing: {token}")
 for required_path in (
     ROOT / "Planning" / "TradePlan" / "TargetSelectionPolicy.cs",
     ROOT / "Planning" / "TradePlan" / "TargetCandidateEvaluator.cs",
+    ROOT / "Planning" / "TradePlan" / "TargetLadderStageCandidateBuilder.cs",
 ):
     if not required_path.exists():
         raise SystemExit(f"Target selection owner missing: {required_path}")
@@ -1825,7 +1826,7 @@ for declaration in (
     "private double[] BuildTargetSelectionRequiredRR(",
     "private double FindPreviousSelectedTargetPrice(",
     "private bool RequiresHtfRewardForTargetStage(",
-    "private bool TryScoreTargetCandidate(",
+    "private bool TryBuildTargetLadderStageOptions(",
 ):
     if declaration in TARGET_SELECTOR_CODE:
         raise SystemExit(f"TargetSelector retains extracted responsibility: {declaration}")
