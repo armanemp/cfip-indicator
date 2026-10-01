@@ -1078,8 +1078,10 @@ Implemented:
 - HistoryLoaded/Reloaded invalidation;
 - stable first/last boundary fingerprints;
 - runtime contracts for cache movement/bounds and quote-volume normalization;
-- full production-boundary Skender parity benchmark across stable and rolling
-  indicator families;
+- one consolidated production-boundary Skender parity benchmark (the existing
+  H3-B owner) across stable and rolling indicator families;
+- duplicate CI-02 benchmark module removed; terminal timestamp alignment is now
+  an explicit parity assertion;
 - deterministic zero-volume benchmark fixtures;
 - runtime/allocation measurement;
 - CI-02 static audit accumulated after CI-01.
