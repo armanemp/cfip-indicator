@@ -5394,7 +5394,11 @@ Safety/manual boundary:
 - actual cTrader fill divergence, broker protection/rejection timing,
   restart/reconnect and terminal UI remain manual acceptance boundaries.
 
-**Next phase: CR6.3 / F4 — Effective-threshold transparency and hidden additive margins.**
+**CR6.3 / F4 verified complete — Effective-threshold transparency and hidden additive margins.**
+
+PR #129 was verified with Source/Architecture, Runtime Acceptance Contracts, and cTrader Compile all PASS on commit `5dd9a8a8bb0fb8172ac40b7336ce86e0bb5c3c2a`. No public parameter contract or default trading policy was changed.
+
+**Next phase: CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 ## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
 
@@ -5575,7 +5579,7 @@ These are not treated as bugs until independently verified.
 
 ## Current active implementation phase
 
-**CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
+**CR6.4 / F5 — Smart-threshold regime identity and hidden REVERSAL dead path.**
 
 CR5.8 / E8 is verified complete and merged to `main` via PR #124. Prompt 5 E1–E8 is now closed at repository level. CR-FINAL remains paused until the Prompt 6 F1–F9 sequence is completed or explicitly documented as verified/deferred with evidence.
 
