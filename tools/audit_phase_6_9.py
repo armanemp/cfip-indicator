@@ -54,7 +54,7 @@ check(
 )
 
 failure_block = re.search(
-    r"if (!ProtectOrphanManagedPosition((.*?)_lastBrokerModifyUtc",
+    r"if \\(!ProtectOrphanManagedPosition\\((.*?)_lastBrokerModifyUtc",
     caller,
     re.S,
 )
