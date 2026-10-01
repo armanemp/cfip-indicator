@@ -8,6 +8,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyConsensusSymmetry();
+            VerifyDecisionScoreBoundariesAndTraceability();
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
             VerifyTopDownCalibrationAbsoluteStrength();
@@ -168,6 +169,111 @@ namespace cAlgo
             Assert(buy.BuyShare == sell.SellShare, "BUY/SELL share symmetry");
             Assert(buy.SellShare == sell.BuyShare, "SELL/BUY share symmetry");
             Assert(buy.Edge == sell.Edge, "BUY/SELL edge symmetry");
+        }
+
+        private static void VerifyDecisionScoreBoundariesAndTraceability()
+        {
+            DecisionScoreInput input =
+                new DecisionScoreInput(
+                    new DecisionFrameContribution(1, 2, 0),
+                    new DecisionFrameContribution(3, 4, 0),
+                    new DecisionFrameContribution(5, 6, 0),
+                    new DecisionFrameContribution(7, 8, 0),
+                    new DecisionFrameContribution(9, 10, 0),
+                    new DecisionFrameContribution(11, 12, 0),
+                    new DecisionFrameContribution(13, 14, 0),
+                    true,
+                    true,
+                    2,
+                    3,
+                    true,
+                    1,
+                    false,
+                    false,
+                    0,
+                    0,
+                    0,
+                    false,
+                    false);
+
+            DecisionScoreSnapshot score =
+                new DecisionScoreCalculator().Calculate(input);
+
+            double expectedBuy =
+                1 + 3 + 5 + 7 + 9 + 11 + 13 + 2 + 6;
+
+            double expectedSell =
+                2 + 4 + 6 + 8 + 10 + 12 + 14 + 3;
+
+            Assert(
+                Math.Abs(score.M5BullContribution - 1) < 1e-12 &&
+                Math.Abs(score.M15BullContribution - 3) < 1e-12 &&
+                Math.Abs(score.H4BearContribution - 10) < 1e-12 &&
+                Math.Abs(score.AdvancedConfluenceBuy - 2) < 1e-12 &&
+                Math.Abs(score.PremiumDiscountBuy - 6) < 1e-12,
+                "score snapshot exposes frame/confluence component provenance");
+
+            Assert(
+                Math.Abs(score.Buy - expectedBuy) < 1e-12 &&
+                Math.Abs(score.Sell - expectedSell) < 1e-12 &&
+                Math.Abs(score.AdaptiveRegimeBuy) < 1e-12 &&
+                Math.Abs(score.ConflictPenaltyBuy) < 1e-12 &&
+                Math.Abs(score.ChoppinessFactor - 1.0) < 1e-12,
+                "score trace reconstructs final totals without hidden adjustments");
+
+            DecisionScoreInput invalid =
+                new DecisionScoreInput(
+                    new DecisionFrameContribution(
+                        double.NaN,
+                        double.PositiveInfinity,
+                        0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    new DecisionFrameContribution(0, 0, 0),
+                    false,
+                    true,
+                    double.NaN,
+                    double.PositiveInfinity,
+                    false,
+                    0,
+                    false,
+                    false,
+                    0,
+                    0,
+                    0,
+                    false,
+                    false);
+
+            DecisionScoreSnapshot sanitized =
+                new DecisionScoreCalculator().Calculate(invalid);
+
+            Assert(
+                sanitized.Buy == 0 &&
+                sanitized.Sell == 0,
+                "non-finite score inputs fail closed");
+
+            double choppyFactor =
+                DecisionScoreCalculator.ResolveChoppinessFactor(
+                    true,
+                    true,
+                    true);
+
+            double neutralFactor =
+                DecisionScoreCalculator.ResolveChoppinessFactor(
+                    true,
+                    false,
+                    true);
+
+            Assert(
+                Math.Abs(choppyFactor - 0.90) < 1e-12 &&
+                Math.Abs(neutralFactor - 1.0) < 1e-12,
+                "choppiness factor rule is explicit and directional-state neutral");
+
+            Console.WriteLine(
+                "CI-09 score boundary and provenance contracts PASS");
         }
 
         private static void VerifyNeutralQualityIsolation()

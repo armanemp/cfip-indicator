@@ -22,7 +22,8 @@ namespace cAlgo
                 throw new ArgumentNullException(nameof(input));
 
             DecisionScoreSnapshot score =
-                _scoreCalculator.Calculate(input);
+                _scoreCalculator.Calculate(
+                    input.ToDecisionScoreInput());
 
             DecisionConsensusSnapshot consensus =
                 _consensusCalculator.Calculate(

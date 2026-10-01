@@ -62,8 +62,8 @@ check(
 check(
     "premium/discount remains an explicit context contribution without regime retuning",
     "if (input.UsePremiumDiscount)" in score and
-    "buy += 6" in score and
-    "sell += 6" in score and
+    "premiumBuy = 6" in score and
+    "premiumSell = 6" in score and
     "class PremiumDiscountBiasRule" in premium_rule,
 )
 

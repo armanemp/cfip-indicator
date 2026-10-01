@@ -1273,3 +1273,31 @@ No public parameters, thresholds, weights, confidence policy, RR/Entry/SL/TP pol
 risk policy or execution authority was changed.
 
 Next specified phase: **CI-04 — Structure / swing / liquidity semantics audit.**
+
+### CI-09 implementation record — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — pending repository workflow verification on the exact feature head.**
+
+Branch: `phase/ci-09-decision-mathematical-audit`
+
+Completed:
+- exact BUY/SELL consensus ties are neutral;
+- non-finite consensus inputs fail closed;
+- conflict reduction cannot introduce directional bias at an exact score tie;
+- DecisionScoreSnapshot exposes canonical score-component provenance;
+- frame and advanced numeric score inputs fail closed when non-finite;
+- deterministic score-boundary/provenance contracts added;
+- `tools/audit_phase_ci_09.py` added and wired after CI-08;
+- phase record added at `docs/PHASE-CI-09-DECISION-MATHEMATICS.md`.
+
+Safety:
+- no public parameter name/type/`DefaultValue` changed;
+- no RR/confidence/entry/SL/TP/risk/execution threshold tuned;
+- no second decision or broker-mutation authority created;
+- no unbounded cache or new broker enumeration introduced.
+
+Verification rule:
+- Source/Architecture, Runtime Acceptance and cTrader Compile are reported only from workflow results for the exact implementation head;
+- target-terminal replay and empirical signal-quality remain manual boundaries.
+
+Next phase after CI-09 verification: **CI-10 — Gate/threshold semantic audit.**

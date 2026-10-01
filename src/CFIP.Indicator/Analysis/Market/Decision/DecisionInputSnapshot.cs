@@ -41,6 +41,31 @@ namespace cAlgo
 
         public DecisionEvidenceSnapshot Evidence { get; }
 
+        internal DecisionScoreInput ToDecisionScoreInput()
+        {
+            return new DecisionScoreInput(
+                M5Contribution,
+                M15Contribution,
+                M30Contribution,
+                H1Contribution,
+                H4Contribution,
+                D1Contribution,
+                W1Contribution,
+                SmartWeeklyContext,
+                UseAdvancedConfluence,
+                AdvancedConfluenceBuy,
+                AdvancedConfluenceSell,
+                UsePremiumDiscount,
+                PremiumDiscountBias,
+                AdaptiveRegimeWeighting,
+                UseHistoricalChoppinessGuard,
+                M5Frame == null ? 0 : M5Frame.Direction,
+                M5Frame == null ? 0 : M5Frame.IndicatorConfluenceQuality,
+                M5Frame == null ? 0 : M5Frame.IndicatorConflict,
+                M5Frame != null && M5Frame.Choppy,
+                M15Frame != null && M15Frame.Choppy);
+        }
+
         public DecisionInputSnapshot(
             Frame m1Frame,
             Frame m5Frame,

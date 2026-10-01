@@ -24,6 +24,9 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndependentEvidenceFusionRule.cs" Link="Core/Math/IndependentEvidenceFusionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionFrameContribution.cs" Link="Decision/DecisionFrameContribution.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionFrameContributionCalculator.cs" Link="Decision/DecisionFrameContributionCalculator.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionScoreInput.cs" Link="Decision/DecisionScoreInput.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionScoreSnapshot.cs" Link="Decision/DecisionScoreSnapshot.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionScoreCalculator.cs" Link="Decision/DecisionScoreCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusSnapshot.cs" Link="Decision/DecisionConsensusSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusCalculator.cs" Link="Decision/DecisionConsensusCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionQualityCalculator.cs" Link="Decision/DecisionQualityCalculator.cs" />
