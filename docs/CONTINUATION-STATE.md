@@ -524,8 +524,13 @@ Safety/manual boundary:
 
 ## Current active phase
 
-CR5.6 / E6 — Directional-bias semantics and canonical M5 closed-bar consistency.
+CR5.7 / E7 — Decision-owned WATCH/REACTION alerts separated from chart rendering.
+
+CR5.6 / E6 is verified complete on PR #122. Implementation head was e930e30d9c82ad279316a41c81116d4ae1e19859; repository verification passed on that head:
+- Source/Architecture run 36838144439;
+- Runtime Acceptance Contracts run 36838144403;
+- cTrader Compile run 36838144416.
 
 ### Next transition
 
-Execute CR5.6 / E6 only; after repository verification advance to CR5.7 / E7. CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
+Execute CR5.7 / E7 only; CR-FINAL remains paused until Prompt 5 and Prompt 6 are closed or explicitly documented with evidence.
