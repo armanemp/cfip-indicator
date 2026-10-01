@@ -38,4 +38,4 @@
 
 `tools/audit_phase_6_9.py` بلافاصله بعد از F9 در Source/Architecture workflow اجرا می‌شود و ownership، fail-closed return، RecoveryRequired transition، retry timestamp semantics و Runtime Contracts را بررسی می‌کند.
 
-**Next phase:** CR7.1 / G1 — Broker protection must never increase live position risk.
+**Next phase: CR7.1 / G1 — Broker protection must never increase live position risk.**
