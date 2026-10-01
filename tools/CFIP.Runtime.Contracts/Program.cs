@@ -4466,34 +4466,42 @@ namespace cAlgo
         {
             Assert(
                 ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
                     100,
                     102,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "BUY-side fill inside envelope");
 
             Assert(
                 ExecutionFillAcceptanceRule.IsAcceptable(
+                    -1,
                     100,
                     98,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "SELL-side mirrored fill inside envelope");
 
             Assert(
                 !ExecutionFillAcceptanceRule.IsAcceptable(
+                    1,
                     100,
                     103,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "BUY-side fill outside envelope");
 
             Assert(
                 !ExecutionFillAcceptanceRule.IsAcceptable(
+                    -1,
                     100,
                     97,
                     10,
-                    0.25),
+                    0.25,
+                    true),
                 "SELL-side mirrored fill outside envelope");
         }
 
