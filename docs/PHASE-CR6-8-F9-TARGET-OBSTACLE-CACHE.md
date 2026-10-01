@@ -6,7 +6,7 @@ Status: **IMPLEMENTED — repository verification pending CI closeout.**
 
 ## Required phase confirmation
 
-تأیید می‌کنم — `Trading/Validation/TargetObstacleValidator.cs` was re-read before implementation at `EvaluateTargetObstacle` (around line 52), `GetTargetObstacleScanSnapshot` (around line 174), `BuildTargetObstacleScanSnapshot` (around line 223) and `IsTargetObstacleSwing` (around line 384). The new Core cache identity is in `Core/Math/TargetObstacleCachePolicy.cs`, and the bounded runtime cache is in `Trading/Validation/TargetObstacleScanCache.cs`.
+تأیید می‌کنم — `Trading/Validation/TargetObstacleValidator.cs` was re-read before implementation at `EvaluateTargetObstacle` (around line 52), `GetTargetObstacleScanSnapshot` (around line 174), `BuildTargetObstacleScanSnapshot` (around line 10) and `IsTargetObstacleSwing` (around line 171). The new Core cache identity is in `Core/Math/TargetObstacleCachePolicy.cs`, and the bounded runtime cache is in `Trading/Validation/TargetObstacleScanCache.cs`.
 
 ## Verified finding
 

@@ -23,6 +23,7 @@ def check(name, condition):
 
 
 validator = read("src/CFIP.Indicator/Trading/Validation/TargetObstacleValidator.cs")
+builder = read("src/CFIP.Indicator/Trading/Validation/TargetObstacleScanSnapshotBuilder.cs")
 cache = read("src/CFIP.Indicator/Trading/Validation/TargetObstacleScanCache.cs")
 policy = read("src/CFIP.Indicator/Core/Math/TargetObstacleCachePolicy.cs")
 selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
@@ -82,7 +83,8 @@ check(
 check(
     "EvaluateTargetObstacle consumes a snapshot instead of rescanning equality levels per candidate",
     "GetTargetObstacleScanSnapshot(" in validator and
-    "IsTargetObstacleSwing(" in validator and
+    "GetTargetObstacleScanSnapshot(" in validator and
+    "IsTargetObstacleSwing(" in builder and
     "FindEqualHigh(" not in validator and
     "FindEqualLow(" not in validator
 )
