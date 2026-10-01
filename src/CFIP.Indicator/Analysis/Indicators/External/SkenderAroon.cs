@@ -21,16 +21,15 @@ namespace cAlgo
             if (quotes == null || quotes.Count < OssIndicatorParameters.AroonMinimumHistory)
                 return double.NaN;
 
-            var results =
+            var last =
                 StockIndicator.GetAroon(
                     quotes,
                     OssIndicatorSettings.Default.AroonPeriod)
-                    .ToList();
+                    .LastOrDefault();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].Oscillator.HasValue
+            return last == null || !last.Oscillator.HasValue
                 ? double.NaN
-                : results[results.Count - 1].Oscillator.Value;
+                : last.Oscillator.Value;
         }
     }
 }
