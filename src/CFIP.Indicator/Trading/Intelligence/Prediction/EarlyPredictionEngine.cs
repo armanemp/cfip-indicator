@@ -253,10 +253,7 @@ namespace cAlgo
                                     {
                                         p.StopLoss =
                                             p.Direction == 1
-                                                ? p.Entry -
-                                                  atr * FallbackSlAtr
-                                                : p.Entry +
-                                                  atr * FallbackSlAtr;
+                                                : 0;
                                     }
                         
                                     double risk =
