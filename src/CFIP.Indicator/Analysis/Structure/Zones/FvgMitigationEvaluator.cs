@@ -36,58 +36,38 @@ namespace cAlgo
                      i <= end;
                      i++)
                 {
-                    double breaker =
-                        direction == 1
-                            ? (FvgBreakByWicks
-                                ? bars.LowPrices[i]
-                                : Math.Min(
-                                    bars.OpenPrices[i],
-                                    bars.ClosePrices[i]))
-                            : (FvgBreakByWicks
-                                ? bars.HighPrices[i]
-                                : Math.Max(
-                                    bars.OpenPrices[i],
-                                    bars.ClosePrices[i]));
-
-                    if (FvgRule.IsFullyFilled(
+                    double probe =
+                        FvgLifecycleRule.GetMitigationProbe(
                             direction,
-                            managedLow,
-                            managedHigh,
-                            breaker))
-                    {
-                        if (FvgInvalidateOnFullFill)
-                            return false;
-
-                        managedHigh =
-                            managedLow;
-                        break;
-                    }
+                            bars.OpenPrices[i],
+                            bars.ClosePrices[i],
+                            bars.LowPrices[i],
+                            bars.HighPrices[i],
+                            FvgBreakByWicks);
 
                     double nextLow;
                     double nextHigh;
+                    bool fullyFilled;
 
-                    if (!FvgRule.TryApplyPartialMitigation(
+                    if (!FvgLifecycleRule.TryApplyMitigationStep(
                             direction,
                             managedLow,
                             managedHigh,
-                            breaker,
+                            probe,
                             Symbol.TickSize,
+                            FvgInvalidateOnFullFill,
                             out nextLow,
-                            out nextHigh))
-                    {
-                        if (managedHigh -
-                            managedLow <=
-                            Symbol.TickSize)
-                        {
-                            if (FvgInvalidateOnFullFill)
-                                return false;
-
-                            managedHigh =
-                                managedLow;
-                            break;
-                        }
-
+                            out nextHigh,
+                            out fullyFilled))
                         return false;
+
+                    if (fullyFilled)
+                    {
+                        // The lifecycle rule preserves source geometry when
+                        // invalidation is explicitly disabled.
+                        managedLow = nextLow;
+                        managedHigh = nextHigh;
+                        break;
                     }
 
                     managedLow = nextLow;
@@ -145,17 +125,13 @@ namespace cAlgo
                  i++)
             {
                 double fillPrice =
-                    direction == 1
-                        ? (FvgBreakByWicks
-                            ? bars.LowPrices[i]
-                            : Math.Min(
-                                bars.OpenPrices[i],
-                                bars.ClosePrices[i]))
-                        : (FvgBreakByWicks
-                            ? bars.HighPrices[i]
-                            : Math.Max(
-                                bars.OpenPrices[i],
-                                bars.ClosePrices[i]));
+                    FvgLifecycleRule.GetMitigationProbe(
+                        direction,
+                        bars.OpenPrices[i],
+                        bars.ClosePrices[i],
+                        bars.LowPrices[i],
+                        bars.HighPrices[i],
+                        FvgBreakByWicks);
 
                 if (FvgRule.IsFullyFilled(
                         direction,
