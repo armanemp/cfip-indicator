@@ -67,11 +67,11 @@ for token in (
         errors.append("reward-risk rule missing: " + token)
 
 if not (
-    "TargetSelectionRequiredRrRule.BuildRequiredRrLadder(" in policy
+    "double tp1" in target_rr_rule
+    and
+    "IsTacticalLane(lane)" in target_rr_rule
     and
     "tacticalOpportunityMinimumRR" in target_rr_rule
-    and
-    "IsTacticalLane" in target_rr_rule
 ):
     errors.append(
         "tactical lanes do not inherit canonical TP1 RR floor"
