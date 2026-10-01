@@ -54,39 +54,39 @@ namespace cAlgo
                     Math.Min(
                         finalMinimumEntryTimingQuality,
                         finalMinimumEntryPositionQuality)) -
-                QualityRecoveryDeficitAllowance;
+                ActionabilityThresholdPolicy.QualityRecoveryDeficitAllowance;
 
             RecoveryConfidenceFloor =
                 Math.Min(
-                    FinalConfidenceCap,
-                    finalMinimumConfidence + RecoveryConfidenceMargin);
+                    ActionabilityThresholdPolicy.FinalConfidenceCap,
+                    finalMinimumConfidence + ActionabilityThresholdPolicy.RecoveryConfidenceMargin);
 
             RecoverySmartQualityFloor =
                 Math.Min(
-                    RecoverySmartQualityCap,
-                    finalMinimumSmartQuality + RecoverySmartQualityMargin);
+                    ActionabilityThresholdPolicy.RecoverySmartQualityCap,
+                    finalMinimumSmartQuality + ActionabilityThresholdPolicy.RecoverySmartQualityMargin);
 
             RecoveryTimeframeAgreementFloor =
                 Math.Min(
-                    RecoveryTimeframeAgreementCap,
+                    ActionabilityThresholdPolicy.RecoveryTimeframeAgreementCap,
                     finalMinimumTimeframeAgreement +
-                    RecoveryTimeframeAgreementMargin);
+                    ActionabilityThresholdPolicy.RecoveryTimeframeAgreementMargin);
 
             RecoveryIndependentEvidenceFloor =
                 Math.Min(
-                    FinalEvidenceCap,
+                    ActionabilityThresholdPolicy.FinalEvidenceCap,
                     finalMinimumIndependentEvidence +
-                    RecoveryIndependentEvidenceMargin);
+                    ActionabilityThresholdPolicy.RecoveryIndependentEvidenceMargin);
 
             RecoveryStructuralConfirmationsFloor =
                 Math.Min(
-                    FinalStructureCap,
+                    ActionabilityThresholdPolicy.FinalStructureCap,
                     finalMinimumStructuralConfirmations +
-                    RecoveryStructuralConfirmationsMargin);
+                    ActionabilityThresholdPolicy.RecoveryStructuralConfirmationsMargin);
 
             RecoveryTp1RRFloor =
                 finalMinimumTp1RR +
-                RecoveryTp1RrMargin;
+                ActionabilityThresholdPolicy.RecoveryTp1RrMargin;
         }
     }
 
@@ -107,21 +107,21 @@ namespace cAlgo
         public const int FinalStructuralConfirmationsMargin = 1;
         public const int ParallelCandidateQualityMargin = 3;
 
-        public const int FinalConfidenceCap = 99;
+        public const int ActionabilityThresholdPolicy.FinalConfidenceCap = 99;
         public const int FinalSmartQualityCap = 95;
         public const int FinalTimeframeAgreementCap = 100;
-        public const int FinalEvidenceCap = 8;
-        public const int FinalStructureCap = 8;
+        public const int ActionabilityThresholdPolicy.FinalEvidenceCap = 8;
+        public const int ActionabilityThresholdPolicy.FinalStructureCap = 8;
 
-        public const int QualityRecoveryDeficitAllowance = 8;
-        public const int RecoveryConfidenceMargin = 5;
-        public const int RecoverySmartQualityMargin = 5;
-        public const int RecoveryTimeframeAgreementMargin = 3;
-        public const int RecoveryIndependentEvidenceMargin = 1;
-        public const int RecoveryStructuralConfirmationsMargin = 1;
-        public const double RecoveryTp1RrMargin = 0.35;
-        public const int RecoverySmartQualityCap = 100;
-        public const int RecoveryTimeframeAgreementCap = 100;
+        public const int ActionabilityThresholdPolicy.QualityRecoveryDeficitAllowance = 8;
+        public const int ActionabilityThresholdPolicy.RecoveryConfidenceMargin = 5;
+        public const int ActionabilityThresholdPolicy.RecoverySmartQualityMargin = 5;
+        public const int ActionabilityThresholdPolicy.RecoveryTimeframeAgreementMargin = 3;
+        public const int ActionabilityThresholdPolicy.RecoveryIndependentEvidenceMargin = 1;
+        public const int ActionabilityThresholdPolicy.RecoveryStructuralConfirmationsMargin = 1;
+        public const double ActionabilityThresholdPolicy.RecoveryTp1RrMargin = 0.35;
+        public const int ActionabilityThresholdPolicy.RecoverySmartQualityCap = 100;
+        public const int ActionabilityThresholdPolicy.RecoveryTimeframeAgreementCap = 100;
 
         public static int EffectiveUpstreamEntryLocationQuality(
             int configuredMinimumEntryQuality)
@@ -171,7 +171,7 @@ namespace cAlgo
         {
             int finalMinimumConfidence =
                 Math.Min(
-                    FinalConfidenceCap,
+                    ActionabilityThresholdPolicy.FinalConfidenceCap,
                     minimumConfidence +
                     FinalConfidenceMargin);
 
@@ -193,7 +193,7 @@ namespace cAlgo
 
             int finalMinimumIndependentEvidence =
                 Math.Min(
-                    FinalEvidenceCap,
+                    ActionabilityThresholdPolicy.FinalEvidenceCap,
                     Math.Max(
                         minimumIndependentEvidence,
                         smartMinimumIndependentEvidence) +
@@ -201,7 +201,7 @@ namespace cAlgo
 
             int finalMinimumStructuralConfirmations =
                 Math.Min(
-                    FinalStructureCap,
+                    ActionabilityThresholdPolicy.FinalStructureCap,
                     minimumStructuralConfirmations +
                     FinalStructuralConfirmationsMargin);
 
