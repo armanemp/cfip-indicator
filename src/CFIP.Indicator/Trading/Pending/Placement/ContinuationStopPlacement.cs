@@ -11,7 +11,7 @@ namespace cAlgo
             { ApplyRuntimeEntryGate(); return false; }
 
             int direction; double atr, trigger, stop, target, volume; ExecutionIntent pendingIntent;
-            if (!TryPrepareContinuationStop(closedM5, out direction, out _, out trigger, out stop, out target, out _, out _, out volume, out pendingIntent))
+            if (!TryPrepareContinuationStop(closedM5, out direction, out atr, out trigger, out stop, out target, out _, out _, out volume, out pendingIntent))
                 return false;
 
             TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
