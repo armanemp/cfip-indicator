@@ -5504,6 +5504,312 @@ not proven defective:
 
 These are not treated as bugs until independently verified.
 
+## Prompt 8 Remediation Gate — H1–H6 — 2026-10-01
+
+Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+
+Prompt 8 is an additional remediation track after Prompt 7 and before
+CR-FINAL. It does not reopen or renumber Prompt 4, Prompt 5, Prompt 6 or
+Prompt 7. The findings remain hypotheses until independently verified against
+the current `main` source and deterministic behavioral contracts; cTrader
+runtime-dependent claims remain subject to manual terminal validation.
+
+Authoritative implementation order:
+
+`CR8.1/H1 → CR8.2/H2 → CR8.3a/H3-A → CR8.3b/H3-B → CR8.4/H4 → CR8.5a/H5-A → CR8.5b/H5-B → CR8.6/H6 → CR-FINAL`
+
+Prompt 8 is deliberately split at the two findings whose safe completion
+requires more than one independently verifiable ownership/performance step
+(H3 and H5).
+
+### CR8.1 / H1 — Directional execution-fill acceptance and one canonical fill envelope
+Priority: **SAFETY-CRITICAL**
+
+Scope:
+- verify the full call chain from `ValidateActualMarketFill` /
+  `IsExecutableFillPrice` through `ExecutionFillAcceptanceRule`,
+  `AggressiveAcceptedFillHandler` and
+  `AutomaticMarketFillReconciliation`;
+- replace symmetric absolute-distance acceptance with one direction-aware Core
+  rule that distinguishes adverse from favorable fill movement;
+- favorable BUY fills (actual below requested) and favorable SELL fills (actual
+  above requested) are accepted by default;
+- only adverse extension beyond the canonical execution envelope can trigger
+  rejection/close;
+- remove the second incompatible distance definition in the aggressive path or
+  make it consume the same canonical rule.
+
+Required Core contract:
+`IsAcceptable(direction, requested, actual, atr, maxAdverseExtensionAtr, allowFavorable)`.
+
+Deterministic tests:
+- BUY favorable 0.5 ATR → accepted;
+- BUY adverse 0.5 ATR → rejected;
+- SELL favorable 0.5 ATR → accepted;
+- SELL adverse 0.5 ATR → rejected;
+- boundary and invalid-input cases;
+- aggressive and automatic-market callers both exercise the same rule.
+
+Behavior change:
+- **Yes.** Favorable fills that are currently rejected become acceptable. This
+  is an explicit safety/semantics correction and must be reported separately.
+
+Manual testing:
+- actual cTrader fill timing/price semantics, market gaps, broker rejection
+  behavior and whether the post-rejection close is accepted by the broker.
+
+Phase completion gate:
+- no duplicate fill envelope remains;
+- no accepted favorable fill can be closed by the envelope itself;
+- BUY/SELL symmetry is contract-tested.
+
+### CR8.2 / H2 — Top-Down alignment must include absolute strength
+Priority: **ANALYTICAL-CORRECTNESS**
+
+Scope:
+- first audit all `TopDownCalibrationRule` callers in
+  `Analysis/Market/*` and related admission paths to determine whether weak
+  HTF frames are already filtered before calibration;
+- if not, extend the Core rule so `htfStrong` requires both directional
+  dominance/alignment and a minimum absolute evidence strength;
+- prefer reusing an existing strength/quality threshold before introducing a
+  new public parameter;
+- if a new public parameter is genuinely required, keep its name/type/default
+  contract untouched for existing parameters and document the proposed default
+  explicitly before adoption;
+- preserve the established alignment ratio as a descriptive metric; do not use
+  ratio alone as proof of strong HTF context.
+
+Deterministic tests:
+- one HTF frame with quality 8 → not `htfStrong`;
+- two sufficiently strong HTFs → `htfStrong`;
+- mixed weak/strong BUY and SELL symmetry;
+- zero/negative/non-finite inputs fail closed;
+- selected-direction eligibility is tested independently from alignment display.
+
+Behavior change:
+- **Potentially yes.** Opposite-direction entries previously blocked solely by a
+  weak HTF frame may become eligible. The actual numerical minimum-strength
+  policy is a separate behavior-change record and must not be silently chosen.
+
+Manual testing:
+- target-terminal MTF close timing and live eligibility across the chart/HTF
+  combinations used by CFIP.
+
+Phase completion gate:
+- strong/weak semantics cannot be produced by alignment ratio alone;
+- no caller silently redefines HTF strength.
+
+### CR8.3a / H3-A — Skender settings ownership without default changes
+Priority: **PERFORMANCE / MAINTAINABILITY**
+
+Scope:
+- audit all production adapters under `Analysis/Indicators/External/Skender*.cs`;
+- centralize the currently hard-coded indicator settings in one immutable
+  `OssIndicatorSettings` owner;
+- preserve current values exactly, including Bollinger, CCI, MFI, Aroon, MACD
+  signal, SAR, SuperTrend and Stoch defaults;
+- keep RSI and MACD fast/slow parameter-driven exactly as today;
+- keep `UseOssExtendedIndicatorConfluence=false` as the existing default;
+- do not expose a new public parameter unless a caller or contract actually
+  requires one.
+
+Deterministic tests:
+- settings object reproduces every current default value;
+- all adapters consume the central owner;
+- BUY/SELL-independent numerical outputs are unchanged for deterministic
+  fixtures.
+
+Phase completion gate:
+- no production Skender constant remains duplicated outside the central
+  settings owner;
+- public parameter names/types/defaults are unchanged.
+
+### CR8.3b / H3-B — Bounded Skender computation, cache and numerical-parity gate
+Priority: **PERFORMANCE / RUNTIME**
+
+Scope:
+- measure the current full-series `.ToList()` pattern before changing it;
+- design a bounded warm-up window sufficient for each indicator family rather
+  than blindly taking the last N bars;
+- preserve stateful indicator semantics for SAR/SuperTrend by proving the chosen
+  warm-up/window policy against the full-series reference;
+- add a deterministic per-series/per-configuration cache so repeated same-input
+  evaluations do not recalculate the complete series;
+- invalidate cache only on input/configuration identity changes required by the
+  adapter contract;
+- keep allocation and latency measurements in the existing OSS benchmark path.
+
+Deterministic tests:
+- warm-up boundary parity against full-series reference;
+- last-value equality within explicit numerical tolerance for all production
+  Skender families;
+- repeated evaluation uses the cache;
+- changed series/configuration invalidates the relevant cache;
+- finite-value/output-count coverage remains intact.
+
+Phase completion gate:
+- no blind last-N optimization that changes SAR/SuperTrend or other warm-up
+  behavior;
+- benchmark evidence documents CPU/allocation effect and numerical parity.
+
+Manual testing:
+- target-terminal startup/cold-cache/warm-cache timing and live-bar update
+  behavior.
+
+### CR8.4 / H4 — Confirmed visual Stage and direction snapshot semantics
+Priority: **PRESENTATION-CORRECTNESS**
+
+Scope:
+- audit the unread presentation chain, especially
+  `SignalVisualSnapshotBuilder`, `PlanLabelRenderCoordinator`,
+  `PlanLabelRenderer`, `PlanLabelFormatting`, `PendingOrderRenderer`,
+  `PredictionLabelsRenderer`, `PredictionLineRenderer` and
+  `ParallelOpportunityRenderer`;
+- keep REACTION/PREDICTION calculation semantics unchanged, but mark their
+  presentation as unconfirmed until the relevant candle is closed;
+- make confirmed vs live/intrabar state explicit in the visual snapshot;
+- ensure visual Stage does not imply execution-grade confirmation;
+- re-evaluate the fallback direction path after the earlier CHoCH/MSS fixes and
+  do not infer canonical direction from an unconfirmed structural blip;
+- keep rendering presentation-only; no decision or execution gate may be moved
+  into a renderer.
+
+Deterministic tests:
+- open M5 reaction → displayed as unconfirmed;
+- closed M5 reaction → displayed as confirmed;
+- prediction/watch snapshots cannot silently become confirmed from intrabar
+  mutation;
+- BUY/SELL symmetry;
+- fallback direction requires the same confirmation state expected by the
+  canonical visual contract.
+
+Behavior change:
+- **Presentation-only.** Signal/decision/execution eligibility is not changed.
+
+Manual testing:
+- chart repaint behavior while a candle is open/closed, marker persistence,
+  Stage transitions, label/arrow rendering and panel/chart refresh on the target
+  cTrader terminal.
+
+Phase completion gate:
+- one snapshot authority;
+- no renderer derives execution-grade confirmation independently.
+
+### CR8.5a / H5-A — Syntax-aware hidden-clamp audit and parameter-bound source of truth
+Priority: **AUDIT / TOOLING**
+
+Scope:
+- implement `tools/audit_param_clamps.py` as a syntax-aware scanner rather than
+  grep-only matching;
+- recognize single-line, multi-line, nested and chained
+  `Math.Max`, `Math.Min`, `ClampInt` and `Clamp` expressions;
+- resolve parameter references to their public `[Parameter]` definitions and
+  compare effective clamp constants against declared `MinValue`/`MaxValue`;
+- distinguish effective clamps from provably unreachable/no-op clamps;
+- emit a machine-readable report plus human-readable diagnostics;
+- add `clamp-allowlist.json` with an explicit reason and owner for every
+  intentionally exceptional clamp;
+- add the audit to the accumulated Source/Architecture CI gate;
+- update the README parameter-count source so public parameter counting has one
+  authoritative machine-readable source rather than duplicated constants.
+
+Deterministic tests:
+- synthetic source fixture with one effective invalid clamp;
+- synthetic source fixture with one valid/in-range clamp;
+- multiline nested/chained expression coverage;
+- allowlisted intentional clamp is accepted only with a non-empty reason;
+- missing/invalid allowlist entry fails the audit.
+
+Phase completion gate:
+- CI can detect the current 47-pattern class without relying on a fixed count;
+- the audit reports location, parameter, operator, bound and reason.
+
+### CR8.5b / H5-B — Remediation of unauthorized clamps without default retuning
+Priority: **ANALYTICAL-CORRECTNESS**
+
+Scope:
+- classify every finding from H5-A into:
+  1. valid/in-range clamp;
+  2. intentional exception requiring allowlist entry;
+  3. unauthorized effective clamp requiring correction;
+- for unauthorized clamps, either align the public parameter's declared
+  `MinValue`/`MaxValue` with the actual contract or remove/replace the
+  hidden floor/ceiling;
+- preserve every existing `DefaultValue`;
+- record any MinValue/MaxValue or effective-calculation change as a separate
+  behavior-change item;
+- make each accepted correction its own `fix(H5-...): ...` commit with the
+  root cause and deterministic test;
+- keep the allowlist minimal and reasoned; do not use it to suppress findings.
+
+Deterministic tests:
+- every corrected clamp gets a boundary test;
+- default-value behavior is covered explicitly;
+- affected caller path is exercised with values below/inside/above the former
+  hidden threshold;
+- BUY/SELL symmetry where the parameter affects both directions.
+
+Behavior change:
+- **Potentially yes**, but only at identified clamp boundaries/defaults. No
+  default is retuned silently.
+
+Phase completion gate:
+- zero unauthorized effective clamps remain;
+- every intentional exception is explainable in the allowlist;
+- no allowlist wildcard or blanket suppression exists.
+
+### CR8.6 / H6 — Central ownership of regime, Stage and block-reason literals
+Priority: **CORRECTNESS / MAINTAINABILITY**
+
+Scope:
+- inventory all production literal consumers for regimes, Stages and block
+  reasons, including `TREND`, `RANGE`, `HIGH_VOLATILITY`,
+  `CONFIRMED SETUP`, `SETUP WATCH`, `WAITING FOR TRIGGER`,
+  `RR BELOW ACTIONABLE FLOOR` and related values;
+- introduce one central named-constant/enum owner while preserving the exact
+  existing serialized/display strings;
+- migrate comparisons, switches and producers to the canonical owner;
+- keep business semantics unchanged; this phase is ownership hardening, not
+  threshold tuning;
+- add a contract/static test that detects a newly introduced unmanaged literal;
+- explicitly record the existing `REVERSAL` production/consumption mismatch as
+  an out-of-scope finding if it remains after inventory; do not repair it in H6.
+
+Deterministic tests:
+- all canonical values are represented exactly once by the owner;
+- all current producers/consumers resolve to canonical values;
+- typo/unknown literal fixture fails;
+- exact serialized/display strings remain unchanged.
+
+Behavior change:
+- **None intended.** The known `REVERSAL` mismatch remains a separately
+  documented bug unless already resolved by an earlier phase.
+
+Manual testing:
+- panel/chart/status text and block-reason presentation remain visually
+  identical on the target terminal.
+
+### Prompt 8 mandatory rules
+
+- public `[Parameter]` name, type and `DefaultValue` remain unchanged;
+- any new parameter must preserve current behavior by default, and any numerical
+  behavior change must be separately recorded before adoption;
+- every accepted correction gets its own `fix(<ID>): ...` commit with root cause;
+- every correction gets deterministic behavioral tests;
+- platform-neutral logic belongs in `Core/` where practical;
+- minimum changes only; no unrelated refactors or renames;
+- each phase begins with the required line: «تأیید می‌کنم» or «مخالفم چون …» plus
+  the verified code location/line range;
+- every phase includes the routine project-wide audit and performance/code-
+  cleanliness audit;
+- cTrader-dependent behavior is explicitly listed under «نیاز به تست دستی در
+  cTrader»;
+- newly discovered out-of-scope bugs are documented separately and not fixed;
+- files identified as unread remain hypotheses until the relevant phase reads
+  them directly.
+
+
 ## Current active implementation phase
 
 **CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
