@@ -21,16 +21,21 @@ namespace cAlgo
             if (quotes == null || quotes.Count < OssIndicatorParameters.ObvMinimumHistory)
                 return double.NaN;
 
-            var results =
-                StockIndicator.GetObv(
-                    quotes)
-                    .ToList();
+            double previous = double.NaN;
+            double current = double.NaN;
+            bool hasCurrent = false;
 
-            if (results.Count < 2)
+            foreach (var result in StockIndicator.GetObv(quotes))
+            {
+                previous = current;
+                current = result.Obv;
+                hasCurrent = true;
+            }
+
+            if (!hasCurrent ||
+                double.IsNaN(previous) ||
+                double.IsInfinity(previous))
                 return double.NaN;
-
-            double current = results[results.Count - 1].Obv;
-            double previous = results[results.Count - 2].Obv;
 
             if (double.IsNaN(current) ||
                 double.IsInfinity(current) ||

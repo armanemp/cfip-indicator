@@ -65,17 +65,12 @@ namespace cAlgo
 
             if (stablePrefix)
             {
-                EnsureStablePrefix(
+                EnsureStableWindow(
                     cache,
                     bars,
                     closedIndex);
 
-                if (closedIndex == cache.StableClosedIndex)
-                    return cache.StableQuotes;
-
-                return cache.StableQuotes.GetRange(
-                    0,
-                    closedIndex + 1);
+                return cache.StableQuotes;
             }
 
             EnsureRollingWindow(
@@ -104,8 +99,9 @@ namespace cAlgo
                 return false;
 
             return cache.StableClosedIndex < 0 ||
-                   cache.StableClosedIndex >= bars.Count ||
-                   MatchesStableLastBar(cache, bars);
+                   MatchesStableWindowBoundaries(
+                       cache,
+                       bars);
         }
 
         private static bool MatchesFirstBar(
@@ -121,22 +117,30 @@ namespace cAlgo
                    cache.FirstTickVolume == bars.TickVolumes[0];
         }
 
-        private static bool MatchesStableLastBar(
+        private static bool MatchesStableWindowBoundaries(
             OssQuoteCacheEntry cache,
             Bars bars)
         {
-            int index = cache.StableClosedIndex;
+            int firstIndex = cache.StableFirstIndex;
+            int lastIndex = cache.StableClosedIndex;
 
-            if (index < 0 ||
-                index >= bars.Count)
+            if (firstIndex < 0 ||
+                lastIndex < firstIndex ||
+                lastIndex >= bars.Count)
                 return false;
 
-            return cache.StableLastOpenTime == bars.OpenTimes[index] &&
-                   cache.StableLastOpen == bars.OpenPrices[index] &&
-                   cache.StableLastHigh == bars.HighPrices[index] &&
-                   cache.StableLastLow == bars.LowPrices[index] &&
-                   cache.StableLastClose == bars.ClosePrices[index] &&
-                   cache.StableLastTickVolume == bars.TickVolumes[index];
+            return cache.StableFirstOpenTime == bars.OpenTimes[firstIndex] &&
+                   cache.StableFirstOpen == bars.OpenPrices[firstIndex] &&
+                   cache.StableFirstHigh == bars.HighPrices[firstIndex] &&
+                   cache.StableFirstLow == bars.LowPrices[firstIndex] &&
+                   cache.StableFirstClose == bars.ClosePrices[firstIndex] &&
+                   cache.StableFirstTickVolume == bars.TickVolumes[firstIndex] &&
+                   cache.StableLastOpenTime == bars.OpenTimes[lastIndex] &&
+                   cache.StableLastOpen == bars.OpenPrices[lastIndex] &&
+                   cache.StableLastHigh == bars.HighPrices[lastIndex] &&
+                   cache.StableLastLow == bars.LowPrices[lastIndex] &&
+                   cache.StableLastClose == bars.ClosePrices[lastIndex] &&
+                   cache.StableLastTickVolume == bars.TickVolumes[lastIndex];
         }
 
         private static void ResetCache(
@@ -145,6 +149,7 @@ namespace cAlgo
         {
             cache.Bars = bars;
             cache.InvalidationPending = false;
+            cache.StableFirstIndex = -1;
             cache.StableClosedIndex = -1;
             cache.RollingFirstIndex = -1;
             cache.RollingClosedIndex = -1;
@@ -157,6 +162,13 @@ namespace cAlgo
             cache.FirstClose = double.NaN;
             cache.FirstTickVolume = double.NaN;
 
+            cache.StableFirstOpenTime = DateTime.MinValue;
+            cache.StableFirstOpen = double.NaN;
+            cache.StableFirstHigh = double.NaN;
+            cache.StableFirstLow = double.NaN;
+            cache.StableFirstClose = double.NaN;
+            cache.StableFirstTickVolume = double.NaN;
+
             cache.StableLastOpenTime = DateTime.MinValue;
             cache.StableLastOpen = double.NaN;
             cache.StableLastHigh = double.NaN;
@@ -165,7 +177,8 @@ namespace cAlgo
             cache.StableLastTickVolume = double.NaN;
 
             cache.StableQuotes =
-                new List<StockQuote>();
+                new List<StockQuote>(
+                    OssIndicatorWarmupPolicy.StableQuoteWindowSize);
 
             cache.RollingQuotes =
                 new List<StockQuote>(
@@ -209,25 +222,44 @@ namespace cAlgo
                 cache.InvalidationPending = true;
         }
 
-        private static void EnsureStablePrefix(
+        private static void EnsureStableWindow(
             OssQuoteCacheEntry cache,
             Bars bars,
             int closedIndex)
         {
             if (cache.StableQuotes == null)
-                cache.StableQuotes = new List<StockQuote>();
+                cache.StableQuotes =
+                    new List<StockQuote>(
+                        OssIndicatorWarmupPolicy.StableQuoteWindowSize);
+
+            int expectedFirstIndex =
+                Math.Max(
+                    0,
+                    closedIndex -
+                    OssIndicatorWarmupPolicy.StableQuoteWindowSize +
+                    1);
+
+            bool rebuild =
+                cache.StableClosedIndex < 0 ||
+                closedIndex < cache.StableClosedIndex ||
+                cache.StableFirstIndex < 0 ||
+                expectedFirstIndex < cache.StableFirstIndex ||
+                expectedFirstIndex >
+                    cache.StableFirstIndex + 1 ||
+                closedIndex >
+                    cache.StableClosedIndex + 1;
+
+            if (rebuild)
+            {
+                cache.StableQuotes.Clear();
+                cache.StableFirstIndex = expectedFirstIndex;
+                cache.StableClosedIndex = expectedFirstIndex - 1;
+            }
 
             int startIndex =
                 Math.Max(
-                    0,
+                    expectedFirstIndex,
                     cache.StableClosedIndex + 1);
-
-            if (closedIndex < cache.StableClosedIndex)
-            {
-                cache.StableQuotes.Clear();
-                cache.StableClosedIndex = -1;
-                startIndex = 0;
-            }
 
             for (int i = startIndex;
                  i <= closedIndex;
@@ -238,13 +270,34 @@ namespace cAlgo
                         bars,
                         i));
 
-                cache.StableLastOpenTime = bars.OpenTimes[i];
-                cache.StableLastOpen = bars.OpenPrices[i];
-                cache.StableLastHigh = bars.HighPrices[i];
-                cache.StableLastLow = bars.LowPrices[i];
-                cache.StableLastClose = bars.ClosePrices[i];
-                cache.StableLastTickVolume = bars.TickVolumes[i];
                 cache.StableClosedIndex = i;
+
+                while (cache.StableQuotes.Count >
+                       OssIndicatorWarmupPolicy.StableQuoteWindowSize)
+                {
+                    cache.StableQuotes.RemoveAt(0);
+                    cache.StableFirstIndex++;
+                }
+            }
+
+            if (cache.StableQuotes.Count == 0)
+            {
+                cache.StableFirstIndex = -1;
+                cache.StableClosedIndex = -1;
+            }
+            else
+            {
+                cache.StableFirstIndex =
+                    cache.StableClosedIndex -
+                    cache.StableQuotes.Count + 1;
+
+                CaptureStableFirstBar(
+                    cache,
+                    bars);
+
+                CaptureStableLastBar(
+                    cache,
+                    bars);
             }
 
             cache.BarCount = bars.Count;
@@ -318,6 +371,42 @@ namespace cAlgo
                     1m,
                     (decimal)bars.TickVolumes[index])
             };
+        }
+
+        private static void CaptureStableFirstBar(
+            OssQuoteCacheEntry cache,
+            Bars bars)
+        {
+            int index = cache.StableFirstIndex;
+
+            if (index < 0 ||
+                index >= bars.Count)
+                return;
+
+            cache.StableFirstOpenTime = bars.OpenTimes[index];
+            cache.StableFirstOpen = bars.OpenPrices[index];
+            cache.StableFirstHigh = bars.HighPrices[index];
+            cache.StableFirstLow = bars.LowPrices[index];
+            cache.StableFirstClose = bars.ClosePrices[index];
+            cache.StableFirstTickVolume = bars.TickVolumes[index];
+        }
+
+        private static void CaptureStableLastBar(
+            OssQuoteCacheEntry cache,
+            Bars bars)
+        {
+            int index = cache.StableClosedIndex;
+
+            if (index < 0 ||
+                index >= bars.Count)
+                return;
+
+            cache.StableLastOpenTime = bars.OpenTimes[index];
+            cache.StableLastOpen = bars.OpenPrices[index];
+            cache.StableLastHigh = bars.HighPrices[index];
+            cache.StableLastLow = bars.LowPrices[index];
+            cache.StableLastClose = bars.ClosePrices[index];
+            cache.StableLastTickVolume = bars.TickVolumes[index];
         }
 
         private static void CaptureFirstBar(

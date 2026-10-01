@@ -22,16 +22,15 @@ namespace cAlgo
                 quotes.Count < OssIndicatorParameters.MfiMinimumHistory)
                 return double.NaN;
 
-            var results =
+            var last =
                 StockIndicator.GetMfi(
                     quotes,
                     OssIndicatorSettings.Default.MfiPeriod)
-                    .ToList();
+                    .LastOrDefault();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].Mfi.HasValue
+            return last == null || !last.Mfi.HasValue
                 ? double.NaN
-                : results[results.Count - 1].Mfi.Value;
+                : last.Mfi.Value;
         }
     }
 }

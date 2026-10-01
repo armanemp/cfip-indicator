@@ -9,6 +9,7 @@ namespace cAlgo
     {
         public Bars Bars { get; set; }
 
+        public int StableFirstIndex { get; set; } = -1;
         public int StableClosedIndex { get; set; } = -1;
         public int RollingFirstIndex { get; set; } = -1;
         public int RollingClosedIndex { get; set; } = -1;
@@ -21,6 +22,13 @@ namespace cAlgo
         public double FirstLow { get; set; } = double.NaN;
         public double FirstClose { get; set; } = double.NaN;
         public double FirstTickVolume { get; set; } = double.NaN;
+
+        public DateTime StableFirstOpenTime { get; set; } = DateTime.MinValue;
+        public double StableFirstOpen { get; set; } = double.NaN;
+        public double StableFirstHigh { get; set; } = double.NaN;
+        public double StableFirstLow { get; set; } = double.NaN;
+        public double StableFirstClose { get; set; } = double.NaN;
+        public double StableFirstTickVolume { get; set; } = double.NaN;
 
         public DateTime StableLastOpenTime { get; set; } = DateTime.MinValue;
         public double StableLastOpen { get; set; } = double.NaN;

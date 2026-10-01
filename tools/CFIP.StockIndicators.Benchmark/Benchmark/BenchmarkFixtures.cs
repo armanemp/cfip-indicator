@@ -22,7 +22,18 @@ internal static class BenchmarkFixtures
 
     internal static IReadOnlyList<V2Quote> BuildV2(string scenario)
     {
-        var source = BuildSyntheticBars(scenario);
+        return BuildV2(
+            scenario,
+            BarCount);
+    }
+
+    internal static IReadOnlyList<V2Quote> BuildV2(
+        string scenario,
+        int barCount)
+    {
+        var source = BuildSyntheticBars(
+            scenario,
+            barCount);
         var quotes = new List<V2Quote>(source.Count);
 
         foreach (SyntheticBar bar in source)
@@ -62,14 +73,24 @@ internal static class BenchmarkFixtures
         return bars;
     }
 
-    private static IReadOnlyList<SyntheticBar> BuildSyntheticBars(string scenario)
+    private static IReadOnlyList<SyntheticBar> BuildSyntheticBars(
+        string scenario)
+    {
+        return BuildSyntheticBars(
+            scenario,
+            BarCount);
+    }
+
+    private static IReadOnlyList<SyntheticBar> BuildSyntheticBars(
+        string scenario,
+        int barCount)
     {
         if (!ScenarioNames.Contains(scenario, StringComparer.Ordinal))
             throw new ArgumentException(
                 $"Unknown benchmark scenario: {scenario}",
                 nameof(scenario));
 
-        var bars = new List<SyntheticBar>(BarCount);
+        var bars = new List<SyntheticBar>(barCount);
         DateTime start = new DateTime(
             2020,
             1,
@@ -79,7 +100,7 @@ internal static class BenchmarkFixtures
             0,
             DateTimeKind.Utc);
 
-        for (int i = 0; i < BarCount; i++)
+        for (int i = 0; i < barCount; i++)
         {
             double open;
             double close;
@@ -128,13 +149,13 @@ internal static class BenchmarkFixtures
 
                 default:
                     double direction =
-                        i < BarCount / 2
+                        i < barCount / 2
                             ? i * 0.045
-                            : (BarCount / 2 * 0.045) -
-                              ((i - BarCount / 2) * 0.055);
+                            : (barCount / 2 * 0.045) -
+                              ((i - barCount / 2) * 0.055);
 
                     double shock =
-                        i >= BarCount / 2
+                        i >= barCount / 2
                             ? Math.Sin(i / 2.3) * 0.42
                             : Math.Sin(i / 7.0) * 0.16;
 

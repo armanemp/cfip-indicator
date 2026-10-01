@@ -21,16 +21,15 @@ namespace cAlgo
             if (quotes == null || quotes.Count < OssIndicatorParameters.CciMinimumHistory)
                 return double.NaN;
 
-            var results =
+            var last =
                 StockIndicator.GetCci(
                     quotes,
                     OssIndicatorSettings.Default.CciPeriod)
-                    .ToList();
+                    .LastOrDefault();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].Cci.HasValue
+            return last == null || !last.Cci.HasValue
                 ? double.NaN
-                : results[results.Count - 1].Cci.Value;
+                : last.Cci.Value;
         }
     }
 }

@@ -22,16 +22,15 @@ namespace cAlgo
                 quotes.Count < OssIndicatorParameters.RsiHistoryRequired(RsiPeriod))
                 return double.NaN;
 
-            var results =
+            var last =
                 StockIndicator.GetRsi(
                     quotes,
                     OssIndicatorParameters.SafeRsiPeriod(RsiPeriod))
-                    .ToList();
+                    .LastOrDefault();
 
-            return results.Count == 0 ||
-                   !results[results.Count - 1].Rsi.HasValue
+            return last == null || !last.Rsi.HasValue
                 ? double.NaN
-                : results[results.Count - 1].Rsi.Value;
+                : last.Rsi.Value;
         }
     }
 }

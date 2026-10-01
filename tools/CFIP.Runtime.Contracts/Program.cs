@@ -36,6 +36,7 @@ namespace cAlgo
             VerifySessionWindowSemantics();
             VerifyCalculationReadinessSemantics();
             VerifyNativeIndicatorReadinessSemantics();
+            VerifyOssWarmupPolicy();
             VerifyStructuralStopRiskCeilingSemantics();
             VerifyLiquidityTargetCandidateSemantics();
             VerifyIndependentEvidenceGroupSemantics();
@@ -9299,6 +9300,48 @@ namespace cAlgo
                 "G1 invalid direction is fail-closed");
         }
 
+
+        private static void VerifyOssWarmupPolicy()
+        {
+            Assert(
+                OssIndicatorWarmupPolicy.StableQuoteWindowSize == 768,
+                "H3-B stable quote window is fixed and bounded");
+
+            Assert(
+                OssIndicatorWarmupPolicy.RecommendedStableBars(
+                    50,
+                    100,
+                    9,
+                    10) == 500,
+                "H3-B maximum current public envelope requires <= 500 recommended bars");
+
+            Assert(
+                OssIndicatorWarmupPolicy.FitsCurrentPublicParameterEnvelope(
+                    50,
+                    100,
+                    9,
+                    10),
+                "H3-B current public parameter envelope fits inside bounded window");
+
+            Assert(
+                OssIndicatorWarmupPolicy.RecommendedStableBars(
+                    14,
+                    26,
+                    9,
+                    10) >= 260,
+                "H3-B default warm-up includes SuperTrend convergence margin");
+
+            Assert(
+                OssIndicatorWarmupPolicy.RecommendedStableBars(
+                    14,
+                    26,
+                    9,
+                    10) == 285,
+                "H3-B default warm-up includes MACD convergence margin");
+
+            Console.WriteLine(
+                "CR8.3b / H3-B warm-up policy contract PASS");
+        }
 
         private static void Assert(bool condition, string name)
         {
