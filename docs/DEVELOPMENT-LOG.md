@@ -2821,3 +2821,22 @@ Verification:
 No public parameter/default, confidence/RR/SL/TP/risk/execution threshold or broker authority was changed by CI-10.
 
 Next phase: **CI-11 — Entry geometry and signal-timing audit**.
+
+
+## 2026-10-02 — CI-11 Entry Geometry / Signal-Timing Audit
+
+CI-11 canonicalized entry geometry and signal timing across execution-mode resolution, live actionability, plan preparation, market validation, pending/presentation snapshots and M1 trigger timing.
+
+Completed:
+- added the canonical `EntryGeometryRule` / `EntryGeometrySnapshot` composition;
+- removed duplicated late/anchor/zone equations from downstream consumers;
+- preserved structural zone tolerance across plan and presentation state;
+- restored canonical price-snapshot ownership in `MarketEntryValidation` after the accumulated CI-00 audit exposed the regression;
+- added causal M1 confirmation timestamping and `ACTIONABILITY_TIMING` telemetry;
+- added deterministic CI-11 contracts and accumulated static audit wiring.
+
+Verification: implementation head `b7bbf5375a062d82c2883360d3f4e8b61de0ee45`; Source/Architecture #2589 PASS; Runtime Acceptance Contracts #2398 PASS; cTrader Compile #2582 PASS; PR #166 merged to `main` as `56554a7cacbdd17d75e2ab38dcad8692594d138b`.
+
+No public parameter/default, confidence/RR/Entry/SL/TP/risk/execution threshold or broker authority was changed by CI-11. Target-terminal timing and empirical signal-quality validation remain manual boundaries.
+
+Next phase: **CI-12 — Structural SL audit**.
