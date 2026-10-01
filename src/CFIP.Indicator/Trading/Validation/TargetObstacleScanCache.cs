@@ -57,18 +57,18 @@ namespace cAlgo
         }
     }
 
+    internal sealed class TargetObstacleScanCacheEntry
+    {
+        public Bars Bars;
+        public TargetObstacleCacheKey Key;
+        public TargetObstacleScanSnapshot Snapshot;
+        public long UseStamp;
+    }
+
     internal sealed class TargetObstacleScanCache
     {
-        private sealed class Entry
-        {
-            public Bars Bars;
-            public TargetObstacleCacheKey Key;
-            public TargetObstacleScanSnapshot Snapshot;
-            public long UseStamp;
-        }
-
-        private readonly Entry[] _entries =
-            new Entry[TargetObstacleCachePolicy.MaximumEntries];
+        private readonly TargetObstacleScanCacheEntry[] _entries =
+            new TargetObstacleScanCacheEntry[TargetObstacleCachePolicy.MaximumEntries];
 
         private readonly List<Bars> _subscribedBars =
             new List<Bars>();
@@ -98,7 +98,7 @@ namespace cAlgo
 
             for (int i = 0; i < _entries.Length; i++)
             {
-                Entry entry = _entries[i];
+                TargetObstacleScanCacheEntry entry = _entries[i];
 
                 if (entry == null ||
                     !ReferenceEquals(entry.Bars, bars) ||
@@ -138,7 +138,7 @@ namespace cAlgo
 
             for (int i = 0; i < _entries.Length; i++)
             {
-                Entry existing = _entries[i];
+                TargetObstacleScanCacheEntry existing = _entries[i];
 
                 if (existing == null ||
                     !ReferenceEquals(existing.Bars, bars) ||
@@ -155,7 +155,7 @@ namespace cAlgo
 
             for (int i = 0; i < _entries.Length; i++)
             {
-                Entry entry = _entries[i];
+                TargetObstacleScanCacheEntry entry = _entries[i];
 
                 if (entry == null)
                 {
@@ -237,7 +237,7 @@ namespace cAlgo
         {
             for (int i = 0; i < _entries.Length; i++)
             {
-                Entry entry = _entries[i];
+                TargetObstacleScanCacheEntry entry = _entries[i];
 
                 if (entry != null &&
                     ReferenceEquals(entry.Bars, bars) &&
