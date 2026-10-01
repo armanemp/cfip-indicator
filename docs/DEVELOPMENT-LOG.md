@@ -2790,3 +2790,8 @@ Implemented a narrow mathematical-integrity correction without policy retuning:
 - `audit_phase_ci_09.py` is accumulated after CI-08.
 
 No public parameter/default, confidence/RR/SL/TP/risk/execution threshold or broker authority was changed. Empirical signal-quality remains a target-terminal/replay concern.
+
+## CI-09 closeout — 2026-10-02
+
+PR #164 merged to `main` as `58d0ef85b2960ac9c706aad120d5f89ffd377946`.
+Final verification: Source/Architecture #2560 PASS; Runtime Acceptance Contracts #2369 PASS; cTrader Compile #2553 PASS. The accumulated CI-09 static audit passed. Next phase: **CI-10 — Gate/threshold semantic audit**.
