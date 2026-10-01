@@ -1753,7 +1753,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation**.
+Current active phase: **CR6.3 / F4 — Effective-threshold transparency and hidden additive margins**.
 
 ## 8. Completion order and dependencies
 
