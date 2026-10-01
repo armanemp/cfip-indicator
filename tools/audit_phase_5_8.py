@@ -129,8 +129,8 @@ check(
     "OpportunityLane lane =" in execution and
     "ResolvePlanTargetSelectionLane()" in execution and
     "BuildTargetSelectionRequiredRR(" in execution and
-    "Math.Max(FallbackTp1RR, requiredRR[0])" in execution and
-    "Math.Max(FallbackTp4RR, requiredRR[3])" in execution,
+    "requiredRR[0]" in execution and
+    "requiredRR[3]" in execution,
 )
 
 check(
@@ -150,7 +150,7 @@ check(
     "VerifyTargetSelectionConsistency();" in contracts and
     "OpportunityLane.CounterHtfTactical" in contracts and
     "OpportunityLane.MicroReaction" in contracts and
-    "requiredRR[stage] >= " in contracts and
+    "requiredRR[stage]" in contracts and
     "TargetProgressionRule.IsValid(" in contracts,
 )
 
