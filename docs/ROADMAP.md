@@ -756,6 +756,36 @@ registry lookup boundaries are preserved, with benchmark coverage. No public
 parameter/default or RR tuning was introduced; target-terminal validation remains
 manual. The next certification transition is CR-FINAL.
 
+## CR5.3 / E3 — Indicator evidence independence
+
+CR5.3 continuity marker: independent evidence-group semantics remain centralized
+without turning correlated indicators into duplicate decision authority.
+
+## CR5.4 / E4 — [historical remediation continuity]
+
+CR5.4 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.5 / E5 — Active remediation continuity
+
+CR5.5 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.6 / E6 — Signal bias and context continuity
+
+CR5.6 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.7 / E7 — Watch/reaction alert continuity
+
+CR5.7 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
+## CR5.8 / E8 — Reward-risk continuity
+
+CR5.8 continuity marker preserved for the accumulated calculation-integrity
+audit chain.
+
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
 Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
