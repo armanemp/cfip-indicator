@@ -52,7 +52,10 @@ namespace cAlgo
                                     int score = 50;
                         
                                     bool inSession =
-                                        IsInsideSessionWindow(nowUtc);
+                                        _marketStateSnapshot != null &&
+                                        _marketStateSnapshot.M5.ClosedIndex == closedM5
+                                            ? _marketStateSnapshot.SessionOpen
+                                            : IsInsideSessionWindow(nowUtc);
                         
                                     score += inSession ? 10 : -8;
                         
@@ -127,37 +130,47 @@ namespace cAlgo
                                     else
                                         score += 4;
                         
-                                    if (_m5Frame.Direction == direction)
+                                    if (_marketStateSnapshot != null &&
+                                        _marketStateSnapshot.M5.Direction == direction)
                                         score += 9;
-                                    else if (_m5Frame.Direction == -direction)
+                                    else if (_marketStateSnapshot != null &&
+                                             _marketStateSnapshot.M5.Direction == -direction)
                                         score -= 10;
                         
-                                    if (_m15Frame.Direction == direction)
+                                    if (_marketStateSnapshot != null &&
+                                        _marketStateSnapshot.M15.Direction == direction)
                                         score += 9;
-                                    else if (_m15Frame.Direction == -direction)
+                                    else if (_marketStateSnapshot != null &&
+                                             _marketStateSnapshot.M15.Direction == -direction)
                                         score -= 10;
                         
                                     if (_m30Frame != null)
                                     {
-                                        if (_m30Frame.Direction == direction)
+                                        if (_marketStateSnapshot != null &&
+                                            _marketStateSnapshot.M30.Direction == direction)
                                             score += 5;
-                                        else if (_m30Frame.Direction == -direction)
+                                        else if (_marketStateSnapshot != null &&
+                                                 _marketStateSnapshot.M30.Direction == -direction)
                                             score -= 6;
                                     }
                         
                                     if (_h1Frame != null)
                                     {
-                                        if (_h1Frame.Direction == direction)
+                                        if (_marketStateSnapshot != null &&
+                                            _marketStateSnapshot.H1.Direction == direction)
                                             score += 4;
-                                        else if (_h1Frame.Direction == -direction)
+                                        else if (_marketStateSnapshot != null &&
+                                                 _marketStateSnapshot.H1.Direction == -direction)
                                             score -= 5;
                                     }
                         
                                     if (_h4Frame != null)
                                     {
-                                        if (_h4Frame.Direction == direction)
+                                        if (_marketStateSnapshot != null &&
+                                            _marketStateSnapshot.H4.Direction == direction)
                                             score += 3;
-                                        else if (_h4Frame.Direction == -direction)
+                                        else if (_marketStateSnapshot != null &&
+                                                 _marketStateSnapshot.H4.Direction == -direction)
                                             score -= 4;
                                     }
                         
@@ -194,7 +207,9 @@ namespace cAlgo
                                         _d1Bars.Count >= 3)
                                     {
                                         int d1Index =
-                                            ClosedIndex(_d1Bars, nowUtc);
+                                            _lastMtfClosedContext == null
+                                                ? -1
+                                                : _lastMtfClosedContext.D1;
                         
                                         if (d1Index > 0)
                                         {
