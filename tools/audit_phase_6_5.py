@@ -94,7 +94,7 @@ for token in (
     check("indicator thresholds owned centrally: " + token, token in thresholds)
 
 for token in (
-    "EntryActionabilityPolicy.ResolveAnchor(",
+    "EntryGeometryRule.Evaluate(",
     "EntryActionabilityPolicy.ResolveActualEntry(",
     "EntryActionabilityPolicy.IsLate(",
     "EntryActionabilityPolicy.IsMicroConflict(",
