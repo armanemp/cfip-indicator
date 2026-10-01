@@ -168,34 +168,74 @@ namespace cAlgo
                                 closedM5,
                                 direction,
                                 executionEntry,
-                                atr);
-                
-                            List<Level> selected = SelectTargets(
-                                levels,
-                                closedM5,
-                                executionEntry,
-                                risk,
-                                direction,
-                                atr,
-                                _plan == null
-                                    ? OpportunityLane.Strategic
-                                    : _plan.Lane);
-                
-                            double tp1 = SelectTarget(
-                                selected, 0, executionEntry, risk, direction,
-                                Math.Max(FallbackTp1RR, MinimumRequiredRR()),
-                                _plan == null
-                                    ? OpportunityLane.Strategic
-                                    : _plan.Lane);
-                            double tp2 = SelectTarget(
-                                selected, 1, executionEntry, risk, direction,
-                                Math.Max(FallbackTp2RR, Tp2MinimumRR));
-                            double tp3 = SelectTarget(
-                                selected, 2, executionEntry, risk, direction,
-                                Math.Max(FallbackTp3RR, Tp3MinimumRR));
-                            double tp4 = SelectTarget(
-                                selected, 3, executionEntry, risk, direction,
-                                Math.Max(FallbackTp4RR, Tp4MinimumRR));
+                                atr);                
+                            OpportunityLane lane =
+                                ResolvePlanTargetSelectionLane();
+
+                            List<Level> selected =
+                                SelectTargets(
+                                    levels,
+                                    closedM5,
+                                    executionEntry,
+                                    risk,
+                                    direction,
+                                    atr,
+                                    lane);
+
+                            double[] requiredRR =
+                                BuildTargetSelectionRequiredRR(
+                                    Math.Max(
+                                        0.10,
+                                        StructuralTpRrStep),
+                                    lane);
+
+                            double tp1 =
+                                SelectTarget(
+                                    selected,
+                                    0,
+                                    executionEntry,
+                                    risk,
+                                    direction,
+                                    Math.Max(
+                                        FallbackTp1RR,
+                                        requiredRR[0]),
+                                    lane);
+
+                            double tp2 =
+                                SelectTarget(
+                                    selected,
+                                    1,
+                                    executionEntry,
+                                    risk,
+                                    direction,
+                                    Math.Max(
+                                        FallbackTp2RR,
+                                        requiredRR[1]),
+                                    lane);
+
+                            double tp3 =
+                                SelectTarget(
+                                    selected,
+                                    2,
+                                    executionEntry,
+                                    risk,
+                                    direction,
+                                    Math.Max(
+                                        FallbackTp3RR,
+                                        requiredRR[2]),
+                                    lane);
+
+                            double tp4 =
+                                SelectTarget(
+                                    selected,
+                                    3,
+                                    executionEntry,
+                                    risk,
+                                    direction,
+                                    Math.Max(
+                                        FallbackTp4RR,
+                                        requiredRR[3]),
+                                    lane);
                 
                             if (!IsValidTarget(direction, executionEntry, tp1))
                                 return false;
