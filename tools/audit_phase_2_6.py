@@ -62,7 +62,7 @@ checks = {
         "OrderBlockLifecycle =" in candidate
     ),
     "broken candidates cannot survive mitigation": (
-        "OrderBlockLifecycleRule.Classify(" in mitigation and
+        "OrderBlockLifecycleRule.ClassifyOrderBlockLifecycle(" in mitigation and
         "OrderBlockLifecycleRule.MinimumRetainedRatio" in mitigation and
         "Broken" in mitigation
     ),
