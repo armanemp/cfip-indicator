@@ -32,7 +32,19 @@ namespace cAlgo
                                         reason = "INVALID MARKET";
                                         return false;
                                     }
-                        
+
+                                    CanonicalPriceSnapshot priceSnapshot =
+                                        GetCanonicalPriceSnapshot();
+
+                                    if (priceSnapshot == null ||
+                                        !priceSnapshot.IsQuoteValid ||
+                                        !IsFinitePositive(priceSnapshot.TickSize) ||
+                                        !IsFinitePositive(priceSnapshot.PipSize))
+                                    {
+                                        reason = "INVALID CANONICAL PRICE";
+                                        return false;
+                                    }
+
                                     if (plan.EntryMode ==
                                         ExecutionMode.BreakoutMarket)
                                     {
@@ -40,8 +52,8 @@ namespace cAlgo
                                                 plan.Direction,
                                                 market,
                                                 plan.EntryTrigger,
-                                                Symbol.TickSize,
-                                                Symbol.PipSize))
+                                                priceSnapshot.TickSize,
+                                                priceSnapshot.PipSize))
                                         {
                                             reason = "WAITING FOR TRIGGER";
                                             return false;
@@ -87,6 +99,18 @@ namespace cAlgo
                 return false;
             }
 
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsQuoteValid ||
+                !IsFinitePositive(priceSnapshot.TickSize) ||
+                !IsFinitePositive(priceSnapshot.PipSize))
+            {
+                reason = "INVALID CANONICAL PRICE";
+                return false;
+            }
+
             double fillAtr =
                 Atr(
                     _m5Bars,
@@ -119,8 +143,8 @@ namespace cAlgo
                         plan.Direction,
                         fillPrice,
                         plan.EntryTrigger,
-                        Symbol.TickSize,
-                        Symbol.PipSize))
+                        priceSnapshot.TickSize,
+                        priceSnapshot.PipSize))
                 {
                     reason =
                         "BREAKOUT FILL • SLIPPAGE ACCEPTED";
