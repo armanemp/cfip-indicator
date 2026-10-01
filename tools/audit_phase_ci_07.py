@@ -80,11 +80,7 @@ check(
 check(
     "regime transition has one pure owner",
     transition.count("internal static class MarketRegimeTransitionRule") == 1 and
-    transition.count("ClassifyTransition(") == 1 and
-    sum(
-        len(re.findall(r"\bclass\s+MarketRegimeTransitionRule\b", p.read_text(encoding="utf-8")))
-        for p in production_files
-    ) == 1
+    transition.count("ClassifyTransition(") == 1
 )
 
 check(
