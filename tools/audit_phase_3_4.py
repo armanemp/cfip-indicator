@@ -12,8 +12,8 @@ def read(relative: str) -> str:
     return path.read_text(encoding="utf-8")
 
 runtime = read("src/CFIP.Indicator/Runtime/Calculation/RuntimeFaultStateMachine.cs")
-handlers = read("src/CFIP.Indicator/UI/Controls/ExecutionToggleHandlers.cs")
 factory = read("src/CFIP.Indicator/UI/Controls/ExecutionControlsFactory.cs")
+rule = read("src/CFIP.Indicator/Core/Math/ExecutionControlPresentationRule.cs")
 sync = read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
@@ -34,17 +34,21 @@ checks = {
         "if (_state != RuntimeFaultState.Healthy)" in runtime and
         "_entryArmed = true;" in runtime
     ),
-    "quick Auto Trade enable uses explicit re-arm": (
-        "RequestExplicitRearm()" in handlers and
-        "if (enabled)" in handlers
+    "explicit re-arm remains owned by the runtime state machine": (
+        "RequestExplicitRearm()" in runtime and
+        "public bool RequestExplicitRearm()" in runtime
     ),
-    "quick Auto Trade enable is independent of public configuration parameter": (
-        "EnableAutoTrading" not in handlers
+    "execution controls remain status-only and do not mutate runtime authority": (
+        "IsEnabled = false" in factory and
+        "ExecutionControlPresentationRule.ComposeStatusText(" in factory and
+        "_autoTradingQuickToggle.Click +=" not in factory and
+        "_automaticOrdersQuickToggle.Click +=" not in factory and
+        "public static bool IsInteractive => false;" in rule
     ),
-    "existing click-event reliability boundary is preserved": (
-        "_autoTradingQuickToggle.Click +=" in factory and
-        "_automaticOrdersQuickToggle.Click +=" in factory and
-        "_executionToggleSyncing = true" in sync
+    "execution-control synchronization remains guarded": (
+        "SyncQuickExecutionControls(" in sync and
+        "_executionToggleSyncing = true" in sync and
+        "EnsureExecutionRuntimeState();" in sync
     ),
     "popup queue is owned by runtime state": (
         "PopupAlertQueue(16)" in state and
@@ -107,10 +111,6 @@ for name, ok in checks.items():
         errors.append(name)
 
 # The handler must never reintroduce a parameter-dependent re-arm branch.
-if "EnableAutoTrading" in handlers:
-    print("FAIL | handler contains EnableAutoTrading")
-    errors.append("handler contains EnableAutoTrading")
-
 # The queue itself must remain platform-neutral.
 if "cAlgo.API" in queue or "Indicator" in queue or "Chart." in queue:
     print("FAIL | popup queue has a platform/UI dependency")

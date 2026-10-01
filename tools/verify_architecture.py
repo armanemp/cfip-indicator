@@ -1022,7 +1022,7 @@ VISUAL_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 VISUAL_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 VISUAL_LABEL_REMOVER = ROOT / "UI" / "Chart" / "PlanLabelRemover.cs"
 CONTROL_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
-CONTROL_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
+CONTROL_PRESENTATION_RULE = ROOT / "Core" / "Math" / "ExecutionControlPresentationRule.cs"
 
 for required_path in (
     VISUAL_PREVIEW_MODEL,
@@ -1034,7 +1034,7 @@ for required_path in (
     VISUAL_LINE_RENDERER,
     VISUAL_LINE_PRESENTATION_RULE,
     CONTROL_FACTORY,
-    CONTROL_HANDLERS,
+    CONTROL_PRESENTATION_RULE,
 ):
     if not required_path.exists():
         raise SystemExit(f"Phase 5.5 visual/control owner is missing: {required_path.name}")
@@ -1051,7 +1051,7 @@ plan_label_renderer_code = VISUAL_LABEL_RENDERER.read_text(encoding="utf-8")
 plan_label_coordinator_code = VISUAL_LABEL_COORDINATOR.read_text(encoding="utf-8")
 plan_label_remover_code = VISUAL_LABEL_REMOVER.read_text(encoding="utf-8")
 control_factory_code = CONTROL_FACTORY.read_text(encoding="utf-8")
-control_handlers_code = CONTROL_HANDLERS.read_text(encoding="utf-8")
+control_presentation_rule_code = CONTROL_PRESENTATION_RULE.read_text(encoding="utf-8")
 
 if "class TradeSetupPreview" not in preview_model_code:
     raise SystemExit("Visual setup preview model is missing")
@@ -1075,25 +1075,15 @@ if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
     raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
 
 if "CreateExecutionToggle(" not in control_factory_code:
-    raise SystemExit("Execution controls must use interactive ToggleButton presentation")
-for required_event in (
-    "_autoTradingQuickToggle.Click +=",
-    "_automaticOrdersQuickToggle.Click +=",
-):
-    if required_event not in control_factory_code:
-        raise SystemExit(f"Execution toggle operator event missing: {required_event}")
-for required_action in (
-    "ApplyAutoTradingQuickToggleClick",
-    "ApplyAutomaticOrdersQuickToggleClick",
-):
-    if required_action not in control_handlers_code:
-        raise SystemExit(f"Execution toggle handler missing: {required_action}")
-for required_setter in (
-    "SetAutoTradingRuntimeState",
-    "SetAutomaticOrdersRuntimeState",
-):
-    if required_setter not in control_handlers_code:
-        raise SystemExit(f"Execution toggle handler must use canonical runtime setter: {required_setter}")
+    raise SystemExit("Execution controls must use the shared status ToggleButton presentation")
+if "IsEnabled = false" not in control_factory_code:
+    raise SystemExit("Execution status controls must be explicitly non-interactive")
+if "_autoTradingQuickToggle.Click +=" in control_factory_code or "_automaticOrdersQuickToggle.Click +=" in control_factory_code:
+    raise SystemExit("Execution status controls must not own click-based mutations")
+if "ExecutionControlPresentationRule.ComposeStatusText(" not in control_factory_code:
+    raise SystemExit("Execution status text must consume the canonical presentation rule")
+if "public static bool IsInteractive => false;" not in control_presentation_rule_code:
+    raise SystemExit("Execution-control presentation policy must be canonical and read-only")
 # Phase 1.5 performance/supervision gates.
 RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
 PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
@@ -2694,24 +2684,20 @@ if "atr *\n                TargetUpdateStepAtr" not in LIVE_TARGET_CODE:
 EXECUTION_CONTROLS_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
 EXECUTION_CONTROLS_FACTORY_CODE = EXECUTION_CONTROLS_FACTORY.read_text(encoding="utf-8")
 if "CreateExecutionToggle(" not in EXECUTION_CONTROLS_FACTORY_CODE:
-    raise SystemExit("Panel execution controls must use interactive ToggleButton surfaces")
+    raise SystemExit("Panel execution controls must use the shared status ToggleButton surfaces")
+if "IsEnabled = false" not in EXECUTION_CONTROLS_FACTORY_CODE:
+    raise SystemExit("Panel execution controls must remain status-only")
 for token in (
     "_autoTradingQuickToggle.Click +=",
     "_automaticOrdersQuickToggle.Click +=",
 ):
-    if token not in EXECUTION_CONTROLS_FACTORY_CODE:
-        raise SystemExit(f"Panel execution toggle event missing: {token}")
+    if token in EXECUTION_CONTROLS_FACTORY_CODE:
+        raise SystemExit(f"Panel execution control must not register a mutation handler: {token}")
 
-EXECUTION_TOGGLE_HANDLERS = ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"
-EXECUTION_TOGGLE_HANDLERS_CODE = EXECUTION_TOGGLE_HANDLERS.read_text(encoding="utf-8")
-for token in (
-    "ApplyAutoTradingQuickToggleClick",
-    "ApplyAutomaticOrdersQuickToggleClick",
-    "SetAutoTradingRuntimeState",
-    "SetAutomaticOrdersRuntimeState",
-):
-    if token not in EXECUTION_TOGGLE_HANDLERS_CODE:
-        raise SystemExit(f"Execution toggle runtime binding missing: {token}")
+EXECUTION_CONTROL_PRESENTATION = ROOT / "Core" / "Math" / "ExecutionControlPresentationRule.cs"
+EXECUTION_CONTROL_PRESENTATION_CODE = EXECUTION_CONTROL_PRESENTATION.read_text(encoding="utf-8")
+if "public static bool IsInteractive => false;" not in EXECUTION_CONTROL_PRESENTATION_CODE:
+    raise SystemExit("Execution-control presentation policy must be canonical and read-only")
 
 EXECUTION_CONTROLS_SYNC = ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs"
 EXECUTION_CONTROLS_SYNC_CODE = EXECUTION_CONTROLS_SYNC.read_text(encoding="utf-8")
@@ -3269,8 +3255,8 @@ for token in ("!_decision.ActionableNow", "GetManagedPendingOrder() != null"):
 
 execution_state = (ROOT / "Indicator" / "State.cs").read_text(encoding="utf-8")
 execution_factory = (ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs").read_text(encoding="utf-8")
-execution_handlers = (ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs").read_text(encoding="utf-8")
 execution_sync = (ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs").read_text(encoding="utf-8")
+execution_rule = (ROOT / "Core" / "Math" / "ExecutionControlPresentationRule.cs").read_text(encoding="utf-8")
 for token in (
     "ToggleButton _autoTradingQuickToggle",
     "ToggleButton _automaticOrdersQuickToggle",
@@ -3278,20 +3264,16 @@ for token in (
 ):
     if token not in execution_state:
         raise SystemExit(f"Functional execution control state missing: {token}")
-for token in (
-    "_autoTradingQuickToggle.Click +=",
-    "_automaticOrdersQuickToggle.Click +=",
-):
-    if token not in execution_factory:
-        raise SystemExit(f"Execution toggle click owner missing: {token}")
-for token in (
-    "SetAutoTradingRuntimeState(",
-    "SetAutomaticOrdersRuntimeState(",
-):
-    if token not in execution_handlers:
-        raise SystemExit(f"Execution toggle handler must call canonical runtime setter: {token}")
+if "_autoTradingQuickToggle.Click +=" in execution_factory or "_automaticOrdersQuickToggle.Click +=" in execution_factory:
+    raise SystemExit("Execution status controls must not own click mutations")
+if "IsEnabled = false" not in execution_factory:
+    raise SystemExit("Execution status controls must be non-interactive")
 if "_executionToggleSyncing = true" not in execution_sync:
     raise SystemExit("Execution toggle synchronizer must guard programmatic state changes")
+if "EnsureExecutionRuntimeState();" not in execution_sync:
+    raise SystemExit("Execution-control synchronizer must consume canonical settings/runtime state")
+if "public static bool IsInteractive => false;" not in execution_rule:
+    raise SystemExit("Execution-control interaction policy must remain read-only")
 
 # Strict type isolation: production behavior files may not hide helper types
 # inside the cTrader partial host. Every helper/model type must have a file owner.

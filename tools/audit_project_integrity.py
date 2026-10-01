@@ -185,26 +185,27 @@ if "MapM5ToChart(" in line or "anchorM5" in line:
 # 5) Execution UI ownership invariants.
 factory = texts[ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"]
 sync = texts[ROOT / "UI" / "Controls" / "ExecutionControlsSynchronizer.cs"]
-handlers = texts[ROOT / "UI" / "Controls" / "ExecutionToggleHandlers.cs"]
+rule = texts[ROOT / "Core" / "Math" / "ExecutionControlPresentationRule.cs"]
+if "CreateExecutionToggle(" not in factory:
+    fail("Functional execution status presentation factory is missing")
+if "IsEnabled = false" not in factory:
+    fail("Execution status surfaces must remain non-interactive")
 for token in (
-    "CreateExecutionToggle(",
     "_autoTradingQuickToggle.Click +=",
     "_automaticOrdersQuickToggle.Click +=",
 ):
-    if token not in factory:
-        fail(f"Functional execution toggle invariant missing: {token}")
-for token in (
-    "ApplyAutoTradingQuickToggleClick",
-    "ApplyAutomaticOrdersQuickToggleClick",
-    "SetAutoTradingRuntimeState",
-    "SetAutomaticOrdersRuntimeState",
-):
-    if token not in handlers:
-        fail(f"Execution toggle runtime binding missing: {token}")
+    if token in factory:
+        fail(f"Execution status surface must not register a mutation handler: {token}")
+if "ExecutionControlPresentationRule.ComposeStatusText(" not in factory:
+    fail("Execution status text must use the canonical presentation rule")
+if "public static bool IsInteractive => false;" not in rule:
+    fail("Execution-control interaction policy must be canonical and read-only")
 if "SyncQuickExecutionControls(" not in sync or "_executionToggleSyncing = true" not in sync:
-    fail("Execution toggle synchronization boundary is incomplete")
+    fail("Execution-control synchronization boundary is incomplete")
 if "EnsureExecutionRuntimeState();" not in sync:
-    fail("Execution toggle synchronization must consume canonical runtime/settings state")
+    fail("Execution-control synchronization must consume canonical runtime/settings state")
+if "ExecutionControlPresentationRule.IsInteractive" not in sync:
+    fail("Execution-control synchronizer must enforce the canonical read-only interaction policy")
 
 # 6) Architecture-wide forbidden legacy status-only control symbols.
 all_production = "\n".join(texts.values())
