@@ -2095,7 +2095,9 @@ The Prompt 7 G6B implementation is closed on main. The historical CR7.6c/G6C mar
 
 CR8.1/H1 → CR8.2/H2 → CR8.3a/H3-A → CR8.3b/H3-B → CR8.4/H4 → CR8.5a/H5-A → CR8.5b/H5-B → CR8.6/H6 → CR-FINAL
 
-Current active implementation phase: **CR8.1 / H1 — Directional execution-fill acceptance and one canonical fill envelope.**
+Current active implementation phase: **CR8.2 / H2 — Top-Down alignment must include absolute strength.**
+
+CR8.1/H1 is verified complete on PR #149 with Source/Architecture #2348, Runtime Acceptance #2157 and cTrader Compile #2341.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 
