@@ -95,20 +95,16 @@ for token in (
 
 for token in (
     "EntryGeometryRule.Evaluate(",
-    "EntryActionabilityPolicy.ResolveActualEntry(",
-    "EntryActionabilityPolicy.IsLate(",
     "EntryActionabilityPolicy.IsMicroConflict(",
     "EntryActionabilityPolicy.ShouldBlockTrapRisk(",
 ):
-    check("trade actionability consumes F6 policy: " + token, token in evaluator)
+    check("trade actionability consumes canonical F6 geometry/trap policy: " + token, token in evaluator)
 
 for token in (
-    "EntryActionabilityPolicy.IsRetestReady(",
+    "EntryGeometryRule.Evaluate(",
     "EntryActionabilityPolicy.ExecutionZoneQualityFloor",
-    "EntryActionabilityPolicy.BreakoutLateExtensionFloorAtr",
-    "EntryActionabilityPolicy.RetestLateDistanceFloorAtr",
 ):
-    check("execution mode resolver consumes F6 policy: " + token, token in resolver)
+    check("execution mode resolver consumes canonical F6 geometry policy: " + token, token in resolver)
 
 check(
     "trigger tolerance is centrally owned",
