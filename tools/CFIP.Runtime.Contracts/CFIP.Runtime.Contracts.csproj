@@ -30,6 +30,12 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OssIndicatorWarmupPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NativeIndicatorReadinessRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/DmiBiasRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/MacdBiasRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/RangeEfficiencyRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ChoppinessIndexRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/VwapBiasRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/VolumeExpansionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PriceProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ManagedStopProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ProtectionProgressionRule.cs" />
