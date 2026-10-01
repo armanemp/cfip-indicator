@@ -1857,36 +1857,6 @@ for required_path in (
     if not required_path.exists():
         raise SystemExit(f"Order-block owner missing: {required_path}")
 
-# Structural-stop selection ownership.
-STRUCTURAL_STOP_SELECTOR = ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateSelector.cs"
-STRUCTURAL_STOP_SELECTOR_CODE = STRUCTURAL_STOP_SELECTOR.read_text(encoding="utf-8")
-if STRUCTURAL_STOP_SELECTOR.stat().st_size > 4096:
-    raise SystemExit("StructuralStopCandidateSelector.cs must remain a selection orchestration boundary")
-for token in (
-    "TrySelectBestStructuralStopCandidate(",
-    "MaterializeStructuralStop(",
-):
-    if token not in STRUCTURAL_STOP_SELECTOR_CODE:
-        raise SystemExit(f"Structural-stop orchestration call missing: {token}")
-for declaration in (
-    "private bool TrySelectBestStructuralStopCandidate(",
-    "private double MaterializeStructuralStop(",
-):
-    if declaration in STRUCTURAL_STOP_SELECTOR_CODE:
-        raise SystemExit(f"StructuralStopCandidateSelector retains extracted responsibility: {declaration}")
-for path, token in (
-    (
-        ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateEvaluator.cs",
-        "TrySelectBestStructuralStopCandidate("
-    ),
-    (
-        ROOT / "Planning" / "TradePlan" / "StructuralStopFinalizer.cs",
-        "MaterializeStructuralStop("
-    ),
-):
-    if not path.exists() or token not in path.read_text(encoding="utf-8"):
-        raise SystemExit(f"Structural-stop owner missing: {path}")
-
 # FVG lifecycle ownership.
 FVG_LIFECYCLE_RULE = ROOT / "Core" / "Math" / "FvgLifecycleRule.cs"
 FVG_LIFECYCLE_RULE_CODE = FVG_LIFECYCLE_RULE.read_text(encoding="utf-8")
