@@ -1848,6 +1848,25 @@ Verification boundary:
 
 **Next phase: CR6.9 / F3 — Orphaned managed-position protection.**
 
+### CR6.9 / F3 closeout — 2026-10-01
+
+Status: **IMPLEMENTED — repository CI verification pending on the final F3 head.**
+
+**تأیید می‌کنم** — the invalid-stop success path in `OrphanManagedProtection.ProtectOrphanManagedPosition` has been corrected fail-closed.
+
+Completed:
+- invalid orphan stop candidate now returns failure and emits an explicit diagnostic;
+- Core `OrphanManagedProtectionRule` gates success on valid stop and broker-confirmed protection for a valid BUY/SELL direction;
+- caller enters `RecoveryRequired` on failure without updating `_lastBrokerModifyUtc`;
+- deterministic Runtime Contract and static audit are accumulated.
+
+Safety/manual boundary:
+- no public parameter/default/threshold tuning;
+- no alternate broker mutation owner;
+- target-terminal broker/restart behavior remains manual acceptance.
+
+**Next phase: CR7.1 / G1 — Broker protection must never increase live position risk.**
+
 ### CR6.9 — Orphaned managed-position protection (F3)
 
 Initial review label: **CONFIRMED / MEDIUM — invalid-stop success result is a concrete safety invariant violation.**
@@ -1884,7 +1903,7 @@ This file is the canonical implementation order for the Claude review-remediatio
 
 At the start of every new chat, read this file and `docs/CONTINUATION-STATE.md` first. The active phase recorded there is the only phase to implement next; do not jump to CBOT work while this track is incomplete.
 
-Current active phase: **CR6.9 / F3 — Orphaned managed-position protection**.
+Current active phase: **CR7.1 / G1 — Broker protection must never increase live position risk**.
 
 ## 7.4 CR6.3 / F4 completion checkpoint
 

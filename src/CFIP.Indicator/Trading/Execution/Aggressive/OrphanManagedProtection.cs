@@ -85,7 +85,20 @@ namespace cAlgo
                                             direction,
                                             position.EntryPrice,
                                             stop))
-                                        return true;
+                                    {
+                                        SendUnifiedAlert(
+                                            "ORPHAN-PROTECTION-FAILED|" +
+                                            position.Id,
+                                            "CFIP ORPHAN POSITION PROTECTION FAILED • INVALID STOP • RETRY | #" +
+                                            position.Id,
+                                            direction,
+                                            true);
+
+                                        return OrphanManagedProtectionRule.CanReportSuccess(
+                                            direction,
+                                            false,
+                                            false);
+                                    }
 
                                     double target =
                                         position.TakeProfit.HasValue &&
@@ -128,13 +141,22 @@ namespace cAlgo
                                                       MinimumRequiredRR());
                                     }
 
-                                    return EnsureBrokerProtectionForPosition(
-                                        position,
-                                        stop,
-                                        target,
-                                        "ORPHAN MANAGED POSITION",
+                                    bool brokerProtectionConfirmed =
+                                        EnsureBrokerProtectionForPosition(
+                                            position,
+                                            stop,
+                                            target,
+                                            "ORPHAN MANAGED POSITION",
+                                            direction,
+                                            false);
+
+                                    return OrphanManagedProtectionRule.CanReportSuccess(
                                         direction,
-                                        false);
+                                        IsValidStop(
+                                            direction,
+                                            position.EntryPrice,
+                                            stop),
+                                        brokerProtectionConfirmed);
                                 }
     }
 }
