@@ -82,11 +82,12 @@ namespace cAlgo
 
             HasBrokerDistanceMetadata =
                 BrokerDistanceUnit != BrokerDistanceUnit.Unknown &&
-                IsFinitePositive(pipSize) &&
                 IsFiniteNonNegative(
                     MinimumStopDistanceRaw) &&
                 IsFiniteNonNegative(
-                    MinimumTakeProfitDistanceRaw);
+                    MinimumTakeProfitDistanceRaw) &&
+                (BrokerDistanceUnit != BrokerDistanceUnit.Pips ||
+                 IsFinitePositive(pipSize));
         }
 
         public static CanonicalPriceSnapshot Create(
