@@ -848,6 +848,51 @@ roadmap audit chain.
 Historical continuity marker: CI-03 is verified complete; later CI phases remain
 the active remediation sequence.
 
+## CI-05 implementation record
+
+CI-05 FVG lifecycle semantics are retained as a completed historical
+continuity item in the accumulated calculation-integrity chain.
+
+## CI-06 — Order Block lifecycle
+
+CI-06 Order Block lifecycle integrity is retained as a completed historical
+continuity item.
+
+## CI-07 — Market regime, MTF and context audit
+
+CI-07 MTF/regime/context integrity is retained as a completed historical
+continuity item.
+
+## CI-08 implementation record
+
+CI-08 divergence, WaveTrend, reaction and early-signal integrity are retained
+as a completed historical continuity item.
+
+## CI-09 implementation record
+
+CI-09 decision-engine mathematical integrity is retained as a completed
+historical continuity item.
+
+## CI-10 — Trigger and trigger-lifecycle audit
+
+CI-10 trigger/lifecycle integrity is retained as a completed historical
+continuity item.
+
+Phase document: `docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md`
+
+## CI-11 — Entry geometry and signal-timing audit
+
+CI-11 entry-geometry and causal signal-timing integrity are retained as a
+completed historical continuity item.
+
+Current implementation phase: CI-12
+## CI-12 — Structural SL
+
+CI-12 structural-stop integrity is retained as a completed historical
+continuity item.
+
+Phase document: `docs/PHASE-CI-12-STRUCTURAL-SL.md`
+
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
 Status: **active — CI-00 through CI-11 verified complete; CI-12 is the active blocking phase and CI-FINAL remains the final certification gate.**
