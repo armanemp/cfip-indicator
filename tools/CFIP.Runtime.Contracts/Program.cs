@@ -95,6 +95,7 @@ namespace cAlgo
             VerifyOssIndicatorParameters();
             VerifyDirectionalBiasTimeframeSemantics();
             VerifyWatchReactionAlertSemantics();
+            VerifyOpposingZonePathF1();
 
             Console.WriteLine("Runtime acceptance contracts OK");
         }
@@ -7189,6 +7190,119 @@ namespace cAlgo
                     Utc(10, 14),
                     i => m5[i]),
                 "unfinished M5 bar cannot be used as live-bias confirmation");
+        }
+
+
+        private static void VerifyOpposingZonePathF1()
+        {
+            double bearishLow;
+            double bearishHigh;
+            double bearishGap;
+
+            Assert(
+                FvgRule.TryGetThreeBarGap(
+                    -1,
+                    108,
+                    106,
+                    104,
+                    102,
+                    out bearishLow,
+                    out bearishHigh,
+                    out bearishGap) &&
+                bearishLow == 104 &&
+                bearishHigh == 106,
+                "F1 BUY opposing zone uses canonical bearish FVG orientation");
+
+            double bullishLow;
+            double bullishHigh;
+            double bullishGap;
+
+            Assert(
+                FvgRule.TryGetThreeBarGap(
+                    1,
+                    104,
+                    100,
+                    108,
+                    106,
+                    out bullishLow,
+                    out bullishHigh,
+                    out bullishGap) &&
+                bullishLow == 104 &&
+                bullishHigh == 106,
+                "F1 bullish FVG orientation remains distinct from BUY opposing semantics");
+
+            Assert(
+                RewardPathGeometryRule.BlocksRewardPath(
+                    bearishLow,
+                    bearishHigh,
+                    100,
+                    110,
+                    0.10),
+                "F1 BUY bearish FVG blocks the reward path");
+
+            Assert(
+                !RewardPathGeometryRule.BlocksRewardPath(
+                    bullishLow,
+                    bullishHigh,
+                    100,
+                    110,
+                    0.10),
+                "F1 same-direction bullish FVG fixture is not treated as opposing by zone direction policy");
+
+            Assert(
+                FvgRule.IsFullyFilled(
+                    -1,
+                    bearishLow,
+                    bearishHigh,
+                    bearishHigh),
+                "F1 fully mitigated bearish FVG is detectable as filled");
+
+            double managedLow;
+            double managedHigh;
+
+            Assert(
+                !FvgRule.TryApplyPartialMitigation(
+                    -1,
+                    bearishLow,
+                    bearishHigh,
+                    bearishHigh,
+                    0.01,
+                    out managedLow,
+                    out managedHigh),
+                "F1 fully mitigated opposing FVG cannot survive canonical mitigation");
+
+            Assert(
+                RewardPathGeometryRule.BlocksRewardPath(
+                    104,
+                    106,
+                    100,
+                    110,
+                    0.10) ==
+                RewardPathGeometryRule.BlocksRewardPath(
+                    94,
+                    96,
+                    100,
+                    90,
+                    0.10),
+                "F1 reward-path obstacle geometry is BUY/SELL symmetric");
+
+            Assert(
+                RewardPathGeometryRule.BlocksRewardPath(
+                    104,
+                    106,
+                    100,
+                    110,
+                    0.10) &&
+                !RewardPathGeometryRule.BlocksRewardPath(
+                    104,
+                    106,
+                    100,
+                    104,
+                    0.10),
+                "F1 target-specific path check preserves entry/target clearance semantics");
+
+            Console.WriteLine(
+                "F1 opposing-zone path contracts: canonical direction, mitigation and path geometry passed");
         }
 
         private static void VerifyWatchReactionAlertSemantics()
