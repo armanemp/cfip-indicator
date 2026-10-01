@@ -154,6 +154,28 @@ namespace cAlgo
             if (!IsFinitePositive(risk))
                 return false;
 
+            double riskAtr =
+                risk /
+                Math.Max(
+                    Symbol.PipSize,
+                    atr);
+
+            double spread =
+                Math.Max(
+                    0,
+                    Symbol.Ask - Symbol.Bid);
+
+            if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
+                    riskAtr,
+                    atr,
+                    MinimumSlAtr,
+                    MaximumSlAtr,
+                    MaximumStructuralStopAtr,
+                    spread,
+                    Symbol.PipSize,
+                    MaximumSpreadToStopRiskRatio))
+                return false;
+
             geometry =
                 new ParallelScenarioGeometry
                 {
