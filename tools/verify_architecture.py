@@ -159,6 +159,7 @@ for token in (
 
 # Phase 8.4 — canonical Order Block mathematics and lifecycle ownership.
 ob_rule = ROOT / "Core" / "Math" / "OrderBlockRule.cs"
+ob_lifecycle_rule = ROOT / "Core" / "Math" / "OrderBlockLifecycleRule.cs"
 ob_analyzer = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockAnalyzer.cs"
 ob_builder = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockCandidateBuilder.cs"
 ob_evidence = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockEvidenceBuilder.cs"
@@ -167,6 +168,7 @@ ob_confluence = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockConfluenc
 
 for required in (
     ob_rule,
+    ob_lifecycle_rule,
     ob_analyzer,
     ob_builder,
     ob_evidence,
@@ -177,6 +179,7 @@ for required in (
         raise SystemExit(f"Phase 8.4 Order Block owner is missing: {required}")
 
 ob_rule_code = ob_rule.read_text(encoding="utf-8")
+ob_lifecycle_rule_code = ob_lifecycle_rule.read_text(encoding="utf-8")
 ob_analyzer_code = ob_analyzer.read_text(encoding="utf-8")
 ob_builder_code = ob_builder.read_text(encoding="utf-8")
 ob_evidence_code = ob_evidence.read_text(encoding="utf-8")
@@ -188,25 +191,58 @@ for token in (
     "TryGetZone(",
     "MeetsDisplacement(",
     "BreaksStructure(",
-    "GetMitigationProbe(",
-    "IsFullyMitigated(",
-    "TryApplyOrderBlockPartialMitigation(",
     "OrderBlockIdentity(",
     "low < high",
 ):
     if token not in ob_rule_code:
         raise SystemExit(f"Order Block mathematical rule missing deterministic owner: {token}")
 
+for forbidden in (
+    "OrderBlockLifecycleState.Fresh",
+    "OrderBlockLifecycleState.Mitigated",
+    "OrderBlockLifecycleState.Broken",
+    "GetMitigationProbe(",
+    "IsFullyMitigated(",
+    "TryApplyOrderBlockPartialMitigation(",
+    "ClassifyLifecycle(",
+):
+    if forbidden in ob_rule_code:
+        raise SystemExit(
+            f"Order Block lifecycle implementation leaked back into OrderBlockRule: {forbidden}"
+        )
+
+for token in (
+    "OrderBlockLifecycleState.Fresh",
+    "OrderBlockLifecycleState.Mitigated",
+    "OrderBlockLifecycleState.Broken",
+    "MinimumRetainedRatio",
+    "IsAgeValid(",
+    "ResolveMitigationProbe(",
+    "IsFullyMitigated(",
+    "TryApplyPartialMitigation(",
+    "Classify(",
+):
+    if token not in ob_lifecycle_rule_code:
+        raise SystemExit(
+            f"Order Block lifecycle rule missing deterministic owner: {token}"
+        )
+
 for token in (
     "Atr(",
     "createdIndex",
     "TryBuildOrderBlockImpulseEvidence(",
     "TryApplyOrderBlockMitigation(",
+    "OrderBlockLifecycleRule.IsAgeValid(",
     "OrderBlockRule.TryGetZone(",
     "OrderBlockRule.OrderBlockIdentity(",
 ):
     if token not in ob_builder_code:
         raise SystemExit(f"Order Block builder missing canonical source/lifecycle usage: {token}")
+
+if "bool opposite =" in ob_analyzer_code:
+    raise SystemExit(
+        "Order Block analyzer must not duplicate the canonical opposite-source-candle definition"
+    )
 
 for token in (
     "OrderBlockRule.MeetsDisplacement(",
@@ -216,12 +252,12 @@ for token in (
         raise SystemExit(f"Order Block evidence must consume canonical qualification math: {token}")
 
 for token in (
-    "OrderBlockRule.GetMitigationProbe(",
-    "OrderBlockRule.TryApplyOrderBlockPartialMitigation(",
-    "remainingRatio",
+    "OrderBlockLifecycleRule.ResolveMitigationProbe(",
+    "OrderBlockLifecycleRule.TryApplyPartialMitigation(",
+    "OrderBlockLifecycleRule.MinimumRetainedRatio",
 ):
     if token not in ob_mitigation_code:
-        raise SystemExit(f"Order Block mitigation must consume canonical boundary math: {token}")
+        raise SystemExit(f"Order Block mitigation must consume canonical lifecycle boundary math: {token}")
 
 for token in (
     "FvgRule.TryGetThreeBarGap(",
@@ -234,6 +270,37 @@ for token in (
 
 if "OrderBlockRule.OrderBlockIdentity(" not in ob_builder_code:
     raise SystemExit("Managed Order Blocks must retain deterministic source identity")
+
+# CI-06: every managed OB consumer must use the canonical built Zone object
+# for its geometry instead of reconstructing an OB from raw OHLC data.
+ob_consumers = {
+    "Planning/Execution/ExecutionZoneCandidateSelector.cs": (
+        "m5Ob.Low", "m5Ob.High",
+    ),
+    "Planning/TradePlan/TargetLevelBuilder.cs": (
+        "ob.Low", "ob.High",
+    ),
+    "Planning/TradePlan/StructuralStopCandidateCollector.cs": (
+        "supportOb.Low", "supportOb.High",
+    ),
+    "Trading/Validation/RewardPathZoneObstacleScanner.cs": (
+        "BuildOrderBlockCandidate(",
+    ),
+}
+for relative, tokens in ob_consumers.items():
+    path = ROOT / relative
+    if not path.exists():
+        raise SystemExit(f"Order Block consumer missing: {relative}")
+    consumer_code = path.read_text(encoding="utf-8")
+    for token in tokens:
+        if token not in consumer_code:
+            raise SystemExit(
+                f"Order Block consumer does not preserve canonical source geometry: {relative}: {token}"
+            )
+
+# Stale OBs must be rejected before any consumer can materialize the zone.
+if "MaximumZoneAgeBars" not in ob_builder_code or "OrderBlockLifecycleRule.IsAgeValid(" not in ob_builder_code:
+    raise SystemExit("Order Block stale-age contract must be enforced at the canonical builder boundary")
 
 # Phase 8.3 — canonical FVG mathematics and lifecycle ownership.
 fvg_rule = ROOT / "Core" / "Math" / "FvgRule.cs"
