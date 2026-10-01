@@ -24,7 +24,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 ## Active phase
 
 Prompt 4, Prompt 5 and Prompt 6 are mandatory remediation tracks before CR-FINAL.
-**Current: CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
+**Current: CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
 
 CR5.1 through CR5.8 are verified complete at repository level. CR5.8 was merged
 to `main` via PR #124 with merge commit
@@ -525,6 +525,35 @@ Safety/manual boundary:
 - no second decision/execution authority introduced;
 - target-terminal intrabar timing, panel presentation, broker lifecycle,
   restart/reconnect and empirical signal-quality/profitability remain manual.
+
+### CR6.1 / F1 closeout — 2026-10-01
+
+CR6.1 / F1 is **VERIFIED COMPLETE on PR #127**, implementation head
+`b37ebf00bbd835d7cab8a192842752be7238d703`.
+
+Implementation record:
+- canonical Core `RewardPathGeometryRule` owns opposing-zone direction and target-path geometry;
+- FVG/OB obstacle creation consistently uses `-direction`;
+- managed FVG lifecycle/mitigation is applied before obstacle caching;
+- fully mitigated FVGs and broken OBs are excluded;
+- candidate obstacle snapshots are cached per Bars/index/direction while
+  target-specific geometry remains live;
+- higher-timeframe M15/M30/H1/H4 reward-path checks share the same owner;
+- deterministic F1 runtime contracts and the accumulated static audit are wired.
+
+Verification:
+- Source/Architecture PASS — run #2177;
+- Runtime Acceptance Contracts PASS — run #1986;
+- cTrader Compile PASS — run #2170;
+- F1 static audit PASS.
+
+Safety/manual boundary:
+- no public parameter name/type/DefaultValue or RR/confidence/SL/TP threshold changed;
+- no decision/execution authority changed;
+- target-terminal replay, zone mitigation timing, warm-cache behavior and empirical
+  signal-quality/profitability remain manual.
+
+Next phase: **CR6.2 / F2 — Aggressive pre-trade RR/risk guard, direction consistency and actual-fill plan reconciliation.**
 
 ## Current active phase
 
