@@ -5327,6 +5327,183 @@ Safety/manual boundary:
 
 **Next phase: CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
 
+## Prompt 7 Remediation Gate — G1–G6 — 2026-10-01
+
+Status: **ADDED TO REMEDIATION PROGRAM — IMPLEMENTATION PENDING**
+
+Prompt 7 is an additional remediation track after Prompt 6 and before CR-FINAL.
+It does not reopen or renumber Prompt 4, Prompt 5 or Prompt 6. The findings are
+review hypotheses until independently verified against the current `main`
+source, deterministic behavioral contracts and target-terminal/cTrader behavior
+where required.
+
+Authoritative order:
+
+`CR7.1 → CR7.2 → CR7.3 → CR7.4 → CR7.5 → CR7.6a → CR7.6b → CR7.6c → CR7.6d → CR-FINAL`
+
+### CR7.1 / G1 — Broker protection must never increase live position risk
+Priority: **SAFETY-CRITICAL**
+
+Scope:
+- separate existing broker-stop health from acceptability of a newly proposed stop;
+- ensure an existing correctly-sided broker SL is not replaced with a farther stop merely because it becomes too close to current market price;
+- require protective-only stop progression whenever a current SL exists;
+- preserve/build protection when no SL exists;
+- prevent false `MISSING OR INVALID` recovery state when an existing stop is present and correctly sided;
+- verify the `BoundPlanProtection` path for the same risk-expansion possibility.
+
+Required Core ownership:
+- split `IsValidManagedStop` semantics into existing-stop health and new-stop acceptability;
+- use `ProtectionProgressionRule` as the authoritative progression guard.
+
+Deterministic tests:
+- BUY/SELL with an existing near-market SL must not move farther away;
+- BUY/SELL without SL must create protection;
+- wrong-sided existing SL must be rejected/recovered;
+- structural fallback farther from the current SL must not replace it.
+
+Manual boundary:
+- actual cTrader `ModifyStopLossPrice` behavior and broker minimum-distance semantics.
+
+### CR7.2 / G2 — Retest adverse-momentum semantics and rejection telemetry
+
+Scope:
+- verify whether adverse-momentum thresholds incorrectly reject legitimate Retest entries;
+- preserve current defaults unless a separately approved behavior change is made;
+- expose rejection reasons `TRAP_ADVERSE_M5`, `TRAP_ADVERSE_M1`, `TRAP_EXTREME`,
+  `TRAP_DIVERGENCE` through telemetry/panel ownership;
+- distinguish pre-zone adverse movement from post-zone reaction behavior before
+  changing Retest policy.
+
+Required Core/test ownership:
+- parameterize the existing 0.30 / 0.45 / 0.40 thresholds without changing
+  their defaults;
+- deterministic matrix covering range position, M5/M1 adverse momentum,
+  divergence, risk and block reason.
+
+Behavior-change gate:
+- no Retest exemption or threshold retuning is authorized by the roadmap alone.
+
+### CR7.3 / G3 — Display parameter truth for plan-line thickness/style
+
+Scope:
+- make `Level Line Thickness` values 1/2/3 produce actual thickness 1/2/3;
+- preserve the current Solid line behavior;
+- do not rename or remove the existing public parameter.
+
+Deterministic tests:
+- thickness 1 → 1;
+- thickness 2 → 2;
+- thickness 3 → 3.
+
+Style behavior:
+- keep Solid as the current default/behavior unless a separate approved parameter
+  design is justified.
+
+### CR7.4 / G4 — Panel execution/protection state semantics
+
+Scope:
+- separate “new entry blocked” from “position management active”;
+- do not present no-signal state as `ALIGNED`;
+- use a neutral state/color when there is no active direction;
+- trace `ProtectBrokerPositions`, BE and trailing behavior when Auto Trading is
+  disabled before deciding whether `DISABLED WITH AUTO ENGINE` is truthful;
+- preserve the distinction between execution permission and active management.
+
+Required validation:
+- panel-state contracts for no-signal, blocked-entry, active-management and
+  disabled-engine states;
+- runtime verification for managed positions with Auto Trading disabled.
+
+### CR7.5 / G5 — Post-fill exit-geometry integrity
+
+Scope:
+- audit `LiveFillExitReconciler` and
+  `AutomaticMarketFillReconciliation` after actual fills;
+- verify final risk and reward-risk quality after any post-fill SL/TP
+  reconstruction;
+- verify the caller's reaction when reconciliation returns false;
+- preserve the existing protective/progressive direction rules unless evidence
+  requires an explicitly approved behavior change.
+
+Required tests:
+- post-fill tighter-stop risk calculation;
+- final RR validation;
+- invalid/no-safe-exit reconciliation;
+- caller fail-closed/recovery behavior.
+
+Behavior-change gate:
+- no automatic post-fill close/continue policy change without explicit approval.
+
+### CR7.6a / G6-A — Broker modification timestamp truth
+
+Scope:
+- audit consumers of `_lastBrokerModifyUtc`;
+- update it only when a broker modification actually occurred;
+- preserve existing throttling/cadence semantics.
+
+### CR7.6b / G6-B — Bound-plan null safety
+
+Scope:
+- prove all callers initialize `_plan` before `ProtectBoundPlanPosition`;
+- add a minimal defensive null guard if required;
+- no duplicate execution/protection path.
+
+### CR7.6c / G6-C — Direction-correct minimum protection distance
+
+Scope:
+- replace direction-agnostic `Bid` reference usage where required by the
+  canonical `MinimumProtectionDistancePriceForDirection(direction)`;
+- preserve existing percentage-distance semantics except for the direction
+  correctness fix;
+- deterministic BUY/SELL tests.
+
+### CR7.6d / G6-D — Canonical actionability threshold ownership
+
+Scope:
+- migrate the 58/60 and 55/52 actionability thresholds in
+  `IndicatorActionabilityRule` to the already-established single source of
+  truth from Prompt 2/B4;
+- no numerical threshold retuning;
+- deterministic ownership and symmetry tests.
+
+### Prompt 7 mandatory rules
+
+- public `[Parameter]` name, type and `DefaultValue` remain unchanged;
+- any new parameter preserves current behavior by default;
+- G1 safety correction is authorized as an explicit safety exception and must
+  be reported separately from ordinary behavior changes;
+- every accepted correction gets its own `fix(<ID>): ...` commit with root cause;
+- every accepted correction gets deterministic behavioral tests, not grep-only
+  verification;
+- platform-neutral logic belongs in `Core/` where practical;
+- minimum change only; no unrelated rewrites or renames;
+- every phase begins with a line explicitly stating “تأیید می‌کنم” or
+  “مخالفم چون …” and the relevant code location/line range;
+- every phase includes project-wide routine audit and performance/code-cleanliness
+  audit;
+- cTrader-dependent behavior is explicitly listed under manual testing;
+- newly discovered out-of-scope bugs are documented separately and not fixed;
+- files explicitly listed by the Prompt 7 review as unread remain audit scope, not
+  assumed defects; they must be inspected when a relevant phase reaches them.
+
+### Prompt 7 review inventory boundary
+
+The review specifically marked the following areas as not yet read and therefore
+not proven defective:
+
+- chart/presentation: `ParallelOpportunityRenderer`,
+  `PlanLabelRenderCoordinator`, `PlanLabelRenderer`, `PlanLabelFormatting`,
+  `SignalVisualSnapshotBuilder`, `PendingOrderRenderer`,
+  `PredictionLabelsRenderer`;
+- panel: `PanelFactory`, `PanelLayoutManager`, `PanelMainRenderer`,
+  `PanelRowWriter`, `PanelTextFormatting`;
+- Skender Aroon/CCI/MFI/RSI/Bollinger/MACD;
+- remaining `Core/Math/*` outside the already audited rule set;
+- `docs/*` and `tools/*` beyond the CI material already inspected.
+
+These are not treated as bugs until independently verified.
+
 ## Current active implementation phase
 
 **CR6.1 / F1 — Opposing FVG/OB target-path direction, mitigation and obstacle caching.**
