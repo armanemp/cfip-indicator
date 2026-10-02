@@ -16,5 +16,14 @@ namespace cAlgo
                     public double Volume;
                     public int CreatedM5;
                     public string Source;
+                    public double MarketRangePips;
+                    public bool UseServerTakeProfitLadder;
+                    public double Tp1Pips;
+                    public double Tp1Volume;
+                    public double Tp2Pips;
+                    public double Tp2Volume;
+                    public double FinalTpPips;
+                    public double? BreakEvenTriggerPips;
+                    public double? BreakEvenOffsetPips;
                 }
 }
