@@ -565,8 +565,8 @@ namespace CFIP.cBot
                 runtimeState = "BLOCKED";
             }
             else if (brokerSnapshot != null &&
-                     (brokerSnapshot.ManagedPositions > 0 ||
-                      brokerSnapshot.ManagedPendingOrders > 0))
+                     (brokerSnapshot.ManagedPositionCount > 0 ||
+                      brokerSnapshot.ManagedPendingOrderCount > 0))
             {
                 runtimeState = "ACTIVE";
             }
