@@ -1,6 +1,8 @@
 ## CBOT-P3 — cBot Host / Shadow — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2801 PASS; Runtime Acceptance #2610 PASS; cTrader Compile #2794 PASS.
 
 Implemented a deterministic read-only shadow host around the canonical Indicator provider. The cBot now validates contract identity/version/scope, provider/envelope revision agreement, expiry, intent lineage, basic BUY/SELL geometry integrity, duplicate/conflicting revisions, single-plan capacity and live quote validity; trading permission remains a P4 broker-submission concern because the Robot host does not expose the documented Plugin-style Permissions object. A bounded 128-entry idempotency cache suppresses repeated intents without introducing hot-path persistence.
 
