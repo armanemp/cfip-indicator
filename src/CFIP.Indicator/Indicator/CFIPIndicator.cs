@@ -1,10 +1,11 @@
 using cAlgo.API;
+using CFIP.Contracts;
 
 namespace cAlgo
 {
 #pragma warning disable CS0612
     [Indicator(
-        "CFIP Smart Indicator",
+        IndicatorIdentity.DisplayName,
         IsOverlay = true,
         AutoRescale = false,
         TimeZone = TimeZones.UTC,
