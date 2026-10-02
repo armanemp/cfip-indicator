@@ -7,21 +7,48 @@ namespace cAlgo
         public bool Allowed { get; }
         public double Risk { get; }
         public double Reward { get; }
+        public double EffectiveRisk { get; }
         public double RiskReward { get; }
+        public double EffectiveRiskReward { get; }
+        public double MinimumRR { get; }
+        public double MaximumRR { get; }
         public string Reason { get; }
 
         public ExecutionPlanGeometryResult(
             bool allowed,
-            double risk,
-            double reward,
-            double riskReward,
-            string reason)
+            RiskRewardMathResult geometry,
+            string reasonOverride = null)
         {
             Allowed = allowed;
-            Risk = risk;
-            Reward = reward;
-            RiskReward = riskReward;
-            Reason = reason ?? string.Empty;
+            Risk = geometry.Risk;
+            Reward = geometry.Reward;
+            EffectiveRisk = geometry.EffectiveRisk;
+            RiskReward = geometry.NominalRR;
+            EffectiveRiskReward = geometry.EffectiveRR;
+            MinimumRR = geometry.MinimumRR;
+            MaximumRR = geometry.MaximumRR;
+            Reason =
+                string.IsNullOrWhiteSpace(reasonOverride)
+                    ? geometry.Reason
+                    : reasonOverride;
+        }
+
+        public static ExecutionPlanGeometryResult Blocked(
+            string reason)
+        {
+            return new ExecutionPlanGeometryResult(
+                false,
+                new RiskRewardMathResult(
+                    false,
+                    reason,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0),
+                reason);
         }
     }
 
@@ -32,83 +59,41 @@ namespace cAlgo
             double entry,
             double stop,
             double tp1,
-            double minimumRR)
+            double spread,
+            double minimumRR,
+            double maximumRR,
+            double riskFloor)
         {
-            if (direction != 1 &&
-                direction != -1)
-                return CreateBlocked("DIRECTION INVALID");
+            RiskRewardMathResult geometry =
+                RiskRewardMathRule.Evaluate(
+                    direction,
+                    entry,
+                    stop,
+                    tp1,
+                    spread,
+                    Math.Max(
+                        0.10,
+                        minimumRR),
+                    maximumRR,
+                    riskFloor);
 
-            if (!IsPositiveFinite(entry) ||
-                !IsPositiveFinite(stop) ||
-                !IsPositiveFinite(tp1))
-                return CreateBlocked("LEVEL GEOMETRY INVALID");
+            if (!geometry.Valid)
+            {
+                string reason =
+                    geometry.Reason == "RR BELOW MINIMUM"
+                        ? "RR BELOW EXECUTION FLOOR"
+                        : geometry.Reason;
 
-            double risk =
-                Math.Abs(entry - stop);
-
-            if (!IsPositiveFinite(risk))
-                return CreateBlocked("RISK INVALID");
-
-            bool protectiveStop =
-                direction == 1
-                    ? stop < entry
-                    : stop > entry;
-
-            bool progressiveTarget =
-                direction == 1
-                    ? tp1 > entry
-                    : tp1 < entry;
-
-            if (!protectiveStop)
-                return CreateBlocked("STOP WRONG SIDE");
-
-            if (!progressiveTarget)
-                return CreateBlocked("TP1 WRONG SIDE");
-
-            double reward =
-                Math.Abs(tp1 - entry);
-
-            double rr =
-                reward / risk;
-
-            if (!IsPositiveFinite(rr))
-                return CreateBlocked("RR INVALID");
-
-            if (rr + 1e-9 <
-                Math.Max(0.10, minimumRR))
                 return new ExecutionPlanGeometryResult(
                     false,
-                    risk,
-                    reward,
-                    rr,
-                    "RR BELOW EXECUTION FLOOR");
+                    geometry,
+                    reason);
+            }
 
             return new ExecutionPlanGeometryResult(
                 true,
-                risk,
-                reward,
-                rr,
+                geometry,
                 "OK");
-        }
-
-        private static bool IsPositiveFinite(
-            double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value > 0;
-        }
-
-        private static ExecutionPlanGeometryResult CreateBlocked(
-            string reason)
-        {
-            return new ExecutionPlanGeometryResult(
-                false,
-                0,
-                0,
-                0,
-                reason);
         }
     }
 }
