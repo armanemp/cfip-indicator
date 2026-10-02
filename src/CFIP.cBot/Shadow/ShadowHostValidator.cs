@@ -369,12 +369,6 @@ namespace CFIP.cBot.Shadow
                 return false;
             }
 
-            if (!broker.TradingPermissionAllowed)
-            {
-                reason = "TRADING PERMISSION BLOCKED";
-                return false;
-            }
-
             if (broker.ManagedPositionCount +
                 broker.ManagedPendingOrderCount >= 1)
             {
