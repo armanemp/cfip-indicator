@@ -4,7 +4,7 @@ Status: **VERIFIED COMPLETE — merged to `main` in implementation commit `0a45b
 
 Completed:
 - M15 is the canonical execution timeframe;
-- cBot default host timeframe changed from M5 to M15 and non-M15 cBot startup is fail-closed;
+- cBot launch default is M15, but runtime host timeframe is ignored for execution;
 - M15 agreement is required by canonical actionability;
 - M5/M1 remain defensive tuning layers;
 - H1+ remains higher-timeframe context/reward-path support;
