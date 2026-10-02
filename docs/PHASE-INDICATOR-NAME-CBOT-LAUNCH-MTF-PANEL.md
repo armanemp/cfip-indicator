@@ -48,8 +48,8 @@ is not orphaned.
 
 ## Safety
 
-No strategy, threshold, Decision, Plan, RR, Entry, SL, TP, confidence, risk, provider contract
-or broker execution authority changes.
+No strategy or threshold changes. No Decision, Plan, RR, Entry, SL, TP, confidence, risk,
+provider contract or broker execution authority changes.
 
 Public parameter count remains 568.
 
