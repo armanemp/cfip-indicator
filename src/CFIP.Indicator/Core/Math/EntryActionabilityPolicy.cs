@@ -50,6 +50,20 @@ namespace cAlgo
             return mode != ExecutionMode.BreakoutMarket;
         }
 
+        public static bool RequiresConfirmedTrigger(
+            ExecutionMode mode,
+            bool m5OnlyConfirmedTrigger)
+        {
+            if (!m5OnlyConfirmedTrigger)
+                return false;
+
+            // An in-zone retest is a zone-driven market entry. It must not be
+            // suppressed merely because the generic closed-bar trigger has not
+            // fired yet. Breakout and predictive pending modes remain trigger-
+            // dependent.
+            return mode != ExecutionMode.RetestMarket;
+        }
+
         public static double ResolveAnchor(
             ExecutionMode mode,
             double trigger,
