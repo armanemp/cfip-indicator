@@ -70,6 +70,21 @@ namespace cAlgo
             return true;
         }
 
+        public static int ResolveDirectionalPresentationDirection(
+            int preferredDirection,
+            int fallbackDirection)
+        {
+            if (preferredDirection == 1 ||
+                preferredDirection == -1)
+                return preferredDirection;
+
+            return
+                fallbackDirection == 1 ||
+                fallbackDirection == -1
+                    ? fallbackDirection
+                    : 0;
+        }
+
         public static bool IsPreTradePlanVisible(
             SignalVisualLifecycleInput input)
         {
