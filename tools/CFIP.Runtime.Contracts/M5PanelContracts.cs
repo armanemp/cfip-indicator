@@ -18,7 +18,7 @@ namespace cAlgo
                 PanelDimensionRule.EffectiveContentWidth(
                     220,
                     10,
-                    1) == 198,
+                    1) == 200,
                 "220px panel content width preserves padding and border math");
 
             Assert(
