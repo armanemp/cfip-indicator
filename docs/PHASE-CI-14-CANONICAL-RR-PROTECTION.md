@@ -13,6 +13,7 @@ The canonical owner is:
 src/CFIP.Indicator/Core/Math/RiskRewardMathRule.cs
 
 It owns:
+- shared RiskFromLevels construction for stored plan risk;
 - directional protection/target-side validation;
 - normalized risk with an explicit physical distance floor;
 - reward distance;
