@@ -15,5 +15,6 @@
     <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostValidator.cs" />
     <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostCoordinator.cs" />
     <Compile Include="../../src/CFIP.cBot/Execution/MarketExecutionIntentRule.cs" />
+    <Compile Include="../../src/CFIP.cBot/Execution/ManagedExecutionLabelRule.cs" />
   </ItemGroup>
 </Project>
