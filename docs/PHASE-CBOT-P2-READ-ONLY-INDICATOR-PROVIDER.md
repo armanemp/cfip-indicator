@@ -25,6 +25,13 @@ This follows cTrader's documented custom-indicator consumption pattern (`Indicat
 
 ### Indicator
 
+Added a focused partial-owner set so the provider remains consistent with the repository's production-module size/ownership audit:
+
+- `CFIPReadOnlyProvider.cs` — state/output surface
+- `CFIPReadOnlyProviderRefresh.cs` — snapshot refresh/fingerprint
+- `CFIPReadOnlyProviderPlan.cs` — plan/intent projection
+- `CFIPReadOnlyProviderIdentity.cs` — identity/action/lifecycle mapping
+
 Added:
 
 `src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProvider.cs`
