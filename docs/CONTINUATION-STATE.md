@@ -23,11 +23,18 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-17A — Panel live-content refresh correction — implementation complete; repository verification pending, then CI-17 target-terminal acceptance continues.**
+**CI-17 — Target-terminal cTrader validation — CI-17A panel live-content correction verified and merged; real target-terminal/manual acceptance remains pending.**
 
-Repository package status: **MERGED — PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.**
+CI-17A repository package: **VERIFIED COMPLETE — PR #175 merged to `main` as `6ffff643ad5c24782ca7035355e31ee4a04465c2`.**
 
-The next certification gate is **CI-FINAL**, but it remains blocked until the real target-terminal/broker evidence is recorded. Historical phase closeout records below are retained for continuity and are not the current phase.
+Verified CI-17A implementation HEAD: `9641bfc02c7604d6432202459fa198866d4a5f53`.
+
+Repository gates on that exact HEAD:
+- Source/Architecture #2742: PASS;
+- Runtime Acceptance Contracts #2551: PASS;
+- cTrader Compile #2735: PASS.
+
+The panel correction separates bounded row-content refresh from full layout refresh. The remaining blocker is real cTrader target-terminal evidence, not repository implementation.
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
