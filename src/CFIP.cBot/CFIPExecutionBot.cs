@@ -81,6 +81,14 @@ namespace CFIP.cBot
             MaxValue = 60)]
         public int ProviderStaleAfterSeconds { get; set; }
 
+        [Parameter(
+            "Management Command Max Age Seconds",
+            Group = "Safety",
+            DefaultValue = 30,
+            MinValue = 5,
+            MaxValue = 300)]
+        public int ManagementCommandMaxAgeSeconds { get; set; }
+
         private readonly DemoMarketExecutionCoordinator _market =
             new DemoMarketExecutionCoordinator();
 
@@ -141,6 +149,7 @@ namespace CFIP.cBot
                 EnableDemoManagementExecution ? "ARMED" : "DISARMED",
                 MaxDemoExecutionsPerSession,
                 ProviderStaleAfterSeconds,
+                ManagementCommandMaxAgeSeconds,
                 ContractVersion.Current);
 
             SubscribeBrokerLifecycleEvents();
@@ -171,6 +180,7 @@ namespace CFIP.cBot
                     this,
                     _boundIndicatorInstanceId,
                     nowUtc,
+                    ManagementCommandMaxAgeSeconds,
                     out string managementStatus);
 
                 if (!string.IsNullOrWhiteSpace(managementStatus) &&
