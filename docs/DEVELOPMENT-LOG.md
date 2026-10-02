@@ -2868,6 +2868,8 @@ Implemented the blocking CI-16 replay layer as a verification-only extension of 
 
 Canonical existing owners are reused for Entry geometry, Risk/Reward, final ExecutionIntent geometry, Trigger lifecycle and fill acceptance. No live calculation path, broker mutation path, public parameter, confidence/RR/Entry/SL/TP/risk threshold or execution policy was changed.
 
-The dedicated audit_phase_ci_16.py is accumulated immediately after CI-15. Target-terminal timing, broker event ordering, actual slippage/fills, panel timing and empirical outcome quality remain CI-17/manual boundaries.
+The dedicated audit_phase_ci_16.py is accumulated immediately after CI-15.
+
+CI-16 verification results on implementation HEAD `1c292d3162f6085869238029fe599630ab3ca3a9`: Source/Architecture workflow #2715 (36950516204) PASS; Runtime Acceptance Contracts #2524 (36950516284) PASS; cTrader Compile/Build #2708 (36950516224) PASS; accumulated CI-16 audit PASS. Target-terminal timing, broker event ordering, actual slippage/fills, panel timing and empirical outcome quality remain CI-17/manual boundaries.
 
 Next phase: **CI-17 — Target-terminal cTrader validation.**
