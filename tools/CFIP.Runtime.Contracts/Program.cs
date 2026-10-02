@@ -35,6 +35,7 @@ namespace cAlgo
             VerifyEarlyPredictionScoreSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
+            VerifyCbotPresenceContract();
             VerifyParallelScenarioSelectionSemantics();
             VerifyMicroReactionClosedBarSemantics();
             VerifyMtfContextIntegrity();
@@ -4284,6 +4285,40 @@ namespace cAlgo
             Assert(
                 !oppositeWithoutHtfSupport.Allowed,
                 "counter-M5 direction remains blocked when HTF support is not strong enough");
+        }
+
+        private static void VerifyCbotPresenceContract()
+        {
+            CbotPresenceSnapshot snapshot =
+                new CbotPresenceSnapshot(
+                    ContractVersion.Current,
+                    "CFIPExecutionBot|EURUSD",
+                    "CFIPExecutionBot",
+                    "CFIP Smart Execution Bot",
+                    "EURUSD",
+                    DateTime.UtcNow,
+                    "RUNNING",
+                    true,
+                    "indicator-instance-1");
+
+            string payload =
+                CbotExecutionStateCodec.SerializePresence(
+                    snapshot);
+
+            Assert(
+                CbotExecutionStateCodec.TryDeserializePresence(
+                    payload,
+                    out CbotPresenceSnapshot restored) &&
+                restored != null &&
+                restored.ContractVersion ==
+                    ContractVersion.Current &&
+                restored.CbotTypeName ==
+                    "CFIPExecutionBot" &&
+                restored.Symbol ==
+                    "EURUSD" &&
+                restored.BoundIndicatorInstanceId ==
+                    "indicator-instance-1",
+                "cBot presence snapshot round-trips through the canonical device contract");
         }
 
         private static void VerifyIndependentEvidenceGroupSemantics()
