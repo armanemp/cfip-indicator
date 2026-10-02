@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTATION COMPLETE — verification pending.
+VERIFIED COMPLETE — merged to `main` via PR #200 as `623dd198885c684b85be01459b4e72faafa00b8a`.
 
 ## Root causes addressed
 
@@ -30,6 +30,12 @@ No public minimum-confidence, SmartQuality, Entry, SL or safety gate is removed.
 No profitability guarantee is made. Empirical signal accuracy still requires replay/OOS validation.
 
 ## Verification
+
+- Source / Architecture #3100: **PASS**;
+- Runtime Acceptance #2909: **PASS**;
+- cTrader Compile #3093: **PASS**;
+- CI-19 signal/target quality audit: **PASS**;
+- accumulated signal/target/MTF/architecture audits: **PASS**;
 
 Required:
 - Source / Architecture accumulated audits;
