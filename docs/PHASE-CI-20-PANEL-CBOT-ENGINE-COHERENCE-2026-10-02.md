@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTATION COMPLETE — repository verification pending.
+VERIFIED COMPLETE — repository gates PASS on final implementation head `60a0bad5cbcf300521db93aa275b4c00df5b1903`.
 
 ## Scope
 
@@ -48,6 +48,12 @@ Required repository checks:
 - CI-20 cBot state continuity audit;
 - CI-20 analysis quality/performance audit.
 
+Repository verification on the final head:
+- Source / Architecture #3131: **PASS**;
+- Runtime Acceptance Contracts #2940: **PASS**;
+- cTrader Compile/Build #3124: **PASS**;
+- accumulated CI-20 panel option, cBot state-continuity and analysis-quality/performance audits: **PASS**.
+
 Manual target-terminal validation remains required for:
 - visible panel controls and spacing on the real cTrader terminal;
 - actual cBot attach/detach/stale transitions;
@@ -56,4 +62,4 @@ Manual target-terminal validation remains required for:
 
 ## Next
 
-After acceptance, continue CI-20 protection/trailing with monotonic SL tightening, profit-locking and structure/reward-driven progressive target expansion without constant TP movement.
+Next implementation: **CI-20 protection/trailing and lifecycle/recovery completion**, using one canonical protection owner for monotonic SL tightening, profit-locking and structure/reward-driven target progression without constant TP movement.
