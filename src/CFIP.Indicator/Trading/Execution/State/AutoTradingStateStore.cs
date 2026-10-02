@@ -137,7 +137,6 @@ namespace cAlgo
                                     if (changed)
                                         InvalidatePanelExecutionProtectionStateCache();
 
-                                    SyncQuickExecutionControls();
                                 }
 
         private void SetAutomaticOrdersRuntimeState(bool enabled, string reason)
@@ -154,7 +153,6 @@ namespace cAlgo
                                     if (changed)
                                         InvalidatePanelExecutionProtectionStateCache();
 
-                                    SyncQuickExecutionControls();
                                 }
     }
 }
