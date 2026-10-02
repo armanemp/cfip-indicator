@@ -32,7 +32,7 @@ require(
     "Indicator must expose the requested stable cTrader display name",
 )
 require(
-    '"CFIP Smart Execution Bot"' in cbot and
+    "CbotIdentity.DisplayName" in cbot and
     'DefaultTimeFrame = "M5"' in cbot and
     "[Robot(" in cbot,
     "cBot must expose stable launch name and M5 host-launch / M15 internal execution-clock default",

@@ -117,6 +117,7 @@ jobs:
       - run: python tools/audit_phase_ci_19_signal_target_quality.py
       - run: python tools/audit_phase_ci20_engine_quality.py
       - run: python tools/audit_phase_ci20b_protection_cbot_signal.py
+      - run: python tools/audit_phase_ci20c_cbot_connection_lifecycle.py
       - run: python tools/audit_phase_mtf_primary_panel.py
       - run: python tools/audit_phase_mtf_primary_location_obfvg.py
       - run: python tools/audit_phase_mtf_primary_provider_identity.py

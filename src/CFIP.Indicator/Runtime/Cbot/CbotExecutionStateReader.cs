@@ -68,6 +68,37 @@ namespace cAlgo
             }
         }
 
+        private string CbotConnectionPanelText()
+        {
+            RefreshCbotExecutionStateIfDue();
+
+            if (_cBotExecutionState == null)
+                return
+                    "CBOT NOT CONNECTED • START cBot ON THIS CHART";
+
+            double ageSeconds =
+                Math.Max(
+                    0,
+                    (TimeInUtc -
+                     _cBotExecutionState.ObservedUtc).TotalSeconds);
+
+            if (ageSeconds > 3.0)
+                return
+                    "CBOT RECONNECTING • HEARTBEAT STALE • " +
+                    ageSeconds.ToString("F1") +
+                    "s";
+
+            if (string.Equals(
+                    _cBotExecutionState.Reason,
+                    "CBOT STOPPED",
+                    StringComparison.OrdinalIgnoreCase))
+                return "CBOT STOPPED";
+
+            return
+                "CBOT CONNECTED • " +
+                CbotExecutionStatePanelText();
+        }
+
         private bool IsCbotExecutionStateFresh()
         {
             if (_cBotExecutionState == null)
@@ -89,7 +120,7 @@ namespace cAlgo
             if (_cBotExecutionState == null)
                 return
                     string.IsNullOrWhiteSpace(_cBotStateReadError)
-                        ? "CBOT NOT ATTACHED"
+                        ? "CBOT HEARTBEAT UNAVAILABLE"
                         : _cBotStateReadError;
 
             double ageSeconds =
@@ -182,10 +213,7 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             if (!IsCbotExecutionStateFresh())
-                return
-                    _cBotExecutionState == null
-                        ? PanelWarningColor
-                        : PanelWarningColor;
+                return PanelWarningColor;
 
             string state =
                 _cBotExecutionState.RuntimeState ?? string.Empty;

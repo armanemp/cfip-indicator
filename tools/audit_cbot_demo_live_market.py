@@ -17,7 +17,7 @@ pending = PENDING.read_text(encoding="utf-8")
 indicator = INDICATOR.read_text(encoding="utf-8")
 
 for token in (
-    '"CFIP Smart Execution Bot"',
+    "CbotIdentity.DisplayName",
     'DefaultTimeFrame = "M5"',
     "EnableDemoMarketExecution",
     "Account.IsLive",

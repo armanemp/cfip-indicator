@@ -10,7 +10,7 @@ namespace CFIP.cBot
 {
 #pragma warning disable CS0612
     [Robot(
-        "CFIP Smart Execution Bot",
+        CbotIdentity.DisplayName,
         DefaultTimeFrame = "M5",
         TimeZone = TimeZones.UTC,
         AccessRights = AccessRights.None)]
@@ -152,6 +152,7 @@ namespace CFIP.cBot
                 ManagementCommandMaxAgeSeconds,
                 ContractVersion.Current);
 
+            SubscribeIndicatorLifecycleEvents();
             SubscribeBrokerLifecycleEvents();
             RefreshIndicatorBinding(true);
             ReloadSignalStore(true);
@@ -519,6 +520,72 @@ namespace CFIP.cBot
         }
 
 
+        private void SubscribeIndicatorLifecycleEvents()
+        {
+            ChartIndicators.IndicatorAdded += OnChartIndicatorAdded;
+            ChartIndicators.IndicatorRemoved += OnChartIndicatorRemoved;
+            ChartIndicators.IndicatorModified += OnChartIndicatorModified;
+        }
+
+        private void UnsubscribeIndicatorLifecycleEvents()
+        {
+            ChartIndicators.IndicatorAdded -= OnChartIndicatorAdded;
+            ChartIndicators.IndicatorRemoved -= OnChartIndicatorRemoved;
+            ChartIndicators.IndicatorModified -= OnChartIndicatorModified;
+        }
+
+        private void OnChartIndicatorAdded(
+            ChartIndicatorAddedEventArgs args)
+        {
+            RefreshIndicatorBinding(true);
+
+            if (!string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+                PublishExecutionState(
+                    "INDICATOR ATTACHED",
+                    true);
+        }
+
+        private void OnChartIndicatorRemoved(
+            ChartIndicatorRemovedEventArgs args)
+        {
+            string removedInstance =
+                args == null ||
+                args.Indicator == null
+                    ? ""
+                    : args.Indicator.InstanceId ?? "";
+
+            bool wasBound =
+                !string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId) &&
+                string.Equals(
+                    removedInstance,
+                    _boundIndicatorInstanceId,
+                    StringComparison.Ordinal);
+
+            RefreshIndicatorBinding(true);
+
+            if (wasBound &&
+                string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+            {
+                LogBlockedState(
+                    "CFIP SMART INDICATOR REMOVED FROM CHART");
+            }
+        }
+
+        private void OnChartIndicatorModified(
+            ChartIndicatorModifiedEventArgs args)
+        {
+            RefreshIndicatorBinding(true);
+
+            if (!string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+                PublishExecutionState(
+                    "INDICATOR MODIFIED",
+                    true);
+        }
+
         private void SubscribeBrokerLifecycleEvents()
         {
             Positions.Opened +=
@@ -616,6 +683,12 @@ namespace CFIP.cBot
 
         protected override void OnStop()
         {
+            PublishExecutionState(
+                "CBOT STOPPED",
+                true);
+
+            UnsubscribeIndicatorLifecycleEvents();
+
             Print(
                 "CFIP DEMO cBot STOP | state={0} | executions={1} | " +
                 "sessionMs={2}",

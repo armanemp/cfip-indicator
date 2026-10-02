@@ -1845,3 +1845,16 @@ Operator action after merge: `git pull --ff-only` on local `main`.
 Next implementation response: **CI-20 — Intelligent progressive protection and trailing**, focused on monotonic SL tightening, profit-locking and structure/reward-driven target expansion without constant TP movement.
 
 Phase record: `docs/PHASE-CI-19-SIGNAL-TARGET-QUALITY-COHERENCE-2026-10-02.md`.
+
+    
+### CI-20C closeout — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending for the CI20C branch.
+
+CI20C establishes explicit same-chart exact-instance cBot binding and heartbeat freshness are separated, makes Indicator execution capability require a Running cBot plus fresh state, and adds event-driven cBot rebind on Indicator Added/Removed/Modified.
+
+The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTING**, and **CONNECTED** instead of conflating these states.
+
+No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
+
+Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.

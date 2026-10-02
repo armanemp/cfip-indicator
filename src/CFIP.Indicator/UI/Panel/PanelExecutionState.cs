@@ -144,7 +144,7 @@ namespace cAlgo
             return
                 state +
                 "  •  " +
-                CbotExecutionStatePanelText();
+                CbotConnectionPanelText();
         }
         
         private Color GetAutoTradingPanelColor()
@@ -172,7 +172,7 @@ namespace cAlgo
             return
                 state +
                 "  •  " +
-                CbotExecutionStatePanelText();
+                CbotConnectionPanelText();
         }
         
         private Color GetAutoOrdersPanelColor()
@@ -205,18 +205,10 @@ namespace cAlgo
 
             RefreshCbotExecutionStateIfDue();
 
-            if (_cBotExecutionState == null)
-                return state + " • CBOT NOT ATTACHED";
-
             return
                 state +
-                " • CBOT MGMT " +
-                (_cBotExecutionState.ManagementExecutionEnabled
-                    ? "ON"
-                    : "OFF") +
-                (IsCbotExecutionStateFresh()
-                    ? ""
-                    : " • STALE");
+                " • " +
+                CbotConnectionPanelText();
         }
         
         private Color GetAutoProtectionPanelColor()

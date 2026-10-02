@@ -33,7 +33,7 @@ namespace cAlgo
             AddPanelRow(
                 ref slot,
                 "CBOT LINK  " +
-                CbotExecutionStatePanelText() +
+                CbotConnectionPanelText() +
                 "  •  " +
                 CbotExecutionScenarioPanelText(),
                 CbotExecutionStatePanelColor(),
