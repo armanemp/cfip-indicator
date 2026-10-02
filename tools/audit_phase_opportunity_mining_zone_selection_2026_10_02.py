@@ -7,6 +7,9 @@ def read(path: str) -> str:
 
 rule = read('src/CFIP.Indicator/Core/Math/ExecutionZoneSelectionRule.cs')
 selector = read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelector.cs')
+selection_core = read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCore.cs')
+selection_candidates = read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCandidates.cs')
+selection_consumer = selector + "\n" + selection_core + "\n" + selection_candidates
 zone = read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneBuilder.cs')
 architecture = read('tools/verify_architecture.py')
 workflow = read('.github/workflows/source-check.yml')
@@ -24,27 +27,27 @@ checks = {
         'input.IsObFvgConfluence' in rule and
         'input.HasMtfOverlap' in rule,
     'selector evaluates M5 FVG and OB independently':
-        'm5Fvg' in selector and 'm5Ob' in selector and
-        'AddZoneCandidate(' in selector,
+        'm5Fvg' in selection_core and 'm5Ob' in selection_core and
+        'AddZoneCandidate(' in selection_core,
     'selector evaluates M15 FVG and OB independently':
-        'm15Fvg' in selector and 'm15Ob' in selector,
+        'm15Fvg' in selection_core and 'm15Ob' in selection_core,
     'selector can form same-frame OB+FVG candidates':
-        'M5 FVG+OB' in selector and 'M15 FVG+OB' in selector and
-        'AddOverlapCandidate(' in selector,
+        'M5 FVG+OB' in selection_core and 'M15 FVG+OB' in selection_core and
+        'AddOverlapCandidate(' in selection_candidates,
     'selector can form cross-timeframe confluence':
-        'AddMtfOverlapCandidate(' in selector and
-        'M5 ' in selector and 'M15 ' in selector,
+        'AddMtfOverlapCandidate(' in selection_core and
+        'M5 ' in selection_candidates and 'M15 ' in selection_candidates,
     'selector selects highest scored valid candidate':
-        'candidate.Score >' in selector and
-        'candidate.Quality >' in selector,
+        'candidate.Score >' in selection_core and
+        'candidate.Quality >' in selection_core,
     'execution FVG lookup uses quality-aware selection':
         'preferQualityForSelection' in read('src/CFIP.Indicator/Analysis/Structure/Zones/FvgDetectionAnalyzer.cs') and
         'SelectBestFvgForExecution(' in read('src/CFIP.Indicator/Analysis/Structure/Zones/FvgDetectionAnalyzer.cs') and
         'market,' in read('src/CFIP.Indicator/Analysis/Structure/Zones/ZoneLookup.cs'),
     'legacy swing fallback remains':
-        'M5 SWING' in selector and
-        'FindSwingLowBelow(' in selector and
-        'FindSwingHighAbove(' in selector,
+        'M5 SWING' in selection_core and
+        'FindSwingLowBelow(' in selection_core and
+        'FindSwingHighAbove(' in selection_core,
     'execution builder remains canonical caller':
         'TrySelectExecutionZoneCandidate(' in zone and
         'EvaluateExecutionZoneQuality(' in zone,
