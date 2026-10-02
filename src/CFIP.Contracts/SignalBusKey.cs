@@ -10,5 +10,11 @@ namespace CFIP.Contracts
             return "CFIPSignalBus" +
                    ContractBusKeyHash.Hash(instanceId);
         }
+
+        public static string ForScenarioBatch(string instanceId)
+        {
+            return "CFIPSignalScenarioBatch" +
+                   ContractBusKeyHash.Hash(instanceId);
+        }
     }
 }
