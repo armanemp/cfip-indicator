@@ -27,6 +27,7 @@ namespace cAlgo
             VerifyTargetObstacleCachePolicyF9();
             VerifyTargetSelectionConsistency();
             VerifyTargetLadderSelection();
+            VerifyTargetCandidateRewardScoring();
             VerifyLiveReversalD9();
             Console.WriteLine("Planning contracts OK");
         }
@@ -1595,6 +1596,120 @@ namespace cAlgo
             Assert(
                 !ExecutionTimeframePolicy.IsPrimaryExecution("M5"),
                 "M5 cannot become primary execution");
+        }
+
+        private static void VerifyTargetCandidateRewardScoring()
+        {
+            double minimumRrScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    80,
+                    2.0,
+                    2.0,
+                    0,
+                    2.0,
+                    false,
+                    false,
+                    false,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0);
+
+            double expandedRrScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    80,
+                    4.0,
+                    2.0,
+                    0,
+                    2.0,
+                    false,
+                    false,
+                    false,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0);
+
+            Assert(
+                expandedRrScore > minimumRrScore,
+                "CI19 higher valid RR must outrank same-quality minimum RR");
+
+            double strongNearScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    90,
+                    2.0,
+                    2.0,
+                    0,
+                    2.0,
+                    false,
+                    false,
+                    false,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0);
+
+            double weakFarScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    55,
+                    6.0,
+                    2.0,
+                    0,
+                    6.0,
+                    false,
+                    false,
+                    false,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0);
+
+            Assert(
+                strongNearScore > weakFarScore,
+                "source quality must still dominate a weak far-away target");
+
+            double scoreA =
+                TargetCandidateRewardScoreRule.Calculate(
+                    80,
+                    4.0,
+                    2.0,
+                    0,
+                    2.0,
+                    true,
+                    true,
+                    true,
+                    2,
+                    1,
+                    10,
+                    8,
+                    6);
+
+            double scoreB =
+                TargetCandidateRewardScoreRule.Calculate(
+                    80,
+                    4.0,
+                    2.0,
+                    0,
+                    2.0,
+                    true,
+                    true,
+                    true,
+                    2,
+                    1,
+                    10,
+                    8,
+                    6);
+
+            Assert(
+                Math.Abs(scoreA - scoreB) < 1e-12,
+                "CI19 target reward scoring deterministic");
+
+            Console.WriteLine(
+                "CI19 target reward scoring: reward expansion preferred with source-quality preservation");
         }
 
         private static void Assert(bool condition, string name)

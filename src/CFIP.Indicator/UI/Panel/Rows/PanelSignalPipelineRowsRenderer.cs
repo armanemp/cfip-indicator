@@ -131,6 +131,26 @@ namespace cAlgo
                     : PanelWarningColor,
                 false,
                 contentWidth);
+
+            if (decision != null)
+            {
+                AddPanelRow(
+                    ref slot,
+                    "BARRIER TRACE  " +
+                    CompactText(
+                        !decision.EntryAllowed
+                            ? decision.BlockReason
+                            : !decision.ActionableNow
+                                ? decision.ActionabilityReason
+                                : "NONE",
+                        72),
+                    !decision.EntryAllowed ||
+                    !decision.ActionableNow
+                        ? PanelWarningColor
+                        : PanelSecondaryTextColor,
+                    false,
+                    contentWidth);
+            }
         }
 
         private string SignalPipelineYesNo(bool value)

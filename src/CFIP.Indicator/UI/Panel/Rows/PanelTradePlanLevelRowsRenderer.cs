@@ -143,7 +143,11 @@ namespace cAlgo
                 "  •  MAX RR " +
                 Math.Max(
                     0,
-                    MaximumRewardRR).ToString("F2"),
+                    MaximumRewardRR).ToString("F2") +
+                "  •  TP1 SOURCE " +
+                (_plan.Tp1Source ?? "NONE") +
+                "  •  TP1 Q " +
+                _plan.Tp1Quality,
                 PanelAccentColor,
                 false,
                 contentWidth);

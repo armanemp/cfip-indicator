@@ -1,3 +1,18 @@
+## CI-19 — Signal / Target Quality Coherence — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch.**
+
+Deep audit findings:
+- DecisionStructureGates still globally blocked on TriggerReady after the CI-18 mode-specific trigger refactor;
+- a qualified TacticalOpportunity could be rejected by TREND M5 evidence before canonical actionability;
+- TargetLevelBuilder truncated candidates before confluence merging;
+- TargetCandidateEvaluator favored the required/minimum RR instead of treating it as a floor;
+- LiveTargetCandidateEvaluator had a separate target score and could not reason about reward expansion relative to the previous confirmed target.
+
+Corrections are implemented in the canonical owners and covered by deterministic planning tests plus the CI-19 audit. No public signal-quality or safety threshold was lowered merely to increase signal count.
+
+Next focus is intelligent progressive protection/trailing using the same canonical reward and structure semantics.
+
 ## Build Warning / Panel Height Integrity — 2026-10-02
 
 Status: IMPLEMENTATION COMPLETE — verification pending.

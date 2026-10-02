@@ -17,6 +17,30 @@ Phase record: `docs/PHASE-BUILD-WARNING-PANEL-HEIGHT-INTEGRITY-2026-10-02.md`.
 
 Next staged phase: **CI-18 — Signal / Panel Coherence**.
 
+## CI-19 — Signal / Target Quality Coherence — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch.**
+
+Root causes under active correction:
+- global TriggerReady blocking survived in DecisionStructureGates and could suppress Retest before actionability;
+- TREND M5 evidence could reject already-qualified TacticalOpportunity paths;
+- target candidates were capped before MergeLevels, potentially removing higher-reward structural/HTF/OB/FVG targets before confluence;
+- target scoring treated minimum RR as an implicit preference via a centered efficiency bonus and nearest-level bias;
+- live progressive target selection used a separate quality-only score from initial target selection.
+
+Canonical CI-19 corrections:
+- remove global trigger blocking from DecisionStructureGates;
+- preserve high-quality Tactical Retest paths in TREND;
+- merge all valid levels before applying SmartTargetMaxCandidates;
+- use one TargetCandidateRewardScoreRule for initial and live target selection;
+- treat minimum RR as a validity floor and reward additional valid RR only when source quality supports it;
+- add panel BARRIER TRACE to show the actual blocker/actionability reason;
+- preserve all final confidence, SmartQuality, RR, regime, divergence, trap-risk, indicator-fusion and market safety gates.
+
+Phase record: `docs/PHASE-CI-19-SIGNAL-TARGET-QUALITY-COHERENCE-2026-10-02.md`.
+
+Next: intelligent progressive protection and trailing after repository acceptance.
+
 ## CI-18 — Signal / Panel Coherence — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #199 as `8ba701ea288641bc1435ac8f94ea6890713ed63c`.**

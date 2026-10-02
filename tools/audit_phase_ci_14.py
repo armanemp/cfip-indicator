@@ -185,7 +185,10 @@ check(
 )
 check(
     "live target candidate RR is canonical",
-    "RiskRewardMathRule.EvaluateFromRisk(" in live_target and
+    (
+        "RiskRewardMathRule.EvaluateFromRisk(" in live_target or
+        "TargetCandidateRewardScoreRule.Calculate(" in live_target
+    ) and
     "Math.Abs(" not in live_target,
 )
 check(

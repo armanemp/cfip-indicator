@@ -63,10 +63,6 @@ namespace cAlgo
                 if (!retestOverride)
                     return new DecisionFilterResult(false, "RETEST QUALITY");
             }
-
-            if (!decision.TriggerReady)
-                return new DecisionFilterResult(false, "TRIGGER");
-
             return new DecisionFilterResult(true, string.Empty);
         }
     }
