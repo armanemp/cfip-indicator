@@ -1643,6 +1643,10 @@ Once M42 is accepted, the project leaves the remediation/certification track and
 
 Historical continuity marker preserved: the single-plan `Maximum Open Positions` semantics remain an audited invariant. This is historical continuity only; it is not a new implementation phase in the M0–M42 execution sequence.
 
+## CR4.4 — Numerical stability and caching continuity
+
+CR4.4 is a completed historical numerical-stability/caching remediation. Its production work remains under the existing OSS adapter/cache owners. Target-terminal validation is a separate manual acceptance boundary and is **not claimed as completed** by this roadmap.
+
 ## Track 19 — OSS Numerical Benchmark
 
 Track 19.1 numerical benchmark is a completed historical research/validation milestone. Its detailed continuity and benchmark evidence are retained in:
