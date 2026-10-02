@@ -102,7 +102,11 @@ namespace cAlgo
                 matchingCount != 1)
                 return false;
 
-            return cbot.State == RobotState.Running;
+            return
+                string.Equals(
+                    cbot.State.ToString(),
+                    "Running",
+                    StringComparison.OrdinalIgnoreCase);
         }
 
         private string CbotConnectionPanelText()
