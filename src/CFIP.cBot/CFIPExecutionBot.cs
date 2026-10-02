@@ -692,6 +692,66 @@ namespace CFIP.cBot
                 };
         }
 
+        private void ReconcileBrokerState(bool force)
+        {
+            if (string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+                return;
+
+            DateTime now = Server.TimeInUtc;
+
+            if (!force &&
+                now < _nextBrokerReconciliationUtc)
+                return;
+
+            _nextBrokerReconciliationUtc =
+                now.AddMilliseconds(500);
+
+            _reconciliation =
+                _brokerReconciliation.Evaluate(
+                    this,
+                    _boundIndicatorInstanceId,
+                    _activeManagedExecutionLabel);
+
+            if (_reconciliation != null &&
+                !string.IsNullOrWhiteSpace(
+                    _reconciliation.ExecutionLabel))
+            {
+                _activeManagedExecutionLabel =
+                    _reconciliation.ExecutionLabel;
+            }
+        }
+
+        private bool TryRecoverProtection(
+            SignalEnvelope envelope,
+            DateTime nowUtc)
+        {
+            if (envelope == null ||
+                envelope.Intent == null ||
+                _reconciliation == null ||
+                !_reconciliation.RecoveryRequired ||
+                _reconciliation.ManagedPositions != 1)
+                return false;
+
+            if (envelope.Identity == null ||
+                envelope.Intent.Identity == null ||
+                !envelope.Intent.Identity.Equals(
+                    envelope.Identity))
+                return false;
+
+            if (string.IsNullOrWhiteSpace(
+                    envelope.Intent.ExecutionLabel))
+                return false;
+
+            return _management.TryRecoverProtectionFromSignal(
+                this,
+                _boundIndicatorInstanceId,
+                nowUtc,
+                envelope,
+                out _,
+                out _);
+        }
+
         private void PublishExecutionState(
             string reason,
             bool force)
