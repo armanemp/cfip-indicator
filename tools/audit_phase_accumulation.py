@@ -12,12 +12,9 @@ def read(rel: str) -> str:
 
 # Phase accumulation gate: every phase must keep the automatic trade/order
 # pipeline coupled to one decision, one submission gate and one protection owner.
-auto_market = read("Trading/Execution/AutomaticMarket/AutomaticMarketBrokerExecution.cs")
-aggressive = read("Trading/Execution/Aggressive/AggressiveBrokerExecution.cs")
 pending_stop = read("Trading/Pending/Placement/ContinuationStopPlacement.cs")
 pending_limit = read("Trading/Pending/Placement/ReversalLimitPlacement.cs")
 ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
-market_mutation = read("Trading/Execution/BrokerMarketOrderMutation.cs")
 pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 protection = read("Trading/LiveManagement/ProtectionManager.cs")
@@ -35,8 +32,6 @@ popup_core = read("Indicator/Parameters/12_alerts_core.cs")
 popup_advanced = read("Indicator/Parameters/12_alerts_advanced.cs")
 
 execution_paths = {
-    "automatic-market": auto_market,
-    "aggressive-market": aggressive,
     "pending-stop": pending_stop,
     "pending-limit": pending_limit,
 }
@@ -45,15 +40,10 @@ for name, source in execution_paths.items():
         if token not in source:
             raise SystemExit(f"{name}: missing shared {token}")
 
-if "ValidateSingleExecutionCapacity(" not in read("Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs"):
-    raise SystemExit("automatic-market: canonical capacity gate missing")
-if "ValidateSingleExecutionCapacity(" not in read("Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs"):
-    raise SystemExit("aggressive-market: canonical capacity gate missing")
 if "ValidateSingleExecutionCapacity(" not in read("Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs"):
     raise SystemExit("pending: canonical capacity gate missing")
 
 for source_name, source in (
-    ("market mutation", market_mutation),
     ("pending-stop mutation", pending_mutation),
     ("pending-limit mutation", limit_mutation),
 ):
@@ -163,7 +153,6 @@ if "Chart.DrawRectangle(" in labels:
 # Phase 7.4 / G4 — panel execution/protection state semantics.
 g4_rule = read("Core/Math/ExecutionProtectionPanelStateRule.cs")
 g4_panel = read("UI/Panel/PanelExecutionState.cs")
-g4_auto_rows = read("UI/Panel/Rows/PanelAutoTradingRowsRenderer.cs")
 g4_overview_rows = read("UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs")
 g4_panel_key = read("UI/Panel/PanelRenderOptimization.cs")
 
@@ -227,7 +216,7 @@ if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PA
     raise SystemExit("public parameter contract changed unexpectedly")
 
 print("Phase 9.10 accumulated auto-trade/protection audit PASS")
-print("Automatic market / aggressive / pending paths: shared submission + server-protection hooks PASS")
+print("Remaining Indicator pending paths: shared submission + server-protection hooks PASS")
 print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
