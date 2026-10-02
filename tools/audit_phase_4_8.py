@@ -70,8 +70,11 @@ check(
 )
 
 check(
-    "candidate constraints delegate target-side semantics",
-    "PriceProtectionRule.ValidateTarget(" in constraints
+    "candidate constraints delegate target-side semantics to the canonical owner",
+    (
+        "PriceProtectionRule.ValidateTarget(" in constraints
+        or "RiskRewardMathRule.EvaluateFromRisk(" in constraints
+    )
     and "TargetCandidateRejectionReasons.TargetSideInvalid" in constraints
     and "direction == 1 && target <= entry" not in constraints
     and "direction == -1 && target >= entry" not in constraints,
