@@ -1,3 +1,16 @@
+## 2026-10-03 — Actionable candidate / provider geometry cohesion
+
+A deeper handoff audit found that `TradeOpportunityCandidate` could remain based on the presentation `TradeSetupPreview` after `Actionability` had already evaluated a different canonical actual-entry path.
+
+Correction completed:
+- actionable candidates now bind `Entry/SL/TP1..TP4/Risk/RR` from `CanonicalTradePathGeometry.Preview`;
+- Provider scenario envelopes consequently consume the exact geometry that passed Actionability;
+- WATCH/presentation candidates retain their preview semantics intentionally;
+- parallel opportunity construction was split into orchestration and candidate-builder modules to keep production modules within the 20KB architecture limit;
+- CR5.1 audit scope and architecture ownership checks were reconciled with the new single-owner path.
+
+No public threshold was lowered. M15 remains the trade-decision/execution reference; M5 remains trigger/tuning/entry precision; M1 optional.
+
 ## 2026-10-03 — Canonical trade-path ownership closeout
 
 Status: implementation complete on `phase/canonical-trade-path-geometry-2026-10-03`; repository verification pending.
