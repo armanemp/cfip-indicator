@@ -182,7 +182,6 @@ if "ExecuteMarketRangeOrder(" not in cbot_market or "ExecuteMarketOrder(" not in
     raise SystemExit("cBot must own Market / Market-Range broker mutation")
 if "PlaceStopOrder(" not in pending_cbot or "BrokerAction.SubmitPendingStop" not in pending_cbot:
     raise SystemExit("cBot Pending Stop mutation owner missing")
-pending_cbot = read("Execution/DemoPendingOrderExecutionCoordinator.cs")
 if "PlaceLimitOrder(" not in pending_cbot:
     raise SystemExit("Pending limit cBot mutation owner missing")
 
