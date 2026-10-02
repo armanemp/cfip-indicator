@@ -182,7 +182,8 @@ namespace cAlgo
             double price,
             bool includeDistance,
             bool includeRr,
-            double rr)
+            double rr,
+            int displayNumber = 0)
         {
             if (candidate == null)
                 return
@@ -192,8 +193,19 @@ namespace cAlgo
                     " " +
                     PlanTimeframeTag();
 
+            string prefix =
+                ScenarioLabelPrefix(candidate);
+
+            if (displayNumber > 0)
+                prefix =
+                    "#" +
+                    displayNumber.ToString(
+                        CultureInfo.InvariantCulture) +
+                    " " +
+                    prefix;
+
             string text =
-                ScenarioLabelPrefix(candidate) +
+                prefix +
                 " " +
                 levelName +
                 " " +
