@@ -6,27 +6,6 @@ namespace CFIP.Contracts
 {
     public static class ManagementBusKey
     {
-        private const ulong OffsetBasis = 14695981039346656037UL;
-        private const ulong Prime = 1099511628211UL;
-
-        public static string CommandKeyForInstance(string instanceId) =>
-            "CFIPManagementCommands" + Hash(instanceId);
-
-        public static string ReportKeyForInstance(string instanceId) =>
-            "CFIPManagementReports" + Hash(instanceId);
-
-        private static string Hash(string? value)
-        {
-            ulong hash = OffsetBasis;
-            value = value ?? "";
-
-            unchecked
-            {
-                for (int i = 0; i < value.Length; i++)
-                {
-                    hash ^= value[i];
-                    hash *= Prime;
-                }
             }
 
             return hash.ToString("X16", CultureInfo.InvariantCulture);
