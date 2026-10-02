@@ -98,7 +98,7 @@ check(
 
 check(
     "roadmap records the current root-cause fix",
-    "RetestMarket trigger-path hardening" in roadmap,
+    "RETEST TRIGGER-PATH HARDENING" in roadmap,
 )
 
 check(
