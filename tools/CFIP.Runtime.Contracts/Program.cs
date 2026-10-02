@@ -7008,6 +7008,7 @@ namespace cAlgo
                     plan,
                     decision,
                     0.001,
+                    true,
                     out TradeOpportunityCandidate selected,
                     out string reason) &&
                 selected == tactical &&
