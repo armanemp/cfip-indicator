@@ -30,14 +30,12 @@ namespace cAlgo
                 return EconomicNewsFeedState.NeverLoaded;
 
             DateTime now =
-                nowUtc.Kind == DateTimeKind.Utc
-                    ? nowUtc
-                    : nowUtc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    nowUtc);
 
             DateTime success =
-                lastSuccessUtc.Kind == DateTimeKind.Utc
-                    ? lastSuccessUtc
-                    : lastSuccessUtc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    lastSuccessUtc);
 
             double ageMinutes =
                 (now - success).TotalMinutes;
