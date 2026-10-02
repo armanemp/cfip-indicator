@@ -1007,43 +1007,40 @@ Safety/manual boundary:
 - no second decision/plan/broker-mutation authority introduced;
 - target-terminal replay, panel/chart rendering, broker lifecycle and empirical TP/signal-quality validation remain manual acceptance boundaries.
 
-**Current implementation phase: CI-14 — Canonical risk/reward and protection mathematics.**
-**Next phase after CI-14: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+**Current implementation phase: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+**CI-14 is VERIFIED COMPLETE.**
+**Next implementation phase: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
 
-### CI-14 implementation record — 2026-10-02
+### CI-14 closeout — 2026-10-02
 
-Status: **IMPLEMENTED — awaiting exact-head repository verification.**
+Status: **VERIFIED COMPLETE — PR #171 merged to `main` as `54e2cffb6909be1c5e5183eeacb7dd838e473151`.**
 
-Implementation branch:
-phase/ci-14-canonical-rr-protection
-
-Current implementation head:
-6b5f251603d458f9c363e6bec93649b6aff5e3eb
+Implementation head: `371577118c6c5d6450ce856d232374a291afdb61`.
 
 Completed:
-- introduced one canonical RiskRewardMathRule for risk, reward, nominal RR, effective RR, bounds, synthetic target and live-progress RR;
-- aligned candidate filtering, plan reward integrity, actionability, market/aggressive/pending execution validation and live lifecycle calculations with the same geometry semantics;
-- removed the identified stored-risk/raw-risk RR mismatch around the pip floor;
-- aligned chart LIVE-RR and heartbeat presentation with the same canonical directional-progress calculation;
-- added deterministic BUY/SELL mirror, spread, pip-floor, wrong-side, synthetic-target and live-progress contract fixtures;
-- added tools/audit_phase_ci_14.py and wired it after CI-13 in Source/Architecture;
-- recorded the phase semantics in docs/PHASE-CI-14-CANONICAL-RR-PROTECTION.md.
+- one canonical `RiskRewardMathRule` now owns risk, reward, nominal RR, effective RR, RR bounds, synthetic targets and directional live-progress RR;
+- candidate selection, plan materialization/integrity, actionability, market/aggressive/pending validation, live lifecycle and panel LIVE-RR/heartbeat all consume the same calculation semantics;
+- the stored-risk versus raw-risk pip-floor mismatch was eliminated;
+- deterministic BUY/SELL, spread, pip-floor, wrong-side, synthetic-target and live-progress contracts were added;
+- accumulated CR4.8/CR5.8 audit assumptions were reconciled with the canonical ownership model;
+- the CI-14 audit was repaired and verified as an executable Python gate rather than only documentation text.
 
-Important finding:
-The earlier cross-component symptoms are not yet proven to be purely analytical or purely presentation-related. CI-14 establishes one RR/protection semantic owner; CI-15 must trace exact Entry/SL/TP/intent values through execution and broker boundaries, and CI-16 must classify missed/weak signals with deterministic replays instead of weakening gates blindly.
+Verification on the final implementation HEAD:
+- Source/Architecture: **PASS** — run #2691;
+- Runtime Acceptance Contracts: **PASS** — run #2500;
+- cTrader Compile/Build: **PASS** — run #2684;
+- Planning Contracts: **PASS** — final compile/contract workflow output reported `Planning contracts OK`;
+- accumulated Source/Architecture audits through CI-14: **PASS**.
 
-Safety:
-- no public parameter/default contract changed;
-- no strategy threshold was tuned;
-- no second decision or broker-mutation authority introduced.
+Safety/manual boundary:
+- no public parameter names/types/defaults were changed;
+- no strategy, RR, confidence, entry, SL/TP, risk or execution threshold was tuned;
+- no second decision or execution authority was introduced;
+- target-terminal timing, broker lifecycle, panel rendering latency and empirical signal-quality/profitability validation remain manual acceptance work.
 
-Verification gate still required on this exact head:
-- Source/Architecture;
-- Runtime Acceptance Contracts;
-- cTrader Compile/Build;
-- Planning Contracts.
+The user's cross-component mismatch concern remains open as the next diagnostic chain: CI-15 traces exact Entry/SL/TP/intent values through every execution/broker boundary before any strategy tuning is considered.
 
-**Next implementation phase after CI-14 verification: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+Next phase: **CI-15 — End-to-end execution-geometry and broker-boundary audit.**
 
-Operator action after merge: run git pull --ff-only on local main.
+Operator action: run `git pull --ff-only` on local `main`.
