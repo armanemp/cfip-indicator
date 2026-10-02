@@ -69,8 +69,12 @@ require(
     "cBot stop lifecycle must publish terminal state",
 )
 
-# Exact-instance heartbeat is the Indicator connection/execution authority.
+# Direct chart presence is the physical connection authority; heartbeat adds
+# freshness and execution-state truth.
 require(
+    "ChartRobots" in reader and
+    "CbotIdentity.DisplayName" in reader and
+    "TryFindChartCbot" in reader and
     "CbotExecutionStateSnapshot" in reader and
     "ForIndicatorInstance(" in reader and
     "InstanceId" in reader and
@@ -82,9 +86,10 @@ require(
     "canonical cBot connection presentation owner is missing",
 )
 for token in (
-    "CBOT NOT CONNECTED",
+    "CBOT NOT ATTACHED",
     "CBOT RECONNECTING",
     "CBOT CONNECTED",
+    "CBOT CONNECTING",
 ):
     require(token in reader, "missing canonical connection state: " + token)
 
@@ -113,11 +118,17 @@ require(
     "overview panel must consume canonical cBot connection presentation",
 )
 
-# This phase must stay SDK-compatible: ChartRobots is intentionally not required
-# on Indicator; connection proof is the exact IndicatorInstanceId heartbeat.
+# The supported ChartRobots API is required so the panel can distinguish
+# physically attached/stopped cBots from an absent cBot before consulting
+# LocalStorage heartbeat freshness.
 require(
-    "ChartRobots" not in reader,
-    "Indicator connection reader must not depend on direct ChartRobots API",
+    "foreach (ChartRobot candidate in ChartRobots)" in reader,
+    "Indicator connection reader must enumerate chart robots directly",
+)
+require(
+    "robot.State" in reader and
+    'string.Equals(\n                state,\n                "Running"' in reader,
+    "Indicator connection reader must use cBot runtime state",
 )
 
 if errors:

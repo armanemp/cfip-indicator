@@ -10,6 +10,85 @@ namespace cAlgo
         private DateTime _nextCbotStateReadUtc = DateTime.MinValue;
         private string _cBotStateReadError = string.Empty;
 
+        private bool TryFindChartCbot(
+            out ChartRobot robot,
+            out string reason)
+        {
+            robot = null;
+            reason = "CBOT NOT ATTACHED";
+
+            int count = 0;
+
+            try
+            {
+                foreach (ChartRobot candidate in ChartRobots)
+                {
+                    if (candidate == null)
+                        continue;
+
+                    if (!string.Equals(
+                            candidate.Name,
+                            CbotIdentity.DisplayName,
+                            StringComparison.Ordinal))
+                        continue;
+
+                    robot = candidate;
+                    count++;
+                }
+            }
+            catch (Exception ex)
+            {
+                reason =
+                    "CBOT PRESENCE READ FAILED • " +
+                    ex.Message;
+                return false;
+            }
+
+            if (count == 0)
+            {
+                reason = "CBOT NOT ATTACHED";
+                return false;
+            }
+
+            if (count > 1)
+            {
+                robot = null;
+                reason = "CBOT AMBIGUOUS • MULTIPLE INSTANCES";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(robot.InstanceId))
+            {
+                robot = null;
+                reason = "CBOT INSTANCE ID UNAVAILABLE";
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool IsChartCbotRunning(
+            out ChartRobot robot,
+            out string state,
+            out string reason)
+        {
+            state = "UNKNOWN";
+
+            if (!TryFindChartCbot(
+                    out robot,
+                    out reason))
+                return false;
+
+            state =
+                robot.State.ToString() ?? "UNKNOWN";
+
+            return string.Equals(
+                state,
+                "Running",
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+
         private void RefreshCbotExecutionStateIfDue(
             bool force = false)
         {
@@ -101,9 +180,30 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
+            ChartRobot chartRobot;
+            string chartState;
+            string chartReason;
+
+            if (!IsChartCbotRunning(
+                    out chartRobot,
+                    out chartState,
+                    out chartReason))
+            {
+                if (chartRobot != null)
+                    return
+                        "CBOT " +
+                        chartState.ToUpperInvariant();
+
+                return
+                    chartReason ==
+                    "CBOT NOT ATTACHED"
+                        ? "CBOT NOT ATTACHED • START cBot ON THIS CHART"
+                        : chartReason;
+            }
+
             if (_cBotExecutionState == null)
                 return
-                    "CBOT NOT CONNECTED • START cBot ON THIS CHART";
+                    "CBOT CONNECTING • HEARTBEAT PENDING";
 
             double ageSeconds =
                 Math.Max(
@@ -117,12 +217,6 @@ namespace cAlgo
                     ageSeconds.ToString("F1") +
                     "s";
 
-            if (string.Equals(
-                    _cBotExecutionState.Reason,
-                    "CBOT STOPPED",
-                    StringComparison.OrdinalIgnoreCase))
-                return "CBOT STOPPED";
-
             return
                 "CBOT CONNECTED • " +
                 CbotExecutionStatePanelText();
@@ -131,6 +225,16 @@ namespace cAlgo
         private bool IsCbotExecutionStateFresh()
         {
             if (_cBotExecutionState == null)
+                return false;
+
+            ChartRobot chartRobot;
+            string chartState;
+            string chartReason;
+
+            if (!IsChartCbotRunning(
+                    out chartRobot,
+                    out chartState,
+                    out chartReason))
                 return false;
 
             double ageSeconds =
@@ -231,6 +335,16 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
+            ChartRobot chartRobot;
+            string chartState;
+            string chartReason;
+
+            if (!IsChartCbotRunning(
+                    out chartRobot,
+                    out chartState,
+                    out chartReason))
+                return false;
+
             return
                 IsCbotExecutionStateFresh() &&
                 (_cBotExecutionState.MarketExecutionEnabled ||
@@ -241,6 +355,16 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
+            ChartRobot chartRobot;
+            string chartState;
+            string chartReason;
+
+            if (!IsChartCbotRunning(
+                    out chartRobot,
+                    out chartState,
+                    out chartReason))
+                return false;
+
             return
                 IsCbotExecutionStateFresh() &&
                 (_cBotExecutionState.PendingStopExecutionEnabled ||
@@ -250,6 +374,16 @@ namespace cAlgo
         private bool CbotCanManage()
         {
             RefreshCbotExecutionStateIfDue();
+
+            ChartRobot chartRobot;
+            string chartState;
+            string chartReason;
+
+            if (!IsChartCbotRunning(
+                    out chartRobot,
+                    out chartState,
+                    out chartReason))
+                return false;
 
             return
                 IsCbotExecutionStateFresh() &&

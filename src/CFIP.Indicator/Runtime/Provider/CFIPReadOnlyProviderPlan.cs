@@ -150,7 +150,11 @@ namespace cAlgo
                 expiryUtc,
                 sourceIntent.Source ?? "",
                 executionLabel,
-                marketProfile);
+                marketProfile)
+            {
+                MaxSpreadToStopRiskRatio =
+                    MaximumSpreadToStopRiskRatio
+            };
         }
 
         private MarketExecutionProfile BuildCanonicalMarketExecutionProfile(

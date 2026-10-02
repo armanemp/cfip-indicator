@@ -17,6 +17,8 @@ namespace CFIP.Contracts
         string ExecutionLabel,
         MarketExecutionProfile MarketProfile)
     {
+        public double MaxSpreadToStopRiskRatio { get; init; } =
+            double.NaN;
         public ExecutionIntent(
             ContractIdentity identity,
             ExecutionAction action,

@@ -108,6 +108,14 @@ namespace CFIP.cBot
         private readonly CbotBrokerReconciliation _brokerReconciliation =
             new CbotBrokerReconciliation();
 
+        private readonly CbotExecutionEnvironmentGate _executionEnvironment =
+            new CbotExecutionEnvironmentGate();
+
+        private readonly Risk.CbotDailyLossGuard _dailyLossGuard =
+            new Risk.CbotDailyLossGuard();
+
+        private CbotIndicatorExecutionSettings _executionSettings;
+
         private CbotBrokerReconciliationResult _reconciliation;
         private DateTime _nextBrokerReconciliationUtc = DateTime.MinValue;
 
@@ -162,6 +170,7 @@ namespace CFIP.cBot
             SubscribeIndicatorLifecycleEvents();
             SubscribeBrokerLifecycleEvents();
             RefreshIndicatorBinding(true);
+            RefreshExecutionSettings(true);
             ReloadSignalStore(true);
             ReconcileBrokerState(true);
             PublishExecutionState("CBOT STARTED", true);
@@ -177,6 +186,7 @@ namespace CFIP.cBot
                 return;
             }
 
+            RefreshExecutionSettings(false);
             ReloadSignalStore(false);
 
             DateTime nowUtc = Server.TimeInUtc;
@@ -300,6 +310,34 @@ namespace CFIP.cBot
                 EnableDemoPendingLimitExecution ||
                 EnableDemoAggressiveExecution;
 
+            bool pendingAction =
+                envelope.Intent != null &&
+                (envelope.Intent.Action ==
+                    ExecutionAction.PendingStop ||
+                 envelope.Intent.Action ==
+                    ExecutionAction.PendingLimit);
+
+            if (executionEnabled &&
+                !_executionEnvironment.Evaluate(
+                    this,
+                    envelope,
+                    MaxExecutionMarginUsagePercent,
+                    ExecutionMarginBufferPercent,
+                    _executionSettings,
+                    _dailyLossGuard,
+                    pendingAction,
+                    nowUtc,
+                    out string environmentReason))
+            {
+                LogBlockedState(
+                    environmentReason);
+                PublishExecutionState(
+                    "EXECUTION BLOCKED • " +
+                    environmentReason,
+                    true);
+                return;
+            }
+
             bool actionEnabled =
                 envelope.Intent != null &&
                 (envelope.Intent.Action == ExecutionAction.Aggressive
@@ -400,6 +438,7 @@ namespace CFIP.cBot
             {
                 _boundIndicatorInstanceId = "";
                 _activeManagedExecutionLabel = "";
+                _executionSettings = null;
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
                 return false;
@@ -411,6 +450,7 @@ namespace CFIP.cBot
             {
                 _boundIndicatorInstanceId = "";
                 _activeManagedExecutionLabel = "";
+                _executionSettings = null;
                 LogBlockedState("CFIP INDICATOR INSTANCE ID UNAVAILABLE");
                 return false;
             }
@@ -424,12 +464,51 @@ namespace CFIP.cBot
 
             _boundIndicatorInstanceId = instanceId;
 
+            _executionSettings = null;
+            RefreshExecutionSettings(true);
+
             Print(
                 "CFIP ANALYSIS BIND | state=READY | name={0} | instance={1}",
                 CfipIndicatorChartBinding.DisplayName,
                 _boundIndicatorInstanceId);
 
             return true;
+        }
+
+        private void RefreshExecutionSettings(bool force)
+        {
+            if (string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+            {
+                _executionSettings = null;
+                return;
+            }
+
+            if (!force &&
+                _executionSettings != null)
+                return;
+
+            if (!CfipIndicatorChartBinding.TryFind(
+                    this,
+                    out ChartIndicator indicator,
+                    out string reason))
+            {
+                _executionSettings = null;
+                LogBlockedState(reason);
+                return;
+            }
+
+            if (!CbotIndicatorExecutionSettings.TryRead(
+                    indicator,
+                    out CbotIndicatorExecutionSettings settings,
+                    out reason))
+            {
+                _executionSettings = null;
+                LogBlockedState(reason);
+                return;
+            }
+
+            _executionSettings = settings;
         }
 
         private void ReloadSignalStore(bool force)
@@ -621,6 +700,7 @@ namespace CFIP.cBot
             RefreshIndicatorBinding(true);
 
             ReconcileBrokerState(true);
+            RefreshExecutionSettings(true);
 
             if (!string.IsNullOrWhiteSpace(
                     _boundIndicatorInstanceId))
