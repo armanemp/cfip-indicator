@@ -1,6 +1,6 @@
 ## CI-21 continuation — 2026-10-02
 
-Status: **VERIFIED COMPLETE — merged to `main) via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
 
 Canonical rule reaffirmed:
 - **M15 is the trading/execution reference timeframe.**
