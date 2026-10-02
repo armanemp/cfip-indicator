@@ -1,3 +1,18 @@
+## 2026-10-02 — cBot Attachment / Alert Audio Hardening
+
+- Root-caused the false CBOT NOT ATTACHED state: chart discovery compared Type.Name with the display label instead of the actual stable class type.
+- Added one shared stable type identity for the cBot (CFIPExecutionBot) and one for the Indicator (CFIPIndicator).
+- Kept exact InstanceId and fresh heartbeat as execution-liveness requirements; chart attachment and heartbeat are no longer conflated.
+- Changed empty LocalStorage heartbeat from CBOT NOT ATTACHED to CBOT HEARTBEAT PENDING.
+- Hardened alert audio delivery so an invalid custom sound path falls back to the semantic cTrader sound cue.
+- Added explicit CFIP ALERT QUEUED, CFIP ALERT QUEUE REJECTED and CFIP ALERT SOUND DELIVERED diagnostics.
+- Bounded each alert pump to four deliveries to avoid UI/audio bursts while preventing queued alerts from waiting unnecessarily.
+- Added startup logging for the effective alert-audio configuration.
+- Added a dedicated regression audit and accumulated it into .github/workflows/source-check.yml.
+- Full pre-analysis -> M15 -> M5 -> M1(optional) -> entry/SL/TP -> signal -> alert -> contract -> cBot -> broker/protection -> outcome chain re-audited.
+- No strategy threshold, RR rule, risk setting or broker execution capacity was weakened.
+- Commercial-readiness note: this hardening improves reliability/observability but is not evidence of profitability; replay/OOS/forward-demo measurement remains mandatory.
+
 ## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
 
 Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
