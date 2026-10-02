@@ -360,6 +360,14 @@ No broker mutation is added in P3.
 Phase report: `docs/PHASE-CBOT-P3-CBOT-HOST-SHADOW.md`.
 
 
+## CBOT-P4A — Market / Market Range — ACTIVE IMPLEMENTATION
+
+Status: **Implementation complete on branch `phase/cbot-p4a-market-range-extraction`; CI/target-terminal verification pending.**
+
+Market and Market Range broker mutation now belong to `src/CFIP.cBot/Execution/MarketBrokerMutation.cs`. The Indicator only validates/calculates/prepares and publishes the exact immutable intent/profile. The old Indicator market mutation owner has been removed.
+
+Required gates for this batch: dedicated P4A audit, accumulated Source/Architecture audits, Runtime Acceptance Contracts and cTrader Compile/Build. After verification, the next batch is **CBOT-P4B — Aggressive Market**.
+
 ## CBOT-P4 — Broker Mutation Extraction
 
 Extract and remove, in controlled batches:
