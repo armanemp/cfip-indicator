@@ -1,3 +1,16 @@
+## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+M15 is now the canonical execution timeframe. M5/M1 are defensive tuning inputs and H1+ remains higher-timeframe context/reward support. The cBot default/guard is M15.
+
+The same phase adds spread-aware net reward/effective RR and a broker-side final margin cap that can only reduce the requested exposure.
+
+Manual target-terminal validation remains required for actual cTrader M15 chart behavior, panel responsiveness, signal frequency, broker margin behavior and demo execution.
+
+Next: **CBOT-P4C — Pending Stop authority extraction**.
+
+
 ## CBOT-P4B — Aggressive Authority + Panel Geometry Integrity — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` as `33dd37f225fb9e2677070f122b5068b0c2df2e92`.**
