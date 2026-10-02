@@ -166,34 +166,11 @@ namespace cAlgo
             return result;
         }
 
-        private void TrySmartPendingOrders(
+        private void RefreshPendingExecutionIntent(
             int closedM5)
         {
             _lastAutoOrderAttemptUtc =
                 TimeInUtc;
-
-            if (AutomaticOrdersEnabled)
-            {
-                string dailyLossReason;
-
-                if (DailyLossLimitHit(
-                        TimeInUtc,
-                        out dailyLossReason))
-                {
-                    _autoOrdersBlockReason =
-                        dailyLossReason;
-
-                    CancelAllOrders();
-                    return;
-                }
-            }
-
-            if (!AutomaticOrdersEnabled)
-            {
-                _autoOrdersBlockReason =
-                    "DISABLED";
-                return;
-            }
 
             RefreshLiveDecisionActionability(
                 closedM5);
@@ -222,23 +199,14 @@ namespace cAlgo
                 return;
             }
 
-            CleanupPendingOrdersIfNeeded(
-                closedM5);
-
             PendingOrder existingPending =
                 GetManagedPendingOrder();
 
-            if (existingPending != null)
+            if (existingPending != null ||
+                ManagedPendingOrderCount() > 0)
             {
                 _autoOrdersBlockReason =
                     "PENDING ORDER EXISTS";
-                return;
-            }
-
-            if (ManagedPendingOrderCount() > 0)
-            {
-                _autoOrdersBlockReason =
-                    "PENDING ORDER ALREADY EXISTS";
                 return;
             }
 
@@ -256,13 +224,6 @@ namespace cAlgo
                 return;
             }
 
-            if (!EnsureTradingPermission())
-            {
-                _autoOrdersBlockReason =
-                    "TRADING PERMISSION";
-                return;
-            }
-
             _autoOrdersBlockReason =
                 "PENDING • " +
                 arbiter.Reason +
@@ -271,18 +232,26 @@ namespace cAlgo
                 " / R " +
                 arbiter.ReversalScore;
 
-            // The arbiter is authoritative for this cycle. A failed placement
-            // never silently falls through to the other pending strategy.
+            // Pending Stop is now an analysis-owned execution intent. The cBot
+            // performs the broker mutation. Reversal Limit remains on the staged
+            // P4D migration path until its owner is moved.
             if (arbiter.Choice ==
                 PendingArbiterChoice.ContinuationStop)
             {
-                if (PlaceContinuationStop(
+                if (PrepareContinuationStopForCbot(
                         closedM5))
                 {
                     _autoOrdersBlockReason =
-                        "ORDER PLACED";
+                        "PENDING STOP • READY FOR CBOT";
                 }
 
+                return;
+            }
+
+            if (!AutomaticOrdersEnabled)
+            {
+                _autoOrdersBlockReason =
+                    "PENDING LIMIT • WAITING FOR CBOT P4D";
                 return;
             }
 
