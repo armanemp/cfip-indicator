@@ -3175,7 +3175,7 @@ for token in (
     "MaximumEntryDistanceAtr",
     "Tp1MinimumRR",
     "MinimumRequiredRRForRegime(",
-    "microConflict",
+    "MicroConflict",
     "OPPOSING REGULAR DIVERGENCE",
     "RR BELOW ACTIONABLE FLOOR",
     "LATE / PRICE EXTENDED",
