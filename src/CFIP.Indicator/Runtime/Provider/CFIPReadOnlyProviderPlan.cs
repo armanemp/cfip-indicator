@@ -14,6 +14,7 @@ namespace cAlgo
                 string planId,
                 OpportunityLane lane,
                 int direction,
+                string sourceTimeframe,
                 DateTime createdUtc,
                 DateTime observedUtc,
                 int closedM5)
@@ -47,9 +48,9 @@ namespace cAlgo
                     SymbolName ?? "",
                     ResolveContractDirection(direction),
                     ResolveContractLane(lane),
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString(),
+                    ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                        null,
+                        sourceTimeframe),
                     createdUtc,
                     closedM5,
                     expiryUtc,
