@@ -173,7 +173,10 @@ namespace cAlgo
                                             frames[i],
                                             idx,
                                             direction,
-                                            frameAtr);
+                                            frameAtr,
+                                            false,
+                                            entry,
+                                            true);
                 
                                     if (fvg != null)
                                     {
