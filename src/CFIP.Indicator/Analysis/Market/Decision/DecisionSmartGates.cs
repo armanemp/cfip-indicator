@@ -124,9 +124,18 @@ namespace cAlgo
                          MinimumStructuralConfirmations,
                          MinimumStructuralSequence)))
                 {
-                    return new DecisionFilterResult(
-                        false,
-                        "TREND EVIDENCE");
+                    bool tacticalRetestPath =
+                        decision.TacticalOpportunityAllowed &&
+                        decision.TacticalOpportunityQuality >=
+                        TacticalOpportunityMinimumQuality &&
+                        decision.TacticalOpportunityRR >=
+                        TacticalOpportunityMinimumRR &&
+                        decision.Direction == _m5Frame.Direction;
+
+                    if (!tacticalRetestPath)
+                        return new DecisionFilterResult(
+                            false,
+                            "TREND EVIDENCE");
                 }
 
                 if (regime != null &&
