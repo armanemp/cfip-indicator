@@ -4,11 +4,18 @@ For every future phase, modify the existing canonical production owner directly.
 
 ## CBOT-P4E — Management Command + Remaining Broker Mutation Authority — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — branch verification pending.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #197 as `996cd9cb4872608674269c205b7a03b33ab9e812`.**
 
-The Indicator's remaining broker mutation paths are now command-only; `ManagementExecutionCoordinator` in the cBot is the single owner for cancellation, full/partial close, SL, absolute TP, TP-by-pips and server TP ladder mutation.
+The Indicator's remaining broker mutation paths are command-only; `ManagementExecutionCoordinator` in the cBot is the single owner for cancellation, full/partial close, SL, absolute TP, TP-by-pips and server TP ladder mutation.
 
-Verification pending before merge: Source / Architecture, Runtime Acceptance, cTrader Compile/Build and CBOT-P4E audit. Target-terminal verification remains manual.
+Verification on final merged implementation:
+- Source / Architecture workflow #3064: **PASS**;
+- Runtime Acceptance workflow #2873: **PASS**;
+- cTrader Compile/Build workflow #3057: **PASS**;
+- CBOT-P4E audit: **PASS**;
+- accumulated architecture/execution/UI/identity audits: **PASS**.
+
+Target-terminal broker execution verification remains manual. No profitability claim is made from this structural migration.
 
 Phase record: `docs/PHASE-CBOT-P4E-MANAGEMENT-AUTHORITY-2026-10-02.md`.
 
@@ -2315,4 +2322,3 @@ Operator-facing corrections:
 No strategy/threshold or broker authority change is allowed in this phase.
 
 Phase report: `docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md`.
-
