@@ -117,6 +117,7 @@ namespace cAlgo
             VerifyIndependentTimeframeScenarioSemanticsF7();
             VerifyMtfPrimaryTimeframeSignals();
             VerifyMtfPrimaryLocationEvidence();
+            VerifyMtfPrimaryProviderIdentity();
             VerifyTargetObstacleTelemetryF8();
             VerifyOrphanManagedProtectionF3();
             VerifyEntryTrapRiskG2();
@@ -10893,6 +10894,69 @@ namespace cAlgo
 
             Console.WriteLine(
                 "MTF-P2 primary location OB/FVG contracts PASS");
+        }
+
+
+        private static void VerifyMtfPrimaryProviderIdentity()
+        {
+            TradeOpportunityCandidate m15 =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-M15-BUY",
+                    SourceTimeframe = "M15",
+                    BasePlanTimeframe = "M5",
+                    IsPrimaryTimeframeSignal = true
+                };
+
+            TradeOpportunityCandidate h1 =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-H1-SELL",
+                    SourceTimeframe = "H1",
+                    BasePlanTimeframe = "M5",
+                    IsPrimaryTimeframeSignal = true
+                };
+
+            TradeOpportunityCandidate m5 =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "CANONICAL-TACTICAL-BUY",
+                    SourceTimeframe = "M5",
+                    BasePlanTimeframe = "M5"
+                };
+
+            Assert(
+                ProviderScenarioIdentityRule.ResolveScenarioId(
+                    m15,
+                    "FALLBACK") == "TF-M15-BUY" &&
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    m15) == "M15",
+                "provider identity preserves M15 scenario and source timeframe");
+
+            Assert(
+                ProviderScenarioIdentityRule.ResolveScenarioId(
+                    h1,
+                    "FALLBACK") == "TF-H1-SELL" &&
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    h1) == "H1",
+                "provider identity preserves H1 scenario and source timeframe");
+
+            Assert(
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    m5) == "M5" &&
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    null,
+                    "") == "M5",
+                "provider identity falls back deterministically to canonical M5");
+
+            Assert(
+                ProviderScenarioIdentityRule.ResolveScenarioId(
+                    null,
+                    "CFIP-SC1|fallback") == "CFIP-SC1|fallback",
+                "provider identity preserves explicit fallback scenario id");
+
+            Console.WriteLine(
+                "MTF-P3 provider scenario identity contracts PASS");
         }
 
         private static void Assert(bool condition, string name)
