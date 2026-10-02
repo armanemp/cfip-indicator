@@ -1704,15 +1704,42 @@ if PLAN_BUILDER.stat().st_size > 4096:
     raise SystemExit("PlanBuilder.cs must remain a thin orchestration boundary")
 for token in (
     "TryPreparePlanInputs(",
-    "BuildTargetLevels(",
-    "SelectTargets(",
-    "TryBuildPlanTargets(",
+    "CanonicalTradePathGeometry",
     "CreatePlanFromInputs(",
-    "EnrichPlanTargetMetadata(",
     "ValidatePlanIntegrity(",
 ):
     if token not in PLAN_BUILDER_CODE:
         raise SystemExit(f"PlanBuilder orchestration call missing: {token}")
+
+for forbidden in (
+    "BuildTargetLevels(",
+    "SelectTargets(",
+    "TryBuildPlanTargets(",
+    "EnrichPlanTargetMetadata(",
+    "BuildStructuralStop(",
+):
+    if forbidden in PLAN_BUILDER_CODE:
+        raise SystemExit(
+            f"PlanBuilder must consume canonical trade geometry instead of rebuilding: {forbidden}"
+        )
+
+PLAN_INPUT = ROOT / "Planning" / "TradePlan" / "PlanInputPreparation.cs"
+PLAN_INPUT_CODE = PLAN_INPUT.read_text(encoding="utf-8")
+for token in (
+    "OpportunityLane lane",
+    "TryBuildCanonicalTradePathGeometry(",
+    "canonicalPath.Entry",
+    "canonicalPath.Stop",
+    "canonicalPath.Risk",
+):
+    if token not in PLAN_INPUT_CODE:
+        raise SystemExit(
+            f"PlanInputPreparation is missing canonical trade-path handoff: {token}"
+        )
+
+CANONICAL_TRADE_PATH_BUILDER = ROOT / "Planning" / "TradePlan" / "CanonicalTradePathGeometryBuilder.cs"
+if not CANONICAL_TRADE_PATH_BUILDER.exists():
+    raise SystemExit("Canonical trade-path builder is missing")
 for declaration in (
     "private double BuildStructuralStop(",
     "private List<Level> BuildTargetLevels(",
