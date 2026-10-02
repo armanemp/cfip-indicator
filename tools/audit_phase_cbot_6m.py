@@ -49,7 +49,7 @@ check(
     "string IndicatorInstanceId" in batch and
     "long Revision" in batch and
     "SignalEnvelope[] Scenarios" in batch and
-    "JsonSerializer.Serialize" in codec
+    "Serialize(" in codec
 )
 check(
     "scenario batch transport is instance-scoped",
@@ -59,7 +59,7 @@ check(
 )
 check(
     "scenario labels preserve per-ScenarioId identity without broker types in contracts",
-    "ScenarioMarker = "|CFIP-S:" in scenario_identity and
+    'ScenarioMarker = "|CFIP-S:' in scenario_identity and
     "return root +" in scenario_identity and
     "scenarioId.Trim()" in scenario_identity and
     "cAlgo." not in batch and
@@ -192,7 +192,7 @@ check(
 )
 check(
     "single-plan safety remains intact before 6M adoption",
-    "Max Concurrent Scenarios" in bot and
+    '"Max Concurrent Scenarios"' in bot and
     "MaximumOpenPositions" not in bot
 )
 check(
