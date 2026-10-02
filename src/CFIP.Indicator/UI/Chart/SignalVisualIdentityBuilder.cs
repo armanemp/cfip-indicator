@@ -5,54 +5,55 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private void PopulateCanonicalVisualIdentity(
-    SignalVisualSnapshot snapshot,
-    int closedM5,
-    int direction)
+            SignalVisualSnapshot snapshot,
+            int closedM5,
+            int direction)
         {
-    if (snapshot == null)
+            if (snapshot == null)
+            {
                 return;
+            }
 
-    string signalId =
+            string signalId =
                 ResolveProviderSignalId(
                     closedM5);
 
-    OpportunityLane lane =
+            OpportunityLane lane =
                 ResolveProviderLane();
 
-    string scenarioId =
+            string scenarioId =
                 ResolveProviderScenarioId(
                     signalId,
                     lane,
                     direction);
 
-    string planId =
+            string planId =
                 ResolveProviderPlanId(
                     signalId);
 
-    TradeOpportunityCandidate scenario = null;
-    _tradePlanRegistry.TryGetCandidate(
+            TradeOpportunityCandidate scenario = null;
+            _tradePlanRegistry.TryGetCandidate(
                 scenarioId,
                 out scenario);
 
-    snapshot.SignalId =
+            snapshot.SignalId =
                 signalId ?? "";
 
-    snapshot.ScenarioId =
+            snapshot.ScenarioId =
                 scenarioId ?? "";
 
-    snapshot.PlanId =
+            snapshot.PlanId =
                 planId ?? "";
 
-    snapshot.SourceTimeframe =
+            snapshot.SourceTimeframe =
                 ProviderScenarioIdentityRule.ResolveSourceTimeframe(
                     scenario,
                     ProviderScenarioIdentityRule.CanonicalM5);
 
-    snapshot.Revision =
+            snapshot.Revision =
                 Math.Max(
                     1,
                     _cfipProviderRevision);
         }
-
     }
 }
