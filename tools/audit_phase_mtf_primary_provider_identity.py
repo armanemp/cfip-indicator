@@ -31,8 +31,8 @@ require(
     "provider must map envelope source timeframe from the exact scenario candidate",
 )
 require(
-    "ResolveProviderPlanScenarioCandidate" in provider and
-    "ScenarioExecutionPolicyRule.TryResolvePlanScenario" in provider,
+    "ScenarioExecutionPolicyRule.TryResolvePlanScenario" in provider and
+    'ResolveProviderScenarioId(' in provider,
     "provider plan scenario identity must reuse the canonical scenario resolver",
 )
 require(
