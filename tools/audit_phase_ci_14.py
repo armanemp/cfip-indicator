@@ -108,7 +108,7 @@ for name, path in geometry_consumer_paths.items():
         "RiskRewardGeometryRule.CalculateNominalRR(" in text or
         "RiskRewardGeometryRule.CalculateNominalRRFromDistances(" in text or
         (
-            name == "PlanRewardRiskQualityRule" and
+            name in ("PlanRewardRiskQualityRule", "ExecutionPlanGeometryRule") and
             "RiskRewardGeometryRule.Evaluate(" in text
         ),
     )
