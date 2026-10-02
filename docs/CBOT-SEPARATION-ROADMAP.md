@@ -659,7 +659,11 @@ Acceptance:
 
 ### CBOT-2 — Indicator read-only signal surface
 
-The Indicator gets a public read-only provider interface.
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2790 PASS; Runtime Acceptance #2599 PASS; cTrader Compile #2783 PASS.
+
+The Indicator now exposes a public read-only provider interface.
 
 The provider must expose an immutable snapshot/envelope rather than references to mutable internal `Plan` or broker objects. The provider surface must also expose freshness state and a deterministic "no actionable signal" state.
 
