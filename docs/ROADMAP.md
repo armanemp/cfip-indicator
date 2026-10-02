@@ -1,7 +1,7 @@
 ## Permanent Development Rule — Canonical Owners / No Patches
 ## CI-21 — Primary M15 Signal Visibility / M5 Entry Tuning — 2026-10-02
 
-Status: **VERIFIED COMPLETE — merged to `main) via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
 
 Scope:
 - preserve **M15 as the canonical execution/trade-decision timeframe**;
