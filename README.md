@@ -19,6 +19,6 @@ Clean, modular cTrader indicator with a single execution authority.
 - Planning: entry, trigger, filters, execution model, trade plan and target engines.
 - Runtime: initialization, MTF context and calculation cycle.
 - Trading: identity, pending orders, execution, lifecycle, live management, risk, validation and intelligence.
-- UI: chart, panel, historical and popup renderers.
+- UI: chart, panel, historical and unified alert-rail presentation.
 
 See `docs/ARCHITECTURE.md`, `docs/EDITING-GUIDE.md`, `docs/ROADMAP.md`, `docs/PHASE-CR1-9-MINOR-CLEANUP.md` and `docs/OSS-COMPONENT-REGISTER.md`.
