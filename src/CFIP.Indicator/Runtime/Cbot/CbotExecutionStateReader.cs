@@ -177,9 +177,24 @@ namespace cAlgo
             if (string.IsNullOrWhiteSpace(modes))
                 modes = "NONE";
 
+            string lifecycle =
+                string.IsNullOrWhiteSpace(_cBotExecutionState.LifecycleState)
+                    ? "UNKNOWN"
+                    : _cBotExecutionState.LifecycleState;
+
+            string protection =
+                string.IsNullOrWhiteSpace(_cBotExecutionState.ProtectionState)
+                    ? "UNKNOWN"
+                    : _cBotExecutionState.ProtectionState;
+
             return
                 "CBOT " +
-                (_cBotExecutionState.RuntimeState ?? "UNKNOWN") +
+                lifecycle +
+                " • " +
+                protection +
+                (_cBotExecutionState.RecoveryRequired
+                    ? " • RECOVERY"
+                    : "") +
                 " • " +
                 modes +
                 " • POS " +
@@ -188,7 +203,11 @@ namespace cAlgo
                 Math.Max(0, _cBotExecutionState.ManagedPendingOrders) +
                 " • " +
                 ageSeconds.ToString("F1") +
-                "s";
+                "s" +
+                (_cBotExecutionState.RecoveryRequired &&
+                 !string.IsNullOrWhiteSpace(_cBotExecutionState.RecoveryReason)
+                    ? " • " + _cBotExecutionState.RecoveryReason
+                    : "");
         }
 
         private string CbotExecutionScenarioPanelText()
@@ -242,6 +261,9 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             if (!IsCbotExecutionStateFresh())
+                return PanelWarningColor;
+
+            if (_cBotExecutionState.RecoveryRequired)
                 return PanelWarningColor;
 
             string state =
