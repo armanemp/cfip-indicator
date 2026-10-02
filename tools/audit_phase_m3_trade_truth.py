@@ -174,8 +174,9 @@ require(
 require(
     "lineLeft - offset" in label_anchor and
     "Chart.RemoveObject(" in label_renderer and
-    "Color.White" in label_renderer,
-    "M3: compact signal labels must stay left of the line, background-free and white",
+    "return semanticColor;" in label_renderer and
+    "GetReadableLabelTextColor(" in label_renderer,
+    "M3: compact signal labels must stay left of the line, background-free and line-colored",
 )
 
 require(
