@@ -106,7 +106,7 @@ require(
 
 require(
     HOST,
-    r"\[Indicator\(\s*\n\s*IsOverlay\s*=",
+    r"\[Indicator\(\s*(?:"[^"]+"\s*,\s*)?IsOverlay\s*=",
     "supported non-obsolete cTrader indicator attribute",
 )
 if '"CFIPIndicator"' in HOST.read_text(encoding="utf-8"):
