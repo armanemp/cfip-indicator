@@ -124,9 +124,8 @@ namespace cAlgo
                                     key,
                                     message);
 
-                            // Restriction/blocked candidates may show the configured
-                            // diagnostic popup, but never emit the normal signal sound
-                            // or chart marker.
+                            // Restriction/blocked candidates remain diagnostic panel messages
+                            // and never emit the normal signal sound or chart marker.
                             bool playSound =
                                 EnableSoundAlerts &&
                                 !blockedCandidateAlert;
@@ -176,49 +175,6 @@ namespace cAlgo
                             }
                 
 
-                        }
-
-        private bool IsImportantPopupAlertKey(
-                            string key,
-                            bool critical)
-                        {
-                            if (critical)
-                                return true;
-
-                            if (string.IsNullOrWhiteSpace(key))
-                                return false;
-
-                            string[] prefixes =
-                            {
-                                "ACTION|",
-                                "HIGH|",
-                                "SMART|",
-                                "EARLY|",
-                                "REACTION|",
-                                "REVERSAL|",
-                                "TP",
-                                "SL|",
-                                "INVALID",
-                                "PROTECTION",
-                                "POSITION-OPEN|",
-                                "PENDING-",
-                                "FILL-MISMATCH|",
-                                "STRUCT-INVALID",
-                                "EXHAUSTION-CLOSE|",
-                                "OUTCOME-TIMEOUT|",
-                                "DAILYLOSS|",
-                                "RESTRICT|",
-                            };
-
-                            foreach (string prefix in prefixes)
-                            {
-                                if (key.StartsWith(
-                                        prefix,
-                                        StringComparison.OrdinalIgnoreCase))
-                                    return true;
-                            }
-
-                            return false;
                         }
 
         private bool IsVisualSignalAlertKey(
