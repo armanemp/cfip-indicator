@@ -52,14 +52,18 @@ namespace cAlgo
                 return RejectPlanRewardStructure("INVALID REWARD RR LIMITS");
 
             double tp1RR =
-                Math.Abs(
-                    plan.Tp1 -
-                    plan.Entry) /
-                plan.Risk;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    plan.Entry,
+                    plan.Tp1,
+                    plan.Risk);
 
             if (!IsFinitePositive(tp1RR) ||
-                tp1RR < minimumRR ||
-                tp1RR > maximumRR)
+                !RiskRewardPolicyRule.MeetsMinimum(
+                    tp1RR,
+                    minimumRR) ||
+                !RiskRewardPolicyRule.IsWithinMaximum(
+                    tp1RR,
+                    maximumRR))
                 return RejectPlanRewardStructure("TP1 RR OUT OF RANGE");
 
             if (plan.Tp2 > 0)
