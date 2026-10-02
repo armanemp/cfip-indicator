@@ -8,6 +8,7 @@ using CFIP.cBot.Shadow;
 
 namespace CFIP.cBot
 {
+#pragma warning disable CS0612
     [Robot(
         "CFIP Smart Execution Bot",
         DefaultTimeFrame = "M5",
@@ -15,6 +16,7 @@ namespace CFIP.cBot
         AccessRights = AccessRights.None)]
     public sealed class CFIPExecutionBot : Robot
     {
+#pragma warning restore CS0612
         private const string ManagedLabel = "CFIP-SMART";
         private const string StartupState = "DEMO-MARKET";
 
