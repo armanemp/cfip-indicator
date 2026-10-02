@@ -36,12 +36,14 @@ namespace cAlgo
                         candidate.Entry.ToString(
                             "R",
                             CultureInfo.InvariantCulture),
+                        action.ToString(),
                         candidate.Stop.ToString(
                             "R",
                             CultureInfo.InvariantCulture),
                         candidate.Tp1.ToString(
                             "R",
                             CultureInfo.InvariantCulture),
+                        candidate.ExecutionMode.ToString(),
                         candidate.RequestedVolume.ToString(
                             "R",
                             CultureInfo.InvariantCulture)));
@@ -197,17 +199,33 @@ namespace cAlgo
                             "R",
                             CultureInfo.InvariantCulture)));
 
+            ExecutionAction action =
+                ResolveScenarioExecutionAction(
+                    candidate.ExecutionMode);
+
+            if (action == ExecutionAction.None)
+                return false;
+
+            DateTime? expiryUtc =
+                action == ExecutionAction.PendingStop ||
+                action == ExecutionAction.PendingLimit
+                    ? observedUtc.AddMinutes(
+                        Math.Max(
+                            15,
+                            PendingOrderExpiryMinutes))
+                    : (DateTime?)null;
+
             CFIP.Contracts.ExecutionIntent intent =
                 new CFIP.Contracts.ExecutionIntent(
                     identity,
-                    ExecutionAction.Market,
+                    action,
                     candidate.Entry,
                     candidate.Stop,
                     target,
                     candidate.RequestedVolume,
                     SizingMode.ToString(),
                     observedUtc,
-                    null,
+                    expiryUtc,
                     candidate.Source ?? "",
                     executionLabel,
                     null)
@@ -268,6 +286,26 @@ namespace cAlgo
             return true;
         }
 
+        private ExecutionAction ResolveScenarioExecutionAction(
+            ExecutionMode executionMode)
+        {
+            switch (executionMode)
+            {
+                case ExecutionMode.RetestMarket:
+                case ExecutionMode.BreakoutMarket:
+                    return ExecutionAction.Market;
+
+                case ExecutionMode.ContinuationStop:
+                    return ExecutionAction.PendingStop;
+
+                case ExecutionMode.ReversalLimit:
+                    return ExecutionAction.PendingLimit;
+
+                default:
+                    return ExecutionAction.None;
+            }
+        }
+
         private bool IsScenarioBatchExecutableCandidate(
             TradeOpportunityCandidate candidate,
             int closedM5)
@@ -277,11 +315,6 @@ namespace cAlgo
                 !candidate.PresentationOnly &&
                 candidate.ExecutionPolicyAllowed &&
                 candidate.ActionableNow &&
-                (string.IsNullOrWhiteSpace(candidate.SourceTimeframe) ||
-                 string.Equals(
-                     candidate.SourceTimeframe.Trim(),
-                     ProviderScenarioIdentityRule.CanonicalM5,
-                     StringComparison.OrdinalIgnoreCase)) &&
                 candidate.Direction != 0 &&
                 IsFinitePositive(candidate.Entry) &&
                 IsFinitePositive(candidate.Stop) &&
