@@ -219,6 +219,22 @@ namespace CFIP.cBot.Execution
             return true;
         }
 
+        private static string ResolveManagedInstanceRoot(
+            string executionLabel)
+        {
+            if (string.IsNullOrWhiteSpace(executionLabel))
+                return string.Empty;
+
+            int marker =
+                executionLabel.IndexOf(
+                    "|CFIP-S:",
+                    StringComparison.Ordinal);
+
+            return marker > 0
+                ? executionLabel.Substring(0, marker)
+                : executionLabel;
+        }
+
         private static bool IsInsideSession(
             DateTime utc,
             int startHour,
