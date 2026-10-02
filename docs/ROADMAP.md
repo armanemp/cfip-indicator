@@ -2093,3 +2093,16 @@ SL, TP, confidence, risk, broker authority or the M15/H1 observe-only execution 
 
 Phase report: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
 
+## Panel Geometry Correction — 50px Bottom Clearance + Hidden Restore Position
+
+Status: **IMPLEMENTATION IN PROGRESS — branch `phase/panel-clearance-restore-position-2026-10-02`.**
+
+The Indicator panel bottom clearance is corrected from 100px to exactly 50px. The hidden
+restore button for BottomLeft/BottomRight positions receives the same 50px bottom clearance.
+This preserves the reserved lower chart area for the separate cBot surface without the
+previously excessive gap.
+
+No strategy, signal, Decision, Plan, RR, Entry/SL/TP, risk or execution authority changes.
+
+Phase report: `docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md`.
+
