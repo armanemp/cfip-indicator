@@ -68,10 +68,10 @@ namespace cAlgo
                         closedM5,
                         structuralUpdate);
 
-                if (BetterStop(
+                if (ProtectionProgressionRule.ShouldAdvanceStop(
                         _plan.Direction,
-                        protectedStop,
-                        _plan.Stop))
+                        _plan.Stop,
+                        protectedStop))
                 {
                     _pendingProtectedStopCandidate =
                         NormalizePrice(
