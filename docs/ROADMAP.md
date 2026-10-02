@@ -2106,3 +2106,18 @@ No strategy, signal, Decision, Plan, RR, Entry/SL/TP, risk or execution authorit
 
 Phase report: `docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md`.
 
+## Indicator Naming + cBot Launch + MTF Panel Direction Correction
+
+Status: **IMPLEMENTATION IN PROGRESS — branch `phase/indicator-name-cbot-launch-mtf-panel-2026-10-02`.**
+
+Operator-facing corrections:
+- Indicator display name: **CFIP Smart Indicator**;
+- cBot display name: **CFIP Smart Execution Bot**;
+- cBot default host timeframe: **M5**;
+- MTF panel distinguishes resolved BUY/SELL from BULL BIAS/BEAR BIAS and true NEUTRAL;
+- obsolete Quick Execution height reservation is removed from the live panel render path.
+
+No strategy/threshold or broker authority change is allowed in this phase.
+
+Phase report: `docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md`.
+
