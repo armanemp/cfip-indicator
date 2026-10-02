@@ -49,7 +49,5 @@ namespace cAlgo
                 intent.CreatedM5;
         }
 
-        private string CurrentProviderSource => "CFIP";
-
     }
 }
