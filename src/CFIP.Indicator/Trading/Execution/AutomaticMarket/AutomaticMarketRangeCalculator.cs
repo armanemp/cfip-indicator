@@ -78,7 +78,9 @@ namespace cAlgo
                         desired));
 
             if (_cfipProviderExecutionIntent != null &&
-                IsFiniteNonNegative(range))
+                !double.IsNaN(range) &&
+                !double.IsInfinity(range) &&
+                range >= 0)
             {
                 _cfipProviderExecutionIntent.MarketRangePips =
                     range;
