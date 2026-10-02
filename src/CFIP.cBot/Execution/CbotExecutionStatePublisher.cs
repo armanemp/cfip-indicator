@@ -98,10 +98,9 @@ namespace CFIP.cBot.Execution
                             position.SymbolName,
                             robot.SymbolName,
                             StringComparison.Ordinal) ||
-                        !string.Equals(
+                        !CbotManagedObjectIdentityRule.MatchesManagedLabel(
                             position.Label,
-                            executionLabel,
-                            StringComparison.Ordinal))
+                            executionLabel))
                         continue;
 
                     managedPositions++;
@@ -125,10 +124,9 @@ namespace CFIP.cBot.Execution
                             order.SymbolName,
                             robot.SymbolName,
                             StringComparison.Ordinal) ||
-                        !string.Equals(
+                        !CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
                             order.Label,
-                            pendingLabel,
-                            StringComparison.Ordinal))
+                            executionLabel))
                         continue;
 
                     managedPendingOrders++;
