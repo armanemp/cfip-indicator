@@ -33,7 +33,7 @@ namespace cAlgo
                     : reasonOverride;
         }
 
-        public static ExecutionPlanGeometryResult Blocked(
+        public static ExecutionPlanGeometryResult CreateBlockedGeometry(
             string reason)
         {
             return new ExecutionPlanGeometryResult(
