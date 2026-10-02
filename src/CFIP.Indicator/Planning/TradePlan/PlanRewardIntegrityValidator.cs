@@ -69,10 +69,10 @@ namespace cAlgo
             if (plan.Tp2 > 0)
             {
                 double rr =
-                    Math.Abs(
-                        plan.Tp2 -
-                        plan.Entry) /
-                    plan.Risk;
+                    RiskRewardGeometryRule.CalculateNominalRR(
+                        plan.Entry,
+                        plan.Tp2,
+                        plan.Risk);
 
                 if (!IsFinitePositive(rr) ||
                     rr <
