@@ -51,8 +51,6 @@ namespace cAlgo
         public PlanRewardRiskQualityResult RewardRisk;
         public string IndicatorGateReason;
 
-        public string EarlyBlockReason;
-
         public TradeActionabilityResult ToBlockedResult(
             string reason,
             bool preserveMetrics)
@@ -67,9 +65,9 @@ namespace cAlgo
                 PricePositionQuality,
                 EntryDistanceAtr,
                 Math.Max(0, Tp1RR),
-                Divergence == null ? 0 : Divergence.Quality,
-                Divergence == null ? 0 : Divergence.Direction,
-                Divergence == null ? "NONE" : Divergence.Type,
+                Divergence.Quality,
+                Divergence.Direction,
+                Divergence.Type,
                 reason);
         }
     }
