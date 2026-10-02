@@ -439,7 +439,7 @@ namespace cAlgo
                         2.0,
                         0.90,
                         0.15) -
-                    1.80) < 1e-12,
+                    1.85) < 1e-12,
                 "effective minimum RR policy");
 
             PlanRewardRiskQualityResult plan =
