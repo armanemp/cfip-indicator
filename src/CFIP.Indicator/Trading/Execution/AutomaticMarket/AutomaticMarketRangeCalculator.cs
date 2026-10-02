@@ -70,32 +70,22 @@ namespace cAlgo
 
             // The market-range envelope is always capped by the ATR-derived
             // maximum; it may never silently exceed the execution extension gate.
-            return Math.Max(
-                0.10,
-                Math.Min(
-                    maximum,
-                    desired));
+            double range =
+                Math.Max(
+                    0.10,
+                    Math.Min(
+                        maximum,
+                        desired));
+
+            if (_cfipProviderExecutionIntent != null &&
+                IsFiniteNonNegative(range))
+            {
+                _cfipProviderExecutionIntent.MarketRangePips =
+                    range;
+            }
+
+            return range;
         }
 
-        private TradeResult TryExecuteAutomaticMarketOrderFallback(
-            TradeType type,
-            double volume,
-            double stopPips,
-            double targetPips)
-        {
-            // Kept as the architectural cross-path compatibility boundary. The
-            // normal Phase 9.7 path uses Market Range; this fallback is not used
-            // while a valid bounded market-range envelope is available.
-            return TryExecuteMarketOrder(
-                type,
-                SymbolName,
-                volume,
-                NormalizeLabel(),
-                stopPips,
-                targetPips,
-                TradeExecutionMetadata.DefaultExecutionComment,
-                false,
-                "AUTOMATIC MARKET FALLBACK");
-        }
     }
 }
