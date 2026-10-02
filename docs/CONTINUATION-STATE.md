@@ -1766,3 +1766,34 @@ Repository verification is pending.
 Operator action after merge: `git pull --ff-only`.
 
 Phase record: `docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md`.
+### CI-19 closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — repository gates passed on final verified head `a3654a02ea651b8f4b3ff8cfd53406d49ed3e946`; target-terminal and empirical outcome validation remain manual.**
+
+Completed:
+- removed the remaining global TriggerReady blocker from DecisionStructureGates while preserving downstream actionability and safety gates;
+- preserved qualifying tactical Retest opportunities in TREND without bypassing canonical quality/RR/regime checks;
+- merged structural/HTF/OB/FVG target levels before SmartTargetMaxCandidates truncation;
+- established TargetCandidateRewardScoreRule as the shared reward owner for initial and progressive target selection;
+- made minimum RR a validity floor and rewarded additional RR by source quality;
+- synchronized further-target progression to the same reward semantics using the current confirmed target RR as the baseline;
+- exposed trigger lifecycle and BARRIER TRACE diagnostics in the panel;
+- added deterministic planning-contract coverage and accumulated CI-19 signal/target audit coverage;
+- reconciled CI-14 RR audit ownership with the CI-19 live-target canonical reward path.
+
+Verification:
+- Source/Architecture: **PASS** — run `37003310940` / job `110825729434`, including accumulated CI-19 audit;
+- Runtime Acceptance Contracts: **PASS** — run `37003310757` / job `110825728529`;
+- cTrader Compile/Build: **PASS** — run `37003310770` / job `110825728693`;
+- Planning Contracts: **PASS** — `Planning contracts OK`, including CI-19 target reward scoring fixtures.
+
+Safety/manual:
+- no public parameter/default or broker-execution authority change;
+- no profitability guarantee or empirical signal-quality claim;
+- target-terminal signal frequency, panel/chart synchronization, alert timing, target progression and broker/outcome validation remain manual boundaries.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+Next implementation response: **CI-20 — Intelligent progressive protection and trailing**, focused on monotonic SL tightening, profit-locking and structure/reward-driven target expansion without constant TP movement.
+
+Phase record: `docs/PHASE-CI-19-SIGNAL-TARGET-QUALITY-COHERENCE-2026-10-02.md`.
