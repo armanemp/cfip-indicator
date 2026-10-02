@@ -1,6 +1,6 @@
 # CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: **VERIFIED COMPLETE — merged to main via PR #196 as 352e6229adcff8a4ebb6ee6e5c71a0e0397dc70b.**
 
 ## Scope
 
@@ -76,4 +76,6 @@ Still required after repository verification:
 
 No profitability claim is made from this structural/UI phase alone.
 
-Next staged execution migration after verification: CBOT-P4E — Pending cancellation authority extraction.
+Repository verification on implementation head 22d7af189d7037237b27a3df09a42a9cdda7f252: Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS; P4D audit PASS; dependent execution/UI/identity audits PASS.
+
+Target-terminal acceptance remains manual. Next implementation phase: **CBOT-P4E — full remaining broker execution authority consolidation.**
