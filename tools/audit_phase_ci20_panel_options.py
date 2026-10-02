@@ -162,6 +162,31 @@ require(
     "PanelRowPadding",
     "PanelRowPadding is not applied to actual row controls",
 )
+require(
+    read(SRC / "UI/Panel/PanelToggleButtonFactory.cs"),
+    "PanelToggleWidth",
+    "PanelToggleWidth is not consumed by the toggle width owner",
+)
+require(
+    read(SRC / "UI/Panel/PanelToggleButtonFactory.cs"),
+    "PanelToggleHeight",
+    "PanelToggleHeight is not consumed by the toggle height owner",
+)
+require(
+    read(SRC / "UI/Panel/Theme/PanelActionButtonsLayout.cs"),
+    "int buttonGap",
+    "PanelButtonGap is not threaded through the final toggle layout owner",
+)
+require(
+    read(SRC / "UI/Panel/Theme/PanelActionButtonsLayout.cs"),
+    "Math.Max(\n                        0,\n                        buttonGap)",
+    "PanelButtonGap does not affect the actual toggle margin",
+)
+require(
+    read(SRC / "UI/Panel/Theme/PanelVisualSettings.cs"),
+    "buttonGap);",
+    "PanelVisualSettings does not pass PanelButtonGap into the final toggle layout",
+)
 
 compat = read(SRC / "UI/Panel/PanelRenderOptimization.cs")
 for token in (
