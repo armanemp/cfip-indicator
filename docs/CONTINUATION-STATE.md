@@ -1408,22 +1408,32 @@ The next blocking implementation phase is **CI-14 — Canonical risk/reward and 
 
 The user's reported cross-component symptoms remain an explicit empirical acceptance concern: CI-14 must remove RR-semantic drift first; CI-15 must trace exact Entry/SL/TP through every execution path; CI-16 must use deterministic counterexamples to distinguish genuinely missing analytical evidence from downstream gating or synchronization loss; CI-17 then validates the same semantics on the target cTrader terminal.
 
-### CI-14 implementation record — 2026-10-02
+### CI-14 closeout — 2026-10-02
 
-Status: **IMPLEMENTED — awaiting exact-head repository verification.**
+Status: **VERIFIED COMPLETE — PR #171 merged to `main` as `54e2cffb6909be1c5e5183eeacb7dd838e473151`.**
 
-Branch: phase/ci-14-canonical-rr-protection
-Current head: 6b5f251603d458f9c363e6bec93649b6aff5e3eb
+Implementation HEAD: `371577118c6c5d6450ce856d232374a291afdb61`.
 
-Completed:
-- canonical RiskRewardMathRule owns risk/reward/effective-RR/bounds and RR-derived target/progress math;
-- candidate, plan, actionability, execution, live lifecycle and chart LIVE-RR paths were migrated to that owner;
-- corrected the concrete raw-risk versus pip-floor stored-risk RR semantic drift;
-- deterministic CI-14 fixtures and accumulated static audit were added.
+Verification:
+- Source/Architecture: **PASS** — run #2691;
+- Runtime Acceptance Contracts: **PASS** — run #2500;
+- cTrader Compile/Build: **PASS** — run #2684;
+- Planning Contracts: **PASS** — final compile/contract output reported `Planning contracts OK`;
+- accumulated Source/Architecture audit chain through CI-14: **PASS**.
 
-No PASS is claimed before the exact-head Source/Architecture, Runtime Acceptance, cTrader Compile/Build and Planning Contracts checks complete.
+Implementation closeout:
+- canonical `RiskRewardMathRule` is the single RR/protection geometry owner;
+- candidate, plan, actionability, execution, live lifecycle and panel LIVE-RR/heartbeat consumers are aligned to that owner;
+- the pip-floor/raw-risk semantic mismatch was removed;
+- CI-14 deterministic contracts and static audit are active and passing.
 
-The user's reported weak/missing-signal symptom remains deliberately open as a downstream diagnostic question: CI-15 traces exact execution geometry, while CI-16 separates analytical absence from gating/synchronization loss using replay counterexamples.
+Boundaries:
+- no public parameter name/type/DefaultValue changed;
+- no strategy/RR/confidence/entry/SL/TP/risk/execution threshold was tuned;
+- no second decision or execution authority introduced;
+- target-terminal timing, broker lifecycle, panel latency and empirical signal-quality/profitability remain manual acceptance boundaries.
 
-Next phase after verification: **CI-15 — End-to-end execution-geometry and broker-boundary audit.**
-Operator action after merge: run git pull --ff-only on local main.
+Next implementation response: **CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+CI-16 remains the deterministic weak/missing-signal diagnostic phase, and CI-17 remains target-terminal validation.
+
+Operator action: run `git pull --ff-only` on local `main`.
