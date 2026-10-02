@@ -1434,3 +1434,24 @@ Operator action: run `git pull --ff-only` on local `main`.
 
 Next implementation response: **CI-16 — Deterministic replay, latency and counterexample suite.**
 Operator action: run `git pull --ff-only` on local `main`.
+
+### CI-16 closeout — 2026-10-02
+
+Status: **IMPLEMENTED — automated verification pending final workflow results.**
+
+Completed:
+- Runtime Contracts execute the deterministic replay suite twice and compare complete serialized traces;
+- all 16 required breakout/reversal/retest/regime/confluence/spread/displacement/M1 timing/obstruction/divergence/mirror fixtures are covered;
+- causal/reference/quote timestamps and downstream actionable/alert/execution/fill timestamps are explicit;
+- canonical Entry, Risk/Reward, ExecutionIntent geometry, trigger lifecycle and fill-acceptance owners are reused;
+- authoritative and submission geometry fingerprints must match;
+- deterministic latency intervals are exposed without manufacturing timestamps for blocked cases;
+- the CI-16 audit is accumulated after CI-15.
+
+Safety/manual:
+- no public parameter/default or trading threshold changed;
+- no second decision or execution authority introduced;
+- target-terminal timing, broker lifecycle, panel timing and empirical outcomes remain manual CI-17 boundaries.
+
+Next implementation response: **CI-17 — Target-terminal cTrader validation.**
+Operator action after merge: run `git pull --ff-only` on local `main`.
