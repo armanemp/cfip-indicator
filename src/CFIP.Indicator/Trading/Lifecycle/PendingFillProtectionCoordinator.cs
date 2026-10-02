@@ -24,15 +24,15 @@ namespace cAlgo
             if (!IsFinitePositive(finalTarget))
                 return false;
 
-            RelativeTakeProfitProtections protections;
-            StopLossBreakEven stopLossBreakEven;
+            RelativeTakeProfitProtections unusedProtections;
+            StopLossBreakEven unusedBreakEven;
 
             if (!TryBuildServerSideTakeProfitLadder(
                     position.EntryPrice,
                     finalTarget,
                     position.VolumeInUnits,
-                    out protections,
-                    out stopLossBreakEven))
+                    out unusedProtections,
+                    out unusedBreakEven))
                 return false;
 
             double firstVolume =
