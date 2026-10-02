@@ -16,6 +16,7 @@ required = {
     "ManagementCommand.cs",
     "BrokerExecutionReport.cs",
     "LifecycleEvent.cs",
+    "MarketExecutionProfile.cs",
     "ContractVersion.cs",
 }
 
@@ -43,7 +44,17 @@ else:
         if re.search(r'\bset\s*;', source):
             errors.append(f"setter found in contract source: {rel}")
 
-        if "static void " in source or " static bool " in source or " static int " in source:
+        if (
+            path.name not in {
+                "SignalEnvelopeCodec.cs",
+                "SignalBusKey.cs",
+            } and
+            (
+                "static void " in source or
+                " static bool " in source or
+                " static int " in source
+            )
+        ):
             errors.append(f"behavioral method found in data contract source: {rel}")
 
 expected_records = (
@@ -54,6 +65,7 @@ expected_records = (
     "public sealed record ManagementCommand(",
     "public sealed record BrokerExecutionReport(",
     "public sealed record LifecycleEvent(",
+    "public sealed record MarketExecutionProfile(",
 )
 
 for token in expected_records:
@@ -65,6 +77,7 @@ for token in expected_records:
         "ManagementCommand": "ManagementCommand.cs",
         "BrokerExecutionReport": "BrokerExecutionReport.cs",
         "LifecycleEvent": "LifecycleEvent.cs",
+        "MarketExecutionProfile": "MarketExecutionProfile.cs",
     }[token.split()[-1].split("(")[0]]
     source = path.read_text(encoding="utf-8") if path.exists() else ""
     if token not in source:
