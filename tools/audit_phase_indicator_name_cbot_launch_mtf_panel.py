@@ -71,6 +71,27 @@ require(
     "SyncQuickExecutionControls();" not in panel_main,
     "panel render path must not reserve obsolete quick-execution UI height",
 )
+panel_factory = read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs")
+parallel_renderer = read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs")
+panel_key = read("src/CFIP.Indicator/UI/Panel/PanelRenderOptimization.cs")
+require(
+    "Math.Min(" in panel_factory and
+    "260" in panel_factory and
+    "Never add an unconstrained panel" in panel_factory,
+    "indicator panel must start from small finite bootstrap geometry",
+)
+require(
+    "FramePresentationKey(_m15Frame)" in panel_key and
+    "FramePresentationKey(_h1Frame)" in panel_key and
+    "FramePresentationKey(_m5Frame)" in panel_key,
+    "panel key must invalidate when primary MTF frames change",
+)
+require(
+    "PRIMARY_M15_SIGNAL" in parallel_renderer and
+    "PRIMARY_H1_SIGNAL" in parallel_renderer and
+    '"WATCH"' in parallel_renderer,
+    "primary M15/H1 visual markers must remain distinct from canonical execution state",
+)
 require(
     "VerifyPanelFrameDirectionPresentation();" in runtime and
     "PanelFrameDirectionRule.cs" in runtime_csproj,
