@@ -36,9 +36,19 @@ namespace cAlgo
 
         private string PlanTimeframeTag()
         {
+            string snapshotSource =
+                _renderSignalVisualSnapshot == null
+                    ? ""
+                    : _renderSignalVisualSnapshot.SourceTimeframe;
+
+            string source =
+                string.IsNullOrWhiteSpace(snapshotSource)
+                    ? ResolveCanonicalPlanSourceTimeframe()
+                    : snapshotSource.Trim().ToUpperInvariant();
+
             return
                 "(" +
-                ResolveCanonicalPlanSourceTimeframe() +
+                source +
                 ")";
         }
 
