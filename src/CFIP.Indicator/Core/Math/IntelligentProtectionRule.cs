@@ -64,13 +64,13 @@ namespace cAlgo
             double tp1)
         {
             if ((direction != 1 && direction != -1) ||
-                !FinitePositive(entry) ||
-                !FinitePositive(market) ||
-                !FinitePositive(risk) ||
-                !FiniteNonNegative(peakRR) ||
-                !FinitePositive(atr) ||
-                !FinitePositive(pipSize) ||
-                !FiniteNonNegative(minimumDistance))
+                !IsFiniteProtectionPrice(entry) ||
+                !IsFiniteProtectionPrice(market) ||
+                !IsFiniteProtectionPrice(risk) ||
+                !IsFiniteProtectionNonNegative(peakRR) ||
+                !IsFiniteProtectionPrice(atr) ||
+                !IsFiniteProtectionPrice(pipSize) ||
+                !IsFiniteProtectionNonNegative(minimumDistance))
             {
                 return new IntelligentProtectionDecision(
                     currentStop,
@@ -79,7 +79,7 @@ namespace cAlgo
             }
 
             double candidate =
-                FinitePositive(currentStop)
+                IsFiniteProtectionPrice(currentStop)
                     ? currentStop
                     : 0;
 
@@ -91,7 +91,7 @@ namespace cAlgo
                 pipSize;
 
             double tp1Pips =
-                FinitePositive(tp1)
+                IsFiniteProtectionPrice(tp1)
                     ? Math.Abs(tp1 - entry) /
                       pipSize
                     : 0;
@@ -136,7 +136,7 @@ namespace cAlgo
                 peakRR >= Math.Max(
                     Math.Max(0, slRepriceStartRR),
                     Math.Max(0, smartTrailMinimumRR)) &&
-                FinitePositive(structuralStop);
+                IsFiniteProtectionPrice(structuralStop);
 
             if (structuralAllowed)
             {
@@ -166,7 +166,7 @@ namespace cAlgo
                 peakRR >= Math.Max(
                     1.0,
                     Math.Max(0, smartTrailTightenAtRR)) &&
-                FinitePositive(structuralStop))
+                IsFiniteProtectionPrice(structuralStop))
             {
                 double pressureTighten =
                     exitPressure >= Math.Max(0, exitPressureThreshold)
@@ -267,10 +267,10 @@ namespace cAlgo
             double proposed,
             double current)
         {
-            if (!FinitePositive(proposed))
+            if (!IsFiniteProtectionPrice(proposed))
                 return false;
 
-            if (!FinitePositive(current))
+            if (!IsFiniteProtectionPrice(current))
                 return true;
 
             return ProtectionProgressionRule.ShouldAdvanceStop(
@@ -285,9 +285,9 @@ namespace cAlgo
             double stop,
             double room)
         {
-            if (!FinitePositive(market) ||
-                !FinitePositive(stop) ||
-                !FiniteNonNegative(room))
+            if (!IsFiniteProtectionPrice(market) ||
+                !IsFiniteProtectionPrice(stop) ||
+                !IsFiniteProtectionNonNegative(room))
                 return false;
 
             return direction == 1
@@ -296,7 +296,7 @@ namespace cAlgo
                   stop >= market + room;
         }
 
-        private static bool FinitePositive(double value)
+        private static bool IsFiniteProtectionPrice(double value)
         {
             return
                 !double.IsNaN(value) &&
@@ -304,7 +304,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static bool FiniteNonNegative(double value)
+        private static bool IsFiniteProtectionNonNegative(double value)
         {
             return
                 !double.IsNaN(value) &&
