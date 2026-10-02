@@ -61,6 +61,17 @@ namespace cAlgo
                     ? target - market
                     : market - target;
 
+            double rewardRisk =
+                RiskRewardMathRule.EvaluateFromRisk(
+                    direction,
+                    entry,
+                    risk,
+                    target,
+                    0,
+                    0,
+                    double.PositiveInfinity,
+                    0).NominalRR;
+
             if (marketDistance <=
                 Math.Max(
                     0,
@@ -68,13 +79,13 @@ namespace cAlgo
                 return new LiveExitGeometryResult(
                     false,
                     marketDistance,
-                    entryDistance / risk,
+                    rewardRisk,
                     "TARGET BEHIND MARKET");
 
             return new LiveExitGeometryResult(
                 true,
                 marketDistance,
-                entryDistance / risk,
+                rewardRisk,
                 "OK");
         }
 
