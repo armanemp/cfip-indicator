@@ -256,30 +256,30 @@ namespace cAlgo
 
             double tp1RR =
                 CalculatePreviewStageRR(
-                    preview.Tp1,
-                    preview.Entry,
-                    preview.Stop,
+                    executablePreview.Tp1,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
                     direction);
 
             double tp2RR =
                 CalculatePreviewStageRR(
-                    preview.Tp2,
-                    preview.Entry,
-                    preview.Stop,
+                    executablePreview.Tp2,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
                     direction);
 
             double tp3RR =
                 CalculatePreviewStageRR(
-                    preview.Tp3,
-                    preview.Entry,
-                    preview.Stop,
+                    executablePreview.Tp3,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
                     direction);
 
             double tp4RR =
                 CalculatePreviewStageRR(
-                    preview.Tp4,
-                    preview.Entry,
-                    preview.Stop,
+                    executablePreview.Tp4,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
                     direction);
 
             TradeActionabilityResult actionability =
@@ -291,12 +291,39 @@ namespace cAlgo
                     execution,
                     preview);
 
+            // Once a scenario is actually actionable, the candidate handed to
+            // the provider/cBot must carry the exact canonical actual-entry
+            // geometry that passed Actionability. Non-actionable/watch
+            // candidates intentionally retain the presentation preview.
+            TradeSetupPreview executablePreview =
+                preview;
+
+            if (actionability.Actionable)
+            {
+                CanonicalTradePathGeometry canonicalPath;
+                string canonicalPathReason;
+
+                if (!TryBuildCanonicalTradePathGeometry(
+                        closedM5,
+                        direction,
+                        execution,
+                        lane,
+                        out canonicalPath,
+                        out canonicalPathReason) ||
+                    canonicalPath == null ||
+                    !canonicalPath.IsValid)
+                    return null;
+
+                executablePreview =
+                    canonicalPath.Preview;
+            }
+
             PlanRewardRiskQualityResult rewardRisk =
                 PlanRewardRiskQualityRule.Evaluate(
                     direction,
-                    preview.Entry,
-                    preview.Stop,
-                    preview.Tp1,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
+                    executablePreview.Tp1,
                     Atr(
                         _m5Bars,
                         closedM5),
@@ -351,20 +378,20 @@ namespace cAlgo
                         quality > 0
                             ? quality
                             : execution.Quality)),
-                Risk = preview.Risk,
+                Risk = executablePreview.Risk,
                 Tp1RR = tp1RR,
                 Tp2RR = tp2RR,
                 Tp3RR = tp3RR,
                 Tp4RR = tp4RR,
-                Entry = preview.Entry,
-                IdealEntry = preview.IdealEntry,
-                Trigger = preview.Trigger,
-                Invalidation = preview.Invalidation,
-                Stop = preview.Stop,
-                Tp1 = preview.Tp1,
-                Tp2 = preview.Tp2,
-                Tp3 = preview.Tp3,
-                Tp4 = preview.Tp4,
+                Entry = executablePreview.Entry,
+                IdealEntry = executablePreview.IdealEntry,
+                Trigger = executablePreview.Trigger,
+                Invalidation = executablePreview.Invalidation,
+                Stop = executablePreview.Stop,
+                Tp1 = executablePreview.Tp1,
+                Tp2 = executablePreview.Tp2,
+                Tp3 = executablePreview.Tp3,
+                Tp4 = executablePreview.Tp4,
                 Source = execution.Source,
                 Stage =
                     actionability.Actionable
