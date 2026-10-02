@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CFIP cBot boundary audit for the bounded demo-market migration phase."""
+"""CFIP cBot boundary audit for bounded demo Market / Market-Range / Aggressive migration."""
 from pathlib import Path
 import re
 import sys
@@ -76,6 +76,7 @@ required_bot_tokens = (
     '"CFIP Smart Execution Bot"',
     'DefaultTimeFrame = "M5"',
     "EnableDemoMarketExecution",
+    "EnableDemoAggressiveExecution",
     "Account.IsLive",
     "CfipIndicatorChartBinding.TryFind(",
     "CfipDeviceSignalTransport.TryRead(",
