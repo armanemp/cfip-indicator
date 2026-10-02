@@ -150,8 +150,9 @@ if "_normal.Dequeue()" not in alert_queue or "if (delivery.Critical)" not in ale
 if "ShowPopup(" in alert_engine:
     raise SystemExit("Alert hot path must not directly overwrite popup presentation")
 
-if "return Color.White" not in labels_renderer:
-    raise SystemExit("All compact plan-level text must be white")
+compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
+if "return semanticColor" not in compact_label_renderer:
+    raise SystemExit("All compact plan-level text must reuse the exact semantic line color")
 if "Chart.DrawRectangle(" in labels_renderer:
     raise SystemExit("Plan label renderer must not create text backgrounds")
 if "OrderVolume(" in server_ladder:
