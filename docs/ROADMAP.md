@@ -1,3 +1,16 @@
+## CBOT-P7 — UI / State Cutover — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+- AUTO TRADE/AUTO ORDERS are now status-only surfaces backed by the cBot effective-state snapshot.
+- Effective state combines attached Indicator settings, cBot execution capability and cBot lifecycle/recovery state.
+- Indicator uses direct ChartRobots presence/state plus exact-instance heartbeat freshness for connection/liveness.
+- cBot attach/remove/modify/start/stop events trigger prompt panel refresh without forcing a LocalStorage read on every redraw.
+- Full chain re-audited: pre-analysis → M15 → M5 → entry → signal/alert → contract → cBot → broker → lifecycle/protection → panel.
+
+Phase record: docs/PHASE-CBOT-P7-UI-STATE-CUTOVER-2026-10-02.md.
+
+
 ## CBOT-P6 — Account / Execution Risk + Connection Truth — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**
