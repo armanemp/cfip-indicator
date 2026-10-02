@@ -768,7 +768,7 @@ M2–M28 may continue in parallel, but any phase touching execution/protection/p
 
 ## M3 — Single Trade Truth Chain
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
+Status: **VERIFIED COMPLETE — merged through PR #207 after all required repository gates passed.**
 
 2026-10-02 implementation:
 - added immutable CFIP.Contracts.AlertEnvelope carrying the same ContractIdentity used by the Indicator→cBot provider boundary;
