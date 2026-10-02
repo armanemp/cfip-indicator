@@ -44,6 +44,7 @@ namespace cAlgo
 
             bool primaryM15Rendered = false;
             bool primaryH1Rendered = false;
+            int displayNumber = 0;
 
             for (int i = 0;
                  i < _opportunityCandidates.Count;
@@ -55,6 +56,8 @@ namespace cAlgo
                 if (candidate == null ||
                     IsSameAsLivePlan(candidate))
                     continue;
+
+                displayNumber++;
 
                 string baseName =
                     P +
@@ -205,7 +208,8 @@ namespace cAlgo
                             candidate.Entry,
                             false,
                             false,
-                            0),
+                            0,
+                            displayNumber),
                         candidate.Entry,
                         EntryLineColor,
                         left,
@@ -221,7 +225,8 @@ namespace cAlgo
                             candidate.Stop,
                             true,
                             false,
-                            0),
+                            0,
+                            displayNumber),
                         candidate.Stop,
                         SlLineColor,
                         left,
@@ -237,7 +242,8 @@ namespace cAlgo
                             candidate.Tp1,
                             true,
                             true,
-                            candidate.Tp1RR),
+                            candidate.Tp1RR,
+                            displayNumber),
                         candidate.Tp1,
                         TpLineColor,
                         left,
@@ -253,7 +259,8 @@ namespace cAlgo
                             candidate.Tp2,
                             true,
                             true,
-                            candidate.Tp2RR),
+                            candidate.Tp2RR,
+                            displayNumber),
                         candidate.Tp2,
                         Tp2LineColor,
                         left,
@@ -269,7 +276,8 @@ namespace cAlgo
                             candidate.Tp3,
                             true,
                             true,
-                            candidate.Tp3RR),
+                            candidate.Tp3RR,
+                            displayNumber),
                         candidate.Tp3,
                         Tp3LineColor,
                         left,
@@ -285,7 +293,8 @@ namespace cAlgo
                             candidate.Tp4,
                             true,
                             true,
-                            candidate.Tp4RR),
+                            candidate.Tp4RR,
+                            displayNumber),
                         candidate.Tp4,
                         Tp4LineColor,
                         left,
