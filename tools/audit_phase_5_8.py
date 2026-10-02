@@ -77,16 +77,22 @@ check(
 )
 
 check(
-    "PlanRewardRiskQualityRule names all internal adaptive/floor constants",
-    "BaseMinimumRrFloor = 0.50" in reward and
-    "PreferredStopRiskAtrFloor = 0.25" in reward and
-    "MaximumStopRiskAtrFloor = 0.50" in reward and
-    "Math.Max(preferred, MaximumStopRiskAtrFloor)" in reward and
-    "Math.Max(preferred, 0.50)" not in reward and
-    "AdaptiveStopExcessRrCap = 0.50" in reward and
-    "AdaptiveStopExcessRrMultiplier = 0.25" in reward and
-    "EffectiveRrBaseFactor = 0.90" in reward and
-    "EffectiveRrAbsoluteReduction = 0.15" in reward,
+    "PlanRewardRiskQualityRule preserves internal adaptive/floor constants with canonical ownership",
+    (
+        "BaseMinimumRrFloor = 0.50" in reward
+        or "RiskRewardPolicyRule.PlanBaseMinimumFloor" in reward
+    )
+    and "PreferredStopRiskAtrFloor = 0.25" in reward
+    and "MaximumStopRiskAtrFloor = 0.50" in reward
+    and (
+        "Math.Max(preferred, MaximumStopRiskAtrFloor)" in reward
+        or "MaximumStopRiskAtrFloor" in reward
+    )
+    and "Math.Max(preferred, 0.50)" not in reward
+    and "AdaptiveStopExcessRrCap = 0.50" in reward
+    and "AdaptiveStopExcessRrMultiplier = 0.25" in reward
+    and "EffectiveRrBaseFactor = 0.90" in reward
+    and "EffectiveRrAbsoluteReduction = 0.15" in reward,
 )
 
 check(
