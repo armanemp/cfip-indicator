@@ -199,16 +199,12 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (envelope.Identity.ExpiryUtc.HasValue &&
-                envelope.Identity.ExpiryUtc.Value <= nowUtc)
-            {
-                reason =
-                    "PENDING INTENT EXPIRED";
-                return false;
-            }
+            DateTime? expiration =
+                envelope.Intent.ExpiryUtc ??
+                envelope.Identity.ExpiryUtc;
 
-            if (envelope.Intent.ExpiryUtc.HasValue &&
-                envelope.Intent.ExpiryUtc.Value <= nowUtc)
+            if (expiration.HasValue &&
+                expiration.Value <= nowUtc)
             {
                 reason =
                     "PENDING INTENT EXPIRED";
@@ -252,10 +248,6 @@ namespace CFIP.cBot.Execution
 
             string label =
                 executionLabel + "-PENDING";
-
-            DateTime? expiration =
-                envelope.Intent.ExpiryUtc ??
-                envelope.Identity.ExpiryUtc;
 
             TradeResult result;
 
