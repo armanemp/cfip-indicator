@@ -2856,3 +2856,8 @@ Repository verification on final implementation HEAD `52679d319ecd03d5bbf0358cf3
 Manual acceptance remains required for target-terminal timing, broker-specific fill/slippage behavior, reconnect/reload and empirical signal/outcome validation.
 
 Next phase: **CI-16 — Deterministic replay, latency and counterexample suite.**
+
+
+## CI-15 merge closeout — 2026-10-02
+
+PR #172 was merged to `main` as `8aa4a7dc3fee97d6ce233c26b2114e844b36a669`. The CI-15 implementation head was `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`; Source/Architecture #2707, Runtime Acceptance #2516 and cTrader Compile #2700 passed on the final implementation head, with Planning Contracts reporting `Planning contracts OK`. The next phase is **CI-16 — Deterministic replay, latency and counterexample suite**.

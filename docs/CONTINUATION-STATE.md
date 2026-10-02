@@ -23,7 +23,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-13 — TP source, target obstacle and coherent TP ladder integrity — continuation from CI-12.**
+**CI-16 — Deterministic replay, latency and counterexample suite — continuation from CI-15.**
 
 Status: **VERIFIED COMPLETE — CI-07 merged to `main` in PR #162, merge commit `73511c84ff3072cdbdab8487b0d4331b52c789b1`.**
 
@@ -1410,7 +1410,7 @@ The user's reported cross-component symptoms remain an explicit empirical accept
 
 ### CI-15 closeout — 2026-10-02
 
-Status: **VERIFIED COMPLETE — PR #172 merged to `main`.**
+Status: **VERIFIED COMPLETE — PR #172 merged to `main` as `8aa4a7dc3fee97d6ce233c26b2114e844b36a669`.**
 
 Implementation HEAD: `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`.
 
@@ -1427,6 +1427,10 @@ Safety:
 - no strategy/RR/confidence/Entry/SL/TP/risk/execution threshold was tuned;
 - no second decision or execution authority introduced;
 - target-terminal and empirical broker/outcome validation remain manual.
+
+Next implementation response: **CI-16 — Deterministic replay, latency and counterexample suite.**
+Operator action: run `git pull --ff-only` on local `main`.
+
 
 Next implementation response: **CI-16 — Deterministic replay, latency and counterexample suite.**
 Operator action: run `git pull --ff-only` on local `main`.

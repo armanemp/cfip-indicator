@@ -1007,14 +1007,14 @@ Safety/manual boundary:
 - no second decision/plan/broker-mutation authority introduced;
 - target-terminal replay, panel/chart rendering, broker lifecycle and empirical TP/signal-quality validation remain manual acceptance boundaries.
 
-**Current implementation phase: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
-**CI-14 is VERIFIED COMPLETE.**
-**Next implementation phase: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+**Current implementation phase: CI-16 — Deterministic replay, latency and counterexample suite.**
+**CI-14 and CI-15 are VERIFIED COMPLETE.**
+**Next implementation phase: CI-16 — Deterministic replay, latency and counterexample suite.**
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
 
 ### CI-15 closeout — 2026-10-02
 
-Status: **VERIFIED COMPLETE — PR #172 merged to `main`.**
+Status: **VERIFIED COMPLETE — PR #172 merged to `main` as `8aa4a7dc3fee97d6ce233c26b2114e844b36a669`.**
 
 Implementation HEAD: `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`.
 
