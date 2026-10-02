@@ -68,7 +68,7 @@ check(
     "single-plan capacity is explicit",
     'const string ManagedLabel = "CFIP-SMART"' in shadow and
     'const string PendingManagedLabel = "CFIP-SMART-PENDING"' in shadow and
-    re.search(r"ManagedPositionCount\\s*\\+\\s*broker\\.ManagedPendingOrderCount\\s*>=\\s*1", shadow) is not None,
+    re.search(r"ManagedPositionCount\s*\+\s*broker\.ManagedPendingOrderCount\s*>=\s*1", shadow) is not None,
 )
 
 check(
