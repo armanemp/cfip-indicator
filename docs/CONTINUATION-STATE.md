@@ -1462,3 +1462,19 @@ Safety/manual:
 
 Next implementation response: **CI-17 — Target-terminal cTrader validation.**
 Operator action after merge: run `git pull --ff-only` on local `main`.
+
+### CI-17 target-terminal acceptance package — 2026-10-02
+
+Status: **IMPLEMENTATION PACKAGE COMPLETE — target-terminal/manual broker acceptance remains open.**
+
+Completed:
+- target-terminal no-trade probe strengthened with startup/first-tick timing, calculation revision/age, Bid/Ask/spread and bar freshness evidence;
+- preflight is now represented by a compilable .NET 6 project referencing the production Indicator;
+- CI-17 static audit is accumulated after CI-16;
+- exact manual acceptance matrix is recorded for market, pending, protection, lifecycle, reconnect/reload and panel/chart synchronization.
+
+Manual boundary:
+- real cTrader terminal and broker execution cannot be truthfully simulated by repository CI;
+- demo market/pending fill and slippage evidence, restart/reconnect evidence, panel responsiveness evidence and end-to-end signal/plan/execution trace remain required.
+
+Next implementation response after manual evidence: **CI-FINAL — Full-stack Calculation Integrity Certification**.
