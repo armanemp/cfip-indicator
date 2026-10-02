@@ -259,7 +259,7 @@ namespace cAlgo
                     " | SCENARIO " +
                     (string.IsNullOrWhiteSpace(candidate.ScenarioId)
                         ? candidate.Id
-                        : candidate.ScenarioId)
+                        : candidate.ScenarioId) +
                     " | Q " +
                     Math.Max(
                         0,
