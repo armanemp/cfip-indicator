@@ -46,15 +46,12 @@ namespace cAlgo
                                 Tp2 = 0,
                                 Tp3 = 0,
                                 Tp4 = 0,
-                                Risk = Math.Max(
-                                    Symbol.PipSize,
-                                    risk),
+                                Risk = risk,
                                 Tp1RR =
-                                    risk > 0
-                                        ? Math.Abs(
-                                            target - entry) /
-                                          risk
-                                        : 0,
+                                    RiskRewardGeometryRule.CalculateNominalRR(
+                                        entry,
+                                        target,
+                                        risk),
                                 StopSource = "LIVE / STRUCTURAL",
                                 StopQuality = 100,
                                 Tp1Source = "LIVE / ADAPTIVE",
