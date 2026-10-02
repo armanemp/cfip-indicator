@@ -191,9 +191,8 @@ namespace cAlgo
             return
                 (_economicNewsBlockingEvent.TimeUtc -
                  new DateTimeOffset(
-                    utc.Kind == DateTimeKind.Utc
-                        ? utc
-                        : utc.ToUniversalTime(),
+                    CanonicalTimeRule.EnsureUtc(
+                        utc),
                     TimeSpan.Zero))
                 .TotalMinutes;
         }
