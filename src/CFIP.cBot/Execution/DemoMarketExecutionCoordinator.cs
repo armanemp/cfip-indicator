@@ -18,6 +18,8 @@ namespace CFIP.cBot.Execution
             SignalEnvelope envelope,
             string executionLabel,
             DateTime nowUtc,
+            double maximumMarginUsagePercent,
+            double marginBufferPercent,
             out BrokerExecutionReport report,
             out string reason)
         {
@@ -113,6 +115,8 @@ namespace CFIP.cBot.Execution
                         ? TradeType.Buy
                         : TradeType.Sell,
                     volume,
+                    maximumMarginUsagePercent,
+                    marginBufferPercent,
                     out volume,
                     out marginReason))
             {
