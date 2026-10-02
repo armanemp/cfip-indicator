@@ -28,6 +28,13 @@ Important:
 Full-chain routine audit:
 `Pre-analysis → M15 → M5 → M1 optional → entry geometry → signal/alert → contract → cBot → broker → lifecycle/protection → chart/panel`.
 
+### Visual consistency follow-up — 2026-10-02
+
+- BUY and SELL level presentation uses the same canonical line geometry, thickness mapping, font size, weight, and label placement; direction does not alter the visual layout.
+- Entry / Trigger / SL / TP / Pending labels share the same compact renderer.
+- Compact level text is now exactly the same semantic color as its corresponding Solid line; labels remain background-free.
+- All compact plan lines remain finite and Solid with the existing default 40-bar span.
+
 ## CBOT-P7 — UI / State Cutover — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**
@@ -3402,7 +3409,7 @@ Implemented on phase/m3-trade-truth-alert-chart-coherence-2026-10-02.
 - Extended SignalVisualSnapshot with canonical opportunity identity.
 - Prevented directional watch markers while EntryAllowed is false or a pending/live broker state owns the chart.
 - Replaced the hard-coded main-plan (MTF) label with the canonical source timeframe from the current visual snapshot, with the existing deterministic fallback.
-- Corrected compact signal-label anchoring so labels sit to the left of the 40-candle line start with a horizontal gap; white text and no background remain unchanged.
+- Corrected compact signal-label anchoring so labels sit to the left of the 40-candle line start with a horizontal gap; labels are background-free and use the exact semantic color of their corresponding line.
 - Added and accumulated tools/audit_phase_m3_trade_truth.py and wired it into Source/Architecture CI.
 
 Verification status:
