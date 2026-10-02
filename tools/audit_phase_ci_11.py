@@ -63,7 +63,7 @@ check(
 check(
     "geometry owns one mode/inside/trigger/late calculation",
     "EntryGeometryRule.Evaluate(" in execution_resolver and
-    "EntryGeometryRule.Evaluate(" in actionability and
+    "EntryGeometryRule.Evaluate(" in actionability_preparation and
     "EntryGeometryRule.Evaluate(" in plan_input and
     "EntryGeometryRule.Evaluate(" in plan_market
 )
