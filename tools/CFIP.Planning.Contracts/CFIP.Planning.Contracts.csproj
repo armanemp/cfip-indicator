@@ -16,6 +16,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionIntentGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PlanRewardRiskQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetSelectionRequiredRrRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateRewardScoreRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetLadderOption.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetLadderSelectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" />
