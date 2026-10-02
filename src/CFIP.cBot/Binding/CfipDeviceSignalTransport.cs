@@ -25,7 +25,7 @@ namespace CFIP.cBot.Binding
             try
             {
                 string key =
-                    SignalBusKey.ForIndicatorInstance(
+                    SignalBusKey.ForInstance(
                         indicatorInstanceId);
 
                 string payload =
