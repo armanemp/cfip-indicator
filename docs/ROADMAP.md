@@ -1010,3 +1010,40 @@ Safety/manual boundary:
 **Current implementation phase: CI-14 — Canonical risk/reward and protection mathematics.**
 **Next phase after CI-14: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
+
+### CI-14 implementation record — 2026-10-02
+
+Status: **IMPLEMENTED — awaiting exact-head repository verification.**
+
+Implementation branch:
+phase/ci-14-canonical-rr-protection
+
+Current implementation head:
+6b5f251603d458f9c363e6bec93649b6aff5e3eb
+
+Completed:
+- introduced one canonical RiskRewardMathRule for risk, reward, nominal RR, effective RR, bounds, synthetic target and live-progress RR;
+- aligned candidate filtering, plan reward integrity, actionability, market/aggressive/pending execution validation and live lifecycle calculations with the same geometry semantics;
+- removed the identified stored-risk/raw-risk RR mismatch around the pip floor;
+- aligned chart LIVE-RR and heartbeat presentation with the same canonical directional-progress calculation;
+- added deterministic BUY/SELL mirror, spread, pip-floor, wrong-side, synthetic-target and live-progress contract fixtures;
+- added tools/audit_phase_ci_14.py and wired it after CI-13 in Source/Architecture;
+- recorded the phase semantics in docs/PHASE-CI-14-CANONICAL-RR-PROTECTION.md.
+
+Important finding:
+The earlier cross-component symptoms are not yet proven to be purely analytical or purely presentation-related. CI-14 establishes one RR/protection semantic owner; CI-15 must trace exact Entry/SL/TP/intent values through execution and broker boundaries, and CI-16 must classify missed/weak signals with deterministic replays instead of weakening gates blindly.
+
+Safety:
+- no public parameter/default contract changed;
+- no strategy threshold was tuned;
+- no second decision or broker-mutation authority introduced.
+
+Verification gate still required on this exact head:
+- Source/Architecture;
+- Runtime Acceptance Contracts;
+- cTrader Compile/Build;
+- Planning Contracts.
+
+**Next implementation phase after CI-14 verification: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+
+Operator action after merge: run git pull --ff-only on local main.
