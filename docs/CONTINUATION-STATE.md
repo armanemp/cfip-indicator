@@ -1,6 +1,6 @@
 ## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
 
 Current canonical UI boundary:
 - there is no production Popup surface;
