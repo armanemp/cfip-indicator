@@ -58,7 +58,6 @@ require(
 )
 
 for token in (
-    "CbotIdentity.DisplayName",
     "CbotConnectionPanelText",
     "CBOT NOT CONNECTED • START cBot ON THIS CHART",
     "CBOT RECONNECTING • HEARTBEAT STALE • ",
