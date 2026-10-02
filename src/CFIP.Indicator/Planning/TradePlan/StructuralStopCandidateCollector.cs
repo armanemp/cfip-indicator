@@ -49,7 +49,10 @@ namespace cAlgo
                                     _m5Bars,
                                     closedM5,
                                     direction,
-                                    atr);
+                                    atr,
+                                    false,
+                                    entry,
+                                    true);
                 
                             if (supportFvg != null)
                             {
