@@ -91,7 +91,7 @@ namespace CFIP.cBot.Execution
                 }
             }
 
-            int signalRevision =
+            long signalRevision =
                 envelope == null ||
                 envelope.Identity == null
                     ? 0
