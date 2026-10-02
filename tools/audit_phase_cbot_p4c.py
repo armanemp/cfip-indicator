@@ -60,8 +60,8 @@ check("PrimaryExecution = \"M15\"" in timeframe and
       "execution timeframe roles must remain canonical")
 check("Bars.TimeFrame != TimeFrame.Minute15" not in bot,
       "cBot must not bind execution to host Chart TF")
-check('DefaultTimeFrame = "M15"' in bot,
-      "cBot launch default should remain M15")
+check('DefaultTimeFrame = "M5"' in bot,
+      "cBot host launch default should remain M5")
 check("ExecutionAction.PendingStop" in bot and
       "EnableDemoPendingStopExecution" in bot,
       "cBot Pending Stop routing/arm missing")
