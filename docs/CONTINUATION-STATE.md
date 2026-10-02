@@ -1,6 +1,6 @@
 ## CI-21 continuation — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci-21-primary-m15-signal-visibility`.**
+Status: **VERIFIED COMPLETE — merged to `main) via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
 
 Canonical rule reaffirmed:
 - **M15 is the trading/execution reference timeframe.**
@@ -18,17 +18,17 @@ Important boundary:
 - presentation-only state does not authorize broker execution;
 - executable entry still requires the canonical M15 decision plus M5 actionability/trigger/entry-quality and all existing risk/reward protections.
 
-Verification pending:
-- Source/Architecture;
-- Runtime Acceptance;
-- cTrader Compile/Build;
-- CI-21 audit.
+Verification:
+- Source/Architecture: **PASS**;
+- Runtime Acceptance: **PASS**;
+- cTrader Compile/Build: **PASS**;
+- CI-21 audit: **PASS**.
 
 Manual validation remains required for live cTrader timing/visuals, popup/sound alignment and empirical signal frequency/quality.
 
 Next work unit: continue one complete phase at a time and repeat the full pre-analysis → analysis → signal → M5 trigger/tuning → plan → cBot execution coherence audit.
 
-Operator action after merge: run `git pull --ff-only` on local `main`.
+Operator action: run `git pull --ff-only` on local `main`.
 
 ## CI-20B closeout — 2026-10-02
 
