@@ -109,7 +109,10 @@ namespace cAlgo
                                                                     PanelToggleWidth,
                                                                     PanelToggleHeight)));
                                         
-                                                    int buttonGap = 0;
+                                                    int buttonGap =
+                                                        Math.Max(
+                                                            0,
+                                                            PanelButtonGap);
                                         
                                                     int buttonMargin =
                                                         Math.Max(
