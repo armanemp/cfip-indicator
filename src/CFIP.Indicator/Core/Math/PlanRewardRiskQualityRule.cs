@@ -32,7 +32,8 @@ namespace cAlgo
     {
         // Named internal policy constants: fixed safety floors/margins only.
         // Their values are preserved from the pre-E8 implementation.
-        internal const double BaseMinimumRrFloor = 0.50;
+        internal const double BaseMinimumRrFloor =
+            RiskRewardPolicyRule.PlanBaseMinimumFloor;
         internal const double PreferredStopRiskAtrFloor = 0.25;
         internal const double MaximumStopRiskAtrFloor = 0.50;
         internal const double AdaptiveStopExcessRrCap = 0.50;
@@ -75,28 +76,49 @@ namespace cAlgo
             if (!validTarget)
                 return CreateRewardRiskBlocked("TP1 SIDE INVALID");
 
-            double risk = Math.Abs(entry - stop);
-            double reward = Math.Abs(tp1 - entry);
+            RiskRewardGeometryResult geometry =
+                RiskRewardGeometryRule.Evaluate(
+                    direction,
+                    entry,
+                    stop,
+                    tp1,
+                    spread);
 
-            if (!IsFinitePositiveRewardRisk(risk) ||
-                !IsFinitePositiveRewardRisk(reward))
-                return CreateRewardRiskBlocked("EMPTY REWARD/RISK");
+            if (!geometry.Valid)
+            {
+                return CreateRewardRiskBlocked(
+                    geometry.Reason == "TARGET SIDE INVALID"
+                        ? "TP1 SIDE INVALID"
+                        : geometry.Reason);
+            }
+
+            double risk =
+                geometry.Risk;
 
             double riskAtr =
-                risk / Math.Max(SymbolTickFloor(), atr);
+                risk /
+                Math.Max(
+                    SymbolTickFloor(),
+                    atr);
 
             if (!IsFinitePositiveRewardRisk(riskAtr))
                 return CreateRewardRiskBlocked("RISK ATR INVALID");
 
             double boundedBase =
-                Math.Max(BaseMinimumRrFloor, baseMinimumRR);
+                RiskRewardPolicyRule.NormalizeMinimum(
+                    baseMinimumRR,
+                    BaseMinimumRrFloor);
 
             double preferred =
-                Math.Max(PreferredStopRiskAtrFloor, preferredStopRiskAtr);
+                Math.Max(
+                    PreferredStopRiskAtrFloor,
+                    preferredStopRiskAtr);
 
             double maximum =
                 Math.Max(
-                    Math.Max(preferred, MaximumStopRiskAtrFloor),
+                    Math.Max(
+                        preferred,
+                        MaximumStopRiskAtrFloor),
                     maximumStopRiskAtr);
 
             if (riskAtr > maximum)
@@ -113,33 +135,27 @@ namespace cAlgo
                     boundedBase);
             }
 
-            double stopExcess =
-                Math.Max(0, riskAtr - preferred);
-
             double adaptiveRequired =
-                boundedBase +
-                Math.Min(
+                RiskRewardPolicyRule.CalculateAdaptiveMinimum(
+                    boundedBase,
+                    riskAtr,
+                    preferred,
                     AdaptiveStopExcessRrCap,
-                    stopExcess * AdaptiveStopExcessRrMultiplier);
+                    AdaptiveStopExcessRrMultiplier);
 
             double nominalRR =
-                reward / risk;
-
-            double safeSpread =
-                Math.Max(0, spread);
-
-            double effectiveRisk =
-                risk + safeSpread;
+                geometry.NominalRR;
 
             double effectiveRR =
-                reward /
-                Math.Max(SymbolTickFloor(), effectiveRisk);
+                geometry.EffectiveRR;
 
             if (!IsFinitePositiveRewardRisk(nominalRR) ||
                 !IsFinitePositiveRewardRisk(effectiveRR))
                 return CreateRewardRiskBlocked("RR INVALID");
 
-            if (nominalRR < adaptiveRequired)
+            if (!RiskRewardPolicyRule.MeetsMinimum(
+                    nominalRR,
+                    adaptiveRequired))
             {
                 return new PlanRewardRiskQualityResult(
                     false,
@@ -154,11 +170,14 @@ namespace cAlgo
             }
 
             double minimumEffectiveRR =
-                Math.Max(
-                    boundedBase * EffectiveRrBaseFactor,
-                    boundedBase - EffectiveRrAbsoluteReduction);
+                RiskRewardPolicyRule.CalculateEffectiveMinimum(
+                    boundedBase,
+                    EffectiveRrBaseFactor,
+                    EffectiveRrAbsoluteReduction);
 
-            if (effectiveRR < minimumEffectiveRR)
+            if (!RiskRewardPolicyRule.MeetsMinimum(
+                    effectiveRR,
+                    minimumEffectiveRR))
             {
                 return new PlanRewardRiskQualityResult(
                     false,
