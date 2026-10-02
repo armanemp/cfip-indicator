@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification and target-terminal visual acceptance pending.**
+Status: **REPOSITORY IMPLEMENTATION VERIFIED — target-terminal visual acceptance pending.**
 
 ## Root cause
 
@@ -69,3 +69,15 @@ After repository verification and target-terminal panel acceptance, CI-17 contin
 ## Repository verification continuity
 
 Historical CI-04/05/08/09/12/13 continuity checks were reconciled to the current CI-17A state so archived phase audits validate historical records without requiring an obsolete active-phase label.
+
+
+## Repository verification closeout
+
+PR #175 merged to `main` as `6ffff643ad5c24782ca7035355e31ee4a04465c2`.
+
+Exact implementation HEAD `9641bfc02c7604d6432202459fa198866d4a5f53` passed:
+- Source/Architecture #2742;
+- Runtime Acceptance Contracts #2551;
+- cTrader Compile #2735.
+
+CI-17A is therefore repository-verified. The remaining CI-17 acceptance boundary is the actual cTrader terminal: visible panel refresh latency, live reaction/context updates, startup/reload behavior and end-to-end synchronization.
