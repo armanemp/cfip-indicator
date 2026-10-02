@@ -6552,12 +6552,27 @@ namespace cAlgo
                 pendingRenderer.Contains("RemovePlanLabel("),
                 "pending levels render through compact semantic boxes");
 
+            string alertDeliveryPath = Path.Combine(
+                "src", "CFIP.Indicator", "Core", "Runtime", "AlertDelivery.cs");
+            string alertContractPath = Path.Combine(
+                "src", "CFIP.Contracts", "AlertEnvelope.cs");
+
             Assert(
-                alertEngine.Contains("RememberVisualSignalAlert(") &&
-                state.Contains("_lastVisualAlertM5") &&
-                state.Contains("_lastVisualAlertDirection") &&
-                alertRenderer.Contains("RenderLatestAlertSignalMarker("),
-                "audible signal alert has a non-authoritative visual presentation path");
+                !alertEngine.Contains("RememberVisualSignalAlert(") &&
+                !state.Contains("_lastVisualAlertM5") &&
+                !state.Contains("_lastVisualAlertDirection") &&
+                alertRenderer.Contains("RenderLatestAlertSignalMarker(") &&
+                File.Exists(alertDeliveryPath) &&
+                File.Exists(alertContractPath) &&
+                File.ReadAllText(alertDeliveryPath).Contains("AlertEnvelope Envelope") &&
+                File.ReadAllText(alertContractPath).Contains("VisualMarkAllowed"),
+                "audible signal alerts use canonical envelope delivery without a second visual authority");
+
+            Assert(
+                File.ReadAllText(alertEnginePath).Contains("BuildCanonicalAlertEnvelope(") &&
+                File.ReadAllText(alertEnginePath).Contains("EnableSoundAlerts &&") &&
+                File.ReadAllText(alertEnginePath).Contains("!blockedCandidateAlert"),
+                "blocked signal alert side effects are suppressed at the alert authority");
 
             string protectionPath = Path.Combine(
                 "src", "CFIP.Indicator", "Trading", "LiveManagement", "ProtectionManager.cs");
