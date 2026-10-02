@@ -54,10 +54,10 @@ if "Bars.TimeFrame != TimeFrame.Minute15" not in bot:
     errors.append("cBot must fail closed outside M15")
 if "class ExecutionMarginBudgetRule" not in margin or "AllowedMargin" not in margin:
     errors.append("cBot margin budget owner missing")
-if ("TryConstrainVolumeForMargin(" not in coord or
-        "ExecutionMarginBudgetRule.AllowedMargin" not in coord or
-        "ExecutionMarginBudgetRule.ScaleVolumeToBudget" not in coord or
-        "NormalizeVolumeInUnits" not in coord):
+if ("BrokerExecutionSafety.TryConstrainVolumeForMargin(" not in coord or
+        "BrokerExecutionSafety.CountManagedPositions(" not in coord or
+        "BrokerExecutionSafety.TryConstrainVolumeForMargin(" not in coord or
+        "NormalizeVolumeInUnits" not in margin):
     errors.append("broker-side final volume cap missing")
 if "Execution Margin Usage" not in bot or "Execution Margin Buffer" not in bot:
     errors.append("cBot execution margin safety settings missing")
