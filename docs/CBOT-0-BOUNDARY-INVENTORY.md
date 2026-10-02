@@ -37,7 +37,7 @@ The current Indicator has 15 direct broker-mutation call sites. CBOT-0 requires 
 | --- | --- | ---: | --- |
 | `ExecuteMarketOrder` | `Trading/Execution/BrokerMarketOrderMutation.cs` | 2 | Market + aggressive market submission |
 | `ExecuteMarketRangeOrder` | `Trading/Execution/BrokerMarketOrderMutation.cs` | 2 | Market-range submission |
-| `PlaceStopOrder` | `Trading/Execution/BrokerPendingOrderPlacement.cs` | 2 | Pending Stop submission |
+| `PlaceStopOrder` | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` | 2 | Pending Stop submission |
 | `PlaceLimitOrder` | `Trading/Execution/BrokerLimitOrderPlacement.cs` | 2 | Pending Limit submission |
 | `CancelPendingOrder` | `Trading/Execution/BrokerPendingOrderCancellation.cs` | 1 | Pending cancellation |
 | `ClosePosition` | `Trading/Execution/BrokerPositionCloseMutation.cs` | 1 | Full/partial position close mutation |
