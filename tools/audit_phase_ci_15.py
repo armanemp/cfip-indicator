@@ -26,8 +26,8 @@ intent_rule = read("src/CFIP.Indicator/Core/Math/ExecutionIntentGeometryRule.cs"
 intent_builder = read("src/CFIP.Indicator/Planning/Execution/ExecutionIntentBuilder.cs")
 intent_validation = read("src/CFIP.Indicator/Planning/Execution/ExecutionIntentValidation.cs")
 market_validator = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs")
-market_execution = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketBrokerExecution.cs")
-aggressive_execution = read("src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveBrokerExecution.cs")
+market_execution = read("src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs")
+aggressive_execution = ""
 pending_stop = read("src/CFIP.Indicator/Trading/Pending/Placement/ContinuationStopPlacement.cs")
 pending_limit = read("src/CFIP.Indicator/Trading/Pending/Placement/ReversalLimitPlacement.cs")
 pending_fill = read("src/CFIP.Indicator/Trading/Lifecycle/PendingFilledHandler.cs")
@@ -76,29 +76,17 @@ check(
 )
 
 check(
-    "Automatic Market broker path consumes the validated intent",
-    "out validatedIntent" in market_execution
-    and "entry = validatedIntent.RequestedEntry" in market_execution
-    and "stopPips = validatedIntent.StopPips" in market_execution
-    and "targetPips = validatedIntent.TargetPips" in market_execution
-    and "target = validatedIntent.Target" in market_execution
-    and "volume = validatedIntent.Volume" in market_execution
-    and "TryBuildServerSideTakeProfitLadder(" in market_execution
-    and "validatedIntent.RequestedEntry" in market_execution
-    and "validatedIntent.Target" in market_execution,
+    "cBot Market broker path consumes canonical Market/Range geometry",
+    "ExecuteMarketRangeOrder(" in market_execution
+    and "ExecuteMarketOrder(" in market_execution
+    and "stopPips" in market_execution
+    and "targetPips" in market_execution
+    and "MarketProfile" in market_execution,
 )
 
 check(
-    "Aggressive broker path consumes the exact validated intent",
-    "ExecutionIntent aggressiveIntent" in aggressive_execution
-    and "ValidateExecutionIntent(" in aggressive_execution
-    and "entry = aggressiveIntent.RequestedEntry" in aggressive_execution
-    and "stopPips = aggressiveIntent.StopPips" in aggressive_execution
-    and "tpPips = aggressiveIntent.TargetPips" in aggressive_execution
-    and "target = aggressiveIntent.Target" in aggressive_execution
-    and "volume = aggressiveIntent.Volume" in aggressive_execution
-    and "aggressiveIntent.RequestedEntry" in aggressive_execution
-    and "aggressiveIntent.Target" in aggressive_execution,
+    "Aggressive Indicator broker owner is intentionally removed in P4A",
+    aggressive_execution == ""
 )
 
 check(
