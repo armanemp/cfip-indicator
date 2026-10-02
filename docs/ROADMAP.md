@@ -1,1068 +1,1633 @@
-## Phase 7.4 — MaximumOpenPositions semantics — continuity record
+# CFIP Indicator — Master Roadmap 2026-10-02
+## Single Source of Truth — Correctness → Certification → cBot → Data-Driven Intelligence → Release
 
-The single-plan execution-capacity semantics are enforced by the canonical
-capacity rule and guard. This continuity record preserves the historical
-phase identifier required by the project-integrity audit.
-
-# CFIP Indicator — Master Implementation, Certification and Release Roadmap
-
-## 0. Purpose
-
-This file is the single master roadmap for the CFIP Indicator project.
-
-It is intentionally self-contained so that development can resume from another
-chat, account or assistant without reconstructing the plan from conversation
-history.
-
-This document combines:
-
-- the historical modularization work already completed in the repository;
-- the current runtime/cTrader acceptance state;
-- the unresolved findings from the external/Claude review;
-- the current OSS numerical benchmark work;
-- the complete certification sequence;
-- local production release;
-- cloud cBot portability and validation;
-- post-stability adaptive learning.
-
-The roadmap is a **plan and continuity contract**. It does not authorize a
-production behavior change by itself.
+> این فایل **تنها مرجع اجرای پروژه** است. ترتیب فازها، شرایط پذیرش، وضعیت فعلی، معماری نهایی، قوانین تغییر، تست، پاکسازی و معیار پایان همگی در همین فایل تعریف می‌شوند.
+>
+> قانون اصلی: در هر پاسخ/واحد کاری فقط **یک فاز کامل** اجرا می‌شود. فاز بعدی فقط پس از ثبت نتیجه و تأیید ادامه داده می‌شود.
+>
+> این roadmap تضمین سود نمی‌دهد؛ هدف آن این است که هیچ نقص شناخته‌شده بدون مالک، تست، وضعیت و تصمیم نهایی باقی نماند و هیچ ادعای «حل شده» بدون شواهد معتبر پذیرفته نشود.
 
 ---
 
-## Phase-sequence integrity note
+# 1. هدف نهایی
 
-The canonical Prompt 4 remediation track contains **D1 through D10** only.
-A repository-wide search on 2026-10-01 found no authoritative `CR4.11`,
-`D11`, `Phase 4.11` or `Prompt 4.11` entry. The authoritative sequence
-therefore transitions from **CR4.10 / D10** to **CR5.1 / E1**, and then to
-**CR5.2 / E2**. No CR4.11 step is being skipped.
+CFIP باید به یک سیستم واحد، قابل‌اعتماد، سریع، قابل‌آزمون و قابل‌نگهداری تبدیل شود که در آن:
 
-# 1. Non-negotiable working rules
+1. تحلیل بازار، تصمیم، سناریو و Plan یک حقیقت واحد داشته باشند.
+2. Chart، Panel و Alert دقیقاً همان حقیقت را نمایش دهند.
+3. Signal → Plan → Alert → Chart → Execution → Broker State → Outcome از یک identity chain واحد تبعیت کند.
+4. هیچ مسیر موازی نتواند Buy/Sell، Entry، SL، TP، RR یا وضعیت معامله را خلاف مسیر اصلی تولید کند.
+5. SL فقط در جهت محافظتی حرکت کند و TP هرگز به عقب برنگردد.
+6. Partial TP، Break-even، Trail، Dynamic TP، Close، Cancel و Recovery بر اساس broker-confirmed state باشند.
+7. پنل واقعاً live، کامل، سریع و بدون stale content باشد.
+8. Alert صوتی/نمایشی دقیقاً با event واقعی هم‌زمان و idempotent باشد.
+9. تحلیل از execution جدا شود.
+10. Indicator فقط Analysis / Decision / Scenario / Plan / Presentation باشد.
+11. cBot تنها Broker Execution / Account Risk / Protection / Lifecycle Authority باشد.
+12. کیفیت سیگنال فقط با Replay، OOS و Walk-forward سنجیده شود.
+13. OB/FVG/WaveTrend/Divergence/VWAP/Liquidity/Volume فقط بر اساس evidence تقویت یا حذف شوند.
+14. Clampهای پنهان، parameterهای دروغین، dead code، duplicate owner و فایل‌های زائد حذف شوند.
+15. Repository نهایی از clean checkout قابل ساخت و تست باشد.
 
-## 1.1 One phase per implementation response
+---
 
-One implementation response completes exactly one phase.
+# 2. وضعیت مبنای واقعی — 2026-10-02
 
-A phase is complete only when the affected implementation, caller migration,
-static/contract verification, duplicate-path cleanup, available runtime
-validation and roadmap status are updated.
+## 2.1 baseline
 
-A phase must be small enough to finish without leaving a partially applied
-architectural change.
+مبنای audit حاضر:
+- حدود 631 فایل C#
+- حدود 77 هزار خط
+- 568 public parameters
+- معماری ماژولار Analysis / Planning / Risk / Lifecycle / UI
+- broker mutation هنوز داخل Indicator host
+- current production OSS boundary validated separately
+- Target Terminal acceptance هنوز gate نهایی است
 
-## 1.2 Implementation order inside each phase
+## 2.2 وضعیت فعلی ثبت‌شده
 
-Always use:
+- CI-17A مربوط به اصلاح live-content refresh پنل در repository پیاده و merge شده.
+- repository gates آن PASS شده‌اند:
+  - Source/Architecture
+  - Runtime Acceptance Contracts
+  - cTrader Compile
+- با این حال stale/incomplete panel content هنوز در محیط واقعی کاربر گزارش شده؛ بنابراین repository PASS به‌تنهایی acceptance نهایی پنل نیست.
+- Current terminal/broker boundary همچنان باید دستی اثبات شود.
+- مسیر معماری نهایی: Indicator = analysis/signal/plan/presentation؛ cBot = broker execution/account risk/live protection/lifecycle.
+- Cloud در این roadmap پیاده‌سازی نمی‌شود و فقط contractها transport-neutral می‌مانند.
+
+## 2.3 اصل مهم status
+
+هر موردی که فقط source-reviewed باشد، «حل‌شده قطعی» محسوب نمی‌شود.
+برای رفتار cTrader/broker، evidence target-terminal لازم است.
+
+---
+
+# 3. قوانین غیرقابل‌مذاکره
+
+## 3.1 One phase per response
+
+هر پاسخ اجرایی دقیقاً یک فاز را کامل می‌کند.
+نیمه‌کاره ماندن migration یا owner switch مجاز نیست.
+
+## 3.2 ترتیب داخل هر فاز
 
 1. Contract / invariant
-2. Authoritative implementation
-3. Caller migration
-4. Tests / static checks
-5. Duplicate-path removal
-6. Runtime validation where available
-7. Documentation
+2. Root-cause verification
+3. Canonical implementation
+4. Caller migration
+5. Behavioral tests
+6. Duplicate/dead-path cleanup
+7. Runtime verification
+8. Documentation/status
+9. Performance/optimization audit
+10. Phase closeout
 
-## 1.3 Source ownership
+## 3.3 Parameter contract
 
-Every behavior has one authoritative owner.
+- نام، نوع و DefaultValue هیچ public Parameter بدون تصمیم صریح تغییر نمی‌کند.
+- پارامتر جدید فقط با defaultی که behavior فعلی را حفظ کند.
+- هر behavior change جداگانه علامت‌گذاری می‌شود.
+- قبل از Replay هیچ tuning برای confidence/RR/risk/weights/thresholds مجاز نیست.
 
-Do not add:
+## 3.4 Evidence contract
 
-- compatibility aliases;
-- duplicate business rules;
-- parallel decision authorities;
-- alternate broker mutation paths;
-- second trading engines;
-- historical/versioned production identities.
+- grep-only و text-only به‌تنهایی test نیست.
+- هر bug fix باید behavioral test داشته باشد.
+- ترجیح: test قبل از اصلاح fail و بعد از اصلاح pass.
+- pure logic باید در Core یا معادل تست‌پذیر خود باشد.
+- clock/time باید injectable باشد.
+- ادعای قبلی در صورت تعارض با کد/تست باید رد شود و علت ثبت شود.
 
-## 1.4 Production source hygiene
+## 3.5 Single owner
 
-Production C# remains version-neutral.
+ممنوع:
+- duplicate decision engine
+- duplicate execution engine
+- alternate broker mutation
+- second trading authority
+- compatibility alias دارای business logic
+- static mutable global برای bridge
+- chart-object scraping
+- reflection برای state خصوصی
+- hidden fallback executor
 
-Historical versions, source snapshots and migration references may appear only
-in documentation required for continuity.
+## 3.6 Broker truth
 
-Production source must not contain historical class names, numbered strategy
-identifiers, release suffixes or versioned trade comments.
+- broker-confirmed state authoritative
+- submitted != accepted
+- accepted != filled
+- pending != position
+- rejection != success
+- desired Plan state != broker state
+- restart/reconnect: reconcile first, act second
 
-## 1.5 Trading safety
+## 3.7 Protective mutation
 
-The following are permanent invariants:
+- Tighten SL فقط protective.
+- Repair SL فقط برای missing/invalid/wrong-side.
+- TP progression فقط forward.
+- Partial/Close/Cancel فقط پس از broker confirmation.
+- Plan live state فقط بعد از mutation success/reconciliation advance می‌کند.
 
-- broker-confirmed state is authoritative;
-- accepted submission is not fill confirmation;
-- rejection is not success;
-- pending is not a position before confirmed fill;
-- SL changes are protective-only;
-- partial close and close are consumed only after broker confirmation;
-- restart/reconnect reconciliation precedes assumptions about live state;
-- automatic market and pending execution share one managed identity;
-- there is one decision authority and one automatic execution authority;
-- manual BUY/SELL entry controls do not exist.
+## 3.8 Permanent optimization audit
 
-## 1.6 OSS boundary
+در هر فاز بررسی کن:
+startup، hot path، allocations، repeated computation، redraw، broker reads، cache growth، I/O، duplicate helpers، dead code، panel responsiveness.
 
-OSS libraries are allowed only through an explicit adapter or an isolated
-research/benchmark project.
+Optimization نباید correctness را قربانی کند.
 
-Before production adoption, record:
+## 3.9 Mandatory closeout
 
-- upstream source;
-- exact version/tag/commit;
-- license and attribution;
-- target-runtime compatibility;
-- dependency implications;
-- deterministic fixture results;
-- benchmark evidence;
-- adapter owner;
-- authority boundary.
-
-No OSS trading engine may become a second live CFIP engine.
-
----
-
-# 2. Current repository baseline
-
-Current branch:
-
-\`main\`
-
-Phase 0.1 verification commit:
-
-\`5d4b6a00fa61dda4c927800b8bd27f6dd496f3cd\`
-
-Current repository state includes:
-
-- modular cTrader Indicator host;
-- one managed strategy identity;
-- one decision authority;
-- one execution authority;
-- explicit broker mutation owners;
-- modular analysis, planning, risk, lifecycle and UI boundaries;
-- deterministic decision/planning/execution/runtime contracts;
-- cTrader compile and repository acceptance workflows;
-- runtime fault containment;
-- staged startup work;
-- regime-aware analysis;
-- pending Stop and Limit paths;
-- automatic market and aggressive paths;
-- OSS production/research separation;
-- Track 19.1 numerical benchmark completed.
-
-Current production numerical OSS package:
-
-\`Skender.Stock.Indicators 2.7.3\`
-
-Current research-only numerical package:
-
-\`FacioQuo.Stock.Indicators 3.0.1\`
-
-The FacioQuo v3 package remains outside the net6 cTrader production assembly.
-
-Current benchmark milestone already completed:
-
-- Track 19.1 FacioQuo comparison;
-- four deterministic market-shape fixtures;
-- 800 bars per scenario;
-- all 10 production OSS indicator families;
-- 12 numerical metrics;
-- timestamp and output-count validation;
-- warm-up-aware parity;
-- max/mean/RMS error;
-- finite-value coverage;
-- batch timing;
-- allocation measurement;
-- CI report generation.
-
-The benchmark completion does **not** constitute production package promotion.
-
-Detailed Track 19 record:
-`docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md`
-
-## 2.0.1 — Current certification state — 2026-10-02
-
-**Active blocking track: CI-17 — Target-terminal cTrader validation; CI-17A panel live-content refresh correction is repository-verified and merged.**
-
-Repository implementation package: **merged** in PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.
-
-CI-17 implementation HEAD `9a71b1dbac09e41759458a404ce4675dc4972f92` passed Source/Architecture, Runtime Acceptance Contracts and cTrader Compile before merge.
-
-The remaining acceptance boundary is the real target cTrader terminal/broker: M1/M5 timing, initialization/data readiness, Bid/Ask execution geometry, market/pending fill and slippage, cancellation/expiration, restart/reconnect, chart/panel responsiveness and end-to-end Decision → Plan → Execution synchronization.
-
-**CI-FINAL must not be certified until those manual evidence items are recorded.** Track 12A / cBot separation remains gated behind CI-FINAL.
-
-### CI-17A — Panel live-content refresh correction — 2026-10-02
-
-Status: **VERIFIED COMPLETE — repository implementation gate passed and PR #175 merged to `main`.**
-
-Merge commit: `6ffff643ad5c24782ca7035355e31ee4a04465c2`.
-
-Verified implementation HEAD: `9641bfc02c7604d6432202459fa198866d4a5f53`.
-
-Repository verification on the exact implementation HEAD:
-- Source/Architecture run #2742: **PASS**;
-- Runtime Acceptance Contracts run #2551: **PASS**;
-- cTrader Compile run #2735: **PASS**;
-- accumulated historical audits through CI-17A: **PASS**.
-
-Root cause:
-- runtime heartbeat refreshed only volatile clock/live rows;
-- full RenderPanel could short-circuit on an unchanged/incomplete presentation key;
-- mutable reaction/prediction/context/panel rows could therefore remain stale.
-
-Completed:
-- bounded 500 ms content-only panel refresh;
-- one SignalVisualSnapshot reused per refresh;
-- direct RenderPanelRows() refresh without layout/container rebuild;
-- presentation-key optimization preserved for full layout work;
-- immediate content refresh after panel restore/reset;
-- live RR display reads current Bid/Ask locally without mutating trading state;
-- deterministic Runtime Contract and accumulated CI-17A static audit.
-
-No public parameter, strategy threshold, decision rule, execution policy or broker mutation authority changed.
-
-Target-terminal acceptance remains required for visible cTrader panel refresh latency, live reaction/context updates and final end-to-end runtime behavior.
-
-**Current next step: CI-17 target-terminal acceptance remains open; after that evidence, CI-FINAL is the next gate.**
-## A-series runtime/execution risks
-
-| ID | Area | Roadmap coverage |
-| --- | --- | --- |
-| A1 | submission retry/backoff and rejection storms | Tracks 2, 16, 23 |
-| A2 | spread/stop semantics | Track 4 |
-| A3 | daily-loss persistence/day authority | Track 4, 16 |
-| A4 | end-of-day behavior | Track 4, 16 |
-| A5 | identity/label scope | Track 3 |
-| A6 | fault isolation / management starvation | Track 1 |
-| A7 | UI execution safety | Track 5 |
-| A8 | cross-instance duplicate protection | Track 3 |
-| A9 | intrabar policy | Track 6 |
-
-## B-series analytical/runtime quality risks
-
-| ID | Area | Roadmap coverage |
-| --- | --- | --- |
-| B1 | hidden clamps / ignored parameters | Track 7 |
-| B2 | M1 trigger semantics | Track 8 |
-| B3 | evidence duplication | Track 9 |
-| B4 | confidence/calibration semantics | Track 9, Track 25 |
-| B5 | MaximumOpenPositions semantics | Track 7 |
-| B6 | swing plateau/equality semantics | Track 8 |
-| B7 | margin duplication | Track 10 |
-| B8 | alert key/delivery semantics | Track 11 |
-| B9 | partial TP retry/event semantics | Track 12 |
-| B10 | outcome persistence/idempotency | Track 11, Track 17 |
-
-## C-series architectural/runtime quality risks
-
-| ID | Area | Roadmap coverage |
-| --- | --- | --- |
-| C1 | indicator acting as executor | **Track 12A (mandatory local cBot separation)**, Track 27-29 |
-| C2 | cosmetic-only modularization | Track 8, Track 14, Track 24 |
-| C3 | timer/safety supervisor | Track 1, Track 14 |
-| C4 | real performance profiling | Track 14 |
-| C5 | broker trading-day model | Track 4 |
-| C6 | code hygiene/dead paths | Track 0, Track 7, Track 26 |
+هر فاز باید ثبت کند:
+- Phase/IDs
+- root cause
+- files
+- behavior changes
+- before/after tests
+- static checks
+- runtime checks
+- manual terminal checks
+- new bugs
+- unresolved risks
+- CI results
+- exact progress
+- git pull requirement after merge
 
 ---
 
-# 5. Historical implementation milestones
-
-These phases describe the work that created the current architecture. They are
-retained for continuity and are not to be repeated unless a regression is found.
-
-## Phase 1 — Canonical source hygiene and architecture contract
-
-Status: complete.
-
-Completed:
-
-- version-neutral production identities;
-- historical residue gate;
-- managed trade-label authority;
-- source/architecture gate;
-- separate OSS boundary.
-
-## Phase 2 — Atomic indicators and analysis modules
-
-Status: complete.
-
-Completed:
-
-- atomic native indicators;
-- isolated OSS adapters;
-- market context decomposition;
-- structure/liquidity decomposition;
-- FVG lifecycle separation;
-- Order Block confluence separation;
-- modular editing ownership.
-
-## Phase 3 — Decision and intelligence services
-
-Status: complete.
-
-Completed:
-
-- immutable decision input snapshots;
-- score/consensus/quality/confidence separation;
-- independent evidence collection;
-- ordered decision gates;
-- intelligence helper ownership;
-- deterministic decision contracts.
-
-## Phase 4 — Planning and risk
-
-Status: complete.
-
-Completed:
-
-- plan construction decomposition;
-- target policy/evaluator separation;
-- structural stop planning;
-- target metadata and progression ownership;
-- risk policy, sizing and margin separation;
-- planning/risk contracts.
-
-## Phase 5 — Automatic trading, pending orders and lifecycle
-
-Status: complete.
-
-Completed:
-
-- market execution mutation boundary;
-- pending Stop/Limit mutation boundaries;
-- broker mutation ownership;
-- broker reconciliation;
-- lifecycle recovery;
-- partial close;
-- break-even;
-- target progression;
-- restart/adoption boundaries.
-
-## Phase 6 — Presentation and UI
-
-Status: complete.
-
-Completed:
-
-- chart render ownership;
-- plan lines/labels;
-- popup;
-- panel sections;
-- execution controls;
-- UI authority gate.
-
-## Phase 7 — OSS research, adapters and benchmarks
-
-Status: complete.
-
-Completed:
-
-- Skender 2.7.3 production boundary;
-- FacioQuo 3.0.1 research boundary;
-- OSS snapshot caching;
-- isolated benchmark project;
-- package and license documentation;
-- initial numerical parity and performance measurements.
-
-## Phase 8 — Static verification and contract testing
-
-Status: complete.
-
-Completed:
-
-- architecture contract gates;
-- BUY/SELL symmetry;
-- confidence repeatability;
-- SL/TP directionality;
-- lifecycle transition invariants;
-- lifecycle event idempotency.
-
-## Phase 9 — cTrader compile and runtime acceptance
-
-Status: repository acceptance complete; hands-on terminal/broker acceptance remains
-required.
-
-Completed:
-
-- runtime contract workflow;
-- MTF integrity;
-- broker confirmation;
-- rejection handling;
-- fill-envelope validation;
-- protection recovery;
-- partial-close/break-even contracts;
-- lifecycle contracts.
-
-Still requires hands-on cTrader/broker validation.
-
-## Phase 10 — Final hardening
-
-Status: complete.
-
-Completed:
-
-- broker-state authority hardening;
-- missing-SL protection safeguards;
-- live protection validation;
-- aggressive fill-mismatch handling;
-- explicit RECOVERY state.
-
-## Phase 11 — Deep runtime decomposition and oversized-module audit
-
-Status: complete.
-
-Completed:
-
-- Calculate decomposition;
-- closed-bar/live-cycle extraction;
-- alert-state extraction;
-- production file-size ceiling;
-- ownership gates.
-
-## Phase 12 — Market-frame decomposition
-
-Status: complete.
-
-Completed:
-
-- market-frame evidence construction;
-- frame scoring;
-- quality/direction ownership.
-
-## Phase 13 — Trade-plan construction decomposition
-
-Status: complete.
-
-Completed:
-
-- PlanInputPreparation;
-- PlanTargetPreparation;
-- PlanMaterialization;
-- PlanBuilder orchestration.
-
-## Phase 14 — Target selection decomposition
-
-Status: complete.
-
-Completed:
-
-- stage policy;
-- candidate evaluator;
-- fixed TP1..TP4 semantics.
-
-## Phase 15 — Order-block candidate decomposition
-
-Status: complete.
-
-Completed:
-
-- geometry;
-- structure/displacement evidence;
-- mitigation;
-- quality;
-- confluence ownership.
-
-## Phase 16 — Reward-path validation decomposition
-
-Status: complete.
-
-Completed:
-
-- reward-path geometry;
-- zone obstacle scanning;
-- target obstacle validation;
-- HTF reward-path traversal;
-- HTF target presence.
-
-## Phase 17 — Live target progression decomposition
-
-Status: complete.
-
-Completed:
-
-- live target candidate evaluator;
-- RR recalculation;
-- live target stage orchestration.
-
-## Phase 18 — Automatic market execution decomposition
-
-Status: complete.
-
-Completed:
-
-- eligibility;
-- execution preparation;
-- submission validation;
-- fill adoption;
-- post-fill target resolution.
-
-## Phase 19 — Aggressive execution decomposition
-
-Status: complete.
-
-Completed:
-
-- aggressive eligibility;
-- entry/SL/TP/volume preparation;
-- accepted-fill validation;
-- managed-plan adoption.
-
-## Phase 20 — Pending placement decomposition
-
-Status: complete.
-
-Completed:
-
-- Continuation Stop preparation;
-- Reversal Limit preparation;
-- shared pending submission validation;
-- broker-confirmed pending adoption.
-
-## Phase 21 — Cross-path automatic execution consistency
-
-Status: complete.
-
-Completed:
-
-- common intent validation;
-- common broker confirmation;
-- common protection boundary;
-- Stop/Limit distinction;
-- Market/Aggressive distinction;
-- cross-path invariant gate.
-
-## Phase 22 — Broker protection state ownership
-
-Status: complete.
-
-Completed:
-
-- BrokerProtectionStateEvaluator;
-- unified SL/TP validity evaluation;
-- lifecycle consumers migrated.
-
-## Phase 23 — Panel renderer decomposition
-
-Status: complete.
-
-Completed:
-
-- overview renderer decomposition;
-- trade-plan renderer decomposition;
-- pure presentation row ownership.
-
-## Phase 24 — Execution-zone decomposition
-
-Status: complete.
-
-Completed:
-
-- candidate discovery;
-- overlap selection;
-- retest/premium-discount quality;
-- MTF quality adjustment.
-
-## Phase 25 — Additional oversized-module and duplicate-owner cleanup
-
-Status: complete.
-
-Completed:
-
-- remaining near-ceiling modules reduced where required;
-- duplicate helper patterns removed;
-- ownership documentation updated.
-
-## Phase 26 — Regime-aware intelligence preparation
-
-Status: complete.
-
-Completed:
-
-- regime classification;
-- regime snapshots;
-- regime-aware decision quality;
-- no-trade gating;
-- pending/plan synchronization;
-- OSS cache improvements.
-
-## Phase 27 — Smart fusion hardening
-
-Status: complete.
-
-Completed:
-
-- evidence caps;
-- BUY/SELL symmetry;
-- quality-weighted frame contributions;
-- deterministic smart-fusion contract;
-- prevention of below-threshold directional retention.
-
-## Phase 28 — Runtime resilience foundation
-
-Status: complete.
-
-Completed:
-
-- calculation fault containment;
-- fail-closed automatic execution after recoverable runtime failure;
-- preservation of fatal process exceptions;
-- diagnostic logging.
-
-## Phase 29A — Startup and panel resilience
-
-Status: superseded/iterated during host compatibility investigation.
-
-The initial bootstrap implementation was removed when terminal behavior showed that
-the added host API surface was not compatible with the installed environment.
-
-## Phase 29B — Accepted cTrader host compatibility restoration
-
-Status: complete.
-
-Completed:
-
-- minimal known-good Indicator host contract;
-- removal of unverified host diagnostics;
-- preservation of calculation-level containment.
-
-## Phase 29C — Staged startup
-
-Status: in progress.
-
-Completed:
-
-- early panel construction;
-- staged MTF/native initialization;
-- Calculate gating until initialization;
-- runtime timer cleanup.
-
-Remaining:
-
-- measure target-terminal cold/warm startup;
-- confirm final live rendering and resource behavior.
-
-## Phase 29D — Regime-aware signal/execution synchronization
-
-Status: in progress.
-
-Completed:
-
-- regime-aware gating;
-- prediction/watch vs confirmed signal vs active plan separation;
-- pre-trade plan reconciliation;
-- pending-state visual authority;
-- trigger rendering restriction;
-- OSS per-bar caching.
-
-Remaining:
-
-- full runtime validation on the target terminal;
-- replay validation;
-- threshold calibration.
+# 4. Definition of Done سراسری
+
+پروژه فقط زمانی «کامل» تلقی می‌شود که:
+
+1. هیچ Critical/High known defect بدون disposition باقی نماند.
+2. Indicator هیچ direct broker mutation نداشته باشد.
+3. یک decision authority و یک execution authority وجود داشته باشد.
+4. Signal → Plan → Alert → Chart → Execution → Outcome identity-continuous باشد.
+5. BUY/SELL symmetry و lifecycle invariants تست شوند.
+6. Replay deterministic و بدون information leak باشد.
+7. OOS evidence برای هر تغییر عددی وجود داشته باشد.
+8. Target Terminal acceptance کامل باشد.
+9. restart/reconnect/rejection/slippage/delayed-confirmation تست شده باشد.
+10. Panel live content واقعی و سریع باشد.
+11. Alert sound/popup/mark synchronized و idempotent باشد.
+12. History durable و recoverable باشد.
+13. source/tools/tests/build audit کامل شده باشد.
+14. dead/obsolete files و duplicate docs پاک شده باشند.
+15. clean checkout reproducible باشد.
+16. Indicator بدون cBot قابل استفاده برای analysis/display باشد.
+17. cBot به‌تنهایی broker execution را کامل انجام دهد.
+18. نبود/stale بودن cBot یا signal source fail-closed باشد.
+19. هیچ Cloud dependency برای local product وجود نداشته باشد.
+20. بعد از آن feature expansion آزاد شود.
 
 ---
 
-# 6. Forward master execution program
+# 5. نقشه راه اصلی
 
-The following tracks are the current refinement/certification program.
+# گروه A — تثبیت و اثبات واقعیت
 
-The numerical order is the intended dependency order unless a track is explicitly
-marked as a research milestone that may be completed early.
+## M0 — Adoption / Freeze / Baseline
+
+### هدف
+این فایل تنها roadmap اجرایی پروژه شود.
+
+### کارها
+- ثبت branch/commit/working-tree.
+- اجرای سه gate repository و ثبت runها.
+- شمارش واقعی parameterها.
+- ثبت project tree و dependency graph.
+- inventory direct broker calls.
+- inventory public parameters و ownership.
+- جذب تمام known findings این roadmap.
+- هیچ source behavior change.
+
+### پذیرش
+Baseline reproducible و همه findingها status داخلی دارند.
 
 ---
 
-## CR4.4 — Numerical stability and caching continuity
-
-## CR4.5 / D5 — Per-timeframe regime semantics
-
-CR4.5 is a completed historical continuity item: each canonical timeframe
-carries its own normalized regime metadata, non-M5 regime snapshots are bounded
-and independently cached, UNKNOWN remains neutral, and frame scoring consumes
-the owning frame's regime. Target-terminal timing and replay validation remain
-manual acceptance boundaries.
-
-The production OSS indicator adapters use the canonical bounded quote-cache
-owners and preserve deterministic warm-up semantics. Historical target-terminal
-validation remains a manual acceptance boundary; this continuity marker keeps
-the review issue mapped into the current roadmap without changing production
-trading policy.
-
-## CR4.6 / D6 — Frame-scoring constant ownership
-
-CR4.6 implementation complete: frame-scoring literals remain under the single
-Core constant owner without numerical tuning. Target-terminal timing, replay and
-empirical signal-quality validation remain manual boundaries.
-
-## CR4.7 / D7 — TP pipeline feasibility and telemetry
-
-CR4.7 implementation complete: target-stage feasibility, age, geometry and
-bounded rejection telemetry remain under their canonical planning owners. No
-public parameter/default or RR tuning was introduced; target-terminal validation
-remains manual.
-
-## CR4.8 / D8 — TP1 directional defensive validation
-
-CR4.8 implementation complete: TP1 direction and reward-integrity validation use
-the canonical target protection rules. No trading threshold tuning or second
-decision authority was introduced; target-terminal validation remains manual.
-
-## CR4.9 / D9 — Live reversal action and alert semantics
-
-CR4.9 implementation complete: live reversal action/alert ownership remains
-canonical and directionally symmetric. No public parameter/default or RR tuning
-was introduced; target-terminal replay remains a manual acceptance boundary.
-
-## CR4.10 / D10 — Native indicator safety and registry performance
-
-CR4.10 / D10 implementation complete: native indicator ownership/safety and
-registry lookup boundaries are preserved, with benchmark coverage. No public
-parameter/default or RR tuning was introduced; target-terminal validation remains
-manual. The next certification transition is CR-FINAL.
-
-## CR5.3 / E3 — Indicator evidence independence
-
-CR5.3 continuity marker: independent evidence-group semantics remain centralized
-without turning correlated indicators into duplicate decision authority.
-
-## CR5.4 / E4 — [historical remediation continuity]
-
-CR5.4 continuity marker preserved for the accumulated calculation-integrity
-audit chain.
-
-## CR5.5 / E5 — Active remediation continuity
-
-CR5.5 continuity marker preserved for the accumulated calculation-integrity
-audit chain.
-
-## CR5.6 / E6 — Signal bias and context continuity
-
-CR5.6 continuity marker preserved for the accumulated calculation-integrity
-audit chain.
-
-## CR5.7 / E7 — Watch/reaction alert continuity
-
-CR5.7 continuity marker preserved for the accumulated calculation-integrity
-audit chain.
-
-## CR5.8 / E8 — Reward-risk continuity
-
-CR5.8 continuity marker preserved for the accumulated calculation-integrity
-audit chain.
-
-## CR6.6 / F7 closeout
-
-Historical continuity marker for CR6.6 / F7 is retained in the accumulated
-roadmap audit chain.
-
-## CR6.7 / F8
-
-Historical continuity marker for CR6.7 / F8 is retained in the accumulated
-roadmap audit chain.
-
-## CR6.7 / F8 closeout
-
-Historical continuity marker for CR6.7 / F8 closeout is retained in the
-accumulated roadmap audit chain.
-
-## CR6.8 / F9
-
-Historical continuity marker for CR6.8 / F9 is retained in the accumulated
-roadmap audit chain.
-
-## CR6.8 / F9 closeout
-
-Historical continuity marker for CR6.8 / F9 closeout is retained in the
-accumulated roadmap audit chain.
-
-## CR6.9 / F3
-
-Historical continuity marker for CR6.9 / F3 is retained in the accumulated
-roadmap audit chain.
-
-## CR6.9 / F3 closeout
-
-Historical continuity marker for CR6.9 / F3 closeout is retained in the
-accumulated roadmap audit chain.
-
-## CR7.1 / G1
-
-Historical continuity marker for CR7.1 / G1 is retained in the accumulated
-roadmap audit chain.
-
-## CR7.3 / G3 closeout
-
-Historical continuity marker for CR7.3 / G3 closeout is retained.
-
-**Next phase: CR7.4 / G4**
-
-## CR7.5 / G5
-
-Historical continuity marker for CR7.5 / G5 is retained.
-
-Next continuation: CR7.6a
-
-## CR7.6a / G6A
-
-Historical continuity marker for CR7.6a / G6A is retained in the accumulated
-roadmap audit chain.
-
-## CI-03 — Indicator fusion / evidence independence
-
-Historical continuity marker: CI-03 is verified complete; later CI phases remain
-the active remediation sequence.
-
-## CI-04 closeout — implementation record
-
-CI-04 structure, swing, liquidity and alert-delivery integrity is retained as a verified historical continuity item in the accumulated calculation-integrity chain.
-
-Completed:
-- canonical swing plateau, confirmation and structural-break freshness;
-- repeated re-break rejection for already-crossed confirmed levels;
-- active/unbroken liquidity-sweep validation with BUY/SELL symmetry;
-- canonical Structure/MSS/CHOCH event de-duplication;
-- unified bounded alert delivery queue for popup and sound;
-- popup-before-sound delivery ordering on the same queued alert event;
-- direct sound ownership removed from AlertEngine;
-- deterministic Runtime Acceptance and accumulated Source/Architecture audit coverage.
-
-Repository verification was completed on the CI-04 implementation head before the later CI phases advanced.
-
-
-## CI-05 implementation record
-
-CI-05 FVG lifecycle semantics are retained as a completed historical
-continuity item in the accumulated calculation-integrity chain.
-
-## CI-06 — Order Block lifecycle
-
-CI-06 Order Block lifecycle integrity is retained as a completed historical
-continuity item.
-
-## CI-07 — Market regime, MTF and context audit
-
-CI-07 MTF/regime/context integrity is retained as a completed historical
-continuity item.
-
-## CI-08 implementation record
-
-CI-08 divergence, WaveTrend, reaction and early-signal integrity are retained
-as a completed historical continuity item.
-
-## CI-09 implementation record
-
-CI-09 decision-engine mathematical integrity is retained as a completed
-historical continuity item.
-
-## CI-10 — Trigger and trigger-lifecycle audit
-
-CI-10 trigger/lifecycle integrity is retained as a completed historical
-continuity item.
-
-Phase document: `docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md`
-
-## CI-11 — Entry geometry and signal-timing audit
-
-CI-11 entry-geometry and causal signal-timing integrity are retained as a
-completed historical continuity item.
-
-Historical continuation marker: CI-12 was the implementation phase at that point.
-## CI-12 — Structural SL
-
-CI-12 structural-stop integrity is retained as a completed historical
-continuity item.
-
-Phase document: `docs/PHASE-CI-12-STRUCTURAL-SL.md`
-
-# Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
-
-Status: **active — CI-00 through CI-17 repository implementation is complete and CI-17 target-terminal/manual acceptance is pending; CI-FINAL remains gated by that evidence.**
-
-This track is introduced after the 2026-10-01 deep review of the Trigger →
-Entry → SL → TP chain. It intentionally expands the audit upstream so
-correctness is established from raw market data and indicator calculations
-through analysis, decision, trigger, trade-plan geometry and broker execution.
-
-The authoritative detailed specification is:
-`docs/PHASE-CI-FULL-STACK-CALCULATION-ANALYTICAL-INTEGRITY.md`
-
-The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
-blocking correctness gate inserted before the next unfinished refinement phase.
-
-**Current implementation phase: CI-17 — Target-terminal cTrader validation (repository package merged; manual terminal acceptance pending).**
-
-### CI-12 closeout — 2026-10-02
-
-Status: **VERIFIED COMPLETE — PR #167 merged to `main`.**
-
-Implementation head: `f452b3b8e2892f1773cef5873a051a2b542e72a6`
-
-Merge commit: `cd10da89ddf8ba9cf1c9da517a3fdc74b6953851`.
-
-Repository verification:
-- Source/Architecture #2609: **PASS** (workflow 36939262476);
-- Runtime Acceptance Contracts #2418: **PASS** (workflow 36939262418);
-- cTrader Compile #2602: **PASS** (workflow 36939262429);
-- accumulated audits through CI-12: **PASS**.
-
-Completed:
-- canonical structural-stop geometry and immutable geometry snapshot;
-- evaluated structural stop is preserved through candidate selection without a second materialization pass;
-- obsolete duplicate StructuralStopFinalizer removed;
-- canonical M5/HTF buffer semantics and price normalization;
-- canonical planning stop-risk envelope with configured maximum independent of spread-derived minimum;
-- canonical ATR fallback geometry across planning, preview, parallel and lifecycle/recovery paths;
-- fail-closed fallback risk validation;
-- deterministic CI-12 Runtime Contracts and static audit;
-- accumulated CR5.1/CR6.9/CI-04..CI-12 audits reconciled to the new ownership without removing safety assertions.
-
-Safety:
-- no public parameter name/type/DefaultValue changed;
-- no RR, confidence, entry, SL, TP, risk or execution threshold was tuned;
-- no second decision/plan/broker-mutation authority was introduced;
-- broker-confirmed live protection remains authoritative.
-
-Manual boundary:
-- target-terminal broker-specific stop distance;
-- startup/reconnect recovery;
-- actual order/fill protection;
-- chart/panel presentation and empirical historical signal/outcome validation remain manual acceptance items.
-
-Phase record: `docs/PHASE-CI-12-STRUCTURAL-SL.md`.
-
-**Next phase: CI-13 — TP source, target obstacle and TP ladder audit.**
-
-### CI-13 implementation record — 2026-10-02
-
-Status: **VERIFIED COMPLETE — PR #168 merged to `main`.**
-
-Implementation branch:
-`phase/ci-13-tp-source-obstacle-ladder`
-
-Production implementation head:
-`db48e116731e48c91f250ce77b966044dd96df63`
-
-Audit-contract correction commit:
-`7cc30bba42dd5280bd79118d8ba497660a216923`
-
-Completed:
-- coherent global TP1..TP4 ladder path selection over already validated stage candidates;
-- exact target-source provenance preserved through clustering and plan materialization;
-- exact selected-source TP metadata reused by execution rebuild and live-target progression;
-- explicit `SYNTHETIC_RR` provenance for synthetic fallback;
-- canonical opposing-zone and HTF target-path obstacle validation retained;
-- deterministic BUY/SELL, termination and invalid-direction planning contracts;
-- CI-13 accumulated Source/Architecture audit wired into the repository gate;
-- final audit false-positive corrected so roadmap continuation is checked semantically rather than by broad token presence.
-
-Repository verification on final HEAD `0cb7945854ff4dfca1e0e57728b87b6ce220972d`:
-- Source/Architecture #2652 family re-run: **PASS** — workflow run `36943488081`;
-- Runtime Acceptance Contracts: **PASS** — workflow run `36943488030`;
-- cTrader Compile: **PASS** — workflow run `36943488065`;
-- accumulated audits through CI-13: **PASS**.
-
-Merge commit:
-`1f397134508e0f8c6d3bba1e1809d2ff255c39d3`.
-
-The final audit corrections are non-production tooling/documentation changes and do not alter trading behavior or public parameters.
-
-Safety/manual boundary:
-- no public parameter/default or RR/confidence/entry/SL/TP/risk/execution threshold was retuned;
-- no second decision/plan/broker-mutation authority introduced;
-- target-terminal replay, panel/chart rendering, broker lifecycle and empirical TP/signal-quality validation remain manual acceptance boundaries.
-
-Historical continuation marker: CI-14, CI-15 and CI-16 were verified before CI-17.
-
-**Prompt 8 / CR8.4 remains paused until CI-FINAL.**
-
-### CI-15 closeout — 2026-10-02
-
-Status: **VERIFIED COMPLETE — PR #172 merged to `main` as `8aa4a7dc3fee97d6ce233c26b2114e844b36a669`.**
-
-Implementation HEAD: `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`.
-
-Completed:
-- introduced one canonical `ExecutionIntentGeometryRule` for final intent-side geometry and exact pip projection;
-- `ExecutionIntentBuilder` and `ExecutionIntentValidation` now share and re-check the same Entry/SL/TP→StopPips/TargetPips projection;
-- Automatic Market retains the validated intent through the broker handoff instead of submitting independently reconstructed raw values;
-- Aggressive Market consumes the exact validated intent at the broker boundary;
-- Pending Stop/Limit server protection and submission telemetry consume the same pending intent;
-- bounded execution telemetry now records the exact intent geometry for later broker-confirmation comparison;
-- deterministic Planning Contracts cover BUY/SELL symmetry, wrong-side rejection, invalid pip size and sub-pip geometry;
-- accumulated architecture verification also forced the Pending placement orchestration files back under the established byte-size ceiling and rejected duplicate helper ownership.
-
-Verification on final implementation HEAD:
-- Source/Architecture: **PASS** — run #2707;
-- Runtime Acceptance Contracts: **PASS** — run #2516;
-- cTrader Compile/Build: **PASS** — run #2700;
-- Planning Contracts: **PASS** — final compile output reported `Planning contracts OK`;
-- accumulated Source/Architecture audits through CI-15: **PASS**.
-
-Safety/manual boundary:
-- no public parameter names/types/defaults changed;
-- no confidence, decision, Entry, SL, TP, RR, risk or execution threshold was tuned;
-- no second decision or execution authority was introduced;
-- target-terminal quote timing, broker-specific fill/slippage, pending-fill timing, reconnect/reload and empirical signal quality remain manual acceptance boundaries.
-
-The concrete seam fixed in CI-15 was validation-to-submission drift: the system could validate an `ExecutionIntent` and then submit a separately passed Entry/SL/TP projection. CI-15 removes that drift without changing the trading policy itself.
-
-### CI-16 closeout — 2026-10-02
-
-Status: **VERIFIED COMPLETE — PR #173 accepted on implementation HEAD `1c292d3162f6085869238029fe599630ab3ca3a9`.**
-
-Completed:
-- deterministic replay harness added to Runtime Acceptance Contracts;
-- all 16 required CI-16 counterexample scenarios are represented;
-- exact reference/causal/quote timestamps and Decision → Trigger → Entry → SL → TP1..TP4 trace data are recorded;
-- canonical RiskRewardMathRule and ExecutionIntentGeometryRule are reused rather than duplicated;
-- authoritative-vs-submission geometry fingerprints are compared;
-- causal/actionable, alert/execution and execution/fill latency intervals are measurable;
-- blocked scenarios carry no fabricated downstream timestamps;
-- CI-16 audit is accumulated immediately after CI-15 in Source/Architecture.
-
-
-Verification:
-- Source/Architecture: **PASS** — workflow run `36950516204` / #2715;
-- Runtime Acceptance Contracts: **PASS** — workflow run `36950516284` / #2524;
-- cTrader Compile/Build: **PASS** — workflow run `36950516224` / #2708;
-- accumulated CI-16 audit: **PASS**.
-
-Safety:
-- no public parameter name/type/default changed;
-- no confidence, RR, Entry, SL, TP, risk or execution threshold was tuned;
-- no decision or broker-mutation authority was added;
-- replay remains diagnostic/verification-only and does not add a second live engine.
-
-Acceptance boundary:
-- deterministic replay is the automated CI-16 boundary;
-- target-terminal latency, broker event ordering, real fills/slippage, panel timing and empirical signal/outcome behavior remain CI-17/manual boundaries.
-
-Next phase: **CI-17 — Target-terminal cTrader validation.**
-
-Operator action: run `git pull --ff-only` on local `main`.
-### CI-17 target-terminal acceptance package — 2026-10-02
-
-Status: **IMPLEMENTATION PACKAGE COMPLETE AND MERGED — target-terminal/manual broker acceptance remains open.**
-
-Merge: **PR #174 merged to `main` as `194ab90030f668ea3a42f0e709d42ca3238383ae`.**
-
-CI-17 implementation HEAD `9a71b1dbac09e41759458a404ce4675dc4972f92` passed Source/Architecture run `36951458606`, Runtime Acceptance Contracts run `36951458326`, and cTrader Compile run `36951458297` before merge.
-
-Completed:
-- upgraded the existing no-trade cTrader preflight bot with real terminal timing and quote diagnostics;
-- recorded startup → first-tick timing, probe calculation revision/age, Bid/Ask, spread in pips, bar count and latest bar-open UTC;
-- exposed first probe calculation UTC while preserving read-only probe semantics;
-- added a compilable preflight project against the production Indicator project;
-- accumulated tools/audit_phase_ci_17.py immediately after CI-16;
-- preserved the existing no-trade boundary: no market/pending/protection/close/cancel broker mutations were added;
-- added the complete manual target-terminal acceptance matrix covering initialization, M1/M5 timing, Bid/Ask, fill/slippage, pending fill/cancel/expiration, reconnect/reload, panel/chart timing and Decision → Plan → Execution synchronization.
-
-Manual acceptance still required:
-- actual cTrader terminal run on the target broker/server;
-- demo execution/fill/slippage evidence for market and pending paths;
-- restart/reconnect evidence;
-- panel/chart responsiveness evidence;
-- signal/plan/execution identity trace from the terminal runtime log.
-
-CI-17 is therefore **not yet certified VERIFIED COMPLETE** by repository CI alone. The next closeout step is to record real terminal evidence, then proceed to **CI-FINAL — Full-stack Calculation Integrity Certification**.
+## M1 — Full Forensic Audit
+
+### هدف
+هیچ بخش قدیمی یا جدید بر اساس «گفته شده سالم است» فرض نشود.
+
+### دامنه
+Core, Analysis, Planning, Trading, Lifecycle, Runtime, UI, Tools, Tests, Build.
+
+### checks
+- BUY/SELL symmetry
+- closed/live boundary
+- NaN/Infinity/zero/negative
+- hidden constants
+- parameter clamps
+- bounded collections
+- hot-path I/O
+- time/session
+- persistence
+- event idempotency
+- identity propagation
+- decision/execution authority
+- visual authority
+- alert authority
+- outcome accounting
+- large-method ownership
+
+### پذیرش
+هر finding: VERIFIED / PARTIAL / OPEN / FALSE / MANUAL-ONLY / DESIGN-RISK.
+هیچ finding بدون disposition.
+
+---
+
+## M2 — Repository Hygiene / Dead Code / Ownership
+
+### هدف
+قبل از توسعه جدید، repo از فایل و owner زائد پاک شود.
+
+### کارها
+- unreachable files
+- dead classes/methods
+- duplicate constants
+- duplicate helpers
+- empty methods
+- duplicated visual suffix arrays
+- unused scripts
+- unused tests
+- obsolete parameters بعد از migration
+- stale references
+- docs classification: WORKING / EVIDENCE / ARCHIVE
+
+### rule
+این roadmap تنها WORKING planning authority است.
+بعد از جذب کامل محتوا، اسناد برنامه‌ریزی پراکنده و promptهای مصرف‌شده در cleanup نهایی حذف می‌شوند؛ Git history محفوظ می‌ماند.
+
+---
+
+# گروه B — Canonical Truth
+
+## M3 — Single Trade Truth Chain
+
+### هدف
+حل ریشه‌ای mismatch بین pre-analysis، signal، scenario، plan، panel، chart، alert، execution و outcome.
+
+### immutable opportunity identity
+- SignalId
+- ScenarioId
+- PlanId
+- SourceTimeframe
+- Lane
+- Symbol
+- Direction
+- CreatedUtc
+- ClosedBarReference
+- Revision
+- Expiry
+- State
+
+### same source
+همه این‌ها باید از همان snapshot/contract بخوانند:
+- panel
+- chart
+- popup
+- sound
+- market intent
+- pending intent
+- telemetry
+- outcome attribution
+
+### پذیرش
+برای یک fixture، همه consumers همان direction/price/RR/identity/state را بدهند.
+
+---
+
+## M4 — Time / Session / History / Persistence Truth
+
+### هدف
+حل همه ناسازگاری‌های زمان، trading day، previous-period، EOD، daily loss و history.
+
+### کارها
+- canonical trading-day.
+- previous D1/W1.
+- overnight session.
+- EOD warning/cancel/close.
+- late-created position handling.
+- realized/floating loss separation.
+- daily-loss persistence.
+- restart-mid-day.
+- storage root.
+- History marker.
+- read/write recovery.
+- 90-day rolling archive بدون پاک کردن تاریخچه قبلی.
+- duplicate outcome prevention.
+- transfer/import path.
+- DST-aware session semantics.
+
+### پذیرش
+پس از restart/re-attach history و daily-loss state درست و قابل ممیزی باشد.
+
+---
+
+## M5 — Panel Live Content / Responsiveness
+
+### هدف
+حل واقعی stale/incomplete/slow panel.
+
+### کارها
+- full-layout و content-refresh را جدا کن.
+- reaction/prediction/context/plan/execution rows را در content refresh تضمین کن.
+- یک snapshot per refresh.
+- حداقل broker reads.
+- EffectivePanelContentWidth واحد.
+- overflow counter؛ silent row drop ممنوع.
+- button width بر اساس PanelWidth.
+- height measurement واقعی یا conservative deterministic.
+- width tests: 220/430/700.
+- font tests.
+- reload/restore.
+- latency budget.
+- no flicker/no stale row.
+
+### I2 safety
+پارامتر جدید Confirm Panel Close Actions فقط با default false.
+وقتی true:
+کلیک اول = CONFIRM?، کلیک دوم حداکثر طی 3 ثانیه.
+برای مهلت از clock تزریقی استفاده شود.
+ManagedActionsOnly و هشدار حالت unrestricted باید verification شوند.
+
+### پذیرش
+در target terminal، panel content بدون full-layout rebuild به‌روز شود و هیچ row مهمی stale نشود.
+
+---
+
+## M6 — Alert Synchronization / External Watchdog
+
+### هدف
+sound، popup، chart mark، panel state و telemetry یک event باشند.
+
+### کارها
+- canonical AlertEnvelope.
+- event timestamp.
+- source Revision.
+- duplicate suppression.
+- stale suppression.
+- blocked signal → no sound/no mark.
+- watch/prediction/reaction/confirmed/active/expired جدا.
+- sound after accepted alert event only.
+- restart/reconnect semantics.
+- race tests between Calculate/Timer/UI.
+- critical external notification channel برای مواردی مثل lost protection، rejected close و daily-loss lock؛ provider اتصال‌پذیر باشد و notification source همان canonical event باشد.
+
+### پذیرش
+برای هر fixture دقیقاً expected alerts تولید شود؛ sound/popup/mark mismatch صفر.
+
+---
+
+## M7 — Chart / Label Truth
+
+### هدف
+تمام chart objects دقیقاً همان Plan را نشان دهند.
+
+### کارها
+- Entry/Trigger/SL/TP canonical geometry.
+- LineLengthBars به plan lines وصل شود.
+- default 40 حفظ شود.
+- future extension با DateTime/timeframe.
+- solid/thickness contract حفظ شود.
+- label text readability.
+- واقعی کردن Source Timeframe به‌جای tag ثابت.
+- label font consistency.
+- LabelLeftOffsetBars دامنه را بی‌اثر نکند.
+- expired drawings حذف.
+- multiple scenarios بدون overlap/ambiguity.
+- old generic signal text حذف فقط اگر duplicate owner باشد.
+- marker shape از contract تبعیت کند.
+- label text: price/name + TP/SL distance in pips + source timeframe، بدون background در طراحی نهایی.
+
+### پذیرش
+Visual contract tests + manual chart matrix.
+
+---
+
+# گروه C — Execution Safety قبل از جداسازی
+
+## M8 — Canonical Entry / SL / TP / RR
+
+### هدف
+هیچ path نتواند geometry Plan را خراب کند.
+
+### کارها
+- BUY/SELL side rules.
+- entry validation.
+- stop-side validation.
+- target-side validation.
+- normalized price.
+- normalized volume.
+- slippage envelope.
+- pending/market distinction.
+- final RR recalculation.
+- invalid stop candidate must fail explicitly.
+- invalid computed stop must not return false success.
+- RecoveryRequired when protection cannot be established.
+- G1 Tighten-only at the mutation boundary.
+- TP monotonic progression.
+- BE after Partial TP uses same protection owner.
+- Dynamic TP advance never backwards.
+
+### پذیرش
+Mock broker + symmetric BUY/SELL fixtures.
+
+---
+
+## M9 — Execution Lifecycle / Event Ordering
+
+### کارها
+- explicit state machine.
+- submission identity.
+- scenario-scoped retry/circuit.
+- broker rejection.
+- delayed confirmation.
+- opened-before-ID event.
+- duplicate events.
+- manual volume reduction.
+- pending creation/fill/cancel.
+- orphan/recovery.
+- restart/reconnect.
+- no duplicate execution.
+
+### پذیرش
+mock broker deterministic.
+
+---
+
+## M10 — Runtime / Startup / Hot Path
+
+### هدف
+رفع late start، 30–60 second waits، calculation starvation و unnecessary work.
+
+### کارها
+- cold/warm startup measurement.
+- MTF readiness.
+- staged initialization.
+- timer ownership.
+- Skender bounded warm-up/cache.
+- repeated allocations.
+- broker enumeration.
+- chart redraw.
+- panel refresh.
+- file I/O.
+- cache bounds.
+- large-method decomposition with golden regression tests.
+- signal latency measurement: bar close → decision/plan.
+
+### پذیرش
+startup and refresh budgets recorded; no regression.
+
+---
+
+# گروه D — Test / Replay Foundation
+
+## M11 — Deterministic Replay
+
+### inputs
+M1/M5/M15/H1/H4/D1/W1 CSV with UTC.
+
+### output per signal
+- time
+- direction
+- Entry
+- SL
+- TP1..TP4
+- Confidence
+- Quality
+- Regime
+- Lane
+- ScenarioId
+- Stage
+- first SL/TP outcome
+- MFE
+- MAE
+- bars-to-event
+- spread
+- commission
+- slippage
+
+### attribution
+در یک candle با هر دو touch، SL first.
+
+### reports
+- Expectancy R
+- Profit Factor
+- Win rate
+- max drawdown
+- Bootstrap CI
+- by Regime
+- by Lane
+- Confidence bucket
+- hour
+- session
+- weekday
+
+### walk-forward
+Train/validation/test جدا و بدون leak.
+
+### پذیرش
+دو اجرای پشت‌سرهم byte-equivalent.
+
+---
+
+## M12 — Replay vs Live Consistency
+
+### کارها
+- SignalTrace comparison.
+- repaint detection.
+- stage ordering.
+- scenario identity.
+- plan identity.
+- closed-bar semantics.
+- future leak detection.
+- live vs replay latency.
+- plan/visual attribution consistency.
+
+### پذیرش
+هر difference یا توضیح ریشه‌ای دارد یا fail است.
+
+---
+
+## M13 — Data Quality / Time Quality
+
+### کارها
+- gap detection
+- incomplete candle detection
+- market closure
+- DST
+- rollover
+- tick-volume limitations
+- insufficient bars
+- missing news data
+- symbol→currency mapping
+- insufficient MTF data
+- fail closed for unavailable critical data
+
+### پذیرش
+داده ناکافی = unavailable / no-trade، نه تحلیل ساختگی.
+
+---
+
+# گروه E — Signal Quality / Data Science
+
+## M14 — Ablation
+
+### module set
+- WaveTrend
+- Divergence
+- OSS indicator families
+- OB
+- FVG
+- OB+FVG
+- Liquidity
+- VWAP
+- Volume
+
+### method
+one-at-a-time + controlled combinations + OOS.
+
+### measure
+- Expectancy
+- PF
+- drawdown
+- CI
+- trade count
+- latency
+- redundancy
+
+### decision
+KEEP / REDUCE / DISABLE / REMOVE.
+
+هیچ ماژول جدیدی قبل از این gate اضافه نمی‌شود.
+
+---
+
+## M15 — Parameter Simplification
+
+### هدف
+از 568 public parameters به حدود 40–60 effective controls، فقط در صورت evidence.
+
+### کارها
+- sensitivity analysis.
+- identify non-effective params.
+- detect redundant controls.
+- merge semantically duplicate controls only when behavior can be preserved.
+- three operator profiles: Conservative / Balanced / Aggressive.
+- hide/persist low-value implementation controls only after migration safety.
+- no destructive rename/default change without explicit approval.
+
+### پذیرش
+هر کاهش parameter با mapping قدیم→جدید و regression tests.
+
+---
+
+## M16 — Confidence Calibration
+
+### هدف
+Confidence = calibrated probability, not raw score.
+
+### کارها
+- P(TP1 before SL).
+- regime-aware mapping.
+- Isotonic or Logistic.
+- minimum sample rule.
+- reliability curve.
+- Bootstrap CI.
+- calibration drift.
+- panel: P=0.xx ± 0.xx (n=...)
+
+### پذیرش
+فقط OOS evidence معتبر است.
+
+---
+
+## M17 — Range / Regime Signal Quality
+
+### هدف
+ضعف signals در range بدون از دست دادن فرصت‌های low-risk/high-reward.
+
+### کارها
+- centralize Range thresholds.
+- verify current 0.35 / 0.65 behavior.
+- test 20/80 hypothesis only via Replay.
+- validate Confidence/SmartQuality/IndependentEvidence/RR interactions.
+- prevent structural double counting.
+- range false-positive study.
+- range reward-path study.
+
+### fixed-to-owner cases
+- Confidence
+- SmartQuality
+- IndependentEvidence
+- RR
+- WaveTrend threshold
+- range edge threshold
+
+### پذیرش
+هیچ numeric tuning بدون OOS evidence.
+
+---
+
+## M18 — OB / FVG / Confluence
+
+### هدف
+OB و FVG وزن بالاتر فقط اگر data confirms edge.
+
+### کارها
+- geometry
+- mitigation
+- opposing-direction obstacle
+- freshness
+- age
+- touch count
+- distance
+- OB+FVG confluence
+- reaction after touch
+- reward-path effect
+- target effect
+
+### پذیرش
+هر new weight/threshold evidence-backed + OOS.
+
+---
+
+## M19 — Exit MAE/MFE Research
+
+### کارها
+اندازه‌گیری:
+- stop width
+- 0.75R soft invalidation
+- BE trigger
+- Partial TP
+- TP1..TP4 ladder
+- Dynamic TP
+- trailing give-back
+
+### rule
+هر exit policy با MFE/MAE و walk-forward قضاوت می‌شود.
+
+---
+
+## M20 — Session / Spread / News
+
+### کارها
+- DST-aware real session calendar.
+- hourly/day expectancy.
+- rollover filter.
+- spread moving median.
+- spread z-score.
+- dynamic liquidity guard.
+- news importance windows.
+- symbol-to-currency mapping.
+- index/gold/crypto mapping.
+- optional reduced-risk news mode.
+- transparent block reason in panel.
+
+### پذیرش
+changes measured OOS.
+
+---
+
+# گروه F — Risk / Survival / Explainability
+
+## M21 — Outcome Integrity / Adaptive Risk
+
+### هدف
+Adaptive Risk فقط از outcome صحیح استفاده کند.
+
+### required
+- aggregate R across all legs
+- Partial TP accounting
+- BE accounting
+- close accounting
+- NaN/Infinity rejection
+- min sample
+- named constants/parameters with current defaults
+- reason logging
+- clear Risk % Equity description
+- clear Use Smart Risk Scaling description
+- effective risk visible
+
+### current adaptive logic to preserve until evidence
+Current multiplier behavior is bounded and cannot exceed configured risk.
+Before changing coefficients, correct outcome attribution.
+
+### after evidence
+- weekly loss limit
+- peak drawdown de-risking
+- volatility targeting
+- correlated exposure cap
+- fractional Kelly ≤ 0.25 Kelly only if statistically justified
+
+### acceptance
+effective risk <= configured risk and reason is auditable.
+
+---
+
+## M22 — Statistical Safety Switch
+
+### هدف
+وقتی live results statistically diverge from Replay expectation، new auto execution stop شود.
+
+### candidates
+CUSUM / SPRT / defensible equivalent.
+
+### behavior
+- stop new execution
+- preserve existing broker SL/TP
+- alert operator
+- do not auto-close solely from detector
+
+### acceptance
+normal synthetic stream = no trigger؛ degraded stream = trigger.
+
+---
+
+## M23 — Why-No-Trade
+
+### هدف
+کاربر بداند چرا معامله انجام نشد.
+
+### output
+Top 3 reasons:
+- panel
+- daily CSV
+- replay report
+
+### rule
+هر block canonical reason code و owner داشته باشد.
+
+### acceptance
+panel/log/replay counts برابر.
+
+---
+
+# گروه G — Advanced Intelligence مشروط
+
+## M24 — Importance-based Swing
+
+- ATR-ZigZag
+- level age
+- depth
+- touch count
+- equal-high/low ATR tolerance
+- liquidity importance
+
+فقط در صورت evidence.
+
+## M25 — Anchored VWAP / Volume Profile
+
+- session anchored VWAP
+- swing anchored VWAP
+- high tick-volume zones
+- target/obstacle utility
+
+فقط اگر ablation positive باشد.
+
+## M26 — Lightweight Meta-Labeling (اختیاری)
+
+- offline only
+- logistic regression
+- walk-forward
+- take/skip existing signal only
+- no runtime ML dependency
+- no black-box trading engine
+
+اگر overfit/unstable، حذف شود.
+
+---
+
+# گروه H — Engineering Quality
+
+## M27 — Property-Based / Mutation Testing
+
+### tests
+- BUY/SELL mirror property
+- random geometry
+- random regime combinations
+- random event order
+- NaN/Infinity
+- invalid transitions
+- mutation testing on Core
+
+### پذیرش
+mutated business logic should be caught.
+
+---
+
+## M28 — Replace Text-Only Audits
+
+### کارها
+auditهایی که behavior را فقط با regex/text بررسی می‌کنند به behavioral/contract tests منتقل شوند.
+فقط architecture checks واقعی در scripts باقی بمانند.
+
+### خروجی
+- faster CI
+- lower false confidence
+- deterministic regression coverage
+
+---
+
+# گروه I — cBot Separation
+
+## M29 — CBOT-0 Boundary Inventory
+
+### Indicator keeps
+- Market data
+- MTF analysis
+- structure
+- liquidity
+- BOS/MSS/CHoCH
+- FVG
+- OB
+- OB+FVG
+- WaveTrend
+- divergence
+- regime
+- no-trade intelligence
+- confidence/quality
+- trigger intelligence
+- scenario construction
+- Entry/SL/TP proposal
+- analytical RR
+- chart/panel
+- signal alerts
+- analytical outcome/calibration logic
+
+### cBot owns
+- trading permission
+- managed identity
+- balance/equity/margin
+- final volume normalization
+- capacity
+- live daily-loss enforcement
+- broker/account spread/session checks
+- Market
+- Aggressive
+- Pending Stop
+- Pending Limit
+- Cancel
+- Close/Partial Close
+- SL/TP mutation
+- BE
+- Trail
+- Profit Lock
+- broker confirmation
+- fill reconciliation
+- lifecycle
+- restart/reconnect recovery
+- retry/backoff/circuit
+- execution telemetry
+
+### mixed classes
+method-by-method split؛ whole-file copy ممنوع.
+
+### acceptance
+every direct broker mutation future-owned exactly once.
+
+---
+
+## M30 — CBOT-Preflight
+
+### no-trade capability test
+اثبات کن:
+- cBot can instantiate the custom Indicator through supported cTrader mechanism.
+- cBot can read structured read-only signal data.
+- no reflection/static globals/chart scraping required.
+- instance scope deterministic.
+- stale/unavailable provider is detected.
+- package/build layout works in target terminal.
+- startup order variations do not fabricate signal.
+
+### blocking rule
+بدون موفقیت M29 + M30، cBot implementation شروع نمی‌شود.
+
+---
+
+## M31 — Platform-Neutral Contracts
+
+### required data
+- SignalEnvelope
+- PlanSnapshot
+- ExecutionIntent
+- ManagementCommand
+- BrokerExecutionReport
+- LifecycleEvent
+- ContractVersion
+- Sequence/Revision
+- CorrelationId
+- IdempotencyKey
+
+### identity
+SignalId / ScenarioId / PlanId / SourceTimeframe / Lane / Symbol / Direction / CreatedUtc / ClosedBarReference / Expiry / Revision.
+
+### rule
+Contracts data-only است؛ decision engine جدید نیست.
+
+---
+
+## M32 — Indicator Read-Only Provider
+
+### states
+- unavailable
+- initializing
+- watch
+- prediction
+- confirmed
+- active
+- expired
+- blocked
+
+### forbidden
+- broker mutation
+- private state scraping
+- static mutable global bridge
+- hidden executor fallback
+
+### acceptance
+stale/uninitialized signal never actionable.
+
+---
+
+## M33 — cBot Shadow Execution
+
+### flow
+receive → validate → expiry/revision → duplicate → identity → account safety → simulate → telemetry
+
+### acceptance
+one-to-one plan/intent parity; no live broker mutation.
+
+---
+
+## M34 — Broker Execution Migration
+
+### exact order
+1. Market
+2. Aggressive
+3. Pending Stop
+4. Pending Limit
+5. Cancel
+6. Close
+7. Partial Close
+8. SL
+9. TP
+
+### acceptance
+zero direct broker mutation in Indicator for migrated paths.
+
+---
+
+## M35 — Protection / Lifecycle / Recovery Migration
+
+### move
+- broker-confirmed state
+- protection reconciliation
+- BE
+- TP progression mutation
+- trailing
+- partial/full close
+- pending lifecycle
+- restart/reconnect
+- orphan recovery
+
+### invariant
+Indicator supplies analytical intent/management request; cBot validates broker-level mutation and owns the mutation.
+
+---
+
+## M36 — Account Risk / Execution Control Migration
+
+### move
+- capacity
+- volume normalization
+- margin safety
+- daily loss enforcement
+- trading permission
+- managed identity
+- live spread
+- live session restriction
+- broker modification throttles
+
+### stay Indicator
+- analytical RR
+- signal quality
+- market suitability
+- scenario reasoning
+
+---
+
+## M37 — UI Control Authority Cutover
+
+### goal
+UI never lies about execution.
+
+### rules
+- cBot authoritative execution state.
+- Indicator shows status/diagnostics.
+- no Indicator click can mutate broker.
+- unavailable control/status channel = fail-closed.
+- AUTO TRADE / AUTO ORDERS status must correspond to actual cBot state.
+
+---
+
+## M38 — Remove Indicator Execution Engine
+
+### physical cleanup
+- direct broker mutation code
+- hidden fallback
+- duplicate execution state
+- duplicate managed identity
+- dead execution handlers
+- execution-only parameters no longer owned by Indicator
+
+### hard acceptance
+AST/source architecture proves zero direct broker mutation in Indicator.
+
+---
+
+# گروه J — Terminal Certification / Release
+
+## M39 — Full Target-Terminal Acceptance
+
+### demo only until complete
+Mandatory:
+- startup/reload
+- M1/M5 timing
+- MTF readiness
+- panel cold/warm
+- live panel updates
+- chart drawing
+- sound alerts
+- news
+- history write/read
+- daily loss
+- EOD
+- overnight session
+- Market/Aggressive/Stop/Limit
+- slippage
+- rejection
+- delayed confirmation
+- restart
+- reconnect
+- partial close
+- BE
+- trail
+- TP advance
+- protection recovery
+- duplicate event
+- missing cBot
+- stale signal
+- expired signal
+- multiple simultaneous scenarios
+- panel widths 220/430/700
+- fonts
+- chart reload
+
+### acceptance
+هر fail => defect ID و no-final.
+
+---
+
+## M40 — End-to-End Certification
+
+### chain
+Market
+→ Analysis
+→ Decision
+→ Scenario
+→ Plan
+→ Signal
+→ Panel
+→ Chart
+→ Alert
+→ cBot
+→ Broker
+→ Confirmation
+→ Protection
+→ Outcome
+→ History
+→ Replay
+
+### checks
+identity, direction, prices, RR, risk, timeframe, revision, reason.
+
+---
+
+## M41 — Final Repository Cleanup
+
+### کارها
+- delete unreachable source
+- delete dead classes
+- remove obsolete execution code
+- remove duplicate scripts
+- remove obsolete planning files
+- remove temporary artifacts
+- remove stale references
+- clean accidental binaries/logs
+- remove historical production identifiers from source
+- verify generated outputs
+- verify package contents
+- verify clean checkout
+
+### acceptance
+clean checkout builds/tests exactly.
+
+---
+
+## M42 — Release Gate
+
+### required green
+- Source/Architecture
+- Runtime Acceptance
+- cTrader Compile
+- Replay
+- deterministic replay
+- property tests
+- mutation evidence
+- target terminal
+- restart/reconnect
+- repository hygiene
+- documentation completeness
+
+### rule
+No real-account auto execution before all mandatory gates are green.
+
+---
+
+# 6. بعد از Release
+
+## M43 — Production Observation
+
+monitor:
+- live/replay distribution
+- drift
+- reject reasons
+- broker error rate
+- protection failures
+- panel latency
+- execution latency
+
+بدون automatic tuning.
+
+## M44 — Controlled Calibration
+
+- OOS only
+- walk-forward
+- versioned calibration
+- rollback
+- no hidden coefficient changes
+
+## M45 — Future Cloud Analysis (اختیاری)
+
+فقط در صورت نیاز:
+- same Contracts
+- cBot remains execution authority
+- no duplicate analysis engine
+- local mode remains functional
+- no Cloud requirement for local operation
+
+---
+
+# 7. Exact Known-Issue Closure Matrix
+
+## I-series
+- I1 IndependentEvidence mismatch → M3
+- I2 Close/Cancel confirmation → M5 / M37
+- I3 score rounding → M1 / M28
+- I4 WaveTrend OS/OB validation → M1
+- I5 Quality Recovery reference → M17
+- I6 Range hard-coded thresholds → M17
+- I7 panel button/height sizing → M5
+- I8 missing time/session behavioral tests → M4 / M28
+- I9 source-review-only claims must be re-verified → M1
+
+## J-series
+- J1 LineLengthBars plan lines → M7
+- J2 label color / real timeframe → M7
+- J3 LabelLeftOffsetBars clamp → M2 / M7
+- J4 effective panel width / overflow → M5
+
+## K-series
+- K1 adaptive outcome risk → M21
+- K2 empty HashSet + duplicated suffix ownership → M2 / M7
+- K3 MAX RR must show actual Plan RR → M7
+- K4 Invariant UI formatting → M7
+
+## G1 remainder
+- Tighten-only at mutation boundary → M8
+- Partial-TP BE path audit → M8/M9
+
+## D2
+- Relative History path → M4/M39
+
+---
+
+# 8. Hidden-Clamp Closure Contract
+
+M1/M2 must detect not only simple Max/Min but also:
+
+- nested Max(Min(...))
+- Clamp / ClampInt
+- multiline calls
+- reversed argument order
+- helper wrappers
+- parameter aliases
+
+Every clamp must be:
+1. aligned with public Min/Max;
+2. removed if it is accidental;
+3. allowlisted with explicit reason;
+4. or escalated as a behavior question.
+
+Known high-risk examples that require explicit review:
+- MinimumTriggerBodyAtr internal floor higher than its public minimum.
+- SmartStrongSetupEdge internal floor higher than its public minimum.
+- LabelLeftOffsetBars capped below its public maximum.
+- panel width internal minimum above public minimum.
+- WaveTrend minimum quality below internal floor.
+- BreakEven / Trail hidden minimums.
+- structural lookback and obstacle lookbacks.
+- predictive quality/zone-age floors.
+
+No default is silently changed merely to make the clamp disappear.
+
+---
+
+# 9. Permanent Signal-Quality Rules
+
+1. Do not add indicators before ablation.
+2. Do not raise/lower thresholds by intuition.
+3. Do not optimize on the complete dataset.
+4. Do not use black-box live entry/exit AI.
+5. Do not infer profitability from a visual sample.
+6. Do not promote independent scenarios to execution without one authoritative execution contract.
+7. Preserve high-RR opportunities during tightening studies by measuring conditional expectancy, not trade count alone.
+8. OB/FVG evidence must be measured against baselines.
+9. Range filters must be evaluated on Range-only OOS subsets.
+10. Confidence must be calibrated before treating it as probability.
+11. Exit changes require MAE/MFE evidence.
+12. Any change that improves in-sample but harms OOS is rejected.
+
+---
+
+# 10. Permanent Execution / Protection Rules
+
+### Entry
+exact plan identity and geometry.
+
+### SL
+never farther in Tighten mode.
+
+### TP
+never backwards.
+
+### Partial
+volume and realized R reconciled from broker facts.
+
+### Close
+broker-confirmed close only.
+
+### Cancel
+broker-confirmed cancellation only.
+
+### Recovery
+missing protection = explicit recovery state.
+
+### Restart
+broker state first.
+
+### Reconnect
+broker state first.
+
+### Duplicate
+idempotency key and scenario identity.
+
+---
+
+# 11. Permanent UI Truth Rules
+
+Panel and chart are presentation surfaces, not authorities.
+
+Every displayed:
+- direction
+- Entry
+- SL
+- TP
+- RR
+- confidence
+- quality
+- stage
+- reason
+- execution state
+- protection state
+
+must come from the canonical current snapshot.
+
+No display-only value may become an execution input.
+
+---
+
+# 12. Permanent Parameter Ownership
+
+## Indicator owns
+Any parameter changing:
+- market analysis
+- evidence
+- MTF interpretation
+- confidence
+- quality
+- scenario selection
+- analytical Entry/SL/TP
+- analytical RR
+- presentation
+
+## cBot owns
+Any parameter changing:
+- broker execution
+- account sizing
+- margin
+- capacity
+- daily loss enforcement
+- live spread/session broker guard
+- trading permission
+- managed identity
+- retries
+- broker protection
+- lifecycle
+
+## rule
+No duplicated public controls.
+One authority, other side read-only reflection.
+
+---
+
+# 13. Permanent cBot Architecture
+
+### Indicator
+Market → Evidence → Decision → Scenario → Plan → Presentation
+
+### Contracts
+data exchange only; platform-neutral; deterministic IDs/versioning.
+
+### cBot
+Intent → Broker Eligibility → Submission → Confirmation → Protection → Lifecycle → Recovery → Account Risk Enforcement
+
+Exactly one live execution authority.
+
+### forbidden
+second engine, chart scraping, static globals, reflection, cloud dependency, multi-position expansion.
+
+---
+
+# 14. Permanent cBot Runtime State Machine
+
+WAITING
+→ RECEIVE
+→ VALIDATE
+→ EXPIRY
+→ REVISION
+→ DUPLICATE
+→ ACCOUNT/BROKER SAFETY
+→ PREPARE
+→ SUBMIT
+→ BROKER RESULT
+
+BROKER RESULT:
+- REJECTED → Retry/Circuit
+- ACCEPTED/UNCONFIRMED → Reconcile
+- CONFIRMED → Adopt
+
+CONFIRMED
+→ PROTECTION
+→ LIVE MANAGEMENT
+→ PARTIAL / TP / SL / CLOSE
+→ BROKER CONFIRMATION
+→ OUTCOME
+
+RESTART/RECONNECT:
+START
+→ READ BROKER STATE
+→ RECONCILE
+→ ADOPT
+→ REPAIR PROTECTION
+→ RESUME
+
+---
+
+# 15. Permanent Test Matrix
+
+## Analytical
+- BUY/SELL mirror
+- closed/open candle
+- MTF
+- Range/Trend/Transition
+- OB/FVG
+- WaveTrend
+- Divergence
+- liquidity
+- NaN/Infinity
+- insufficient data
+
+## Planning
+- Entry
+- SL
+- TP1..TP4
+- RR
+- obstacle
+- source timeframe
+- expiry
+- scenario coexistence
+
+## Execution
+- Market
+- Aggressive
+- Stop
+- Limit
+- rejection
+- delayed confirmation
+- slippage
+- duplicate
+- partial fill
+- manual change
+
+## Lifecycle
+- open
+- modify
+- close
+- partial
+- cancel
+- restart
+- reconnect
+- orphan
+- recovery
+
+## UI
+- panel 220/430/700
+- fonts
+- overflow
+- live content
+- reload
+- chart objects
+- label readability
+
+## Persistence
+- history write
+- history read
+- duplicate
+- restart
+- recovery
+- 90-day archive
+
+## Statistical
+- deterministic replay
+- walk-forward
+- bootstrap
+- calibration
+- ablation
+- drift detection
+
+---
+
+# 16. Permanent Phase-Close Record
+
+## Phase
+Mxx — Title
+
+## Result
+VERIFIED COMPLETE / PARTIAL / BLOCKED / FAILED
+
+## Root cause
+...
+
+## Changed files
+...
+
+## Behavioral changes
+...
+
+## Tests
+before: FAIL
+after: PASS
+
+## CI
+Source/Architecture: ...
+Runtime Acceptance: ...
+cTrader Compile: ...
+
+## Manual Target Terminal
+...
+
+## New bugs
+...
+
+## Remaining risks
+...
+
+## Exact progress
+...
+
+## Operator action
+git pull required after merge: YES / NO
+
+## Next phase
+Mxx+1 — Title
+
+---
+
+# 17. Final Product Target
+
+## Accuracy
+- consistent decision evidence
+- no double-counted structure
+- calibrated confidence
+- measured OB/FVG value
+- measured exit behavior
+- data-backed Range handling
+
+## Performance
+- bounded startup
+- fast panel content refresh
+- bounded caches
+- limited redraw
+- limited broker reads
+- no hot-path file I/O
+
+## Safety
+- broker truth
+- protective SL
+- monotonic TP
+- deterministic retries
+- restart/reconnect recovery
+- fail-closed
+
+## Architecture
+- Indicator analysis only
+- Contracts data only
+- cBot execution only
+- one decision authority
+- one execution authority
+
+## Maintenance
+- one roadmap
+- clean repo
+- reproducible build
+- behavioral tests
+- property/mutation evidence
+- target-terminal evidence
+
+---
+
+# 18. Current Starting Point
+
+**Canonical implementation start after this roadmap is installed: M0 — Adoption / Freeze / Baseline.**
+
+No other roadmap, prompt, continuation note or planning document may override this file.
+
+Do not start advanced intelligence, parameter tuning, new indicators, real-account automatic execution or a permanent dual Indicator/cBot executor before the relevant gates above are completed.
+
+Once M42 is accepted, the project leaves the remediation/certification track and enters controlled production observation/calibration.
