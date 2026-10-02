@@ -139,7 +139,7 @@ legacy_patterns = [
 ]
 
 legacy_scan_paths = [
-    consumer_paths["PlanRewardRiskQualityRule"],
+    geometry_consumer_paths["PlanRewardRiskQualityRule"],
     consumer_paths["ExecutionPlanGeometryRule"],
     consumer_paths["TargetCandidateConstraintRule"],
     consumer_paths["PlanMaterialization"],
