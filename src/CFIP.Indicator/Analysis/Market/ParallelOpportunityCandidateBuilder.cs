@@ -89,34 +89,6 @@ namespace cAlgo
                     : null;
             }
 
-            double tp1RR =
-                CalculatePreviewStageRR(
-                    executablePreview.Tp1,
-                    executablePreview.Entry,
-                    executablePreview.Stop,
-                    direction);
-
-            double tp2RR =
-                CalculatePreviewStageRR(
-                    executablePreview.Tp2,
-                    executablePreview.Entry,
-                    executablePreview.Stop,
-                    direction);
-
-            double tp3RR =
-                CalculatePreviewStageRR(
-                    executablePreview.Tp3,
-                    executablePreview.Entry,
-                    executablePreview.Stop,
-                    direction);
-
-            double tp4RR =
-                CalculatePreviewStageRR(
-                    executablePreview.Tp4,
-                    executablePreview.Entry,
-                    executablePreview.Stop,
-                    direction);
-
             TradeActionabilityResult actionability =
                 EvaluateTradeActionability(
                     closedM5,
@@ -152,6 +124,34 @@ namespace cAlgo
                 executablePreview =
                     canonicalPath.Preview;
             }
+
+            double tp1RR =
+                CalculatePreviewStageRR(
+                    executablePreview.Tp1,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
+                    direction);
+
+            double tp2RR =
+                CalculatePreviewStageRR(
+                    executablePreview.Tp2,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
+                    direction);
+
+            double tp3RR =
+                CalculatePreviewStageRR(
+                    executablePreview.Tp3,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
+                    direction);
+
+            double tp4RR =
+                CalculatePreviewStageRR(
+                    executablePreview.Tp4,
+                    executablePreview.Entry,
+                    executablePreview.Stop,
+                    direction);
 
             PlanRewardRiskQualityResult rewardRisk =
                 PlanRewardRiskQualityRule.Evaluate(
