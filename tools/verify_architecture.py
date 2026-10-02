@@ -2943,7 +2943,6 @@ ROW_EXPECTATIONS = {
     "Rows/PanelExecutionRowsRenderer.cs": "RenderPanelExecutionRows",
     "Rows/PanelTradePlanRowsRenderer.cs": "RenderPanelTradePlanRows",
     "Rows/PanelContextRowsRenderer.cs": "RenderPanelContextRows",
-    "Rows/PanelAutoTradingRowsRenderer.cs": "RenderPanelAutoTradingRows",
 }
 for relative, method in ROW_EXPECTATIONS.items():
     path = PANEL_ROOT / relative
