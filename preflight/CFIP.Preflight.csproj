@@ -12,8 +12,4 @@
     <PackageReference Include="cTrader.Automate" Version="1.0.21" />
     <ProjectReference Include="../src/CFIP.Indicator/CFIP.Indicator.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CFIPPreflightBot.cs" />
-    <Compile Include="CFIPPreflightProbeIndicator.cs" />
-  </ItemGroup>
 </Project>
