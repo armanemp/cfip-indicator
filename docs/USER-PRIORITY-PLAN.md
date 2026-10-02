@@ -321,3 +321,19 @@ The Indicator chart-panel AUTO TRADE and AUTO ORDERS quick controls are not part
 For primary M15/H1 signals, the selected FVG and Order Block evidence must remain attributable to the same closed source frame. OB+FVG confluence remains the strongest single location feature under the existing canonical location owner. M5 and M1 refine timing/readiness but must not replace or hide the source-frame location evidence.
 
 The panel should expose source OB/FVG evidence for each primary M15/H1 candidate. Any future threshold or weight change must be supported by deterministic replay/OOS evidence rather than visual preference.
+
+
+## V. Primary M15/H1 provider identity cohesion — 2026-10-02
+
+The primary signal hierarchy is not complete until its identity survives the provider
+boundary. For a canonical matched scenario, ScenarioId and SourceTimeframe must remain
+the same from the Indicator registry through the read-only provider and into cBot shadow
+telemetry.
+
+The provider must not infer SourceTimeframe from the chart attachment when an exact
+scenario candidate is available. Pending Stop/Limit identity must reuse the same canonical
+scenario resolver rather than introducing parallel identifiers.
+
+This is traceability only. No threshold, signal quality rule, Entry/SL/TP geometry, risk
+rule or broker authority may change under this requirement. Empirical M15/H1 quality
+changes remain a separate replay/OOS concern.
