@@ -78,10 +78,23 @@ namespace cAlgo
                 return null;
 
             double entry = intent.RequestedEntry;
-            double risk = Math.Abs(entry - intent.Stop);
 
-            if (!IsFinitePositive(risk))
+            RiskRewardMathResult baseGeometry =
+                RiskRewardMathRule.Evaluate(
+                    intent.Direction,
+                    entry,
+                    intent.Stop,
+                    intent.Target,
+                    0,
+                    0,
+                    MaximumRewardRR,
+                    Symbol.PipSize);
+
+            if (!baseGeometry.Valid)
                 return null;
+
+            double risk =
+                baseGeometry.Risk;
 
             OpportunityLane lane =
                 intent.Kind == ExecutionIntentKind.Limit
