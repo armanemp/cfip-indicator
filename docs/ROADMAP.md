@@ -912,7 +912,7 @@ Phase document: `docs/PHASE-CI-12-STRUCTURAL-SL.md`
 
 # Track CI — Full-Stack Calculation & Analytical Integrity (BLOCKING)
 
-Status: **active — CI-00 through CI-13 verified complete; CI-14 is the active blocking phase and CI-FINAL remains the final certification gate.**
+Status: **active — CI-00 through CI-17 repository implementation is complete and CI-17 target-terminal/manual acceptance is pending; CI-FINAL remains gated by that evidence.**
 
 This track is introduced after the 2026-10-01 deep review of the Trigger →
 Entry → SL → TP chain. It intentionally expands the audit upstream so
@@ -925,7 +925,7 @@ The authoritative detailed specification is:
 The track does **not** renumber or invalidate Prompt 4/5/6/7/8 phases. It is a
 blocking correctness gate inserted before the next unfinished refinement phase.
 
-**Current implementation phase: CI-14 — Canonical risk/reward and protection mathematics.**
+**Current implementation phase: CI-17 — Target-terminal cTrader validation (repository package merged; manual terminal acceptance pending).**
 
 ### CI-12 closeout — 2026-10-02
 
@@ -1079,7 +1079,11 @@ Next phase: **CI-17 — Target-terminal cTrader validation.**
 Operator action: run `git pull --ff-only` on local `main`.
 ### CI-17 target-terminal acceptance package — 2026-10-02
 
-Status: **IMPLEMENTATION PACKAGE COMPLETE — target-terminal/manual broker acceptance remains open.**
+Status: **IMPLEMENTATION PACKAGE COMPLETE AND MERGED — target-terminal/manual broker acceptance remains open.**
+
+Merge: **PR #174 merged to `main` as `194ab90030f668ea3a42f0e709d42ca3238383ae`.**
+
+CI-17 implementation HEAD `9a71b1dbac09e41759458a404ce4675dc4972f92` passed Source/Architecture run `36951458606`, Runtime Acceptance Contracts run `36951458326`, and cTrader Compile run `36951458297` before merge.
 
 Completed:
 - upgraded the existing no-trade cTrader preflight bot with real terminal timing and quote diagnostics;
