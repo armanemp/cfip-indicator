@@ -47,6 +47,28 @@ check(
     "Core/Math/RiskRewardPolicyRule.cs" in contract_project,
 )
 
+runtime_project = (
+    ROOT / "tools" / "CFIP.Runtime.Contracts" /
+    "CFIP.Runtime.Contracts.csproj"
+).read_text(encoding="utf-8")
+
+decision_project = (
+    ROOT / "tools" / "CFIP.Decision.Contracts" /
+    "CFIP.Decision.Contracts.csproj"
+).read_text(encoding="utf-8")
+
+check(
+    "runtime contract project compiles canonical RR owners",
+    "Core/Math/RiskRewardGeometryRule.cs" in runtime_project and
+    "Core/Math/RiskRewardPolicyRule.cs" in runtime_project,
+)
+
+check(
+    "decision contract project compiles canonical RR owners",
+    "Core/Math/RiskRewardGeometryRule.cs" in decision_project and
+    "Core/Math/RiskRewardPolicyRule.cs" in decision_project,
+)
+
 check(
     "deterministic CI-14 planning contract is wired",
     "VerifyCanonicalRiskReward();" in contracts and
@@ -76,6 +98,8 @@ consumer_paths = {
     "LivePlanFactory": LIFECYCLE / "LivePlanFactory.cs",
     "PendingOrderPlanSnapshot": LIFECYCLE / "PendingOrderPlanSnapshot.cs",
     "ParallelOpportunityBuilder": ANALYSIS / "ParallelOpportunityBuilder.cs",
+    ,"ActionableSignalQualityRule": CORE / "ActionableSignalQualityRule.cs"
+    ,"RangeSignalQualityRule": CORE / "RangeSignalQualityRule.cs",
 }
 
 for name, path in consumer_paths.items():
