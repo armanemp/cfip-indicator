@@ -180,7 +180,7 @@ def main() -> int:
         if "ExecuteMarketOrder" not in cbot_market_code or "ExecuteMarketRangeOrder" not in cbot_market_code:
             errors.append("cBot Market owner must expose Market and Market-Range broker mutation")
         if "Account.IsLive" not in (
-            ROOT.parent / "CFIP.cBot" / "CFIPExecutionBot.cs"
+            cbot_root / "CFIPExecutionBot.cs"
         ).read_text(encoding="utf-8"):
             errors.append("cBot Market execution must retain the hard live-account guard")
 
