@@ -110,14 +110,30 @@ namespace cAlgo
             if (candidate == null)
                 return false;
 
-            int minimumQuality =
-                Math.Max(
-                    TacticalOpportunityMinimumQuality,
-                    Math.Max(
-                        MinimumSmartQuality,
-                        SmartQualityThreshold));
+            int minimumQuality;
 
-            if (candidate.Lane ==
+            if (candidate.IsPrimaryTimeframeSignal)
+            {
+                // Primary M15/H1 source visibility is intentionally based on
+                // the primary-source quality floor. M5 actionability/entry
+                // readiness is evaluated separately and must not erase the source setup.
+                minimumQuality =
+                    Math.Max(
+                        60,
+                        TacticalOpportunityMinimumQuality - 5);
+            }
+            else
+            {
+                minimumQuality =
+                    Math.Max(
+                        TacticalOpportunityMinimumQuality,
+                        Math.Max(
+                            MinimumSmartQuality,
+                            SmartQualityThreshold));
+            }
+
+            if (!candidate.IsPrimaryTimeframeSignal &&
+                candidate.Lane ==
                 OpportunityLane.Strategic)
             {
                 minimumQuality =
@@ -144,7 +160,8 @@ namespace cAlgo
 
             // Keep parallel detection available, but do not crowd the chart
             // with candidates that are materially below the active quality floor.
-            if (candidate.Lane != OpportunityLane.CounterHtfTactical &&
+            if (!candidate.IsPrimaryTimeframeSignal &&
+                candidate.Lane != OpportunityLane.CounterHtfTactical &&
                 candidate.Lane != OpportunityLane.MicroReaction)
                 minimumQuality =
                     ActionabilityThresholdPolicy.ApplyParallelCandidateQualityMargin(
@@ -159,7 +176,8 @@ namespace cAlgo
             OpportunityLane lane,
             int direction,
             int quality,
-            string sourceTimeframe = null)
+            string sourceTimeframe = null,
+            bool allowPrimaryPresentationFallback = false)
         {
             if (direction != 1 &&
                 direction != -1)
@@ -171,7 +189,17 @@ namespace cAlgo
                     closedM5,
                     direction,
                     out geometry))
-                return null;
+            {
+                return allowPrimaryPresentationFallback
+                    ? BuildPrimaryPresentationCandidate(
+                        closedM5,
+                        lane,
+                        direction,
+                        quality,
+                        sourceTimeframe,
+                        "PRIMARY PLAN GEOMETRY UNAVAILABLE")
+                    : null;
+            }
 
             ExecutionModel execution;
 
@@ -179,7 +207,17 @@ namespace cAlgo
                     closedM5,
                     direction,
                     out execution))
-                return null;
+            {
+                return allowPrimaryPresentationFallback
+                    ? BuildPrimaryPresentationCandidate(
+                        closedM5,
+                        lane,
+                        direction,
+                        quality,
+                        sourceTimeframe,
+                        "PRIMARY EXECUTION MODEL UNAVAILABLE")
+                    : null;
+            }
 
             TradeSetupPreview preview;
             if (!TryGetParallelScenarioPreview(
@@ -188,13 +226,33 @@ namespace cAlgo
                     lane,
                     geometry,
                     out preview))
-                return null;
+            {
+                return allowPrimaryPresentationFallback
+                    ? BuildPrimaryPresentationCandidate(
+                        closedM5,
+                        lane,
+                        direction,
+                        quality,
+                        sourceTimeframe,
+                        "PRIMARY PLAN PREVIEW UNAVAILABLE")
+                    : null;
+            }
 
             if (preview == null ||
                 !IsFinitePositive(preview.Stop) ||
                 !IsFinitePositive(preview.Tp1) ||
                 preview.Risk <= 0)
-                return null;
+            {
+                return allowPrimaryPresentationFallback
+                    ? BuildPrimaryPresentationCandidate(
+                        closedM5,
+                        lane,
+                        direction,
+                        quality,
+                        sourceTimeframe,
+                        "PRIMARY PLAN LEVELS INCOMPLETE")
+                    : null;
+            }
 
             double tp1RR =
                 CalculatePreviewStageRR(
@@ -259,7 +317,8 @@ namespace cAlgo
                         Math.Max(0, MaximumRewardRR),
                         Symbol.PipSize);
 
-            if (!rewardRisk.Allowed)
+            if (!rewardRisk.Allowed &&
+                !allowPrimaryPresentationFallback)
                 return null;
 
             int independentEvidence =
@@ -354,6 +413,71 @@ namespace cAlgo
                 policy.ExecutionReason;
 
             return candidate;
+        }
+
+        private TradeOpportunityCandidate BuildPrimaryPresentationCandidate(
+            int closedM5,
+            OpportunityLane lane,
+            int direction,
+            int quality,
+            string sourceTimeframe,
+            string reason)
+        {
+            if (!PrimaryTimeframeSignalRule.IsPrimarySource(sourceTimeframe) ||
+                (direction != 1 && direction != -1))
+                return null;
+
+            string normalizedTimeframe =
+                sourceTimeframe.Trim().ToUpperInvariant();
+
+            return new TradeOpportunityCandidate
+            {
+                Id =
+                    "TF-" +
+                    normalizedTimeframe +
+                    "-" +
+                    (direction == 1 ? "BUY" : "SELL"),
+                ScenarioId =
+                    "TF-" +
+                    normalizedTimeframe +
+                    "-" +
+                    (direction == 1 ? "BUY" : "SELL"),
+                SourceTimeframe = normalizedTimeframe,
+                BasePlanTimeframe = "M5",
+                IsPrimaryTimeframeSignal = true,
+                PresentationOnly = true,
+                Lane = lane,
+                Direction = direction,
+                CreatedM5 = closedM5,
+                IndependentEvidenceScore =
+                    IndependentEvidence(direction),
+                IndependentEvidenceGroupCount =
+                    IndependentEvidenceGroupCount(direction),
+                IndicatorIndependentEvidenceGroupCount =
+                    _m5Frame == null
+                        ? 0
+                        : _m5Frame.IndicatorIndependentEvidenceGroupCount,
+                Quality =
+                    Math.Max(
+                        0,
+                        Math.Min(100, quality)),
+                Source = "PRIMARY " + normalizedTimeframe,
+                Stage =
+                    "PRIMARY " +
+                    normalizedTimeframe +
+                    " • M5 TUNING • WAIT",
+                LabelPrefix =
+                    "PRIMARY-" +
+                    normalizedTimeframe,
+                ActionableNow = false,
+                ExecutionPolicyAllowed = false,
+                ExecutionPolicyReason =
+                    "PRESENTATION ONLY • NO EXECUTION PLAN",
+                ActionabilityReason =
+                    string.IsNullOrWhiteSpace(reason)
+                        ? "PRIMARY SOURCE VALID • PLAN PENDING"
+                        : reason
+            };
         }
 
         private string BuildCanonicalScenarioId(

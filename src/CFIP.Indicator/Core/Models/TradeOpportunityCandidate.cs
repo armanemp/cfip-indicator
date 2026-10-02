@@ -7,6 +7,7 @@ namespace cAlgo
         public string SourceTimeframe;
         public string BasePlanTimeframe;
         public bool IsPrimaryTimeframeSignal;
+        public bool PresentationOnly;
         public bool M5TuningAligned;
         public bool M1TuningConfirmed;
         public string PrimarySignalState;

@@ -6825,6 +6825,34 @@ namespace cAlgo
                 independent.BasePlanTimeframe == "M5",
                 "timeframe scenario explicitly declares M5 as its canonical plan geometry base");
 
+            TradeOpportunityCandidate presentationOnly =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-M15-BUY",
+                    SourceTimeframe = "M15",
+                    BasePlanTimeframe = "M5",
+                    IsPrimaryTimeframeSignal = true,
+                    PresentationOnly = true,
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 100,
+                    Quality = 78,
+                    ActionableNow = true
+                };
+
+            ScenarioExecutionPolicyResult presentationPolicy =
+                ScenarioExecutionPolicyRule.Evaluate(
+                    presentationOnly,
+                    decision,
+                    OpportunityLane.Tactical);
+
+            Assert(
+                !presentationPolicy.CandidateEligible &&
+                !presentationPolicy.ExecutionAuthorized &&
+                presentationPolicy.ExecutionReason ==
+                    "PRIMARY PRESENTATION ONLY",
+                "primary presentation-only setup can never cross the execution policy boundary");
+
             TradeOpportunityCandidate mismatch =
                 new TradeOpportunityCandidate
                 {

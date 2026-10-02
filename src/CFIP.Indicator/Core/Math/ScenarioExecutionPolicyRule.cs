@@ -39,6 +39,10 @@ namespace cAlgo
             if (candidate == null)
                 return BlockScenarioExecutionPolicy("NO SCENARIO");
 
+            if (candidate.PresentationOnly)
+                return BlockScenarioExecutionPolicy(
+                    "PRIMARY PRESENTATION ONLY");
+
             if (decision == null ||
                 decision.Direction == 0)
                 return BlockScenarioExecutionPolicy("NO CANONICAL DECISION");

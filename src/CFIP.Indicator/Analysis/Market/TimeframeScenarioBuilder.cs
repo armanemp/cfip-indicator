@@ -65,7 +65,6 @@ namespace cAlgo
                     weights[i] <= 0 ||
                     indices[i] < 30 ||
                     frame.Index != indices[i] ||
-                    frame.Direction == 0 ||
                     frame.Quality <= 0)
                     continue;
 
@@ -79,13 +78,45 @@ namespace cAlgo
                 if (frame.Quality < minimumQuality)
                     continue;
 
+                bool m1ConfirmationAvailable =
+                    UseM1Trigger &&
+                    _m1Bars != null &&
+                    context.M1 >= 0;
+
+                bool m1Confirmed =
+                    m1ConfirmationAvailable &&
+                    M1TriggerReady(
+                        _m1Bars,
+                        _m5Bars,
+                        context.M1,
+                        closedM5,
+                        reference,
+                        frame.Direction);
+
+                PrimaryTimeframeSignalResult primary =
+                    PrimaryTimeframeSignalRule.Evaluate(
+                        names[i],
+                        frame.Direction,
+                        frame.Quality,
+                        minimumQuality,
+                        _m5Frame == null ? 0 : _m5Frame.Direction,
+                        m1ConfirmationAvailable,
+                        _m1Frame == null ? 0 : _m1Frame.Direction,
+                        m1Confirmed);
+
+                if (!primary.Allowed)
+                    continue;
+
+                // M15/H1 source validity is decided before plan geometry.
+                // M5/M1 then tune the entry and determine actionability.
                 TradeOpportunityCandidate candidate =
                     BuildLaneCandidate(
                         closedM5,
                         OpportunityLane.Tactical,
                         frame.Direction,
                         frame.Quality,
-                        names[i]);
+                        names[i],
+                        true);
 
                 if (candidate == null)
                     continue;
@@ -122,35 +153,6 @@ namespace cAlgo
                     candidate,
                     frame,
                     frame.Direction);
-
-                bool m1ConfirmationAvailable =
-                    UseM1Trigger &&
-                    _m1Bars != null &&
-                    context.M1 >= 0;
-
-                bool m1Confirmed =
-                    m1ConfirmationAvailable &&
-                    M1TriggerReady(
-                        _m1Bars,
-                        _m5Bars,
-                        context.M1,
-                        closedM5,
-                        reference,
-                        frame.Direction);
-
-                PrimaryTimeframeSignalResult primary =
-                    PrimaryTimeframeSignalRule.Evaluate(
-                        names[i],
-                        frame.Direction,
-                        frame.Quality,
-                        minimumQuality,
-                        _m5Frame == null ? 0 : _m5Frame.Direction,
-                        m1ConfirmationAvailable,
-                        _m1Frame == null ? 0 : _m1Frame.Direction,
-                        m1Confirmed);
-
-                if (!primary.Allowed)
-                    continue;
 
                 candidate.IsPrimaryTimeframeSignal = true;
                 candidate.M5TuningAligned = primary.M5Aligned;
