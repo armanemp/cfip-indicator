@@ -2861,3 +2861,13 @@ Next phase: **CI-16 — Deterministic replay, latency and counterexample suite.*
 ## CI-15 merge closeout — 2026-10-02
 
 PR #172 was merged to `main` as `8aa4a7dc3fee97d6ce233c26b2114e844b36a669`. The CI-15 implementation head was `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`; Source/Architecture #2707, Runtime Acceptance #2516 and cTrader Compile #2700 passed on the final implementation head, with Planning Contracts reporting `Planning contracts OK`. The next phase is **CI-16 — Deterministic replay, latency and counterexample suite**.
+
+## CI-16 deterministic replay / latency / counterexample suite — 2026-10-02
+
+Implemented the blocking CI-16 replay layer as a verification-only extension of Runtime Acceptance Contracts. The suite runs the same 16 required counterexample fixtures twice, compares complete deterministic traces, records causal/reference/quote timing plus Decision → Trigger → Entry → SL → TP1..TP4 → intent → actionability → alert → execution-attempt → fill timestamps, and compares authoritative versus submission geometry fingerprints.
+
+Canonical existing owners are reused for Entry geometry, Risk/Reward, final ExecutionIntent geometry, Trigger lifecycle and fill acceptance. No live calculation path, broker mutation path, public parameter, confidence/RR/Entry/SL/TP/risk threshold or execution policy was changed.
+
+The dedicated audit_phase_ci_16.py is accumulated immediately after CI-15. Target-terminal timing, broker event ordering, actual slippage/fills, panel timing and empirical outcome quality remain CI-17/manual boundaries.
+
+Next phase: **CI-17 — Target-terminal cTrader validation.**
