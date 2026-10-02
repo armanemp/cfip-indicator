@@ -38,56 +38,51 @@ namespace cAlgo
                 direction != -1)
                 return CreateBlocked("DIRECTION INVALID");
 
-            if (!IsPositiveFinite(entry) ||
-                !IsPositiveFinite(stop) ||
-                !IsPositiveFinite(tp1))
-                return CreateBlocked("LEVEL GEOMETRY INVALID");
+            RiskRewardGeometryResult geometry =
+                RiskRewardGeometryRule.Evaluate(
+                    direction,
+                    entry,
+                    stop,
+                    tp1,
+                    0);
 
-            double risk =
-                Math.Abs(entry - stop);
+            if (!geometry.Valid)
+            {
+                string reason =
+                    geometry.Reason == "STOP SIDE INVALID"
+                        ? "STOP WRONG SIDE"
+                        : geometry.Reason == "TARGET SIDE INVALID"
+                            ? "TP1 WRONG SIDE"
+                            : geometry.Reason;
 
-            if (!IsPositiveFinite(risk))
-                return CreateBlocked("RISK INVALID");
-
-            bool protectiveStop =
-                direction == 1
-                    ? stop < entry
-                    : stop > entry;
-
-            bool progressiveTarget =
-                direction == 1
-                    ? tp1 > entry
-                    : tp1 < entry;
-
-            if (!protectiveStop)
-                return CreateBlocked("STOP WRONG SIDE");
-
-            if (!progressiveTarget)
-                return CreateBlocked("TP1 WRONG SIDE");
-
-            double reward =
-                Math.Abs(tp1 - entry);
-
-            double rr =
-                reward / risk;
-
-            if (!IsPositiveFinite(rr))
-                return CreateBlocked("RR INVALID");
-
-            if (rr + 1e-9 <
-                Math.Max(0.10, minimumRR))
                 return new ExecutionPlanGeometryResult(
                     false,
-                    risk,
-                    reward,
-                    rr,
+                    geometry.Risk,
+                    geometry.Reward,
+                    geometry.NominalRR,
+                    reason);
+            }
+
+            double requiredRR =
+                RiskRewardPolicyRule.NormalizeMinimum(
+                    minimumRR,
+                    RiskRewardPolicyRule.ExecutionMinimumFloor);
+
+            if (!RiskRewardPolicyRule.MeetsMinimum(
+                    geometry.NominalRR,
+                    requiredRR))
+                return new ExecutionPlanGeometryResult(
+                    false,
+                    geometry.Risk,
+                    geometry.Reward,
+                    geometry.NominalRR,
                     "RR BELOW EXECUTION FLOOR");
 
             return new ExecutionPlanGeometryResult(
                 true,
-                risk,
-                reward,
-                rr,
+                geometry.Risk,
+                geometry.Reward,
+                geometry.NominalRR,
                 "OK");
         }
 
