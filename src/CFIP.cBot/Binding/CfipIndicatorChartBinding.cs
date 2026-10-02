@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
-using System.Text;
 using cAlgo.API;
-using cAlgo;
 
 namespace CFIP.cBot.Binding
 {
@@ -108,39 +106,6 @@ namespace CFIP.cBot.Binding
                 hash.ToString(
                     "X16",
                     CultureInfo.InvariantCulture);
-            return true;
-        }
-
-        public static bool TryBuildParameterValues(
-            ChartIndicator indicator,
-            out object[] values,
-            out string reason)
-        {
-            values = null;
-            reason = "OK";
-
-            if (indicator == null ||
-                indicator.Parameters == null)
-            {
-                reason = "CFIP SMART INDICATOR PARAMETERS UNAVAILABLE";
-                return false;
-            }
-
-            var list =
-                new System.Collections.Generic.List<object>();
-
-            foreach (AlgoInstanceParameter parameter in indicator.Parameters)
-            {
-                if (parameter == null)
-                {
-                    reason = "CFIP PARAMETER UNAVAILABLE";
-                    return false;
-                }
-
-                list.Add(parameter.Value);
-            }
-
-            values = list.ToArray();
             return true;
         }
 
