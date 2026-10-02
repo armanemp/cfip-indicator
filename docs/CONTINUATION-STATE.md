@@ -1,14 +1,16 @@
-## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
+## CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
 
-Status: **VERIFIED COMPLETE — merged to main via PR #195 as 7b8648091bde26753b1e0fcff3d75984a1f1b9eb.**
+Status: **VERIFIED COMPLETE — merged to main via PR #196 as 352e6229adcff8a4ebb6ee6e5c71a0e0397dc70b.**
 
-M15 is the internal execution clock. Chart TF is host-only; Indicator and cBot must behave consistently when attached to M1/M5/M15/H1/H4/D1/W1 charts.
+M15 is the internal execution clock; host Chart TF is not an execution input. Pending Stop and Pending Limit broker mutation are owned by one cBot coordinator. Indicator owns analysis/decision/scenario/intent and absolute lifecycle snapshots only.
 
-Pending Stop mutation is now cBot-owned. Indicator only prepares the spread-aware executable trigger, immutable intent and absolute lifecycle snapshot. The canonical instance-scoped execution label is transported through ExecutionIntent; cBot consumes it directly without recreating identity formatting.
+Directional signal presentation now uses arrow-only markers. The M1 trigger is UpArrow/DownArrow, and Strong/Confirmed/Caution states have distinct BUY/SELL colors. Direction visibility is separated from execution actionability using the existing evidence floor.
 
-Repository verification on final head c700e3adbc3557bf1278024df870a15a6e308b69: Source/Architecture #3025 PASS; Runtime #2834 PASS; cTrader Compile #3018 PASS; P4C audit PASS; dependent CR5.4 / CI-15 / M15-Risk-Spread / CR1.8-A11 audits PASS.
+Popup is BottomRight by default, persistent until next alert/manual close, and fed by a centralized important-alert classifier.
 
-Next implementation phase: **CBOT-P4D — Pending Limit authority extraction.**
+Repository verification on implementation head 22d7af189d7037237b27a3df09a42a9cdda7f252: Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS; P4D audit PASS; dependent audits PASS.
+
+Next implementation phase: **CBOT-P4E — full remaining broker execution authority consolidation.**
 
 ## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
 
