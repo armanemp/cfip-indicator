@@ -37,7 +37,7 @@ require(
     "frame.ObBullQuality" in enrichment and
     "frame.FvgBearQuality" in enrichment and
     "frame.ObBearQuality" in enrichment and
-    "PrimaryLocationQuality = location.Score" in enrichment,
+    "PrimaryLocationQuality" in enrichment and\n    re.search(r"PrimaryLocationQuality\\s*=\\s*location\\.Score", enrichment),
     "enrichment must copy evidence from the actual source Frame",
 )
 require(
