@@ -2,6 +2,7 @@
 """CBOT-P4E acceptance gate: broker mutations are cBot-owned and confirmed."""
 
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,16 +35,20 @@ command = read("src/CFIP.Contracts/ManagementCommand.cs")
 report = read("src/CFIP.Contracts/BrokerExecutionReport.cs")
 bus = read("src/CFIP.Contracts/ManagementBusKey.cs")
 
-mutation_tokens = (
-    "ExecuteMarketOrder(", "ExecuteMarketRangeOrder(", "PlaceStopOrder(",
-    "PlaceLimitOrder(", "CancelPendingOrder(", "ClosePosition(",
-    "ModifyStopLossPrice(", "ModifyTakeProfitPrice(",
-    "ModifyTakeProfitPips(", "ModifyTakeProfit(",
+mutation_apis = (
+    "ExecuteMarketOrder", "ExecuteMarketRangeOrder", "PlaceStopOrder",
+    "PlaceLimitOrder", "CancelPendingOrder", "ClosePosition",
+    "ModifyStopLossPrice", "ModifyTakeProfitPrice",
+    "ModifyTakeProfitPips", "ModifyTakeProfit",
 )
 
-for token in mutation_tokens:
-    if token in indicator:
-        errors.append("Indicator direct broker mutation remains: " + token)
+# Ignore Indicator Try* request wrappers; only real broker API invocations count.
+for api in mutation_apis:
+    if re.search(
+        r"(?<!Try)\b" + re.escape(api) + r"\s*\(",
+        indicator,
+    ):
+        errors.append("Indicator direct broker mutation remains: " + api + "(")
 
 for token in (
     "TryCancelPendingOrder(", "TryClosePosition(", "TryModifyStopLoss(",
@@ -54,9 +59,9 @@ for token in (
     if token not in management_ind:
         errors.append("Indicator management request owner missing: " + token)
 
-for token in mutation_tokens[4:]:
-    if token not in management_cbot:
-        errors.append("cBot management owner missing: " + token)
+for api in mutation_apis[4:]:
+    if api + "(" not in management_cbot:
+        errors.append("cBot management owner missing: " + api + "(")
 
 for token in (
     "ManagementCommandCodec.TryDeserialize(",
@@ -91,15 +96,11 @@ if (
 ):
     errors.append("cBot management integration missing")
 
-management_arm = "Enable Demo Management Execution"
-arm_declared = bool(
-    __import__("re").search(
-        r'\[Parameter\(\s*"Enable Demo Management Execution"'
-        r'[\s\S]*?DefaultValue\s*=\s*false',
-        host,
-    )
-)
-if not arm_declared:
+if not re.search(
+    r'\[Parameter\(\s*"Enable Demo Management Execution"'
+    r'[\s\S]*?DefaultValue\s*=\s*false',
+    host,
+):
     errors.append("management arm must default false")
 
 for rel in (
