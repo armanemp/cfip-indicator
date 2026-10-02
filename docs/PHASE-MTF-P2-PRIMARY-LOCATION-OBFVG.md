@@ -2,6 +2,8 @@
 
 Date: 2026-10-02
 
+Status: **VERIFIED COMPLETE — repository gates passed on implementation HEAD `c811967d8462229e8efc5f14af1f48cc3e3e72b2`; target-terminal evidence remains manual.**
+
 ## Goal
 
 Strengthen the primary M15/H1 signal representation by preserving the actual
