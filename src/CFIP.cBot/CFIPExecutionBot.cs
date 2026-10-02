@@ -1,6 +1,7 @@
 using System;
 using cAlgo.API;
 using CFIP.Contracts;
+using cAlgo;
 
 namespace CFIP.cBot
 {
@@ -66,7 +67,8 @@ namespace CFIP.cBot
 
             // Reading the Output first is the supported liveness trigger for a
             // referenced custom indicator; no chart scraping/reflection is used.
-            _indicator.ProviderHeartbeat.LastValue;
+            double heartbeat =
+                _indicator.ProviderHeartbeat.LastValue;
 
             ObserveProviderSnapshot();
         }
