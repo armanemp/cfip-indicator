@@ -144,7 +144,9 @@ require(
 
 require(
     "ContractIdentity identity" in provider and
-    "LatestSignalEnvelope" in provider and
+    "_cfipProviderEnvelope" in provider and
+    "_lastSignalEnvelope" in cbot_host and
+    "SignalEnvelope" in cbot_host and
     "CFIP.Contracts" in cbot_host,
     "M4: Indicator/cBot provider identity boundary regressed",
 )
