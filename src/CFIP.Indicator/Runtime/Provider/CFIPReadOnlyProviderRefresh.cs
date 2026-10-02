@@ -44,6 +44,16 @@ namespace cAlgo
                 ResolveProviderPlanId(
                     signalId);
 
+            TradeOpportunityCandidate providerScenario;
+            _tradePlanRegistry.TryGetCandidate(
+                scenarioId,
+                out providerScenario);
+
+            string sourceTimeframe =
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    providerScenario,
+                    ProviderScenarioIdentityRule.CanonicalM5);
+
             DateTime createdUtc =
                 _m5Bars.OpenTimes[closedM5];
 
@@ -68,16 +78,6 @@ namespace cAlgo
                 ResolveProviderSignalStage(
                     direction,
                     canonicalIntent);
-
-            TradeOpportunityCandidate providerScenario;
-            _tradePlanRegistry.TryGetCandidate(
-                scenarioId,
-                out providerScenario);
-
-            string sourceTimeframe =
-                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
-                    providerScenario,
-                    ProviderScenarioIdentityRule.CanonicalM5);
 
             string expiryKey =
                 canonicalIntent == null ||
@@ -224,11 +224,37 @@ namespace cAlgo
         private string ResolveProviderScenarioId(
             string signalId,
             OpportunityLane lane,
-            int direction)
+            int direction,
+            int closedM5)
         {
             if (!string.IsNullOrWhiteSpace(
                     _activeExecutionScenarioId))
-                return _activeExecutionScenarioId;
+                return ProviderScenarioIdentityRule.ResolveScenarioId(
+                    null,
+                    _activeExecutionScenarioId);
+
+            if (_plan != null &&
+                _decision != null)
+            {
+                string reason;
+                TradeOpportunityCandidate selected = null;
+
+                if (ScenarioExecutionPolicyRule.TryResolvePlanScenario(
+                        _tradePlanRegistry.Snapshot(),
+                        _plan,
+                        _decision,
+                        Math.Max(
+                            Symbol.TickSize * 2,
+                            Symbol.PipSize * 0.10),
+                        out selected,
+                        out reason) &&
+                    selected != null)
+                {
+                    return ProviderScenarioIdentityRule.ResolveScenarioId(
+                        selected,
+                        string.Empty);
+                }
+            }
 
             return
                 "CFIP-SC1|" +
