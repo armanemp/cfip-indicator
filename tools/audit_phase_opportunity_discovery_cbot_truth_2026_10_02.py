@@ -22,7 +22,11 @@ def check(name: str, condition: bool):
         errors.append(name)
 
 
-selector = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelector.cs")
+selector = (
+    read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelector.cs") +
+    read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCore.cs") +
+    read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCandidates.cs")
+)
 selection_rule = read("src/CFIP.Indicator/Core/Math/ExecutionZoneSelectionRule.cs")
 candidate = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneSelectionCandidate.cs")
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
