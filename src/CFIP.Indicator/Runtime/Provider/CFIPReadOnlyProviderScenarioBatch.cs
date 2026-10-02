@@ -238,6 +238,15 @@ namespace cAlgo
                     candidate.Entry -
                     candidate.Stop);
 
+            int compositePlanQuality =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        100,
+                        candidate.Quality +
+                        TradeOpportunityQualityRule.CalculateRankBonus(
+                            candidate)));
+
             PlanSnapshot plan =
                 new PlanSnapshot(
                     candidate.Entry,
@@ -259,7 +268,7 @@ namespace cAlgo
                     candidate.EntryDistanceAtr > 0
                         ? candidate.Quality
                         : 0,
-                    candidate.Quality,
+                    compositePlanQuality,
                     0,
                     0,
                     0,
