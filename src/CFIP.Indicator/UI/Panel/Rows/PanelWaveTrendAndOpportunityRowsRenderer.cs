@@ -81,6 +81,16 @@ namespace cAlgo
                         opportunity.Tp1RR.ToString("F2") +
                         "R/" +
                         opportunity.Quality;
+
+                    if (opportunity.IsPrimaryTimeframeSignal)
+                    {
+                        laneSummary +=
+                            opportunity.M1TuningConfirmed
+                                ? " • M1✓"
+                                : opportunity.M5TuningAligned
+                                    ? " • M5✓"
+                                    : " • TUNE";
+                    }
                 }
 
                 AddPanelRow(
