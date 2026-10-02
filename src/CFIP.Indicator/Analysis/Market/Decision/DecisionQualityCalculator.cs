@@ -12,7 +12,8 @@ namespace cAlgo
             int regimeQuality,
             int retestQuality,
             int indicatorConfluenceQuality = 0,
-            int indicatorConflict = 0)
+            int indicatorConflict = 0,
+            int independentEvidenceGroupCount = 0)
         {
             double normalizedIndependentEvidence =
                 Math.Min(
@@ -36,6 +37,10 @@ namespace cAlgo
                         0,
                         100);
 
+            int diversityBonus =
+                IndependentEvidenceDiversityRule.QualityBonus(
+                    independentEvidenceGroupCount);
+
             if (indicatorConfluenceQuality <= 0 &&
                 indicatorConflict <= 0)
             {
@@ -46,7 +51,8 @@ namespace cAlgo
                         normalizedIndependentEvidence * 0.20 +
                         normalizedStructural * 0.15 +
                         NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.10 +
-                        effectiveRetestQuality * 0.10);
+                        effectiveRetestQuality * 0.10 +
+                        diversityBonus);
 
                 return NumericGuards.ClampInt(
                     baselineQuality,
@@ -62,7 +68,8 @@ namespace cAlgo
                     normalizedStructural * 0.15 +
                     NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.10 +
                     effectiveRetestQuality * 0.07 +
-                    NumericGuards.ClampInt(indicatorConfluenceQuality, 0, 100) * 0.10) -
+                    NumericGuards.ClampInt(indicatorConfluenceQuality, 0, 100) * 0.10 +
+                    diversityBonus) -
                 Math.Min(
                     12,
                     Math.Max(
