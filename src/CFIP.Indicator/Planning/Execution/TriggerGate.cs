@@ -81,10 +81,21 @@ namespace cAlgo
                 !M5OnlyConfirmedTrigger)
                 return true;
 
-            return ClosedBarTriggerReady(
-                _m5Bars,
-                closedM5,
-                direction);
+            if (ClosedBarTriggerReady(
+                    _m5Bars,
+                    closedM5,
+                    direction))
+                return true;
+
+            if (AllowStrongTriggerOverride &&
+                AllowStrongM5TriggerOverride &&
+                _decision != null &&
+                _decision.Direction == direction &&
+                _decision.Confidence >= 85 &&
+                _decision.Edge >= 20)
+                return true;
+
+            return false;
         }
 
         private string ExecutionModeText(
