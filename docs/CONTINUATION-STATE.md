@@ -1,3 +1,19 @@
+## CBOT-6M — Concurrent Multi-Scenario Execution — 2026-10-02
+
+Status: **IMPLEMENTATION IN PROGRESS — verification pending.**
+
+Current branch: phase/cbot-6m-concurrent-multiscenario-execution-2026-10-02-v2.
+
+Current execution boundary: Indicator analysis/signals → canonical SignalEnvelope + scenario batch → Device LocalStorage / exact InstanceId → cBot SignalEnvelope preflight → scenario-aware capacity/risk → broker coordinator → broker confirmation → per-scenario reconciliation/protection.
+
+M15 remains the canonical trade-decision/execution reference; M5 remains trigger/tuning/entry precision; M1 remains optional confirmation; H1 remains context/reward and is not auto-executed.
+
+6M preserves ScenarioId, PlanId and idempotency per scenario, supports independent Market/Pending Stop/Pending Limit action materialization, and keeps the existing global session execution cap.
+
+Automated verification is pending on the phase branch; terminal coexistence/reconnect/protection tests remain manual.
+
+Operator after merge: git pull --ff-only.
+
 ## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
 
 Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
