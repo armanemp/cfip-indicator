@@ -129,9 +129,9 @@ require(
 )
 
 require(
-    "CfipDeviceSignalTransport.TryRead(" in (ROOT.parent / "CFIP.cBot" / "CFIPExecutionBot.cs").read_text(encoding="utf-8") and
-    "_market.TryExecute(" in (ROOT.parent / "CFIP.cBot" / "CFIPExecutionBot.cs").read_text(encoding="utf-8") and
-    "_pending.TryExecute(" in (ROOT.parent / "CFIP.cBot" / "CFIPExecutionBot.cs").read_text(encoding="utf-8"),
+    "CfipDeviceSignalTransport.TryRead(" in (ROOT / "src" / "CFIP.cBot" / "CFIPExecutionBot.cs").read_text(encoding="utf-8") and
+    "_market.TryExecute(" in (ROOT / "src" / "CFIP.cBot" / "CFIPExecutionBot.cs").read_text(encoding="utf-8") and
+    "_pending.TryExecute(" in (ROOT / "src" / "CFIP.cBot" / "CFIPExecutionBot.cs").read_text(encoding="utf-8"),
     "M5: cBot signal-to-broker execution handoff is incomplete",
 )
 
