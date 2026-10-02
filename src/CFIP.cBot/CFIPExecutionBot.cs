@@ -11,7 +11,7 @@ namespace CFIP.cBot
 #pragma warning disable CS0612
     [Robot(
         "CFIP Smart Execution Bot",
-        DefaultTimeFrame = "M15",
+        DefaultTimeFrame = "M5",
         TimeZone = TimeZones.UTC,
         AccessRights = AccessRights.None)]
     public sealed class CFIPExecutionBot : Robot
