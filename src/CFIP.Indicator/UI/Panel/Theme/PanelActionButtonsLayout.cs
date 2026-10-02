@@ -65,7 +65,9 @@ namespace cAlgo
                 new Thickness(
                     buttonMargin,
                     buttonMargin,
-                    0,
+                    Math.Max(
+                        0,
+                        buttonGap),
                     buttonMargin);
         }
     }
