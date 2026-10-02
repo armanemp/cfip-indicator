@@ -27,11 +27,12 @@ builder = read("src/CFIP.Indicator/Planning/TradePlan/CanonicalTradePathGeometry
 actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
 preparation = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs")
 gates = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+state = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluationState.cs")
 plan_builder = read("src/CFIP.Indicator/Planning/TradePlan/PlanBuilder.cs")
 plan_inputs = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.cs")
 trace = read("src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs")
 panel = read("src/CFIP.Indicator/UI/Panel/Rows/PanelDecisionRowsRenderer.cs")
-state = read("src/CFIP.Indicator/Indicator/State.cs")
+state_store = read("src/CFIP.Indicator/Indicator/State.cs")
 workflow = read(".github/workflows/source-check.yml")
 
 check(
@@ -46,7 +47,7 @@ check(
 )
 
 check(
-    "canonical builder derives stop from actual execution entry",
+    "canonical builder derives stop and targets from actual execution entry",
     "execution.ActualEntry" in builder and
     "BuildStructuralStop(" in builder and
     "BuildTargetLevels(" in builder and
@@ -57,14 +58,15 @@ check(
 check(
     "canonical builder validates stop risk envelope and target path",
     "StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(" in builder and
-    "reason = "TARGET PATH INVALID"" in builder,
+    'reason = "TARGET PATH INVALID"' in builder,
 )
 
 check(
-    "actionability consumes canonical actual-entry geometry",
+    "actionability uses the prepared canonical path",
+    "TryPrepareTradeActionability(" in actionability and
+    "EvaluatePreparedTradeActionability(" in actionability and
     "TryBuildCanonicalTradePathGeometry(" in preparation and
-    "state.EffectivePreview" in preparation and
-    "TryPrepareTradeActionability(" in actionability,
+    "state.EffectivePreview" in preparation,
 )
 
 check(
@@ -74,22 +76,39 @@ check(
 )
 
 check(
-    "actionability reward calculation uses canonical SL/TP rather than ideal preview",
+    "actionability reward calculation uses canonical SL/TP",
     "state.EffectivePreview.Stop" in preparation and
-    "state.EffectivePreview.Tp1" in preparation,
+    "state.EffectivePreview.Tp1" in preparation and
+    "state.Tp1RR = canonicalPath.Tp1RR" in preparation,
+)
+
+check(
+    "actionability gates remain one final canonical sequence",
+    "if (!state.QualityReady)" in gates and
+    "if (!IsActionabilityTriggerReady(" in gates and
+    "if (state.Tp1RR <" in gates and
+    "return new TradeActionabilityResult(" in gates,
+)
+
+check(
+    "actionability refactor keeps bounded state container and no oversized owner",
+    "class TradeActionabilityEvaluationState" in state and
+    len(actionability) < 20 * 1024 and
+    len(preparation) < 20 * 1024 and
+    len(gates) < 20 * 1024,
 )
 
 check(
     "canonical actionability path keeps bounded live-path caching",
-    "_canonicalTradePathCache" in state and
-    "_canonicalTradePathCacheEntry" in state and
-    "_canonicalTradePathCacheSpread" in state and
+    "_canonicalTradePathCache" in state_store and
+    "_canonicalTradePathCacheEntry" in state_store and
+    "_canonicalTradePathCacheSpread" in state_store and
     "entryTolerance" in builder and
     "spreadTolerance" in builder,
 )
 
 check(
-    "existing plan builder uses actual execution entry",
+    "existing PlanBuilder still derives executable geometry from actual entry",
     "execution.ActualEntry" in plan_inputs and
     "BuildStructuralStop(" in plan_inputs and
     "BuildTargetLevels(" in plan_builder,
@@ -99,11 +118,11 @@ check(
     "trace lifecycle reports actionable state before generic trigger state",
     "if (decision.ActionableNow)" in trace and
     trace.index("if (decision.ActionableNow)") <
-    trace.index('if (!decision.TriggerReady)'),
+    trace.index("if (!decision.TriggerReady)"),
 )
 
 check(
-    "historical trace geometry reuses the canonical actual-entry path",
+    "historical trace geometry reuses canonical actual-entry path",
     "TryBuildCanonicalTradePathGeometry(" in trace and
     '"CANONICAL-ACTIONABILITY"' in trace and
     "canonicalPreview.Entry" in trace and
@@ -113,11 +132,9 @@ check(
 
 check(
     "panel lifecycle reports actionable state before trigger waiting",
-    "_decision.ActionableNow" in panel and
-    panel.index('_decision.ActionableNow
-                                                            ? "TRIGGER  NOT REQUIRED') <
-    panel.index('_decision.TriggerReady
-                                                                ? "TRIGGER  CONFIRMED"'),
+    "TRIGGER  NOT REQUIRED • ACTIONABLE" in panel and
+    panel.index("TRIGGER  NOT REQUIRED • ACTIONABLE") <
+    panel.index("TRIGGER  CONFIRMED"),
 )
 
 check(
