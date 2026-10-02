@@ -38,23 +38,28 @@ namespace cAlgo
                             if (!geometry.Valid)
                                 return null;
 
-                            return new ExecutionIntent
-                            {
-                                Direction = direction,
-                                Policy = policy,
-                                Kind = kind,
-                                RequestedEntry = entry,
-                                Trigger = NormalizePrice(trigger),
-                                ZoneLow = NormalizePrice(zoneLow),
-                                ZoneHigh = NormalizePrice(zoneHigh),
-                                Stop = geometry.Stop,
-                                Target = geometry.Target,
-                                StopPips = geometry.StopPips,
-                                TargetPips = geometry.TargetPips,
-                                Volume = volume,
-                                CreatedM5 = closedM5,
-                                Source = source
-                            };
+                            ExecutionIntent intent =
+                                new ExecutionIntent
+                                {
+                                    Direction = direction,
+                                    Policy = policy,
+                                    Kind = kind,
+                                    RequestedEntry = entry,
+                                    Trigger = NormalizePrice(trigger),
+                                    ZoneLow = NormalizePrice(zoneLow),
+                                    ZoneHigh = NormalizePrice(zoneHigh),
+                                    Stop = geometry.Stop,
+                                    Target = geometry.Target,
+                                    StopPips = geometry.StopPips,
+                                    TargetPips = geometry.TargetPips,
+                                    Volume = volume,
+                                    CreatedM5 = closedM5,
+                                    Source = source
+                                };
+
+                            CaptureProviderExecutionIntent(intent);
+
+                            return intent;
                         }
     }
 }
