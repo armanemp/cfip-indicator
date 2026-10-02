@@ -60,7 +60,7 @@ require(
 for token in (
     "ChartRobots",
     "CbotIdentity.DisplayName",
-    "RobotState.Running",
+    "cbot.State.ToString()",
     "CbotConnectionPanelText",
     "CBOT NOT ATTACHED • ATTACH TO THIS CHART",
     "CBOT CONNECTING • HEARTBEAT PENDING",
