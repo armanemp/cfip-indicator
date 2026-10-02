@@ -470,6 +470,7 @@ namespace CFIP.cBot
                     nowUtc,
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
+                    MaxConcurrentScenarios,
                     out BrokerExecutionReport report,
                     out string executionReason))
             {
