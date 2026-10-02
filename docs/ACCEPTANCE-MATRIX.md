@@ -15,7 +15,7 @@
 | Live management | PASS | PASS | PASS | Required | Required |
 | Risk / suitability | PASS | PASS | PASS | Required | Required |
 | Prediction / telemetry | PASS | PASS | PASS | Required | Required |
-| Alerts / popup / chart / panel | PASS | PASS | PASS | Required | Required |
+| Alerts / panel alert rail / chart / panel | PASS | PASS | PASS | Required | Required |
 
 Static/source parity is not a substitute for live cTrader scenario acceptance.
 
