@@ -8775,7 +8775,7 @@ namespace cAlgo
                 queue.Enqueue(normal1) &&
                 queue.Enqueue(normal2) &&
                 queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "NORMAL|3",
                         "normal-3",
                         false,
@@ -8785,7 +8785,7 @@ namespace cAlgo
                         "",
                         false)) &&
                 !queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "NORMAL|4",
                         "normal-4",
                         false,
@@ -8813,7 +8813,7 @@ namespace cAlgo
 
             Assert(
                 queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "CRITICAL|2",
                         "critical-2",
                         true,
@@ -8829,7 +8829,7 @@ namespace cAlgo
 
             Assert(
                 !queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "EMPTY",
                         "",
                         false,
