@@ -24,6 +24,8 @@ visual_identity = read("src/CFIP.Indicator/UI/Chart/SignalVisualIdentityBuilder.
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 closed = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
+stages = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
+live = read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs")
 lines = read("src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs")
 labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
 label_anchor = read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs")
@@ -127,10 +129,18 @@ require(
 )
 
 require(
-    "ProcessDecisionOwnedWatchReactionAlerts(" in cycle and
-    "RenderCalculationState(" in cycle and
+    "ProcessDecisionOwnedWatchReactionAlerts(" in stages and
+    "RenderCalculationState(" in stages and
     "ProcessQueuedAlertDelivery();" in cycle,
     "M3: calculation cycle must connect analysis, presentation and alert transport",
+)
+
+require(
+    live.index("RefreshLiveDecisionActionability(") <
+    live.index("BuildSignalVisualSnapshot(") <
+    live.index("RenderLatestAlertSignalMarker(") <
+    live.index("RenderPanel();"),
+    "M3: live presentation must consume the refreshed decision before provider/panel state is published",
 )
 
 require(
