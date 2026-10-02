@@ -49,8 +49,8 @@ for token in (
 for token in (
     "CbotExecutionStatePublisher",
     "SubscribeBrokerLifecycleEvents()",
-    "PublishExecutionState("HEARTBEAT"",
-    "PublishExecutionState("SIGNAL OBSERVED"",
+    "PublishExecutionState(\"HEARTBEAT\",",
+    "PublishExecutionState(\"SIGNAL OBSERVED\",",
     "Positions.Opened",
     "Positions.Modified",
     "Positions.Closed",
