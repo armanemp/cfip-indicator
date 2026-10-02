@@ -81,6 +81,35 @@ namespace cAlgo
             double actualEntry =
                 geometry.ActualEntry;
 
+            CanonicalTradePathGeometry canonicalPath;
+            string canonicalPathReason;
+
+            if (!TryBuildCanonicalTradePathGeometry(
+                    closedM5,
+                    direction,
+                    execution,
+                    lane,
+                    out canonicalPath,
+                    out canonicalPathReason))
+            {
+                return TradeActionabilityResult.Blocked(
+                    string.IsNullOrWhiteSpace(canonicalPathReason)
+                        ? "CANONICAL TRADE PATH INVALID"
+                        : canonicalPathReason);
+            }
+
+            // Actionability is evaluated against the exact entry/SL/TP path
+            // that the PlanBuilder and cBot handoff use, not the presentation
+            // preview's ideal-entry geometry.
+            TradeSetupPreview effectivePreview =
+                canonicalPath.Preview;
+
+            double canonicalRisk =
+                canonicalPath.Risk;
+
+            double canonicalTp1RR =
+                canonicalPath.Tp1RR;
+
             bool qualityReady =
                 !RequirePrecisionEntry ||
                 execution.Quality >=
@@ -91,8 +120,8 @@ namespace cAlgo
                 PlanRewardRiskQualityRule.Evaluate(
                     direction,
                     actualEntry,
-                    preview.Stop,
-                    preview.Tp1,
+                    effectivePreview.Stop,
+                    effectivePreview.Tp1,
                     atr,
                     Math.Max(
                         0,
@@ -109,10 +138,10 @@ namespace cAlgo
                     Symbol.PipSize);
 
             double risk =
-                rewardRisk.Risk;
+                canonicalRisk;
 
             double tp1RR =
-                rewardRisk.NominalRR;
+                canonicalTp1RR;
 
             DivergenceResult divergence =
                 _m5Frame == null
