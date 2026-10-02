@@ -137,3 +137,4 @@ jobs:
       - run: python tools/audit_phase_m4_time_history.py
       - run: python tools/audit_phase_m5_panel_live.py
       - run: python tools/audit_phase_ci21_primary_signal_visibility.py
+      - run: python tools/audit_phase_cbot_p7r_attachment_alert_visibility.py
