@@ -3075,6 +3075,7 @@ required_phase_9_2 = (
     ROOT / "Analysis" / "Market" / "WaveTrendEngine.cs",
     ROOT / "Analysis" / "Market" / "WaveTrendEvidenceAnalyzer.cs",
     ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs",
+    ROOT / "Analysis" / "Market" / "ParallelOpportunityCandidateBuilder.cs",
     ROOT / "UI" / "Chart" / "ParallelOpportunityRenderer.cs",
 )
 for required_path in required_phase_9_2:
@@ -3222,7 +3223,17 @@ if "_decision.ActionableNow" in plan_eligibility.read_text(encoding="utf-8"):
     raise SystemExit("Plan creation must not be blocked by live ActionableNow state")
 
 registry_code = plan_registry.read_text(encoding="utf-8")
-parallel_code = parallel_builder.read_text(encoding="utf-8")
+parallel_candidate_builder = (
+    ROOT / "Analysis" / "Market" / "ParallelOpportunityCandidateBuilder.cs"
+)
+if not parallel_candidate_builder.exists():
+    raise SystemExit(
+        "Parallel opportunity candidate builder module is missing"
+    )
+parallel_code = (
+    parallel_builder.read_text(encoding="utf-8") +
+    parallel_candidate_builder.read_text(encoding="utf-8")
+)
 for token in ("Dictionary<string, TradeOpportunityCandidate>", "Upsert(", "Snapshot()"):
     if token not in registry_code:
         raise SystemExit(f"Multi-plan registry contract missing: {token}")
