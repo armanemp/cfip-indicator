@@ -175,6 +175,49 @@ namespace cAlgo
 
                         }
 
+        private bool IsImportantPopupAlertKey(
+                            string key,
+                            bool critical)
+                        {
+                            if (critical)
+                                return true;
+
+                            if (string.IsNullOrWhiteSpace(key))
+                                return false;
+
+                            string[] prefixes =
+                            {
+                                "ACTION|",
+                                "HIGH|",
+                                "SMART|",
+                                "EARLY|",
+                                "REACTION|",
+                                "REVERSAL|",
+                                "TP",
+                                "SL|",
+                                "INVALID",
+                                "PROTECTION",
+                                "POSITION-OPEN|",
+                                "PENDING-",
+                                "FILL-MISMATCH|",
+                                "STRUCT-INVALID",
+                                "EXHAUSTION-CLOSE|",
+                                "OUTCOME-TIMEOUT|",
+                                "DAILYLOSS|",
+                                "RESTRICT|",
+                            };
+
+                            foreach (string prefix in prefixes)
+                            {
+                                if (key.StartsWith(
+                                        prefix,
+                                        StringComparison.OrdinalIgnoreCase))
+                                    return true;
+                            }
+
+                            return false;
+                        }
+
         private bool IsVisualSignalAlertKey(
                             string key)
                         {
