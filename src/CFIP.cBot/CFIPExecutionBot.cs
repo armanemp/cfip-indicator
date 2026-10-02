@@ -108,6 +108,7 @@ namespace CFIP.cBot
                         snapshot,
                         broker,
                         ContractVersion.Current,
+                        _indicator.ProviderRevision,
                         Server.TimeInUtc);
 
                 LogStateIfChanged(result);
