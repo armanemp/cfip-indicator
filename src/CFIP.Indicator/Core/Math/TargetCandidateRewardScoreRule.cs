@@ -23,9 +23,10 @@ namespace cAlgo
             double liquidityBonus,
             double zoneBonus)
         {
-            if (!IsFiniteValue(baseScore) ||
-                !IsPositiveFinite(rr) ||
-                !IsNonNegativeFinite(requiredRr))
+            if (!NumericGuards.IsFiniteValue(baseScore) ||
+                !NumericGuards.IsFinitePositive(rr) ||
+                !NumericGuards.IsFiniteValue(requiredRr) ||
+                requiredRr < 0)
                 return double.MinValue;
 
             double rewardExpansionRr =
@@ -98,25 +99,5 @@ namespace cAlgo
             return score;
         }
 
-        private static bool IsFiniteValue(double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value);
-        }
-
-        private static bool IsPositiveFinite(double value)
-        {
-            return
-                IsFiniteValue(value) &&
-                value > 0;
-        }
-
-        private static bool IsNonNegativeFinite(double value)
-        {
-            return
-                IsFinite(value) &&
-                value >= 0;
-        }
     }
 }
