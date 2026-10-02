@@ -1,3 +1,7 @@
+# Permanent rule
+
+Always edit the canonical production owner directly. Do not add hotfix/patch files, duplicate executors, compatibility wrappers or alternate calculation/identity paths when the existing owner can be corrected. Remove obsolete extracted owners in the same phase and update every audit to the surviving owner.
+
 # CFIP Indicator — Editing Guide
 
 Edit the smallest authoritative module that owns the behavior.
