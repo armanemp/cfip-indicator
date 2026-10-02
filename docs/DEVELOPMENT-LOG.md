@@ -1,3 +1,21 @@
+## Build Warning / Panel Height Integrity — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Corrections:
+- initialized BrokerExecutionReport.CommandIdempotencyKey and ManagementCommand.ExecutionLabel explicitly;
+- made management JSON deserializers model nullable parsed arrays explicitly while preserving failure semantics;
+- removed dead _lastPendingSignalM5 state;
+- removed the panel geometry baseline that depended on Chart.Height;
+- made the panel maximum-height resolver configuration-owned;
+- set the overlay Indicator to AutoRescale = false;
+- retained the transparent Provider Heartbeat solely as a read-only provider signal while preventing it from affecting chart scale;
+- added tools/audit_phase_build_warning_panel_height.py and wired it into Source/Architecture checks.
+
+Root cause confirmed:
+the Provider Heartbeat output writes a provider revision rather than a price value, while cTrader overlay Indicators default to automatic chart rescaling. The panel renderer also retained a Chart.Height feedback input. Both paths are now removed from chart geometry/scaling authority.
+
+Manual cTrader check remains required for chart plot height, panel attachment/reload, hide/show and provider-heartbeat scale behavior.
 ## CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to main via PR #196 as 352e6229adcff8a4ebb6ee6e5c71a0e0397dc70b.**
