@@ -85,7 +85,7 @@ check(
     "ScenarioExecutionPolicyRule.Evaluate(" in builder and
     "candidate.ExecutionPolicyAllowed =" in builder and
     "candidate.ExecutionPolicyReason =" in builder and
-    "candidate.ExecutionPolicyReason" in timeframes
+    "candidate.ExecutionPolicyReason" in builder
 )
 
 check(
