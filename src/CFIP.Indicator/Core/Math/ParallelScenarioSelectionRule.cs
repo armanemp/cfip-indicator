@@ -228,6 +228,20 @@ namespace cAlgo
             if (quality != 0)
                 return quality;
 
+            int primaryLocation =
+                right.PrimaryLocationQuality.CompareTo(
+                    left.PrimaryLocationQuality);
+
+            if (primaryLocation != 0)
+                return primaryLocation;
+
+            int confluence =
+                right.PrimaryLocationConfluence.CompareTo(
+                    left.PrimaryLocationConfluence);
+
+            if (confluence != 0)
+                return confluence;
+
             int location =
                 right.LocationConfluenceScore.CompareTo(
                     left.LocationConfluenceScore);

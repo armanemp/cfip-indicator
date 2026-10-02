@@ -102,6 +102,7 @@
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskPercentPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ZoneConfluenceRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/LocationEvidenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OrderBlockRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OrderBlockLifecycleRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OrderBlockQualityRule.cs" />

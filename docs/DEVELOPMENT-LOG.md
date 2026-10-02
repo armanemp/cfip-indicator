@@ -3041,3 +3041,14 @@ The Indicator chart-panel AUTO TRADE / AUTO ORDERS quick-control row was removed
 No public parameter or trading threshold changed. Target-terminal timing, panel responsiveness/spatial separation and empirical signal-quality effects remain manual acceptance boundaries.
 
 Phase record: `docs/PHASE-MTF-P1-PRIMARY-M15-H1-PANEL.md`.
+
+
+## MTF-P2 — Primary M15/H1 Location Evidence: OB/FVG Provenance — 2026-10-02
+
+The primary M15/H1 signal layer now carries the source timeframe's actual FVG and Order Block quality plus explicit OB+FVG confluence. Existing LocationEvidenceRule remains the sole scoring owner, so no duplicate location score or hidden threshold was introduced.
+
+Primary source location quality/confluence is used for deterministic presentation priority. The panel exposes the evidence for each primary candidate so M15/H1 source levels are auditable instead of being represented only by a generic scenario quality value.
+
+No public parameter or trading threshold changed. Non-M5 execution remains observe-only for these independent primary candidates, and target-terminal/empirical validation remains required.
+
+Phase record: `docs/PHASE-MTF-P2-PRIMARY-LOCATION-OBFVG.md`.

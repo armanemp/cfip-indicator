@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     public partial class CFIPIndicator
@@ -16,6 +18,22 @@ namespace cAlgo
                 : LocationEvidenceRule.Evaluate(frame.FvgBear, frame.FvgBearQuality, frame.ObBear, frame.ObBearQuality, frame.FvgObBearConfluence);
 
             candidate.LocationConfluenceScore = location.Score;
+            candidate.SourceFvgQuality =
+                direction == 1
+                    ? Math.Max(0, frame.FvgBullQuality)
+                    : Math.Max(0, frame.FvgBearQuality);
+            candidate.SourceOrderBlockQuality =
+                direction == 1
+                    ? Math.Max(0, frame.ObBullQuality)
+                    : Math.Max(0, frame.ObBearQuality);
+            candidate.SourceFvgObConfluence =
+                direction == 1
+                    ? frame.FvgObBullConfluence
+                    : frame.FvgObBearConfluence;
+            candidate.PrimaryLocationConfluence =
+                location.Confluence;
+            candidate.PrimaryLocationQuality =
+                location.Score;
             candidate.WaveTrendQuality = frame.WaveTrendQuality;
             candidate.IndicatorIndependentEvidenceGroupCount = frame.IndicatorIndependentEvidenceGroupCount;
         }
