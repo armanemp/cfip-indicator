@@ -257,3 +257,19 @@ The repository now contains the active target project boundary:
 During migration, existing broker mutation inside the Indicator is temporary compatibility only. Each migrated owner must be replaced and parity-verified before its Indicator implementation is physically removed. The cBot may reference the installed CFIP custom Indicator only through cTrader's supported custom-indicator reference mechanism; it must not access Indicator private state, scrape chart objects, use reflection or introduce a second decision engine.
 
 The active migration schedule is CBOT-P0→P8 and runs in parallel with M2 onward. `docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md` is the exact current execution extraction inventory.
+
+
+## Canonical Indicator ↔ cBot contract ownership — 2026-10-02
+
+`src/CFIP.Contracts` is the single cross-project data boundary. The existing Indicator-side `Plan` and `ExecutionIntent` types are internal production models and are not alternate cross-project contracts.
+
+Mapping for the upcoming provider migration:
+
+- `cAlgo.Plan` → `CFIP.Contracts.PlanSnapshot`
+- `cAlgo.ExecutionIntent` → `CFIP.Contracts.ExecutionIntent`
+- signal trace / scenario / plan lineage → `CFIP.Contracts.ContractIdentity`
+- lifecycle transitions → `CFIP.Contracts.LifecycleEvent`
+- broker-confirmed execution facts → `CFIP.Contracts.BrokerExecutionReport`
+- requested live management actions → `CFIP.Contracts.ManagementCommand`
+
+P2 must expose these canonical Contracts read-only from the Indicator. cBot must never reconstruct them from chart objects or private Indicator state. After P2/P3 parity, the temporary internal models can be reduced or removed as their callers are migrated.
