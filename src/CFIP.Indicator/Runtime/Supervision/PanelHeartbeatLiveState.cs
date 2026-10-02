@@ -26,12 +26,12 @@ namespace cAlgo
             int width = PanelContentWidth();
 
             double liveRR =
-                _plan.Risk > 0
-                    ? (_plan.Direction == 1
-                        ? _lastMarket - _plan.Entry
-                        : _plan.Entry - _lastMarket) /
-                      _plan.Risk
-                    : 0;
+                RiskRewardMathRule.DirectionalProgressRR(
+                    _plan.Direction,
+                    _plan.Entry,
+                    _lastMarket,
+                    _plan.Risk,
+                    Symbol.PipSize);
 
             if (_panelLiveRow >= 0)
             {
