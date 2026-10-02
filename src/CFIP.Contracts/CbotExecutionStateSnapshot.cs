@@ -36,7 +36,6 @@ namespace CFIP.Contracts
         public bool IndicatorAutomaticOrdersEnabled { get; init; }
         public bool EffectiveAutoTradingEnabled { get; init; }
         public bool EffectiveAutomaticOrdersEnabled { get; init; }
-    {
         public string LifecycleState { get; init; } = "UNKNOWN";
         public string ProtectionState { get; init; } = "UNKNOWN";
         public bool RecoveryRequired { get; init; }
