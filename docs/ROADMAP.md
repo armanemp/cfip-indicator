@@ -17,7 +17,7 @@ Phase record: `docs/PHASE-BUILD-WARNING-PANEL-HEIGHT-INTEGRITY-2026-10-02.md`.
 
 ## CI-20B — Protection / cBot / Signal Hardening — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci20b-protection-cbot-signal-hardening-2026-10-02`.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #204.**
 
 Scope:
 - consolidate live BE/SL/trailing semantics under one canonical pure protection rule;
@@ -31,7 +31,18 @@ No public confidence, RR or strategy threshold is lowered by this phase.
 
 Phase record: `docs/PHASE-CI-20B-PROTECTION-CBOT-SIGNAL-HARDENING-2026-10-02.md`.
 
-Next: verify CI20B on the branch, then continue cBot lifecycle/recovery completion and protection/target progression migration.
+Verification:
+- Source / Architecture #3141: **PASS**;
+- Runtime Acceptance Contracts #2950: **PASS**;
+- cTrader Compile/Build #3134: **PASS**;
+- dedicated CI20B protection/cBot/signal audit: **PASS**;
+- accumulated audits: **PASS**.
+
+During verification, pre-existing ownership-sensitive audits were updated to the canonical owners introduced by this phase; no production compatibility subsystem was added.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+Next: continue cBot lifecycle/recovery completion and broker-owned protection/target progression migration.
 
 ## CI-20 — Panel / cBot / Analysis Engine Coherence — 2026-10-02
 
