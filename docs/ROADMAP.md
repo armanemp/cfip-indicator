@@ -1631,3 +1631,198 @@ No other roadmap, prompt, continuation note or planning document may override th
 Do not start advanced intelligence, parameter tuning, new indicators, real-account automatic execution or a permanent dual Indicator/cBot executor before the relevant gates above are completed.
 
 Once M42 is accepted, the project leaves the remediation/certification track and enters controlled production observation/calibration.
+
+
+---
+
+# 19. Historical baseline absorbed into this roadmap
+
+این بخش فقط برای حفظ تداوم است. فازهای historical زیر «باز» نیستند مگر M1 خلافشان را ثابت کند.
+
+## Foundation already established
+- Canonical source/architecture boundary
+- Modular indicator/analysis decomposition
+- Decision and planning separation
+- Risk/sizing separation
+- Automatic market execution decomposition
+- Aggressive execution decomposition
+- Pending Stop/Limit decomposition
+- Broker protection ownership work
+- Panel decomposition
+- Regime-aware intelligence
+- Runtime fault containment
+- staged startup foundation
+- deterministic decision/planning/execution/runtime contracts
+- OSS adapter/research separation
+- numerical benchmark foundation
+- scenario identity and multi-scenario observation semantics
+
+## Previously completed review/correction families
+- runtime fault containment
+- closed-bar Reaction semantics
+- CHoCH structural semantics
+- daily loss foundation
+- EOD boundary foundation
+- asynchronous news retrieval
+- calibration-key equality
+- FVG/OB direction-aware obstacle scanning
+- aggressive RR guard
+- existing-stop health checks
+- fill acceptance direction
+- HTF absolute strength
+- bounded Skender computation/cache work
+- memory account scoping
+- execution/presentation state decomposition
+
+## Current inherited gate
+Target-terminal validation remains the final evidence boundary for current repository behavior until M39/M40 closes it.
+
+The historical work is not reimplemented merely because its old phase number disappears from the current roadmap. M1 can reopen a historical behavior only if code/tests/runtime evidence prove regression or missing coverage.
+
+---
+
+# 20. Mapping of the old planning vocabulary into the new master roadmap
+
+این نگاشت فقط برای اثبات پوشش کامل است؛ برای اجرای آینده باید فقط M-phaseهای همین فایل استفاده شوند.
+
+| Old group | Absorbed into |
+|---|---|
+| P0 | M0, M1 |
+| P1 / CI-15 | M8, M9 |
+| P2 / CI-16 Replay | M11, M12 |
+| P3 / CI-17 Target Terminal | M39 |
+| P4 / CI-FINAL | M40 |
+| P5 / H4-H6 | M3, M7, M2 |
+| P6 / Prompt 9 I2-I7 | M5, M1, M7 |
+| P7 / Prompt 10 J1-J4 | M7, M5, M2 |
+| P8 / Prompt 11 K1-K4 | M21, M2, M7 |
+| P9 independent code review | M1 |
+| P10 structural/testability | M10, M27, M28 |
+| P11 final integration | M40, M41 |
+| P12 cBot separation | M29-M38 |
+| S1 Replay/Walk-forward | M11-M13 |
+| S2 calibrated confidence | M16 |
+| S3 ablation | M14 |
+| S4 parameter reduction | M15 |
+| S5 MAE/MFE exits | M19 |
+| S6 time/session | M13, M20 |
+| S7 dynamic risk | M21 |
+| S8 statistical cut-off | M22 |
+| S9 spread/liquidity guard | M20 |
+| S10 news guard | M20 |
+| S11 cBot/server execution | M29-M38 |
+| S12 watchdog/external alerts | M6, M22 |
+| S13 data quality | M13 |
+| S14 swing importance | M24 |
+| S15 anchored VWAP/volume | M25 |
+| S16 meta-labeling | M26 |
+| S17 property/mutation testing | M27 |
+| S18 why-no-trade | M23 |
+| I1-I9 | M1, M3, M4, M5, M28 |
+| J1-J4 | M5, M7, M2 |
+| K1-K4 | M2, M7, M21 |
+| G1 remainder | M8, M9 |
+
+No item above is allowed to create a second roadmap or an alternate implementation order.
+
+---
+
+# 21. Canonical known-risk inventory
+
+M1 must explicitly scan and disposition at least these risk families:
+
+### Analysis
+- evidence double counting
+- structure/MSS/CHoCH correlation
+- closed/open candle contamination
+- MTF source contamination
+- Range center/edge behavior
+- OB/FVG mitigation and direction
+- WaveTrend OS/OB validity
+- divergence/swing equality
+- liquidity false positives
+- hidden threshold changes
+
+### Planning
+- Entry/SL/TP direction
+- reward-path obstacles
+- target ladder ordering
+- RR after normalization
+- expiry
+- simultaneous scenarios
+- source timeframe attribution
+
+### Execution
+- market/aggressive distinction
+- pending Stop/Limit distinction
+- slippage
+- final volume
+- broker rejection
+- delayed confirmation
+- duplicate attempt
+- retry storm
+- capacity
+- account permission
+- protection mutation
+
+### Lifecycle
+- opened/modified/closed events
+- pending events
+- partial close
+- BE
+- trail
+- TP progression
+- recovery
+- orphan adoption
+- restart/reconnect
+
+### Presentation
+- panel stale content
+- panel overflow
+- panel sizing
+- label readability
+- timeframe labels
+- line length
+- line extension
+- marker identity
+- alert/sound synchronization
+- stale/blocked marks
+
+### Persistence
+- history location
+- write/read failure
+- duplicate rows
+- account scope
+- session/day boundary
+- 90-day retention
+- recovery after restart
+
+---
+
+# 22. Final cleanup rule for obsolete planning material
+
+Once M41 is accepted:
+
+1. This ROADMAP.md remains.
+2. Evidence produced by actual acceptance/testing remains only when it has operational value.
+3. Historical planning prompts, duplicate roadmaps and superseded execution plans are removable after dependency verification.
+4. No source code, test or CI workflow may depend on a planning-only document.
+5. No deleted document may be the hidden source of implementation order.
+6. Git history remains the archival record.
+7. The repository must contain exactly one active development roadmap: this file.
+
+---
+
+# 23. No-silent-scope-expansion rule
+
+During M0-M42, a newly discovered issue is handled as follows:
+
+- Critical safety defect: can interrupt the current phase and becomes part of the current phase only if necessary to leave the system safe.
+- Direct regression blocking the current acceptance: current phase expands only enough to restore the invariant.
+- Non-critical defect: register it here with owner and target phase; do not silently change scope.
+- New feature idea: postponed until M42 unless required for an existing acceptance contract.
+- New indicator: forbidden before M14.
+- Threshold tuning: forbidden before OOS evidence.
+- Live auto-execution: forbidden before M42.
+
+This prevents the roadmap from becoming an endlessly expanding patch queue.
