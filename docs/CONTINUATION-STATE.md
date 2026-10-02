@@ -1,3 +1,32 @@
+## 2026-10-03 — Canonical trade-path ownership closeout
+
+Status: implementation complete on `phase/canonical-trade-path-geometry-2026-10-03`; repository verification pending.
+
+Deep audit found that the first canonical trade-path implementation fixed live Actionability but still left PlanBuilder independently rebuilding the same SL/TP ladder. That was an architectural drift risk.
+
+Correction completed:
+- `CanonicalTradePathGeometry` is now the single executable Entry/SL/TP/RR geometry snapshot;
+- canonical target provenance and HTF target count are carried with that snapshot;
+- `PlanInputPreparation` consumes the canonical path;
+- `PlanBuilder` no longer rebuilds structural stop, target levels, target selection or target metadata;
+- plan materialization receives the exact canonical Entry/SL/TP1..TP4 values;
+- actionability and Plan therefore consume the same actual-entry geometry;
+- bounded Entry/Spread cache reuse remains in the live path;
+- no public quality/RR/risk threshold was lowered.
+
+Full-chain audit:
+Pre-analysis -> M15 decision -> M5 tuning/zone -> M1 optional -> Entry geometry -> Structural SL -> TP1..TP4 -> Actionability -> Plan -> SignalEnvelope/Scenario -> cBot preflight -> Broker -> Protection -> Outcome/History.
+
+Canonical timeframes:
+M15 = decision/execution reference; M5 = trigger/tuning/entry precision; M1 = optional confirmation; H1+ = context/reward.
+
+Verification still required:
+Source/Architecture, Runtime Acceptance, cTrader Compile/Build and target-terminal exact geometry/handoff validation.
+
+Operator action after verified merge: `git pull --ff-only` on local `main`.
+
+---
+
 ## 2026-10-03 — Canonical trade-path geometry
 
 Deep audit found a live-path mismatch: presentation SetupPreview could be based on IdealEntry while live actionability evaluated current ActualEntry against the preview's Stop/TP1. Plan creation, however, already uses ActualEntry when building its structural stop and target ladder.
