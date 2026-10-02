@@ -50,7 +50,7 @@ namespace cAlgo
             else if (candidate.Tp1RR >= 2.0)
                 bonus += 2;
 
-            if (IsFiniteNonNegative(candidate.EntryDistanceAtr))
+            if (IsFiniteNonNegativeQuality(candidate.EntryDistanceAtr))
             {
                 if (candidate.EntryDistanceAtr <= 0.50)
                     bonus += 4;
@@ -60,11 +60,11 @@ namespace cAlgo
                     bonus -= 4;
             }
 
-            if (!IsFinitePositive(candidate.Risk))
+            if (!IsFinitePositiveQuality(candidate.Risk))
                 bonus -= 8;
 
-            if (!IsFinitePositive(candidate.Stop) ||
-                !IsFinitePositive(candidate.Tp1))
+            if (!IsFinitePositiveQuality(candidate.Stop) ||
+                !IsFinitePositiveQuality(candidate.Tp1))
                 bonus -= 8;
 
             return Math.Max(
@@ -74,7 +74,7 @@ namespace cAlgo
                     bonus));
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveQuality(double value)
         {
             return
                 !double.IsNaN(value) &&
@@ -82,7 +82,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsFiniteNonNegativeQuality(double value)
         {
             return
                 !double.IsNaN(value) &&
