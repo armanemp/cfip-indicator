@@ -26,11 +26,11 @@ namespace cAlgo
             if (!_decision.EntryAllowed)
                 return "SIGNAL  •  " + direction + "  •  BLOCKED";
 
-            if (!_decision.TriggerReady)
-                return "SIGNAL  •  " + direction + "  •  WATCH";
-
             if (_decision.ActionableNow)
                 return "SIGNAL  •  " + direction + "  •  ACTIONABLE";
+
+            if (!_decision.TriggerReady)
+                return "SIGNAL  •  " + direction + "  •  WATCH";
 
             return "SIGNAL  •  " + direction + "  •  CONFIRMED";
         }
