@@ -242,6 +242,66 @@ namespace cAlgo
                 Math.Max(0, minimumRR));
         }
 
+        public static double NominalRRFromDistance(
+            double rewardDistance,
+            double risk,
+            double riskFloor)
+        {
+            if (!IsPositiveFinite(rewardDistance) ||
+                !IsPositiveFinite(risk))
+                return 0;
+
+            double normalizedRisk =
+                Math.Max(
+                    DistanceFloor,
+                    IsFiniteNonNegative(riskFloor)
+                        ? riskFloor
+                        : 0);
+
+            return
+                rewardDistance /
+                Math.Max(
+                    normalizedRisk,
+                    risk);
+        }
+
+        public static double DirectionalProgressRR(
+            int direction,
+            double entry,
+            double market,
+            double risk,
+            double riskFloor)
+        {
+            if ((direction != 1 && direction != -1) ||
+                !IsPositiveFinite(entry) ||
+                !IsPositiveFinite(market) ||
+                !IsPositiveFinite(risk))
+                return 0;
+
+            double reward =
+                direction == 1
+                    ? market - entry
+                    : entry - market;
+
+            if (reward <= 0 ||
+                double.IsNaN(reward) ||
+                double.IsInfinity(reward))
+                return reward == 0 ? 0 : -Math.Abs(reward) /
+                    Math.Max(
+                        DistanceFloor,
+                        Math.Max(
+                            risk,
+                            IsFiniteNonNegative(riskFloor)
+                                ? riskFloor
+                                : 0));
+
+            return
+                NominalRRFromDistance(
+                    reward,
+                    risk,
+                    riskFloor);
+        }
+
         public static double TargetFromRR(
             int direction,
             double entry,
