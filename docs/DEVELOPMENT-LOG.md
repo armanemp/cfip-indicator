@@ -3317,5 +3317,5 @@ Implemented on phase/m4-time-session-history-persistence-2026-10-02.
 - The M4 audit explicitly rechecks the whole analysis -> signal -> plan -> presentation -> provider -> cBot -> broker lifecycle -> outcome/history chain.
 
 Verification status:
-- Required repository gates are running on the M4 implementation head.
+- Final M4 head `2f8b447f70d7327232dfa5f118d00520017cef99` passed Source / Architecture, Runtime Acceptance Contracts and cTrader Compile/Build.
 - Target-terminal verification remains required for exact broker session-time behavior, restart-mid-day persistence, History folder/readback and EOD/cBot reconnect behavior.
