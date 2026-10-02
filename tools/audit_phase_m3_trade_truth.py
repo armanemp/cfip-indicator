@@ -1,0 +1,164 @@
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def read(relative):
+    return (ROOT / relative).read_text(encoding="utf-8")
+
+
+def require(condition, message):
+    if not condition:
+        raise SystemExit(message)
+
+
+contracts = read("src/CFIP.Contracts/AlertEnvelope.cs")
+delivery = read("src/CFIP.Indicator/Core/Runtime/AlertDelivery.cs")
+queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
+alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
+processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
+snapshot = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs")
+snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
+watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
+closed = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
+cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
+lines = read("src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs")
+labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
+alert_renderer = read("src/CFIP.Indicator/UI/Chart/AlertSignalRenderer.cs")
+provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderRefresh.cs")
+cbot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
+workflow = read(".github/workflows/source-check.yml")
+
+require(
+    "public sealed record AlertEnvelope(" in contracts and
+    "ContractIdentity Identity" in contracts and
+    "SignalStage Stage" in contracts and
+    "VisualMarkAllowed" in contracts,
+    "M3: canonical immutable AlertEnvelope contract is incomplete",
+)
+
+require(
+    "AlertEnvelope envelope" in delivery and
+    "public AlertEnvelope Envelope" in delivery and
+    "AlertEnvelope envelope" in delivery,
+    "M3: AlertDelivery must carry the canonical envelope",
+)
+
+require(
+    "BuildCanonicalAlertEnvelope(" in alerts and
+    "new AlertDelivery(" in alerts and
+    "envelope," in alerts,
+    "M3: AlertEngine does not enqueue the canonical alert envelope",
+)
+
+require(
+    "Notifications.PlaySound" not in alerts and
+    "ProcessQueuedAlertDelivery();" in cycle,
+    "M3: sound must stay transport-owned by the queued delivery processor",
+)
+
+require(
+    "bool blockedCandidateAlert" in alerts and
+    "EnableSoundAlerts &&" in alerts and
+    "!blockedCandidateAlert" in alerts and
+    "!blockedCandidate &&" in alerts,
+    "M3: blocked candidate alerts must not create audible/visual signal side effects",
+)
+
+require(
+    "next.ShowPopup" in processor and
+    "next.PlaySound" in processor and
+    "next.Message" in processor,
+    "M3: popup and sound must consume the same queued event",
+)
+
+require(
+    "public string SignalId;" in snapshot and
+    "public string ScenarioId;" in snapshot and
+    "public string PlanId;" in snapshot and
+    "public string SourceTimeframe;" in snapshot and
+    "public long Revision;" in snapshot and
+    "PopulateCanonicalVisualIdentity(" in snapshot_builder,
+    "M3: visual snapshot is missing canonical trade identity",
+)
+
+require(
+    "ResolveProviderSignalId(" in alerts and
+    "ResolveProviderScenarioId(" in alerts and
+    "ResolveProviderPlanId(" in alerts and
+    "ProviderScenarioIdentityRule.ResolveSourceTimeframe(" in alerts,
+    "M3: alert identity must reuse the canonical provider identity resolvers",
+)
+
+require(
+    "snapshot.DecisionEntryAllowed" in watch_renderer and
+    "!snapshot.PendingOrder" in watch_renderer and
+    "!snapshot.LivePosition" in watch_renderer,
+    "M3: blocked/pending/live states must not draw directional watch marks",
+)
+
+require(
+    "BuildDecision(" in closed and
+    "BuildEarlyPrediction(" in closed and
+    "TryEnsureAutomaticPlan(" in closed and
+    "ProcessDecisionAlerts(" in closed,
+    "M3: closed-bar decision chain is missing a canonical stage",
+)
+
+require(
+    closed.index("BuildDecision(") <
+    closed.index("BuildEarlyPrediction(") <
+    closed.index("TryEnsureAutomaticPlan(") <
+    closed.index("ProcessDecisionAlerts("),
+    "M3: decision -> prediction -> plan -> alert ordering is broken",
+)
+
+require(
+    "ProcessDecisionOwnedWatchReactionAlerts(" in cycle and
+    "RenderCalculationState(" in cycle and
+    "ProcessQueuedAlertDelivery();" in cycle,
+    "M3: calculation cycle must connect analysis, presentation and alert transport",
+)
+
+require(
+    "private const int CompactPlanLineLengthBars = 40;" in lines and
+    "return LineStyle.Solid;" in lines and
+    "PlanLinePresentationRule.ResolveThickness(" in lines and
+    "ExtendToInfinity = false;" in lines,
+    "M3: signal-line geometry contract regressed",
+)
+
+require(
+    "private string PlanTimeframeTag()" in labels and
+    "ResolveCanonicalPlanSourceTimeframe()" in labels and
+    "ResolveCanonicalPlanSourceTimeframe()" in labels,
+    "M3: label source-timeframe resolver missing",
+)
+
+require(
+    "return "( + "
+                ResolveCanonicalPlanSourceTimeframe()" in labels,
+    "M3: main plan label still needs real source timeframe",
+)
+
+require(
+    "RenderLatestAlertSignalMarker(" in alert_renderer and
+    "Chart.DrawIcon(" not in alert_renderer,
+    "M3: legacy alert mirror must not create a duplicate chart marker",
+)
+
+require(
+    "ContractIdentity identity" in provider and
+    "new SignalEnvelope(" in provider and
+    "LatestSignalEnvelope" in cbot,
+    "M3: Indicator -> provider -> cBot identity chain is incomplete",
+)
+
+require(
+    "audit_phase_m3_trade_truth.py" in workflow,
+    "M3: phase audit is not wired into Source/Architecture CI",
+)
+
+print("=" * 72)
+print("M3 Single Trade Truth / Alert-Chart Coherence audit: PASS")
+print("=" * 72)
