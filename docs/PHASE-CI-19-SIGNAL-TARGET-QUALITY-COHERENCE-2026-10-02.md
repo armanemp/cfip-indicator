@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTATION COMPLETE — verification pending.
+VERIFIED COMPLETE — repository gates passed on final verified head `a3654a02ea651b8f4b3ff8cfd53406d49ed3e946`; target-terminal and empirical outcome validation remain manual.
 
 ## Root causes addressed
 
