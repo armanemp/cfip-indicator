@@ -1,10 +1,9 @@
 using System;
 using cAlgo.API;
 using CFIP.Contracts;
-using cAlgo;
-using CFIP.cBot.Shadow;
-using CFIP.cBot.Execution;
 using CFIP.cBot.Binding;
+using CFIP.cBot.Execution;
+using CFIP.cBot.Shadow;
 
 namespace CFIP.cBot
 {
@@ -28,158 +27,201 @@ namespace CFIP.cBot
             DefaultValue = true)]
         public bool UseMarketRange { get; set; }
 
-        private CFIPIndicator _indicator;
+        [Parameter(
+            "Provider Stale After Seconds",
+            Group = "Safety",
+            DefaultValue = 15,
+            MinValue = 1,
+            MaxValue = 60)]
+        public int ProviderStaleAfterSeconds { get; set; }
 
         private readonly MarketExecutionCoordinator _market =
             new MarketExecutionCoordinator();
+
         private readonly ShadowHostCoordinator _shadow =
             new ShadowHostCoordinator();
 
         private ShadowHostState _state =
             ShadowHostState.Waiting;
+
         private long _lastLoggedRevision = -1;
+
         private string _lastLoggedReason = "";
+
         private long _tickCount;
+
         private DateTime _startedUtc;
+
         private DateTime _nextIndicatorBindingCheckUtc =
             DateTime.MinValue;
+
+        private DateTime _nextSignalReloadUtc =
+            DateTime.MinValue;
+
         private string _boundIndicatorInstanceId = "";
-        private string _boundIndicatorFingerprint = "";
-        private string _boundManagedExecutionLabel = "CFIP-SMART";
+
+        private string _boundManagedExecutionLabel =
+            "CFIP-SMART";
+
         private string _indicatorBindingReason =
             "NOT BOUND";
 
         protected override void OnStart()
         {
-            _startedUtc = Server.TimeInUtc;
+            _startedUtc =
+                Server.TimeInUtc;
+
             _tickCount = 0;
 
             Print(
-                "CFIP cBot START | state={0} | marketExecution={1} | " +
-                "shadow host=ACTIVE | contractVersion={2}",
+                "CFIP Execution cBot START | state={0} | " +
+                "marketExecution={1} | staleAfter={2}s | " +
+                "contractVersion={3}",
                 StartupState,
-                EnableMarketExecution ? "ARMED" : "DISARMED",
+                EnableMarketExecution
+                    ? "ARMED"
+                    : "DISARMED",
+                ProviderStaleAfterSeconds,
                 ContractVersion.Current);
 
             RefreshIndicatorBinding(true);
+            ReloadSignalStore(true);
         }
 
         protected override void OnTick()
         {
             _tickCount++;
 
-            RefreshIndicatorBinding(false);
-
-            if (_indicator == null)
+            if (!RefreshIndicatorBinding(false))
             {
-                LogStateIfChanged(
-                    new ShadowHostResult(
-                        ShadowHostState.Blocked,
-                        "INDICATOR UNAVAILABLE",
-                        false,
-                        -1,
-                        "",
-                        "",
-                        "",
-                        ""));
+                LogBlockedState(
+                    "INDICATOR BINDING BLOCKED");
                 return;
             }
 
-            try
+            ReloadSignalStore(false);
+
+            SignalEnvelope snapshot;
+            string transportReason;
+
+            if (!CfipDeviceSignalTransport.TryRead(
+                    this,
+                    _boundIndicatorInstanceId,
+                    out snapshot,
+                    out transportReason))
             {
-                double heartbeat =
-                    _indicator.ProviderHeartbeat.LastValue;
-
-                SignalEnvelope snapshot =
-                    _indicator.LatestSignalEnvelope;
-
-                ShadowBrokerSnapshot broker =
-                    ReadBrokerSnapshot();
-
-                ShadowHostResult result =
-                    _shadow.Observe(
-                        snapshot,
-                        broker,
-                        ContractVersion.Current,
-                        _indicator.ProviderRevision,
-                        Server.TimeInUtc);
-
-                LogStateIfChanged(result);
-
-                if (EnableMarketExecution &&
-                    result != null &&
-                    result.State == ShadowHostState.Ready)
-                {
-                    BrokerExecutionReport report;
-                    string executionReason;
-
-                    _market.TryExecute(
-                            this,
-                            snapshot,
-                            UseMarketRange,
-                            NormalizeManagedExecutionLabel(),
-                            Server.TimeInUtc,
-                            out report,
-                            out executionReason);
-
-                    if (report != null)
-                    {
-                        Print(
-                            "CFIP MARKET EXECUTION | status={0} | action={1} | " +
-                            "revision={2} | position={3} | reason={4}",
-                            report.Status,
-                            report.Action,
-                            report.AttemptRevision,
-                            report.BrokerPositionId.HasValue
-                                ? report.BrokerPositionId.Value.ToString()
-                                : "",
-                            executionReason);
-                    }
-                }
+                LogBlockedState(transportReason);
+                return;
             }
-            catch (Exception ex)
-            {
-                _state = ShadowHostState.Blocked;
 
+            DateTime nowUtc =
+                Server.TimeInUtc;
+
+            if (snapshot.ObservedUtc > nowUtc)
+            {
+                LogBlockedState(
+                    "SIGNAL OBSERVED TIME IS IN THE FUTURE");
+                return;
+            }
+
+            double ageSeconds =
+                (nowUtc -
+                 snapshot.ObservedUtc)
+                .TotalSeconds;
+
+            if (ageSeconds >
+                Math.Max(
+                    1,
+                    ProviderStaleAfterSeconds))
+            {
+                LogBlockedState(
+                    "SIGNAL ENVELOPE STALE • AGE " +
+                    Math.Round(
+                        ageSeconds,
+                        1) +
+                    "S");
+                return;
+            }
+
+            ShadowBrokerSnapshot broker =
+                ReadBrokerSnapshot();
+
+            ShadowHostResult result =
+                _shadow.Observe(
+                    snapshot,
+                    broker,
+                    ContractVersion.Current,
+                    nowUtc);
+
+            LogStateIfChanged(result);
+
+            if (!EnableMarketExecution ||
+                result == null ||
+                result.State != ShadowHostState.Ready)
+                return;
+
+            BrokerExecutionReport report;
+            string executionReason;
+
+            _market.TryExecute(
+                this,
+                snapshot,
+                UseMarketRange,
+                NormalizeManagedExecutionLabel(),
+                nowUtc,
+                out report,
+                out executionReason);
+
+            if (report != null)
+            {
                 Print(
-                    "CFIP SHADOW HOST FAULT | state=BLOCKED | reason={0}",
-                    ex.Message);
+                    "CFIP MARKET EXECUTION | status={0} | " +
+                    "action={1} | revision={2} | position={3} | " +
+                    "reason={4}",
+                    report.Status,
+                    report.Action,
+                    report.AttemptRevision,
+                    report.BrokerPositionId.HasValue
+                        ? report.BrokerPositionId.Value.ToString()
+                        : "",
+                    executionReason);
             }
         }
 
-        private bool RefreshIndicatorBinding(bool force)
+        private bool RefreshIndicatorBinding(
+            bool force)
         {
             DateTime now =
                 Server.TimeInUtc;
 
             if (!force &&
-                now < _nextIndicatorBindingCheckUtc)
-                return _indicator != null;
+                now <
+                _nextIndicatorBindingCheckUtc)
+                return
+                    !string.IsNullOrWhiteSpace(
+                        _boundIndicatorInstanceId);
 
             _nextIndicatorBindingCheckUtc =
                 now.AddMilliseconds(500);
 
             ChartIndicator chartIndicator;
-            string fingerprint;
-            string managedExecutionLabel;
             string reason;
 
             if (!CfipIndicatorChartBinding.TryFind(
                     this,
                     out chartIndicator,
-                    out fingerprint,
-                    out managedExecutionLabel,
                     out reason))
             {
-                _indicator = null;
                 _boundIndicatorInstanceId = "";
-                _boundIndicatorFingerprint = "";
-                _boundManagedExecutionLabel = "CFIP-SMART";
+                _boundManagedExecutionLabel =
+                    "CFIP-SMART";
                 _indicatorBindingReason = reason;
-                _state = ShadowHostState.Blocked;
+                _state =
+                    ShadowHostState.Blocked;
 
                 Print(
-                    "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
+                    "CFIP ANALYSIS BIND | state=BLOCKED | " +
+                    "reason={0}",
                     reason);
 
                 return false;
@@ -188,102 +230,137 @@ namespace CFIP.cBot
             string instanceId =
                 chartIndicator.InstanceId ?? "";
 
-            bool bindingSame =
-                _indicator != null &&
+            if (!force &&
                 string.Equals(
                     _boundIndicatorInstanceId,
                     instanceId,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    _boundIndicatorFingerprint,
-                    fingerprint,
-                    StringComparison.Ordinal);
-
-            if (!force && bindingSame)
+                    StringComparison.Ordinal))
                 return true;
 
-            object[] parameterValues;
-            if (!CfipIndicatorChartBinding.TryBuildParameterValues(
+            string managedExecutionLabel;
+            if (!CfipIndicatorChartBinding.TryGetManagedExecutionLabel(
                     chartIndicator,
-                    out parameterValues,
+                    out managedExecutionLabel,
                     out reason))
             {
-                _indicator = null;
                 _boundIndicatorInstanceId = "";
-                _boundIndicatorFingerprint = "";
+                _boundManagedExecutionLabel =
+                    "CFIP-SMART";
                 _indicatorBindingReason = reason;
-                _state = ShadowHostState.Blocked;
+                _state =
+                    ShadowHostState.Blocked;
 
                 Print(
-                    "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
+                    "CFIP ANALYSIS BIND | state=BLOCKED | " +
+                    "reason={0}",
                     reason);
 
                 return false;
             }
 
+            _boundIndicatorInstanceId =
+                instanceId;
+
+            _boundManagedExecutionLabel =
+                string.IsNullOrWhiteSpace(
+                    managedExecutionLabel)
+                    ? "CFIP-SMART"
+                    : managedExecutionLabel.Trim();
+
+            _indicatorBindingReason =
+                "BOUND TO " +
+                CfipIndicatorChartBinding.DisplayName;
+
+            Print(
+                "CFIP ANALYSIS BIND | state=READY | " +
+                "name={0} | instance={1} | executionLabel={2}",
+                CfipIndicatorChartBinding.DisplayName,
+                _boundIndicatorInstanceId,
+                _boundManagedExecutionLabel);
+
+            return true;
+        }
+
+        private void ReloadSignalStore(
+            bool force)
+        {
+            DateTime now =
+                Server.TimeInUtc;
+
+            if (!force &&
+                now < _nextSignalReloadUtc)
+                return;
+
+            _nextSignalReloadUtc =
+                now.AddMilliseconds(750);
+
             try
             {
-                CFIPIndicator bound =
-                    Indicators.GetIndicator<CFIPIndicator>(
-                        parameterValues);
-
-                if (bound == null)
-                {
-                    _indicator = null;
-                    _state = ShadowHostState.Blocked;
-                    _indicatorBindingReason =
-                        "CFIP INDICATOR HOST CREATION FAILED";
-                    Print(
-                        "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
-                        _indicatorBindingReason);
-                    return false;
-                }
-
-                _indicator = bound;
-                _boundIndicatorInstanceId = instanceId;
-                _boundIndicatorFingerprint = fingerprint;
-                _boundManagedExecutionLabel =
-                    string.IsNullOrWhiteSpace(managedExecutionLabel)
-                        ? "CFIP-SMART"
-                        : managedExecutionLabel.Trim();
-                _indicatorBindingReason =
-                    "BOUND TO " +
-                    CfipIndicatorChartBinding.DisplayName;
-
-                Print(
-                    "CFIP ANALYSIS BIND | state=READY | name={0} | instance={1} | " +
-                    "parameterFingerprint={2}",
-                    CfipIndicatorChartBinding.DisplayName,
-                    instanceId,
-                    fingerprint);
-                return true;
+                CfipDeviceSignalTransport.Reload(
+                    this);
             }
             catch (Exception ex)
             {
-                _indicator = null;
-                _state = ShadowHostState.Blocked;
-                _indicatorBindingReason =
-                    "CFIP INDICATOR HOST CREATION FAILED • " +
-                    ex.Message;
-
                 Print(
-                    "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
-                    _indicatorBindingReason);
-                return false;
+                    "CFIP SIGNAL STORE RELOAD FAILED | {0}",
+                    ex.Message);
             }
         }
 
-        private string NormalizeManagedExecutionLabel()
+        private bool IsFresh(
+            SignalEnvelope envelope)
         {
-            return string.IsNullOrWhiteSpace(
-                    _boundManagedExecutionLabel)
-                ? "CFIP-SMART"
-                : _boundManagedExecutionLabel.Trim();
+            if (envelope == null)
+                return false;
+
+            double ageSeconds =
+                (Server.TimeInUtc -
+                 envelope.ObservedUtc)
+                .TotalSeconds;
+
+            return
+                ageSeconds >= 0 &&
+                ageSeconds <=
+                    Math.Max(
+                        1,
+                        ProviderStaleAfterSeconds);
+        }
+
+        private void LogBlockedState(
+            string reason)
+        {
+            if (string.Equals(
+                    _lastLoggedReason,
+                    reason,
+                    StringComparison.Ordinal) &&
+                _state ==
+                    ShadowHostState.Blocked)
+                return;
+
+            _state =
+                ShadowHostState.Blocked;
+
+            _lastLoggedReason =
+                reason ?? "";
+
+            Print(
+                "CFIP cBot STATE | state=BLOCKED | " +
+                "reason={0} | indicator={1} | tickCount={2}",
+                _lastLoggedReason,
+                string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId)
+                    ? "NONE"
+                    : _boundIndicatorInstanceId,
+                _tickCount);
         }
 
         private ShadowBrokerSnapshot ReadBrokerSnapshot()
         {
+            string executionLabel =
+                NormalizeManagedExecutionLabel();
+
             int managedPositions = 0;
+
             foreach (Position position in Positions)
             {
                 if (position != null &&
@@ -293,13 +370,18 @@ namespace CFIP.cBot
                         StringComparison.Ordinal) &&
                     ManagedExecutionLabelRule.Matches(
                         position.Label,
-                        NormalizeManagedExecutionLabel()))
+                        executionLabel))
                 {
                     managedPositions++;
                 }
             }
 
             int managedPendingOrders = 0;
+
+            string pendingLabel =
+                executionLabel +
+                "-PENDING";
+
             foreach (PendingOrder order in PendingOrders)
             {
                 if (order != null &&
@@ -309,7 +391,7 @@ namespace CFIP.cBot
                         StringComparison.Ordinal) &&
                     ManagedExecutionLabelRule.Matches(
                         order.Label,
-                        NormalizeManagedExecutionLabel() + "-PENDING"))
+                        pendingLabel))
                 {
                     managedPendingOrders++;
                 }
@@ -324,22 +406,13 @@ namespace CFIP.cBot
                 Symbol.PipSize);
         }
 
-        private static bool IsManagedLabel(
-            string label,
-            string baseLabel)
+        private string NormalizeManagedExecutionLabel()
         {
-            if (string.IsNullOrWhiteSpace(label))
-                return false;
-
-            if (string.Equals(
-                    label,
-                    baseLabel,
-                    StringComparison.Ordinal))
-                return true;
-
-            return label.StartsWith(
-                baseLabel + "|CFIP-I:",
-                StringComparison.Ordinal);
+            return
+                string.IsNullOrWhiteSpace(
+                    _boundManagedExecutionLabel)
+                    ? "CFIP-SMART"
+                    : _boundManagedExecutionLabel.Trim();
         }
 
         private void LogStateIfChanged(
@@ -349,7 +422,8 @@ namespace CFIP.cBot
                 return;
 
             if (result.State == _state &&
-                result.Revision == _lastLoggedRevision &&
+                result.Revision ==
+                    _lastLoggedRevision &&
                 string.Equals(
                     result.Reason,
                     _lastLoggedReason,
@@ -368,7 +442,7 @@ namespace CFIP.cBot
             Print(
                 "CFIP SHADOW STATE | state={0} | reason={1} | " +
                 "revision={2} | signal={3} | scenario={4} | plan={5} | " +
-                "key={6} | tickCount={7}",
+                "key={6} | indicator={7} | tickCount={8}",
                 result.State,
                 result.Reason,
                 result.Revision,
@@ -376,18 +450,25 @@ namespace CFIP.cBot
                 result.ScenarioId ?? "",
                 result.PlanId ?? "",
                 result.IdempotencyKey ?? "",
+                _boundIndicatorInstanceId,
                 _tickCount);
         }
 
         protected override void OnStop()
         {
             Print(
-                "CFIP cBot STOP | state={0} | marketExecution={1} | " +
-                "lastRevision={2} | sessionMs={3}",
+                "CFIP Execution cBot STOP | state={0} | " +
+                "marketExecution={1} | indicator={2} | " +
+                "lastRevision={3} | sessionMs={4}",
                 _state,
-                EnableMarketExecution ? "ARMED" : "DISARMED",
+                EnableMarketExecution
+                    ? "ARMED"
+                    : "DISARMED",
+                _boundIndicatorInstanceId,
                 _shadow.LastAcceptedRevision,
-                (Server.TimeInUtc - _startedUtc).TotalMilliseconds);
+                (Server.TimeInUtc -
+                 _startedUtc)
+                    .TotalMilliseconds);
         }
     }
 }
