@@ -84,18 +84,10 @@ namespace cAlgo
                                                             PanelBorderThickness);
                                         
                                                     int effectivePanelWidth =
-                                                        Math.Max(
-                                                            220,
-                                                            Math.Min(
-                                                                700,
-                                                                PanelWidth));
+                                                        EffectivePanelWidth();
                                         
                                                     int contentWidth =
-                                                        Math.Max(
-                                                            200,
-                                                            effectivePanelWidth -
-                                                            padding * 2 -
-                                                            border * 2);
+                                                        EffectivePanelContentWidth();
                                         
                                                     bool buttons =
                                                         ShowPanelToggleButton;
