@@ -109,7 +109,7 @@ check(
     "parallel candidate ownership is centralized in TradePlanRegistry",
     "UpsertScenario(" in registry and
     "ParallelScenarioSelectionRule.ShouldReplace(" in registry and
-    "_tradePlanRegistry.UpsertScenario(" in parallel and
+    "_tradePlanRegistry.UpsertScenario(" in candidate_builder and
     "_opportunityCandidates.Clear();" in timeframe and
     "_tradePlanRegistry.SelectScenariosForDisplay(" in timeframe,
 )
