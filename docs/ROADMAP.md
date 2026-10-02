@@ -1639,6 +1639,35 @@ Once M42 is accepted, the project leaves the remediation/certification track and
 
 این بخش فقط برای حفظ تداوم است. فازهای historical زیر «باز» نیستند مگر M1 خلافشان را ثابت کند.
 
+## Historical audit continuity anchors
+
+The following identifiers are retained solely so accumulated repository audits can prove historical continuity after the roadmap consolidation. They are not additional implementation phases and do not override the M0–M42 order:
+
+- CR4.4
+- CR4.5
+- CR4.6
+- CR4.7
+- CR4.8
+- CR4.9
+- CR4.10 / D10
+- CR5.3 / E3
+- CR5.4 / E4
+- CR5.5 / E5
+- CR5.7 / E7
+- CR5.8 / E8
+- CR6.6 / F7 closeout
+- CR6.7 / F8
+- CR6.7 / F8 closeout
+- CR6.8 / F9
+- CR6.8 / F9 closeout
+- CR6.9 / F3
+- CR6.9 / F3 closeout
+- CR7.1 / G1
+- CR7.3 / G3 closeout
+- **Next phase: CR7.4 / G4**
+
+Historical target-terminal validation remains a separate manual acceptance boundary; no anchor above claims terminal certification.
+
 ## Phase 7.4 — MaximumOpenPositions semantics
 
 Historical continuity marker preserved: the single-plan `Maximum Open Positions` semantics remain an audited invariant. This is historical continuity only; it is not a new implementation phase in the M0–M42 execution sequence.
