@@ -26,11 +26,11 @@ namespace cAlgo
             Risk = Math.Max(0, risk);
             Reward = Math.Max(0, reward);
             EffectiveRisk = Math.Max(0, effectiveRisk);
-            NominalRR = IsFiniteNonNegative(nominalRR) ? nominalRR : 0;
-            EffectiveRR = IsFiniteNonNegative(effectiveRR) ? effectiveRR : 0;
+            NominalRR = IsCanonicalFiniteNonNegative(nominalRR) ? nominalRR : 0;
+            EffectiveRR = IsCanonicalFiniteNonNegative(effectiveRR) ? effectiveRR : 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsCanonicalFiniteNonNegative(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
@@ -49,12 +49,12 @@ namespace cAlgo
             double target,
             double spread)
         {
-            if (!IsFiniteNonNegative(spread) ||
+            if (!IsCanonicalFiniteNonNegative(spread) ||
                 (direction != 1 && direction != -1) ||
-                !IsPositiveFinite(entry) ||
-                !IsPositiveFinite(stop) ||
-                !IsPositiveFinite(target))
-                return Block("LEVEL GEOMETRY INVALID");
+                !IsCanonicalPositiveFinite(entry) ||
+                !IsCanonicalPositiveFinite(stop) ||
+                !IsCanonicalPositiveFinite(target))
+                return BuildBlockedGeometry("LEVEL GEOMETRY INVALID");
 
             bool protectiveStop =
                 direction == 1
@@ -62,7 +62,7 @@ namespace cAlgo
                     : stop > entry;
 
             if (!protectiveStop)
-                return Block("STOP SIDE INVALID");
+                return BuildBlockedGeometry("STOP SIDE INVALID");
 
             bool progressiveTarget =
                 direction == 1
@@ -70,7 +70,7 @@ namespace cAlgo
                     : target < entry;
 
             if (!progressiveTarget)
-                return Block("TARGET SIDE INVALID");
+                return BuildBlockedGeometry("TARGET SIDE INVALID");
 
             return CalculateFromDistances(
                 Math.Abs(entry - stop),
@@ -83,9 +83,9 @@ namespace cAlgo
             double target,
             double risk)
         {
-            if (!IsPositiveFinite(entry) ||
-                !IsPositiveFinite(target) ||
-                !IsPositiveFinite(risk))
+            if (!IsCanonicalPositiveFinite(entry) ||
+                !IsCanonicalPositiveFinite(target) ||
+                !IsCanonicalPositiveFinite(risk))
                 return 0;
 
             return CalculateNominalRRFromDistances(
@@ -97,8 +97,8 @@ namespace cAlgo
             double reward,
             double risk)
         {
-            if (!IsPositiveFinite(reward) ||
-                !IsPositiveFinite(risk))
+            if (!IsCanonicalPositiveFinite(reward) ||
+                !IsCanonicalPositiveFinite(risk))
                 return 0;
 
             double rr =
@@ -107,7 +107,7 @@ namespace cAlgo
                     PriceFloor,
                     risk);
 
-            return IsPositiveFinite(rr)
+            return IsCanonicalPositiveFinite(rr)
                 ? rr
                 : 0;
         }
@@ -117,12 +117,12 @@ namespace cAlgo
             double risk,
             double spread)
         {
-            if (!IsPositiveFinite(reward) ||
-                !IsPositiveFinite(risk))
+            if (!IsCanonicalPositiveFinite(reward) ||
+                !IsCanonicalPositiveFinite(risk))
                 return 0;
 
             double safeSpread =
-                IsFiniteNonNegative(spread)
+                IsCanonicalFiniteNonNegative(spread)
                     ? Math.Max(0, spread)
                     : 0;
 
@@ -130,7 +130,7 @@ namespace cAlgo
                 risk +
                 safeSpread;
 
-            if (!IsPositiveFinite(effectiveRisk))
+            if (!IsCanonicalPositiveFinite(effectiveRisk))
                 return 0;
 
             double rr =
@@ -139,7 +139,7 @@ namespace cAlgo
                     PriceFloor,
                     effectiveRisk);
 
-            return IsPositiveFinite(rr)
+            return IsCanonicalPositiveFinite(rr)
                 ? rr
                 : 0;
         }
@@ -149,12 +149,12 @@ namespace cAlgo
             double reward,
             double spread)
         {
-            if (!IsPositiveFinite(risk) ||
-                !IsPositiveFinite(reward))
-                return Block("EMPTY REWARD/RISK");
+            if (!IsCanonicalPositiveFinite(risk) ||
+                !IsCanonicalPositiveFinite(reward))
+                return BuildBlockedGeometry("EMPTY REWARD/RISK");
 
             double safeSpread =
-                IsFiniteNonNegative(spread)
+                IsCanonicalFiniteNonNegative(spread)
                     ? Math.Max(0, spread)
                     : 0;
 
@@ -173,10 +173,10 @@ namespace cAlgo
                     risk,
                     safeSpread);
 
-            if (!IsPositiveFinite(effectiveRisk) ||
-                !IsPositiveFinite(nominalRR) ||
-                !IsPositiveFinite(effectiveRR))
-                return Block("RR INVALID");
+            if (!IsCanonicalPositiveFinite(effectiveRisk) ||
+                !IsCanonicalPositiveFinite(nominalRR) ||
+                !IsCanonicalPositiveFinite(effectiveRR))
+                return BuildBlockedGeometry("RR INVALID");
 
             return new RiskRewardGeometryResult(
                 true,
@@ -188,7 +188,7 @@ namespace cAlgo
                 effectiveRR);
         }
 
-        private static RiskRewardGeometryResult Block(
+        private static RiskRewardGeometryResult BuildBlockedGeometry(
             string reason)
         {
             return new RiskRewardGeometryResult(
@@ -201,14 +201,14 @@ namespace cAlgo
                 0);
         }
 
-        private static bool IsPositiveFinite(double value)
+        private static bool IsCanonicalPositiveFinite(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
                    !double.IsInfinity(value);
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsCanonicalFiniteNonNegative(double value)
         {
             return value >= 0 &&
                    !double.IsNaN(value) &&
