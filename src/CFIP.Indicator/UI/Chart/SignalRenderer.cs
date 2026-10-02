@@ -27,7 +27,9 @@ namespace cAlgo
                 return;
 
             int visualDirection =
-                snapshot.AuthoritativeDirection;
+                snapshot.AuthoritativeDirection != 0
+                    ? snapshot.AuthoritativeDirection
+                    : snapshot.DecisionDirection;
 
             int hostBar =
                 MapM5ToChart(
@@ -176,7 +178,9 @@ namespace cAlgo
 
                             DrawIcon(
                                 P + "M1_TRIGGER",
-                                ChartIconType.Circle,
+                                (snapshot.DecisionDirection == 1
+                                     ? ChartIconType.UpArrow
+                                     : ChartIconType.DownArrow),
                                 triggerBar,
                                 price,
                                 SignalArrowColorFor(
