@@ -2110,3 +2110,17 @@ Verification/manual boundary:
 - M5 implementation is complete on `phase/m5-panel-live-responsiveness-2026-10-02`; Source/Architecture, Runtime Acceptance Contracts and cTrader Compile/Build all PASS.
 - Target-terminal validation remains required for actual panel latency, cBot state presentation, live refresh/flicker, and reconnect behavior.
 - Next implementation phase: **M6 — Alert Synchronization / External Watchdog**.
+
+## Current continuation — 2026-10-02 — Opportunity discovery / cBot truth
+
+Completed implementation on branch phase/opportunity-discovery-cbot-truth-2026-10-02:
+- reward-aware execution-zone comparison across M5/M15 FVG/OB and confluence candidates;
+- M15/H1 structural swing levels added to entry-zone discovery;
+- selected-zone score now prefers downstream structural-stop quality and available TP1 reward path;
+- fresh validated cBot heartbeat is accepted as liveness truth without requiring ChartRobots lookup to succeed;
+- stale/invalid cBot state remains fail-closed;
+- unified panel alert rail is left aligned and readable at a larger minimum font.
+
+The phase does not lower public signal/RR/risk gates and does not remove cBot single-plan capacity. M15 remains canonical, M5 remains tuning/precision, M1 optional, H1+ context/reward.
+
+Next required opportunity work: mine SignalEvaluationTrace and outcome history by candidate family and rejection reason, then expand discovery only where measured evidence shows a real coverage gap.
