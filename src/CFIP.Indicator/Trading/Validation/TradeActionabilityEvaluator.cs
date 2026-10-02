@@ -139,6 +139,50 @@ namespace cAlgo
                     rewardRisk.Reason);
             }
 
+            // M15 is the canonical execution timeframe. M5/M1 remain
+            // defensive tuning inputs and may only refine/block an M15 setup;
+            // H1+ remains higher-timeframe context for reward-path selection.
+            int primaryM15Index =
+                _lastMtfClosedContext == null
+                    ? -1
+                    : _lastMtfClosedContext.M15;
+
+            if (_m15Frame == null ||
+                primaryM15Index < 0 ||
+                _m15Frame.Index != primaryM15Index)
+            {
+                return new TradeActionabilityResult(
+                    false,
+                    0,
+                    0,
+                    0,
+                    entryDistanceAtr,
+                    Math.Max(
+                        0,
+                        tp1RR),
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    "M15 EXECUTION FRAME UNAVAILABLE");
+            }
+
+            if (_m15Frame.Direction != direction)
+            {
+                return new TradeActionabilityResult(
+                    false,
+                    0,
+                    0,
+                    0,
+                    entryDistanceAtr,
+                    Math.Max(
+                        0,
+                        tp1RR),
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    "M15 EXECUTION DIRECTION CONFLICT");
+            }
+
             int locationQuality =
                 Math.Max(
                     0,

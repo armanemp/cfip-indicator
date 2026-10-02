@@ -8,6 +8,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyTargetSymmetry();
+            VerifyExecutionTimeframeRoles();
             VerifyTargetInvalidDirections();
             VerifyRiskPercentBounds();
             VerifyRiskAmount();
@@ -1416,7 +1417,8 @@ namespace cAlgo
                 Math.Abs(buy.Reward - 6.0) < 1e-12 &&
                 Math.Abs(buy.EffectiveRisk - 2.20) < 1e-12 &&
                 Math.Abs(buy.NominalRR - 3.0) < 1e-12 &&
-                Math.Abs(buy.EffectiveRR - (6.0 / 2.20)) < 1e-12,
+                Math.Abs(buy.EffectiveRR - (5.80 / 2.20)) < 1e-12 &&
+                Math.Abs(buy.NetReward - 5.80) < 1e-12,
                 "CI-14 canonical BUY geometry");
 
             Assert(
@@ -1459,7 +1461,8 @@ namespace cAlgo
             Assert(
                 spread.Valid &&
                 Math.Abs(spread.NominalRR - 2.0) < 1e-12 &&
-                Math.Abs(spread.EffectiveRR - (4.0 / 2.50)) < 1e-12,
+                Math.Abs(spread.EffectiveRR - (3.50 / 2.50)) < 1e-12 &&
+                Math.Abs(spread.NetReward - 3.50) < 1e-12,
                 "CI-14 spread-adjusted RR is deterministic");
 
             RiskRewardMathResult wrongSide =
@@ -1486,6 +1489,14 @@ namespace cAlgo
                         2.0,
                         3.0) -
                     106.0) < 1e-12 &&
+                Math.Abs(
+                    RiskRewardMathRule.TargetFromRR(
+                        1,
+                        100.0,
+                        2.0,
+                        3.0,
+                        0.50) -
+                    108.0) < 1e-12 &&
                 Math.Abs(
                     RiskRewardMathRule.TargetFromRR(
                         -1,
@@ -1519,6 +1530,29 @@ namespace cAlgo
                     2.0,
                     0.01) < 0,
                 "CI-14 live progress RR mirror");
+        }
+
+        private static void VerifyExecutionTimeframeRoles()
+        {
+            Assert(
+                ExecutionTimeframePolicy.IsPrimaryExecution("M15"),
+                "M15 is primary execution timeframe");
+
+            Assert(
+                ExecutionTimeframePolicy.IsLowerDefensive("M5") &&
+                ExecutionTimeframePolicy.IsLowerDefensive("M1"),
+                "M5/M1 are defensive timeframes");
+
+            Assert(
+                ExecutionTimeframePolicy.IsHigherContext("H1") &&
+                ExecutionTimeframePolicy.IsHigherContext("H4") &&
+                ExecutionTimeframePolicy.IsHigherContext("D1") &&
+                ExecutionTimeframePolicy.IsHigherContext("W1"),
+                "H1+ are higher-timeframe context");
+
+            Assert(
+                !ExecutionTimeframePolicy.IsPrimaryExecution("M5"),
+                "M5 cannot become primary execution");
         }
 
         private static void Assert(bool condition, string name)

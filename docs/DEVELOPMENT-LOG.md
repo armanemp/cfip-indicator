@@ -1,3 +1,23 @@
+## MTF-EXECUTION-M15 + Smart Margin/Spread Risk — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Completed:
+- M15 is the canonical execution timeframe;
+- cBot default host timeframe changed from M5 to M15 and non-M15 cBot startup is fail-closed;
+- M15 agreement is required by canonical actionability;
+- M5/M1 remain defensive tuning layers;
+- H1+ remains higher-timeframe context/reward-path support;
+- canonical effective reward-risk math now accounts for spread on the reward side as well as the risk side;
+- synthetic TP generation includes spread cost when spread-aware sizing is enabled;
+- cBot applies a final broker margin budget cap to requested volume;
+- deterministic timeframe, spread and margin tests/audits were added.
+
+No independent decision engine, second execution owner, or numeric signal-confidence tuning was added.
+
+Manual target-terminal acceptance remains open.
+
+
 ## CBOT-P4B + Panel Geometry Integrity — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` as `33dd37f225fb9e2677070f122b5068b0c2df2e92`.**

@@ -11,7 +11,7 @@ namespace CFIP.cBot
 #pragma warning disable CS0612
     [Robot(
         "CFIP Smart Execution Bot",
-        DefaultTimeFrame = "M5",
+        DefaultTimeFrame = "M15",
         TimeZone = TimeZones.UTC,
         AccessRights = AccessRights.None)]
     public sealed class CFIPExecutionBot : Robot
@@ -39,6 +39,22 @@ namespace CFIP.cBot
             MinValue = 1,
             MaxValue = 10)]
         public int MaxDemoMarketExecutionsPerSession { get; set; }
+
+        [Parameter(
+            "Max Execution Margin Usage %",
+            Group = "Safety",
+            DefaultValue = 80,
+            MinValue = 10,
+            MaxValue = 100)]
+        public double MaxExecutionMarginUsagePercent { get; set; }
+
+        [Parameter(
+            "Execution Margin Buffer %",
+            Group = "Safety",
+            DefaultValue = 10,
+            MinValue = 0,
+            MaxValue = 40)]
+        public double ExecutionMarginBufferPercent { get; set; }
 
         [Parameter(
             "Provider Stale After Seconds",
@@ -81,11 +97,24 @@ namespace CFIP.cBot
                 return;
             }
 
+            if (Bars == null ||
+                Bars.TimeFrame != TimeFrame.Minute15)
+            {
+                Print(
+                    "CFIP cBot BLOCKED | execution timeframe must be M15 | actual={0}",
+                    Bars == null
+                        ? "UNKNOWN"
+                        : Bars.TimeFrame.ToString());
+                Stop();
+                return;
+            }
+
             Print(
-                "CFIP DEMO cBot START | state={0} | marketExecution={1} | " +
-                "maxSessionExecutions={2} | staleAfter={3}s | contractVersion={4}",
+                "CFIP M15 cBot START | state={0} | marketExecution={1} | " +
+                "aggressiveExecution={2} | maxSessionExecutions={3} | staleAfter={4}s | contractVersion={5}",
                 StartupState,
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
+                EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
                 MaxDemoMarketExecutionsPerSession,
                 ProviderStaleAfterSeconds,
                 ContractVersion.Current);
@@ -187,6 +216,8 @@ namespace CFIP.cBot
                     envelope,
                     ManagedLabel,
                     nowUtc,
+                    MaxExecutionMarginUsagePercent,
+                    ExecutionMarginBufferPercent,
                     out BrokerExecutionReport report,
                     out string executionReason))
             {

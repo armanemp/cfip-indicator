@@ -14,5 +14,6 @@
     <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostContracts.cs" />
     <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostValidator.cs" />
     <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostCoordinator.cs" />
+    <Compile Include="../../src/CFIP.cBot/Risk/ExecutionMarginBudgetRule.cs" Link="Risk/ExecutionMarginBudgetRule.cs" />
   </ItemGroup>
 </Project>

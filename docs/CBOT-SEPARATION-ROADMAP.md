@@ -1,3 +1,14 @@
+## Active execution timeframe decision — 2026-10-02
+
+The execution boundary is now standardized on **M15**:
+- cBot default host timeframe = M15;
+- non-M15 cBot host is fail-closed;
+- Indicator canonical actionability requires the closed M15 frame to be available and aligned with the candidate direction;
+- M5 and M1 remain defensive tuning layers;
+- H1/H4/D1/W1 remain higher-timeframe context and reward-path layers.
+
+This is an execution-role decision, not a claim about profitability. Signal quality must still be measured by replay/OOS/walk-forward and target-terminal behavior.
+
 # CFIP — Local cBot Separation Roadmap
 
 ## 0. Purpose

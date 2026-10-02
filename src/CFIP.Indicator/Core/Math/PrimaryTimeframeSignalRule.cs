@@ -32,7 +32,7 @@ namespace cAlgo
             return
                 string.Equals(
                     sourceTimeframe,
-                    "M15",
+                    ExecutionTimeframePolicy.PrimaryExecution,
                     StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(
                     sourceTimeframe,

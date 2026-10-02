@@ -47,12 +47,20 @@ private double SelectTarget(
                                                 minimumRR > maximumRR)
                                                 return 0;
                                 
+                                            double spread =
+                                                IncludeSpreadInRiskSizing
+                                                    ? Math.Max(
+                                                        0,
+                                                        Symbol.Ask - Symbol.Bid)
+                                                    : 0;
+
                                             double synthetic =
                                                 RiskRewardMathRule.TargetFromRR(
                                                     direction,
                                                     entry,
                                                     risk,
-                                                    minimumRR);
+                                                    minimumRR,
+                                                    spread);
 
                                             return IsFinitePositive(synthetic)
                                                 ? NormalizePrice(synthetic)

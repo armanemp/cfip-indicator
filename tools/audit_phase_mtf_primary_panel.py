@@ -25,10 +25,12 @@ def require(condition: bool, message: str) -> None:
     if not condition:
         raise SystemExit("MTF-P1 audit failed: " + message)
 
+policy = read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs")
+
 require(
-    'string.Equals(\n                    sourceTimeframe,\n                    "M15"' in rule and
-    'string.Equals(\n                    sourceTimeframe,\n                    "H1"' in rule,
-    "primary source rule must recognize M15 and H1",
+    ("M15" in policy and "H1" in policy and
+     "ExecutionTimeframePolicy.PrimaryExecution" in rule),
+    "primary source rule must recognize M15/H1 through the canonical timeframe policy",
 )
 require(
     "m5Direction == sourceDirection" in rule and

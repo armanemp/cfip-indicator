@@ -1,3 +1,26 @@
+## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Decision for the active execution architecture:
+- **M15 = primary execution timeframe** and the only chart timeframe used for the cBot host by default.
+- **M5 + M1 = defensive tuning layers** used to refine timing/location and block adverse microstructure; they do not replace M15 as the execution frame.
+- **H1 + H4 + D1 + W1 = higher-timeframe context/reward-path layers** used to establish context and extend target selection when valid structural targets exist.
+- cBot execution is fail-closed outside M15.
+
+Risk/price contract:
+- requested volume remains risk-based from the Indicator's canonical stop geometry;
+- Indicator sizing already includes spread when `Include Spread In Risk Sizing=true`;
+- cBot now performs a final margin-budget cap after broker margin estimation and normalization, and only reduces exposure;
+- canonical effective RR now subtracts spread from both risk and realized reward distance;
+- synthetic targets account for the same spread cost;
+- no new signal score, confidence threshold, RR policy tuning or target selection tuning is introduced beyond the requested spread/margin correctness.
+
+Phase report: `docs/PHASE-MTF-EXECUTION-M15-RISK-SPREAD-2026-10-02.md`.
+
+Next execution-migration phase: **CBOT-P4C — Pending Stop authority extraction**.
+
+
 # CFIP Indicator — Master Roadmap 2026-10-02
 ## Single Source of Truth — Correctness → Certification → cBot → Data-Driven Intelligence → Release
 

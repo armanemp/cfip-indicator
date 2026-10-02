@@ -14,6 +14,7 @@ namespace CFIP.cBot.Shadow.Tests
 
         private static void Main()
         {
+            VerifyMarginBudget();
             Ready(TradeDirection.Buy, ExecutionAction.Market, 1, "K1");
             Ready(TradeDirection.Sell, ExecutionAction.Aggressive, -1, "K1A");
             Ready(TradeDirection.Sell, ExecutionAction.PendingLimit, -1, "K2");
@@ -252,6 +253,33 @@ namespace CFIP.cBot.Shadow.Tests
                 same.State == ShadowHostState.Ready &&
                 c.LastAcceptedRevision == 6,
                 "transient broker block must recheck and dedupe thereafter");
+        }
+
+        private static void VerifyMarginBudget()
+        {
+            double allowed =
+                CFIP.cBot.Risk.ExecutionMarginBudgetRule.AllowedMargin(
+                    10000,
+                    80,
+                    10);
+
+            double scaled =
+                CFIP.cBot.Risk.ExecutionMarginBudgetRule.ScaleVolumeToBudget(
+                    100,
+                    10000,
+                    allowed);
+
+            Assert(
+                Math.Abs(allowed - 7000) < 1e-12 &&
+                Math.Abs(scaled - 70) < 1e-12,
+                "execution margin budget must cap exposure proportionally");
+
+            Assert(
+                CFIP.cBot.Risk.ExecutionMarginBudgetRule.AllowedMargin(
+                    0,
+                    80,
+                    10) == 0,
+                "zero free margin must fail closed");
         }
 
         private static ShadowHostResult Validate(

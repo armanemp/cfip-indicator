@@ -14,6 +14,7 @@ namespace cAlgo
         public string Reason { get; }
         public double Risk { get; }
         public double Reward { get; }
+        public double NetReward { get; }
         public double EffectiveRisk { get; }
         public double NominalRR { get; }
         public double EffectiveRR { get; }
@@ -35,6 +36,11 @@ namespace cAlgo
             Reason = reason ?? string.Empty;
             Risk = NonNegativeFinite(risk);
             Reward = NonNegativeFinite(reward);
+            NetReward = NonNegativeFinite(
+                reward -
+                Math.Max(
+                    0,
+                    effectiveRisk - risk));
             EffectiveRisk = NonNegativeFinite(effectiveRisk);
             NominalRR = NonNegativeFinite(nominalRR);
             EffectiveRR = NonNegativeFinite(effectiveRR);
@@ -128,8 +134,13 @@ namespace cAlgo
                     DistanceFloor,
                     risk);
 
+            double netReward =
+                Math.Max(
+                    0,
+                    reward - safeSpread);
+
             double effectiveRR =
-                reward /
+                netReward /
                 Math.Max(
                     DistanceFloor,
                     effectiveRisk);
@@ -333,7 +344,8 @@ namespace cAlgo
             int direction,
             double entry,
             double risk,
-            double rewardRisk)
+            double rewardRisk,
+            double spread = 0)
         {
             if ((direction != 1 && direction != -1) ||
                 !IsPositiveFinite(entry) ||
@@ -346,9 +358,23 @@ namespace cAlgo
                     DistanceFloor,
                     risk);
 
+            double safeSpread =
+                Math.Max(
+                    0,
+                    IsFiniteNonNegativeDistance(spread)
+                        ? spread
+                        : 0);
+
+            // Preserve the requested RR after accounting for spread on both
+            // the risk side and the target-side execution cost.
+            double requiredReward =
+                (normalizedRisk + safeSpread) *
+                rewardRisk +
+                safeSpread;
+
             return direction == 1
-                ? entry + normalizedRisk * rewardRisk
-                : entry - normalizedRisk * rewardRisk;
+                ? entry + requiredReward
+                : entry - requiredReward;
         }
 
         private static RiskRewardMathResult CreateInvalidResult(

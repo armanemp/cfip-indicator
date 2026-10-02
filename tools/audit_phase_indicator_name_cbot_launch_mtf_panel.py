@@ -33,9 +33,9 @@ require(
 )
 require(
     '"CFIP Smart Execution Bot"' in cbot and
-    'DefaultTimeFrame = "M5"' in cbot and
+    'DefaultTimeFrame = "M15"' in cbot and
     "[Robot(" in cbot,
-    "cBot must expose stable launch name and M5 default host timeframe",
+    "cBot must expose stable launch name and M15 default host timeframe",
 )
 require(
     "PanelFrameDirectionRule.ResolveDisplayDirection" in panel_format and
