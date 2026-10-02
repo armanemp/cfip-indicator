@@ -66,9 +66,9 @@ require(
 )
 require(
     "PRIMARY M15/H1" in panel_context and
-    "_m15Frame.Direction" in panel_context and
-    "_h1Frame.Direction" in panel_context,
-    "primary M15/H1 alignment must use exact resolved source direction",
+    "FrameDirection(_m15Frame)" in panel_context and
+    "FrameDirection(_h1Frame)" in panel_context,
+    "primary M15/H1 alignment must use the canonical resolved display direction",
 )
 require(
     "QuickExecutionRowHeight" not in panel_main and
