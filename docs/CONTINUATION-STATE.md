@@ -1,3 +1,22 @@
+## M1 — Full Forensic Audit — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Completed:
+- full forensic disposition report added at `docs/PHASE-M1-FULL-FORENSIC-AUDIT.md`;
+- 18 findings classified with explicit disposition;
+- current production baseline recorded as 633 Indicator C# files, 568 public parameters, 15 direct broker mutation call-sites;
+- stale cBot boundary parameter-count expectation corrected from 564 to 568;
+- no production trading behavior changed.
+
+Important residual boundaries:
+- target-terminal panel/chart/audio acceptance;
+- restart/reconnect/history broker evidence;
+- mixed Indicator/cBot ownership until M29+;
+- large-method decomposition and broader constant/parameter ownership audit.
+
+Next phase: **M2 — Repository Hygiene / Dead Code / Ownership**.
+
 # CFIP — Cross-Chat Continuation State
 
 Last updated: 2026-10-02 Asia/Baku
