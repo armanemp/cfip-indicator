@@ -204,6 +204,32 @@ namespace cAlgo
                             smartBreakEven.OffsetPips);
                 }
 
+                if (_cfipProviderExecutionIntent != null &&
+                    _cfipProviderExecutionIntent.CreatedM5 ==
+                    _cfipProviderExecutionIntentM5)
+                {
+                    _cfipProviderExecutionIntent.UseServerTakeProfitLadder =
+                        true;
+                    _cfipProviderExecutionIntent.Tp1Pips =
+                        d1 / Symbol.PipSize;
+                    _cfipProviderExecutionIntent.Tp1Volume =
+                        tp1Volume;
+                    _cfipProviderExecutionIntent.Tp2Pips =
+                        d2 / Symbol.PipSize;
+                    _cfipProviderExecutionIntent.Tp2Volume =
+                        tp2Volume;
+                    _cfipProviderExecutionIntent.FinalTpPips =
+                        dFinal / Symbol.PipSize;
+                    _cfipProviderExecutionIntent.BreakEvenTriggerPips =
+                        smartBreakEven.Allowed && MoveSlToBreakEven
+                            ? smartBreakEven.TriggerPips
+                            : (double?)null;
+                    _cfipProviderExecutionIntent.BreakEvenOffsetPips =
+                        smartBreakEven.Allowed && MoveSlToBreakEven
+                            ? smartBreakEven.OffsetPips
+                            : (double?)null;
+                }
+
                 return takeProfits != null;
             }
             catch (Exception ex)
