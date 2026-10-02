@@ -6,15 +6,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private int PanelContentWidth()
-        {
-            return Math.Max(
-                200,
-                PanelWidth -
-                2 * Math.Max(0, PanelPadding) -
-                2 * Math.Max(0, PanelBorderThickness));
-        }
-
         private void UpdatePanelHeartbeatLiveRows()
         {
             if (!ShowUnifiedPanel ||
@@ -23,7 +14,7 @@ namespace cAlgo
                 _plan == null)
                 return;
 
-            int width = PanelContentWidth();
+            int width = EffectivePanelContentWidth();
 
             double liveMarket =
                 _plan.Direction > 0
