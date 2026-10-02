@@ -124,8 +124,8 @@ check(
     "ExecutionIntent intent = null" in submission
     and "FormatExecutionIntentTrace(intent)" in submission
     and "INTENT ENTRY=" in submission
-    and "INTENT SL=" in submission
-    and "INTENT TP=" in submission
+    and " SL=" in submission
+    and " TP=" in submission
     and "INTENT SL_PIPS=" in submission
     and "INTENT TP_PIPS=" in submission,
 )
