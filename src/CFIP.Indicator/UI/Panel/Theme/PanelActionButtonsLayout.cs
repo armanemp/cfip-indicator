@@ -63,7 +63,7 @@ namespace cAlgo
                 new Thickness(
                     buttonMargin,
                     buttonMargin,
-                    buttonGap / 2,
+                    0,
                     buttonMargin);
         }
     }
