@@ -133,7 +133,8 @@ namespace cAlgo
                                                         toggleWidth,
                                                         toggleHeight,
                                                         border,
-                                                        borderAlpha);
+                                                        borderAlpha,
+                                                        buttonGap);
 
                                                     ApplyPanelRestoreButtonLayout(
                                                         borderAlpha,
