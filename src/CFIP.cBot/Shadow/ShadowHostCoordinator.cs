@@ -15,6 +15,7 @@ namespace CFIP.cBot.Shadow
         private long _lastAcceptedRevision = -1;
         private string _lastAcceptedIdempotencyKey = "";
         private DateTime _lastBrokerRecheckUtc = DateTime.MinValue;
+        private ShadowHostResult _lastResult;
 
         public long LastAcceptedRevision =>
             _lastAcceptedRevision;
@@ -62,24 +63,29 @@ namespace CFIP.cBot.Shadow
 
             if (sameCurrent)
             {
-                if ((nowUtc - _lastBrokerRecheckUtc).TotalMilliseconds < 500)
+                if (_lastResult != null &&
+                    _lastResult.State != ShadowHostState.Ready &&
+                    _lastResult.State != ShadowHostState.Observing &&
+                    _lastResult.State != ShadowHostState.Blocked)
                 {
-                    return new ShadowHostResult(
-                        ShadowHostState.Ready,
-                        "CURRENT SHADOW STATE",
-                        false,
-                        identity.Revision,
-                        identity.SignalId,
-                        identity.ScenarioId,
-                        identity.PlanId,
-                        identity.IdempotencyKey);
+                    return _lastResult;
                 }
+
+                if ((nowUtc - _lastBrokerRecheckUtc).TotalMilliseconds < 500)
+                    return _lastResult ?? ShadowHostValidator.RevalidateBrokerSafety(
+                        envelope,
+                        broker);
 
                 _lastBrokerRecheckUtc = nowUtc;
 
-                return ShadowHostValidator.RevalidateBrokerSafety(
-                    envelope,
-                    broker);
+                ShadowHostResult rechecked =
+                    ShadowHostValidator.RevalidateBrokerSafety(
+                        envelope,
+                        broker);
+
+                _lastResult = rechecked;
+
+                return rechecked;
             }
 
             bool alreadySeen =
@@ -105,6 +111,8 @@ namespace CFIP.cBot.Shadow
                         _lastAcceptedRevision,
                         _lastAcceptedIdempotencyKey,
                         nowUtc);
+
+            _lastResult = result;
 
             if (result.State == ShadowHostState.Ready ||
                 result.State == ShadowHostState.Observing ||
