@@ -29,10 +29,13 @@ def require(path: Path, pattern: str, label: str) -> None:
         raise SystemExit(f"missing {label}")
 
 host = HOST.read_text(encoding="utf-8")
-if not re.search(r"\[Indicator\(\s*\n\s*IsOverlay", host):
-    raise SystemExit("indicator host must use the non-obsolete IndicatorAttribute constructor")
-if '"CFIPIndicator"' in host:
-    raise SystemExit("obsolete string-based IndicatorAttribute registration remains")
+if not (
+    re.search(r'\[Indicator\(\s*"CFIP Smart Indicator"\s*,[\s\S]*?IsOverlay', host)
+    or re.search(r"\[Indicator\(\s*\n\s*IsOverlay", host)
+):
+    raise SystemExit("indicator host must have a valid cTrader IndicatorAttribute registration")
+if '[Indicator("CFIPIndicator"' in host:
+    raise SystemExit("legacy string-based IndicatorAttribute registration remains")
 
 state = STATE.read_text(encoding="utf-8")
 if "_lastAutoPlanTriggerM1" in state:

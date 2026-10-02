@@ -104,13 +104,20 @@ require(
     "live outcome archive + learning hook",
 )
 
-require(
-    HOST,
-    r"\[Indicator\(\s*\n\s*IsOverlay\s*=",
-    "supported non-obsolete cTrader indicator attribute",
-)
-if '"CFIPIndicator"' in HOST.read_text(encoding="utf-8"):
-    errors.append("obsolete string-based IndicatorAttribute registration remains")
+host_text = HOST.read_text(encoding="utf-8")
+if (
+    not re.search(
+        r'\[Indicator\(\s*"CFIP Smart Indicator"\s*,[\s\S]*?IsOverlay\s*=',
+        host_text,
+    )
+    and not re.search(
+        r"\[Indicator\(\s*\n\s*IsOverlay\s*=",
+        host_text,
+    )
+):
+    errors.append("cTrader indicator attribute registration is missing")
+if '[Indicator("CFIPIndicator"' in host_text:
+    errors.append("legacy IndicatorAttribute name remains")
 require(
     CSPROJ,
     r"<AssemblyName>CFIPIndicator</AssemblyName>",
@@ -158,8 +165,8 @@ if "RequestBars(\n                TimeFrame.Daily" in init_text or "RequestBars(
     errors.append("D1/W1 must not block mandatory startup pending-load count")
 
 host_text = HOST.read_text(encoding="utf-8")
-if '"CFIPIndicator"' in host_text:
-    errors.append("obsolete indicator string constructor must not be present")
+if '[Indicator("CFIPIndicator"' in host_text:
+    errors.append("obsolete legacy indicator string constructor must not be present")
 
 if errors:
     print("Phase 9.15 startup/persistence audit FAILED")

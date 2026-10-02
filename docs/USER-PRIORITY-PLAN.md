@@ -337,3 +337,18 @@ scenario resolver rather than introducing parallel identifiers.
 This is traceability only. No threshold, signal quality rule, Entry/SL/TP geometry, risk
 rule or broker authority may change under this requirement. Empirical M15/H1 quality
 changes remain a separate replay/OOS concern.
+
+
+## W. Indicator/cBot names + MTF panel directional display — 2026-10-02
+
+Operator visibility requirements:
+- Indicator must appear in cTrader as **CFIP Smart Indicator**;
+- cBot must appear as **CFIP Smart Execution Bot** and default to M5 for the initial host chart;
+- MTF context rows must not call a directionally biased but unresolved frame NEUTRAL;
+- use **BULL BIAS / BEAR BIAS** for directional context and reserve BUY/SELL for resolved
+  direction;
+- this presentation correction must not change signal authority or introduce a second
+  strategy score.
+
+The separate cBot remains the execution host; this phase only improves initial usability,
+naming and diagnostic correctness.
