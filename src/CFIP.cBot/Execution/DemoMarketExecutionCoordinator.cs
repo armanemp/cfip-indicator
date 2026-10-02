@@ -16,7 +16,6 @@ namespace CFIP.cBot.Execution
         public bool TryExecute(
             Robot robot,
             SignalEnvelope envelope,
-            string executionLabel,
             DateTime nowUtc,
             double maximumMarginUsagePercent,
             double marginBufferPercent,
@@ -60,7 +59,11 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(executionLabel))
+            string executionLabel =
+                envelope.Intent.ExecutionLabel ?? "";
+
+            if (string.IsNullOrWhiteSpace(
+                    executionLabel))
             {
                 reason = "MISSING EXECUTION LABEL";
                 return false;
