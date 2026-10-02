@@ -47,8 +47,11 @@ namespace cAlgo
                                 direction =
                                     GetAuthoritativeDirection();
                 
+                            string normalizedKey =
+                                key ?? "";
+
                             bool restrictionAlert =
-                                key.StartsWith(
+                                normalizedKey.StartsWith(
                                     "RESTRICT|",
                                     StringComparison.OrdinalIgnoreCase);
                 
@@ -63,17 +66,17 @@ namespace cAlgo
                             if (SuppressDuplicateAlerts)
                             {
                                 int cooldownSeconds =
-                                    (key.StartsWith(
+                                    (normalizedKey.StartsWith(
                                         "SMART|",
                                         StringComparison.OrdinalIgnoreCase) ||
-                                     key.StartsWith(
+                                     normalizedKey.StartsWith(
                                         "REACTION|",
                                         StringComparison.OrdinalIgnoreCase))
                                         ? SmartAlertCooldownSeconds
                                         : AlertCooldownSeconds;
                 
                                 if (_alertCooldowns.TryGetValue(
-                                        key,
+                                        normalizedKey,
                                         out DateTime lastSent) &&
                                     (now - lastSent).TotalSeconds <
                                     Math.Max(
@@ -82,7 +85,7 @@ namespace cAlgo
                                     return;
                             }
                 
-                            _alertCooldowns[key] = now;
+                            _alertCooldowns[normalizedKey] = now;
                 
                             // Light housekeeping so this dictionary can't grow forever over
                             // a long-running session — unique keys (per-plan TP/SL, daily
@@ -105,7 +108,7 @@ namespace cAlgo
                 
                             AlertEnvelope envelope =
                                 BuildCanonicalAlertEnvelope(
-                                    key,
+                                    normalizedKey,
                                     message,
                                     direction,
                                     critical,
@@ -125,7 +128,7 @@ namespace cAlgo
                 
                             bool blockedCandidateAlert =
                                 IsBlockedCandidateAlert(
-                                    key,
+                                    normalizedKey,
                                     message);
 
                             // Restriction/blocked candidates remain diagnostic panel messages
