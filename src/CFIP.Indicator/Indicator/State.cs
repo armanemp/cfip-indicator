@@ -291,11 +291,12 @@ namespace cAlgo
         
                 private readonly AlertDeliveryQueue _alertDeliveryQueue =
                     new AlertDeliveryQueue(16);
-                private bool _popupCritical;
 
-                private Border _popup;
-                private TextBlock _popupText;
-                private DateTime _popupUntilUtc = DateTime.MinValue;
+                private Queue<AlertDelivery> _panelAlertHistory =
+                    new Queue<AlertDelivery>(5);
+                private StackPanel _panelAlertMessageStack;
+                private readonly List<TextBlock> _panelAlertMessageRows =
+                    new List<TextBlock>(5);
         
                 private const string P = "CFIP_";
                 private const string H = "CFIP_H_";
@@ -307,7 +308,6 @@ namespace cAlgo
                 private Button _panelToggleButton;
                 private string _panelStableHeader = "";
                 private DateTime _panelStableHeaderSinceUtc = DateTime.MinValue;
-                private Button _popupCloseButton;
         private int _runtimeTpStageIndex = -1;
         private int _runtimeTpStagePlanCreatedM5 = -1;
         private int _lastReactionAlertBar = -1;
