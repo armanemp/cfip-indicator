@@ -1,3 +1,21 @@
+## 2026-10-03 — Canonical trade-path geometry
+
+Status: implementation complete, verification pending.
+
+Root cause:
+- live actionability could compare current ActualEntry against Stop/TP1 generated from the presentation IdealEntry preview;
+- PlanBuilder already derives executable geometry from actual entry, creating a potential RR/entry-path mismatch.
+
+Fix:
+- added CanonicalTradePathGeometry and builder;
+- structural stop and target ladder are derived from ExecutionModel.ActualEntry;
+- live actionability now consumes canonical Stop/TP1/RR and validates entry/mode consistency;
+- bounded cache limits rebuild cost;
+- trace and panel state prioritize ActionableNow over generic TriggerReady.
+
+Full chain re-audited. No public threshold was lowered.
+
+Phase record: docs/PHASE-CANONICAL-TRADE-PATH-GEOMETRY-2026-10-03.md.
 ## 2026-10-03 — Retest trigger-path hardening
 
 Status: implementation complete, verification pending.
