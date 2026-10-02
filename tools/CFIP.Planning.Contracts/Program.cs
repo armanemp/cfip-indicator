@@ -23,6 +23,7 @@ namespace cAlgo
             VerifyTargetObstacleCachePolicyF9();
             VerifyTargetSelectionConsistency();
             VerifyTargetLadderSelection();
+            VerifyCanonicalRiskReward();
             VerifyLiveReversalD9();
             Console.WriteLine("Planning contracts OK");
         }
@@ -312,6 +313,220 @@ namespace cAlgo
 
             Console.WriteLine(
                 "D8 TP1 directional defence: BUY/SELL valid and wrong-side fixtures passed");
+        }
+
+        private static void VerifyCanonicalRiskReward()
+        {
+            RiskRewardGeometryResult buy =
+                RiskRewardGeometryRule.Evaluate(
+                    1,
+                    100,
+                    98,
+                    106,
+                    0.50);
+
+            RiskRewardGeometryResult sell =
+                RiskRewardGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    102,
+                    94,
+                    0.50);
+
+            Assert(
+                buy.Valid &&
+                sell.Valid &&
+                Math.Abs(buy.Risk - 2.0) < 1e-12 &&
+                Math.Abs(sell.Risk - 2.0) < 1e-12,
+                "canonical BUY/SELL risk symmetry");
+
+            Assert(
+                Math.Abs(buy.Reward - 6.0) < 1e-12 &&
+                Math.Abs(sell.Reward - 6.0) < 1e-12 &&
+                Math.Abs(buy.NominalRR - 3.0) < 1e-12 &&
+                Math.Abs(sell.NominalRR - 3.0) < 1e-12,
+                "canonical nominal RR symmetry");
+
+            Assert(
+                Math.Abs(buy.EffectiveRisk - 2.5) < 1e-12 &&
+                Math.Abs(sell.EffectiveRisk - 2.5) < 1e-12 &&
+                Math.Abs(buy.EffectiveRR - 2.4) < 1e-12 &&
+                Math.Abs(sell.EffectiveRR - 2.4) < 1e-12,
+                "canonical spread-adjusted RR symmetry");
+
+            Assert(
+                !RiskRewardGeometryRule.Evaluate(
+                    1,
+                    100,
+                    101,
+                    106,
+                    0).Valid &&
+                !RiskRewardGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    99,
+                    94,
+                    0).Valid &&
+                !RiskRewardGeometryRule.Evaluate(
+                    1,
+                    100,
+                    98,
+                    99,
+                    0).Valid &&
+                !RiskRewardGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    102,
+                    101,
+                    0).Valid,
+                "canonical wrong-side geometry fail-closed");
+
+            Assert(
+                !RiskRewardGeometryRule.Evaluate(
+                    1,
+                    100,
+                    98,
+                    106,
+                    double.NaN).Valid &&
+                !RiskRewardGeometryRule.Evaluate(
+                    -1,
+                    100,
+                    102,
+                    94,
+                    double.PositiveInfinity).Valid,
+                "canonical non-finite spread fail-closed");
+
+            Assert(
+                Math.Abs(
+                    RiskRewardPolicyRule.NormalizeMinimum(
+                        0.20,
+                        0.50) -
+                    0.50) < 1e-12,
+                "minimum RR hard floor");
+
+            Assert(
+                RiskRewardPolicyRule.MeetsMinimum(
+                    2.0,
+                    2.0) &&
+                !RiskRewardPolicyRule.MeetsMinimum(
+                    1.999999999,
+                    2.0),
+                "minimum RR boundary");
+
+            Assert(
+                RiskRewardPolicyRule.IsWithinMaximum(
+                    3.0,
+                    3.0) &&
+                !RiskRewardPolicyRule.IsWithinMaximum(
+                    3.0000001,
+                    3.0),
+                "maximum RR boundary");
+
+            Assert(
+                Math.Abs(
+                    RiskRewardPolicyRule.CalculateAdaptiveMinimum(
+                        2.0,
+                        1.0,
+                        0.50,
+                        0.50,
+                        0.25) -
+                    2.125) < 1e-12,
+                "adaptive minimum RR policy");
+
+            Assert(
+                Math.Abs(
+                    RiskRewardPolicyRule.CalculateEffectiveMinimum(
+                        2.0,
+                        0.90,
+                        0.15) -
+                    1.80) < 1e-12,
+                "effective minimum RR policy");
+
+            PlanRewardRiskQualityResult plan =
+                PlanRewardRiskQualityRule.Evaluate(
+                    1,
+                    100,
+                    98,
+                    106,
+                    2.0,
+                    0.50,
+                    2.0,
+                    1.0,
+                    2.0);
+
+            Assert(
+                plan.Allowed &&
+                Math.Abs(plan.NominalRR - buy.NominalRR) < 1e-12 &&
+                Math.Abs(plan.EffectiveRR - buy.EffectiveRR) < 1e-12,
+                "plan RR consumer uses canonical geometry");
+
+            ExecutionPlanGeometryResult execution =
+                ExecutionPlanGeometryRule.Evaluate(
+                    1,
+                    100,
+                    98,
+                    106,
+                    2.0);
+
+            Assert(
+                execution.Allowed &&
+                Math.Abs(execution.Risk - buy.Risk) < 1e-12 &&
+                Math.Abs(execution.Reward - buy.Reward) < 1e-12 &&
+                Math.Abs(execution.RiskReward - buy.NominalRR) < 1e-12,
+                "execution RR consumer uses canonical geometry");
+
+            TargetCandidateConstraintResult candidate =
+                TargetCandidateConstraintRule.Evaluate(
+                    0,
+                    1,
+                    100,
+                    2.0,
+                    106,
+                    2.0,
+                    0.01,
+                    3.0,
+                    4.0,
+                    12.0,
+                    0.40,
+                    100,
+                    false,
+                    false,
+                    false,
+                    0,
+                    0);
+
+            Assert(
+                candidate.Allowed &&
+                Math.Abs(candidate.RiskReward - 3.0) < 1e-12,
+                "candidate RR consumer uses canonical geometry");
+
+            TargetCandidateConstraintResult tinyRisk =
+                TargetCandidateConstraintRule.Evaluate(
+                    0,
+                    1,
+                    100,
+                    0.005,
+                    100.015,
+                    2.0,
+                    0.01,
+                    2.0,
+                    5.0,
+                    12.0,
+                    0.40,
+                    100,
+                    false,
+                    false,
+                    false,
+                    0,
+                    0);
+
+            Assert(
+                tinyRisk.Allowed &&
+                Math.Abs(tinyRisk.RiskReward - 3.0) < 1e-12,
+                "candidate RR does not replace real risk with pip floor");
+
+            Console.WriteLine(
+                "CI-14 canonical risk/reward/protection fixtures passed");
         }
 
         private static void VerifyTargetSelectionConsistency()
