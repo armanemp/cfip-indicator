@@ -16,7 +16,8 @@ namespace cAlgo
             int direction,
             double atr,
             bool requireCurrentRetest = true,
-            double selectionPrice = double.NaN)
+            double selectionPrice = double.NaN,
+            bool preferQualityForSelection = false)
         {
             if (!UseFvg ||
                 bars == null ||
@@ -198,10 +199,16 @@ namespace cAlgo
                     continue;
 
                 best =
-                    SelectNearestFvg(
-                        nearestPrice,
-                        best,
-                        candidate);
+                    preferQualityForSelection
+                        ? SelectBestFvgForExecution(
+                            nearestPrice,
+                            atr,
+                            best,
+                            candidate)
+                        : SelectNearestFvg(
+                            nearestPrice,
+                            best,
+                            candidate);
             }
 
             return best;
