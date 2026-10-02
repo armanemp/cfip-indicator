@@ -142,6 +142,14 @@ namespace cAlgo
                             snapshot.PendingStopExecutionEnabled ||
                         _cBotExecutionState.PendingLimitExecutionEnabled !=
                             snapshot.PendingLimitExecutionEnabled ||
+                        _cBotExecutionState.IndicatorAutoTradingEnabled !=
+                            snapshot.IndicatorAutoTradingEnabled ||
+                        _cBotExecutionState.IndicatorAutomaticOrdersEnabled !=
+                            snapshot.IndicatorAutomaticOrdersEnabled ||
+                        _cBotExecutionState.EffectiveAutoTradingEnabled !=
+                            snapshot.EffectiveAutoTradingEnabled ||
+                        _cBotExecutionState.EffectiveAutomaticOrdersEnabled !=
+                            snapshot.EffectiveAutomaticOrdersEnabled ||
                         _cBotExecutionState.AggressiveExecutionEnabled !=
                             snapshot.AggressiveExecutionEnabled ||
                         _cBotExecutionState.ManagementExecutionEnabled !=
