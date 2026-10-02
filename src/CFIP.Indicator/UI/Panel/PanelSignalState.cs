@@ -26,10 +26,74 @@ namespace cAlgo
                                     return PanelTextColor;
                                 }
         
+        private int GetMarketBiasDirection()
+                                {
+                                    int m15 =
+                                        FrameDirection(_m15Frame);
+
+                                    int h1 =
+                                        FrameDirection(_h1Frame);
+
+                                    int m5 =
+                                        FrameDirection(_m5Frame);
+
+                                    if (m15 != 0 &&
+                                        h1 != 0 &&
+                                        m15 == h1)
+                                        return m15;
+
+                                    if (m15 != 0 &&
+                                        h1 == 0)
+                                        return m15;
+
+                                    if (h1 != 0 &&
+                                        m15 == 0)
+                                        return h1;
+
+                                    if (m5 != 0)
+                                        return m5;
+
+                                    if (_decision != null &&
+                                        (_decision.Direction == 1 ||
+                                         _decision.Direction == -1))
+                                        return _decision.Direction;
+
+                                    return 0;
+                                }
+
+        private string GetMarketBiasText()
+                                {
+                                    int m15 =
+                                        FrameDirection(_m15Frame);
+
+                                    int h1 =
+                                        FrameDirection(_h1Frame);
+
+                                    int m5 =
+                                        FrameDirection(_m5Frame);
+
+                                    return
+                                        "MARKET BIAS  •  M15 " +
+                                        DirectionText(m15) +
+                                        "  •  H1 " +
+                                        DirectionText(h1) +
+                                        "  •  M5 " +
+                                        DirectionText(m5) +
+                                        "  •  " +
+                                        DirectionText(
+                                            GetMarketBiasDirection());
+                                }
+
         private int GetAuthoritativeDirection()
                                 {
-                                    if (_renderSignalVisualSnapshot != null)
+                                    if (_renderSignalVisualSnapshot != null &&
+                                        _renderSignalVisualSnapshot.AuthoritativeDirection != 0)
                                         return _renderSignalVisualSnapshot.AuthoritativeDirection;
+
+                                    if (_decision != null &&
+                                        (_decision.Direction == 1 ||
+                                         _decision.Direction == -1))
+                                        return _decision.Direction;
 
                                     return BuildSignalVisualSnapshot(
                                         Math.Max(
@@ -49,7 +113,10 @@ namespace cAlgo
                                                     _lastEvaluatedM5));
 
                                     if (direction == 0)
-                                        return "WAITING";
+                                        return
+                                            GetMarketBiasDirection() != 0
+                                                ? "WAITING FOR TRADE"
+                                                : "WAITING";
 
                                     string prefix =
                                         direction == 1

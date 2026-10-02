@@ -38,14 +38,10 @@ namespace cAlgo
         private string GetPrimaryTimeframeSignalPanelStatus()
         {
             int m15 =
-                _m15Frame == null
-                    ? 0
-                    : _m15Frame.Direction;
+                FrameDirection(_m15Frame);
 
             int h1 =
-                _h1Frame == null
-                    ? 0
-                    : _h1Frame.Direction;
+                FrameDirection(_h1Frame);
 
             if (m15 == 0 && h1 == 0)
                 return string.Empty;
@@ -97,7 +93,8 @@ namespace cAlgo
         {
             if (_decision == null ||
                 _decision.Direction == 0)
-                return PanelMutedTextColor;
+                return PanelDirectionColor(
+                    GetMarketBiasDirection());
 
             if (!_decision.EntryAllowed)
                 return PanelWarningColor;

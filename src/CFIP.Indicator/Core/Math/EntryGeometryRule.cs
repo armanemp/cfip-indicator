@@ -75,13 +75,16 @@ namespace cAlgo
             {
                 mode = ExecutionMode.BreakoutMarket;
             }
+            else if (insideZone)
+            {
+                // A valid retest location remains actionable inside a trend.
+                // Continuation context may wait outside the zone, but it must
+                // never override an actual in-zone retest opportunity.
+                mode = ExecutionMode.RetestMarket;
+            }
             else if (continuation)
             {
                 mode = ExecutionMode.WaitingForTrigger;
-            }
-            else if (insideZone)
-            {
-                mode = ExecutionMode.RetestMarket;
             }
             else
             {

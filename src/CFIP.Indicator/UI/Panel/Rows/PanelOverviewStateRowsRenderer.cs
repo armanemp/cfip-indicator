@@ -45,6 +45,14 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
+                GetMarketBiasText(),
+                PanelDirectionColor(
+                    GetMarketBiasDirection()),
+                true,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
                 GetCanonicalSignalPanelStatus(),
                 GetCanonicalSignalPanelStatusColor(),
                 true,

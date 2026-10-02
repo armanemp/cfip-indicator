@@ -36,8 +36,8 @@ namespace cAlgo
                  _plan.Direction == -1))
                 return _plan.Direction;
 
-            if (decisionReady &&
-                _decision != null)
+            if (_decision != null &&
+                _decision.Direction != 0)
                 return _decision.Direction;
 
             if (reactionReady &&

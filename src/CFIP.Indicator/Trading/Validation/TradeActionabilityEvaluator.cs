@@ -68,6 +68,10 @@ namespace cAlgo
             ExecutionMode liveMode =
                 geometry.Mode;
 
+            if (!execution.Ready)
+                return TradeActionabilityResult.Blocked(
+                    "EXECUTION MODEL NOT READY");
+
             double entryDistanceAtr =
                 geometry.EntryDistanceAtr;
 
@@ -438,6 +442,22 @@ namespace cAlgo
                     divergence.Direction,
                     divergence.Type,
                     "EXECUTION ZONE QUALITY");
+
+            if (!IsActionabilityTriggerReady(
+                    closedM5,
+                    direction,
+                    liveMode))
+                return new TradeActionabilityResult(
+                    false,
+                    locationQuality,
+                    timingQuality,
+                    pricePositionQuality,
+                    entryDistanceAtr,
+                    tp1RR,
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    "M5 TRIGGER");
 
             if (liveMode == ExecutionMode.WaitingForTrigger)
                 return new TradeActionabilityResult(

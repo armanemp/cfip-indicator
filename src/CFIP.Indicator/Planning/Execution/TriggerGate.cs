@@ -72,6 +72,32 @@ namespace cAlgo
                                              MinimumStructuralConfirmations));
                                 }
         
+        private bool IsActionabilityTriggerReady(
+            int closedM5,
+            int direction,
+            ExecutionMode mode)
+        {
+            if (mode == ExecutionMode.RetestMarket ||
+                !M5OnlyConfirmedTrigger)
+                return true;
+
+            if (ClosedBarTriggerReady(
+                    _m5Bars,
+                    closedM5,
+                    direction))
+                return true;
+
+            if (AllowStrongTriggerOverride &&
+                AllowStrongM5TriggerOverride &&
+                _decision != null &&
+                _decision.Direction == direction &&
+                _decision.Confidence >= 85 &&
+                _decision.Edge >= 20)
+                return true;
+
+            return false;
+        }
+
         private string ExecutionModeText(
                                     ExecutionMode mode)
                                 {

@@ -68,6 +68,32 @@ namespace cAlgo
                 Math.Abs(retest.ActualEntry - retest.Market) < 1e-12,
                 "BUY retest geometry uses the canonical tolerant zone");
 
+            EntryGeometrySnapshot continuationRetest =
+                EntryGeometryRule.Evaluate(
+                    1,
+                    ExecutionMode.None,
+                    99.85,
+                    99.00,
+                    100.00,
+                    0.10,
+                    99.80,
+                    101.00,
+                    99.80,
+                    1.00,
+                    0.01,
+                    0.10,
+                    true,
+                    true,
+                    0.75,
+                    0.50);
+
+            Assert(
+                continuationRetest.Mode == ExecutionMode.RetestMarket &&
+                continuationRetest.InsideZone &&
+                !continuationRetest.TriggerReached &&
+                Math.Abs(continuationRetest.ActualEntry - continuationRetest.Market) < 1e-12,
+                "continuation context must not hide an in-zone BUY retest");
+
             EntryGeometrySnapshot breakout =
                 EntryGeometryRule.Evaluate(
                     -1,

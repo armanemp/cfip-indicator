@@ -92,13 +92,9 @@ namespace cAlgo
                                                 // resolved direction. The display-only BULL/BEAR
                                                 // bias fallback is intentionally excluded here.
                                                 int primaryM15Direction =
-                                                    _m15Frame == null
-                                                        ? 0
-                                                        : _m15Frame.Direction;
+                                                    FrameDirection(_m15Frame);
                                                 int primaryH1Direction =
-                                                    _h1Frame == null
-                                                        ? 0
-                                                        : _h1Frame.Direction;
+                                                    FrameDirection(_h1Frame);
 
                                                 string primaryState =
                                                     primaryM15Direction != 0 &&
