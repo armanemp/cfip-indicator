@@ -10,7 +10,6 @@ namespace cAlgo
             int closedM5)
         {
             if (!EnableParallelOpportunities ||
-                !ShowLevelLines ||
                 Bars == null ||
                 Bars.Count < 2)
             {
@@ -170,7 +169,8 @@ namespace cAlgo
                     Tp4LineColor,
                     ShowTP4);
 
-                if (ShowTacticalOpportunityLabels &&
+                if (ShowLevelLines &&
+                    ShowTacticalOpportunityLabels &&
                     (ShowLevelPriceLabels ||
                      ShowSignalLabels))
                 {
