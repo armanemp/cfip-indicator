@@ -32,6 +32,7 @@ namespace cAlgo
         public double Tp2RR;
         public double Tp3RR;
         public double Tp4RR;
+        public double RequestedVolume;
 
         public double Entry;
         public double IdealEntry;
