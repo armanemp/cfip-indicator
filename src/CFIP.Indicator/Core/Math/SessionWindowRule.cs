@@ -48,14 +48,8 @@ namespace cAlgo
                 NormalizeHour(sessionEndHour);
 
             DateTime dayStart =
-                new DateTime(
-                    reference.Year,
-                    reference.Month,
-                    reference.Day,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
+                CanonicalTimeRule.UtcDayStart(
+                    reference);
 
             int startMinute = startHour * SessionResolutionMinutes;
             int endMinute = endHour * SessionResolutionMinutes;
@@ -278,9 +272,7 @@ namespace cAlgo
 
         private static DateTime EnsureUtc(DateTime value)
         {
-            return value.Kind == DateTimeKind.Utc
-                ? value
-                : value.ToUniversalTime();
+            return CanonicalTimeRule.EnsureUtc(value);
         }
     }
 }
