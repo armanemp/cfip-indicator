@@ -1535,7 +1535,7 @@ START
 
 # 16. Permanent Phase-Close Record
 
-## Phase
+## Phase-closeout template
 Mxx — Title
 
 ## Result
@@ -1638,6 +1638,10 @@ Once M42 is accepted, the project leaves the remediation/certification track and
 # 19. Historical baseline absorbed into this roadmap
 
 این بخش فقط برای حفظ تداوم است. فازهای historical زیر «باز» نیستند مگر M1 خلافشان را ثابت کند.
+
+## Phase 7.4 — MaximumOpenPositions semantics
+
+Historical continuity marker preserved: the single-plan `Maximum Open Positions` semantics remain an audited invariant. This is historical continuity only; it is not a new implementation phase in the M0–M42 execution sequence.
 
 ## Track 19 — OSS Numerical Benchmark
 
