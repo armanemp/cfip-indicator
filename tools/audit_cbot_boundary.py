@@ -38,6 +38,7 @@ BROKER_MUTATION_APIS = (
 )
 
 KNOWN_BROKER_MUTATION_OWNERS = {
+    "Trading/Execution/BrokerAggressiveOrderMutation.cs",
     "Trading/Execution/BrokerPendingOrderPlacement.cs",
     "Trading/Execution/BrokerLimitOrderPlacement.cs",
     "Trading/Execution/BrokerPendingOrderCancellation.cs",
