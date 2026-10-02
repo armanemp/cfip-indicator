@@ -66,7 +66,6 @@ for token in (
     require(token in settings, "execution settings bridge missing " + token)
 
 for token in (
-    "Permissions.TradingPermission.IsAllowed",
     "SINGLE-PLAN CAPACITY BLOCKED",
     "ACCOUNT MARGIN LEVEL UNSAFE",
     "LIVE SPREAD EXCEEDS PLAN RISK LIMIT",
@@ -88,6 +87,10 @@ require(
     "canonical spread risk configuration must cross the Indicator→cBot intent boundary",
 )
 
+# The current cTrader Robot host exposes account/broker state, while the
+# Indicator API owns the user-facing trading-permission prompt. The cBot
+# remains fail-closed on live-account/broker submission errors and does not
+# attempt an unsupported Robot.Permissions access.
 require(
     "BrokerExecutionSafety.TryConstrainVolumeForMargin" in
     read("src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs"),
