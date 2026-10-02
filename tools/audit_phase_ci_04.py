@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static acceptance gate for CI-04 structure/swing/liquidity semantics and alert delivery synchronization."""
+"""Static acceptance gate for CI-04 structure/swing/liquidity semantics and unified alert delivery synchronization."""
 from pathlib import Path
 import sys
 
@@ -31,7 +31,7 @@ context_alerts = read("src/CFIP.Indicator/Trading/Alerts/ContextAlertEmitter.cs"
 alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 alert_event = read("src/CFIP.Indicator/Core/Runtime/AlertDelivery.cs")
 alert_queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
-alert_processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
+alert_processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 calc_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
 initialization = read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
@@ -127,18 +127,19 @@ check(
 )
 
 check(
-    "sound and popup consume the same queued alert event",
+    "sound and panel rail consume the same queued alert event",
     "_alertDeliveryQueue.Enqueue(" in alert_engine and
     "ProcessQueuedAlertDelivery();" in calc_cycle and
     "ProcessQueuedAlertDelivery();" in initialization and
-    "next.ShowPopup" in alert_processor and
-    "next.PlaySound" in alert_processor
+    "RecordPanelAlertDelivery(next)" in alert_processor and
+    "Notifications.PlaySound(" in alert_processor
 )
 
 check(
-    "delivery order updates popup before the audible cue",
-    "ShowPopup(" in alert_processor and
-    alert_processor.index("ShowPopup(") < alert_processor.index("Notifications.PlaySound(")
+    "delivery order updates panel rail before the audible cue",
+    "RecordPanelAlertDelivery(next)" in alert_processor and
+    alert_processor.index("RecordPanelAlertDelivery(next)") <
+    alert_processor.index("Notifications.PlaySound(")
 )
 
 check(
@@ -159,7 +160,8 @@ check(
     'key.StartsWith(\n                                    "RESTRICT|"' in alert_engine and
     'message.StartsWith(\n                                    "CFIP ENTRY BLOCKED"' in alert_engine and
     "restrictionAlert =" in alert_engine and
-    "if (playSound ||" in alert_engine
+    "blockedCandidateAlert" in alert_engine and
+    "!blockedCandidateAlert" in alert_engine
 )
 
 check(
@@ -183,7 +185,7 @@ check(
 check(
     "runtime UI audit points to the unified queue",
     "Core/Runtime/AlertDeliveryQueue.cs" in read("tools/audit_runtime_ui.py") and
-    "UI/Popup/AlertDeliveryProcessor.cs" in read("tools/audit_runtime_ui.py")
+    "UI/Panel/AlertDeliveryProcessor.cs" in read("tools/audit_runtime_ui.py")
 )
 
 check(

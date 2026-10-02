@@ -15,7 +15,7 @@
 | Live management | PASS | PASS | PASS | Required | Required |
 | Risk / suitability | PASS | PASS | PASS | Required | Required |
 | Prediction / telemetry | PASS | PASS | PASS | Required | Required |
-| Alerts / popup / chart / panel | PASS | PASS | PASS | Required | Required |
+| Alerts / panel alert rail / chart / panel | PASS | PASS | PASS | Required | Required |
 
 Static/source parity is not a substitute for live cTrader scenario acceptance.
 
@@ -462,8 +462,8 @@ Target-terminal replay remains required for actual broker/server timing, partial
 | Strong one-dimension location/timing/price-position recovery is deterministic | PASS | Required |
 | Multiple deficiencies and hard blockers remain rejected | PASS | Required |
 | Legacy ALERT BUY/SELL chart label is absent | PASS | Required |
-| Blocked/restricted candidates cause no sound, popup, email or visual-alert side effect | PASS | Required |
-| Alert popup defaults to bottom-left and readable presentation | PASS | Required |
+| Blocked/restricted candidates cause no sound, email or visual-alert side effect | PASS | Required |
+| Alert messages appear in the panel footer beside the Hide/Show control with semantic colors | PASS | Required |
 | Plan and prediction signal lines are fixed to thickness 1 and Solid | PASS | Required |
 | Broker submission confirmation/rejection/null-result telemetry is recorded through one gate | PASS | Required |
 | Server SL/TP ladder rejects wrong-side structural stop geometry | PASS | Required |
@@ -476,7 +476,7 @@ Target-terminal replay remains required for actual broker/server timing, partial
 | cTrader Compile/Build | PASS | Required |
 | Source / Architecture | PASS | Required |
 
-Target-terminal replay remains required for exact signal timing, stale-object removal, popup rendering, broker submission timing, server protection activation, realized SL/TP and false-signal measurements.
+Target-terminal replay remains required for exact signal timing, stale-object removal, panel alert-rail rendering, broker submission timing, server protection activation, realized SL/TP and false-signal measurements.
 
 
 

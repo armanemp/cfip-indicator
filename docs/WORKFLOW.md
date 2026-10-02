@@ -129,7 +129,7 @@ The standing checklist is:
 
 All signal/plan level lines must use `LineStyle.Solid` and fixed thickness 1. This is a standing UI contract and must be checked by the phase audits; line text remains white and background-free unless a future phase explicitly changes the documented contract.
 
-Alert mirror text such as `ALERT BUY/SELL` is not a signal authority and must remain absent from chart level presentation. Expired/stale pre-trade visuals must be removed by a bounded lifecycle owner, and blocked/restricted candidates must produce no sound, popup, email or visual-alert side effect.
+Alert mirror text such as `ALERT BUY/SELL` is not a signal authority and must remain absent from chart level presentation. Expired/stale pre-trade visuals must be removed by a bounded lifecycle owner, and blocked/restricted candidates must produce no sound, email or visual-alert side effect.
 
 
 

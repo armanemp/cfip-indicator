@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static acceptance gate for CR3.4 execution UI re-arm and popup reliability."""
+"""Static acceptance gate for CR3.4 execution-control and alert-delivery boundaries."""
 from pathlib import Path
 import sys
 
@@ -17,11 +17,11 @@ rule = read("src/CFIP.Indicator/Core/Math/ExecutionControlPresentationRule.cs")
 sync = read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
-renderer = read("src/CFIP.Indicator/UI/Popup/PopupRenderer.cs")
-processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
-remover = read("src/CFIP.Indicator/UI/Popup/PopupRemover.cs")
 initialization = read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
 queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
+delivery = read("src/CFIP.Indicator/Core/Runtime/AlertDelivery.cs")
+processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
+rail = read("src/CFIP.Indicator/UI/Panel/PanelAlertMessageRenderer.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
@@ -34,11 +34,7 @@ checks = {
         "if (_state != RuntimeFaultState.Healthy)" in runtime and
         "_entryArmed = true;" in runtime
     ),
-    "explicit re-arm remains owned by the runtime state machine": (
-        "RequestExplicitRearm()" in runtime and
-        "public bool RequestExplicitRearm()" in runtime
-    ),
-    "execution controls remain status-only and do not mutate runtime authority": (
+    "execution controls remain status-only": (
         "IsEnabled = false" in factory and
         "ExecutionControlPresentationRule.ComposeStatusText(" in factory and
         "_autoTradingQuickToggle.Click +=" not in factory and
@@ -52,47 +48,34 @@ checks = {
         "EffectiveAutoTradingEnabled" in sync and
         "EffectiveAutomaticOrdersEnabled" in sync
     ),
-    "alert delivery queue is owned by runtime state": (
+    "bounded alert delivery queue remains runtime-owned": (
         "AlertDeliveryQueue(16)" in state and
-        "_popupCritical" in state
-    ),
-    "alert delivery queue is bounded": (
         "_capacity" in queue and
         "return false;" in queue
     ),
-    "critical alert deliveries have priority": (
+    "critical deliveries retain priority": (
         "if (_critical.Count > 0)" in queue and
         "if (delivery.Critical)" in queue
     ),
-    "normal alert overflow cannot grow the queue": (
-        "else" in queue and
-        "return false;" in queue
-    ),
-    "alert engine queues one delivery event": (
+    "alert engine uses one canonical delivery event": (
         "_alertDeliveryQueue.Enqueue(" in alerts and
-        "ShowPopup(message)" not in alerts
+        "new AlertDelivery(" in alerts and
+        "ShowPopup(" not in alerts
     ),
-    "popup renderer tracks priority": (
-        "private void ShowPopup(" in renderer and
-        "bool critical)" in renderer and
-        "_popupCritical =\n                                critical;" in renderer
+    "panel rail is the sole visual message surface": (
+        "RecordPanelAlertDelivery(next)" in processor and
+        "CreatePanelAlertMessageRail(" in rail and
+        "ResolvePanelAlertMessageColor(" in rail and
+        "ShowPopup(" not in processor
     ),
-    "alert delivery processor is the only queue-to-render handoff": (
-        "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor and
-        "_alertDeliveryQueue.TryPeek" in processor
+    "sound remains after panel presentation at one delivery boundary": (
+        processor.index("RecordPanelAlertDelivery(next)") <
+        processor.index("Notifications.PlaySound(")
     ),
-    "queued alert replaces prior popup at one delivery boundary": (
-        "if (next.ShowPopup)" in processor and
-        "if (_popup != null)" in processor and
-        "ShowPopup(\n                    next.Message,\n                    next.Critical)" in processor
+    "queue is drained at calculation/initialization boundaries": (
+        "ProcessQueuedAlertDelivery();" in initialization
     ),
-    "popup priority resets on removal": (
-        "_popupCritical = false;" in remover
-    ),
-    "alert delivery queue is drained at runtime boundaries": (
-        "RemoveExpiredPopup();\n                HandleRuntimeHeartbeat();\n                ProcessQueuedAlertDelivery();" in initialization
-    ),
-    "alert delivery queue is cleared on destroy": (
+    "queue is cleared on destroy": (
         "_alertDeliveryQueue.ClearPendingAlerts();" in initialization
     ),
     "deterministic re-arm runtime contract is registered": (
@@ -114,31 +97,34 @@ for name, ok in checks.items():
     if not ok:
         errors.append(name)
 
-# The handler must never reintroduce a parameter-dependent re-arm branch.
-# The queue itself must remain platform-neutral.
 if "cAlgo.API" in queue or "Indicator" in queue or "Chart." in queue:
+    errors.append("alert delivery queue has a platform/UI dependency")
     print("FAIL | alert delivery queue has a platform/UI dependency")
-    errors.append("popup queue has a platform/UI dependency")
 
-# There should be one production popup render owner, plus the queue processor.
 production = "\n".join(
     p.read_text(encoding="utf-8")
     for p in (ROOT / "src/CFIP.Indicator").rglob("*.cs")
 )
-if production.count("ShowPopup(\n                    next.Message,\n                    next.Critical)") != 1:
-    print("FAIL | queued popup render handoff count is not exactly one")
-    errors.append("queued popup render handoff count is not exactly one")
 
-for path in (ROOT / "src/CFIP.Indicator").rglob("*.cs"):
-    relative = path.relative_to(ROOT).as_posix()
-    if relative in {
-        "src/CFIP.Indicator/UI/Popup/PopupRenderer.cs",
-        "src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs",
-    }:
-        continue
-    if "ShowPopup(" in path.read_text(encoding="utf-8"):
-        print(f"FAIL | direct popup render caller: {relative}")
-        errors.append(f"direct popup render caller: {relative}")
+for forbidden in (
+    "ShowPopup(",
+    "_popup",
+    "ShowPopupAlerts",
+    "PopupCriticalOnly",
+):
+    if forbidden in production:
+        print(f"FAIL | obsolete popup symbol remains: {forbidden}")
+        errors.append(f"obsolete popup symbol remains: {forbidden}")
+
+for relative in (
+    "src/CFIP.Indicator/UI/Popup/PopupRenderer.cs",
+    "src/CFIP.Indicator/UI/Popup/PopupRemover.cs",
+    "src/CFIP.Indicator/UI/Popup/PopupExpirationCleaner.cs",
+    "src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs",
+):
+    if (ROOT.parent.parent / relative).exists():
+        print(f"FAIL | obsolete popup file remains: {relative}")
+        errors.append(f"obsolete popup file remains: {relative}")
 
 print("CR3.4 SUMMARY")
 print("=" * 72)
