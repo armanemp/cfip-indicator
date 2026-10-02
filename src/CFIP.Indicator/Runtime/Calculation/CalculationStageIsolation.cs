@@ -305,14 +305,7 @@ namespace cAlgo
                 index,
                 "EXECUTION REMINDER");
 
-            RunCalculationStage(
-                () =>
-                {
-                    SyncQuickExecutionControls();
-                    return true;
-                },
-                index,
-                "EXECUTION CONTROL SYNCHRONIZATION");
+
 
             // Predictive pending orders get first execution priority. They must be
             // evaluated before a market plan is materialized, otherwise a newly-created
