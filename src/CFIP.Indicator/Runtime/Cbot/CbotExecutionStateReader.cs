@@ -7,6 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private CbotExecutionStateSnapshot _cBotExecutionState;
+        private CbotPresenceSnapshot _cBotPresence;
         private DateTime _nextCbotStateReadUtc = DateTime.MinValue;
         private string _cBotStateReadError = string.Empty;
 
@@ -123,6 +124,28 @@ namespace cAlgo
                             InstanceId),
                         LocalStorageScope.Device);
 
+                string presencePayload =
+                    LocalStorage.GetString(
+                        CbotExecutionStateBusKey.ForSymbol(
+                            SymbolName),
+                        LocalStorageScope.Device);
+
+                if (CbotExecutionStateCodec.TryDeserializePresence(
+                        presencePayload,
+                        out CbotPresenceSnapshot presence) &&
+                    presence != null &&
+                    string.Equals(
+                        presence.Symbol,
+                        SymbolName,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        presence.CbotTypeName,
+                        CbotIdentity.TypeName,
+                        StringComparison.Ordinal))
+                {
+                    _cBotPresence = presence;
+                }
+
                 if (CbotExecutionStateCodec.TryDeserialize(
                         payload,
                         out CbotExecutionStateSnapshot snapshot) &&
@@ -204,6 +227,18 @@ namespace cAlgo
                     "CBOT CONNECTED • HEARTBEAT LIVE • " +
                     CbotExecutionStatePanelText();
 
+            if (HasFreshCbotPresence())
+                return
+                    "CBOT DETECTED • " +
+                    (_cBotPresence.State ?? "RUNNING") +
+                    " • INDICATOR BIND " +
+                    (string.Equals(
+                        _cBotPresence.BoundIndicatorInstanceId,
+                        InstanceId,
+                        StringComparison.Ordinal)
+                        ? "PENDING"
+                        : "NOT RESOLVED");
+
             ChartRobot chartRobot;
             string chartState;
             string chartReason;
@@ -261,6 +296,20 @@ namespace cAlgo
         private bool HasFreshCbotHeartbeat()
         {
             return IsCbotExecutionStateFresh();
+        }
+
+        private bool HasFreshCbotPresence()
+        {
+            if (_cBotPresence == null)
+                return false;
+
+            double ageSeconds =
+                (TimeInUtc -
+                 _cBotPresence.ObservedUtc).TotalSeconds;
+
+            return
+                ageSeconds >= 0 &&
+                ageSeconds <= 3.0;
         }
 
         private string CbotExecutionStatePanelText()
