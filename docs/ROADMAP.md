@@ -815,7 +815,7 @@ Status: **VERIFIED COMPLETE — merged through PR #207 after all required reposi
 
 ## M4 — Time / Session / History / Persistence Truth
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #207.**
 
 2026-10-02 implementation:
 - introduced a single CanonicalTimeRule for UTC normalization, UTC trading-day boundaries, half-open intervals and deterministic 90-day archive periods;
