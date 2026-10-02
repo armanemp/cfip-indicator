@@ -114,23 +114,23 @@ namespace cAlgo
                     StringComparison.OrdinalIgnoreCase) >= 0)
                 return false;
 
-            double distance =
-                Math.Abs(
-                    level.Price -
-                    _plan.Entry);
+            RiskRewardMathResult geometry =
+                RiskRewardMathRule.EvaluateFromRisk(
+                    _plan.Direction,
+                    _plan.Entry,
+                    _plan.Risk,
+                    level.Price,
+                    0,
+                    0,
+                    MaximumRewardRR,
+                    Symbol.PipSize);
 
             double rr =
-                distance /
-                Math.Max(
-                    Symbol.PipSize,
-                    _plan.Risk);
+                geometry.NominalRR;
 
             return
-                IsFinitePositive(rr) &&
-                rr <=
-                Math.Max(
-                    0,
-                    MaximumRewardRR);
+                geometry.Valid &&
+                IsFinitePositive(rr);
         }
 
         private bool IsImprovedLiveTarget(
