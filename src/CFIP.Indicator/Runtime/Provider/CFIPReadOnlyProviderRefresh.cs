@@ -223,8 +223,7 @@ namespace cAlgo
         private string ResolveProviderScenarioId(
             string signalId,
             OpportunityLane lane,
-            int direction,
-            int closedM5)
+            int direction)
         {
             if (!string.IsNullOrWhiteSpace(
                     _activeExecutionScenarioId))
