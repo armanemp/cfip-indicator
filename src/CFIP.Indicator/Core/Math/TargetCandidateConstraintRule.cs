@@ -95,7 +95,7 @@ namespace cAlgo
                     target,
                     risk);
 
-            if (!IsPositiveFinite(rr))
+            if (!IsCanonicalCandidatePositiveFinite(rr))
             {
                 return BlockGeometry(
                     TargetCandidateRejectionReasons.RewardRiskInvalid);
@@ -164,7 +164,7 @@ namespace cAlgo
                 rr);
         }
 
-        private static bool IsPositiveFinite(
+        private static bool IsCanonicalCandidatePositiveFinite(
             double value)
         {
             return value > 0 &&
