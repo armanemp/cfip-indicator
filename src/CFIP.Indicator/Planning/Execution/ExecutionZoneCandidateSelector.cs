@@ -202,7 +202,8 @@ namespace cAlgo
                 ExecutionZoneSelectionCandidate candidate =
                     candidates[i];
 
-                if (candidate == null)
+                if (candidate == null ||
+                    candidate.RewardPathRR <= 0)
                     continue;
 
                 if (best == null ||
