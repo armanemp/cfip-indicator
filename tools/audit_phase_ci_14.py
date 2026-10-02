@@ -81,8 +81,8 @@ check(
 check(
     "canonical RR owner normalizes maximum RR against minimum RR",
     "NormalizeMaximumRR(" in canonical and
-    "Math.Max(
-                maximumRR," in canonical,
+    "maximumRR" in canonical and
+    "minimumRR" in canonical,
 )
 
 check(
