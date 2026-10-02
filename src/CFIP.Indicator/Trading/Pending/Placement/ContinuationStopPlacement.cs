@@ -32,8 +32,8 @@ namespace cAlgo
       {
         SubmissionAttemptIdentity submissionIdentity; string submissionGateReason;
         string executionScenarioId =
-        "PENDING-STOP-" +
-        (direction == 1 ? "BUY" : "SELL");
+            ResolveDirectionExecutionScenarioId(
+                direction);
         _activeExecutionScenarioId =
         executionScenarioId;
         if (!TryAcquireSubmission(closedM5, direction, ExecutionSubmissionPath.PendingStop, executionScenarioId, out submissionIdentity, out submissionGateReason))
