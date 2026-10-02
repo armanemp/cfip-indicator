@@ -169,6 +169,7 @@ namespace cAlgo
                                                 }
                                     
             
+        }
         private string DirectionText(int direction)
         {
             if (direction == 1)
