@@ -93,6 +93,9 @@ namespace CFIP.cBot
         private readonly ManagementExecutionCoordinator _management =
             new ManagementExecutionCoordinator();
 
+        private readonly CbotExecutionStatePublisher _statePublisher =
+            new CbotExecutionStatePublisher();
+
         private ShadowHostState _state =
             ShadowHostState.Waiting;
 
@@ -105,6 +108,8 @@ namespace CFIP.cBot
         private DateTime _nextSignalReloadUtc = DateTime.MinValue;
         private string _boundIndicatorInstanceId = "";
         private string _activeManagedExecutionLabel = "";
+        private SignalEnvelope _lastSignalEnvelope;
+        private long _stateRevision;
 
         protected override void OnStart()
         {
@@ -138,8 +143,10 @@ namespace CFIP.cBot
                 ProviderStaleAfterSeconds,
                 ContractVersion.Current);
 
+            SubscribeBrokerLifecycleEvents();
             RefreshIndicatorBinding(true);
             ReloadSignalStore(true);
+            PublishExecutionState("CBOT STARTED", true);
         }
 
         protected override void OnTick()
@@ -155,6 +162,7 @@ namespace CFIP.cBot
             ReloadSignalStore(false);
 
             DateTime nowUtc = Server.TimeInUtc;
+            PublishExecutionState("HEARTBEAT", false);
 
             if (EnableDemoManagementExecution &&
                 !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
@@ -215,10 +223,13 @@ namespace CFIP.cBot
                 return;
             }
 
+            _lastSignalEnvelope = envelope;
             _activeManagedExecutionLabel =
                 envelope.Intent == null
                     ? ""
                     : envelope.Intent.ExecutionLabel ?? "";
+
+            PublishExecutionState("SIGNAL OBSERVED", false);
 
             ShadowHostResult shadowResult =
                 _shadow.Observe(
@@ -229,6 +240,11 @@ namespace CFIP.cBot
                     nowUtc);
 
             LogStateIfChanged(shadowResult);
+            PublishExecutionState(
+                shadowResult == null
+                    ? "SHADOW STATE UNAVAILABLE"
+                    : shadowResult.Reason ?? "SHADOW STATE",
+                false);
 
             bool executionEnabled =
                 EnableDemoMarketExecution ||
@@ -476,6 +492,10 @@ namespace CFIP.cBot
             _lastLoggedRevision = result.Revision;
             _lastLoggedReason = result.Reason ?? "";
 
+            PublishExecutionState(
+                result.Reason ?? "SHADOW STATE",
+                true);
+
             Print(
                 "CFIP DEMO SHADOW | state={0} | reason={1} | revision={2} | " +
                 "signal={3} | scenario={4} | plan={5} | key={6}",
@@ -486,6 +506,99 @@ namespace CFIP.cBot
                 result.ScenarioId ?? "",
                 result.PlanId ?? "",
                 result.IdempotencyKey ?? "");
+        }
+
+
+        private void SubscribeBrokerLifecycleEvents()
+        {
+            Positions.Opened +=
+                args => PublishExecutionState(
+                    "POSITION OPENED",
+                    true);
+
+            Positions.Modified +=
+                args => PublishExecutionState(
+                    "POSITION MODIFIED",
+                    true);
+
+            Positions.Closed +=
+                args => PublishExecutionState(
+                    "POSITION CLOSED",
+                    true);
+
+            PendingOrders.Created +=
+                args => PublishExecutionState(
+                    "PENDING CREATED",
+                    true);
+
+            PendingOrders.Modified +=
+                args => PublishExecutionState(
+                    "PENDING MODIFIED",
+                    true);
+
+            PendingOrders.Filled +=
+                args => PublishExecutionState(
+                    "PENDING FILLED",
+                    true);
+
+            PendingOrders.Cancelled +=
+                args => PublishExecutionState(
+                    "PENDING CANCELLED",
+                    true);
+        }
+
+        private void PublishExecutionState(
+            string reason,
+            bool force)
+        {
+            if (string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+                return;
+
+            ShadowBrokerSnapshot brokerSnapshot =
+                ReadBrokerSnapshot();
+
+            string runtimeState;
+
+            if (_state == ShadowHostState.Blocked)
+            {
+                runtimeState = "BLOCKED";
+            }
+            else if (brokerSnapshot != null &&
+                     (brokerSnapshot.ManagedPositions > 0 ||
+                      brokerSnapshot.ManagedPendingOrders > 0))
+            {
+                runtimeState = "ACTIVE";
+            }
+            else if (EnableDemoMarketExecution ||
+                     EnableDemoPendingStopExecution ||
+                     EnableDemoPendingLimitExecution ||
+                     EnableDemoAggressiveExecution ||
+                     EnableDemoManagementExecution)
+            {
+                runtimeState = "ARMED";
+            }
+            else
+            {
+                runtimeState = "DISARMED";
+            }
+
+            _statePublisher.Publish(
+                this,
+                _boundIndicatorInstanceId,
+                Server.TimeInUtc,
+                ++_stateRevision,
+                runtimeState,
+                reason ?? string.Empty,
+                EnableDemoMarketExecution,
+                EnableDemoPendingStopExecution,
+                EnableDemoPendingLimitExecution,
+                EnableDemoAggressiveExecution,
+                EnableDemoManagementExecution,
+                _activeManagedExecutionLabel,
+                _activeManagedExecutionLabel,
+                _lastSignalEnvelope,
+                force);
         }
 
         protected override void OnStop()
