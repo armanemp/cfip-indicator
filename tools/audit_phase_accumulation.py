@@ -13,6 +13,7 @@ def read(rel: str) -> str:
 # Phase accumulation gate: every phase must keep the automatic trade/order
 # pipeline coupled to one decision, one submission gate and one protection owner.
 pending_stop = read("Trading/Pending/Placement/ContinuationStopPlacement.cs")
+pending_stop_preparation = read("Trading/Pending/Placement/ContinuationStopPreparation.cs")
 pending_limit = read("Trading/Pending/Placement/ReversalLimitPlacement.cs")
 ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
 ROOT_REPO = Path(__file__).resolve().parents[1]
@@ -42,12 +43,13 @@ for name, source in execution_paths.items():
     if name == "pending-stop":
         for token in (
             "PrepareContinuationStopForCbot(",
-            "ExecutionIntentKind.Stop",
         ):
             if token not in source:
                 raise SystemExit(f"{name}: missing intent-only token {token}")
         if "PlaceStopOrder(" in source:
             raise SystemExit("pending-stop: Indicator broker mutation remains")
+        if "ExecutionIntentKind.Stop" not in pending_stop_preparation:
+            raise SystemExit("pending-stop: canonical Stop intent construction missing")
     else:
         for token in ("TryAcquireSubmission(", "TryBuildServerSideTakeProfitLadder("):
             if token not in source:
