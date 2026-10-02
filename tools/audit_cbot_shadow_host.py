@@ -128,9 +128,10 @@ check(
 )
 
 check(
-    "cBot execution remains disarmed",
-    "broker mutation=DISARMED" in host and
-    "EnableAutoTrading = false" in host and
+    "cBot market execution is explicit and fail-closed",
+    "EnableAutoTrading = true" in host and
+    "EnableMarketExecution" in host and
+    "DefaultValue = false" in host and
     "EnableAutomaticOrders = false" in host and
     "EnableAggressiveAutoEntry = false" in host and
     "AutoProtectBrokerPositions = false" in host and
@@ -164,7 +165,7 @@ check(
     "ProviderRevisionMismatch();" in test_text,
 )
 
-print("CBOT-P3 SHADOW HOST SUMMARY")
+print("CBOT-P3 SHADOW HOST SUMMARY • P4A MARKET OWNER ACTIVE")
 print("=" * 72)
 print(f"Failures: {len(errors)}")
 if errors:
