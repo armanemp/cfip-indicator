@@ -1,14 +1,22 @@
-## CI-17A — Panel live-content refresh correction — 2026-10-02
+## CI-17A closeout — Panel live-content refresh correction — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — repository implementation gate passed; target-terminal visual acceptance remains pending.**
 
-Root cause: the runtime heartbeat intentionally skipped the full RenderPanel path, but the full renderer also short-circuited on an incomplete presentation key, so mutable panel content could remain stale. Implemented a bounded 500 ms content-only refresh that builds one snapshot and updates row content without rebuilding the panel layout. The panel is reset for immediate refresh on restore, and the live RR row now uses the current Bid/Ask quote.
+PR #175 merged to `main` as `6ffff643ad5c24782ca7035355e31ee4a04465c2`.
 
-No strategy thresholds, decision/execution policy, public parameters or broker mutation paths changed.
+Verified implementation HEAD: `9641bfc02c7604d6432202459fa198866d4a5f53`.
 
-A deterministic Runtime Contract and audit_phase_ci_17a.py were added and accumulated after CI-17.
+Verification:
+- Source/Architecture #2742: PASS;
+- Runtime Acceptance Contracts #2551: PASS;
+- cTrader Compile #2735: PASS;
+- accumulated Source/Architecture historical audits through CI-17A: PASS.
 
-Target-terminal visual responsiveness remains a manual acceptance boundary.
+Root cause was an incomplete refresh split: the runtime heartbeat updated only volatile rows while full panel rendering could short-circuit on an unchanged/incomplete presentation key. The fix adds a bounded 500 ms content-only row refresh, reuses one visual snapshot, preserves full-layout optimization, forces immediate refresh after restore/reset, and uses current Bid/Ask locally for live RR display.
+
+The live quote is presentation-only and does not mutate trading state. No public parameters, strategy thresholds, decision rules, execution policy or broker mutation authority changed.
+
+Target-terminal visual responsiveness remains a manual CI-17 acceptance boundary.
 
 # CFIP Indicator — Development and Continuity Log
 
