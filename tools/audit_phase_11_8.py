@@ -12,6 +12,9 @@ LABELS = ROOT / "src/CFIP.Indicator/Trading/Execution/State/TradeLabelFormatter.
 AUTO_MARKET = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketBrokerExecution.cs"
 AGGRESSIVE = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveBrokerExecution.cs"
 PENDING_STOP = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/ContinuationStopPlacement.cs"
+PENDING_STOP_CBOT = ROOT / "src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs"
+PROVIDER_PLAN = ROOT / "src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderPlan.cs"
+CBOT_HOST = ROOT / "src/CFIP.cBot/CFIPExecutionBot.cs"
 PENDING_LIMIT = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/ReversalLimitPlacement.cs"
 REVERSAL = ROOT / "src/CFIP.Indicator/Trading/LiveManagement/ReversalCloseGuard.cs"
 PARAMS = ROOT / "src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs"
@@ -35,6 +38,9 @@ labels = read(LABELS)
 auto_market = read_optional(AUTO_MARKET)
 aggressive = read_optional(AGGRESSIVE)
 pending_stop = read(PENDING_STOP)
+pending_stop_cbot = read(PENDING_STOP_CBOT)
+provider_plan = read(PROVIDER_PLAN)
+cbot_host = read(CBOT_HOST)
 pending_limit = read(PENDING_LIMIT)
 reversal = read(REVERSAL)
 params = read(PARAMS)
@@ -90,12 +96,41 @@ cbot = read_optional(
 if "ExecuteMarketOrder(" not in cbot or "ExecuteMarketRangeOrder(" not in cbot:
     errors.append("cBot Market owner must expose both Market and Market-Range submission")
 
-for path, label in (
-    (pending_stop, "pending stop"),
-    (pending_limit, "pending limit"),
+if (
+    "CapturePendingOrderPlanSnapshot(" not in pending_stop or
+    "PlaceStopOrder(" in pending_stop
 ):
-    if "PendingOrderLabel()" not in path:
-        errors.append(label + " submission is not instance-scoped through PendingOrderLabel()")
+    errors.append(
+        "pending stop Indicator path must remain intent/snapshot-only after P4C"
+    )
+
+if (
+    "ManagedExecutionLabel()" not in provider_plan or
+    "string executionLabel" not in provider_plan or
+    "executionLabel," not in provider_plan
+):
+    errors.append(
+        "provider must transport the canonical instance-scoped execution label"
+    )
+
+if (
+    "envelope.Intent.ExecutionLabel" not in pending_stop_cbot or
+    'string label = executionLabel + "-PENDING";' not in pending_stop_cbot or
+    "MISSING EXECUTION LABEL" not in pending_stop_cbot
+):
+    errors.append(
+        "pending stop cBot must consume the transported instance-scoped execution label"
+    )
+
+if "envelope.Intent.ExecutionLabel" not in cbot_host:
+    errors.append(
+        "cBot host must use the transported execution label for broker-state ownership"
+    )
+
+if "PendingOrderLabel()" not in pending_limit:
+    errors.append(
+        "pending limit submission remains instance-scoped through the canonical Indicator owner"
+    )
 
 if "ManagedExecutionLabel()" not in labels or "InstanceId" not in labels:
     errors.append("canonical managed execution label formatter is missing InstanceId binding")
