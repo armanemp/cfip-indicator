@@ -55,7 +55,9 @@ check(
 )
 check(
     "scenario labels preserve per-ScenarioId identity without broker types in contracts",
-    'root + "|CFIP-S:" + hash' in scenario_identity and
+    "ScenarioMarker = "|CFIP-S:" in scenario_identity and
+    "return root +" in scenario_identity and
+    "scenarioId.Trim()" in scenario_identity and
     "cAlgo." not in batch and
     "cAlgo." not in codec
 )
@@ -108,7 +110,7 @@ check(
 check(
     "cBot validates every scenario through one canonical preflight",
     "CbotSignalPreflight.TryValidate(" in bot and
-    "ProviderStaleAfterSeconds" in preflight and
+    "staleAfterSeconds" in preflight and
     "SIGNAL SYMBOL SCOPE MISMATCH" in preflight
 )
 check(
