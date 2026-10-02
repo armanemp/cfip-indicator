@@ -77,7 +77,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[safeBar],
                             labelPrice,
-                            whiteTextColor);
+                            labelTextColor);
                 }
 
                 if (label == null)
@@ -90,7 +90,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    whiteTextColor;
+                    labelTextColor;
                 label.FontSize =
                     Math.Max(
                         8,
@@ -188,9 +188,9 @@ namespace cAlgo
                     NormalizePrice(
                         price + verticalGap);
 
-                // Level text is deliberately background-free and always white.
-                // The semantic color remains owned by the corresponding line.
-                Color whiteTextColor =
+                // Level text is deliberately background-free and reuses the
+                // exact semantic color of its corresponding line.
+                Color labelTextColor =
                     GetReadableLabelTextColor(
                         semanticColor);
 
@@ -255,10 +255,11 @@ namespace cAlgo
         }
 
         private Color GetReadableLabelTextColor(
-            Color background)
+            Color semanticColor)
         {
-            // Level annotations intentionally use white text only.
-            return Color.White;
+            // Compact level labels have no background, so the only visual
+            // styling authority is the exact color of the corresponding line.
+            return semanticColor;
         }
 
         private void RemovePlanLabel(
