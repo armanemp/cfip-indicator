@@ -49,26 +49,33 @@ namespace cAlgo
 
             int lanePriority;
 
-            switch (candidate.Lane)
+            if (candidate.IsPrimaryTimeframeSignal)
             {
-                case OpportunityLane.Strategic:
-                    lanePriority = 4000;
-                    break;
+                lanePriority = 5000;
+            }
+            else
+            {
+                switch (candidate.Lane)
+                {
+                    case OpportunityLane.Strategic:
+                        lanePriority = 4000;
+                        break;
 
-                case OpportunityLane.CounterHtfTactical:
-                    lanePriority = 3200;
-                    break;
+                    case OpportunityLane.CounterHtfTactical:
+                        lanePriority = 3200;
+                        break;
 
-                case OpportunityLane.MicroReaction:
-                    lanePriority = 3000;
-                    break;
+                    case OpportunityLane.MicroReaction:
+                        lanePriority = 3000;
+                        break;
 
-                default:
-                    lanePriority =
-                        string.IsNullOrWhiteSpace(candidate.SourceTimeframe)
-                            ? 2600
-                            : 2800;
-                    break;
+                    default:
+                        lanePriority =
+                            string.IsNullOrWhiteSpace(candidate.SourceTimeframe)
+                                ? 2600
+                                : 2800;
+                        break;
+                }
             }
 
             return
@@ -206,6 +213,27 @@ namespace cAlgo
 
             if (priority != 0)
                 return priority;
+
+            int primary =
+                right.IsPrimaryTimeframeSignal.CompareTo(
+                    left.IsPrimaryTimeframeSignal);
+
+            if (primary != 0)
+                return primary;
+
+            int quality =
+                right.Quality.CompareTo(
+                    left.Quality);
+
+            if (quality != 0)
+                return quality;
+
+            int location =
+                right.LocationConfluenceScore.CompareTo(
+                    left.LocationConfluenceScore);
+
+            if (location != 0)
+                return location;
 
             int actionable =
                 right.ActionableNow.CompareTo(
