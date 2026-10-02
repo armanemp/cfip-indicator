@@ -1,6 +1,19 @@
 
 ## CBOT-DEMO-MARKET — 2026-10-02
 
+Status: **VERIFIED COMPLETE — repository gates passed.**
+
+Merged via PR #191 as `8ea385e2aa782ae24aa4f4a7941aee64bf4b685b`.
+
+Verification: Runtime `36976202827` PASS; cTrader Compile `36976202817` PASS; Source/Architecture `36976202805` PASS.
+
+Completed: stable Indicator/cBot names with SDK warning cleanup; canonical Device-scope SignalEnvelope publication; exact same-chart Indicator instance binding; demo-only Market execution owner with live-account rejection, one-session execution cap, geometry/volume/capacity/idempotency guards; cBot project depends only on Contracts; accumulated provider/shadow/project audits updated.
+
+Manual target-terminal acceptance remains pending. The Indicator execution switches must stay OFF for this bridge; only `Enable Demo Market Execution` on the cBot is armed on a demo account.
+
+Next implementation phase: **CBOT-P4A — reissue Market / Market Range broker-mutation extraction from current `main`**, using the target-terminal demo bridge as the parity baseline.
+
+
 Implementation branch: phase/cbot-p4a-live-demo-warning-2026-10-02.
 
 Completed in this phase:
