@@ -197,16 +197,32 @@ namespace cAlgo
                 return null;
 
             double tp1RR =
-                CalculatePreviewStageRR(preview.Tp1, preview.Entry, preview.Stop);
+                CalculatePreviewStageRR(
+                    preview.Tp1,
+                    preview.Entry,
+                    preview.Stop,
+                    direction);
 
             double tp2RR =
-                CalculatePreviewStageRR(preview.Tp2, preview.Entry, preview.Stop);
+                CalculatePreviewStageRR(
+                    preview.Tp2,
+                    preview.Entry,
+                    preview.Stop,
+                    direction);
 
             double tp3RR =
-                CalculatePreviewStageRR(preview.Tp3, preview.Entry, preview.Stop);
+                CalculatePreviewStageRR(
+                    preview.Tp3,
+                    preview.Entry,
+                    preview.Stop,
+                    direction);
 
             double tp4RR =
-                CalculatePreviewStageRR(preview.Tp4, preview.Entry, preview.Stop);
+                CalculatePreviewStageRR(
+                    preview.Tp4,
+                    preview.Entry,
+                    preview.Stop,
+                    direction);
 
             TradeActionabilityResult actionability =
                 EvaluateTradeActionability(
@@ -392,6 +408,31 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize * 2,
                     0));
+        }
+
+        private double CalculatePreviewStageRR(
+            double target,
+            double entry,
+            double stop,
+            int direction)
+        {
+            if (!IsFinitePositive(target))
+                return 0;
+
+            RiskRewardMathResult geometry =
+                RiskRewardMathRule.Evaluate(
+                    direction,
+                    entry,
+                    stop,
+                    target,
+                    0,
+                    0,
+                    MaximumRewardRR,
+                    Symbol.PipSize);
+
+            return geometry.Valid
+                ? geometry.NominalRR
+                : 0;
         }
 
     }
