@@ -8,8 +8,7 @@ namespace CFIP.cBot.Execution
     {
         private const int MaxPublishIntervalMilliseconds = 1000;
 
-        private DateTime _lastFlushUtc = DateTime.MinValue;
-        private string _lastPayload = string.Empty;
+        private DateTime _lastPublishUtc = DateTime.MinValue;
 
         public void Publish(
             Robot robot,
@@ -132,20 +131,14 @@ namespace CFIP.cBot.Execution
                     scenarioId,
                     signalRevision);
 
-            string payload =
-                CbotExecutionStateCodec.Serialize(snapshot);
-
-            bool materiallyChanged =
-                !string.Equals(
-                    payload,
-                    _lastPayload,
-                    StringComparison.Ordinal);
-
             if (!force &&
-                !materiallyChanged &&
-                (nowUtc - _lastFlushUtc).TotalMilliseconds <
+                _lastPublishUtc != DateTime.MinValue &&
+                (nowUtc - _lastPublishUtc).TotalMilliseconds <
                     MaxPublishIntervalMilliseconds)
                 return;
+
+            string payload =
+                CbotExecutionStateCodec.Serialize(snapshot);
 
             try
             {
@@ -155,17 +148,10 @@ namespace CFIP.cBot.Execution
                     payload,
                     LocalStorageScope.Device);
 
-                if (force ||
-                    materiallyChanged ||
-                    (nowUtc - _lastFlushUtc).TotalMilliseconds >=
-                        MaxPublishIntervalMilliseconds)
-                {
-                    robot.LocalStorage.Flush(
-                        LocalStorageScope.Device);
-                    _lastFlushUtc = nowUtc;
-                }
+                robot.LocalStorage.Flush(
+                    LocalStorageScope.Device);
 
-                _lastPayload = payload;
+                _lastPublishUtc = nowUtc;
             }
             catch (Exception ex)
             {
