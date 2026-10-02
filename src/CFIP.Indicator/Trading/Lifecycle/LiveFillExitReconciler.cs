@@ -159,11 +159,17 @@ namespace cAlgo
                 return false;
 
             double candidateRisk =
-                Math.Max(
-                    Symbol.PipSize,
-                    Math.Abs(
-                        actualEntry -
-                        candidateStop));
+                RiskRewardMathRule.Evaluate(
+                    direction,
+                    actualEntry,
+                    candidateStop,
+                    direction == 1
+                        ? actualEntry + Symbol.PipSize
+                        : actualEntry - Symbol.PipSize,
+                    0,
+                    0,
+                    double.PositiveInfinity,
+                    Symbol.PipSize).Risk;
 
             List<Level> levels =
                 BuildTargetLevels(

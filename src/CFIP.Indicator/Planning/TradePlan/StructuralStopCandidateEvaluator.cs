@@ -135,7 +135,9 @@ namespace cAlgo
                                     ? "UNKNOWN"
                                     : _decision.Regime)),
                         PreferredStopRiskAtr,
-                        maximumRiskAtr);
+                        maximumRiskAtr,
+                        Math.Max(0, MaximumRewardRR),
+                        Symbol.PipSize);
 
                 if (!rewardRisk.Allowed)
                     continue;

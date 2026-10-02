@@ -617,7 +617,9 @@ namespace cAlgo
                     0,
                     2,
                     0.75,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             PlanRewardRiskQualityResult invalidReward =
                 PlanRewardRiskQualityRule.Evaluate(
@@ -629,7 +631,9 @@ namespace cAlgo
                     0,
                     2,
                     0.75,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             Assert(
                 validReward.Allowed &&
@@ -7317,7 +7321,9 @@ namespace cAlgo
                     0.0,
                     1.0,
                     0.25,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             PlanRewardRiskQualityResult sellAccepted =
                 PlanRewardRiskQualityRule.Evaluate(
@@ -7329,7 +7335,9 @@ namespace cAlgo
                     0.0,
                     1.0,
                     0.25,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             Assert(
                 buyAccepted.Allowed &&
@@ -7346,7 +7354,9 @@ namespace cAlgo
                     0.0,
                     1.0,
                     0.25,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             PlanRewardRiskQualityResult sellLowRr =
                 PlanRewardRiskQualityRule.Evaluate(
@@ -7358,7 +7368,9 @@ namespace cAlgo
                     0.0,
                     1.0,
                     0.25,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             Assert(
                 !buyLowRr.Allowed &&
@@ -7377,7 +7389,9 @@ namespace cAlgo
                     0.0,
                     1.0,
                     0.25,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             PlanRewardRiskQualityResult sellWideStop =
                 PlanRewardRiskQualityRule.Evaluate(
@@ -7389,7 +7403,9 @@ namespace cAlgo
                     0.0,
                     1.0,
                     0.25,
-                    1.80);
+                    1.80,
+                    12.0,
+                    0.01);
 
             Assert(
                 !buyWideStop.Allowed &&

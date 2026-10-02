@@ -63,57 +63,49 @@ namespace cAlgo
                     TargetCandidateRejectionReasons.InvalidGeometry);
             }
 
-            if (!PriceProtectionRule.ValidateTarget(
-                    direction,
-                    entry,
-                    target,
-                    0))
-            {
-                return BlockGeometry(
-                    TargetCandidateRejectionReasons.TargetSideInvalid);
-            }
-
             if (requireHtf && !isHtf)
-            {
                 return BlockGeometry(
                     TargetCandidateRejectionReasons.HtfSourceRequired);
-            }
 
             if (requireHtf &&
                 htfQuality < minimumHtfQuality)
-            {
                 return BlockGeometry(
                     TargetCandidateRejectionReasons.HtfQualityTooLow);
+
+            RiskRewardMathResult geometry =
+                RiskRewardMathRule.EvaluateFromRisk(
+                    direction,
+                    entry,
+                    risk,
+                    target,
+                    0,
+                    requiredRR,
+                    maximumRR,
+                    pipSize);
+
+            if (!geometry.Valid)
+            {
+                string reason =
+                    geometry.Reason == "STOP WRONG SIDE"
+                        ? TargetCandidateRejectionReasons.TargetSideInvalid
+                        : geometry.Reason == "TARGET WRONG SIDE"
+                            ? TargetCandidateRejectionReasons.TargetSideInvalid
+                            : geometry.Reason == "RR BELOW MINIMUM"
+                                ? TargetCandidateRejectionReasons.RewardRiskBelowMinimum
+                                : geometry.Reason == "RR ABOVE MAXIMUM"
+                                    ? TargetCandidateRejectionReasons.RewardRiskAboveMaximum
+                                    : TargetCandidateRejectionReasons.RewardRiskInvalid;
+
+                return BlockWithRr(
+                    reason,
+                    geometry.NominalRR);
             }
 
             double distance =
-                Math.Abs(target - entry);
+                geometry.Reward;
 
             double rr =
-                distance /
-                Math.Max(pipSize, risk);
-
-            if (double.IsNaN(rr) ||
-                double.IsInfinity(rr) ||
-                rr <= 0)
-            {
-                return BlockGeometry(
-                    TargetCandidateRejectionReasons.RewardRiskInvalid);
-            }
-
-            if (rr < requiredRR)
-            {
-                return BlockWithRr(
-                    TargetCandidateRejectionReasons.RewardRiskBelowMinimum,
-                    rr);
-            }
-
-            if (rr > maximumRR)
-            {
-                return BlockWithRr(
-                    TargetCandidateRejectionReasons.RewardRiskAboveMaximum,
-                    rr);
-            }
+                geometry.NominalRR;
 
             if (distance >
                 atr *

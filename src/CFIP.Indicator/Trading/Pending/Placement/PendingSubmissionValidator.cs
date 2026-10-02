@@ -92,7 +92,9 @@ namespace cAlgo
                         StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
                         MinimumSlAtr,
                         MaximumSlAtr,
-                        MaximumStructuralStopAtr));
+                        MaximumStructuralStopAtr),
+                        Math.Max(0, MaximumRewardRR),
+                        Symbol.PipSize);
 
                 if (!rewardRisk.Allowed)
                 {

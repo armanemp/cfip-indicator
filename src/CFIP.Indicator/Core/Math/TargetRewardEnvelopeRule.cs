@@ -25,12 +25,14 @@ namespace cAlgo
                     maximumTargetExtensionAtr);
 
             double extensionRR =
-                extension /
-                risk;
+                RiskRewardMathRule.NominalRRFromDistance(
+                    extension,
+                    risk,
+                    RiskRewardMathRule.DistanceFloor);
 
-            if (double.IsNaN(extensionRR) ||
-                double.IsInfinity(extensionRR) ||
-                extensionRR <= 0)
+            if (extensionRR <= 0 ||
+                double.IsNaN(extensionRR) ||
+                double.IsInfinity(extensionRR))
                 return 0;
 
             return Math.Min(

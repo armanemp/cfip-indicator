@@ -123,9 +123,17 @@ namespace cAlgo
 
                         if (IsFinitePositive(stop))
                         {
+                            double risk =
+                                RiskRewardMathRule.RiskFromLevels(
+                                    entry,
+                                    stop,
+                                    Symbol.PipSize);
+
                             double riskAtr =
-                                Math.Abs(entry - stop) /
-                                Math.Max(Symbol.PipSize, atr);
+                                risk /
+                                Math.Max(
+                                    Symbol.PipSize,
+                                    atr);
 
                             double spread =
                                 Math.Max(
@@ -177,11 +185,10 @@ namespace cAlgo
                             atr))
                     {
                         double risk =
-                            Math.Max(
-                                Symbol.PipSize,
-                                Math.Abs(
-                                    entry -
-                                    stop));
+                            RiskRewardMathRule.RiskFromLevels(
+                                entry,
+                                stop,
+                                Symbol.PipSize);
 
                         double fallbackRR =
                             Math.Max(

@@ -6,25 +6,40 @@ namespace cAlgo
     {
         public bool Allowed { get; }
         public string Reason { get; }
+        public double Risk { get; }
+        public double Reward { get; }
+        public double EffectiveRisk { get; }
         public double RiskAtr { get; }
         public double NominalRR { get; }
         public double EffectiveRR { get; }
         public double RequiredRR { get; }
+        public double MaximumRR { get; }
 
         public PlanRewardRiskQualityResult(
             bool allowed,
             string reason,
+            double risk,
+            double reward,
+            double effectiveRisk,
             double riskAtr,
             double nominalRR,
             double effectiveRR,
-            double requiredRR)
+            double requiredRR,
+            double maximumRR)
         {
             Allowed = allowed;
             Reason = reason ?? string.Empty;
+            Risk = Math.Max(0, risk);
+            Reward = Math.Max(0, reward);
+            EffectiveRisk = Math.Max(0, effectiveRisk);
             RiskAtr = Math.Max(0, riskAtr);
             NominalRR = Math.Max(0, nominalRR);
             EffectiveRR = Math.Max(0, effectiveRR);
             RequiredRR = Math.Max(0, requiredRR);
+            MaximumRR =
+                double.IsInfinity(maximumRR)
+                    ? double.PositiveInfinity
+                    : Math.Max(0, maximumRR);
         }
     }
 
@@ -39,6 +54,7 @@ namespace cAlgo
         internal const double AdaptiveStopExcessRrMultiplier = 0.25;
         internal const double EffectiveRrBaseFactor = 0.90;
         internal const double EffectiveRrAbsoluteReduction = 0.15;
+
         public static PlanRewardRiskQualityResult Evaluate(
             int direction,
             double entry,
@@ -48,7 +64,9 @@ namespace cAlgo
             double spread,
             double baseMinimumRR,
             double preferredStopRiskAtr,
-            double maximumStopRiskAtr)
+            double maximumStopRiskAtr,
+            double maximumRewardRR,
+            double riskFloor)
         {
             if ((direction != 1 && direction != -1) ||
                 !IsFinitePositiveRewardRisk(entry) ||
@@ -56,7 +74,8 @@ namespace cAlgo
                 !IsFinitePositiveRewardRisk(tp1) ||
                 !IsFinitePositiveRewardRisk(atr))
             {
-                return CreateRewardRiskBlocked("INVALID REWARD/RISK GEOMETRY");
+                return CreateRewardRiskBlocked(
+                    "INVALID REWARD/RISK GEOMETRY");
             }
 
             bool validStop =
@@ -75,101 +94,128 @@ namespace cAlgo
             if (!validTarget)
                 return CreateRewardRiskBlocked("TP1 SIDE INVALID");
 
-            double risk = Math.Abs(entry - stop);
-            double reward = Math.Abs(tp1 - entry);
-
-            if (!IsFinitePositiveRewardRisk(risk) ||
-                !IsFinitePositiveRewardRisk(reward))
-                return CreateRewardRiskBlocked("EMPTY REWARD/RISK");
-
-            double riskAtr =
-                risk / Math.Max(SymbolTickFloor(), atr);
-
-            if (!IsFinitePositiveRewardRisk(riskAtr))
-                return CreateRewardRiskBlocked("RISK ATR INVALID");
-
             double boundedBase =
-                Math.Max(BaseMinimumRrFloor, baseMinimumRR);
+                Math.Max(
+                    BaseMinimumRrFloor,
+                    baseMinimumRR);
 
             double preferred =
-                Math.Max(PreferredStopRiskAtrFloor, preferredStopRiskAtr);
-
-            double maximum =
                 Math.Max(
-                    Math.Max(preferred, MaximumStopRiskAtrFloor),
+                    PreferredStopRiskAtrFloor,
+                    preferredStopRiskAtr);
+
+            double maximumStopRisk =
+                Math.Max(
+                    Math.Max(
+                        preferred,
+                        MaximumStopRiskAtrFloor),
                     maximumStopRiskAtr);
 
-            if (riskAtr > maximum)
+            double rawRisk =
+                Math.Abs(entry - stop);
+
+            if (!IsFinitePositiveRewardRisk(rawRisk))
+                return CreateRewardRiskBlocked("EMPTY RISK");
+
+            double riskAtr =
+                rawRisk /
+                Math.Max(
+                    SymbolTickFloor(),
+                    atr);
+
+            if (!IsFinitePositiveRewardRisk(riskAtr))
+                return CreateRewardRiskBlocked(
+                    "RISK ATR INVALID");
+
+            if (riskAtr > maximumStopRisk)
             {
                 return new PlanRewardRiskQualityResult(
                     false,
                     "STOP RISK TOO HIGH • " +
                     riskAtr.ToString("F2") +
                     " ATR > " +
-                    maximum.ToString("F2"),
+                    maximumStopRisk.ToString("F2"),
+                    0,
+                    0,
+                    0,
                     riskAtr,
                     0,
                     0,
-                    boundedBase);
+                    boundedBase,
+                    RiskRewardMathRule.NormalizeMaximumRR(
+                        maximumRewardRR,
+                        boundedBase));
             }
 
             double stopExcess =
-                Math.Max(0, riskAtr - preferred);
+                Math.Max(
+                    0,
+                    riskAtr - preferred);
 
             double adaptiveRequired =
                 boundedBase +
                 Math.Min(
                     AdaptiveStopExcessRrCap,
-                    stopExcess * AdaptiveStopExcessRrMultiplier);
+                    stopExcess *
+                    AdaptiveStopExcessRrMultiplier);
 
-            double nominalRR =
-                reward / risk;
+            RiskRewardMathResult geometry =
+                RiskRewardMathRule.Evaluate(
+                    direction,
+                    entry,
+                    stop,
+                    tp1,
+                    spread,
+                    adaptiveRequired,
+                    maximumRewardRR,
+                    riskFloor);
 
-            double safeSpread =
-                Math.Max(0, spread);
-
-            double effectiveRisk =
-                risk + safeSpread;
-
-            double effectiveRR =
-                reward /
-                Math.Max(SymbolTickFloor(), effectiveRisk);
-
-            if (!IsFinitePositiveRewardRisk(nominalRR) ||
-                !IsFinitePositiveRewardRisk(effectiveRR))
-                return CreateRewardRiskBlocked("RR INVALID");
-
-            if (nominalRR < adaptiveRequired)
+            if (!geometry.Valid)
             {
+                string reason =
+                    geometry.Reason == "RR BELOW MINIMUM"
+                        ? "REWARD TOO LOW FOR STOP • RR " +
+                          geometry.NominalRR.ToString("F2") +
+                          " < " +
+                          adaptiveRequired.ToString("F2")
+                        : geometry.Reason;
+
                 return new PlanRewardRiskQualityResult(
                     false,
-                    "REWARD TOO LOW FOR STOP • RR " +
-                    nominalRR.ToString("F2") +
-                    " < " +
-                    adaptiveRequired.ToString("F2"),
+                    reason,
+                    geometry.Risk,
+                    geometry.Reward,
+                    geometry.EffectiveRisk,
                     riskAtr,
-                    nominalRR,
-                    effectiveRR,
-                    adaptiveRequired);
+                    geometry.NominalRR,
+                    geometry.EffectiveRR,
+                    adaptiveRequired,
+                    geometry.MaximumRR);
             }
 
             double minimumEffectiveRR =
                 Math.Max(
-                    boundedBase * EffectiveRrBaseFactor,
-                    boundedBase - EffectiveRrAbsoluteReduction);
+                    boundedBase *
+                    EffectiveRrBaseFactor,
+                    boundedBase -
+                    EffectiveRrAbsoluteReduction);
 
-            if (effectiveRR < minimumEffectiveRR)
+            if (geometry.EffectiveRR < minimumEffectiveRR)
             {
                 return new PlanRewardRiskQualityResult(
                     false,
                     "RR TOO LOW AFTER SPREAD • " +
-                    effectiveRR.ToString("F2") +
+                    geometry.EffectiveRR.ToString("F2") +
                     " < " +
                     minimumEffectiveRR.ToString("F2"),
+                    geometry.Risk,
+                    geometry.Reward,
+                    geometry.EffectiveRisk,
                     riskAtr,
-                    nominalRR,
-                    effectiveRR,
-                    adaptiveRequired);
+                    geometry.NominalRR,
+                    geometry.EffectiveRR,
+                    adaptiveRequired,
+                    geometry.MaximumRR);
             }
 
             return new PlanRewardRiskQualityResult(
@@ -177,10 +223,14 @@ namespace cAlgo
                 riskAtr > preferred + 0.35
                     ? "REWARD/RISK ACCEPTED • WIDE STOP REQUIRES EXTRA REWARD"
                     : "REWARD/RISK ACCEPTED",
+                geometry.Risk,
+                geometry.Reward,
+                geometry.EffectiveRisk,
                 riskAtr,
-                nominalRR,
-                effectiveRR,
-                adaptiveRequired);
+                geometry.NominalRR,
+                geometry.EffectiveRR,
+                adaptiveRequired,
+                geometry.MaximumRR);
         }
 
         private static PlanRewardRiskQualityResult CreateRewardRiskBlocked(
@@ -189,6 +239,10 @@ namespace cAlgo
             return new PlanRewardRiskQualityResult(
                 false,
                 reason,
+                0,
+                0,
+                0,
+                0,
                 0,
                 0,
                 0,
@@ -205,7 +259,7 @@ namespace cAlgo
 
         private static double SymbolTickFloor()
         {
-            return 1e-12;
+            return RiskRewardMathRule.DistanceFloor;
         }
     }
 }

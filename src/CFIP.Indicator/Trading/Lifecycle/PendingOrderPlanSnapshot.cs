@@ -78,10 +78,23 @@ namespace cAlgo
                 return null;
 
             double entry = intent.RequestedEntry;
-            double risk = Math.Abs(entry - intent.Stop);
 
-            if (!IsFinitePositive(risk))
+            RiskRewardMathResult baseGeometry =
+                RiskRewardMathRule.Evaluate(
+                    intent.Direction,
+                    entry,
+                    intent.Stop,
+                    intent.Target,
+                    0,
+                    0,
+                    MaximumRewardRR,
+                    Symbol.PipSize);
+
+            if (!baseGeometry.Valid)
                 return null;
+
+            double risk =
+                baseGeometry.Risk;
 
             OpportunityLane lane =
                 intent.Kind == ExecutionIntentKind.Limit
@@ -100,7 +113,7 @@ namespace cAlgo
                     levels,
                     closedM5,
                     entry,
-                    Math.Max(Symbol.PipSize, risk),
+                    risk,
                     intent.Direction,
                     atr,
                     lane);
@@ -234,24 +247,54 @@ namespace cAlgo
                 Tp4 = IsFinitePositive(tp4)
                     ? NormalizePrice(tp4)
                     : 0,
-                Risk = Math.Max(
-                    Symbol.PipSize,
-                    risk),
+                Risk = risk,
                 Tp1RR =
                     IsFinitePositive(tp1)
-                        ? Math.Abs(tp1 - entry) / risk
+                        ? RiskRewardMathRule.EvaluateFromRisk(
+                            intent.Direction,
+                            entry,
+                            risk,
+                            tp1,
+                            0,
+                            0,
+                            double.PositiveInfinity,
+                            Symbol.PipSize).NominalRR
                         : 0,
                 Tp2RR =
                     IsFinitePositive(tp2)
-                        ? Math.Abs(tp2 - entry) / risk
+                        ? RiskRewardMathRule.EvaluateFromRisk(
+                            intent.Direction,
+                            entry,
+                            risk,
+                            tp2,
+                            0,
+                            0,
+                            double.PositiveInfinity,
+                            Symbol.PipSize).NominalRR
                         : 0,
                 Tp3RR =
                     IsFinitePositive(tp3)
-                        ? Math.Abs(tp3 - entry) / risk
+                        ? RiskRewardMathRule.EvaluateFromRisk(
+                            intent.Direction,
+                            entry,
+                            risk,
+                            tp3,
+                            0,
+                            0,
+                            double.PositiveInfinity,
+                            Symbol.PipSize).NominalRR
                         : 0,
                 Tp4RR =
                     IsFinitePositive(tp4)
-                        ? Math.Abs(tp4 - entry) / risk
+                        ? RiskRewardMathRule.EvaluateFromRisk(
+                            intent.Direction,
+                            entry,
+                            risk,
+                            tp4,
+                            0,
+                            0,
+                            double.PositiveInfinity,
+                            Symbol.PipSize).NominalRR
                         : 0,
                 StopQuality = 100,
                 Tp1Quality = 100,

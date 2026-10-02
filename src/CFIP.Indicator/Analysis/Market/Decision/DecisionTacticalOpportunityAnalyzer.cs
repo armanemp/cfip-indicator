@@ -126,13 +126,26 @@ namespace cAlgo
                     0,
                     0);
 
+            RiskRewardMathResult rewardRiskGeometry =
+                RiskRewardMathRule.EvaluateFromRisk(
+                    direction,
+                    entry,
+                    risk,
+                    bestTarget,
+                    0,
+                    TacticalOpportunityMinimumRR,
+                    MaximumRewardRR,
+                    Symbol.PipSize);
+
+            if (!rewardRiskGeometry.Valid)
+                return new TacticalOpportunityResult(
+                    false,
+                    OpportunityLane.Tactical,
+                    0,
+                    0);
+
             double rr =
-                Math.Abs(
-                    bestTarget -
-                    entry) /
-                Math.Max(
-                    Symbol.PipSize,
-                    risk);
+                rewardRiskGeometry.NominalRR;
 
             int quality =
                 (int)Math.Round(

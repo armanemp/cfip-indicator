@@ -1407,3 +1407,23 @@ CI-13 closed the TP source/provenance, target-obstacle and coherent TP1..TP4 lad
 The next blocking implementation phase is **CI-14 — Canonical risk/reward and protection mathematics**.
 
 The user's reported cross-component symptoms remain an explicit empirical acceptance concern: CI-14 must remove RR-semantic drift first; CI-15 must trace exact Entry/SL/TP through every execution path; CI-16 must use deterministic counterexamples to distinguish genuinely missing analytical evidence from downstream gating or synchronization loss; CI-17 then validates the same semantics on the target cTrader terminal.
+
+### CI-14 implementation record — 2026-10-02
+
+Status: **IMPLEMENTED — awaiting exact-head repository verification.**
+
+Branch: phase/ci-14-canonical-rr-protection
+Current head: 6b5f251603d458f9c363e6bec93649b6aff5e3eb
+
+Completed:
+- canonical RiskRewardMathRule owns risk/reward/effective-RR/bounds and RR-derived target/progress math;
+- candidate, plan, actionability, execution, live lifecycle and chart LIVE-RR paths were migrated to that owner;
+- corrected the concrete raw-risk versus pip-floor stored-risk RR semantic drift;
+- deterministic CI-14 fixtures and accumulated static audit were added.
+
+No PASS is claimed before the exact-head Source/Architecture, Runtime Acceptance, cTrader Compile/Build and Planning Contracts checks complete.
+
+The user's reported weak/missing-signal symptom remains deliberately open as a downstream diagnostic question: CI-15 traces exact execution geometry, while CI-16 separates analytical absence from gating/synchronization loss using replay counterexamples.
+
+Next phase after verification: **CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+Operator action after merge: run git pull --ff-only on local main.

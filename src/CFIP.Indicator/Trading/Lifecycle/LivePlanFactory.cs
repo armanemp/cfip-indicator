@@ -23,47 +23,43 @@ namespace cAlgo
                                 ExecutionMode.BreakoutMarket,
                             bool bindSignalTrace = false)
                         {
-                            double risk =
-                                Math.Abs(
-                                    entry -
-                                    stop);
+                            RiskRewardMathResult geometry =
+                                RiskRewardMathRule.Evaluate(
+                                    direction,
+                                    entry,
+                                    stop,
+                                    target,
+                                    0,
+                                    0,
+                                    MaximumRewardRR,
+                                    Symbol.PipSize);
 
-                            if (!IsFinitePositive(entry) ||
-                                !IsFinitePositive(stop) ||
-                                !IsFinitePositive(target) ||
-                                !IsFinitePositive(risk))
+                            if (!geometry.Valid)
                                 return null;
-                
+
                             Plan plan =
                                 new Plan
                                 {
                                     Direction = direction,
-                                EntryMode = entryMode,
-                                Entry = NormalizePrice(entry),
-                                IdealEntry = NormalizePrice(entry),
-                                Stop = NormalizePrice(stop),
-                                Tp1 = NormalizePrice(target),
-                                Tp2 = 0,
-                                Tp3 = 0,
-                                Tp4 = 0,
-                                Risk = Math.Max(
-                                    Symbol.PipSize,
-                                    risk),
-                                Tp1RR =
-                                    risk > 0
-                                        ? Math.Abs(
-                                            target - entry) /
-                                          risk
-                                        : 0,
-                                StopSource = "LIVE / STRUCTURAL",
-                                StopQuality = 100,
-                                Tp1Source = "LIVE / ADAPTIVE",
-                                Tp1Quality = 100,
-                                CreatedM5 = createdM5,
-                                OriginalVolume = volume,
-                                CalibrationEligible = false,
-                                IsLivePosition = true
-                            };
+                                    EntryMode = entryMode,
+                                    Entry = NormalizePrice(entry),
+                                    IdealEntry = NormalizePrice(entry),
+                                    Stop = NormalizePrice(stop),
+                                    Tp1 = NormalizePrice(target),
+                                    Tp2 = 0,
+                                    Tp3 = 0,
+                                    Tp4 = 0,
+                                    Risk = geometry.Risk,
+                                    Tp1RR = geometry.NominalRR,
+                                    StopSource = "LIVE / STRUCTURAL",
+                                    StopQuality = 100,
+                                    Tp1Source = "LIVE / ADAPTIVE",
+                                    Tp1Quality = 100,
+                                    CreatedM5 = createdM5,
+                                    OriginalVolume = volume,
+                                    CalibrationEligible = false,
+                                    IsLivePosition = true
+                                };
 
                             if (bindSignalTrace)
                             {

@@ -57,18 +57,18 @@ namespace cAlgo
                                             atr)))
                                     continue;
                 
-                                double rr =
-                                    Math.Abs(
-                                        level.Price -
-                                        _plan.Entry) /
-                                    Math.Max(
-                                        Symbol.PipSize,
-                                        _plan.Risk);
-                
-                                if (rr >
-                                    Math.Max(
+                                RiskRewardMathResult geometry =
+                                    RiskRewardMathRule.EvaluateFromRisk(
+                                        _plan.Direction,
+                                        _plan.Entry,
+                                        _plan.Risk,
+                                        level.Price,
                                         0,
-                                        MaximumRewardRR))
+                                        0,
+                                        MaximumRewardRR,
+                                        Symbol.PipSize);
+
+                                if (!geometry.Valid)
                                     continue;
                 
                                 if (RejectTargetObstacle &&

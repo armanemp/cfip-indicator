@@ -1388,7 +1388,10 @@ namespace cAlgo
                     100,
                     95,
                     110,
-                    1.5);
+                    0,
+                    1.5,
+                    12.0,
+                    0.01);
 
             Assert(
                 buy.Allowed &&
@@ -1403,7 +1406,10 @@ namespace cAlgo
                     100,
                     105,
                     90,
-                    1.5);
+                    0,
+                    1.5,
+                    12.0,
+                    0.01);
 
             Assert(
                 sell.Allowed &&
@@ -1416,7 +1422,10 @@ namespace cAlgo
                     100,
                     105,
                     120,
-                    1.5);
+                    0,
+                    1.5,
+                    12.0,
+                    0.01);
 
             Assert(
                 !wrongBuyStop.Allowed &&
@@ -1429,7 +1438,10 @@ namespace cAlgo
                     100,
                     95,
                     80,
-                    1.5);
+                    0,
+                    1.5,
+                    12.0,
+                    0.01);
 
             Assert(
                 !wrongSellStop.Allowed &&
@@ -1442,7 +1454,10 @@ namespace cAlgo
                     100,
                     90,
                     105,
-                    2.0);
+                    0,
+                    2.0,
+                    12.0,
+                    0.01);
 
             Assert(
                 !weakRR.Allowed &&
@@ -1455,7 +1470,10 @@ namespace cAlgo
                     100,
                     105,
                     90,
-                    2.0);
+                    0,
+                    2.0,
+                    12.0,
+                    0.01);
 
             Assert(
                 mirrored.Allowed &&

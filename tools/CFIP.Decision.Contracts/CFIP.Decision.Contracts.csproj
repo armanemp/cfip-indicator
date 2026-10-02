@@ -51,6 +51,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/DivergenceThresholdRule.cs" Link="Core/Math/DivergenceThresholdRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FrameRegimeResolutionRule.cs" Link="Core/Math/FrameRegimeResolutionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LocationEvidenceRule.cs" Link="Core/Math/LocationEvidenceRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/RiskRewardMathRule.cs" Link="Core/Math/RiskRewardMathRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionPlanGeometryRule.cs" Link="Core/Math/ExecutionPlanGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveExitGeometryRule.cs" Link="Core/Math/LiveExitGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ProtectionProgressionRule.cs" Link="Core/Math/ProtectionProgressionRule.cs" />

@@ -100,20 +100,18 @@ namespace cAlgo
 
             if (UseRRFilter)
             {
-                double tp1RR =
-                    Math.Abs(
-                        tp1 -
-                        entry) /
-                    Math.Max(
-                        Symbol.PipSize,
-                        risk);
+                RiskRewardMathResult tp1Geometry =
+                    RiskRewardMathRule.EvaluateFromRisk(
+                        direction,
+                        entry,
+                        risk,
+                        tp1,
+                        0,
+                        requiredRR[0],
+                        MaximumRewardRR,
+                        Symbol.PipSize);
 
-                double minimumPlanRR =
-                    requiredRR[0];
-
-                if (!IsFinitePositive(tp1RR) ||
-                    !IsFinitePositive(minimumPlanRR) ||
-                    tp1RR < minimumPlanRR)
+                if (!tp1Geometry.Valid)
                     return false;
             }
 

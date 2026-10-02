@@ -24,7 +24,10 @@ namespace cAlgo
                                 return 0;
                 
                             double risk =
-                                Math.Abs(entry - stop);
+                                RiskRewardMathRule.RiskFromLevels(
+                                    entry,
+                                    stop,
+                                    Symbol.PipSize);
                 
                             if (risk <= 0)
                                 return 0;
@@ -107,10 +110,16 @@ namespace cAlgo
                                 !requiresHtf &&
                                 fallbackRR > 0)
                             {
-                                return NormalizePrice(
-                                    direction == 1
-                                        ? entry + risk * fallbackRR
-                                        : entry - risk * fallbackRR);
+                                double synthetic =
+                                    RiskRewardMathRule.TargetFromRR(
+                                        direction,
+                                        entry,
+                                        risk,
+                                        fallbackRR);
+
+                                return IsFinitePositive(synthetic)
+                                    ? NormalizePrice(synthetic)
+                                    : 0;
                             }
                 
                             return 0;
@@ -160,9 +169,11 @@ namespace cAlgo
                                 !IsValidStop(direction, executionEntry, stop))
                                 return false;
                 
-                            double risk = Math.Max(
-                                Symbol.PipSize,
-                                Math.Abs(executionEntry - stop));
+                            double risk =
+                                RiskRewardMathRule.RiskFromLevels(
+                                    executionEntry,
+                                    stop,
+                                    Symbol.PipSize);
                 
                             List<Level> levels = BuildTargetLevels(
                                 closedM5,
