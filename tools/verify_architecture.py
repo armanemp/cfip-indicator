@@ -2079,10 +2079,10 @@ for consumer_name in (
 CROSS_PATH_CONTRACTS = {
     "AutomaticMarketBrokerExecution.cs": (
         "TryValidateAutomaticMarketSubmission(",
-        "TryExecuteMarketOrder(",
-        "BrokerConfirmationPolicy.CanAdoptPosition(",
-        "TryAcceptAutomaticMarketFill(",
-        "EnsureBrokerProtectionForPosition(",
+        "CalculateAutomaticMarketRangePips(",
+        "TryBuildServerSideTakeProfitLadder(",
+        "CBOT cBot handoff",
+        "RefreshReadOnlyProvider(",
     ),
     "AggressiveBrokerExecution.cs": (
         "BuildExecutionIntent(",
@@ -2678,7 +2678,6 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
 MUTATION_ALLOWED_FILES = {
-    "BrokerMarketOrderMutation.cs",
     "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
@@ -2687,7 +2686,6 @@ MUTATION_ALLOWED_FILES = {
     "BrokerPositionCloseMutation.cs",
 }
 REQUIRED_BROKER_MUTATION_FILES = {
-    "BrokerMarketOrderMutation.cs",
     "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
