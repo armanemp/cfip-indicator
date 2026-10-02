@@ -3157,7 +3157,18 @@ for token in (
         raise SystemExit(f"Divergence evidence is not flowing through Frame: {token}")
 
 act_code = actionability_evaluator.read_text(encoding="utf-8")
+actionability_preparation = (
+    ROOT / "Trading" / "Validation" / "TradeActionabilityPreparation.cs"
+).read_text(encoding="utf-8")
+actionability_gates = (
+    ROOT / "Trading" / "Validation" / "TradeActionabilityGateEvaluation.cs"
+).read_text(encoding="utf-8")
 decision_code = decision_model.read_text(encoding="utf-8")
+actionability_code = (
+    act_code +
+    actionability_preparation +
+    actionability_gates
+)
 for token in (
     "EntryGeometryRule.Evaluate(",
     "MaximumEntryExtensionAtr",
@@ -3169,7 +3180,7 @@ for token in (
     "RR BELOW ACTIONABLE FLOOR",
     "LATE / PRICE EXTENDED",
 ):
-    if token not in act_code:
+    if token not in actionability_code:
         raise SystemExit(f"Actionability gate missing deterministic execution condition: {token}")
 for token in (
     "ActionableNow",
