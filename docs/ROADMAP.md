@@ -1,6 +1,6 @@
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: VERIFIED COMPLETE — all repository gates passed on final head; PR #195 ready to merge.
 
 Completed:
 - M15 is the internal execution clock; Chart timeframe is host/presentation-only;
@@ -9,9 +9,23 @@ Completed:
 - shared cBot margin/capacity safety owner prevents duplicate helper implementations;
 - Pending Stop trigger uses current spread through canonical PendingEntryPriceRule;
 - Indicator Pending Stop path is intent-only;
-- active audits and documentation were reconciled.
+- active audits and documentation were reconciled;
+- Pending Stop lifecycle snapshot is preserved across Indicator to cBot handoff;
+- the canonical instance-scoped execution label is transported in CFIP.Contracts.ExecutionIntent and consumed by cBot broker execution/state ownership.
 
-Next staged migration after verification: CBOT-P4D — Pending Limit authority extraction.
+Verification on final implementation head c700e3adbc3557bf1278024df870a15a6e308b69:
+- Source / Architecture 36991157739 / workflow #3025: PASS;
+- Runtime Acceptance Contracts 36991157724 / workflow #2834: PASS;
+- cTrader Compile/Build 36991157712 / workflow #3018: PASS;
+- CBOT-P4C acceptance audit: PASS;
+- CR5.4 absolute pending-fill reconciliation audit: PASS;
+- CI-15 execution-geometry/broker-boundary audit: PASS;
+- M15 / Risk / Spread audit: PASS;
+- CR1.8 / A11 identity audit: PASS.
+
+Target-terminal acceptance remains manual. No profitability claim is made from this structural migration alone.
+
+Next staged migration after merge: CBOT-P4D — Pending Limit authority extraction.
 
 ## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
 
