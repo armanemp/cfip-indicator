@@ -18,8 +18,9 @@ namespace cAlgo
             try
             {
                 string stored =
-                    ReadDailyLossState(
-                        out bool legacy);
+                    LocalStorage.GetString(
+                        DailyLossStorageKey(),
+                        LocalStorageScope.Type);
 
                 ApplySharedDailyLossLock(
                     referenceUtc,
