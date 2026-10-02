@@ -832,6 +832,16 @@ namespace CFIP.cBot
                 _boundIndicatorInstanceId);
         }
 
+        private void PublishPresence(
+            string state)
+        {
+            _statePublisher.PublishPresence(
+                this,
+                Server.TimeInUtc,
+                state,
+                _boundIndicatorInstanceId);
+        }
+
         private void PublishExecutionState(
             string reason,
             bool force)
