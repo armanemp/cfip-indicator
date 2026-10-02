@@ -139,19 +139,19 @@ legacy_patterns = [
 ]
 
 legacy_scan_paths = [
-    geometry_consumer_paths["PlanRewardRiskQualityRule"],
-    consumer_paths["ExecutionPlanGeometryRule"],
-    consumer_paths["TargetCandidateConstraintRule"],
-    consumer_paths["PlanMaterialization"],
-    consumer_paths["PlanTargetPreparation"],
-    consumer_paths["PlanRewardIntegrityValidator"],
-    consumer_paths["StructuralStopCandidateEvaluator"],
-    consumer_paths["LiveExitGeometryRule"],
-    consumer_paths["LiveTargetCandidateEvaluator"],
-    consumer_paths["PlanRiskRewardRecalculator"],
-    consumer_paths["LivePlanFactory"],
-    consumer_paths["PendingOrderPlanSnapshot"],
-    consumer_paths["ParallelOpportunityBuilder"],
+    geometry_geometry_consumer_paths["PlanRewardRiskQualityRule"],
+    geometry_consumer_paths["ExecutionPlanGeometryRule"],
+    geometry_consumer_paths["TargetCandidateConstraintRule"],
+    geometry_consumer_paths["PlanMaterialization"],
+    geometry_consumer_paths["PlanTargetPreparation"],
+    geometry_consumer_paths["PlanRewardIntegrityValidator"],
+    geometry_consumer_paths["StructuralStopCandidateEvaluator"],
+    geometry_consumer_paths["LiveExitGeometryRule"],
+    geometry_consumer_paths["LiveTargetCandidateEvaluator"],
+    geometry_consumer_paths["PlanRiskRewardRecalculator"],
+    geometry_consumer_paths["LivePlanFactory"],
+    geometry_consumer_paths["PendingOrderPlanSnapshot"],
+    geometry_consumer_paths["ParallelOpportunityBuilder"],
 ]
 
 legacy_found = []
