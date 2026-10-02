@@ -49,7 +49,7 @@ require(
 
 require(
     "CanonicalTimeRule.UtcDayStart(" in session and
-    "CanonicalTimeRule.EnsureUtc(value)" in session and
+    "CanonicalTimeRule.EnsureUtc(" in session and
     "startMinute == endMinute" in session and
     "startMinute < endMinute" in session,
     "M4: session semantics are not owned by the canonical UTC rule",
