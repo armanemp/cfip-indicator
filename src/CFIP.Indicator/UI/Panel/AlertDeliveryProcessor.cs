@@ -35,9 +35,6 @@ namespace cAlgo
         private void DeliverAlertSound(
             AlertDelivery delivery)
         {
-            if (delivery == null)
-                return;
-
             bool attemptedCustomFile =
                 !string.IsNullOrWhiteSpace(
                     delivery.SoundFilePath);
