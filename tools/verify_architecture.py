@@ -1250,7 +1250,7 @@ startup_seed_code = CALC_STARTUP_SEED.read_text(encoding="utf-8")
 for forbidden in (
     "TryAutoTrade(",
     "TryAggressiveAutoTrade(",
-    "TrySmartPendingOrders(",
+    "RefreshPendingExecutionIntent(",
     "ProcessLiveCalculationStages(",
 ):
     if forbidden in startup_seed_code:
@@ -2635,7 +2635,7 @@ if "_executionToggleSyncing = true" not in EXECUTION_CONTROLS_SYNC_CODE:
 
 CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
 CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")
-pending_idx = CALC_STAGE_CODE.find('"PREDICTIVE PENDING EXECUTION"')
+pending_idx = CALC_STAGE_CODE.find('"PENDING INTENT PREPARATION"')
 plan_idx = CALC_STAGE_CODE.find('"PLAN CREATION"')
 if min(pending_idx, plan_idx) < 0 or not pending_idx < plan_idx:
     raise SystemExit("Remaining Indicator execution stage ordering must keep pending before plan materialization")
