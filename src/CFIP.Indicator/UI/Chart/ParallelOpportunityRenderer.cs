@@ -10,7 +10,6 @@ namespace cAlgo
             int closedM5)
         {
             if (!EnableParallelOpportunities ||
-                !ShowLevelLines ||
                 Bars == null ||
                 Bars.Count < 2)
             {
@@ -60,58 +59,65 @@ namespace cAlgo
                 _opportunityVisualIds.Add(
                     baseName);
 
-                RenderOpportunityLine(
-                    baseName + "_ENTRY",
-                    candidate.Entry,
-                    EntryLineColor,
-                    ShowEntry);
+                if (ShowLevelLines)
+                {
+                    RenderOpportunityLine(
+                        baseName + "_ENTRY",
+                        candidate.Entry,
+                        EntryLineColor,
+                        ShowEntry);
 
-                RenderOpportunityLine(
-                    baseName + "_IDEAL_ENTRY",
-                    candidate.IdealEntry,
-                    PanelAccentColor,
-                    ShowEntry &&
-                    IsFinitePositive(candidate.IdealEntry) &&
-                    !SamePrice(
+                    RenderOpportunityLine(
+                        baseName + "_IDEAL_ENTRY",
                         candidate.IdealEntry,
-                        candidate.Entry));
+                        PanelAccentColor,
+                        ShowEntry &&
+                        IsFinitePositive(candidate.IdealEntry) &&
+                        !SamePrice(
+                            candidate.IdealEntry,
+                            candidate.Entry));
 
-                RenderOpportunityLine(
-                    baseName + "_TRIGGER",
-                    candidate.Trigger,
-                    TriggerLineColor,
-                    ShowTrigger &&
-                    IsFinitePositive(candidate.Trigger));
+                    RenderOpportunityLine(
+                        baseName + "_TRIGGER",
+                        candidate.Trigger,
+                        TriggerLineColor,
+                        ShowTrigger &&
+                        IsFinitePositive(candidate.Trigger));
 
-                RenderOpportunityLine(
-                    baseName + "_SL",
-                    candidate.Stop,
-                    SlLineColor,
-                    ShowSL);
+                    RenderOpportunityLine(
+                        baseName + "_SL",
+                        candidate.Stop,
+                        SlLineColor,
+                        ShowSL);
 
-                RenderOpportunityLine(
-                    baseName + "_TP1",
-                    candidate.Tp1,
-                    TpLineColor,
-                    ShowTP1);
+                    RenderOpportunityLine(
+                        baseName + "_TP1",
+                        candidate.Tp1,
+                        TpLineColor,
+                        ShowTP1);
 
-                RenderOpportunityLine(
-                    baseName + "_TP2",
-                    candidate.Tp2,
-                    Tp2LineColor,
-                    ShowTP2);
+                    RenderOpportunityLine(
+                        baseName + "_TP2",
+                        candidate.Tp2,
+                        Tp2LineColor,
+                        ShowTP2);
 
-                RenderOpportunityLine(
-                    baseName + "_TP3",
-                    candidate.Tp3,
-                    Tp3LineColor,
-                    ShowTP3);
+                    RenderOpportunityLine(
+                        baseName + "_TP3",
+                        candidate.Tp3,
+                        Tp3LineColor,
+                        ShowTP3);
 
-                RenderOpportunityLine(
-                    baseName + "_TP4",
-                    candidate.Tp4,
-                    Tp4LineColor,
-                    ShowTP4);
+                    RenderOpportunityLine(
+                        baseName + "_TP4",
+                        candidate.Tp4,
+                        Tp4LineColor,
+                        ShowTP4);
+                }
+
+                RenderPrimarySignalMarker(
+                    candidate,
+                    right);
 
                 if (ShowTacticalOpportunityLabels &&
                     (ShowLevelPriceLabels ||
@@ -242,6 +248,83 @@ namespace cAlgo
             }
 
             RemoveStaleParallelOpportunityObjects();
+        }
+
+        private void RenderPrimarySignalMarker(
+            TradeOpportunityCandidate candidate,
+            int right)
+        {
+            string name =
+                P +
+                "OPP_" +
+                (candidate == null
+                    ? "NONE"
+                    : candidate.Id) +
+                "_PRIMARY_ARROW";
+
+            Chart.RemoveObject(name);
+
+            if (candidate == null ||
+                !candidate.PrimarySignal ||
+                !candidate.PrimarySignalReady ||
+                !ShowSignalArrow ||
+                Bars == null ||
+                Bars.Count < 2)
+                return;
+
+            int hostBar =
+                MapM5ToChart(
+                    candidate.CreatedM5,
+                    right);
+
+            hostBar =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        hostBar));
+
+            double atr =
+                Atr(
+                    Bars,
+                    Math.Max(
+                        1,
+                        Math.Min(
+                            Bars.Count - 1,
+                            hostBar)));
+
+            double timeframeOffset =
+                string.Equals(
+                    candidate.SourceTimeframe,
+                    "H1",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? 0.20
+                    : 0.12;
+
+            double offset =
+                Math.Max(
+                    Symbol.PipSize * 2,
+                    Math.Max(
+                        Symbol.PipSize,
+                        atr * timeframeOffset));
+
+            double price =
+                candidate.Direction == 1
+                    ? Bars.LowPrices[hostBar] - offset
+                    : Bars.HighPrices[hostBar] + offset;
+
+            DrawIcon(
+                name,
+                candidate.Direction == 1
+                    ? ChartIconType.UpArrow
+                    : ChartIconType.DownArrow,
+                hostBar,
+                price,
+                SignalArrowColorFor(
+                    candidate.Direction,
+                    candidate.LowerTimeframeConflict
+                        ? "WATCH"
+                        : "CONFIRMED"));
         }
 
         private void RenderOpportunityLine(
@@ -414,6 +497,7 @@ namespace cAlgo
                     "_TP2",
                     "_TP3",
                     "_TP4",
+                    "_PRIMARY_ARROW",
                     "_ENTRY_LABEL",
                     "_SL_LABEL",
                     "_TP1_LABEL",
