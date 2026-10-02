@@ -4,37 +4,43 @@ Status: IMPLEMENTATION COMPLETE — verification pending.
 
 Purpose:
 - eliminate Entry/SL/TP/RR drift between presentation preview, live actionability, Plan creation and cBot handoff;
-- make the exact actual-entry reward path the canonical live execution geometry;
-- preserve existing quality/risk gates while improving consistency and missed-opportunity diagnosis.
+- make one actual-entry reward path the sole executable geometry owner;
+- preserve existing quality/risk gates while making missed-opportunity diagnosis and end-to-end traceability more reliable.
 
 Completed:
-- CanonicalTradePathGeometry model and builder;
-- actual ExecutionModel entry used for structural stop and target ladder calculation;
-- actionability checks exact entry/mode consistency and evaluates RR from canonical SL/TP1;
-- bounded path cache for runtime efficiency;
-- trace/panel actionable-state ordering corrected;
-- dedicated audit accumulated in Source/Architecture.
+- `CanonicalTradePathGeometry` model and builder;
+- structural SL and TP1..TP4 derive from `ExecutionModel.ActualEntry`;
+- selected TP source/quality provenance and HTF target count are carried in the canonical snapshot;
+- live actionability validates Entry/Mode consistency and uses canonical SL/TP1/RR;
+- PlanInputPreparation consumes the canonical path;
+- PlanBuilder no longer rebuilds StructuralStop/TargetLevels/TargetSelection/TP metadata;
+- bounded path cache preserves live-path performance;
+- trace/panel lifecycle ordering treats `ActionableNow` as authoritative before generic TriggerReady presentation;
+- dedicated canonical trade-path audit and accumulated architecture enforcement updated.
 
 Safety:
-- no public thresholds lowered;
-- M15 remains canonical execution timeframe;
+- no public confidence, smart-quality, MTF, evidence, structure, RR or risk thresholds lowered;
+- M15 remains canonical decision/execution reference;
 - M5 remains trigger/tuning/entry precision;
-- M1 optional confirmation;
-- Indicator remains broker-mutation-free.
+- M1 remains optional confirmation;
+- H1+ remains context/reward;
+- Indicator remains broker-mutation-free;
+- cBot remains the single broker execution/lifecycle authority.
 
 Full-chain audit:
-Pre-analysis -> M15 -> M5 -> M1 -> Entry -> SL -> TP/RR -> Actionability -> Plan -> Contract -> cBot -> Broker -> Protection -> Outcome/History.
+Pre-analysis -> M15 -> M5 -> M1 -> Entry geometry -> Structural SL -> TP1..TP4 -> Actionability -> Plan -> SignalEnvelope/Scenario -> cBot preflight -> Broker -> Protection -> Outcome/History.
 
 Verification:
 - dedicated canonical trade-path audit;
 - Source/Architecture;
 - Runtime Acceptance;
-- cTrader Compile;
-- target-terminal exact geometry/handoff validation.
+- cTrader Compile/Build;
+- target-terminal exact Entry/SL/TP proposal-to-broker handoff;
+- target-terminal restart/reconnect/rebind behavior.
 
 Phase record: docs/PHASE-CANONICAL-TRADE-PATH-GEOMETRY-2026-10-03.md.
 
-Operator action after merge: git pull --ff-only.
+Operator action after verified merge: `git pull --ff-only` on local `main`.
 
 ---
 # Current focus — RETEST TRIGGER-PATH HARDENING — 2026-10-03
@@ -2882,3 +2888,4 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+
