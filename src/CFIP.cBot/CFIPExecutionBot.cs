@@ -11,9 +11,24 @@ namespace CFIP.cBot
         AccessRights = AccessRights.None)]
     public sealed class CFIPExecutionBot : Robot
     {
-        private const string StartupState = "SHADOW";
+        private const string StartupState = "HANDOFF";
+
+        [Parameter(
+            "Enable Market Execution",
+            Group = "Execution",
+            DefaultValue = false)]
+        public bool EnableMarketExecution { get; set; }
+
+        [Parameter(
+            "Use Market Range",
+            Group = "Execution",
+            DefaultValue = true)]
+        public bool UseMarketRange { get; set; }
 
         private CFIPIndicator _indicator;
+
+        private readonly MarketExecutionCoordinator _market =
+            new MarketExecutionCoordinator();
         private readonly ShadowHostCoordinator _shadow =
             new ShadowHostCoordinator();
 
@@ -30,9 +45,10 @@ namespace CFIP.cBot
             _tickCount = 0;
 
             Print(
-                "CFIP cBot START | state={0} | broker mutation=DISARMED | " +
-                "shadow host=ACTIVE | contractVersion={1}",
+                "CFIP cBot START | state={0} | marketExecution={1} | " +
+                "shadow host=ACTIVE | contractVersion={2}",
                 StartupState,
+                EnableMarketExecution ? "ARMED" : "DISARMED",
                 ContractVersion.Current);
 
             try
@@ -120,8 +136,7 @@ namespace CFIP.cBot
                     BrokerExecutionReport report;
                     string executionReason;
 
-                    bool executed =
-                        _market.TryExecute(
+                    _market.TryExecute(
                             this,
                             snapshot,
                             UseMarketRange,
@@ -255,9 +270,10 @@ namespace CFIP.cBot
         protected override void OnStop()
         {
             Print(
-                "CFIP cBot STOP | state={0} | broker mutation=DISARMED | " +
-                "lastRevision={1} | sessionMs={2}",
+                "CFIP cBot STOP | state={0} | marketExecution={1} | " +
+                "lastRevision={2} | sessionMs={3}",
                 _state,
+                EnableMarketExecution ? "ARMED" : "DISARMED",
                 _shadow.LastAcceptedRevision,
                 (Server.TimeInUtc - _startedUtc).TotalMilliseconds);
         }
