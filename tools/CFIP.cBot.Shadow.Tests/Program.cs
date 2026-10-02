@@ -311,7 +311,22 @@ namespace CFIP.cBot.Shadow.Tests
                     ? null
                     : new ExecutionIntent(
                         id, action, entry, stop, target, 1000, "UNIT",
-                        Now, expiry, "fixture");
+                        Now,
+                        expiry,
+                        "fixture",
+                        "CFIP-SMART|CFIP-I:TEST",
+                        new MarketExecutionProfile(
+                            1,
+                            10,
+                            10,
+                            false,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            null,
+                            null));
 
             return new SignalEnvelope(id, stage, plan, intent, Now);
         }
@@ -470,7 +485,7 @@ namespace CFIP.cBot.Shadow.Tests
         {
             if (!ok)
                 throw new InvalidOperationException(
-                    "CBOT-P3 shadow behavioral contract failed: " + message);
+                    "CBOT cBot behavioral contract failed: " + message);
         }
     }
 }
