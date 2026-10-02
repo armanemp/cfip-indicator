@@ -88,6 +88,41 @@ namespace cAlgo
                                                     false,
                                                     contentWidth);
                                     
+                                                int primaryM15Direction =
+                                                    FrameDirection(_m15Frame);
+                                                int primaryH1Direction =
+                                                    FrameDirection(_h1Frame);
+
+                                                string primaryState =
+                                                    primaryM15Direction != 0 &&
+                                                    primaryH1Direction != 0
+                                                        ? primaryM15Direction == primaryH1Direction
+                                                            ? "ALIGNED"
+                                                            : "CONFLICT"
+                                                        : "CALIBRATING";
+
+                                                string primaryDirections =
+                                                    DirectionText(primaryM15Direction) +
+                                                    "/" +
+                                                    DirectionText(primaryH1Direction);
+
+                                                AddPanelRow(
+                                                    ref slot,
+                                                    "PRIMARY M15/H1  •  " +
+                                                    primaryState +
+                                                    "  •  " +
+                                                    primaryDirections +
+                                                    "  •  Q" +
+                                                    FrameQuality(_m15Frame) +
+                                                    "/" +
+                                                    FrameQuality(_h1Frame),
+                                                    primaryM15Direction != 0 &&
+                                                    primaryM15Direction == primaryH1Direction
+                                                        ? PanelDirectionColor(primaryM15Direction)
+                                                        : PanelWarningColor,
+                                                    true,
+                                                    contentWidth);
+
                                                 AddPanelRow(
                                                     ref slot,
                                                     "H4   " +
@@ -134,6 +169,22 @@ namespace cAlgo
                                                 }
                                     
             
+        private string DirectionText(int direction)
+        {
+            if (direction == 1)
+                return "BUY";
+            if (direction == -1)
+                return "SELL";
+            return "NEUTRAL";
+        }
+
+        private int FrameQuality(Frame frame)
+        {
+            return frame == null
+                ? 0
+                : Math.Max(0, Math.Min(100, frame.Quality));
+        }
+
         }
     }
 }
