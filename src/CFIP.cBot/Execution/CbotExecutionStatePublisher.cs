@@ -1,6 +1,7 @@
 using System;
 using cAlgo.API;
 using CFIP.Contracts;
+using CFIP.cBot.Recovery;
 
 namespace CFIP.cBot.Execution
 {
@@ -25,6 +26,7 @@ namespace CFIP.cBot.Execution
             string executionLabel,
             string executionScenarioId,
             SignalEnvelope envelope,
+            CbotBrokerReconciliationResult reconciliation,
             bool force)
         {
             if (robot == null ||
@@ -130,6 +132,25 @@ namespace CFIP.cBot.Execution
                     executionLabel,
                     scenarioId,
                     signalRevision);
+
+            snapshot = snapshot with
+            {
+                LifecycleState =
+                    reconciliation == null
+                        ? "UNKNOWN"
+                        : reconciliation.LifecycleState,
+                ProtectionState =
+                    reconciliation == null
+                        ? "UNKNOWN"
+                        : reconciliation.ProtectionState,
+                RecoveryRequired =
+                    reconciliation != null &&
+                    reconciliation.RecoveryRequired,
+                RecoveryReason =
+                    reconciliation == null
+                        ? string.Empty
+                        : reconciliation.Reason
+            };
 
             if (!force &&
                 _lastPublishUtc != DateTime.MinValue &&
