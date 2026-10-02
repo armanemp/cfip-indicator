@@ -150,63 +150,16 @@ if "public bool PopupBold" not in popup_core or "DefaultValue = true" not in pop
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must not create backgrounds")
 
-# Phase 7.4 / G4 — panel execution/protection state semantics.
-g4_rule = read("Core/Math/ExecutionProtectionPanelStateRule.cs")
-g4_panel = read("UI/Panel/PanelExecutionState.cs")
+# Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
 g4_overview_rows = read("UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs")
-g4_panel_key = read("UI/Panel/PanelRenderOptimization.cs")
+panel_rows = read("UI/Panel/PanelRowsRenderer.cs")
 
-for token in (
-    "ResolveAutoTrading(",
-    "ResolveAutoOrders(",
-    "ResolveProtection(",
-):
-    if token not in g4_rule:
-        raise SystemExit(f"G4 canonical state rule missing: {token}")
+if "RenderPanelAutoTradingRows(" in panel_rows:
+    raise SystemExit("legacy Auto Trading execution rows must not be rendered by Indicator")
 
-for token in (
-    "ExecutionProtectionPanelStateRule.ResolveAutoTrading(",
-    "ExecutionProtectionPanelStateRule.ResolveAutoOrders(",
-    "ExecutionProtectionPanelStateRule.ResolveProtection(",
-    "_brokerProtectionRecoveryRequired",
-    "IsExistingManagedStopHealthy(",
-):
-    if token not in g4_panel:
-        raise SystemExit(f"G4 panel state ownership missing: {token}")
+if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
+    raise SystemExit("canonical signal status must remain visible in the overview panel")
 
-if "_decision" in g4_panel.split("private Color GetAutoTradingPanelColor()",1)[1].split("private string GetAutoOrdersPanelState()",1)[0]:
-    raise SystemExit("G4 Auto Trade color cannot infer runtime state from decision")
-if "_reaction" in g4_panel.split("private Color GetAutoTradingPanelColor()",1)[1].split("private string GetAutoOrdersPanelState()",1)[0]:
-    raise SystemExit("G4 Auto Trade color cannot infer runtime state from reaction")
-
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoTradingPanelColor()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoOrdersPanelColor()",
-    "GetAutoProtectionPanelState()",
-    "GetAutoProtectionPanelColor()",
-):
-    if token not in g4_auto_rows:
-        raise SystemExit(f"G4 Auto Trading rows missing canonical helper: {token}")
-
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoTradingPanelColor()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoOrdersPanelColor()",
-):
-    if token not in g4_overview_rows:
-        raise SystemExit(f"G4 overview execution rows missing canonical helper: {token}")
-
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoProtectionPanelState()",
-    "_brokerProtectionRecoveryRequired",
-):
-    if token not in g4_panel_key:
-        raise SystemExit(f"G4 panel presentation cache key missing state: {token}")
 
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
