@@ -200,6 +200,8 @@ namespace cAlgo
                      candidate.Direction != -1))
                     continue;
 
+                displayNumber++;
+
                 bool actionable =
                     candidate.ActionableNow &&
                     candidate.ExecutionPolicyAllowed &&
@@ -220,8 +222,6 @@ namespace cAlgo
 
                 if (!enabled)
                     continue;
-
-                displayNumber++;
 
                 string timeframe =
                     string.IsNullOrWhiteSpace(
