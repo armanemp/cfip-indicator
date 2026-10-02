@@ -1871,5 +1871,6 @@ Completed in this phase:
 - Deterministic M4 runtime contracts and accumulated full-chain audit are added.
 
 Verification/manual boundary:
-- Source / Architecture, Runtime Acceptance Contracts and cTrader Compile are required before merge.
+- Source / Architecture, Runtime Acceptance Contracts and cTrader Compile all PASS on the final M4 head.
 - Target-terminal verification remains required for restart-mid-day history persistence, exact session/EOD broker behavior and cBot reconnect.
+- Next implementation phase: **M5 — Panel Live Content / Responsiveness**.
