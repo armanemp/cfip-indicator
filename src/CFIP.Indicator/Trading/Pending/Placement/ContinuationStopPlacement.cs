@@ -47,18 +47,29 @@ namespace cAlgo
 
                 RelativeTakeProfitProtections serverTakeProfits;
                 StopLossBreakEven serverBreakEven;
-                bool useServerTakeProfitLadder = TryBuildServerSideTakeProfitLadder(
+                bool useServerTakeProfitLadder =
+                    TryBuildServerSideTakeProfitLadder(
                         pendingIntent.RequestedEntry,
                         pendingIntent.Target,
                         pendingIntent.Volume,
                         out serverTakeProfits,
                         out serverBreakEven);
+                string label = PendingOrderLabel();
+                string comment = TradeExecutionMetadata.DefaultExecutionComment;
                 TradeResult result;
                 try
                 {
                     result = useServerTakeProfitLadder
-                        ? TryPlaceStopOrderWithTakeProfitLadder(type, SymbolName, volume, trigger, PendingOrderLabel(), pendingIntent.StopPips, serverTakeProfits, serverBreakEven, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "CONTINUATION STOP • SERVER TP LADDER")
-                        : TryPlaceStopOrder(type, SymbolName, volume, trigger, PendingOrderLabel(), pendingIntent.StopPips, pendingIntent.TargetPips, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "CONTINUATION STOP");
+                        ? TryPlaceStopOrderWithTakeProfitLadder(
+                            type, SymbolName, volume, trigger, label,
+                            pendingIntent.StopPips, serverTakeProfits, serverBreakEven,
+                            ProtectionType.Relative, PendingExpiration(), comment,
+                            false, "CONTINUATION STOP • SERVER TP LADDER")
+                        : TryPlaceStopOrder(
+                            type, SymbolName, volume, trigger, label,
+                            pendingIntent.StopPips, pendingIntent.TargetPips,
+                            ProtectionType.Relative, PendingExpiration(), comment,
+                            false, "CONTINUATION STOP");
                 }
                 catch { RecordSubmissionFailure(submissionIdentity); throw; }
 
