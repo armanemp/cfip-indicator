@@ -37,6 +37,10 @@ checks = {
     'selector selects highest scored valid candidate':
         'candidate.Score >' in selector and
         'candidate.Quality >' in selector,
+    'execution FVG lookup uses quality-aware selection':
+        'preferQualityForSelection' in read('src/CFIP.Indicator/Analysis/Structure/Zones/FvgDetectionAnalyzer.cs') and
+        'SelectBestFvgForExecution(' in read('src/CFIP.Indicator/Analysis/Structure/Zones/FvgDetectionAnalyzer.cs') and
+        'market,' in read('src/CFIP.Indicator/Analysis/Structure/Zones/ZoneLookup.cs'),
     'legacy swing fallback remains':
         'M5 SWING' in selector and
         'FindSwingLowBelow(' in selector and
