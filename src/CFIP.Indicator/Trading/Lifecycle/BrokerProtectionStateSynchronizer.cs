@@ -32,6 +32,12 @@ namespace cAlgo
             bool changed = false;
             int direction = _plan.Direction;
 
+            double previousBrokerStop =
+                _activeBrokerStop;
+
+            double previousBrokerTarget =
+                _activeBrokerTarget;
+
             double market =
                 direction == 1
                     ? Symbol.Bid
@@ -68,13 +74,30 @@ namespace cAlgo
                         market,
                         brokerStop);
 
-                if (!stopHealthy)
+                bool brokerStopRegressed =
+                    IsFinitePositive(previousBrokerStop) &&
+                    !SamePrice(
+                        previousBrokerStop,
+                        brokerStop) &&
+                    !ProtectionProgressionRule.ShouldAdvanceStop(
+                        direction,
+                        previousBrokerStop,
+                        brokerStop);
+
+                if (brokerStopRegressed)
+                {
+                    if (enforceMonotonic)
+                        MarkBrokerProtectionRegression(
+                            "BROKER CONFIRMED STOP REGRESSED");
+                }
+                else if (!stopHealthy)
                 {
                     if (enforceMonotonic)
                         MarkBrokerProtectionRegression(
                             "BROKER CONFIRMED STOP INVALID");
                 }
-                else if (!IsFinitePositive(_plan.Stop))
+                else if (!brokerStopRegressed &&
+                         !IsFinitePositive(_plan.Stop))
                 {
                     _plan.Stop = brokerStop;
                     RecalculatePlanRR();
@@ -86,7 +109,8 @@ namespace cAlgo
                 {
                     changed = true;
                 }
-                else if (ProtectionProgressionRule.ShouldAdvanceStop(
+                else if (!brokerStopRegressed &&
+                         ProtectionProgressionRule.ShouldAdvanceStop(
                              direction,
                              _plan.Stop,
                              brokerStop))
@@ -95,7 +119,8 @@ namespace cAlgo
                     RecalculatePlanRR();
                     changed = true;
                 }
-                else if (enforceMonotonic)
+                else if (!brokerStopRegressed &&
+                         enforceMonotonic)
                 {
                     MarkBrokerProtectionRegression(
                         "BROKER CONFIRMED STOP REGRESSED");
@@ -121,7 +146,19 @@ namespace cAlgo
                         entryPrice,
                         brokerTarget);
 
-                if (!targetHealthy &&
+                bool brokerTargetRegressed =
+                    IsFinitePositive(previousBrokerTarget) &&
+                    !SamePrice(
+                        previousBrokerTarget,
+                        brokerTarget) &&
+                    !ProtectionProgressionRule.ShouldAdvanceTarget(
+                        direction,
+                        previousBrokerTarget,
+                        brokerTarget,
+                        true);
+
+                if ((brokerTargetRegressed ||
+                     !targetHealthy) &&
                     enforceMonotonic)
                 {
                     MarkBrokerProtectionRegression(
