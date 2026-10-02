@@ -152,7 +152,7 @@ Edit the smallest authoritative module that owns the behavior.
 | Panel trade-plan composition | `UI/Panel/Rows/PanelTradePlanRowsRenderer.cs` |
 | Panel trade-plan level rows | `UI/Panel/Rows/PanelTradePlanLevelRowsRenderer.cs` |
 | Panel trade-plan live rows | `UI/Panel/Rows/PanelTradePlanLiveRowsRenderer.cs` |
-| Popup | `UI/Popup/**/*.cs` |
+| Alert message rail | `UI/Panel/AlertDeliveryProcessor.cs`, `UI/Panel/PanelAlertMessageRenderer.cs` |
 | Historical rendering | `UI/Historical/**/*.cs` |
 | Shared math/text/time utilities | `Core/{Math,Text,Time}/*.cs` |
 
