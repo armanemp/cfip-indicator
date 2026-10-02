@@ -17,7 +17,7 @@ delivery = read("src/CFIP.Indicator/Core/Runtime/AlertDelivery.cs")
 queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
 alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 alert_identity = read("src/CFIP.Indicator/Trading/Alerts/CanonicalAlertEnvelopeBuilder.cs")
-processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
+processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 snapshot = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs")
 snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
 visual_identity = read("src/CFIP.Indicator/UI/Chart/SignalVisualIdentityBuilder.cs")
@@ -79,10 +79,10 @@ require(
 )
 
 require(
-    "next.ShowPopup" in processor and
-    "next.PlaySound" in processor and
-    "next.Message" in processor,
-    "M3: popup and sound must consume the same queued event",
+    "RecordPanelAlertDelivery(next)" in processor and
+    "Notifications.PlaySound(" in processor and
+    "next.Message" not in processor,
+    "M3: panel rail and sound must consume the same queued event",
 )
 
 require(

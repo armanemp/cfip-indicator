@@ -4,7 +4,7 @@ Clean, modular cTrader indicator with a single execution authority.
 
 ## Current state
 
-- 568 configuration parameters are currently exposed; the count is machine-verified from the parameter source tree by `python tools/audit_parameter_count.py`.
+- 548 configuration parameters are currently exposed; the count is machine-verified from the parameter source tree by `python tools/audit_parameter_count.py`.
 - Strategy behavior decomposed into responsibility-isolated source modules.
 - Automatic market execution and automatic pending orders retained.
 - Manual BUY/SELL/order-entry controls are absent.
@@ -19,6 +19,6 @@ Clean, modular cTrader indicator with a single execution authority.
 - Planning: entry, trigger, filters, execution model, trade plan and target engines.
 - Runtime: initialization, MTF context and calculation cycle.
 - Trading: identity, pending orders, execution, lifecycle, live management, risk, validation and intelligence.
-- UI: chart, panel, historical and popup renderers.
+- UI: chart, panel, historical and unified alert-rail presentation.
 
 See `docs/ARCHITECTURE.md`, `docs/EDITING-GUIDE.md`, `docs/ROADMAP.md`, `docs/PHASE-CR1-9-MINOR-CLEANUP.md` and `docs/OSS-COMPONENT-REGISTER.md`.

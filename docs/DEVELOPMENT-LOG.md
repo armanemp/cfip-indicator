@@ -1,3 +1,37 @@
+## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
+
+Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
+
+Root causes addressed:
+- the Popup surface had become a separate presentation path while the user-facing requirement was to keep messages in the panel;
+- popup-specific parameters and lifecycle hooks were creating dead configuration/ownership surface;
+- alert presentation and optional sound needed one canonical queued event boundary;
+- execution-side signal validity checks were embedded in the cBot host instead of one explicit preflight owner.
+
+Implemented:
+- removed PopupRenderer, PopupRemover, PopupExpirationCleaner and the Popup-scoped AlertDeliveryProcessor;
+- removed 20 obsolete popup configuration parameters;
+- added PanelAlertMessageRenderer with bounded five-message history and semantic colors;
+- added UI/Panel/AlertDeliveryProcessor.cs as the single alert delivery boundary;
+- made panel presentation invalidate on a new alert revision instead of relying on a continuously forced full redraw;
+- added CbotSignalPreflight and routed CFIPExecutionBot SignalEnvelope validation through it;
+- added P9 source/static gate and accumulated full-project audit requirements.
+
+The cBot execution architecture remains:
+Indicator analysis → canonical SignalEnvelope → Device LocalStorage / exact InstanceId → cBot signal preflight → execution environment gate → broker coordinator → broker confirmation → lifecycle/protection.
+
+Verification status:
+- implementation commits are on phase/cbot-p9-unified-alert-rail-visual-coherence-2026-10-02;
+- Source/Architecture CI: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader compile/build: PASS;
+- dedicated P9 audit: PASS;
+- terminal visual acceptance remains manual.
+
+Next phase: CBOT-6M concurrent multi-scenario execution.
+
+Operator action after verified merge: git pull --ff-only.
+
 ## CBOT-P8 — Progressive Protection / Broker-Confirmed State Sync — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

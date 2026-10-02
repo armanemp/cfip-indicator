@@ -17,8 +17,11 @@ alert_renderer = read("UI/Chart/AlertSignalRenderer.cs")
 alert_engine = read("Trading/Alerts/AlertEngine.cs")
 visual_snapshot = read("UI/Chart/SignalVisualSnapshotBuilder.cs")
 visual_lifecycle = read("Core/Math/SignalVisualLifecycleRule.cs")
-popup_core = read("Indicator/Parameters/12_alerts_core.cs")
-popup_advanced = read("Indicator/Parameters/12_alerts_advanced.cs")
+alerts_core = read("Indicator/Parameters/12_alerts_core.cs")
+alerts_advanced = read("Indicator/Parameters/12_alerts_advanced.cs")
+alert_event = read("Core/Runtime/AlertDelivery.cs")
+alert_processor = read("UI/Panel/AlertDeliveryProcessor.cs")
+alert_rail = read("UI/Panel/PanelAlertMessageRenderer.cs")
 partial = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 level_hits = read("Trading/LiveManagement/ActivePlanLevelExitHandler.cs")
@@ -128,27 +131,36 @@ if "SignalVisualLifecycleRule.IsPreTradePlanVisible(" not in visual_snapshot:
     raise SystemExit("Signal visuals must consume the lifecycle expiry rule")
 if "CurrentM5 - input.CreatedM5" not in visual_lifecycle:
     raise SystemExit("Signal lifecycle must enforce bounded age")
-if "DefaultValue = true)]\n        public bool ShowPopupAlerts" not in popup_core:
-    raise SystemExit("Popup alerts must default to enabled")
-if "DefaultValue = PanelCorner.BottomRight" not in popup_advanced:
-    raise SystemExit("Popup must default to bottom-right")
-if "DefaultValue = false)]\n        public bool PopupCriticalOnly" not in popup_core:
-    raise SystemExit("Popup must default to show valid alerts, not critical-only")
+if "public bool ShowPopupAlerts" in alerts_core or "PopupCriticalOnly" in alerts_core:
+    raise SystemExit("Legacy popup parameters must be removed")
+if "Popup Position" in alerts_advanced or "Keep Popup Until Next Alert" in alerts_advanced:
+    raise SystemExit("Legacy popup advanced parameters must be removed")
 
 alert_queue = read("Core/Runtime/AlertDeliveryQueue.cs")
-alert_processor = read("UI/Popup/AlertDeliveryProcessor.cs")
 if "AlertDeliveryQueue(16)" not in state:
-    raise SystemExit("Popup queue must have a fixed bounded capacity")
+    raise SystemExit("Alert queue must have a fixed bounded capacity")
 if "_alertDeliveryQueue.Enqueue(" not in alert_engine:
-    raise SystemExit("Alerts must enter the bounded popup queue")
-if "ShowPopup(\n                    next.Message,\n                    next.Critical)" not in alert_processor:
-    raise SystemExit("Popup processor must be the only queued-to-render handoff")
-if "RemoveExpiredPopup();\n                HandleRuntimeHeartbeat();\n                ProcessQueuedAlertDelivery();" not in initialization:
-    raise SystemExit("Popup queue must be drained at the timer boundary")
+    raise SystemExit("Alerts must enter the bounded delivery queue")
+if "RecordPanelAlertDelivery(next)" not in alert_processor:
+    raise SystemExit("Panel alert processor must own the queued visual delivery")
+if "Notifications.PlaySound(" not in alert_processor:
+    raise SystemExit("Panel alert processor must remain the single sound delivery owner")
 if "_normal.Dequeue()" not in alert_queue or "if (delivery.Critical)" not in alert_queue:
     raise SystemExit("Popup queue must prefer critical alerts over normal alerts")
 if "ShowPopup(" in alert_engine:
-    raise SystemExit("Alert hot path must not directly overwrite popup presentation")
+    raise SystemExit("Alert hot path must not directly render a popup")
+
+for relative in (
+    "UI/Popup/PopupRenderer.cs",
+    "UI/Popup/PopupRemover.cs",
+    "UI/Popup/PopupExpirationCleaner.cs",
+    "UI/Popup/AlertDeliveryProcessor.cs",
+):
+    if (ROOT / relative).exists():
+        raise SystemExit(f"Obsolete popup production file remains: {relative}")
+
+if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessageColor(" not in alert_rail:
+    raise SystemExit("Unified panel alert rail is incomplete")
 
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
 if "return semanticColor" not in compact_label_renderer:
@@ -190,6 +202,8 @@ if "PlaceLimitOrder(" not in pending_cbot:
 
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
-print("Pending lines: no M5 mapping dependency")
+print("All level/prediction signal lines: solid-only")
+print("Level labels: semantic line-color, background-free")
+print("Alerts: unified panel rail + optional sound, no popup UI")
 print("Indicator execution controls: broker-action UI removed; analysis panel is canonical")
 print("Market / Market-Range broker mutation: owned by CFIP.cBot")

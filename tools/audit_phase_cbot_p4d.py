@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CBOT-P4D acceptance gate: Pending Limit authority + signal/popup continuity."""
+"""CBOT-P4D acceptance gate: Pending Limit authority + signal/panel-alert continuity."""
 
 from pathlib import Path
 import re
@@ -49,13 +49,16 @@ signal_renderer = read(
 signal_presentation = read(
     IND / "UI/Chart/SignalPresentationRenderer.cs"
 )
-popup_renderer = read(
-    IND / "UI/Popup/PopupRenderer.cs"
+alert_processor = read(
+    IND / "UI/Panel/AlertDeliveryProcessor.cs"
+)
+alert_rail = read(
+    IND / "UI/Panel/PanelAlertMessageRenderer.cs"
 )
 alert_engine = read(
     IND / "Trading/Alerts/AlertEngine.cs"
 )
-popup_params = read(
+alert_params = read(
     IND / "Indicator/Parameters/12_alerts_advanced.cs"
 )
 arrow_params = read(
@@ -153,30 +156,28 @@ check(
 )
 
 check(
-    "DefaultValue = PanelCorner.BottomRight" in popup_params,
-    "popup must default to bottom-right",
+    "panel alert delivery owner exists",
+    "RecordPanelAlertDelivery(next)" in alert_processor and
+    "Notifications.PlaySound(" in alert_processor and
+    "ResolvePanelAlertMessageColor(" in alert_rail,
 )
 check(
-    "KeepPopupUntilNextAlert" in popup_params and
-    "DateTime.MaxValue" in popup_renderer,
-    "persistent popup mode must remain until alert/manual close",
+    "popup UI and popup parameter dependencies are removed",
+    not (IND / "UI/Popup/PopupRenderer.cs").exists() and
+    not (IND / "UI/Popup/PopupRemover.cs").exists() and
+    not (IND / "UI/Popup/PopupExpirationCleaner.cs").exists() and
+    "ShowPopupAlerts" not in alert_params and
+    "PopupCriticalOnly" not in alert_params and
+    "PopupPosition" not in alert_params and
+    "ShowPopup(" not in alert_engine,
 )
 check(
-    '"CLOSE"' in popup_renderer and
-    "_popupCloseButton.Click" in popup_renderer,
-    "popup must retain a manual close button",
+    "panel alert rail is direction/priority semantic",
+    "if (delivery.Critical)" in alert_rail and
+    "return BuyArrowColor;" in alert_rail and
+    "return SellArrowColor;" in alert_rail,
 )
-check(
-    "IsImportantPopupAlertKey(" in alert_engine and
-    "importantPopup" in alert_engine,
-    "popup delivery must use one central important-alert classifier",
-)
-check(
-    "PENDING-" in alert_engine and
-    "PROTECTION" in alert_engine and
-    "INVALID" in alert_engine,
-    "important-popup classifier must include execution/protection failure families",
-)
+
 
 # Guard the architectural migration boundary.
 legacy_execution = [

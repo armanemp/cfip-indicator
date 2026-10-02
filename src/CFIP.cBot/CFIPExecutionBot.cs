@@ -225,33 +225,18 @@ namespace CFIP.cBot
                 return;
             }
 
-            if (envelope.Identity == null)
+            if (!CbotSignalPreflight.TryValidate(
+                    this,
+                    envelope,
+                    nowUtc,
+                    ProviderStaleAfterSeconds,
+                    out string signalPreflightReason))
             {
-                LogBlockedState("SIGNAL IDENTITY UNAVAILABLE");
-                return;
-            }
-
-            if (envelope.ObservedUtc > nowUtc)
-            {
-                LogBlockedState("SIGNAL OBSERVED TIME IS IN THE FUTURE");
-                return;
-            }
-
-            double ageSeconds =
-                (nowUtc - envelope.ObservedUtc).TotalSeconds;
-
-            if (ageSeconds >
-                Math.Max(1, ProviderStaleAfterSeconds))
-            {
-                LogBlockedState(
-                    "SIGNAL ENVELOPE STALE • AGE " +
-                    Math.Round(ageSeconds, 1) + "S");
-                return;
-            }
-
-            if (envelope.Identity.Symbol != SymbolName)
-            {
-                LogBlockedState("SIGNAL SYMBOL SCOPE MISMATCH");
+                LogBlockedState(signalPreflightReason);
+                PublishExecutionState(
+                    "SIGNAL PREFLIGHT BLOCKED • " +
+                    signalPreflightReason,
+                    true);
                 return;
             }
 

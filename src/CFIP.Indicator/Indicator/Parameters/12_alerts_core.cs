@@ -7,35 +7,8 @@ namespace cAlgo
         [Parameter("Enable Sound Alerts", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool EnableSoundAlerts { get; set; }
 
-        [Parameter("Show Popup Alerts", Group = "12 · ALERTS — CORE", DefaultValue = true)]
-        public bool ShowPopupAlerts { get; set; }
-
-        [Parameter("Popup Critical Only", Group = "12 · ALERTS — CORE", DefaultValue = false)]
-        public bool PopupCriticalOnly { get; set; }
-
-        [Parameter("Popup Duration Seconds", Group = "12 · ALERTS — CORE", DefaultValue = 6, MinValue = 1, MaxValue = 60)]
-        public int PopupDurationSeconds { get; set; }
-
-        [Parameter("Popup Font Size", Group = "12 · ALERTS — CORE", DefaultValue = 11, MinValue = 8, MaxValue = 22)]
-        public int PopupFontSize { get; set; }
-
-        [Parameter("Show Entry Restriction Popup", Group = "12 · ALERTS — CORE", DefaultValue = true)]
-        public bool ShowEntryRestrictionPopup { get; set; }
-
         [Parameter("Alert On News / Event Guard", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool AlertOnNewsEventGuard { get; set; }
-
-        [Parameter("Popup Margin", Group = "12 · ALERTS — CORE", DefaultValue = 10, MinValue = 0, MaxValue = 50)]
-        public int PopupMargin { get; set; }
-
-        [Parameter("Popup Border Alpha", Group = "12 · ALERTS — CORE", DefaultValue = 235, MinValue = 0, MaxValue = 255)]
-        public int PopupBorderAlpha { get; set; }
-
-        [Parameter("Popup Bold", Group = "12 · ALERTS — CORE", DefaultValue = true)]
-        public bool PopupBold { get; set; }
-
-        [Parameter("Popup Font Family", Group = "12 · ALERTS — CORE", DefaultValue = "Arial")]
-        public string PopupFontFamily { get; set; }
 
         [Parameter("Alert On Confirmed Signal", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool AlertOnConfirmedSignal { get; set; }
