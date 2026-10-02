@@ -1,3 +1,30 @@
+## URGENT STABILIZATION — cBot Attachment / Alert Audio — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Scope completed on the hardening branch:
+- corrected cTrader chart-object type matching to the actual stable class identities CFIPExecutionBot and CFIPIndicator while retaining display-name compatibility;
+- separated physical cBot attachment truth from LocalStorage heartbeat truth so empty heartbeat state no longer masquerades as CBOT NOT ATTACHED;
+- hardened the two AUTO TRADE / AUTO ORDERS panel states through the canonical cBot connection presentation path;
+- hardened alert sound delivery with custom-file failure fallback to the canonical semantic sound cue;
+- added bounded multi-event alert draining per delivery pump;
+- added explicit alert queue / sound-delivery runtime diagnostics;
+- added a dedicated source regression audit and accumulated it into Source/Architecture CI;
+- preserved all strategy, M15/M5 role, RR and broker-capacity contracts; no threshold was lowered just to increase signal frequency.
+
+Full chain audited for this phase:
+Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional confirmation -> entry/SL/TP -> signal -> alert/message -> contract -> cBot binding -> cBot preflight -> broker execution/protection -> lifecycle -> outcome/history.
+
+Verification pending:
+- Source/Architecture CI;
+- cTrader compile/build;
+- target-terminal cBot attachment/rename/start/stop/reconnect;
+- target-terminal eligible-signal -> panel alert -> sound delivery.
+
+Next work unit after this stabilization: CBOT-6M concurrent multi-scenario execution with per-ScenarioId idempotency, reconciliation, risk and protection ownership.
+
+Operator action after merge: run git pull --ff-only on local main.
+
 ## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
 
 Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
