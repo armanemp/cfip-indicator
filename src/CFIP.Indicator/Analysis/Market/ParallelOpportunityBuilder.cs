@@ -197,42 +197,28 @@ namespace cAlgo
                 return null;
 
             double tp1RR =
-                Math.Abs(
-                    preview.Tp1 -
-                    preview.Entry) /
-                Math.Max(
-                    Symbol.PipSize,
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    preview.Entry,
+                    preview.Tp1,
                     preview.Risk);
 
             double tp2RR =
-                IsFinitePositive(preview.Tp2)
-                    ? Math.Abs(
-                        preview.Tp2 -
-                        preview.Entry) /
-                      Math.Max(
-                        Symbol.PipSize,
-                        preview.Risk)
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    preview.Entry,
+                    preview.Tp2,
+                    preview.Risk);
 
             double tp3RR =
-                IsFinitePositive(preview.Tp3)
-                    ? Math.Abs(
-                        preview.Tp3 -
-                        preview.Entry) /
-                      Math.Max(
-                        Symbol.PipSize,
-                        preview.Risk)
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    preview.Entry,
+                    preview.Tp3,
+                    preview.Risk);
 
             double tp4RR =
-                IsFinitePositive(preview.Tp4)
-                    ? Math.Abs(
-                        preview.Tp4 -
-                        preview.Entry) /
-                      Math.Max(
-                        Symbol.PipSize,
-                        preview.Risk)
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    preview.Entry,
+                    preview.Tp4,
+                    preview.Risk);
 
             TradeActionabilityResult actionability =
                 EvaluateTradeActionability(
