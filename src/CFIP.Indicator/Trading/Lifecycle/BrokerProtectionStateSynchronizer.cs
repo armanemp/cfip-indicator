@@ -142,7 +142,7 @@ namespace cAlgo
 
                 bool targetHealthy =
                     IsFinitePositive(entryPrice) &&
-                    LiveExitGeometryRule.IsTargetBeyondEntry(
+                    TargetProgressionRule.IsValid(
                         direction,
                         entryPrice,
                         brokerTarget);
