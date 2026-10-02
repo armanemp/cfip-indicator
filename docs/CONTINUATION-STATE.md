@@ -1564,3 +1564,28 @@ Operator action: run `git pull --ff-only` on local `main`.
 
 Next gated phase after CI-17 terminal evidence: **CI-FINAL — Full-stack Calculation Integrity Certification**.
 
+
+
+### MTF-P1 — Primary M15/H1 Signal Layer + Panel Separation — 2026-10-02
+
+Status: **IMPLEMENTED — repository verification pending on branch `phase/mtf-primary-m15-h1-panel-2026-10-02`.**
+
+Completed:
+- M15 and H1 are now the only primary visible timeframe-signal sources;
+- closed M5 is retained as local tuning/calibration evidence;
+- existing closed M1 trigger logic is used as optional timing confirmation;
+- M15 and H1 candidates can coexist simultaneously with distinct identities;
+- source-frame OB/FVG evidence is preserved and participates in display priority;
+- chart labels identify primary M15/H1 candidates;
+- chart-panel AUTO TRADE/AUTO ORDERS quick-control surfaces are removed;
+- BottomLeft/BottomRight Indicator panel positions keep 100px bottom clearance for the separate cBot surface;
+- no public parameter or trading threshold was changed;
+- no broker mutation or second decision authority was introduced.
+
+Known boundary:
+- primary candidate Entry/SL/TP geometry still comes from the canonical M5 planning projection and remains observe-only for non-M5 source scenarios;
+- target-terminal timing, simultaneous visual coexistence, panel/cBot spatial separation and empirical signal-quality effects remain manual acceptance items.
+
+Operator action after merge: `git pull --ff-only`.
+
+Phase record: `docs/PHASE-MTF-P1-PRIMARY-M15-H1-PANEL.md`.
