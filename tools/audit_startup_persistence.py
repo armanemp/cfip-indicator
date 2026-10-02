@@ -60,7 +60,7 @@ require(
 )
 require(
     ARCHIVE,
-    r"OutcomeArchivePeriodStart\([\s\S]*?periodDays[\s\S]*?90",
+    r"OutcomeArchivePeriodStart\([\s\S]*?CanonicalTimeRule\.OutcomeArchivePeriodDays",
     "90-day archive rotation",
 )
 require(

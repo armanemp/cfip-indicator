@@ -16,8 +16,12 @@ namespace cAlgo
                 NormalizeHour(sessionStartHour) * SessionResolutionMinutes;
             int endMinute =
                 NormalizeHour(sessionEndHour) * SessionResolutionMinutes;
+            DateTime reference =
+                CanonicalTimeRule.EnsureUtc(
+                    utc);
+
             int nowMinute =
-                utc.Hour * 60 + utc.Minute;
+                reference.Hour * 60 + reference.Minute;
 
             if (startMinute == endMinute)
                 return true;
@@ -40,7 +44,7 @@ namespace cAlgo
             endUtc = default(DateTime);
 
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
 
             int startHour =
                 NormalizeHour(sessionStartHour);
@@ -48,14 +52,8 @@ namespace cAlgo
                 NormalizeHour(sessionEndHour);
 
             DateTime dayStart =
-                new DateTime(
-                    reference.Year,
-                    reference.Month,
-                    reference.Day,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
+                CanonicalTimeRule.UtcDayStart(
+                    reference);
 
             int startMinute = startHour * SessionResolutionMinutes;
             int endMinute = endHour * SessionResolutionMinutes;
@@ -142,7 +140,7 @@ namespace cAlgo
             boundaryUtc = default(DateTime);
 
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
 
             int startHour =
                 NormalizeHour(sessionStartHour);
@@ -150,14 +148,8 @@ namespace cAlgo
                 NormalizeHour(sessionEndHour);
 
             DateTime dayStart =
-                new DateTime(
-                    reference.Year,
-                    reference.Month,
-                    reference.Day,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
+                CanonicalTimeRule.UtcDayStart(
+                    reference);
 
             int startMinute = startHour * SessionResolutionMinutes;
             int endMinute = endHour * SessionResolutionMinutes;
@@ -240,9 +232,9 @@ namespace cAlgo
             int minutesBefore)
         {
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
             DateTime boundary =
-                EnsureUtc(boundaryUtc);
+                CanonicalTimeRule.EnsureUtc(boundaryUtc);
 
             int window =
                 Math.Max(0, minutesBefore);
@@ -260,9 +252,9 @@ namespace cAlgo
             int windowMinutes)
         {
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
             DateTime boundary =
-                EnsureUtc(boundaryUtc);
+                CanonicalTimeRule.EnsureUtc(boundaryUtc);
 
             int window =
                 Math.Max(0, windowMinutes);
@@ -276,11 +268,5 @@ namespace cAlgo
             return Math.Max(0, Math.Min(23, hour));
         }
 
-        private static DateTime EnsureUtc(DateTime value)
-        {
-            return value.Kind == DateTimeKind.Utc
-                ? value
-                : value.ToUniversalTime();
-        }
     }
 }

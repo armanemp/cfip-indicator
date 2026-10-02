@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/CFIP.Contracts/CFIP.Contracts.csproj" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/CanonicalTimeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/OpportunityLane.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/ExecutionMode.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/PendingOrderMode.cs" />

@@ -37,9 +37,8 @@ namespace cAlgo
             bool force)
         {
             DateTime now =
-                nowUtc.Kind == DateTimeKind.Utc
-                    ? nowUtc
-                    : nowUtc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    nowUtc);
 
             bool intervalDue =
                 _lastBufferedArchiveFlushUtc ==

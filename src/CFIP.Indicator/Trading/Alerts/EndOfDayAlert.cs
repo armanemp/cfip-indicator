@@ -30,7 +30,9 @@ namespace cAlgo
                     boundaryUtc,
                     ExecutionThresholdPolicy.NormalizeEndOfDayAlertMinutesBefore(
                         EndOfDayAlertMinutesBefore)) &&
-                _lastEndOfDayAlertDate.Date != boundaryUtc.Date &&
+                !CanonicalTimeRule.IsSameUtcDay(
+                    _lastEndOfDayAlertDate,
+                    boundaryUtc) &&
                 HasManagedOpenPosition())
             {
                 _lastEndOfDayAlertDate =
@@ -67,8 +69,9 @@ namespace cAlgo
                     nowUtc,
                     boundaryUtc,
                     SessionWindowRule.DefaultEndOfDayCloseWindowMinutes) ||
-                _lastEndOfDayCloseDate.Date ==
-                    boundaryUtc.Date)
+                CanonicalTimeRule.IsSameUtcDay(
+                    _lastEndOfDayCloseDate,
+                    boundaryUtc))
                 return;
 
             List<Position> positionsToClose =
@@ -81,9 +84,8 @@ namespace cAlgo
                     continue;
 
                 DateTime entryUtc =
-                    position.EntryTime.Kind == DateTimeKind.Utc
-                        ? position.EntryTime
-                        : position.EntryTime.ToUniversalTime();
+                    CanonicalTimeRule.EnsureUtc(
+                        position.EntryTime);
 
                 // A position created after the session boundary belongs to the
                 // new session and must not be immediately closed by the
@@ -137,9 +139,8 @@ namespace cAlgo
                     continue;
 
                 DateTime entryUtc =
-                    position.EntryTime.Kind == DateTimeKind.Utc
-                        ? position.EntryTime
-                        : position.EntryTime.ToUniversalTime();
+                    CanonicalTimeRule.EnsureUtc(
+                        position.EntryTime);
 
                 if (entryUtc < boundaryUtc)
                 {

@@ -51,10 +51,15 @@ namespace cAlgo
 
         public void MarkProbeResult(
             bool succeeded,
-            string error = "")
+            string error = "",
+            DateTime? observedUtc = null)
         {
             _probeSucceeded = succeeded;
-            _lastProbeUtc = DateTime.UtcNow;
+            _lastProbeUtc =
+                observedUtc.HasValue
+                    ? CanonicalTimeRule.EnsureUtc(
+                        observedUtc.Value)
+                    : DateTime.UtcNow;
 
             if (!succeeded &&
                 !string.IsNullOrWhiteSpace(error))

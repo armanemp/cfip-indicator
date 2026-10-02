@@ -12,8 +12,9 @@ namespace cAlgo
         private void RefreshDailyLossTradeFacts(
             DateTime referenceUtc)
         {
-            if (_dailyLossBaselineDate.Date !=
-                    referenceUtc.Date)
+            if (!CanonicalTimeRule.IsSameUtcDay(
+                    _dailyLossBaselineDate,
+                    referenceUtc))
                 return;
 
             bool historyNeedsRefresh =
@@ -48,17 +49,12 @@ namespace cAlgo
                 return;
 
             DateTime startUtc =
-                new DateTime(
-                    referenceUtc.Year,
-                    referenceUtc.Month,
-                    referenceUtc.Day,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
+                CanonicalTimeRule.UtcDayStart(
+                    referenceUtc);
 
             DateTime endExclusive =
-                startUtc.AddDays(1);
+                CanonicalTimeRule.UtcNextDayStart(
+                    referenceUtc);
 
             try
             {

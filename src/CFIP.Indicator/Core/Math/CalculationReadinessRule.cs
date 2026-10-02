@@ -40,14 +40,12 @@ namespace cAlgo
                 return true;
 
             DateTime now =
-                nowUtc.Kind == DateTimeKind.Utc
-                    ? nowUtc
-                    : nowUtc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    nowUtc);
 
             DateTime last =
-                lastProbeUtc.Kind == DateTimeKind.Utc
-                    ? lastProbeUtc
-                    : lastProbeUtc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    lastProbeUtc);
 
             if (now < last)
                 return true;

@@ -211,9 +211,8 @@ namespace cAlgo
             }
 
             DateTime normalizedUtc =
-                utc.Kind == DateTimeKind.Utc
-                    ? utc
-                    : utc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    utc);
 
             string uri =
                 EconomicNewsDataUri;

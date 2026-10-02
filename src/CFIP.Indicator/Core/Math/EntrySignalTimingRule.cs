@@ -13,14 +13,12 @@ namespace cAlgo
                 return EntrySignalTiming.NotMeasured();
 
             DateTime causal =
-                causalUtc.Kind == DateTimeKind.Utc
-                    ? causalUtc
-                    : causalUtc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    causalUtc);
 
             DateTime actionable =
-                actionableUtcValue.Kind == DateTimeKind.Utc
-                    ? actionableUtcValue
-                    : actionableUtcValue.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    actionableUtcValue);
 
             if (actionable < causal)
                 return EntrySignalTiming.NotMeasured();

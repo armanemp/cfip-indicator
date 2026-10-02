@@ -768,7 +768,7 @@ M2–M28 may continue in parallel, but any phase touching execution/protection/p
 
 ## M3 — Single Trade Truth Chain
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
+Status: **VERIFIED COMPLETE — merged through PR #207 after all required repository gates passed.**
 
 2026-10-02 implementation:
 - added immutable CFIP.Contracts.AlertEnvelope carrying the same ContractIdentity used by the Indicator→cBot provider boundary;
@@ -814,6 +814,18 @@ Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
 ---
 
 ## M4 — Time / Session / History / Persistence Truth
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
+
+2026-10-02 implementation:
+- introduced a single CanonicalTimeRule for UTC normalization, UTC trading-day boundaries, half-open intervals and deterministic 90-day archive periods;
+- migrated SessionWindowRule, DailyLoss accounting/guard/persistence, EOD, Runtime Log and related timing/news/persistence owners to the canonical UTC semantics;
+- made unspecified API timestamps timezone-invariant by treating them as algorithm UTC rather than machine-local time;
+- scoped DailyLoss persistence by the canonical account identity; the prior account-number-only key is intentionally not auto-adopted because broker ownership cannot be proven safely;
+- kept the existing bounded buffered archive/history architecture and startup History location marker;
+- added deterministic M4 runtime contracts covering midnight, overnight sessions, EOD windows, 90-day rotation, restart/account scope and DST-calendar invariance;
+- added the accumulated tools/audit_phase_m4_time_history.py full-chain audit.
+
 
 ### هدف
 حل همه ناسازگاری‌های زمان، trading day، previous-period، EOD، daily loss و history.
