@@ -28,6 +28,12 @@ namespace CFIP.cBot
             DefaultValue = true)]
         public bool UseMarketRange { get; set; }
 
+        [Parameter(
+            "Managed Execution Label",
+            Group = "Execution",
+            DefaultValue = "CFIP-SMART")]
+        public string ManagedExecutionLabel { get; set; }
+
         private CFIPIndicator _indicator;
 
         private readonly MarketExecutionCoordinator _market =
@@ -116,6 +122,7 @@ namespace CFIP.cBot
                             this,
                             snapshot,
                             UseMarketRange,
+                            NormalizeManagedExecutionLabel(),
                             Server.TimeInUtc,
                             out report,
                             out executionReason);
@@ -264,6 +271,13 @@ namespace CFIP.cBot
             }
         }
 
+        private string NormalizeManagedExecutionLabel()
+        {
+            return string.IsNullOrWhiteSpace(ManagedExecutionLabel)
+                ? "CFIP-SMART"
+                : ManagedExecutionLabel.Trim();
+        }
+
         private ShadowBrokerSnapshot ReadBrokerSnapshot()
         {
             int managedPositions = 0;
@@ -274,9 +288,9 @@ namespace CFIP.cBot
                         position.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    IsManagedLabel(
+                    ManagedExecutionLabelRule.Matches(
                         position.Label,
-                        ShadowHostValidator.ManagedLabel))
+                        NormalizeManagedExecutionLabel()))
                 {
                     managedPositions++;
                 }
@@ -290,9 +304,9 @@ namespace CFIP.cBot
                         order.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    IsManagedLabel(
+                    ManagedExecutionLabelRule.Matches(
                         order.Label,
-                        ShadowHostValidator.PendingManagedLabel))
+                        NormalizeManagedExecutionLabel() + "-PENDING"))
                 {
                     managedPendingOrders++;
                 }
