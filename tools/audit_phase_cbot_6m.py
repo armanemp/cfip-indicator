@@ -26,6 +26,7 @@ scenario_identity = read("src/CFIP.Contracts/ScenarioExecutionIdentityRule.cs")
 candidate = read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs")
 scenario_policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
 parallel = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+candidate_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
 provider_refresh = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderRefresh.cs")
 provider_batch = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs")
 provider_publisher = read("src/CFIP.Indicator/Runtime/Provider/CFIPDeviceScenarioBatchPublisher.cs")
@@ -40,7 +41,7 @@ reconciliation = read("src/CFIP.cBot/Recovery/CbotBrokerReconciliation.cs")
 management = read("src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs")
 workflow = read(".github/workflows/source-check.yml")
 quality_rule = read("src/CFIP.Indicator/Core/Math/TradeOpportunityQualityRule.cs")
-quality_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+quality_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
 quality_selection = read("src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs")
 quality_batch = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs")
 
@@ -69,7 +70,7 @@ check(
     "candidate carries the execution mode and requested volume",
     "public ExecutionMode ExecutionMode;" in candidate and
     "public double RequestedVolume;" in candidate and
-    "ExecutionMode = execution.Mode" in parallel
+    "ExecutionMode = execution.Mode" in candidate_builder
 )
 check(
     "M15 is the only independent timeframe authorized for automatic execution",
