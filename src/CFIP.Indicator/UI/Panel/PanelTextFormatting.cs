@@ -131,6 +131,19 @@ namespace cAlgo
                                     if (frame == null)
                                         return "WAIT";
                         
+                                    int displayDirection =
+                                        PanelFrameDirectionRule.ResolveDisplayDirection(
+                                            frame.Direction,
+                                            frame.BullScore,
+                                            frame.BearScore,
+                                            frame.TrendBull,
+                                            frame.TrendBear);
+
+                                    string directionLabel =
+                                        PanelFrameDirectionRule.ResolveLabel(
+                                            frame.Direction,
+                                            displayDirection);
+
                                     string zones =
                                         "FVG " +
                                         (frame.FvgBull
@@ -151,15 +164,15 @@ namespace cAlgo
                                                 : "");
 
                                     return
-                                        (frame.Direction == 1
-                                            ? "BUY"
-                                            : frame.Direction == -1
-                                                ? "SELL"
-                                                : "NEUTRAL") +
+                                        directionLabel +
                                         " | Q" +
                                         frame.Quality +
                                         " | E" +
                                         frame.Evidence +
+                                        " | SCORE " +
+                                        frame.BullScore +
+                                        "/" +
+                                        frame.BearScore +
                                         " | " +
                                         zones;
                                 }
