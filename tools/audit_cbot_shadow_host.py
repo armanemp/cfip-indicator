@@ -31,7 +31,7 @@ def read(path):
 
 host = read(HOST)
 shadow_files = sorted(SHADOW.glob("*.cs"))
-shadow = "\\n".join(read(p) for p in shadow_files)
+shadow = "\n".join(read(p) for p in shadow_files)
 
 required_shadow = {
     "ShadowHostContracts.cs",
