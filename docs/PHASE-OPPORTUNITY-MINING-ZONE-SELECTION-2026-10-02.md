@@ -16,7 +16,7 @@ One canonical selection rule now scores each valid execution-zone candidate with
 - same-timeframe OB+FVG confluence bonus;
 - M5/M15 overlap bonus.
 
-The selector compares independent M5 FVG/OB and M15 FVG/OB candidates, same-frame overlap candidates and cross-timeframe overlap candidates, then selects the highest-scoring valid geometry.
+The selector compares independent M5 FVG/OB and M15 FVG/OB candidates, same-frame overlap candidates and cross-timeframe overlap candidates, then selects the highest-scoring valid geometry. Execution-only FVG lookup also compares all valid FVG candidates by quality, distance and age instead of returning only the nearest FVG.
 
 ## Safety boundary
 
