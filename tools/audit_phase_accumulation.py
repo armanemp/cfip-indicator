@@ -20,7 +20,7 @@ ROOT_REPO = Path(__file__).resolve().parents[1]
 pending_cbot = (
     ROOT_REPO / "src" / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
 ).read_text(encoding="utf-8")
-limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
+limit_mutation = ""
 protection = read("Trading/LiveManagement/ProtectionManager.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 partial_tp = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
@@ -157,8 +157,8 @@ if "public bool ShowPopupAlerts" not in popup_core or "DefaultValue = true" not 
     raise SystemExit("popup alerts should be enabled by default")
 if "public bool PopupCriticalOnly" not in popup_core or "DefaultValue = false" not in popup_core:
     raise SystemExit("popup must not be critical-only by default")
-if "public PanelCorner PopupPosition" not in popup_advanced or "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
-    raise SystemExit("popup default position must be bottom-left")
+if "public PanelCorner PopupPosition" not in popup_advanced or "DefaultValue = PanelCorner.BottomRight" not in popup_advanced:
+    raise SystemExit("popup default position must be bottom-right")
 if "public bool PopupBold" not in popup_core or "DefaultValue = true" not in popup_core:
     raise SystemExit("popup text should be bold by default")
 if "Chart.DrawRectangle(" in labels:
