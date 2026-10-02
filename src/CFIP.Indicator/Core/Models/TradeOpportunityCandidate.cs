@@ -10,6 +10,7 @@ namespace cAlgo
         public bool PresentationOnly;
         public bool M5TuningAligned;
         public bool M1TuningConfirmed;
+        public ExecutionMode ExecutionMode;
         public string PrimarySignalState;
         public int IndependentEvidenceScore;
         public int IndependentEvidenceGroupCount;
