@@ -142,9 +142,8 @@ namespace cAlgo
 
                         SendUnifiedAlert(
                             "DAILYLOSS|" +
-                            reference.Date.ToString(
-                                "yyyyMMdd",
-                                System.Globalization.CultureInfo.InvariantCulture),
+                            CanonicalTimeRule.UtcDayKey(
+                                reference),
                             "Daily loss limit reached (" +
                             evaluation.LossPercent.ToString(
                                 "F2",
@@ -205,8 +204,9 @@ namespace cAlgo
         private void EnsureDailyLossBaseline(
             DateTime referenceUtc)
         {
-            if (_dailyLossBaselineDate.Date ==
-                    referenceUtc.Date &&
+            if (CanonicalTimeRule.IsSameUtcDay(
+                    _dailyLossBaselineDate,
+                    referenceUtc) &&
                 IsFinitePositive(
                     _dailyLossStartEquity))
                 return;
@@ -254,7 +254,8 @@ namespace cAlgo
             }
 
             _dailyLossBaselineDate =
-                referenceUtc.Date;
+                CanonicalTimeRule.UtcDayStart(
+                    referenceUtc);
 
             _dailyLossStartEquity =
                 reconstructedStartEquity;
