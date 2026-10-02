@@ -26,11 +26,11 @@ namespace cAlgo
             Risk = Math.Max(0, risk);
             Reward = Math.Max(0, reward);
             EffectiveRisk = Math.Max(0, effectiveRisk);
-            NominalRR = IsRiskRewardGeometryFiniteNonNegative(nominalRR) ? nominalRR : 0;
-            EffectiveRR = IsRiskRewardGeometryFiniteNonNegative(effectiveRR) ? effectiveRR : 0;
+            NominalRR = Ci14RiskRewardGeometryFiniteNonNegativeGuard(nominalRR) ? nominalRR : 0;
+            EffectiveRR = Ci14RiskRewardGeometryFiniteNonNegativeGuard(effectiveRR) ? effectiveRR : 0;
         }
 
-        private static bool IsRiskRewardGeometryFiniteNonNegative(double value)
+        private static bool Ci14RiskRewardGeometryFiniteNonNegativeGuard(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
@@ -49,11 +49,11 @@ namespace cAlgo
             double target,
             double spread)
         {
-            if (!IsRiskRewardGeometryFiniteNonNegative(spread) ||
+            if (!Ci14RiskRewardGeometryFiniteNonNegativeGuard(spread) ||
                 (direction != 1 && direction != -1) ||
-                !IsCanonicalPositiveFinite(entry) ||
-                !IsCanonicalPositiveFinite(stop) ||
-                !IsCanonicalPositiveFinite(target))
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(entry) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(stop) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(target))
                 return BuildBlockedGeometry("LEVEL GEOMETRY INVALID");
 
             bool protectiveStop =
@@ -83,9 +83,9 @@ namespace cAlgo
             double target,
             double risk)
         {
-            if (!IsCanonicalPositiveFinite(entry) ||
-                !IsCanonicalPositiveFinite(target) ||
-                !IsCanonicalPositiveFinite(risk))
+            if (!IsCi14RiskRewardGeometryPositiveFiniteGuard(entry) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(target) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(risk))
                 return 0;
 
             return CalculateNominalRRFromDistances(
@@ -97,8 +97,8 @@ namespace cAlgo
             double reward,
             double risk)
         {
-            if (!IsCanonicalPositiveFinite(reward) ||
-                !IsCanonicalPositiveFinite(risk))
+            if (!IsCi14RiskRewardGeometryPositiveFiniteGuard(reward) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(risk))
                 return 0;
 
             double rr =
@@ -107,7 +107,7 @@ namespace cAlgo
                     PriceFloor,
                     risk);
 
-            return IsCanonicalPositiveFinite(rr)
+            return IsCi14RiskRewardGeometryPositiveFiniteGuard(rr)
                 ? rr
                 : 0;
         }
@@ -117,12 +117,12 @@ namespace cAlgo
             double risk,
             double spread)
         {
-            if (!IsCanonicalPositiveFinite(reward) ||
-                !IsCanonicalPositiveFinite(risk))
+            if (!IsCi14RiskRewardGeometryPositiveFiniteGuard(reward) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(risk))
                 return 0;
 
             double safeSpread =
-                IsRiskRewardGeometryFiniteNonNegative(spread)
+                Ci14RiskRewardGeometryFiniteNonNegativeGuard(spread)
                     ? Math.Max(0, spread)
                     : 0;
 
@@ -130,7 +130,7 @@ namespace cAlgo
                 risk +
                 safeSpread;
 
-            if (!IsCanonicalPositiveFinite(effectiveRisk))
+            if (!IsCi14RiskRewardGeometryPositiveFiniteGuard(effectiveRisk))
                 return 0;
 
             double rr =
@@ -139,7 +139,7 @@ namespace cAlgo
                     PriceFloor,
                     effectiveRisk);
 
-            return IsCanonicalPositiveFinite(rr)
+            return IsCi14RiskRewardGeometryPositiveFiniteGuard(rr)
                 ? rr
                 : 0;
         }
@@ -149,12 +149,12 @@ namespace cAlgo
             double reward,
             double spread)
         {
-            if (!IsCanonicalPositiveFinite(risk) ||
-                !IsCanonicalPositiveFinite(reward))
+            if (!IsCi14RiskRewardGeometryPositiveFiniteGuard(risk) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(reward))
                 return BuildBlockedGeometry("EMPTY REWARD/RISK");
 
             double safeSpread =
-                IsRiskRewardGeometryFiniteNonNegative(spread)
+                Ci14RiskRewardGeometryFiniteNonNegativeGuard(spread)
                     ? Math.Max(0, spread)
                     : 0;
 
@@ -173,9 +173,9 @@ namespace cAlgo
                     risk,
                     safeSpread);
 
-            if (!IsCanonicalPositiveFinite(effectiveRisk) ||
-                !IsCanonicalPositiveFinite(nominalRR) ||
-                !IsCanonicalPositiveFinite(effectiveRR))
+            if (!IsCi14RiskRewardGeometryPositiveFiniteGuard(effectiveRisk) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(nominalRR) ||
+                !IsCi14RiskRewardGeometryPositiveFiniteGuard(effectiveRR))
                 return BuildBlockedGeometry("RR INVALID");
 
             return new RiskRewardGeometryResult(
@@ -201,14 +201,14 @@ namespace cAlgo
                 0);
         }
 
-        private static bool IsCanonicalPositiveFinite(double value)
+        private static bool IsCi14RiskRewardGeometryPositiveFiniteGuard(double value)
         {
             return value > 0 &&
                    !double.IsNaN(value) &&
                    !double.IsInfinity(value);
         }
 
-        private static bool IsRiskRewardGeometryFiniteNonNegative(double value)
+        private static bool Ci14RiskRewardGeometryFiniteNonNegativeGuard(double value)
         {
             return value >= 0 &&
                    !double.IsNaN(value) &&
