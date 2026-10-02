@@ -44,10 +44,10 @@ namespace cAlgo
             }
             else
             {
+            // The active-plan direction arrow is live guidance: keep it on
+            // the current chart bar so it continuously follows the active path.
             int hostBar =
-                MapM5ToChart(
-                    snapshot.CreatedM5,
-                    Bars.Count - 1);
+                Bars.Count - 1;
             double atr =
                 Atr(
                     Bars,
