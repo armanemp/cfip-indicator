@@ -23,9 +23,9 @@ namespace cAlgo
                                     {
                                         int bootstrapWidth =
                                             Math.Max(
-                                                260,
+                                                220,
                                                 Math.Min(
-                                                    760,
+                                                    700,
                                                     PanelWidth));
 
                                         int bootstrapHeight =
