@@ -109,9 +109,14 @@ namespace CFIP.cBot.Recovery
                 if (managedPosition == null)
                     managedPosition = position;
 
-                if (string.IsNullOrWhiteSpace(resolvedLabel) &&
-                    position != null)
-                    resolvedLabel = position.Label ?? string.Empty;
+                if (position != null &&
+                    (!string.Equals(
+                        position.Label,
+                        preferred,
+                        StringComparison.Ordinal) ||
+                     string.IsNullOrWhiteSpace(resolvedLabel)))
+                    resolvedLabel =
+                        position.Label ?? string.Empty;
             }
 
             foreach (PendingOrder order in robot.PendingOrders)
@@ -135,12 +140,16 @@ namespace CFIP.cBot.Recovery
                 if (managedPending == null)
                     managedPending = order;
 
-                if (string.IsNullOrWhiteSpace(resolvedLabel) &&
-                    order != null)
+                if (order != null &&
+                    !string.IsNullOrWhiteSpace(order.Label))
                 {
-                    string label = order.Label ?? string.Empty;
-                    const string pendingSuffix = "-PENDING";
-                    resolvedLabel =
+                    string label =
+                        order.Label;
+
+                    const string pendingSuffix =
+                        "-PENDING";
+
+                    string baseLabel =
                         label.EndsWith(
                             pendingSuffix,
                             StringComparison.Ordinal)
@@ -148,6 +157,13 @@ namespace CFIP.cBot.Recovery
                                 0,
                                 label.Length - pendingSuffix.Length)
                             : label;
+
+                    if (string.IsNullOrWhiteSpace(resolvedLabel) ||
+                        !string.Equals(
+                            resolvedLabel,
+                            baseLabel,
+                            StringComparison.Ordinal))
+                        resolvedLabel = baseLabel;
                 }
             }
 
@@ -330,15 +346,14 @@ namespace CFIP.cBot.Recovery
                 return false;
 
             if (!string.IsNullOrWhiteSpace(preferred) &&
-                string.Equals(
+                CbotManagedObjectIdentityRule.MatchesManagedLabel(
                     actual,
-                    preferred,
-                    StringComparison.Ordinal))
+                    preferred))
                 return true;
 
-            return actual.EndsWith(
-                scopedSuffix,
-                StringComparison.Ordinal);
+            return CbotManagedObjectIdentityRule.MatchesInstanceScope(
+                actual,
+                scopedSuffix);
         }
 
         private static bool Finite(double value)
