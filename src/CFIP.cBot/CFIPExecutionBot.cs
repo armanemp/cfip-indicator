@@ -5,6 +5,7 @@ using CFIP.Contracts;
 using CFIP.cBot.Binding;
 using CFIP.cBot.Execution;
 using CFIP.cBot.Shadow;
+using CFIP.cBot.Recovery;
 
 namespace CFIP.cBot
 {
@@ -104,6 +105,12 @@ namespace CFIP.cBot
         private readonly CbotExecutionStatePublisher _statePublisher =
             new CbotExecutionStatePublisher();
 
+        private readonly CbotBrokerReconciliation _brokerReconciliation =
+            new CbotBrokerReconciliation();
+
+        private CbotBrokerReconciliationResult _reconciliation;
+        private DateTime _nextBrokerReconciliationUtc = DateTime.MinValue;
+
         private ShadowHostState _state =
             ShadowHostState.Waiting;
 
@@ -156,6 +163,7 @@ namespace CFIP.cBot
             SubscribeBrokerLifecycleEvents();
             RefreshIndicatorBinding(true);
             ReloadSignalStore(true);
+            ReconcileBrokerState(true);
             PublishExecutionState("CBOT STARTED", true);
         }
 
@@ -240,6 +248,8 @@ namespace CFIP.cBot
                     ? ""
                     : envelope.Intent.ExecutionLabel ?? "";
 
+            ReconcileBrokerState(false);
+
             PublishExecutionState("SIGNAL OBSERVED", false);
 
             ShadowHostResult shadowResult =
@@ -256,6 +266,30 @@ namespace CFIP.cBot
                     ? "SHADOW STATE UNAVAILABLE"
                     : shadowResult.Reason ?? "SHADOW STATE",
                 false);
+
+            if (_reconciliation != null &&
+                _reconciliation.RecoveryRequired)
+            {
+                if (EnableDemoManagementExecution &&
+                    TryRecoverProtection(
+                        envelope,
+                        nowUtc))
+                {
+                    ReconcileBrokerState(true);
+                }
+
+                if (_reconciliation != null &&
+                    _reconciliation.RecoveryRequired)
+                {
+                    LogBlockedState(
+                        "BROKER RECOVERY REQUIRED • " +
+                        (_reconciliation.Reason ?? "UNKNOWN"));
+                    PublishExecutionState(
+                        "RECOVERY REQUIRED",
+                        true);
+                    return;
+                }
+            }
 
             bool executionEnabled =
                 EnableDemoMarketExecution ||
@@ -678,6 +712,7 @@ namespace CFIP.cBot
                     ? ""
                     : _lastSignalEnvelope.Identity.ScenarioId ?? "",
                 _lastSignalEnvelope,
+                _reconciliation,
                 force);
         }
 
