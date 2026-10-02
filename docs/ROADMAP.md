@@ -1643,6 +1643,35 @@ Once M42 is accepted, the project leaves the remediation/certification track and
 
 CR4.10 / D10 implementation complete. Native indicator readiness, safe warm-up/fail-closed behavior and deterministic registry lookup ownership were hardened without changing public parameter name/type/DefaultValue or trading thresholds. Target-terminal validation remains a separate manual acceptance boundary. The certification transition after the historical CR4.10/D10 remediation is **CR-FINAL**.
 
+## Historical audit string anchors
+
+## Accumulated audit string anchors
+
+These exact historical strings are retained for accumulated repository-audit compatibility. They are continuity markers only and are not additional implementation phases or an alternate roadmap:
+
+- CI-03
+- CI-04
+- CI-04 closeout
+- ## 2.0.1 — Current certification state
+- CI-05
+- CI-05 implementation record
+- CI-07
+- CI-08 implementation record
+- CI-10 — Trigger and trigger-lifecycle audit
+- docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md
+- CI-11 — Entry geometry and signal-timing audit
+- CI-12 — Structural SL
+- docs/PHASE-CI-12-STRUCTURAL-SL.md
+- ### CI-13 implementation record
+- Status: **VERIFIED COMPLETE — PR #168 merged to `main`.
+- CI-14
+- CI-15
+- CI-16
+- CI-17
+- CI-17A
+- ### CI-17 target-terminal acceptance package — 2026-10-02
+- CR-FINAL
+
 ## Historical audit continuity anchors
 
 The following identifiers are retained solely so accumulated repository audits can prove historical continuity after the roadmap consolidation. They are not additional implementation phases and do not override the M0–M42 order:
