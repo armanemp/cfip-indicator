@@ -30,14 +30,13 @@ namespace cAlgo
                     ? Symbol.Bid
                     : Symbol.Ask;
 
-            if (IsFinitePositive(liveMarket))
-                _lastMarket = liveMarket;
-
             double liveRR =
                 RiskRewardMathRule.DirectionalProgressRR(
                     _plan.Direction,
                     _plan.Entry,
-                    _lastMarket,
+                    IsFinitePositive(liveMarket)
+                        ? liveMarket
+                        : _lastMarket,
                     _plan.Risk,
                     Symbol.PipSize);
 
