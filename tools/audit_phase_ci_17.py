@@ -11,6 +11,7 @@ def check(condition, message):
 
 bot = read("preflight/CFIPPreflightBot.cs")
 preflight_project = read("preflight/CFIP.Preflight.csproj")
+preflight_probe_project = read("preflight/CFIP.Preflight.Probe.csproj")
 probe = read("preflight/CFIPPreflightProbeIndicator.cs")
 preflight_audit = read("tools/audit_cbot_preflight.py")
 workflow = read(".github/workflows/source-check.yml")
@@ -62,8 +63,12 @@ check(
 
 check(
     'PackageReference Include="cTrader.Automate" Version="1.0.21"' in preflight_project and
-    'ProjectReference Include="../src/CFIP.Indicator/CFIP.Indicator.csproj"' in preflight_project,
-    "target-terminal preflight project compiles against the production Indicator assembly",
+    'ProjectReference Include="../src/CFIP.Indicator/CFIP.Indicator.csproj"' in preflight_project and
+    'ProjectReference Include="CFIP.Preflight.Probe.csproj"' in preflight_project and
+    'Compile Remove="CFIPPreflightProbeIndicator.cs"' in preflight_project and
+    'Compile Include="CFIPPreflightProbeIndicator.cs"' in preflight_probe_project and
+    'Compile Remove="CFIPPreflightBot.cs"' in preflight_probe_project,
+    "target-terminal bot and probe are compiled as separate single-algo assemblies",
 )
 
 check(
