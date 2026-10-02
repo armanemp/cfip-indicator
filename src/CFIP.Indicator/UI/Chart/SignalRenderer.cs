@@ -42,7 +42,8 @@ namespace cAlgo
                         chartIndex));
 
             bool signalPresentationAllowed =
-                !snapshot.PendingOrder;
+                !snapshot.PendingOrder &&
+                !snapshot.LivePosition;
 
             if (!signalPresentationAllowed)
             {
