@@ -25,6 +25,8 @@ def check(name, condition):
 model = read("src/CFIP.Indicator/Core/Models/CanonicalTradePathGeometry.cs")
 builder = read("src/CFIP.Indicator/Planning/TradePlan/CanonicalTradePathGeometryBuilder.cs")
 actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+preparation = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs")
+gates = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
 plan_builder = read("src/CFIP.Indicator/Planning/TradePlan/PlanBuilder.cs")
 plan_inputs = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.cs")
 trace = read("src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs")
@@ -60,21 +62,21 @@ check(
 
 check(
     "actionability consumes canonical actual-entry geometry",
-    "TryBuildCanonicalTradePathGeometry(" in actionability and
-    "effectivePreview =
-                canonicalPath.Preview" in actionability,
+    "TryBuildCanonicalTradePathGeometry(" in preparation and
+    "state.EffectivePreview" in preparation and
+    "TryPrepareTradeActionability(" in actionability,
 )
 
 check(
     "actionability rejects execution/actionability entry or mode drift",
-    "EXECUTION GEOMETRY / ACTIONABILITY MISMATCH" in actionability and
-    "canonicalPath.EntryMode != liveMode" in actionability,
+    "EXECUTION GEOMETRY / ACTIONABILITY MISMATCH" in preparation and
+    "canonicalPath.EntryMode != state.LiveMode" in preparation,
 )
 
 check(
     "actionability reward calculation uses canonical SL/TP rather than ideal preview",
-    "effectivePreview.Stop" in actionability and
-    "effectivePreview.Tp1" in actionability,
+    "state.EffectivePreview.Stop" in preparation and
+    "state.EffectivePreview.Tp1" in preparation,
 )
 
 check(
