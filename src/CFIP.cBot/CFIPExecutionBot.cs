@@ -41,6 +41,22 @@ namespace CFIP.cBot
         public int MaxDemoMarketExecutionsPerSession { get; set; }
 
         [Parameter(
+            "Max Execution Margin Usage %",
+            Group = "Safety",
+            DefaultValue = 80,
+            MinValue = 10,
+            MaxValue = 100)]
+        public double MaxExecutionMarginUsagePercent { get; set; }
+
+        [Parameter(
+            "Execution Margin Buffer %",
+            Group = "Safety",
+            DefaultValue = 10,
+            MinValue = 0,
+            MaxValue = 40)]
+        public double ExecutionMarginBufferPercent { get; set; }
+
+        [Parameter(
             "Provider Stale After Seconds",
             Group = "Safety",
             DefaultValue = 15,
@@ -200,6 +216,8 @@ namespace CFIP.cBot
                     envelope,
                     ManagedLabel,
                     nowUtc,
+                    MaxExecutionMarginUsagePercent,
+                    ExecutionMarginBufferPercent,
                     out BrokerExecutionReport report,
                     out string executionReason))
             {
