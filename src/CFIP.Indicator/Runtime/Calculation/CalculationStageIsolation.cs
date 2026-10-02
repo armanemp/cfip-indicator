@@ -335,7 +335,7 @@ namespace cAlgo
                     return true;
                 },
                 index,
-                "PREDICTIVE PENDING EXECUTION");
+                "PENDING INTENT PREPARATION");
 
             RunCalculationStage(
                 () =>
