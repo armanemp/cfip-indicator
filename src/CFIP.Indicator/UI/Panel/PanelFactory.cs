@@ -254,7 +254,7 @@ namespace cAlgo
                                         _panelRestoreButton = null;
                                     }
                                 }
-    }
+
         private void CapturePanelGeometryBaseline()
         {
             int observedHeight = 0;
@@ -278,5 +278,5 @@ namespace cAlgo
             if (observedHeight >= 220)
                 _panelGeometryBaselineChartHeight = observedHeight;
         }
-
+    }
 }
