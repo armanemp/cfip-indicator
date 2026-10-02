@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTATION COMPLETE — repository verification pending on branch `phase/ci20b-protection-cbot-signal-hardening-2026-10-02`.
+VERIFIED COMPLETE — repository gates PASS on final implementation head `5d37563536f8a5171d14dbc09b58cf2affeb10a2`.
 
 ## Scope
 
@@ -47,6 +47,13 @@ This phase continues CI-20 without creating a second execution engine:
 
 ## Verification
 
+Repository verification on the final head:
+- Source / Architecture #3141: **PASS**;
+- Runtime Acceptance Contracts #2950: **PASS**;
+- cTrader Compile/Build #3134: **PASS**;
+- CI20B dedicated protection/cBot/signal audit: **PASS**;
+- accumulated architecture/execution/UI audits: **PASS**.
+
 Required:
 - accumulated Source / Architecture;
 - Runtime Acceptance Contracts;
@@ -64,4 +71,6 @@ No profitability claim is made from this structural hardening phase.
 
 ## Next
 
-After repository acceptance, continue the remaining cBot lifecycle/recovery and protection migration work, then use replay/OOS evidence to tune signal quality rather than changing thresholds blindly.
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+After merge, continue the remaining cBot lifecycle/recovery and broker-owned protection/target progression work, then use replay/OOS evidence to tune signal quality rather than changing thresholds blindly.
