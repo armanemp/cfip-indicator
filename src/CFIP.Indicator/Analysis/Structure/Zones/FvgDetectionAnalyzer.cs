@@ -214,6 +214,88 @@ namespace cAlgo
             return best;
         }
 
+        private Zone SelectBestFvgForExecution(
+            double price,
+            double atr,
+            Zone best,
+            Zone candidate)
+        {
+            if (candidate == null)
+                return best;
+
+            if (best == null)
+                return candidate;
+
+            double candidateDistanceAtr =
+                DistanceToZone(
+                    price,
+                    candidate) /
+                Math.Max(
+                    Symbol.TickSize,
+                    atr);
+
+            double bestDistanceAtr =
+                DistanceToZone(
+                    price,
+                    best) /
+                Math.Max(
+                    Symbol.TickSize,
+                    atr);
+
+            double candidateScore =
+                candidate.Quality -
+                18.0 *
+                Math.Min(
+                    1.0,
+                    candidateDistanceAtr / 3.0) -
+                10.0 *
+                Math.Min(
+                    1.0,
+                    candidate.Age /
+                    (double)Math.Max(
+                        1,
+                        MaximumZoneAgeBars));
+
+            double bestScore =
+                best.Quality -
+                18.0 *
+                Math.Min(
+                    1.0,
+                    bestDistanceAtr / 3.0) -
+                10.0 *
+                Math.Min(
+                    1.0,
+                    best.Age /
+                    (double)Math.Max(
+                        1,
+                        MaximumZoneAgeBars));
+
+            if (candidateScore >
+                bestScore +
+                0.0001)
+                return candidate;
+
+            if (Math.Abs(
+                    candidateScore -
+                    bestScore) <=
+                0.0001 &&
+                candidate.Quality >
+                best.Quality)
+                return candidate;
+
+            if (Math.Abs(
+                    candidateScore -
+                    bestScore) <=
+                0.0001 &&
+                candidate.Quality ==
+                best.Quality &&
+                candidate.Age <
+                best.Age)
+                return candidate;
+
+            return best;
+        }
+
         private bool PassesCurrentFvgRetest(
             Bars bars,
             int index,
