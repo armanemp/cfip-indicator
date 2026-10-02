@@ -6,6 +6,7 @@ namespace cAlgo
     {
         internal const double ExecutionMinimumFloor = 0.10;
         internal const double PlanBaseMinimumFloor = 0.50;
+        internal const double RangeMinimumRRFloor = 1.80;
 
         public static double NormalizeMinimum(
             double configured,
