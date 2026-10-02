@@ -1306,6 +1306,13 @@ for broker_path in (
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs",
 ):
     broker_code = broker_path.read_text(encoding="utf-8")
+
+    # CBOT-P4A converts Automatic Market into a no-mutation handoff.
+    if broker_path.name == "AutomaticMarketBrokerExecution.cs":
+        if "CBOT cBot handoff" not in broker_code:
+            raise SystemExit("Automatic Market must expose the cBot handoff boundary")
+        continue
+
     if "GetActiveBrokerStopPrice()" not in broker_code or "GetActiveBrokerTargetPrice()" not in broker_code:
         raise SystemExit(f"Live trade reporting must use broker-confirmed protection: {broker_path.name}")
 
