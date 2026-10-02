@@ -1999,7 +1999,7 @@ for consumer_name in (
 # Cross-path execution consistency for the remaining Indicator pending boundary.
 CROSS_PATH_CONTRACTS = {
     "ContinuationStopPlacement.cs": (
-        "TryPrepareContinuationStopForCbot(",
+        "PrepareContinuationStopForCbot(",
     ),
     "ReversalLimitPlacement.cs": (
         "TryPrepareReversalLimit(",
