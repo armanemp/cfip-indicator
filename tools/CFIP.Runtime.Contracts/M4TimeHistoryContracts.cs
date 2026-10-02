@@ -350,14 +350,15 @@ namespace cAlgo
             int year,
             int month,
             int day,
-            int hour)
+            int hour,
+            int minute = 0)
         {
             return new DateTime(
                 year,
                 month,
                 day,
                 hour,
-                0,
+                minute,
                 0,
                 DateTimeKind.Utc);
         }
