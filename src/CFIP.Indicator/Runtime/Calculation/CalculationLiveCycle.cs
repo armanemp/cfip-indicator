@@ -93,6 +93,21 @@ namespace cAlgo
                 DecisionPolicyMode.Confirmed);
         }
 
+        private void TryEnsureAutomaticPlan(
+            int closedM5)
+        {
+            // "Automatic" here means automatic analysis-plan materialization.
+            // It must never depend on Auto Trading and must never mutate the broker.
+            if (_decision == null ||
+                _decision.Direction == 0 ||
+                _plan != null)
+                return;
+
+            EnsureSignalPlan(
+                closedM5,
+                DecisionPolicyMode.Confirmed);
+        }
+
         private void UpdateExecutionModel(
             int closedM5)
         {
