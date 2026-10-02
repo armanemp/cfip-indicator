@@ -81,8 +81,9 @@ namespace cAlgo
             RefreshLiveDecisionActionability(
                 closedM5);
 
-            if (!AutoTradingEnabled ||
-                _plan != null ||
+            // Plan generation is analysis, not broker mutation. The execution
+            // owner applies its own AutoTrading gate later.
+            if (_plan != null ||
                 _decision == null ||
                 _decision.Direction == 0)
                 return;
