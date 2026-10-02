@@ -109,14 +109,14 @@ namespace cAlgo
             if (newsEvent == null)
                 return "NEWS";
 
+            DateTime normalizedUtc =
+                CanonicalTimeRule.EnsureUtc(
+                    utc);
+
             DateTimeOffset now =
-                utc.Kind == DateTimeKind.Utc
-                    ? new DateTimeOffset(
-                        utc,
-                        TimeSpan.Zero)
-                    : new DateTimeOffset(
-                        utc.ToUniversalTime(),
-                        TimeSpan.Zero);
+                new DateTimeOffset(
+                    normalizedUtc,
+                    TimeSpan.Zero);
 
             double deltaMinutes =
                 (newsEvent.TimeUtc - now).TotalMinutes;
@@ -158,9 +158,8 @@ namespace cAlgo
                 return "";
 
             DateTime now =
-                TimeInUtc.Kind == DateTimeKind.Utc
-                    ? TimeInUtc
-                    : TimeInUtc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    TimeInUtc);
 
             EconomicNewsFeedState state =
                 EconomicNewsFeedStateRule.Evaluate(
@@ -278,9 +277,8 @@ namespace cAlgo
             _economicNewsBlockingEvent = null;
 
             DateTime normalizedUtc =
-                utc.Kind == DateTimeKind.Utc
-                    ? utc
-                    : utc.ToUniversalTime();
+                CanonicalTimeRule.EnsureUtc(
+                    utc);
 
             // Existing manual UTC blackout remains a deliberate manual override.
             if (TryManualNewsBlackout(
