@@ -56,7 +56,14 @@ namespace cAlgo
             if (!decision.EntryAllowed)
                 return BlockScenarioExecutionPolicy("CANONICAL DECISION BLOCKED");
 
-            if (!decision.TriggerReady)
+            // RetestMarket is zone-driven and does not require the generic
+            // Decision.TriggerReady flag. The candidate must still pass the live
+            // actionability gate, including current quote, M15 direction, RR,
+            // location/timing, trap-risk and indicator-fusion checks.
+            if (EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    candidate.ExecutionMode,
+                    M5OnlyConfirmedTrigger) &&
+                !decision.TriggerReady)
                 return BlockScenarioExecutionPolicy("CANONICAL TRIGGER NOT READY");
 
             if (!decision.ActionableNow)
@@ -179,7 +186,6 @@ namespace cAlgo
 
             if (decision == null ||
                 !decision.EntryAllowed ||
-                !decision.TriggerReady ||
                 decision.Direction != direction ||
                 candidates == null)
                 return false;
