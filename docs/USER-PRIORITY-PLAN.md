@@ -314,3 +314,10 @@ M15 and H1 signals must be able to coexist at the same time, including opposite 
 Source-timeframe OB/FVG evidence must remain attributable to the M15/H1 frame. No new global OB/FVG override or hard threshold is introduced without replay evidence.
 
 The Indicator chart-panel AUTO TRADE and AUTO ORDERS quick controls are not part of the presentation surface. Their canonical execution status/diagnostic information may remain available as text. The Indicator panel must retain explicit bottom clearance so the separate cBot panel can occupy the lower chart area without overlap.
+
+
+## U. Primary M15/H1 location evidence — 2026-10-02
+
+For primary M15/H1 signals, the selected FVG and Order Block evidence must remain attributable to the same closed source frame. OB+FVG confluence remains the strongest single location feature under the existing canonical location owner. M5 and M1 refine timing/readiness but must not replace or hide the source-frame location evidence.
+
+The panel should expose source OB/FVG evidence for each primary M15/H1 candidate. Any future threshold or weight change must be supported by deterministic replay/OOS evidence rather than visual preference.
