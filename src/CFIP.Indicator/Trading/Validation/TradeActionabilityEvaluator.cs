@@ -101,6 +101,22 @@ namespace cAlgo
             // Actionability is evaluated against the exact entry/SL/TP path
             // that the PlanBuilder and cBot handoff use, not the presentation
             // preview's ideal-entry geometry.
+            double entryConsistencyTolerance =
+                Math.Max(
+                    Symbol.TickSize * 2,
+                    Symbol.PipSize * 0.10);
+
+            if (canonicalPath == null ||
+                canonicalPath.EntryMode != liveMode ||
+                Math.Abs(
+                    canonicalPath.Entry -
+                    actualEntry) >
+                entryConsistencyTolerance)
+            {
+                return TradeActionabilityResult.Blocked(
+                    "EXECUTION GEOMETRY / ACTIONABILITY MISMATCH");
+            }
+
             TradeSetupPreview effectivePreview =
                 canonicalPath.Preview;
 
@@ -136,9 +152,6 @@ namespace cAlgo
                         MaximumStructuralStopAtr),
                     Math.Max(0, MaximumRewardRR),
                     Symbol.PipSize);
-
-            double risk =
-                canonicalRisk;
 
             double tp1RR =
                 canonicalTp1RR;
