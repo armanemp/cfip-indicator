@@ -117,11 +117,16 @@ check(
     "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" not in cbot
 )
 
+transport = read(CBOT / "Binding" / "CfipDeviceSignalTransport.cs")
+binding = read(CBOT / "Binding" / "CfipIndicatorChartBinding.cs")
+
 check(
     "cBot consumes the exact Device-scope SignalEnvelope",
     "CfipDeviceSignalTransport.TryRead(" in cbot and
     "CfipDeviceSignalTransport.Reload(" in cbot and
-    "SignalBusKey.ForIndicatorInstance(" not in cbot
+    "SignalBusKey.ForIndicatorInstance(" in transport and
+    "SignalEnvelopeCodec.TryDeserialize(" in transport and
+    "Cfip Smart Indicator" in binding
 )
 
 check(
@@ -135,7 +140,7 @@ check(
 
 check(
     "cBot uses read-only provider only",
-    "LatestSignalEnvelope" in cbot and
+    "CfipDeviceSignalTransport.TryRead(" in cbot and
     "ExecuteMarketOrder(" not in cbot and
     "PlaceStopOrder(" not in cbot and
     "PlaceLimitOrder(" not in cbot and
