@@ -1,8 +1,8 @@
 ## CBOT-P4B — Aggressive Authority + Panel Geometry Integrity — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending on branch `phase/cbot-p4b-panel-geometry-aggressive-2026-10-02`.**
+Status: **VERIFIED COMPLETE — merged to `main` as `33dd37f225fb9e2677070f122b5068b0c2df2e92`.**
 
-Completed the reported panel integrity fixes and the next Aggressive cBot mutation batch. Manual target-terminal acceptance remains required.
+Repository verification: Source/Architecture `36983568671` PASS; Runtime `36983568612` PASS; cTrader Compile `36983568641` PASS; P4B panel/Aggressive audit PASS. Manual target-terminal acceptance remains required. Next phase: **CBOT-P4C — Pending Stop authority extraction**.
 
 ## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
 
