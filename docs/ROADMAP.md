@@ -1672,6 +1672,9 @@ These exact historical strings are retained for accumulated repository-audit com
 - ### CI-17 target-terminal acceptance package — 2026-10-02
 - CR-FINAL
 
+- CR7.5 / G5
+- CR7.6a
+
 ## Historical audit continuity anchors
 
 The following identifiers are retained solely so accumulated repository audits can prove historical continuity after the roadmap consolidation. They are not additional implementation phases and do not override the M0–M42 order:
