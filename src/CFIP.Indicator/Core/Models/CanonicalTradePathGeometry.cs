@@ -58,15 +58,15 @@ namespace cAlgo
                 return
                     (Direction == 1 || Direction == -1) &&
                     EntryMode != ExecutionMode.None &&
-                    IsFinitePositive(Entry) &&
-                    IsFinitePositive(Stop) &&
-                    IsFinitePositive(Tp1) &&
-                    IsFinitePositive(Risk) &&
+                    HasFinitePositiveTradePathValue(Entry) &&
+                    HasFinitePositiveTradePathValue(Stop) &&
+                    HasFinitePositiveTradePathValue(Tp1) &&
+                    HasFinitePositiveTradePathValue(Risk) &&
                     Tp1RR > 0;
             }
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool HasFinitePositiveTradePathValue(double value)
         {
             return
                 !double.IsNaN(value) &&
