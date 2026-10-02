@@ -1639,6 +1639,13 @@ Once M42 is accepted, the project leaves the remediation/certification track and
 
 این بخش فقط برای حفظ تداوم است. فازهای historical زیر «باز» نیستند مگر M1 خلافشان را ثابت کند.
 
+## Track 19 — OSS Numerical Benchmark
+
+Track 19.1 numerical benchmark is a completed historical research/validation milestone. Its detailed continuity and benchmark evidence are retained in:
+`docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md`
+
+This track does not authorize production package promotion or numerical policy tuning.
+
 ## Foundation already established
 - Canonical source/architecture boundary
 - Modular indicator/analysis decomposition
