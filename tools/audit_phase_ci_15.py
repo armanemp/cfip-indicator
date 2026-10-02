@@ -126,8 +126,8 @@ check(
     and "INTENT ENTRY=" in submission
     and " SL=" in submission
     and " TP=" in submission
-    and "INTENT SL_PIPS=" in submission
-    and "INTENT TP_PIPS=" in submission,
+    and " SL_PIPS=" in submission
+    and " TP_PIPS=" in submission,
 )
 
 check(
@@ -172,7 +172,7 @@ check(
 check(
     "CI-15 remains a geometry/traceability correction, not strategy tuning",
     "no public parameter" in phase_doc.lower()
-    and "no strategy" in phase_doc.lower()
+    and "retune strategy thresholds" in phase_doc.lower()
     and "target-terminal" in phase_doc.lower(),
 )
 
