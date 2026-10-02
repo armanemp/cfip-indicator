@@ -14,7 +14,9 @@ namespace CFIP.cBot.Execution
             {
                 if (position != null &&
                     string.Equals(position.SymbolName, robot.SymbolName, StringComparison.Ordinal) &&
-                    string.Equals(position.Label, executionLabel, StringComparison.Ordinal))
+                    CbotManagedObjectIdentityRule.MatchesManagedLabel(
+                        position.Label,
+                        executionLabel))
                     count++;
             }
             return count;
@@ -30,7 +32,12 @@ namespace CFIP.cBot.Execution
             {
                 if (order != null &&
                     string.Equals(order.SymbolName, robot.SymbolName, StringComparison.Ordinal) &&
-                    string.Equals(order.Label, label, StringComparison.Ordinal))
+                    CbotManagedObjectIdentityRule.MatchesManagedLabel(
+                        order.Label,
+                        executionLabel) &&
+                    CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
+                        order.Label,
+                        executionLabel))
                     count++;
             }
             return count;
