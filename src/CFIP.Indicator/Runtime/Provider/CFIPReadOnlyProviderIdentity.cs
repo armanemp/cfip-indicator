@@ -178,6 +178,3 @@ namespace cAlgo
         }
     }
 }
-
-    }
-}
