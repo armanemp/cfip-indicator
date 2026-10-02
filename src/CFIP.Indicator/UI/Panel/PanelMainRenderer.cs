@@ -212,8 +212,6 @@ namespace cAlgo
                                                         buttonHeight,
                                                         buttonGap);
                                         
-                                                    SyncQuickExecutionControls();
-                
                                                     _lastPanelRenderUtc =
                                                         now;
                                                 
