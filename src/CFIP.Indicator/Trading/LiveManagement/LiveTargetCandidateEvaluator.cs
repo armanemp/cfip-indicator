@@ -120,17 +120,18 @@ namespace cAlgo
                     _plan.Entry);
 
             double rr =
-                distance /
-                Math.Max(
-                    Symbol.PipSize,
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    _plan.Entry,
+                    level.Price,
                     _plan.Risk);
 
             return
                 IsFinitePositive(rr) &&
-                rr <=
-                Math.Max(
-                    0,
-                    MaximumRewardRR);
+                RiskRewardPolicyRule.IsWithinMaximum(
+                    rr,
+                    RiskRewardPolicyRule.NormalizeMaximum(
+                        MaximumRewardRR,
+                        0));
         }
 
         private bool IsImprovedLiveTarget(
