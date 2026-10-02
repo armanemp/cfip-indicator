@@ -77,23 +77,6 @@ namespace cAlgo
             double actualEntry =
                 geometry.ActualEntry;
 
-            double risk =
-                Math.Abs(
-                    actualEntry -
-                    preview.Stop);
-
-            if (!IsFinitePositive(risk))
-                return TradeActionabilityResult.Blocked(
-                    "RISK UNAVAILABLE");
-
-            double tp1RR =
-                IsFinitePositive(preview.Tp1)
-                    ? Math.Abs(
-                        preview.Tp1 -
-                        actualEntry) /
-                      risk
-                    : 0;
-
             bool qualityReady =
                 !RequirePrecisionEntry ||
                 execution.Quality >=
@@ -117,7 +100,15 @@ namespace cAlgo
                     StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
                         MinimumSlAtr,
                         MaximumSlAtr,
-                        MaximumStructuralStopAtr));
+                        MaximumStructuralStopAtr),
+                    Math.Max(0, MaximumRewardRR),
+                    Symbol.PipSize);
+
+            double risk =
+                rewardRisk.Risk;
+
+            double tp1RR =
+                rewardRisk.NominalRR;
 
             DivergenceResult divergence =
                 _m5Frame == null
