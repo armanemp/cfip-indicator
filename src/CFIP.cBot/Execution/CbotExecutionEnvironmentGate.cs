@@ -75,7 +75,7 @@ namespace CFIP.cBot.Execution
 
             try
             {
-                if (!Permissions.TradingPermission.IsAllowed)
+                if (!robot.Permissions.TradingPermission.IsAllowed)
                 {
                     reason = "TRADING PERMISSION NOT GRANTED";
                     return false;
