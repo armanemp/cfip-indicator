@@ -26,11 +26,11 @@ namespace cAlgo
             Risk = Math.Max(0, risk);
             Reward = Math.Max(0, reward);
             EffectiveRisk = Math.Max(0, effectiveRisk);
-            NominalRR = IsCanonicalFiniteNonNegative(nominalRR) ? nominalRR : 0;
-            EffectiveRR = IsCanonicalFiniteNonNegative(effectiveRR) ? effectiveRR : 0;
+            NominalRR = IsRiskRewardGeometryFiniteNonNegative(nominalRR) ? nominalRR : 0;
+            EffectiveRR = IsRiskRewardGeometryFiniteNonNegative(effectiveRR) ? effectiveRR : 0;
         }
 
-        private static bool IsCanonicalFiniteNonNegative(double value)
+        private static bool IsRiskRewardGeometryFiniteNonNegative(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
@@ -49,7 +49,7 @@ namespace cAlgo
             double target,
             double spread)
         {
-            if (!IsCanonicalFiniteNonNegative(spread) ||
+            if (!IsRiskRewardGeometryFiniteNonNegative(spread) ||
                 (direction != 1 && direction != -1) ||
                 !IsCanonicalPositiveFinite(entry) ||
                 !IsCanonicalPositiveFinite(stop) ||
@@ -122,7 +122,7 @@ namespace cAlgo
                 return 0;
 
             double safeSpread =
-                IsCanonicalFiniteNonNegative(spread)
+                IsRiskRewardGeometryFiniteNonNegative(spread)
                     ? Math.Max(0, spread)
                     : 0;
 
@@ -154,7 +154,7 @@ namespace cAlgo
                 return BuildBlockedGeometry("EMPTY REWARD/RISK");
 
             double safeSpread =
-                IsCanonicalFiniteNonNegative(spread)
+                IsRiskRewardGeometryFiniteNonNegative(spread)
                     ? Math.Max(0, spread)
                     : 0;
 
@@ -208,7 +208,7 @@ namespace cAlgo
                    !double.IsInfinity(value);
         }
 
-        private static bool IsCanonicalFiniteNonNegative(double value)
+        private static bool IsRiskRewardGeometryFiniteNonNegative(double value)
         {
             return value >= 0 &&
                    !double.IsNaN(value) &&
