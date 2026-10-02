@@ -1727,10 +1727,11 @@ AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "Au
 AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
 if (
     "SetAutoTradingState" not in AUTO_MARKET_CODE or
-    "protectionOk" not in AUTO_MARKET_CODE or
-    '"RECOVERY"' not in AUTO_MARKET_CODE
+    "CBOT cBot handoff" not in AUTO_MARKET_CODE or
+    "TryExecuteMarketOrder(" in AUTO_MARKET_CODE or
+    "TryExecuteMarketRangeOrder(" in AUTO_MARKET_CODE
 ):
-    raise SystemExit("Market execution must expose broker protection recovery in auto state")
+    raise SystemExit("Automatic Market must be a no-mutation cBot handoff boundary")
 
 AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
 AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
