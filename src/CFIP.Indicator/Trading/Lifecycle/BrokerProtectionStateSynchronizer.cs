@@ -43,7 +43,8 @@ namespace cAlgo
                     ? Symbol.Bid
                     : Symbol.Ask;
 
-            if (IsFinitePositive(confirmedEntry))
+            if (confirmedEntry.HasValue &&
+                IsFinitePositive(confirmedEntry.Value))
             {
                 double entry =
                     NormalizePrice(confirmedEntry.Value);
