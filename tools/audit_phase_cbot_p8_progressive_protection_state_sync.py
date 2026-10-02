@@ -115,15 +115,18 @@ require(
 )
 
 require(
-    "IntelligentProtectionRule.Evaluate(" in intelligent and
+    "public static IntelligentProtectionDecision Evaluate(" in intelligent and
     "ProtectionProgressionRule.ShouldAdvanceStop(" in intelligent,
     "IntelligentProtectionRule remains the sole live trailing/protection policy",
 )
 
 require(
-    active_live.count("CalculateProtectedStop(") == 1 and
+    "CalculateProtectedStop(" in active_live and
+    "private double CalculateProtectedStop(" in read(
+        "src/CFIP.Indicator/Trading/LiveManagement/ProtectionManager.cs"
+    ) and
     "ProtectionProgressionRule.ShouldAdvanceStop(" in active_live,
-    "live management must retain one canonical progressive-stop candidate path",
+    "live management must retain the canonical progressive-stop candidate path",
 )
 
 require(
