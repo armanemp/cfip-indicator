@@ -1858,3 +1858,18 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+
+
+### M4 — Time / Session / History / Persistence Truth — 2026-10-02
+
+Implementation branch: phase/m4-time-session-history-persistence-2026-10-02.
+
+Completed in this phase:
+- CanonicalTimeRule owns UTC normalization and UTC trading-day/90-day period boundaries.
+- Session/EOD, DailyLoss, archive and related timing owners consume the same canonical time semantics.
+- DailyLoss persistence is account-scope aware and safely migrates the former account-number-only key.
+- Deterministic M4 runtime contracts and accumulated full-chain audit are added.
+
+Verification/manual boundary:
+- Source / Architecture, Runtime Acceptance Contracts and cTrader Compile are required before merge.
+- Target-terminal verification remains required for restart-mid-day history persistence, exact session/EOD broker behavior and cBot reconnect.
