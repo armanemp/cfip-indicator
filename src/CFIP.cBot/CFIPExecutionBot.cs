@@ -17,7 +17,6 @@ namespace CFIP.cBot
     public sealed class CFIPExecutionBot : Robot
     {
 #pragma warning restore CS0612
-        private const string ManagedLabel = "CFIP-SMART";
         private const string StartupState = "DEMO";
 
         [Parameter(
@@ -90,6 +89,7 @@ namespace CFIP.cBot
         private DateTime _nextBindingCheckUtc = DateTime.MinValue;
         private DateTime _nextSignalReloadUtc = DateTime.MinValue;
         private string _boundIndicatorInstanceId = "";
+        private string _activeManagedExecutionLabel = "";
 
         protected override void OnStart()
         {
@@ -179,6 +179,11 @@ namespace CFIP.cBot
                 return;
             }
 
+            _activeManagedExecutionLabel =
+                envelope.Intent == null
+                    ? ""
+                    : envelope.Intent.ExecutionLabel ?? "";
+
             ShadowHostResult shadowResult =
                 _shadow.Observe(
                     envelope,
@@ -221,7 +226,6 @@ namespace CFIP.cBot
                 if (_pending.TryExecuteStop(
                         this,
                         envelope,
-                        ManagedLabel,
                         nowUtc,
                         MaxExecutionMarginUsagePercent,
                         ExecutionMarginBufferPercent,
@@ -251,7 +255,6 @@ namespace CFIP.cBot
             if (_market.TryExecute(
                     this,
                     envelope,
-                    ManagedLabel,
                     nowUtc,
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
@@ -292,6 +295,7 @@ namespace CFIP.cBot
                     out string reason))
             {
                 _boundIndicatorInstanceId = "";
+                _activeManagedExecutionLabel = "";
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
                 return false;
@@ -302,6 +306,7 @@ namespace CFIP.cBot
             if (string.IsNullOrWhiteSpace(instanceId))
             {
                 _boundIndicatorInstanceId = "";
+                _activeManagedExecutionLabel = "";
                 LogBlockedState("CFIP INDICATOR INSTANCE ID UNAVAILABLE");
                 return false;
             }
@@ -348,6 +353,9 @@ namespace CFIP.cBot
 
         private ShadowBrokerSnapshot ReadBrokerSnapshot()
         {
+            string managedLabel =
+                _activeManagedExecutionLabel ?? "";
+
             int managedPositions = 0;
             foreach (Position position in Positions)
             {
@@ -358,7 +366,7 @@ namespace CFIP.cBot
                         StringComparison.Ordinal) &&
                     string.Equals(
                         position.Label,
-                        ManagedLabel,
+                        managedLabel,
                         StringComparison.Ordinal))
                     managedPositions++;
             }
@@ -373,7 +381,7 @@ namespace CFIP.cBot
                         StringComparison.Ordinal) &&
                     string.Equals(
                         order.Label,
-                        ManagedLabel + "-PENDING",
+                        managedLabel + "-PENDING",
                         StringComparison.Ordinal))
                     managedPendingOrders++;
             }
