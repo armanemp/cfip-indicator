@@ -1,15 +1,19 @@
 using System;
-using System.Globalization;
 using System.Text.Json;
 
 namespace CFIP.Contracts
 {
     public static class ManagementBusKey
     {
-            }
+        public static string CommandKeyForInstance(
+            string instanceId) =>
+            "CFIPManagementCommands" +
+            ContractBusKeyHash.Hash(instanceId);
 
-            return hash.ToString("X16", CultureInfo.InvariantCulture);
-        }
+        public static string ReportKeyForInstance(
+            string instanceId) =>
+            "CFIPManagementReports" +
+            ContractBusKeyHash.Hash(instanceId);
     }
 
     public static class ManagementCommandCodec
@@ -21,19 +25,28 @@ namespace CFIP.Contracts
                 WriteIndented = false
             };
 
-        public static string Serialize(ManagementCommand[] commands) =>
-            JsonSerializer.Serialize(commands ?? Array.Empty<ManagementCommand>(), Options);
+        public static string Serialize(
+            ManagementCommand[] commands) =>
+            JsonSerializer.Serialize(
+                commands ?? Array.Empty<ManagementCommand>(),
+                Options);
 
-        public static bool TryDeserialize(string payload, out ManagementCommand[]? commands)
+        public static bool TryDeserialize(
+            string payload,
+            out ManagementCommand[] commands)
         {
             commands = null;
+
             if (string.IsNullOrWhiteSpace(payload))
                 return false;
 
             try
             {
-                ManagementCommand[]? parsed =
-                    JsonSerializer.Deserialize<ManagementCommand[]>(payload, Options);
+                ManagementCommand[] parsed =
+                    JsonSerializer.Deserialize<ManagementCommand[]>(
+                        payload,
+                        Options);
+
                 commands = parsed;
                 return parsed != null;
             }
@@ -54,21 +67,28 @@ namespace CFIP.Contracts
                 WriteIndented = false
             };
 
-        public static string Serialize(BrokerExecutionReport[] reports) =>
-            JsonSerializer.Serialize(reports ?? Array.Empty<BrokerExecutionReport>(), Options);
+        public static string Serialize(
+            BrokerExecutionReport[] reports) =>
+            JsonSerializer.Serialize(
+                reports ?? Array.Empty<BrokerExecutionReport>(),
+                Options);
 
         public static bool TryDeserialize(
             string payload,
-            out BrokerExecutionReport[]? reports)
+            out BrokerExecutionReport[] reports)
         {
             reports = null;
+
             if (string.IsNullOrWhiteSpace(payload))
                 return false;
 
             try
             {
-                BrokerExecutionReport[]? parsed =
-                    JsonSerializer.Deserialize<BrokerExecutionReport[]>(payload, Options);
+                BrokerExecutionReport[] parsed =
+                    JsonSerializer.Deserialize<BrokerExecutionReport[]>(
+                        payload,
+                        Options);
+
                 reports = parsed;
                 return parsed != null;
             }
