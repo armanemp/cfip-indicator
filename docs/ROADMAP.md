@@ -1,7 +1,7 @@
 ## Permanent Development Rule — Canonical Owners / No Patches
 ## CI-21 — Primary M15 Signal Visibility / M5 Entry Tuning — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci-21-primary-m15-signal-visibility`.**
+Status: **VERIFIED COMPLETE — merged to `main) via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
 
 Scope:
 - preserve **M15 as the canonical execution/trade-decision timeframe**;
@@ -21,15 +21,15 @@ No public confidence, RR, risk, spread or strategy threshold was lowered.
 Phase record: `docs/PHASE-CI-21-PRIMARY-M15-SIGNAL-VISIBILITY.md`.
 
 Verification:
-- Source / Architecture: pending;
-- Runtime Acceptance: pending;
-- cTrader Compile/Build: pending;
-- CI-21 dedicated audit: pending;
+- Source / Architecture: **PASS** — run 37030614471;
+- Runtime Acceptance: **PASS** — run 37030614523;
+- cTrader Compile/Build: **PASS** — run 37030614229;
+- CI-21 dedicated audit: **PASS**;
 - target-terminal M15/M5 validation and empirical signal-quality validation remain manual.
 
 Next: continue the full pre-analysis → M15 decision → M5 trigger/tuning → entry → cBot execution chain audit, with every phase checking that the visual setup state and executable state remain consistent.
 
-Operator action after merge: run `git pull --ff-only` on local `main`.
+Operator action: run `git pull --ff-only` on local `main`.
 
 ## Build Warning / Panel Height Integrity — 2026-10-02
 
