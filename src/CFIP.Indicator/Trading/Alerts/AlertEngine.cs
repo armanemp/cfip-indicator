@@ -139,7 +139,7 @@ namespace cAlgo
 
                             SoundType soundType =
                                 ResolveAlertSoundType(
-                                    key,
+                                    normalizedKey,
                                     critical);
 
                             // Every eligible canonical alert is delivered to the same bounded transport.
@@ -157,7 +157,7 @@ namespace cAlgo
                                 "CFIP ALERT QUEUED | id={0} | key={1} | stage={2} | critical={3} | sound={4} | soundType={5} | queue={6}",
                                 envelope.AlertId,
                                 envelope.AlertKey,
-                                envelope.SignalStage,
+                                envelope.Stage,
                                 envelope.Critical,
                                 playSound,
                                 soundType,
