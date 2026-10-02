@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 
 namespace CFIP.Contracts
@@ -15,7 +16,6 @@ namespace CFIP.Contracts
         string Reason,
         string ExecutionLabel,
         MarketExecutionProfile MarketProfile)
-
     {
         public ExecutionIntent(
             ContractIdentity identity,
@@ -45,3 +45,4 @@ namespace CFIP.Contracts
         }
     }
 }
+#nullable enable
