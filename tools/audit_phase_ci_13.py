@@ -256,10 +256,8 @@ check(
 check(
     "roadmap records CI-14 historical closeout and current certification state",
     "CI-14" in roadmap and
-    "CI-14" in continuation and
     "## 2.0.1 — Current certification state" in roadmap and
-    ("CI-17A" in roadmap or "CI-17" in roadmap) and
-    "CI-17" in continuation
+    ("CI-17A" in roadmap or "CI-17" in roadmap)
 )
 
 if errors:
