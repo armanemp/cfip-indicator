@@ -10,6 +10,7 @@ def check(condition, message):
         raise SystemExit("CI-17 audit failed: " + message)
 
 bot = read("preflight/CFIPPreflightBot.cs")
+preflight_project = read("preflight/CFIP.Preflight.csproj")
 probe = read("preflight/CFIPPreflightProbeIndicator.cs")
 preflight_audit = read("tools/audit_cbot_preflight.py")
 workflow = read(".github/workflows/source-check.yml")
@@ -57,6 +58,12 @@ check(
     "spreadPips" in bot and
     "latestBarOpenUtc" in bot,
     "runtime timing fields are emitted",
+)
+
+check(
+    'PackageReference Include="cTrader.Automate" Version="1.0.21"' in preflight_project and
+    'ProjectReference Include="../src/CFIP.Indicator/CFIP.Indicator.csproj"' in preflight_project,
+    "target-terminal preflight project compiles against the production Indicator assembly",
 )
 
 check(
