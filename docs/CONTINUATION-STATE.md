@@ -1,3 +1,15 @@
+## 2026-10-03 — Retest trigger-path hardening
+
+Deep audit found a concrete signal-to-trade path defect: RetestMarket is intentionally zone-driven, but PlanCreationEligibility and ScenarioExecutionPolicyRule still treated Decision.TriggerReady as a global prerequisite. That could suppress valid in-zone Retest proposals before Plan/Scenario/cBot handoff.
+
+Correction:
+- canonical EntryActionabilityPolicy.RequiresConfirmedTrigger(mode, M5OnlyConfirmedTrigger) now owns the semantic;
+- RetestMarket bypasses the generic trigger prerequisite;
+- BreakoutMarket and predictive pending modes remain trigger-dependent;
+- Plan creation, scenario authorization and TriggerGate now consume the same owner;
+- deterministic runtime coverage and a dedicated static audit were added.
+
+No public signal-quality/RR/risk threshold was lowered. Full-chain audit remains mandatory.
 ## Current Continuation — 2026-10-02 — Opportunity Mining / Zone Selection
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
