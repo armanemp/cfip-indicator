@@ -53,10 +53,18 @@ namespace CFIP.cBot
         [Parameter(
             "Max Demo Executions Per Session",
             Group = "Safety",
-            DefaultValue = 1,
+            DefaultValue = 3,
+            MinValue = 1,
+            MaxValue = 20)]
+        public int MaxDemoExecutionsPerSession { get; set; }
+
+        [Parameter(
+            "Max Concurrent Scenarios",
+            Group = "Safety",
+            DefaultValue = 3,
             MinValue = 1,
             MaxValue = 10)]
-        public int MaxDemoExecutionsPerSession { get; set; }
+        public int MaxConcurrentScenarios { get; set; }
 
         [Parameter(
             "Max Execution Margin Usage %",
@@ -117,6 +125,10 @@ namespace CFIP.cBot
         private CbotIndicatorExecutionSettings _executionSettings;
 
         private CbotBrokerReconciliationResult _reconciliation;
+        private readonly Dictionary<string, SignalEnvelope> _scenarioEnvelopes =
+            new Dictionary<string, SignalEnvelope>(StringComparer.Ordinal);
+        private readonly Dictionary<string, CbotBrokerReconciliationResult> _scenarioReconciliations =
+            new Dictionary<string, CbotBrokerReconciliationResult>(StringComparer.Ordinal);
         private DateTime _nextBrokerReconciliationUtc = DateTime.MinValue;
         private string _lastReconciledExecutionLabel = "";
 
@@ -156,7 +168,7 @@ namespace CFIP.cBot
             Print(
                 "CFIP cBot START | hostTimeframe={0} | execTimeframe=M15 | state={1} | " +
                 "marketExecution={2} | pendingStopExecution={3} | pendingLimitExecution={4} | aggressiveExecution={5} | managementExecution={6} | " +
-                "maxSessionExecutions={7} | staleAfter={8}s | managementMaxAge={9}s | contractVersion={10}",
+                "maxSessionExecutions={7} | maxConcurrentScenarios={8} | staleAfter={9}s | managementMaxAge={10}s | contractVersion={11}",
                 Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 StartupState,
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
@@ -165,6 +177,7 @@ namespace CFIP.cBot
                 EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
                 EnableDemoManagementExecution ? "ARMED" : "DISARMED",
                 MaxDemoExecutionsPerSession,
+                MaxConcurrentScenarios,
                 ProviderStaleAfterSeconds,
                 ManagementCommandMaxAgeSeconds,
                 ContractVersion.Current);
