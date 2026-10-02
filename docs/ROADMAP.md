@@ -182,7 +182,7 @@ Detailed Track 19 record:
 
 ## 2.0.1 — Current certification state — 2026-10-02
 
-**Active blocking track: CI-17A — Panel live-content refresh correction, within CI-17 target-terminal validation.**
+**Active blocking track: CI-17 — Target-terminal cTrader validation; CI-17A panel live-content refresh correction is repository-verified and merged.**
 
 Repository implementation package: **merged** in PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.
 
@@ -194,103 +194,37 @@ The remaining acceptance boundary is the real target cTrader terminal/broker: M1
 
 ### CI-17A — Panel live-content refresh correction — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — repository implementation gate passed and PR #175 merged to `main`.**
 
-Root cause: the heartbeat refreshed only clock/live rows while RenderPanel() could short-circuit on an unchanged presentation key, leaving mutable reaction/prediction/context/panel rows stale.
+Merge commit: `6ffff643ad5c24782ca7035355e31ee4a04465c2`.
+
+Verified implementation HEAD: `9641bfc02c7604d6432202459fa198866d4a5f53`.
+
+Repository verification on the exact implementation HEAD:
+- Source/Architecture run #2742: **PASS**;
+- Runtime Acceptance Contracts run #2551: **PASS**;
+- cTrader Compile run #2735: **PASS**;
+- accumulated historical audits through CI-17A: **PASS**.
+
+Root cause:
+- runtime heartbeat refreshed only volatile clock/live rows;
+- full RenderPanel could short-circuit on an unchanged/incomplete presentation key;
+- mutable reaction/prediction/context/panel rows could therefore remain stale.
 
 Completed:
-- added bounded 500 ms content-only panel refresh;
-- reused one canonical SignalVisualSnapshot per content refresh;
-- refreshed RenderPanelRows() without rebuilding panel layout/container;
-- preserved presentation-key optimization for full renders;
-- forced immediate refresh after panel restore/reset;
-- made live RR heartbeat use current Bid/Ask;
-- added deterministic Runtime Contract and accumulated audit_phase_ci_17a.py.
+- bounded 500 ms content-only panel refresh;
+- one SignalVisualSnapshot reused per refresh;
+- direct RenderPanelRows() refresh without layout/container rebuild;
+- presentation-key optimization preserved for full layout work;
+- immediate content refresh after panel restore/reset;
+- live RR display reads current Bid/Ask locally without mutating trading state;
+- deterministic Runtime Contract and accumulated CI-17A static audit.
 
-No public parameters, strategy thresholds, decision rules or broker mutation paths changed.
+No public parameter, strategy threshold, decision rule, execution policy or broker mutation authority changed.
 
-Target-terminal acceptance remains required for visible refresh latency and live cTrader behavior.
+Target-terminal acceptance remains required for visible cTrader panel refresh latency, live reaction/context updates and final end-to-end runtime behavior.
 
-Machine-enforced baseline facts for the Phase 0.1 verification commit:
-
-- 398 production C# source files;
-- 534 public configuration parameters (531 baseline + 3 OSS extension parameters);
-- 27 parameter-group source files;
-- 500 method declarations / 467 unique baseline methods.
-
-Automated gate snapshot for the Phase 0.1 verification commit:
-
-- cTrader compile: PASS (workflow run 720);
-- runtime acceptance contracts: PASS (workflow run 536);
-- source and architecture checks: PASS (workflow run 727).
-
-The original Phase 0.1 baseline reported 398 production C# files, 535 parameters, 500 method declarations and 467 unique baseline methods. The current audited parameter surface is 534.
-
----
-
-# 2.1 User-priority implementation overlay
-
-Persistent user priorities are recorded in
-`docs/USER-PRIORITY-PLAN.md` and are mandatory inputs to future phase planning.
-
-Priority order:
-1. responsive/accurate panel startup and live refresh;
-2. clean, readable panel and reliable Auto Trading / Auto Orders controls;
-3. stronger signal quality without indiscriminate over-filtering;
-4. technically strong Entry / SL / TP levels;
-5. structurally valid higher RR;
-6. safer automatic market/pending execution and rejection handling;
-7. smart trailing / profit-lock / target progression for better profit capture;
-8. whole-system performance optimization and measurable validation.
-
-The overlay never overrides architectural dependencies. Each item is implemented
-under its correct existing owner and is validated through source, runtime, compile,
-replay or outcome evidence appropriate to the claim.
-
-# 3. Acceptance hierarchy
-
-CFIP certification is performed in this order:
-
-\`\`\`
-Repository truth
-    ↓
-Architecture / static gates
-    ↓
-Contract tests
-    ↓
-Claude review-remediation gate (CR-0 → CR-FINAL)
-    ↓
-Local cBot separation gate
-    ↓
-cTrader compile
-    ↓
-Hands-on cTrader runtime
-    ↓
-Broker lifecycle acceptance
-    ↓
-Deterministic replay
-    ↓
-Historical outcome validation
-    ↓
-Local Release
-    ↓
-Cloud portability
-    ↓
-Cloud cBot validation
-    ↓
-Adaptive Learning
-\`\`\`
-
-A later stage cannot waive a failed earlier invariant.
-
----
-
-# 4. External review issue map
-
-The external review was treated as a risk inventory rather than as proof of
-runtime failure. Its own limitation was that several findings were static
-review findings and still require compile/runtime/replay evidence.
-
+**Current next step: CI-17 target-terminal acceptance remains open; after that evidence, CI-FINAL is the next gate.**
 ## A-series runtime/execution risks
 
 | ID | Area | Roadmap coverage |
