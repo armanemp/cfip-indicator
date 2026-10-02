@@ -1,3 +1,9 @@
+## CBOT-P4C closeout note — 2026-10-02
+
+Pending Stop extraction is now implemented in src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs. The old Indicator mutation owner Trading/Execution/BrokerPendingOrderPlacement.cs has been deleted. Indicator retains only analytical preparation and immutable execution intent publication.
+
+The internal execution clock is M15. Chart timeframe is not an execution input. M5/M1 remain defensive tuning and H1+ remains higher-timeframe context/reward support.
+
 # CBOT-P0 — Execution Dependency-Closure Inventory
 
 Date: 2026-10-02
