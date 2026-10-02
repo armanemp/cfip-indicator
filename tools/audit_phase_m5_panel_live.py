@@ -32,7 +32,7 @@ provider = read("Runtime/Provider/CFIPReadOnlyProviderRefresh.cs")
 
 contracts = ROOT / "tools" / "CFIP.Runtime.Contracts" / "M5PanelContracts.cs"
 program = ROOT / "tools" / "CFIP.Runtime.Contracts" / "Program.cs"
-workflow = ROOT.parent / "tools" / ".github" if False else ROOT.parent.parent / ".github" / "workflows" / "source-check.yml"
+workflow = ROOT / ".github" / "workflows" / "source-check.yml"
 m3_audit = ROOT / "tools" / "audit_phase_m3_trade_truth.py"
 m4_audit = ROOT / "tools" / "audit_phase_m4_time_history.py"
 
@@ -87,7 +87,7 @@ require(
 
 require(
     "AUTO TRADING  •  OFF  •  MANUAL REVIEW" not in auto_state and
-    "return" in auto_state,
+    "SetAutoTradingState(" in auto_state,
     "M5: stale Indicator-owned AUTO TRADING OFF presentation remains",
 )
 
