@@ -118,6 +118,7 @@ namespace CFIP.cBot
 
         private CbotBrokerReconciliationResult _reconciliation;
         private DateTime _nextBrokerReconciliationUtc = DateTime.MinValue;
+        private string _lastReconciledExecutionLabel = "";
 
         private ShadowHostState _state =
             ShadowHostState.Waiting;
@@ -137,6 +138,7 @@ namespace CFIP.cBot
         protected override void OnStart()
         {
             _startedUtc = Server.TimeInUtc;
+            PublishPresence("STARTING");
             _tickCount = 0;
             _sessionExecutions = 0;
 
@@ -179,6 +181,7 @@ namespace CFIP.cBot
         protected override void OnTick()
         {
             _tickCount++;
+            PublishPresence("RUNNING");
 
             if (!RefreshIndicatorBinding(false))
             {
@@ -532,10 +535,9 @@ namespace CFIP.cBot
                         position.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    string.Equals(
+                    CbotManagedObjectIdentityRule.MatchesManagedLabel(
                         position.Label,
-                        managedLabel,
-                        StringComparison.Ordinal))
+                        managedLabel))
                     managedPositions++;
             }
 
@@ -547,10 +549,9 @@ namespace CFIP.cBot
                         order.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    string.Equals(
+                    CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
                         order.Label,
-                        managedLabel + "-PENDING",
-                        StringComparison.Ordinal))
+                        managedLabel))
                     managedPendingOrders++;
             }
 
@@ -768,8 +769,15 @@ namespace CFIP.cBot
 
             DateTime now = Server.TimeInUtc;
 
+            bool executionLabelChanged =
+                !string.Equals(
+                    _lastReconciledExecutionLabel,
+                    _activeManagedExecutionLabel,
+                    StringComparison.Ordinal);
+
             if (!force &&
-                now < _nextBrokerReconciliationUtc)
+                now < _nextBrokerReconciliationUtc &&
+                !executionLabelChanged)
                 return;
 
             _nextBrokerReconciliationUtc =
@@ -788,6 +796,9 @@ namespace CFIP.cBot
                 _activeManagedExecutionLabel =
                     _reconciliation.ExecutionLabel;
             }
+
+            _lastReconciledExecutionLabel =
+                _activeManagedExecutionLabel ?? "";
         }
 
         private bool TryRecoverProtection(
@@ -818,6 +829,16 @@ namespace CFIP.cBot
                 envelope,
                 out _,
                 out _);
+        }
+
+        private void PublishPresence(
+            string state)
+        {
+            _statePublisher.PublishPresence(
+                this,
+                Server.TimeInUtc,
+                state,
+                _boundIndicatorInstanceId);
         }
 
         private void PublishExecutionState(
@@ -881,6 +902,7 @@ namespace CFIP.cBot
 
         protected override void OnStop()
         {
+            PublishPresence("STOPPED");
             PublishExecutionState(
                 "CBOT STOPPED",
                 true);

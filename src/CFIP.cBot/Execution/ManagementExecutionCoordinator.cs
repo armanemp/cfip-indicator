@@ -964,7 +964,9 @@ namespace CFIP.cBot.Execution
             {
                 if (position == null ||
                     !string.Equals(position.SymbolName, robot.SymbolName, StringComparison.Ordinal) ||
-                    !string.Equals(position.Label, command.ExecutionLabel, StringComparison.Ordinal))
+                    !CbotManagedObjectIdentityRule.MatchesManagedLabel(
+                        position.Label,
+                        command.ExecutionLabel))
                     continue;
 
                 if (command.PositionId.HasValue &&
@@ -988,7 +990,9 @@ namespace CFIP.cBot.Execution
             {
                 if (order == null ||
                     !string.Equals(order.SymbolName, robot.SymbolName, StringComparison.Ordinal) ||
-                    !string.Equals(order.Label, label, StringComparison.Ordinal))
+                    !CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
+                        order.Label,
+                        command.ExecutionLabel))
                     continue;
 
                 if (command.PendingOrderId.HasValue &&

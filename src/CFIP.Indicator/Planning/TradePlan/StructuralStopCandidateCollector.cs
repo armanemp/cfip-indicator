@@ -49,7 +49,10 @@ namespace cAlgo
                                     _m5Bars,
                                     closedM5,
                                     direction,
-                                    atr);
+                                    atr,
+                                    false,
+                                    entry,
+                                    true);
                 
                             if (supportFvg != null)
                             {
@@ -170,7 +173,10 @@ namespace cAlgo
                                             frames[i],
                                             idx,
                                             direction,
-                                            frameAtr);
+                                            frameAtr,
+                                            false,
+                                            entry,
+                                            true);
                 
                                     if (fvg != null)
                                     {

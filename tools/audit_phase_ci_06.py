@@ -30,6 +30,8 @@ contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 execution_zone = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelector.cs")
+execution_zone_core = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCore.cs")
+execution_zone_consumer = execution_zone + "\n" + execution_zone_core
 targets = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs")
 stops = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs")
 obstacles = read("src/CFIP.Indicator/Trading/Validation/RewardPathZoneObstacleScanner.cs")
@@ -133,9 +135,9 @@ check(
 
 check(
     "execution zone consumes the exact OB geometry",
-    "FindNearestOrderBlockForExecution(" in execution_zone and
-    "m5Ob.Low" in execution_zone and
-    "m5Ob.High" in execution_zone
+    "FindNearestOrderBlockForExecution(" in execution_zone_consumer and
+    "m5Ob.Low" in execution_zone_consumer and
+    "m5Ob.High" in execution_zone_consumer
 )
 
 check(

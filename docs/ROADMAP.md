@@ -1,3 +1,39 @@
+# Current focus — POSITION ENGINE / cBot TRUTH HARDENING — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+This work unit is intentionally concentrated on the path from opportunity discovery to actual broker-object handoff.
+
+Completed:
+- canonical reward-aware execution-zone selection across M5/M15 FVG/OB, OB+FVG overlap, M5/M15 overlap and M15/H1 structural levels;
+- downstream structural-stop quality and best attainable TP1 RR are included before an execution zone is selected;
+- zero/invalid reward-path candidates cannot become the selected execution zone;
+- structural-stop and forward-target FVG discovery can use valid historical/unretested zones at the discovery boundary;
+- cBot publishes an independent symbol-scoped presence heartbeat during STARTING/RUNNING/STOPPED;
+- exact fresh Indicator-instance heartbeat remains the only execution-capability truth;
+- managed broker position/pending lookup uses stable instance scope as fallback to exact label, so base-label changes do not orphan existing managed objects;
+- broker reconciliation immediately re-runs when the active execution label changes;
+- panel alert rail is left-aligned with a larger readable font and 20 px rows.
+
+Safety boundary:
+- M15 remains the canonical trade-decision/execution reference timeframe;
+- M5 remains trigger/tuning/entry precision;
+- M1 remains optional confirmation;
+- no public quality/RR/risk threshold was lowered;
+- the broker remains single-plan until the dedicated CBOT-6M multi-scenario execution/reconciliation phase is verified.
+
+Phase record: docs/PHASE-POSITION-ENGINE-CBOT-TRUTH-HARDENING-2026-10-02.md.
+
+Verification:
+- dedicated Position Engine / cBot Truth / Panel Readability source audit;
+- Source/Architecture CI;
+- cTrader Compile/Build;
+- target-terminal attachment/restart and existing-position rediscovery validation.
+
+Operator action after merge: run git pull --ff-only on local main.
+
+---
+
 ## OPPORTUNITY-MINING / EXECUTION-ZONE SELECTION — 2026-10-02
 
 Status: IMPLEMENTATION COMPLETE — verification pending.

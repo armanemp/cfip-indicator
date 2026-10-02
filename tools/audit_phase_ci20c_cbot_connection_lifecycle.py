@@ -100,12 +100,13 @@ for method in (
     "CbotCanManage",
 ):
     match = re.search(
-        rf"private\s+bool\s+{method}\s*\(.*?\n\s*\}}",
+        rf"private\s+bool\s+{method}\s*\(.*?(?=\n\s*private\s|\n\s*public\s|\Z)",
         reader,
         re.DOTALL,
     )
     require(
-        match is not None and "IsCbotExecutionStateFresh()" in match.group(0),
+        match is not None and
+        "HasFreshCbotHeartbeat()" in match.group(0),
         method + " must require fresh cBot state",
     )
 

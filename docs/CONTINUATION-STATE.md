@@ -2110,3 +2110,30 @@ Verification/manual boundary:
 - M5 implementation is complete on `phase/m5-panel-live-responsiveness-2026-10-02`; Source/Architecture, Runtime Acceptance Contracts and cTrader Compile/Build all PASS.
 - Target-terminal validation remains required for actual panel latency, cBot state presentation, live refresh/flicker, and reconnect behavior.
 - Next implementation phase: **M6 — Alert Synchronization / External Watchdog**.
+
+
+
+## Current continuation — 2026-10-02 — Position engine / cBot truth hardening
+
+The active development unit is concentrated on position discovery and the Indicator -> cBot handoff.
+
+Implemented:
+- reward-aware execution-zone candidate selection across M5/M15 FVG/OB, same-timeframe OB+FVG, M5/M15 overlap and M15/H1 structural levels;
+- candidate selection now evaluates downstream structural-stop quality and best attainable TP1 RR;
+- invalid/zero reward-path candidates are excluded from execution-zone selection;
+- structural-stop and forward-target FVG lookups use unrestricted historical discovery at the planning boundary;
+- cBot symbol-scoped presence heartbeat is published independently of Indicator binding;
+- exact fresh Indicator-instance heartbeat remains the execution authority;
+- stable instance-scope label matching keeps previously managed broker objects discoverable after AutoTradeLabel changes;
+- reconciliation is forced by execution-label changes instead of waiting for the periodic cadence;
+- panel alert messages are left-aligned and larger.
+
+Verification state:
+- implementation branch: phase/position-engine-cbot-truth-hardening-2026-10-02;
+- dedicated source regression gate added: tools/audit_phase_position_engine_cbot_truth_hardening_2026_10_02.py;
+- target-terminal validation is still required for actual cTrader object discovery, startup order, broker positions and visual panel geometry.
+
+Next after this verification unit:
+- continue deep position-engine accuracy work and then complete the dedicated CBOT-6M multi-scenario execution/reconciliation ownership before enabling broker-side parallel execution.
+
+Operator action after merge: git pull --ff-only on local main.

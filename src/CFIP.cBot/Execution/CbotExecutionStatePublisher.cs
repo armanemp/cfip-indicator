@@ -11,6 +11,50 @@ namespace CFIP.cBot.Execution
 
         private DateTime _lastPublishUtc = DateTime.MinValue;
 
+        public void PublishPresence(
+            Robot robot,
+            DateTime nowUtc,
+            string state,
+            string boundIndicatorInstanceId)
+        {
+            if (robot == null)
+                return;
+
+            try
+            {
+                CbotPresenceSnapshot snapshot =
+                    new CbotPresenceSnapshot(
+                        ContractVersion.Current,
+                        (robot.GetType().Name ?? string.Empty) + "|" +
+                        (robot.SymbolName ?? string.Empty),
+                        robot.GetType().Name ?? string.Empty,
+                        CbotIdentity.DisplayName,
+                        robot.SymbolName ?? string.Empty,
+                        nowUtc,
+                        string.IsNullOrWhiteSpace(state)
+                            ? "UNKNOWN"
+                            : state,
+                        !robot.Account.IsLive,
+                        boundIndicatorInstanceId ?? string.Empty);
+
+                robot.LocalStorage.SetString(
+                    CbotExecutionStateBusKey.ForSymbol(
+                        robot.SymbolName ?? string.Empty),
+                    CbotExecutionStateCodec.SerializePresence(
+                        snapshot),
+                    LocalStorageScope.Device);
+
+                robot.LocalStorage.Flush(
+                    LocalStorageScope.Device);
+            }
+            catch (Exception ex)
+            {
+                robot.Print(
+                    "CFIP CBOT PRESENCE PUBLISH FAILED | {0}",
+                    ex.Message);
+            }
+        }
+
         public void Publish(
             Robot robot,
             string indicatorInstanceId,
@@ -54,10 +98,9 @@ namespace CFIP.cBot.Execution
                             position.SymbolName,
                             robot.SymbolName,
                             StringComparison.Ordinal) ||
-                        !string.Equals(
+                        !CbotManagedObjectIdentityRule.MatchesManagedLabel(
                             position.Label,
-                            executionLabel,
-                            StringComparison.Ordinal))
+                            executionLabel))
                         continue;
 
                     managedPositions++;
@@ -81,10 +124,9 @@ namespace CFIP.cBot.Execution
                             order.SymbolName,
                             robot.SymbolName,
                             StringComparison.Ordinal) ||
-                        !string.Equals(
+                        !CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
                             order.Label,
-                            pendingLabel,
-                            StringComparison.Ordinal))
+                            executionLabel))
                         continue;
 
                     managedPendingOrders++;
