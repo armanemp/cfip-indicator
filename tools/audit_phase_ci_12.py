@@ -26,6 +26,7 @@ evaluator = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateE
 selector = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateSelector.cs")
 planner = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
 plan_input = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.cs")
+canonical_path = read("src/CFIP.Indicator/Planning/TradePlan/CanonicalTradePathGeometryBuilder.cs")
 preview = read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs")
 parallel = read("src/CFIP.Indicator/Analysis/Market/ParallelScenarioComputation.cs")
 pending = read("src/CFIP.Indicator/Trading/Lifecycle/PendingFillPlanBuilder.cs")
@@ -87,7 +88,10 @@ check(
 
 check(
     "plan fallback uses the same canonical fallback geometry",
-    "StructuralStopGeometryRule.EvaluateFallback(" in plan_input and
+    (
+        "TryBuildCanonicalTradePathGeometry(" in plan_input and
+        "StructuralStopGeometryRule.EvaluateFallback(" in canonical_path
+    ) and
     "StructuralStopGeometryRule.EvaluateFallback(" in preview and
     "StructuralStopGeometryRule.EvaluateFallback(" in parallel
 )
