@@ -18,13 +18,16 @@ namespace cAlgo
                 snapshot.DecisionEntryAllowed &&
                 snapshot.DecisionDirection != 0;
 
-            bool showStrongWatch =
+            bool showDirectionalWatch =
                 ShowEarlyArrow &&
                 ShowEarlyWatch &&
-                IsStrongWatchSnapshot(snapshot) &&
-                visualDirection != 0;
+                visualDirection != 0 &&
+                snapshot.Confidence >=
+                    Math.Max(
+                        40,
+                        MinimumEarlyConfidence);
 
-            if ((showConfirmedSignal || showStrongWatch) &&
+            if ((showConfirmedSignal || showDirectionalWatch) &&
                 visualDirection != 0)
             {
                 double watchAtr =
@@ -58,9 +61,12 @@ namespace cAlgo
                         : Bars.HighPrices[hostBar] + watchOffset,
                     SignalArrowColorFor(
                         visualDirection,
-                        showConfirmedSignal
-                            ? "CONFIRMED"
-                            : "WATCH"));
+                        snapshot.Confidence >=
+                            HighConfidenceThreshold
+                            ? "STRONG"
+                            : showConfirmedSignal
+                                ? "CONFIRMED"
+                                : "WATCH"));
             }
             else
             {
