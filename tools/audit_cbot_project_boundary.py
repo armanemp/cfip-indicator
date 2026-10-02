@@ -80,6 +80,7 @@ for path in indicator_sources:
 
 allowed = {
     "Trading/Execution/BrokerPendingOrderPlacement.cs",
+    "Trading/Execution/BrokerAggressiveOrderMutation.cs",
     "Trading/Execution/BrokerLimitOrderPlacement.cs",
     "Trading/Execution/BrokerPendingOrderCancellation.cs",
     "Trading/Execution/BrokerPositionCloseMutation.cs",
