@@ -400,6 +400,21 @@ namespace cAlgo
                 BasePlanTimeframe = "M5"
             };
 
+            double stopPips =
+                Math.Abs(
+                    candidate.Entry -
+                    candidate.Stop) /
+                Math.Max(
+                    Symbol.PipSize,
+                    1e-9);
+
+            candidate.RequestedVolume =
+                stopPips > 0
+                    ? CalculateVolume(
+                        EffectiveRiskStopPips(
+                            stopPips))
+                    : 0;
+
             ScenarioExecutionPolicyResult policy =
                 ScenarioExecutionPolicyRule.Evaluate(
                     candidate,
