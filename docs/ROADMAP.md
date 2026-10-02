@@ -854,6 +854,8 @@ Status: **VERIFIED COMPLETE — merged to `main` via PR #207.**
 
 ## M5 — Panel Live Content / Responsiveness
 
+Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
+
 ### هدف
 حل واقعی stale/incomplete/slow panel.
 
