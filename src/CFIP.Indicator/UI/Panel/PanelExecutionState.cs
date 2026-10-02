@@ -256,22 +256,22 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : _cBotExecutionState.RuntimeState.Trim();
 
-            if (string.Equals(
-                    runtimeState,
-                    "BLOCKED",
-                    StringComparison.OrdinalIgnoreCase))
-                return
-                    "CBOT BLOCKED • " +
-                    CbotReasonText();
+            string protection =
+                string.IsNullOrWhiteSpace(
+                    _cBotExecutionState.ProtectionState)
+                    ? "UNKNOWN"
+                    : _cBotExecutionState.ProtectionState.Trim();
 
             return
-                _cBotExecutionState.ManagementExecutionEnabled
-                    ? "CBOT " +
-                      runtimeState +
-                      " • MANAGEMENT ARMED"
-                    : "CBOT CONNECTED • MANAGEMENT DISARMED";
+                "CBOT " +
+                runtimeState +
+                " • PROTECTION " +
+                protection +
+                (_cBotExecutionState.RecoveryRequired
+                    ? " • RECOVERY REQUIRED"
+                    : "");
         }
-        
+
         private Color GetAutoProtectionPanelColor()
         {
             RefreshCbotExecutionStateIfDue();
@@ -279,16 +279,12 @@ namespace cAlgo
             if (!IsCbotExecutionStateFresh())
                 return PanelWarningColor;
 
-            if (string.Equals(
-                    _cBotExecutionState.RuntimeState,
-                    "BLOCKED",
-                    StringComparison.OrdinalIgnoreCase))
+            if (_cBotExecutionState.RecoveryRequired)
                 return PanelWarningColor;
 
-            return
-                CbotCanManage()
-                    ? TpLineColor
-                    : PanelMutedTextColor;
+            return CbotCanManage()
+                ? TpLineColor
+                : PanelMutedTextColor;
         }
 
         private string CbotMarketModeText()
