@@ -249,7 +249,6 @@ namespace cAlgo
                     0,
                     0,
                     0,
-                    0,
                     candidate.Source ?? "",
                     candidate.Source ?? "",
                     candidate.Source ?? "",
