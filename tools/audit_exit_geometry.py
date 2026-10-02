@@ -115,7 +115,8 @@ require(
     "TryAdvanceServerSideTakeProfitLadderAfterTp1(",
     "TryAdvanceServerSideTakeProfitLadder(",
     "TryCollapseServerSideTakeProfitLadderToFinal(",
-    "RelativeTakeProfitProtections(",
+    "LadderFirstVolume",
+    "LadderFinalTargetPips",
     "TryModifyTakeProfitLadder(",
 )
 server_text = read(SERVER_LADDER)
