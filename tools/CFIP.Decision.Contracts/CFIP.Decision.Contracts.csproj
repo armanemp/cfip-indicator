@@ -41,6 +41,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs" Link="Core/Math/ActionabilityThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/EntryGeometrySnapshot.cs" Link="Core/Models/EntryGeometrySnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryGeometryRule.cs" Link="Core/Math/EntryGeometryRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/CanonicalTimeRule.cs" Link="Core/Math/CanonicalTimeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/EntrySignalTiming.cs" Link="Core/Models/EntrySignalTiming.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntrySignalTimingRule.cs" Link="Core/Math/EntrySignalTimingRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs" Link="Core/Math/EntryActionabilityPolicy.cs" />
