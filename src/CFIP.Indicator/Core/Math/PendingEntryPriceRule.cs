@@ -15,20 +15,20 @@ namespace cAlgo
             double tickSize)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(structuralTrigger))
+                !IsFinitePositivePendingEntry(structuralTrigger))
                 return 0;
 
             double safeSpread =
                 Math.Max(
                     0,
-                    IsFiniteNonNegative(spread)
+                    IsFiniteNonNegativePendingEntry(spread)
                         ? spread
                         : 0);
 
             double safeTick =
                 Math.Max(
                     0,
-                    IsFiniteNonNegative(tickSize)
+                    IsFiniteNonNegativePendingEntry(tickSize)
                         ? tickSize
                         : 0);
 
@@ -37,7 +37,7 @@ namespace cAlgo
                     ? structuralTrigger + safeSpread
                     : structuralTrigger - safeSpread;
 
-            if (!IsFinitePositive(price))
+            if (!IsFinitePositivePendingEntry(price))
                 return 0;
 
             return safeTick > 0
@@ -45,14 +45,14 @@ namespace cAlgo
                 : price;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositivePendingEntry(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
                    value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsFiniteNonNegativePendingEntry(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
