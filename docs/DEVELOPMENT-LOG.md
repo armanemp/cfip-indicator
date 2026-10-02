@@ -2873,3 +2873,11 @@ The dedicated audit_phase_ci_16.py is accumulated immediately after CI-15.
 CI-16 verification results on implementation HEAD `1c292d3162f6085869238029fe599630ab3ca3a9`: Source/Architecture workflow #2715 (36950516204) PASS; Runtime Acceptance Contracts #2524 (36950516284) PASS; cTrader Compile/Build #2708 (36950516224) PASS; accumulated CI-16 audit PASS. Target-terminal timing, broker event ordering, actual slippage/fills, panel timing and empirical outcome quality remain CI-17/manual boundaries.
 
 Next phase: **CI-17 — Target-terminal cTrader validation.**
+
+## CI-17 target-terminal validation package — 2026-10-02
+
+Strengthened the existing no-trade cTrader preflight path for the target-terminal acceptance phase. The probe now records startup/first-tick timing, calculation revision and age, Bid/Ask, spread in pips, bar count and latest bar-open UTC, while the preflight project is now compilable against the production Indicator assembly.
+
+Added tools/audit_phase_ci_17.py to the accumulated Source/Architecture gate and documented the full manual acceptance matrix for initialization, closed-bar M1/M5 timing, broker geometry, market fill/slippage, pending fill/cancel/expiration, restart/reconnect, panel/chart responsiveness and Decision → Plan → Execution synchronization.
+
+No public strategy parameter/default, trading threshold or broker mutation path was changed. CI-17 remains open until real target-terminal evidence is recorded; repository CI cannot substitute for broker/server/network/chart behavior.
