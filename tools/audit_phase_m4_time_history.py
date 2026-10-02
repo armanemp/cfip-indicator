@@ -79,7 +79,7 @@ require(
 require(
     "CanonicalTimeRule.RollingPeriodStart(" in archive and
     "OutcomeArchivePeriodDays" in archive and
-    "BufferedArchivePersistence.Enqueue(" in archive,
+    "_bufferedArchivePersistence.Enqueue(" in archive,
     "M4: outcome archive must use one 90-day period owner and buffered writes",
 )
 
