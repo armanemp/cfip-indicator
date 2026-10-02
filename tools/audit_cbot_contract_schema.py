@@ -67,6 +67,7 @@ for token in expected_records:
         "ManagementCommand": "ManagementCommand.cs",
         "BrokerExecutionReport": "BrokerExecutionReport.cs",
         "LifecycleEvent": "LifecycleEvent.cs",
+        "MarketExecutionProfile": "MarketExecutionProfile.cs",
     }[token.split()[-1].split("(")[0]]
     source = path.read_text(encoding="utf-8") if path.exists() else ""
     if token not in source:
