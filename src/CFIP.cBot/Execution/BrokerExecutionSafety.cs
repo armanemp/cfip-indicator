@@ -27,7 +27,6 @@ namespace CFIP.cBot.Execution
             string executionLabel)
         {
             int count = 0;
-            string label = executionLabel + "-PENDING";
             foreach (PendingOrder order in robot.PendingOrders)
             {
                 if (order != null &&
