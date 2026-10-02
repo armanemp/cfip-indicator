@@ -6,6 +6,15 @@ namespace CFIP.Contracts
 {
     public static class CbotExecutionStateBusKey
     {
+        public static string ForSymbol(
+            string symbol)
+        {
+            return
+                "CFIPCbotPresence" +
+                ContractBusKeyHash.Hash(
+                    symbol ?? string.Empty);
+        }
+
         public static string ForIndicatorInstance(string instanceId)
         {
             return
@@ -13,6 +22,17 @@ namespace CFIP.Contracts
                 ContractBusKeyHash.Hash(instanceId);
         }
     }
+
+    public sealed record CbotPresenceSnapshot(
+        int ContractVersion,
+        string CbotInstanceId,
+        string CbotTypeName,
+        string CbotDisplayName,
+        string Symbol,
+        DateTime ObservedUtc,
+        string State,
+        bool DemoAccount,
+        string BoundIndicatorInstanceId);
 
     public static class CbotExecutionStateCodec
     {
