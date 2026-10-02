@@ -35,7 +35,7 @@ stops = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateColle
 obstacles = read("src/CFIP.Indicator/Trading/Validation/RewardPathZoneObstacleScanner.cs")
 predictive = read("src/CFIP.Indicator/Planning/Execution/PredictivePendingZoneCollector.cs")
 alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
-alert_processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
+alert_processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 
 production_files = list((ROOT / "src/CFIP.Indicator").rglob("*.cs"))
 
