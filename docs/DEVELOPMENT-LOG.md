@@ -3296,6 +3296,7 @@ Implemented on phase/m3-trade-truth-alert-chart-coherence-2026-10-02.
 - Extended SignalVisualSnapshot with canonical opportunity identity.
 - Prevented directional watch markers while EntryAllowed is false or a pending/live broker state owns the chart.
 - Replaced the hard-coded main-plan (MTF) label with the canonical source timeframe from the current visual snapshot, with the existing deterministic fallback.
+- Corrected compact signal-label anchoring so labels sit to the left of the 40-candle line start with a horizontal gap; white text and no background remain unchanged.
 - Added and accumulated tools/audit_phase_m3_trade_truth.py and wired it into Source/Architecture CI.
 
 Verification status:
