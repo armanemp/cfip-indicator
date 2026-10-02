@@ -98,10 +98,10 @@ namespace cAlgo
                 {
                     bool shouldMove =
                         !position.StopLoss.HasValue ||
-                        BetterStop(
+                        ProtectionProgressionRule.ShouldAdvanceStop(
                             _plan.Direction,
-                            position.EntryPrice,
-                            position.StopLoss.Value);
+                            position.StopLoss.Value,
+                            position.EntryPrice);
 
                     if (shouldMove)
                     {

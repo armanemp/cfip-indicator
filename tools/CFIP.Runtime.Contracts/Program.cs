@@ -23,6 +23,7 @@ namespace cAlgo
             VerifyTopDownCalibration();
             VerifyProtectionProgressionSemantics();
             VerifyWaveTrendMathematics();
+            Ci20BProtectionAndSignalContracts.Run();
             VerifyHistoricalRenderingSemantics();
             VerifyStructuralStopScoringSemantics();
             VerifyDivergenceThresholdSemantics();
@@ -6560,11 +6561,16 @@ namespace cAlgo
             string protectionPath = Path.Combine(
                 "src", "CFIP.Indicator", "Trading", "LiveManagement", "ProtectionManager.cs");
             string protection = File.ReadAllText(protectionPath);
+            string protectionRulePath = Path.Combine(
+                "src", "CFIP.Indicator", "Core", "Math", "IntelligentProtectionRule.cs");
+            string protectionRule = File.ReadAllText(protectionRulePath);
             Assert(
                 !protection.Contains("pressureStop") &&
                 !protection.Contains("market - tightRoom") &&
                 !protection.Contains("market + tightRoom") &&
-                protection.Contains("pressureTighten"),
+                protection.Contains("IntelligentProtectionRule.Evaluate(") &&
+                protectionRule.Contains("pressureTighten") &&
+                protectionRule.Contains("IsStructuralFarEnough("),
                 "smart trailing remains structural under exit pressure");
         }
 

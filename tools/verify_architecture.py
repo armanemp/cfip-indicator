@@ -2672,10 +2672,14 @@ if "Chart.RemoveObject(" not in compact_label_code:
 
 PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
 PROTECTION_MANAGER_CODE = PROTECTION_MANAGER.read_text(encoding="utf-8")
+INTELLIGENT_PROTECTION_RULE = ROOT / "Core" / "Math" / "IntelligentProtectionRule.cs"
+INTELLIGENT_PROTECTION_RULE_CODE = INTELLIGENT_PROTECTION_RULE.read_text(encoding="utf-8")
 if "market - minimumDistance" in PROTECTION_MANAGER_CODE or "market + minimumDistance" in PROTECTION_MANAGER_CODE:
     raise SystemExit("Structural trailing must not chase raw market price via minimum-distance clamping")
-if "if (structuralUpdate" not in PROTECTION_MANAGER_CODE:
-    raise SystemExit("Smart trailing progression must be structurally gated")
+if "structuralUpdate" not in INTELLIGENT_PROTECTION_RULE_CODE or "IsStructuralFarEnough(" not in INTELLIGENT_PROTECTION_RULE_CODE:
+    raise SystemExit("Smart trailing progression must be structurally gated by the canonical protection rule")
+if "IntelligentProtectionRule.Evaluate(" not in PROTECTION_MANAGER_CODE:
+    raise SystemExit("ProtectionManager must delegate to the canonical intelligent protection owner")
 
 # Phase 7.2 — predictive pending, frozen setup geometry and alert/visual parity.
 PREDICTIVE_PENDING_MODEL = MODEL_ROOT / "PredictivePendingCandidate.cs"
@@ -2842,6 +2846,8 @@ cleanup_code = (
 if "ALERT_SIGNAL" not in cleanup_code or "ALERT_SIGNAL_LABEL" not in cleanup_code:
     raise SystemExit("Alert signal marker cleanup is missing")
 
+INTELLIGENT_PROTECTION_RULE = ROOT / "Core" / "Math" / "IntelligentProtectionRule.cs"
+INTELLIGENT_PROTECTION_RULE_CODE = INTELLIGENT_PROTECTION_RULE.read_text(encoding="utf-8")
 if (
     "pressureStop" in PROTECTION_MANAGER_CODE or
     "market - tightRoom" in PROTECTION_MANAGER_CODE or
@@ -2851,9 +2857,13 @@ if (
         "Smart trailing must not construct stops as a raw market +/- distance"
     )
 
-if "pressureTighten" not in PROTECTION_MANAGER_CODE:
+if (
+    "pressureTighten" not in INTELLIGENT_PROTECTION_RULE_CODE or
+    "IsStructuralFarEnough(" not in INTELLIGENT_PROTECTION_RULE_CODE or
+    "IntelligentProtectionRule.Evaluate(" not in PROTECTION_MANAGER_CODE
+):
     raise SystemExit(
-        "Exit-pressure tightening must be applied to structural trailing room, not raw market distance"
+        "Exit-pressure tightening must remain inside the canonical structural protection owner"
     )
 
 # Planning/risk ownership checks.

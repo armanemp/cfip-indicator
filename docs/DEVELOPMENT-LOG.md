@@ -1,3 +1,45 @@
+## CI-20B — Protection / cBot / Signal Hardening — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged via PR #204.**
+
+Canonical changes:
+- one pure intelligent protection owner now combines smart BE, structural trailing, pressure/momentum tightening and monotonic progression;
+- ProtectionManager is an input collector/reconciler, not a second protection-policy owner;
+- cBot management command freshness is bounded and stale commands become terminal Expired reports;
+- neutral-M5 primary pullback handling is explicitly restricted to aligned, quality-qualified M15/H1 contexts;
+- smart decision gates reuse the same active M5 regime snapshot within one cycle;
+- regression contracts cover BUY/SELL protection symmetry, server BE ownership, monotonic SL, invalid numeric fail-closed, and primary pullback cases.
+
+Verification:
+- Source / Architecture #3141: PASS;
+- Runtime Acceptance #2950: PASS;
+- cTrader Compile #3134: PASS;
+- CI20B dedicated audit: PASS.
+
+No public confidence/RR/strategy threshold was lowered.
+
+## CI-20B — Protection / cBot / Signal Hardening — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci20b-protection-cbot-signal-hardening-2026-10-02`.**
+
+Canonical corrections:
+- live BE/SL/trailing calculation is consolidated in `IntelligentProtectionRule`;
+- `ProtectionManager` no longer owns a second copy of BE/trailing arithmetic;
+- cBot management commands now expire after a bounded age and publish a terminal Expired report;
+- Indicator retires Expired management commands from its local queue;
+- only qualified M15/H1 aligned pullbacks can pass neutral-M5 confirmation; opposite M5 remains blocked;
+- smart-gate M5 regime lookup is reused within the same cycle.
+
+Deterministic regression coverage:
+- intelligent protection BUY/SELL symmetry;
+- server-side BE competition prevention;
+- monotonic stop protection;
+- fail-closed non-finite protection;
+- qualified neutral-M5 primary pullback acceptance and rejection cases.
+
+No public confidence/RR/strategy threshold was lowered.
+
+Phase record: `docs/PHASE-CI-20B-PROTECTION-CBOT-SIGNAL-HARDENING-2026-10-02.md`.
 ## CI-19 — Signal / Target Quality Coherence — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending on branch.**

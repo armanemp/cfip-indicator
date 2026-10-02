@@ -31,7 +31,26 @@ namespace cAlgo
             if (UseM5Confirmation &&
                 (_m5Frame == null ||
                  _m5Frame.Direction != decision.Direction))
-                return new DecisionFilterResult(false, "M5 CONFIRMATION");
+            {
+                bool allowNeutralPrimaryPullback =
+                    _m5Frame != null &&
+                    _m15Frame != null &&
+                    _h1Frame != null &&
+                    PrimaryPullbackTuningRule.AllowsNeutralM5(
+                        decision.Direction,
+                        _m5Frame.Direction,
+                        _m15Frame.Direction,
+                        _h1Frame.Direction,
+                        _m15Frame.Quality,
+                        _h1Frame.Quality,
+                        Math.Max(
+                            MinimumTimeframeAgreement,
+                            SmartMinimumTimeframeAgreement),
+                        decision.TopDownEligible);
+
+                if (!allowNeutralPrimaryPullback)
+                    return new DecisionFilterResult(false, "M5 CONFIRMATION");
+            }
 
             // EntryAllowed is a decision-quality permission, not the live
             // execution trigger. Retest/zone entries must be allowed to proceed

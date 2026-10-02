@@ -65,6 +65,12 @@ namespace cAlgo
                     false,
                     rangeQuality.Reason);
 
+            MarketRegimeSnapshot activeRegime =
+                UseStrictRegimeQualityGate ||
+                UseRegimeNoTradeGuard
+                    ? GetActiveM5Regime(closedM5)
+                    : null;
+
             if (UseStrictRegimeQualityGate &&
                 _m5Frame != null)
             {
@@ -108,8 +114,7 @@ namespace cAlgo
                            _m5Frame.ChochBear);
 
                 MarketRegimeSnapshot regime =
-                    GetActiveM5Regime(
-                        closedM5);
+                    activeRegime;
 
                 if (regime != null &&
                     regime.Regime == "TREND" &&
@@ -175,8 +180,7 @@ namespace cAlgo
             if (UseStrictRegimeQualityGate)
             {
                 MarketRegimeSnapshot regime =
-                    GetActiveM5Regime(
-                        closedM5);
+                    activeRegime;
 
                 if (regime != null)
                 {
@@ -230,8 +234,7 @@ namespace cAlgo
                 RequireRegimeStability)
             {
                 MarketRegimeSnapshot regime =
-                    GetActiveM5Regime(
-                        closedM5);
+                    activeRegime;
 
                 if (regime != null &&
                     (regime.Regime == "TREND" ||

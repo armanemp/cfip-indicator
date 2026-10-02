@@ -1,3 +1,50 @@
+## CI-20B closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged via PR #204.**
+
+Implementation head: `5d37563536f8a5171d14dbc09b58cf2affeb10a2`.
+
+Completed:
+- local live BE/structural trailing logic consolidated under the canonical `IntelligentProtectionRule`;
+- ProtectionManager now delegates protection policy instead of carrying duplicate BE/trailing arithmetic;
+- cBot management commands now have bounded freshness and terminal `Expired` state;
+- Indicator removes terminally expired management commands from its local queue;
+- qualified M15/H1 primary pullbacks with neutral M5 can continue, while opposite M5 direction remains blocked;
+- M5 regime evaluation is reused within the smart-gate cycle;
+- deterministic CI20B protection/signal contracts and dedicated Source/Architecture audit were added;
+- all broker mutation authority remains cBot-owned.
+
+Verification:
+- Source / Architecture #3141: **PASS**;
+- Runtime Acceptance Contracts #2950: **PASS**;
+- cTrader Compile/Build #3134: **PASS**;
+- CI20B dedicated audit: **PASS**.
+
+No profitability claim or empirical signal-frequency claim is made from repository tests. Target-terminal and OOS/replay validation remain manual.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+## CI-20B continuation update — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci20b-protection-cbot-signal-hardening-2026-10-02`.**
+
+Completed in this phase:
+- canonical intelligent protection rule wired into Indicator live protection;
+- duplicate BE/trailing arithmetic removed from `ProtectionManager`;
+- cBot management-command age validation and terminal expiry added;
+- expired management commands are retired by Indicator report reconciliation;
+- qualified neutral-M5 primary pullback handling added without allowing opposite M5 direction;
+- one M5 regime snapshot is reused inside smart decision gates;
+- deterministic CI20B regression contracts and source audit added.
+
+No public signal/RR threshold was lowered. Repository PASS is still required before this phase is considered closed.
+
+Next implementation response: finish CI20B verification, then continue remaining cBot lifecycle/recovery and broker-owned protection/target progression.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+Phase record: `docs/PHASE-CI-20B-PROTECTION-CBOT-SIGNAL-HARDENING-2026-10-02.md`.
+
 ## CI-18 closeout — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #199 as `8ba701ea288641bc1435ac8f94ea6890713ed63c`.**

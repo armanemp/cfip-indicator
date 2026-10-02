@@ -140,6 +140,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceIndependenceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FrameRegimeResolutionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FrameScoringConstants.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/IntelligentProtectionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/PrimaryPullbackTuningRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalTraceIdentityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalTraceLineageRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Indicators/External/OssIndicatorParameters.cs" />
