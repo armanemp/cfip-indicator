@@ -26,11 +26,11 @@ namespace cAlgo
             Risk = Math.Max(0, risk);
             Reward = Math.Max(0, reward);
             EffectiveRisk = Math.Max(0, effectiveRisk);
-            NominalRR = Ci14RiskRewardGeometryFiniteNonNegativeGuard(nominalRR) ? nominalRR : 0;
-            EffectiveRR = Ci14RiskRewardGeometryFiniteNonNegativeGuard(effectiveRR) ? effectiveRR : 0;
+            NominalRR = Ci14RiskRewardResultFiniteNonNegativeGuard(nominalRR) ? nominalRR : 0;
+            EffectiveRR = Ci14RiskRewardResultFiniteNonNegativeGuard(effectiveRR) ? effectiveRR : 0;
         }
 
-        private static bool Ci14RiskRewardGeometryFiniteNonNegativeGuard(double value)
+        private static bool Ci14RiskRewardResultFiniteNonNegativeGuard(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
