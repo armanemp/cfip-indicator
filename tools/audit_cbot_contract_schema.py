@@ -16,6 +16,7 @@ required = {
     "ManagementCommand.cs",
     "BrokerExecutionReport.cs",
     "LifecycleEvent.cs",
+    "MarketExecutionProfile.cs",
     "ContractVersion.cs",
 }
 
@@ -54,6 +55,7 @@ expected_records = (
     "public sealed record ManagementCommand(",
     "public sealed record BrokerExecutionReport(",
     "public sealed record LifecycleEvent(",
+    "public sealed record MarketExecutionProfile(",
 )
 
 for token in expected_records:
