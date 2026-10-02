@@ -92,7 +92,9 @@ namespace cAlgo
                         ArrowOffsetAtr));
 
             string arrowState =
-                "CONFIRMED";
+                ResolveSignalArrowState(
+                    snapshot,
+                    visualDirection);
 
             bool showCurrentStateArrow =
                 ShowSignalArrow;
@@ -209,6 +211,32 @@ namespace cAlgo
                                     Math.Min(
                                         alternate,
                                         Bars.Count - 1));
+                        }
+
+        private string ResolveSignalArrowState(
+                            SignalVisualSnapshot snapshot,
+                            int direction)
+                        {
+                            if (snapshot == null ||
+                                direction == 0)
+                                return "WATCH";
+
+                            if (snapshot.LivePosition ||
+                                snapshot.ActionableNow)
+                            {
+                                return
+                                    snapshot.SmartQuality >=
+                                    SmartStrongSetupQuality ||
+                                    snapshot.Confidence >=
+                                    HighConfidenceThreshold
+                                        ? "STRONG"
+                                        : "CONFIRMED";
+                            }
+
+                            if (snapshot.DecisionEntryAllowed)
+                                return "CONFIRMED";
+
+                            return "WATCH";
                         }
 
         private Color SignalArrowColorFor(
