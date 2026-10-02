@@ -30,13 +30,13 @@ alerts = read("Runtime/Calculation/CalculationDecisionAlerts.cs")
 alert_renderer = read("UI/Chart/AlertSignalRenderer.cs")
 provider = read("Runtime/Provider/CFIPReadOnlyProviderRefresh.cs")
 
-contracts = ROOT.parent.parent / "tools" / "CFIP.Runtime.Contracts" / "M5PanelContracts.cs"
-program = ROOT.parent.parent / "tools" / "CFIP.Runtime.Contracts" / "Program.cs"
+contracts = ROOT / "tools" / "CFIP.Runtime.Contracts" / "M5PanelContracts.cs"
+program = ROOT / "tools" / "CFIP.Runtime.Contracts" / "Program.cs"
 workflow = ROOT.parent / "tools" / ".github" if False else ROOT.parent.parent / ".github" / "workflows" / "source-check.yml"
-m3_audit = ROOT.parent.parent / "tools" / "audit_phase_m3_trade_truth.py"
-m4_audit = ROOT.parent.parent / "tools" / "audit_phase_m4_time_history.py"
+m3_audit = ROOT / "tools" / "audit_phase_m3_trade_truth.py"
+m4_audit = ROOT / "tools" / "audit_phase_m4_time_history.py"
 
-dimension_rule = ROOT / "Core" / "Math" / "PanelDimensionRule.cs"
+dimension_rule = ROOT / "src" / "CFIP.Indicator" / "Core" / "Math" / "PanelDimensionRule.cs"
 
 require(
     dimension_rule.exists() and
