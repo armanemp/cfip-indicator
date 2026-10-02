@@ -336,7 +336,9 @@ Phase report: `docs/PHASE-CBOT-P2-READ-ONLY-INDICATOR-PROVIDER.md`.
 
 ## CBOT-P3 — cBot Host / Shadow
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2801 PASS; Runtime Acceptance #2610 PASS; cTrader Compile #2794 PASS.
 
 The cBot now runs a deterministic shadow host over the canonical Indicator provider:
 
