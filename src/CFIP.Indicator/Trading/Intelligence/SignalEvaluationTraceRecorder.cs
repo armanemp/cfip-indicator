@@ -300,6 +300,63 @@ namespace cAlgo
                 return;
             }
 
+            ExecutionModel traceExecution =
+                _executionModel;
+
+            if (traceExecution != null &&
+                traceExecution.Direction == decision.Direction)
+            {
+                OpportunityLane traceLane =
+                    decision.TopDownEligible &&
+                    string.Equals(
+                        decision.TopDownStage,
+                        "ENTRY CALIBRATED",
+                        StringComparison.OrdinalIgnoreCase)
+                        ? OpportunityLane.Strategic
+                        : decision.TacticalOpportunityLane;
+
+                CanonicalTradePathGeometry canonicalPath;
+                string canonicalReason;
+
+                if (TryBuildCanonicalTradePathGeometry(
+                        closedM5,
+                        decision.Direction,
+                        traceExecution,
+                        traceLane,
+                        out canonicalPath,
+                        out canonicalReason) &&
+                    canonicalPath != null &&
+                    canonicalPath.Preview != null)
+                {
+                    TradeSetupPreview canonicalPreview =
+                        canonicalPath.Preview;
+
+                    entryMode = canonicalPreview.EntryMode;
+                    entry = canonicalPreview.Entry;
+                    idealEntry = canonicalPreview.IdealEntry;
+                    stop = canonicalPreview.Stop;
+                    tp1 = canonicalPreview.Tp1;
+                    tp2 = canonicalPreview.Tp2;
+                    tp3 = canonicalPreview.Tp3;
+                    tp4 = canonicalPreview.Tp4;
+                    geometryBarTicks =
+                        barOpenTimeUtcTicks;
+                    geometrySource =
+                        "CANONICAL-ACTIONABILITY";
+
+                    ApplyTraceRewardMetrics(
+                        decision,
+                        closedM5,
+                        entry,
+                        stop,
+                        tp1,
+                        out planRiskAtr,
+                        out effectiveTp1RR);
+
+                    return;
+                }
+            }
+
             if (_setupPreview != null &&
                 _setupPreview.Direction == decision.Direction &&
                 SignalTraceLineageRule.MatchesClosedBar(
@@ -411,13 +468,13 @@ namespace cAlgo
             if (!decision.EntryAllowed)
                 return "DECISION-FILTER";
 
+            if (decision.ActionableNow)
+                return "ACTIONABLE";
+
             if (!decision.TriggerReady)
                 return "TRIGGER";
 
-            if (!decision.ActionableNow)
-                return "ACTIONABILITY";
-
-            return "ACTIONABLE";
+            return "ACTIONABILITY";
         }
 
         private string SignalTracePanelText()

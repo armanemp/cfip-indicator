@@ -8,13 +8,15 @@ namespace cAlgo
         private bool TryPreparePlanInputs(
             int closedM5,
             int direction,
+            OpportunityLane lane,
             out double atr,
             out ExecutionModel execution,
             out double entry,
             out double stop,
             out string stopSource,
             out int stopQuality,
-            out double risk)
+            out double risk,
+            out CanonicalTradePathGeometry canonicalPath)
         {
             atr = 0;
             execution = null;
@@ -23,6 +25,7 @@ namespace cAlgo
             stopSource = "";
             stopQuality = 0;
             risk = 0;
+            canonicalPath = null;
 
             if (_m5Bars == null ||
                 closedM5 < 30 ||
@@ -68,6 +71,8 @@ namespace cAlgo
                     MinimumEntryQuality))
                 return false;
 
+            // Keep the existing execution-window contract in the same
+            // preparation boundary before the canonical reward path is built.
             Plan executionProbe =
                 new Plan
                 {
@@ -79,106 +84,49 @@ namespace cAlgo
                     EntryZoneTolerance = execution.ZoneTolerance
                 };
 
-            string executionReason;
-
             if (!IsExecutableMarketEntry(
                     executionProbe,
                     entry,
-                    out executionReason))
+                    out _))
                 return false;
 
-            stop =
-                BuildStructuralStop(
+            if (!TryBuildCanonicalTradePathGeometry(
                     closedM5,
                     direction,
-                    entry,
-                    atr,
-                    out stopSource,
-                    out stopQuality);
-
-            if (!IsFinitePositive(stop))
-            {
-                if (RequireStructuralStop)
-                    return false;
-
-                StructuralStopGeometrySnapshot fallbackGeometry =
-                    StructuralStopGeometryRule.EvaluateFallback(
-                        direction,
-                        entry,
-                        atr,
-                        FallbackSlAtr,
-                        Symbol.TickSize,
-                        Symbol.Digits);
-
-                if (!fallbackGeometry.IsValid)
-                    return false;
-
-                stop =
-                    fallbackGeometry.Stop;
-
-                stopSource =
-                    "ATR FALLBACK";
-                stopQuality = 50;
-            }
-
-            EntryGeometrySnapshot planGeometry =
-                EntryGeometryRule.Evaluate(
-                    direction,
-                    execution.Mode,
-                    entry,
-                    execution.ZoneLow,
-                    execution.ZoneHigh,
-                    execution.ZoneTolerance,
-                    execution.IdealEntry,
-                    execution.Trigger,
-                    entry,
-                    atr,
-                    Symbol.TickSize,
-                    Symbol.PipSize,
-                    AllowPrecisionBreakoutEntry,
-                    false,
-                    MaximumEntryExtensionAtr,
-                    MaximumEntryDistanceAtr);
-
-            if (!planGeometry.IsValid ||
-                planGeometry.Mode != execution.Mode ||
-                !IsFinitePositive(planGeometry.ActualEntry))
+                    execution,
+                    lane,
+                    out canonicalPath,
+                    out _))
                 return false;
 
-            if (AvoidLateEntry &&
-                planGeometry.IsLate)
-                return false;
-
-            risk =
+            if (canonicalPath == null ||
+                !canonicalPath.IsValid ||
                 Math.Abs(
-                    entry -
-                    stop);
-
-            if (!IsFinitePositive(risk))
+                    canonicalPath.Entry -
+                    entry) >
+                Math.Max(
+                    Symbol.TickSize * 2,
+                    Symbol.PipSize * 0.10))
                 return false;
 
-            double spread =
-                Math.Max(
-                    0,
-                    Symbol.Ask -
-                    Symbol.Bid);
-
-            double riskAtr =
-                risk /
-                Math.Max(
-                    Symbol.PipSize,
-                    atr);
+            // From this point onward every executable plan value is taken from
+            // the exact same canonical actual-entry geometry used by live
+            // actionability. PlanBuilder must not rebuild SL/TP independently.
+            entry =
+                canonicalPath.Entry;
+            stop =
+                canonicalPath.Stop;
+            stopSource =
+                canonicalPath.StopSource;
+            stopQuality =
+                canonicalPath.StopQuality;
+            risk =
+                canonicalPath.Risk;
 
             return
-                StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
-                    riskAtr,
-                    atr,
-                    MinimumSlAtr,
-                    MaximumSlAtr,
-                    MaximumStructuralStopAtr,
-                    spread,
-                    Symbol.PipSize,
-                    MaximumSpreadToStopRiskRatio);
+                IsFinitePositive(entry) &&
+                IsFinitePositive(stop) &&
+                IsFinitePositive(risk);
         }
     }
 }

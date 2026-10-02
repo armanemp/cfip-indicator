@@ -37,7 +37,10 @@ def read_optional(path):
 
 
 policy = read(POLICY)
-candidates = read(CANDIDATES)
+candidates = (
+    read(CANDIDATES) +
+    read(ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+)
 tf_scenarios = read(TF_SCENARIOS)
 submission_id = read(SUBMISSION_ID)
 submission_coord = read(SUBMISSION_COORD)

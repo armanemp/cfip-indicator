@@ -21,7 +21,11 @@ context = read("src/CFIP.Indicator/UI/Panel/Rows/PanelContextRowsRenderer.cs")
 pipeline = read("src/CFIP.Indicator/UI/Panel/Rows/PanelSignalPipelineRowsRenderer.cs")
 canonical = read("src/CFIP.Indicator/UI/Panel/PanelCanonicalSignalStatus.cs")
 confirmation = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionConfirmationGates.cs")
-actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+actionability = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 geometry = read("src/CFIP.Indicator/Core/Math/EntryGeometryRule.cs")
 contracts = read("tools/CFIP.Decision.Contracts/Program.cs")
 

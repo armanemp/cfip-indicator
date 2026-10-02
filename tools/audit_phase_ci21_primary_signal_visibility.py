@@ -22,7 +22,10 @@ def check(name, condition):
         errors.append(name)
 
 
-builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+builder = (
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+)
 timeframes = read("src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs")
 candidate = read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs")
 policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")

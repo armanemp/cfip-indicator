@@ -93,7 +93,11 @@ if "_serverSideTakeProfitLadderActive" not in partial_tp:
     raise SystemExit("partial TP mutation must yield to server-owned TP ladder")
 
 quality_rule = read("Core/Math/ActionableSignalQualityRule.cs")
-evaluator = read("Trading/Validation/TradeActionabilityEvaluator.cs")
+evaluator = (
+    read("Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 telemetry = read("Trading/Execution/SubmissionGateCoordinator.cs")
 outcome_telemetry = read("Trading/Intelligence/OutcomeTelemetryEngine.cs")
 outcome_model = read("Trading/Intelligence/OutcomeObservation.cs")

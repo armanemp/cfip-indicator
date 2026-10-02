@@ -13,6 +13,7 @@ namespace cAlgo
                         public double Invalidation;
                         public int Quality;
                         public bool Ready;
+                        public bool IsLate;
                         public string Source;
                     }
 }

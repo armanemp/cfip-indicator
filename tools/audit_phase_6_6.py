@@ -27,6 +27,7 @@ def check(name, condition):
 
 
 builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+candidate_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
 timeframes = read("src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs")
 enrichment = read("src/CFIP.Indicator/Analysis/Market/ScenarioEvidenceEnrichment.cs")
 policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
@@ -44,7 +45,7 @@ csproj = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 check(
     "independent timeframe scenarios explicitly declare M5 as canonical geometry base",
     'BasePlanTimeframe' in candidate and
-    'BasePlanTimeframe = "M5"' in builder
+    'BasePlanTimeframe = "M5"' in candidate_builder
 )
 
 check(
@@ -57,8 +58,8 @@ check(
 
 check(
     "timeframe candidates reuse the common parallel preview path",
-    "TryGetParallelScenarioPreview(" in builder and
-    "BuildTradeSetupPreviewFromGeometry(" not in builder
+    "TryGetParallelScenarioPreview(" in candidate_builder and
+    "BuildTradeSetupPreviewFromGeometry(" not in candidate_builder
 )
 
 check(
@@ -84,10 +85,10 @@ check(
 
 check(
     "display stage/reason uses the same policy result as execution authorization",
-    "ScenarioExecutionPolicyRule.Evaluate(" in builder and
-    "candidate.ExecutionPolicyAllowed =" in builder and
-    "candidate.ExecutionPolicyReason =" in builder and
-    "candidate.ExecutionPolicyReason" in builder
+    "ScenarioExecutionPolicyRule.Evaluate(" in candidate_builder and
+    "candidate.ExecutionPolicyAllowed =" in candidate_builder and
+    "candidate.ExecutionPolicyReason =" in candidate_builder and
+    "candidate.ExecutionPolicyReason" in candidate_builder
 )
 
 check(

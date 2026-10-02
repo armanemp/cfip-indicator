@@ -611,7 +611,7 @@ expected_models = {
     "EntrySignalTiming",
     "CanonicalPriceSnapshot",
     "MarketStateFrameSnapshot", "MarketStateSnapshot",
-    "StructuralStopGeometrySnapshot",
+    "StructuralStopGeometrySnapshot", "CanonicalTradePathGeometry",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
@@ -1704,15 +1704,42 @@ if PLAN_BUILDER.stat().st_size > 4096:
     raise SystemExit("PlanBuilder.cs must remain a thin orchestration boundary")
 for token in (
     "TryPreparePlanInputs(",
-    "BuildTargetLevels(",
-    "SelectTargets(",
-    "TryBuildPlanTargets(",
+    "CanonicalTradePathGeometry",
     "CreatePlanFromInputs(",
-    "EnrichPlanTargetMetadata(",
     "ValidatePlanIntegrity(",
 ):
     if token not in PLAN_BUILDER_CODE:
         raise SystemExit(f"PlanBuilder orchestration call missing: {token}")
+
+for forbidden in (
+    "BuildTargetLevels(",
+    "SelectTargets(",
+    "TryBuildPlanTargets(",
+    "EnrichPlanTargetMetadata(",
+    "BuildStructuralStop(",
+):
+    if forbidden in PLAN_BUILDER_CODE:
+        raise SystemExit(
+            f"PlanBuilder must consume canonical trade geometry instead of rebuilding: {forbidden}"
+        )
+
+PLAN_INPUT = ROOT / "Planning" / "TradePlan" / "PlanInputPreparation.cs"
+PLAN_INPUT_CODE = PLAN_INPUT.read_text(encoding="utf-8")
+for token in (
+    "OpportunityLane lane",
+    "TryBuildCanonicalTradePathGeometry(",
+    "canonicalPath.Entry",
+    "canonicalPath.Stop",
+    "canonicalPath.Risk",
+):
+    if token not in PLAN_INPUT_CODE:
+        raise SystemExit(
+            f"PlanInputPreparation is missing canonical trade-path handoff: {token}"
+        )
+
+CANONICAL_TRADE_PATH_BUILDER = ROOT / "Planning" / "TradePlan" / "CanonicalTradePathGeometryBuilder.cs"
+if not CANONICAL_TRADE_PATH_BUILDER.exists():
+    raise SystemExit("Canonical trade-path builder is missing")
 for declaration in (
     "private double BuildStructuralStop(",
     "private List<Level> BuildTargetLevels(",
@@ -3048,6 +3075,7 @@ required_phase_9_2 = (
     ROOT / "Analysis" / "Market" / "WaveTrendEngine.cs",
     ROOT / "Analysis" / "Market" / "WaveTrendEvidenceAnalyzer.cs",
     ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs",
+    ROOT / "Analysis" / "Market" / "ParallelOpportunityCandidateBuilder.cs",
     ROOT / "UI" / "Chart" / "ParallelOpportunityRenderer.cs",
 )
 for required_path in required_phase_9_2:
@@ -3157,19 +3185,30 @@ for token in (
         raise SystemExit(f"Divergence evidence is not flowing through Frame: {token}")
 
 act_code = actionability_evaluator.read_text(encoding="utf-8")
+actionability_preparation = (
+    ROOT / "Trading" / "Validation" / "TradeActionabilityPreparation.cs"
+).read_text(encoding="utf-8")
+actionability_gates = (
+    ROOT / "Trading" / "Validation" / "TradeActionabilityGateEvaluation.cs"
+).read_text(encoding="utf-8")
 decision_code = decision_model.read_text(encoding="utf-8")
+actionability_code = (
+    act_code +
+    actionability_preparation +
+    actionability_gates
+)
 for token in (
     "EntryGeometryRule.Evaluate(",
     "MaximumEntryExtensionAtr",
     "MaximumEntryDistanceAtr",
     "Tp1MinimumRR",
     "MinimumRequiredRRForRegime(",
-    "microConflict",
+    "MicroConflict",
     "OPPOSING REGULAR DIVERGENCE",
     "RR BELOW ACTIONABLE FLOOR",
     "LATE / PRICE EXTENDED",
 ):
-    if token not in act_code:
+    if token not in actionability_code:
         raise SystemExit(f"Actionability gate missing deterministic execution condition: {token}")
 for token in (
     "ActionableNow",
@@ -3184,7 +3223,17 @@ if "_decision.ActionableNow" in plan_eligibility.read_text(encoding="utf-8"):
     raise SystemExit("Plan creation must not be blocked by live ActionableNow state")
 
 registry_code = plan_registry.read_text(encoding="utf-8")
-parallel_code = parallel_builder.read_text(encoding="utf-8")
+parallel_candidate_builder = (
+    ROOT / "Analysis" / "Market" / "ParallelOpportunityCandidateBuilder.cs"
+)
+if not parallel_candidate_builder.exists():
+    raise SystemExit(
+        "Parallel opportunity candidate builder module is missing"
+    )
+parallel_code = (
+    parallel_builder.read_text(encoding="utf-8") +
+    parallel_candidate_builder.read_text(encoding="utf-8")
+)
 for token in ("Dictionary<string, TradeOpportunityCandidate>", "Upsert(", "Snapshot()"):
     if token not in registry_code:
         raise SystemExit(f"Multi-plan registry contract missing: {token}")

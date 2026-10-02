@@ -25,7 +25,11 @@ def check(name, condition):
 policy = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskPolicy.cs")
 action_policy = read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
 risk_rule = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs")
-evaluator = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+evaluator = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 retest_context = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityRetestContext.cs")
 decision = read("src/CFIP.Indicator/Core/Models/Decision.cs")
 orchestration = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
@@ -84,10 +88,10 @@ check(
 
 check(
     "M5/M1 pre-zone flags are only active for an inside-zone Retest",
-    "retestTrapContext =" in evaluator and
-    "liveMode == ExecutionMode.RetestMarket" in evaluator and
-    "m5AdversePreZone" in evaluator and
-    "m1AdversePreZone" in evaluator
+    "RetestTrapContext =" in evaluator and
+    "LiveMode == ExecutionMode.RetestMarket" in evaluator and
+    "M5AdversePreZone" in evaluator and
+    "M1AdversePreZone" in evaluator
 )
 
 check(

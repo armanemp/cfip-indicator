@@ -10,7 +10,11 @@ BOT = ROOT / "src" / "CFIP.cBot"
 errors = []
 
 policy = (IND / "Core" / "Math" / "ExecutionTimeframePolicy.cs").read_text(encoding="utf-8")
-action = (IND / "Trading" / "Validation" / "TradeActionabilityEvaluator.cs").read_text(encoding="utf-8")
+action = (
+    (IND / "Trading" / "Validation" / "TradeActionabilityEvaluator.cs").read_text(encoding="utf-8") +
+    (IND / "Trading" / "Validation" / "TradeActionabilityPreparation.cs").read_text(encoding="utf-8") +
+    (IND / "Trading" / "Validation" / "TradeActionabilityGateEvaluation.cs").read_text(encoding="utf-8")
+)
 rr = (IND / "Core" / "Math" / "RiskRewardMathRule.cs").read_text(encoding="utf-8")
 target = (IND / "Planning" / "TradePlan" / "TargetStageSelector.cs").read_text(encoding="utf-8")
 bot = (BOT / "CFIPExecutionBot.cs").read_text(encoding="utf-8")

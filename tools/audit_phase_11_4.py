@@ -39,8 +39,15 @@ target_rr_rule = read(TARGET_RR_RULE)
 policy = read(POLICY)
 stop = read(STOP)
 plan = read(PLAN)
-action = read(ACTION)
-parallel = read(PARALLEL)
+action = (
+    read(ACTION) +
+    read(ROOT / "src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read(ROOT / "src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
+parallel = (
+    read(PARALLEL) +
+    read(ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+)
 scenarios = read(SCENARIOS)
 parallel_selection = read(PARALLEL_SELECTION)
 planning_contract = read(PLANNING_CONTRACT)

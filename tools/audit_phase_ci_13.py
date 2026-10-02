@@ -43,6 +43,9 @@ materialization = read(
 builder = read(
     "src/CFIP.Indicator/Planning/TradePlan/PlanBuilder.cs"
 )
+canonical_path_builder = read(
+    "src/CFIP.Indicator/Planning/TradePlan/CanonicalTradePathGeometryBuilder.cs"
+)
 execution_rebuild = read(
     "src/CFIP.Indicator/Trading/Execution/ExecutionPlanPreparation.cs"
 )
@@ -187,9 +190,13 @@ check(
 )
 
 check(
-    "PlanBuilder passes selected ladder source objects",
-    "EnrichPlanTargetMetadata(" in builder and
-    "                p,\n                selected);" in builder,
+    "PlanBuilder carries canonical selected ladder provenance",
+    "canonicalPath.Tp1Source" in builder and
+    "canonicalPath.Tp2Source" in builder and
+    "canonicalPath.Tp3Source" in builder and
+    "canonicalPath.Tp4Source" in builder and
+    "canonicalPath.HtfTargetCount" in builder and
+    "ApplySelectedTargetMeta(" not in builder,
 )
 
 for token in (

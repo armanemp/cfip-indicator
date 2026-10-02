@@ -1,3 +1,57 @@
+## 2026-10-03 — Actionable candidate / provider geometry cohesion
+
+A deeper handoff audit found that `TradeOpportunityCandidate` could remain based on the presentation `TradeSetupPreview` after `Actionability` had already evaluated a different canonical actual-entry path.
+
+Correction completed:
+- actionable candidates now bind `Entry/SL/TP1..TP4/Risk/RR` from `CanonicalTradePathGeometry.Preview`;
+- Provider scenario envelopes consequently consume the exact geometry that passed Actionability;
+- WATCH/presentation candidates retain their preview semantics intentionally;
+- parallel opportunity construction was split into orchestration and candidate-builder modules to keep production modules within the 20KB architecture limit;
+- CR5.1 audit scope and architecture ownership checks were reconciled with the new single-owner path.
+
+No public threshold was lowered. M15 remains the trade-decision/execution reference; M5 remains trigger/tuning/entry precision; M1 optional.
+
+## 2026-10-03 — Canonical trade-path ownership closeout
+
+Status: implementation complete on `phase/canonical-trade-path-geometry-2026-10-03`; repository verification pending.
+
+Deep audit found that the first canonical trade-path implementation fixed live Actionability but still left PlanBuilder independently rebuilding the same SL/TP ladder. That was an architectural drift risk.
+
+Correction completed:
+- `CanonicalTradePathGeometry` is now the single executable Entry/SL/TP/RR geometry snapshot;
+- canonical target provenance and HTF target count are carried with that snapshot;
+- `PlanInputPreparation` consumes the canonical path;
+- `PlanBuilder` no longer rebuilds structural stop, target levels, target selection or target metadata;
+- plan materialization receives the exact canonical Entry/SL/TP1..TP4 values;
+- actionability and Plan therefore consume the same actual-entry geometry;
+- bounded Entry/Spread cache reuse remains in the live path;
+- no public quality/RR/risk threshold was lowered.
+
+Full-chain audit:
+Pre-analysis -> M15 decision -> M5 tuning/zone -> M1 optional -> Entry geometry -> Structural SL -> TP1..TP4 -> Actionability -> Plan -> SignalEnvelope/Scenario -> cBot preflight -> Broker -> Protection -> Outcome/History.
+
+Canonical timeframes:
+M15 = decision/execution reference; M5 = trigger/tuning/entry precision; M1 = optional confirmation; H1+ = context/reward.
+
+Verification still required:
+Source/Architecture, Runtime Acceptance, cTrader Compile/Build and target-terminal exact geometry/handoff validation.
+
+Operator action after verified merge: `git pull --ff-only` on local `main`.
+
+---
+
+## 2026-10-03 — Canonical trade-path geometry
+
+Deep audit found a live-path mismatch: presentation SetupPreview could be based on IdealEntry while live actionability evaluated current ActualEntry against the preview's Stop/TP1. Plan creation, however, already uses ActualEntry when building its structural stop and target ladder.
+
+Correction:
+- added CanonicalTradePathGeometry;
+- one builder derives actual-entry structural SL and TP1..TP4 and validates the reward path;
+- live actionability consumes that canonical path and rejects entry/mode drift;
+- bounded caching preserves runtime performance;
+- trace/panel state now reports ActionableNow before generic TriggerReady state.
+
+No public quality/RR/risk threshold was lowered.
 ## 2026-10-03 — Retest trigger-path hardening
 
 Deep audit found a concrete signal-to-trade path defect: RetestMarket is intentionally zone-driven, but PlanCreationEligibility and ScenarioExecutionPolicyRule still treated Decision.TriggerReady as a global prerequisite. That could suppress valid in-zone Retest proposals before Plan/Scenario/cBot handoff.
