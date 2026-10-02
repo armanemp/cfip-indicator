@@ -58,3 +58,11 @@ The previous hard-coded hidden Indicator configuration was removed. This prevent
 Analysis plan/decision generation is also decoupled from broker arming. `EnableAutoTrading` remains an execution gate but no longer changes decision policy or whether the analytical plan can be built.
 
 The cBot remains fail-closed when the named Indicator is missing or duplicated.
+
+## Exact SignalEnvelope transport
+
+The cBot no longer creates a second CFIP indicator instance. The visible `CFIP Smart Indicator` publishes its canonical `SignalEnvelope` to `LocalStorageScope.Device`, keyed by the Indicator `InstanceId`. The cBot discovers exactly one matching chart Indicator and reads that exact envelope.
+
+The cBot validates envelope contract version, identity, plan geometry, execution intent and freshness before broker mutation. This removes duplicate analysis CPU cost and prevents the execution side from silently using different strategy calculations.
+
+`LocalStorageScope.Device` is intentionally used as the current local transport boundary. It is platform-local and can later be replaced by a network/cloud transport without moving decision logic into the cBot.
