@@ -76,7 +76,7 @@ private List<Level> BuildTargetLevels(
                                                     closedM5,
                                                     opposingDirection,
                                                     atr,
-                                                    true,
+                                                    false,
                                                     entry,
                                                     true);
                                 
