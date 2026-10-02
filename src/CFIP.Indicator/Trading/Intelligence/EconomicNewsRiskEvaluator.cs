@@ -27,7 +27,8 @@ namespace cAlgo
                         utc,
                         TimeSpan.Zero)
                     : new DateTimeOffset(
-                        utc.ToUniversalTime(),
+                        CanonicalTimeRule.EnsureUtc(
+                            utc),
                         TimeSpan.Zero);
 
             CfipEconomicNewsEvent best = null;
