@@ -256,10 +256,10 @@ namespace CFIP.cBot.Shadow.Tests
                     Now);
 
             ShadowHostResult ready =
-                c.Observe(e, Safe, ContractVersion.Current, Now.AddSeconds(1));
+                c.Observe(e, Safe, ContractVersion.Current, 6, Now.AddSeconds(1));
 
             ShadowHostResult same =
-                c.Observe(e, Safe, ContractVersion.Current, Now.AddSeconds(1.1));
+                c.Observe(e, Safe, ContractVersion.Current, 6, Now.AddSeconds(1.1));
 
             Assert(
                 blocked.Reason == "SINGLE-PLAN CAPACITY BLOCKED" &&
