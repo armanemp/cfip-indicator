@@ -131,7 +131,6 @@ if "IsRefreshDue(" not in broker_rule:
     errors.append("BrokerStateRefreshRule must own broker refresh cadence")
 
 for relative in (
-    "src/CFIP.Indicator/Trading/Execution/BrokerPendingOrderPlacement.cs",
     "src/CFIP.Indicator/Trading/Execution/BrokerPendingOrderCancellation.cs",
     "src/CFIP.Indicator/Trading/Execution/BrokerPositionCloseMutation.cs",
     "src/CFIP.Indicator/Trading/Execution/BrokerStopLossMutation.cs",
