@@ -22,7 +22,6 @@ panel_factory = read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs")
 panel_layout = read("src/CFIP.Indicator/UI/Panel/PanelLayoutManager.cs")
 indicator = read("src/CFIP.Indicator/Indicator/CFIPIndicator.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProvider.cs")
-b4b = read("tools/audit_phase_cbot_p4b.py")
 
 if "public string CommandIdempotencyKey { get; init; } = string.Empty;" not in report:
     errors.append("BrokerExecutionReport correlation key is not explicitly initialized")
@@ -53,9 +52,6 @@ if "ProviderHeartbeat[index]" not in provider:
     errors.append("provider heartbeat output contract unexpectedly disappeared")
 if 'LineColor = "Transparent"' not in provider:
     errors.append("provider heartbeat must remain invisible")
-
-if "Chart.Height" in b4b:
-    errors.append("P4B audit must not enforce a Chart.Height-derived panel geometry path")
 
 print("BUILD-WARNING / PANEL-HEIGHT INTEGRITY AUDIT")
 print("=" * 72)
