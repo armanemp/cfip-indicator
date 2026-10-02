@@ -1,6 +1,8 @@
 ## CBOT-P1 — Platform-Neutral Contracts — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2778 PASS; Runtime Acceptance #2587 PASS; cTrader Compile #2771 PASS.
 
 Canonical contract boundary is now present in `src/CFIP.Contracts`.
 
