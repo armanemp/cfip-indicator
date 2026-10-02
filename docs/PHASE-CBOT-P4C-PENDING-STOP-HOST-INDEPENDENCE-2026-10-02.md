@@ -1,6 +1,6 @@
 # CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — final CI verification rerun.**
+Status: **VERIFIED COMPLETE — final repository gates passed on head c700e3adbc3557bf1278024df870a15a6e308b69; PR #195 ready to merge.**
 
 ## Scope
 
@@ -49,7 +49,9 @@ Market execution continues to use the canonical executable quote (Ask for BUY / 
 - normalized cBot session-cap property naming;
 - added deterministic Pending Entry spread tests;
 - added Pending Stop shadow contract coverage;
-- added dedicated `tools/audit_phase_cbot_p4c.py`.
+- added dedicated `tools/audit_phase_cbot_p4c.py`;
+- preserved an absolute Pending Stop lifecycle snapshot before the cBot handoff;
+- transported the canonical instance-scoped execution label through ExecutionIntent so the cBot does not recreate identity/label formatting.
 
 ## Verification
 
@@ -75,4 +77,11 @@ No profitability claim is made from this structural phase alone.
 Next staged execution migration: **CBOT-P4D — Pending Limit authority extraction**.
 
 
-Final verification rerun is intentionally tied to the latest branch head after all audit-owner reconciliation commits.
+Final verification on the latest branch head:
+- Source / Architecture 36991157739 / workflow #3025: PASS;
+- Runtime Acceptance Contracts 36991157724 / workflow #2834: PASS;
+- cTrader Compile/Build 36991157712 / workflow #3018: PASS;
+- CBOT-P4C audit: PASS;
+- CR5.4, CI-15, M15/Risk/Spread and CR1.8/A11 dependent audits: PASS.
+
+Target-terminal acceptance remains required for actual cTrader behavior, including host-chart independence, Pending Stop placement/confirmation, spread behavior, margin cap behavior, panel responsiveness and cross-timeframe consistency.
