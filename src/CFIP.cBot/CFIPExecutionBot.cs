@@ -41,7 +41,7 @@ namespace CFIP.cBot
                     Indicators.GetIndicator<CFIPIndicator>(
                         new
                         {
-                            EnableAutoTrading = false,
+                            EnableAutoTrading = true,
                             EnableAutomaticOrders = false,
                             EnableAggressiveAutoEntry = false,
                             AutoProtectBrokerPositions = false,
@@ -112,6 +112,37 @@ namespace CFIP.cBot
                         Server.TimeInUtc);
 
                 LogStateIfChanged(result);
+
+                if (EnableMarketExecution &&
+                    result != null &&
+                    result.State == ShadowHostState.Ready)
+                {
+                    BrokerExecutionReport report;
+                    string executionReason;
+
+                    bool executed =
+                        _market.TryExecute(
+                            this,
+                            snapshot,
+                            UseMarketRange,
+                            Server.TimeInUtc,
+                            out report,
+                            out executionReason);
+
+                    if (report != null)
+                    {
+                        Print(
+                            "CFIP MARKET EXECUTION | status={0} | action={1} | " +
+                            "revision={2} | position={3} | reason={4}",
+                            report.Status,
+                            report.Action,
+                            report.AttemptRevision,
+                            report.BrokerPositionId.HasValue
+                                ? report.BrokerPositionId.Value.ToString()
+                                : "",
+                            executionReason);
+                    }
+                }
             }
             catch (Exception ex)
             {
