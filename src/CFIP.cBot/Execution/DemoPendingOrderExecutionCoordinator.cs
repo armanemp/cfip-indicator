@@ -48,6 +48,13 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
+            if (string.IsNullOrWhiteSpace(
+                    envelope.Identity.ScenarioId))
+            {
+                reason = "MISSING SCENARIO ID";
+                return false;
+            }
+
             if (_rememberedKeys.Contains(key))
             {
                 reason = "DUPLICATE IDEMPOTENCY KEY";
