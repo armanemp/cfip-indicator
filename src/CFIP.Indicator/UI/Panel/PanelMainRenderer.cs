@@ -195,6 +195,9 @@ namespace cAlgo
                                         
                                                     RenderPanelRows(
                                                         contentWidth);
+
+                                                    _lastPanelContentRefreshUtc =
+                                                        now;
                                         
                                                     int scrollHeight =
                                                         EstimatePanelScrollHeight(
