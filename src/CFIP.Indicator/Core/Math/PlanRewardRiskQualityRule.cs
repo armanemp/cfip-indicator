@@ -172,11 +172,17 @@ namespace cAlgo
 
             if (!geometry.Valid)
             {
+                string reason =
+                    geometry.Reason == "RR BELOW MINIMUM"
+                        ? "REWARD TOO LOW FOR STOP • RR " +
+                          geometry.NominalRR.ToString("F2") +
+                          " < " +
+                          adaptiveRequired.ToString("F2")
+                        : geometry.Reason;
+
                 return new PlanRewardRiskQualityResult(
                     false,
-                    geometry.Reason == "RR BELOW MINIMUM"
-                        ? "REWARD TOO LOW FOR STOP"
-                        : geometry.Reason,
+                    reason,
                     geometry.Risk,
                     geometry.Reward,
                     geometry.EffectiveRisk,
