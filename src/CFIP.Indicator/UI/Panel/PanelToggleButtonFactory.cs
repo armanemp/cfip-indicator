@@ -31,17 +31,13 @@ namespace cAlgo
                                                         22,
                                                         Math.Min(
                                                             40,
-                                                            Math.Min(
-                                                                PanelToggleWidth,
-                                                                PanelToggleHeight))),
+                                                            PanelToggleWidth),
                                                 Height =
                                                     Math.Max(
                                                         22,
                                                         Math.Min(
                                                             40,
-                                                            Math.Min(
-                                                                PanelToggleWidth,
-                                                                PanelToggleHeight))),
+                                                            PanelToggleWidth),
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Left,
                                                 VerticalAlignment =
