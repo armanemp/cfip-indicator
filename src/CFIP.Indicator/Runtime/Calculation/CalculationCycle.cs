@@ -102,6 +102,8 @@ namespace cAlgo
                 if (_initializationReady)
                     _lastCalculationCompletedUtc = TimeInUtc;
 
+                PublishProviderHeartbeatValue(index);
+
                 _calculationBusy = false;
             }
         }
