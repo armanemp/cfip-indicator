@@ -475,8 +475,6 @@ namespace cAlgo
                 return "TRIGGER";
 
             return "ACTIONABILITY";
-
-            return "ACTIONABLE";
         }
 
         private string SignalTracePanelText()
