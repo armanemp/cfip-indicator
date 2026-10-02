@@ -180,10 +180,13 @@ namespace CFIP.cBot
             ReloadSignalStore(false);
 
             DateTime nowUtc = Server.TimeInUtc;
+            ReconcileBrokerState(false);
             PublishExecutionState("HEARTBEAT", false);
 
             if (EnableDemoManagementExecution &&
-                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId) &&
+                _reconciliation != null &&
+                !_reconciliation.RecoveryRequired)
             {
                 _management.Process(
                     this,
