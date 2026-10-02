@@ -116,6 +116,7 @@ namespace cAlgo
             VerifyEntryActionabilityF6();
             VerifyIndependentTimeframeScenarioSemanticsF7();
             VerifyMtfPrimaryTimeframeSignals();
+            VerifyMtfPrimaryLocationEvidence();
             VerifyTargetObstacleTelemetryF8();
             VerifyOrphanManagedProtectionF3();
             VerifyEntryTrapRiskG2();
@@ -10849,6 +10850,49 @@ namespace cAlgo
 
             Console.WriteLine(
                 "MTF-P1 primary timeframe signal contracts PASS");
+        }
+
+        private static void VerifyMtfPrimaryLocationEvidence()
+        {
+            LocationEvidenceScore confluence =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    90,
+                    true,
+                    85,
+                    true);
+
+            Assert(
+                confluence.Confluence &&
+                confluence.Score > 0 &&
+                confluence.Evidence == 1,
+                "canonical location evidence preserves explicit OB+FVG confluence");
+
+            LocationEvidenceScore fvgOnly =
+                LocationEvidenceRule.Evaluate(
+                    true,
+                    90,
+                    false,
+                    0,
+                    false);
+
+            LocationEvidenceScore obOnly =
+                LocationEvidenceRule.Evaluate(
+                    false,
+                    0,
+                    true,
+                    85,
+                    false);
+
+            Assert(
+                fvgOnly.Score > 0 &&
+                obOnly.Score > 0 &&
+                confluence.Score > fvgOnly.Score &&
+                confluence.Score > obOnly.Score,
+                "canonical OB+FVG location evidence remains stronger than single-zone evidence");
+
+            Console.WriteLine(
+                "MTF-P2 primary location OB/FVG contracts PASS");
         }
 
         private static void Assert(bool condition, string name)
