@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""CBOT-P0 structural boundary audit.
+"""CFIP cBot/Indicator broker-boundary audit.
 
-This gate verifies the newly activated three-project boundary without moving
-broker authority yet. It prevents the new cBot scaffold from becoming a hidden
-second executor and freezes the intended owner set until extraction phases.
+The extraction track now allows broker mutation only in the explicitly migrated
+cBot owner. Indicator mutation owners remain frozen for the not-yet-extracted
+paths, while already-extracted paths must be physically absent from Indicator.
 """
 from pathlib import Path
 import re
@@ -57,14 +57,18 @@ cbot_sources = list(CBOT.rglob("*.cs"))
 if not cbot_sources:
     errors.append("cBot production source tree is empty")
 
+cbot_market_owner = CBOT / "Execution" / "MarketBrokerMutation.cs"
 for path in cbot_sources:
     source = path.read_text(encoding="utf-8")
     for token in MUTATIONS:
-        if token in source:
+        if token in source and path != cbot_market_owner:
             errors.append(
-                f"P0 cBot must remain broker-mutation-free: "
+                f"cBot broker mutation escaped explicit owner: "
                 f"{path.relative_to(ROOT)} contains {token}"
             )
+
+if not cbot_market_owner.exists():
+    errors.append("P4A cBot market mutation owner is missing")
 
 indicator_sources = list(INDICATOR.rglob("*.cs"))
 owner_hits = []
@@ -75,7 +79,6 @@ for path in indicator_sources:
             owner_hits.append(path.relative_to(INDICATOR).as_posix())
 
 allowed = {
-    "Trading/Execution/BrokerMarketOrderMutation.cs",
     "Trading/Execution/BrokerPendingOrderPlacement.cs",
     "Trading/Execution/BrokerLimitOrderPlacement.cs",
     "Trading/Execution/BrokerPendingOrderCancellation.cs",
@@ -96,5 +99,6 @@ if errors:
 print("CBOT-P0 STRUCTURAL BOUNDARY AUDIT: PASS")
 print(f"Contracts C# files: {len(contracts_sources)}")
 print(f"cBot C# files:      {len(cbot_sources)}")
-print("cBot direct broker mutation: 0")
-print("Indicator mutation ownership: frozen")
+print("cBot market mutation ownership: explicit")
+print("Indicator market mutation: 0")
+print("Remaining Indicator mutation ownership: frozen")
