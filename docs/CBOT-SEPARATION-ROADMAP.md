@@ -50,7 +50,7 @@ Baseline reviewed from `main` at `473d5f1c89afaf8880bb16092e5d9b16b98d0395`:
 Important source examples confirmed during this audit:
 
 - `Trading/Execution/BrokerMarketOrderMutation.cs` directly calls market-order broker APIs.
-- `Trading/Execution/BrokerPendingOrderPlacement.cs` and pending placement owners handle broker pending mutation.
+- `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` and pending placement owners handle broker pending mutation.
 - `Trading/Execution/BrokerPendingOrderCancellation.cs` handles pending cancellation.
 - `Trading/Execution/BrokerPositionCloseMutation.cs` handles broker position close mutation.
 - `Trading/Execution/BrokerStopLossMutation.cs` and `BrokerTakeProfitMutation.cs` handle protection mutation.
