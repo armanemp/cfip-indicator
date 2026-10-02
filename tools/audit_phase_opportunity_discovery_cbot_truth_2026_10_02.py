@@ -92,6 +92,28 @@ check(
     "candidate.M5TuningAligned = primary.M5Aligned;" in timeframes,
 )
 check(
+    "cBot publishes independent symbol presence before indicator binding completes",
+    "PublishPresence(" in read("src/CFIP.cBot/CFIPExecutionBot.cs") and
+    "PublishPresence(" in read("src/CFIP.cBot/Execution/CbotExecutionStatePublisher.cs") and
+    "ForSymbol(" in read("src/CFIP.Contracts/CbotExecutionStateBus.cs") and
+    "TryDeserializePresence(" in read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs"),
+)
+
+check(
+    "forward target FVG discovery is not limited to current-bar retest",
+    "opposingDirection" in read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs") and
+    "false," in read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs") and
+    "entry," in read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs"),
+)
+
+check(
+    "structural stop FVG discovery considers unretested quality-aware zones",
+    "FindNearestFvg(" in read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs") and
+    "false," in read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs") and
+    "frameAtr" in read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs"),
+)
+
+check(
     "strong-HTF counter-M5 opportunity path is actually reachable",
     "strongHtfConflict" in tactical_rule and
     "selectedDirection != m5Direction" in tactical_rule and
