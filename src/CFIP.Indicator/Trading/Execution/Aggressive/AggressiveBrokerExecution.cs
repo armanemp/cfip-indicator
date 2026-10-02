@@ -150,7 +150,8 @@ throw;
 }
 RecordSubmission(
 submissionIdentity,
-result);
+result,
+aggressiveIntent);
 if (!BrokerConfirmationPolicy.CanAdoptPosition(
 result != null,
 result != null &&
