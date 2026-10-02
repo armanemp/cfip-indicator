@@ -62,10 +62,7 @@ namespace cAlgo
                 }
                 catch { RecordSubmissionFailure(submissionIdentity); throw; }
 
-                RecordSubmission(
-                    submissionIdentity,
-                    result,
-                    pendingIntent);
+                RecordSubmission(submissionIdentity, result, pendingIntent);
                 if (!BrokerConfirmationPolicy.CanAdoptPendingOrder(result != null, result != null && result.IsSuccessful, result != null && result.PendingOrder != null))
                 {
                     _autoOrdersBlockReason = result != null && result.Error.HasValue ? result.Error.Value.ToString() : "PENDING STOP REJECTED";
