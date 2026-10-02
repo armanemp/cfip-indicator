@@ -383,10 +383,10 @@ namespace cAlgo
                     continue;
 
                 double rr =
-                    Math.Abs(
-                        candidate.Price -
-                        entry) /
-                    risk;
+                    RiskRewardGeometryRule.CalculateNominalRR(
+                        entry,
+                        candidate.Price,
+                        risk);
 
                 if (rr > bestRR)
                     bestRR = rr;
