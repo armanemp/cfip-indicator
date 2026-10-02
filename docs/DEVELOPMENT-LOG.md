@@ -2840,3 +2840,19 @@ Verification: implementation head `b7bbf5375a062d82c2883360d3f4e8b61de0ee45`; So
 No public parameter/default, confidence/RR/Entry/SL/TP/risk/execution threshold or broker authority was changed by CI-11. Target-terminal timing and empirical signal-quality validation remain manual boundaries.
 
 Next phase: **CI-12 — Structural SL audit**.
+
+## CI-15 closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — PR #172 merged to `main`.**
+
+CI-15 removed the validated-intent-to-broker-submission seam across Automatic Market, Aggressive Market, Pending Stop and Pending Limit. A canonical `ExecutionIntentGeometryRule` now owns the final intent-side Entry/SL/TP and pip projection; `ExecutionIntentValidation` re-checks that projection; broker submission consumes the exact validated intent; and bounded execution telemetry records the exact intent geometry for downstream broker reconciliation.
+
+Repository verification on final implementation HEAD `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`:
+- Source/Architecture #2707: **PASS**;
+- Runtime Acceptance Contracts #2516: **PASS**;
+- cTrader Compile/Build #2700: **PASS**;
+- Planning Contracts: **PASS** (`Planning contracts OK`).
+
+Manual acceptance remains required for target-terminal timing, broker-specific fill/slippage behavior, reconnect/reload and empirical signal/outcome validation.
+
+Next phase: **CI-16 — Deterministic replay, latency and counterexample suite.**

@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTED — awaiting repository verification before merge.**
+Status: **VERIFIED COMPLETE — PR #172 merged to `main`.**
 
 ## Scope
 
@@ -115,14 +115,15 @@ Planning contracts cover:
 - Recovery paths that intentionally reconcile against broker-confirmed state remain
   broker-authoritative.
 
-## Verification boundary
+## Final verification
 
-Required:
+Final implementation HEAD: `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`.
 
-- Source/Architecture accumulated gate including CI-15;
-- Runtime Acceptance Contracts;
-- cTrader Compile/Build;
-- Planning Contracts.
+- Source/Architecture: **PASS** — run #2707;
+- Runtime Acceptance Contracts: **PASS** — run #2516;
+- cTrader Compile/Build: **PASS** — run #2700;
+- Planning Contracts: **PASS** — `Planning contracts OK`.
+- accumulated Source/Architecture audits through CI-15: **PASS**.
 
 Still manual:
 
