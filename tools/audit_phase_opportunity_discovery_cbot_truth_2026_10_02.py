@@ -33,6 +33,8 @@ candidate = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneSelectionCa
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
 panel = read("src/CFIP.Indicator/UI/Panel/PanelAlertMessageRenderer.cs")
 primary = read("src/CFIP.Indicator/Core/Math/PrimaryTimeframeSignalRule.cs")
+tactical_rule = read("src/CFIP.Indicator/Core/Math/TacticalOpportunityRule.cs")
+runtime_contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 parallel = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
 timeframes = read("src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs")
 structural = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateEvaluator.cs")
@@ -88,6 +90,14 @@ check(
     "M5 remains tuning/trigger rather than primary-source veto",
     "PRIMARY SOURCE VALID • WAITING FOR M5/M1 TUNING" in primary and
     "candidate.M5TuningAligned = primary.M5Aligned;" in timeframes,
+)
+check(
+    "strong-HTF counter-M5 opportunity path is actually reachable",
+    "strongHtfConflict" in tactical_rule and
+    "selectedDirection != m5Direction" in tactical_rule and
+    "selectedDirection != htfDirection" in tactical_rule and
+    "counterStrong" in runtime_contracts and
+    "very strong HTF-aligned counter-M5 opportunity" in runtime_contracts,
 )
 check(
     "parallel presentation still keeps multiple scenarios",
