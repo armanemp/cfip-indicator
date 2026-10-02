@@ -6,14 +6,10 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private void ApplyPanelActionButtonsLayout(
-            int buttonHeight,
-            int buttonGap,
             int buttonMargin,
-            int eachButtonWidth,
             int toggleSide,
             int border,
-            int borderAlpha,
-            bool showSafetyButtons)
+            int borderAlpha)
         {
             if (_panelToggleButton == null)
                 return;
