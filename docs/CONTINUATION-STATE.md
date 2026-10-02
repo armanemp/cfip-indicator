@@ -1,3 +1,15 @@
+## CBOT-P3 — cBot Host / Shadow — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+cBot shadow host is implemented over the canonical read-only Indicator provider. Revision/deduplication is bounded and deterministic; transient broker-safety blocks do not consume a revision; no broker mutation exists in the P3 cBot path.
+
+Behavioral tests: `tools/CFIP.cBot.Shadow.Tests`.
+Source audit: `tools/audit_cbot_shadow_host.py`.
+
+Next implementation phase: **CBOT-P4 — Broker Mutation Extraction**, beginning with Market / Market Range.
+
+
 ## CBOT-P2 — Read-Only Indicator Provider — 2026-10-02.
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**
