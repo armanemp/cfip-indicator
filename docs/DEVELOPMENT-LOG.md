@@ -1,6 +1,6 @@
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
-Status: VERIFIED COMPLETE — final repository gates passed; PR #195 ready to merge.
+Status: **VERIFIED COMPLETE — merged to main via PR #195 as 7b8648091bde26753b1e0fcff3d75984a1f1b9eb.**
 
 Completed:
 - deleted the migrated Indicator Pending Stop broker owner;
