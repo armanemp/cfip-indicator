@@ -23,7 +23,6 @@ partial = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 level_hits = read("Trading/LiveManagement/ActivePlanLevelExitHandler.cs")
 server_ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
-market_mutation = read("Trading/Execution/BrokerMarketOrderMutation.cs")
 pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 state = read("Indicator/State.cs")
@@ -168,8 +167,11 @@ for token in (
 ):
     if token not in server_ladder:
         raise SystemExit(f"Server TP ladder contract missing: {token}")
-if "TryExecuteMarketRangeOrderWithTakeProfitLadder" not in market_mutation:
-    raise SystemExit("Market-range server TP mutation owner missing")
+market_handoff = read("Trading/Execution/AutomaticMarket/AutomaticMarketBrokerExecution.cs")
+if "CBOT cBot handoff" not in market_handoff:
+    raise SystemExit("Market execution must expose the cBot handoff boundary")
+if "TryExecuteMarketRangeOrder(" in market_handoff:
+    raise SystemExit("Market execution orchestration must not mutate broker directly")
 if "TryPlaceStopOrderWithTakeProfitLadder" not in pending_mutation:
     raise SystemExit("Pending stop server TP mutation owner missing")
 if "TryPlaceLimitOrderWithTakeProfitLadder" not in limit_mutation:
