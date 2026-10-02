@@ -830,8 +830,6 @@ namespace cAlgo
 
             internal static ReplayGeometrySnapshot Create(
                 ReplayPlanGeometry geometry,
-                ExecutionMode entryMode,
-                bool entryLate,
                 RiskRewardMathResult rr,
                 ExecutionIntentGeometryResult intent,
                 double spread)
@@ -898,6 +896,8 @@ namespace cAlgo
                 ReplayDecisionSnapshot decision,
                 ReplayTriggerSnapshot trigger,
                 ReplayPlanGeometry geometry,
+                ExecutionMode entryMode,
+                bool entryLate,
                 RiskRewardMathResult rr,
                 ExecutionIntentGeometryResult intent,
                 bool fillAccepted,
