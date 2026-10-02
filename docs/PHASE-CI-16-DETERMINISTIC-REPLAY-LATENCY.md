@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **VERIFIED COMPLETE — deterministic contract suite implemented in the Runtime Acceptance project.**
+Status: **VERIFIED COMPLETE — CI-16 accepted on implementation HEAD `1c292d3162f6085869238029fe599630ab3ca3a9`.**
 
 ## Purpose
 
@@ -108,3 +108,10 @@ After CI-16 is merged to `main`, the operator should run:
 `git pull --ff-only`
 
 on the local `main` checkout before continuing.
+
+## Verified workflow results
+
+- Source/Architecture: **PASS** — workflow run `36950516204` / run #2715;
+- Runtime Acceptance Contracts: **PASS** — workflow run `36950516284` / run #2524;
+- cTrader Compile/Build: **PASS** — workflow run `36950516224` / run #2708;
+- accumulated CI-16 audit: **PASS**.
