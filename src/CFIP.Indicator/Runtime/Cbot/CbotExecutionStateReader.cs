@@ -7,6 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private CbotExecutionStateSnapshot _cBotExecutionState;
+        private CbotPresenceSnapshot _cBotPresence;
         private DateTime _nextCbotStateReadUtc = DateTime.MinValue;
         private string _cBotStateReadError = string.Empty;
 
@@ -36,7 +37,7 @@ namespace cAlgo
                         candidate.Type != null &&
                         string.Equals(
                             candidate.Type.Name,
-                            CbotIdentity.DisplayName,
+                            CbotIdentity.TypeName,
                             StringComparison.Ordinal);
 
                     if (!instanceNameMatches &&
@@ -123,6 +124,28 @@ namespace cAlgo
                             InstanceId),
                         LocalStorageScope.Device);
 
+                string presencePayload =
+                    LocalStorage.GetString(
+                        CbotExecutionStateBusKey.ForSymbol(
+                            SymbolName),
+                        LocalStorageScope.Device);
+
+                if (CbotExecutionStateCodec.TryDeserializePresence(
+                        presencePayload,
+                        out CbotPresenceSnapshot presence) &&
+                    presence != null &&
+                    string.Equals(
+                        presence.Symbol,
+                        SymbolName,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        presence.CbotTypeName,
+                        CbotIdentity.TypeName,
+                        StringComparison.Ordinal))
+                {
+                    _cBotPresence = presence;
+                }
+
                 if (CbotExecutionStateCodec.TryDeserialize(
                         payload,
                         out CbotExecutionStateSnapshot snapshot) &&
@@ -179,12 +202,12 @@ namespace cAlgo
                 else if (string.IsNullOrWhiteSpace(payload))
                 {
                     _cBotStateReadError =
-                        "CBOT NOT ATTACHED";
+                        "CBOT HEARTBEAT PENDING";
                 }
                 else
                 {
                     _cBotStateReadError =
-                        "CBOT STATE INVALID";
+                        "CBOT HEARTBEAT INVALID";
                 }
             }
             catch (Exception ex)
@@ -198,6 +221,23 @@ namespace cAlgo
         private string CbotConnectionPanelText()
         {
             RefreshCbotExecutionStateIfDue();
+
+            if (HasFreshCbotHeartbeat())
+                return
+                    "CBOT CONNECTED • HEARTBEAT LIVE • " +
+                    CbotExecutionStatePanelText();
+
+            if (HasFreshCbotPresence())
+                return
+                    "CBOT DETECTED • " +
+                    (_cBotPresence.State ?? "RUNNING") +
+                    " • INDICATOR BIND " +
+                    (string.Equals(
+                        _cBotPresence.BoundIndicatorInstanceId,
+                        InstanceId,
+                        StringComparison.Ordinal)
+                        ? "PENDING"
+                        : "NOT RESOLVED");
 
             ChartRobot chartRobot;
             string chartState;
@@ -243,22 +283,39 @@ namespace cAlgo
 
         private bool IsCbotExecutionStateFresh()
         {
-            if (_cBotExecutionState == null)
-                return false;
-
-            ChartRobot chartRobot;
-            string chartState;
-            string chartReason;
-
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
+            if (_cBotExecutionState == null ||
+                !string.Equals(
+                    _cBotExecutionState.IndicatorInstanceId,
+                    InstanceId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    _cBotExecutionState.Symbol,
+                    SymbolName,
+                    StringComparison.Ordinal))
                 return false;
 
             double ageSeconds =
                 (TimeInUtc -
                  _cBotExecutionState.ObservedUtc).TotalSeconds;
+
+            return
+                ageSeconds >= 0 &&
+                ageSeconds <= 3.0;
+        }
+
+        private bool HasFreshCbotHeartbeat()
+        {
+            return IsCbotExecutionStateFresh();
+        }
+
+        private bool HasFreshCbotPresence()
+        {
+            if (_cBotPresence == null)
+                return false;
+
+            double ageSeconds =
+                (TimeInUtc -
+                 _cBotPresence.ObservedUtc).TotalSeconds;
 
             return
                 ageSeconds >= 0 &&
@@ -354,18 +411,8 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
-            ChartRobot chartRobot;
-            string chartState;
-            string chartReason;
-
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
-                return false;
-
             return
-                IsCbotExecutionStateFresh() &&
+                HasFreshCbotHeartbeat() &&
                 (_cBotExecutionState.MarketExecutionEnabled ||
                  _cBotExecutionState.AggressiveExecutionEnabled);
         }
@@ -374,18 +421,8 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
-            ChartRobot chartRobot;
-            string chartState;
-            string chartReason;
-
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
-                return false;
-
             return
-                IsCbotExecutionStateFresh() &&
+                HasFreshCbotHeartbeat() &&
                 (_cBotExecutionState.PendingStopExecutionEnabled ||
                  _cBotExecutionState.PendingLimitExecutionEnabled);
         }
@@ -394,18 +431,8 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
-            ChartRobot chartRobot;
-            string chartState;
-            string chartReason;
-
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
-                return false;
-
             return
-                IsCbotExecutionStateFresh() &&
+                HasFreshCbotHeartbeat() &&
                 _cBotExecutionState.ManagementExecutionEnabled;
         }
 
