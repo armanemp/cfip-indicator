@@ -299,3 +299,18 @@ preserve these invariants:
   favorable direction.
 - Broker minimum stop/TP distance must be honored.
 - No global exit threshold should be changed without replay evidence.
+
+
+## T. Primary M15/H1 signal hierarchy — 2026-10-02
+
+The preferred visible signal hierarchy is now:
+
+M15 + H1 = primary signal sources;
+M5 = local structure/location/actionability tuning;
+M1 = optional closed-trigger timing confirmation.
+
+M15 and H1 signals must be able to coexist at the same time, including opposite directions. Lower-timeframe tuning may refine readiness but must not silently erase a valid primary source signal.
+
+Source-timeframe OB/FVG evidence must remain attributable to the M15/H1 frame. No new global OB/FVG override or hard threshold is introduced without replay evidence.
+
+The Indicator chart-panel AUTO TRADE and AUTO ORDERS quick controls are not part of the presentation surface. Their canonical execution status/diagnostic information may remain available as text. The Indicator panel must retain explicit bottom clearance so the separate cBot panel can occupy the lower chart area without overlap.
