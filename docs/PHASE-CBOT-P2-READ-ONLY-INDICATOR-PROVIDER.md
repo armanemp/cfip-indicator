@@ -19,7 +19,7 @@ The current target mechanism is cTrader's supported custom-indicator reference m
 - The provider exposes a read-only public contract surface.
 - An invisible `IndicatorDataSeries` heartbeat is consumed before the provider property so lazy evaluation cannot leave the cBot reading an uncalculated instance.
 
-This follows cTrader's documented custom-indicator consumption pattern and the observed lazy-loading behavior for custom indicator properties. citeturn326216search2turn326216search1
+This follows cTrader's documented custom-indicator consumption pattern (`Indicators.GetIndicator<T>()`) and the documented/observed lazy-evaluation behavior around public custom-indicator properties. See cTrader Algo: `https://help.ctrader.com/ctrader-algo/how-tos/indicators/use-custom-indicators-in-cbots/`.
 
 ## Implemented
 
