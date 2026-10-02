@@ -244,3 +244,16 @@ initial ladder, live management may advance only forward, and broker protection 
 only mutation authority. Actual fills are reconciled through a transactional live-aware
 exit reconciler before plan state is committed. Server-side Advanced Protection remains
 broker-owned and is synchronized only with forward/progressive targets.
+
+
+## Active three-project boundary — 2026-10-02
+
+The repository now contains the active target project boundary:
+
+- `src/CFIP.Indicator` — analysis, decision, scenario, plan and presentation;
+- `src/CFIP.Contracts` — platform-neutral immutable cross-boundary data only;
+- `src/CFIP.cBot` — broker execution, account risk, live protection, lifecycle and recovery.
+
+During migration, existing broker mutation inside the Indicator is temporary compatibility only. Each migrated owner must be replaced and parity-verified before its Indicator implementation is physically removed. The cBot may reference the installed CFIP custom Indicator only through cTrader's supported custom-indicator reference mechanism; it must not access Indicator private state, scrape chart objects, use reflection or introduce a second decision engine.
+
+The active migration schedule is CBOT-P0→P8 and runs in parallel with M2 onward. `docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md` is the exact current execution extraction inventory.
