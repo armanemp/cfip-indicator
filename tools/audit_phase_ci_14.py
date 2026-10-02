@@ -36,6 +36,10 @@ actionability = (
     read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
     read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
 )
+actionability_preparation = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 auto_pretrade = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs")
 auto_submission = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs")
 pending_submission = read("src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs")
