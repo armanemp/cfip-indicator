@@ -43,7 +43,7 @@ require(
 require(
     "ResolveScenarioId" in identity and
     "ResolveSourceTimeframe" in identity and
-    "CanonicalM5 = "M5"" in identity,
+    'CanonicalM5 = "M5"' in identity,
     "shared provider identity rule must be deterministic and canonical",
 )
 require(
