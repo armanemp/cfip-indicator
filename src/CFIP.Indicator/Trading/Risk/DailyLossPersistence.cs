@@ -104,10 +104,10 @@ namespace cAlgo
                 LocalStorage.Reload(
                     LocalStorageScope.Type);
 
-                bool legacyKey;
                 string stored =
-                    ReadDailyLossState(
-                        out legacyKey);
+                    LocalStorage.GetString(
+                        DailyLossStorageKey(),
+                        LocalStorageScope.Type);
 
                 if (string.IsNullOrWhiteSpace(stored))
                     return false;
@@ -182,11 +182,6 @@ namespace cAlgo
                     locked
                         ? "DAILY LOSS LIMIT LOCKED"
                         : "RESTORED";
-
-                if (legacyKey)
-                    PersistDailyLossState(
-                        referenceUtc,
-                        false);
 
                 return true;
             }
@@ -271,38 +266,6 @@ namespace cAlgo
             return
                 "CFIP DailyLoss " +
                 MemoryAccountScopeToken();
-        }
-
-        private string LegacyDailyLossStorageKey()
-        {
-            return
-                "CFIP DailyLoss " +
-                Account.Number.ToString(
-                    CultureInfo.InvariantCulture);
-        }
-
-        private string ReadDailyLossState(
-            out bool legacy)
-        {
-            legacy = false;
-
-            string stored =
-                LocalStorage.GetString(
-                    DailyLossStorageKey(),
-                    LocalStorageScope.Type);
-
-            if (!string.IsNullOrWhiteSpace(stored))
-                return stored;
-
-            stored =
-                LocalStorage.GetString(
-                    LegacyDailyLossStorageKey(),
-                    LocalStorageScope.Type);
-
-            legacy =
-                !string.IsNullOrWhiteSpace(stored);
-
-            return stored;
         }
 
         private static DateTime AsUtc(
