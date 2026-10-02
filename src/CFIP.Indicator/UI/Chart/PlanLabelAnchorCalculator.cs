@@ -30,14 +30,13 @@ namespace cAlgo
                         6,
                         LabelLeftOffsetBars));
 
-            // Compact labels stay attached to the line geometry. Their visible
-            // separation from the level is handled in price space by the label
-            // renderer; the line endpoint itself remains unchanged.
+            // Labels sit to the left of the line start, with a deterministic
+            // horizontal gap. The line endpoint itself remains unchanged.
             return Math.Max(
                 0,
                 Math.Min(
                     Bars.Count - 1,
-                    lineLeft + offset));
+                    lineLeft - offset));
         }
 
         private int GetLabelBoxRightBar(
