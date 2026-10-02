@@ -41,8 +41,24 @@ namespace cAlgo
             double counterHtfMinimumRR)
         {
             if (m5Direction == 0 ||
-                selectedDirection != m5Direction ||
                 tp1RR <= 0)
+                return new TacticalOpportunityResult(
+                    false,
+                    OpportunityLane.Tactical,
+                    0,
+                    tp1RR);
+
+            bool strongHtfConflict =
+                htfDirection != 0 &&
+                htfAlignment >=
+                Math.Max(
+                    60,
+                    strongHtfThreshold) &&
+                htfDirection != m5Direction;
+
+            if (selectedDirection != m5Direction &&
+                (!strongHtfConflict ||
+                 selectedDirection != htfDirection))
                 return new TacticalOpportunityResult(
                     false,
                     OpportunityLane.Tactical,
@@ -59,14 +75,6 @@ namespace cAlgo
                     Math.Min(
                         100,
                         independentEvidence * 12) * 0.10);
-
-            bool strongHtfConflict =
-                htfDirection != 0 &&
-                htfAlignment >=
-                Math.Max(
-                    60,
-                    strongHtfThreshold) &&
-                htfDirection != m5Direction;
 
             int requiredQuality =
                 strongHtfConflict
