@@ -656,6 +656,9 @@ namespace CFIP.cBot
 
             _boundIndicatorInstanceId = instanceId;
 
+            _scenarioEnvelopes.Clear();
+            _scenarioReconciliations.Clear();
+
             _executionSettings = null;
             RefreshExecutionSettings(true);
 
