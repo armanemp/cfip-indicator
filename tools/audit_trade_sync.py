@@ -34,6 +34,9 @@ plan_labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs")
 signal_alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 cbot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
 binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
+transport = read("src/CFIP.cBot/Binding/CfipDeviceSignalTransport.cs")
+contracts_codec = read("src/CFIP.Contracts/SignalEnvelopeCodec.cs")
+contracts_key = read("src/CFIP.Contracts/SignalBusKey.cs")
 market = read("src/CFIP.cBot/Execution/MarketExecutionCoordinator.cs")
 shadow = read("src/CFIP.cBot/Shadow/ShadowHostValidator.cs")
 indicator_host = read("src/CFIP.Indicator/Indicator/CFIPIndicator.cs")
@@ -125,7 +128,20 @@ check(
     "chart-binding failure is fail-closed",
     "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" in binding and
     "MULTIPLE CFIP SMART INDICATOR INSTANCES" in binding and
-    "_indicator = null" in cbot
+    "_boundIndicatorInstanceId = """ in cbot
+)
+
+check(
+    "transport freshness is fail-closed",
+    "Provider Stale After Seconds" in cbot and
+    "snapshot.ObservedUtc" in cbot
+)
+
+check(
+    "transport identity is stable and chart-instance scoped",
+    "SignalBusKey.ForIndicatorInstance(" in contracts_key and
+    "InstanceId" in binding and
+    "SignalEnvelopeCodec.Serialize(" in contracts_codec
 )
 
 if errors:
@@ -139,4 +155,4 @@ print()
 print("TRADE-SYNC AUDIT: PASS")
 print("Analysis owner: Indicator")
 print("Broker mutation owner: cBot")
-print("Chart/cBot configuration binding: exact same-chart Indicator parameters")
+print("Chart/cBot binding: exact same-chart Indicator instance -> canonical Device SignalEnvelope")
