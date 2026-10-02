@@ -137,6 +137,19 @@ require(
 )
 
 require(
+    "return semanticColor;" in labels and
+    "GetReadableLabelTextColor(" in labels and
+    "labelTextColor" in labels,
+    "compact level labels must use the exact semantic line color",
+)
+require(
+    "CompactPlanLabelFontSize = 8.5" in labels and
+    "label.IsBold" in labels and
+    "Chart.DrawRectangle(" not in labels,
+    "compact level labels must retain the modern lightweight text-only presentation",
+)
+
+require(
     "python tools/audit_phase_cbot_p7r_attachment_alert_visibility.py" in workflow,
     "P7R audit must be accumulated in Source/Architecture CI",
 )
