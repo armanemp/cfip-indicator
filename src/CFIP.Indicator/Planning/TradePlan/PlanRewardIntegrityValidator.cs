@@ -51,34 +51,59 @@ namespace cAlgo
                 !IsFinitePositive(maximumRR))
                 return RejectPlanRewardStructure("INVALID REWARD RR LIMITS");
 
-            double tp1RR =
-                Math.Abs(
-                    plan.Tp1 -
-                    plan.Entry) /
-                plan.Risk;
+            RiskRewardMathResult tp1Geometry =
+                RiskRewardMathRule.Evaluate(
+                    direction,
+                    plan.Entry,
+                    plan.Stop,
+                    plan.Tp1,
+                    0,
+                    minimumRR,
+                    maximumRR,
+                    Symbol.PipSize);
 
-            if (!IsFinitePositive(tp1RR) ||
-                tp1RR < minimumRR ||
-                tp1RR > maximumRR)
+            if (!tp1Geometry.Valid)
                 return RejectPlanRewardStructure("TP1 RR OUT OF RANGE");
+
+            double tp1RR =
+                tp1Geometry.NominalRR;
+
+            if (!IsFinitePositive(tp1RR))
+                return RejectPlanRewardStructure("TP1 RR INVALID");
+
+            if (Math.Abs(
+                    plan.Risk -
+                    tp1Geometry.Risk) >
+                Math.Max(
+                    Symbol.TickSize,
+                    1e-9))
+                return RejectPlanRewardStructure("PLAN RISK DRIFT");
 
             if (plan.Tp2 > 0)
             {
-                double rr =
-                    Math.Abs(
-                        plan.Tp2 -
-                        plan.Entry) /
-                    plan.Risk;
-
-                if (!IsFinitePositive(rr) ||
-                    rr <
+                double requiredTp2RR =
+                    Math.Max(
+                        Tp2MinimumRR,
+                        tp1RR +
                         Math.Max(
-                            Tp2MinimumRR,
-                            tp1RR +
-                            Math.Max(
-                                0.10,
-                                StructuralTpRrStep)) ||
-                    rr > maximumRR)
+                            0.10,
+                            StructuralTpRrStep));
+
+                RiskRewardMathResult tp2Geometry =
+                    RiskRewardMathRule.Evaluate(
+                        direction,
+                        plan.Entry,
+                        plan.Stop,
+                        plan.Tp2,
+                        0,
+                        requiredTp2RR,
+                        maximumRR,
+                        Symbol.PipSize);
+
+                double rr = tp2Geometry.NominalRR;
+
+                if (!tp2Geometry.Valid ||
+                    !IsFinitePositive(rr))
                     return RejectPlanRewardStructure("TP2 RR OUT OF RANGE");
 
                 if (RequireHtfRewardForTp2Plus &&
@@ -93,19 +118,39 @@ namespace cAlgo
 
             if (plan.Tp3 > 0)
             {
-                double rr =
-                    Math.Abs(
-                        plan.Tp3 -
-                        plan.Entry) /
-                    plan.Risk;
-
                 double previousRR =
                     plan.Tp2 > 0
-                        ? Math.Abs(
-                            plan.Tp2 -
-                            plan.Entry) /
-                          plan.Risk
+                        ? RiskRewardMathRule.Evaluate(
+                            direction,
+                            plan.Entry,
+                            plan.Stop,
+                            plan.Tp2,
+                            0,
+                            0,
+                            double.PositiveInfinity,
+                            Symbol.PipSize).NominalRR
                         : tp1RR;
+
+                double requiredTp3RR =
+                    Math.Max(
+                        Tp3MinimumRR,
+                        previousRR +
+                        Math.Max(
+                            0.10,
+                            StructuralTpRrStep));
+
+                RiskRewardMathResult tp3Geometry =
+                    RiskRewardMathRule.Evaluate(
+                        direction,
+                        plan.Entry,
+                        plan.Stop,
+                        plan.Tp3,
+                        0,
+                        requiredTp3RR,
+                        maximumRR,
+                        Symbol.PipSize);
+
+                double rr = tp3Geometry.NominalRR;
 
                 if (!IsFinitePositive(rr) ||
                     !IsFinitePositive(previousRR) ||
@@ -127,24 +172,49 @@ namespace cAlgo
 
             if (plan.Tp4 > 0)
             {
-                double rr =
-                    Math.Abs(
-                        plan.Tp4 -
-                        plan.Entry) /
-                plan.Risk;
-
                 double previousRR =
                     plan.Tp3 > 0
-                        ? Math.Abs(
-                            plan.Tp3 -
-                            plan.Entry) /
-                          plan.Risk
+                        ? RiskRewardMathRule.Evaluate(
+                            direction,
+                            plan.Entry,
+                            plan.Stop,
+                            plan.Tp3,
+                            0,
+                            0,
+                            double.PositiveInfinity,
+                            Symbol.PipSize).NominalRR
                         : plan.Tp2 > 0
-                            ? Math.Abs(
-                                plan.Tp2 -
-                                plan.Entry) /
-                              plan.Risk
+                            ? RiskRewardMathRule.Evaluate(
+                                direction,
+                                plan.Entry,
+                                plan.Stop,
+                                plan.Tp2,
+                                0,
+                                0,
+                                double.PositiveInfinity,
+                                Symbol.PipSize).NominalRR
                             : tp1RR;
+
+                double requiredTp4RR =
+                    Math.Max(
+                        Tp4MinimumRR,
+                        previousRR +
+                        Math.Max(
+                            0.10,
+                            StructuralTpRrStep));
+
+                RiskRewardMathResult tp4Geometry =
+                    RiskRewardMathRule.Evaluate(
+                        direction,
+                        plan.Entry,
+                        plan.Stop,
+                        plan.Tp4,
+                        0,
+                        requiredTp4RR,
+                        maximumRR,
+                        Symbol.PipSize);
+
+                double rr = tp4Geometry.NominalRR;
 
                 if (!IsFinitePositive(rr) ||
                     !IsFinitePositive(previousRR) ||
