@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **VERIFIED INVENTORY — migration pending subsequent CBOT phases.**
+Status: **ACTIVE INVENTORY — CBOT-P4A extracted Market / Market Range; remaining owners continue pending subsequent batches.**
 
 This document is the concrete extraction map for the current broker/account/lifecycle authority. It is not a second roadmap.
 
@@ -10,7 +10,7 @@ This document is the concrete extraction map for the current broker/account/life
 
 | Owner | Direct APIs | Current role | Required destination |
 | --- | --- | --- | --- |
-| `Trading/Execution/BrokerMarketOrderMutation.cs` | ExecuteMarketOrder, ExecuteMarketRangeOrder | Market + market-range broker mutation | cBot |
+| `src/CFIP.cBot/Execution/MarketBrokerMutation.cs` | ExecuteMarketOrder, ExecuteMarketRangeOrder | Market + market-range broker mutation | cBot |
 | `Trading/Execution/BrokerPendingOrderPlacement.cs` | PlaceStopOrder | Stop-order mutation | cBot |
 | `Trading/Execution/BrokerLimitOrderPlacement.cs` | PlaceLimitOrder | Limit-order mutation | cBot |
 | `Trading/Execution/BrokerPendingOrderCancellation.cs` | CancelPendingOrder | Pending cancellation | cBot |
@@ -18,14 +18,15 @@ This document is the concrete extraction map for the current broker/account/life
 | `Trading/Execution/BrokerStopLossMutation.cs` | ModifyStopLossPrice | Broker SL mutation | cBot |
 | `Trading/Execution/BrokerTakeProfitMutation.cs` | ModifyTakeProfitPrice, ModifyTakeProfit, ModifyTakeProfitPips | Broker TP mutation / server ladder | cBot |
 
-Frozen direct mutation inventory remains **15 call-sites**.
+Baseline direct mutation inventory was **15 call-sites**. CBOT-P4A extracted the 4 Market / Market Range call-sites, leaving **11 Indicator-side direct mutation call-sites** for later batches.
 
 ## 2. Current production callers
 
 ### Market
-- `AutomaticMarket/AutomaticMarketRangeCalculator.cs` — market fallback.
-- `AutomaticMarket/AutomaticMarketBrokerExecution.cs` — market-range and market submission.
-- `Aggressive/AggressiveBrokerExecution.cs` — aggressive market submission.
+- `src/CFIP.cBot/Execution/MarketBrokerMutation.cs` — Market + Market Range broker submission.
+- `AutomaticMarket/AutomaticMarketRangeCalculator.cs` — Indicator-side range calculation only.
+- `AutomaticMarket/AutomaticMarketBrokerExecution.cs` — Indicator-side validation/handoff only.
+- `Aggressive/AggressiveBrokerExecution.cs` — remains pending CBOT-P4B migration.
 
 ### Pending
 - `Pending/Placement/ContinuationStopPlacement.cs` — Stop submission.
