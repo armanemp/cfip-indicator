@@ -40,13 +40,15 @@ namespace cAlgo
                 _decision != null)
                 return _decision.Direction;
 
-            // Directional decision state remains visible even when the trade is
-            // not yet actionable. Actionability controls execution, not the
-            // underlying market thesis shown by the chart/panel.
-            if (_decision != null &&
-                (_decision.Direction == 1 ||
-                 _decision.Direction == -1))
-                return _decision.Direction;
+            if (_decision != null)
+            {
+                int decisionDirection =
+                    SignalVisualLifecycleRule.ResolveDirectionalPresentationDirection(
+                        0,
+                        _decision.Direction);
+                if (decisionDirection != 0)
+                    return decisionDirection;
+            }
 
             if (reactionReady &&
                 _reaction != null)
