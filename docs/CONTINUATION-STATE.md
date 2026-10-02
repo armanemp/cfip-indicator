@@ -1622,7 +1622,7 @@ Purpose:
 - keep pending Stop/Limit identity on the same canonical scenario resolver;
 - preserve M15/H1 as analytical primary scenarios without changing execution authority.
 
-Repository verification is pending. Operator action after merge remains `git pull --ff-only`.
+Repository verification passed: Source/Architecture, Runtime Acceptance and cTrader Compile/Build. Operator action after merge remains `git pull --ff-only`.
 
 Phase record: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
 
@@ -1644,7 +1644,7 @@ Phase record: `docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md`.
 
 ### Indicator Naming + cBot Launch + MTF Panel Direction Correction — 2026-10-02
 
-Status: **IMPLEMENTATION IN PROGRESS** on branch `phase/indicator-name-cbot-launch-mtf-panel-2026-10-02`.
+Status: **VERIFIED COMPLETE** — implementation HEAD `b360761d13df94ac098e8bfc626ed2985499742d`; target-terminal name/visual confirmation remains manual.
 
 Scope:
 - expose stable cTrader names for Indicator and cBot;
