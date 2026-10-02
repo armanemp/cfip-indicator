@@ -10,6 +10,7 @@ namespace cAlgo
         {
             VerifyM1TriggerSemantics();
             VerifyCi10TriggerLifecycle();
+            VerifyCi16DeterministicReplay();
             VerifySwingPlateauSemantics();
             VerifyFvgMathematics();
             VerifyFvgLifecycleSemantics();
@@ -10674,6 +10675,10 @@ namespace cAlgo
                 "CI-02 OSS quote-window semantics contracts PASS");
         }
 
+        private static void VerifyCi16DeterministicReplay()
+        {
+            DeterministicReplaySuite.Verify();
+        }
         private static void VerifyOssWarmupPolicy()
         {
             Assert(
