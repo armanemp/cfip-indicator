@@ -232,7 +232,7 @@ Strategic top-down opportunities and worthwhile Tactical LTF opportunities must 
 
 A strong HTF conflict should tighten the LTF candidate's quality/RR requirements rather than automatically erase it.
 
-The chart must support multiple isolated candidate setups without changing established line lengths/geometry. Compact level labels must be solid, use the line color as their background, and automatically choose readable text contrast.
+The chart must support multiple isolated candidate setups without changing established line lengths/geometry. Compact level labels must be background-free, use the exact line color for their text, and keep identical geometry/typography for BUY and SELL.
 
 The user's CUSTOMWAVETREND source from the latest ZIP is part of the evidence stack. Its numerical parity still requires target-terminal replay.
 
