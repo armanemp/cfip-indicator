@@ -1,6 +1,5 @@
-# Panel Geometry Correction — 50px Bottom Clearance + Hidden Restore Position
+Status: **VERIFIED COMPLETE — repository gates passed on implementation HEAD `b63f82e1d1fca9ef3af2d7fbbe34e779099ab7d7`; target-terminal visual confirmation remains manual.**
 
-Date: 2026-10-02
 
 Status: **IMPLEMENTATION IN PROGRESS — branch `phase/panel-clearance-restore-position-2026-10-02`.**
 
