@@ -85,6 +85,7 @@ jobs:
       - run: python tools/audit_phase_6_5.py
       - run: python tools/audit_phase_6_6.py
       - run: python tools/audit_phase_retest_trigger_path.py
+      - run: python tools/audit_phase_canonical_trade_path_geometry.py
       - run: python tools/audit_phase_6_7.py
       - run: python tools/audit_phase_6_8.py
       - run: python tools/audit_phase_6_9.py
