@@ -24,7 +24,8 @@ def read(path):
         return ""
     return path.read_text(encoding="utf-8")
 
-provider = read(PROVIDER)
+provider_paths = sorted((INDICATOR / "Runtime" / "Provider").glob("CFIPReadOnlyProvider*.cs"))
+provider = "\n".join(read(path) for path in provider_paths)
 indicator_csproj = read(INDICATOR_CSPROJ)
 cbot_csproj = read(CBOT_CSPROJ)
 cbot = read(CBOT_SOURCE)
@@ -37,6 +38,11 @@ def check(name, condition):
     print(f"{'PASS' if condition else 'FAIL'} | {name}")
     if not condition:
         errors.append(name)
+
+check(
+    "required provider partial owners exist",
+    len(provider_paths) == 4 and all(path.exists() for path in provider_paths)
+)
 
 check(
     "Indicator references platform-neutral Contracts",
