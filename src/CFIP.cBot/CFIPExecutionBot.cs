@@ -28,12 +28,6 @@ namespace CFIP.cBot
             DefaultValue = true)]
         public bool UseMarketRange { get; set; }
 
-        [Parameter(
-            "Managed Execution Label",
-            Group = "Execution",
-            DefaultValue = "CFIP-SMART")]
-        public string ManagedExecutionLabel { get; set; }
-
         private CFIPIndicator _indicator;
 
         private readonly MarketExecutionCoordinator _market =
@@ -51,6 +45,7 @@ namespace CFIP.cBot
             DateTime.MinValue;
         private string _boundIndicatorInstanceId = "";
         private string _boundIndicatorFingerprint = "";
+        private string _boundManagedExecutionLabel = "CFIP-SMART";
         private string _indicatorBindingReason =
             "NOT BOUND";
 
@@ -166,17 +161,20 @@ namespace CFIP.cBot
 
             ChartIndicator chartIndicator;
             string fingerprint;
+            string managedExecutionLabel;
             string reason;
 
             if (!CfipIndicatorChartBinding.TryFind(
                     this,
                     out chartIndicator,
                     out fingerprint,
+                    out managedExecutionLabel,
                     out reason))
             {
                 _indicator = null;
                 _boundIndicatorInstanceId = "";
                 _boundIndicatorFingerprint = "";
+                _boundManagedExecutionLabel = "CFIP-SMART";
                 _indicatorBindingReason = reason;
                 _state = ShadowHostState.Blocked;
 
@@ -244,6 +242,10 @@ namespace CFIP.cBot
                 _indicator = bound;
                 _boundIndicatorInstanceId = instanceId;
                 _boundIndicatorFingerprint = fingerprint;
+                _boundManagedExecutionLabel =
+                    string.IsNullOrWhiteSpace(managedExecutionLabel)
+                        ? "CFIP-SMART"
+                        : managedExecutionLabel.Trim();
                 _indicatorBindingReason =
                     "BOUND TO " +
                     CfipIndicatorChartBinding.DisplayName;
@@ -273,9 +275,10 @@ namespace CFIP.cBot
 
         private string NormalizeManagedExecutionLabel()
         {
-            return string.IsNullOrWhiteSpace(ManagedExecutionLabel)
+            return string.IsNullOrWhiteSpace(
+                    _boundManagedExecutionLabel)
                 ? "CFIP-SMART"
-                : ManagedExecutionLabel.Trim();
+                : _boundManagedExecutionLabel.Trim();
         }
 
         private ShadowBrokerSnapshot ReadBrokerSnapshot()
