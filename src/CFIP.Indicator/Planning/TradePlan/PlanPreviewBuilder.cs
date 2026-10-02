@@ -148,8 +148,10 @@ namespace cAlgo
                 return false;
 
             double risk =
-                Math.Abs(
-                    entry - stop);
+                RiskRewardMathRule.RiskFromLevels(
+                    entry,
+                    stop,
+                    Symbol.PipSize);
 
             if (!IsFinitePositive(risk))
                 return false;
