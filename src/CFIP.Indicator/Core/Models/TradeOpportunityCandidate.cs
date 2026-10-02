@@ -14,6 +14,11 @@ namespace cAlgo
         public int IndependentEvidenceGroupCount;
         public int IndicatorIndependentEvidenceGroupCount;
         public int LocationConfluenceScore;
+        public int SourceFvgQuality;
+        public int SourceOrderBlockQuality;
+        public bool SourceFvgObConfluence;
+        public bool PrimaryLocationConfluence;
+        public int PrimaryLocationQuality;
         public int WaveTrendQuality;
         public bool ExecutionPolicyAllowed;
         public string ExecutionPolicyReason;
