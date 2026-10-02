@@ -73,20 +73,6 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            try
-            {
-                if (!robot.Permissions.TradingPermission.IsAllowed)
-                {
-                    reason = "TRADING PERMISSION NOT GRANTED";
-                    return false;
-                }
-            }
-            catch
-            {
-                reason = "TRADING PERMISSION STATE UNAVAILABLE";
-                return false;
-            }
-
             if (!string.Equals(
                     envelope.Identity.Symbol,
                     robot.SymbolName,
