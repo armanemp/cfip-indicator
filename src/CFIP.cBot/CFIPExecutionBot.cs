@@ -573,6 +573,8 @@ namespace CFIP.cBot
         {
             RefreshIndicatorBinding(true);
 
+            ReconcileBrokerState(true);
+
             if (!string.IsNullOrWhiteSpace(
                     _boundIndicatorInstanceId))
                 PublishExecutionState(
@@ -599,6 +601,8 @@ namespace CFIP.cBot
 
             RefreshIndicatorBinding(true);
 
+            ReconcileBrokerState(true);
+
             if (wasBound &&
                 string.IsNullOrWhiteSpace(
                     _boundIndicatorInstanceId))
@@ -613,6 +617,8 @@ namespace CFIP.cBot
         {
             RefreshIndicatorBinding(true);
 
+            ReconcileBrokerState(true);
+
             if (!string.IsNullOrWhiteSpace(
                     _boundIndicatorInstanceId))
                 PublishExecutionState(
@@ -623,37 +629,51 @@ namespace CFIP.cBot
         private void SubscribeBrokerLifecycleEvents()
         {
             Positions.Opened +=
-                args => PublishExecutionState(
+                args => ReconcileBrokerState(true);
+
+                PublishExecutionState(
                     "POSITION OPENED",
                     true);
 
             Positions.Modified +=
-                args => PublishExecutionState(
+                args => ReconcileBrokerState(true);
+
+                PublishExecutionState(
                     "POSITION MODIFIED",
                     true);
 
             Positions.Closed +=
-                args => PublishExecutionState(
+                args => ReconcileBrokerState(true);
+
+                PublishExecutionState(
                     "POSITION CLOSED",
                     true);
 
             PendingOrders.Created +=
-                args => PublishExecutionState(
+                args => ReconcileBrokerState(true);
+
+                PublishExecutionState(
                     "PENDING CREATED",
                     true);
 
             PendingOrders.Modified +=
-                args => PublishExecutionState(
+                args => ReconcileBrokerState(true);
+
+                PublishExecutionState(
                     "PENDING MODIFIED",
                     true);
 
             PendingOrders.Filled +=
-                args => PublishExecutionState(
+                args => ReconcileBrokerState(true);
+
+                PublishExecutionState(
                     "PENDING FILLED",
                     true);
 
             PendingOrders.Cancelled +=
-                args => PublishExecutionState(
+                args => ReconcileBrokerState(true);
+
+                PublishExecutionState(
                     "PENDING CANCELLED",
                     true);
         }
