@@ -550,10 +550,9 @@ namespace CFIP.cBot
                         position.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    string.Equals(
+                    CbotManagedObjectIdentityRule.MatchesManagedLabel(
                         position.Label,
-                        managedLabel,
-                        StringComparison.Ordinal))
+                        managedLabel))
                     managedPositions++;
             }
 
@@ -565,10 +564,9 @@ namespace CFIP.cBot
                         order.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    string.Equals(
+                    CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
                         order.Label,
-                        managedLabel + "-PENDING",
-                        StringComparison.Ordinal))
+                        managedLabel))
                     managedPendingOrders++;
             }
 
