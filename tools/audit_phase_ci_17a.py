@@ -60,7 +60,8 @@ checks = (
         "double liveMarket =" in live and
         "Symbol.Bid" in live and
         "Symbol.Ask" in live and
-        "_lastMarket = liveMarket" in live,
+        "IsFinitePositive(liveMarket)" in live and
+        "_lastMarket = liveMarket" not in live,
     ),
     (
         "runtime contract is accumulated",
