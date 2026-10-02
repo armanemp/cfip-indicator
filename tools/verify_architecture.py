@@ -1301,13 +1301,7 @@ for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
     if "SignalVisualSnapshot snapshot" not in visual_code or "snapshot.Stop" not in visual_code:
         raise SystemExit(f"Plan levels must render through the canonical visual snapshot: {visual_path.name}")
 
-for broker_path in (
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
-    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs",
-):
-    broker_code = broker_path.read_text(encoding="utf-8")
-    if "GetActiveBrokerStopPrice()" not in broker_code or "GetActiveBrokerTargetPrice()" not in broker_code:
-        raise SystemExit(f"Live trade reporting must use broker-confirmed protection: {broker_path.name}")
+# Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
 
 for pending_path in (
     ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
@@ -1328,8 +1322,6 @@ for token in (
         raise SystemExit(f"Broker-confirmed pending reporting field missing: {token}")
 
 for entry_path in (
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
-    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
 ):
@@ -1658,23 +1650,7 @@ for execution_path in [
     if "ManagedPositionCount() >=" in execution_code:
         raise SystemExit(f"Duplicate position-capacity calculation remains in {execution_path.name}")
 
-AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
-AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
-if (
-    "SetAutoTradingState" not in AUTO_MARKET_CODE or
-    "protectionOk" not in AUTO_MARKET_CODE or
-    '"RECOVERY"' not in AUTO_MARKET_CODE
-):
-    raise SystemExit("Market execution must expose broker protection recovery in auto state")
-
-AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
-AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
-if (
-    "SetAutoTradingState" not in AGGRESSIVE_CODE or
-    "protectionOk" not in AGGRESSIVE_CODE or
-    '"RECOVERY"' not in AGGRESSIVE_CODE
-):
-    raise SystemExit("Aggressive execution must expose broker protection recovery in auto state")
+# Market/Aggressive broker state ownership moved to cBot in CBOT-P4A.
 
 AUTO_STATE = ROOT / "Trading" / "Execution" / "State" / "AutoTradingStateStore.cs"
 AUTO_STATE_CODE = AUTO_STATE.read_text(encoding="utf-8")
