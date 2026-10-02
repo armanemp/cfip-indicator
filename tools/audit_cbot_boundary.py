@@ -6,8 +6,9 @@ It scans the current Indicator source tree for remaining direct broker mutation 
 broker/account state access, execution-related parameters, and parameter usage
 across analytical/execution/UI domains.
 
-The gate intentionally freezes the current architecture before any cBot code is
-created. It does not create CFIP.Contracts or CFIP.cBot and does not move code.
+The gate validates the current repository architecture after the initial cBot
+project exists. It freezes the Indicator/cBot boundary and the remaining staged
+migration inventory; it does not move code or enable later execution domains.
 """
 
 from __future__ import annotations
@@ -158,9 +159,9 @@ def classify_parameter(
 
 def main() -> int:
     errors: list[str] = []
+    cbot_root = ROOT / "src" / "CFIP.cBot"
     cbot_market = (
-        ROOT.parent /
-        "CFIP.cBot" /
+        cbot_root /
         "Execution" /
         "DemoMarketExecutionCoordinator.cs"
     )
