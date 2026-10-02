@@ -1999,10 +1999,7 @@ for consumer_name in (
 # Cross-path execution consistency for the remaining Indicator pending boundary.
 CROSS_PATH_CONTRACTS = {
     "ContinuationStopPlacement.cs": (
-        "TryPrepareContinuationStop(",
-        "ValidatePendingSubmission(",
-        "TryPlaceStopOrder(",
-        "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+        "TryPrepareContinuationStopForCbot(",
     ),
     "ReversalLimitPlacement.cs": (
         "TryPrepareReversalLimit(",
@@ -2049,13 +2046,12 @@ PENDING_STOP_CODE = PENDING_STOP.read_text(encoding="utf-8")
 if PENDING_STOP.stat().st_size > 4096:
     raise SystemExit("ContinuationStopPlacement.cs must remain a placement orchestration boundary")
 for token in (
-    "TryPrepareContinuationStop(",
-    "ValidatePendingSubmission(",
-    "TryPlaceStopOrder(",
-    "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+    "TryPrepareContinuationStopForCbot(",
 ):
     if token not in PENDING_STOP_CODE:
-        raise SystemExit(f"Continuation stop ownership call missing: {token}")
+        raise SystemExit(f"Continuation stop intent owner missing: {token}")
+if "PlaceStopOrder(" in PENDING_STOP_CODE:
+    raise SystemExit("Continuation stop broker mutation remains in Indicator")
 
 PENDING_STOP_PREP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPreparation.cs"
 if not PENDING_STOP_PREP.exists() or "BuildStructuralStop(" not in PENDING_STOP_PREP.read_text(encoding="utf-8"):
