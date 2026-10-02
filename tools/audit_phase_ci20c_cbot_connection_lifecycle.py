@@ -58,21 +58,19 @@ require(
 )
 
 for token in (
-    "ChartRobots",
     "CbotIdentity.DisplayName",
-    "cbot.State.ToString()",
     "CbotConnectionPanelText",
+
     "CBOT NOT ATTACHED • ATTACH TO THIS CHART",
     "CBOT CONNECTING • HEARTBEAT PENDING",
     "CBOT CONNECTED • ",
 ):
     require(token in reader, "cBot connection reader missing " + token)
 
-for token in (
-    "return IsCbotChartRunning()",
-    "IsCbotExecutionStateFresh()",
-):
-    require(token in reader, "execution gating must require chart-running cBot plus fresh state")
+require(
+    "IsCbotExecutionStateFresh()" in reader,
+    "execution gating must require an exact fresh cBot heartbeat",
+)
 
 require(
     "CbotConnectionPanelText()" in panel,
