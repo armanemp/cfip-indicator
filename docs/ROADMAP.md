@@ -1,6 +1,6 @@
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
-Status: VERIFIED COMPLETE — all repository gates passed on final head; PR #195 ready to merge.
+Status: **VERIFIED COMPLETE — merged to main via PR #195 as 7b8648091bde26753b1e0fcff3d75984a1f1b9eb.**
 
 Completed:
 - M15 is the internal execution clock; Chart timeframe is host/presentation-only;
@@ -25,7 +25,7 @@ Verification on final implementation head c700e3adbc3557bf1278024df870a15a6e308b
 
 Target-terminal acceptance remains manual. No profitability claim is made from this structural migration alone.
 
-Next staged migration after merge: CBOT-P4D — Pending Limit authority extraction.
+Next staged execution migration: **CBOT-P4D — Pending Limit authority extraction.**
 
 ## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
 
