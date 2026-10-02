@@ -17,7 +17,6 @@ aggressive = read("Trading/Execution/Aggressive/AggressiveBrokerExecution.cs")
 pending_stop = read("Trading/Pending/Placement/ContinuationStopPlacement.cs")
 pending_limit = read("Trading/Pending/Placement/ReversalLimitPlacement.cs")
 ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
-market_mutation = read("Trading/Execution/BrokerMarketOrderMutation.cs")
 pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 protection = read("Trading/LiveManagement/ProtectionManager.cs")
@@ -41,6 +40,18 @@ execution_paths = {
     "pending-limit": pending_limit,
 }
 for name, source in execution_paths.items():
+    if name == "automatic-market":
+        for token in (
+            "TryValidateAutomaticMarketSubmission(",
+            "CalculateAutomaticMarketRangePips(",
+            "CBOT cBot handoff",
+        ):
+            if token not in source:
+                raise SystemExit(f"{name}: missing cBot handoff boundary: {token}")
+        if "TryExecuteMarketOrder(" in source or "TryExecuteMarketRangeOrder(" in source:
+            raise SystemExit(f"{name}: Indicator still contains broker market mutation")
+        continue
+
     for token in ("TryAcquireSubmission(", "TryBuildServerSideTakeProfitLadder("):
         if token not in source:
             raise SystemExit(f"{name}: missing shared {token}")
@@ -53,7 +64,6 @@ if "ValidateSingleExecutionCapacity(" not in read("Trading/Pending/Placement/Sma
     raise SystemExit("pending: canonical capacity gate missing")
 
 for source_name, source in (
-    ("market mutation", market_mutation),
     ("pending-stop mutation", pending_mutation),
     ("pending-limit mutation", limit_mutation),
 ):
