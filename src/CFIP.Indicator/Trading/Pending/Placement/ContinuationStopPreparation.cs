@@ -98,6 +98,18 @@ namespace cAlgo
                               0.02,
                               PendingEntryBufferAtr);
 
+            double spread =
+                Math.Max(
+                    0,
+                    Symbol.Ask - Symbol.Bid);
+
+            trigger =
+                PendingEntryPriceRule.ForExecutableStop(
+                    direction,
+                    trigger,
+                    spread,
+                    Symbol.TickSize);
+
             trigger =
                 NormalizePrice(
                     trigger);
@@ -167,13 +179,6 @@ namespace cAlgo
                 CalculateVolume(
                     EffectiveRiskStopPips(
                         stopPips));
-
-            volume =
-                AdjustVolumeForMargin(
-                    direction == 1
-                        ? TradeType.Buy
-                        : TradeType.Sell,
-                    volume);
 
             if (volume <
                 Symbol.VolumeInUnitsMin)
