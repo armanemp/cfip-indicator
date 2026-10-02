@@ -130,7 +130,7 @@ namespace CFIP.cBot
             try
             {
                 tradingPermissionAllowed =
-                    Permissions.TradingPermission.IsAllowed;
+                    this.Permissions.TradingPermission.IsAllowed;
             }
             catch
             {
