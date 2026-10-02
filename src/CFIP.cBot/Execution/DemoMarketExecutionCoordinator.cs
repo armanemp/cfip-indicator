@@ -1,0 +1,296 @@
+using System;
+using System.Collections.Generic;
+using cAlgo.API;
+using CFIP.Contracts;
+
+namespace CFIP.cBot.Execution
+{
+    internal sealed class DemoMarketExecutionCoordinator
+    {
+        private const int MaxRememberedKeys = 128;
+        private readonly HashSet<string> _rememberedKeys =
+            new HashSet<string>(StringComparer.Ordinal);
+        private readonly Queue<string> _rememberedOrder =
+            new Queue<string>();
+
+        public bool TryExecute(
+            Robot robot,
+            SignalEnvelope envelope,
+            string executionLabel,
+            DateTime nowUtc,
+            out BrokerExecutionReport report,
+            out string reason)
+        {
+            report = null;
+            reason = "NOT APPLICABLE";
+
+            if (robot == null ||
+                envelope == null ||
+                envelope.Identity == null ||
+                envelope.Intent == null)
+            {
+                reason = "NO EXECUTION ENVELOPE";
+                return false;
+            }
+
+            if (envelope.Intent.Action != ExecutionAction.Market)
+            {
+                reason = "DEMO BRIDGE SUPPORTS MARKET ACTION ONLY";
+                return false;
+            }
+
+            string key = envelope.Identity.IdempotencyKey;
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                reason = "MISSING IDEMPOTENCY KEY";
+                return false;
+            }
+
+            if (_rememberedKeys.Contains(key))
+            {
+                reason = "DUPLICATE IDEMPOTENCY KEY";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(executionLabel))
+            {
+                reason = "MISSING EXECUTION LABEL";
+                return false;
+            }
+
+            if (!IsFinitePositive(envelope.Intent.RequestedEntry) ||
+                !IsFinitePositive(envelope.Intent.Stop) ||
+                !IsFinitePositive(envelope.Intent.InitialTarget) ||
+                !envelope.Intent.RequestedVolume.HasValue ||
+                !IsFinitePositive(envelope.Intent.RequestedVolume.Value))
+            {
+                reason = "INVALID EXECUTION GEOMETRY OR VOLUME";
+                return false;
+            }
+
+            if (envelope.Identity.Direction == TradeDirection.Buy &&
+                (envelope.Intent.Stop >= envelope.Intent.RequestedEntry ||
+                 envelope.Intent.InitialTarget <= envelope.Intent.RequestedEntry))
+            {
+                reason = "BUY EXECUTION GEOMETRY WRONG SIDE";
+                return false;
+            }
+
+            if (envelope.Identity.Direction == TradeDirection.Sell &&
+                (envelope.Intent.Stop <= envelope.Intent.RequestedEntry ||
+                 envelope.Intent.InitialTarget >= envelope.Intent.RequestedEntry))
+            {
+                reason = "SELL EXECUTION GEOMETRY WRONG SIDE";
+                return false;
+            }
+
+            double volume = envelope.Intent.RequestedVolume.Value;
+
+            if (robot.Symbol.VolumeInUnitsMin > 0 &&
+                volume < robot.Symbol.VolumeInUnitsMin)
+            {
+                reason = "REQUESTED VOLUME BELOW BROKER MINIMUM";
+                return false;
+            }
+
+            if (robot.Symbol.VolumeInUnitsMax > 0 &&
+                volume > robot.Symbol.VolumeInUnitsMax)
+            {
+                reason = "REQUESTED VOLUME ABOVE BROKER MAXIMUM";
+                return false;
+            }
+
+            int managedPositions = 0;
+            foreach (Position position in robot.Positions)
+            {
+                if (position != null &&
+                    string.Equals(position.SymbolName, robot.SymbolName, StringComparison.Ordinal) &&
+                    string.Equals(position.Label, executionLabel, StringComparison.Ordinal))
+                    managedPositions++;
+            }
+
+            int managedPending = 0;
+            foreach (PendingOrder order in robot.PendingOrders)
+            {
+                if (order != null &&
+                    string.Equals(order.SymbolName, robot.SymbolName, StringComparison.Ordinal) &&
+                    string.Equals(order.Label, executionLabel + "-PENDING", StringComparison.Ordinal))
+                    managedPending++;
+            }
+
+            if (managedPositions + managedPending >= 1)
+            {
+                reason = "SINGLE-PLAN CAPACITY BLOCKED";
+                return false;
+            }
+
+            if (!IsFinitePositive(robot.Symbol.Bid) ||
+                !IsFinitePositive(robot.Symbol.Ask) ||
+                !IsFinitePositive(robot.Symbol.PipSize))
+            {
+                reason = "INVALID LIVE QUOTE";
+                return false;
+            }
+
+            double pipSize = robot.Symbol.PipSize;
+            double stopPips =
+                Math.Abs(
+                    envelope.Intent.RequestedEntry -
+                    envelope.Intent.Stop) /
+                pipSize;
+            double targetPips =
+                Math.Abs(
+                    envelope.Intent.InitialTarget -
+                    envelope.Intent.RequestedEntry) /
+                pipSize;
+
+            if (!IsFinitePositive(stopPips) ||
+                !IsFinitePositive(targetPips))
+            {
+                reason = "INVALID STOP/TARGET DISTANCE";
+                return false;
+            }
+
+            TradeType tradeType =
+                envelope.Identity.Direction == TradeDirection.Buy
+                    ? TradeType.Buy
+                    : TradeType.Sell;
+
+            TradeResult result;
+            try
+            {
+                result =
+                    robot.ExecuteMarketOrder(
+                        tradeType,
+                        robot.SymbolName,
+                        volume,
+                        executionLabel,
+                        stopPips,
+                        targetPips,
+                        "CFIP DEMO",
+                        false);
+            }
+            catch (Exception ex)
+            {
+                Remember(key);
+                reason = "BROKER SUBMISSION EXCEPTION";
+                report = BuildReport(
+                    envelope,
+                    BrokerReportStatus.RecoveryRequired,
+                    nowUtc,
+                    null,
+                    ex.Message);
+                return false;
+            }
+
+            Remember(key);
+
+            if (result == null)
+            {
+                reason = "NULL TRADE RESULT";
+                report = BuildReport(
+                    envelope,
+                    BrokerReportStatus.RecoveryRequired,
+                    nowUtc,
+                    null,
+                    reason);
+                return false;
+            }
+
+            if (!result.IsSuccessful ||
+                result.Position == null)
+            {
+                reason =
+                    result.Error.HasValue
+                        ? result.Error.Value.ToString()
+                        : "BROKER REJECTED";
+
+                report = BuildReport(
+                    envelope,
+                    BrokerReportStatus.Rejected,
+                    nowUtc,
+                    result,
+                    reason);
+                return false;
+            }
+
+            reason = "POSITION #" + result.Position.Id;
+
+            report = BuildReport(
+                envelope,
+                BrokerReportStatus.Confirmed,
+                nowUtc,
+                result,
+                reason);
+
+            return true;
+        }
+
+        private static BrokerExecutionReport BuildReport(
+            SignalEnvelope envelope,
+            BrokerReportStatus status,
+            DateTime nowUtc,
+            TradeResult result,
+            string reason)
+        {
+            long? positionId =
+                result != null && result.Position != null
+                    ? result.Position.Id
+                    : (long?)null;
+
+            double? entryPrice =
+                result != null && result.Position != null
+                    ? result.Position.EntryPrice
+                    : (double?)null;
+
+            string reference =
+                positionId.HasValue
+                    ? positionId.Value.ToString()
+                    : "";
+
+            string errorCode =
+                result != null && result.Error.HasValue
+                    ? result.Error.Value.ToString()
+                    : "";
+
+            return new BrokerExecutionReport(
+                envelope.Identity,
+                BrokerAction.SubmitMarket,
+                status,
+                nowUtc,
+                nowUtc,
+                status == BrokerReportStatus.Confirmed
+                    ? nowUtc
+                    : (DateTime?)null,
+                positionId,
+                null,
+                entryPrice,
+                null,
+                null,
+                reference,
+                errorCode,
+                reason,
+                envelope.Identity.Revision);
+        }
+
+        private void Remember(string key)
+        {
+            if (!_rememberedKeys.Add(key))
+                return;
+
+            _rememberedOrder.Enqueue(key);
+
+            while (_rememberedOrder.Count > MaxRememberedKeys)
+            {
+                _rememberedKeys.Remove(_rememberedOrder.Dequeue());
+            }
+        }
+
+        private static bool IsFinitePositive(double value)
+        {
+            return !double.IsNaN(value) &&
+                   !double.IsInfinity(value) &&
+                   value > 0;
+        }
+    }
+}
