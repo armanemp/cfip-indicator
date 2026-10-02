@@ -64,6 +64,18 @@ namespace cAlgo
                     return;
                 }
 
+                RelativeTakeProfitProtections serverTakeProfits;
+                StopLossBreakEven serverBreakEven;
+
+                // Build the same server-protection profile as the former
+                // broker path, but transport it as immutable intent data only.
+                TryBuildServerSideTakeProfitLadder(
+                    validatedIntent.RequestedEntry,
+                    validatedIntent.Target,
+                    validatedIntent.Volume,
+                    out serverTakeProfits,
+                    out serverBreakEven);
+
                 // CBOT cBot handoff — Indicator validates and publishes the
                 // exact immutable intent/profile; it never mutates the broker.
                 SetAutoTradingState(
