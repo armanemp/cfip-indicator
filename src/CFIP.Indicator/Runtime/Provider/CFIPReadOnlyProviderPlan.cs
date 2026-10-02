@@ -99,7 +99,9 @@ namespace cAlgo
                 return null;
 
             bool hasRange =
-                IsFiniteNonNegative(intent.MarketRangePips);
+                !double.IsNaN(intent.MarketRangePips) &&
+                !double.IsInfinity(intent.MarketRangePips) &&
+                intent.MarketRangePips >= 0;
 
             bool hasLadder =
                 intent.UseServerTakeProfitLadder &&
