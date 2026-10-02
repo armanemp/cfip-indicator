@@ -164,8 +164,17 @@ namespace cAlgo
                                             showPopup)))
                                 {
                                     Print(
-                                        "CFIP alert delivery queue rejected [{0}] revision={1}",
+                                        "CFIP ALERT QUEUE REJECTED | id={0} | revision={1}",
                                         envelope.AlertId,
+                                        envelope.Identity.Revision);
+                                }
+                                else
+                                {
+                                    Print(
+                                        "CFIP ALERT QUEUED | id={0} | sound={1} | popup={2} | revision={3}",
+                                        envelope.AlertId,
+                                        playSound ? "ON" : "OFF",
+                                        showPopup ? "ON" : "OFF",
                                         envelope.Identity.Revision);
                                 }
                             }
