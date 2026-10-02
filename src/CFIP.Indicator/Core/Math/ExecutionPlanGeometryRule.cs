@@ -82,7 +82,11 @@ namespace cAlgo
                 string reason =
                     geometry.Reason == "RR BELOW MINIMUM"
                         ? "RR BELOW EXECUTION FLOOR"
-                        : geometry.Reason;
+                        : geometry.Reason == "TARGET WRONG SIDE"
+                            ? "TP1 WRONG SIDE"
+                            : geometry.Reason == "STOP WRONG SIDE"
+                                ? "STOP WRONG SIDE"
+                                : geometry.Reason;
 
                 return new ExecutionPlanGeometryResult(
                     false,
