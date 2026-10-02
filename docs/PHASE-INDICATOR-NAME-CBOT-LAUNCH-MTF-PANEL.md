@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTATION IN PROGRESS — branch `phase/indicator-name-cbot-launch-mtf-panel-2026-10-02`.**
+Status: **VERIFIED COMPLETE — repository gates passed on implementation HEAD `b360761d13df94ac098e8bfc626ed2985499742d`; target-terminal visual/name confirmation remains manual.**
 
 ## Scope
 
@@ -36,7 +36,7 @@ The repository already contains a separate cTrader Robot project and its CI comp
 green. This phase makes its cTrader metadata explicit so the compiled robot appears under
 the stable name **CFIP Smart Execution Bot** and defaults to M5 when instantiated.
 
-The current cBot remains **SHADOW / broker mutation DISARMED**. This phase does not activate
+The current cBot remains **SHADOW / broker mutation DISARMED**. Its standalone cTrader project now passes the repository Compile/Build gate and exposes the stable launch name. This phase does not activate
 live execution and does not move broker mutation ownership.
 
 ## Cleanup
@@ -50,6 +50,8 @@ is not orphaned.
 
 No strategy or threshold changes. No Decision, Plan, RR, Entry, SL, TP, confidence, risk,
 provider contract or broker execution authority changes.
+
+The current cTrader SDK marks the string-based Indicator display-name constructor obsolete at compile time; the named Indicator still builds successfully. The cBot uses the constructor-based Robot name required by the current SDK.
 
 Public parameter count remains 568.
 
