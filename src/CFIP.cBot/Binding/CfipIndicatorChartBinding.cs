@@ -29,10 +29,21 @@ namespace CFIP.cBot.Binding
                 if (candidate == null)
                     continue;
 
-                if (!string.Equals(
+                bool instanceNameMatches =
+                    string.Equals(
                         candidate.Name,
                         DisplayName,
-                        StringComparison.Ordinal))
+                        StringComparison.Ordinal);
+
+                bool typeNameMatches =
+                    candidate.Type != null &&
+                    string.Equals(
+                        candidate.Type.Name,
+                        DisplayName,
+                        StringComparison.Ordinal);
+
+                if (!instanceNameMatches &&
+                    !typeNameMatches)
                     continue;
 
                 match = candidate;
