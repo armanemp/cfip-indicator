@@ -629,53 +629,67 @@ namespace CFIP.cBot
         private void SubscribeBrokerLifecycleEvents()
         {
             Positions.Opened +=
-                args => ReconcileBrokerState(true);
-
-                PublishExecutionState(
-                    "POSITION OPENED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "POSITION OPENED",
+                        true);
+                };
 
             Positions.Modified +=
-                args => ReconcileBrokerState(true);
-
-                PublishExecutionState(
-                    "POSITION MODIFIED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "POSITION MODIFIED",
+                        true);
+                };
 
             Positions.Closed +=
-                args => ReconcileBrokerState(true);
-
-                PublishExecutionState(
-                    "POSITION CLOSED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "POSITION CLOSED",
+                        true);
+                };
 
             PendingOrders.Created +=
-                args => ReconcileBrokerState(true);
-
-                PublishExecutionState(
-                    "PENDING CREATED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING CREATED",
+                        true);
+                };
 
             PendingOrders.Modified +=
-                args => ReconcileBrokerState(true);
-
-                PublishExecutionState(
-                    "PENDING MODIFIED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING MODIFIED",
+                        true);
+                };
 
             PendingOrders.Filled +=
-                args => ReconcileBrokerState(true);
-
-                PublishExecutionState(
-                    "PENDING FILLED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING FILLED",
+                        true);
+                };
 
             PendingOrders.Cancelled +=
-                args => ReconcileBrokerState(true);
-
-                PublishExecutionState(
-                    "PENDING CANCELLED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING CANCELLED",
+                        true);
+                };
         }
 
         private void PublishExecutionState(
