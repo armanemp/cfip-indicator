@@ -46,6 +46,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ManagedStopProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ProtectionProgressionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IntelligentProtectionRule.cs" />
+    <Compile Include="IntelligentProtectionContracts.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetObstacleCachePolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OrphanManagedProtectionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionCapacityRule.cs" />
