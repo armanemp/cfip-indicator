@@ -3304,6 +3304,22 @@ Verification status:
 - GitHub API exposed no completed workflow runs for the new phase branch at implementation time.
 - Target-terminal acceptance is intentionally still manual for sound playback, popup behavior and marker/line timing.
 
+## 2026-10-02 — M5 Panel Live Content / Responsiveness
+
+Implementation branch: `phase/m5-panel-live-responsiveness-2026-10-02`.
+
+- Rebased panel execution presentation on the actual cBot heartbeat/capability state instead of retained Indicator execution flags.
+- Removed the obsolete Indicator-owned AUTO TRADING presentation path that could surface a false `OFF` state after the cBot separation.
+- Centralized effective panel width/content width through `PanelDimensionRule`.
+- Made panel content refresh consume one current visual snapshot and fresh cBot state per refresh cadence.
+- Added observable panel row-capacity overflow and stale live-row clearing when a plan disappears.
+- Re-ran the full analysis -> signal -> plan -> presentation -> provider -> cBot -> broker -> outcome/history ownership checks through the accumulated M3/M4 audits and the new M5 panel audit.
+- Added deterministic M5 panel geometry contracts.
+
+Verification status: repository gates pending on the final M5 implementation head.
+
+Next: complete M5 repository verification and target-terminal panel/cBot state validation, then proceed to M6.
+
 ## 2026-10-02 — M4 Time / Session / History / Persistence Truth
 
 Implemented on phase/m4-time-session-history-persistence-2026-10-02.
