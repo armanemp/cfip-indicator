@@ -40,6 +40,17 @@ namespace cAlgo
                 _decision != null)
                 return _decision.Direction;
 
+            // Direction visibility is intentionally independent from execution
+            // actionability. A blocked/non-actionable decision still tells the
+            // user which side the canonical analysis currently favors; the
+            // renderer will express reduced confidence with the caution color.
+            if (_decision != null &&
+                (_decision.Direction == 1 ||
+                 _decision.Direction == -1) &&
+                _decision.Confidence >=
+                    Math.Max(40, MinimumEarlyConfidence))
+                return _decision.Direction;
+
             if (reactionReady &&
                 _reaction != null)
                 return _reaction.Direction;
