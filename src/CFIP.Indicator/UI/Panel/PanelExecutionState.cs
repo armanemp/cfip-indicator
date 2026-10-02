@@ -150,6 +150,11 @@ namespace cAlgo
         private Color GetAutoTradingPanelColor()
         {
             EnsurePanelExecutionProtectionStateCache();
+
+            if (AutoTradingEnabled &&
+                !CbotCanMarketExecute())
+                return PanelWarningColor;
+
             return ExecutionPanelStateColor(
                 _panelAutoTradingState);
         }
@@ -173,6 +178,11 @@ namespace cAlgo
         private Color GetAutoOrdersPanelColor()
         {
             EnsurePanelExecutionProtectionStateCache();
+
+            if (AutomaticOrdersEnabled &&
+                !CbotCanPendingExecute())
+                return PanelWarningColor;
+
             return ExecutionPanelStateColor(
                 _panelAutoOrdersState);
         }
@@ -212,6 +222,11 @@ namespace cAlgo
         private Color GetAutoProtectionPanelColor()
         {
             EnsurePanelExecutionProtectionStateCache();
+
+            if ((AutoBrokerProtection ||
+                 AutoProtectBrokerPositions) &&
+                !CbotCanManage())
+                return PanelWarningColor;
 
             return
                 _panelProtectionState ==
