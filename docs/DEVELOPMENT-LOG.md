@@ -1,3 +1,20 @@
+## CBOT-P8 — Progressive Protection / Broker-Confirmed State Sync — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+- Added one canonical `BrokerProtectionStateSynchronizer` for broker-confirmed Entry/SL/active-TP adoption.
+- Confirmed management reports, broker refresh and position-modified events now share the same state-adoption owner.
+- Accepted/unconfirmed management commands cannot manufacture new protected plan state.
+- BUY/SELL stop progression remains protective-only; broker-confirmed stop regression enters explicit recovery.
+- Active broker target must remain forward from entry and cannot regress from the previously confirmed target.
+- Existing `IntelligentProtectionRule` remains the sole live trailing/protection policy; no duplicate trailing engine was introduced.
+- Full-chain audit remains mandatory and preserves M15 as the execution/trade-decision reference, M5 as trigger/tuning/entry precision, M1 optional confirmation, H1+ context/reward and chart timeframe as presentation only.
+- Performance path remains bounded by broker dirty-state / refresh cadence; repeated unconfirmed management writes are not introduced.
+
+Phase record: `docs/PHASE-CBOT-P8-PROGRESSIVE-PROTECTION-STATE-SYNC-2026-10-02.md`.
+
+Next: complete P8 verification, then execute CBOT-6M multi-scenario capacity/reconciliation before removing the single-plan gate.
+
 ## CBOT-P7R — Attachment Truth / Alert Visibility / Parallel Scenario Presentation — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**
