@@ -20,8 +20,6 @@ namespace cAlgo
                 Bars == null)
                 return false;
 
-            RemoveExpiredPopup();
-
             DateTime now =
                 Server.TimeInUtc;
 
