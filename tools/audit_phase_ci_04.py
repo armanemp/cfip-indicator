@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static acceptance gate for CI-04 structure/swing/liquidity semantics and alert delivery synchronization."""
+"""Static acceptance gate for CI-04 structure/swing/liquidity semantics and unified alert delivery synchronization."""
 from pathlib import Path
 import sys
 
@@ -160,7 +160,8 @@ check(
     'key.StartsWith(\n                                    "RESTRICT|"' in alert_engine and
     'message.StartsWith(\n                                    "CFIP ENTRY BLOCKED"' in alert_engine and
     "restrictionAlert =" in alert_engine and
-    "if (playSound ||" in alert_engine
+    "blockedCandidateAlert" in alert_engine and
+    "!blockedCandidateAlert" in alert_engine
 )
 
 check(
