@@ -17,6 +17,15 @@ namespace cAlgo
         public double Tp1RR { get; }
         public string StopSource { get; }
         public int StopQuality { get; }
+        public string Tp1Source { get; }
+        public int Tp1Quality { get; }
+        public string Tp2Source { get; }
+        public int Tp2Quality { get; }
+        public string Tp3Source { get; }
+        public int Tp3Quality { get; }
+        public string Tp4Source { get; }
+        public int Tp4Quality { get; }
+        public int HtfTargetCount { get; }
         public TradeSetupPreview Preview { get; }
 
         public CanonicalTradePathGeometry(
@@ -33,6 +42,15 @@ namespace cAlgo
             double tp1RR,
             string stopSource,
             int stopQuality,
+            string tp1Source,
+            int tp1Quality,
+            string tp2Source,
+            int tp2Quality,
+            string tp3Source,
+            int tp3Quality,
+            string tp4Source,
+            int tp4Quality,
+            int htfTargetCount,
             TradeSetupPreview preview)
         {
             Direction = direction;
@@ -48,6 +66,15 @@ namespace cAlgo
             Tp1RR = tp1RR;
             StopSource = stopSource ?? string.Empty;
             StopQuality = stopQuality;
+            Tp1Source = tp1Source ?? string.Empty;
+            Tp1Quality = tp1Quality;
+            Tp2Source = tp2Source ?? string.Empty;
+            Tp2Quality = tp2Quality;
+            Tp3Source = tp3Source ?? string.Empty;
+            Tp3Quality = tp3Quality;
+            Tp4Source = tp4Source ?? string.Empty;
+            Tp4Quality = tp4Quality;
+            HtfTargetCount = Math.Max(0, htfTargetCount);
             Preview = preview;
         }
 
