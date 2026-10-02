@@ -795,6 +795,36 @@ Acceptance:
 - no cBot re-implementation of the decision engine;
 - execution rejects unsafe broker conditions immediately before mutation.
 
+### CBOT-6M — Concurrent multi-scenario execution (required follow-on)
+
+This is a separate execution-capacity phase required by the user's multi-opportunity requirement.
+
+The existing single-plan gate must not simply be removed. Replace it only after the cBot has a complete per-scenario lifecycle model.
+
+Required:
+
+- batch or multi-item Indicator→cBot signal handoff with preserved `SignalId`, `ScenarioId`, `PlanId` and revision identity;
+- per-scenario idempotency/submission state so one scenario cannot suppress another;
+- per-scenario broker labels/identifiers and reconciliation;
+- explicit capacity/risk accounting for simultaneous Market/Aggressive positions and Pending Stop/Pending Limit orders;
+- a deterministic policy for compatible combinations such as one immediate position plus one or more independent pending orders;
+- per-position protection and per-scenario management commands;
+- independent trailing/profit-lock/target progression state for each live plan;
+- broker-confirmed close/cancel/fill transitions before a scenario is released;
+- restart/reconnect adoption for every managed scenario;
+- no aggregate "multiple objects = recovery" fallback once the explicit multi-scenario contract is active.
+
+Acceptance:
+
+- two or more valid scenarios can coexist without ScenarioId collision;
+- an immediate market execution and an independent pending order can coexist when all account/risk/capacity gates pass;
+- each object retains its own SL/TP/protection/lifecycle state;
+- a failure/rejection/recovery in one scenario does not block unrelated valid scenarios;
+- no duplicate execution occurs after restart/reconnect;
+- chart/panel/alerts keep the same scenario numbering/identity until each scenario reaches a broker-confirmed terminal state.
+
+This phase must be completed before removing the current single-plan safety gate.
+
 ## Hard migration rules
 
 - A moved method carries its required fields/helpers/dependencies with it; no hidden dependency remains in the Indicator.
