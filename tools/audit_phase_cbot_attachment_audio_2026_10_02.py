@@ -39,7 +39,8 @@ checks = {
     "sound delivery has semantic fallback":
         "DeliverAlertSound(next)" in processor and
         "falling back to semantic cue" in processor and
-        "Notifications.PlaySound(soundType)" in processor,
+        "Notifications.PlaySound(parsedSoundType)" in processor and
+        "Notifications.PlaySound(AlertSoundType)" in processor,
     "sound delivery is bounded per pump":
         "MaxAlertDeliveriesPerPump = 4" in processor and
         "while (processed < MaxAlertDeliveriesPerPump" in processor,
