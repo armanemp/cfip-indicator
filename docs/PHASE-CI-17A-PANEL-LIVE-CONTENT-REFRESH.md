@@ -64,3 +64,8 @@ Target-terminal acceptance remains required for visible refresh latency, panel r
 ## Next gate
 
 After repository verification and target-terminal panel acceptance, CI-17 continues to its final manual acceptance boundary, followed by CI-FINAL.
+
+
+## Repository verification continuity
+
+Historical CI-04/05/08/09/12/13 continuity checks were reconciled to the current CI-17A state so archived phase audits validate historical records without requiring an obsolete active-phase label.
