@@ -2672,10 +2672,14 @@ if "Chart.RemoveObject(" not in compact_label_code:
 
 PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
 PROTECTION_MANAGER_CODE = PROTECTION_MANAGER.read_text(encoding="utf-8")
+INTELLIGENT_PROTECTION_RULE = ROOT / "Core" / "Math" / "IntelligentProtectionRule.cs"
+INTELLIGENT_PROTECTION_RULE_CODE = INTELLIGENT_PROTECTION_RULE.read_text(encoding="utf-8")
 if "market - minimumDistance" in PROTECTION_MANAGER_CODE or "market + minimumDistance" in PROTECTION_MANAGER_CODE:
     raise SystemExit("Structural trailing must not chase raw market price via minimum-distance clamping")
-if "if (structuralUpdate" not in PROTECTION_MANAGER_CODE:
-    raise SystemExit("Smart trailing progression must be structurally gated")
+if "structuralUpdate" not in INTELLIGENT_PROTECTION_RULE_CODE or "IsStructuralFarEnough(" not in INTELLIGENT_PROTECTION_RULE_CODE:
+    raise SystemExit("Smart trailing progression must be structurally gated by the canonical protection rule")
+if "IntelligentProtectionRule.Evaluate(" not in PROTECTION_MANAGER_CODE:
+    raise SystemExit("ProtectionManager must delegate to the canonical intelligent protection owner")
 
 # Phase 7.2 — predictive pending, frozen setup geometry and alert/visual parity.
 PREDICTIVE_PENDING_MODEL = MODEL_ROOT / "PredictivePendingCandidate.cs"
