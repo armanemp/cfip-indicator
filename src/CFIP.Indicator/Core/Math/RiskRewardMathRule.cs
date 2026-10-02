@@ -344,22 +344,8 @@ namespace cAlgo
             int direction,
             double entry,
             double risk,
-            double rewardRisk)
-        {
-            return TargetFromRR(
-                direction,
-                entry,
-                risk,
-                rewardRisk,
-                0);
-        }
-
-        public static double TargetFromRR(
-            int direction,
-            double entry,
-            double risk,
             double rewardRisk,
-            double spread)
+            double spread = 0)
         {
             if ((direction != 1 && direction != -1) ||
                 !IsPositiveFinite(entry) ||
