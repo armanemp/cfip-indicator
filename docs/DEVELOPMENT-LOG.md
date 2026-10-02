@@ -1,3 +1,31 @@
+## 2026-10-03 — Canonical trade-path single-owner correction
+
+Implemented on `phase/canonical-trade-path-geometry-2026-10-03`.
+
+The previous canonical geometry hardening introduced a correct actual-entry live path, but a deeper ownership audit found duplicate calculation in PlanBuilder. PlanBuilder still recomputed structural SL and TP1..TP4 independently, leaving a future drift seam.
+
+Closed that seam:
+- expanded CanonicalTradePathGeometry with TP source/quality provenance and HTF target count;
+- canonical builder now binds the selected target ladder provenance;
+- PlanInputPreparation consumes the canonical geometry;
+- PlanBuilder became a thin orchestration/materialization owner and no longer reconstructs SL/TP;
+- architecture/static audits were updated to enforce the one-owner rule.
+
+Safety/strategy boundary preserved:
+- M15 canonical execution decision;
+- M5 trigger/tuning/entry precision;
+- M1 optional confirmation;
+- no threshold weakening;
+- Indicator remains broker-mutation-free;
+- cBot remains the broker execution authority.
+
+Verification pending:
+Source/Architecture, Runtime Acceptance, cTrader Compile/Build and target-terminal exact geometry plus restart/reconnect validation.
+
+Phase record: docs/PHASE-CANONICAL-TRADE-PATH-GEOMETRY-2026-10-03.md.
+
+---
+
 ## 2026-10-03 — Canonical trade-path geometry
 
 Status: implementation complete, verification pending.
