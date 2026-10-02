@@ -28,12 +28,17 @@ preview_model = read("src/CFIP.Indicator/Core/Models/TradeSetupPreview.cs")
 execution_builder = read("src/CFIP.Indicator/Planning/Execution/ExecutionModelBuilder.cs")
 execution_resolver = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs")
 plan_input = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.cs")
+canonical_path_builder = read("src/CFIP.Indicator/Planning/TradePlan/CanonicalTradePathGeometryBuilder.cs")
 market_entry = read("src/CFIP.Indicator/Planning/Execution/MarketEntryValidation.cs")
 plan_market = read("src/CFIP.Indicator/Planning/TradePlan/PlanMarketConstraintValidator.cs")
 actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
 actionability_preparation = (
     read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
     read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
+actionability_geometry_owner = (
+    actionability +
+    actionability_preparation
 )
 preview_builder = read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs")
 pending_snapshot = read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs")
@@ -67,8 +72,15 @@ check(
 check(
     "geometry owns one mode/inside/trigger/late calculation",
     "EntryGeometryRule.Evaluate(" in execution_resolver and
-    "EntryGeometryRule.Evaluate(" in actionability_preparation and
-    "EntryGeometryRule.Evaluate(" in plan_input and
+    (
+        "EntryGeometryRule.Evaluate(" in actionability_preparation or
+        "TryBuildCanonicalTradePathGeometry(" in actionability_preparation
+    ) and
+    (
+        "EntryGeometryRule.Evaluate(" in plan_input or
+        "TryBuildCanonicalTradePathGeometry(" in plan_input or
+        "TryBuildCanonicalTradePathGeometry(" in canonical_path_builder
+    ) and
     "EntryGeometryRule.Evaluate(" in plan_market
 )
 
@@ -90,9 +102,9 @@ check(
 
 check(
     "actionability no longer has an independent zone/anchor/late equation",
-    "EntryGeometryRule.Evaluate(" in actionability and
-    "EntryActionabilityPolicy.IsLate(" not in actionability and
-    "EntryActionabilityPolicy.ResolveAnchor(" not in actionability
+    "TryBuildCanonicalTradePathGeometry(" in actionability_geometry_owner and
+    "EntryActionabilityPolicy.IsLate(" not in actionability_geometry_owner and
+    "EntryActionabilityPolicy.ResolveAnchor(" not in actionability_geometry_owner
 )
 
 check(
