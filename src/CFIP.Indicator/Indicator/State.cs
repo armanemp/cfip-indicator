@@ -71,6 +71,16 @@ namespace cAlgo
                 private double _targetLevelCacheAtr = 0;
                 private List<Level> _targetLevelCache;
 
+                // Live actionability reuses the exact execution geometry within a
+                // bounded price/spread tolerance. This keeps the actual-entry
+                // consistency fix from rebuilding structural targets on every tick.
+                private CanonicalTradePathGeometry _canonicalTradePathCache;
+                private int _canonicalTradePathCacheM5 = -1;
+                private int _canonicalTradePathCacheDirection;
+                private OpportunityLane _canonicalTradePathCacheLane;
+                private double _canonicalTradePathCacheEntry;
+                private double _canonicalTradePathCacheSpread;
+
                 private readonly HashSet<string> _opportunityVisualIds =
                     new HashSet<string>();
 
