@@ -26,6 +26,7 @@ def check(name, condition):
 reward = read("src/CFIP.Indicator/Core/Math/PlanRewardRiskQualityRule.cs")
 rr_rule = read("src/CFIP.Indicator/Core/Math/TargetSelectionRequiredRrRule.cs")
 policy = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelectionPolicy.cs")
+rr_policy = read("src/CFIP.Indicator/Core/Math/RiskRewardPolicyRule.cs")
 selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
 stage_selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetStageSelector.cs")
 plan_builder = read("src/CFIP.Indicator/Planning/TradePlan/PlanBuilder.cs")
@@ -78,7 +79,9 @@ check(
 
 check(
     "PlanRewardRiskQualityRule names all internal adaptive/floor constants",
-    "BaseMinimumRrFloor = 0.50" in reward and
+    ("BaseMinimumRrFloor =\n            RiskRewardPolicyRule.PlanBaseMinimumFloor" in reward or
+     "BaseMinimumRrFloor = RiskRewardPolicyRule.PlanBaseMinimumFloor" in reward) and
+    "PlanBaseMinimumFloor = 0.50" in rr_policy and
     "PreferredStopRiskAtrFloor = 0.25" in reward and
     "MaximumStopRiskAtrFloor = 0.50" in reward and
     "Math.Max(preferred, MaximumStopRiskAtrFloor)" in reward and
