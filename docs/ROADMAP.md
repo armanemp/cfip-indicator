@@ -40,6 +40,8 @@ Completed:
 
 Phase record: `docs/PHASE-CBOT-P8-PROGRESSIVE-PROTECTION-STATE-SYNC-2026-10-02.md`.
 
+CBOT-6M phase record: `docs/PHASE-CBOT-6M-CONCURRENT-MULTISCENARIO-EXECUTION-2026-10-02.md`.
+
 Verification:
 - Source / Architecture: pending;
 - Runtime Acceptance: pending;
