@@ -129,3 +129,4 @@ jobs:
       - run: python tools/audit_phase_11_5.py
       - run: python tools/audit_phase_11_8.py
       - run: python tools/audit_phase_ci20_panel_options.py
+      - run: python tools/audit_phase_m3_trade_truth.py
