@@ -126,13 +126,18 @@ namespace cAlgo
                             bool restrictionPopup =
                                 restrictionAlert &&
                                 ShowEntryRestrictionPopup;
+                             bool importantPopup =
+                                 IsImportantPopupAlertKey(
+                                     key,
+                                     critical);
 
-                            bool showPopup =
-                                ShowPopupAlerts &&
-                                (restrictionPopup ||
-                                 (!restrictionAlert &&
-                                  (!PopupCriticalOnly ||
-                                   critical)));
+                             bool showPopup =
+                                 ShowPopupAlerts &&
+                                 (restrictionPopup ||
+                                  (!restrictionAlert &&
+                                   (PopupCriticalOnly
+                                       ? critical
+                                       : importantPopup)));
 
                             if (playSound ||
                                 showPopup)
