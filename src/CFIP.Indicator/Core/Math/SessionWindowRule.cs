@@ -252,9 +252,9 @@ namespace cAlgo
             int windowMinutes)
         {
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
             DateTime boundary =
-                EnsureUtc(boundaryUtc);
+                CanonicalTimeRule.EnsureUtc(boundaryUtc);
 
             int window =
                 Math.Max(0, windowMinutes);
