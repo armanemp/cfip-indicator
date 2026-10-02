@@ -56,8 +56,8 @@ namespace cAlgo
                     NormalizePrice(
                         price + verticalGap);
 
-                Color whiteTextColor =
-                    Color.White;
+                Color labelTextColor =
+                    GetReadableLabelTextColor(color);
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -77,7 +77,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[safeBar],
                             labelPrice,
-                            whiteTextColor);
+                            labelTextColor);
                 }
 
                 if (label == null)
@@ -90,7 +90,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    whiteTextColor;
+                    labelTextColor;
                 label.FontSize =
                     Math.Max(
                         8,
