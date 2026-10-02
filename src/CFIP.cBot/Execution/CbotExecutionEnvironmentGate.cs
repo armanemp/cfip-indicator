@@ -1,6 +1,7 @@
 using System;
 using cAlgo.API;
 using CFIP.Contracts;
+using CFIP.cBot.Risk;
 
 namespace CFIP.cBot.Execution
 {
@@ -11,6 +12,10 @@ namespace CFIP.cBot.Execution
             SignalEnvelope envelope,
             double maximumMarginUsagePercent,
             double marginBufferPercent,
+            CbotIndicatorExecutionSettings settings,
+            CbotDailyLossGuard dailyLossGuard,
+            bool pendingAction,
+            DateTime nowUtc,
             out string reason)
         {
             reason = "OK";
@@ -18,9 +23,46 @@ namespace CFIP.cBot.Execution
             if (robot == null ||
                 envelope == null ||
                 envelope.Identity == null ||
-                envelope.Intent == null)
+                envelope.Intent == null ||
+                settings == null ||
+                dailyLossGuard == null)
             {
                 reason = "EXECUTION ENVIRONMENT INPUT INVALID";
+                return false;
+            }
+
+            if (!settings.EnableAutoTrading)
+            {
+                reason = "AUTO TRADING DISABLED IN INDICATOR";
+                return false;
+            }
+
+            if (pendingAction &&
+                !settings.EnableAutomaticOrders)
+            {
+                reason = "AUTOMATIC ORDERS DISABLED IN INDICATOR";
+                return false;
+            }
+
+            if (settings.UseMarketHoursGuard &&
+                !IsInsideSession(
+                    nowUtc,
+                    settings.SessionStartUtc,
+                    settings.SessionEndUtc))
+            {
+                reason = "OUTSIDE CONFIGURED MARKET HOURS";
+                return false;
+            }
+
+            if (dailyLossGuard.IsBlocked(
+                    robot,
+                    settings.EnableDailyLossLimit,
+                    settings.MaximumDailyLossPercent,
+                    nowUtc,
+                    out double lossPercent,
+                    out string dailyLossReason))
+            {
+                reason = dailyLossReason;
                 return false;
             }
 
@@ -134,30 +176,33 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            double spread =
-                robot.Symbol.Ask -
-                robot.Symbol.Bid;
-
-            if (!FinitePositive(spread))
+            if (settings.UseSpreadFilter)
             {
-                reason = "SPREAD INVALID";
-                return false;
-            }
+                double spread =
+                    robot.Symbol.Ask -
+                    robot.Symbol.Bid;
 
-            double spreadLimit =
-                envelope.Intent.MaxSpreadToStopRiskRatio;
+                if (!FinitePositive(spread))
+                {
+                    reason = "SPREAD INVALID";
+                    return false;
+                }
 
-            if (!FinitePositive(spreadLimit))
-            {
-                reason = "SPREAD RISK LIMIT UNAVAILABLE";
-                return false;
-            }
+                double spreadLimit =
+                    envelope.Intent.MaxSpreadToStopRiskRatio;
 
-            if (spread / envelope.Plan.PlanRisk >
-                Math.Max(0.02, spreadLimit))
-            {
-                reason = "LIVE SPREAD EXCEEDS PLAN RISK LIMIT";
-                return false;
+                if (!FinitePositive(spreadLimit))
+                {
+                    reason = "SPREAD RISK LIMIT UNAVAILABLE";
+                    return false;
+                }
+
+                if (spread / envelope.Plan.PlanRisk >
+                    Math.Max(0.02, spreadLimit))
+                {
+                    reason = "LIVE SPREAD EXCEEDS PLAN RISK LIMIT";
+                    return false;
+                }
             }
 
             if (!FinitePositive(maximumMarginUsagePercent) ||
@@ -170,6 +215,34 @@ namespace CFIP.cBot.Execution
             }
 
             return true;
+        }
+
+        private static bool IsInsideSession(
+            DateTime utc,
+            int startHour,
+            int endHour)
+        {
+            DateTime reference =
+                utc.Kind == DateTimeKind.Utc
+                    ? utc
+                    : utc.ToUniversalTime();
+
+            int start =
+                Math.Max(0, Math.Min(23, startHour)) * 60;
+
+            int end =
+                Math.Max(0, Math.Min(23, endHour)) * 60;
+
+            int now =
+                reference.Hour * 60 +
+                reference.Minute;
+
+            if (start == end)
+                return true;
+
+            return start < end
+                ? now >= start && now < end
+                : now >= start || now < end;
         }
 
         private static bool FinitePositive(double value)
