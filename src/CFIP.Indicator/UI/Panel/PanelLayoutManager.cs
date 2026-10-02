@@ -54,13 +54,26 @@ namespace cAlgo
                                                 Math.Max(
                                                     4,
                                                     PanelMargin);
-                                
+
+                                            bool bottomPosition =
+                                                PanelPosition ==
+                                                    PanelCorner.BottomLeft ||
+                                                PanelPosition ==
+                                                    PanelCorner.BottomRight;
+
+                                            int bottomMargin =
+                                                bottomPosition
+                                                    ? Math.Max(
+                                                        margin,
+                                                        PanelRestoreBottomClearance)
+                                                    : margin;
+
                                             _panelRestoreButton.Margin =
                                                 new Thickness(
                                                     margin,
                                                     margin,
                                                     margin,
-                                                    margin);
+                                                    bottomMargin);
                                         }
         
         private int EstimatePanelScrollHeight(
