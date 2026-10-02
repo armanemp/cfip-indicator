@@ -311,7 +311,14 @@ Verification: Source/Architecture #2771 PASS; Runtime Acceptance #2580 PASS; cTr
 
 ## CBOT-P1 — Platform-Neutral Contracts
 
-Create src/CFIP.Contracts and the immutable Signal/Plan/Execution/Management/Broker/Lifecycle contracts defined in the separation specification. Contracts must contain no cTrader dependency.
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Create and freeze one shared, immutable, platform-neutral contract model for Indicator ↔ cBot. Contracts must contain no cTrader dependency, no decision logic and no broker mutation. Required families: SignalEnvelope, PlanSnapshot, ExecutionIntent, ManagementCommand, BrokerExecutionReport, LifecycleEvent, ContractIdentity, ContractVersion, revision/sequence identity, CorrelationId and IdempotencyKey.
+
+Authoritative schema audit: `tools/audit_cbot_contract_schema.py`.
+Phase report: `docs/PHASE-CBOT-P1-PLATFORM-NEUTRAL-CONTRACTS.md`.
+
+No parallel DTO/model set may be introduced in the cBot. Existing Indicator internal models remain temporary source models until P2+ provider migration replaces them with these contracts.
 
 ## CBOT-P2 — Read-Only Indicator Provider
 
