@@ -152,11 +152,8 @@ namespace cAlgo
                         
                                         // The Indicator panel is analysis/presentation only.
                                         // Broker Close/Cancel actions belong to the cBot surface.
-                                        // Moved (per user request): the hide/show toggle now lives at
-                                        // the bottom of the box, to the left of Close/Cancel, instead
-                                        // of the header. It must be added to _buttonStack BEFORE the
-                                        // other two buttons so it renders left-most in this
-                                        // horizontal StackPanel.
+                                        // The hide/show toggle is the only interactive control
+                                        // owned by the Indicator panel. Broker actions are cBot-owned.
                                         CreatePanelToggleButton();
                         
                                         if (_panelToggleButton != null)
