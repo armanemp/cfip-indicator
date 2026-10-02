@@ -854,7 +854,7 @@ Status: **VERIFIED COMPLETE — merged to `main` via PR #207.**
 
 ## M5 — Panel Live Content / Responsiveness
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
+Status: **VERIFIED COMPLETE — repository gates passed; ready for merge to `main`.**
 
 ### هدف
 حل واقعی stale/incomplete/slow panel.
