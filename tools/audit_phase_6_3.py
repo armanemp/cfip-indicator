@@ -24,7 +24,11 @@ def check(name, condition):
 
 policy = read("src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs")
 gate = read("src/CFIP.Indicator/Trading/Validation/ActionableSignalQualityGate.cs")
-evaluator = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+evaluator = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 parallel = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
 quality_rule = read("src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs")
 orchestration = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
