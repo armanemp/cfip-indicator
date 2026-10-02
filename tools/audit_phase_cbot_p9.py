@@ -159,12 +159,20 @@ check(
     "BrokerExecutionSafety.CountManagedPositions(" in gate and
     "BrokerExecutionSafety.CountManagedPending(" in gate,
 )
-check(
-    "single-plan safety remains intact until CBOT-6M",
-    "MaximumOpenPositions" not in bot and
-    "MaxDemoExecutionsPerSession" in bot and
-    "SINGLE-PLAN CAPACITY" in gate,
-)
+if "Max Concurrent Scenarios" in bot:
+    check(
+        "CBOT-6M scenario capacity supersedes the historical single-plan gate",
+        "CountManagedScenarioObjects(" in gate and
+        "CONCURRENT SCENARIO CAPACITY BLOCKED" in gate and
+        "SINGLE-PLAN CAPACITY BLOCKED" not in gate,
+    )
+else:
+    check(
+        "single-plan safety remains intact before CBOT-6M",
+        "MaximumOpenPositions" not in bot and
+        "MaxDemoExecutionsPerSession" in bot and
+        "SINGLE-PLAN CAPACITY" in gate,
+    )
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8")
     for p in (IND / "Indicator/Parameters").glob("*.cs")
