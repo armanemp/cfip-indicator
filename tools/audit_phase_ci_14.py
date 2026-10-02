@@ -31,12 +31,19 @@ live_exit = read("src/CFIP.Indicator/Core/Math/LiveExitGeometryRule.cs")
 target_envelope = read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs")
 target_preparation = read("src/CFIP.Indicator/Planning/TradePlan/PlanTargetPreparation.cs")
 plan_reward = read("src/CFIP.Indicator/Planning/TradePlan/PlanRewardIntegrityValidator.cs")
-actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+actionability = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 auto_pretrade = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs")
 auto_submission = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs")
 pending_submission = read("src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs")
 aggressive = read("src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs")
-parallel = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+parallel = (
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+)
 tactical = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionTacticalOpportunityAnalyzer.cs")
 factory = read("src/CFIP.Indicator/Trading/Lifecycle/LivePlanFactory.cs")
 pending_snapshot = read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs")
