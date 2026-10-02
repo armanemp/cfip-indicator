@@ -26,7 +26,18 @@ namespace cAlgo
                             entry = NormalizePrice(entry);
                             stop = NormalizePrice(stop);
                             target = NormalizePrice(target);
-                
+
+                            ExecutionIntentGeometryResult geometry =
+                                ExecutionIntentGeometryRule.Evaluate(
+                                    direction,
+                                    entry,
+                                    stop,
+                                    target,
+                                    Symbol.PipSize);
+
+                            if (!geometry.Valid)
+                                return null;
+
                             return new ExecutionIntent
                             {
                                 Direction = direction,
@@ -36,20 +47,10 @@ namespace cAlgo
                                 Trigger = NormalizePrice(trigger),
                                 ZoneLow = NormalizePrice(zoneLow),
                                 ZoneHigh = NormalizePrice(zoneHigh),
-                                Stop = stop,
-                                Target = target,
-                                StopPips =
-                                    IsFinitePositive(entry) &&
-                                    IsFinitePositive(stop)
-                                        ? Math.Abs(entry - stop) /
-                                          Symbol.PipSize
-                                        : 0,
-                                TargetPips =
-                                    IsFinitePositive(entry) &&
-                                    IsFinitePositive(target)
-                                        ? Math.Abs(target - entry) /
-                                          Symbol.PipSize
-                                        : 0,
+                                Stop = geometry.Stop,
+                                Target = geometry.Target,
+                                StopPips = geometry.StopPips,
+                                TargetPips = geometry.TargetPips,
                                 Volume = volume,
                                 CreatedM5 = closedM5,
                                 Source = source
