@@ -2686,6 +2686,7 @@ PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
 MUTATION_ALLOWED_FILES = {
     "BrokerPendingOrderPlacement.cs",
+    "BrokerAggressiveOrderMutation.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
@@ -2694,6 +2695,7 @@ MUTATION_ALLOWED_FILES = {
 }
 REQUIRED_BROKER_MUTATION_FILES = {
     "BrokerPendingOrderPlacement.cs",
+    "BrokerAggressiveOrderMutation.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
