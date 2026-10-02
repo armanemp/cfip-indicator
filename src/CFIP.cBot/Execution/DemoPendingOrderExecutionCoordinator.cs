@@ -376,37 +376,6 @@ namespace CFIP.cBot.Execution
             return true;
         }
 
-        // Compatibility wrapper for the previously extracted Pending Stop path.
-        // The mutation owner remains this single coordinator.
-        public bool TryExecuteStop(
-            Robot robot,
-            SignalEnvelope envelope,
-            DateTime nowUtc,
-            double maximumMarginUsagePercent,
-            double marginBufferPercent,
-            out BrokerExecutionReport report,
-            out string reason)
-        {
-            if (envelope == null ||
-                envelope.Intent == null ||
-                envelope.Intent.Action !=
-                    ExecutionAction.PendingStop)
-            {
-                report = null;
-                reason = "PENDING STOP ACTION REQUIRED";
-                return false;
-            }
-
-            return TryExecute(
-                robot,
-                envelope,
-                nowUtc,
-                maximumMarginUsagePercent,
-                marginBufferPercent,
-                out report,
-                out reason);
-        }
-
         private static BrokerExecutionReport BuildReport(
             SignalEnvelope envelope,
             ExecutionAction action,
