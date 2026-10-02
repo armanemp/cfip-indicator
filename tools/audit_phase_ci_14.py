@@ -63,6 +63,12 @@ check(
     )),
 )
 check(
+    "canonical RR owner exposes shared risk-from-levels helper",
+    "RiskFromLevels(" in canonical and
+    "Math.Max(floor, risk)" in canonical,
+)
+
+check(
     "canonical RR owner normalizes risk by the supplied physical floor",
     "Math.Max(" in canonical and "riskFloor" in canonical,
 )
