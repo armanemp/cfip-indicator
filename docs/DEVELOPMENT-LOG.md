@@ -1,3 +1,15 @@
+## CBOT-P2 — Read-Only Indicator Provider — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Added the canonical read-only Indicator provider backed by `CFIP.Contracts`, including immutable `SignalEnvelope`, semantic revisioning, deterministic identity/idempotency, and an invisible `ProviderHeartbeat` output to force lazy evaluation from cBot. The cBot now references `CFIPIndicator` through `Indicators.GetIndicator<CFIPIndicator>()`, explicitly disables all Indicator-side execution/protection switches for the P2 instance, and logs the provider snapshot without broker mutation.
+
+Added `tools/audit_cbot_provider_boundary.py` and wired it into Source/Architecture CI. No broker execution owner was removed in P2; this phase establishes the handoff required for P3 shadow and later P4–P8 migration.
+
+Phase report: `docs/PHASE-CBOT-P2-READ-ONLY-INDICATOR-PROVIDER.md`.
+
+Next: **CBOT-P3 — cBot Host / Shadow**.
+
 ## CBOT-P1 — Platform-Neutral Contracts — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**
