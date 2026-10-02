@@ -161,8 +161,10 @@ for name, source in (
 
 check(
     "actionability no longer rebuilds TP1 RR locally",
-    "rewardRisk.NominalRR" in actionability and
-    "Math.Abs(\n                        preview.Tp1" not in actionability and
+    "canonicalPath.Tp1RR" in actionability and
+    "state.Tp1RR =" in actionability and
+    "PlanRewardRiskQualityRule.Evaluate(" in actionability_preparation and
+    "Math.Abs(\n                        preview.Tp1 -" not in actionability and
     "Math.Abs(\n                    actualEntry" not in actionability,
 )
 check(
