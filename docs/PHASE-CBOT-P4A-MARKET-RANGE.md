@@ -49,3 +49,12 @@ Target-terminal evidence is still required for actual broker acceptance/fill/rej
 ## Next
 
 **CBOT-P4B — Aggressive Market broker mutation extraction.**
+## TRADE-SYNC-01 integration
+
+The cBot now binds its hosted CFIP analysis instance to the exact `CFIP Smart Indicator` configuration attached to the same chart. Parameter values are copied from `ChartIndicator.Parameters`; the cBot rechecks a compact fingerprint every 500 ms and rebuilds its hosted analysis instance only when the visible configuration changes.
+
+The previous hard-coded hidden Indicator configuration was removed. This prevents an execution-side instance from silently using a different Auto Trading, risk, news, target or confluence configuration than the Indicator visible to the user.
+
+Analysis plan/decision generation is also decoupled from broker arming. `EnableAutoTrading` remains an execution gate but no longer changes decision policy or whether the analytical plan can be built.
+
+The cBot remains fail-closed when the named Indicator is missing or duplicated.
