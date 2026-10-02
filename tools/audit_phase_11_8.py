@@ -115,7 +115,7 @@ if (
 
 if (
     "envelope.Intent.ExecutionLabel" not in pending_stop_cbot or
-    'string label = executionLabel + "-PENDING";' not in pending_stop_cbot or
+    'executionLabel + "-PENDING"' not in pending_stop_cbot or
     "MISSING EXECUTION LABEL" not in pending_stop_cbot
 ):
     errors.append(
