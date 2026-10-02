@@ -12,6 +12,7 @@ namespace cAlgo
         private const int QuickExecutionRowHeight = 38;
         private const int QuickExecutionButtonHeight = 30;
         private const int QuickExecutionVerticalMargin = 4;
-        private const int PanelBottomClearance = 100;
+        private const int PanelBottomClearance = 50;
+        private const int PanelRestoreBottomClearance = 50;
     }
 }
