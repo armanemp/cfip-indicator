@@ -31,7 +31,11 @@ namespace cAlgo
                             if (message.StartsWith(
                                     "CFIP ENTRY BLOCKED",
                                     StringComparison.OrdinalIgnoreCase) &&
-                                !key.StartsWith(
+                                !string.Equals(
+                                    key == null ? "" : key,
+                                    "RESTRICT|" + _lastRestrictionMessage,
+                                    StringComparison.OrdinalIgnoreCase) &&
+                                !(key ?? "").StartsWith(
                                     "RESTRICT|",
                                     StringComparison.OrdinalIgnoreCase))
                                 return;
@@ -43,8 +47,11 @@ namespace cAlgo
                                 direction =
                                     GetAuthoritativeDirection();
                 
+                            string normalizedKey =
+                                key ?? "";
+
                             bool restrictionAlert =
-                                key.StartsWith(
+                                normalizedKey.StartsWith(
                                     "RESTRICT|",
                                     StringComparison.OrdinalIgnoreCase);
                 
@@ -59,17 +66,17 @@ namespace cAlgo
                             if (SuppressDuplicateAlerts)
                             {
                                 int cooldownSeconds =
-                                    (key.StartsWith(
+                                    (normalizedKey.StartsWith(
                                         "SMART|",
                                         StringComparison.OrdinalIgnoreCase) ||
-                                     key.StartsWith(
+                                     normalizedKey.StartsWith(
                                         "REACTION|",
                                         StringComparison.OrdinalIgnoreCase))
                                         ? SmartAlertCooldownSeconds
                                         : AlertCooldownSeconds;
                 
                                 if (_alertCooldowns.TryGetValue(
-                                        key,
+                                        normalizedKey,
                                         out DateTime lastSent) &&
                                     (now - lastSent).TotalSeconds <
                                     Math.Max(
@@ -78,7 +85,7 @@ namespace cAlgo
                                     return;
                             }
                 
-                            _alertCooldowns[key] = now;
+                            _alertCooldowns[normalizedKey] = now;
                 
                             // Light housekeeping so this dictionary can't grow forever over
                             // a long-running session — unique keys (per-plan TP/SL, daily
@@ -101,7 +108,7 @@ namespace cAlgo
                 
                             AlertEnvelope envelope =
                                 BuildCanonicalAlertEnvelope(
-                                    key,
+                                    normalizedKey,
                                     message,
                                     direction,
                                     critical,
@@ -121,7 +128,7 @@ namespace cAlgo
                 
                             bool blockedCandidateAlert =
                                 IsBlockedCandidateAlert(
-                                    key,
+                                    normalizedKey,
                                     message);
 
                             // Restriction/blocked candidates remain diagnostic panel messages
@@ -132,21 +139,34 @@ namespace cAlgo
 
                             SoundType soundType =
                                 ResolveAlertSoundType(
-                                    key,
+                                    normalizedKey,
                                     critical);
 
                             // Every eligible canonical alert is delivered to the same bounded transport.
                             // The panel rail is now the sole visual message surface; sound remains optional.
-                            if (!_alertDeliveryQueue.Enqueue(
+                            bool queued =
+                                _alertDeliveryQueue.Enqueue(
                                     new AlertDelivery(
                                         envelope,
                                         direction,
                                         playSound,
                                         soundType.ToString(),
-                                        SoundFilePath)))
+                                        SoundFilePath));
+
+                            Print(
+                                "CFIP ALERT QUEUED | id={0} | key={1} | stage={2} | critical={3} | sound={4} | soundType={5} | queue={6}",
+                                envelope.AlertId,
+                                envelope.AlertKey,
+                                envelope.Stage,
+                                envelope.Critical,
+                                playSound,
+                                soundType,
+                                _alertDeliveryQueue.Count);
+
+                            if (!queued)
                             {
                                 Print(
-                                    "CFIP alert delivery queue rejected [{0}] revision={1}",
+                                    "CFIP ALERT QUEUE REJECTED | id={0} | revision={1}",
                                     envelope.AlertId,
                                     envelope.Identity.Revision);
                             }

@@ -36,7 +36,7 @@ namespace cAlgo
                         candidate.Type != null &&
                         string.Equals(
                             candidate.Type.Name,
-                            CbotIdentity.DisplayName,
+                            CbotIdentity.TypeName,
                             StringComparison.Ordinal);
 
                     if (!instanceNameMatches &&
@@ -179,12 +179,12 @@ namespace cAlgo
                 else if (string.IsNullOrWhiteSpace(payload))
                 {
                     _cBotStateReadError =
-                        "CBOT NOT ATTACHED";
+                        "CBOT HEARTBEAT PENDING";
                 }
                 else
                 {
                     _cBotStateReadError =
-                        "CBOT STATE INVALID";
+                        "CBOT HEARTBEAT INVALID";
                 }
             }
             catch (Exception ex)
