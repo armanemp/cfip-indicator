@@ -15,6 +15,7 @@ namespace CFIP.cBot.Execution
             CbotIndicatorExecutionSettings settings,
             CbotDailyLossGuard dailyLossGuard,
             bool pendingAction,
+            int maximumConcurrentScenarios,
             DateTime nowUtc,
             out string reason)
         {
@@ -135,7 +136,22 @@ namespace CFIP.cBot.Execution
 
             if (positions + pending >= 1)
             {
-                reason = "SINGLE-PLAN CAPACITY BLOCKED";
+                reason = "SCENARIO CAPACITY BLOCKED • SCENARIO ALREADY ACTIVE";
+                return false;
+            }
+
+            int managedScenarioObjects =
+                BrokerExecutionSafety.CountManagedScenarioObjects(
+                    robot,
+                    ResolveManagedInstanceRoot(
+                        envelope.Intent.ExecutionLabel ?? string.Empty));
+
+            if (maximumConcurrentScenarios < 1 ||
+                managedScenarioObjects >= maximumConcurrentScenarios)
+            {
+                reason =
+                    "CONCURRENT SCENARIO CAPACITY BLOCKED • " +
+                    Math.Max(1, maximumConcurrentScenarios);
                 return false;
             }
 
@@ -201,6 +217,22 @@ namespace CFIP.cBot.Execution
             }
 
             return true;
+        }
+
+        private static string ResolveManagedInstanceRoot(
+            string executionLabel)
+        {
+            if (string.IsNullOrWhiteSpace(executionLabel))
+                return string.Empty;
+
+            int marker =
+                executionLabel.IndexOf(
+                    "|CFIP-S:",
+                    StringComparison.Ordinal);
+
+            return marker > 0
+                ? executionLabel.Substring(0, marker)
+                : executionLabel;
         }
 
         private static bool IsInsideSession(
