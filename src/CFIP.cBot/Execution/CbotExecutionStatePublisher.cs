@@ -27,6 +27,7 @@ namespace CFIP.cBot.Execution
             string executionScenarioId,
             SignalEnvelope envelope,
             CbotBrokerReconciliationResult reconciliation,
+            CbotIndicatorExecutionSettings executionSettings,
             bool force)
         {
             if (robot == null ||
@@ -133,8 +134,52 @@ namespace CFIP.cBot.Execution
                     scenarioId,
                     signalRevision);
 
+            bool cbotMarketArmed =
+                marketExecutionEnabled ||
+                aggressiveExecutionEnabled;
+
+            bool cbotOrdersArmed =
+                pendingStopExecutionEnabled ||
+                pendingLimitExecutionEnabled;
+
+            bool lifecycleAllowsExecution =
+                reconciliation == null ||
+                string.Equals(
+                    reconciliation.LifecycleState,
+                    "READY",
+                    StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(
+                    reconciliation.LifecycleState,
+                    "ACTIVE",
+                    StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(
+                    reconciliation.LifecycleState,
+                    "PENDING",
+                    StringComparison.OrdinalIgnoreCase);
+
             snapshot = snapshot with
             {
+                IndicatorAutoTradingEnabled =
+                    executionSettings != null &&
+                    executionSettings.EnableAutoTrading,
+                IndicatorAutomaticOrdersEnabled =
+                    executionSettings != null &&
+                    executionSettings.EnableAutomaticOrders,
+                EffectiveAutoTradingEnabled =
+                    executionSettings != null &&
+                    executionSettings.EnableAutoTrading &&
+                    cbotMarketArmed &&
+                    lifecycleAllowsExecution &&
+                    !(reconciliation != null &&
+                      reconciliation.RecoveryRequired),
+                EffectiveAutomaticOrdersEnabled =
+                    executionSettings != null &&
+                    executionSettings.EnableAutoTrading &&
+                    executionSettings.EnableAutomaticOrders &&
+                    cbotOrdersArmed &&
+                    lifecycleAllowsExecution &&
+                    !(reconciliation != null &&
+                      reconciliation.RecoveryRequired),
                 LifecycleState =
                     reconciliation == null
                         ? "UNKNOWN"
