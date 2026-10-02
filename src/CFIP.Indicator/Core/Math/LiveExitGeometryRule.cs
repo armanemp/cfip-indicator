@@ -68,7 +68,9 @@ namespace cAlgo
                 return new LiveExitGeometryResult(
                     false,
                     marketDistance,
-                    entryDistance / risk,
+                    RiskRewardGeometryRule.CalculateNominalRRFromDistances(
+                        entryDistance,
+                        risk),
                     "TARGET BEHIND MARKET");
 
             return new LiveExitGeometryResult(
