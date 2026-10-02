@@ -170,6 +170,14 @@ namespace CFIP.cBot.Execution
                     executionSettings.EnableAutoTrading &&
                     cbotMarketArmed &&
                     lifecycleAllowsExecution &&
+                    !string.Equals(
+                        runtimeState,
+                        "BLOCKED",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(
+                        runtimeState,
+                        "DISARMED",
+                        StringComparison.OrdinalIgnoreCase) &&
                     !(reconciliation != null &&
                       reconciliation.RecoveryRequired),
                 EffectiveAutomaticOrdersEnabled =
@@ -178,6 +186,14 @@ namespace CFIP.cBot.Execution
                     executionSettings.EnableAutomaticOrders &&
                     cbotOrdersArmed &&
                     lifecycleAllowsExecution &&
+                    !string.Equals(
+                        runtimeState,
+                        "BLOCKED",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(
+                        runtimeState,
+                        "DISARMED",
+                        StringComparison.OrdinalIgnoreCase) &&
                     !(reconciliation != null &&
                       reconciliation.RecoveryRequired),
                 LifecycleState =
