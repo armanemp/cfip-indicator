@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTATION COMPLETE — repository verification pending.**
+**VERIFIED COMPLETE — merged to `main` via PR #197 as `996cd9cb4872608674269c205b7a03b33ab9e812`.**
 
 P4E finishes the remaining broker-mutation owner extraction after P4D. The Indicator is now command-only for management mutation requests; the cBot is the sole broker-mutation owner for the migrated paths.
 
@@ -49,18 +49,21 @@ The cBot keeps the existing hard live-account guard. The new management arm is `
 
 ### Verification
 
-The implementation branch must pass:
+Final merged HEAD `996cd9cb4872608674269c205b7a03b33ab9e812` was accepted by:
 
-- Source / Architecture
-- Runtime Acceptance Contracts
-- cTrader Compile/Build
-- CBOT-P4E audit
+- Source / Architecture workflow #3064: **PASS**;
+- Runtime Acceptance workflow #2873: **PASS**;
+- cTrader Compile/Build workflow #3057: **PASS**;
+- CBOT-P4E audit inside Source / Architecture: **PASS**;
+- accumulated architecture/parameter/UI/execution/identity audits: **PASS**.
 
-Target-terminal execution evidence remains manual.
+Target-terminal broker execution evidence remains manual and is not claimed by repository CI.
 
 ### Operator action
 
-After merge to `main`: `git pull --ff-only`.
+The P4E merge is already on `main`. Local checkout must run:
+
+`git pull --ff-only`
 
 ### Next phase
 
