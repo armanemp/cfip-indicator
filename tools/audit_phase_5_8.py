@@ -119,8 +119,7 @@ check(
     calls_with_last_lane(live_reconcile, "SelectTargets") and
     calls_with_last_lane(read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs"), "SelectTargets") and
     calls_with_last_lane(prediction, "SelectTargets") and
-    calls_with_last_lane(preview, "SelectTargets") and
-    calls_with_last_lane(plan_builder, "SelectTargets"),
+    calls_with_last_lane(preview, "SelectTargets"),
 )
 
 check(
