@@ -378,6 +378,7 @@ namespace cAlgo
                     EntrySignalTiming.NotMeasured();
         private string _lastPanelPresentationKey = "";
         private int _panelLiveRow = -1;
+        private int _panelGeometryBaselineChartHeight;
         private int _panelPositionRow = -1;
         private int _panelExitRow = -1;
         private DateTime _lastLiveStructuralPulseUtc = DateTime.MinValue;
