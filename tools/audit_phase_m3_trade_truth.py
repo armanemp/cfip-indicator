@@ -136,8 +136,8 @@ require(
 )
 
 require(
-    "return "( + "
-                ResolveCanonicalPlanSourceTimeframe()" in labels,
+    "return\n                \"(\" +" in labels and
+    "ResolveCanonicalPlanSourceTimeframe()" in labels,
     "M3: main plan label still needs real source timeframe",
 )
 
