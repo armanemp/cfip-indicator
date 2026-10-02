@@ -69,10 +69,10 @@ namespace cAlgo
             double riskFloor)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositive(entry) ||
-                !IsFinitePositive(stop) ||
-                !IsFinitePositive(tp1) ||
-                !IsFinitePositive(atr))
+                !IsFinitePositiveRewardRisk(entry) ||
+                !IsFinitePositiveRewardRisk(stop) ||
+                !IsFinitePositiveRewardRisk(tp1) ||
+                !IsFinitePositiveRewardRisk(atr))
             {
                 return CreateRewardRiskBlocked(
                     "INVALID REWARD/RISK GEOMETRY");
