@@ -100,16 +100,20 @@ namespace cAlgo
                 false,
                 false);
 
-            AddZoneCandidate(
-                candidates,
-                market,
-                atr,
-                m5Ob,
-                "M5 ORDER_BLOCK",
-                false,
-                false,
-                true,
-                false);
+            if (m5Ob != null &&
+                m5Ob.High > m5Ob.Low)
+            {
+                AddZoneCandidate(
+                    candidates,
+                    market,
+                    atr,
+                    m5Ob,
+                    "M5 ORDER_BLOCK",
+                    false,
+                    false,
+                    true,
+                    false);
+            }
 
             AddZoneCandidate(
                 candidates,
