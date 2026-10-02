@@ -31,6 +31,10 @@ plan_input = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.cs
 market_entry = read("src/CFIP.Indicator/Planning/Execution/MarketEntryValidation.cs")
 plan_market = read("src/CFIP.Indicator/Planning/TradePlan/PlanMarketConstraintValidator.cs")
 actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+actionability_preparation = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 preview_builder = read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs")
 pending_snapshot = read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs")
 pending_fill = read("src/CFIP.Indicator/Trading/Lifecycle/PendingFilledHandler.cs")
