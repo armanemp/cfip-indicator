@@ -6,6 +6,7 @@
 - Added M5/M15 cross-timeframe overlap candidates so source-frame confluence can materially improve entry-zone selection.
 - M15 receives a bounded priority bonus while M5 remains the entry-precision layer.
 - Actual existing zone quality is now carried into selection instead of relying only on fixed source constants.
+- Execution-only FVG lookup now compares candidate quality, market distance and age across the valid bounded FVG set, while non-execution consumers keep the original nearest-FVG semantics.
 - Final actionability, RR, risk and cBot execution gates remain unchanged.
 - Added a dedicated static regression audit to CI.
 - Full pre-analysis -> M15 -> M5 -> M1(optional) -> entry geometry -> SL/TP/RR -> signal/alert -> cBot -> broker/protection -> outcome chain re-audited.
