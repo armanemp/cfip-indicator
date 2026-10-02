@@ -33,7 +33,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out CbotExecutionStateSnapshot snapshot)
+            out CbotExecutionStateSnapshot? snapshot)
         {
             snapshot = null;
 
