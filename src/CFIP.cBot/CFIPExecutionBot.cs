@@ -2,6 +2,7 @@ using System;
 using cAlgo.API;
 using CFIP.Contracts;
 using cAlgo;
+using CFIP.cBot.Shadow;
 
 namespace CFIP.cBot
 {
@@ -10,17 +11,27 @@ namespace CFIP.cBot
         AccessRights = AccessRights.None)]
     public sealed class CFIPExecutionBot : Robot
     {
-        private const string StartupState = "READ_ONLY_SHADOW";
+        private const string StartupState = "SHADOW";
 
         private CFIPIndicator _indicator;
-        private long _lastObservedProviderRevision = -1;
-        private string _lastObservedSignalId = "";
+        private readonly ShadowHostCoordinator _shadow =
+            new ShadowHostCoordinator();
+
+        private ShadowHostState _state =
+            ShadowHostState.Waiting;
+        private long _lastLoggedRevision = -1;
+        private string _lastLoggedReason = "";
+        private long _tickCount;
+        private DateTime _startedUtc;
 
         protected override void OnStart()
         {
+            _startedUtc = Server.TimeInUtc;
+            _tickCount = 0;
+
             Print(
                 "CFIP cBot START | state={0} | broker mutation=DISARMED | " +
-                "provider=READ-ONLY | contractVersion={1}",
+                "shadow host=ACTIVE | contractVersion={1}",
                 StartupState,
                 ContractVersion.Current);
 
@@ -37,93 +48,171 @@ namespace CFIP.cBot
                             EnableLiveExitManagement = false
                         });
 
-                // cTrader may lazily evaluate a referenced custom indicator until
-                // an Output is consumed. Heartbeat is intentionally invisible and
-                // exists to make provider evaluation deterministic.
                 double heartbeat =
                     _indicator.ProviderHeartbeat.LastValue;
 
                 Print(
-                    "CFIP PROVIDER | created={0} | heartbeat={1} | revision={2} | state={3}",
+                    "CFIP PROVIDER HOST | created={0} | heartbeat={1} | " +
+                    "providerRevision={2} | state={3}",
                     _indicator != null,
                     heartbeat,
-                    _indicator.ProviderRevision,
-                    _indicator.ProviderState);
-
-                ObserveProviderSnapshot();
+                    _indicator == null
+                        ? -1
+                        : _indicator.ProviderRevision,
+                    _indicator == null
+                        ? "UNAVAILABLE"
+                        : _indicator.ProviderState);
             }
             catch (Exception ex)
             {
+                _state = ShadowHostState.Blocked;
+
                 Print(
-                    "CFIP PROVIDER FAIL | state=BLOCKED | reason={0}",
+                    "CFIP PROVIDER HOST FAIL | state=BLOCKED | reason={0}",
                     ex.Message);
             }
         }
 
         protected override void OnTick()
         {
+            _tickCount++;
+
             if (_indicator == null)
+            {
+                LogStateIfChanged(
+                    new ShadowHostResult(
+                        ShadowHostState.Blocked,
+                        "INDICATOR UNAVAILABLE",
+                        false,
+                        -1,
+                        "",
+                        "",
+                        "",
+                        ""));
                 return;
+            }
 
-            // Reading the Output first is the supported liveness trigger for a
-            // referenced custom indicator; no chart scraping/reflection is used.
-            double heartbeat =
-                _indicator.ProviderHeartbeat.LastValue;
+            try
+            {
+                double heartbeat =
+                    _indicator.ProviderHeartbeat.LastValue;
 
-            ObserveProviderSnapshot();
+                SignalEnvelope snapshot =
+                    _indicator.LatestSignalEnvelope;
+
+                ShadowBrokerSnapshot broker =
+                    ReadBrokerSnapshot();
+
+                ShadowHostResult result =
+                    _shadow.Observe(
+                        snapshot,
+                        broker,
+                        ContractVersion.Current,
+                        _indicator.ProviderRevision,
+                        Server.TimeInUtc);
+
+                LogStateIfChanged(result);
+            }
+            catch (Exception ex)
+            {
+                _state = ShadowHostState.Blocked;
+
+                Print(
+                    "CFIP SHADOW HOST FAULT | state=BLOCKED | reason={0}",
+                    ex.Message);
+            }
         }
 
-        private void ObserveProviderSnapshot()
+        private ShadowBrokerSnapshot ReadBrokerSnapshot()
         {
-            SignalEnvelope snapshot =
-                _indicator.LatestSignalEnvelope;
+            int managedPositions = 0;
+            foreach (Position position in Positions)
+            {
+                if (position != null &&
+                    string.Equals(
+                        position.SymbolName,
+                        SymbolName,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        position.Label,
+                        ShadowHostValidator.ManagedLabel,
+                        StringComparison.Ordinal))
+                {
+                    managedPositions++;
+                }
+            }
 
-            long revision =
-                _indicator.ProviderRevision;
+            int managedPendingOrders = 0;
+            foreach (PendingOrder order in PendingOrders)
+            {
+                if (order != null &&
+                    string.Equals(
+                        order.SymbolName,
+                        SymbolName,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        order.Label,
+                        ShadowHostValidator.PendingManagedLabel,
+                        StringComparison.Ordinal))
+                {
+                    managedPendingOrders++;
+                }
+            }
 
-            if (snapshot == null ||
-                revision == _lastObservedProviderRevision)
+            return new ShadowBrokerSnapshot(
+                managedPositions,
+                managedPendingOrders,
+                SymbolName ?? "",
+                Symbol.Bid,
+                Symbol.Ask,
+                Symbol.PipSize);
+        }
+
+        private void LogStateIfChanged(
+            ShadowHostResult result)
+        {
+            if (result == null)
                 return;
 
-            _lastObservedProviderRevision =
-                revision;
+            if (result.State == _state &&
+                result.Revision == _lastLoggedRevision &&
+                string.Equals(
+                    result.Reason,
+                    _lastLoggedReason,
+                    StringComparison.Ordinal))
+                return;
 
-            _lastObservedSignalId =
-                snapshot.Identity == null
-                    ? ""
-                    : snapshot.Identity.SignalId ?? "";
+            _state =
+                result.State;
+
+            _lastLoggedRevision =
+                result.Revision;
+
+            _lastLoggedReason =
+                result.Reason ?? "";
 
             Print(
-                "CFIP PROVIDER UPDATE | revision={0} | state={1} | stage={2} | " +
-                "signal={3} | scenario={4} | plan={5} | action={6} | " +
-                "direction={7} | sourceTf={8} | createdM5={9}",
-                revision,
-                _indicator.ProviderState,
-                snapshot.Stage,
-                _lastObservedSignalId,
-                snapshot.Identity == null ? "" : snapshot.Identity.ScenarioId,
-                snapshot.Identity == null ? "" : snapshot.Identity.PlanId,
-                snapshot.Intent == null
-                    ? "NONE"
-                    : snapshot.Intent.Action.ToString(),
-                snapshot.Identity == null
-                    ? TradeDirection.None.ToString()
-                    : snapshot.Identity.Direction.ToString(),
-                snapshot.Identity == null
-                    ? ""
-                    : snapshot.Identity.SourceTimeframe,
-                snapshot.Identity == null
-                    ? -1
-                    : snapshot.Identity.CreatedClosedM5);
+                "CFIP SHADOW STATE | state={0} | reason={1} | " +
+                "revision={2} | signal={3} | scenario={4} | plan={5} | " +
+                "key={6} | tickCount={7}",
+                result.State,
+                result.Reason,
+                result.Revision,
+                result.SignalId ?? "",
+                result.ScenarioId ?? "",
+                result.PlanId ?? "",
+                result.IdempotencyKey ?? "",
+                _tickCount);
         }
 
         protected override void OnStop()
         {
             Print(
                 "CFIP cBot STOP | state={0} | broker mutation=DISARMED | " +
-                "lastProviderRevision={1}",
-                StartupState,
-                _lastObservedProviderRevision);
+                "lastRevision={1} | sessionMs={2}",
+                _state,
+                _shadow.LastAcceptedRevision,
+                (Server.TimeInUtc - _startedUtc).TotalMilliseconds);
         }
     }
 }

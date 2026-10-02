@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>CFIP.cBot.Shadow.Tests</AssemblyName>
+    <RootNamespace>CFIP.cBot.Shadow.Tests</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/CFIP.Contracts/CFIP.Contracts.csproj" />
+    <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostContracts.cs" />
+    <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostValidator.cs" />
+    <Compile Include="../../src/CFIP.cBot/Shadow/ShadowHostCoordinator.cs" />
+  </ItemGroup>
+</Project>

@@ -1,3 +1,16 @@
+## CBOT-P3 — cBot Host / Shadow — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Implemented a deterministic read-only shadow host around the canonical Indicator provider. The cBot now validates contract identity/version/scope, provider/envelope revision agreement, expiry, intent lineage, basic BUY/SELL geometry integrity, duplicate/conflicting revisions, single-plan capacity and live quote validity; trading permission remains a P4 broker-submission concern because the Robot host does not expose the documented Plugin-style Permissions object. A bounded 128-entry idempotency cache suppresses repeated intents without introducing hot-path persistence.
+
+Added deterministic behavioral fixtures under `tools/CFIP.cBot.Shadow.Tests` and wired them into the cTrader build workflow. Added `tools/audit_cbot_shadow_host.py` to Source/Architecture CI.
+
+No broker mutation was added or moved. The cBot remains shadow-only and execution-disarmed.
+
+Next: **CBOT-P4 — Broker Mutation Extraction**.
+
+
 ## CBOT-P2 — Read-Only Indicator Provider — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**

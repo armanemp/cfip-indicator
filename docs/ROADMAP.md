@@ -336,7 +336,27 @@ Phase report: `docs/PHASE-CBOT-P2-READ-ONLY-INDICATOR-PROVIDER.md`.
 
 ## CBOT-P3 — cBot Host / Shadow
 
-Create src/CFIP.cBot with deterministic receive → validate → expiry/revision → deduplicate → broker-safety → shadow/telemetry state machine. Shadow mode must not mutate the broker.
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+The cBot now runs a deterministic shadow host over the canonical Indicator provider:
+
+`receive → validate → expiry/revision → deduplicate → broker-safety → shadow state → telemetry`.
+
+Implemented:
+- `src/CFIP.cBot/Shadow/ShadowHostContracts.cs`
+- `src/CFIP.cBot/Shadow/ShadowHostValidator.cs`
+- `src/CFIP.cBot/Shadow/ShadowHostCoordinator.cs`
+- cBot broker-state read adapter with single-plan capacity;
+- bounded 128-key idempotency cache;
+- providerRevision/envelopeRevision integrity check;
+- BUY/SELL contract-geometry safety invariants;
+- deterministic behavioral test project;
+- Source/Architecture audit `tools/audit_cbot_shadow_host.py`.
+
+No broker mutation is added in P3.
+
+Phase report: `docs/PHASE-CBOT-P3-CBOT-HOST-SHADOW.md`.
+
 
 ## CBOT-P4 — Broker Mutation Extraction
 
