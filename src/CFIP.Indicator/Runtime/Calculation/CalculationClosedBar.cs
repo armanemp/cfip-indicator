@@ -141,9 +141,8 @@ namespace cAlgo
             ReconcilePreTradePlanDirection(
                 closedM5);
 
-            EnsureSignalPlan(
-                closedM5,
-                DecisionPolicyMode.Confirmed);
+            TryEnsureAutomaticPlan(
+                closedM5);
 
             // Alerting reads the exact Plan created by the authoritative
             // actionability gate, eliminating Decision-vs-Plan price drift.
