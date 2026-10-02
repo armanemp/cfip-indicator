@@ -109,6 +109,19 @@ namespace cAlgo
                         ? "0"
                         : canonicalIntent.InitialTarget
                             .ToString("R", CultureInfo.InvariantCulture),
+                    canonicalIntent == null ||
+                    canonicalIntent.MarketProfile == null
+                        ? "NO-MARKET-PROFILE"
+                        : canonicalIntent.MarketProfile.MarketRangePips
+                            .ToString("R", CultureInfo.InvariantCulture),
+                    canonicalIntent == null ||
+                    canonicalIntent.MarketProfile == null
+                        ? "NO-LADDER"
+                        : canonicalIntent.MarketProfile.UseServerTakeProfitLadder
+                            .ToString(),
+                    canonicalIntent == null
+                        ? ""
+                        : canonicalIntent.ExecutionLabel ?? "",
                     expiryKey,
                     planSnapshot == null
                         ? "NO-PLAN"
