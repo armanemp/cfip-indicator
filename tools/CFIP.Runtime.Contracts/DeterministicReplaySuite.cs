@@ -296,12 +296,20 @@ namespace cAlgo
                         DateTimeKind.Utc)
                     .AddMinutes(sequence * 7);
 
+                int causalLatencyMs =
+                    Math.Max(
+                        0,
+                        scenario.CausalLatencyMs);
+
                 DateTime causalUtc =
                     referenceUtc.AddMilliseconds(
-                        -Math.Max(0, scenario.CausalLatencyMs));
+                        -causalLatencyMs);
 
                 DateTime quoteUtc =
-                    referenceUtc.AddMilliseconds(-25);
+                    causalUtc.AddMilliseconds(
+                        Math.Min(
+                            25,
+                            causalLatencyMs));
 
                 ReplayIndicatorSnapshot indicators =
                     new ReplayIndicatorSnapshot(
