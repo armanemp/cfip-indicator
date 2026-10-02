@@ -196,9 +196,7 @@ namespace cAlgo
 
             return SignalTraceIdentityRule.CreateTraceId(
                 SymbolName,
-                Bars == null
-                    ? "UNKNOWN"
-                    : Bars.TimeFrame.ToString(),
+                ExecutionTimeframePolicy.PrimaryExecution,
                 MemoryAccountScopeToken(),
                 MemoryConfigurationFingerprint(),
                 GetSignalBarOpenTimeUtcTicks(closedM5));
