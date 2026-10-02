@@ -53,6 +53,14 @@ namespace cAlgo
                 snapshot.PlanActive ? "1" : "0",
                 snapshot.PendingOrder ? "1" : "0",
                 snapshot.LivePosition ? "1" : "0",
+                FramePresentationKey(_m1Frame),
+                FramePresentationKey(_m5Frame),
+                FramePresentationKey(_m15Frame),
+                FramePresentationKey(_m30Frame),
+                FramePresentationKey(_h1Frame),
+                FramePresentationKey(_h4Frame),
+                FramePresentationKey(_d1Frame),
+                FramePresentationKey(_w1Frame),
                 snapshot.Confidence,
                 snapshot.SmartQuality,
                 snapshot.TimeframeAgreement,
@@ -88,6 +96,20 @@ namespace cAlgo
                 GetAutoOrdersPanelState(),
                 GetAutoProtectionPanelState(),
                 _brokerProtectionRecoveryRequired ? "1" : "0");
+        }
+
+        private string FramePresentationKey(
+            Frame frame)
+        {
+            if (frame == null)
+                return "NULL";
+
+            return string.Join(
+                ":",
+                frame.Index,
+                frame.Direction,
+                frame.Quality,
+                frame.Evidence);
         }
 
         private string PriceKey(
