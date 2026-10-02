@@ -74,9 +74,19 @@ require(
     "pinned to the last closed M5 candle" in signal_renderer,
     "signal arrow renderer must use the current chart bar",
 )
+watch_gate_start = watch_renderer.find("bool showDirectionalWatch")
+watch_gate_end = watch_renderer.find(
+    "if ((showConfirmedSignal || showDirectionalWatch)",
+    watch_gate_start,
+)
+watch_gate = (
+    watch_renderer[watch_gate_start:watch_gate_end]
+    if watch_gate_start >= 0 and watch_gate_end >= 0
+    else ""
+)
 require(
-    "snapshot.DecisionEntryAllowed" not in
-    watch_renderer.split("private bool IsStrongWatchSnapshot", 1)[0],
+    watch_gate_start >= 0 and
+    "snapshot.DecisionEntryAllowed" not in watch_gate,
     "directional WATCH arrow must not be coupled to EntryAllowed",
 )
 require(
