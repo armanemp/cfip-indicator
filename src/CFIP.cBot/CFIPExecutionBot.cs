@@ -125,18 +125,6 @@ namespace CFIP.cBot
 
         private ShadowBrokerSnapshot ReadBrokerSnapshot()
         {
-            bool tradingPermissionAllowed;
-
-            try
-            {
-                tradingPermissionAllowed =
-                    this.Permissions.TradingPermission.IsAllowed;
-            }
-            catch
-            {
-                tradingPermissionAllowed = false;
-            }
-
             int managedPositions = 0;
             foreach (Position position in Positions)
             {
@@ -172,7 +160,6 @@ namespace CFIP.cBot
             }
 
             return new ShadowBrokerSnapshot(
-                tradingPermissionAllowed,
                 managedPositions,
                 managedPendingOrders,
                 SymbolName ?? "",
