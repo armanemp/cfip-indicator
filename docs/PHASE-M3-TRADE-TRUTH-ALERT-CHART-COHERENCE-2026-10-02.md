@@ -57,6 +57,7 @@ The existing geometry contract is preserved:
 - solid lines;
 - bounded thickness policy;
 - 40-candle compact span by default;
+- labels start to the left of the line endpoint with a deterministic horizontal gap;
 - no infinite extension.
 
 ## Full-chain ordering audited
