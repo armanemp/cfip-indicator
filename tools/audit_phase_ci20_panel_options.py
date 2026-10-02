@@ -127,20 +127,39 @@ def require(text, token, label):
     if token not in text:
         errors.append(label)
 
+panel_dimension_rule = read(SRC / "Core/Math/PanelDimensionRule.cs")
+panel_layout = read(SRC / "UI/Panel/PanelLayoutManager.cs")
+panel_main = read(SRC / "UI/Panel/PanelMainRenderer.cs")
+
 require(
-    read(SRC / "UI/Panel/PanelMainRenderer.cs"),
-    "Math.Min(\n                                                                700,\n                                                                PanelWidth)",
-    "PanelWidth maximum is not aligned to public MaxValue=700",
+    panel_dimension_rule,
+    "EffectiveWidth(",
+    "PanelWidth canonical dimension owner is missing",
 )
 require(
-    read(SRC / "UI/Panel/PanelMainRenderer.cs"),
-    "Math.Max(\n                                                            220,",
+    panel_dimension_rule,
+    "configuredWidth",
+    "PanelDimensionRule does not expose configured-width ownership",
+)
+require(
+    panel_dimension_rule,
+    "220",
     "PanelWidth minimum is not aligned to public MinValue=220",
 )
 require(
-    read(SRC / "UI/Panel/PanelFactory.cs"),
-    "Math.Min(\n                                                    700,\n                                                    PanelWidth)",
-    "PanelFactory does not honor PanelWidth max=700",
+    panel_dimension_rule,
+    "700",
+    "PanelWidth maximum is not aligned to public MaxValue=700",
+)
+require(
+    panel_layout,
+    "PanelDimensionRule.EffectiveWidth(",
+    "PanelLayoutManager does not consume the canonical PanelWidth owner",
+)
+require(
+    panel_main,
+    "EffectivePanelContentWidth()",
+    "PanelMainRenderer does not consume the canonical panel content-width owner",
 )
 require(
     read(SRC / "UI/Panel/Theme/PanelSurfaceAndHeaderLayout.cs"),
