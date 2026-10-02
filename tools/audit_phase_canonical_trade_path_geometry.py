@@ -101,6 +101,15 @@ check(
 )
 
 check(
+    "historical trace geometry reuses the canonical actual-entry path",
+    "TryBuildCanonicalTradePathGeometry(" in trace and
+    '"CANONICAL-ACTIONABILITY"' in trace and
+    "canonicalPreview.Entry" in trace and
+    "canonicalPreview.Stop" in trace and
+    "canonicalPreview.Tp1" in trace,
+)
+
+check(
     "panel lifecycle reports actionable state before trigger waiting",
     "_decision.ActionableNow" in panel and
     panel.index('_decision.ActionableNow
