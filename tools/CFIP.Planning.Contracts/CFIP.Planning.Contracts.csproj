@@ -24,6 +24,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateConstraintRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/PendingEntryPriceRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetObstacleCachePolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/RiskPercentPolicy.cs" />
