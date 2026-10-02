@@ -41,6 +41,12 @@ namespace cAlgo
                                                         _panelScroll == null ||
                                                         _buttonStack == null)
                                                         return;
+
+                                                    if (_panelAlertMessageStack == null)
+                                                        CreatePanelAlertMessageRail();
+
+                                                    UpdatePanelAlertMessageRail();
+
                 
                                                     DateTime now =
                                                         Server.TimeInUtc;
