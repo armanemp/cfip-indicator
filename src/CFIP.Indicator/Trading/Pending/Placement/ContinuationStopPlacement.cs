@@ -47,7 +47,12 @@ namespace cAlgo
 
                 RelativeTakeProfitProtections serverTakeProfits;
                 StopLossBreakEven serverBreakEven;
-                bool useServerTakeProfitLadder = TryBuildServerSideTakeProfitLadder(trigger, target, volume, out serverTakeProfits, out serverBreakEven);
+                bool useServerTakeProfitLadder = TryBuildServerSideTakeProfitLadder(
+                        pendingIntent.RequestedEntry,
+                        pendingIntent.Target,
+                        pendingIntent.Volume,
+                        out serverTakeProfits,
+                        out serverBreakEven);
                 TradeResult result;
                 try
                 {
