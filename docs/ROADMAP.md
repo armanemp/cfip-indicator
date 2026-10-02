@@ -182,7 +182,7 @@ Detailed Track 19 record:
 
 ## 2.0.1 — Current certification state — 2026-10-02
 
-**Active blocking track: CI-17 — Target-terminal cTrader validation.**
+**Active blocking track: CI-17A — Panel live-content refresh correction, within CI-17 target-terminal validation.**
 
 Repository implementation package: **merged** in PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.
 
@@ -191,6 +191,25 @@ CI-17 implementation HEAD `9a71b1dbac09e41759458a404ce4675dc4972f92` passed Sour
 The remaining acceptance boundary is the real target cTrader terminal/broker: M1/M5 timing, initialization/data readiness, Bid/Ask execution geometry, market/pending fill and slippage, cancellation/expiration, restart/reconnect, chart/panel responsiveness and end-to-end Decision → Plan → Execution synchronization.
 
 **CI-FINAL must not be certified until those manual evidence items are recorded.** Track 12A / cBot separation remains gated behind CI-FINAL.
+
+### CI-17A — Panel live-content refresh correction — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Root cause: the heartbeat refreshed only clock/live rows while RenderPanel() could short-circuit on an unchanged presentation key, leaving mutable reaction/prediction/context/panel rows stale.
+
+Completed:
+- added bounded 500 ms content-only panel refresh;
+- reused one canonical SignalVisualSnapshot per content refresh;
+- refreshed RenderPanelRows() without rebuilding panel layout/container;
+- preserved presentation-key optimization for full renders;
+- forced immediate refresh after panel restore/reset;
+- made live RR heartbeat use current Bid/Ask;
+- added deterministic Runtime Contract and accumulated audit_phase_ci_17a.py.
+
+No public parameters, strategy thresholds, decision rules or broker mutation paths changed.
+
+Target-terminal acceptance remains required for visible refresh latency and live cTrader behavior.
 
 Machine-enforced baseline facts for the Phase 0.1 verification commit:
 
