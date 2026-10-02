@@ -136,16 +136,16 @@ namespace cAlgo
         [Parameter("Strong SELL Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "Red")]
         public Color StrongSellArrowColor { get; set; }
 
-        [Parameter("Confirmed BUY Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "Lime")]
+        [Parameter("Confirmed BUY Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "#6BE38B")]
         public Color ConfirmedBuyArrowColor { get; set; }
 
-        [Parameter("Confirmed SELL Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "Red")]
+        [Parameter("Confirmed SELL Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "#FF6B78")]
         public Color ConfirmedSellArrowColor { get; set; }
 
-        [Parameter("Caution BUY Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "#9AA7B4")]
+        [Parameter("Caution BUY Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "#B8F0C6")]
         public Color CautionBuyArrowColor { get; set; }
 
-        [Parameter("Caution SELL Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "#9AA7B4")]
+        [Parameter("Caution SELL Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "#FFB3BA")]
         public Color CautionSellArrowColor { get; set; }
 
         [Parameter("Blocked / Reaction Arrow Color", Group = "21 · Complete Intelligence", DefaultValue = "#9AA7B4")]
