@@ -104,7 +104,12 @@ namespace cAlgo
                         : input.M5Frame.IndicatorConfluenceQuality,
                     input.M5Frame == null
                         ? 0
-                        : input.M5Frame.IndicatorConflict);
+                        : input.M5Frame.IndicatorConflict,
+                    consensus.Direction == 0
+                        ? 0
+                        : consensus.Direction == 1
+                            ? evidence.BullIndependentEvidenceGroups
+                            : evidence.BearIndependentEvidenceGroups);
 
             if (decision.Direction == 0)
             {

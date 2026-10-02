@@ -32,6 +32,16 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
+                "CBOT LINK  " +
+                CbotExecutionStatePanelText() +
+                "  •  " +
+                CbotExecutionScenarioPanelText(),
+                CbotExecutionStatePanelColor(),
+                false,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
                 "BREAK-EVEN  " +
                 CompactText(
                     string.IsNullOrWhiteSpace(

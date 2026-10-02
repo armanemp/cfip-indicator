@@ -34,6 +34,7 @@ jobs:
       - run: python tools/audit_phase_cbot_p4c.py
       - run: python tools/audit_phase_cbot_p4d.py
       - run: python tools/audit_phase_cbot_p4e.py
+      - run: python tools/audit_phase_cbot_p5.py
       - run: python tools/audit_phase_build_warning_panel_height.py
       - run: python tools/audit_phase_m15_primary_execution_risk_spread.py
       - run: python tools/audit_cbot_demo_live_market.py
@@ -114,6 +115,7 @@ jobs:
       - run: python tools/audit_phase_ci_17a.py
       - run: python tools/audit_phase_ci_18_signal_panel.py
       - run: python tools/audit_phase_ci_19_signal_target_quality.py
+      - run: python tools/audit_phase_ci20_engine_quality.py
       - run: python tools/audit_phase_mtf_primary_panel.py
       - run: python tools/audit_phase_mtf_primary_location_obfvg.py
       - run: python tools/audit_phase_mtf_primary_provider_identity.py
@@ -124,3 +126,4 @@ jobs:
       - run: python tools/audit_phase_11_4.py
       - run: python tools/audit_phase_11_5.py
       - run: python tools/audit_phase_11_8.py
+      - run: python tools/audit_phase_ci20_panel_options.py

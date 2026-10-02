@@ -103,6 +103,8 @@ namespace cAlgo
                             TimeframeAgreement(-1, closedContext),
                             IndependentEvidence(1),
                             IndependentEvidence(-1),
+                            IndependentEvidenceGroupCount(1),
+                            IndependentEvidenceGroupCount(-1),
                             StructuralConfirmations(1),
                             StructuralConfirmations(-1),
                             _marketStateSnapshot.M5.RegimeQuality,

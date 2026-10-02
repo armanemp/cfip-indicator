@@ -42,7 +42,8 @@ namespace cAlgo
                 if (!cachedM1Frame)
                 {
                     _m1Frame =
-                        AnalyzeFrame(
+                        AnalyzeFrameCached(
+                            _m1Frame,
                             _m1Bars,
                             m1Index);
                 }
@@ -53,40 +54,47 @@ namespace cAlgo
             }
 
             _m5Frame =
-                AnalyzeFrame(
+                AnalyzeFrameCached(
+                    _m5Frame,
                     _m5Bars,
                     closedM5);
 
             _m15Frame =
-                AnalyzeFrame(
+                AnalyzeFrameCached(
+                    _m15Frame,
                     _m15Bars,
                     m15Index);
 
             _m30Frame =
-                AnalyzeFrame(
+                AnalyzeFrameCached(
+                    _m30Frame,
                     _m30Bars,
                     m30Index);
 
             _h1Frame =
-                AnalyzeFrame(
+                AnalyzeFrameCached(
+                    _h1Frame,
                     _h1Bars,
                     h1Index);
 
             _h4Frame =
-                AnalyzeFrame(
+                AnalyzeFrameCached(
+                    _h4Frame,
                     _h4Bars,
                     h4Index);
 
             _d1Frame =
                 d1Index >= 10
-                    ? AnalyzeFrame(
+                    ? AnalyzeFrameCached(
+                        _d1Frame,
                         _d1Bars,
                         d1Index)
                     : null;
 
             _w1Frame =
                 w1Index >= 10
-                    ? AnalyzeFrame(
+                    ? AnalyzeFrameCached(
+                        _w1Frame,
                         _w1Bars,
                         w1Index)
                     : null;

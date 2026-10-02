@@ -7,9 +7,11 @@ namespace cAlgo
     {
         private void ApplyPanelActionButtonsLayout(
             int buttonMargin,
-            int toggleSide,
+            int toggleWidth,
+            int toggleHeight,
             int border,
-            int borderAlpha)
+            int borderAlpha,
+            int buttonGap)
         {
             if (_panelToggleButton == null)
                 return;
@@ -18,10 +20,10 @@ namespace cAlgo
                 ShowPanelToggleButton;
 
             _panelToggleButton.Width =
-                toggleSide;
+                toggleWidth;
 
             _panelToggleButton.Height =
-                toggleSide;
+                toggleHeight;
 
             _panelToggleButton.ForegroundColor =
                 PanelTextColor;
@@ -63,7 +65,9 @@ namespace cAlgo
                 new Thickness(
                     buttonMargin,
                     buttonMargin,
-                    0,
+                    Math.Max(
+                        0,
+                        buttonGap),
                     buttonMargin);
         }
     }

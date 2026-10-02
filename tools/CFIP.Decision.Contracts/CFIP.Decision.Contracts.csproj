@@ -22,6 +22,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TopDownCalibrationRule.cs" Link="Core/Math/TopDownCalibrationRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvidenceSnapshot.cs" Link="Decision/DecisionEvidenceSnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndependentEvidenceFusionRule.cs" Link="Core/Math/IndependentEvidenceFusionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/IndependentEvidenceDiversityRule.cs" Link="Core/Math/IndependentEvidenceDiversityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionFrameContribution.cs" Link="Decision/DecisionFrameContribution.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionFrameContributionCalculator.cs" Link="Decision/DecisionFrameContributionCalculator.cs" />
     <Compile Include="../../src/CFIP.Indicator/Analysis/Market/Decision/DecisionScoreInput.cs" Link="Decision/DecisionScoreInput.cs" />

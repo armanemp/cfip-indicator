@@ -136,9 +136,9 @@ check(
 )
 
 check(
-    "host execution is chart-timeframe independent",
+    "host launch is M5 and execution remains chart-timeframe independent",
     "Bars.TimeFrame != TimeFrame.Minute15" not in host and
-    'DefaultTimeFrame = "M15"' in host,
+    'DefaultTimeFrame = "M5"' in host,
 )
 
 check(

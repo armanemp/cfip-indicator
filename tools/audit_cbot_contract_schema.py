@@ -27,6 +27,8 @@ TRANSPORT_UTILITY_FILES = {
     "SignalEnvelopeCodec.cs",
     "SignalBusKey.cs",
     "ManagementBusKey.cs",
+    "CbotExecutionStateBus.cs",
+    "ContractBusKeyHash.cs",
 }
 
 errors = []
@@ -42,21 +44,32 @@ else:
     for path in CONTRACTS.glob("*.cs"):
         source = path.read_text(encoding="utf-8")
         rel = path.relative_to(ROOT).as_posix()
+        # Ignore documentation/comments when checking for platform coupling.
+        code = re.sub(r"/\*[\s\S]*?\*/", " ", source)
+        code = re.sub(r"//[^\r\n]*", " ", code)
 
-        for forbidden in ("cAlgo", "cTrader.Automate", "cAlgo.API", "Robot", "Indicator"):
-            if forbidden in source:
-                errors.append(f"platform dependency in {rel}: {forbidden}")
+        for forbidden in (
+            r"\bcAlgo\b",
+            r"\bcTrader\.Automate\b",
+            r"\bcAlgo\.API\b",
+            r"\bRobot\b",
+            r"\bIndicator\b",
+        ):
+            if re.search(forbidden, code):
+                errors.append(
+                    f"platform dependency in {rel}: {forbidden}"
+                )
 
         if re.search(
             r'\b(public|internal|private|protected)\s+'
             r'[A-Za-z0-9_<>,.?\[\]]+\s+'
             r'[A-Za-z_][A-Za-z0-9_]*\s*'
             r'\{\s*get\s*;\s*set\s*;',
-            source,
+            code,
         ):
             errors.append(f"mutable auto-property in contract source: {rel}")
 
-        if re.search(r'\bset\s*;', source):
+        if re.search(r'\bset\s*;', code):
             errors.append(f"setter found in contract source: {rel}")
 
         if (

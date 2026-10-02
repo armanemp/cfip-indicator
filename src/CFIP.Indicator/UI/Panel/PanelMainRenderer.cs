@@ -85,8 +85,10 @@ namespace cAlgo
                                         
                                                     int effectivePanelWidth =
                                                         Math.Max(
-                                                            260,
-                                                            PanelWidth);
+                                                            220,
+                                                            Math.Min(
+                                                                700,
+                                                                PanelWidth));
                                         
                                                     int contentWidth =
                                                         Math.Max(
@@ -103,31 +105,30 @@ namespace cAlgo
                                                             22,
                                                             Math.Min(
                                                                 40,
-                                                                Math.Min(
-                                                                    PanelToggleWidth,
-                                                                    PanelToggleHeight)));
+                                                                PanelToggleHeight));
+
+                                                    int toggleHeight =
+                                                        Math.Max(
+                                                            22,
+                                                            Math.Min(
+                                                                40,
+                                                                PanelToggleHeight));
                                         
-                                                    int buttonGap = 0;
+                                                    int buttonGap =
+                                                        Math.Max(
+                                                            0,
+                                                            PanelButtonGap);
                                         
                                                     int buttonMargin =
                                                         Math.Max(
                                                             0,
                                                             PanelPadding);
                                         
-                                                    int toggleSideForLayout =
-                                                        Math.Max(
-                                                            22,
-                                                            Math.Min(
-                                                                40,
-                                                                Math.Min(
-                                                                    PanelToggleWidth,
-                                                                    PanelToggleHeight)));
-                                        
                                                     int buttonContentHeight =
                                                         Math.Max(
                                                             buttonHeight,
                                                             ShowPanelToggleButton
-                                                                ? toggleSideForLayout
+                                                                ? toggleHeight
                                                                 : 0);
                                         
                                                     int buttonAreaHeight =
@@ -138,8 +139,10 @@ namespace cAlgo
                                         
                                                     int configuredMaxHeight =
                                                         Math.Max(
-                                                            240,
-                                                            PanelMaxHeight);
+                                                            260,
+                                                            Math.Min(
+                                                                1200,
+                                                                PanelMaxHeight));
                                         
                                                     int maxHeight =
                                                         ResolvePanelMaximumHeight(

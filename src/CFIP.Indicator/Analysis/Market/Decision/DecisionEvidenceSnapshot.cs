@@ -8,6 +8,8 @@ namespace cAlgo
         public int BearTimeframeAgreement { get; }
         public int BullIndependentEvidence { get; }
         public int BearIndependentEvidence { get; }
+        public int BullIndependentEvidenceGroups { get; }
+        public int BearIndependentEvidenceGroups { get; }
         public int BullStructuralConfirmations { get; }
         public int BearStructuralConfirmations { get; }
         public int RegimeQuality { get; }
@@ -40,11 +42,62 @@ namespace cAlgo
             int bearConfidenceAdjustment,
             int bullHigherTimeframePenalty,
             int bearHigherTimeframePenalty)
+            : this(
+                bullTimeframeAgreement,
+                bearTimeframeAgreement,
+                bullIndependentEvidence,
+                bearIndependentEvidence,
+                0,
+                0,
+                bullStructuralConfirmations,
+                bearStructuralConfirmations,
+                regimeQuality,
+                bullRetestQuality,
+                bearRetestQuality,
+                bullClosedBarTriggerReady,
+                bearClosedBarTriggerReady,
+                bullM1TriggerReady,
+                bearM1TriggerReady,
+                bullConfidenceAdjustment,
+                bearConfidenceAdjustment,
+                bullHigherTimeframePenalty,
+                bearHigherTimeframePenalty)
+        {
+        }
+
+        public DecisionEvidenceSnapshot(
+            int bullTimeframeAgreement,
+            int bearTimeframeAgreement,
+            int bullIndependentEvidence,
+            int bearIndependentEvidence,
+            int bullIndependentEvidenceGroups,
+            int bearIndependentEvidenceGroups,
+            int bullStructuralConfirmations,
+            int bearStructuralConfirmations,
+            int regimeQuality,
+            int bullRetestQuality,
+            int bearRetestQuality,
+            bool bullClosedBarTriggerReady,
+            bool bearClosedBarTriggerReady,
+            bool bullM1TriggerReady,
+            bool bearM1TriggerReady,
+            int bullConfidenceAdjustment,
+            int bearConfidenceAdjustment,
+            int bullHigherTimeframePenalty,
+            int bearHigherTimeframePenalty)
         {
             BullTimeframeAgreement = NumericGuards.ClampInt(bullTimeframeAgreement, 0, 100);
             BearTimeframeAgreement = NumericGuards.ClampInt(bearTimeframeAgreement, 0, 100);
             BullIndependentEvidence = Math.Max(0, bullIndependentEvidence);
             BearIndependentEvidence = Math.Max(0, bearIndependentEvidence);
+            BullIndependentEvidenceGroups = NumericGuards.ClampInt(
+                bullIndependentEvidenceGroups,
+                0,
+                4);
+            BearIndependentEvidenceGroups = NumericGuards.ClampInt(
+                bearIndependentEvidenceGroups,
+                0,
+                4);
             BullStructuralConfirmations = Math.Max(0, bullStructuralConfirmations);
             BearStructuralConfirmations = Math.Max(0, bearStructuralConfirmations);
             RegimeQuality = NumericGuards.ClampInt(regimeQuality, 0, 100);

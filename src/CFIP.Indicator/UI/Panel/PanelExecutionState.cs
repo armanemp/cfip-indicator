@@ -26,6 +26,8 @@ namespace cAlgo
 
         private void EnsurePanelExecutionProtectionStateCache()
         {
+            RefreshCbotExecutionStateIfDue();
+
             if (_panelExecutionProtectionStateCached)
                 return;
 
@@ -133,15 +135,26 @@ namespace cAlgo
         {
             EnsurePanelExecutionProtectionStateCache();
 
-            return FormatExecutionPanelState(
-                _panelAutoTradingState,
-                _autoExecutionBlockReason,
-                "READY TO SUBMIT");
+            string state =
+                FormatExecutionPanelState(
+                    _panelAutoTradingState,
+                    _autoExecutionBlockReason,
+                    "READY TO SUBMIT");
+
+            return
+                state +
+                "  •  " +
+                CbotExecutionStatePanelText();
         }
         
         private Color GetAutoTradingPanelColor()
         {
             EnsurePanelExecutionProtectionStateCache();
+
+            if (AutoTradingEnabled &&
+                !CbotCanMarketExecute())
+                return PanelWarningColor;
+
             return ExecutionPanelStateColor(
                 _panelAutoTradingState);
         }
@@ -150,15 +163,26 @@ namespace cAlgo
         {
             EnsurePanelExecutionProtectionStateCache();
 
-            return FormatExecutionPanelState(
-                _panelAutoOrdersState,
-                _autoOrdersBlockReason,
-                "READY TO PLACE");
+            string state =
+                FormatExecutionPanelState(
+                    _panelAutoOrdersState,
+                    _autoOrdersBlockReason,
+                    "READY TO PLACE");
+
+            return
+                state +
+                "  •  " +
+                CbotExecutionStatePanelText();
         }
         
         private Color GetAutoOrdersPanelColor()
         {
             EnsurePanelExecutionProtectionStateCache();
+
+            if (AutomaticOrdersEnabled &&
+                !CbotCanPendingExecute())
+                return PanelWarningColor;
+
             return ExecutionPanelStateColor(
                 _panelAutoOrdersState);
         }
@@ -167,7 +191,7 @@ namespace cAlgo
         {
             EnsurePanelExecutionProtectionStateCache();
 
-            return
+            string state =
                 _panelProtectionState ==
                     ProtectionPanelStateKind.Off
                     ? "OFF"
@@ -178,11 +202,31 @@ namespace cAlgo
                             ProtectionPanelStateKind.Protected
                             ? "PROTECTED"
                             : "RECOVERY REQUIRED";
+
+            RefreshCbotExecutionStateIfDue();
+
+            if (_cBotExecutionState == null)
+                return state + " • CBOT NOT ATTACHED";
+
+            return
+                state +
+                " • CBOT MGMT " +
+                (_cBotExecutionState.ManagementExecutionEnabled
+                    ? "ON"
+                    : "OFF") +
+                (IsCbotExecutionStateFresh()
+                    ? ""
+                    : " • STALE");
         }
         
         private Color GetAutoProtectionPanelColor()
         {
             EnsurePanelExecutionProtectionStateCache();
+
+            if ((AutoBrokerProtection ||
+                 AutoProtectBrokerPositions) &&
+                !CbotCanManage())
+                return PanelWarningColor;
 
             return
                 _panelProtectionState ==

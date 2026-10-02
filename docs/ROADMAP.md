@@ -15,6 +15,39 @@ A broader pre-existing Planning Contracts warning set remains in `TradeOpportuni
 
 Phase record: `docs/PHASE-BUILD-WARNING-PANEL-HEIGHT-INTEGRITY-2026-10-02.md`.
 
+## CI-20 — Panel / cBot / Analysis Engine Coherence — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged to `main` via PR #203.**
+
+Scope:
+- audit every Display/Panel option against a canonical runtime consumer;
+- make actual cBot broker state visible to the Indicator without moving broker authority back into the Indicator;
+- align panel geometry clamps with public parameter ranges;
+- make panel row spacing parameters affect actual controls;
+- continue cBot protection/lifecycle groundwork with broker-event state publication;
+- reduce repeated MTF analysis work through aligned frame caching;
+- strengthen decision quality with bounded independent-evidence-family diversity;
+- preserve the no-host-timeframe-coupling execution architecture.
+
+No live-account execution authority or public strategy threshold is introduced by this phase.
+
+Phase record: `docs/PHASE-CI-20-PANEL-CBOT-ENGINE-COHERENCE-2026-10-02.md`.
+
+Verification:
+- Source / Architecture #3131: **PASS**;
+- Runtime Acceptance Contracts #2940: **PASS**;
+- cTrader Compile/Build #3124: **PASS**;
+- CI-20 panel option audit: **PASS**;
+- CI-20 cBot P5 state-continuity audit: **PASS**;
+- CI-20 analysis quality/performance audit: **PASS**;
+- accumulated audits: **PASS**.
+
+The Source Gate itself exposed two audit-owner drift issues during closeout: CR4.5 still expected the superseded `AnalyzeFrame(` call shape, and the CI-20 panel option audit assumed direct parameter-name presence inside downstream methods instead of following canonical argument flow. Both were corrected in the audit owners without introducing production compatibility code.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
+Next implementation: **CI-20 protection/trailing and cBot lifecycle/recovery completion**, with monotonic SL tightening, profit-locking and structure/reward-driven target progression without constant TP movement.
+
 ## CI-19 — Signal / Target Quality Coherence — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #200 as `623dd198885c684b85be01459b4e72faafa00b8a`; target-terminal and empirical outcome validation remain manual.**

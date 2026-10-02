@@ -67,6 +67,20 @@ namespace cAlgo
             if (row.TextTrimming != TextTrimming.None)
                 row.TextTrimming = TextTrimming.None;
 
+            Thickness margin =
+                new Thickness(
+                    0,
+                    Math.Max(
+                        0,
+                        PanelRowPadding),
+                    0,
+                    Math.Max(
+                        0,
+                        PanelRowGap));
+
+            if (row.Margin != margin)
+                row.Margin = margin;
+
             int lineHeight =
                 Math.Max(
                     14,

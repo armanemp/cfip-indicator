@@ -50,8 +50,8 @@ if "ExecutionAction.PendingStop" not in bot:
     errors.append("cBot Pending Stop action routing missing")
 if "EnableDemoPendingStopExecution" not in bot:
     errors.append("cBot Pending Stop arm missing")
-if "DefaultTimeFrame = \"M15\"" not in bot:
-    errors.append("cBot default timeframe must be M15")
+if "DefaultTimeFrame = \"M5\"" not in bot:
+    errors.append("cBot host launch default must be M5")
 if "class ExecutionMarginBudgetRule" not in margin or "AllowedMargin" not in margin:
     errors.append("cBot margin budget owner missing")
 if ("BrokerExecutionSafety.TryConstrainVolumeForMargin(" not in coord or
