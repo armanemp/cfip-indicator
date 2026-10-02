@@ -16,6 +16,7 @@ target = (IND / "Planning" / "TradePlan" / "TargetStageSelector.cs").read_text(e
 bot = (BOT / "CFIPExecutionBot.cs").read_text(encoding="utf-8")
 coord = (BOT / "Execution" / "DemoMarketExecutionCoordinator.cs").read_text(encoding="utf-8")
 margin = (BOT / "Risk" / "ExecutionMarginBudgetRule.cs").read_text(encoding="utf-8")
+safety = (BOT / "Execution" / "BrokerExecutionSafety.cs").read_text(encoding="utf-8")
 
 if "PrimaryExecution = \"M15\"" not in policy:
     errors.append("M15 primary execution policy missing")
@@ -35,9 +36,10 @@ if "Bars.TimeFrame != TimeFrame.Minute15" in bot:
     errors.append("cBot must not bind execution to host chart timeframe")
 if "Bars.TimeFrame" in action:
     errors.append("Indicator actionability must not read host chart timeframe")
-if "PrepareContinuationStopForCbot(" not in (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8"):
+pending_indicator = (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8")
+if "PrepareContinuationStopForCbot(" not in pending_indicator:
     errors.append("Indicator Pending Stop path must prepare a cBot intent")
-if "PlaceStopOrder(" in (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8"):
+if "PlaceStopOrder(" in pending_indicator:
     errors.append("Indicator Pending Stop placement mutation remains")
 if (IND / "Trading" / "Execution" / "BrokerPendingOrderPlacement.cs").exists():
     errors.append("migrated Indicator Pending Stop broker owner still exists")
@@ -49,14 +51,13 @@ if "ExecutionAction.PendingStop" not in bot:
 if "EnableDemoPendingStopExecution" not in bot:
     errors.append("cBot Pending Stop arm missing")
 if "DefaultTimeFrame = \"M15\"" not in bot:
-    errors.append("cBot launch default must be M15")
-if "Bars.TimeFrame != TimeFrame.Minute15" not in bot:
-    errors.append("cBot must not bind execution to host Chart TF")
+    errors.append("cBot default timeframe must be M15")
 if "class ExecutionMarginBudgetRule" not in margin or "AllowedMargin" not in margin:
     errors.append("cBot margin budget owner missing")
 if ("BrokerExecutionSafety.TryConstrainVolumeForMargin(" not in coord or
         "BrokerExecutionSafety.CountManagedPositions(" not in coord or
-        "NormalizeVolumeInUnits" not in shared):
+        "BrokerExecutionSafety.CountManagedPending(" not in coord or
+        "NormalizeVolumeInUnits" not in safety):
     errors.append("broker-side final volume cap missing")
 if "Execution Margin Usage" not in bot or "Execution Margin Buffer" not in bot:
     errors.append("cBot execution margin safety settings missing")
