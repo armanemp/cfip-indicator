@@ -23,7 +23,7 @@ Added `CFIP.Contracts.CbotIdentity` and changed the cBot display attribute to co
 
 ### 2. Same-chart presence detection
 
-The Indicator now reads `ChartRobots` and matches the canonical cBot display name.
+The Indicator now treats a fresh cBot heartbeat keyed by the exact `IndicatorInstanceId` as the connection proof. The cBot side keeps same-chart binding authoritative through `ChartIndicators` and event-driven rebind.
 
 Panel states are explicit:
 
@@ -39,7 +39,7 @@ This keeps chart presence separate from heartbeat freshness.
 
 Indicator-side execution capability checks now require both:
 
-1. the matching cBot is actually Running on the same chart;
+1. the cBot has successfully bound the exact Indicator instance on its chart;
 2. its published execution state is fresh.
 
 A stale storage snapshot therefore cannot be treated as a live cBot execution authority.
