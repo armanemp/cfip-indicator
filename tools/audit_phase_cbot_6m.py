@@ -39,6 +39,10 @@ pending = read("src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs"
 reconciliation = read("src/CFIP.cBot/Recovery/CbotBrokerReconciliation.cs")
 management = read("src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs")
 workflow = read(".github/workflows/source-check.yml")
+quality_rule = read("src/CFIP.Indicator/Core/Math/TradeOpportunityQualityRule.cs")
+quality_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+quality_selection = read("src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs")
+quality_batch = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs")
 
 check(
     "shared scenario contract preserves identity and bounded batch revision",
@@ -151,6 +155,29 @@ check(
     "_scenarioEnvelopes.Clear();" in bot and
     "_scenarioReconciliations.Clear();" in bot
 )
+check(
+    "trade quality ranking has one bounded composite owner",
+    "class TradeOpportunityQualityRule" in quality_rule and
+    "CalculateRankBonus(" in quality_rule and
+    "return Math.Max(" in quality_rule and
+    "Math.Min(" in quality_rule
+)
+check(
+    "canonical opportunity evidence is enriched before scenario ranking",
+    "EnrichScenarioEvidence(" in quality_builder and
+    "_m5Frame" in quality_builder
+)
+check(
+    "parallel scenario ranking consumes the composite quality bonus",
+    "TradeOpportunityQualityRule.CalculateRankBonus(" in quality_selection and
+    "compositeBonus" in quality_selection
+)
+check(
+    "cBot scenario PlanSnapshot carries the composite plan quality",
+    "compositePlanQuality" in quality_batch and
+    "TradeOpportunityQualityRule.CalculateRankBonus(" in quality_batch
+)
+
 check(
     "no broker mutation authority moved into Indicator",
     "ExecuteMarketOrder(" not in provider_batch and
