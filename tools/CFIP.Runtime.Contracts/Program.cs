@@ -119,6 +119,7 @@ namespace cAlgo
             VerifyAggressiveRiskAndFillSemantics();
             VerifyActionabilityThresholdTransparency();
             VerifyEntryActionabilityF6();
+            VerifyRetestTriggerModeSemantics();
             VerifyIndependentTimeframeScenarioSemanticsF7();
             VerifyMtfPrimaryTimeframeSignals();
             VerifyMtfPrimaryLocationEvidence();
@@ -9912,7 +9913,40 @@ namespace cAlgo
                 m1.Block &&
                 m1.Reason == EntryTrapRiskPolicy.AdverseM1Reason &&
                 m1.Context == "RETEST PRE-ZONE M1",
-                "G2 EntryTrapRiskRule preserves strong M1 block and context");
+                "G2 EntryTrapRiskRule preserves s        private static void VerifyRetestTriggerModeSemantics()
+        {
+            Assert(
+                !EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.RetestMarket,
+                    true),
+                "RetestMarket remains zone-driven when M5 confirmed-trigger mode is enabled");
+
+            Assert(
+                EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.BreakoutMarket,
+                    true) &&
+                EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.ContinuationStop,
+                    true) &&
+                EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.ReversalLimit,
+                    true),
+                "breakout and predictive pending modes remain trigger-dependent");
+
+            Assert(
+                !EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.BreakoutMarket,
+                    false) &&
+                !EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.ContinuationStop,
+                    false),
+                "disabling M5 confirmed-trigger mode removes the trigger requirement");
+
+            Console.WriteLine(
+                "Retest mode-aware trigger contracts PASS");
+        }
+
+trong M1 block and context");
         }
         private static void VerifyEntryActionabilityF6()
         {
