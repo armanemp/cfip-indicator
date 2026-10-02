@@ -43,7 +43,9 @@ for token in (
         raise SystemExit(f"G6B status-only execution surface still has a click handler: {token}")
 
 for token in (
-    "EnsureExecutionRuntimeState();",
+    "RefreshCbotExecutionStateIfDue();",
+    "EffectiveAutoTradingEnabled",
+    "EffectiveAutomaticOrdersEnabled",
     "ExecutionControlPresentationRule.ComposeStatusText(",
     "ExecutionControlPresentationRule.IsInteractive",
     "_autoTradingQuickToggle.IsEnabled",
