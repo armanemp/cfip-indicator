@@ -40,7 +40,7 @@ def check(name, condition):
 
 check(
     "required provider partial owners exist",
-    len(provider_paths) == 4 and all(path.exists() for path in provider_paths),
+    len(provider_paths) == 5 and all(path.exists() for path in provider_paths),
 )
 
 check(
@@ -113,7 +113,9 @@ check(
     "CfipDeviceSignalTransport.TryRead(" in cbot and
     "CfipDeviceSignalTransport.Reload(" in cbot and
     "SignalBusKey.ForInstance(" in transport and
-    "SignalEnvelopeCodec.TryDeserialize(" in transport,
+    "SignalBusKey.ForScenarioBatch(" in transport and
+    "SignalEnvelopeCodec.TryDeserialize(" in transport and
+    "SignalScenarioBatchCodec.TryDeserialize(" in transport,
 )
 
 check(
