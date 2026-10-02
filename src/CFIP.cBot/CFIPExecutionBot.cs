@@ -596,7 +596,10 @@ namespace CFIP.cBot
                 EnableDemoAggressiveExecution,
                 EnableDemoManagementExecution,
                 _activeManagedExecutionLabel,
-                _activeManagedExecutionLabel,
+                _lastSignalEnvelope == null ||
+                _lastSignalEnvelope.Identity == null
+                    ? ""
+                    : _lastSignalEnvelope.Identity.ScenarioId ?? "",
                 _lastSignalEnvelope,
                 force);
         }
