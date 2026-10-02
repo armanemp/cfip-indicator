@@ -213,6 +213,31 @@ namespace cAlgo
                                         Bars.Count - 1));
                         }
 
+        private string ResolveTriggerArrowState(
+                            SignalVisualSnapshot snapshot)
+                        {
+                            if (snapshot == null)
+                                return "WATCH";
+
+                            int required =
+                                Math.Max(
+                                    1,
+                                    snapshot.TriggerRuntimeRequired);
+
+                            int score =
+                                Math.Max(
+                                    0,
+                                    snapshot.TriggerRuntimeScore);
+
+                            if (score >= required + 1)
+                                return "STRONG";
+
+                            if (score >= required)
+                                return "CONFIRMED";
+
+                            return "WATCH";
+                        }
+
         private string ResolveSignalArrowState(
                             SignalVisualSnapshot snapshot,
                             int direction)
