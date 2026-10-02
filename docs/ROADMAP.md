@@ -2074,7 +2074,7 @@ During M0-M42, a newly discovered issue is handled as follows:
 This prevents the roadmap from becoming an endlessly expanding patch queue.
 ## MTF-P3 — Primary M15/H1 Provider Scenario Identity Cohesion
 
-Status: **IMPLEMENTATION IN PROGRESS — branch `phase/mtf-primary-provider-identity-2026-10-02`.**
+Status: **VERIFIED COMPLETE — repository gates passed on implementation HEAD `5f6a9873a27b3b1edfa139ab21d19c1b5faa6bdc`; target-terminal identity verification remains manual.**
 
 The provider bridge must preserve the exact ScenarioId/SourceTimeframe of the canonical
 candidate used by the execution-facing plan. Provider SourceTimeframe may not be derived
