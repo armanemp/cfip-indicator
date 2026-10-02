@@ -13,9 +13,9 @@ Move the Market and Market-Range broker mutation authority out of the Indicator 
 - Provider publishes a Market intent only when the current quote passes the canonical actionability boundary and the plan mode is executable Market/Retest/Breakout.
 - Provider fingerprint now changes when live actionability changes, so the cBot receives the transition from confirmed/waiting to actionable.
 - cBot consumes MarketExecutionProfile and owns ExecuteMarketRangeOrder / ExecuteMarketOrder.
-- Removed Indicator Close/Cancel broker-action buttons and the old Auto Trading / Auto Orders execution block from the panel.
-- Added finite panel bootstrap width/height before Chart.AddControl.
-- Added explicit M15/H1 primary alignment diagnostics.
+- Removed Indicator Close/Cancel broker-action controls from the panel surface; internal lifecycle mutation methods remain for the staged migration.
+- Added finite panel bootstrap width/height before Chart.AddControl and reduced the bootstrap cap to 260px; live panel height is capped at 75% of usable chart height to prevent layout collapse.
+- Added explicit M15/H1 primary alignment diagnostics using exact resolved source direction, added panel-key invalidation for MTF frame changes, and added distinct observe-only M15/H1 chart arrows.
 - Fixed algorithm package naming by defining AlgoName for Indicator and cBot.
 
 ## Signal behavior correction
