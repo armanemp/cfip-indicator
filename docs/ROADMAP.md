@@ -15,11 +15,9 @@ A broader pre-existing Planning Contracts warning set remains in `TradeOpportuni
 
 Phase record: `docs/PHASE-BUILD-WARNING-PANEL-HEIGHT-INTEGRITY-2026-10-02.md`.
 
-Next staged phase: **CI-18 — Signal / Panel Coherence**.
-
 ## CI-19 — Signal / Target Quality Coherence — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #200 as `623dd198885c684b85be01459b4e72faafa00b8a`; target-terminal and empirical outcome validation remain manual.**
 
 Root causes under active correction:
 - global TriggerReady blocking survived in DecisionStructureGates and could suppress Retest before actionability;
@@ -39,7 +37,7 @@ Canonical CI-19 corrections:
 
 Phase record: `docs/PHASE-CI-19-SIGNAL-TARGET-QUALITY-COHERENCE-2026-10-02.md`.
 
-Next: intelligent progressive protection and trailing after repository acceptance.
+Next: **CI-20 — Intelligent progressive protection and trailing**, with monotonic SL tightening, profit-locking and progressive target expansion driven by structure and reward potential without constant TP movement.
 
 ## CI-18 — Signal / Panel Coherence — 2026-10-02
 
@@ -73,24 +71,6 @@ Phase record: `docs/PHASE-CI-18-SIGNAL-PANEL-COHERENCE-2026-10-02.md`.
 
 Next: **evidence-driven Signal/Target Quality Audit**, beginning with the 2R fallback clustering and Decision → Plan → Alert coherence audit, then intelligent progressive target/trailing behavior.
 
-
-Deep audit found two concrete coherence failures:
-- a directional Decision could disappear from the chart/panel and become WAITING because visual direction was coupled to EntryAllowed/TriggerReady;
-- continuation context was evaluated before an actual in-zone Retest, so a valid trend pullback could become WAITING FOR TRIGGER and never reach actionability.
-
-Implemented in canonical owners:
-- directional Decision remains visible before trade actionability;
-- MARKET BIAS is presented separately from SIGNAL readiness;
-- M15/H1 panel direction uses the shared frame-display direction;
-- trigger score, required score, M1 direction and trigger reason are visible in the panel;
-- M5OnlyConfirmedTrigger is enforced at mode-specific actionability rather than globally blocking Decision EntryAllowed;
-- in-zone Retest takes precedence over generic continuation waiting;
-- ExecutionModel readiness is required before actionability can pass;
-- deterministic Retest regression coverage and accumulated CI-18 audit were added.
-
-No public strategy threshold was lowered. Final actionability quality/RR, regime, divergence, trap-risk and market gates remain active.
-
-Phase record: `docs/PHASE-CI-18-SIGNAL-PANEL-COHERENCE-2026-10-02.md`.
 
 
 For every future phase, modify the existing canonical production owner directly. Do not create parallel hotfix files, duplicate executors, compatibility wrappers, alternate calculation paths, alternate identity formatters, or detached patch subsystems when the existing owner can be corrected. Any obsolete owner created by an extraction must be deleted in the same phase, and all audits/docs must point to the single surviving owner.
