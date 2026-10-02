@@ -21,6 +21,20 @@ namespace cAlgo
                         
                                     try
                                     {
+                                        int bootstrapWidth =
+                                            Math.Max(
+                                                260,
+                                                Math.Min(
+                                                    760,
+                                                    PanelWidth));
+
+                                        int bootstrapHeight =
+                                            Math.Max(
+                                                220,
+                                                Math.Min(
+                                                    420,
+                                                    PanelMaxHeight));
+
                                         _panelHeaderStack =
                                             new StackPanel
                                             {
@@ -77,6 +91,14 @@ namespace cAlgo
                                         _panelScroll =
                                             new ScrollViewer
                                             {
+                                                Width =
+                                                    Math.Max(
+                                                        240,
+                                                        bootstrapWidth - 8),
+                                                Height =
+                                                    Math.Max(
+                                                        120,
+                                                        bootstrapHeight - 70),
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
                                                 VerticalAlignment =
@@ -99,6 +121,10 @@ namespace cAlgo
                                             {
                                                 Orientation =
                                                     Orientation.Vertical,
+                                                Width =
+                                                    bootstrapWidth,
+                                                Height =
+                                                    bootstrapHeight,
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
                                                 VerticalAlignment =
@@ -178,6 +204,14 @@ namespace cAlgo
                                             {
                                                 Child =
                                                     _panelStack,
+                                                Width =
+                                                    bootstrapWidth,
+                                                Height =
+                                                    bootstrapHeight,
+                                                MinWidth = 260,
+                                                MaxWidth = 760,
+                                                MinHeight = 170,
+                                                MaxHeight = 420,
                                                 IsHitTestVisible =
                                                     true,
                                                 BackgroundColor =
@@ -208,6 +242,12 @@ namespace cAlgo
                                                         PanelCornerRadius)
                                             };
                         
+                                        SetPanelAlignment();
+
+                                        // Never add an unconstrained panel to the main chart.
+                                        // The first layout pass must have a finite geometry or
+                                        // cTrader may collapse the chart area while measuring
+                                        // the control tree.
                                         Chart.AddControl(
                                             _panel);
                         
