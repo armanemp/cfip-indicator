@@ -118,6 +118,7 @@ namespace cAlgo
             VerifyMtfPrimaryTimeframeSignals();
             VerifyMtfPrimaryLocationEvidence();
             VerifyMtfPrimaryProviderIdentity();
+            VerifyPanelFrameDirectionPresentation();
             VerifyTargetObstacleTelemetryF8();
             VerifyOrphanManagedProtectionF3();
             VerifyEntryTrapRiskG2();
@@ -10957,6 +10958,53 @@ namespace cAlgo
 
             Console.WriteLine(
                 "MTF-P3 provider scenario identity contracts PASS");
+        }
+
+
+        private static void VerifyPanelFrameDirectionPresentation()
+        {
+            Assert(
+                PanelFrameDirectionRule.ResolveDisplayDirection(
+                    1,
+                    20,
+                    10,
+                    false,
+                    false) == 1 &&
+                PanelFrameDirectionRule.ResolveLabel(1, 1) == "BUY",
+                "resolved BUY direction remains authoritative in panel");
+
+            Assert(
+                PanelFrameDirectionRule.ResolveDisplayDirection(
+                    0,
+                    28,
+                    10,
+                    true,
+                    false) == 1 &&
+                PanelFrameDirectionRule.ResolveLabel(0, 1) == "BULL BIAS",
+                "unresolved bullish frame is shown as bullish bias instead of misleading neutral");
+
+            Assert(
+                PanelFrameDirectionRule.ResolveDisplayDirection(
+                    0,
+                    8,
+                    24,
+                    false,
+                    true) == -1 &&
+                PanelFrameDirectionRule.ResolveLabel(0, -1) == "BEAR BIAS",
+                "unresolved bearish frame is shown as bearish bias");
+
+            Assert(
+                PanelFrameDirectionRule.ResolveDisplayDirection(
+                    0,
+                    12,
+                    12,
+                    false,
+                    false) == 0 &&
+                PanelFrameDirectionRule.ResolveLabel(0, 0) == "NEUTRAL",
+                "only genuinely balanced unresolved frames remain neutral");
+
+            Console.WriteLine(
+                "Panel frame direction presentation contracts PASS");
         }
 
         private static void Assert(bool condition, string name)
