@@ -59,6 +59,16 @@ namespace cAlgo
                     signalId,
                     "");
 
+            string executionLabel =
+                action == ExecutionAction.Market ||
+                action == ExecutionAction.Aggressive
+                    ? ManagedExecutionLabel()
+                    : "";
+
+            MarketExecutionProfile marketProfile =
+                BuildCanonicalMarketExecutionProfile(
+                    _cfipProviderExecutionIntent);
+
             return new CFIP.Contracts.ExecutionIntent(
                 identity,
                 action,
@@ -71,7 +81,54 @@ namespace cAlgo
                 SizingMode.ToString(),
                 observedUtc,
                 expiryUtc,
-                _cfipProviderExecutionIntent.Source ?? "");
+                _cfipProviderExecutionIntent.Source ?? "",
+                executionLabel,
+                marketProfile);
+        }
+
+        private MarketExecutionProfile BuildCanonicalMarketExecutionProfile(
+            cAlgo.ExecutionIntent intent)
+        {
+            if (intent == null)
+                return null;
+
+            bool marketAction =
+                intent.Kind == ExecutionIntentKind.Market;
+
+            if (!marketAction)
+                return null;
+
+            bool hasRange =
+                IsFiniteNonNegative(intent.MarketRangePips);
+
+            bool hasLadder =
+                intent.UseServerTakeProfitLadder &&
+                IsFinitePositive(intent.Tp1Pips) &&
+                IsFinitePositive(intent.Tp2Pips) &&
+                IsFinitePositive(intent.FinalTpPips) &&
+                IsFinitePositive(intent.Tp1Volume) &&
+                IsFinitePositive(intent.Tp2Volume);
+
+            if (!hasRange &&
+                !hasLadder)
+                return null;
+
+            return new MarketExecutionProfile(
+                intent.MarketRangePips,
+                intent.StopPips,
+                intent.TargetPips,
+                hasLadder,
+                hasLadder ? intent.Tp1Pips : 0,
+                hasLadder ? intent.Tp1Volume : 0,
+                hasLadder ? intent.Tp2Pips : 0,
+                hasLadder ? intent.Tp2Volume : 0,
+                hasLadder ? intent.FinalTpPips : 0,
+                hasLadder
+                    ? intent.BreakEvenTriggerPips
+                    : null,
+                hasLadder
+                    ? intent.BreakEvenOffsetPips
+                    : null);
         }
 
         private PlanSnapshot BuildCanonicalPlanSnapshot(
