@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTED — awaiting repository CI verification before merge.**
+Status: **VERIFIED COMPLETE — PR #171 merged to `main`.**
 
 ## Scope
 
@@ -117,11 +117,11 @@ CI-15 remains the required next phase for exact value tracing through every exec
 
 ## Verification gate
 
-Required exact implementation-head checks before merge:
+Final verification on implementation HEAD `371577118c6c5d6450ce856d232374a291afdb61`:
 
-- Source/Architecture;
-- Runtime Acceptance Contracts;
-- cTrader Compile/Build;
-- Planning Contracts.
+- Source/Architecture: **PASS** — workflow run #2691;
+- Runtime Acceptance Contracts: **PASS** — workflow run #2500;
+- cTrader Compile/Build: **PASS** — workflow run #2684;
+- Planning Contracts: **PASS** — included in the final contract/build verification.
 
 The target cTrader terminal, broker-specific distances, actual fills, panel render timing and empirical signal quality remain CI-15/CI-17 acceptance boundaries.
