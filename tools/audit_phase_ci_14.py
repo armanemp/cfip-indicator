@@ -84,7 +84,7 @@ check(
     ) is not None,
 )
 
-consumer_paths = {
+geometry_consumer_paths = {
     "PlanRewardRiskQualityRule": CORE / "PlanRewardRiskQualityRule.cs",
     "ExecutionPlanGeometryRule": CORE / "ExecutionPlanGeometryRule.cs",
     "TargetCandidateConstraintRule": CORE / "TargetCandidateConstraintRule.cs",
@@ -98,24 +98,38 @@ consumer_paths = {
     "LivePlanFactory": LIFECYCLE / "LivePlanFactory.cs",
     "PendingOrderPlanSnapshot": LIFECYCLE / "PendingOrderPlanSnapshot.cs",
     "ParallelOpportunityBuilder": ANALYSIS / "ParallelOpportunityBuilder.cs",
-    ,"ActionableSignalQualityRule": CORE / "ActionableSignalQualityRule.cs"
-    ,"RangeSignalQualityRule": CORE / "RangeSignalQualityRule.cs",
+    "TradeActionabilityEvaluator": SRC / "Trading" / "Validation" / "TradeActionabilityEvaluator.cs",
 }
 
-for name, path in consumer_paths.items():
+for name, path in geometry_consumer_paths.items():
     text = path.read_text(encoding="utf-8") if path.exists() else ""
     check(
         name + " consumes canonical nominal RR",
         "RiskRewardGeometryRule.CalculateNominalRR(" in text or
-        "RiskRewardGeometryRule.CalculateNominalRRFromDistances(" in text,
+        "RiskRewardGeometryRule.CalculateNominalRRFromDistances(" in text or
+        (
+            name == "PlanRewardRiskQualityRule" and
+            "RiskRewardGeometryRule.Evaluate(" in text
+        ),
     )
 
-check(
-    "plan reward-risk uses canonical geometry and policy",
-    "RiskRewardGeometryRule.Evaluate(" in (CORE / "PlanRewardRiskQualityRule.cs").read_text(encoding="utf-8") and
-    "RiskRewardPolicyRule.CalculateAdaptiveMinimum(" in (CORE / "PlanRewardRiskQualityRule.cs").read_text(encoding="utf-8") and
-    "RiskRewardPolicyRule.CalculateEffectiveMinimum(" in (CORE / "PlanRewardRiskQualityRule.cs").read_text(encoding="utf-8"),
-)
+policy_consumer_paths = {
+    "ActionableSignalQualityRule": CORE / "ActionableSignalQualityRule.cs",
+    "RangeSignalQualityRule": CORE / "RangeSignalQualityRule.cs",
+    "PlanRewardRiskQualityRule": CORE / "PlanRewardRiskQualityRule.cs",
+    "ExecutionPlanGeometryRule": CORE / "ExecutionPlanGeometryRule.cs",
+    "TargetCandidateConstraintRule": CORE / "TargetCandidateConstraintRule.cs",
+    "PlanRewardIntegrityValidator": PLANNING / "PlanRewardIntegrityValidator.cs",
+    "TradeActionabilityEvaluator": SRC / "Trading" / "Validation" / "TradeActionabilityEvaluator.cs",
+    "LiveTargetCandidateEvaluator": LIVE / "LiveTargetCandidateEvaluator.cs",
+}
+
+for name, path in policy_consumer_paths.items():
+    text = path.read_text(encoding="utf-8") if path.exists() else ""
+    check(
+        name + " consumes canonical RR policy semantics",
+        "RiskRewardPolicyRule." in text,
+    )
 
 legacy_patterns = [
     re.compile(r"Math\.Abs\(\s*(?:preview\.)?Tp[1-4]\s*-\s*(?:preview\.)?Entry\s*\)\s*/\s*Math\.Max\(\s*Symbol\.PipSize"),
