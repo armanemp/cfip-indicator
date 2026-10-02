@@ -21,6 +21,7 @@
     <Compile Include="../../src/CFIP.Indicator/Planning/TradePlan/TargetProgressionRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateRejectionReasons.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetAgeSemanticsRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionPlanGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetCandidateConstraintRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs" />
