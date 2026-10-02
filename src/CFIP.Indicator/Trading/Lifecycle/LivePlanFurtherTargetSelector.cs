@@ -81,11 +81,60 @@ namespace cAlgo
                                         atr))
                                     continue;
                 
+                                RiskRewardMathResult previousGeometry =
+                                    RiskRewardMathRule.EvaluateFromRisk(
+                                        _plan.Direction,
+                                        _plan.Entry,
+                                        _plan.Risk,
+                                        previous,
+                                        0,
+                                        0,
+                                        MaximumRewardRR,
+                                        Symbol.PipSize);
+
+                                double baselineRr =
+                                    previousGeometry.Valid
+                                        ? previousGeometry.NominalRR
+                                        : 0;
+
+                                double normalizedDistance =
+                                    geometry.Reward /
+                                    Math.Max(
+                                        Symbol.PipSize,
+                                        _plan.Risk);
+
+                                bool htf =
+                                    IsHtfTimeframe(
+                                        level.Timeframe);
+
+                                bool liquidity =
+                                    level.Kind.IndexOf(
+                                        "LIQUIDITY",
+                                        StringComparison.OrdinalIgnoreCase) >= 0;
+
+                                bool zone =
+                                    level.Kind.IndexOf(
+                                        "FVG",
+                                        StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    level.Kind.IndexOf(
+                                        "ORDER_BLOCK",
+                                        StringComparison.OrdinalIgnoreCase) >= 0;
+
                                 double score =
-                                    level.Score +
-                                    (IsHtfTimeframe(level.Timeframe)
-                                        ? HtfRewardBonus
-                                        : 0);
+                                    TargetCandidateRewardScoreRule.Calculate(
+                                        level.Score,
+                                        geometry.NominalRR,
+                                        baselineRr,
+                                        SmartTargetNearestBias,
+                                        normalizedDistance,
+                                        htf,
+                                        liquidity,
+                                        zone,
+                                        level.Hits,
+                                        1,
+                                        HtfRewardBonus,
+                                        LiquidityRewardBonus,
+                                        ZoneRewardBonus);
                 
                                 if (score > bestScore)
                                 {
