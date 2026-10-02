@@ -4,6 +4,7 @@ using CFIP.Contracts;
 using cAlgo;
 using CFIP.cBot.Shadow;
 using CFIP.cBot.Execution;
+using CFIP.cBot.Binding;
 
 namespace CFIP.cBot
 {
@@ -40,6 +41,12 @@ namespace CFIP.cBot
         private string _lastLoggedReason = "";
         private long _tickCount;
         private DateTime _startedUtc;
+        private DateTime _nextIndicatorBindingCheckUtc =
+            DateTime.MinValue;
+        private string _boundIndicatorInstanceId = "";
+        private string _boundIndicatorFingerprint = "";
+        private string _indicatorBindingReason =
+            "NOT BOUND";
 
         protected override void OnStart()
         {
@@ -53,47 +60,14 @@ namespace CFIP.cBot
                 EnableMarketExecution ? "ARMED" : "DISARMED",
                 ContractVersion.Current);
 
-            try
-            {
-                _indicator =
-                    Indicators.GetIndicator<CFIPIndicator>(
-                        new
-                        {
-                            EnableAutoTrading = true,
-                            EnableAutomaticOrders = false,
-                            EnableAggressiveAutoEntry = false,
-                            AutoProtectBrokerPositions = false,
-                            EnableLiveExitManagement = false
-                        });
-
-                double heartbeat =
-                    _indicator.ProviderHeartbeat.LastValue;
-
-                Print(
-                    "CFIP PROVIDER HOST | created={0} | heartbeat={1} | " +
-                    "providerRevision={2} | state={3}",
-                    _indicator != null,
-                    heartbeat,
-                    _indicator == null
-                        ? -1
-                        : _indicator.ProviderRevision,
-                    _indicator == null
-                        ? "UNAVAILABLE"
-                        : _indicator.ProviderState);
-            }
-            catch (Exception ex)
-            {
-                _state = ShadowHostState.Blocked;
-
-                Print(
-                    "CFIP PROVIDER HOST FAIL | state=BLOCKED | reason={0}",
-                    ex.Message);
-            }
+            RefreshIndicatorBinding(true);
         }
 
         protected override void OnTick()
         {
             _tickCount++;
+
+            RefreshIndicatorBinding(false);
 
             if (_indicator == null)
             {
@@ -168,6 +142,125 @@ namespace CFIP.cBot
                 Print(
                     "CFIP SHADOW HOST FAULT | state=BLOCKED | reason={0}",
                     ex.Message);
+            }
+        }
+
+        private bool RefreshIndicatorBinding(bool force)
+        {
+            DateTime now =
+                Server.TimeInUtc;
+
+            if (!force &&
+                now < _nextIndicatorBindingCheckUtc)
+                return _indicator != null;
+
+            _nextIndicatorBindingCheckUtc =
+                now.AddMilliseconds(500);
+
+            ChartIndicator chartIndicator;
+            string fingerprint;
+            string reason;
+
+            if (!CfipIndicatorChartBinding.TryFind(
+                    this,
+                    out chartIndicator,
+                    out fingerprint,
+                    out reason))
+            {
+                _indicator = null;
+                _boundIndicatorInstanceId = "";
+                _boundIndicatorFingerprint = "";
+                _indicatorBindingReason = reason;
+                _state = ShadowHostState.Blocked;
+
+                Print(
+                    "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
+                    reason);
+
+                return false;
+            }
+
+            string instanceId =
+                chartIndicator.InstanceId ?? "";
+
+            bool bindingSame =
+                _indicator != null &&
+                string.Equals(
+                    _boundIndicatorInstanceId,
+                    instanceId,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    _boundIndicatorFingerprint,
+                    fingerprint,
+                    StringComparison.Ordinal);
+
+            if (!force && bindingSame)
+                return true;
+
+            object[] parameterValues;
+            if (!CfipIndicatorChartBinding.TryBuildParameterValues(
+                    chartIndicator,
+                    out parameterValues,
+                    out reason))
+            {
+                _indicator = null;
+                _boundIndicatorInstanceId = "";
+                _boundIndicatorFingerprint = "";
+                _indicatorBindingReason = reason;
+                _state = ShadowHostState.Blocked;
+
+                Print(
+                    "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
+                    reason);
+
+                return false;
+            }
+
+            try
+            {
+                CFIPIndicator bound =
+                    Indicators.GetIndicator<CFIPIndicator>(
+                        parameterValues);
+
+                if (bound == null)
+                {
+                    _indicator = null;
+                    _state = ShadowHostState.Blocked;
+                    _indicatorBindingReason =
+                        "CFIP INDICATOR HOST CREATION FAILED";
+                    Print(
+                        "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
+                        _indicatorBindingReason);
+                    return false;
+                }
+
+                _indicator = bound;
+                _boundIndicatorInstanceId = instanceId;
+                _boundIndicatorFingerprint = fingerprint;
+                _indicatorBindingReason =
+                    "BOUND TO " +
+                    CfipIndicatorChartBinding.DisplayName;
+
+                Print(
+                    "CFIP ANALYSIS BIND | state=READY | name={0} | instance={1} | " +
+                    "parameterFingerprint={2}",
+                    CfipIndicatorChartBinding.DisplayName,
+                    instanceId,
+                    fingerprint);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _indicator = null;
+                _state = ShadowHostState.Blocked;
+                _indicatorBindingReason =
+                    "CFIP INDICATOR HOST CREATION FAILED • " +
+                    ex.Message;
+
+                Print(
+                    "CFIP ANALYSIS BIND | state=BLOCKED | reason={0}",
+                    _indicatorBindingReason);
+                return false;
             }
         }
 
