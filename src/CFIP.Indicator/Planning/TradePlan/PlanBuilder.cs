@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using cAlgo.API;
 
 namespace cAlgo
@@ -10,53 +9,27 @@ namespace cAlgo
             int closedM5,
             int direction)
         {
-            if (!TryPreparePlanInputs(
-                closedM5,
-                direction,
-                out double atr,
-                out ExecutionModel execution,
-                out double entry,
-                out double stop,
-                out string stopSource,
-                out int stopQuality,
-                out double risk))
-                return null;
-
-            List<Level> candidates =
-                BuildTargetLevels(
-                    closedM5,
-                    direction,
-                    entry,
-                    atr);
-
             OpportunityLane lane =
                 ResolvePlanTargetSelectionLane();
 
-            List<Level> selected =
-                SelectTargets(
-                    candidates,
+            if (!TryPreparePlanInputs(
                     closedM5,
-                    entry,
-                    risk,
                     direction,
-                    atr,
-                    lane);
-
-            if (!TryBuildPlanTargets(
-                candidates,
-                selected,
-                closedM5,
-                entry,
-                risk,
-                direction,
-                atr,
-                lane,
-                out double tp1,
-                out double tp2,
-                out double tp3,
-                out double tp4))
+                    lane,
+                    out double atr,
+                    out ExecutionModel execution,
+                    out double entry,
+                    out double stop,
+                    out string stopSource,
+                    out int stopQuality,
+                    out double risk,
+                    out CanonicalTradePathGeometry canonicalPath))
                 return null;
 
+            // The canonical path is the only source for executable Entry/SL/TP.
+            // Target provenance is also carried forward from the exact selected
+            // ladder so Plan metadata cannot drift from the geometry that was
+            // actually evaluated.
             Plan p =
                 CreatePlanFromInputs(
                     execution,
@@ -66,15 +39,26 @@ namespace cAlgo
                     stop,
                     stopSource,
                     stopQuality,
-                    tp1,
-                    tp2,
-                    tp3,
-                    tp4);
+                    canonicalPath.Tp1,
+                    canonicalPath.Tp2,
+                    canonicalPath.Tp3,
+                    canonicalPath.Tp4);
 
             if (p == null)
                 return null;
 
             p.Lane = lane;
+
+            p.Tp1Source = canonicalPath.Tp1Source;
+            p.Tp1Quality = canonicalPath.Tp1Quality;
+            p.Tp2Source = canonicalPath.Tp2Source;
+            p.Tp2Quality = canonicalPath.Tp2Quality;
+            p.Tp3Source = canonicalPath.Tp3Source;
+            p.Tp3Quality = canonicalPath.Tp3Quality;
+            p.Tp4Source = canonicalPath.Tp4Source;
+            p.Tp4Quality = canonicalPath.Tp4Quality;
+            p.HtfTargetCount =
+                canonicalPath.HtfTargetCount;
 
             p.SignalBarOpenTimeUtcTicks =
                 GetSignalBarOpenTimeUtcTicks(closedM5);
@@ -86,10 +70,6 @@ namespace cAlgo
                 _decision,
                 direction,
                 lane);
-
-            EnrichPlanTargetMetadata(
-                p,
-                selected);
 
             if (RequirePlanIntegrity &&
                 !ValidatePlanIntegrity(
