@@ -12,7 +12,7 @@ namespace cAlgo
     {
         private void SyncQuickExecutionControls()
         {
-            EnsureExecutionRuntimeState();
+            RefreshCbotExecutionStateIfDue(true);
 
             if (_executionToggleSyncing)
                 return;
@@ -23,13 +23,18 @@ namespace cAlgo
             {
                 if (_autoTradingQuickToggle != null)
                 {
+                    bool autoTrading =
+                        _cBotExecutionState != null &&
+                        IsCbotExecutionStateFresh() &&
+                        _cBotExecutionState.EffectiveAutoTradingEnabled;
+
                     _autoTradingQuickToggle.IsChecked =
-                        AutoTradingEnabled;
+                        autoTrading;
 
                     _autoTradingQuickToggle.Text =
                         ExecutionControlPresentationRule.ComposeStatusText(
                             "AUTO TRADE",
-                            AutoTradingEnabled);
+                            autoTrading);
 
                     _autoTradingQuickToggle.IsEnabled =
                         ExecutionControlPresentationRule.IsInteractive;
@@ -52,13 +57,18 @@ namespace cAlgo
 
                 if (_automaticOrdersQuickToggle != null)
                 {
+                    bool autoOrders =
+                        _cBotExecutionState != null &&
+                        IsCbotExecutionStateFresh() &&
+                        _cBotExecutionState.EffectiveAutomaticOrdersEnabled;
+
                     _automaticOrdersQuickToggle.IsChecked =
-                        AutomaticOrdersEnabled;
+                        autoOrders;
 
                     _automaticOrdersQuickToggle.Text =
                         ExecutionControlPresentationRule.ComposeStatusText(
                             "AUTO ORDERS",
-                            AutomaticOrdersEnabled);
+                            autoOrders);
 
                     _automaticOrdersQuickToggle.IsEnabled =
                         ExecutionControlPresentationRule.IsInteractive;
