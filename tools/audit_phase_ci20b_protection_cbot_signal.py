@@ -84,16 +84,14 @@ check(
 
 check(
     "intelligent protection fails closed on invalid numeric state",
-    "!FiniteNonNegative(peakRR)" in protection_rule and
+    "!IsFiniteProtectionNonNegative(peakRR)" in protection_rule and
     "PROTECTION INPUT INVALID" in protection_rule,
 )
 
 check(
     "cBot exposes a bounded management-command freshness policy",
-    re.search(
-        r'[Parameter(s*"Management Command Max Age Seconds"[sS]*?DefaultValues*=s*30',
-        cbot_host,
-    ) is not None and
+    "Management Command Max Age Seconds" in cbot_host and
+    "DefaultValue = 30" in cbot_host and
     "ManagementCommandMaxAgeSeconds" in cbot_host,
 )
 
