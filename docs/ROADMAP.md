@@ -382,6 +382,16 @@ No public parameter, trading threshold, broker mutation authority or second deci
 
 Phase report: `docs/PHASE-MTF-P1-PRIMARY-M15-H1-PANEL.md`.
 
+## MTF-P2 — Primary M15/H1 Location Evidence: OB/FVG Provenance
+
+Status: **IMPLEMENTED — repository verification pending on this branch; target-terminal evidence remains manual.**
+
+M15/H1 primary candidates now retain source-frame FVG quality, Order Block quality, OB+FVG confluence and canonical location quality. The existing LocationEvidenceRule remains the sole location-scoring owner; no new threshold or competing score was introduced.
+
+Presentation priority uses primary source location evidence, and the chart panel exposes OB/FVG source evidence alongside the existing M5/M1 tuning state. This phase does not change broker authority, execution policy, RR, Entry, SL, TP, confidence, risk or public parameters.
+
+Phase report: `docs/PHASE-MTF-P2-PRIMARY-LOCATION-OBFVG.md`.
+
 ## CBOT-P4 — Broker Mutation Extraction
 
 Extract and remove, in controlled batches:
