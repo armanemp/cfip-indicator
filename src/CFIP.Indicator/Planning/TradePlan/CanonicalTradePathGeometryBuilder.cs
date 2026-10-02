@@ -66,6 +66,13 @@ namespace cAlgo
                 return false;
             }
 
+            if (AvoidLateEntry &&
+                execution.IsLate)
+            {
+                reason = "LATE / PRICE EXTENDED";
+                return false;
+            }
+
             if (execution.Mode != ExecutionMode.RetestMarket &&
                 execution.Mode != ExecutionMode.BreakoutMarket)
             {
