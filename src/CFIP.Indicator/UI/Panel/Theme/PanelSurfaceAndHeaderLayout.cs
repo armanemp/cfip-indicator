@@ -56,7 +56,7 @@ namespace cAlgo
                                                         bottomPosition
                                                             ? Math.Max(
                                                                 baseMargin,
-                                                                PanelBottomClearance))
+                                                                PanelBottomClearance)
                                                             : baseMargin;
 
                                                     _panel.Margin =
