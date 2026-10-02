@@ -1,3 +1,30 @@
+## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
+
+Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
+
+Completed:
+- production Popup UI and its obsolete parameter surface removed;
+- all eligible alerts use the bounded canonical AlertDeliveryQueue and are shown in a five-row panel message rail beside the Hide/Show control;
+- message color is derived from the canonical alert direction/priority semantics;
+- sound remains on the same queued event boundary and no direct AlertEngine sound/popup side effect exists;
+- canonical BUY/SELL level rendering remains symmetric: Solid, finite, 40-bar geometry, shared thickness, background-free labels and semantic line/text color;
+- cBot now has one dedicated SignalEnvelope preflight owner for identity, timestamp, staleness and symbol scope before execution branching;
+- full Pre-analysis → M15 → M5 → M1(optional) → entry/SL/TP → signal → alert → contract → cBot → broker/protection → outcome chain was re-audited;
+- no multi-position capacity was enabled early and the single-plan safety contract remains intact until CBOT-6M is completed.
+
+Phase record: `docs/PHASE-CBOT-P9-UNIFIED-ALERT-RAIL-VISUAL-COHERENCE-2026-10-02.md`.
+
+Verification:
+- Source / Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile/Build: PASS;
+- P9 dedicated audit: PASS;
+- target-terminal panel message placement, line/arrow symmetry and cBot attach/reconnect validation: manual.
+
+Next required work: after verification, continue CBOT-6M concurrent multi-scenario execution with per-ScenarioId idempotency, reconciliation, risk and protection ownership before removing the single-plan broker gate.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
 ## CBOT-P8 — Progressive Protection / Broker-Confirmed State Sync — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

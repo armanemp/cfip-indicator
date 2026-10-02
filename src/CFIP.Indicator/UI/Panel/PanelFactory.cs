@@ -159,6 +159,13 @@ namespace cAlgo
                                         if (_panelToggleButton != null)
                                             _buttonStack.AddChild(
                                                 _panelToggleButton);
+
+                                        CreatePanelAlertMessageRail();
+
+                                        if (_panelAlertMessageStack != null)
+                                            _buttonStack.AddChild(
+                                                _panelAlertMessageStack);
+
                         
                                         _panelHeaderStack.AddChild(
                                             _panelHeaderTitle);

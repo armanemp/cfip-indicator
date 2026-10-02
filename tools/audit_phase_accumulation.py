@@ -164,14 +164,16 @@ if "SignalVisualLifecycleRule.IsPreTradePlanVisible(" not in visual_snapshot:
     raise SystemExit("visual snapshot must consume signal lifecycle expiry rule")
 if "CurrentM5 - input.CreatedM5" not in visual_lifecycle:
     raise SystemExit("visual lifecycle must enforce bounded pre-trade age")
-if "public bool ShowPopupAlerts" not in popup_core or "DefaultValue = true" not in popup_core:
-    raise SystemExit("popup alerts should be enabled by default")
-if "public bool PopupCriticalOnly" not in popup_core or "DefaultValue = false" not in popup_core:
-    raise SystemExit("popup must not be critical-only by default")
-if "public PanelCorner PopupPosition" not in popup_advanced or "DefaultValue = PanelCorner.BottomRight" not in popup_advanced:
-    raise SystemExit("popup default position must be bottom-right")
-if "public bool PopupBold" not in popup_core or "DefaultValue = true" not in popup_core:
-    raise SystemExit("popup text should be bold by default")
+if "public bool ShowPopupAlerts" in popup_core or "PopupCriticalOnly" in popup_core:
+    raise SystemExit("legacy popup core parameters remain")
+if "public PanelCorner PopupPosition" in popup_advanced or "KeepPopupUntilNextAlert" in popup_advanced:
+    raise SystemExit("legacy popup advanced parameters remain")
+if not (ROOT / "UI" / "Panel" / "AlertDeliveryProcessor.cs").exists():
+    raise SystemExit("unified panel alert processor is missing")
+if "RecordPanelAlertDelivery(" not in read("UI/Panel/AlertDeliveryProcessor.cs"):
+    raise SystemExit("panel alert delivery handoff is missing")
+if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRenderer.cs"):
+    raise SystemExit("panel alert semantic color owner is missing")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must not create backgrounds")
 
@@ -189,7 +191,7 @@ if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
 )
-EXPECTED_CURRENT_PARAMETERS = 568
+EXPECTED_CURRENT_PARAMETERS = 548
 if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit("public parameter contract changed unexpectedly")
 

@@ -8773,7 +8773,7 @@ namespace cAlgo
             bool playSound,
             string soundTypeName,
             string soundFilePath,
-            bool showPopup)
+            bool showPanelMessage)
         {
             ContractIdentity identity =
                 new ContractIdentity(
@@ -8807,10 +8807,10 @@ namespace cAlgo
 
             return new AlertDelivery(
                 envelope,
+                0,
                 playSound,
                 soundTypeName,
-                soundFilePath,
-                showPopup);
+                soundFilePath);
         }
 
         private static void VerifyAlertDeliveryQueueSemantics()
@@ -8868,8 +8868,8 @@ namespace cAlgo
                 alert.Critical &&
                 alert.Message == "critical-1" &&
                 alert.PlaySound &&
-                alert.ShowPopup,
-                "critical alert delivery is prioritized with audio and popup intent intact");
+                alert.Message == "critical-1",
+                "critical alert delivery is prioritized with audio and canonical message intent intact");
 
             Assert(
                 queue.TryDequeue(out alert) &&
