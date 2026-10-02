@@ -32,48 +32,26 @@ namespace cAlgo
 
             Frame[] frames =
             {
-                _m5Frame,
                 _m15Frame,
-                _m30Frame,
-                _h1Frame,
-                _h4Frame,
-                _d1Frame,
-                _w1Frame
+                _h1Frame
             };
 
             string[] names =
             {
-                "M5",
                 "M15",
-                "M30",
-                "H1",
-                "H4",
-                "D1",
-                "W1"
+                "H1"
             };
 
             int[] indices =
             {
-                context.M5,
                 context.M15,
-                context.M30,
-                context.H1,
-                context.H4,
-                context.D1,
-                context.W1
+                context.H1
             };
 
             double[] weights =
             {
-                Math.Max(0, M5Weight),
                 Math.Max(0, M15Weight),
-                Math.Max(0, M30Weight),
-                Math.Max(0, H1Weight),
-                Math.Max(0, H4Weight),
-                Math.Max(0, D1Weight),
-                SmartWeeklyContext
-                    ? Math.Max(0, W1Weight)
-                    : 0
+                Math.Max(0, H1Weight)
             };
 
             for (int i = 0;
@@ -129,7 +107,7 @@ namespace cAlgo
                 candidate.BasePlanTimeframe = "M5";
 
                 candidate.LabelPrefix =
-                    "TF-" +
+                    "PRIMARY-" +
                     names[i];
 
                 candidate.Source =
@@ -141,37 +119,69 @@ namespace cAlgo
                           names[i];
 
                 candidate.Stage =
-                    candidate.ActionableNow &&
-                    candidate.ExecutionPolicyAllowed
-                        ? "TF SCENARIO • READY"
-                        : "TF SCENARIO • WATCH • " +
-                          (string.IsNullOrWhiteSpace(
-                              candidate.ExecutionPolicyReason)
-                              ? "POLICY BLOCKED"
-                              : candidate.ExecutionPolicyReason);
+                    (candidate.PrimarySignalState ?? "PRIMARY") +
+                    " • " +
+                    (candidate.ActionableNow
+                        ? "M5 ENTRY WINDOW"
+                        : candidate.M5TuningAligned
+                            ? "M5 TUNING • WAIT"
+                            : "M5 TUNING • CONFLICT");
 
                 EnrichScenarioEvidence(
                     candidate,
                     frame,
                     frame.Direction);
 
+                bool m1ConfirmationAvailable =
+                    UseM1Trigger &&
+                    _m1Bars != null &&
+                    context.M1 >= 0;
+
+                bool m1Confirmed =
+                    m1ConfirmationAvailable &&
+                    M1TriggerReady(
+                        _m1Bars,
+                        _m5Bars,
+                        context.M1,
+                        closedM5,
+                        reference,
+                        frame.Direction);
+
+                PrimaryTimeframeSignalResult primary =
+                    PrimaryTimeframeSignalRule.Evaluate(
+                        names[i],
+                        frame.Direction,
+                        frame.Quality,
+                        minimumQuality,
+                        _m5Frame.Direction,
+                        m1ConfirmationAvailable,
+                        _m1Frame == null ? 0 : _m1Frame.Direction,
+                        m1Confirmed);
+
+                if (!primary.Allowed)
+                    continue;
+
+                candidate.IsPrimaryTimeframeSignal = true;
+                candidate.M5TuningAligned = primary.M5Aligned;
+                candidate.M1TuningConfirmed = primary.M1Confirmed;
+                candidate.PrimarySignalState = primary.State;
+
                 candidate.ActionabilityReason =
                     string.IsNullOrWhiteSpace(
                         candidate.ActionabilityReason)
-                        ? "INDEPENDENT " +
+                        ? "PRIMARY " +
                           names[i] +
-                          " FRAME"
+                          " SOURCE"
                         : candidate.ActionabilityReason;
 
                 candidate.Stage =
-                    candidate.ActionableNow &&
-                    candidate.ExecutionPolicyAllowed
-                        ? "TF SCENARIO • READY"
-                        : "TF SCENARIO • WATCH • " +
-                          (string.IsNullOrWhiteSpace(
-                              candidate.ExecutionPolicyReason)
-                              ? "POLICY BLOCKED"
-                              : candidate.ExecutionPolicyReason);
+                    (candidate.PrimarySignalState ?? "PRIMARY") +
+                    " • " +
+                    (candidate.ActionableNow
+                        ? "M5 ENTRY WINDOW"
+                        : candidate.M5TuningAligned
+                            ? "M5 TUNING • WAIT"
+                            : "M5 TUNING • CONFLICT");
 
                 AddOpportunityCandidate(
                     candidate);
