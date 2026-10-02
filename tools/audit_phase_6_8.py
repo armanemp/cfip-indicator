@@ -28,6 +28,7 @@ cache = read("src/CFIP.Indicator/Trading/Validation/TargetObstacleScanCache.cs")
 policy = read("src/CFIP.Indicator/Core/Math/TargetObstacleCachePolicy.cs")
 selector = read("src/CFIP.Indicator/Planning/TradePlan/TargetSelector.cs")
 plan_builder = read("src/CFIP.Indicator/Planning/TradePlan/PlanBuilder.cs")
+canonical_path_builder = read("src/CFIP.Indicator/Planning/TradePlan/CanonicalTradePathGeometryBuilder.cs")
 preview_builder = read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs")
 plan_targets = read("src/CFIP.Indicator/Planning/TradePlan/PlanTargetPreparation.cs")
 contracts = read("tools/CFIP.Planning.Contracts/Program.cs")
@@ -100,7 +101,7 @@ check(
 check(
     "SelectTargets has one owner and canonical callers remain unchanged",
     selector.count("private List<Level> SelectTargets(") == 1 and
-    "SelectTargets(" in plan_builder and
+    "SelectTargets(" in canonical_path_builder and
     "SelectTargets(" in preview_builder and
     "HasTargetObstacle(" in plan_targets
 )
