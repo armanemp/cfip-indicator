@@ -1,6 +1,10 @@
+## Permanent Development Rule — Canonical Owners / No Patches
+
+For every future phase, modify the existing canonical production owner directly. Do not create parallel hotfix files, duplicate executors, compatibility wrappers, alternate calculation paths, alternate identity formatters, or detached patch subsystems when the existing owner can be corrected. Any obsolete owner created by an extraction must be deleted in the same phase, and all audits/docs must point to the single surviving owner.
+
 ## CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: **VERIFIED COMPLETE — merged to main via PR #196 as 352e6229adcff8a4ebb6ee6e5c71a0e0397dc70b.**
 
 Scope:
 - move Pending Limit broker mutation completely to the existing cBot pending execution owner;
@@ -13,7 +17,16 @@ Scope:
 
 No new strategy engine, duplicate signal engine, duplicate broker owner, or alternate label formatter is introduced.
 
-Next staged execution migration after verification: CBOT-P4E — Pending cancellation authority extraction.
+Repository verification on final P4D implementation head 22d7af189d7037237b27a3df09a42a9cdda7f252:
+- Source / Architecture: **PASS**;
+- Runtime Acceptance Contracts: **PASS**;
+- cTrader Compile/Build: **PASS**;
+- CBOT-P4D acceptance audit: **PASS**;
+- accumulated execution/UI/identity audits: **PASS**.
+
+Target-terminal acceptance remains manual. No profitability claim is made from this structural/UI phase alone.
+
+Next staged execution phase: **CBOT-P4E — full remaining broker execution authority consolidation (cancellation, protection, partial TP, break-even, trail, close/recovery) in the cBot, with no duplicate Indicator mutation owners.**
 
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
