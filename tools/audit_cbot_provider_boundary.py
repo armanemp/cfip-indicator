@@ -111,20 +111,21 @@ check(
 )
 
 check(
-    "cBot initializes CFIP from the configured same-chart indicator",
+    "cBot binds to the configured same-chart CFIP indicator",
     "RefreshIndicatorBinding(" in cbot and
     "CfipIndicatorChartBinding.TryFind(" in cbot and
-    "CfipIndicatorChartBinding.TryBuildParameterValues(" in cbot and
-    "Indicators.GetIndicator<CFIPIndicator>(" in cbot
+    "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" not in cbot
 )
 
 check(
-    "cBot forces referenced indicator evaluation through output",
-    "_indicator.ProviderHeartbeat.LastValue" in cbot
+    "cBot consumes the exact Device-scope SignalEnvelope",
+    "CfipDeviceSignalTransport.TryRead(" in cbot and
+    "CfipDeviceSignalTransport.Reload(" in cbot and
+    "SignalBusKey.ForIndicatorInstance(" not in cbot
 )
 
 check(
-    "cBot does not create a mismatched hard-coded Indicator configuration",
+    "cBot has no hard-coded hidden Indicator configuration",
     "EnableAutoTrading = true" not in cbot and
     "EnableAutomaticOrders = false" not in cbot and
     "EnableAggressiveAutoEntry = false" not in cbot and
@@ -149,7 +150,7 @@ check(
     "DefaultValue = false" in cbot
 )
 
-for forbidden in ("System.Reflection", "GetType(", "Invoke(", "ChartObjects", "Chart.Draw", "File.", "LocalStorage", "HttpClient", "WebSocket"):
+for forbidden in ("System.Reflection", "GetType(", "Invoke(", "ChartObjects", "Chart.Draw", "File.", "HttpClient", "WebSocket"):
     check(
         f"no unsupported transport/mechanism token: {forbidden}",
         forbidden not in provider and forbidden not in cbot
