@@ -1639,6 +1639,10 @@ Once M42 is accepted, the project leaves the remediation/certification track and
 
 این بخش فقط برای حفظ تداوم است. فازهای historical زیر «باز» نیستند مگر M1 خلافشان را ثابت کند.
 
+## CR4.10 / D10 — Native indicator safety and registry performance
+
+CR4.10 / D10 implementation complete. Native indicator readiness, safe warm-up/fail-closed behavior and deterministic registry lookup ownership were hardened without changing public parameter name/type/DefaultValue or trading thresholds. Target-terminal validation remains a separate manual acceptance boundary. The certification transition after the historical CR4.10/D10 remediation is **CR-FINAL**.
+
 ## Historical audit continuity anchors
 
 The following identifiers are retained solely so accumulated repository audits can prove historical continuity after the roadmap consolidation. They are not additional implementation phases and do not override the M0–M42 order:
