@@ -429,7 +429,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     candidate,
                     _decision,
-                    lane);
+                    lane,
+                    M5OnlyConfirmedTrigger);
 
             candidate.ExecutionPolicyAllowed =
                 policy.ExecutionAuthorized;
