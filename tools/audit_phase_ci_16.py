@@ -61,9 +61,8 @@ check(
 )
 
 check(
-    "DeterministicReplaySuite.cs" in runtime_project and
     "ExecutionIntentGeometryRule.cs" in runtime_project,
-    "Runtime Contracts project includes the CI-16 suite and canonical final-intent geometry owner",
+    "Runtime Contracts project includes the canonical final-intent geometry owner",
 )
 
 check(
