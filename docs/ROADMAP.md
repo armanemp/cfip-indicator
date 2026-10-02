@@ -324,7 +324,9 @@ No parallel DTO/model set may be introduced in the cBot. Existing Indicator inte
 
 ## CBOT-P2 — Read-Only Indicator Provider
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2790 PASS; Runtime Acceptance #2599 PASS; cTrader Compile #2783 PASS.
 
 Expose one structured, immutable, read-only provider from the Indicator to the cBot using the supported cTrader custom-indicator reference mechanism. The provider uses the canonical `CFIP.Contracts` envelope and an invisible output heartbeat to make lazy evaluation deterministic. No chart scraping, reflection, private-field access or static mutable bridge is allowed.
 

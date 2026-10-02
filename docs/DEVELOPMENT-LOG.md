@@ -1,6 +1,8 @@
 ## CBOT-P2 — Read-Only Indicator Provider — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2790 PASS; Runtime Acceptance #2599 PASS; cTrader Compile #2783 PASS.
 
 Added the canonical read-only Indicator provider backed by `CFIP.Contracts`, including immutable `SignalEnvelope`, semantic revisioning, deterministic identity/idempotency, and an invisible `ProviderHeartbeat` output to force lazy evaluation from cBot. The cBot now references `CFIPIndicator` through `Indicators.GetIndicator<CFIPIndicator>()`, explicitly disables all Indicator-side execution/protection switches for the P2 instance, and logs the provider snapshot without broker mutation.
 
