@@ -7,6 +7,8 @@ namespace cAlgo
         public string Source;
         public int Quality;
         public double Score;
+        public double RewardPathRR;
+        public int StopQuality;
         public bool Primary;
         public bool Fvg;
         public bool OrderBlock;
