@@ -164,10 +164,9 @@ namespace CFIP.cBot
                         position.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    string.Equals(
+                    IsManagedLabel(
                         position.Label,
-                        ShadowHostValidator.ManagedLabel,
-                        StringComparison.Ordinal))
+                        ShadowHostValidator.ManagedLabel))
                 {
                     managedPositions++;
                 }
@@ -181,10 +180,9 @@ namespace CFIP.cBot
                         order.SymbolName,
                         SymbolName,
                         StringComparison.Ordinal) &&
-                    string.Equals(
+                    IsManagedLabel(
                         order.Label,
-                        ShadowHostValidator.PendingManagedLabel,
-                        StringComparison.Ordinal))
+                        ShadowHostValidator.PendingManagedLabel))
                 {
                     managedPendingOrders++;
                 }
@@ -197,6 +195,24 @@ namespace CFIP.cBot
                 Symbol.Bid,
                 Symbol.Ask,
                 Symbol.PipSize);
+        }
+
+        private static bool IsManagedLabel(
+            string label,
+            string baseLabel)
+        {
+            if (string.IsNullOrWhiteSpace(label))
+                return false;
+
+            if (string.Equals(
+                    label,
+                    baseLabel,
+                    StringComparison.Ordinal))
+                return true;
+
+            return label.StartsWith(
+                baseLabel + "|CFIP-I:",
+                StringComparison.Ordinal);
         }
 
         private void LogStateIfChanged(
