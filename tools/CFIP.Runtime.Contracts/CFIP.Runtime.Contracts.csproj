@@ -84,6 +84,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/EntryGeometrySnapshot.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryGeometryRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionIntentGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PlanLinePresentationRule.cs" />
