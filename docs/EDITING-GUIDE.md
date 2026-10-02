@@ -104,10 +104,10 @@ Edit the smallest authoritative module that owns the behavior.
 | Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
 | Pending stop-order mutation | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
 | Pending limit-order mutation | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
-| Pending cancellation mutation | `Trading/Execution/BrokerPendingOrderCancellation.cs` |
-| Stop-loss mutation | `Trading/Execution/BrokerStopLossMutation.cs` |
-| Take-profit mutation | `Trading/Execution/BrokerTakeProfitMutation.cs` |
-| Position-close mutation | `Trading/Execution/BrokerPositionCloseMutation.cs` |
+| Pending cancellation mutation | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` |
+| Stop-loss mutation | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` |
+| Take-profit mutation | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` |
+| Position-close mutation | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` |
 | Broker protection coordination | `Trading/Execution/BrokerProtectionCoordinator.cs` |
 | Broker mutation confirmation policy | `Trading/Execution/BrokerConfirmationPolicy.cs` |
 | Broker identity | `Trading/Identity/*.cs` |

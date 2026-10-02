@@ -19,10 +19,10 @@ This document is the concrete extraction map for the current broker/account/life
 | `Trading/Execution/BrokerMarketOrderMutation.cs` | ExecuteMarketOrder, ExecuteMarketRangeOrder | Market + market-range broker mutation | cBot |
 | `Trading/Execution/BrokerPendingOrderPlacement.cs` | PlaceStopOrder | Stop-order mutation | **MIGRATED in CBOT-P4C** |
 | `Trading/Execution/BrokerLimitOrderPlacement.cs` | PlaceLimitOrder | Limit-order mutation | cBot |
-| `Trading/Execution/BrokerPendingOrderCancellation.cs` | CancelPendingOrder | Pending cancellation | cBot |
-| `Trading/Execution/BrokerPositionCloseMutation.cs` | ClosePosition | Full/partial close | cBot |
-| `Trading/Execution/BrokerStopLossMutation.cs` | ModifyStopLossPrice | Broker SL mutation | cBot |
-| `Trading/Execution/BrokerTakeProfitMutation.cs` | ModifyTakeProfitPrice, ModifyTakeProfit, ModifyTakeProfitPips | Broker TP mutation / server ladder | cBot |
+| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | CancelPendingOrder | Pending cancellation | cBot — P4E |
+| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | ClosePosition | Full/partial close | cBot — P4E |
+| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | ModifyStopLossPrice | Broker SL mutation | cBot — P4E |
+| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | ModifyTakeProfitPrice, ModifyTakeProfit, ModifyTakeProfitPips | Broker TP mutation / server ladder | cBot — P4E |
 
 Frozen direct mutation inventory remains **15 call-sites**.
 

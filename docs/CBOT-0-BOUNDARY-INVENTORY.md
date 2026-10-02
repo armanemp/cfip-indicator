@@ -31,7 +31,7 @@ No HTTP, sockets, database, Cloud service, second decision engine, multi-positio
 
 ## 2. Direct broker mutation inventory
 
-The current Indicator has 15 direct broker-mutation call sites. CBOT-0 requires every one to remain behind the frozen broker-owner boundary until CBOT-4/5/7 physically extract and remove those calls from the Indicator.
+The P4E migration removes the remaining Indicator broker-mutation owners. The Indicator now has zero direct mutation calls for cancellation, close/partial-close, stop, absolute TP, TP-by-pips and server TP ladder paths.
 
 | Broker API | Current Indicator owner | Call-site count | Future cBot responsibility |
 | --- | --- | ---: | --- |
@@ -39,12 +39,12 @@ The current Indicator has 15 direct broker-mutation call sites. CBOT-0 requires 
 | `ExecuteMarketRangeOrder` | `Trading/Execution/BrokerMarketOrderMutation.cs` | 2 | Market-range submission |
 | `PlaceStopOrder` | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` | 2 | Pending Stop submission |
 | `PlaceLimitOrder` | `Trading/Execution/BrokerLimitOrderPlacement.cs` | 2 | Pending Limit submission |
-| `CancelPendingOrder` | `Trading/Execution/BrokerPendingOrderCancellation.cs` | 1 | Pending cancellation |
-| `ClosePosition` | `Trading/Execution/BrokerPositionCloseMutation.cs` | 1 | Full/partial position close mutation |
-| `ModifyStopLossPrice` | `Trading/Execution/BrokerStopLossMutation.cs` | 1 | Protective SL mutation |
-| `ModifyTakeProfitPrice` | `Trading/Execution/BrokerTakeProfitMutation.cs` | 1 | TP mutation |
-| `ModifyTakeProfit` | `Trading/Execution/BrokerTakeProfitMutation.cs` | 1 | Server TP ladder mutation |
-| `ModifyTakeProfitPips` | `Trading/Execution/BrokerTakeProfitMutation.cs` | 1 | TP-by-pips mutation |
+| `CancelPendingOrder` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | Pending cancellation |
+| `ClosePosition` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | Full/partial position close mutation |
+| `ModifyStopLossPrice` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | Protective SL mutation |
+| `ModifyTakeProfitPrice` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | TP mutation |
+| `ModifyTakeProfit` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | Server TP ladder mutation |
+| `ModifyTakeProfitPips` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | TP-by-pips mutation |
 | `ModifyPosition` / `ModifyPendingOrder` | no current direct call-site found in frozen owner scan | 0 | reserved for target cBot only if target API requires it |
 
 Machine audit: `tools/audit_cbot_boundary.py`.
@@ -209,3 +209,14 @@ Local checkout action after this phase is merged: `git pull --ff-only`.
 ## CR1.8 remediation delta
 
 CBOT-0 remains a historical boundary-freeze record; its original 562-parameter count is preserved as historical evidence. CR1.8 added exactly one required safety parameter, `ReversalCloseMinimumNetProfit`, so the current machine-audited public parameter baseline is now **563**. This safety correction does not create a new execution authority, reopen the CBOT-0 inventory design, or authorize cBot implementation. `tools/audit_cbot_boundary.py` now expects the post-CR1.8 count of 563 before the separation track can continue.
+
+
+## CBOT-P4E closeout — 2026-10-02
+
+Canonical remaining mutation owner:
+`src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs`.
+
+Transport:
+Indicator `ManagementCommand` -> Device queue -> cBot broker mutation -> `BrokerExecutionReport` -> Device queue -> Indicator reconciliation.
+
+The requested plan is not adopted as broker truth; confirmation is state-based.

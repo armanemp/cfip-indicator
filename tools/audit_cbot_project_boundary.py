@@ -28,6 +28,7 @@ MUTATIONS = (
 ALLOWED_CBOT_MUTATION_OWNERS = {
     "Execution/DemoMarketExecutionCoordinator.cs",
     "Execution/DemoPendingOrderExecutionCoordinator.cs",
+    "Execution/ManagementExecutionCoordinator.cs",
 }
 errors = []
 

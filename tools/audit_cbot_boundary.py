@@ -196,18 +196,35 @@ def main() -> int:
     print("=" * 72)
     if mutation_hits:
         for path, method, api in mutation_hits:
-            owner_ok = path in KNOWN_BROKER_MUTATION_OWNERS
-            print(
-                f"{'OK ' if owner_ok else 'ERR'} "
-                f"{api:26s} {path} :: {method}"
+            errors.append(
+                f"Indicator direct broker mutation remains: {api} {path}::{method}"
             )
-            if not owner_ok:
-                errors.append(
-                    f"direct broker mutation {api} is outside the frozen owner set: "
-                    f"{path}::{method}"
-                )
+            print(f"ERR {api:26s} {path} :: {method}")
     else:
-        errors.append("no direct broker mutation calls were found; baseline inventory is incomplete")
+        print("OK  No direct broker mutation calls remain in the Indicator.")
+
+    cbot_management = (
+        ROOT.parent /
+        "CFIP.cBot" /
+        "Execution" /
+        "ManagementExecutionCoordinator.cs"
+    )
+    if not cbot_management.exists():
+        errors.append("cBot management mutation owner is missing")
+    else:
+        code = cbot_management.read_text(encoding="utf-8")
+        for required_api in (
+            "CancelPendingOrder(",
+            "ClosePosition(",
+            "ModifyStopLossPrice(",
+            "ModifyTakeProfitPrice(",
+            "ModifyTakeProfitPips(",
+            "ModifyTakeProfit(",
+        ):
+            if required_api not in code:
+                errors.append(
+                    f"cBot management owner missing broker mutation: {required_api}"
+                )
 
     # 2) Broker/account state access inventory.
     state_tokens = (
