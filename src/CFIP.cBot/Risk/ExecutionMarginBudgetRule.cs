@@ -1,3 +1,5 @@
+using System;
+
 namespace CFIP.cBot.Risk
 {
     internal static class ExecutionMarginBudgetRule
