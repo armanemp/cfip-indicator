@@ -27,23 +27,27 @@ namespace CFIP.Contracts
             string payload,
             out SignalEnvelope envelope)
         {
-            envelope = null;
+            envelope = default!;
 
             if (string.IsNullOrWhiteSpace(payload))
                 return false;
 
             try
             {
-                envelope =
+                SignalEnvelope? parsed =
                     JsonSerializer.Deserialize<SignalEnvelope>(
                         payload,
                         Options);
 
-                return envelope != null;
+                if (parsed == null)
+                    return false;
+
+                envelope = parsed;
+                return true;
             }
             catch
             {
-                envelope = null;
+                envelope = default!;
                 return false;
             }
         }
