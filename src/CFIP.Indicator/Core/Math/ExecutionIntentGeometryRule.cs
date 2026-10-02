@@ -26,11 +26,11 @@ namespace cAlgo
             Entry = entry;
             Stop = stop;
             Target = target;
-            StopPips = Sanitize(stopPips);
-            TargetPips = Sanitize(targetPips);
+            StopPips = SanitizeExecutionIntentGeometry(stopPips);
+            TargetPips = SanitizeExecutionIntentGeometry(targetPips);
         }
 
-        private static double Sanitize(double value)
+        private static double SanitizeExecutionIntentGeometry(double value)
         {
             return double.IsNaN(value) || double.IsInfinity(value) || value < 0
                 ? 0
@@ -94,7 +94,7 @@ namespace cAlgo
                 targetPips);
         }
 
-        private static ExecutionIntentGeometryResult Invalid(string reason)
+        private static ExecutionIntentGeometryResult InvalidGeometry(string reason)
         {
             return new ExecutionIntentGeometryResult(
                 false,
