@@ -241,7 +241,11 @@ namespace cAlgo
 
                 string key =
                     keyPrefix +
-                    candidate.Id +
+                    (string.IsNullOrWhiteSpace(candidate.ScenarioId)
+                        ? candidate.Id
+                        : candidate.ScenarioId) +
+                    "|" +
+                    candidate.Direction +
                     "|" +
                     closedM5;
 
@@ -252,6 +256,10 @@ namespace cAlgo
                     direction +
                     " | " +
                     timeframe +
+                    " | SCENARIO " +
+                    (string.IsNullOrWhiteSpace(candidate.ScenarioId)
+                        ? candidate.Id
+                        : candidate.ScenarioId)
                     " | Q " +
                     Math.Max(
                         0,
