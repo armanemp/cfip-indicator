@@ -69,13 +69,15 @@ namespace cAlgo
         }
 
         private bool TryReadChartCbot(
-            out ChartRobot cbot,
+            out string instanceId,
+            out string state,
             out int matchingCount)
         {
-            cbot = null;
+            instanceId = string.Empty;
+            state = string.Empty;
             matchingCount = 0;
 
-            foreach (ChartRobot candidate in ChartRobots)
+            foreach (var candidate in ChartRobots)
             {
                 if (candidate == null ||
                     !string.Equals(
@@ -87,36 +89,45 @@ namespace cAlgo
                 matchingCount++;
 
                 if (matchingCount == 1)
-                    cbot = candidate;
+                {
+                    instanceId =
+                        candidate.InstanceId ?? string.Empty;
+
+                    state =
+                        candidate.State == null
+                            ? string.Empty
+                            : candidate.State.ToString();
+                }
             }
 
             return matchingCount == 1 &&
-                   cbot != null;
+                   !string.IsNullOrWhiteSpace(instanceId);
         }
 
         private bool IsCbotChartRunning()
         {
-            if (!TryReadChartCbot(
-                    out ChartRobot cbot,
-                    out int matchingCount) ||
-                matchingCount != 1)
-                return false;
+            TryReadChartCbot(
+                out string instanceId,
+                out string state,
+                out int matchingCount);
 
             return
+                matchingCount == 1 &&
                 string.Equals(
-                    cbot.State.ToString(),
+                    state,
                     "Running",
-                    StringComparison.OrdinalIgnoreCase);
+                    StringComparison.OrdinalIgnoreCase) &&
+                !string.IsNullOrWhiteSpace(instanceId);
         }
 
         private string CbotConnectionPanelText()
         {
             RefreshCbotExecutionStateIfDue();
 
-            bool chartMatch =
-                TryReadChartCbot(
-                    out ChartRobot cbot,
-                    out int matchingCount);
+            TryReadChartCbot(
+                out string instanceId,
+                out string state,
+                out int matchingCount);
 
             if (matchingCount == 0)
                 return
@@ -129,12 +140,17 @@ namespace cAlgo
                         CultureInfo.InvariantCulture) +
                     " INSTANCES";
 
-            if (cbot.State != RobotState.Running)
+            if (!string.Equals(
+                    state,
+                    "Running",
+                    StringComparison.OrdinalIgnoreCase))
                 return
                     "CBOT " +
-                    cbot.State.ToString().ToUpperInvariant();
+                    (string.IsNullOrWhiteSpace(state)
+                        ? "UNKNOWN"
+                        : state.ToUpperInvariant());
 
-            if (!chartMatch ||
+            if (string.IsNullOrWhiteSpace(instanceId) ||
                 !IsCbotExecutionStateFresh())
                 return
                     "CBOT CONNECTING • HEARTBEAT PENDING";
