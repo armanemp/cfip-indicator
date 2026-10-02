@@ -208,13 +208,8 @@ namespace cAlgo
                         previousGeometry.NominalRR;
             }
 
-            double distance =
-                Math.Abs(
-                    level.Price -
-                    _plan.Entry);
-
             double normalizedDistance =
-                distance /
+                targetGeometry.Reward /
                 Math.Max(
                     Symbol.PipSize,
                     _plan.Risk);
