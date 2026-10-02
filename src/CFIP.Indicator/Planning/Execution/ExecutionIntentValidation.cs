@@ -24,13 +24,25 @@ namespace cAlgo
                 return false;
             }
 
-            if (!IsExecutionPlanConsistent(
-                intent.Direction,
-                intent.RequestedEntry,
-                intent.Stop,
-                intent.Target))
+            ExecutionIntentGeometryResult geometry =
+                ExecutionIntentGeometryRule.Evaluate(
+                    intent.Direction,
+                    intent.RequestedEntry,
+                    intent.Stop,
+                    intent.Target,
+                    Symbol.PipSize);
+
+            if (!geometry.Valid ||
+                !IsExecutionPlanConsistent(
+                    intent.Direction,
+                    intent.RequestedEntry,
+                    intent.Stop,
+                    intent.Target))
             {
-                reason = "INCONSISTENT EXECUTION INTENT";
+                reason =
+                    geometry.Valid
+                        ? "INCONSISTENT EXECUTION INTENT"
+                        : geometry.Reason;
                 return false;
             }
 
@@ -39,6 +51,13 @@ namespace cAlgo
                 intent.TargetPips <= 0)
             {
                 reason = "INCOMPLETE EXECUTION INTENT";
+                return false;
+            }
+
+            if (Math.Abs(intent.StopPips - geometry.StopPips) > 1e-12 ||
+                Math.Abs(intent.TargetPips - geometry.TargetPips) > 1e-12)
+            {
+                reason = "EXECUTION INTENT PIP GEOMETRY MISMATCH";
                 return false;
             }
 
