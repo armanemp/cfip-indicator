@@ -6849,7 +6849,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     strategic,
                     decision,
-                    OpportunityLane.Strategic);
+                    OpportunityLane.Strategic,
+                    true);
 
             Assert(
                 strategicPolicy.CandidateEligible &&
@@ -6876,7 +6877,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     independent,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 independentPolicy.CandidateEligible &&
@@ -6903,7 +6905,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     m15,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 m15Policy.CandidateEligible &&
@@ -6935,7 +6938,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     presentationOnly,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 !presentationPolicy.CandidateEligible &&
@@ -6957,7 +6961,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     mismatch,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 !mismatchPolicy.CandidateEligible &&
@@ -7016,7 +7021,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     tactical,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 !blockedPolicy.CandidateEligible &&
