@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """OPPORTUNITY-DISCOVERY / cBot-truth / panel-readability regression gate."""
+# Branch verification deliberately re-runs on each source change.
 from pathlib import Path
 import re
 import sys
