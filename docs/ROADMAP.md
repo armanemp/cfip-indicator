@@ -2072,3 +2072,24 @@ During M0-M42, a newly discovered issue is handled as follows:
 - Live auto-execution: forbidden before M42.
 
 This prevents the roadmap from becoming an endlessly expanding patch queue.
+## MTF-P3 — Primary M15/H1 Provider Scenario Identity Cohesion
+
+Status: **IMPLEMENTATION IN PROGRESS — branch `phase/mtf-primary-provider-identity-2026-10-02`.**
+
+The provider bridge must preserve the exact ScenarioId/SourceTimeframe of the canonical
+candidate used by the execution-facing plan. Provider SourceTimeframe may not be derived
+from the Indicator chart attachment timeframe when a scenario candidate is available.
+
+Implementation scope:
+- reuse canonical scenario identity from the existing registry/resolution path;
+- derive provider SourceTimeframe from the exact candidate;
+- pass the same source timeframe into canonical execution-intent identity;
+- remove hard-coded pending Stop/Limit scenario identifiers in favor of the canonical
+  direction scenario identity;
+- accumulate deterministic runtime/static verification.
+
+This phase changes traceability only. It does not change strategy thresholds, RR, Entry,
+SL, TP, confidence, risk, broker authority or the M15/H1 observe-only execution policy.
+
+Phase report: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
+
