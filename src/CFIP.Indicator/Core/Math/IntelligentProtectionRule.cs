@@ -41,7 +41,6 @@ namespace cAlgo
             double breakEvenTriggerRR,
             double breakEvenBufferPips,
             double riskFreeLockPips,
-            double tp1Pips,
             bool moveToBreakEven,
             bool spreadAwareBreakEven,
             bool enableStructuralRepricing,
@@ -97,6 +96,18 @@ namespace cAlgo
                         : Math.Max(
                             0,
                             breakEvenBufferPips);
+
+                double maximumLockPips =
+                    risk /
+                    pipSize *
+                    0.50;
+
+                lockPips =
+                    Math.Min(
+                        lockPips,
+                        Math.Max(
+                            0,
+                            maximumLockPips));
 
                 double be =
                     direction == 1
@@ -258,56 +269,3 @@ namespace cAlgo
                     "STOP TOO CLOSE TO MARKET");
 
             return new IntelligentProtectionDecision(
-                candidate,
-                true,
-                reason);
-        }
-
-        private static bool IsPositive(double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value > 0;
-        }
-
-        private static bool IsNonNegative(double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value >= 0;
-        }
-
-        private static bool BetterStop(
-            int direction,
-            double proposed,
-            double current)
-        {
-            if (!IsPositive(proposed))
-                return false;
-
-            if (!IsPositive(current))
-                return true;
-
-            return direction == 1
-                ? proposed > current
-                : proposed < current;
-        }
-
-        private static bool IsStructuralFarEnough(
-            int direction,
-            double market,
-            double structural,
-            double room)
-        {
-            if (!IsPositive(structural) ||
-                !IsNonNegative(room))
-                return false;
-
-            return direction == 1
-                ? structural <= market - room
-                : structural >= market + room;
-        }
-    }
-}
