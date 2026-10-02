@@ -131,7 +131,7 @@ namespace cAlgo
                                                                 : 0);
                                         
                                                     int buttonAreaHeight =
-                                                        showButtonRow
+                                                        buttons
                                                             ? buttonContentHeight +
                                                               buttonMargin * 2
                                                             : 0;
