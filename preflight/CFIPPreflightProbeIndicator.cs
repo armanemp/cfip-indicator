@@ -20,10 +20,13 @@ namespace cAlgo
 
         public DateTime LastCalculatedUtc { get; private set; }
 
+        public DateTime FirstCalculatedUtc { get; private set; }
+
         protected override void Initialize()
         {
             Revision = 0;
             LastCalculatedUtc = DateTime.MinValue;
+            FirstCalculatedUtc = DateTime.MinValue;
         }
 
         public override void Calculate(int index)
@@ -31,6 +34,8 @@ namespace cAlgo
             Probe[index] = index;
             Revision++;
             LastCalculatedUtc = Server.TimeInUtc;
+            if (FirstCalculatedUtc == DateTime.MinValue)
+                FirstCalculatedUtc = LastCalculatedUtc;
         }
     }
 }

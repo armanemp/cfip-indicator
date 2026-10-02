@@ -1077,3 +1077,24 @@ Acceptance boundary:
 Next phase: **CI-17 — Target-terminal cTrader validation.**
 
 Operator action: run `git pull --ff-only` on local `main`.
+### CI-17 target-terminal acceptance package — 2026-10-02
+
+Status: **IMPLEMENTATION PACKAGE COMPLETE — target-terminal/manual broker acceptance remains open.**
+
+Completed:
+- upgraded the existing no-trade cTrader preflight bot with real terminal timing and quote diagnostics;
+- recorded startup → first-tick timing, probe calculation revision/age, Bid/Ask, spread in pips, bar count and latest bar-open UTC;
+- exposed first probe calculation UTC while preserving read-only probe semantics;
+- added a compilable preflight project against the production Indicator project;
+- accumulated tools/audit_phase_ci_17.py immediately after CI-16;
+- preserved the existing no-trade boundary: no market/pending/protection/close/cancel broker mutations were added;
+- added the complete manual target-terminal acceptance matrix covering initialization, M1/M5 timing, Bid/Ask, fill/slippage, pending fill/cancel/expiration, reconnect/reload, panel/chart timing and Decision → Plan → Execution synchronization.
+
+Manual acceptance still required:
+- actual cTrader terminal run on the target broker/server;
+- demo execution/fill/slippage evidence for market and pending paths;
+- restart/reconnect evidence;
+- panel/chart responsiveness evidence;
+- signal/plan/execution identity trace from the terminal runtime log.
+
+CI-17 is therefore **not yet certified VERIFIED COMPLETE** by repository CI alone. The next closeout step is to record real terminal evidence, then proceed to **CI-FINAL — Full-stack Calculation Integrity Certification**.
