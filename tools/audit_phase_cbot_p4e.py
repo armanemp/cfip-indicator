@@ -2,7 +2,6 @@
 """CBOT-P4E acceptance gate: broker mutations are cBot-owned and confirmed."""
 
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -10,17 +9,20 @@ IND = ROOT / "src" / "CFIP.Indicator"
 BOT = ROOT / "src" / "CFIP.cBot"
 errors = []
 
+
 def read(rel):
-    p = ROOT / rel
-    if not p.exists():
+    path = ROOT / rel
+    if not path.exists():
         errors.append("missing " + rel)
         return ""
-    return p.read_text(encoding="utf-8")
+    return path.read_text(encoding="utf-8")
 
-indicator = "
-".join(
-    p.read_text(encoding="utf-8") for p in IND.rglob("*.cs")
+
+indicator = "\n".join(
+    path.read_text(encoding="utf-8")
+    for path in IND.rglob("*.cs")
 )
+
 management_ind = read(
     "src/CFIP.Indicator/Trading/Execution/ManagementCommandRequestCoordinator.cs"
 )
@@ -38,6 +40,7 @@ mutation_tokens = (
     "ModifyStopLossPrice(", "ModifyTakeProfitPrice(",
     "ModifyTakeProfitPips(", "ModifyTakeProfit(",
 )
+
 for token in mutation_tokens:
     if token in indicator:
         errors.append("Indicator direct broker mutation remains: " + token)
@@ -75,15 +78,25 @@ for token in (
 
 if "CommandIdempotencyKey" not in report:
     errors.append("BrokerExecutionReport command correlation missing")
-if "CommandKeyForInstance(" not in bus or "ReportKeyForInstance(" not in bus:
+
+if (
+    "CommandKeyForInstance(" not in bus
+    or "ReportKeyForInstance(" not in bus
+):
     errors.append("management transport keys missing")
 
-if "EnableDemoManagementExecution" not in host or "_management.Process(" not in host:
-    errors.append("cBot management integration missing")
-if not re.search(
-    r'[Parameter(s*"Enable Demo Management Execution"[sS]*?DefaultValues*=s*false',
-    host,
+if (
+    "EnableDemoManagementExecution" not in host
+    or "_management.Process(" not in host
 ):
+    errors.append("cBot management integration missing")
+
+management_arm = "Enable Demo Management Execution"
+arm_declared = (
+    '[Parameter("' + management_arm + '"' in host
+    and "DefaultValue = false" in host
+)
+if not arm_declared:
     errors.append("management arm must default false")
 
 for rel in (
