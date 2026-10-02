@@ -105,9 +105,21 @@ namespace cAlgo
                                                             22,
                                                             Math.Min(
                                                                 40,
-                                                                Math.Min(
-                                                                    PanelToggleWidth,
-                                                                    PanelToggleHeight)));
+                                                                PanelToggleHeight));
+
+                                                    int toggleWidth =
+                                                        Math.Max(
+                                                            22,
+                                                            Math.Min(
+                                                                40,
+                                                                PanelToggleWidth));
+
+                                                    int toggleHeight =
+                                                        Math.Max(
+                                                            22,
+                                                            Math.Min(
+                                                                40,
+                                                                PanelToggleHeight));
                                         
                                                     int buttonGap =
                                                         Math.Max(
@@ -119,20 +131,11 @@ namespace cAlgo
                                                             0,
                                                             PanelPadding);
                                         
-                                                    int toggleSideForLayout =
-                                                        Math.Max(
-                                                            22,
-                                                            Math.Min(
-                                                                40,
-                                                                Math.Min(
-                                                                    PanelToggleWidth,
-                                                                    PanelToggleHeight)));
-                                        
                                                     int buttonContentHeight =
                                                         Math.Max(
                                                             buttonHeight,
                                                             ShowPanelToggleButton
-                                                                ? toggleSideForLayout
+                                                                ? toggleHeight
                                                                 : 0);
                                         
                                                     int buttonAreaHeight =
