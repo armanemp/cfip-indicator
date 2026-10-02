@@ -126,20 +126,15 @@ check(
 check(
     "plan target preparation uses canonical RR",
     "RiskRewardMathRule.EvaluateFromRisk(" in target_preparation and
-    "Math.Abs(
-                        tp1" not in target_preparation,
+    "Math.Abs(\n                        tp1" not in target_preparation,
 )
 check(
     "plan reward integrity uses canonical stage RR",
     plan_reward.count("RiskRewardMathRule.Evaluate(") >= 4 and
-    "plan.Tp1 -
-                    plan.Entry) /" not in plan_reward and
-    "plan.Tp2 -
-                        plan.Entry) /" not in plan_reward and
-    "plan.Tp3 -
-                        plan.Entry) /" not in plan_reward and
-    "plan.Tp4 -
-                        plan.Entry) /" not in plan_reward,
+    "plan.Tp1 -\n                    plan.Entry) /" not in plan_reward and
+    "plan.Tp2 -\n                        plan.Entry) /" not in plan_reward and
+    "plan.Tp3 -\n                        plan.Entry) /" not in plan_reward and
+    "plan.Tp4 -\n                        plan.Entry) /" not in plan_reward,
 )
 
 for name, source in (
@@ -160,10 +155,8 @@ for name, source in (
 check(
     "actionability no longer rebuilds TP1 RR locally",
     "rewardRisk.NominalRR" in actionability and
-    "Math.Abs(
-                        preview.Tp1" not in actionability and
-    "Math.Abs(
-                    actualEntry" not in actionability,
+    "Math.Abs(\n                        preview.Tp1" not in actionability and
+    "Math.Abs(\n                    actualEntry" not in actionability,
 )
 check(
     "automatic market pre-trade passes spread, min and max into geometry adapter",
@@ -203,14 +196,12 @@ check(
 check(
     "tactical opportunity RR is canonical",
     "RiskRewardMathRule.EvaluateFromRisk(" in tactical and
-    "Math.Abs(
-                    bestTarget" not in tactical,
+    "Math.Abs(\n                    bestTarget" not in tactical,
 )
 check(
     "parallel opportunity RR fields are canonical",
     "CalculatePreviewStageRR(" in parallel and
-    "Math.Abs(
-                    preview.Tp1" not in parallel,
+    "Math.Abs(\n                    preview.Tp1" not in parallel,
 )
 check(
     "panel LIVE RR uses canonical directional progress",
@@ -268,33 +259,25 @@ for relative, source, forbidden in (
         "PlanRewardIntegrityValidator",
         plan_reward,
         [
-            "plan.Tp1 -
-                    plan.Entry) /",
-            "plan.Tp2 -
-                        plan.Entry) /",
-            "plan.Tp3 -
-                        plan.Entry) /",
-            "plan.Tp4 -
-                        plan.Entry) /",
+            "plan.Tp1 -\n                    plan.Entry) /",
+            "plan.Tp2 -\n                        plan.Entry) /",
+            "plan.Tp3 -\n                        plan.Entry) /",
+            "plan.Tp4 -\n                        plan.Entry) /",
         ],
     ),
     (
         "TradeActionabilityEvaluator",
         actionability,
         [
-            "Math.Abs(
-                    actualEntry -
-                    preview.Stop)",
-            "Math.Abs(
-                        preview.Tp1 -",
+            "Math.Abs(\n                    actualEntry -\n                    preview.Stop)",
+            "Math.Abs(\n                        preview.Tp1 -",
         ],
     ),
     (
         "LivePlanFurtherTargetSelector",
         live_further,
         [
-            "Math.Abs(
-                                        level.Price -",
+            "Math.Abs(\n                                        level.Price -",
         ],
     ),
 ):
