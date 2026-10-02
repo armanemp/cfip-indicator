@@ -24,14 +24,16 @@ namespace cAlgo
                                                 {
                                                     _panel.Width =
                                                         Math.Max(
-                                                            260,
-                                                            PanelWidth);
+                                                            220,
+                                                            Math.Min(
+                                                                700,
+                                                                PanelWidth));
                                         
                                                     _panel.Height =
                                                         panelHeight;
                                         
-                                                    _panel.MinWidth = 260;
-                                                    _panel.MaxWidth = 760;
+                                                    _panel.MinWidth = 220;
+                                                    _panel.MaxWidth = 700;
                                                     _panel.MinHeight = 170;
                                                     _panel.MaxHeight =
                                                         Math.Max(
