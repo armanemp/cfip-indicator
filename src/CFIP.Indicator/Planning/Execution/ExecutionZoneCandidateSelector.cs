@@ -157,6 +157,48 @@ namespace cAlgo
                 m15Fvg,
                 m15Ob);
 
+            AddHigherTimeframeStructureCandidates(
+                candidates,
+                market,
+                direction,
+                m15Index,
+                m15Atr,
+                "M15",
+                _m15Frame == null
+                    ? 0
+                    : _m15Frame.Quality);
+
+            int h1Index =
+                _h1Bars == null
+                    ? -1
+                    : ClosedIndex(
+                        _h1Bars,
+                        _m5Bars.OpenTimes[closedM5]);
+
+            double h1Atr =
+                h1Index >= 10
+                    ? Atr(
+                        _h1Bars,
+                        h1Index)
+                    : 0;
+
+            AddHigherTimeframeStructureCandidates(
+                candidates,
+                market,
+                direction,
+                h1Index,
+                h1Atr,
+                "H1",
+                _h1Frame == null
+                    ? 0
+                    : _h1Frame.Quality);
+
+            ApplyRewardPathPreferences(
+                candidates,
+                closedM5,
+                direction,
+                atr);
+
             ExecutionZoneSelectionCandidate best = null;
 
             for (int i = 0;
@@ -166,7 +208,8 @@ namespace cAlgo
                 ExecutionZoneSelectionCandidate candidate =
                     candidates[i];
 
-                if (candidate == null)
+                if (candidate == null ||
+                    candidate.RewardPathRR <= 0)
                     continue;
 
                 if (best == null ||
