@@ -16,7 +16,7 @@ indicator = INDICATOR.read_text(encoding="utf-8")
 
 for token in (
     '"CFIP Smart Execution Bot"',
-    'DefaultTimeFrame = "M5"',
+    'DefaultTimeFrame = "M15"',
     "EnableDemoMarketExecution",
     "Account.IsLive",
     "CfipIndicatorChartBinding.TryFind(",
