@@ -90,25 +90,31 @@ namespace cAlgo
                 Math.Abs(target - entry);
 
             double rr =
-                distance /
-                Math.Max(pipSize, risk);
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    entry,
+                    target,
+                    risk);
 
-            if (double.IsNaN(rr) ||
-                double.IsInfinity(rr) ||
-                rr <= 0)
+            if (!IsPositiveFinite(rr))
             {
                 return BlockGeometry(
                     TargetCandidateRejectionReasons.RewardRiskInvalid);
             }
 
-            if (rr < requiredRR)
+            if (!RiskRewardPolicyRule.MeetsMinimum(
+                    rr,
+                    requiredRR))
             {
                 return BlockWithRr(
                     TargetCandidateRejectionReasons.RewardRiskBelowMinimum,
                     rr);
             }
 
-            if (rr > maximumRR)
+            if (!RiskRewardPolicyRule.IsWithinMaximum(
+                    rr,
+                    RiskRewardPolicyRule.NormalizeMaximum(
+                        maximumRR,
+                        requiredRR)))
             {
                 return BlockWithRr(
                     TargetCandidateRejectionReasons.RewardRiskAboveMaximum,
@@ -156,6 +162,14 @@ namespace cAlgo
                 true,
                 string.Empty,
                 rr);
+        }
+
+        private static bool IsPositiveFinite(
+            double value)
+        {
+            return value > 0 &&
+                   !double.IsNaN(value) &&
+                   !double.IsInfinity(value);
         }
 
         private static TargetCandidateConstraintResult BlockGeometry(
