@@ -23,6 +23,7 @@ namespace cAlgo
             VerifyTopDownCalibration();
             VerifyProtectionProgressionSemantics();
             VerifyWaveTrendMathematics();
+            Ci20BProtectionAndSignalContracts.Run();
             VerifyHistoricalRenderingSemantics();
             VerifyStructuralStopScoringSemantics();
             VerifyDivergenceThresholdSemantics();
