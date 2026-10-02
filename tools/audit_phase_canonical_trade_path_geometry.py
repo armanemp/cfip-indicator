@@ -108,10 +108,38 @@ check(
 )
 
 check(
-    "existing PlanBuilder still derives executable geometry from actual entry",
-    "execution.ActualEntry" in plan_inputs and
-    "BuildStructuralStop(" in plan_inputs and
-    "BuildTargetLevels(" in plan_builder,
+    "plan preparation consumes the canonical actual-entry trade path",
+    "OpportunityLane lane" in plan_inputs and
+    "TryBuildCanonicalTradePathGeometry(" in plan_inputs and
+    "canonicalPath.Entry" in plan_inputs and
+    "canonicalPath.Stop" in plan_inputs and
+    "canonicalPath.Risk" in plan_inputs,
+)
+
+check(
+    "PlanBuilder has one canonical geometry owner and no duplicate SL/TP construction",
+    "TryPreparePlanInputs(" in plan_builder and
+    "CanonicalTradePathGeometry" in plan_builder and
+    "EnrichPlanTargetMetadata(" not in plan_builder and
+    "BuildStructuralStop(" not in plan_builder and
+    "BuildTargetLevels(" not in plan_builder and
+    "SelectTargets(" not in plan_builder and
+    "TryBuildPlanTargets(" not in plan_builder,
+)
+
+check(
+    "canonical path carries selected TP provenance",
+    all(token in model for token in (
+        "Tp1Source",
+        "Tp1Quality",
+        "Tp2Source",
+        "Tp2Quality",
+        "Tp3Source",
+        "Tp3Quality",
+        "Tp4Source",
+        "Tp4Quality",
+        "HtfTargetCount",
+    )),
 )
 
 check(
