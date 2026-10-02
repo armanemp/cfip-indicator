@@ -49,27 +49,46 @@ namespace cAlgo
 
             int lanePriority;
 
-            switch (candidate.Lane)
+            if (candidate.PrimarySignal)
             {
-                case OpportunityLane.Strategic:
-                    lanePriority = 4000;
-                    break;
-
-                case OpportunityLane.CounterHtfTactical:
-                    lanePriority = 3200;
-                    break;
-
-                case OpportunityLane.MicroReaction:
-                    lanePriority = 3000;
-                    break;
-
-                default:
-                    lanePriority =
-                        string.IsNullOrWhiteSpace(candidate.SourceTimeframe)
-                            ? 2600
-                            : 2800;
-                    break;
+                lanePriority =
+                    PrimarySignalTimeframeRule.PrimaryPriority(
+                        candidate.SourceTimeframe);
             }
+            else
+            {
+                switch (candidate.Lane)
+                {
+                    case OpportunityLane.Strategic:
+                        lanePriority = 4000;
+                        break;
+
+                    case OpportunityLane.CounterHtfTactical:
+                        lanePriority = 3200;
+                        break;
+
+                    case OpportunityLane.MicroReaction:
+                        lanePriority = 3000;
+                        break;
+
+                    default:
+                        lanePriority =
+                            string.IsNullOrWhiteSpace(
+                                candidate.SourceTimeframe)
+                                ? 2600
+                                : 2800;
+                        break;
+                }
+            }
+
+            int levelEvidence =
+                candidate.PrimarySignal
+                    ? Math.Max(
+                        0,
+                        Math.Min(
+                            100,
+                            candidate.PrimaryLevelEvidenceScore))
+                    : 0;
 
             return
                 lanePriority +
@@ -77,7 +96,8 @@ namespace cAlgo
                     0,
                     Math.Min(
                         100,
-                        candidate.Quality));
+                        candidate.Quality)) +
+                levelEvidence;
         }
 
         internal static bool SameIdentity(
@@ -159,6 +179,52 @@ namespace cAlgo
             HashSet<string> covered =
                 new HashSet<string>(
                     StringComparer.OrdinalIgnoreCase);
+
+            // M15 and H1 are the two primary signal lanes. When both are
+            // available they must coexist in the visible set, regardless of
+            // whether one has a slightly higher quality score.
+            string[] primaryTimeframes =
+            {
+                "M15",
+                "H1"
+            };
+
+            for (int p = 0;
+                 p < primaryTimeframes.Length &&
+                 selected.Count < maximum;
+                 p++)
+            {
+                for (int i = 0;
+                     i < ordered.Count;
+                     i++)
+                {
+                    TradeOpportunityCandidate candidate =
+                        ordered[i];
+
+                    if (candidate == null ||
+                        !candidate.PrimarySignal ||
+                        !candidate.PrimarySignalReady ||
+                        !string.Equals(
+                            candidate.SourceTimeframe,
+                            primaryTimeframes[p],
+                            StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    if (selected.Contains(candidate))
+                        continue;
+
+                    string coverage =
+                        CoverageKey(candidate);
+
+                    if (string.IsNullOrWhiteSpace(coverage) ||
+                        covered.Contains(coverage))
+                        continue;
+
+                    selected.Add(candidate);
+                    covered.Add(coverage);
+                    break;
+                }
+            }
 
             for (int i = 0;
                  i < ordered.Count &&
