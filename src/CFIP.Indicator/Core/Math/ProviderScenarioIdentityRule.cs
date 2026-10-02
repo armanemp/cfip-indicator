@@ -13,20 +13,20 @@ namespace cAlgo
             if (candidate != null)
             {
                 string source =
-                    Normalize(candidate.SourceTimeframe);
+                    NormalizeTimeframe(candidate.SourceTimeframe);
 
                 if (!string.IsNullOrWhiteSpace(source))
                     return source;
 
                 string basePlan =
-                    Normalize(candidate.BasePlanTimeframe);
+                    NormalizeTimeframe(candidate.BasePlanTimeframe);
 
                 if (!string.IsNullOrWhiteSpace(basePlan))
                     return basePlan;
             }
 
             string normalizedFallback =
-                Normalize(fallback);
+                NormalizeTimeframe(fallback);
 
             return string.IsNullOrWhiteSpace(normalizedFallback)
                 ? CanonicalM5
@@ -47,7 +47,7 @@ namespace cAlgo
                     : fallback.Trim();
         }
 
-        private static string Normalize(string value)
+        private static string NormalizeTimeframe(string value)
         {
             return
                 string.IsNullOrWhiteSpace(value)
