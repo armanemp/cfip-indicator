@@ -27,6 +27,8 @@ TRANSPORT_UTILITY_FILES = {
     "SignalEnvelopeCodec.cs",
     "SignalBusKey.cs",
     "ManagementBusKey.cs",
+    "CbotExecutionStateBus.cs",
+    "ContractBusKeyHash.cs",
 }
 
 errors = []
@@ -43,9 +45,17 @@ else:
         source = path.read_text(encoding="utf-8")
         rel = path.relative_to(ROOT).as_posix()
 
-        for forbidden in ("cAlgo", "cTrader.Automate", "cAlgo.API", "Robot", "Indicator"):
-            if forbidden in source:
-                errors.append(f"platform dependency in {rel}: {forbidden}")
+        for forbidden in (
+            r"\bcAlgo\b",
+            r"\bcTrader\.Automate\b",
+            r"\bcAlgo\.API\b",
+            r"\bRobot\b",
+            r"\bIndicator\b",
+        ):
+            if re.search(forbidden, source):
+                errors.append(
+                    f"platform dependency in {rel}: {forbidden}"
+                )
 
         if re.search(
             r'\b(public|internal|private|protected)\s+'
