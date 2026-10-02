@@ -31,6 +31,8 @@ pending = read("src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs"
 management = read("src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs")
 publisher = read("src/CFIP.cBot/Execution/CbotExecutionStatePublisher.cs")
 gate = read("src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs")
+brokerSafety = read("src/CFIP.cBot/Execution/BrokerExecutionSafety.cs")
+dailyLoss = read("src/CFIP.cBot/Risk/CbotDailyLossGuard.cs")
 
 for token in (
     "execTimeframe=M15",
@@ -95,7 +97,9 @@ for source, tokens in (
     (pending, ("TryExecute(", "BrokerExecutionSafety.TryConstrainVolumeForMargin", "SINGLE-PLAN CAPACITY BLOCKED")),
     (management, ("ModifyProtection", "Protect(", "TryRecoverProtectionFromSignal")),
     (publisher, ("CbotExecutionStateSnapshot", "CbotBrokerReconciliationResult")),
-    (gate, ("ACCOUNT MARGIN", "LIVE SPREAD", "DAILY LOSS")),
+    (gate, ("ACCOUNT MARGIN LEVEL UNSAFE", "LIVE SPREAD EXCEEDS PLAN RISK LIMIT")),
+    (brokerSafety, ("TryConstrainVolumeForMargin", "GetEstimatedMargin", "NormalizeVolumeInUnits")),
+    (dailyLoss, ("CbotDailyLossGuard", "DAILY LOSS LIMIT REACHED")),
 ):
     require(all(t in source for t in tokens), "broker/cBot owner incomplete: " + tokens[0])
 
