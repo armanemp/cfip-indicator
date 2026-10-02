@@ -17,6 +17,39 @@ namespace cAlgo
             path = null;
             reason = string.Empty;
 
+            double currentEntry =
+                execution == null
+                    ? 0
+                    : NormalizePrice(execution.ActualEntry);
+            double currentSpread =
+                Math.Max(0, Symbol.Ask - Symbol.Bid);
+            double entryTolerance =
+                Math.Max(
+                    Symbol.TickSize,
+                    Symbol.PipSize * 0.10);
+            double spreadTolerance =
+                Math.Max(
+                    Symbol.TickSize,
+                    Symbol.PipSize * 0.05);
+
+            if (_canonicalTradePathCache != null &&
+                _canonicalTradePathCacheM5 == closedM5 &&
+                _canonicalTradePathCacheDirection == direction &&
+                _canonicalTradePathCacheLane == lane &&
+                IsFinitePositive(currentEntry) &&
+                Math.Abs(
+                    _canonicalTradePathCacheEntry -
+                    currentEntry) <=
+                entryTolerance &&
+                Math.Abs(
+                    _canonicalTradePathCacheSpread -
+                    currentSpread) <=
+                spreadTolerance)
+            {
+                path = _canonicalTradePathCache;
+                return path.IsValid;
+            }
+
             if (_m5Bars == null ||
                 closedM5 < 30 ||
                 execution == null ||
@@ -257,7 +290,17 @@ namespace cAlgo
                     stopQuality,
                     preview);
 
-            return path.IsValid;
+            if (!path.IsValid)
+                return false;
+
+            _canonicalTradePathCache = path;
+            _canonicalTradePathCacheM5 = closedM5;
+            _canonicalTradePathCacheDirection = direction;
+            _canonicalTradePathCacheLane = lane;
+            _canonicalTradePathCacheEntry = entry;
+            _canonicalTradePathCacheSpread = spread;
+
+            return true;
         }
     }
 }
