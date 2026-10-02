@@ -40,16 +40,15 @@ namespace cAlgo
             int counterHtfMinimumQuality,
             double counterHtfMinimumRR)
         {
-            if (m5Direction == 0 ||
-                selectedDirection != m5Direction ||
-                tp1RR <= 0)
-                return new TacticalOpportunityResult(
-                    false,
-                    OpportunityLane.Tactical,
-                    0,
-                    tp1RR);
+            bool strongHtfConflict =
+                htfDirection != 0 &&
+                htfAlignment >=
+                Math.Max(
+                    60,
+                    strongHtfThreshold) &&
+                htfDirection != m5Direction;
 
-            int quality =
+            int requiredQuality =
                 (int)Math.Round(
                     m5Quality * 0.55 +
                     waveTrendQuality * 0.20 +
