@@ -133,7 +133,9 @@ namespace cAlgo
                     "SIGNAL QUALITY • PRICE POSITION");
 
             if (!IsFinitePositiveValue(input.Tp1RR) ||
-                input.Tp1RR < input.MinimumTp1RR)
+                !RiskRewardPolicyRule.MeetsMinimum(
+                    input.Tp1RR,
+                    input.MinimumTp1RR))
                 return new ActionableSignalQualityResult(
                     false,
                     "SIGNAL QUALITY • RR");
