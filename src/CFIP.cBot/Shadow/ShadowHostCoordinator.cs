@@ -27,7 +27,6 @@ namespace CFIP.cBot.Shadow
             SignalEnvelope envelope,
             ShadowBrokerSnapshot broker,
             int contractVersion,
-            long providerRevision,
             DateTime nowUtc)
         {
             if (envelope == null)
@@ -53,23 +52,6 @@ namespace CFIP.cBot.Shadow
                     _lastAcceptedRevision,
                     _lastAcceptedIdempotencyKey,
                     nowUtc);
-            }
-
-            if (providerRevision != identity.Revision)
-            {
-                ShadowHostResult mismatch =
-                    new ShadowHostResult(
-                        ShadowHostState.Blocked,
-                        "PROVIDER REVISION MISMATCH",
-                        false,
-                        identity.Revision,
-                        identity.SignalId,
-                        identity.ScenarioId,
-                        identity.PlanId,
-                        identity.IdempotencyKey);
-
-                _lastResult = mismatch;
-                return mismatch;
             }
 
             bool sameCurrent =
