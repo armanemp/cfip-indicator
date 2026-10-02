@@ -144,11 +144,55 @@ namespace CFIP.cBot.Execution
                     envelope.Intent.RequestedEntry) /
                 pipSize;
 
+            if (envelope.Intent.MarketProfile != null &&
+                IsFinitePositive(
+                    envelope.Intent.MarketProfile.StopPips))
+                stopPips =
+                    envelope.Intent.MarketProfile.StopPips;
+
+            if (envelope.Intent.MarketProfile != null &&
+                IsFinitePositive(
+                    envelope.Intent.MarketProfile.TargetPips))
+                targetPips =
+                    envelope.Intent.MarketProfile.TargetPips;
+
             if (!IsFinitePositive(stopPips) ||
                 !IsFinitePositive(targetPips))
             {
                 reason = "INVALID STOP/TARGET DISTANCE";
                 return false;
+            }
+
+            double marketRangePips =
+                envelope.Intent.MarketProfile == null
+                    ? 0
+                    : envelope.Intent.MarketProfile.MarketRangePips;
+
+            if (marketRangePips < 0 ||
+                double.IsNaN(marketRangePips) ||
+                double.IsInfinity(marketRangePips))
+            {
+                reason = "INVALID MARKET RANGE";
+                return false;
+            }
+
+            if (marketRangePips > 0)
+            {
+                double reference =
+                    envelope.Intent.RequestedEntry;
+
+                double liveQuote =
+                    envelope.Identity.Direction == TradeDirection.Buy
+                        ? robot.Symbol.Ask
+                        : robot.Symbol.Bid;
+
+                if (!IsFinitePositive(liveQuote) ||
+                    Math.Abs(liveQuote - reference) >
+                    marketRangePips * pipSize)
+                {
+                    reason = "LIVE QUOTE OUTSIDE MARKET RANGE";
+                    return false;
+                }
             }
 
             TradeType tradeType =
@@ -159,16 +203,31 @@ namespace CFIP.cBot.Execution
             TradeResult result;
             try
             {
+                bool useMarketRange =
+                    marketRangePips > 0;
+
                 result =
-                    robot.ExecuteMarketOrder(
-                        tradeType,
-                        robot.SymbolName,
-                        volume,
-                        executionLabel,
-                        stopPips,
-                        targetPips,
-                        "CFIP DEMO",
-                        false);
+                    useMarketRange
+                        ? robot.ExecuteMarketRangeOrder(
+                            tradeType,
+                            robot.SymbolName,
+                            volume,
+                            marketRangePips,
+                            envelope.Intent.RequestedEntry,
+                            executionLabel,
+                            stopPips,
+                            targetPips,
+                            "CFIP DEMO",
+                            false)
+                        : robot.ExecuteMarketOrder(
+                            tradeType,
+                            robot.SymbolName,
+                            volume,
+                            executionLabel,
+                            stopPips,
+                            targetPips,
+                            "CFIP DEMO",
+                            false);
             }
             catch (Exception ex)
             {
@@ -255,7 +314,11 @@ namespace CFIP.cBot.Execution
 
             return new BrokerExecutionReport(
                 envelope.Identity,
-                BrokerAction.SubmitMarket,
+                envelope.Intent != null &&
+                envelope.Intent.MarketProfile != null &&
+                envelope.Intent.MarketProfile.MarketRangePips > 0
+                    ? BrokerAction.SubmitMarketRange
+                    : BrokerAction.SubmitMarket,
                 status,
                 nowUtc,
                 nowUtc,
