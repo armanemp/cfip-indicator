@@ -248,14 +248,14 @@ check(
 )
 
 check(
-    "roadmap records the CI-13 implementation section",
+    "roadmap records the CI-13 completed closeout",
     "### CI-13 implementation record" in roadmap and
-    "Current implementation phase: CI-13" in roadmap,
+    "Status: **VERIFIED COMPLETE — PR #168 merged to `main`." in roadmap,
 )
 
 check(
-    "roadmap records CI-14 as the next phase",
-    "Next phase: CI-14 — Canonical risk/reward and protection mathematics."
+    "roadmap advances the implementation state to CI-14",
+    "Current implementation phase: CI-14 — Canonical risk/reward and protection mathematics."
     in roadmap,
 )
 
