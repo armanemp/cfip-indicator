@@ -537,6 +537,8 @@ namespace cAlgo
                     decision,
                     trigger,
                     geometry,
+                    entry.Mode,
+                    entry.IsLate,
                     rr,
                     intent,
                     fillAccepted,
