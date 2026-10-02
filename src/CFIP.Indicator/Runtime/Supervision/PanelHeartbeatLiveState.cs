@@ -25,6 +25,14 @@ namespace cAlgo
 
             int width = PanelContentWidth();
 
+            double liveMarket =
+                _plan.Direction == 1
+                    ? Symbol.Bid
+                    : Symbol.Ask;
+
+            if (IsFinitePositive(liveMarket))
+                _lastMarket = liveMarket;
+
             double liveRR =
                 RiskRewardMathRule.DirectionalProgressRR(
                     _plan.Direction,
