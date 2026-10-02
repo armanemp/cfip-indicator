@@ -73,9 +73,6 @@ namespace cAlgo
                                     _processingLampPulseIndex = 0;
                                     _panelRowsStack = null;
                                     _panelScroll = null;
-                                    _quickExecutionStack = null;
-                                    _autoTradingQuickToggle = null;
-                                    _automaticOrdersQuickToggle = null;
                                     _panelRows.Clear();
                                     _buttonStack = null;
                                     _closeButton = null;
