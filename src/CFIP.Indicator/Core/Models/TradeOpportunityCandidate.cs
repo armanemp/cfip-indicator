@@ -13,6 +13,17 @@ namespace cAlgo
         public int WaveTrendQuality;
         public bool ExecutionPolicyAllowed;
         public string ExecutionPolicyReason;
+        public bool PrimarySignal;
+        public bool PrimarySignalReady;
+        public string SignalRole;
+        public string LowerTimeframeTuning;
+        public int LowerTimeframeTuningAgreement;
+        public bool LowerTimeframeConflict;
+        public string PrimaryLevelEvidence;
+        public int PrimaryLevelEvidenceScore;
+        public int PrimaryFvgQuality;
+        public int PrimaryObQuality;
+        public bool PrimaryObFvgConfluence;
         public OpportunityLane Lane;
         public int Direction;
         public int CreatedM5;
