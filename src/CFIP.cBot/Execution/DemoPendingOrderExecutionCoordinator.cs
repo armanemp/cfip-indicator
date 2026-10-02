@@ -60,11 +60,11 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (!IsFinitePositive(envelope.Intent.RequestedEntry) ||
-                !IsFinitePositive(envelope.Intent.Stop) ||
-                !IsFinitePositive(envelope.Intent.InitialTarget) ||
+            if (!IsFinitePositivePendingExecution(envelope.Intent.RequestedEntry) ||
+                !IsFinitePositivePendingExecution(envelope.Intent.Stop) ||
+                !IsFinitePositivePendingExecution(envelope.Intent.InitialTarget) ||
                 !envelope.Intent.RequestedVolume.HasValue ||
-                !IsFinitePositive(envelope.Intent.RequestedVolume.Value))
+                !IsFinitePositivePendingExecution(envelope.Intent.RequestedVolume.Value))
             {
                 reason = "INVALID PENDING STOP GEOMETRY OR VOLUME";
                 return false;
@@ -83,9 +83,9 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (!IsFinitePositive(robot.Symbol.Bid) ||
-                !IsFinitePositive(robot.Symbol.Ask) ||
-                !IsFinitePositive(robot.Symbol.PipSize) ||
+            if (!IsFinitePositivePendingExecution(robot.Symbol.Bid) ||
+                !IsFinitePositivePendingExecution(robot.Symbol.Ask) ||
+                !IsFinitePositivePendingExecution(robot.Symbol.PipSize) ||
                 robot.Symbol.Ask < robot.Symbol.Bid)
             {
                 reason = "INVALID LIVE QUOTE";
@@ -127,8 +127,8 @@ namespace CFIP.cBot.Execution
                     envelope.Intent.RequestedEntry) /
                 robot.Symbol.PipSize;
 
-            if (!IsFinitePositive(stopPips) ||
-                !IsFinitePositive(targetPips))
+            if (!IsFinitePositivePendingExecution(stopPips) ||
+                !IsFinitePositivePendingExecution(targetPips))
             {
                 reason = "INVALID PENDING STOP DISTANCES";
                 return false;
@@ -293,7 +293,7 @@ namespace CFIP.cBot.Execution
                 _rememberedKeys.Remove(_rememberedOrder.Dequeue());
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositivePendingExecution(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
