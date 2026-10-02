@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Text.Json;
 
@@ -50,3 +51,4 @@ namespace CFIP.Contracts
         }
     }
 }
+#nullable enable
