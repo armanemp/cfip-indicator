@@ -1,6 +1,6 @@
 ## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — merged to `main` in implementation commit `0a45bb251d28a5542fa7580d886d3af8b25184b7`.**
 
 Decision for the active execution architecture:
 - **M15 = primary execution timeframe** and the only chart timeframe used for the cBot host by default.
@@ -17,6 +17,14 @@ Risk/price contract:
 - no new signal score, confidence threshold, RR policy tuning or target selection tuning is introduced beyond the requested spread/margin correctness.
 
 Phase report: `docs/PHASE-MTF-EXECUTION-M15-RISK-SPREAD-2026-10-02.md`.
+
+Verification on the final implementation head:
+- Source / Architecture `36985594477` / workflow #2997: **PASS**;
+- Runtime Acceptance `36985594449` / workflow #2806: **PASS**;
+- cTrader Compile/Build `36985594530` / workflow #2990: **PASS**;
+- M15 / Risk / Spread audit: **PASS**.
+
+Target-terminal acceptance remains manual. No profitability claim is made from this architecture change alone.
 
 Next execution-migration phase: **CBOT-P4C — Pending Stop authority extraction**.
 

@@ -26,7 +26,14 @@ Status: **IMPLEMENTATION COMPLETE — repository verification pending on branch.
 
 ## Verification
 
-Required: Source/Architecture, Runtime Acceptance Contracts, cTrader Compile/Build, and the new M15/risk/spread audit.
+Final implementation commit: `0a45bb251d28a5542fa7580d886d3af8b25184b7`.
+
+- Source / Architecture workflow #2997 (`36985594477`): **PASS**;
+- Runtime Acceptance workflow #2806 (`36985594449`): **PASS**;
+- cTrader Compile/Build workflow #2990 (`36985594530`): **PASS**;
+- M15 / Risk / Spread audit: **PASS**.
+
+The target-terminal boundary remains manual.
 
 ## Manual target-terminal boundary
 
