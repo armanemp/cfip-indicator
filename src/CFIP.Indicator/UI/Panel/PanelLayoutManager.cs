@@ -158,7 +158,7 @@ namespace cAlgo
             int configuredMaxHeight)
         {
             // Panel geometry is an overlay concern. Never derive its size from
-            // Chart.Height because the chart viewport may be transiently affected
+            // a live chart viewport because the chart viewport may be transiently affected
             // by the control tree during attachment/layout. Long content is already
             // bounded by the ScrollViewer.
             return Math.Max(
