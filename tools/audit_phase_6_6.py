@@ -49,7 +49,9 @@ check(
 
 check(
     "timeframe candidates pass their frame identity into candidate construction",
-    'names[i]);' in timeframes and
+    "names[i]," in timeframes and
+    "BuildLaneCandidate(" in timeframes and
+    "true)" in timeframes and
     'BasePlanTimeframe = "M5"' in timeframes
 )
 
