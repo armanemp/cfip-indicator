@@ -12,5 +12,7 @@ namespace CFIP.Contracts
         string SizingMode,
         DateTime RequestedUtc,
         DateTime? ExpiryUtc,
-        string Reason);
+        string Reason,
+        string ExecutionLabel,
+        MarketExecutionProfile MarketProfile);
 }
