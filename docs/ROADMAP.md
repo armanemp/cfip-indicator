@@ -361,6 +361,14 @@ Phase report: `docs/PHASE-CBOT-P3-CBOT-HOST-SHADOW.md`.
 
 
 ## CBOT-P4A — Market / Market Range — ACTIVE IMPLEMENTATION
+## TRADE-SYNC-01 — Analysis → Signal → cBot Configuration Parity — ACTIVE
+
+The execution host must consume the same configured `CFIP Smart Indicator` inputs visible on the chart. cBot no longer creates a hidden Indicator with hard-coded execution settings. It discovers the named custom Indicator on the same chart, copies its parameter values, and rebinds when its configuration changes.
+
+Analysis is independent of broker arming: `EnableAutoTrading` no longer changes the decision policy or whether analytical plans are built. It remains an execution control.
+
+Required verification: `tools/audit_trade_sync.py`, Runtime Acceptance Contracts, Source/Architecture and cTrader Compile.
+
 
 Status: **Implementation complete on branch `phase/cbot-p4a-market-range-extraction`; CI/target-terminal verification pending.**
 
