@@ -33,6 +33,7 @@ plan_inputs = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.c
 trace = read("src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs")
 panel = read("src/CFIP.Indicator/UI/Panel/Rows/PanelDecisionRowsRenderer.cs")
 opportunity_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+candidate_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
 state_store = read("src/CFIP.Indicator/Indicator/State.cs")
 execution_model = read("src/CFIP.Indicator/Core/Models/ExecutionModel.cs")
 execution_resolver = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs")
@@ -74,12 +75,12 @@ check(
 
 check(
     "actionable opportunity candidates consume canonical executable geometry",
-    "TradeSetupPreview executablePreview" in opportunity_builder and
-    "if (actionability.Actionable)" in opportunity_builder and
-    "TryBuildCanonicalTradePathGeometry(" in opportunity_builder and
-    "Entry = executablePreview.Entry" in opportunity_builder and
-    "Stop = executablePreview.Stop" in opportunity_builder and
-    "Tp1 = executablePreview.Tp1" in opportunity_builder,
+    "TradeSetupPreview executablePreview" in candidate_builder and
+    "if (actionability.Actionable)" in candidate_builder and
+    "TryBuildCanonicalTradePathGeometry(" in candidate_builder and
+    "Entry = executablePreview.Entry" in candidate_builder and
+    "Stop = executablePreview.Stop" in candidate_builder and
+    "Tp1 = executablePreview.Tp1" in candidate_builder,
 )
 
 check(
