@@ -30,8 +30,8 @@ def require(cond, msg):
         errors.append(msg)
 
 require(
-    "if (_decision != null &&" in snapshot and
-    "return _decision.Direction;" in snapshot,
+    "SignalVisualLifecycleRule.ResolveDirectionalPresentationDirection(" in snapshot and
+    "_decision.Direction" in snapshot,
     "visual direction must retain a directional Decision even before actionability",
 )
 require(
@@ -65,9 +65,9 @@ require(
 )
 require(
     "!execution.Ready" in actionability and
-    "M5OnlyConfirmedTrigger &&" in actionability and
-    "liveMode != ExecutionMode.RetestMarket" in actionability,
-    "mode-specific trigger enforcement must live in actionability",
+    "IsActionabilityTriggerReady(" in actionability and
+    "IsActionabilityTriggerReady(" in read("src/CFIP.Indicator/Planning/Execution/TriggerGate.cs"),
+    "mode-specific trigger enforcement must live in the canonical trigger owner",
 )
 require(
     geometry.find("else if (insideZone)") < geometry.find("else if (continuation)"),
