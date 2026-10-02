@@ -22,6 +22,7 @@ namespace cAlgo
                 ShowEarlyArrow &&
                 ShowEarlyWatch &&
                 !snapshot.PendingOrder &&
+                !snapshot.LivePosition &&
                 visualDirection != 0 &&
                 snapshot.Confidence >=
                     Math.Max(
