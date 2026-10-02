@@ -13,6 +13,11 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x'
+      - run: dotnet restore src/CFIP.Contracts/CFIP.Contracts.csproj
+      - run: dotnet build src/CFIP.Contracts/CFIP.Contracts.csproj --configuration Release --no-restore
+      - run: dotnet restore src/CFIP.cBot/CFIP.cBot.csproj
+      - run: dotnet build src/CFIP.cBot/CFIP.cBot.csproj --configuration Release --no-restore
+
       - run: dotnet restore tools/CFIP.Indicator.CI/CFIP.Indicator.CI.csproj
       - run: dotnet build tools/CFIP.Indicator.CI/CFIP.Indicator.CI.csproj --configuration Release --no-restore
       - run: dotnet restore tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj
