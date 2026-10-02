@@ -201,7 +201,6 @@ namespace cAlgo
         private void ApplyPanelAlertMessageRailLayout(
             int contentWidth,
             int buttonGap,
-            int buttonMargin,
             int toggleWidth)
         {
             if (_panelAlertMessageStack == null)
