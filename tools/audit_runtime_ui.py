@@ -29,7 +29,12 @@ cbot_market = (
     "Execution" /
     "DemoMarketExecutionCoordinator.cs"
 ).read_text(encoding="utf-8")
-pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
+pending_cbot = (
+    ROOT.parent /
+    "CFIP.cBot" /
+    "Execution" /
+    "DemoPendingOrderExecutionCoordinator.cs"
+).read_text(encoding="utf-8")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 state = read("Indicator/State.cs")
 factory = read("UI/Controls/ExecutionControlsFactory.cs")
@@ -175,8 +180,8 @@ for token in (
         raise SystemExit(f"Server TP ladder contract missing: {token}")
 if "ExecuteMarketRangeOrder(" not in cbot_market or "ExecuteMarketOrder(" not in cbot_market:
     raise SystemExit("cBot must own Market / Market-Range broker mutation")
-if "TryPlaceStopOrderWithTakeProfitLadder" not in pending_mutation:
-    raise SystemExit("Pending stop server TP mutation owner missing")
+if "PlaceStopOrder(" not in pending_cbot or "BrokerAction.SubmitPendingStop" not in pending_cbot:
+    raise SystemExit("cBot Pending Stop mutation owner missing")
 if "TryPlaceLimitOrderWithTakeProfitLadder" not in limit_mutation:
     raise SystemExit("Pending limit server TP mutation owner missing")
 
