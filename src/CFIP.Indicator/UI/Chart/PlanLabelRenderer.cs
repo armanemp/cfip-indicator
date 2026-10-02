@@ -92,20 +92,18 @@ namespace cAlgo
                 label.Color =
                     labelTextColor;
                 label.FontSize =
-                    Math.Max(
-                        8,
-                        PanelFontSize);
+                    CompactPlanLabelFontSize;
                 label.FontFamily =
                     string.IsNullOrWhiteSpace(
                         PanelFontFamily)
                         ? "Arial"
                         : PanelFontFamily;
                 label.IsBold =
-                    PanelBold;
+                    true;
                 label.HorizontalAlignment =
                     HorizontalAlignment.Left;
                 label.VerticalAlignment =
-                    VerticalAlignment.Bottom;
+                    VerticalAlignment.Center;
                 label.IsInteractive =
                     false;
             }
