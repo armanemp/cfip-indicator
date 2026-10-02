@@ -416,6 +416,15 @@ namespace cAlgo
                             stopPips))
                     : 0;
 
+            if (string.IsNullOrWhiteSpace(
+                    sourceTimeframe))
+            {
+                EnrichScenarioEvidence(
+                    candidate,
+                    _m5Frame,
+                    direction);
+            }
+
             ScenarioExecutionPolicyResult policy =
                 ScenarioExecutionPolicyRule.Evaluate(
                     candidate,
