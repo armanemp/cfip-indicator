@@ -48,12 +48,12 @@ namespace cAlgo
             double pipSize)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsPositiveFinite(entry) ||
-                !IsPositiveFinite(stop) ||
-                !IsPositiveFinite(target) ||
-                !IsPositiveFinite(pipSize))
+                !IsPositiveFiniteGeometry(entry) ||
+                !IsPositiveFiniteGeometry(stop) ||
+                !IsPositiveFiniteGeometry(target) ||
+                !IsPositiveFiniteGeometry(pipSize))
             {
-                return Invalid("INVALID GEOMETRY");
+                return InvalidGeometry("INVALID GEOMETRY");
             }
 
             if (!PriceProtectionRule.ValidateStop(
@@ -67,7 +67,7 @@ namespace cAlgo
                     target,
                     0))
             {
-                return Invalid("WRONG-SIDE GEOMETRY");
+                return InvalidGeometry("WRONG-SIDE GEOMETRY");
             }
 
             double stopPips =
@@ -78,10 +78,10 @@ namespace cAlgo
                 Math.Abs(target - entry) /
                 pipSize;
 
-            if (!IsPositiveFinite(stopPips) ||
-                !IsPositiveFinite(targetPips))
+            if (!IsPositiveFiniteGeometry(stopPips) ||
+                !IsPositiveFiniteGeometry(targetPips))
             {
-                return Invalid("INVALID PIP GEOMETRY");
+                return InvalidGeometry("INVALID PIP GEOMETRY");
             }
 
             return new ExecutionIntentGeometryResult(
@@ -106,7 +106,7 @@ namespace cAlgo
                 0);
         }
 
-        private static bool IsPositiveFinite(double value)
+        private static bool IsPositiveFiniteGeometry(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
