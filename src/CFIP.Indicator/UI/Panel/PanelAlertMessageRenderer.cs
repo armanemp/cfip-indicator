@@ -83,6 +83,7 @@ namespace cAlgo
                             PanelAlertMessageCapacity);
 
                 _panelAlertHistory.Enqueue(delivery);
+                _panelAlertRevision++;
 
                 while (_panelAlertHistory.Count >
                        PanelAlertMessageCapacity)
