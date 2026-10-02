@@ -139,9 +139,8 @@ namespace cAlgo
                     continue;
 
                 DateTime entryUtc =
-                    position.EntryTime.Kind == DateTimeKind.Utc
-                        ? position.EntryTime
-                        : position.EntryTime.ToUniversalTime();
+                    CanonicalTimeRule.EnsureUtc(
+                        position.EntryTime);
 
                 if (entryUtc < boundaryUtc)
                 {
