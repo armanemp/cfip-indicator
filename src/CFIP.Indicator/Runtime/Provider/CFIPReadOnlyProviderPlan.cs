@@ -19,13 +19,66 @@ namespace cAlgo
                 DateTime observedUtc,
                 int closedM5)
         {
-            if (_cfipProviderExecutionIntent == null ||
+            cAlgo.ExecutionIntent sourceIntent =
+                _cfipProviderExecutionIntent;
+
+            if (sourceIntent == null ||
                 _cfipProviderExecutionIntentM5 != closedM5)
-                return null;
+            {
+                if (_plan == null ||
+                    _decision == null ||
+                    !_decision.EntryAllowed ||
+                    _plan.CreatedM5 != closedM5 ||
+                    direction == 0 ||
+                    _plan.Direction != direction)
+                    return null;
+
+                double planTarget =
+                    IsFinitePositive(_plan.Tp1)
+                        ? _plan.Tp1
+                        : _plan.Tp4;
+
+                if (!IsFinitePositive(_plan.Entry) ||
+                    !IsFinitePositive(_plan.Stop) ||
+                    !IsFinitePositive(planTarget) ||
+                    !IsFinitePositive(_plan.OriginalVolume))
+                    return null;
+
+                sourceIntent =
+                    new cAlgo.ExecutionIntent
+                    {
+                        Direction = direction,
+                        Policy = DecisionPolicyMode.Confirmed,
+                        Kind = ExecutionIntentKind.Market,
+                        RequestedEntry = _plan.Entry,
+                        Trigger = _plan.EntryTrigger,
+                        ZoneLow = _plan.EntryZoneLow,
+                        ZoneHigh = _plan.EntryZoneHigh,
+                        Stop = _plan.Stop,
+                        Target = planTarget,
+                        StopPips =
+                            Math.Abs(
+                                _plan.Entry -
+                                _plan.Stop) /
+                            Math.Max(
+                                Symbol.PipSize,
+                                1e-9),
+                        TargetPips =
+                            Math.Abs(
+                                planTarget -
+                                _plan.Entry) /
+                            Math.Max(
+                                Symbol.PipSize,
+                                1e-9),
+                        Volume = _plan.OriginalVolume,
+                        CreatedM5 = closedM5,
+                        Source = "CANONICAL PLAN • CBOT HANDOFF"
+                    };
+            }
 
             ExecutionAction action =
                 ResolveContractExecutionAction(
-                    _cfipProviderExecutionIntent);
+                    sourceIntent);
 
             if (action == ExecutionAction.None)
                 return null;
@@ -63,16 +116,16 @@ namespace cAlgo
             return new CFIP.Contracts.ExecutionIntent(
                 identity,
                 action,
-                _cfipProviderExecutionIntent.RequestedEntry,
-                _cfipProviderExecutionIntent.Stop,
-                _cfipProviderExecutionIntent.Target,
-                _cfipProviderExecutionIntent.Volume > 0
-                    ? _cfipProviderExecutionIntent.Volume
+                sourceIntent.RequestedEntry,
+                sourceIntent.Stop,
+                sourceIntent.Target,
+                sourceIntent.Volume > 0
+                    ? sourceIntent.Volume
                     : (double?)null,
                 SizingMode.ToString(),
                 observedUtc,
                 expiryUtc,
-                _cfipProviderExecutionIntent.Source ?? "");
+                sourceIntent.Source ?? "");
         }
 
         private PlanSnapshot BuildCanonicalPlanSnapshot(
