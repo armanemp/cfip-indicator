@@ -32,6 +32,8 @@ workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
+closed_bar = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
+panel_status = read("src/CFIP.Indicator/UI/Panel/PanelCanonicalSignalStatus.cs")
 
 check(
     "one canonical mode-aware trigger policy exists",
@@ -67,6 +69,20 @@ check(
     "live actionability still enforces mode-specific trigger semantics",
     "if (!IsActionabilityTriggerReady(" in actionability and
     "ExecutionMode.RetestMarket" in actionability,
+)
+
+check(
+    "new-bar plan gating sees the current execution mode, not the prior bar",
+    "UpdateExecutionModel(" in closed_bar and
+    "TryEnsureAutomaticPlan(" in closed_bar and
+    closed_bar.index("UpdateExecutionModel(") <
+    closed_bar.index("TryEnsureAutomaticPlan("),
+)
+
+check(
+    "panel presents Actionable before generic trigger-watch state",
+    panel_status.index("if (_decision.ActionableNow)") <
+    panel_status.index("if (!_decision.TriggerReady)"),
 )
 
 check(
