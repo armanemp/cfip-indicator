@@ -1,6 +1,6 @@
 ## CI-21 — Primary M15 Signal Visibility / M5 Entry Tuning — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci-21-primary-m15-signal-visibility`.**
+Status: **VERIFIED COMPLETE — merged to `main) via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
 
 Deep audit finding:
 - a qualified M15/H1 source could disappear before presentation because the primary candidate path was coupled to downstream geometry/plan/target construction;
@@ -14,10 +14,10 @@ Canonical correction:
 - primary display uses its dedicated source-quality floor without the extra generic parallel margin.
 
 Verification:
-- Source/Architecture: pending;
-- Runtime Acceptance: pending;
-- cTrader Compile: pending;
-- CI-21 audit: pending.
+- Source/Architecture: **PASS**;
+- Runtime Acceptance: **PASS**;
+- cTrader Compile: **PASS**;
+- CI-21 audit: **PASS**.
 
 No public strategy/RR/risk threshold was lowered.
 
