@@ -22,6 +22,7 @@ panel_factory = read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs")
 panel_layout = read("src/CFIP.Indicator/UI/Panel/PanelLayoutManager.cs")
 indicator = read("src/CFIP.Indicator/Indicator/CFIPIndicator.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProvider.cs")
+provider_identity = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderIdentity.cs")
 
 if "public string CommandIdempotencyKey { get; init; } = string.Empty;" not in report:
     errors.append("BrokerExecutionReport correlation key is not explicitly initialized")
@@ -48,8 +49,8 @@ if "return Math.Max(" not in panel_layout or "configuredMaxHeight" not in panel_
 
 if "AutoRescale = false" not in indicator:
     errors.append("overlay Indicator must disable automatic chart rescaling")
-if "ProviderHeartbeat[index]" not in provider:
-    errors.append("provider heartbeat output contract unexpectedly disappeared")
+if "ProviderHeartbeat[index]" not in provider_identity:
+    errors.append("provider heartbeat output publication unexpectedly disappeared")
 if 'LineColor = "Transparent"' not in provider:
     errors.append("provider heartbeat must remain invisible")
 
