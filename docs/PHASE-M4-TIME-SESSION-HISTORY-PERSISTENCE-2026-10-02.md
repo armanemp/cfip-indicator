@@ -77,6 +77,17 @@ Required repository gates:
 
 Target-terminal evidence remains required for exact broker session-time behavior, restart-mid-day persistence, history-folder creation/readback, EOD cleanup timing and cBot reconnect.
 
+## Verification closeout
+
+Final M4 implementation head: `2f8b447f70d7327232dfa5f118d00520017cef99`.
+
+Repository gates PASS:
+- Source / Architecture: PASS
+- Runtime Acceptance Contracts: PASS
+- cTrader Compile/Build: PASS
+
+Manual target-terminal boundary remains for restart-mid-day persistence, exact broker session/EOD behavior, History filesystem readback and cBot reconnect.
+
 ## Operator action
 
 After merge to `main`:
