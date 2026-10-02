@@ -77,7 +77,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[safeBar],
                             labelPrice,
-                            labelTextColor);
+                            whiteTextColor);
                 }
 
                 if (label == null)
@@ -90,7 +90,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    labelTextColor;
+                    whiteTextColor;
                 label.FontSize =
                     Math.Max(
                         8,
@@ -216,7 +216,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[safeLabelBar],
                             labelPrice,
-                            whiteTextColor);
+                            labelTextColor);
                 }
 
                 if (label == null)
@@ -229,7 +229,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    whiteTextColor;
+                    labelTextColor;
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
