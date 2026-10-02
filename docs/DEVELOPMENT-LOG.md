@@ -1,3 +1,39 @@
+## M0 — Adoption / Freeze / Baseline closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — Master Roadmap consolidation and repository baseline freeze completed.**
+
+Branch: `phase/master-roadmap-single-source-2026-10-02`  
+Verified implementation/continuity HEAD before closeout: `6ceab05142fab7f2ac2bf9bbfd6f6346bd1023bc6`.
+
+Verification:
+- Source / Architecture #2756: **PASS**
+- Runtime Acceptance Contracts #2565: **PASS**
+- cTrader Compile #2749: **PASS**
+
+Completed:
+- established `docs/ROADMAP.md` as the single active development roadmap;
+- reconciled historical roadmap/audit continuity requirements after consolidation;
+- verified the 568-parameter baseline and repository structure;
+- preserved the frozen broker-mutation boundary and current single execution authority;
+- recorded the target Indicator → Contracts → cBot architecture without creating the cBot in M0;
+- made no production C# trading-behavior change.
+
+Findings resolved during M0:
+- missing Track 19 continuity link;
+- missing Phase 7.4 continuity marker and misleading `Mxx` phase-closeout template;
+- missing CR4.4 / D10 / CR-FINAL continuity anchors;
+- missing CR7.5 / G5 and CR7.6a continuity anchors;
+- accumulated CI/CR historical string anchors required by repository audits.
+
+Manual boundary remains open:
+- target cTrader terminal/broker behavior;
+- panel/chart live responsiveness;
+- broker fill/reconnect/lifecycle evidence.
+
+Operator action after merge: `git pull --ff-only`.
+
+Next phase: **M1 — Full Forensic Audit**.
+
 ## CI-17A closeout — Panel live-content refresh correction — 2026-10-02
 
 Status: **VERIFIED COMPLETE — repository implementation gate passed; target-terminal visual acceptance remains pending.**
