@@ -469,7 +469,8 @@ namespace cAlgo
                     markerRoundTrip,
                     markerRoundTrip
                         ? ""
-                        : "History read/write round-trip not verified");
+                        : "History read/write round-trip not verified",
+                    Server.TimeInUtc);
 
                 if (!markerRoundTrip)
                 {
