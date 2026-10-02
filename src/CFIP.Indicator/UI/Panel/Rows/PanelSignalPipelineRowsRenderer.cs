@@ -99,6 +99,31 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
+                "TRIGGER  " +
+                (_triggerRuntime.Latched
+                    ? "LATCHED"
+                    : _triggerRuntime.Ready
+                        ? "READY"
+                        : "WAIT") +
+                "  • SCORE " +
+                Math.Max(0, _triggerRuntime.Score) +
+                "/" +
+                Math.Max(0, _triggerRuntime.RequiredScore) +
+                "  • M1 " +
+                DirectionText(
+                    _triggerRuntime.Direction) +
+                "  • " +
+                CompactText(
+                    _triggerRuntime.Reason,
+                    34),
+                _triggerRuntime.Ready
+                    ? TpLineColor
+                    : PanelWarningColor,
+                false,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
                 "PIPELINE REASON  " +
                 reason,
                 actionable
