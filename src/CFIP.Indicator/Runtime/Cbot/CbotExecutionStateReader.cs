@@ -68,92 +68,31 @@ namespace cAlgo
             }
         }
 
-        private bool TryReadChartCbot(
-            out string instanceId,
-            out string state,
-            out int matchingCount)
-        {
-            instanceId = string.Empty;
-            state = string.Empty;
-            matchingCount = 0;
-
-            foreach (var candidate in ChartRobots)
-            {
-                if (candidate == null ||
-                    !string.Equals(
-                        candidate.Name,
-                        CbotIdentity.DisplayName,
-                        StringComparison.Ordinal))
-                    continue;
-
-                matchingCount++;
-
-                if (matchingCount == 1)
-                {
-                    instanceId =
-                        candidate.InstanceId ?? string.Empty;
-
-                    state =
-                        candidate.State == null
-                            ? string.Empty
-                            : candidate.State.ToString();
-                }
-            }
-
-            return matchingCount == 1 &&
-                   !string.IsNullOrWhiteSpace(instanceId);
-        }
-
-        private bool IsCbotChartRunning()
-        {
-            TryReadChartCbot(
-                out string instanceId,
-                out string state,
-                out int matchingCount);
-
-            return
-                matchingCount == 1 &&
-                string.Equals(
-                    state,
-                    "Running",
-                    StringComparison.OrdinalIgnoreCase) &&
-                !string.IsNullOrWhiteSpace(instanceId);
-        }
-
         private string CbotConnectionPanelText()
         {
             RefreshCbotExecutionStateIfDue();
 
-            TryReadChartCbot(
-                out string instanceId,
-                out string state,
-                out int matchingCount);
-
-            if (matchingCount == 0)
+            if (_cBotExecutionState == null)
                 return
-                    "CBOT NOT ATTACHED • ATTACH TO THIS CHART";
+                    "CBOT NOT CONNECTED • START cBot ON THIS CHART";
 
-            if (matchingCount > 1)
+            double ageSeconds =
+                Math.Max(
+                    0,
+                    (TimeInUtc -
+                     _cBotExecutionState.ObservedUtc).TotalSeconds);
+
+            if (ageSeconds > 3.0)
                 return
-                    "CBOT AMBIGUOUS • " +
-                    matchingCount.ToString(
-                        CultureInfo.InvariantCulture) +
-                    " INSTANCES";
+                    "CBOT RECONNECTING • HEARTBEAT STALE • " +
+                    ageSeconds.ToString("F1") +
+                    "s";
 
-            if (!string.Equals(
-                    state,
-                    "Running",
+            if (string.Equals(
+                    _cBotExecutionState.Reason,
+                    "CBOT STOPPED",
                     StringComparison.OrdinalIgnoreCase))
-                return
-                    "CBOT " +
-                    (string.IsNullOrWhiteSpace(state)
-                        ? "UNKNOWN"
-                        : state.ToUpperInvariant());
-
-            if (string.IsNullOrWhiteSpace(instanceId) ||
-                !IsCbotExecutionStateFresh())
-                return
-                    "CBOT CONNECTING • HEARTBEAT PENDING";
+                return "CBOT STOPPED";
 
             return
                 "CBOT CONNECTED • " +
@@ -245,7 +184,6 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             return
-                IsCbotChartRunning() &&
                 IsCbotExecutionStateFresh() &&
                 (_cBotExecutionState.MarketExecutionEnabled ||
                  _cBotExecutionState.AggressiveExecutionEnabled);
@@ -256,7 +194,6 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             return
-                IsCbotChartRunning() &&
                 IsCbotExecutionStateFresh() &&
                 (_cBotExecutionState.PendingStopExecutionEnabled ||
                  _cBotExecutionState.PendingLimitExecutionEnabled);
@@ -267,7 +204,6 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             return
-                IsCbotChartRunning() &&
                 IsCbotExecutionStateFresh() &&
                 _cBotExecutionState.ManagementExecutionEnabled;
         }
@@ -275,9 +211,6 @@ namespace cAlgo
         private Color CbotExecutionStatePanelColor()
         {
             RefreshCbotExecutionStateIfDue();
-
-            if (!IsCbotChartRunning())
-                return PanelWarningColor;
 
             if (!IsCbotExecutionStateFresh())
                 return PanelWarningColor;
