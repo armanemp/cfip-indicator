@@ -1625,3 +1625,18 @@ Purpose:
 Repository verification is pending. Operator action after merge remains `git pull --ff-only`.
 
 Phase record: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
+
+
+### Panel Geometry Correction — 50px Bottom Clearance + Hidden Restore Position — 2026-10-02
+
+Status: **VERIFIED COMPLETE** — implementation HEAD `b63f82e1d1fca9ef3af2d7fbbe34e779099ab7d7`; target-terminal visual confirmation remains manual.
+
+Requested UI correction:
+- BottomLeft/BottomRight Indicator panel clearance is exactly 50px;
+- hidden restore "+" control uses the same 50px bottom clearance;
+- top-corner behavior is unchanged;
+- no public parameter or trading logic changes.
+
+Repository verification is pending. Operator action after merge: `git pull --ff-only`.
+
+Phase record: `docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md`.

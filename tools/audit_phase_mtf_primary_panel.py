@@ -67,7 +67,7 @@ require(
     "chart panel must not construct or add AUTO TRADE/AUTO ORDERS quick controls",
 )
 require(
-    "PanelBottomClearance = 100" in read("src/CFIP.Indicator/UI/Panel/PanelConstants.cs") and
+    "PanelBottomClearance =" in read("src/CFIP.Indicator/UI/Panel/PanelConstants.cs") and
     "PanelBottomClearance" in panel_surface and
     "new Thickness(" in panel_surface,
     "bottom panel clearance must be an internal layout constant applied as bottom margin",

@@ -3074,3 +3074,17 @@ No public parameter, threshold, RR, Entry, SL, TP, confidence, risk or broker mu
 authority has changed.
 
 Phase record: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
+
+
+## Panel Geometry Correction — 50px Bottom Clearance + Hidden Restore Position — 2026-10-02
+
+Completed the requested panel geometry correction on a dedicated phase branch. Repository Source/Architecture, Runtime Acceptance and cTrader Compile/Build gates passed on implementation HEAD `b63f82e1d1fca9ef3af2d7fbbe34e779099ab7d7`. The previous
+100px bottom clearance is reduced to 50px. The hidden restore button now uses a dedicated
+50px bottom clearance for BottomLeft/BottomRight, keeping it aligned with the new panel/cBot
+boundary instead of falling directly against the chart bottom edge.
+
+The accumulated P1 panel audit was made value-agnostic so a deliberate geometry correction does
+not look like a historical regression. No public parameter, strategy logic or broker authority
+was changed.
+
+Phase record: `docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md`.
