@@ -1303,13 +1303,20 @@ for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
 
 # Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
 
-for pending_path in (
-    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
-    ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
-):
-    pending_code = pending_path.read_text(encoding="utf-8")
-    if "ReportConfirmedPendingOrderPlacement(" not in pending_code:
-        raise SystemExit(f"Pending-order reporting boundary missing: {pending_path.name}")
+# Pending Stop is cBot-owned after CBOT-P4C. Indicator must only prepare
+# immutable intent; Reversal Limit remains on the staged Indicator path until P4D.
+continuation_stop_code = (
+    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
+).read_text(encoding="utf-8")
+if "PrepareContinuationStopForCbot(" not in continuation_stop_code:
+    raise SystemExit("Pending Stop intent-only preparation owner is missing")
+if "PlaceStopOrder(" in continuation_stop_code:
+    raise SystemExit("Pending Stop broker mutation leaked back into Indicator")
+
+reversal_limit_path = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs"
+reversal_limit_code = reversal_limit_path.read_text(encoding="utf-8")
+if "ReportConfirmedPendingOrderPlacement(" not in reversal_limit_code:
+    raise SystemExit("Pending Limit reporting boundary missing")
 
 PENDING_REPORTER = ROOT / "Trading" / "Pending" / "Placement" / "PendingOrderConfirmationReporter.cs"
 PENDING_REPORTER_CODE = PENDING_REPORTER.read_text(encoding="utf-8")
@@ -1321,15 +1328,11 @@ for token in (
     if token not in PENDING_REPORTER_CODE:
         raise SystemExit(f"Broker-confirmed pending reporting field missing: {token}")
 
-for entry_path in (
-    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
-    ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
-):
-    entry_code = entry_path.read_text(encoding="utf-8")
-    if "CanRunAutomaticEntry()" not in entry_code:
-        raise SystemExit(f"Runtime entry gate missing: {entry_path.name}")
-    if "ApplyRuntimeEntryGate()" not in entry_code:
-        raise SystemExit(f"Runtime entry block action missing: {entry_path.name}")
+entry_code = reversal_limit_code
+if "CanRunAutomaticEntry()" not in entry_code:
+    raise SystemExit("Runtime entry gate missing: ReversalLimitPlacement.cs")
+if "ApplyRuntimeEntryGate()" not in entry_code:
+    raise SystemExit("Runtime entry block action missing: ReversalLimitPlacement.cs")
 
 # Phase 6.1 closed-bar decision contract.
 CLOSED_BAR_RULE = ROOT / "Core" / "Math" / "ClosedBarReferenceRule.cs"
