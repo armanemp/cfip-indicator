@@ -25,7 +25,9 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 **CI-17 — Target-terminal cTrader validation — repository package merged; real target-terminal/manual acceptance remains pending.**
 
-Status: **VERIFIED COMPLETE — CI-07 merged to `main` in PR #162, merge commit `73511c84ff3072cdbdab8487b0d4331b52c789b1`.**
+Repository package status: **MERGED — PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.**
+
+The next certification gate is **CI-FINAL**, but it remains blocked until the real target-terminal/broker evidence is recorded. Historical phase closeout records below are retained for continuity and are not the current phase.
 
 CI-03 is verified complete and merged to `main` via PR #157 as `29e52fceae4072205a2dc3ab0b0f101952d157e8`.
 Final CI-03 implementation head: `5b08d615c4d3e813207cabfa0a5b261d14a0ea37`.
