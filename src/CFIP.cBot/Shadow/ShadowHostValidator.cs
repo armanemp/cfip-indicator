@@ -351,18 +351,40 @@ namespace CFIP.cBot.Shadow
                 return false;
             }
 
-            if (!IsFinitePositiveOrZero(intent.RequestedEntry) ||
-                !IsFinitePositiveOrZero(intent.Stop) ||
-                !IsFinitePositiveOrZero(intent.InitialTarget))
+            if (!IsFinitePositive(intent.RequestedEntry) ||
+                !IsFinitePositive(intent.Stop) ||
+                !IsFinitePositive(intent.InitialTarget))
             {
                 reason = "INVALID EXECUTION GEOMETRY";
                 return false;
             }
 
-            return identity.Direction == TradeDirection.Buy ||
-                   identity.Direction == TradeDirection.Sell
-                ? true
-                : Fail("INVALID EXECUTION DIRECTION", out reason);
+            if (identity.Direction == TradeDirection.Buy)
+            {
+                if (intent.Stop >= intent.RequestedEntry ||
+                    intent.InitialTarget <= intent.RequestedEntry)
+                {
+                    reason = "BUY EXECUTION GEOMETRY WRONG SIDE";
+                    return false;
+                }
+            }
+            else if (identity.Direction == TradeDirection.Sell)
+            {
+                if (intent.Stop <= intent.RequestedEntry ||
+                    intent.InitialTarget >= intent.RequestedEntry)
+                {
+                    reason = "SELL EXECUTION GEOMETRY WRONG SIDE";
+                    return false;
+                }
+            }
+            else
+            {
+                return Fail(
+                    "INVALID EXECUTION DIRECTION",
+                    out reason);
+            }
+
+            return true;
         }
 
         private static bool IsFinitePositiveOrZero(double value)
@@ -371,6 +393,14 @@ namespace CFIP.cBot.Shadow
                 !double.IsNaN(value) &&
                 !double.IsInfinity(value) &&
                 value >= 0;
+        }
+
+        private static bool IsFinitePositive(double value)
+        {
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                value > 0;
         }
 
         private static bool Fail(
