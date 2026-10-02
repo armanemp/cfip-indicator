@@ -67,7 +67,7 @@ namespace cAlgo
                 !FinitePositive(entry) ||
                 !FinitePositive(market) ||
                 !FinitePositive(risk) ||
-                !FinitePositive(peakRR) && peakRR < 0 ||
+                !FiniteNonNegative(peakRR) ||
                 !FinitePositive(atr) ||
                 !FinitePositive(pipSize) ||
                 !FiniteNonNegative(minimumDistance))
