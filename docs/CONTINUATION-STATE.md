@@ -1873,4 +1873,5 @@ Completed in this phase:
 Verification/manual boundary:
 - Source / Architecture, Runtime Acceptance Contracts and cTrader Compile all PASS on the final M4 head.
 - Target-terminal verification remains required for restart-mid-day history persistence, exact session/EOD broker behavior and cBot reconnect.
-- Next implementation phase: **M5 — Panel Live Content / Responsiveness**.
+- M5 implementation is complete on `phase/m5-panel-live-responsiveness-2026-10-02`; repository verification is pending.
+- Next implementation phase after M5 closeout: **M6 — Alert Synchronization / External Watchdog**.
