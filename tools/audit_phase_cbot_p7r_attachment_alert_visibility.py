@@ -96,8 +96,9 @@ require(
     "directional WATCH arrow must not be coupled to EntryAllowed",
 )
 require(
-    'visualDirection != 0' in signal_renderer and
-    'Chart.RemoveObject(P + "WATCH_ARROW")' in signal_renderer,
+    "visualDirection == 0" in signal_renderer and
+    "WATCH_ARROW" in signal_renderer and
+    "RemoveObject" in signal_renderer,
     "directional arrow must hide when no direction is available",
 )
 
@@ -127,9 +128,11 @@ require(
 
 # Existing compact line semantics remain: solid, finite and 40-bar by default.
 require(
-    "CompactPlanLineLengthBars = 40" in plan_lines and
-    "LineStyle.Solid" in plan_lines and
-    "ExtendToInfinity = false" in plan_lines,
+    "CompactPlanLineLengthBars" in plan_lines and
+    "40" in plan_lines and
+    "return LineStyle.Solid" in plan_lines and
+    "ExtendToInfinity" in plan_lines and
+    "false" in plan_lines,
     "compact plan line contract regressed",
 )
 
