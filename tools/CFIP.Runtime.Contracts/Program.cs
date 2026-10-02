@@ -6681,7 +6681,8 @@ namespace cAlgo
                 live.Contains("double liveMarket =") &&
                 live.Contains("Symbol.Bid") &&
                 live.Contains("Symbol.Ask") &&
-                live.Contains("_lastMarket = liveMarket"),
+                live.Contains("IsFinitePositive(liveMarket)") &&
+                !live.Contains("_lastMarket = liveMarket"),
                 "live panel RR uses the current executable-side quote");
 
             Console.WriteLine("Panel live content refresh contract PASS");
