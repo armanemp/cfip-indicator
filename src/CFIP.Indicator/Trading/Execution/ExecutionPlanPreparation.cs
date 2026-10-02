@@ -107,10 +107,16 @@ namespace cAlgo
                                 !requiresHtf &&
                                 fallbackRR > 0)
                             {
-                                return NormalizePrice(
-                                    direction == 1
-                                        ? entry + risk * fallbackRR
-                                        : entry - risk * fallbackRR);
+                                double synthetic =
+                                    RiskRewardMathRule.TargetFromRR(
+                                        direction,
+                                        entry,
+                                        risk,
+                                        fallbackRR);
+
+                                return IsFinitePositive(synthetic)
+                                    ? NormalizePrice(synthetic)
+                                    : 0;
                             }
                 
                             return 0;
