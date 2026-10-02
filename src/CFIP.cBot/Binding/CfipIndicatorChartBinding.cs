@@ -6,7 +6,7 @@ namespace CFIP.cBot.Binding
 {
     internal static class CfipIndicatorChartBinding
     {
-        public const string DisplayName = IndicatorIdentity.DisplayName;
+        public const string DisplayName = "CFIP Smart Indicator";
         public const string TypeName = IndicatorIdentity.TypeName;
 
         public static bool TryFind(
