@@ -411,11 +411,13 @@ namespace cAlgo
             if (!decision.EntryAllowed)
                 return "DECISION-FILTER";
 
+            if (decision.ActionableNow)
+                return "ACTIONABLE";
+
             if (!decision.TriggerReady)
                 return "TRIGGER";
 
-            if (!decision.ActionableNow)
-                return "ACTIONABILITY";
+            return "ACTIONABILITY";
 
             return "ACTIONABLE";
         }
