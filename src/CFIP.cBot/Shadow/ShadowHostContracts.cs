@@ -27,6 +27,7 @@ namespace CFIP.cBot.Shadow
         ShadowHostState State,
         string Reason,
         bool NewRevision,
+        bool RetryOnBrokerChange,
         long Revision,
         string SignalId,
         string ScenarioId,
