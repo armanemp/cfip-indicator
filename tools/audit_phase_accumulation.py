@@ -151,7 +151,7 @@ if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must not create backgrounds")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
-g4_overview_rows = read("UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs")
+g4_overview_rows = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
 panel_rows = read("UI/Panel/PanelRowsRenderer.cs")
 
 if "RenderPanelAutoTradingRows(" in panel_rows:
