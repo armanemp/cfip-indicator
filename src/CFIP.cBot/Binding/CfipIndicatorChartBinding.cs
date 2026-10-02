@@ -67,9 +67,8 @@ namespace CFIP.cBot.Binding
                 return false;
             }
 
-            StringBuilder builder =
-                new StringBuilder(
-                    match.InstanceId ?? "");
+            ulong hash =
+                14695981039346656037UL;
 
             foreach (AlgoInstanceParameter parameter in match.Parameters)
             {
@@ -80,11 +79,12 @@ namespace CFIP.cBot.Binding
                     return false;
                 }
 
-                builder
-                    .Append('|')
-                    .Append(parameter.Name ?? "")
-                    .Append('=')
-                    .Append(FormatValue(parameter.Value));
+                hash = HashText(
+                    hash,
+                    parameter.Name ?? "");
+                hash = HashText(
+                    hash,
+                    FormatValue(parameter.Value));
             }
 
             foreach (AlgoInstanceParameter parameter in match.Parameters)
@@ -104,7 +104,10 @@ namespace CFIP.cBot.Binding
             }
 
             indicator = match;
-            fingerprint = builder.ToString();
+            fingerprint =
+                hash.ToString(
+                    "X16",
+                    CultureInfo.InvariantCulture);
             return true;
         }
 
@@ -139,6 +142,25 @@ namespace CFIP.cBot.Binding
 
             values = list.ToArray();
             return true;
+        }
+
+        private static ulong HashText(
+            ulong hash,
+            string value)
+        {
+            if (value == null)
+                value = "";
+
+            unchecked
+            {
+                for (int i = 0; i < value.Length; i++)
+                {
+                    hash ^= value[i];
+                    hash *= 1099511628211UL;
+                }
+            }
+
+            return hash;
         }
 
         private static string FormatValue(object value)
