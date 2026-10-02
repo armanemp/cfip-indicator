@@ -273,6 +273,47 @@ namespace cAlgo
                     Risk = risk
                 };
 
+            string tp1Source;
+            int tp1Quality;
+            string tp2Source;
+            int tp2Quality;
+            string tp3Source;
+            int tp3Quality;
+            string tp4Source;
+            int tp4Quality;
+
+            ApplySelectedTargetMeta(
+                selected,
+                0,
+                tp1,
+                out tp1Source,
+                out tp1Quality);
+
+            ApplySelectedTargetMeta(
+                selected,
+                1,
+                tp2,
+                out tp2Source,
+                out tp2Quality);
+
+            ApplySelectedTargetMeta(
+                selected,
+                2,
+                tp3,
+                out tp3Source,
+                out tp3Quality);
+
+            ApplySelectedTargetMeta(
+                selected,
+                3,
+                tp4,
+                out tp4Source,
+                out tp4Quality);
+
+            int htfTargetCount =
+                CountHtfTargets(
+                    selected);
+
             path =
                 new CanonicalTradePathGeometry(
                     direction,
@@ -288,6 +329,15 @@ namespace cAlgo
                     tp1RR,
                     stopSource,
                     stopQuality,
+                    tp1Source,
+                    tp1Quality,
+                    tp2Source,
+                    tp2Quality,
+                    tp3Source,
+                    tp3Quality,
+                    tp4Source,
+                    tp4Quality,
+                    htfTargetCount,
                     preview);
 
             if (!path.IsValid)
