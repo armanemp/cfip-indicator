@@ -23,9 +23,9 @@ namespace cAlgo
             double liquidityBonus,
             double zoneBonus)
         {
-            if (!NumericGuards.IsTargetScoreFinite(baseScore) ||
+            if (!NumericGuards.IsFiniteValue(baseScore) ||
                 !NumericGuards.IsFinitePositive(rr) ||
-                !NumericGuards.IsTargetScoreFinite(requiredRr) ||
+                !NumericGuards.IsFiniteValue(requiredRr) ||
                 requiredRr < 0)
                 return double.MinValue;
 
