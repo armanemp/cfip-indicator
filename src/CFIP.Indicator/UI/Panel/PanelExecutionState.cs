@@ -133,104 +133,208 @@ namespace cAlgo
 
         private string GetAutoTradingPanelState()
         {
-            EnsurePanelExecutionProtectionStateCache();
+            RefreshCbotExecutionStateIfDue();
 
-            string state =
-                FormatExecutionPanelState(
-                    _panelAutoTradingState,
-                    _autoExecutionBlockReason,
-                    "READY TO SUBMIT");
+            if (!IsCbotExecutionStateFresh())
+                return CbotConnectionPanelText();
+
+            string runtimeState =
+                string.IsNullOrWhiteSpace(
+                    _cBotExecutionState.RuntimeState)
+                    ? "UNKNOWN"
+                    : _cBotExecutionState.RuntimeState.Trim();
+
+            string mode =
+                CbotMarketModeText();
+
+            if (string.Equals(
+                    runtimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase))
+                return
+                    "CBOT BLOCKED • " +
+                    CbotReasonText();
+
+            if (_cBotExecutionState.MarketExecutionEnabled ||
+                _cBotExecutionState.AggressiveExecutionEnabled)
+                return
+                    "CBOT " +
+                    runtimeState +
+                    " • " +
+                    mode;
 
             return
-                state +
-                "  •  " +
-                CbotConnectionPanelText();
+                "CBOT CONNECTED • MARKET DISARMED • " +
+                mode;
         }
         
         private Color GetAutoTradingPanelColor()
         {
-            EnsurePanelExecutionProtectionStateCache();
+            RefreshCbotExecutionStateIfDue();
 
-            if (AutoTradingEnabled &&
-                !CbotCanMarketExecute())
+            if (!IsCbotExecutionStateFresh())
                 return PanelWarningColor;
 
-            return ExecutionPanelStateColor(
-                _panelAutoTradingState);
+            if (string.Equals(
+                    _cBotExecutionState.RuntimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase))
+                return PanelWarningColor;
+
+            return
+                CbotCanMarketExecute()
+                    ? TpLineColor
+                    : PanelMutedTextColor;
         }
         
         private string GetAutoOrdersPanelState()
         {
-            EnsurePanelExecutionProtectionStateCache();
+            RefreshCbotExecutionStateIfDue();
 
-            string state =
-                FormatExecutionPanelState(
-                    _panelAutoOrdersState,
-                    _autoOrdersBlockReason,
-                    "READY TO PLACE");
+            if (!IsCbotExecutionStateFresh())
+                return CbotConnectionPanelText();
+
+            string runtimeState =
+                string.IsNullOrWhiteSpace(
+                    _cBotExecutionState.RuntimeState)
+                    ? "UNKNOWN"
+                    : _cBotExecutionState.RuntimeState.Trim();
+
+            string mode =
+                CbotPendingModeText();
+
+            if (string.Equals(
+                    runtimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase))
+                return
+                    "CBOT BLOCKED • " +
+                    CbotReasonText();
+
+            if (_cBotExecutionState.PendingStopExecutionEnabled ||
+                _cBotExecutionState.PendingLimitExecutionEnabled)
+                return
+                    "CBOT " +
+                    runtimeState +
+                    " • " +
+                    mode;
 
             return
-                state +
-                "  •  " +
-                CbotConnectionPanelText();
+                "CBOT CONNECTED • PENDING DISARMED • " +
+                mode;
         }
         
         private Color GetAutoOrdersPanelColor()
         {
-            EnsurePanelExecutionProtectionStateCache();
+            RefreshCbotExecutionStateIfDue();
 
-            if (AutomaticOrdersEnabled &&
-                !CbotCanPendingExecute())
+            if (!IsCbotExecutionStateFresh())
                 return PanelWarningColor;
 
-            return ExecutionPanelStateColor(
-                _panelAutoOrdersState);
+            if (string.Equals(
+                    _cBotExecutionState.RuntimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase))
+                return PanelWarningColor;
+
+            return
+                CbotCanPendingExecute()
+                    ? TpLineColor
+                    : PanelMutedTextColor;
         }
         
         private string GetAutoProtectionPanelState()
         {
-            EnsurePanelExecutionProtectionStateCache();
-
-            string state =
-                _panelProtectionState ==
-                    ProtectionPanelStateKind.Off
-                    ? "OFF"
-                    : _panelProtectionState ==
-                        ProtectionPanelStateKind.NoLivePosition
-                        ? "READY • NO LIVE POSITION"
-                        : _panelProtectionState ==
-                            ProtectionPanelStateKind.Protected
-                            ? "PROTECTED"
-                            : "RECOVERY REQUIRED";
-
             RefreshCbotExecutionStateIfDue();
 
+            if (!IsCbotExecutionStateFresh())
+                return CbotConnectionPanelText();
+
+            string runtimeState =
+                string.IsNullOrWhiteSpace(
+                    _cBotExecutionState.RuntimeState)
+                    ? "UNKNOWN"
+                    : _cBotExecutionState.RuntimeState.Trim();
+
+            if (string.Equals(
+                    runtimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase))
+                return
+                    "CBOT BLOCKED • " +
+                    CbotReasonText();
+
             return
-                state +
-                " • " +
-                CbotConnectionPanelText();
+                _cBotExecutionState.ManagementExecutionEnabled
+                    ? "CBOT " +
+                      runtimeState +
+                      " • MANAGEMENT ARMED"
+                    : "CBOT CONNECTED • MANAGEMENT DISARMED";
         }
         
         private Color GetAutoProtectionPanelColor()
         {
-            EnsurePanelExecutionProtectionStateCache();
+            RefreshCbotExecutionStateIfDue();
 
-            if ((AutoBrokerProtection ||
-                 AutoProtectBrokerPositions) &&
-                !CbotCanManage())
+            if (!IsCbotExecutionStateFresh())
+                return PanelWarningColor;
+
+            if (string.Equals(
+                    _cBotExecutionState.RuntimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase))
                 return PanelWarningColor;
 
             return
-                _panelProtectionState ==
-                    ProtectionPanelStateKind.Protected
+                CbotCanManage()
                     ? TpLineColor
-                    : _panelProtectionState ==
-                        ProtectionPanelStateKind.RecoveryRequired
-                        ? SlLineColor
-                        : _panelProtectionState ==
-                            ProtectionPanelStateKind.Off
-                            ? PanelMutedTextColor
-                            : PanelAccentColor;
+                    : PanelMutedTextColor;
+        }
+
+        private string CbotMarketModeText()
+        {
+            string mode = "";
+
+            if (_cBotExecutionState != null &&
+                _cBotExecutionState.MarketExecutionEnabled)
+                mode = "MKT";
+
+            if (_cBotExecutionState != null &&
+                _cBotExecutionState.AggressiveExecutionEnabled)
+                mode += string.IsNullOrWhiteSpace(mode) ? "AGG" : "/AGG";
+
+            return string.IsNullOrWhiteSpace(mode)
+                ? "NONE"
+                : mode;
+        }
+
+        private string CbotPendingModeText()
+        {
+            string mode = "";
+
+            if (_cBotExecutionState != null &&
+                _cBotExecutionState.PendingStopExecutionEnabled)
+                mode = "STOP";
+
+            if (_cBotExecutionState != null &&
+                _cBotExecutionState.PendingLimitExecutionEnabled)
+                mode += string.IsNullOrWhiteSpace(mode) ? "LIMIT" : "/LIMIT";
+
+            return string.IsNullOrWhiteSpace(mode)
+                ? "NONE"
+                : mode;
+        }
+
+        private string CbotReasonText()
+        {
+            if (_cBotExecutionState == null ||
+                string.IsNullOrWhiteSpace(
+                    _cBotExecutionState.Reason))
+                return "NO REASON";
+
+            return CompactText(
+                _cBotExecutionState.Reason,
+                70);
         }
         
         private string GetExecutionRelationText(
