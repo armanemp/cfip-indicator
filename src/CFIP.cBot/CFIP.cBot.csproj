@@ -10,6 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="cTrader.Automate" Version="1.0.21" />
-    <ProjectReference Include="..CFIP.ContractsCFIP.Contracts.csproj" />
+    <ProjectReference Include="..\CFIP.Contracts\CFIP.Contracts.csproj" />
   </ItemGroup>
 </Project>
