@@ -204,7 +204,8 @@ def main() -> int:
         print("OK  No direct broker mutation calls remain in the Indicator.")
 
     cbot_management = (
-        ROOT.parent /
+        ROOT /
+        "src" /
         "CFIP.cBot" /
         "Execution" /
         "ManagementExecutionCoordinator.cs"
