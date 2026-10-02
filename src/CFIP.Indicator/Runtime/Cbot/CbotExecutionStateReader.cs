@@ -68,6 +68,78 @@ namespace cAlgo
             }
         }
 
+        private bool TryReadChartCbot(
+            out ChartRobot cbot,
+            out int matchingCount)
+        {
+            cbot = null;
+            matchingCount = 0;
+
+            foreach (ChartRobot candidate in ChartRobots)
+            {
+                if (candidate == null ||
+                    !string.Equals(
+                        candidate.Name,
+                        CbotIdentity.DisplayName,
+                        StringComparison.Ordinal))
+                    continue;
+
+                matchingCount++;
+
+                if (matchingCount == 1)
+                    cbot = candidate;
+            }
+
+            return matchingCount == 1 &&
+                   cbot != null;
+        }
+
+        private bool IsCbotChartRunning()
+        {
+            if (!TryReadChartCbot(
+                    out ChartRobot cbot,
+                    out int matchingCount) ||
+                matchingCount != 1)
+                return false;
+
+            return cbot.State == RobotState.Running;
+        }
+
+        private string CbotConnectionPanelText()
+        {
+            RefreshCbotExecutionStateIfDue();
+
+            bool chartMatch =
+                TryReadChartCbot(
+                    out ChartRobot cbot,
+                    out int matchingCount);
+
+            if (matchingCount == 0)
+                return
+                    "CBOT NOT ATTACHED • ATTACH TO THIS CHART";
+
+            if (matchingCount > 1)
+                return
+                    "CBOT AMBIGUOUS • " +
+                    matchingCount.ToString(
+                        CultureInfo.InvariantCulture) +
+                    " INSTANCES";
+
+            if (cbot.State != RobotState.Running)
+                return
+                    "CBOT " +
+                    cbot.State.ToString().ToUpperInvariant();
+
+            if (!chartMatch ||
+                !IsCbotExecutionStateFresh())
+                return
+                    "CBOT CONNECTING • HEARTBEAT PENDING";
+
+            return
+                "CBOT CONNECTED • " +
+                CbotExecutionStatePanelText();
+        }
+
         private bool IsCbotExecutionStateFresh()
         {
             if (_cBotExecutionState == null)
@@ -89,7 +161,7 @@ namespace cAlgo
             if (_cBotExecutionState == null)
                 return
                     string.IsNullOrWhiteSpace(_cBotStateReadError)
-                        ? "CBOT NOT ATTACHED"
+                        ? "CBOT HEARTBEAT UNAVAILABLE"
                         : _cBotStateReadError;
 
             double ageSeconds =
@@ -153,6 +225,7 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             return
+                IsCbotChartRunning() &&
                 IsCbotExecutionStateFresh() &&
                 (_cBotExecutionState.MarketExecutionEnabled ||
                  _cBotExecutionState.AggressiveExecutionEnabled);
@@ -163,6 +236,7 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             return
+                IsCbotChartRunning() &&
                 IsCbotExecutionStateFresh() &&
                 (_cBotExecutionState.PendingStopExecutionEnabled ||
                  _cBotExecutionState.PendingLimitExecutionEnabled);
@@ -173,6 +247,7 @@ namespace cAlgo
             RefreshCbotExecutionStateIfDue();
 
             return
+                IsCbotChartRunning() &&
                 IsCbotExecutionStateFresh() &&
                 _cBotExecutionState.ManagementExecutionEnabled;
         }
@@ -181,11 +256,11 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
+            if (!IsCbotChartRunning())
+                return PanelWarningColor;
+
             if (!IsCbotExecutionStateFresh())
-                return
-                    _cBotExecutionState == null
-                        ? PanelWarningColor
-                        : PanelWarningColor;
+                return PanelWarningColor;
 
             string state =
                 _cBotExecutionState.RuntimeState ?? string.Empty;
