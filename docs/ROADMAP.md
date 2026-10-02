@@ -2095,7 +2095,7 @@ Phase report: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
 
 ## Panel Geometry Correction — 50px Bottom Clearance + Hidden Restore Position
 
-Status: **IMPLEMENTATION IN PROGRESS — branch `phase/panel-clearance-restore-position-2026-10-02`.**
+Status: **VERIFIED COMPLETE — repository gates passed on implementation HEAD `b63f82e1d1fca9ef3af2d7fbbe34e779099ab7d7`; target-terminal visual confirmation remains manual.**
 
 The Indicator panel bottom clearance is corrected from 100px to exactly 50px. The hidden
 restore button for BottomLeft/BottomRight positions receives the same 50px bottom clearance.
