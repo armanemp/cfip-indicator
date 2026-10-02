@@ -117,7 +117,6 @@ namespace cAlgo
                 private bool _autoTradingEnabledRuntime;
                 private bool _automaticOrdersEnabledRuntime;
                 private bool _executionRuntimeInitialized;
-                private bool _executionToggleSyncing;
                 private CalculationMarketContext _calculationMarketContext;
 
                 private string _autoExecutionBlockReason
@@ -296,9 +295,6 @@ namespace cAlgo
                 private Button _closeButton;
                 private Button _cancelButton;
                 private Button _panelRestoreButton;
-                private StackPanel _quickExecutionStack;
-                private ToggleButton _autoTradingQuickToggle;
-                private ToggleButton _automaticOrdersQuickToggle;
         
                 private readonly AlertDeliveryQueue _alertDeliveryQueue =
                     new AlertDeliveryQueue(16);
