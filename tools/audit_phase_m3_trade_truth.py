@@ -72,7 +72,7 @@ require(
     "bool blockedCandidateAlert" in alerts and
     "EnableSoundAlerts &&" in alerts and
     "!blockedCandidateAlert" in alerts and
-    "!blockedCandidate &&" in alerts,
+    "!blockedCandidate &&" in alert_identity,
     "M3: blocked candidate alerts must not create audible/visual signal side effects",
 )
 
