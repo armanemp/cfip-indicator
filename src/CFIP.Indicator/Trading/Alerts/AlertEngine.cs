@@ -31,7 +31,11 @@ namespace cAlgo
                             if (message.StartsWith(
                                     "CFIP ENTRY BLOCKED",
                                     StringComparison.OrdinalIgnoreCase) &&
-                                !key.StartsWith(
+                                !string.Equals(
+                                    key == null ? "" : key,
+                                    "RESTRICT|" + _lastRestrictionMessage,
+                                    StringComparison.OrdinalIgnoreCase) &&
+                                !(key ?? "").StartsWith(
                                     "RESTRICT|",
                                     StringComparison.OrdinalIgnoreCase))
                                 return;
@@ -137,16 +141,29 @@ namespace cAlgo
 
                             // Every eligible canonical alert is delivered to the same bounded transport.
                             // The panel rail is now the sole visual message surface; sound remains optional.
-                            if (!_alertDeliveryQueue.Enqueue(
+                            bool queued =
+                                _alertDeliveryQueue.Enqueue(
                                     new AlertDelivery(
                                         envelope,
                                         direction,
                                         playSound,
                                         soundType.ToString(),
-                                        SoundFilePath)))
+                                        SoundFilePath));
+
+                            Print(
+                                "CFIP ALERT QUEUED | id={0} | key={1} | stage={2} | critical={3} | sound={4} | soundType={5} | queue={6}",
+                                envelope.AlertId,
+                                envelope.AlertKey,
+                                envelope.SignalStage,
+                                envelope.Critical,
+                                playSound,
+                                soundType,
+                                _alertDeliveryQueue.Count);
+
+                            if (!queued)
                             {
                                 Print(
-                                    "CFIP alert delivery queue rejected [{0}] revision={1}",
+                                    "CFIP ALERT QUEUE REJECTED | id={0} | revision={1}",
                                     envelope.AlertId,
                                     envelope.Identity.Revision);
                             }
