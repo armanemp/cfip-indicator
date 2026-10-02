@@ -101,19 +101,20 @@ namespace cAlgo
             if (UseRRFilter)
             {
                 double tp1RR =
-                    Math.Abs(
-                        tp1 -
-                        entry) /
-                    Math.Max(
-                        Symbol.PipSize,
+                    RiskRewardGeometryRule.CalculateNominalRR(
+                        entry,
+                        tp1,
                         risk);
 
                 double minimumPlanRR =
-                    requiredRR[0];
+                    RiskRewardPolicyRule.NormalizeMinimum(
+                        requiredRR[0],
+                        0);
 
                 if (!IsFinitePositive(tp1RR) ||
-                    !IsFinitePositive(minimumPlanRR) ||
-                    tp1RR < minimumPlanRR)
+                    !RiskRewardPolicyRule.MeetsMinimum(
+                        tp1RR,
+                        minimumPlanRR))
                     return false;
             }
 
