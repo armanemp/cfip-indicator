@@ -88,8 +88,10 @@ if "ExecutionControlPresentationRule.ComposeStatusText(" not in factory:
 
 if "_executionToggleSyncing = true" not in sync:
     raise SystemExit("Execution controls must guard programmatic visual synchronization")
-if "EnsureExecutionRuntimeState();" not in sync:
-    raise SystemExit("Execution status synchronization must consume canonical runtime/settings state")
+if "RefreshCbotExecutionStateIfDue();" not in sync:
+    raise SystemExit("Execution status synchronization must consume canonical cBot state")
+if "EffectiveAutoTradingEnabled" not in sync or "EffectiveAutomaticOrdersEnabled" not in sync:
+    raise SystemExit("Execution status synchronization must consume effective cBot state")
 if "SyncQuickExecutionControls(" not in sync:
     raise SystemExit("Execution controls must have a dedicated synchronization boundary")
 if "ExecutionControlPresentationRule.ComposeStatusText(" not in sync:
@@ -97,10 +99,10 @@ if "ExecutionControlPresentationRule.ComposeStatusText(" not in sync:
 if "ExecutionControlPresentationRule.IsInteractive" not in sync:
     raise SystemExit("Execution control synchronization must enforce the read-only interaction contract")
 
-if "EnableAutoTrading" not in initialization or "EnableAutomaticOrders" not in initialization:
-    raise SystemExit("Execution status settings must be sourced from the public cTrader parameters")
-if "EnsureExecutionRuntimeState()" not in initialization:
-    raise SystemExit("Execution settings must retain a canonical runtime synchronization boundary")
+if "SubscribeCbotChartLifecycleEvents();" not in initialization:
+    raise SystemExit("Execution status must subscribe to cBot chart lifecycle changes")
+if "UnsubscribeCbotChartLifecycleEvents();" not in initialization:
+    raise SystemExit("Execution status must unsubscribe from cBot chart lifecycle changes")
 if "ExecutionControlPresentationRule.IsInteractive" not in production_source:
     raise SystemExit("Execution status interaction policy must have a canonical owner")
 if "ApplyAutoTradingQuickToggleClick" in production_source or "ApplyAutomaticOrdersQuickToggleClick" in production_source:
