@@ -32,7 +32,13 @@ required = {
     "existing order maps to one choice": "IsSameChoice(" in arbiter,
     "cancellation hysteresis is canonical": "ShouldCancelAfterHysteresis(" in arbiter,
     "orchestrator uses arbiter": "ResolvePendingDecision(" in orchestrator and "PendingDecisionArbiterRule.SelectWinner(" in orchestrator,
-    "orchestrator prevents silent fallback": "never silently falls through" in orchestrator and "return;" in orchestrator,
+    "orchestrator prevents silent fallback": (
+        "if (!arbiter.HasChoice)" in orchestrator and
+        "PENDING STOP • READY FOR CBOT" in orchestrator and
+        "PENDING LIMIT • WAITING FOR CBOT P4D" in orchestrator and
+        "PENDING EXECUTION BLOCKED" in orchestrator and
+        "return;" in orchestrator
+    ),
     "cleanup uses arbiter": "ResolvePendingDecision(" in cleanup and "ObservePendingInvalidation(" in cleanup,
     "limit uses executable side": "Symbol.Ask" in limit and "Symbol.Bid" in limit,
     "stop fallback has explicit boundaries": "fallbackStart" in stop and "fallbackEnd" in stop and "INVALID LOOKBACK" in stop,
