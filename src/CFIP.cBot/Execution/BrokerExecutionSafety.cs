@@ -49,7 +49,7 @@ namespace CFIP.cBot.Execution
             reason = "MARGIN SIZING UNAVAILABLE";
 
             if (robot == null ||
-                !IsFinitePositive(requestedVolume))
+                !IsFinitePositiveBrokerSafety(requestedVolume))
                 return false;
 
             double allowedMargin =
@@ -58,7 +58,7 @@ namespace CFIP.cBot.Execution
                     maximumMarginUsagePercent,
                     marginBufferPercent);
 
-            if (!IsFinitePositive(allowedMargin))
+            if (!IsFinitePositiveBrokerSafety(allowedMargin))
             {
                 reason = "NO EXECUTION MARGIN BUDGET";
                 return false;
@@ -78,7 +78,7 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (!IsFinitePositive(estimatedMargin))
+            if (!IsFinitePositiveBrokerSafety(estimatedMargin))
             {
                 reason = "EXECUTION MARGIN ESTIMATE INVALID";
                 return false;
@@ -90,7 +90,7 @@ namespace CFIP.cBot.Execution
                     estimatedMargin,
                     allowedMargin);
 
-            if (!IsFinitePositive(candidate))
+            if (!IsFinitePositiveBrokerSafety(candidate))
             {
                 reason = "EXECUTION MARGIN VOLUME INVALID";
                 return false;
@@ -113,7 +113,7 @@ namespace CFIP.cBot.Execution
                     tradeType,
                     constrainedVolume);
 
-            if (!IsFinitePositive(finalEstimatedMargin) ||
+            if (!IsFinitePositiveBrokerSafety(finalEstimatedMargin) ||
                 finalEstimatedMargin > allowedMargin)
             {
                 reason = "FINAL EXECUTION MARGIN BUDGET EXCEEDED";
@@ -123,7 +123,7 @@ namespace CFIP.cBot.Execution
             return true;
         }
 
-        private static bool IsFinitePositive(double value)
+        private static bool IsFinitePositiveBrokerSafety(double value)
         {
             return !double.IsNaN(value) &&
                    !double.IsInfinity(value) &&
