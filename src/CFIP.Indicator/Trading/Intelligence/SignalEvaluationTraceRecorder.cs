@@ -28,9 +28,7 @@ namespace cAlgo
             string traceId =
                 SignalTraceIdentityRule.CreateTraceId(
                     SymbolName,
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString(),
+                    ExecutionTimeframePolicy.PrimaryExecution,
                     MemoryAccountScopeToken(),
                     MemoryConfigurationFingerprint(),
                     key);
@@ -214,9 +212,7 @@ namespace cAlgo
         {
             return SignalTraceIdentityRule.CreateTraceId(
                 SymbolName,
-                Bars == null
-                    ? "UNKNOWN"
-                    : Bars.TimeFrame.ToString(),
+                ExecutionTimeframePolicy.PrimaryExecution,
                 MemoryAccountScopeToken(),
                 MemoryConfigurationFingerprint(),
                 GetSignalBarOpenTimeUtcTicks(closedM5));
