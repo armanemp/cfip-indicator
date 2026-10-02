@@ -32,7 +32,7 @@ require(
     "Indicator must expose the requested stable cTrader display name",
 )
 require(
-    'Name = "CFIP Smart Execution Bot"' in cbot and
+    '"CFIP Smart Execution Bot"' in cbot and
     'DefaultTimeFrame = "M5"' in cbot and
     "[Robot(" in cbot,
     "cBot must expose stable launch name and M5 default host timeframe",
