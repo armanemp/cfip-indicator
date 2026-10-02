@@ -21,7 +21,6 @@ namespace cAlgo
             bool showDirectionalWatch =
                 ShowEarlyArrow &&
                 ShowEarlyWatch &&
-                snapshot.DecisionEntryAllowed &&
                 !snapshot.PendingOrder &&
                 !snapshot.LivePosition &&
                 visualDirection != 0 &&

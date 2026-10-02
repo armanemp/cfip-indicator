@@ -39,8 +39,8 @@ REQUIRED = {
         "BROKER PROTECTION • WAITING",
     ],
     "src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.cs": [
-        "_brokerStateReconciledThisCycle",
         "ProcessDecisionAlerts(",
+        "ProcessParallelOpportunityAlerts(",
     ],
     "src/CFIP.Indicator/Runtime/Calculation/CalculationStartupSeed.cs": [
         "RunPreDecisionBrokerReconciliation(",
@@ -117,13 +117,15 @@ if "RunClosedBarAnalysisStage(" not in cycle:
 if "ProcessLiveCalculationStages(" not in cycle:
     errors.append("Calculate: live stage call missing")
 
-if "ProcessDecisionAlerts(" in alerts and (
-    "if (_decision == null ||" not in alerts
-    or "!_brokerStateReconciledThisCycle" not in alerts
-):
-    errors.append(
-        "decision alerts must require same-cycle broker reconciliation"
-    )
+if "ProcessDecisionAlerts(" in alerts:
+    if "ProcessParallelOpportunityAlerts(" not in alerts:
+        errors.append(
+            "decision alert stage must include canonical parallel-opportunity alerting"
+        )
+    if "!_brokerStateReconciledThisCycle" in alerts:
+        errors.append(
+            "analysis alerts must not be blocked by broker reconciliation"
+        )
 
 if "RunPreDecisionBrokerReconciliation(" not in startup:
     errors.append(

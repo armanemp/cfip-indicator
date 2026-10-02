@@ -1,3 +1,32 @@
+## CBOT-P7R — Attachment Truth / Alert Visibility / Parallel Scenario Presentation — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Completed:
+- cBot attachment discovery is resilient to renamed chart instances by matching object type name as well as instance name on both sides of the boundary;
+- exact InstanceId and heartbeat freshness are still required before cBot execution is considered live;
+- Indicator analysis alerts no longer wait on broker reconciliation;
+- multiple qualified opportunity candidates can now generate distinct numbered alert events using ScenarioId identity;
+- live directional arrow follows the current chart bar and hides only when no valid direction is available;
+- parallel chart labels use the same scenario ordinal.
+
+Safety boundary:
+- presentation/alert multiplicity is expanded now;
+- broker execution remains single-plan until a dedicated multi-scenario lifecycle/reconciliation phase is implemented;
+- existing cBot market/pending/management mutation ownership is preserved;
+- existing canonical IntelligentProtectionRule remains the source of trailing/profit-protection policy.
+
+Verification:
+- Source/Architecture pending;
+- Runtime Acceptance pending;
+- cTrader Compile/Build pending;
+- P7R dedicated audit pending;
+- target-terminal attach/start/stop/reconnect, alert, arrow, line-lifetime and empirical signal-frequency validation remain manual.
+
+Next work unit: one complete phase at a time, with the full pre-analysis → M15 decision → M5 tuning/trigger → entry → signal/alert → contract → cBot → broker/protection chain re-audited every phase.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
 ## CBOT-P7 — UI / State Cutover — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

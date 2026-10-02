@@ -2664,8 +2664,9 @@ PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must resolve a canonical text color")
-if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must use white text")
+compact_label_color = PLAN_LABEL_RENDERER_CODE[PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel("):]
+if "return semanticColor;" not in compact_label_color:
+    raise SystemExit("Compact plan labels must reuse the exact semantic line color")
 if "Chart.DrawRectangle(" in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must remain background-free")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
@@ -3097,8 +3098,9 @@ label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
     raise SystemExit("Plan labels must use the canonical text-color resolver")
-if "return Color.White;" not in label_code:
-    raise SystemExit("Plan labels must use white text")
+compact_label_color = label_code[label_code.find("private void DrawCompactPlanLabel("):]
+if "return semanticColor;" not in compact_label_color:
+    raise SystemExit("Plan labels must reuse the exact semantic line color")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
 if "Chart.DrawRectangle(" in compact_label_code:

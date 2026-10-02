@@ -31,17 +31,15 @@ namespace cAlgo
                     ? snapshot.AuthoritativeDirection
                     : snapshot.DecisionDirection;
 
+            // Direction arrows are live-state guidance. Keep the arrow on
+            // the current chart bar so it follows the market rather than remaining
+            // pinned to the last closed M5 candle.
             int hostBar =
-                MapM5ToChart(
-                    closedM5,
-                    chartIndex);
-
-            hostBar =
                 Math.Max(
                     0,
                     Math.Min(
                         Bars.Count - 1,
-                        hostBar));
+                        chartIndex));
 
             bool signalPresentationAllowed =
                 !snapshot.PendingOrder &&

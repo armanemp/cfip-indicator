@@ -8,13 +8,16 @@ namespace cAlgo
         private void ProcessDecisionAlerts(
             int closedM5)
         {
-            // Decision/entry alerts must never consume a broker lifecycle snapshot
-            // that was not reconciled at the start of the same calculation cycle.
-            if (_decision == null ||
-                !_brokerStateReconciledThisCycle)
+            // Analysis alerts are presentation/decision events, not broker events.
+            // They must remain deliverable even when the cBot is absent, stopped,
+            // reconnecting, or has not yet published a heartbeat.
+            if (_decision == null)
                 return;
 
             ProcessRestrictionAlert(
+                closedM5);
+
+            ProcessParallelOpportunityAlerts(
                 closedM5);
 
             ProcessCanonicalActionableEntryAlert(
@@ -27,8 +30,7 @@ namespace cAlgo
             // WATCH/REACTION alerts are analysis/alert state, not chart state.
             // They must be evaluated even when chart presentation is disabled,
             // skipped or optimized away.
-            if (_decision == null ||
-                !_brokerStateReconciledThisCycle)
+            if (_decision == null)
                 return;
 
             RefreshLiveDecisionActionability(
@@ -162,6 +164,140 @@ namespace cAlgo
 
             _lastReactionAlertBar =
                 reactionM5;
+        }
+
+        private void ProcessParallelOpportunityAlerts(
+            int closedM5)
+        {
+            if (!EnableParallelOpportunities ||
+                _tradePlanRegistry == null ||
+                _m5Bars == null ||
+                closedM5 < 0)
+                return;
+
+            // Rebuild the scenario snapshot from the freshly closed M5 state so
+            // alerting never depends on the previous bar's candidate collection.
+            RefreshParallelOpportunityCandidates(
+                closedM5);
+
+            var candidates =
+                _tradePlanRegistry.SelectScenariosForDisplay(
+                    Math.Max(
+                        2,
+                        MaximumVisibleOpportunities));
+
+            int displayNumber = 0;
+
+            for (int i = 0;
+                 i < candidates.Count;
+                 i++)
+            {
+                TradeOpportunityCandidate candidate =
+                    candidates[i];
+
+                if (candidate == null ||
+                    (candidate.Direction != 1 &&
+                     candidate.Direction != -1))
+                    continue;
+
+                displayNumber++;
+
+                bool actionable =
+                    candidate.ActionableNow &&
+                    candidate.ExecutionPolicyAllowed &&
+                    !candidate.PresentationOnly;
+
+                bool primaryWatch =
+                    candidate.IsPrimaryTimeframeSignal &&
+                    !actionable;
+
+                if (!actionable &&
+                    !primaryWatch)
+                    continue;
+
+                bool enabled =
+                    actionable
+                        ? AlertOnConfirmedSignal
+                        : AlertOnEarlyWatch;
+
+                if (!enabled)
+                    continue;
+
+                string timeframe =
+                    string.IsNullOrWhiteSpace(
+                        candidate.SourceTimeframe)
+                        ? "M5"
+                        : candidate.SourceTimeframe.Trim().ToUpperInvariant();
+
+                string direction =
+                    candidate.Direction == 1
+                        ? "BUY"
+                        : "SELL";
+
+                string keyPrefix =
+                    actionable
+                        ? "ACTION|SCENARIO|"
+                        : "EARLY|SCENARIO|";
+
+                string key =
+                    keyPrefix +
+                    (string.IsNullOrWhiteSpace(candidate.ScenarioId)
+                        ? candidate.Id
+                        : candidate.ScenarioId) +
+                    "|" +
+                    candidate.Direction +
+                    "|" +
+                    closedM5;
+
+                string message =
+                    "CFIP #" +
+                    displayNumber +
+                    " OPPORTUNITY " +
+                    direction +
+                    " | " +
+                    timeframe +
+                    " | SCENARIO " +
+                    (string.IsNullOrWhiteSpace(candidate.ScenarioId)
+                        ? candidate.Id
+                        : candidate.ScenarioId) +
+                    " | Q " +
+                    Math.Max(
+                        0,
+                        candidate.Quality);
+
+                if (IsFinitePositive(candidate.Entry))
+                    message +=
+                        " | ENTRY " +
+                        Price(candidate.Entry);
+
+                if (IsFinitePositive(candidate.Stop))
+                    message +=
+                        " | SL " +
+                        Price(candidate.Stop);
+
+                if (IsFinitePositive(candidate.Tp1))
+                    message +=
+                        " | TP1 " +
+                        Price(candidate.Tp1);
+
+                if (candidate.Tp1RR > 0)
+                    message +=
+                        " | RR " +
+                        candidate.Tp1RR.ToString(
+                            "F2",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        "R";
+
+                message +=
+                    " | " +
+                    (candidate.Stage ?? "WATCH");
+
+                SendUnifiedAlert(
+                    key,
+                    message,
+                    candidate.Direction,
+                    actionable);
+            }
         }
 
         private void ProcessCanonicalActionableEntryAlert(

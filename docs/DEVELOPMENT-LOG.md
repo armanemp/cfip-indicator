@@ -1,3 +1,40 @@
+## CBOT-P7R — Attachment Truth / Alert Visibility / Parallel Scenario Presentation — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Root causes confirmed:
+- cBot discovery was too dependent on mutable chart instance naming;
+- analysis alerting was coupled to broker reconciliation even though alert emission itself is not broker mutation;
+- the parallel opportunity architecture already supported multiple scenarios, but user-visible ordinal identity was missing;
+- directional WATCH guidance was tied to the closed M5 anchor and, for early display, to EntryAllowed.
+
+Canonical corrections:
+- match cBot/Indicator chart objects by both instance name and stable type name;
+- keep exact InstanceId + heartbeat freshness as execution liveness proof;
+- emit scenario alerts from the canonical parallel registry using ScenarioId and deterministic #N numbering;
+- keep alert delivery on the existing unified AlertDeliveryQueue;
+- anchor directional guidance to the current chart bar so the arrow continues to track the active market state;
+- keep arrow hidden when there is no valid direction;
+- keep existing 40-candle solid level-line geometry;
+- update the calculation-cycle audit owner to reflect the new analysis-alert boundary;
+- add a dedicated accumulated P7R regression audit.
+
+Important:
+- this phase does not lower confidence/RR/risk filters;
+- it does not create a second execution owner;
+- it does not falsely claim multi-position/multi-pending execution, which remains blocked by the existing single-plan safety contract;
+- intelligent trailing/progressive protection remains owned by the existing canonical protection policy and cBot mutation boundary.
+
+Full-chain routine audit:
+`Pre-analysis → M15 → M5 → M1 optional → entry geometry → signal/alert → contract → cBot → broker → lifecycle/protection → chart/panel`.
+
+### Visual consistency follow-up — 2026-10-02
+
+- BUY and SELL level presentation uses the same canonical line geometry, thickness mapping, font size, weight, and label placement; direction does not alter the visual layout.
+- Entry / Trigger / SL / TP / Pending labels share the same compact renderer.
+- Compact level text is now exactly the same semantic color as its corresponding Solid line; labels remain background-free.
+- All compact plan lines remain finite and Solid with the existing default 40-bar span.
+
 ## CBOT-P7 — UI / State Cutover — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**
@@ -3372,7 +3409,7 @@ Implemented on phase/m3-trade-truth-alert-chart-coherence-2026-10-02.
 - Extended SignalVisualSnapshot with canonical opportunity identity.
 - Prevented directional watch markers while EntryAllowed is false or a pending/live broker state owns the chart.
 - Replaced the hard-coded main-plan (MTF) label with the canonical source timeframe from the current visual snapshot, with the existing deterministic fallback.
-- Corrected compact signal-label anchoring so labels sit to the left of the 40-candle line start with a horizontal gap; white text and no background remain unchanged.
+- Corrected compact signal-label anchoring so labels sit to the left of the 40-candle line start with a horizontal gap; labels are background-free and use the exact semantic color of their corresponding line.
 - Added and accumulated tools/audit_phase_m3_trade_truth.py and wired it into Source/Architecture CI.
 
 Verification status:

@@ -1,3 +1,43 @@
+## CBOT-P7R — Attachment Truth / Alert Visibility / Parallel Scenario Presentation — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Completed in canonical owners:
+- cBot/Indicator same-chart discovery now matches both stable object type name and visible instance name; exact InstanceId + heartbeat freshness remain mandatory;
+- analysis alerts no longer depend on same-cycle broker reconciliation, so a valid Indicator signal cannot be silenced by a missing/stale/restarting cBot;
+- existing parallel opportunity registry now emits scenario-specific actionable/watch alerts with stable ScenarioId and deterministic `#N` numbering;
+- directional WATCH/CONFIRMED arrow follows the current chart bar and remains visible while a valid direction exists, instead of being pinned to the last closed M5 bar or blocked solely by EntryAllowed;
+- parallel chart labels now show the same scenario ordinal;
+- existing compact signal-line geometry remains solid, finite and 40 candles by default;
+- accumulated calculation-cycle audit was updated to treat broker-independent analysis alerting as canonical;
+- dedicated P7R source regression audit is accumulated in CI.
+
+Important boundary:
+- this phase increases **multi-opportunity detection/presentation**, not broker capacity;
+- cBot execution remains safely single-plan until a dedicated multi-scenario execution/reconciliation contract is completed;
+- existing intelligent protection/trailing ownership is preserved; no second trailing policy is introduced.
+
+Full chain re-audited:
+`Pre-analysis → M15 decision → M5 trigger/tuning → M1 optional confirmation → entry geometry → signal/alert → contract → cBot → broker → lifecycle/protection → chart/panel`.
+
+Canonical timeframe rule:
+M15 = trade-decision/execution reference; M5 = trigger/tuning/entry precision; M1 optional confirmation; H1+ context/reward; Chart TF presentation only.
+
+Phase record: `docs/PHASE-CBOT-P7R-ATTACHMENT-ALERT-VISIBILITY-2026-10-02.md`.
+
+Verification:
+- Source / Architecture: pending;
+- Runtime Acceptance: pending;
+- cTrader Compile/Build: pending;
+- P7R dedicated audit: pending;
+- target-terminal cBot attach/rename/start/stop/reconnect and live alert/chart validation: manual.
+
+Next required work:
+1. Complete **CI-20 intelligent progressive protection/trailing verification** with monotonic SL tightening, profit locking and non-regressive target progression.
+2. Complete a dedicated **CBOT multi-scenario execution phase** before removing the current single-plan capacity gate; that phase must add per-ScenarioId execution/reconciliation/idempotency/risk/protection ownership for concurrent positions and pending orders.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
 ## CBOT-P7 — UI / State Cutover — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

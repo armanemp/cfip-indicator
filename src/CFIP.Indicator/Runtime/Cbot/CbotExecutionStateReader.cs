@@ -26,10 +26,21 @@ namespace cAlgo
                     if (candidate == null)
                         continue;
 
-                    if (!string.Equals(
+                    bool instanceNameMatches =
+                        string.Equals(
                             candidate.Name,
                             CbotIdentity.DisplayName,
-                            StringComparison.Ordinal))
+                            StringComparison.Ordinal);
+
+                    bool typeNameMatches =
+                        candidate.Type != null &&
+                        string.Equals(
+                            candidate.Type.Name,
+                            CbotIdentity.DisplayName,
+                            StringComparison.Ordinal);
+
+                    if (!instanceNameMatches &&
+                        !typeNameMatches)
                         continue;
 
                     robot = candidate;

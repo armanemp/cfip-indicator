@@ -143,8 +143,9 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
         if forbidden in chart_source:
             raise SystemExit(f"{chart_path.name}: forbidden non-solid line style {forbidden}")
 
-if "return Color.White" not in labels:
-    raise SystemExit("level labels must use white text")
+compact_label_renderer = labels[labels.find("private void DrawCompactPlanLabel("):]
+if "return semanticColor" not in compact_label_renderer:
+    raise SystemExit("level labels must reuse the exact semantic line color")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
     raise SystemExit("plan signal line thickness must use the canonical presentation rule")
 if "MinimumThickness = 1" not in line_presentation_rule or "MaximumThickness = 3" not in line_presentation_rule:
@@ -198,6 +199,6 @@ print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("Plan Level Line Thickness: truthful 1/2/3 mapping")
-print("All level label text: White / background-free")
+print("All compact level label text: exact semantic line color / background-free")
 print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")
