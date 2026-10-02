@@ -172,11 +172,13 @@ namespace cAlgo
                                                 brokerStopValid &&
                                                 planPosition.StopLoss.HasValue)
                                             {
-                                                _plan.Stop =
-                                                    NormalizePrice(
-                                                        planPosition.StopLoss.Value);
-                                                _activeBrokerStop =
-                                                    _plan.Stop;
+                                                ApplyBrokerConfirmedProtectionState(
+                                                    planPosition.Id,
+                                                    planPosition.EntryPrice,
+                                                    planPosition.EntryPrice,
+                                                    planPosition.StopLoss,
+                                                    planPosition.TakeProfit,
+                                                    true);
                                             }
                                         }
 
