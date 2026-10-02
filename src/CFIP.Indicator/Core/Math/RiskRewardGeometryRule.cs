@@ -49,7 +49,8 @@ namespace cAlgo
             double target,
             double spread)
         {
-            if ((direction != 1 && direction != -1) ||
+            if (!IsFiniteNonNegative(spread) ||
+                (direction != 1 && direction != -1) ||
                 !IsPositiveFinite(entry) ||
                 !IsPositiveFinite(stop) ||
                 !IsPositiveFinite(target))
