@@ -25,10 +25,16 @@ namespace cAlgo
             if (string.IsNullOrWhiteSpace(signalId))
                 return;
 
+            // The executable plan owns direction once a plan exists.
+            // Decision direction is used only before plan materialization.
             int direction =
-                _decision != null
-                    ? _decision.Direction
-                    : (_plan != null ? _plan.Direction : 0);
+                _plan != null &&
+                (_plan.Direction == 1 ||
+                 _plan.Direction == -1)
+                    ? _plan.Direction
+                    : (_decision != null
+                        ? _decision.Direction
+                        : 0);
 
             OpportunityLane lane =
                 ResolveProviderLane();
