@@ -16,8 +16,12 @@ namespace cAlgo
                 NormalizeHour(sessionStartHour) * SessionResolutionMinutes;
             int endMinute =
                 NormalizeHour(sessionEndHour) * SessionResolutionMinutes;
+            DateTime reference =
+                CanonicalTimeRule.EnsureUtc(
+                    utc);
+
             int nowMinute =
-                utc.Hour * 60 + utc.Minute;
+                reference.Hour * 60 + reference.Minute;
 
             if (startMinute == endMinute)
                 return true;
@@ -144,14 +148,8 @@ namespace cAlgo
                 NormalizeHour(sessionEndHour);
 
             DateTime dayStart =
-                new DateTime(
-                    reference.Year,
-                    reference.Month,
-                    reference.Day,
-                    0,
-                    0,
-                    0,
-                    DateTimeKind.Utc);
+                CanonicalTimeRule.UtcDayStart(
+                    reference);
 
             int startMinute = startHour * SessionResolutionMinutes;
             int endMinute = endHour * SessionResolutionMinutes;
