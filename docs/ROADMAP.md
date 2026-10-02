@@ -230,6 +230,10 @@ Baseline reproducible و همه findingها status داخلی دارند.
 
 ## M1 — Full Forensic Audit
 
+Status: **IMPLEMENTATION COMPLETE — gate verification pending on M1 branch.**
+
+Audit report: `docs/PHASE-M1-FULL-FORENSIC-AUDIT.md`.
+
 ### هدف
 هیچ بخش قدیمی یا جدید بر اساس «گفته شده سالم است» فرض نشود.
 
@@ -257,6 +261,8 @@ Core, Analysis, Planning, Trading, Lifecycle, Runtime, UI, Tools, Tests, Build.
 ### پذیرش
 هر finding: VERIFIED / PARTIAL / OPEN / FALSE / MANUAL-ONLY / DESIGN-RISK.
 هیچ finding بدون disposition.
+
+M1 disposition record: all F1–F18 are classified with an explicit owner/next-phase disposition. The only audit-tool correction made in M1 aligns `audit_cbot_boundary.py` with the current 568-parameter baseline; no production trading behavior changed.
 
 ---
 
@@ -1645,9 +1651,9 @@ Mxx+1 — Title
 
 # 18. Current Starting Point
 
-**Canonical implementation start after M0 closeout: M1 — Full Forensic Audit.**
+**Canonical implementation start after M0 closeout: M2 — Repository Hygiene / Dead Code / Ownership.**
 
-M0 — Adoption / Freeze / Baseline is **VERIFIED COMPLETE** on repository evidence.
+M0 — Adoption / Freeze / Baseline is **VERIFIED COMPLETE** and M1 has a completed forensic disposition report pending its repository verification gates.
 
 No other roadmap, prompt, continuation note or planning document may override this file.
 

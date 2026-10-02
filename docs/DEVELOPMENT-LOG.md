@@ -1,3 +1,22 @@
+## M1 — Full Forensic Audit — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Report: `docs/PHASE-M1-FULL-FORENSIC-AUDIT.md`
+
+Baseline:
+- 633 production Indicator C# files;
+- 568 public parameters;
+- 15 direct broker-mutation call-sites inside the frozen owner set.
+
+M1 completed a repository-wide forensic review across BUY/SELL symmetry, closed/live boundaries, numeric safety, constants/clamps, collection bounds, hot-path I/O, time/session, persistence, idempotency, identity, authority boundaries, visual/alert ownership, outcome accounting and large-method ownership.
+
+Key findings were explicitly dispositioned. The concrete tooling drift found was `tools/audit_cbot_boundary.py` expecting 564 instead of the current authoritative 568 parameter baseline; this was corrected on the M1 branch. No production trading behavior changed.
+
+Design-risk/manual findings remain intentionally routed to M2, M4–M7, M8–M16 and M29–M39 rather than silently expanded into M1.
+
+Next phase after gate verification: **M2 — Repository Hygiene / Dead Code / Ownership**.
+
 ## M0 — Adoption / Freeze / Baseline closeout — 2026-10-02
 
 Status: **VERIFIED COMPLETE — Master Roadmap consolidation and repository baseline freeze completed.**
