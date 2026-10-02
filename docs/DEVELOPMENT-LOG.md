@@ -1,6 +1,6 @@
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: VERIFIED COMPLETE — final repository gates passed; PR #195 ready to merge.
 
 Completed:
 - deleted the migrated Indicator Pending Stop broker owner;
@@ -10,9 +10,13 @@ Completed:
 - removed Pending Stop broker submission, permission and submission-gate ownership from Indicator;
 - made provider and memory/archive identity use internal M15 rather than host Chart TF;
 - updated active audit scripts and operational documentation;
-- added Pending Entry spread, Pending Stop shadow, and M15 host-independence checks.
+- added Pending Entry spread, Pending Stop shadow, and M15 host-independence checks;
+- preserved the absolute Pending Stop lifecycle snapshot across the Indicator to cBot boundary;
+- moved broker label ownership to the existing canonical instance-scoped identity carried by ExecutionIntent; no second label formatter was added.
 
 No new strategy engine or duplicate execution engine was added.
+
+Verification: Source/Architecture #3025 PASS; Runtime #2834 PASS; cTrader Compile #3018 PASS; P4C audit PASS; CR5.4, CI-15, M15/Risk/Spread and CR1.8/A11 audits PASS. Target-terminal acceptance remains manual.
 
 ## MTF-EXECUTION-M15 + Smart Margin/Spread Risk — 2026-10-02
 
