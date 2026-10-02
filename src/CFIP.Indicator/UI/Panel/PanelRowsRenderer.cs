@@ -35,10 +35,6 @@ namespace cAlgo
                 ref slot,
                 contentWidth);
 
-            RenderPanelAutoTradingRows(
-                ref slot,
-                contentWidth);
-
                                                 while (slot < _panelRows.Count)
                                                 {
                                                     _panelRows[slot].IsVisible =
@@ -48,4 +44,3 @@ namespace cAlgo
                                             
         }
     }
-}
