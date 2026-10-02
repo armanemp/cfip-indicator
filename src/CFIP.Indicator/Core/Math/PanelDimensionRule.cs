@@ -6,7 +6,7 @@ namespace cAlgo
     {
         internal static int EffectiveWidth(int configuredWidth)
         {
-            return Clamp(
+            return ClampPanelDimension(
                 configuredWidth,
                 220,
                 700);
@@ -17,7 +17,7 @@ namespace cAlgo
             int padding,
             int borderThickness)
         {
-            return Clamp(
+            return ClampPanelDimension(
                 EffectiveWidth(configuredWidth) -
                 2 * ClampNonNegative(padding) -
                 2 * ClampNonNegative(borderThickness),
@@ -25,7 +25,7 @@ namespace cAlgo
                 700);
         }
 
-        private static int Clamp(
+        private static int ClampPanelDimension(
             int value,
             int minimum,
             int maximum)
