@@ -73,8 +73,14 @@ namespace cAlgo
                     ? "MTF"
                     : candidate.SourceTimeframe;
 
+            string role =
+                candidate.IsPrimaryTimeframeSignal
+                    ? "PRIMARY"
+                    : "TF";
+
             return
-                "TF-" +
+                role +
+                " " +
                 tf +
                 " " +
                 direction +

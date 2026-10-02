@@ -41,10 +41,30 @@ namespace cAlgo
                                                     _panel.Padding =
                                                         padding;
                                         
-                                                    _panel.Margin =
+                                                    int baseMargin =
                                                         Math.Max(
                                                             0,
                                                             PanelMargin);
+
+                                                    bool bottomPosition =
+                                                        PanelPosition ==
+                                                            PanelCorner.BottomLeft ||
+                                                        PanelPosition ==
+                                                            PanelCorner.BottomRight;
+
+                                                    int bottomMargin =
+                                                        bottomPosition
+                                                            ? Math.Max(
+                                                                baseMargin,
+                                                                PanelBottomClearance)
+                                                            : baseMargin;
+
+                                                    _panel.Margin =
+                                                        new Thickness(
+                                                            baseMargin,
+                                                            baseMargin,
+                                                            baseMargin,
+                                                            bottomMargin);
                                         
                                                     _panel.BackgroundColor =
                                                         Color.FromArgb(

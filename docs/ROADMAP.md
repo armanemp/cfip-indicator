@@ -359,6 +359,28 @@ No broker mutation is added in P3.
 
 Phase report: `docs/PHASE-CBOT-P3-CBOT-HOST-SHADOW.md`.
 
+## MTF-P1 — Primary M15/H1 Signal Layer + Panel Separation
+
+Status: **IMPLEMENTED — repository verification pending on this branch; target-terminal evidence remains manual.**
+
+Decision:
+- M15 and H1 are the primary visible signal sources.
+- Closed M5 tunes local structure/location/actionability.
+- Closed M1 supplies timing confirmation through the existing trigger path.
+- M15 and H1 may coexist simultaneously and independently.
+- H1+/M30 context remains part of canonical top-down reasoning.
+- Non-M5 primary candidates remain observe-only for execution until the cBot provider/execution track explicitly adopts them.
+- M15/H1 OB/FVG evidence is preserved on the candidate and participates in display priority.
+- Candidate Entry/SL/TP remains the canonical M5 planning projection in this phase; independent source-timeframe execution geometry is a later, separately verified change.
+
+Panel:
+- chart-panel AUTO TRADE / AUTO ORDERS quick controls are removed;
+- canonical status/diagnostic rows remain;
+- BottomLeft/BottomRight Indicator panel positions keep a fixed 100px bottom clearance for the separate cBot surface.
+
+No public parameter, trading threshold, broker mutation authority or second decision authority is introduced.
+
+Phase report: `docs/PHASE-MTF-P1-PRIMARY-M15-H1-PANEL.md`.
 
 ## CBOT-P4 — Broker Mutation Extraction
 

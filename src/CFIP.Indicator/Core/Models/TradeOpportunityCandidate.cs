@@ -6,6 +6,10 @@ namespace cAlgo
         public string ScenarioId;
         public string SourceTimeframe;
         public string BasePlanTimeframe;
+        public bool IsPrimaryTimeframeSignal;
+        public bool M5TuningAligned;
+        public bool M1TuningConfirmed;
+        public string PrimarySignalState;
         public int IndependentEvidenceScore;
         public int IndependentEvidenceGroupCount;
         public int IndicatorIndependentEvidenceGroupCount;

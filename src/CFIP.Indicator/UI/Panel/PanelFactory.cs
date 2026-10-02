@@ -94,8 +94,6 @@ namespace cAlgo
                                         _panelScroll.Content =
                                             _panelRowsStack;
                         
-                                        CreateQuickExecutionControls();
-                        
                                         _panelStack =
                                             new StackPanel
                                             {
@@ -168,10 +166,6 @@ namespace cAlgo
                         
                                         _panelStack.AddChild(
                                             _panelHeaderStack);
-                        
-                                        if (_quickExecutionStack != null)
-                                            _panelStack.AddChild(
-                                                _quickExecutionStack);
                         
                                         _panelStack.AddChild(
                                             _panelScroll);

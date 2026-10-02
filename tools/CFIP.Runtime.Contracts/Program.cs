@@ -115,6 +115,7 @@ namespace cAlgo
             VerifyActionabilityThresholdTransparency();
             VerifyEntryActionabilityF6();
             VerifyIndependentTimeframeScenarioSemanticsF7();
+            VerifyMtfPrimaryTimeframeSignals();
             VerifyTargetObstacleTelemetryF8();
             VerifyOrphanManagedProtectionF3();
             VerifyEntryTrapRiskG2();
@@ -10771,6 +10772,83 @@ namespace cAlgo
 
             Console.WriteLine(
                 "CR8.3b / H3-B warm-up policy contract PASS");
+        }
+
+        private static void VerifyMtfPrimaryTimeframeSignals()
+        {
+            PrimaryTimeframeSignalResult both =
+                PrimaryTimeframeSignalRule.Evaluate(
+                    "M15",
+                    1,
+                    80,
+                    70,
+                    1,
+                    true,
+                    1,
+                    true);
+
+            Assert(
+                both.Allowed &&
+                both.M5Aligned &&
+                both.M1Confirmed &&
+                both.State.Contains("PRIMARY M15") &&
+                both.State.Contains("M5 ALIGNED") &&
+                both.State.Contains("M1 CONFIRMED"),
+                "M15 primary signal keeps its source direction and accepts aligned M5/M1 tuning");
+
+            PrimaryTimeframeSignalResult h1Conflict =
+                PrimaryTimeframeSignalRule.Evaluate(
+                    "H1",
+                    -1,
+                    82,
+                    70,
+                    1,
+                    true,
+                    1,
+                    false);
+
+            Assert(
+                h1Conflict.Allowed &&
+                !h1Conflict.M5Aligned &&
+                !h1Conflict.M1Confirmed &&
+                h1Conflict.State.Contains("PRIMARY H1") &&
+                h1Conflict.State.Contains("LTF TUNING PENDING"),
+                "H1 primary signal remains observable when M5 is opposite and M1 is not confirmed");
+
+            PrimaryTimeframeSignalResult wrongTimeframe =
+                PrimaryTimeframeSignalRule.Evaluate(
+                    "M30",
+                    1,
+                    90,
+                    70,
+                    1,
+                    false,
+                    0,
+                    false);
+
+            Assert(
+                !wrongTimeframe.Allowed &&
+                wrongTimeframe.Reason == "SOURCE TIMEFRAME IS NOT M15/H1",
+                "only M15 and H1 may be primary timeframe signal sources");
+
+            PrimaryTimeframeSignalResult weak =
+                PrimaryTimeframeSignalRule.Evaluate(
+                    "M15",
+                    1,
+                    69,
+                    70,
+                    1,
+                    false,
+                    0,
+                    false);
+
+            Assert(
+                !weak.Allowed &&
+                weak.Reason == "SOURCE QUALITY BELOW PRIMARY FLOOR",
+                "primary source quality floor remains deterministic and explicit");
+
+            Console.WriteLine(
+                "MTF-P1 primary timeframe signal contracts PASS");
         }
 
         private static void Assert(bool condition, string name)

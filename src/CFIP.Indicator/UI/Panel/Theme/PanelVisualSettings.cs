@@ -39,9 +39,6 @@ namespace cAlgo
                                                     int headerHeight =
                                                         PanelHeaderHeight;
                                         
-                                                    int quickExecutionHeight =
-                                                        QuickExecutionRowHeight;
-                                        
                                                     int buttonMargin =
                                                         Math.Max(
                                                             0,
@@ -71,7 +68,6 @@ namespace cAlgo
                                         
                                                     int panelHeight =
                                                         headerHeight +
-                                                        quickExecutionHeight +
                                                         scrollHeight +
                                                         buttonAreaHeight +
                                                         padding * 2 +
@@ -154,10 +150,6 @@ namespace cAlgo
                                                         headerHeight,
                                                         scrollHeight,
                                                         buttonAreaHeight);
-
-                                                    ApplyPanelQuickExecutionLayout(
-                                                        contentWidth,
-                                                        buttonGap);
 
                                                     ApplyPanelRowsLayout(
                                                         contentWidth);
