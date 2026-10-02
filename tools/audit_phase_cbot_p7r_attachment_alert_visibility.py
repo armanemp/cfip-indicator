@@ -27,6 +27,7 @@ alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.
 signal_renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
+label_renderer = read("src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs")
 parallel_renderer = read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs")
 plan_lines = read("src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs")
 workflow = read(".github/workflows/source-check.yml")
@@ -137,15 +138,15 @@ require(
 )
 
 require(
-    "return semanticColor;" in labels and
-    "GetReadableLabelTextColor(" in labels and
-    "labelTextColor" in labels,
+    "return semanticColor;" in label_renderer and
+    "GetReadableLabelTextColor(" in label_renderer and
+    "labelTextColor" in label_renderer,
     "compact level labels must use the exact semantic line color",
 )
 require(
-    "CompactPlanLabelFontSize = 8.5" in labels and
-    "label.IsBold" in labels and
-    "Chart.DrawRectangle(" not in labels,
+    "CompactPlanLabelFontSize = 8.5" in label_renderer and
+    "label.IsBold" in label_renderer and
+    "Chart.DrawRectangle(" not in label_renderer,
     "compact level labels must retain the modern lightweight text-only presentation",
 )
 
