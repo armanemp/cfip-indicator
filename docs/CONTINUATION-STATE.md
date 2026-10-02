@@ -2124,3 +2124,12 @@ Completed implementation on branch phase/opportunity-discovery-cbot-truth-2026-1
 The phase does not lower public signal/RR/risk gates and does not remove cBot single-plan capacity. M15 remains canonical, M5 remains tuning/precision, M1 optional, H1+ context/reward.
 
 Next required opportunity work: mine SignalEvaluationTrace and outcome history by candidate family and rejection reason, then expand discovery only where measured evidence shows a real coverage gap.
+
+
+Follow-up hardening on the current opportunity branch:
+- target FVG lookup now mines forward opposing FVGs by quality/distance/age instead of requiring current-bar retest;
+- structural-stop FVG lookup now mines valid unretested support/resistance FVGs on M5 and HTF frames;
+- cBot presence is independently published by symbol before Indicator binding, allowing the panel to say CBOT DETECTED when bind is unresolved;
+- CounterHtfTactical is reachable when the selected direction follows a strong HTF anchor but not when HTF support is insufficient.
+
+Execution remains fail-closed on exact instance heartbeat.
