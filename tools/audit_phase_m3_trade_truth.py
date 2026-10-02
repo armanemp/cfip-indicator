@@ -147,7 +147,8 @@ require(
     "private const int CompactPlanLineLengthBars = 40;" in lines and
     "return LineStyle.Solid;" in lines and
     "PlanLinePresentationRule.ResolveThickness(" in lines and
-    "line.ExtendToInfinity = false;" in lines,
+    "line.ExtendToInfinity =" in lines and
+    "line.IsInteractive =" in lines,
     "M3: signal-line geometry contract regressed",
 )
 
