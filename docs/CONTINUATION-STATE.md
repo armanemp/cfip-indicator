@@ -1,6 +1,8 @@
 ## CBOT-P0 — Immediate parallel separation — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source/Architecture #2771 PASS; Runtime Acceptance #2580 PASS; cTrader Compile #2764 PASS.
 
 The cBot separation is now an active parallel execution track, not a deferred M29–M38 activity.
 
