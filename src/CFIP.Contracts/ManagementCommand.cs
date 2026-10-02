@@ -15,7 +15,7 @@ namespace CFIP.Contracts
         string Reason,
         string CommandIdempotencyKey)
     {
-        public string ExecutionLabel { get; init; }
+        public string ExecutionLabel { get; init; } = string.Empty;
         public double? DesiredTargetPips { get; init; }
         public double? ExpectedRemainingVolume { get; init; }
         public double? LadderFirstVolume { get; init; }
