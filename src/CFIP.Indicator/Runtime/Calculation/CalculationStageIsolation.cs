@@ -337,23 +337,10 @@ namespace cAlgo
                 index,
                 "PREDICTIVE PENDING EXECUTION");
 
-            // Aggressive market entry is the direct AUTO TRADE path. Give it first
-            // opportunity after predictive orders; if the intrabar reaction is not
-            // sufficiently qualified, the normal plan/market path can still proceed.
             RunCalculationStage(
                 () =>
                 {
-                    TryAggressiveAutoTrade(
-                        closedM5);
-                    return true;
-                },
-                index,
-                "AGGRESSIVE AUTO EXECUTION");
-
-            RunCalculationStage(
-                () =>
-                {
-                    TryEnsureAutomaticPlan(
+                    EnsureCanonicalPlan(
                         closedM5);
                     return true;
                 },
