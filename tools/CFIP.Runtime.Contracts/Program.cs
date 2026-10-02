@@ -6493,7 +6493,7 @@ namespace cAlgo
 
             int pendingExecution =
                 calculationStage.IndexOf(
-                    "PREDICTIVE PENDING EXECUTION",
+                    "PENDING INTENT PREPARATION",
                     StringComparison.Ordinal);
             int aggressiveExecution =
                 calculationStage.IndexOf(
@@ -6516,7 +6516,7 @@ namespace cAlgo
                 "execution priority is pending -> plan; Market/Aggressive broker execution is cBot-owned");
 
             Assert(
-                calculationStage.Contains("TrySmartPendingOrders(") &&
+                calculationStage.Contains("RefreshPendingExecutionIntent(") &&
                 calculationStage.Contains("EnsureCanonicalPlan(") &&
                 !calculationStage.Contains("TryAggressiveAutoTrade(") &&
                 !calculationStage.Contains("TryAutoTrade("),
