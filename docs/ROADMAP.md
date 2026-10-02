@@ -1,3 +1,42 @@
+# Current focus — CANONICAL TRADE-PATH GEOMETRY — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Purpose:
+- eliminate Entry/SL/TP/RR drift between presentation preview, live actionability, Plan creation and cBot handoff;
+- make the exact actual-entry reward path the canonical live execution geometry;
+- preserve existing quality/risk gates while improving consistency and missed-opportunity diagnosis.
+
+Completed:
+- CanonicalTradePathGeometry model and builder;
+- actual ExecutionModel entry used for structural stop and target ladder calculation;
+- actionability checks exact entry/mode consistency and evaluates RR from canonical SL/TP1;
+- bounded path cache for runtime efficiency;
+- trace/panel actionable-state ordering corrected;
+- dedicated audit accumulated in Source/Architecture.
+
+Safety:
+- no public thresholds lowered;
+- M15 remains canonical execution timeframe;
+- M5 remains trigger/tuning/entry precision;
+- M1 optional confirmation;
+- Indicator remains broker-mutation-free.
+
+Full-chain audit:
+Pre-analysis -> M15 -> M5 -> M1 -> Entry -> SL -> TP/RR -> Actionability -> Plan -> Contract -> cBot -> Broker -> Protection -> Outcome/History.
+
+Verification:
+- dedicated canonical trade-path audit;
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile;
+- target-terminal exact geometry/handoff validation.
+
+Phase record: docs/PHASE-CANONICAL-TRADE-PATH-GEOMETRY-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
 # Current focus — RETEST TRIGGER-PATH HARDENING — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
