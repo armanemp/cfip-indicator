@@ -181,7 +181,9 @@ require(
 require(
     "ContractIdentity identity" in provider and
     "new SignalEnvelope(" in provider and
-    "LatestSignalEnvelope" in cbot,
+    "_cfipProviderEnvelope" in provider and
+    "_lastSignalEnvelope" in cbot and
+    "SignalEnvelope" in cbot,
     "M3: Indicator -> provider -> cBot identity chain is incomplete",
 )
 
