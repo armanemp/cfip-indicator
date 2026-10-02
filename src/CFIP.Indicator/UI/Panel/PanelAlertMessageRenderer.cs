@@ -7,7 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const int PanelAlertMessageCapacity = 5;
-        private const int PanelAlertMessageRowHeight = 17;
+        private const int PanelAlertMessageRowHeight = 20;
         private const int PanelAlertMessageGap = 1;
         private const int PanelAlertMessageMaxCharacters = 132;
 
@@ -22,7 +22,7 @@ namespace cAlgo
                     new StackPanel
                     {
                         Orientation = Orientation.Vertical,
-                        HorizontalAlignment = HorizontalAlignment.Right,
+                        HorizontalAlignment = HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Center,
                         BackgroundColor = Color.FromArgb(0, Color.Black)
                     };
@@ -39,12 +39,12 @@ namespace cAlgo
                                 string.IsNullOrWhiteSpace(PanelFontFamily)
                                     ? "Arial"
                                     : PanelFontFamily,
-                            FontSize = Math.Max(8, PanelFontSize - 3),
+                            FontSize = Math.Max(10, PanelFontSize - 1),
                             FontWeight = FontWeight.Bold,
                             ForegroundColor = PanelMutedTextColor,
                             HorizontalAlignment = HorizontalAlignment.Right,
                             VerticalAlignment = VerticalAlignment.Center,
-                            TextAlignment = TextAlignment.Right,
+                            TextAlignment = TextAlignment.Left,
                             Margin =
                                 new Thickness(
                                     0,
@@ -147,8 +147,8 @@ namespace cAlgo
 
                     row.FontSize =
                         Math.Max(
-                            8,
-                            PanelFontSize - 3);
+                            10,
+                            PanelFontSize - 1);
 
                     row.FontWeight =
                         FontWeight.Bold;
