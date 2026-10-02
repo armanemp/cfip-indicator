@@ -13,6 +13,11 @@ namespace cAlgo
         private void RenderPanelRows(
             int contentWidth)
         {
+            _panelOverflowCount = 0;
+
+            if (_panelOverflowCount == 0)
+                _panelOverflowReported = false;
+
             int slot = 0;
 
             RenderPanelOverviewRows(
