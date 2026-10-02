@@ -26,7 +26,11 @@ policy = read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
 trigger = read("src/CFIP.Indicator/Planning/Execution/TriggerGate.cs")
 plan_gate = read("src/CFIP.Indicator/Trading/Validation/PlanCreationEligibility.cs")
 scenario = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
-actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+actionability = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityPreparation.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityGateEvaluation.cs")
+)
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/ROADMAP.md")
