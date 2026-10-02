@@ -75,14 +75,17 @@ namespace cAlgo
                         plan.Risk);
 
                 if (!IsFinitePositive(rr) ||
-                    rr <
+                    !RiskRewardPolicyRule.MeetsMinimum(
+                        rr,
                         Math.Max(
                             Tp2MinimumRR,
                             tp1RR +
                             Math.Max(
                                 0.10,
-                                StructuralTpRrStep)) ||
-                    rr > maximumRR)
+                                StructuralTpRrStep))) ||
+                    !RiskRewardPolicyRule.IsWithinMaximum(
+                        rr,
+                        maximumRR))
                     return RejectPlanRewardStructure("TP2 RR OUT OF RANGE");
 
                 if (RequireHtfRewardForTp2Plus &&
