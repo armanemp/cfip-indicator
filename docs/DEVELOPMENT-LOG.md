@@ -3088,3 +3088,22 @@ not look like a historical regression. No public parameter, strategy logic or br
 was changed.
 
 Phase record: `docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md`.
+
+
+## Indicator Naming + cBot Launch + MTF Panel Direction Correction — 2026-10-02
+
+Started the operator-facing correction phase. The Indicator is being given the stable
+display name **CFIP Smart Indicator** and the cBot **CFIP Smart Execution Bot** with M5
+as the default host timeframe.
+
+The MTF context panel is being corrected so an unresolved frame is not presented as
+NEUTRAL when existing BullScore/BearScore or TrendBull/TrendBear evidence establishes a
+directional bias. The panel will show BULL BIAS / BEAR BIAS while canonical Frame.Direction
+and Decision semantics remain unchanged.
+
+The live panel render path also drops the obsolete Quick Execution height reservation and
+synchronization call.
+
+No strategy threshold, Decision, Plan, risk or broker authority is changed.
+
+Phase record: `docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md`.
