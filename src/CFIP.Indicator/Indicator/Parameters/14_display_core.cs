@@ -91,7 +91,6 @@ namespace cAlgo
         [Parameter("Panel Margin", Group = "14 · DISPLAY — CORE", DefaultValue = 8, MinValue = 0, MaxValue = 30)]
         public int PanelMargin { get; set; }
 
-
         [Parameter("Panel Row Gap", Group = "14 · DISPLAY — CORE", DefaultValue = 1, MinValue = 0, MaxValue = 6)]
         public int PanelRowGap { get; set; }
 
