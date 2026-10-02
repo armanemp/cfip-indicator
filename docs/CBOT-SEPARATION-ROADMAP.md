@@ -37,7 +37,7 @@ Baseline reviewed from `main` at `473d5f1c89afaf8880bb16092e5d9b16b98d0395`:
 
 Important source examples confirmed during this audit:
 
-- `Trading/Execution/BrokerMarketOrderMutation.cs` directly calls market-order broker APIs.
+- `src/CFIP.cBot/Execution/MarketBrokerMutation.cs` now directly calls Market / Market Range broker APIs; the former Indicator owner has been deleted.
 - `Trading/Execution/BrokerPendingOrderPlacement.cs` and pending placement owners handle broker pending mutation.
 - `Trading/Execution/BrokerPendingOrderCancellation.cs` handles pending cancellation.
 - `Trading/Execution/BrokerPositionCloseMutation.cs` handles broker position close mutation.
