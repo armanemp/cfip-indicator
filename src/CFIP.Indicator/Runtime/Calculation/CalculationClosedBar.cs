@@ -149,6 +149,13 @@ namespace cAlgo
             ReconcilePreTradePlanDirection(
                 closedM5);
 
+            // Refresh the execution geometry for the new canonical M5 before
+            // deciding whether its mode is allowed to bypass the generic trigger.
+            // This prevents a prior-bar Breakout/Waiting mode from accidentally
+            // blocking a current-bar in-zone Retest plan.
+            UpdateExecutionModel(
+                closedM5);
+
             TryEnsureAutomaticPlan(
                 closedM5);
 
