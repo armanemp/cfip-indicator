@@ -106,6 +106,7 @@ jobs:
       - run: python tools/audit_phase_ci_17.py
       - run: python tools/audit_phase_ci_17a.py
       - run: python tools/audit_phase_mtf_primary_panel.py
+      - run: python tools/audit_phase_mtf_primary_location_obfvg.py
       - run: python tools/audit_phase_11_2.py
       - run: python tools/audit_phase_11_3.py
       - run: python tools/audit_phase_11_4.py
