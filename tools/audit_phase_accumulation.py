@@ -15,7 +15,9 @@ def read(rel: str) -> str:
 pending_stop = read("Trading/Pending/Placement/ContinuationStopPlacement.cs")
 pending_limit = read("Trading/Pending/Placement/ReversalLimitPlacement.cs")
 ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
-pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
+pending_cbot = (
+    Path("..") / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
+).read_text(encoding="utf-8")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 protection = read("Trading/LiveManagement/ProtectionManager.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
@@ -36,19 +38,28 @@ execution_paths = {
     "pending-limit": pending_limit,
 }
 for name, source in execution_paths.items():
-    for token in ("TryAcquireSubmission(", "TryBuildServerSideTakeProfitLadder("):
-        if token not in source:
-            raise SystemExit(f"{name}: missing shared {token}")
+    if name == "pending-stop":
+        for token in (
+            "PrepareContinuationStopForCbot(",
+            "ExecutionIntentKind.Stop",
+        ):
+            if token not in source:
+                raise SystemExit(f"{name}: missing intent-only token {token}")
+        if "PlaceStopOrder(" in source:
+            raise SystemExit("pending-stop: Indicator broker mutation remains")
+    else:
+        for token in ("TryAcquireSubmission(", "TryBuildServerSideTakeProfitLadder("):
+            if token not in source:
+                raise SystemExit(f"{name}: missing shared {token}")
 
 if "ValidateSingleExecutionCapacity(" not in read("Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs"):
     raise SystemExit("pending: canonical capacity gate missing")
 
-for source_name, source in (
-    ("pending-stop mutation", pending_mutation),
-    ("pending-limit mutation", limit_mutation),
-):
-    if "StopLossBreakEven" not in source:
-        raise SystemExit(f"{source_name}: server break-even transport missing")
+if "PlaceStopOrder(" not in pending_cbot:
+    raise SystemExit("cBot Pending Stop mutation owner missing")
+if "StopLossBreakEven" not in ladder:
+    raise SystemExit("server break-even transport missing from canonical ladder")
+
 
 for token in (
     "SmartBreakEvenRule.Evaluate(",
