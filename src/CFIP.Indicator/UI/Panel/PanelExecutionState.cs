@@ -138,36 +138,28 @@ namespace cAlgo
             if (!IsCbotExecutionStateFresh())
                 return CbotConnectionPanelText();
 
-            string runtimeState =
-                string.IsNullOrWhiteSpace(
-                    _cBotExecutionState.RuntimeState)
-                    ? "UNKNOWN"
-                    : _cBotExecutionState.RuntimeState.Trim();
-
-            string mode =
-                CbotMarketModeText();
-
-            if (string.Equals(
-                    runtimeState,
-                    "BLOCKED",
-                    StringComparison.OrdinalIgnoreCase))
+            if (_cBotExecutionState.RecoveryRequired)
                 return
-                    "CBOT BLOCKED • " +
+                    "CBOT RECOVERY REQUIRED • " +
                     CbotReasonText();
 
-            if (_cBotExecutionState.MarketExecutionEnabled ||
-                _cBotExecutionState.AggressiveExecutionEnabled)
+            if (_cBotExecutionState.EffectiveAutoTradingEnabled)
                 return
-                    "CBOT " +
-                    runtimeState +
-                    " • " +
-                    mode;
+                    "CBOT AUTO TRADE ON • " +
+                    CbotMarketModeText();
+
+            if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
+                return "CBOT CONNECTED • AUTO TRADE OFF • INDICATOR SETTING OFF";
+
+            if (!_cBotExecutionState.MarketExecutionEnabled &&
+                !_cBotExecutionState.AggressiveExecutionEnabled)
+                return "CBOT CONNECTED • AUTO TRADE OFF • MARKET DISARMED";
 
             return
-                "CBOT CONNECTED • MARKET DISARMED • " +
-                mode;
+                "CBOT CONNECTED • AUTO TRADE BLOCKED • " +
+                CbotReasonText();
         }
-        
+
         private Color GetAutoTradingPanelColor()
         {
             RefreshCbotExecutionStateIfDue();
@@ -175,14 +167,11 @@ namespace cAlgo
             if (!IsCbotExecutionStateFresh())
                 return PanelWarningColor;
 
-            if (string.Equals(
-                    _cBotExecutionState.RuntimeState,
-                    "BLOCKED",
-                    StringComparison.OrdinalIgnoreCase))
+            if (_cBotExecutionState.RecoveryRequired)
                 return PanelWarningColor;
 
             return
-                CbotCanMarketExecute()
+                _cBotExecutionState.EffectiveAutoTradingEnabled
                     ? TpLineColor
                     : PanelMutedTextColor;
         }
@@ -194,36 +183,31 @@ namespace cAlgo
             if (!IsCbotExecutionStateFresh())
                 return CbotConnectionPanelText();
 
-            string runtimeState =
-                string.IsNullOrWhiteSpace(
-                    _cBotExecutionState.RuntimeState)
-                    ? "UNKNOWN"
-                    : _cBotExecutionState.RuntimeState.Trim();
-
-            string mode =
-                CbotPendingModeText();
-
-            if (string.Equals(
-                    runtimeState,
-                    "BLOCKED",
-                    StringComparison.OrdinalIgnoreCase))
+            if (_cBotExecutionState.RecoveryRequired)
                 return
-                    "CBOT BLOCKED • " +
+                    "CBOT RECOVERY REQUIRED • " +
                     CbotReasonText();
 
-            if (_cBotExecutionState.PendingStopExecutionEnabled ||
-                _cBotExecutionState.PendingLimitExecutionEnabled)
+            if (_cBotExecutionState.EffectiveAutomaticOrdersEnabled)
                 return
-                    "CBOT " +
-                    runtimeState +
-                    " • " +
-                    mode;
+                    "CBOT AUTO ORDERS ON • " +
+                    CbotPendingModeText();
+
+            if (!_cBotExecutionState.IndicatorAutomaticOrdersEnabled)
+                return "CBOT CONNECTED • AUTO ORDERS OFF • INDICATOR SETTING OFF";
+
+            if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
+                return "CBOT CONNECTED • AUTO ORDERS BLOCKED • AUTO TRADE OFF";
+
+            if (!_cBotExecutionState.PendingStopExecutionEnabled &&
+                !_cBotExecutionState.PendingLimitExecutionEnabled)
+                return "CBOT CONNECTED • AUTO ORDERS OFF • PENDING DISARMED";
 
             return
-                "CBOT CONNECTED • PENDING DISARMED • " +
-                mode;
+                "CBOT CONNECTED • AUTO ORDERS BLOCKED • " +
+                CbotReasonText();
         }
-        
+
         private Color GetAutoOrdersPanelColor()
         {
             RefreshCbotExecutionStateIfDue();
@@ -231,15 +215,12 @@ namespace cAlgo
             if (!IsCbotExecutionStateFresh())
                 return PanelWarningColor;
 
-            if (string.Equals(
-                    _cBotExecutionState.RuntimeState,
-                    "BLOCKED",
-                    StringComparison.OrdinalIgnoreCase))
+            if (_cBotExecutionState.RecoveryRequired)
                 return PanelWarningColor;
 
             return
-                CbotCanPendingExecute()
-                    ? TpLineColor
+                _cBotExecutionState.EffectiveAutomaticOrdersEnabled
+                    ? TriggerLineColor
                     : PanelMutedTextColor;
         }
         
