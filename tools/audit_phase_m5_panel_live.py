@@ -80,8 +80,8 @@ require(
 require(
     "RefreshCbotExecutionStateIfDue();" in panel_exec and
     "IsCbotExecutionStateFresh()" in panel_exec and
-    "CBOT CONNECTED • MARKET DISARMED" in panel_exec and
-    "CBOT CONNECTED • PENDING DISARMED" in panel_exec,
+    "CBOT CONNECTED • AUTO TRADE OFF • MARKET DISARMED" in panel_exec and
+    "CBOT CONNECTED • AUTO ORDERS OFF • PENDING DISARMED" in panel_exec,
     "M5: panel execution status must be cBot-authoritative",
 )
 

@@ -6491,9 +6491,11 @@ namespace cAlgo
 
             Assert(
                 controlSync.Contains("_executionToggleSyncing = true") &&
-                controlSync.Contains("EnsureExecutionRuntimeState();") &&
+                controlSync.Contains("RefreshCbotExecutionStateIfDue();") &&
+                controlSync.Contains("EffectiveAutoTradingEnabled") &&
+                controlSync.Contains("EffectiveAutomaticOrdersEnabled") &&
                 controlSync.Contains("ExecutionControlPresentationRule.IsInteractive"),
-                "execution control synchronization is guarded and uses canonical settings/runtime state");
+                "execution control synchronization is guarded and uses canonical cBot state");
 
             int pendingExecution =
                 calculationStage.IndexOf(

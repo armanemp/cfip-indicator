@@ -202,8 +202,10 @@ if "public static bool IsInteractive => false;" not in rule:
     fail("Execution-control interaction policy must be canonical and read-only")
 if "SyncQuickExecutionControls(" not in sync or "_executionToggleSyncing = true" not in sync:
     fail("Execution-control synchronization boundary is incomplete")
-if "EnsureExecutionRuntimeState();" not in sync:
-    fail("Execution-control synchronization must consume canonical runtime/settings state")
+if "RefreshCbotExecutionStateIfDue();" not in sync:
+    fail("Execution-control synchronization must consume the canonical cBot state snapshot")
+if "EffectiveAutoTradingEnabled" not in sync or "EffectiveAutomaticOrdersEnabled" not in sync:
+    fail("Execution-control synchronization must consume effective cBot state")
 if "ExecutionControlPresentationRule.IsInteractive" not in sync:
     fail("Execution-control synchronizer must enforce the canonical read-only interaction policy")
 

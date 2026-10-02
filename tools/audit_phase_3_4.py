@@ -48,7 +48,9 @@ checks = {
     "execution-control synchronization remains guarded": (
         "SyncQuickExecutionControls(" in sync and
         "_executionToggleSyncing = true" in sync and
-        "EnsureExecutionRuntimeState();" in sync
+        "RefreshCbotExecutionStateIfDue();" in sync and
+        "EffectiveAutoTradingEnabled" in sync and
+        "EffectiveAutomaticOrdersEnabled" in sync
     ),
     "alert delivery queue is owned by runtime state": (
         "AlertDeliveryQueue(16)" in state and

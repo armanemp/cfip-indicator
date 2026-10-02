@@ -37,6 +37,8 @@ jobs:
       - run: python tools/audit_phase_cbot_p5.py
       - run: python tools/audit_phase_cbot_p5_reconciliation.py
       - run: python tools/audit_phase_cbot_p6_account_risk_and_connection.py
+      - run: python tools/audit_phase_cbot_p7_ui_state_cutover.py
+      - run: python tools/audit_phase_cbot_p7_whole_chain.py
       - run: python tools/audit_phase_build_warning_panel_height.py
       - run: python tools/audit_phase_m15_primary_execution_risk_spread.py
       - run: python tools/audit_cbot_demo_live_market.py
