@@ -312,6 +312,104 @@ namespace CFIP.cBot.Execution
             return true;
         }
 
+        private static bool TryConstrainVolumeForMargin(
+            Robot robot,
+            TradeType tradeType,
+            double requestedVolume,
+            double maximumMarginUsagePercent,
+            double marginBufferPercent,
+            out double constrainedVolume,
+            out string reason)
+        {
+            constrainedVolume = 0;
+            reason = "MARGIN SIZING UNAVAILABLE";
+
+            if (robot == null ||
+                !IsFinitePositive(requestedVolume))
+                return false;
+
+            double allowedMargin =
+                Risk.ExecutionMarginBudgetRule.AllowedMargin(
+                    robot.Account.FreeMargin,
+                    maximumMarginUsagePercent,
+                    marginBufferPercent);
+
+            if (!IsFinitePositive(allowedMargin))
+            {
+                reason = "NO EXECUTION MARGIN BUDGET";
+                return false;
+            }
+
+            double estimatedMargin;
+            try
+            {
+                estimatedMargin =
+                    robot.Symbol.GetEstimatedMargin(
+                        tradeType,
+                        requestedVolume);
+            }
+            catch
+            {
+                reason = "EXECUTION MARGIN ESTIMATE FAILED";
+                return false;
+            }
+
+            if (!IsFinitePositive(estimatedMargin))
+            {
+                reason = "EXECUTION MARGIN ESTIMATE INVALID";
+                return false;
+            }
+
+            double candidate =
+                Risk.ExecutionMarginBudgetRule.ScaleVolumeToBudget(
+                    requestedVolume,
+                    estimatedMargin,
+                    allowedMargin);
+
+            if (!IsFinitePositive(candidate))
+            {
+                reason = "EXECUTION MARGIN VOLUME INVALID";
+                return false;
+            }
+
+            constrainedVolume =
+                robot.Symbol.NormalizeVolumeInUnits(
+                    candidate,
+                    RoundingMode.Down);
+
+            if (robot.Symbol.VolumeInUnitsMin > 0 &&
+                constrainedVolume < robot.Symbol.VolumeInUnitsMin)
+            {
+                reason = "MARGIN CAP BELOW BROKER MINIMUM";
+                return false;
+            }
+
+            if (robot.Symbol.VolumeInUnitsMax > 0)
+                constrainedVolume =
+                    Math.Min(
+                        constrainedVolume,
+                        robot.Symbol.VolumeInUnitsMax);
+
+            double finalEstimatedMargin =
+                robot.Symbol.GetEstimatedMargin(
+                    tradeType,
+                    constrainedVolume);
+
+            if (!IsFinitePositive(finalEstimatedMargin) ||
+                finalEstimatedMargin > allowedMargin)
+            {
+                reason = "FINAL EXECUTION MARGIN BUDGET EXCEEDED";
+                return false;
+            }
+
+            reason =
+                constrainedVolume < requestedVolume
+                    ? "VOLUME CAPPED BY EXECUTION MARGIN"
+                    : "EXECUTION MARGIN OK";
+
+            return true;
+        }
+
         private static BrokerExecutionReport BuildReport(
             SignalEnvelope envelope,
             BrokerReportStatus status,
