@@ -15,6 +15,15 @@ namespace CFIP.Contracts
                     symbol ?? string.Empty);
         }
 
+        public static string ForSymbol(
+            string symbol)
+        {
+            return
+                "CFIPCbotPresence" +
+                ContractBusKeyHash.Hash(
+                    symbol ?? string.Empty);
+        }
+
         public static string ForIndicatorInstance(string instanceId)
         {
             return
@@ -22,6 +31,17 @@ namespace CFIP.Contracts
                 ContractBusKeyHash.Hash(instanceId);
         }
     }
+
+    public sealed record CbotPresenceSnapshot(
+        int ContractVersion,
+        string CbotInstanceId,
+        string CbotTypeName,
+        string CbotDisplayName,
+        string Symbol,
+        DateTime ObservedUtc,
+        string State,
+        bool DemoAccount,
+        string BoundIndicatorInstanceId);
 
     public sealed record CbotPresenceSnapshot(
         int ContractVersion,
@@ -42,6 +62,39 @@ namespace CFIP.Contracts
                 PropertyNameCaseInsensitive = true,
                 WriteIndented = false
             };
+
+        public static string SerializePresence(
+            CbotPresenceSnapshot snapshot)
+        {
+            return JsonSerializer.Serialize(
+                snapshot,
+                Options);
+        }
+
+        public static bool TryDeserializePresence(
+            string payload,
+            out CbotPresenceSnapshot? snapshot)
+        {
+            snapshot = null;
+
+            if (string.IsNullOrWhiteSpace(payload))
+                return false;
+
+            try
+            {
+                snapshot =
+                    JsonSerializer.Deserialize<CbotPresenceSnapshot>(
+                        payload,
+                        Options);
+
+                return snapshot != null;
+            }
+            catch
+            {
+                snapshot = null;
+                return false;
+            }
+        }
 
         public static string SerializePresence(
             CbotPresenceSnapshot snapshot)
