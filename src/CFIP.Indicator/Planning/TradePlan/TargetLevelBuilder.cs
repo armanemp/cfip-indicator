@@ -155,23 +155,31 @@ private List<Level> BuildTargetLevels(
                                                 entry,
                                                 atr);
                                 
+                                            List<Level> preparedLevels =
+                                                levels
+                                                    .Where(
+                                                        x =>
+                                                            IsFinitePositive(
+                                                                x.Price) &&
+                                                            x.Price != entry)
+                                                    .OrderByDescending(
+                                                        x => x.Score)
+                                                    .ToList();
+
                                             List<Level> mergedLevels =
                                                 MergeLevels(
-                                                    levels
-                                                        .Where(
-                                                            x =>
-                                                                IsFinitePositive(
-                                                                    x.Price) &&
-                                                                x.Price != entry)
-                                                        .OrderByDescending(
-                                                            x =>
-                                                                x.Score)
-                                                        .Take(
-                                                            Math.Max(
-                                                                1,
-                                                                SmartTargetMaxCandidates))
-                                                        .ToList(),
+                                                    preparedLevels,
                                                     atr);
+
+                                            mergedLevels =
+                                                mergedLevels
+                                                    .OrderByDescending(
+                                                        x => x.Score)
+                                                    .Take(
+                                                        Math.Max(
+                                                            1,
+                                                            SmartTargetMaxCandidates))
+                                                    .ToList();
 
                                             _targetLevelCacheM5 = closedM5;
                                             _targetLevelCacheDirection = direction;
