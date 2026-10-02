@@ -111,13 +111,25 @@ check(
 )
 
 check(
-    "cBot initializes CFIP through supported GetIndicator mechanism",
+    "cBot initializes CFIP from the configured same-chart indicator",
+    "RefreshIndicatorBinding(" in cbot and
+    "CfipIndicatorChartBinding.TryFind(" in cbot and
+    "CfipIndicatorChartBinding.TryBuildParameterValues(" in cbot and
     "Indicators.GetIndicator<CFIPIndicator>(" in cbot
 )
 
 check(
     "cBot forces referenced indicator evaluation through output",
     "_indicator.ProviderHeartbeat.LastValue" in cbot
+)
+
+check(
+    "cBot does not create a mismatched hard-coded Indicator configuration",
+    "EnableAutoTrading = true" not in cbot and
+    "EnableAutomaticOrders = false" not in cbot and
+    "EnableAggressiveAutoEntry = false" not in cbot and
+    "AutoProtectBrokerPositions = false" not in cbot and
+    "EnableLiveExitManagement = false" not in cbot
 )
 
 check(
@@ -132,12 +144,7 @@ check(
 )
 
 check(
-    "cBot instance produces market intent while remaining fail-closed",
-    "EnableAutoTrading = true" in cbot and
-    "EnableAutomaticOrders = false" in cbot and
-    "EnableAggressiveAutoEntry = false" in cbot and
-    "AutoProtectBrokerPositions = false" in cbot and
-    "EnableLiveExitManagement = false" in cbot and
+    "cBot market execution remains separately fail-closed",
     "EnableMarketExecution" in cbot and
     "DefaultValue = false" in cbot
 )
