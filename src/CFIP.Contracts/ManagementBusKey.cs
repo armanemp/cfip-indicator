@@ -33,7 +33,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out ManagementCommand[] commands)
+            out ManagementCommand[]? commands)
         {
             commands = null;
 
@@ -42,7 +42,7 @@ namespace CFIP.Contracts
 
             try
             {
-                ManagementCommand[] parsed =
+                ManagementCommand[]? parsed =
                     JsonSerializer.Deserialize<ManagementCommand[]>(
                         payload,
                         Options);
@@ -75,7 +75,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out BrokerExecutionReport[] reports)
+            out BrokerExecutionReport[]? reports)
         {
             reports = null;
 
@@ -84,7 +84,7 @@ namespace CFIP.Contracts
 
             try
             {
-                BrokerExecutionReport[] parsed =
+                BrokerExecutionReport[]? parsed =
                     JsonSerializer.Deserialize<BrokerExecutionReport[]>(
                         payload,
                         Options);
