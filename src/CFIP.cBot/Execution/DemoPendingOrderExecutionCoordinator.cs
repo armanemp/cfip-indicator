@@ -21,6 +21,7 @@ namespace CFIP.cBot.Execution
             DateTime nowUtc,
             double maximumMarginUsagePercent,
             double marginBufferPercent,
+            int maximumConcurrentScenarios,
             out BrokerExecutionReport report,
             out string reason)
         {
@@ -242,7 +243,31 @@ namespace CFIP.cBot.Execution
                 managedPending >= 1)
             {
                 reason =
-                    "SINGLE-PLAN CAPACITY BLOCKED";
+                    "SCENARIO CAPACITY BLOCKED • SCENARIO ALREADY ACTIVE";
+                return false;
+            }
+
+            string managedRoot =
+                executionLabel;
+            int scenarioMarker =
+                managedRoot.IndexOf(
+                    "|CFIP-S:",
+                    StringComparison.Ordinal);
+
+            if (scenarioMarker > 0)
+                managedRoot =
+                    managedRoot.Substring(
+                        0,
+                        scenarioMarker);
+
+            if (maximumConcurrentScenarios < 1 ||
+                BrokerExecutionSafety.CountManagedScenarioObjects(
+                    robot,
+                    managedRoot) >= maximumConcurrentScenarios)
+            {
+                reason =
+                    "CONCURRENT SCENARIO CAPACITY BLOCKED • " +
+                    Math.Max(1, maximumConcurrentScenarios);
                 return false;
             }
 
