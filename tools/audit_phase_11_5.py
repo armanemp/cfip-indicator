@@ -83,7 +83,6 @@ if "ExecutionAuthorized" not in policy:
 for path, label in (
     (auto_market, "automatic market"),
     (aggressive, "aggressive market"),
-    (pending_limit, "pending limit"),
 ):
     if not path:
         continue
@@ -92,9 +91,34 @@ for path, label in (
     if "TryAcquireSubmission(" not in path:
         ERRORS.append(label + " does not use the shared submission gate")
 
-# P4C deliberately moved Pending Stop broker mutation into the cBot. The
-# Indicator binds the pending intent to its scenario identity; the cBot
-# preserves that identity and provides broker-side idempotency.
+# P4C/P4D moved Pending Stop and Pending Limit broker mutation into the cBot.
+# The Indicator binds the intent to its scenario identity; the cBot preserves
+# that identity and performs broker-side idempotency.
+if (
+    "_activeExecutionScenarioId" not in pending_stop or
+    "ResolveDirectionExecutionScenarioId(" not in pending_stop
+):
+    ERRORS.append("pending stop does not bind an execution scenario identity")
+
+if (
+    "envelope.Identity.ScenarioId" not in pending_stop_cbot or
+    "envelope.Identity.IdempotencyKey" not in pending_stop_cbot or
+    "BrokerAction.SubmitPendingStop" not in pending_stop_cbot
+):
+    ERRORS.append("pending stop cBot owner does not preserve scenario/idempotency identity")
+
+if (
+    "_activeExecutionScenarioId" not in pending_limit or
+    "ResolveDirectionExecutionScenarioId(" not in pending_limit
+):
+    ERRORS.append("pending limit does not bind an execution scenario identity")
+
+if (
+    "envelope.Identity.ScenarioId" not in pending_stop_cbot or
+    "envelope.Identity.IdempotencyKey" not in pending_stop_cbot or
+    "BrokerAction.SubmitPendingLimit" not in pending_stop_cbot
+):
+    ERRORS.append("pending limit cBot owner does not preserve scenario/idempotency identity")
 if (
     "_activeExecutionScenarioId" not in pending_stop or
     "ResolveDirectionExecutionScenarioId(" not in pending_stop
