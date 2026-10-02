@@ -70,12 +70,12 @@ namespace cAlgo
             double riskFloor)
         {
             if (direction != 1 && direction != -1)
-                return Block("DIRECTION INVALID");
+                return CreateInvalidResult("DIRECTION INVALID");
 
             if (!IsPositiveFinite(entry) ||
                 !IsPositiveFinite(stop) ||
                 !IsPositiveFinite(target))
-                return Block("LEVEL GEOMETRY INVALID");
+                return CreateInvalidResult("LEVEL GEOMETRY INVALID");
 
             bool protectiveStop =
                 direction == 1
@@ -83,7 +83,7 @@ namespace cAlgo
                     : stop > entry;
 
             if (!protectiveStop)
-                return Block("STOP WRONG SIDE");
+                return CreateInvalidResult("STOP WRONG SIDE");
 
             bool progressiveTarget =
                 direction == 1
@@ -91,12 +91,12 @@ namespace cAlgo
                     : target < entry;
 
             if (!progressiveTarget)
-                return Block("TARGET WRONG SIDE");
+                return CreateInvalidResult("TARGET WRONG SIDE");
 
             double floor =
                 Math.Max(
                     DistanceFloor,
-                    IsFiniteNonNegative(riskFloor)
+                    IsFiniteNonNegativeDistance(riskFloor)
                         ? riskFloor
                         : 0);
 
@@ -110,12 +110,12 @@ namespace cAlgo
 
             if (!IsPositiveFinite(risk) ||
                 !IsPositiveFinite(reward))
-                return Block("EMPTY REWARD/RISK");
+                return CreateInvalidResult("EMPTY REWARD/RISK");
 
             double safeSpread =
                 Math.Max(
                     0,
-                    IsFiniteNonNegative(spread)
+                    IsFiniteNonNegativeDistance(spread)
                         ? spread
                         : 0);
 
@@ -137,7 +137,7 @@ namespace cAlgo
             double minimum =
                 Math.Max(
                     0,
-                    IsFiniteNonNegative(minimumRR)
+                    IsFiniteNonNegativeDistance(minimumRR)
                         ? minimumRR
                         : 0);
 
@@ -207,7 +207,7 @@ namespace cAlgo
             double floor =
                 Math.Max(
                     DistanceFloor,
-                    IsFiniteNonNegative(riskFloor)
+                    IsFiniteNonNegativeDistance(riskFloor)
                         ? riskFloor
                         : 0);
 
@@ -281,7 +281,7 @@ namespace cAlgo
             double normalizedRisk =
                 Math.Max(
                     DistanceFloor,
-                    IsFiniteNonNegative(riskFloor)
+                    IsFiniteNonNegativeDistance(riskFloor)
                         ? riskFloor
                         : 0);
 
@@ -318,7 +318,7 @@ namespace cAlgo
                         DistanceFloor,
                         Math.Max(
                             risk,
-                            IsFiniteNonNegative(riskFloor)
+                            IsFiniteNonNegativeDistance(riskFloor)
                                 ? riskFloor
                                 : 0));
 
