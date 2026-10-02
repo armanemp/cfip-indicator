@@ -174,8 +174,14 @@ namespace cAlgo
                     false,
                     "RANGE NO-TRADE • NO DISPLACEMENT");
 
-            if (IsRangeFinitePositive(input.Tp1RR) &&
-                input.Tp1RR < 1.80)
+            if (!IsRangeFinitePositive(input.Tp1RR))
+                return new RangeSignalQualityResult(
+                    false,
+                    "RANGE NO-TRADE • LOW RR");
+
+            if (!RiskRewardPolicyRule.MeetsMinimum(
+                    input.Tp1RR,
+                    RiskRewardPolicyRule.RangeMinimumRRFloor))
                 return new RangeSignalQualityResult(
                     false,
                     "RANGE NO-TRADE • LOW RR");
