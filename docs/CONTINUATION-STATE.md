@@ -1,3 +1,35 @@
+## CI-21 continuation — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci-21-primary-m15-signal-visibility`.**
+
+Canonical rule reaffirmed:
+- **M15 is the trading/execution reference timeframe.**
+- **M5 is the trigger/tuning/entry-precision layer used to reduce adverse entry risk.**
+- M1 remains optional confirmation; H1+ remains higher-timeframe context/reward support.
+
+Completed:
+- primary M15/H1 validation now happens before downstream plan construction;
+- primary setups can remain visible as a presentation-only candidate when geometry/preview is not ready;
+- presentation-only candidates are explicitly blocked by the canonical execution policy;
+- primary source visibility uses the existing primary-quality floor without the generic parallel margin;
+- deterministic runtime contract and accumulated source audit were added.
+
+Important boundary:
+- presentation-only state does not authorize broker execution;
+- executable entry still requires the canonical M15 decision plus M5 actionability/trigger/entry-quality and all existing risk/reward protections.
+
+Verification pending:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- CI-21 audit.
+
+Manual validation remains required for live cTrader timing/visuals, popup/sound alignment and empirical signal frequency/quality.
+
+Next work unit: continue one complete phase at a time and repeat the full pre-analysis → analysis → signal → M5 trigger/tuning → plan → cBot execution coherence audit.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
 ## CI-20B closeout — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged via PR #204.**
