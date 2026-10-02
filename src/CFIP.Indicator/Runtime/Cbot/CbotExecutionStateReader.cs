@@ -1,4 +1,5 @@
 using System;
+using cAlgo.API;
 using CFIP.Contracts;
 
 namespace cAlgo
