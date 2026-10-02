@@ -310,6 +310,15 @@ namespace cAlgo
                     "INITIALIZATION RENDER");
             }
 
+            Print(
+                "CFIP ALERT AUDIO | enabled={0} | semanticSounds={1} | configuredCue={2} | customFile={3}",
+                EnableSoundAlerts,
+                UseSemanticAlertSounds,
+                AlertSoundType,
+                string.IsNullOrWhiteSpace(SoundFilePath)
+                    ? "NONE"
+                    : SoundFilePath);
+
             QueueStartupCalculationSeed();
         }
 
