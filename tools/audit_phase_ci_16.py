@@ -55,8 +55,8 @@ required_fields = (
 )
 
 check(
-    "Verify();" in program and
-    "VerifyCi16DeterministicReplay();" in program,
+    "VerifyCi16DeterministicReplay();" in program and
+    "private static void VerifyCi16DeterministicReplay()" in program,
     "Runtime Contracts Program invokes the CI-16 suite",
 )
 
