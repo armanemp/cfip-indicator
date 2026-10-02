@@ -136,38 +136,20 @@ namespace cAlgo
                                     key,
                                     critical);
 
-                            bool restrictionPopup =
-                                restrictionAlert &&
-                                ShowEntryRestrictionPopup;
-                             bool importantPopup =
-                                 IsImportantPopupAlertKey(
-                                     key,
-                                     critical);
-
-                             bool showPopup =
-                                 ShowPopupAlerts &&
-                                 (restrictionPopup ||
-                                  (!restrictionAlert &&
-                                   (PopupCriticalOnly
-                                       ? critical
-                                       : importantPopup)));
-
-                            if (playSound ||
-                                showPopup)
+                            // Every eligible canonical alert is delivered to the same bounded transport.
+                            // The panel rail is now the sole visual message surface; sound remains optional.
+                            if (!_alertDeliveryQueue.Enqueue(
+                                    new AlertDelivery(
+                                        envelope,
+                                        direction,
+                                        playSound,
+                                        soundType.ToString(),
+                                        SoundFilePath)))
                             {
-                                if (!_alertDeliveryQueue.Enqueue(
-                                        new AlertDelivery(
-                                            envelope,
-                                            playSound,
-                                            soundType.ToString(),
-                                            SoundFilePath,
-                                            showPopup)))
-                                {
-                                    Print(
-                                        "CFIP alert delivery queue rejected [{0}] revision={1}",
-                                        envelope.AlertId,
-                                        envelope.Identity.Revision);
-                                }
+                                Print(
+                                    "CFIP alert delivery queue rejected [{0}] revision={1}",
+                                    envelope.AlertId,
+                                    envelope.Identity.Revision);
                             }
 
                             if (EnableEmailAlerts &&
