@@ -11,6 +11,5 @@
   <ItemGroup>
     <PackageReference Include="cTrader.Automate" Version="1.0.21" />
     <ProjectReference Include="..\CFIP.Contracts\CFIP.Contracts.csproj" />
-    <ProjectReference Include="..\CFIP.Indicator\CFIP.Indicator.csproj" />
   </ItemGroup>
 </Project>
