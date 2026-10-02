@@ -85,8 +85,10 @@ namespace cAlgo
                                         
                                                     int effectivePanelWidth =
                                                         Math.Max(
-                                                            260,
-                                                            PanelWidth);
+                                                            220,
+                                                            Math.Min(
+                                                                700,
+                                                                PanelWidth));
                                         
                                                     int contentWidth =
                                                         Math.Max(
@@ -138,8 +140,10 @@ namespace cAlgo
                                         
                                                     int configuredMaxHeight =
                                                         Math.Max(
-                                                            240,
-                                                            PanelMaxHeight);
+                                                            260,
+                                                            Math.Min(
+                                                                1200,
+                                                                PanelMaxHeight));
                                         
                                                     int maxHeight =
                                                         ResolvePanelMaximumHeight(
