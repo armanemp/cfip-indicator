@@ -12,12 +12,12 @@ namespace cAlgo
             double hardFloor)
         {
             double safeConfigured =
-                IsFiniteNonNegative(configured)
+                IsCanonicalPolicyFiniteNonNegative(configured)
                     ? configured
                     : 0;
 
             double safeHardFloor =
-                IsFiniteNonNegative(hardFloor)
+                IsCanonicalPolicyFiniteNonNegative(hardFloor)
                     ? hardFloor
                     : 0;
 
@@ -35,7 +35,7 @@ namespace cAlgo
                     minimum,
                     0);
 
-            if (!IsFiniteNonNegative(configured) ||
+            if (!IsCanonicalPolicyFiniteNonNegative(configured) ||
                 configured <= 0)
                 return safeMinimum;
 
@@ -59,22 +59,22 @@ namespace cAlgo
                     0);
 
             double safeRiskAtr =
-                IsFiniteNonNegative(riskAtr)
+                IsCanonicalPolicyFiniteNonNegative(riskAtr)
                     ? riskAtr
                     : 0;
 
             double safePreferred =
-                IsFiniteNonNegative(preferredStopRiskAtr)
+                IsCanonicalPolicyFiniteNonNegative(preferredStopRiskAtr)
                     ? preferredStopRiskAtr
                     : 0;
 
             double safeCap =
-                IsFiniteNonNegative(cap)
+                IsCanonicalPolicyFiniteNonNegative(cap)
                     ? cap
                     : 0;
 
             double safeMultiplier =
-                IsFiniteNonNegative(multiplier)
+                IsCanonicalPolicyFiniteNonNegative(multiplier)
                     ? multiplier
                     : 0;
 
@@ -100,12 +100,12 @@ namespace cAlgo
                     0);
 
             double safeFactor =
-                IsFiniteNonNegative(baseFactor)
+                IsCanonicalPolicyFiniteNonNegative(baseFactor)
                     ? baseFactor
                     : 0;
 
             double safeReduction =
-                IsFiniteNonNegative(absoluteReduction)
+                IsCanonicalPolicyFiniteNonNegative(absoluteReduction)
                     ? absoluteReduction
                     : 0;
 
@@ -118,7 +118,7 @@ namespace cAlgo
             double nominalRR,
             double minimum)
         {
-            if (!IsFiniteNonNegative(nominalRR))
+            if (!IsCanonicalPolicyFiniteNonNegative(nominalRR))
                 return false;
 
             return nominalRR + 1e-12 >=
@@ -131,10 +131,10 @@ namespace cAlgo
             double nominalRR,
             double maximum)
         {
-            if (!IsFiniteNonNegative(nominalRR))
+            if (!IsCanonicalPolicyFiniteNonNegative(nominalRR))
                 return false;
 
-            if (!IsFiniteNonNegative(maximum) ||
+            if (!IsCanonicalPolicyFiniteNonNegative(maximum) ||
                 maximum <= 0)
                 return true;
 
@@ -145,7 +145,7 @@ namespace cAlgo
                 1e-12;
         }
 
-        public static bool IsFiniteNonNegative(
+        public static bool IsCanonicalPolicyFiniteNonNegative(
             double value)
         {
             return value >= 0 &&
