@@ -1,3 +1,19 @@
+
+## CBOT-DEMO-MARKET — 2026-10-02
+
+Implementation branch: phase/cbot-p4a-live-demo-warning-2026-10-02.
+
+Completed in this phase:
+- documented/suppressed only the current IndicatorAttribute(string) SDK deprecation warning;
+- canonical Indicator SignalEnvelope publication to LocalStorageScope.Device keyed by Indicator InstanceId;
+- plan-backed canonical Market ExecutionIntent fallback so cBot can consume an existing confirmed plan without enabling Indicator Auto Trading;
+- standalone cBot binding to the exact visible CFIP Smart Indicator instance on the same chart;
+- demo-only Market execution coordinator with live-account rejection, single-session execution cap, broker capacity check, geometry/volume checks and bounded idempotency;
+- cBot project dependency reduced to Contracts only;
+- focused boundary/static audits added.
+
+Verification pending: Source/Architecture, Runtime Acceptance Contracts, cTrader Compile/Build and target-terminal demo execution evidence.
+
 ## CBOT-P3 — cBot Host / Shadow — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**

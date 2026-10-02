@@ -178,6 +178,9 @@ namespace cAlgo
             _cfipProviderUpdatedUtc =
                 observedUtc;
 
+            PublishDeviceSignalEnvelope(
+                _cfipProviderEnvelope);
+
             PublishProviderHeartbeat(
                 observedUtc);
         }

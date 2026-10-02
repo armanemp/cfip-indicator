@@ -392,6 +392,41 @@ Presentation priority uses primary source location evidence, and the chart panel
 
 Phase report: `docs/PHASE-MTF-P2-PRIMARY-LOCATION-OBFVG.md`.
 
+
+## CBOT-DEMO-MARKET — Demo-only Market Execution Bridge — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending; target-terminal verification required.**
+
+Purpose: provide a bounded local/demo execution path while the remaining broker-mutation migration continues phase-by-phase.
+
+Current boundary:
+- Indicator = analysis / decision / scenario / plan / presentation and canonical SignalEnvelope publication.
+- Contracts = immutable transport schema.
+- cBot = demo Market broker mutation only in this phase, guarded against live accounts.
+
+Safeguards:
+- Enable Demo Market Execution defaults to false;
+- live accounts are rejected by Account.IsLive;
+- maximum demo market executions per cBot session defaults to 1;
+- missing/duplicate Indicator, stale envelope, wrong symbol, invalid geometry, broker capacity or invalid volume fail closed;
+- one idempotency key can never submit twice in one cBot session;
+- only ExecuteMarketOrder is present in the cBot mutation owner; no pending, aggressive, close, SL mutation or TP mutation is activated by this phase;
+- the existing Indicator market mutation remains dormant when Indicator automatic trading is OFF and is scheduled for the current-main P4A extraction immediately after this demo validation bridge.
+
+Warning cleanup:
+- the cTrader SDK obsolete IndicatorAttribute(string) warning is intentionally suppressed only around the stable display-name attribute so CFIP Smart Indicator remains unchanged.
+
+Target-terminal acceptance:
+- attach exactly one CFIP Smart Indicator and this cBot to the same M5 chart;
+- keep Indicator Auto Trading / Automatic Orders / Aggressive Auto Entry OFF;
+- arm only the cBot demo-market switch on a demo account;
+- verify bind -> envelope -> SHADOW READY -> one demo Market execution -> broker position with initial SL/TP;
+- stop/disable the cBot after the bounded test.
+
+Phase report: docs/PHASE-CBOT-DEMO-LIVE-MARKET-2026-10-02.md.
+
+Next implementation phase: reissue CBOT-P4A — Market / Market Range broker-mutation extraction from current main so the legacy Indicator Market mutation owner is physically removed after this bridge's target-terminal parity evidence.
+
 ## CBOT-P4 — Broker Mutation Extraction
 
 Extract and remove, in controlled batches:
@@ -2069,7 +2104,7 @@ During M0-M42, a newly discovered issue is handled as follows:
 - New feature idea: postponed until M42 unless required for an existing acceptance contract.
 - New indicator: forbidden before M14.
 - Threshold tuning: forbidden before OOS evidence.
-- Live auto-execution: forbidden before M42.
+- Production live auto-execution remains forbidden before M42. A narrowly bounded demo-only Market execution bridge is allowed only under CBOT-DEMO-MARKET, with live-account rejection and explicit default DISARMED controls.
 
 This prevents the roadmap from becoming an endlessly expanding patch queue.
 ## MTF-P3 — Primary M15/H1 Provider Scenario Identity Cohesion
