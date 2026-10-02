@@ -88,10 +88,10 @@ check(
 
 check(
     "M5/M1 pre-zone flags are only active for an inside-zone Retest",
-    "retestTrapContext =" in evaluator and
-    "liveMode == ExecutionMode.RetestMarket" in evaluator and
-    "m5AdversePreZone" in evaluator and
-    "m1AdversePreZone" in evaluator
+    "RetestTrapContext =" in evaluator and
+    "LiveMode == ExecutionMode.RetestMarket" in evaluator and
+    "M5AdversePreZone" in evaluator and
+    "M1AdversePreZone" in evaluator
 )
 
 check(
