@@ -35,7 +35,7 @@ pending_cbot = (
     "Execution" /
     "DemoPendingOrderExecutionCoordinator.cs"
 ).read_text(encoding="utf-8")
-limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
+limit_mutation = ""
 state = read("Indicator/State.cs")
 factory = read("UI/Controls/ExecutionControlsFactory.cs")
 sync = read("UI/Controls/ExecutionControlsSynchronizer.cs")
@@ -128,8 +128,8 @@ if "CurrentM5 - input.CreatedM5" not in visual_lifecycle:
     raise SystemExit("Signal lifecycle must enforce bounded age")
 if "DefaultValue = true)]\n        public bool ShowPopupAlerts" not in popup_core:
     raise SystemExit("Popup alerts must default to enabled")
-if "DefaultValue = PanelCorner.BottomLeft" not in popup_advanced:
-    raise SystemExit("Popup must default to bottom-left")
+if "DefaultValue = PanelCorner.BottomRight" not in popup_advanced:
+    raise SystemExit("Popup must default to bottom-right")
 if "DefaultValue = false)]\n        public bool PopupCriticalOnly" not in popup_core:
     raise SystemExit("Popup must default to show valid alerts, not critical-only")
 
@@ -182,8 +182,9 @@ if "ExecuteMarketRangeOrder(" not in cbot_market or "ExecuteMarketOrder(" not in
     raise SystemExit("cBot must own Market / Market-Range broker mutation")
 if "PlaceStopOrder(" not in pending_cbot or "BrokerAction.SubmitPendingStop" not in pending_cbot:
     raise SystemExit("cBot Pending Stop mutation owner missing")
-if "TryPlaceLimitOrderWithTakeProfitLadder" not in limit_mutation:
-    raise SystemExit("Pending limit server TP mutation owner missing")
+pending_cbot = read("Execution/DemoPendingOrderExecutionCoordinator.cs")
+if "PlaceLimitOrder(" not in pending_cbot:
+    raise SystemExit("Pending limit cBot mutation owner missing")
 
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
