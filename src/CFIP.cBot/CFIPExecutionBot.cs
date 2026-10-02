@@ -890,6 +890,7 @@ namespace CFIP.cBot
                     : _lastSignalEnvelope.Identity.ScenarioId ?? "",
                 _lastSignalEnvelope,
                 _reconciliation,
+                _executionSettings,
                 force);
         }
 
