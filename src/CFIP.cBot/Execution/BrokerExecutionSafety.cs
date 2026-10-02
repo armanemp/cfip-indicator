@@ -32,9 +32,6 @@ namespace CFIP.cBot.Execution
             {
                 if (order != null &&
                     string.Equals(order.SymbolName, robot.SymbolName, StringComparison.Ordinal) &&
-                    CbotManagedObjectIdentityRule.MatchesManagedLabel(
-                        order.Label,
-                        executionLabel) &&
                     CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
                         order.Label,
                         executionLabel))
