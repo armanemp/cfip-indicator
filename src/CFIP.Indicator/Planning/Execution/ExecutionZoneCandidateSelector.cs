@@ -7,19 +7,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private sealed class ExecutionZoneSelectionCandidate
-        {
-            public double Low;
-            public double High;
-            public string Source;
-            public int Quality;
-            public double Score;
-            public bool Primary;
-            public bool Fvg;
-            public bool OrderBlock;
-            public bool Confluence;
-        }
-
         private bool TrySelectExecutionZoneCandidate(
             int closedM5,
             int direction,
