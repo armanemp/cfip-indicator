@@ -37,3 +37,4 @@ namespace CFIP.Contracts
         public bool RecoveryRequired { get; init; }
         public string RecoveryReason { get; init; } = string.Empty;
     }
+}
