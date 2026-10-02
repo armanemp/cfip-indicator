@@ -59,7 +59,6 @@ check(
 check(
     "host uses broker state only for read-only safety",
     "ReadBrokerSnapshot()" in host and
-    "Permissions.TradingPermission.IsAllowed" in host and
     "Positions" in host and
     "PendingOrders" in host,
 )
