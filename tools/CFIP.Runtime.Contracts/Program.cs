@@ -6523,10 +6523,10 @@ namespace cAlgo
                 "Indicator calculation keeps analysis/plan stages and removes broker execution paths");
 
             Assert(
-                calculation.Contains("TryEnsureAutomaticPlan(") &&
+                calculation.Contains("EnsureCanonicalPlan(") &&
                 calculation.Contains("RenderPredictionObjects(") &&
                 calculation.Contains("RenderLatestAlertSignalMarker("),
-                "live cycle retains plan plus prediction/alert presentation orchestration");
+                "live cycle retains canonical plan plus prediction/alert presentation orchestration");
 
             Assert(
                 predictiveSelector.Contains("TrySelectPredictivePendingLevel(") &&
