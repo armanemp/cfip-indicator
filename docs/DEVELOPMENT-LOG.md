@@ -3528,3 +3528,18 @@ Implemented on phase/m4-time-session-history-persistence-2026-10-02.
 Verification status:
 - Final M4 head `2f8b447f70d7327232dfa5f118d00520017cef99` passed Source / Architecture, Runtime Acceptance Contracts and cTrader Compile/Build.
 - Target-terminal verification remains required for exact broker session-time behavior, restart-mid-day persistence, History folder/readback and EOD/cBot reconnect behavior.
+
+## 2026-10-02 — Opportunity Discovery + cBot Truth + Panel Readability
+
+Deep focus was moved to the complete position path: discovery → entry zone → structural SL → TP/reward path → actionability → signal → cBot handoff.
+
+Implemented:
+- reward-aware execution-zone selection;
+- M15/H1 structural-level entry candidates when FVG/OB is absent;
+- explicit reward-path and stop-quality fields on selection candidates;
+- fresh cBot heartbeat as validated liveness truth, with ChartRobots retained as secondary diagnostic state;
+- larger/left-aligned unified panel alert messages.
+
+The final ActionableNow, RR, risk, regime, divergence, market and broker-safety gates remain authoritative. No public threshold was lowered and broker multi-position capacity remains unchanged.
+
+The next empirical step is candidate-family / gate mining from persisted SignalEvaluationTrace and outcome history.
