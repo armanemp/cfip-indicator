@@ -10,5 +10,14 @@ namespace cAlgo
         private const int PanelRowCount = 64;
         private const int PanelHeaderHeight = 30;
         private const int PanelBottomExecutionGap = 64;
+
+        private int PanelBottomReservedSpace()
+        {
+            return
+                PanelPosition == PanelCorner.BottomLeft ||
+                PanelPosition == PanelCorner.BottomRight
+                    ? PanelBottomExecutionGap
+                    : 0;
+        }
     }
 }
