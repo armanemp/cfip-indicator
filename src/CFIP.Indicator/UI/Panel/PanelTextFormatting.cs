@@ -19,7 +19,12 @@ namespace cAlgo
                                 {
                                     return frame == null
                                         ? 0
-                                        : frame.Direction;
+                                        : PanelFrameDirectionRule.ResolveDisplayDirection(
+                                            frame.Direction,
+                                            frame.BullScore,
+                                            frame.BearScore,
+                                            frame.TrendBull,
+                                            frame.TrendBear);
                                 }
         
         private string GetStablePanelState(
