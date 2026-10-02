@@ -296,7 +296,9 @@ M1 disposition record: all F1–F18 are classified with an explicit owner/next-p
 
 ## CBOT-P0 — Activation / Boundary Lock
 
-Status: IN PROGRESS
+Status: VERIFIED COMPLETE — 2026-10-02
+
+Verification: Source/Architecture #2771 PASS; Runtime Acceptance #2580 PASS; cTrader Compile #2764 PASS.
 
 - Indicator owner = analysis / decision / scenario / plan / presentation.
 - cBot owner = broker execution / account risk / live protection / lifecycle / recovery.
@@ -1717,7 +1719,7 @@ Mxx+1 — Title
 
 **Canonical implementation start: M2 — Repository Hygiene / Dead Code / Ownership, with the mandatory parallel CBOT-P0 separation track active.**
 
-M0 — Adoption / Freeze / Baseline and M1 — Full Forensic Audit are **VERIFIED COMPLETE**.
+M0 — Adoption / Freeze / Baseline, M1 — Full Forensic Audit and CBOT-P0 — Activation / Boundary Lock are **VERIFIED COMPLETE**.
 
 No other roadmap, prompt, continuation note or planning document may override this file.
 
