@@ -28,13 +28,6 @@ namespace cAlgo
 
             if (plan == null)
             {
-                if (AutoTradingEnabled)
-                {
-                    SetAutoTradingState(
-                        "BLOCKED",
-                        "PLAN BUILD / STRUCTURAL REWARD GATE");
-                }
-
                 return;
             }
 
