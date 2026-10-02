@@ -28,6 +28,9 @@ for token in (
     if token not in bot:
         errors.append("missing cBot token: " + token)
 
+if "Bars.TimeFrame != TimeFrame.Minute15" in bot:
+    errors.append("cBot must not bind execution to host Chart TF")
+
 if 'DefaultValue = false)]' not in bot:
     errors.append("demo execution must default to false")
 
