@@ -19,7 +19,36 @@ Next staged phase: **CI-18 — Signal / Panel Coherence**.
 
 ## CI-18 — Signal / Panel Coherence — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #199 as `8ba701ea288641bc1435ac8f94ea6890713ed63c`.**
+
+Deep audit found two concrete coherence failures:
+- directional Decision state could disappear from the chart/panel and become WAITING because visual direction was coupled to EntryAllowed/TriggerReady;
+- continuation context was evaluated before an actual in-zone Retest, so a valid trend pullback could become WAITING FOR TRIGGER and never reach actionability.
+
+Completed in canonical owners:
+- directional Decision remains visible before trade actionability;
+- MARKET BIAS is presented separately from SIGNAL readiness;
+- M15/H1 panel direction uses the shared frame-display direction;
+- trigger score, required score, M1 direction and trigger reason are visible in the panel;
+- M5OnlyConfirmedTrigger is enforced at mode-specific actionability rather than globally blocking Decision EntryAllowed;
+- in-zone Retest takes precedence over generic continuation waiting;
+- ExecutionModel readiness is required before actionability can pass;
+- strong M5 trigger override remains owned by the canonical TriggerGate;
+- deterministic Retest regression coverage and accumulated CI-18 audit were added.
+
+Verification on final CI-18 head `1d33146d8fd3ffb4f17e8b580c3fc9321f74b4b5`:
+- Source / Architecture #3087: **PASS**;
+- Runtime Acceptance #2896: **PASS**;
+- cTrader Compile #3080: **PASS**;
+- CI-18 signal/panel coherence audit: **PASS**;
+- accumulated MTF/UI/identity audits: **PASS**.
+
+No public strategy threshold was lowered. Directional WATCH presentation remains presentation-only; final ActionableNow quality/RR, regime, divergence, trap-risk, indicator-fusion and market gates remain active.
+
+Phase record: `docs/PHASE-CI-18-SIGNAL-PANEL-COHERENCE-2026-10-02.md`.
+
+Next: **evidence-driven Signal/Target Quality Audit**, beginning with the 2R fallback clustering and Decision → Plan → Alert coherence audit, then intelligent progressive target/trailing behavior.
+
 
 Deep audit found two concrete coherence failures:
 - a directional Decision could disappear from the chart/panel and become WAITING because visual direction was coupled to EntryAllowed/TriggerReady;
