@@ -1091,9 +1091,15 @@ namespace cAlgo
                     ScenarioName);
 
                 Assert(
-                    Trigger.M5Ready &&
-                    (!Trigger.UseM1 || Trigger.Confirmed),
-                    "CI-16 trigger readiness is explicit for actionable replay inputs: " + ScenarioName);
+                    !Trigger.Confirmed || Trigger.M5Ready,
+                    "CI-16 trigger confirmation cannot exist without M5 readiness: " + ScenarioName);
+
+                if (Trigger.UseM1)
+                {
+                    Assert(
+                        Trigger.Confirmed == Trigger.M1Ready,
+                        "CI-16 M1-enabled confirmation mirrors M1 readiness: " + ScenarioName);
+                }
 
                 if (ScenarioName == "fast breakout")
                 {
