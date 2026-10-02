@@ -854,7 +854,7 @@ Status: **VERIFIED COMPLETE — merged to `main` via PR #207.**
 
 ## M5 — Panel Live Content / Responsiveness
 
-Status: **VERIFIED COMPLETE — repository gates passed; ready for merge to `main`.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #209 as `50dac181e6561bf65fd30a6cef246c189f5c89f5`.**
 
 ### هدف
 حل واقعی stale/incomplete/slow panel.
