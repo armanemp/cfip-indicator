@@ -4,6 +4,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFIP.Indicator", "src\CFIP.Indicator\CFIP.Indicator.csproj", "{9A4C9BA6-0A12-4D2E-BD79-6D14D7A6AC21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFIP.Contracts", "src\CFIP.Contracts\CFIP.Contracts.csproj", "{B3E7C0CB-7FA8-4BD4-9B3B-41A9D5D2A101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFIP.cBot", "src\CFIP.cBot\CFIP.cBot.csproj", "{C0B60F3D-A8E7-4F45-9E9C-3B11F8D2A202}"
+EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
         Debug|Any CPU = Debug|Any CPU

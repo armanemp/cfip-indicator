@@ -1,3 +1,22 @@
+## CBOT-P0 — Immediate parallel separation — 2026-10-02
+
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source/Architecture #2771 PASS; Runtime Acceptance #2580 PASS; cTrader Compile #2764 PASS.
+
+The cBot separation is now an active parallel execution track, not a deferred M29–M38 activity.
+
+Repository boundary:
+- src/CFIP.Indicator = analysis/decision/scenario/plan/presentation;
+- src/CFIP.Contracts = platform-neutral immutable data boundary;
+- src/CFIP.cBot = broker execution/account risk/protection/lifecycle/recovery.
+
+Exact migration inventory is in docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md.
+
+No broker owner is deleted until its cBot replacement, caller migration, deterministic parity and source verification all pass.
+
+Next parallel execution step: CBOT-P1 — Platform-Neutral Contracts.
+
 ## M1 — Full Forensic Audit — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — repository verification pending.**

@@ -1,3 +1,25 @@
+## CBOT-P0 — Activation / Boundary Lock — 2026-10-02
+
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Activated the cBot separation as a mandatory parallel track beginning immediately after M1.
+
+Implemented:
+- master roadmap now carries CBOT-P0→P8 as the active parallel execution-separation track;
+- detailed cBot roadmap explicitly states that M29–M38 are historical/reference sequencing, not the start gate;
+- created src/CFIP.Contracts and src/CFIP.cBot;
+- registered both projects in CFIP.Indicator.sln;
+- added a fail-closed cBot host with no broker mutation in P0;
+- permanent CI now builds Contracts and cBot;
+- created docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md with exact mutation owners and callers;
+- froze the Indicator against adding new broker mutation authority.
+
+No production trading behavior was moved or deleted in P0. The existing Indicator executor remains only as a temporary compatibility owner until the corresponding cBot replacement passes parity and deletion gates.
+
+Verification: Source/Architecture #2771 PASS; Runtime Acceptance #2580 PASS; cTrader Compile #2764 PASS, including independent Contracts/cBot builds.
+
+Next: CBOT-P1 Contracts. Execution migration then proceeds in controlled owner batches while M2+ continues in parallel.
+
 ## M1 — Full Forensic Audit — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — repository verification pending.**

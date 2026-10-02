@@ -290,6 +290,72 @@ M1 disposition record: all F1–F18 are classified with an explicit owner/next-p
 
 ---
 
+# گروه A — Parallel cBot Separation (فعال از 2026-10-02)
+
+این track به درخواست مالک پروژه از همین نقطه همزمان با M2 به بعد اجرا می‌شود و ترتیب قبلی M29–M38 را برای شروع migration عوض می‌کند. هدف آن این است که execution/account/lifecycle قبل از تکمیل بخش‌های تحلیلی آینده از Indicator خارج شود تا هیچ دوباره‌کاری یا دو owner باقی نماند.
+
+## CBOT-P0 — Activation / Boundary Lock
+
+Status: VERIFIED COMPLETE — 2026-10-02
+
+Verification: Source/Architecture #2771 PASS; Runtime Acceptance #2580 PASS; cTrader Compile #2764 PASS.
+
+- Indicator owner = analysis / decision / scenario / plan / presentation.
+- cBot owner = broker execution / account risk / live protection / lifecycle / recovery.
+- Contracts owner = platform-neutral immutable data-only boundary.
+- No new broker mutation may be added to Indicator.
+- Existing Indicator mutation remains temporarily only until its cBot replacement passes parity and terminal-safe verification.
+- A migration step is not complete until: replacement exists → callers migrate → old owner removed → source audit proves zero duplicate authority for that migrated path.
+- No project/file is copied wholesale when it mixes analytical and broker responsibilities.
+- Exact extraction inventory: docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md.
+
+## CBOT-P1 — Platform-Neutral Contracts
+
+Create src/CFIP.Contracts and the immutable Signal/Plan/Execution/Management/Broker/Lifecycle contracts defined in the separation specification. Contracts must contain no cTrader dependency.
+
+## CBOT-P2 — Read-Only Indicator Provider
+
+Expose a documented, structured read-only provider from the Indicator for the cBot through the supported cTrader custom-indicator reference mechanism. No chart scraping, reflection, private-field access or static mutable bridge.
+
+## CBOT-P3 — cBot Host / Shadow
+
+Create src/CFIP.cBot with deterministic receive → validate → expiry/revision → deduplicate → broker-safety → shadow/telemetry state machine. Shadow mode must not mutate the broker.
+
+## CBOT-P4 — Broker Mutation Extraction
+
+Extract and remove, in controlled batches:
+1. Market / Market Range
+2. Aggressive
+3. Pending Stop
+4. Pending Limit
+5. Cancel
+6. Close / Partial Close
+7. SL mutation
+8. TP / server TP ladder mutation
+
+Each batch requires caller migration and zero direct mutation remaining in Indicator for that path.
+
+## CBOT-P5 — Protection / Lifecycle / Recovery
+
+Move broker-confirmed state, protection mutation, BE, trailing/profit-lock mutation, partial/full close, pending lifecycle, fill reconciliation, restart/reconnect and orphan recovery to cBot. Analytical reasoning remains in Indicator.
+
+## CBOT-P6 — Account / Execution Risk Authority
+
+Move trading permission, managed identity, capacity, final volume normalization, margin, live spread/session checks, daily-loss enforcement and execution retry/circuit ownership to cBot. Analytical quality/RR/suitability stay in Indicator.
+
+## CBOT-P7 — UI / State Cutover
+
+Indicator panel/chart becomes a read-only reflection of execution state. No UI action in Indicator can mutate broker state. AUTO TRADE / AUTO ORDERS status reflects actual cBot state.
+
+## CBOT-P8 — Physical Removal / Terminal Certification
+
+Delete migrated Indicator execution owners, hidden fallbacks, duplicate lifecycle state, execution-only parameters, and stale references only after replacement parity and target-terminal verification. This phase feeds M39/M40 certification.
+
+### Cross-track close rule
+
+M2–M28 may continue in parallel, but any phase touching execution/protection/panel execution status must consume the current cBot contracts/authority. No later phase may reintroduce execution logic into Indicator.
+
+
 # گروه B — Canonical Truth
 
 ## M3 — Single Trade Truth Chain
@@ -1651,13 +1717,13 @@ Mxx+1 — Title
 
 # 18. Current Starting Point
 
-**Canonical implementation start after M0 closeout: M2 — Repository Hygiene / Dead Code / Ownership.**
+**Canonical implementation start: M2 — Repository Hygiene / Dead Code / Ownership, with the mandatory parallel CBOT-P0 separation track active.**
 
-M0 — Adoption / Freeze / Baseline is **VERIFIED COMPLETE** and M1 has a completed forensic disposition report pending its repository verification gates.
+M0 — Adoption / Freeze / Baseline, M1 — Full Forensic Audit and CBOT-P0 — Activation / Boundary Lock are **VERIFIED COMPLETE**.
 
 No other roadmap, prompt, continuation note or planning document may override this file.
 
-Do not start advanced intelligence, parameter tuning, new indicators, real-account automatic execution or a permanent dual Indicator/cBot executor before the relevant gates above are completed.
+Do not start advanced intelligence, parameter tuning or new indicators before the relevant gates. cBot separation is explicitly active now, but no permanent dual broker executor is allowed: migration is staged, parity-gated and fail-closed.
 
 Once M42 is accepted, the project leaves the remediation/certification track and enters controlled production observation/calibration.
 
