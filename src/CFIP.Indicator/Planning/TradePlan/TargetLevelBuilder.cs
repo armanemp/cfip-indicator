@@ -75,7 +75,10 @@ private List<Level> BuildTargetLevels(
                                                     _m5Bars,
                                                     closedM5,
                                                     opposingDirection,
-                                                    atr);
+                                                    atr,
+                                                    false,
+                                                    entry,
+                                                    true);
                                 
                                             if (fvg != null)
                                             {
