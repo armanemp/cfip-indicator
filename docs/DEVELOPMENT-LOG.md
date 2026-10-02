@@ -1,3 +1,15 @@
+## CBOT-P1 — Platform-Neutral Contracts — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Created the canonical platform-neutral Indicator ↔ cBot contract layer under `src/CFIP.Contracts` with immutable Signal/Plan/Execution/Management/Broker/Lifecycle records and identity/revision/idempotency fields.
+
+Added `tools/audit_cbot_contract_schema.py` and wired it into Source/Architecture. Contracts contain no cTrader dependency, no setters and no behavioral methods. Existing Indicator-side `Plan`/`ExecutionIntent` remain temporary source models; no duplicate cBot model was created.
+
+Added detailed phase report: `docs/PHASE-CBOT-P1-PLATFORM-NEUTRAL-CONTRACTS.md`.
+
+Next: **CBOT-P2 — Read-Only Indicator Provider**.
+
 ## CBOT-P0 — Activation / Boundary Lock — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**
