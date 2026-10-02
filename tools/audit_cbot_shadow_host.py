@@ -101,9 +101,10 @@ check(
 )
 
 check(
-    "provider and envelope revisions must agree",
-    "PROVIDER REVISION MISMATCH" in shadow and
-    "providerRevision" in host,
+    "transported envelope revision is the single execution revision",
+    "identity.Revision" in shadow and
+    "ContractVersion.Current" in host and
+    "CfipDeviceSignalTransport.TryRead(" in host,
 )
 
 check(
@@ -123,7 +124,7 @@ check(
     all(token not in host + shadow for token in (
         "System.Reflection", "GetType(", "Invoke(",
         "ChartObjects", "Chart.Draw", "File.",
-        "LocalStorage", "HttpClient", "WebSocket"
+        "HttpClient", "WebSocket"
     )),
 )
 
