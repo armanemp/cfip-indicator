@@ -274,7 +274,19 @@ namespace cAlgo
                         continue;
 
                     if (_confirmedManagementKeys.Add(report.CommandIdempotencyKey))
+                    {
                         newConfirmation = true;
+
+                        if (report.Status == BrokerReportStatus.Confirmed)
+                        {
+                            ApplyBrokerConfirmedProtectionState(
+                                report.BrokerPositionId,
+                                report.ConfirmedEntry,
+                                report.ConfirmedStop,
+                                report.ConfirmedTarget,
+                                true);
+                        }
+                    }
 
                     for (int j = pending.Count - 1; j >= 0; j--)
                     {
