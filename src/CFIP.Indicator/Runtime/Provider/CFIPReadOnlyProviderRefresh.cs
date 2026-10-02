@@ -37,7 +37,8 @@ namespace cAlgo
                 ResolveProviderScenarioId(
                     signalId,
                     lane,
-                    direction);
+                    direction,
+                    closedM5);
 
             string planId =
                 ResolveProviderPlanId(
@@ -67,10 +68,15 @@ namespace cAlgo
                     direction,
                     canonicalIntent);
 
+            TradeOpportunityCandidate providerScenario;
+            _tradePlanRegistry.TryGetCandidate(
+                scenarioId,
+                out providerScenario);
+
             string sourceTimeframe =
-                Bars == null
-                    ? "UNKNOWN"
-                    : Bars.TimeFrame.ToString();
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    providerScenario,
+                    ProviderScenarioIdentityRule.CanonicalM5);
 
             string expiryKey =
                 canonicalIntent == null ||
