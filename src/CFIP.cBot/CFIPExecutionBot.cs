@@ -137,6 +137,7 @@ namespace CFIP.cBot
         protected override void OnStart()
         {
             _startedUtc = Server.TimeInUtc;
+            PublishPresence("STARTING");
             _tickCount = 0;
             _sessionExecutions = 0;
 
@@ -179,6 +180,7 @@ namespace CFIP.cBot
         protected override void OnTick()
         {
             _tickCount++;
+            PublishPresence("RUNNING");
 
             if (!RefreshIndicatorBinding(false))
             {
@@ -835,6 +837,16 @@ namespace CFIP.cBot
                 out _);
         }
 
+        private void PublishPresence(
+            string state)
+        {
+            _statePublisher.PublishPresence(
+                this,
+                Server.TimeInUtc,
+                state,
+                _boundIndicatorInstanceId);
+        }
+
         private void PublishExecutionState(
             string reason,
             bool force)
@@ -896,6 +908,7 @@ namespace CFIP.cBot
 
         protected override void OnStop()
         {
+            PublishPresence("STOPPED");
             PublishExecutionState(
                 "CBOT STOPPED",
                 true);
