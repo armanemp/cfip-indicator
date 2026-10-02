@@ -1437,7 +1437,7 @@ Operator action: run `git pull --ff-only` on local `main`.
 
 ### CI-16 closeout — 2026-10-02
 
-Status: **IMPLEMENTED — automated verification pending final workflow results.**
+Status: **VERIFIED COMPLETE — implementation HEAD `1c292d3162f6085869238029fe599630ab3ca3a9`.**
 
 Completed:
 - Runtime Contracts execute the deterministic replay suite twice and compare complete serialized traces;
@@ -1447,6 +1447,13 @@ Completed:
 - authoritative and submission geometry fingerprints must match;
 - deterministic latency intervals are exposed without manufacturing timestamps for blocked cases;
 - the CI-16 audit is accumulated after CI-15.
+
+
+Verification:
+- Source/Architecture: **PASS** — workflow run `36950516204` / #2715;
+- Runtime Acceptance Contracts: **PASS** — workflow run `36950516284` / #2524;
+- cTrader Compile/Build: **PASS** — workflow run `36950516224` / #2708;
+- accumulated CI-16 audit: **PASS**.
 
 Safety/manual:
 - no public parameter/default or trading threshold changed;
