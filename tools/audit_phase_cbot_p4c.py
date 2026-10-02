@@ -43,10 +43,10 @@ check("PlaceStopOrder(" in pending and
       "ExecutionAction.PendingStop" in pending and
       "BrokerAction.SubmitPendingStop" in pending,
       "cBot must own Pending Stop mutation")
-check("TryConstrainVolumeForMargin(" not in pending and
+check("private static bool TryConstrainVolumeForMargin(" not in pending and
       "BrokerExecutionSafety.TryConstrainVolumeForMargin(" in pending,
       "Pending Stop must use the shared cBot margin-safety owner")
-check("CountManagedPositions(" not in pending and
+check("private static int CountManagedPositions(" not in pending and
       "BrokerExecutionSafety.CountManagedPositions(" in pending,
       "Pending Stop must use the shared cBot capacity owner")
 check("PendingEntryPriceRule.ForExecutableStop(" in prep,
