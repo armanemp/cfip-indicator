@@ -92,9 +92,12 @@ if (
     errors.append("cBot management integration missing")
 
 management_arm = "Enable Demo Management Execution"
-arm_declared = (
-    '[Parameter("' + management_arm + '"' in host
-    and "DefaultValue = false" in host
+arm_declared = bool(
+    __import__("re").search(
+        r'\[Parameter\(\s*"Enable Demo Management Execution"'
+        r'[\s\S]*?DefaultValue\s*=\s*false',
+        host,
+    )
 )
 if not arm_declared:
     errors.append("management arm must default false")
