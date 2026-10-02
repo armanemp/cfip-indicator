@@ -31,6 +31,21 @@ if "public double NetReward" not in rr:
     errors.append("RiskRewardMathResult must expose spread-adjusted net reward")
 if "TargetFromRR(" not in target or "IncludeSpreadInRiskSizing" not in target:
     errors.append("synthetic target path must consume spread-aware target geometry")
+if "Bars.TimeFrame != TimeFrame.Minute15" in bot:
+    errors.append("cBot must not bind execution to host chart timeframe")
+if "PrepareContinuationStopForCbot(" not in (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8"):
+    errors.append("Indicator Pending Stop path must prepare a cBot intent")
+if "PlaceStopOrder(" in (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8"):
+    errors.append("Indicator Pending Stop placement mutation remains")
+if (IND / "Trading" / "Execution" / "BrokerPendingOrderPlacement.cs").exists():
+    errors.append("migrated Indicator Pending Stop broker owner still exists")
+pending = (BOT / "Execution" / "DemoPendingOrderExecutionCoordinator.cs").read_text(encoding="utf-8")
+if "class DemoPendingOrderExecutionCoordinator" not in pending or "PlaceStopOrder(" not in pending:
+    errors.append("cBot Pending Stop mutation owner missing")
+if "ExecutionAction.PendingStop" not in bot:
+    errors.append("cBot Pending Stop action routing missing")
+if "EnableDemoPendingStopExecution" not in bot:
+    errors.append("cBot Pending Stop arm missing")
 if "DefaultTimeFrame = \"M15\"" not in bot:
     errors.append("cBot default timeframe must be M15")
 if "Bars.TimeFrame != TimeFrame.Minute15" not in bot:
