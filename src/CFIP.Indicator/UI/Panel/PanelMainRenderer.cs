@@ -95,31 +95,24 @@ namespace cAlgo
                                                             padding * 2 -
                                                             border * 2);
                                         
-                                                    bool showSafetyButtons =
-                                                        ShowTradeActionButtons ||
-                                                        AlwaysShowSafetyButtons;
-                                        
-                                                    bool showButtonRow =
-                                                        showSafetyButtons ||
-                                                        ShowPanelToggleButton;
-                                        
                                                     bool buttons =
-                                                        showButtonRow;
+                                                        ShowPanelToggleButton;
                                         
                                                     int buttonHeight =
                                                         Math.Max(
-                                                            26,
-                                                            ActionButtonHeight);
+                                                            22,
+                                                            Math.Min(
+                                                                40,
+                                                                Math.Min(
+                                                                    PanelToggleWidth,
+                                                                    PanelToggleHeight)));
                                         
-                                                    int buttonGap =
-                                                        Math.Max(
-                                                            0,
-                                                            PanelButtonGap);
+                                                    int buttonGap = 0;
                                         
                                                     int buttonMargin =
                                                         Math.Max(
                                                             0,
-                                                            ActionButtonMargin);
+                                                            PanelPadding);
                                         
                                                     int toggleSideForLayout =
                                                         Math.Max(
@@ -174,8 +167,13 @@ namespace cAlgo
                                                                 180,
                                                                 Math.Min(
                                                                     configuredMaxHeight,
-                                                                    availableChartHeight))
-                                                            : configuredMaxHeight;
+                                                                    Math.Max(
+                                                                        180,
+                                                                        (int)Math.Round(
+                                                                            availableChartHeight * 0.75))))
+                                                            : Math.Min(
+                                                                configuredMaxHeight,
+                                                                260);
                                         
                                                     int fixedHeight =
                                                         PanelHeaderHeight +
