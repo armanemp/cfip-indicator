@@ -1,6 +1,6 @@
 ## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
 
 Root causes addressed:
 - the Popup surface had become a separate presentation path while the user-facing requirement was to keep messages in the panel;
@@ -22,7 +22,10 @@ Indicator analysis → canonical SignalEnvelope → Device LocalStorage / exact 
 
 Verification status:
 - implementation commits are on phase/cbot-p9-unified-alert-rail-visual-coherence-2026-10-02;
-- CI and cTrader compile remain pending until the phase branch is checked by the repository gates;
+- Source/Architecture CI: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader compile/build: PASS;
+- dedicated P9 audit: PASS;
 - terminal visual acceptance remains manual.
 
 Next phase: CBOT-6M concurrent multi-scenario execution.
