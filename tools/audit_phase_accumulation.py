@@ -15,8 +15,9 @@ def read(rel: str) -> str:
 pending_stop = read("Trading/Pending/Placement/ContinuationStopPlacement.cs")
 pending_limit = read("Trading/Pending/Placement/ReversalLimitPlacement.cs")
 ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
+ROOT_REPO = Path(__file__).resolve().parents[1]
 pending_cbot = (
-    Path("..") / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
+    ROOT_REPO / "src" / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
 ).read_text(encoding="utf-8")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 protection = read("Trading/LiveManagement/ProtectionManager.cs")
