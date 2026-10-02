@@ -43,6 +43,9 @@ materialization = read(
 builder = read(
     "src/CFIP.Indicator/Planning/TradePlan/PlanBuilder.cs"
 )
+canonical_path_builder = read(
+    "src/CFIP.Indicator/Planning/TradePlan/CanonicalTradePathGeometryBuilder.cs"
+)
 execution_rebuild = read(
     "src/CFIP.Indicator/Trading/Execution/ExecutionPlanPreparation.cs"
 )
