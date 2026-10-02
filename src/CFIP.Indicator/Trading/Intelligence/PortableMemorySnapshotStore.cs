@@ -86,9 +86,7 @@ namespace cAlgo
 
             string timeframe =
                 SanitizeArchivePart(
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString());
+                    ExecutionTimeframePolicy.PrimaryExecution);
 
             return
                 OutcomeArchiveDirectory +
@@ -114,9 +112,7 @@ namespace cAlgo
 
             string timeframe =
                 SanitizeArchivePart(
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString());
+                    ExecutionTimeframePolicy.PrimaryExecution);
 
             return
                 OutcomeArchiveDirectory +
@@ -158,9 +154,7 @@ namespace cAlgo
 
             text.Append("TimeFrame=");
             text.Append(
-                Bars == null
-                    ? "UNKNOWN"
-                    : Bars.TimeFrame.ToString());
+                ExecutionTimeframePolicy.PrimaryExecution);
             text.Append(Environment.NewLine);
 
             text.Append("AccountNumber=");
