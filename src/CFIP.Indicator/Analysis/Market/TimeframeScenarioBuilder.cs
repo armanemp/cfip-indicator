@@ -128,9 +128,75 @@ namespace cAlgo
 
                 candidate.BasePlanTimeframe = "M5";
 
+                bool primary =
+                    PrimarySignalTimeframeRule.IsPrimary(
+                        names[i]);
+
+                PrimaryTimeframeTuning tuning =
+                    PrimarySignalTimeframeRule.ResolveTuning(
+                        frame.Direction,
+                        _m5Frame == null ? 0 : _m5Frame.Direction,
+                        _m1Frame == null ? 0 : _m1Frame.Direction);
+
+                candidate.PrimarySignal =
+                    primary;
+
+                candidate.PrimarySignalReady =
+                    primary &&
+                    frame.Quality >= minimumQuality;
+
+                candidate.SignalRole =
+                    primary ? "PRIMARY SIGNAL" : "CONTEXT";
+
+                candidate.LowerTimeframeTuning =
+                    tuning.State;
+
+                candidate.LowerTimeframeTuningAgreement =
+                    tuning.Agreement;
+
+                candidate.LowerTimeframeConflict =
+                    tuning.Conflict;
+
+                candidate.PrimaryLevelEvidence =
+                    PrimarySignalTimeframeRule.ResolveLevelEvidence(
+                        frame,
+                        frame.Direction);
+
+                candidate.PrimaryLevelEvidenceScore =
+                    primary
+                        ? Math.Max(
+                            0,
+                            frame.Direction == 1
+                                ? frame.LocationEvidenceBull
+                                : frame.LocationEvidenceBear)
+                        : 0;
+
+                candidate.PrimaryFvgQuality =
+                    primary
+                        ? (frame.Direction == 1
+                            ? frame.FvgBullQuality
+                            : frame.FvgBearQuality)
+                        : 0;
+
+                candidate.PrimaryObQuality =
+                    primary
+                        ? (frame.Direction == 1
+                            ? frame.ObBullQuality
+                            : frame.ObBearQuality)
+                        : 0;
+
+                candidate.PrimaryObFvgConfluence =
+                    primary &&
+                    (frame.Direction == 1
+                        ? frame.FvgObBullConfluence
+                        : frame.FvgObBearConfluence);
+
                 candidate.LabelPrefix =
                     "TF-" +
-                    names[i];
+                    names[i] +
+                    (primary
+                        ? " PRIMARY"
+                        : "");
 
                 candidate.Source =
                     string.IsNullOrWhiteSpace(
@@ -141,14 +207,21 @@ namespace cAlgo
                           names[i];
 
                 candidate.Stage =
-                    candidate.ActionableNow &&
-                    candidate.ExecutionPolicyAllowed
-                        ? "TF SCENARIO • READY"
-                        : "TF SCENARIO • WATCH • " +
-                          (string.IsNullOrWhiteSpace(
-                              candidate.ExecutionPolicyReason)
-                              ? "POLICY BLOCKED"
-                              : candidate.ExecutionPolicyReason);
+                    primary
+                        ? "PRIMARY " +
+                          names[i] +
+                          " SIGNAL • " +
+                          (candidate.PrimarySignalReady
+                              ? tuning.State
+                              : "NOT READY")
+                        : candidate.ActionableNow &&
+                          candidate.ExecutionPolicyAllowed
+                            ? "TF SCENARIO • READY"
+                            : "TF SCENARIO • WATCH • " +
+                              (string.IsNullOrWhiteSpace(
+                                  candidate.ExecutionPolicyReason)
+                                  ? "POLICY BLOCKED"
+                                  : candidate.ExecutionPolicyReason);
 
                 EnrichScenarioEvidence(
                     candidate,
@@ -164,14 +237,21 @@ namespace cAlgo
                         : candidate.ActionabilityReason;
 
                 candidate.Stage =
-                    candidate.ActionableNow &&
-                    candidate.ExecutionPolicyAllowed
-                        ? "TF SCENARIO • READY"
-                        : "TF SCENARIO • WATCH • " +
-                          (string.IsNullOrWhiteSpace(
-                              candidate.ExecutionPolicyReason)
-                              ? "POLICY BLOCKED"
-                              : candidate.ExecutionPolicyReason);
+                    primary
+                        ? "PRIMARY " +
+                          names[i] +
+                          " SIGNAL • " +
+                          (candidate.PrimarySignalReady
+                              ? tuning.State
+                              : "NOT READY")
+                        : candidate.ActionableNow &&
+                          candidate.ExecutionPolicyAllowed
+                            ? "TF SCENARIO • READY"
+                            : "TF SCENARIO • WATCH • " +
+                              (string.IsNullOrWhiteSpace(
+                                  candidate.ExecutionPolicyReason)
+                                  ? "POLICY BLOCKED"
+                                  : candidate.ExecutionPolicyReason);
 
                 AddOpportunityCandidate(
                     candidate);
