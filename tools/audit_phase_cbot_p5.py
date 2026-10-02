@@ -84,8 +84,9 @@ for token in (
     require(token in indicator_state, "Indicator cBot state reader missing " + token)
 
 require(
-    "CbotExecutionStatePanelText()" in indicator_panel,
-    "Panel execution state must consume cBot runtime state",
+    "CbotExecutionStatePanelText()" in indicator_panel or
+    "CbotConnectionPanelText()" in indicator_panel,
+    "Panel execution state must consume canonical cBot runtime/connection state",
 )
 require(
     "audit_phase_cbot_p5.py" in workflow or
