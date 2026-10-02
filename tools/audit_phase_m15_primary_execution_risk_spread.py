@@ -33,6 +33,8 @@ if "TargetFromRR(" not in target or "IncludeSpreadInRiskSizing" not in target:
     errors.append("synthetic target path must consume spread-aware target geometry")
 if "Bars.TimeFrame != TimeFrame.Minute15" in bot:
     errors.append("cBot must not bind execution to host chart timeframe")
+if "Bars.TimeFrame" in action:
+    errors.append("Indicator actionability must not read host chart timeframe")
 if "PrepareContinuationStopForCbot(" not in (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8"):
     errors.append("Indicator Pending Stop path must prepare a cBot intent")
 if "PlaceStopOrder(" in (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8"):
