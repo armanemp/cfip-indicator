@@ -3052,3 +3052,23 @@ Primary source location quality/confluence is used for deterministic presentatio
 No public parameter or trading threshold changed. Non-M5 execution remains observe-only for these independent primary candidates, and target-terminal/empirical validation remains required.
 
 Phase record: `docs/PHASE-MTF-P2-PRIMARY-LOCATION-OBFVG.md`.
+
+
+## MTF-P3 — Primary M15/H1 Provider Scenario Identity Cohesion — 2026-10-02
+
+Started the provider identity cohesion phase. The existing provider envelope currently
+uses a read-only single-snapshot bridge, while M15/H1 primary scenarios coexist in the
+Indicator registry. The phase therefore corrects identity traceability without creating
+a second decision or execution authority.
+
+Implemented so far:
+- provider SourceTimeframe is being mapped from the exact scenario candidate;
+- canonical plan scenario resolution is reused instead of selecting an unrelated fallback;
+- canonical source timeframe is carried into provider execution-intent identity;
+- pending Stop/Limit paths no longer create independent hard-coded scenario identifiers;
+- deterministic runtime/static acceptance coverage is being accumulated.
+
+No public parameter, threshold, RR, Entry, SL, TP, confidence, risk or broker mutation
+authority has changed.
+
+Phase record: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
