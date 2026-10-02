@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     public partial class CFIPIndicator
