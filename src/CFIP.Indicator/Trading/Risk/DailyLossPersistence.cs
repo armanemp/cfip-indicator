@@ -85,8 +85,9 @@ namespace cAlgo
                         CultureInfo.InvariantCulture),
                     DateTimeKind.Utc);
 
-            if (baselineDate.Date !=
-                referenceUtc.Date)
+            if (!CanonicalTimeRule.IsSameUtcDay(
+                    baselineDate,
+                    referenceUtc))
                 return;
 
             if (parts[4] == "1")
@@ -145,8 +146,9 @@ namespace cAlgo
                 bool alerted =
                     parts[5] == "1";
 
-                if (baselineDate.Date !=
-                        referenceUtc.Date ||
+                if (!CanonicalTimeRule.IsSameUtcDay(
+                        baselineDate,
+                        referenceUtc) ||
                     !IsFinitePositive(
                         startEquity) ||
                     double.IsNaN(startFloating) ||
@@ -201,14 +203,8 @@ namespace cAlgo
                 string payload =
                     DailyLossStateSchema +
                     "|" +
-                    new DateTime(
-                        referenceUtc.Year,
-                        referenceUtc.Month,
-                        referenceUtc.Day,
-                        0,
-                        0,
-                        0,
-                        DateTimeKind.Utc).Ticks.ToString(
+                    CanonicalTimeRule.UtcDayStart(
+                        referenceUtc).Ticks.ToString(
                             CultureInfo.InvariantCulture) +
                     "|" +
                     _dailyLossStartEquity.ToString(
@@ -252,8 +248,9 @@ namespace cAlgo
             bool force)
         {
             if (force ||
-                _dailyLossBaselineDate.Date !=
-                    referenceUtc.Date ||
+                !CanonicalTimeRule.IsSameUtcDay(
+                    _dailyLossBaselineDate,
+                    referenceUtc) ||
                 (referenceUtc -
                  _lastDailyLossPersistUtc).TotalSeconds >=
                     60)
@@ -275,9 +272,8 @@ namespace cAlgo
         private static DateTime AsUtc(
             DateTime value)
         {
-            return value.Kind == DateTimeKind.Utc
-                ? value
-                : value.ToUniversalTime();
+            return CanonicalTimeRule.EnsureUtc(
+                value);
         }
     }
 }
