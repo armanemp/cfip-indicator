@@ -47,18 +47,29 @@ namespace cAlgo
 
                 RelativeTakeProfitProtections serverTakeProfits;
                 StopLossBreakEven serverBreakEven;
-                bool useServerTakeProfitLadder = TryBuildServerSideTakeProfitLadder(
+                bool useServerTakeProfitLadder =
+                    TryBuildServerSideTakeProfitLadder(
                         pendingIntent.RequestedEntry,
                         pendingIntent.Target,
                         pendingIntent.Volume,
                         out serverTakeProfits,
                         out serverBreakEven);
+                string label = PendingOrderLabel();
+                string comment = TradeExecutionMetadata.DefaultExecutionComment;
                 TradeResult result;
                 try
                 {
                     result = useServerTakeProfitLadder
-                        ? TryPlaceLimitOrderWithTakeProfitLadder(type, SymbolName, volume, targetEntry, PendingOrderLabel(), pendingIntent.StopPips, serverTakeProfits, serverBreakEven, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "REVERSAL LIMIT • SERVER TP LADDER")
-                        : TryPlaceLimitOrder(type, SymbolName, volume, targetEntry, PendingOrderLabel(), pendingIntent.StopPips, pendingIntent.TargetPips, ProtectionType.Relative, PendingExpiration(), TradeExecutionMetadata.DefaultExecutionComment, false, "REVERSAL LIMIT");
+                        ? TryPlaceLimitOrderWithTakeProfitLadder(
+                            type, SymbolName, volume, targetEntry, label,
+                            pendingIntent.StopPips, serverTakeProfits, serverBreakEven,
+                            ProtectionType.Relative, PendingExpiration(), comment,
+                            false, "REVERSAL LIMIT • SERVER TP LADDER")
+                        : TryPlaceLimitOrder(
+                            type, SymbolName, volume, targetEntry, label,
+                            pendingIntent.StopPips, pendingIntent.TargetPips,
+                            ProtectionType.Relative, PendingExpiration(), comment,
+                            false, "REVERSAL LIMIT");
                 }
                 catch { RecordSubmissionFailure(submissionIdentity); throw; }
 
