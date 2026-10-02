@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AssemblyName>CFIP.Preflight</AssemblyName>
+    <AssemblyName>CFIP.Preflight.Bot</AssemblyName>
     <RootNamespace>cAlgo</RootNamespace>
     <Deterministic>true</Deterministic>
     <Nullable>disable</Nullable>
@@ -11,5 +11,9 @@
   <ItemGroup>
     <PackageReference Include="cTrader.Automate" Version="1.0.21" />
     <ProjectReference Include="../src/CFIP.Indicator/CFIP.Indicator.csproj" />
+    <ProjectReference Include="CFIP.Preflight.Probe.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="CFIPPreflightProbeIndicator.cs" />
   </ItemGroup>
 </Project>
