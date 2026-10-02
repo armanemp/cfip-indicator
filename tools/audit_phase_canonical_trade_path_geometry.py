@@ -33,6 +33,8 @@ plan_inputs = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.c
 trace = read("src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs")
 panel = read("src/CFIP.Indicator/UI/Panel/Rows/PanelDecisionRowsRenderer.cs")
 state_store = read("src/CFIP.Indicator/Indicator/State.cs")
+execution_model = read("src/CFIP.Indicator/Core/Models/ExecutionModel.cs")
+execution_resolver = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs")
 workflow = read(".github/workflows/source-check.yml")
 
 check(
@@ -96,6 +98,14 @@ check(
     len(actionability) < 20 * 1024 and
     len(preparation) < 20 * 1024 and
     len(gates) < 20 * 1024,
+)
+
+check(
+    "late-entry policy remains a real execution-model setting",
+    "public bool IsLate" in execution_model and
+    "model.IsLate = geometry.IsLate" in execution_resolver and
+    "(!AvoidLateEntry ||" in execution_resolver and
+    "if (AvoidLateEntry &&" in builder,
 )
 
 check(
