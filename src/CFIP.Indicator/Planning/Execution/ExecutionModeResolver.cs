@@ -66,9 +66,12 @@ namespace cAlgo
                                         geometry.Mode;
                                     model.ActualEntry =
                                         geometry.ActualEntry;
+                                    model.IsLate =
+                                        geometry.IsLate;
                                     model.Ready =
                                         qualityReady &&
-                                        !geometry.IsLate &&
+                                        (!AvoidLateEntry ||
+                                         !geometry.IsLate) &&
                                         ((geometry.Mode ==
                                           ExecutionMode.BreakoutMarket) ||
                                          (geometry.Mode ==
