@@ -72,8 +72,8 @@ EXECUTION_RELATED_PATTERN = re.compile(
 )
 
 PARAMETER_RE = re.compile(
-    r'\[Parameter\("(?P<label>[^"]+)"(?P<rest>[^\]]*)\]\s*'
-    r'public\s+(?P<type>[A-Za-z0-9_<>\[\]?]+)\s+'
+    r'\[Parameter\s*\((?P<attribute>[^\]]*)\]\s*'
+    r'public\s+(?P<type>[A-Za-z0-9_<>\[\],.?]+)\s+'
     r'(?P<name>[A-Za-z0-9_]+)\s*\{\s*get;\s*set;\s*\}',
     re.S,
 )
@@ -120,7 +120,17 @@ def parse_parameters(parameter_file_paths: list[Path]) -> list[dict[str, str]]:
             parsed.append(
                 {
                     "file": path.name,
-                    "label": match.group("label"),
+                    "label": (
+                        re.search(
+                            r'^\s*"([^"]+)"',
+                            match.group("attribute") or "",
+                        ).group(1)
+                        if re.search(
+                            r'^\s*"([^"]+)"',
+                            match.group("attribute") or "",
+                        )
+                        else path.name
+                    ),
                     "type": match.group("type"),
                     "name": match.group("name"),
                 }
