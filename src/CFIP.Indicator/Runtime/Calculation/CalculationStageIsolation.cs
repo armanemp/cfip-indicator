@@ -470,6 +470,16 @@ namespace cAlgo
                 },
                 index,
                 "PRESENTATION");
+
+            RunCalculationStage(
+                () =>
+                {
+                    RefreshReadOnlyProvider(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "CBOT READ-ONLY PROVIDER");
         }
 
         private bool RunCalculationStage(
