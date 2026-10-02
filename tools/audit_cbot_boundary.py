@@ -39,7 +39,6 @@ BROKER_MUTATION_APIS = (
 )
 
 KNOWN_BROKER_MUTATION_OWNERS = {
-    "src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs",
     "Trading/Execution/BrokerPendingOrderCancellation.cs",
     "Trading/Execution/BrokerPositionCloseMutation.cs",
     "Trading/Execution/BrokerStopLossMutation.cs",
