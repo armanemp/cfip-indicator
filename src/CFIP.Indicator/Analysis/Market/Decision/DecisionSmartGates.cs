@@ -234,8 +234,7 @@ namespace cAlgo
                 RequireRegimeStability)
             {
                 MarketRegimeSnapshot regime =
-                    GetActiveM5Regime(
-                        closedM5);
+                    activeRegime;
 
                 if (regime != null &&
                     (regime.Regime == "TREND" ||
