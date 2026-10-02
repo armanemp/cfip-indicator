@@ -139,3 +139,5 @@ jobs:
       - run: python tools/audit_phase_ci21_primary_signal_visibility.py
       - run: python tools/audit_phase_cbot_p7r_attachment_alert_visibility.py
       - run: python tools/audit_phase_cbot_p8_progressive_protection_state_sync.py
+      - run: python tools/audit_phase_opportunity_mining_zone_selection_2026_10_02.py
+      - run: python tools/audit_phase_opportunity_discovery_cbot_truth_2026_10_02.py
