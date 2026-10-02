@@ -79,6 +79,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveM5BiasRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/HealthyVolatilityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TradeOpportunityQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorExecutionQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PendingDecisionArbiterRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/FvgRule.cs" />
