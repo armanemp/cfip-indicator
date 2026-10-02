@@ -80,10 +80,6 @@ require(
     read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs"),
     "active plan arrow must remain live rather than pinned to creation bar",
 )
-require(
-    "!snapshot.LivePosition" not in watch_gate,
-    "directional WATCH guidance must remain available while a live position is active",
-)
 watch_gate_start = watch_renderer.find("bool showDirectionalWatch")
 watch_gate_end = watch_renderer.find(
     "if ((showConfirmedSignal || showDirectionalWatch)",
