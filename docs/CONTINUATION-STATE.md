@@ -1,3 +1,29 @@
+## CI-20B closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged via PR #204.**
+
+Implementation head: `5d37563536f8a5171d14dbc09b58cf2affeb10a2`.
+
+Completed:
+- local live BE/structural trailing logic consolidated under the canonical `IntelligentProtectionRule`;
+- ProtectionManager now delegates protection policy instead of carrying duplicate BE/trailing arithmetic;
+- cBot management commands now have bounded freshness and terminal `Expired` state;
+- Indicator removes terminally expired management commands from its local queue;
+- qualified M15/H1 primary pullbacks with neutral M5 can continue, while opposite M5 direction remains blocked;
+- M5 regime evaluation is reused within the smart-gate cycle;
+- deterministic CI20B protection/signal contracts and dedicated Source/Architecture audit were added;
+- all broker mutation authority remains cBot-owned.
+
+Verification:
+- Source / Architecture #3141: **PASS**;
+- Runtime Acceptance Contracts #2950: **PASS**;
+- cTrader Compile/Build #3134: **PASS**;
+- CI20B dedicated audit: **PASS**.
+
+No profitability claim or empirical signal-frequency claim is made from repository tests. Target-terminal and OOS/replay validation remain manual.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
 ## CI-20B continuation update — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci20b-protection-cbot-signal-hardening-2026-10-02`.**
