@@ -80,6 +80,24 @@ SetAutoTradingState(
 _autoExecutionBlockReason);
 return;
 }
+
+if (aggressiveIntent == null)
+{
+_autoExecutionBlockReason =
+"AGGRESSIVE - VALIDATED EXECUTION INTENT UNAVAILABLE";
+SetAutoTradingState(
+"BLOCKED",
+_autoExecutionBlockReason);
+return;
+}
+
+// Consume the exact validated intent at the broker boundary.
+entry = aggressiveIntent.RequestedEntry;
+stopPips = aggressiveIntent.StopPips;
+tpPips = aggressiveIntent.TargetPips;
+target = aggressiveIntent.Target;
+volume = aggressiveIntent.Volume;
+
 string submissionGateReason;
 SubmissionAttemptIdentity submissionIdentity;
 int aggressiveDirection =
@@ -110,9 +128,9 @@ RelativeTakeProfitProtections serverTakeProfits;
 StopLossBreakEven serverBreakEven;
 bool useServerTakeProfitLadder =
 TryBuildServerSideTakeProfitLadder(
-entry,
-target,
-volume,
+aggressiveIntent.RequestedEntry,
+aggressiveIntent.Target,
+aggressiveIntent.Volume,
 out serverTakeProfits,
 out serverBreakEven);
 TradeResult result;
