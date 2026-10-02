@@ -2520,7 +2520,6 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
 MUTATION_ALLOWED_FILES = {
-    "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
@@ -2528,7 +2527,6 @@ MUTATION_ALLOWED_FILES = {
     "BrokerPositionCloseMutation.cs",
 }
 REQUIRED_BROKER_MUTATION_FILES = {
-    "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
