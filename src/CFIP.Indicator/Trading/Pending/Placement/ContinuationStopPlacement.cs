@@ -46,6 +46,26 @@ namespace cAlgo
                 return false;
             }
 
+            // Keep one immutable absolute lifecycle snapshot at the same
+            // analysis/intention boundary. This preserves the original pending
+            // plan for broker-confirmed fill reconciliation without restoring any
+            // broker mutation authority to the Indicator.
+            Plan pendingSnapshot =
+                CapturePendingOrderPlanSnapshot(
+                    pendingIntent,
+                    closedM5,
+                    atr);
+
+            if (pendingSnapshot == null)
+            {
+                _autoOrdersBlockReason =
+                    "PENDING STOP • ABSOLUTE PLAN SNAPSHOT UNAVAILABLE";
+                return false;
+            }
+
+            _pendingOrderPlanSnapshot =
+                pendingSnapshot;
+
             // Analysis-owned state only. The cBot receives the captured immutable
             // intent through the provider; this method never mutates the broker.
             _activeExecutionScenarioId =
