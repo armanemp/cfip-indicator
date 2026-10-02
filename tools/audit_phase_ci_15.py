@@ -29,6 +29,7 @@ market_validator = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/Au
 market_execution = read("src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs")
 aggressive_execution = ""
 pending_stop = read("src/CFIP.Indicator/Trading/Pending/Placement/ContinuationStopPlacement.cs")
+pending_stop_cbot = read("src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs")
 pending_limit = read("src/CFIP.Indicator/Trading/Pending/Placement/ReversalLimitPlacement.cs")
 pending_fill = read("src/CFIP.Indicator/Trading/Lifecycle/PendingFilledHandler.cs")
 pending_snapshot = read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs")
@@ -90,12 +91,16 @@ check(
 )
 
 check(
-    "Pending Stop broker path uses the same intent for submission and server protection",
-    "pendingIntent.StopPips" in pending_stop
-    and "pendingIntent.TargetPips" in pending_stop
-    and "pendingIntent.RequestedEntry" in pending_stop
-    and "pendingIntent.Target" in pending_stop
-    and "pendingIntent.Volume" in pending_stop,
+    "Pending Stop handoff uses one intent from Indicator analysis to cBot broker submission/protection",
+    "PrepareContinuationStopForCbot(" in pending_stop
+    and "CapturePendingOrderPlanSnapshot(" in pending_stop
+    and "PlaceStopOrder(" not in pending_stop
+    and "envelope.Intent.RequestedEntry" in pending_stop_cbot
+    and "envelope.Intent.Stop" in pending_stop_cbot
+    and "envelope.Intent.InitialTarget" in pending_stop_cbot
+    and "envelope.Intent.RequestedVolume" in pending_stop_cbot
+    and "stopPips" in pending_stop_cbot
+    and "targetPips" in pending_stop_cbot,
 )
 
 check(
