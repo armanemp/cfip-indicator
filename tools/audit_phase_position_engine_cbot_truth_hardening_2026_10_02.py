@@ -104,7 +104,8 @@ check(
     "cBot reconciliation runs immediately when the execution label changes",
     "_lastReconciledExecutionLabel" in bot and
     "executionLabelChanged" in bot and
-    "&& !executionLabelChanged" in bot,
+    "!executionLabelChanged" in bot and
+    "_nextBrokerReconciliationUtc" in bot,
 )
 check(
     "management lookup uses stable instance scope",
