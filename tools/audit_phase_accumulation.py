@@ -51,15 +51,25 @@ for name, source in execution_paths.items():
         if "ExecutionIntentKind.Stop" not in pending_stop_preparation:
             raise SystemExit("pending-stop: canonical Stop intent construction missing")
     else:
-        for token in ("TryAcquireSubmission(", "TryBuildServerSideTakeProfitLadder("):
+        for token in (
+            "TryPrepareReversalLimit(",
+            "PrepareReversalLimitForCbot(",
+            "CapturePendingOrderPlanSnapshot(",
+        ):
             if token not in source:
-                raise SystemExit(f"{name}: missing shared {token}")
+                raise SystemExit(f"{name}: missing canonical intent handoff {token}")
+        if "PlaceLimitOrder(" in source:
+            raise SystemExit("pending-limit: Indicator broker mutation remains")
 
 if "ValidateSingleExecutionCapacity(" not in read("Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs"):
     raise SystemExit("pending: canonical capacity gate missing")
 
 if "PlaceStopOrder(" not in pending_cbot:
     raise SystemExit("cBot Pending Stop mutation owner missing")
+if "PlaceLimitOrder(" not in pending_cbot:
+    raise SystemExit("cBot Pending Limit mutation owner missing")
+if "ExecutionAction.PendingLimit" not in pending_cbot:
+    raise SystemExit("cBot Pending Limit action routing missing")
 if "StopLossBreakEven" not in ladder:
     raise SystemExit("server break-even transport missing from canonical ladder")
 
