@@ -344,6 +344,8 @@ namespace cAlgo
             _startupCalculationSeedQueued = false;
             _status = "STARTING";
 
+            SubscribeCbotChartLifecycleEvents();
+
             CreatePanel();
 
             try
@@ -518,6 +520,7 @@ namespace cAlgo
 
                                     try
                                     {
+                                        UnsubscribeCbotChartLifecycleEvents();
                                         UnhookHistoricalBarsEvents();
                                         Positions.Opened -= OnPositionOpened;
                                         Positions.Closed -= OnPositionClosed;
