@@ -39,8 +39,8 @@ checks = {
     "partial TP mutation rejection does not manufacture plan stop state": (
         "if (!closeAccepted)" in partial and
         "return false;" in partial and
-        "if (breakEvenApplied)" in partial and
-        "_plan.Stop =" in partial and
+        "_plan.Stop =" not in partial and
+        "ApplyBrokerConfirmedProtectionState(" in partial and
         "Break-even mutation failed" not in partial
     ),
     "post-partial BE uses the canonical spread-aware SmartBreakEvenRule": (
@@ -95,12 +95,13 @@ checks = {
         "_pendingProtectedStopCandidate" in bound and
         "stopMutationSucceeded" in bound and
         "TryModifyStopLoss(" in bound and
-        "_plan.Stop" in bound and
+        "ApplyBrokerConfirmedProtectionState(" in bound and
         "NormalizePrice(desiredStop)" in bound
     ),
     "broker stop rejection does not overwrite plan stop": (
         "if (!stopConfirmed" in bound and
-        "_plan.Stop =" in bound
+        "_plan.Stop =" not in bound and
+        "ApplyBrokerConfirmedProtectionState(" in bound
     ),
     "restart recovery derives the original phase from broker EntryTime": (
         "position.EntryTime" in recovery and
