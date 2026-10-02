@@ -1,3 +1,22 @@
+## CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged to main via PR #196 as 352e6229adcff8a4ebb6ee6e5c71a0e0397dc70b.**
+
+Completed:
+- Pending Limit broker mutation moved completely to the existing cBot Pending Stop/Limit coordinator;
+- obsolete Indicator BrokerLimitOrderPlacement owner removed;
+- Indicator Pending Limit path is intent-only and preserves the absolute lifecycle snapshot;
+- cBot Pending Limit arm added with fail-closed identity, margin, capacity, geometry and idempotency protections;
+- M15 remains the internal execution clock; host Chart TF remains presentation-only;
+- signal direction is decoupled from execution actionability for visibility; markers are arrows only;
+- M1 trigger is UpArrow/DownArrow and arrow intensity is score-derived;
+- BUY/SELL each have Strong, Confirmed and Caution visual colors;
+- popup defaults to BottomRight, persistent until next alert/manual close, with important-alert filtering through the canonical alert engine;
+- stale audits were reconciled to the single surviving owners;
+- no duplicate execution engine, identity formatter or compatibility wrapper was retained.
+
+Verification on implementation head 22d7af189d7037237b27a3df09a42a9cdda7f252: Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS; P4D audit PASS; dependent execution/UI/identity audits PASS. Target-terminal acceptance remains manual.
+
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to main via PR #195 as 7b8648091bde26753b1e0fcff3d75984a1f1b9eb.**
