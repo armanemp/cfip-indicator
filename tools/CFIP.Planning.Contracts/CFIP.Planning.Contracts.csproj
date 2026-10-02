@@ -38,7 +38,9 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/LiveReversalEpisodeRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Lifecycle/LifecycleTransitionPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Enums/OpportunityLane.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Enums/ExecutionMode.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TradeOpportunityQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/TradePlanRegistry.cs" />
   </ItemGroup>

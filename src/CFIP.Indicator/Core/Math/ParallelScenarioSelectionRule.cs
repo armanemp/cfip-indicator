@@ -78,13 +78,21 @@ namespace cAlgo
                 }
             }
 
-            return
-                lanePriority +
+            int quality =
                 Math.Max(
                     0,
                     Math.Min(
                         100,
                         candidate.Quality));
+
+            int compositeBonus =
+                TradeOpportunityQualityRule.CalculateRankBonus(
+                    candidate);
+
+            return
+                lanePriority +
+                quality +
+                compositeBonus;
         }
 
         internal static bool SameIdentity(

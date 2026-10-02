@@ -1,3 +1,45 @@
+# Current focus — CBOT-6M + TRADE QUALITY HARDENING — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Scope:
+- enable bounded concurrent execution for independent ScenarioIds;
+- preserve exact Indicator/cBot identity and per-scenario idempotency;
+- reconcile/protect scenarios independently;
+- improve opportunity ranking using independent evidence, OB/FVG confluence, WaveTrend, location quality, RR and entry-distance quality;
+- keep M15 as canonical decision/execution reference, M5 as trigger/tuning/entry precision, M1 optional confirmation and H1 context/reward.
+
+Completed in this work unit:
+- SignalScenarioBatch transport and scenario identity contracts;
+- scenario-aware Market / Pending Stop / Pending Limit execution;
+- bounded `Max Concurrent Scenarios`;
+- scenario-aware broker capacity counting;
+- per-ScenarioId envelope/reconciliation caches and protection sweep;
+- stable ScenarioId-based broker labels;
+- composite trade-quality ranking;
+- composite plan quality carried into the scenario PlanSnapshot;
+- dedicated CBOT-6M audit and accumulated CI wiring.
+
+Safety:
+- Indicator remains broker-mutation-free;
+- live accounts remain blocked;
+- same ScenarioId is idempotent;
+- broker capacity is bounded;
+- no public signal threshold was lowered to increase frequency.
+
+Verification:
+- Source/Architecture;
+- cTrader Compile;
+- Runtime Acceptance;
+- dedicated CBOT-6M audit;
+- target terminal: multiple ScenarioIds, duplicate replay, restart/rebind and independent protection/reconciliation.
+
+Phase record: docs/PHASE-CBOT-6M-TRADE-QUALITY-HARDENING-2026-10-02.md.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+---
+
 # Current focus — POSITION ENGINE / cBot TRUTH HARDENING — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

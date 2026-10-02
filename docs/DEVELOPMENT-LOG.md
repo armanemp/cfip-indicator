@@ -3528,3 +3528,18 @@ Implemented on phase/m4-time-session-history-persistence-2026-10-02.
 Verification status:
 - Final M4 head `2f8b447f70d7327232dfa5f118d00520017cef99` passed Source / Architecture, Runtime Acceptance Contracts and cTrader Compile/Build.
 - Target-terminal verification remains required for exact broker session-time behavior, restart-mid-day persistence, History folder/readback and EOD/cBot reconnect behavior.
+
+
+## CBOT-6M + Trade Quality Hardening — 2026-10-02
+
+- Rebased the planned 6M implementation conceptually onto the current post-position-engine main instead of merging the old conflicting PR directly.
+- Added SignalScenarioBatch transport with stable ScenarioId/PlanId/revision identity.
+- Added bounded Max Concurrent Scenarios support in the cBot.
+- Added scenario-aware broker object counting and same-scenario duplicate blocking.
+- Added Market, Pending Stop and Pending Limit scenario execution using the existing broker mutation owners.
+- Added per-ScenarioId envelope/reconciliation state and a protection recovery sweep.
+- Preserved exact Indicator-instance binding, canonical SignalEnvelope preflight and live-account blocking.
+- Added composite opportunity quality ranking from independent evidence groups, OB/FVG confluence, location quality, WaveTrend, TP1 RR and entry distance.
+- Propagated composite quality into scenario PlanSnapshot quality so Indicator ranking and cBot payload quality are aligned.
+- No public confidence/RR/risk gate was lowered to force more signals.
+- Full-chain audit remains mandatory; target-terminal multi-scenario validation is still required before operational adoption.

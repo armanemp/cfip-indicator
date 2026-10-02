@@ -335,6 +335,7 @@ namespace cAlgo
                         lane,
                         direction),
                 Lane = lane,
+                ExecutionMode = execution.Mode,
                 Direction = direction,
                 CreatedM5 = closedM5,
                 IndependentEvidenceScore =
@@ -399,6 +400,30 @@ namespace cAlgo
                         : sourceTimeframe.Trim(),
                 BasePlanTimeframe = "M5"
             };
+
+            double stopPips =
+                Math.Abs(
+                    candidate.Entry -
+                    candidate.Stop) /
+                Math.Max(
+                    Symbol.PipSize,
+                    1e-9);
+
+            candidate.RequestedVolume =
+                stopPips > 0
+                    ? CalculateVolume(
+                        EffectiveRiskStopPips(
+                            stopPips))
+                    : 0;
+
+            if (string.IsNullOrWhiteSpace(
+                    sourceTimeframe))
+            {
+                EnrichScenarioEvidence(
+                    candidate,
+                    _m5Frame,
+                    direction);
+            }
 
             ScenarioExecutionPolicyResult policy =
                 ScenarioExecutionPolicyRule.Evaluate(

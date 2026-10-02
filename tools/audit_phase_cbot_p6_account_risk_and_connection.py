@@ -66,7 +66,7 @@ for token in (
     require(token in settings, "execution settings bridge missing " + token)
 
 for token in (
-    "SINGLE-PLAN CAPACITY BLOCKED",
+    "CONCURRENT SCENARIO CAPACITY BLOCKED",
     "ACCOUNT MARGIN LEVEL UNSAFE",
     "LIVE SPREAD EXCEEDS PLAN RISK LIMIT",
     "OUTSIDE CONFIGURED MARKET HOURS",
@@ -127,5 +127,5 @@ print("Indicator execution-settings bridge: PASS")
 print("trading-permission/account safety: PASS")
 print("session/spread guards: PASS")
 print("daily-loss enforcement: PASS")
-print("single-plan capacity: PASS")
+print("scenario-aware capacity: PASS")
 print("cBot final margin/volume ownership: PASS")

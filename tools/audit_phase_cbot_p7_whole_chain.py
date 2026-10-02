@@ -93,8 +93,8 @@ for token in (
     require(token in bot, "cBot lifecycle/execution stage missing " + token)
 
 for source, tokens in (
-    (market, ("TryExecute(", "ExecuteMarket", "BrokerExecutionSafety.TryConstrainVolumeForMargin", "SINGLE-PLAN CAPACITY BLOCKED")),
-    (pending, ("TryExecute(", "BrokerExecutionSafety.TryConstrainVolumeForMargin", "SINGLE-PLAN CAPACITY BLOCKED")),
+    (market, ("TryExecute(", "ExecuteMarket", "BrokerExecutionSafety.TryConstrainVolumeForMargin", "CONCURRENT SCENARIO CAPACITY BLOCKED")),
+    (pending, ("TryExecute(", "BrokerExecutionSafety.TryConstrainVolumeForMargin", "CONCURRENT SCENARIO CAPACITY BLOCKED")),
     (management, ("ModifyProtection", "Protect(", "TryRecoverProtectionFromSignal")),
     (publisher, ("CbotExecutionStateSnapshot", "CbotBrokerReconciliationResult")),
     (gate, ("ACCOUNT MARGIN LEVEL UNSAFE", "LIVE SPREAD EXCEEDS PLAN RISK LIMIT")),

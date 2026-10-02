@@ -69,7 +69,7 @@ if "ExecutionPolicyAllowed =" not in candidates:
 if (
     'BasePlanTimeframe = "M5"' not in tf_scenarios or
     "ExecutionPolicyAllowed =" not in candidates or
-    "OBSERVE-ONLY TF SCENARIO" not in policy
+    "OBSERVE-ONLY HTF SCENARIO" not in policy
 ):
     ERRORS.append(
         "independent timeframe scenarios must remain observe-only"

@@ -29,6 +29,8 @@ TRANSPORT_UTILITY_FILES = {
     "ManagementBusKey.cs",
     "CbotExecutionStateBus.cs",
     "ContractBusKeyHash.cs",
+    "SignalScenarioBatchCodec.cs",
+    "ScenarioExecutionIdentityRule.cs",
 }
 
 errors = []

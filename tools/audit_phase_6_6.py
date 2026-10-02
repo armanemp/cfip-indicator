@@ -78,8 +78,8 @@ check(
 
 check(
     "independent timeframe scenarios are structurally eligible but observe-only",
-    '"INDEPENDENT TIMEFRAME STRUCTURALLY ELIGIBLE"' in policy and
-    '"OBSERVE-ONLY TF SCENARIO"' in policy
+    '"INDEPENDENT HTF STRUCTURALLY ELIGIBLE"' in policy and
+    '"OBSERVE-ONLY HTF SCENARIO"' in policy
 )
 
 check(

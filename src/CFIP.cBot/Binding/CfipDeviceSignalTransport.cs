@@ -53,6 +53,53 @@ namespace CFIP.cBot.Binding
             }
         }
 
+        public static bool TryReadScenarioBatch(
+            Robot robot,
+            string indicatorInstanceId,
+            out SignalScenarioBatch batch,
+            out string reason)
+        {
+            batch = null;
+            reason = "OK";
+
+            if (robot == null ||
+                string.IsNullOrWhiteSpace(indicatorInstanceId))
+            {
+                reason = "CFIP SCENARIO BATCH TRANSPORT ID UNAVAILABLE";
+                return false;
+            }
+
+            try
+            {
+                string key =
+                    SignalBusKey.ForScenarioBatch(
+                        indicatorInstanceId);
+
+                string payload =
+                    robot.LocalStorage.GetString(
+                        key,
+                        LocalStorageScope.Device);
+
+                if (!SignalScenarioBatchCodec.TryDeserialize(
+                        payload,
+                        out batch))
+                {
+                    reason = "CFIP SCENARIO BATCH UNAVAILABLE";
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                batch = null;
+                reason =
+                    "CFIP SCENARIO BATCH READ FAILED • " +
+                    ex.Message;
+                return false;
+            }
+        }
+
         public static void Reload(Robot robot)
         {
             if (robot == null)
