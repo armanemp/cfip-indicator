@@ -40,7 +40,7 @@ namespace cAlgo
             endUtc = default(DateTime);
 
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
 
             int startHour =
                 NormalizeHour(sessionStartHour);
@@ -136,7 +136,7 @@ namespace cAlgo
             boundaryUtc = default(DateTime);
 
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
 
             int startHour =
                 NormalizeHour(sessionStartHour);
@@ -234,9 +234,9 @@ namespace cAlgo
             int minutesBefore)
         {
             DateTime reference =
-                EnsureUtc(utc);
+                CanonicalTimeRule.EnsureUtc(utc);
             DateTime boundary =
-                EnsureUtc(boundaryUtc);
+                CanonicalTimeRule.EnsureUtc(boundaryUtc);
 
             int window =
                 Math.Max(0, minutesBefore);
@@ -270,9 +270,5 @@ namespace cAlgo
             return Math.Max(0, Math.Min(23, hour));
         }
 
-        private static DateTime EnsureUtc(DateTime value)
-        {
-            return CanonicalTimeRule.EnsureUtc(value);
-        }
     }
 }
