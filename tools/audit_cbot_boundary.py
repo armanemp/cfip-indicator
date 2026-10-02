@@ -38,7 +38,6 @@ BROKER_MUTATION_APIS = (
 )
 
 KNOWN_BROKER_MUTATION_OWNERS = {
-    "Trading/Execution/BrokerMarketOrderMutation.cs",
     "Trading/Execution/BrokerPendingOrderPlacement.cs",
     "Trading/Execution/BrokerLimitOrderPlacement.cs",
     "Trading/Execution/BrokerPendingOrderCancellation.cs",
@@ -178,6 +177,17 @@ def main() -> int:
 
     print("CBOT-0 DIRECT BROKER MUTATION INVENTORY")
     print("=" * 72)
+    # P4A: market mutation has physically moved to cBot.
+    market_apis_remaining = [
+        api for path, _, api in mutation_hits
+        if api in ("ExecuteMarketOrder", "ExecuteMarketRangeOrder")
+    ]
+    if market_apis_remaining:
+        errors.append(
+            "market broker mutation remains inside Indicator after CBOT-P4A extraction: "
+            + ", ".join(market_apis_remaining)
+        )
+
     if mutation_hits:
         for path, method, api in mutation_hits:
             owner_ok = path in KNOWN_BROKER_MUTATION_OWNERS
