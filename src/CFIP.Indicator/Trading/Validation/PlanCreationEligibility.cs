@@ -27,12 +27,9 @@ namespace cAlgo
             if (!_decision.TriggerReady)
                 return false;
 
-            // Direction/confirmation are necessary but not sufficient. A plan may
-            // only materialize when the current quote is still actionable against
-            // the frozen structural zone and reward path.
-            if (!_decision.ActionableNow)
-                return false;
-
+            // Plan is an analytical artifact. Current-quote actionability is evaluated
+            // separately at the execution-facing boundary and must not prevent the
+            // Indicator from publishing a complete plan to the cBot.
             if (BlockSameBarReentryAfterExit &&
                 _lastExitM5 == closedM5)
                 return false;
