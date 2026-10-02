@@ -40,6 +40,12 @@ M3 and M4 accumulated audits remain in the same Source/Architecture CI workflow.
 
 Added `M5PanelContracts` covering panel width/content-width behavior at 220/430/700 and pathological padding/border inputs.
 
+## Repository verification
+
+Final verified implementation head: `bb8238d8572880c785745ed763c51a6a8fd85e91`.
+
+Required gates: Source/Architecture PASS, Runtime Acceptance Contracts PASS, cTrader Compile/Build PASS. The accumulated M3, M4 and M5 audits all pass.
+
 ## Manual target-terminal boundary
 
 Repository contracts can prove source ownership and deterministic behavior, but target cTrader verification is still required for:
