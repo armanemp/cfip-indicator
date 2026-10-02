@@ -11,13 +11,9 @@ namespace CFIP.cBot.Binding
         public static bool TryFind(
             Robot robot,
             out ChartIndicator indicator,
-            out string fingerprint,
-            out string managedExecutionLabel,
             out string reason)
         {
             indicator = null;
-            fingerprint = "";
-            managedExecutionLabel = "CFIP-SMART";
             reason = "OK";
 
             if (robot == null)
@@ -58,34 +54,34 @@ namespace CFIP.cBot.Binding
                 return false;
             }
 
-            if (match.Parameters == null)
+            if (string.IsNullOrWhiteSpace(match.InstanceId))
+            {
+                reason =
+                    "CFIP SMART INDICATOR INSTANCE ID UNAVAILABLE";
+                return false;
+            }
+
+            indicator = match;
+            return true;
+        }
+
+        public static bool TryGetManagedExecutionLabel(
+            ChartIndicator indicator,
+            out string managedExecutionLabel,
+            out string reason)
+        {
+            managedExecutionLabel = "CFIP-SMART";
+            reason = "OK";
+
+            if (indicator == null ||
+                indicator.Parameters == null)
             {
                 reason =
                     "CFIP SMART INDICATOR PARAMETERS UNAVAILABLE";
                 return false;
             }
 
-            ulong hash =
-                14695981039346656037UL;
-
-            foreach (AlgoInstanceParameter parameter in match.Parameters)
-            {
-                if (parameter == null)
-                {
-                    reason =
-                        "CFIP SMART INDICATOR PARAMETER UNAVAILABLE";
-                    return false;
-                }
-
-                hash = HashText(
-                    hash,
-                    parameter.Name ?? "");
-                hash = HashText(
-                    hash,
-                    FormatValue(parameter.Value));
-            }
-
-            foreach (AlgoInstanceParameter parameter in match.Parameters)
+            foreach (AlgoInstanceParameter parameter in indicator.Parameters)
             {
                 if (parameter != null &&
                     string.Equals(
@@ -97,35 +93,11 @@ namespace CFIP.cBot.Binding
                 {
                     managedExecutionLabel =
                         label.Trim();
-                    break;
+                    return true;
                 }
             }
 
-            indicator = match;
-            fingerprint =
-                hash.ToString(
-                    "X16",
-                    CultureInfo.InvariantCulture);
             return true;
-        }
-
-        private static ulong HashText(
-            ulong hash,
-            string value)
-        {
-            if (value == null)
-                value = "";
-
-            unchecked
-            {
-                for (int i = 0; i < value.Length; i++)
-                {
-                    hash ^= value[i];
-                    hash *= 1099511628211UL;
-                }
-            }
-
-            return hash;
         }
 
         private static string FormatValue(object value)
