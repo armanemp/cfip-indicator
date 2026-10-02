@@ -104,12 +104,15 @@ check(
 )
 
 check(
-    "Pending Limit broker path uses the same intent for submission and server protection",
-    "pendingIntent.StopPips" in pending_limit
-    and "pendingIntent.TargetPips" in pending_limit
-    and "pendingIntent.RequestedEntry" in pending_limit
-    and "pendingIntent.Target" in pending_limit
-    and "pendingIntent.Volume" in pending_limit,
+    "Pending Limit handoff preserves the same canonical intent for cBot submission",
+    "PrepareReversalLimitForCbot(" in pending_limit
+    and "CapturePendingOrderPlanSnapshot(" in pending_limit
+    and "PlaceLimitOrder(" not in pending_limit
+    and "ExecutionAction.PendingLimit" in pending_stop_cbot
+    and "envelope.Intent.RequestedEntry" in pending_stop_cbot
+    and "envelope.Intent.Stop" in pending_stop_cbot
+    and "envelope.Intent.InitialTarget" in pending_stop_cbot
+    and "envelope.Intent.RequestedVolume" in pending_stop_cbot,
 )
 
 check(
