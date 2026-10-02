@@ -2457,3 +2457,15 @@ Operator-facing corrections:
 No strategy/threshold or broker authority change is allowed in this phase.
 
 Phase report: `docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md`.
+    
+### CI-20C closeout — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending for the CI20C branch.
+
+CI20C establishes explicit same-chart cBot presence detection using cTrader `ChartRobots`, separates that from heartbeat freshness, makes Indicator execution capability require a Running cBot plus fresh state, and adds event-driven cBot rebind on Indicator Added/Removed/Modified.
+
+The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTING**, and **CONNECTED** instead of conflating these states.
+
+No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
+
+Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
