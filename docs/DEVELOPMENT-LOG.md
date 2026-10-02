@@ -1,3 +1,15 @@
+## CBOT-P4A — Market / Market Range Broker Mutation Extraction — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — CI/target-terminal verification pending.**
+
+Created `MarketExecutionProfile`, extended the canonical provider execution contract with exact managed execution identity and market submission geometry, moved Market / Market Range mutation into `src/CFIP.cBot/Execution/MarketBrokerMutation.cs`, added cBot validation/coordinator/idempotency, removed the Indicator market mutation owner, and updated the accumulated architecture/runtime audits.
+
+No analytical thresholds or signal/plan selection logic were changed. cBot Market mutation is fail-closed and disabled by default.
+
+Phase report: `docs/PHASE-CBOT-P4A-MARKET-RANGE.md`.
+
+Next: **CBOT-P4B — Aggressive Market broker mutation extraction.**
+
 ## CBOT-P3 — cBot Host / Shadow — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**
