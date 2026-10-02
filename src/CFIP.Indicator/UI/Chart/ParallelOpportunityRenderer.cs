@@ -116,6 +116,9 @@ namespace cAlgo
                         primaryH1Rendered = true;
                 }
 
+                if (candidate.PresentationOnly)
+                    continue;
+
                 RenderOpportunityLine(
                     baseName + "_ENTRY",
                     candidate.Entry,
