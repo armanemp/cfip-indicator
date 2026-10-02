@@ -153,7 +153,8 @@ namespace cAlgo
             RecordExecutionTelemetry(
                 identity,
                 result,
-                confirmed);
+                confirmed,
+                intent);
 
             RecordExecutionTelemetryHistory(
                 identity.Path.ToString(),
@@ -233,7 +234,8 @@ namespace cAlgo
         private void RecordExecutionTelemetry(
             SubmissionAttemptIdentity identity,
             TradeResult result,
-            bool confirmed)
+            bool confirmed,
+            ExecutionIntent intent)
         {
             _lastExecutionTelemetryPath =
                 identity.Path.ToString();
@@ -251,6 +253,8 @@ namespace cAlgo
                 _lastExecutionTelemetryReason =
                     "SCENARIO " +
                     identity.ScenarioId +
+                    " • " +
+                    FormatExecutionIntentTrace(intent) +
                     " • BROKER RETURNED NULL";
                 return;
             }
