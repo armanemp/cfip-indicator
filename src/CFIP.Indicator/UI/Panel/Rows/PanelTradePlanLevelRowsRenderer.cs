@@ -10,6 +10,25 @@ namespace cAlgo
             int contentWidth)
         {
             if (ShowLevelPricesInUnifiedPanel &&
+                ShowTrigger &&
+                _plan.EntryMode != ExecutionMode.BreakoutMarket &&
+                IsFinitePositive(_plan.EntryTrigger) &&
+                !SamePrice(
+                    _plan.EntryTrigger,
+                    _plan.Entry))
+            {
+                AddPanelRow(
+                    ref slot,
+                    "TRIGGER  " +
+                    Price(_plan.EntryTrigger) +
+                    "  •  " +
+                    ExecutionLevelSemanticsText(_executionModel),
+                    TriggerLineColor,
+                    true,
+                    contentWidth);
+            }
+
+            if (ShowLevelPricesInUnifiedPanel &&
                 ShowEntry)
             {
                 AddPanelRow(
