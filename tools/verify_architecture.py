@@ -2046,7 +2046,7 @@ PENDING_STOP_CODE = PENDING_STOP.read_text(encoding="utf-8")
 if PENDING_STOP.stat().st_size > 4096:
     raise SystemExit("ContinuationStopPlacement.cs must remain a placement orchestration boundary")
 for token in (
-    "TryPrepareContinuationStopForCbot(",
+    "PrepareContinuationStopForCbot(",
 ):
     if token not in PENDING_STOP_CODE:
         raise SystemExit(f"Continuation stop intent owner missing: {token}")
