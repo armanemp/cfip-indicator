@@ -2728,3 +2728,21 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+
+## 2026-10-02 — Opportunity Discovery + cBot Truth + Panel Readability
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+The trade-opportunity path was deepened without lowering final quality gates:
+- entry-zone selection now considers M5/M15 FVG and OB, OB+FVG overlap, M5↔M15 overlap, and M15/H1 structural swing levels;
+- selected zone scoring now incorporates the downstream structural stop and best available TP1 reward path, so a visually attractive zone that cannot support a credible reward path is not preferred;
+- reward-path and stop-quality diagnostics are retained on zone candidates;
+- a fresh, instance-scoped, symbol-scoped cBot heartbeat is now sufficient liveness truth for the Indicator status/capability surface; ChartRobots remains secondary diagnostic evidence;
+- stale/invalid cBot heartbeat remains fail-closed;
+- the unified panel alert rail is left-aligned with a larger readable font and taller rows.
+
+Preserved: M15 canonical execution timeframe; M5 trigger/tuning/precision; M1 optional confirmation; H1+ context/reward; canonical SL/TP/RR/actionability gates; broker single-plan safety until CBOT-6M.
+
+Phase record: docs/PHASE-OPPORTUNITY-DISCOVERY-CBOT-TRUTH-2026-10-02.md
+
+Next: trace-driven candidate-family mining using SignalEvaluationTrace + outcome history to identify measured rejection/missed-opportunity bottlenecks.
