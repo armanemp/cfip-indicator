@@ -30,6 +30,7 @@ jobs:
       - run: python tools/audit_hotpath_persistence.py
       - run: python tools/audit_cbot_boundary.py
       - run: python tools/audit_cbot_project_boundary.py
+      - run: python tools/audit_cbot_market_extraction.py
       - run: python tools/audit_cbot_contract_schema.py
       - run: python tools/audit_cbot_provider_boundary.py
       - run: python tools/audit_cbot_shadow_host.py
