@@ -32,8 +32,16 @@ namespace cAlgo
         // sourced from the detector's Low/High values, never synthetic bounds.
         private bool IsCanonicalM5OrderBlockGeometry(Zone m5Ob)
         {
-            return m5Ob != null &&
-                   m5Ob.High > m5Ob.Low;
+            if (m5Ob == null)
+                return false;
+
+            double canonicalLow = m5Ob.Low;
+            double canonicalHigh = m5Ob.High;
+
+            return
+                IsFinitePositive(canonicalLow) &&
+                IsFinitePositive(canonicalHigh) &&
+                canonicalHigh > canonicalLow;
         }
 
 
