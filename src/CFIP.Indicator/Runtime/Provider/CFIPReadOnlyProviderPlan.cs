@@ -92,6 +92,13 @@ namespace cAlgo
             if (action == ExecutionAction.None)
                 return null;
 
+            string executionLabel =
+                ManagedExecutionLabel();
+
+            if (string.IsNullOrWhiteSpace(
+                    executionLabel))
+                return null;
+
             DateTime? expiryUtc =
                 action == ExecutionAction.PendingStop ||
                 action == ExecutionAction.PendingLimit
@@ -142,7 +149,7 @@ namespace cAlgo
                 observedUtc,
                 expiryUtc,
                 sourceIntent.Source ?? "",
-                "CFIP-SMART",
+                executionLabel,
                 marketProfile);
         }
 
