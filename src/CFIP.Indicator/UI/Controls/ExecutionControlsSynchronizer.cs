@@ -12,7 +12,7 @@ namespace cAlgo
     {
         private void SyncQuickExecutionControls()
         {
-            RefreshCbotExecutionStateIfDue(true);
+            RefreshCbotExecutionStateIfDue();
 
             if (_executionToggleSyncing)
                 return;
