@@ -195,6 +195,33 @@ namespace cAlgo
                 maximum);
         }
 
+        public static double RiskFromLevels(
+            double entry,
+            double stop,
+            double riskFloor)
+        {
+            if (!IsPositiveFinite(entry) ||
+                !IsPositiveFinite(stop))
+                return 0;
+
+            double floor =
+                Math.Max(
+                    DistanceFloor,
+                    IsFiniteNonNegative(riskFloor)
+                        ? riskFloor
+                        : 0);
+
+            double risk =
+                Math.Abs(
+                    entry -
+                    stop);
+
+            return
+                IsPositiveFinite(risk)
+                    ? Math.Max(floor, risk)
+                    : 0;
+        }
+
         public static RiskRewardMathResult EvaluateFromRisk(
             int direction,
             double entry,
