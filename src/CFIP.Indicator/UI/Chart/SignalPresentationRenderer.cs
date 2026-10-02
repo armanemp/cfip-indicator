@@ -13,9 +13,18 @@ namespace cAlgo
             Chart.RemoveObject(
                 P + "REACTION_ARROW");
 
-            if (ShowEarlyArrow &&
+            bool showConfirmedSignal =
+                ShowSignalArrow &&
+                snapshot.DecisionEntryAllowed &&
+                snapshot.DecisionDirection != 0;
+
+            bool showStrongWatch =
+                ShowEarlyArrow &&
                 ShowEarlyWatch &&
                 IsStrongWatchSnapshot(snapshot) &&
+                visualDirection != 0;
+
+            if ((showConfirmedSignal || showStrongWatch) &&
                 visualDirection != 0)
             {
                 double watchAtr =
@@ -49,7 +58,9 @@ namespace cAlgo
                         : Bars.HighPrices[hostBar] + watchOffset,
                     SignalArrowColorFor(
                         visualDirection,
-                        "WATCH"));
+                        showConfirmedSignal
+                            ? "CONFIRMED"
+                            : "WATCH"));
             }
             else
             {
