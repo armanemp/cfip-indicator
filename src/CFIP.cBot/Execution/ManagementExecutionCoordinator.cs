@@ -14,6 +14,7 @@ namespace CFIP.cBot.Execution
             Robot robot,
             string instanceId,
             DateTime nowUtc,
+            int maximumCommandAgeSeconds,
             out string status)
         {
             status = "NO MANAGEMENT COMMAND";
@@ -67,14 +68,25 @@ namespace CFIP.cBot.Execution
                     latest.EventUtc.AddSeconds(RetryDelaySeconds) > nowUtc)
                     continue;
 
-                if (!Validate(command, robot, nowUtc, out string validationReason))
+                bool expired;
+                if (!Validate(
+                        command,
+                        robot,
+                        nowUtc,
+                        maximumCommandAgeSeconds,
+                        out string validationReason,
+                        out expired))
                 {
                     StoreReport(
-                        robot, instanceId, reports,
+                        robot,
+                        instanceId,
+                        reports,
                         BuildReport(
                             command,
                             BrokerAction.None,
-                            BrokerReportStatus.Rejected,
+                            expired
+                                ? BrokerReportStatus.Expired
+                                : BrokerReportStatus.Rejected,
                             nowUtc,
                             null,
                             validationReason));
@@ -691,9 +703,12 @@ namespace CFIP.cBot.Execution
             ManagementCommand command,
             Robot robot,
             DateTime nowUtc,
-            out string reason)
+            int maximumCommandAgeSeconds,
+            out string reason,
+            out bool expired)
         {
             reason = "OK";
+            expired = false;
 
             if (command.Identity == null)
             {
@@ -720,6 +735,19 @@ namespace CFIP.cBot.Execution
             if (command.RequestedUtc > nowUtc.AddSeconds(30))
             {
                 reason = "MANAGEMENT REQUEST TIME IS IN FUTURE";
+                return false;
+            }
+
+            double ageSeconds =
+                (nowUtc - command.RequestedUtc).TotalSeconds;
+
+            if (ageSeconds >
+                Math.Max(
+                    1,
+                    maximumCommandAgeSeconds))
+            {
+                expired = true;
+                reason = "MANAGEMENT COMMAND EXPIRED";
                 return false;
             }
 
