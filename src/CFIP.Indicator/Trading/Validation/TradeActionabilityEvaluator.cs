@@ -443,12 +443,10 @@ namespace cAlgo
                     divergence.Type,
                     "EXECUTION ZONE QUALITY");
 
-            if (M5OnlyConfirmedTrigger &&
-                liveMode != ExecutionMode.RetestMarket &&
-                !ClosedBarTriggerReady(
-                    _m5Bars,
+            if (!IsActionabilityTriggerReady(
                     closedM5,
-                    direction))
+                    direction,
+                    liveMode))
                 return new TradeActionabilityResult(
                     false,
                     locationQuality,
