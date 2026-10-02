@@ -24,6 +24,8 @@ closed = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
 lines = read("src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs")
 labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
+label_anchor = read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs")
+label_renderer = read("src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs")
 alert_renderer = read("src/CFIP.Indicator/UI/Chart/AlertSignalRenderer.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderRefresh.cs")
 cbot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
@@ -145,6 +147,13 @@ require(
     "RenderLatestAlertSignalMarker(" in alert_renderer and
     "Chart.DrawIcon(" not in alert_renderer,
     "M3: legacy alert mirror must not create a duplicate chart marker",
+)
+
+require(
+    "lineLeft - offset" in label_anchor and
+    "Chart.RemoveObject(" in label_renderer and
+    "Color.White" in label_renderer,
+    "M3: compact signal labels must stay left of the line, background-free and white",
 )
 
 require(
