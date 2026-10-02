@@ -68,6 +68,7 @@ namespace cAlgo
             VerifyInitialProtectionDirectionality();
             VerifyManagedBreakEvenDirectionality();
             VerifyProtectionProgression();
+            VerifyBrokerConfirmedProtectionStateSync();
             VerifyTargetProgression();
             VerifyExecutionCapacity();
             VerifyStaleLivePlanRecovery();
@@ -5650,6 +5651,66 @@ namespace cAlgo
                     105,
                     false),
                 "TP policy can explicitly allow backward move");
+        }
+
+        private static void VerifyBrokerConfirmedProtectionStateSync()
+        {
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    100,
+                    101) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    1,
+                    101,
+                    100) &&
+                ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    100,
+                    99) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    -1,
+                    99,
+                    100),
+                "broker-confirmed BUY/SELL stop adoption is monotonic");
+
+            Assert(
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    105,
+                    106,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    1,
+                    106,
+                    105,
+                    true) &&
+                ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    95,
+                    94,
+                    true) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    -1,
+                    94,
+                    95,
+                    true),
+                "broker-confirmed BUY/SELL target state is monotonic");
+
+            Assert(
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    0,
+                    100,
+                    101) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    0,
+                    100,
+                    101,
+                    true),
+                "invalid broker protection direction fails closed");
+
+            Console.WriteLine(
+                "CBOT-P8 broker-confirmed protection state sync contracts PASS");
         }
 
         private static void VerifyTargetProgression()
