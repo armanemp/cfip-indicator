@@ -2874,10 +2874,17 @@ CI-16 verification results on implementation HEAD `1c292d3162f6085869238029fe599
 
 Next phase: **CI-17 — Target-terminal cTrader validation.**
 
-## CI-17 target-terminal validation package — 2026-10-02
+## CI-17 closeout package — 2026-10-02
 
-Strengthened the existing no-trade cTrader preflight path for the target-terminal acceptance phase. The probe now records startup/first-tick timing, calculation revision and age, Bid/Ask, spread in pips, bar count and latest bar-open UTC, while the preflight project is now compilable against the production Indicator assembly.
+Status: **REPOSITORY PACKAGE COMPLETE AND MERGED — PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.**
 
-Added tools/audit_phase_ci_17.py to the accumulated Source/Architecture gate and documented the full manual acceptance matrix for initialization, closed-bar M1/M5 timing, broker geometry, market fill/slippage, pending fill/cancel/expiration, restart/reconnect, panel/chart responsiveness and Decision → Plan → Execution synchronization.
+Implementation head `9a71b1dbac09e41759458a404ce4675dc4972f92` passed Source/Architecture run `36951458606`, Runtime Acceptance Contracts run `36951458326`, and cTrader Compile run `36951458297`.
 
-No public strategy parameter/default, trading threshold or broker mutation path was changed. CI-17 remains open until real target-terminal evidence is recorded; repository CI cannot substitute for broker/server/network/chart behavior.
+The target-terminal package strengthens the existing strict no-trade preflight path, records real terminal timing/quote/bar diagnostics, provides compilable preflight project separation, accumulates `audit_phase_ci_17.py`, and documents the full manual acceptance matrix.
+
+Manual acceptance remains open for the real cTrader terminal/broker: M1/M5 initialization and timing, Bid/Ask execution geometry, market/pending fill and slippage, cancellation/expiration, restart/reconnect, panel/chart responsiveness and Decision → Plan → Execution synchronization. Repository CI is not used as a substitute for these facts.
+
+Operator action: run `git pull --ff-only` on local `main`.
+
+Next gated phase after manual evidence: **CI-FINAL — Full-stack Calculation Integrity Certification**.
+
