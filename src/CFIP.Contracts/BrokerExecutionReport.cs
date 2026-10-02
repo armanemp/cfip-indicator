@@ -17,5 +17,8 @@ namespace CFIP.Contracts
         string BrokerReference,
         string ErrorCode,
         string Reason,
-        long AttemptRevision);
+        long AttemptRevision)
+    {
+        public string CommandIdempotencyKey { get; init; }
+    }
 }

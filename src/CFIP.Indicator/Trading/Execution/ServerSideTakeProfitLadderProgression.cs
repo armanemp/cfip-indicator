@@ -131,7 +131,11 @@ namespace cAlgo
 
                 if (!TryModifyTakeProfitLadder(
                         position,
-                        protections,
+                        tp2Volume,
+                        tp2Pips,
+                        null,
+                        null,
+                        finalPips,
                         "LIVE TARGET PROGRESSION • AFTER TP1"))
                     return false;
 
