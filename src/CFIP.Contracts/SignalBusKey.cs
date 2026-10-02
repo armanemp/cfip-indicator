@@ -8,7 +8,7 @@ namespace CFIP.Contracts
         private const ulong OffsetBasis = 14695981039346656037UL;
         private const ulong Prime = 1099511628211UL;
 
-        public static string ForIndicatorInstance(string instanceId)
+        public static string ForInstance(string instanceId)
         {
             ulong hash = OffsetBasis;
             string value = instanceId ?? "";
