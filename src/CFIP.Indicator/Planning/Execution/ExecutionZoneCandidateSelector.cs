@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -72,126 +73,114 @@ namespace cAlgo
                         market);
             }
 
-            if (m5Fvg != null &&
-                m5Ob != null)
+            var candidates =
+                new List<ExecutionZoneSelectionCandidate>();
+
+            AddZoneCandidate(
+                candidates,
+                market,
+                atr,
+                m5Fvg,
+                "M5 FVG",
+                false,
+                true,
+                false,
+                false);
+
+            if (m5Ob != null &&
+                m5Ob.High > m5Ob.Low)
             {
-                double overlapLow =
-                    Math.Max(
-                        m5Fvg.Low,
-                        m5Ob.Low);
-
-                double overlapHigh =
-                    Math.Min(
-                        m5Fvg.High,
-                        m5Ob.High);
-
-                if (ZoneConfluenceRule.HasOverlap(
-                        m5Fvg.Low,
-                        m5Fvg.High,
-                        m5Ob.Low,
-                        m5Ob.High,
-                        0))
-                {
-                    low = overlapLow;
-                    high = overlapHigh;
-                    source = "M5 FVG+OB";
-                    quality = 92;
-                }
+                AddZoneCandidate(
+                    candidates,
+                    market,
+                    atr,
+                    m5Ob,
+                    "M5 ORDER_BLOCK",
+                    false,
+                    false,
+                    true,
+                    false);
             }
 
-            if (quality == 0 &&
-                m5Fvg != null)
+            AddZoneCandidate(
+                candidates,
+                market,
+                Math.Max(
+                    Symbol.TickSize,
+                    m15Atr),
+                m15Fvg,
+                "M15 FVG",
+                true,
+                true,
+                false,
+                false);
+
+            AddZoneCandidate(
+                candidates,
+                market,
+                Math.Max(
+                    Symbol.TickSize,
+                    m15Atr),
+                m15Ob,
+                "M15 ORDER_BLOCK",
+                true,
+                false,
+                true,
+                false);
+
+            AddOverlapCandidate(
+                candidates,
+                market,
+                atr,
+                m5Fvg,
+                m5Ob,
+                "M5 FVG+OB",
+                false);
+
+            AddOverlapCandidate(
+                candidates,
+                market,
+                Math.Max(
+                    Symbol.TickSize,
+                    m15Atr),
+                m15Fvg,
+                m15Ob,
+                "M15 FVG+OB",
+                true);
+
+            AddMtfOverlapCandidate(
+                candidates,
+                market,
+                atr,
+                m5Fvg,
+                m5Ob,
+                m15Fvg,
+                m15Ob);
+
+            ExecutionZoneSelectionCandidate best = null;
+
+            for (int i = 0;
+                 i < candidates.Count;
+                 i++)
             {
-                low = m5Fvg.Low;
-                high = m5Fvg.High;
-                source = "M5 FVG";
-                quality = 84;
+                ExecutionZoneSelectionCandidate candidate =
+                    candidates[i];
+
+                if (candidate == null)
+                    continue;
+
+                if (best == null ||
+                    candidate.Score >
+                    best.Score + 0.0001 ||
+                    (Math.Abs(
+                        candidate.Score -
+                        best.Score) <= 0.0001 &&
+                     candidate.Quality >
+                        best.Quality))
+                    best = candidate;
             }
 
-            if (quality == 0 &&
-                m5Ob != null)
-            {
-                low = m5Ob.Low;
-                high = m5Ob.High;
-                source = "M5 ORDER_BLOCK";
-                quality = 86;
-            }
-
-            if (quality == 0 &&
-                m15Fvg != null &&
-                m15Ob != null)
-            {
-                double overlapLow =
-                    Math.Max(
-                        m15Fvg.Low,
-                        m15Ob.Low);
-
-                double overlapHigh =
-                    Math.Min(
-                        m15Fvg.High,
-                        m15Ob.High);
-
-                if (ZoneConfluenceRule.HasOverlap(
-                        m15Fvg.Low,
-                        m15Fvg.High,
-                        m15Ob.Low,
-                        m15Ob.High,
-                        0))
-                {
-                    low = overlapLow;
-                    high = overlapHigh;
-                    source = "M15 FVG+OB";
-                    quality = 86;
-                }
-            }
-
-            if (quality == 0 &&
-                m15Fvg != null)
-            {
-                low = m15Fvg.Low;
-                high = m15Fvg.High;
-                source = "M15 FVG";
-                quality = 78;
-            }
-
-            if (quality == 0 &&
-                m15Ob != null)
-            {
-                low = m15Ob.Low;
-                high = m15Ob.High;
-                source = "M15 ORDER_BLOCK";
-                quality = 80;
-            }
-
-            if (quality > 0 &&
-                m15Fvg != null &&
-                m15Ob != null)
-            {
-                double overlapLow =
-                    Math.Max(
-                        low,
-                        Math.Max(
-                            m15Fvg.Low,
-                            m15Ob.Low));
-
-                double overlapHigh =
-                    Math.Min(
-                        high,
-                        Math.Min(
-                            m15Fvg.High,
-                            m15Ob.High));
-
-                if (overlapHigh >
-                    overlapLow)
-                {
-                    low = overlapLow;
-                    high = overlapHigh;
-                    quality += 5;
-                    source += "+MTF";
-                }
-            }
-
-            if (quality == 0)
+            if (best == null)
             {
                 double swing =
                     direction == 1
@@ -230,12 +219,321 @@ namespace cAlgo
                     source = "M5 SWING";
                     quality = 70;
                 }
+
+                return
+                    IsFinitePositive(low) &&
+                    IsFinitePositive(high) &&
+                    high > low;
             }
+
+            low = best.Low;
+            high = best.High;
+            source = best.Source;
+            quality = best.Quality;
 
             return
                 IsFinitePositive(low) &&
                 IsFinitePositive(high) &&
                 high > low;
+        }
+
+        private void AddZoneCandidate(
+            List<ExecutionZoneSelectionCandidate> candidates,
+            double market,
+            double atr,
+            Zone zone,
+            string source,
+            bool primary,
+            bool isFvg,
+            bool isOrderBlock,
+            bool confluence)
+        {
+            if (zone == null ||
+                candidates == null ||
+                !IsFinitePositive(atr) ||
+                zone.High <= zone.Low ||
+                zone.Age > MaximumZoneAgeBars)
+                return;
+
+            double distance =
+                DistanceToZone(
+                    market,
+                    zone);
+
+            ExecutionZoneSelectionResult score =
+                ExecutionZoneSelectionRule.Evaluate(
+                    new ExecutionZoneSelectionInput(
+                        zone.Quality,
+                        distance /
+                        Math.Max(
+                            Symbol.TickSize,
+                            atr),
+                        zone.Age,
+                        primary,
+                        isFvg,
+                        isOrderBlock,
+                        confluence,
+                        false),
+                    Math.Max(
+                        1,
+                        MaximumZoneAgeBars),
+                    3.0);
+
+            if (!score.Valid)
+                return;
+
+            candidates.Add(
+                new ExecutionZoneSelectionCandidate
+                {
+                    Low = zone.Low,
+                    High = zone.High,
+                    Source = source,
+                    Quality = zone.Quality,
+                    Score = score.Score,
+                    Primary = primary,
+                    Fvg = isFvg,
+                    OrderBlock = isOrderBlock,
+                    Confluence = confluence
+                });
+        }
+
+        private void AddOverlapCandidate(
+            List<ExecutionZoneSelectionCandidate> candidates,
+            double market,
+            double atr,
+            Zone fvg,
+            Zone ob,
+            string source,
+            bool primary)
+        {
+            if (fvg == null ||
+                ob == null ||
+                atr <= 0 ||
+                !ZoneConfluenceRule.HasOverlap(
+                    fvg.Low,
+                    fvg.High,
+                    ob.Low,
+                    ob.High,
+                    0))
+                return;
+
+            double low =
+                Math.Max(
+                    fvg.Low,
+                    ob.Low);
+
+            double high =
+                Math.Min(
+                    fvg.High,
+                    ob.High);
+
+            if (high <= low)
+                return;
+
+            int quality =
+                (int)Math.Round(
+                    Math.Min(
+                        100,
+                        Math.Max(
+                            fvg.Quality,
+                            ob.Quality) +
+                        0.60 *
+                        Math.Min(
+                            fvg.Quality,
+                            ob.Quality)));
+
+            AddSyntheticCandidate(
+                candidates,
+                market,
+                atr,
+                low,
+                high,
+                source,
+                primary,
+                quality,
+                true,
+                fvg,
+                ob);
+        }
+
+        private void AddMtfOverlapCandidate(
+            List<ExecutionZoneSelectionCandidate> candidates,
+            double market,
+            double atr,
+            Zone m5Fvg,
+            Zone m5Ob,
+            Zone m15Fvg,
+            Zone m15Ob)
+        {
+            Zone[] m5 =
+            {
+                m5Fvg,
+                m5Ob
+            };
+
+            Zone[] m15 =
+            {
+                m15Fvg,
+                m15Ob
+            };
+
+            string[] m5Names =
+            {
+                "FVG",
+                "OB"
+            };
+
+            string[] m15Names =
+            {
+                "FVG",
+                "OB"
+            };
+
+            for (int i = 0; i < m5.Length; i++)
+            {
+                for (int j = 0; j < m15.Length; j++)
+                {
+                    Zone first = m5[i];
+                    Zone second = m15[j];
+
+                    if (first == null ||
+                        second == null ||
+                        !ZoneConfluenceRule.HasOverlap(
+                            first.Low,
+                            first.High,
+                            second.Low,
+                            second.High,
+                            0))
+                        continue;
+
+                    double low =
+                        Math.Max(
+                            first.Low,
+                            second.Low);
+
+                    double high =
+                        Math.Min(
+                            first.High,
+                            second.High);
+
+                    if (high <= low)
+                        continue;
+
+                    int quality =
+                        (int)Math.Round(
+                            Math.Min(
+                                100,
+                                Math.Max(
+                                    first.Quality,
+                                    second.Quality) +
+                                0.45 *
+                                Math.Min(
+                                    first.Quality,
+                                    second.Quality)));
+
+                    AddSyntheticCandidate(
+                        candidates,
+                        market,
+                        atr,
+                        low,
+                        high,
+                        "M5 " +
+                        m5Names[i] +
+                        "+M15 " +
+                        m15Names[j],
+                        false,
+                        quality,
+                        false,
+                        first,
+                        second);
+                }
+            }
+        }
+
+        private void AddSyntheticCandidate(
+            List<ExecutionZoneSelectionCandidate> candidates,
+            double market,
+            double atr,
+            double low,
+            double high,
+            string source,
+            bool primary,
+            int quality,
+            bool obFvgConfluence,
+            Zone first,
+            Zone second)
+        {
+            if (candidates == null ||
+                atr <= 0 ||
+                high <= low ||
+                !IsFinitePositive(low) ||
+                !IsFinitePositive(high))
+                return;
+
+            double distance =
+                market < low
+                    ? low - market
+                    : market > high
+                        ? market - high
+                        : 0;
+
+            int age =
+                Math.Max(
+                    first == null ? 0 : first.Age,
+                    second == null ? 0 : second.Age);
+
+            ExecutionZoneSelectionResult score =
+                ExecutionZoneSelectionRule.Evaluate(
+                    new ExecutionZoneSelectionInput(
+                        quality,
+                        distance /
+                        Math.Max(
+                            Symbol.TickSize,
+                            atr),
+                        age,
+                        primary,
+                        first != null &&
+                        string.Equals(
+                            first.Kind,
+                            "FVG",
+                            StringComparison.OrdinalIgnoreCase),
+                        first != null &&
+                        string.Equals(
+                            first.Kind,
+                            "ORDER_BLOCK",
+                            StringComparison.OrdinalIgnoreCase) ||
+                        second != null &&
+                        string.Equals(
+                            second.Kind,
+                            "ORDER_BLOCK",
+                            StringComparison.OrdinalIgnoreCase),
+                        obFvgConfluence,
+                        !primary),
+                    Math.Max(
+                        1,
+                        MaximumZoneAgeBars),
+                    3.0);
+
+            if (!score.Valid)
+                return;
+
+            candidates.Add(
+                new ExecutionZoneSelectionCandidate
+                {
+                    Low = low,
+                    High = high,
+                    Source = source,
+                    Quality = Math.Max(
+                        0,
+                        Math.Min(
+                            100,
+                            quality)),
+                    Score = score.Score,
+                    Primary = primary,
+                    Fvg = first != null,
+                    OrderBlock = second != null,
+                    Confluence = obFvgConfluence
+                });
         }
     }
 }

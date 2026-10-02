@@ -1,3 +1,29 @@
+## OPPORTUNITY-MINING / EXECUTION-ZONE SELECTION — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Goal:
+Increase the number of genuinely good setups captured by the Indicator without weakening final execution-quality, RR, risk, regime or broker-safety gates.
+
+Implemented:
+- replaced fixed-priority execution-zone selection with canonical scored selection;
+- execution-only FVG lookup now compares valid FVG candidates by quality, distance and freshness instead of always selecting the nearest candidate;
+- compare M5 FVG, M5 OB, M15 FVG and M15 OB candidates instead of stopping at the first available source;
+- score actual zone quality together with distance-to-market and zone age;
+- explicitly reward same-timeframe OB+FVG overlap;
+- explicitly reward M5/M15 cross-timeframe overlap;
+- retain M15 source priority while preserving M5 entry-precision responsibility;
+- retain the M5 swing fallback when no qualifying zone candidate exists;
+- keep all execution/actionability gates unchanged; better discovery does not automatically authorize a trade.
+
+Full chain re-audited:
+Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional confirmation -> zone/entry geometry -> SL/TP/RR -> signal/alert -> cBot contract -> broker execution -> protection -> outcome/history.
+
+Next:
+After verification, continue with candidate-family mining and empirical missed-opportunity analysis using the existing SignalEvaluationTrace/Outcome history rather than lowering thresholds blindly.
+
+Operator action after merge: run git pull --ff-only on local main.
+
 ## URGENT STABILIZATION — cBot Attachment / Alert Audio — 2026-10-02
 
 Status: IMPLEMENTATION COMPLETE — verification pending.

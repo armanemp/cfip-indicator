@@ -1,3 +1,23 @@
+## Current Continuation — 2026-10-02 — Opportunity Mining / Zone Selection
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Root finding:
+The execution zone selector previously used fixed source priority. A nearer/first FVG could be selected before a materially stronger OB or an OB+FVG/MTF confluence zone.
+
+Correction:
+Execution zone candidates are now compared through one canonical score using real zone quality, market distance, age, M15 priority and confluence bonuses. M5/M15 same-direction overlap can produce a tighter composite zone. Execution-only FVG lookup also compares the full bounded valid FVG set by quality/distance/age, so a weak nearby FVG cannot automatically suppress a stronger valid FVG.
+
+Trading contract preserved:
+M15 remains the canonical trade-decision/execution reference; M5 remains trigger/tuning/entry precision; M1 is optional confirmation; no final risk/RR/actionability gate was relaxed.
+
+Verification required:
+Source/Architecture CI, cTrader compile, Runtime Acceptance and target-terminal empirical signal/entry validation.
+
+Next work unit: candidate-family mining plus trace-driven missed-opportunity analysis, then CBOT-6M capacity work only after the current safety gates remain intact.
+
+Operator action after merge: git pull --ff-only.
+
 ## Current Continuation — 2026-10-02 — cBot Attachment / Alert Audio Hardening
 
 Status: IMPLEMENTATION COMPLETE — verification pending.

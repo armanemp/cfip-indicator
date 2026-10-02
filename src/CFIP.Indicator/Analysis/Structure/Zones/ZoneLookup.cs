@@ -28,7 +28,8 @@ namespace cAlgo
                                         direction,
                                         atr,
                                         false,
-                                        market);
+                                        market,
+                                        true);
                                 }
         
         private Zone FindNearestOrderBlockForExecution(
