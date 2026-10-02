@@ -36,7 +36,6 @@ namespace cAlgo
                         candidate.Entry.ToString(
                             "R",
                             CultureInfo.InvariantCulture),
-                        action.ToString(),
                         candidate.Stop.ToString(
                             "R",
                             CultureInfo.InvariantCulture),
