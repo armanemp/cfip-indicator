@@ -132,12 +132,14 @@ check(
 )
 
 check(
-    "cBot instance is explicitly disarmed for execution",
-    "EnableAutoTrading = false" in cbot and
+    "cBot instance produces market intent while remaining fail-closed",
+    "EnableAutoTrading = true" in cbot and
     "EnableAutomaticOrders = false" in cbot and
     "EnableAggressiveAutoEntry = false" in cbot and
     "AutoProtectBrokerPositions = false" in cbot and
-    "EnableLiveExitManagement = false" in cbot
+    "EnableLiveExitManagement = false" in cbot and
+    "EnableMarketExecution" in cbot and
+    "DefaultValue = false" in cbot
 )
 
 for forbidden in ("System.Reflection", "GetType(", "Invoke(", "ChartObjects", "Chart.Draw", "File.", "LocalStorage", "HttpClient", "WebSocket"):
@@ -146,7 +148,7 @@ for forbidden in ("System.Reflection", "GetType(", "Invoke(", "ChartObjects", "C
         forbidden not in provider and forbidden not in cbot
     )
 
-print("CBOT-P2 READ-ONLY INDICATOR PROVIDER SUMMARY")
+print("CBOT-P2 PROVIDER BOUNDARY SUMMARY • P4A HANDOFF MODE")
 print("=" * 72)
 print(f"Failures: {len(errors)}")
 if errors:
