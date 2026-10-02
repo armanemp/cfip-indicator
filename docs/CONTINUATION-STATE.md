@@ -23,7 +23,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-16 — Deterministic replay, latency and counterexample suite — continuation from CI-15.**
+**CI-17 — Target-terminal cTrader validation — repository package merged; real target-terminal/manual acceptance remains pending.**
 
 Status: **VERIFIED COMPLETE — CI-07 merged to `main` in PR #162, merge commit `73511c84ff3072cdbdab8487b0d4331b52c789b1`.**
 
@@ -1463,18 +1463,17 @@ Safety/manual:
 Next implementation response: **CI-17 — Target-terminal cTrader validation.**
 Operator action after merge: run `git pull --ff-only` on local `main`.
 
-### CI-17 target-terminal acceptance package — 2026-10-02
+### CI-17 closeout package — 2026-10-02
 
-Status: **IMPLEMENTATION PACKAGE COMPLETE — target-terminal/manual broker acceptance remains open.**
+Status: **REPOSITORY PACKAGE COMPLETE AND MERGED — PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.**
 
-Completed:
-- target-terminal no-trade probe strengthened with startup/first-tick timing, calculation revision/age, Bid/Ask/spread and bar freshness evidence;
-- preflight is now represented by a compilable .NET 6 project referencing the production Indicator;
-- CI-17 static audit is accumulated after CI-16;
-- exact manual acceptance matrix is recorded for market, pending, protection, lifecycle, reconnect/reload and panel/chart synchronization.
+The CI-17 implementation head `9a71b1dbac09e41759458a404ce4675dc4972f92` passed Source/Architecture run `36951458606`, Runtime Acceptance Contracts run `36951458326`, and cTrader Compile run `36951458297`.
 
-Manual boundary:
-- real cTrader terminal and broker execution cannot be truthfully simulated by repository CI;
-- demo market/pending fill and slippage evidence, restart/reconnect evidence, panel responsiveness evidence and end-to-end signal/plan/execution trace remain required.
+The package strengthens the no-trade cTrader preflight path with startup/first-tick timing, calculation revision/age, Bid/Ask/spread and bar freshness, adds the compilable preflight project reference, accumulates `tools/audit_phase_ci_17.py`, and records the manual acceptance matrix.
 
-Next implementation response after manual evidence: **CI-FINAL — Full-stack Calculation Integrity Certification**.
+The remaining boundary is intentionally manual: target-terminal initialization/timing, broker fill/slippage, pending lifecycle, reconnect/reload, chart/panel responsiveness and end-to-end Decision → Plan → Execution synchronization require evidence from the actual cTrader terminal and broker. No claim of VERIFIED COMPLETE is made until that evidence exists.
+
+Operator action: run `git pull --ff-only` on local `main`.
+
+Next gated phase after manual evidence: **CI-FINAL — Full-stack Calculation Integrity Certification**.
+
