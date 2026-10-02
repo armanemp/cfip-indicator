@@ -26,6 +26,7 @@ namespace CFIP.cBot.Shadow.Tests
             Quote();
             WrongSide();
             RevisionRules();
+            ProviderRevisionMismatch();
             CoordinatorRecheck();
             Console.WriteLine("CBOT-P3 shadow host behavioral contracts PASS");
         }
@@ -216,6 +217,28 @@ namespace CFIP.cBot.Shadow.Tests
             Assert(duplicate.State == ShadowHostState.Duplicate, "same revision/key must be duplicate");
         }
 
+        private static void ProviderRevisionMismatch()
+        {
+            SignalEnvelope e =
+                Build(18, TradeDirection.Buy, ExecutionAction.Market, "K18",
+                    Now.AddMinutes(5), 100, 99, 101, SignalStage.Confirmed);
+
+            ShadowHostCoordinator c = new ShadowHostCoordinator();
+
+            ShadowHostResult r =
+                c.Observe(
+                    e,
+                    Safe,
+                    ContractVersion.Current,
+                    17,
+                    Now);
+
+            Assert(
+                r.State == ShadowHostState.Blocked &&
+                r.Reason == "PROVIDER REVISION MISMATCH",
+                "provider revision drift must fail closed");
+        }
+
         private static void CoordinatorRecheck()
         {
             ShadowHostCoordinator c = new ShadowHostCoordinator();
@@ -229,6 +252,7 @@ namespace CFIP.cBot.Shadow.Tests
                     e,
                     new ShadowBrokerSnapshot(true, 1, 0, "XAUUSD", 2650, 2650.1, 0.1),
                     ContractVersion.Current,
+                    6,
                     Now);
 
             ShadowHostResult ready =
