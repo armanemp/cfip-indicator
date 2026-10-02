@@ -3,6 +3,11 @@ namespace cAlgo
     internal sealed class SignalVisualSnapshot
     {
         public int ClosedM5;
+        public string SignalId;
+        public string ScenarioId;
+        public string PlanId;
+        public string SourceTimeframe;
+        public long Revision;
         public int AuthoritativeDirection;
         public int PlanDirection;
         public int PendingDirection;
