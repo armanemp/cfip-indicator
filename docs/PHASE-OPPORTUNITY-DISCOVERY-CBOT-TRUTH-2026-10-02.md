@@ -65,3 +65,14 @@ The implementation does not by itself establish profitability; replay/OOS/walk-f
 ## Next analytical focus
 
 The next opportunity-focused phase should use persisted `SignalEvaluationTrace` and outcome history to classify why high-quality candidates are rejected or missed, by family and gate, and then expand candidate families based on those measured bottlenecks rather than lowering thresholds globally.
+
+
+### Follow-up hardening — position coverage and cBot detection
+
+Two additional coverage gaps were closed on the same phase branch:
+
+- Target FVG discovery no longer requires the current M5 bar to retest the opposing FVG. The target pipeline now evaluates forward opposing FVGs by quality, distance to entry and age.
+- Structural-stop FVG discovery on M5 and HTF frames now evaluates unretested valid FVG candidates by quality and entry proximity before the existing structural-stop, risk-envelope and reward-path gates.
+- The cBot now publishes a separate symbol-scoped presence heartbeat before Indicator binding completes. The Indicator can therefore distinguish “cBot detected but Indicator bind unresolved” from “no cBot detected”.
+- The presence heartbeat never grants execution capability; exact IndicatorInstanceId + fresh instance heartbeat remains mandatory for executable cBot state.
+- The strong-HTF counter-M5 opportunity lane is now reachable when the selected direction is aligned with the strong HTF anchor; its stricter quality/RR gate remains active.
