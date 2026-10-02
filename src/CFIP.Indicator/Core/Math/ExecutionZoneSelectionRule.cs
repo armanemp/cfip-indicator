@@ -54,6 +54,61 @@ namespace cAlgo
 
     internal static class ExecutionZoneSelectionRule
     {
+        internal static double ApplyRewardPathPreference(
+            double baseScore,
+            double rewardPathRR,
+            double requiredRewardRR,
+            int stopQuality)
+        {
+            if (!NumericGuards.IsFiniteValue(baseScore))
+                return double.NegativeInfinity;
+
+            if (!NumericGuards.IsFiniteValue(rewardPathRR) ||
+                !NumericGuards.IsFiniteValue(requiredRewardRR))
+                return baseScore - 24.0;
+
+            double required =
+                Math.Max(0, requiredRewardRR);
+            double rr =
+                Math.Max(0, rewardPathRR);
+
+            double qualityFactor =
+                Math.Max(
+                    0.35,
+                    Math.Min(
+                        1.0,
+                        Math.Max(
+                            0,
+                            stopQuality) /
+                        100.0));
+
+            double rrDelta =
+                rr - required;
+
+            double rewardBonus =
+                rrDelta >= 0
+                    ? Math.Min(
+                        24.0,
+                        rrDelta * 5.0 + 8.0) *
+                      qualityFactor
+                    : -Math.Min(
+                        28.0,
+                        -rrDelta * 6.0);
+
+            double stopBonus =
+                Math.Min(
+                    6.0,
+                    Math.Max(
+                        0,
+                        stopQuality) *
+                    0.06);
+
+            return
+                baseScore +
+                rewardBonus +
+                stopBonus;
+        }
+
         internal static ExecutionZoneSelectionResult Evaluate(
             ExecutionZoneSelectionInput input,
             double maximumZoneAgeBars,
