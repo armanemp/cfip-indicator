@@ -2,7 +2,7 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci-21-primary-m15-signal-visibility`.**
+Status: **VERIFIED COMPLETE — merged to `main` via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**
 
 ## Objective
 
@@ -31,8 +31,13 @@ A visually obvious M15 setup must not disappear merely because the downstream en
 
 ## Verification
 
-Deterministic/runtime and source-level coverage added for:
+Verified on the merged implementation:
+- Source / Architecture: **PASS** — run 37030614471;
+- Runtime Acceptance: **PASS** — run 37030614523;
+- cTrader Compile/Build: **PASS** — run 37030614229;
+- CI-21 dedicated audit: **PASS**.
 
+Deterministic/runtime and source-level coverage covers:
 - M15/H1 source validation ordering;
 - presentation fallback ownership;
 - primary display-quality floor;
@@ -42,7 +47,7 @@ Manual cTrader validation remains required for target-terminal marker timing, li
 
 ## Operator action
 
-When this branch is merged to `main`, run:
+Run:
 
 ```bash
 git pull --ff-only
