@@ -66,6 +66,7 @@ check(
     'ProjectReference Include="../src/CFIP.Indicator/CFIP.Indicator.csproj"' in preflight_project and
     'ProjectReference Include="CFIP.Preflight.Probe.csproj"' in preflight_project and
     'Compile Remove="CFIPPreflightProbeIndicator.cs"' in preflight_project and
+    'EnableDefaultCompileItems>false' in preflight_probe_project and
     'Compile Include="CFIPPreflightProbeIndicator.cs"' in preflight_probe_project and
     'Compile Remove="CFIPPreflightBot.cs"' in preflight_probe_project,
     "target-terminal bot and probe are compiled as separate single-algo assemblies",
