@@ -293,8 +293,6 @@ namespace cAlgo
                 private readonly List<TextBlock> _panelRows =
                     new List<TextBlock>();
                 private StackPanel _buttonStack;
-                private Button _closeButton;
-                private Button _cancelButton;
                 private Button _panelRestoreButton;
                 private StackPanel _quickExecutionStack;
                 private ToggleButton _autoTradingQuickToggle;
