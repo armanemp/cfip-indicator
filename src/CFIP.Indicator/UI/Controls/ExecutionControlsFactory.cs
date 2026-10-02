@@ -27,13 +27,13 @@ namespace cAlgo
 
             _autoTradingQuickToggle =
                 CreateExecutionToggle(
-                    AutoTradingEnabled,
+                    false,
                     "AUTO TRADE",
                     TpLineColor);
 
             _automaticOrdersQuickToggle =
                 CreateExecutionToggle(
-                    AutomaticOrdersEnabled,
+                    false,
                     "AUTO ORDERS",
                     TriggerLineColor);
 
