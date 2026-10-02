@@ -43,6 +43,8 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Models/EntrySignalTiming.cs" Link="Core/Models/EntrySignalTiming.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntrySignalTimingRule.cs" Link="Core/Math/EntrySignalTimingRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs" Link="Core/Math/EntryActionabilityPolicy.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/RiskRewardGeometryRule.cs" Link="Core/Math/RiskRewardGeometryRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/RiskRewardPolicyRule.cs" Link="Core/Math/RiskRewardPolicyRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs" Link="Core/Math/ActionableSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs" Link="Core/Math/RangeSignalQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/IndicatorEvidenceFusionRule.cs" Link="Core/Math/IndicatorEvidenceFusionRule.cs" />
