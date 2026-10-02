@@ -13,6 +13,7 @@ def read(relative: str) -> str:
 content = read("src/CFIP.Indicator/UI/Panel/PanelContentRefresh.cs")
 heartbeat = read("src/CFIP.Indicator/Runtime/Supervision/RuntimePanelHeartbeat.cs")
 main = read("src/CFIP.Indicator/UI/Panel/PanelMainRenderer.cs")
+panel_render_optimization = read("src/CFIP.Indicator/UI/Panel/PanelRenderOptimization.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 visibility = read("src/CFIP.Indicator/UI/Panel/PanelVisibility.cs")
 live = read("src/CFIP.Indicator/Runtime/Supervision/PanelHeartbeatLiveState.cs")
@@ -44,8 +45,8 @@ checks = (
     ),
     (
         "full layout remains state-key optimized",
-        "ShouldRenderFullPanel(" in main and
-        "BuildPanelPresentationKey(" in main,
+        "ShouldRenderFullPanel(" in panel_render_optimization and
+        "BuildPanelPresentationKey(" in panel_render_optimization,
     ),
     (
         "full render marks content refresh current",
