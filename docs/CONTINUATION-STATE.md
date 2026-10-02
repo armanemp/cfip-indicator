@@ -1610,3 +1610,18 @@ Manual boundary: target-terminal source-frame timing, simultaneous primary prese
 Operator action after merge: `git pull --ff-only`.
 
 Phase record: `docs/PHASE-MTF-P2-PRIMARY-LOCATION-OBFVG.md`.
+
+
+### MTF-P3 — Primary M15/H1 Provider Scenario Identity Cohesion — 2026-10-02
+
+Status: **IMPLEMENTATION IN PROGRESS** on branch `phase/mtf-primary-provider-identity-2026-10-02`.
+
+Purpose:
+- keep provider ScenarioId and SourceTimeframe aligned with the exact canonical scenario;
+- prevent the attached chart timeframe from masquerading as the provider source timeframe;
+- keep pending Stop/Limit identity on the same canonical scenario resolver;
+- preserve M15/H1 as analytical primary scenarios without changing execution authority.
+
+Repository verification is pending. Operator action after merge remains `git pull --ff-only`.
+
+Phase record: `docs/PHASE-MTF-P3-PRIMARY-PROVIDER-IDENTITY.md`.
