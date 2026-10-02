@@ -1,12 +1,14 @@
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: VERIFIED COMPLETE — final repository gates passed; PR #195 ready to merge.
 
 M15 is the internal execution clock. Chart TF is host-only; Indicator and cBot must behave consistently when attached to M1/M5/M15/H1/H4/D1/W1 charts.
 
-Pending Stop mutation is now cBot-owned. Indicator only prepares the spread-aware executable trigger and immutable intent.
+Pending Stop mutation is now cBot-owned. Indicator only prepares the spread-aware executable trigger, immutable intent and absolute lifecycle snapshot. The canonical instance-scoped execution label is transported through ExecutionIntent; cBot consumes it directly without recreating identity formatting.
 
-Next: verify all gates, then CBOT-P4D — Pending Limit authority extraction.
+Repository verification on final head c700e3adbc3557bf1278024df870a15a6e308b69: Source/Architecture #3025 PASS; Runtime #2834 PASS; cTrader Compile #3018 PASS; P4C audit PASS; dependent CR5.4 / CI-15 / M15-Risk-Spread / CR1.8-A11 audits PASS.
+
+Next after merge: CBOT-P4D — Pending Limit authority extraction.
 
 ## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
 
