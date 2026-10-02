@@ -13,20 +13,20 @@ namespace cAlgo
             int direction; double trigger, stop, target, volume; ExecutionIntent pendingIntent;
             double atr = 0;
             if (!TryPrepareContinuationStop(closedM5, out direction, out atr, out trigger, out stop, out target, out _, out _, out volume, out pendingIntent))
-                return false;
+            return false;
 
             TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
             double entry = direction == 1 ? Symbol.Ask : Symbol.Bid;
             Plan pendingSnapshot =
-                CapturePendingOrderPlanSnapshot(
-                    pendingIntent,
-                    closedM5,
-                    atr);
+            CapturePendingOrderPlanSnapshot(
+            pendingIntent,
+            closedM5,
+            atr);
 
             if (pendingSnapshot == null)
             {
                 _autoOrdersBlockReason =
-                    "PENDING • ABSOLUTE PLAN SNAPSHOT UNAVAILABLE";
+                "PENDING • ABSOLUTE PLAN SNAPSHOT UNAVAILABLE";
                 return false;
             }
 
@@ -38,38 +38,38 @@ namespace cAlgo
             {
                 SubmissionAttemptIdentity submissionIdentity; string submissionGateReason;
                 string executionScenarioId =
-                    "PENDING-STOP-" +
-                    (direction == 1 ? "BUY" : "SELL");
+                "PENDING-STOP-" +
+                (direction == 1 ? "BUY" : "SELL");
                 _activeExecutionScenarioId =
-                    executionScenarioId;
+                executionScenarioId;
                 if (!TryAcquireSubmission(closedM5, direction, ExecutionSubmissionPath.PendingStop, executionScenarioId, out submissionIdentity, out submissionGateReason))
                 { _autoOrdersBlockReason = submissionGateReason; return false; }
 
                 RelativeTakeProfitProtections serverTakeProfits;
                 StopLossBreakEven serverBreakEven;
                 bool useServerTakeProfitLadder =
-                    TryBuildServerSideTakeProfitLadder(
-                        pendingIntent.RequestedEntry,
-                        pendingIntent.Target,
-                        pendingIntent.Volume,
-                        out serverTakeProfits,
-                        out serverBreakEven);
+                TryBuildServerSideTakeProfitLadder(
+                pendingIntent.RequestedEntry,
+                pendingIntent.Target,
+                pendingIntent.Volume,
+                out serverTakeProfits,
+                out serverBreakEven);
                 string label = PendingOrderLabel();
                 string comment = TradeExecutionMetadata.DefaultExecutionComment;
                 TradeResult result;
                 try
                 {
                     result = useServerTakeProfitLadder
-                        ? TryPlaceStopOrderWithTakeProfitLadder(
-                            type, SymbolName, volume, trigger, label,
-                            pendingIntent.StopPips, serverTakeProfits, serverBreakEven,
-                            ProtectionType.Relative, PendingExpiration(), comment,
-                            false, "CONTINUATION STOP • SERVER TP LADDER")
-                        : TryPlaceStopOrder(
-                            type, SymbolName, volume, trigger, label,
-                            pendingIntent.StopPips, pendingIntent.TargetPips,
-                            ProtectionType.Relative, PendingExpiration(), comment,
-                            false, "CONTINUATION STOP");
+                    ? TryPlaceStopOrderWithTakeProfitLadder(
+                    type, SymbolName, volume, trigger, label,
+                    pendingIntent.StopPips, serverTakeProfits, serverBreakEven,
+                    ProtectionType.Relative, PendingExpiration(), comment,
+                    false, "CONTINUATION STOP • SERVER TP LADDER")
+                    : TryPlaceStopOrder(
+                    type, SymbolName, volume, trigger, label,
+                    pendingIntent.StopPips, pendingIntent.TargetPips,
+                    ProtectionType.Relative, PendingExpiration(), comment,
+                    false, "CONTINUATION STOP");
                 }
                 catch { RecordSubmissionFailure(submissionIdentity); throw; }
 
