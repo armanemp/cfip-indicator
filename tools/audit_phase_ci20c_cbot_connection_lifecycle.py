@@ -60,9 +60,8 @@ require(
 for token in (
     "CbotIdentity.DisplayName",
     "CbotConnectionPanelText",
-
-    "CBOT NOT ATTACHED • ATTACH TO THIS CHART",
-    "CBOT CONNECTING • HEARTBEAT PENDING",
+    "CBOT NOT CONNECTED • START cBot ON THIS CHART",
+    "CBOT RECONNECTING • HEARTBEAT STALE • ",
     "CBOT CONNECTED • ",
 ):
     require(token in reader, "cBot connection reader missing " + token)
@@ -89,7 +88,7 @@ if errors:
     sys.exit(1)
 
 print("CI20C CBOT CONNECTION/LIFECYCLE AUDIT: PASS")
-print("same-chart cBot presence detection: PASS")
+print("exact IndicatorInstanceId heartbeat connection proof: PASS")
 print("cBot indicator lifecycle rebinding: PASS")
-print("heartbeat/presence separation: PASS")
+print("heartbeat freshness and lifecycle state separation: PASS")
 print("panel connection truth: PASS")
