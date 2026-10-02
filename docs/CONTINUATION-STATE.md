@@ -1,3 +1,29 @@
+## CI-18 closeout — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged to `main` via PR #199 as `8ba701ea288641bc1435ac8f94ea6890713ed63c`.**
+
+Canonical corrections:
+- a directional Decision is no longer hidden as WAITING merely because EntryAllowed/TriggerReady is false;
+- MARKET BIAS and trade readiness are separated in the panel;
+- primary M15/H1 panel direction uses the shared FrameDirection presentation rule;
+- trigger lifecycle score/required/M1 direction/reason is visible;
+- M5 trigger enforcement is mode-specific; Retest is zone-driven and Breakout remains trigger-dependent;
+- continuation no longer masks an in-zone Retest;
+- ExecutionModel readiness is enforced before actionability;
+- Strong M5 trigger override remains owned by TriggerGate.
+
+Repository verification:
+- Source/Architecture #3087: PASS;
+- Runtime Acceptance #2896: PASS;
+- cTrader Compile #3080: PASS;
+- CI-18 audit: PASS;
+- accumulated MTF/UI/identity audits: PASS.
+
+No threshold was lowered in this phase. Target-terminal synchronization, alert timing and empirical signal quality remain manual validation boundaries.
+
+Operator action: run `git pull --ff-only` on local `main`.
+
+Next implementation focus: **Signal / Target Quality Audit** — diagnose weak-survivor paths and 2R fallback clustering before numeric retuning, then intelligent progressive target/trailing management.
 ## CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to main via PR #196 as 352e6229adcff8a4ebb6ee6e5c71a0e0397dc70b.**
