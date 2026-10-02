@@ -6881,8 +6881,8 @@ namespace cAlgo
                 independentPolicy.CandidateEligible &&
                 !independentPolicy.ExecutionAuthorized &&
                 independentPolicy.ExecutionReason ==
-                    "OBSERVE-ONLY TF SCENARIO",
-                "independent timeframe scenario remains structurally evaluable but observe-only for execution");
+                    "OBSERVE-ONLY HTF SCENARIO",
+                "H1 timeframe scenario remains structurally evaluable but observe-only for execution");
 
             Assert(
                 independent.BasePlanTimeframe == "M5",
