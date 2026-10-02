@@ -45,8 +45,8 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
-                AutoTradingPanelLine(),
-                AutoTradingPanelColor(),
+                GetCanonicalSignalPanelStatus(),
+                GetCanonicalSignalPanelStatusColor(),
                 true,
                 contentWidth);
 
