@@ -76,16 +76,14 @@ check(
 )
 
 check(
-    "Automatic Market broker path consumes the validated intent",
+    "Automatic Market publishes the validated intent to the cBot provider",
     "out validatedIntent" in market_execution
-    and "entry = validatedIntent.RequestedEntry" in market_execution
-    and "stopPips = validatedIntent.StopPips" in market_execution
-    and "targetPips = validatedIntent.TargetPips" in market_execution
-    and "target = validatedIntent.Target" in market_execution
-    and "volume = validatedIntent.Volume" in market_execution
+    and "CalculateAutomaticMarketRangePips(" in market_execution
     and "TryBuildServerSideTakeProfitLadder(" in market_execution
-    and "validatedIntent.RequestedEntry" in market_execution
-    and "validatedIntent.Target" in market_execution,
+    and "CBOT cBot handoff" in market_execution
+    and "RefreshReadOnlyProvider(" in market_execution
+    and "TryExecuteMarketOrder(" not in market_execution
+    and "TryExecuteMarketRangeOrder(" not in market_execution,
 )
 
 check(
