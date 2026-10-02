@@ -1,6 +1,6 @@
 ## CBOT-P0 — Activation / Boundary Lock — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
 
 Activated the cBot separation as a mandatory parallel track beginning immediately after M1.
 
@@ -15,6 +15,8 @@ Implemented:
 - froze the Indicator against adding new broker mutation authority.
 
 No production trading behavior was moved or deleted in P0. The existing Indicator executor remains only as a temporary compatibility owner until the corresponding cBot replacement passes parity and deletion gates.
+
+Verification: Source/Architecture #2771 PASS; Runtime Acceptance #2580 PASS; cTrader Compile #2764 PASS, including independent Contracts/cBot builds.
 
 Next: CBOT-P1 Contracts. Execution migration then proceeds in controlled owner batches while M2+ continues in parallel.
 
