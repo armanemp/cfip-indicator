@@ -26,11 +26,14 @@ def read(path: Path) -> str:
         return ""
     return path.read_text(encoding="utf-8")
 
+def read_optional(path: Path) -> str:
+    return path.read_text(encoding="utf-8") if path.exists() else ""
+
 identity_rule = read(IDENTITY_RULE)
 identity = read(IDENTITY)
 labels = read(LABELS)
-auto_market = read(AUTO_MARKET)
-aggressive = read(AGGRESSIVE)
+auto_market = read_optional(AUTO_MARKET)
+aggressive = read_optional(AGGRESSIVE)
 pending_stop = read(PENDING_STOP)
 pending_limit = read(PENDING_LIMIT)
 reversal = read(REVERSAL)
@@ -74,10 +77,18 @@ for path, label in (
     (auto_market, "automatic market"),
     (aggressive, "aggressive market"),
 ):
+    if not path:
+        continue
     if "ManagedExecutionLabel()" not in path:
         errors.append(label + " broker submission is not instance-scoped")
     if "NormalizeLabel()" in path:
         errors.append(label + " broker submission still contains an unscoped NormalizeLabel()")
+
+cbot = read_optional(
+    ROOT / "src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs"
+)
+if "ExecuteMarketOrder(" not in cbot or "ExecuteMarketRangeOrder(" not in cbot:
+    errors.append("cBot Market owner must expose both Market and Market-Range submission")
 
 for path, label in (
     (pending_stop, "pending stop"),
