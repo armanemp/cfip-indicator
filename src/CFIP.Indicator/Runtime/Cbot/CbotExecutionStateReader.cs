@@ -147,6 +147,35 @@ namespace cAlgo
                     : scenario);
         }
 
+        private bool CbotCanMarketExecute()
+        {
+            RefreshCbotExecutionStateIfDue();
+
+            return
+                IsCbotExecutionStateFresh() &&
+                (_cBotExecutionState.MarketExecutionEnabled ||
+                 _cBotExecutionState.AggressiveExecutionEnabled);
+        }
+
+        private bool CbotCanPendingExecute()
+        {
+            RefreshCbotExecutionStateIfDue();
+
+            return
+                IsCbotExecutionStateFresh() &&
+                (_cBotExecutionState.PendingStopExecutionEnabled ||
+                 _cBotExecutionState.PendingLimitExecutionEnabled);
+        }
+
+        private bool CbotCanManage()
+        {
+            RefreshCbotExecutionStateIfDue();
+
+            return
+                IsCbotExecutionStateFresh() &&
+                _cBotExecutionState.ManagementExecutionEnabled;
+        }
+
         private Color CbotExecutionStatePanelColor()
         {
             RefreshCbotExecutionStateIfDue();
