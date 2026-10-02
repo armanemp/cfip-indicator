@@ -53,7 +53,7 @@ CONSUMERS = {
     "PanelRowGap": ["UI/Panel/PanelRowWriter.cs", "UI/Panel/PanelLayoutManager.cs"],
     "PanelMaxHeight": ["UI/Panel/PanelMainRenderer.cs", "UI/Panel/PanelFactory.cs"],
     "PanelRowPadding": ["UI/Panel/PanelRowWriter.cs", "UI/Panel/PanelLayoutManager.cs"],
-    "PanelButtonGap": ["UI/Panel/PanelRenderOptimization.cs", "UI/Panel/Theme/PanelVisualSettings.cs"],
+    "PanelButtonGap": ["UI/Panel/PanelMainRenderer.cs", "UI/Panel/Theme/PanelActionButtonsLayout.cs"],
     "PanelAccentColor": ["UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs"],
     "PanelSectionColor": ["UI/Panel/Rows/PanelContextRowsRenderer.cs"],
     "PanelSecondaryTextColor": ["UI/Panel/Rows/PanelOverviewDiagnosticRowsRenderer.cs"],
