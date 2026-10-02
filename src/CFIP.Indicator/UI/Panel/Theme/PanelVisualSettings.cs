@@ -149,7 +149,6 @@ namespace cAlgo
                                                     ApplyPanelAlertMessageRailLayout(
                                                         contentWidth,
                                                         buttonGap,
-                                                        buttonMargin,
                                                         toggleWidth);
 
                                                     ApplyPanelRestoreButtonLayout(
