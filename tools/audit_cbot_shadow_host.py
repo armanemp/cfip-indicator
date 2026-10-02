@@ -103,6 +103,12 @@ check(
 )
 
 check(
+    "provider and envelope revisions must agree",
+    "PROVIDER REVISION MISMATCH" in shadow and
+    "providerRevision" in host,
+)
+
+check(
     "dynamic broker safety can be rechecked without consuming revision",
     "RevalidateBrokerSafety(" in shadow and
     "SINGLE-PLAN CAPACITY BLOCKED" in shadow and
@@ -156,7 +162,8 @@ check(
     "Expiry();" in test_text and
     "Capacity();" in test_text and
     "WrongSide();" in test_text and
-    "CoordinatorRecheck();" in test_text,
+    "CoordinatorRecheck();" in test_text and
+    "ProviderRevisionMismatch();" in test_text,
 )
 
 print("CBOT-P3 SHADOW HOST SUMMARY")
