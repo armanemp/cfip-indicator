@@ -2003,9 +2003,8 @@ CROSS_PATH_CONTRACTS = {
     ),
     "ReversalLimitPlacement.cs": (
         "TryPrepareReversalLimit(",
-        "ValidatePendingSubmission(",
-        "TryPlaceLimitOrder(",
-        "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+        "PrepareReversalLimitForCbot(",
+        "CapturePendingOrderPlanSnapshot(",
     ),
 }
 for filename, tokens in CROSS_PATH_CONTRACTS.items():
@@ -2063,9 +2062,8 @@ if PENDING_LIMIT.stat().st_size > 4096:
     raise SystemExit("ReversalLimitPlacement.cs must remain a placement orchestration boundary")
 for token in (
     "TryPrepareReversalLimit(",
-    "ValidatePendingSubmission(",
-    "TryPlaceLimitOrder(",
-    "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+    "PrepareReversalLimitForCbot(",
+    "CapturePendingOrderPlanSnapshot(",
 ):
     if token not in PENDING_LIMIT_CODE:
         raise SystemExit(f"Reversal limit ownership call missing: {token}")
@@ -2077,6 +2075,13 @@ if (
     PENDING_LIMIT_PREP.read_text(encoding="utf-8")
 ):
     raise SystemExit("Reversal limit preparation owner missing")
+
+PENDING_CBOT = ROOT.parent / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
+if (
+    not PENDING_CBOT.exists() or
+    "PlaceLimitOrder(" not in PENDING_CBOT.read_text(encoding="utf-8")
+):
+    raise SystemExit("cBot Pending Limit broker mutation owner missing")
 
 PENDING_SUBMISSION = ROOT / "Trading" / "Pending" / "Placement" / "PendingSubmissionValidator.cs"
 if not PENDING_SUBMISSION.exists():
@@ -2519,14 +2524,12 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
 MUTATION_ALLOWED_FILES = {
-    "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
     "BrokerTakeProfitMutation.cs",
     "BrokerPositionCloseMutation.cs",
 }
 REQUIRED_BROKER_MUTATION_FILES = {
-    "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
     "BrokerTakeProfitMutation.cs",
