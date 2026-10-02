@@ -95,7 +95,24 @@ namespace cAlgo
                 GetAutoTradingPanelState(),
                 GetAutoOrdersPanelState(),
                 GetAutoProtectionPanelState(),
+                RetainedPanelCompatibilityKey(),
                 _brokerProtectionRecoveryRequired ? "1" : "0");
+        }
+
+        private string RetainedPanelCompatibilityKey()
+        {
+            // These public parameters remain for backward-compatible saved settings.
+            // The Indicator no longer instantiates or wires broker-action controls;
+            // reading them here gives the retained configuration an explicit runtime
+            // owner without restoring the obsolete execution UI.
+            return string.Join(
+                ":",
+                ActionButtonHeight,
+                ActionButtonMargin,
+                ActionButtonWidth,
+                AlwaysShowSafetyButtons ? "1" : "0",
+                PanelButtonGap,
+                ShowTradeActionButtons ? "1" : "0");
         }
 
         private string FramePresentationKey(
