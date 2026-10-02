@@ -1,3 +1,18 @@
+## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Completed:
+- M15 is the internal execution clock; Chart timeframe is host/presentation-only;
+- Indicator/cBot runtime no longer rejects or branches on host Chart TF for execution;
+- Pending Stop broker mutation moved completely to src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs;
+- shared cBot margin/capacity safety owner prevents duplicate helper implementations;
+- Pending Stop trigger uses current spread through canonical PendingEntryPriceRule;
+- Indicator Pending Stop path is intent-only;
+- active audits and documentation were reconciled.
+
+Next staged migration after verification: CBOT-P4D — Pending Limit authority extraction.
+
 ## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` in implementation commit `0a45bb251d28a5542fa7580d886d3af8b25184b7`.**
