@@ -153,7 +153,7 @@ namespace cAlgo
                         frame.Direction,
                         frame.Quality,
                         minimumQuality,
-                        _m5Frame.Direction,
+                        _m5Frame == null ? 0 : _m5Frame.Direction,
                         m1ConfirmationAvailable,
                         _m1Frame == null ? 0 : _m1Frame.Direction,
                         m1Confirmed);
