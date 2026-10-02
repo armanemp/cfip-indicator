@@ -73,6 +73,9 @@ namespace cAlgo
                     Bars.Count - 1,
                     closedM5);
 
+                RefreshReadOnlyProvider(
+                    closedM5);
+
                 CompleteRuntimeFaultCycle();
 
                 _startupCalculationSeedDone = true;

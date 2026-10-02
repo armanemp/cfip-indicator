@@ -1,3 +1,11 @@
+## CBOT-P2 — Read-Only Indicator Provider — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+The Indicator now publishes one canonical read-only `CFIP.Contracts.SignalEnvelope`; the cBot consumes it through the supported custom-indicator reference mechanism. The provider uses an invisible output heartbeat so lazy evaluation is explicit and deterministic. Broker mutation remains disarmed in the P2 cBot.
+
+P3 is next: deterministic receive/validation/expiry/revision/deduplication/shadow state, with no live broker mutation.
+
 ## CBOT-P1 — Platform-Neutral Contracts — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**

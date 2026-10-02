@@ -324,7 +324,13 @@ No parallel DTO/model set may be introduced in the cBot. Existing Indicator inte
 
 ## CBOT-P2 — Read-Only Indicator Provider
 
-Expose a documented, structured read-only provider from the Indicator for the cBot through the supported cTrader custom-indicator reference mechanism. No chart scraping, reflection, private-field access or static mutable bridge.
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Expose one structured, immutable, read-only provider from the Indicator to the cBot using the supported cTrader custom-indicator reference mechanism. The provider uses the canonical `CFIP.Contracts` envelope and an invisible output heartbeat to make lazy evaluation deterministic. No chart scraping, reflection, private-field access or static mutable bridge is allowed.
+
+Implementation: `src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProvider.cs`.
+Boundary audit: `tools/audit_cbot_provider_boundary.py`.
+Phase report: `docs/PHASE-CBOT-P2-READ-ONLY-INDICATOR-PROVIDER.md`.
 
 ## CBOT-P3 — cBot Host / Shadow
 
