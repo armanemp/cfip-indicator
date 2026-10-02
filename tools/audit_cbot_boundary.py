@@ -178,15 +178,21 @@ def main() -> int:
 
     print("CBOT-0 DIRECT BROKER MUTATION INVENTORY")
     print("=" * 72)
-    # P4A: market mutation has physically moved to cBot.
-    market_apis_remaining = [
-        api for path, _, api in mutation_hits
+    # P4A: Market / Market Range mutation has physically moved to cBot.
+    # The explicit Aggressive owner remains pending for CBOT-P4B.
+    unexpected_market_hits = [
+        (path, api)
+        for path, _, api in mutation_hits
         if api in ("ExecuteMarketOrder", "ExecuteMarketRangeOrder")
+        and path != "Trading/Execution/BrokerAggressiveOrderMutation.cs"
     ]
-    if market_apis_remaining:
+    if unexpected_market_hits:
         errors.append(
-            "market broker mutation remains inside Indicator after CBOT-P4A extraction: "
-            + ", ".join(market_apis_remaining)
+            "Market / Market Range broker mutation remains in an unexpected Indicator path after CBOT-P4A: "
+            + ", ".join(
+                f"{path}::{api}"
+                for path, api in unexpected_market_hits
+            )
         )
 
     if mutation_hits:
