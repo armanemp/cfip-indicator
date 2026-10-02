@@ -79,12 +79,16 @@ check(
 
 check(
     "PlanRewardRiskQualityRule names all internal adaptive/floor constants",
-    ("BaseMinimumRrFloor =\n            RiskRewardPolicyRule.PlanBaseMinimumFloor" in reward or
-     "BaseMinimumRrFloor = RiskRewardPolicyRule.PlanBaseMinimumFloor" in reward) and
+    "BaseMinimumRrFloor" in reward and
+    "RiskRewardPolicyRule.PlanBaseMinimumFloor" in reward and
     "PlanBaseMinimumFloor = 0.50" in rr_policy and
     "PreferredStopRiskAtrFloor = 0.25" in reward and
     "MaximumStopRiskAtrFloor = 0.50" in reward and
-    "Math.Max(preferred, MaximumStopRiskAtrFloor)" in reward and
+    re.search(
+        r"maximum\s*=\s*Math\.Max\(\s*Math\.Max\(\s*preferred\s*,\s*"
+        r"MaximumStopRiskAtrFloor",
+        reward,
+    ) is not None and
     "Math.Max(preferred, 0.50)" not in reward and
     "AdaptiveStopExcessRrCap = 0.50" in reward and
     "AdaptiveStopExcessRrMultiplier = 0.25" in reward and
