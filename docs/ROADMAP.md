@@ -1007,9 +1007,9 @@ Safety/manual boundary:
 - no second decision/plan/broker-mutation authority introduced;
 - target-terminal replay, panel/chart rendering, broker lifecycle and empirical TP/signal-quality validation remain manual acceptance boundaries.
 
-**Current implementation phase: CI-16 — Deterministic replay, latency and counterexample suite.**
-**CI-14 and CI-15 are VERIFIED COMPLETE.**
-**Next implementation phase: CI-16 — Deterministic replay, latency and counterexample suite.**
+**Current implementation phase: CI-17 — Target-terminal cTrader validation.**
+**CI-14, CI-15 and CI-16 are VERIFIED COMPLETE.**
+**Next implementation phase: CI-17 — Target-terminal cTrader validation.**
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
 
 ### CI-15 closeout — 2026-10-02
@@ -1043,6 +1043,30 @@ Safety/manual boundary:
 
 The concrete seam fixed in CI-15 was validation-to-submission drift: the system could validate an `ExecutionIntent` and then submit a separately passed Entry/SL/TP projection. CI-15 removes that drift without changing the trading policy itself.
 
-Next phase: **CI-16 — Deterministic replay, latency and counterexample suite.**
+### CI-16 closeout — 2026-10-02
+
+Status: **IMPLEMENTED — repository verification pending final workflow results.**
+
+Completed:
+- deterministic replay harness added to Runtime Acceptance Contracts;
+- all 16 required CI-16 counterexample scenarios are represented;
+- exact reference/causal/quote timestamps and Decision → Trigger → Entry → SL → TP1..TP4 trace data are recorded;
+- canonical RiskRewardMathRule and ExecutionIntentGeometryRule are reused rather than duplicated;
+- authoritative-vs-submission geometry fingerprints are compared;
+- causal/actionable, alert/execution and execution/fill latency intervals are measurable;
+- blocked scenarios carry no fabricated downstream timestamps;
+- CI-16 audit is accumulated immediately after CI-15 in Source/Architecture.
+
+Safety:
+- no public parameter name/type/default changed;
+- no confidence, RR, Entry, SL, TP, risk or execution threshold was tuned;
+- no decision or broker-mutation authority was added;
+- replay remains diagnostic/verification-only and does not add a second live engine.
+
+Acceptance boundary:
+- deterministic replay is the automated CI-16 boundary;
+- target-terminal latency, broker event ordering, real fills/slippage, panel timing and empirical signal/outcome behavior remain CI-17/manual boundaries.
+
+Next phase: **CI-17 — Target-terminal cTrader validation.**
 
 Operator action: run `git pull --ff-only` on local `main`.
