@@ -231,16 +231,81 @@ namespace CFIP.cBot
                 }
             }
 
+            bool hasScenarioBatch =
+                CfipDeviceSignalTransport.TryReadScenarioBatch(
+                    this,
+                    _boundIndicatorInstanceId,
+                    out SignalScenarioBatch scenarioBatch,
+                    out string scenarioBatchReason);
+
+            if (hasScenarioBatch)
+            {
+                if (scenarioBatch == null ||
+                    scenarioBatch.ContractVersion != ContractVersion.Current ||
+                    !string.Equals(
+                        scenarioBatch.IndicatorInstanceId,
+                        _boundIndicatorInstanceId,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        scenarioBatch.Symbol,
+                        SymbolName,
+                        StringComparison.Ordinal))
+                {
+                    LogBlockedState(
+                        "SCENARIO BATCH CONTRACT OR IDENTITY MISMATCH");
+                    return;
+                }
+
+                SignalEnvelope[] scenarios =
+                    scenarioBatch.Scenarios ??
+                    Array.Empty<SignalEnvelope>();
+
+                if (scenarios.Length == 0)
+                {
+                    PublishExecutionState(
+                        "NO EXECUTABLE SCENARIOS",
+                        false);
+                    return;
+                }
+
+                for (int scenarioIndex = 0;
+                     scenarioIndex < scenarios.Length;
+                     scenarioIndex++)
+                {
+                    ProcessSignalEnvelope(
+                        scenarios[scenarioIndex],
+                        nowUtc);
+                }
+
+                SweepScenarioProtectionStates(nowUtc);
+                return;
+            }
+
             if (!CfipDeviceSignalTransport.TryRead(
                     this,
                     _boundIndicatorInstanceId,
                     out SignalEnvelope envelope,
                     out string transportReason))
             {
-                LogBlockedState(transportReason);
+                LogBlockedState(
+                    string.IsNullOrWhiteSpace(scenarioBatchReason)
+                        ? transportReason
+                        : scenarioBatchReason);
                 return;
             }
 
+            ProcessSignalEnvelope(
+                envelope,
+                nowUtc);
+
+            SweepScenarioProtectionStates(nowUtc);
+            return;
+        }
+
+        private void ProcessSignalEnvelope(
+            SignalEnvelope envelope,
+            DateTime nowUtc)
+        {
             if (!CbotSignalPreflight.TryValidate(
                     this,
                     envelope,
@@ -255,6 +320,8 @@ namespace CFIP.cBot
                     true);
                 return;
             }
+
+            TrackScenarioEnvelope(envelope);
 
             _lastSignalEnvelope = envelope;
             _activeManagedExecutionLabel =
@@ -327,6 +394,7 @@ namespace CFIP.cBot
                     _executionSettings,
                     _dailyLossGuard,
                     pendingAction,
+                    MaxConcurrentScenarios,
                     nowUtc,
                     out string environmentReason))
             {
@@ -372,6 +440,7 @@ namespace CFIP.cBot
                         nowUtc,
                         MaxExecutionMarginUsagePercent,
                         ExecutionMarginBufferPercent,
+                        MaxConcurrentScenarios,
                         out BrokerExecutionReport pendingReport,
                         out string pendingReason))
                 {
@@ -422,6 +491,128 @@ namespace CFIP.cBot
             }
         }
 
+        private void TrackScenarioEnvelope(
+            SignalEnvelope envelope)
+        {
+            if (envelope == null ||
+                envelope.Identity == null ||
+                string.IsNullOrWhiteSpace(
+                    envelope.Identity.ScenarioId) ||
+                envelope.Intent == null ||
+                string.IsNullOrWhiteSpace(
+                    envelope.Intent.ExecutionLabel))
+                return;
+
+            string key =
+                envelope.Identity.ScenarioId.Trim();
+
+            _scenarioEnvelopes[key] =
+                envelope;
+
+            if (_scenarioEnvelopes.Count > 32)
+            {
+                string removeKey = null;
+
+                foreach (KeyValuePair<string, SignalEnvelope> item in
+                         _scenarioEnvelopes)
+                {
+                    removeKey = item.Key;
+                    break;
+                }
+
+                if (!string.IsNullOrWhiteSpace(removeKey))
+                {
+                    _scenarioEnvelopes.Remove(removeKey);
+                    _scenarioReconciliations.Remove(removeKey);
+                }
+            }
+        }
+
+        private CbotBrokerReconciliationResult ReconcileScenarioState(
+            SignalEnvelope envelope,
+            DateTime nowUtc)
+        {
+            if (envelope == null ||
+                envelope.Identity == null ||
+                envelope.Intent == null)
+                return null;
+
+            string label =
+                envelope.Intent.ExecutionLabel ?? "";
+
+            CbotBrokerReconciliationResult result =
+                _brokerReconciliation.Evaluate(
+                    this,
+                    _boundIndicatorInstanceId,
+                    label);
+
+            string scenarioId =
+                envelope.Identity.ScenarioId ?? "";
+
+            if (!string.IsNullOrWhiteSpace(scenarioId))
+            {
+                _scenarioReconciliations[scenarioId] =
+                    result;
+            }
+
+            return result;
+        }
+
+        private void SweepScenarioProtectionStates(
+            DateTime nowUtc)
+        {
+            if (_scenarioEnvelopes.Count == 0)
+                return;
+
+            foreach (KeyValuePair<string, SignalEnvelope> item in
+                     _scenarioEnvelopes)
+            {
+                SignalEnvelope scenario = item.Value;
+
+                if (scenario == null ||
+                    scenario.Identity == null ||
+                    scenario.Intent == null ||
+                    string.IsNullOrWhiteSpace(
+                        scenario.Intent.ExecutionLabel))
+                    continue;
+
+                CbotBrokerReconciliationResult result =
+                    _brokerReconciliation.Evaluate(
+                        this,
+                        _boundIndicatorInstanceId,
+                        scenario.Intent.ExecutionLabel);
+
+                _scenarioReconciliations[item.Key] =
+                    result;
+
+                if (result == null ||
+                    !result.RecoveryRequired ||
+                    result.ManagedPositions != 1 ||
+                    !EnableDemoManagementExecution)
+                    continue;
+
+                _activeManagedExecutionLabel =
+                    scenario.Intent.ExecutionLabel;
+
+                _lastSignalEnvelope =
+                    scenario;
+
+                _reconciliation =
+                    result;
+
+                if (TryRecoverProtection(
+                        scenario,
+                        nowUtc))
+                {
+                    _scenarioReconciliations[item.Key] =
+                        _brokerReconciliation.Evaluate(
+                            this,
+                            _boundIndicatorInstanceId,
+                            scenario.Intent.ExecutionLabel);
+                }
+            }
+        }
+
         private bool RefreshIndicatorBinding(bool force)
         {
             DateTime now = Server.TimeInUtc;
@@ -440,6 +631,8 @@ namespace CFIP.cBot
                 _boundIndicatorInstanceId = "";
                 _activeManagedExecutionLabel = "";
                 _executionSettings = null;
+                _scenarioEnvelopes.Clear();
+                _scenarioReconciliations.Clear();
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
                 return false;
@@ -464,6 +657,9 @@ namespace CFIP.cBot
                 return true;
 
             _boundIndicatorInstanceId = instanceId;
+
+            _scenarioEnvelopes.Clear();
+            _scenarioReconciliations.Clear();
 
             _executionSettings = null;
             RefreshExecutionSettings(true);
