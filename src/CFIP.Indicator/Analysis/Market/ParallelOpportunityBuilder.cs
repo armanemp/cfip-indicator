@@ -335,6 +335,7 @@ namespace cAlgo
                         lane,
                         direction),
                 Lane = lane,
+                ExecutionMode = execution.Mode,
                 Direction = direction,
                 CreatedM5 = closedM5,
                 IndependentEvidenceScore =
