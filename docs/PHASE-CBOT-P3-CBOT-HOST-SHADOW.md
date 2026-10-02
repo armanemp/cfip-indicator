@@ -2,7 +2,12 @@
 
 Date: 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification:
+- Source / Architecture #2801: PASS
+- Runtime Acceptance #2610: PASS
+- cTrader Compile #2794: PASS
 
 ## Goal
 
@@ -92,7 +97,6 @@ Coverage:
 - incompatible contract version;
 - intent identity mismatch;
 - symbol mismatch;
-- trading permission block;
 - single-plan capacity block;
 - invalid quote;
 - BUY/SELL wrong-side geometry;
