@@ -7,7 +7,7 @@ using CFIP.cBot.Shadow;
 namespace CFIP.cBot
 {
     [Robot(
-        Name = "CFIP Smart Execution Bot",
+        "CFIP Smart Execution Bot",
         DefaultTimeFrame = "M5",
         TimeZone = TimeZones.UTC,
         AccessRights = AccessRights.None)]
