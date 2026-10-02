@@ -100,7 +100,7 @@ namespace cAlgo
                     levels,
                     closedM5,
                     entry,
-                    Math.Max(Symbol.PipSize, risk),
+                    risk,
                     intent.Direction,
                     atr,
                     lane);
