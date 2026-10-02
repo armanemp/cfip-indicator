@@ -97,7 +97,8 @@ Edit the smallest authoritative module that owns the behavior.
 | Continuation stop preparation | `Trading/Pending/Placement/ContinuationStopPreparation.cs` |
 | Reversal limit orchestration | `Trading/Pending/Placement/ReversalLimitPlacement.cs` |
 | Reversal limit preparation | `Trading/Pending/Placement/ReversalLimitPreparation.cs` |
-| Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
+| Legacy Indicator Market mutation | **Removed in CBOT-P4A** |
+| cBot Market / Market Range mutation | `src/CFIP.cBot/Execution/MarketBrokerMutation.cs` |
 | Pending stop-order mutation | `Trading/Execution/BrokerPendingOrderPlacement.cs` |
 | Pending limit-order mutation | `Trading/Execution/BrokerLimitOrderPlacement.cs` |
 | Pending cancellation mutation | `Trading/Execution/BrokerPendingOrderCancellation.cs` |
