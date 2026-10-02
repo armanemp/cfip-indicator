@@ -141,39 +141,9 @@ namespace cAlgo
                                                             240,
                                                             PanelMaxHeight);
                                         
-                                                    int availableChartHeight =
-                                                        0;
-                                        
-                                                    try
-                                                    {
-                                                        availableChartHeight =
-                                                            (int)Math.Round(
-                                                                Math.Max(
-                                                                    0,
-                                                                    Chart.Height -
-                                                                    Math.Max(
-                                                                        0,
-                                                                        PanelMargin) * 2 -
-                                                                    8));
-                                                    }
-                                                    catch
-                                                    {
-                                                        availableChartHeight = 0;
-                                                    }
-                                        
                                                     int maxHeight =
-                                                        availableChartHeight > 0
-                                                            ? Math.Max(
-                                                                180,
-                                                                Math.Min(
-                                                                    configuredMaxHeight,
-                                                                    Math.Max(
-                                                                        180,
-                                                                        (int)Math.Round(
-                                                                            availableChartHeight * 0.75))))
-                                                            : Math.Min(
-                                                                configuredMaxHeight,
-                                                                260);
+                                                        ResolvePanelMaximumHeight(
+                                                            configuredMaxHeight);
                                         
                                                     int fixedHeight =
                                                         PanelHeaderHeight +

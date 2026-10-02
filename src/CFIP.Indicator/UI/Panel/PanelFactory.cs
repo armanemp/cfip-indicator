@@ -21,6 +21,8 @@ namespace cAlgo
                         
                                     try
                                     {
+                                        CapturePanelGeometryBaseline();
+
                                         int bootstrapWidth =
                                             Math.Max(
                                                 260,
@@ -252,5 +254,29 @@ namespace cAlgo
                                         _panelRestoreButton = null;
                                     }
                                 }
+
+        private void CapturePanelGeometryBaseline()
+        {
+            int observedHeight = 0;
+
+            try
+            {
+                observedHeight =
+                    (int)Math.Round(
+                        Math.Max(
+                            0,
+                            Chart.Height));
+            }
+            catch
+            {
+                observedHeight = 0;
+            }
+
+            // Chart controls are overlay controls. Capture a finite viewport
+            // before attachment so a transient collapsed Chart.Height cannot
+            // feed back into the control's own measurement.
+            if (observedHeight >= 220)
+                _panelGeometryBaselineChartHeight = observedHeight;
+        }
     }
 }

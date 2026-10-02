@@ -107,6 +107,12 @@ namespace cAlgo
                                                                     PanelToggleWidth,
                                                                     PanelToggleHeight)));
 
+                                                    _panelStack.Height =
+                                                        panelHeight;
+
+                                                    _panelStack.VerticalAlignment =
+                                                        VerticalAlignment.Top;
+
                                                     ApplyPanelSurfaceAndHeaderLayout(
                                                         contentWidth,
                                                         panelHeight,

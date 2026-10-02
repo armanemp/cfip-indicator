@@ -438,6 +438,23 @@ Target-terminal acceptance:
 
 Phase report: docs/PHASE-CBOT-DEMO-LIVE-MARKET-2026-10-02.md.
 
+## CBOT-P4B — Aggressive Authority + Panel Geometry Integrity — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Scope:
+- fix panel content clipping by synchronizing the inner panel-stack height with the final outer panel height;
+- harden panel sizing against transient/collapsed Chart.Height during control attachment;
+- capture a finite pre-control viewport baseline before Chart.AddControl;
+- complete the next staged cBot mutation batch for ExecutionAction.Aggressive;
+- keep one demo broker mutation owner and preserve live-account fail-closed behavior.
+
+No analytical threshold, confidence, RR, Entry, SL, TP or risk tuning is included.
+
+Phase report: `docs/PHASE-CBOT-P4B-AGGRESSIVE-PANEL-GEOMETRY-2026-10-02.md`.
+
+Next: **CBOT-P4C — Pending Stop authority extraction**.
+
 ## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` on 2026-10-02 as `dee53a3dfa1cbfab7f4b7ec4826298739559d19c`.**

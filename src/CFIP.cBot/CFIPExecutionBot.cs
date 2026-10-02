@@ -27,6 +27,12 @@ namespace CFIP.cBot
         public bool EnableDemoMarketExecution { get; set; }
 
         [Parameter(
+            "Enable Demo Aggressive Execution",
+            Group = "Execution",
+            DefaultValue = false)]
+        public bool EnableDemoAggressiveExecution { get; set; }
+
+        [Parameter(
             "Max Demo Market Executions Per Session",
             Group = "Safety",
             DefaultValue = 1,
@@ -152,7 +158,19 @@ namespace CFIP.cBot
 
             LogStateIfChanged(shadowResult);
 
-            if (!EnableDemoMarketExecution ||
+            bool executionEnabled =
+                EnableDemoMarketExecution ||
+                EnableDemoAggressiveExecution;
+
+            bool actionEnabled =
+                envelope.Intent != null &&
+                (envelope.Intent.Action == ExecutionAction.Aggressive
+                    ? EnableDemoAggressiveExecution
+                    : envelope.Intent.Action == ExecutionAction.Market &&
+                      EnableDemoMarketExecution);
+
+            if (!executionEnabled ||
+                !actionEnabled ||
                 shadowResult == null ||
                 shadowResult.State != ShadowHostState.Ready)
                 return;
