@@ -20,8 +20,8 @@ def require(condition, message):
 
 calc = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderPlan.cs")
-alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertDeliveryQueue.cs")
-renderer = read("src/CFIP.Indicator/Signal/SignalRenderer.cs")
+alerts = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
+renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
 panel = read("src/CFIP.Indicator/UI/Panel/PanelExecutionState.cs")
 overview = read("src/CFIP.Indicator/UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs")
@@ -91,11 +91,11 @@ for token in (
     require(token in bot, "cBot lifecycle/execution stage missing " + token)
 
 for source, tokens in (
-    (market, ("TryExecute(", "ExecuteMarket", "BrokerExecutionSafety.TryConstrainVolumeForMargin")),
-    (pending, ("TryExecute(", "BrokerExecutionSafety.TryConstrainVolumeForMargin")),
+    (market, ("TryExecute(", "ExecuteMarket", "BrokerExecutionSafety.TryConstrainVolumeForMargin", "SINGLE-PLAN CAPACITY BLOCKED")),
+    (pending, ("TryExecute(", "BrokerExecutionSafety.TryConstrainVolumeForMargin", "SINGLE-PLAN CAPACITY BLOCKED")),
     (management, ("ModifyProtection", "Protect(", "TryRecoverProtectionFromSignal")),
     (publisher, ("CbotExecutionStateSnapshot", "CbotBrokerReconciliationResult")),
-    (gate, ("SINGLE-PLAN CAPACITY BLOCKED", "ACCOUNT MARGIN", "LIVE SPREAD", "DAILY LOSS")),
+    (gate, ("ACCOUNT MARGIN", "LIVE SPREAD", "DAILY LOSS")),
 ):
     require(all(t in source for t in tokens), "broker/cBot owner incomplete: " + tokens[0])
 
