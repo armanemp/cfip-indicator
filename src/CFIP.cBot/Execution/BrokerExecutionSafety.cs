@@ -36,6 +36,96 @@ namespace CFIP.cBot.Execution
             return count;
         }
 
+        public static int CountManagedScenarioObjects(
+            Robot robot,
+            string managedInstanceLabel)
+        {
+            if (robot == null ||
+                string.IsNullOrWhiteSpace(managedInstanceLabel))
+                return 0;
+
+            int count = 0;
+
+            foreach (Position position in robot.Positions)
+            {
+                if (position != null &&
+                    string.Equals(
+                        position.SymbolName,
+                        robot.SymbolName,
+                        StringComparison.Ordinal) &&
+                    IsScenarioLabel(
+                        position.Label,
+                        managedInstanceLabel))
+                {
+                    count++;
+                }
+            }
+
+            foreach (PendingOrder order in robot.PendingOrders)
+            {
+                if (order != null &&
+                    string.Equals(
+                        order.SymbolName,
+                        robot.SymbolName,
+                        StringComparison.Ordinal) &&
+                    IsScenarioPendingLabel(
+                        order.Label,
+                        managedInstanceLabel))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        public static bool IsScenarioLabel(
+            string actualLabel,
+            string managedInstanceLabel)
+        {
+            if (string.IsNullOrWhiteSpace(actualLabel) ||
+                string.IsNullOrWhiteSpace(managedInstanceLabel))
+                return false;
+
+            string root =
+                managedInstanceLabel.Trim();
+
+            return
+                string.Equals(
+                    actualLabel,
+                    root,
+                    StringComparison.Ordinal) ||
+                actualLabel.StartsWith(
+                    root + "|CFIP-S:",
+                    StringComparison.Ordinal);
+        }
+
+        public static bool IsScenarioPendingLabel(
+            string actualLabel,
+            string managedInstanceLabel)
+        {
+            if (string.IsNullOrWhiteSpace(actualLabel) ||
+                string.IsNullOrWhiteSpace(managedInstanceLabel))
+                return false;
+
+            const string pendingSuffix = "-PENDING";
+
+            if (!actualLabel.EndsWith(
+                    pendingSuffix,
+                    StringComparison.Ordinal))
+                return false;
+
+            string root =
+                actualLabel.Substring(
+                    0,
+                    actualLabel.Length -
+                    pendingSuffix.Length);
+
+            return IsScenarioLabel(
+                root,
+                managedInstanceLabel);
+        }
+
         public static bool TryConstrainVolumeForMargin(
             Robot robot,
             TradeType tradeType,
