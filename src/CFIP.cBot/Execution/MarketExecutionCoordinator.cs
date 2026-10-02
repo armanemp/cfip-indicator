@@ -17,6 +17,7 @@ namespace CFIP.cBot.Execution
             Robot robot,
             SignalEnvelope envelope,
             bool enableMarketRange,
+            string managedExecutionLabel,
             DateTime nowUtc,
             out BrokerExecutionReport report,
             out string reason)
@@ -53,9 +54,27 @@ namespace CFIP.cBot.Execution
                     out reason))
                 return false;
 
+            if (string.IsNullOrWhiteSpace(managedExecutionLabel))
+            {
+                reason = "MISSING CBOT EXECUTION LABEL";
+                return false;
+            }
+
+            ExecutionIntent executionIntent =
+                envelope.Intent with
+                {
+                    ExecutionLabel =
+                        managedExecutionLabel.Trim()
+                };
+
+            if (!MarketExecutionIntentRule.Validate(
+                    executionIntent,
+                    out reason))
+                return false;
+
             if (!HasLiveCapacity(
                     robot,
-                    envelope.Intent.ExecutionLabel,
+                    executionIntent.ExecutionLabel,
                     out reason))
                 return false;
 
@@ -66,7 +85,7 @@ namespace CFIP.cBot.Execution
             {
                 if (!MarketBrokerMutation.TrySubmit(
                         robot,
-                        envelope.Intent,
+                        executionIntent,
                         enableMarketRange,
                         out result,
                         out mutationReason))
