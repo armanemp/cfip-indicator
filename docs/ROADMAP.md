@@ -305,6 +305,7 @@ Status: IN PROGRESS
 - Existing Indicator mutation remains temporarily only until its cBot replacement passes parity and terminal-safe verification.
 - A migration step is not complete until: replacement exists → callers migrate → old owner removed → source audit proves zero duplicate authority for that migrated path.
 - No project/file is copied wholesale when it mixes analytical and broker responsibilities.
+- Exact extraction inventory: docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md.
 
 ## CBOT-P1 — Platform-Neutral Contracts
 
