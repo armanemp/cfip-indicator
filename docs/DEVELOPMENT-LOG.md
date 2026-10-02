@@ -1,3 +1,28 @@
+## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged to `main` on 2026-10-02 as `dee53a3dfa1cbfab7f4b7ec4826298739559d19c`.**
+
+Final implementation HEAD: `e51d1bb82db2fec25b91917873ab19ccacbd9859`.
+
+Verification:
+- Source / Architecture run `36981439556`: **PASS**;
+- Runtime Acceptance run `36981439561`: **PASS**;
+- cTrader Compile/Build run `36981439570`: **PASS**.
+
+Completed:
+- Market / Market-Range broker mutation is owned by `src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs`;
+- Indicator Market broker owner and legacy Market/Aggressive execution stages are physically removed from the active Indicator path;
+- Indicator plan materialization is independent of Auto Trading, with an explicit analysis-only same-bar retry owner;
+- panel broker-action UI is removed; finite bootstrap/live-height geometry and MTF frame-aware refresh are restored;
+- M15/H1 primary source direction is displayed from exact resolved frame state with separate observe-only source markers;
+- stale CI/audit ownership contracts were reconciled to the current architecture without changing public parameter count or trading thresholds.
+
+No numeric signal threshold, RR, Entry, SL or TP policy was tuned in this phase.
+
+Target-terminal validation remains manual and is not represented as repository-pass evidence.
+
+Next: **CBOT-P4B / next staged execution-migration phase**, followed by the remaining Aggressive, Pending, Close, protection, lifecycle, account-risk and recovery migrations.
+
 ## CBOT-P3 — cBot Host / Shadow — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**

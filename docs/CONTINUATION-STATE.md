@@ -1,3 +1,23 @@
+## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
+
+Status: **VERIFIED COMPLETE — merged to `main` as `dee53a3dfa1cbfab7f4b7ec4826298739559d19c`.**
+
+Final implementation HEAD: `e51d1bb82db2fec25b91917873ab19ccacbd9859`.
+
+Repository verification:
+- Source / Architecture `36981439556`: PASS;
+- Runtime Acceptance `36981439561`: PASS;
+- cTrader Compile/Build `36981439570`: PASS.
+
+Repository boundary now enforced for this batch:
+- Indicator = analysis / decision / scenario / plan / presentation;
+- Contracts = immutable cross-boundary schema;
+- cBot = Market / Market-Range broker submission for P4A.
+
+Manual target-terminal acceptance remains pending for the new algorithm package name, initial chart geometry, panel responsiveness, provider revision transition, demo fill and live-account fail-closed behavior.
+
+Next implementation phase: **CBOT-P4B / next staged execution migration**.
+
 
 ## CBOT-DEMO-MARKET — 2026-10-02
 
@@ -130,7 +150,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-17 — Target-terminal cTrader validation — CI-17A panel live-content correction verified and merged; real target-terminal/manual acceptance remains pending.**
+**CBOT-P4B — next staged execution-migration phase; P4A Market / Market-Range authority cutover is repository-verified and merged.**
 
 CI-17A repository package: **VERIFIED COMPLETE — PR #175 merged to `main` as `6ffff643ad5c24782ca7035355e31ee4a04465c2`.**
 

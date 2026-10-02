@@ -440,7 +440,12 @@ Phase report: docs/PHASE-CBOT-DEMO-LIVE-MARKET-2026-10-02.md.
 
 ## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
 
-Status: **IMPLEMENTED — repository verification pending; target-terminal parity remains manual.**
+Status: **VERIFIED COMPLETE — merged to `main` on 2026-10-02 as `dee53a3dfa1cbfab7f4b7ec4826298739559d19c`.**
+
+Repository verification on final implementation HEAD `e51d1bb82db2fec25b91917873ab19ccacbd9859`:
+- Source / Architecture: PASS (run `36981439556`);
+- Runtime Acceptance: PASS (run `36981439561`);
+- cTrader Compile/Build: PASS (run `36981439570`).
 
 This phase performs the physical Market / Market Range owner switch from Indicator to cBot:
 - Indicator no longer contains the Market broker-mutation owner;
