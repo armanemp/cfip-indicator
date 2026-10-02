@@ -108,6 +108,9 @@ namespace CFIP.cBot
         private readonly CbotBrokerReconciliation _brokerReconciliation =
             new CbotBrokerReconciliation();
 
+        private readonly CbotExecutionEnvironmentGate _executionEnvironment =
+            new CbotExecutionEnvironmentGate();
+
         private CbotBrokerReconciliationResult _reconciliation;
         private DateTime _nextBrokerReconciliationUtc = DateTime.MinValue;
 
@@ -299,6 +302,23 @@ namespace CFIP.cBot
                 EnableDemoPendingStopExecution ||
                 EnableDemoPendingLimitExecution ||
                 EnableDemoAggressiveExecution;
+
+            if (executionEnabled &&
+                !_executionEnvironment.Evaluate(
+                    this,
+                    envelope,
+                    MaxExecutionMarginUsagePercent,
+                    ExecutionMarginBufferPercent,
+                    out string environmentReason))
+            {
+                LogBlockedState(
+                    environmentReason);
+                PublishExecutionState(
+                    "EXECUTION BLOCKED • " +
+                    environmentReason,
+                    true);
+                return;
+            }
 
             bool actionEnabled =
                 envelope.Intent != null &&
