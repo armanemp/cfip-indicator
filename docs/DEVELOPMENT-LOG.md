@@ -3311,7 +3311,7 @@ Implemented on phase/m4-time-session-history-persistence-2026-10-02.
 - Added Core/Math/CanonicalTimeRule as the single owner for UTC normalization, UTC-day identity, exact day boundaries, half-open UTC intervals and deterministic 90-day archive periods.
 - Migrated SessionWindowRule, DailyLoss accounting/guard/persistence and EOD lifecycle checks to the canonical time owner.
 - Migrated signal timing, broker refresh, calculation readiness, economic-news timing, news protection/calendar and buffered-persistence timestamp normalization away from machine-local ToUniversalTime conversions.
-- Made DailyLoss persistence account-scope aware using the existing canonical broker/account/live-state identity token, with safe read/migrate behavior from the previous account-number-only key.
+- Made DailyLoss persistence account-scope aware using the existing canonical broker/account/live-state identity token. The previous account-number-only key is intentionally not auto-adopted because broker ownership cannot be proven; current-account facts reconstruct the state instead.
 - Kept 90-day outcome/runtime archives append-oriented and preserved existing History marker/buffered persistence ownership.
 - Added M4TimeHistoryContracts and an accumulated M4 source audit.
 - The M4 audit explicitly rechecks the whole analysis -> signal -> plan -> presentation -> provider -> cBot -> broker lifecycle -> outcome/history chain.
