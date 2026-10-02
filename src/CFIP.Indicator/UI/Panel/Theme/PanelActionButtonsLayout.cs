@@ -10,6 +10,7 @@ namespace cAlgo
             int toggleWidth,
             int toggleHeight,
             int border,
+            int buttonGap,
             int borderAlpha)
         {
             if (_panelToggleButton == null)
