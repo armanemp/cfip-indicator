@@ -341,8 +341,11 @@ namespace cAlgo
                         liveEntry,
                         _plan.Stop,
                         _plan.Tp1,
+                        priceSnapshot.Spread,
                         MinimumRequiredRRForRegime(
-                            _decision.Regime));
+                            _decision.Regime),
+                        MaximumRewardRR,
+                        Symbol.PipSize);
 
                 if (!geometry.Allowed)
                 {
