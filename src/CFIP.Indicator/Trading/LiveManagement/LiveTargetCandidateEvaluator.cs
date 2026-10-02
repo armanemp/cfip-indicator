@@ -66,7 +66,8 @@ namespace cAlgo
 
                 double score =
                     CalculateLiveTargetScore(
-                        level);
+                        level,
+                        previousTarget);
 
                 if (score > bestScore)
                 {
@@ -166,41 +167,86 @@ namespace cAlgo
         }
 
         private double CalculateLiveTargetScore(
-            Level level)
+            Level level,
+            double previousTarget)
         {
             bool htf =
                 IsHtfTimeframe(
                     level.Timeframe);
 
-            double score =
-                level.Score;
+            RiskRewardMathResult targetGeometry =
+                RiskRewardMathRule.EvaluateFromRisk(
+                    _plan.Direction,
+                    _plan.Entry,
+                    _plan.Risk,
+                    level.Price,
+                    0,
+                    0,
+                    MaximumRewardRR,
+                    Symbol.PipSize);
 
-            if (htf)
-                score +=
-                    HtfRewardBonus;
+            if (!targetGeometry.Valid)
+                return double.MinValue;
 
-            if (level.Kind.IndexOf(
+            double baselineRr = 0;
+
+            if (IsFinitePositive(previousTarget))
+            {
+                RiskRewardMathResult previousGeometry =
+                    RiskRewardMathRule.EvaluateFromRisk(
+                        _plan.Direction,
+                        _plan.Entry,
+                        _plan.Risk,
+                        previousTarget,
+                        0,
+                        0,
+                        MaximumRewardRR,
+                        Symbol.PipSize);
+
+                if (previousGeometry.Valid)
+                    baselineRr =
+                        previousGeometry.NominalRR;
+            }
+
+            double distance =
+                Math.Abs(
+                    level.Price -
+                    _plan.Entry);
+
+            double normalizedDistance =
+                distance /
+                Math.Max(
+                    Symbol.PipSize,
+                    _plan.Risk);
+
+            bool liquidity =
+                level.Kind.IndexOf(
                     "LIQUIDITY",
-                    StringComparison.OrdinalIgnoreCase) >= 0)
-                score +=
-                    LiquidityRewardBonus;
+                    StringComparison.OrdinalIgnoreCase) >= 0;
 
-            if (level.Kind.IndexOf(
+            bool zone =
+                level.Kind.IndexOf(
                     "FVG",
                     StringComparison.OrdinalIgnoreCase) >= 0 ||
                 level.Kind.IndexOf(
                     "ORDER_BLOCK",
-                    StringComparison.OrdinalIgnoreCase) >= 0)
-                score +=
-                    ZoneRewardBonus;
+                    StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return score +
-                Math.Min(
-                    20,
-                    Math.Max(
-                        1,
-                        level.Hits) *
-                    2);
+            return
+                TargetCandidateRewardScoreRule.Calculate(
+                    level.Score,
+                    targetGeometry.NominalRR,
+                    baselineRr,
+                    SmartTargetNearestBias,
+                    normalizedDistance,
+                    htf,
+                    liquidity,
+                    zone,
+                    level.Hits,
+                    1,
+                    HtfRewardBonus,
+                    LiquidityRewardBonus,
+                    ZoneRewardBonus);
         }
     }
 }
