@@ -39,7 +39,7 @@ No public parameter changed. The public parameter count remains 568.
 
 No confidence, quality, RR, Entry, SL, TP, risk or trading threshold changed.
 
-No broker mutation API was added. No new execution or decision authority was added.
+No broker mutation API was added. No execution authority or decision authority was added or changed.
 
 ## Verification
 
