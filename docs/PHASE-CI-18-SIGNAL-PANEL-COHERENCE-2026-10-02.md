@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTATION COMPLETE — verification pending.
+VERIFIED COMPLETE — merged to `main` via PR #199 as `8ba701ea288641bc1435ac8f94ea6890713ed63c`.
 
 ## Problem addressed
 
@@ -30,12 +30,12 @@ No public strategy threshold was lowered in this phase. The purpose is to stop t
 
 A directional WATCH presentation is not an execution authorization. Strong/actionable arrows remain governed by the existing quality and actionability gates.
 
-## Verification required
+## Verification
 
-- Source / Architecture accumulated audits;
-- Runtime Acceptance Contracts;
-- cTrader Compile/Build;
-- CI-18 deterministic Retest/geometry contract and static coherence audit.
+- Source / Architecture accumulated audits: PASS;
+- Runtime Acceptance Contracts: PASS;
+- cTrader Compile/Build: PASS;
+- CI-18 deterministic Retest/geometry contract and static coherence audit: PASS;
 
 Manual target-terminal validation remains required for real chart/panel synchronization, current-price response, MTF frame updates, alert timing and empirical signal quality.
 
