@@ -14,10 +14,12 @@ namespace CFIP.cBot.Binding
             Robot robot,
             out ChartIndicator indicator,
             out string fingerprint,
+            out string managedExecutionLabel,
             out string reason)
         {
             indicator = null;
             fingerprint = "";
+            managedExecutionLabel = "CFIP-SMART";
             reason = "OK";
 
             if (robot == null)
@@ -83,6 +85,22 @@ namespace CFIP.cBot.Binding
                     .Append(parameter.Name ?? "")
                     .Append('=')
                     .Append(FormatValue(parameter.Value));
+            }
+
+            foreach (AlgoInstanceParameter parameter in match.Parameters)
+            {
+                if (parameter != null &&
+                    string.Equals(
+                        parameter.Name,
+                        "AutoTradeLabel",
+                        StringComparison.Ordinal) &&
+                    parameter.Value is string label &&
+                    !string.IsNullOrWhiteSpace(label))
+                {
+                    managedExecutionLabel =
+                        label.Trim();
+                    break;
+                }
             }
 
             indicator = match;
