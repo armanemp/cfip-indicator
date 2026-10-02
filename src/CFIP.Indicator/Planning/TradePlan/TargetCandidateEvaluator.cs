@@ -177,18 +177,41 @@ namespace cAlgo
                     Symbol.PipSize,
                     atr);
 
-            double efficiency =
+            // Minimum RR is a validity floor, not the desired reward target.
+            // Once a candidate is valid, additional reachable RR should improve
+            // its score only when the structural source itself is credible.
+            double rewardExpansionRR =
                 Math.Max(
                     0,
-                    25 -
-                    Math.Abs(
-                        rr -
-                        requiredStageRR) *
-                    4);
+                    rr -
+                    requiredStageRR);
+
+            double qualityMultiplier =
+                NumericGuards.Clamp(
+                    candidate.Score / 100.0,
+                    0.35,
+                    1.0);
+
+            double rewardExpansionBonus =
+                Math.Min(
+                    20.0,
+                    rewardExpansionRR * 4.0) *
+                qualityMultiplier;
+
+            // Keep a small nearest-level preference for execution practicality,
+            // but do not allow it to dominate reward expansion.
+            double nearestPracticalityBonus =
+                SmartTargetNearestBias /
+                (1.0 +
+                 Math.Max(
+                     0,
+                     normalizedDistance)) *
+                3.0;
 
             score =
                 candidate.Score +
-                efficiency;
+                rewardExpansionBonus +
+                nearestPracticalityBonus;
 
             if (htf)
                 score +=
