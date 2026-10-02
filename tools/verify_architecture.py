@@ -2266,16 +2266,18 @@ AUTO_MARKET_RUNTIME = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "Auto
 AUTO_MARKET_RUNTIME_CODE = AUTO_MARKET_RUNTIME.read_text(encoding="utf-8")
 if AUTO_MARKET_RUNTIME.stat().st_size > 8192:
     raise SystemExit("AutomaticMarketBrokerExecution.cs must remain an execution orchestration boundary")
+
 for token in (
     "TryValidateAutomaticMarketSubmission(",
-    "TryExecuteMarketOrder(",
-    "BrokerConfirmationPolicy.CanAdoptPosition(",
-    "TryAcceptAutomaticMarketFill(",
-    "TryResolveAutomaticPostFillTarget(",
-    "EnsureBrokerProtectionForPosition(",
+    "CalculateAutomaticMarketRangePips(",
+    "TryBuildServerSideTakeProfitLadder(",
+    "CBOT cBot handoff",
 ):
     if token not in AUTO_MARKET_RUNTIME_CODE:
-        raise SystemExit(f"Automatic-market execution boundary missing: {token}")
+        raise SystemExit(f"Automatic-market handoff boundary missing: {token}")
+
+if "TryExecuteMarketOrder(" in AUTO_MARKET_RUNTIME_CODE or "TryExecuteMarketRangeOrder(" in AUTO_MARKET_RUNTIME_CODE:
+    raise SystemExit("Automatic-market Indicator path still contains broker mutation")
 for required_path in (
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs",
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs",
