@@ -3219,8 +3219,10 @@ if "IsEnabled = false" not in execution_factory:
     raise SystemExit("Execution status controls must be non-interactive")
 if "_executionToggleSyncing = true" not in execution_sync:
     raise SystemExit("Execution toggle synchronizer must guard programmatic state changes")
-if "EnsureExecutionRuntimeState();" not in execution_sync:
-    raise SystemExit("Execution-control synchronizer must consume canonical settings/runtime state")
+if "RefreshCbotExecutionStateIfDue();" not in execution_sync:
+    raise SystemExit("Execution-control synchronizer must consume the canonical cBot state snapshot")
+if "EffectiveAutoTradingEnabled" not in execution_sync or "EffectiveAutomaticOrdersEnabled" not in execution_sync:
+    raise SystemExit("Execution-control synchronizer must consume effective cBot execution state")
 if "public static bool IsInteractive => false;" not in execution_rule:
     raise SystemExit("Execution-control interaction policy must remain read-only")
 
