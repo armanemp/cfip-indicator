@@ -2137,3 +2137,31 @@ Next after this verification unit:
 - continue deep position-engine accuracy work and then complete the dedicated CBOT-6M multi-scenario execution/reconciliation ownership before enabling broker-side parallel execution.
 
 Operator action after merge: git pull --ff-only on local main.
+
+
+## CBOT-6M + Trade Quality Hardening — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Implemented:
+- instance-scoped SignalScenarioBatch transport;
+- stable ScenarioId execution identity;
+- bounded concurrent Market / Pending Stop / Pending Limit execution;
+- per-scenario idempotency and broker capacity;
+- per-scenario reconciliation and protection recovery sweep;
+- scenario state reset on Indicator rebind;
+- composite trade-quality ranking using independent evidence, OB/FVG confluence, location quality, WaveTrend, TP1 RR and entry distance;
+- composite plan quality carried into each scenario PlanSnapshot.
+
+M15 remains canonical trade decision/execution reference; M5 remains trigger/tuning/entry precision; M1 optional confirmation; H1 context/reward.
+
+Verification must include:
+- Source/Architecture full accumulated audit;
+- cTrader compile;
+- Runtime Acceptance;
+- duplicate ScenarioId replay;
+- concurrent distinct ScenarioId execution;
+- restart/rebind;
+- independent protection/reconciliation on multiple broker objects.
+
+Operator action after merge: git pull --ff-only.
