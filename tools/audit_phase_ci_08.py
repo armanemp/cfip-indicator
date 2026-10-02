@@ -99,9 +99,14 @@ check(
 
 prediction_call = closed_stage.find('_prediction =\n                BuildEarlyPrediction(')
 decision_call = closed_stage.find('_decision =')
-plan_call = closed_stage.find('EnsureSignalPlan(')
+plan_calls = [
+    closed_stage.find('TryEnsureAutomaticPlan('),
+    closed_stage.find('EnsureSignalPlan('),
+]
+plan_calls = [position for position in plan_calls if position >= 0]
+plan_call = min(plan_calls) if plan_calls else -1
 check(
-    "early prediction is downstream of the closed decision and before plan creation",
+    "early prediction is downstream of the closed decision and before analysis-plan creation",
     decision_call >= 0 and prediction_call > decision_call and plan_call > prediction_call
 )
 
