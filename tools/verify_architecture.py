@@ -2639,13 +2639,13 @@ if "_executionToggleSyncing = true" not in EXECUTION_CONTROLS_SYNC_CODE:
 CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
 CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")
 pending_idx = CALC_STAGE_CODE.find('"PREDICTIVE PENDING EXECUTION"')
-aggressive_idx = CALC_STAGE_CODE.find('"AGGRESSIVE AUTO EXECUTION"')
 plan_idx = CALC_STAGE_CODE.find('"PLAN CREATION"')
-market_idx = CALC_STAGE_CODE.find('"AUTOMATIC MARKET EXECUTION"')
-if min(pending_idx, aggressive_idx, plan_idx, market_idx) < 0 or not (
-    pending_idx < aggressive_idx < plan_idx < market_idx
-):
-    raise SystemExit("Execution priority must be pending -> aggressive -> plan -> market")
+if min(pending_idx, plan_idx) < 0 or not pending_idx < plan_idx:
+    raise SystemExit("Remaining Indicator execution stage ordering must keep pending before plan materialization")
+if "AGGRESSIVE AUTO EXECUTION" in CALC_STAGE_CODE:
+    raise SystemExit("Aggressive broker execution must not remain in Indicator calculation stages")
+if "AUTOMATIC MARKET EXECUTION" in CALC_STAGE_CODE:
+    raise SystemExit("Automatic Market broker execution must not remain in Indicator calculation stages")
 
 LIVE_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 LIVE_CYCLE_CODE = LIVE_CYCLE.read_text(encoding="utf-8")
