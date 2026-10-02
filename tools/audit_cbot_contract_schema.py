@@ -20,6 +20,15 @@ required = {
     "ContractVersion.cs",
 }
 
+# Pure, platform-neutral transport utilities are allowed to expose behavior:
+# serialization and deterministic bus-key derivation are part of the shared
+# transport contract, not broker execution ownership.
+TRANSPORT_UTILITY_FILES = {
+    "SignalEnvelopeCodec.cs",
+    "SignalBusKey.cs",
+    "ManagementBusKey.cs",
+}
+
 errors = []
 
 if not CONTRACTS.exists():
@@ -38,21 +47,24 @@ else:
             if forbidden in source:
                 errors.append(f"platform dependency in {rel}: {forbidden}")
 
-        if re.search(r'\b(public|internal|private|protected)\s+[A-Za-z0-9_<>,.?\[\]]+\s+[A-Za-z_][A-Za-z0-9_]*\s*\{\s*get\s*;\s*set\s*;', source):
+        if re.search(
+            r'\b(public|internal|private|protected)\s+'
+            r'[A-Za-z0-9_<>,.?\[\]]+\s+'
+            r'[A-Za-z_][A-Za-z0-9_]*\s*'
+            r'\{\s*get\s*;\s*set\s*;',
+            source,
+        ):
             errors.append(f"mutable auto-property in contract source: {rel}")
 
         if re.search(r'\bset\s*;', source):
             errors.append(f"setter found in contract source: {rel}")
 
         if (
-            path.name not in {
-                "SignalEnvelopeCodec.cs",
-                "SignalBusKey.cs",
-            } and
-            (
-                "static void " in source or
-                " static bool " in source or
-                " static int " in source
+            path.name not in TRANSPORT_UTILITY_FILES
+            and (
+                "static void " in source
+                or " static bool " in source
+                or " static int " in source
             )
         ):
             errors.append(f"behavioral method found in data contract source: {rel}")

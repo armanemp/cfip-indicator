@@ -130,15 +130,18 @@ if "BrokerStateRefreshRule.IsRefreshDue(" not in broker:
 if "IsRefreshDue(" not in broker_rule:
     errors.append("BrokerStateRefreshRule must own broker refresh cadence")
 
-for relative in (
-    "src/CFIP.Indicator/Trading/Execution/BrokerPendingOrderCancellation.cs",
-    "src/CFIP.Indicator/Trading/Execution/BrokerPositionCloseMutation.cs",
-    "src/CFIP.Indicator/Trading/Execution/BrokerStopLossMutation.cs",
-    "src/CFIP.Indicator/Trading/Execution/BrokerTakeProfitMutation.cs",
-):
-    source = read(ROOT / relative)
-    if "MarkBrokerStateDirty();" not in source:
-        errors.append(f"{relative}: successful/attempted broker mutation must invalidate state cache")
+management = read(
+    ROOT / "src" / "CFIP.Indicator" / "Trading" / "Execution" /
+    "ManagementCommandRequestCoordinator.cs"
+)
+if "ProcessManagementReports()" not in management:
+    errors.append(
+        "management command owner must reconcile broker reports before accepting mutation state"
+    )
+if "LocalStorage.Flush(" not in management:
+    errors.append(
+        "management command transport must persist the command queue"
+    )
 
 for relative in (
     "src/CFIP.Indicator/Trading/Lifecycle/PositionOpenedHandler.cs",

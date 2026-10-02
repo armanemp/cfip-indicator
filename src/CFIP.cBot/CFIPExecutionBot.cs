@@ -44,6 +44,12 @@ namespace CFIP.cBot
         public bool EnableDemoAggressiveExecution { get; set; }
 
         [Parameter(
+            "Enable Demo Management Execution",
+            Group = "Execution",
+            DefaultValue = false)]
+        public bool EnableDemoManagementExecution { get; set; }
+
+        [Parameter(
             "Max Demo Executions Per Session",
             Group = "Safety",
             DefaultValue = 1,
@@ -84,6 +90,9 @@ namespace CFIP.cBot
         private readonly ShadowHostCoordinator _shadow =
             new ShadowHostCoordinator();
 
+        private readonly ManagementExecutionCoordinator _management =
+            new ManagementExecutionCoordinator();
+
         private ShadowHostState _state =
             ShadowHostState.Waiting;
 
@@ -116,14 +125,15 @@ namespace CFIP.cBot
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
             Print(
                 "CFIP cBot START | hostTimeframe={0} | execTimeframe=M15 | state={1} | " +
-                "marketExecution={2} | pendingStopExecution={3} | pendingLimitExecution={4} | aggressiveExecution={5} | " +
-                "maxSessionExecutions={6} | staleAfter={7}s | contractVersion={8}",
+                "marketExecution={2} | pendingStopExecution={3} | pendingLimitExecution={4} | aggressiveExecution={5} | managementExecution={6} | " +
+                "maxSessionExecutions={7} | staleAfter={8}s | contractVersion={9}",
                 Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 StartupState,
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
                 EnableDemoPendingStopExecution ? "ARMED" : "DISARMED",
                 EnableDemoPendingLimitExecution ? "ARMED" : "DISARMED",
                 EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
+                EnableDemoManagementExecution ? "ARMED" : "DISARMED",
                 MaxDemoExecutionsPerSession,
                 ProviderStaleAfterSeconds,
                 ContractVersion.Current);
@@ -144,6 +154,27 @@ namespace CFIP.cBot
 
             ReloadSignalStore(false);
 
+            DateTime nowUtc = Server.TimeInUtc;
+
+            if (EnableDemoManagementExecution &&
+                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+            {
+                _management.Process(
+                    this,
+                    _boundIndicatorInstanceId,
+                    nowUtc,
+                    out string managementStatus);
+
+                if (!string.IsNullOrWhiteSpace(managementStatus) &&
+                    !string.Equals(
+                        managementStatus,
+                        "NO MANAGEMENT COMMAND",
+                        StringComparison.Ordinal))
+                {
+                    Print("CFIP MANAGEMENT | {0}", managementStatus);
+                }
+            }
+
             if (!CfipDeviceSignalTransport.TryRead(
                     this,
                     _boundIndicatorInstanceId,
@@ -153,8 +184,6 @@ namespace CFIP.cBot
                 LogBlockedState(transportReason);
                 return;
             }
-
-            DateTime nowUtc = Server.TimeInUtc;
 
             if (envelope.Identity == null)
             {

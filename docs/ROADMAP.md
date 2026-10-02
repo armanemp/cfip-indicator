@@ -2,6 +2,18 @@
 
 For every future phase, modify the existing canonical production owner directly. Do not create parallel hotfix files, duplicate executors, compatibility wrappers, alternate calculation paths, alternate identity formatters, or detached patch subsystems when the existing owner can be corrected. Any obsolete owner created by an extraction must be deleted in the same phase, and all audits/docs must point to the single surviving owner.
 
+## CBOT-P4E — Management Command + Remaining Broker Mutation Authority — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — branch verification pending.**
+
+The Indicator's remaining broker mutation paths are now command-only; `ManagementExecutionCoordinator` in the cBot is the single owner for cancellation, full/partial close, SL, absolute TP, TP-by-pips and server TP ladder mutation.
+
+Verification pending before merge: Source / Architecture, Runtime Acceptance, cTrader Compile/Build and CBOT-P4E audit. Target-terminal verification remains manual.
+
+Phase record: `docs/PHASE-CBOT-P4E-MANAGEMENT-AUTHORITY-2026-10-02.md`.
+
+Next staged phase: **CBOT-P5 — Protection / Lifecycle / Recovery completion**.
+
 ## CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to main via PR #196 as 352e6229adcff8a4ebb6ee6e5c71a0e0397dc70b.**
@@ -1971,7 +1983,7 @@ Mxx+1 — Title
 
 # 18. Current Starting Point
 
-**Canonical implementation start: M2 — Repository Hygiene / Dead Code / Ownership, with the mandatory parallel CBOT-P0 separation track active.**
+**Canonical implementation start: M2 — Repository Hygiene / Dead Code / Ownership, with the CBOT separation track active; current execution migration phase is CBOT-P4E.**
 
 M0 — Adoption / Freeze / Baseline, M1 — Full Forensic Audit and CBOT-P0 — Activation / Boundary Lock are **VERIFIED COMPLETE**.
 

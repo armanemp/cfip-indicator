@@ -115,7 +115,9 @@ require(
     "TryAdvanceServerSideTakeProfitLadderAfterTp1(",
     "TryAdvanceServerSideTakeProfitLadder(",
     "TryCollapseServerSideTakeProfitLadderToFinal(",
-    "RelativeTakeProfitProtections(",
+    "tp1Volume",
+    "tp2Volume",
+    "finalPips",
     "TryModifyTakeProfitLadder(",
 )
 server_text = read(SERVER_LADDER)
@@ -185,6 +187,7 @@ allowed = {
     "Trading/Execution/BrokerProtectionCoordinator.cs",
     "Trading/Execution/Aggressive/BoundPlanProtection.cs",
     "Trading/Execution/ServerSideTakeProfitLadder.cs",
+    "Trading/Execution/ManagementCommandRequestCoordinator.cs",
 }
 unexpected = sorted(
     path

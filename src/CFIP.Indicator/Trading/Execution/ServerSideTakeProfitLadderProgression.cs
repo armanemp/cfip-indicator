@@ -111,14 +111,6 @@ namespace cAlgo
 
             try
             {
-                RelativeTakeProfitProtections protections =
-                    new RelativeTakeProfitProtections(
-                        new RelativeTakeProfitProtection(
-                            tp2Volume,
-                            tp2Pips),
-                        new RelativeTakeProfitLastProtection(
-                            finalPips));
-
             if (!PartialTakeProfitRetryRule.ShouldAttemptStage(
                     closedM5,
                     _lastServerTpLadderMutationM5,
@@ -131,7 +123,11 @@ namespace cAlgo
 
                 if (!TryModifyTakeProfitLadder(
                         position,
-                        protections,
+                        tp2Volume,
+                        tp2Pips,
+                        null,
+                        null,
+                        finalPips,
                         "LIVE TARGET PROGRESSION • AFTER TP1"))
                     return false;
 
@@ -266,17 +262,6 @@ namespace cAlgo
 
             try
             {
-                RelativeTakeProfitProtections protections =
-                    new RelativeTakeProfitProtections(
-                        new RelativeTakeProfitProtection(
-                            tp1Volume,
-                            tp1Pips),
-                        new RelativeTakeProfitProtection(
-                            tp2Volume,
-                            tp2Pips),
-                        new RelativeTakeProfitLastProtection(
-                            finalPips));
-
             if (!PartialTakeProfitRetryRule.ShouldAttemptStage(
                     closedM5,
                     _lastServerTpLadderMutationM5,
@@ -289,7 +274,11 @@ namespace cAlgo
 
                 if (!TryModifyTakeProfitLadder(
                         position,
-                        protections,
+                        tp1Volume,
+                        tp1Pips,
+                        tp2Volume,
+                        tp2Pips,
+                        finalPips,
                         "LIVE TARGET PROGRESSION"))
                     return false;
 

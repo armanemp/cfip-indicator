@@ -2522,26 +2522,6 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 
 # Broker mutation boundary checks.
 PRODUCTION_ROOT = ROOT
-MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
-MUTATION_ALLOWED_FILES = {
-    "BrokerPendingOrderCancellation.cs",
-    "BrokerStopLossMutation.cs",
-    "BrokerTakeProfitMutation.cs",
-    "BrokerPositionCloseMutation.cs",
-}
-REQUIRED_BROKER_MUTATION_FILES = {
-    "BrokerPendingOrderCancellation.cs",
-    "BrokerStopLossMutation.cs",
-    "BrokerTakeProfitMutation.cs",
-    "BrokerPositionCloseMutation.cs",
-    "BrokerProtectionCoordinator.cs",
-    "BrokerConfirmationPolicy.cs",
-}
-for filename in REQUIRED_BROKER_MUTATION_FILES:
-    path = MUTATION_ALLOWED_ROOT / filename
-    if not path.exists():
-        raise SystemExit(f"Broker mutation owner missing: {filename}")
-
 BROKER_MUTATION_PATTERNS = (
     r"(?<!Try)ExecuteMarketOrder\s*\(",
     r"(?<!Try)PlaceStopOrder\s*\(",
@@ -2559,12 +2539,19 @@ for p in sorted(PRODUCTION_ROOT.rglob("*.cs")):
         pattern for pattern in BROKER_MUTATION_PATTERNS
         if re.search(pattern, text_module)
     ]
-    if not direct:
-        continue
-    if p.parent != MUTATION_ALLOWED_ROOT or p.name not in MUTATION_ALLOWED_FILES:
+    if direct:
         raise SystemExit(
-            f"Broker mutation escaped boundary: {relative}"
+            f"Indicator direct broker mutation remains: {relative}"
         )
+
+CBOT_MANAGEMENT_OWNER = (
+    ROOT.parent /
+    "CFIP.cBot" /
+    "Execution" /
+    "ManagementExecutionCoordinator.cs"
+)
+if not CBOT_MANAGEMENT_OWNER.exists():
+    raise SystemExit("cBot ManagementExecutionCoordinator is missing after P4E")
 
 EXECUTION_PLAN = ROOT / "Trading" / "Execution" / "ExecutionPlanPreparation.cs"
 if any(re.search(pattern, strip_for_static_checks(EXECUTION_PLAN.read_text(encoding="utf-8")))

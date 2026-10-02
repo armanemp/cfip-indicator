@@ -33,6 +33,7 @@ jobs:
       - run: python tools/audit_phase_cbot_p4b.py
       - run: python tools/audit_phase_cbot_p4c.py
       - run: python tools/audit_phase_cbot_p4d.py
+      - run: python tools/audit_phase_cbot_p4e.py
       - run: python tools/audit_phase_m15_primary_execution_risk_spread.py
       - run: python tools/audit_cbot_demo_live_market.py
       - run: python tools/audit_cbot_contract_schema.py

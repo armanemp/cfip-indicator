@@ -24,20 +24,56 @@ namespace cAlgo
             if (!IsFinitePositive(finalTarget))
                 return false;
 
-            RelativeTakeProfitProtections protections;
-            StopLossBreakEven stopLossBreakEven;
+            RelativeTakeProfitProtections unusedProtections;
+            StopLossBreakEven unusedBreakEven;
 
             if (!TryBuildServerSideTakeProfitLadder(
                     position.EntryPrice,
                     finalTarget,
                     position.VolumeInUnits,
-                    out protections,
-                    out stopLossBreakEven))
+                    out unusedProtections,
+                    out unusedBreakEven))
                 return false;
+
+            double firstVolume =
+                Symbol.NormalizeVolumeInUnits(
+                    position.VolumeInUnits *
+                    PartialCloseTp1Percent /
+                    100.0,
+                    RoundingMode.Down);
+
+            double secondVolume =
+                Symbol.NormalizeVolumeInUnits(
+                    position.VolumeInUnits *
+                    PartialCloseTp2Percent /
+                    100.0,
+                    RoundingMode.Down);
+
+            double firstPips =
+                Math.Abs(
+                    _plan.Tp1 -
+                    position.EntryPrice) /
+                Math.Max(Symbol.PipSize, 1e-9);
+
+            double secondPips =
+                Math.Abs(
+                    _plan.Tp2 -
+                    position.EntryPrice) /
+                Math.Max(Symbol.PipSize, 1e-9);
+
+            double finalPips =
+                Math.Abs(
+                    finalTarget -
+                    position.EntryPrice) /
+                Math.Max(Symbol.PipSize, 1e-9);
 
             if (!TryModifyTakeProfitLadder(
                     position,
-                    protections,
+                    firstVolume,
+                    firstPips,
+                    secondVolume,
+                    secondPips,
+                    finalPips,
                     "PENDING FILL • ABSOLUTE TP LADDER"))
                 return false;
 
