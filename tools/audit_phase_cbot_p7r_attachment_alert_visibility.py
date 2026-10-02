@@ -48,8 +48,7 @@ require(
     "parallel opportunity alert stage missing",
 )
 require(
-    "if (_decision == null)
-                return;" in alerts,
+    "if (_decision == null)" in alerts,
     "decision alert stage must remain guarded by decision availability",
 )
 require(
