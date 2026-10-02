@@ -69,7 +69,8 @@ namespace CFIP.Contracts
         Accepted = 1,
         Rejected = 2,
         Confirmed = 3,
-        RecoveryRequired = 4
+        RecoveryRequired = 4,
+        Expired = 5
     }
 
     public enum LifecycleEventType
