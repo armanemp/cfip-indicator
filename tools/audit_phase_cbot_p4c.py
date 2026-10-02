@@ -20,6 +20,7 @@ placement = read(IND / "Trading/Pending/Placement/ContinuationStopPlacement.cs")
 orchestrator = read(IND / "Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs")
 prep = read(IND / "Trading/Pending/Placement/ContinuationStopPreparation.cs")
 provider = read(IND / "Runtime/Provider/CFIPReadOnlyProviderRefresh.cs")
+provider_plan = read(IND / "Runtime/Provider/CFIPReadOnlyProviderPlan.cs")
 price_rule = read(IND / "Core/Math/PendingEntryPriceRule.cs")
 timeframe = read(IND / "Core/Math/ExecutionTimeframePolicy.cs")
 bot = read(BOT / "CFIPExecutionBot.cs")
@@ -68,6 +69,11 @@ check("ExecutionTimeframePolicy.PrimaryExecution" in provider,
       "provider identity must use internal M15 execution clock")
 check("Bars.TimeFrame" not in provider,
       "provider identity must not read host Chart TF")
+check("ManagedExecutionLabel()" in provider_plan and
+      "executionLabel," in provider_plan,
+      "provider must transport the canonical instance-scoped broker label")
+check("envelope.Intent.ExecutionLabel" in pending,
+      "cBot Pending Stop must consume the transported instance-scoped broker label")
 check(not (IND / "Trading/Execution/BrokerPendingOrderPlacement.cs").exists(),
       "migrated Indicator Pending Stop broker owner must be deleted")
 check("ExecuteMarketOrder(" in market,
