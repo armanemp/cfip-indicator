@@ -2523,14 +2523,14 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 # Broker mutation boundary checks.
 PRODUCTION_ROOT = ROOT
 BROKER_MUTATION_PATTERNS = (
-    r"(?<!Try)ExecuteMarketOrder\\s*\\(",
-    r"(?<!Try)PlaceStopOrder\\s*\\(",
-    r"(?<!Try)PlaceLimitOrder\\s*\\(",
-    r"(?<!Try)ModifyStopLossPrice\\s*\\(",
-    r"(?<!Try)ModifyTakeProfitPrice\\s*\\(",
-    r"(?<!Try)ModifyPendingOrder\\s*\\(",
-    r"(?<!Try)CancelPendingOrder\\s*\\(",
-    r"(?<!Try)ClosePosition\\s*\\(",
+    r"(?<!Try)ExecuteMarketOrder\s*\(",
+    r"(?<!Try)PlaceStopOrder\s*\(",
+    r"(?<!Try)PlaceLimitOrder\s*\(",
+    r"(?<!Try)ModifyStopLossPrice\s*\(",
+    r"(?<!Try)ModifyTakeProfitPrice\s*\(",
+    r"(?<!Try)ModifyPendingOrder\s*\(",
+    r"(?<!Try)CancelPendingOrder\s*\(",
+    r"(?<!Try)ClosePosition\s*\(",
 )
 for p in sorted(PRODUCTION_ROOT.rglob("*.cs")):
     relative = p.relative_to(ROOT)
