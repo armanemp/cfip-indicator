@@ -15,14 +15,6 @@ namespace cAlgo
             if (!TryPrepareReversalLimit(closedM5, out direction, out atr, out targetEntry, out stop, out target, out _, out _, out volume, out pendingIntent))
                 return false;
 
-            if (pendingIntent == null)
-                return false;
-
-            targetEntry = pendingIntent.RequestedEntry;
-            stop = pendingIntent.Stop;
-            target = pendingIntent.Target;
-            volume = pendingIntent.Volume;
-
             TradeType type = direction == 1 ? TradeType.Buy : TradeType.Sell;
             double entry = direction == 1 ? Symbol.Bid : Symbol.Ask;
             Plan pendingSnapshot =
