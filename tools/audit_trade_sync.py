@@ -119,8 +119,8 @@ check(
 )
 
 check(
-    "cBot has a human-readable cTrader name",
-    'Name = "CFIP Execution cBot"' in cbot and
+    "cBot uses a human-readable build identity",
+    "class CFIPExecutionBot" in cbot and
     "<AssemblyName>CFIPExecutionBot</AssemblyName>" in cbot_project
 )
 
