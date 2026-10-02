@@ -1,6 +1,6 @@
 # CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **IMPLEMENTATION COMPLETE — final CI verification rerun.**
 
 ## Scope
 
@@ -73,3 +73,6 @@ Target-terminal manual checks remain required for:
 No profitability claim is made from this structural phase alone.
 
 Next staged execution migration: **CBOT-P4D — Pending Limit authority extraction**.
+
+
+Final verification rerun is intentionally tied to the latest branch head after all audit-owner reconciliation commits.
