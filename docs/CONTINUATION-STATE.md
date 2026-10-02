@@ -2,7 +2,7 @@
 
 Status: **VERIFIED COMPLETE — merged to `main` in implementation commit `0a45bb251d28a5542fa7580d886d3af8b25184b7`.**
 
-M15 is now the canonical execution timeframe. M5/M1 are defensive tuning inputs and H1+ remains higher-timeframe context/reward support. The cBot default/guard is M15.
+M15 is now the canonical internal execution clock. M5/M1 are defensive tuning inputs and H1+ remains higher-timeframe context/reward support. Indicator/cBot can be attached to any Chart TF; Chart TF is not an execution input.
 
 The same phase adds spread-aware net reward/effective RR and a broker-side final margin cap that can only reduce the requested exposure.
 
