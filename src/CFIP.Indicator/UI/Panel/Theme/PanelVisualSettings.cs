@@ -58,15 +58,24 @@ namespace cAlgo
                                                                 40,
                                                                 PanelToggleWidth));
                                         
+                                                    int alertRailHeight =
+                                                        GetPanelAlertMessageRailHeight();
+
                                                     int buttonContentHeight =
                                                         Math.Max(
                                                             buttonHeight,
-                                                            ShowPanelToggleButton
-                                                                ? toggleHeight
-                                                                : 0);
-                                        
+                                                            Math.Max(
+                                                                ShowPanelToggleButton
+                                                                    ? toggleHeight
+                                                                    : 0,
+                                                                alertRailHeight));
+
+                                                    bool hasBottomContent =
+                                                        ShowPanelToggleButton ||
+                                                        alertRailHeight > 0;
+
                                                     int buttonAreaHeight =
-                                                        buttons
+                                                        hasBottomContent
                                                             ? buttonContentHeight +
                                                               buttonMargin * 2
                                                             : 0;
@@ -126,7 +135,8 @@ namespace cAlgo
                                                         contentWidth);
 
                                                     _buttonStack.IsVisible =
-                                                        buttons;
+                                                        ShowPanelToggleButton ||
+                                                        GetPanelAlertMessageRailHeight() > 0;
 
                                                     ApplyPanelActionButtonsLayout(
                                                         buttonMargin,
@@ -135,6 +145,12 @@ namespace cAlgo
                                                         border,
                                                         borderAlpha,
                                                         buttonGap);
+
+                                                    ApplyPanelAlertMessageRailLayout(
+                                                        contentWidth,
+                                                        buttonGap,
+                                                        buttonMargin,
+                                                        toggleWidth);
 
                                                     ApplyPanelRestoreButtonLayout(
                                                         borderAlpha,
