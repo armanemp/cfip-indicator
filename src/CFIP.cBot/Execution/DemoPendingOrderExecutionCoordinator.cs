@@ -8,12 +8,14 @@ namespace CFIP.cBot.Execution
     internal sealed class DemoPendingOrderExecutionCoordinator
     {
         private const int MaxRememberedKeys = 128;
+
         private readonly HashSet<string> _rememberedKeys =
             new HashSet<string>(StringComparer.Ordinal);
+
         private readonly Queue<string> _rememberedOrder =
             new Queue<string>();
 
-        public bool TryExecuteStop(
+        public bool TryExecute(
             Robot robot,
             SignalEnvelope envelope,
             DateTime nowUtc,
@@ -34,29 +36,39 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (envelope.Intent.Action != ExecutionAction.PendingStop)
+            ExecutionAction action =
+                envelope.Intent.Action;
+
+            if (action != ExecutionAction.PendingStop &&
+                action != ExecutionAction.PendingLimit)
             {
-                reason = "PENDING STOP ACTION REQUIRED";
+                reason =
+                    "PENDING STOP OR LIMIT ACTION REQUIRED";
                 return false;
             }
 
-            string key = envelope.Identity.IdempotencyKey;
+            string key =
+                envelope.Identity.IdempotencyKey;
+
             if (string.IsNullOrWhiteSpace(key))
             {
-                reason = "MISSING IDEMPOTENCY KEY";
+                reason =
+                    "MISSING IDEMPOTENCY KEY";
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(
                     envelope.Identity.ScenarioId))
             {
-                reason = "MISSING SCENARIO ID";
+                reason =
+                    "MISSING SCENARIO ID";
                 return false;
             }
 
             if (_rememberedKeys.Contains(key))
             {
-                reason = "DUPLICATE IDEMPOTENCY KEY";
+                reason =
+                    "DUPLICATE IDEMPOTENCY KEY";
                 return false;
             }
 
@@ -66,44 +78,53 @@ namespace CFIP.cBot.Execution
             if (string.IsNullOrWhiteSpace(
                     executionLabel))
             {
-                reason = "MISSING EXECUTION LABEL";
+                reason =
+                    "MISSING EXECUTION LABEL";
                 return false;
             }
 
-            if (!IsFinitePositivePendingExecution(envelope.Intent.RequestedEntry) ||
-                !IsFinitePositivePendingExecution(envelope.Intent.Stop) ||
-                !IsFinitePositivePendingExecution(envelope.Intent.InitialTarget) ||
+            if (!IsFinitePositivePendingExecution(
+                    envelope.Intent.RequestedEntry) ||
+                !IsFinitePositivePendingExecution(
+                    envelope.Intent.Stop) ||
+                !IsFinitePositivePendingExecution(
+                    envelope.Intent.InitialTarget) ||
                 !envelope.Intent.RequestedVolume.HasValue ||
-                !IsFinitePositivePendingExecution(envelope.Intent.RequestedVolume.Value))
+                !IsFinitePositivePendingExecution(
+                    envelope.Intent.RequestedVolume.Value))
             {
-                reason = "INVALID PENDING STOP GEOMETRY OR VOLUME";
+                reason =
+                    "INVALID PENDING GEOMETRY OR VOLUME";
                 return false;
             }
 
-            TradeType tradeType =
-                envelope.Identity.Direction == TradeDirection.Buy
-                    ? TradeType.Buy
-                    : envelope.Identity.Direction == TradeDirection.Sell
-                        ? TradeType.Sell
-                        : (TradeType)(-1);
-
-            if (envelope.Identity.Direction == TradeDirection.None)
+            if (envelope.Identity.Direction !=
+                    TradeDirection.Buy &&
+                envelope.Identity.Direction !=
+                    TradeDirection.Sell)
             {
-                reason = "INVALID PENDING STOP DIRECTION";
+                reason =
+                    "INVALID PENDING DIRECTION";
                 return false;
             }
 
-            if (!IsFinitePositivePendingExecution(robot.Symbol.Bid) ||
-                !IsFinitePositivePendingExecution(robot.Symbol.Ask) ||
-                !IsFinitePositivePendingExecution(robot.Symbol.PipSize) ||
-                robot.Symbol.Ask < robot.Symbol.Bid)
+            if (!IsFinitePositivePendingExecution(
+                    robot.Symbol.Bid) ||
+                !IsFinitePositivePendingExecution(
+                    robot.Symbol.Ask) ||
+                !IsFinitePositivePendingExecution(
+                    robot.Symbol.PipSize) ||
+                robot.Symbol.Ask <
+                    robot.Symbol.Bid)
             {
-                reason = "INVALID LIVE QUOTE";
+                reason =
+                    "INVALID LIVE QUOTE";
                 return false;
             }
 
-            double liveExecutableReference =
-                envelope.Identity.Direction == TradeDirection.Buy
+            double executableReference =
+                envelope.Identity.Direction ==
+                    TradeDirection.Buy
                     ? robot.Symbol.Ask
                     : robot.Symbol.Bid;
 
@@ -112,18 +133,49 @@ namespace CFIP.cBot.Execution
                     robot.Symbol.TickSize,
                     robot.Symbol.PipSize * 0.10);
 
-            bool correctSide =
-                envelope.Identity.Direction == TradeDirection.Buy
-                    ? envelope.Intent.RequestedEntry >
-                      liveExecutableReference + minimumOffset
-                    : envelope.Intent.RequestedEntry <
-                      liveExecutableReference - minimumOffset;
+            bool correctSide;
+
+            if (action ==
+                ExecutionAction.PendingStop)
+            {
+                correctSide =
+                    envelope.Identity.Direction ==
+                        TradeDirection.Buy
+                        ? envelope.Intent.RequestedEntry >
+                          executableReference +
+                          minimumOffset
+                        : envelope.Intent.RequestedEntry <
+                          executableReference -
+                          minimumOffset;
+            }
+            else
+            {
+                correctSide =
+                    envelope.Identity.Direction ==
+                        TradeDirection.Buy
+                        ? envelope.Intent.RequestedEntry <
+                          executableReference -
+                          minimumOffset
+                        : envelope.Intent.RequestedEntry >
+                          executableReference +
+                          minimumOffset;
+            }
 
             if (!correctSide)
             {
-                reason = "PENDING STOP TRIGGER NOT AHEAD OF EXECUTABLE QUOTE";
+                reason =
+                    action ==
+                        ExecutionAction.PendingStop
+                        ? "PENDING STOP TRIGGER NOT AHEAD OF EXECUTABLE QUOTE"
+                        : "PENDING LIMIT ENTRY NOT BEYOND EXECUTABLE QUOTE";
                 return false;
             }
+
+            TradeType tradeType =
+                envelope.Identity.Direction ==
+                    TradeDirection.Buy
+                    ? TradeType.Buy
+                    : TradeType.Sell;
 
             double stopPips =
                 Math.Abs(
@@ -137,26 +189,34 @@ namespace CFIP.cBot.Execution
                     envelope.Intent.RequestedEntry) /
                 robot.Symbol.PipSize;
 
-            if (!IsFinitePositivePendingExecution(stopPips) ||
-                !IsFinitePositivePendingExecution(targetPips))
+            if (!IsFinitePositivePendingExecution(
+                    stopPips) ||
+                !IsFinitePositivePendingExecution(
+                    targetPips))
             {
-                reason = "INVALID PENDING STOP DISTANCES";
+                reason =
+                    "INVALID PENDING STOP/TARGET DISTANCES";
                 return false;
             }
 
             if (envelope.Identity.ExpiryUtc.HasValue &&
                 envelope.Identity.ExpiryUtc.Value <= nowUtc)
             {
-                reason = "PENDING STOP EXPIRED";
+                reason =
+                    "PENDING INTENT EXPIRED";
                 return false;
             }
 
             if (envelope.Intent.ExpiryUtc.HasValue &&
                 envelope.Intent.ExpiryUtc.Value <= nowUtc)
             {
-                reason = "PENDING STOP INTENT EXPIRED";
+                reason =
+                    "PENDING INTENT EXPIRED";
                 return false;
             }
+
+            double volume;
+            string marginReason;
 
             if (!BrokerExecutionSafety.TryConstrainVolumeForMargin(
                     robot,
@@ -164,9 +224,13 @@ namespace CFIP.cBot.Execution
                     envelope.Intent.RequestedVolume.Value,
                     maximumMarginUsagePercent,
                     marginBufferPercent,
-                    out double volume,
-                    out reason))
+                    out volume,
+                    out marginReason))
+            {
+                reason =
+                    marginReason;
                 return false;
+            }
 
             int managedPositions =
                 BrokerExecutionSafety.CountManagedPositions(
@@ -178,42 +242,72 @@ namespace CFIP.cBot.Execution
                     robot,
                     executionLabel);
 
-            if (managedPositions + managedPending >= 1)
+            if (managedPositions +
+                managedPending >= 1)
             {
-                reason = "SINGLE-PLAN CAPACITY BLOCKED";
+                reason =
+                    "SINGLE-PLAN CAPACITY BLOCKED";
                 return false;
             }
 
-            string label = executionLabel + "-PENDING";
+            string label =
+                executionLabel + "-PENDING";
+
             DateTime? expiration =
-                envelope.Intent.ExpiryUtc ?? envelope.Identity.ExpiryUtc;
+                envelope.Intent.ExpiryUtc ??
+                envelope.Identity.ExpiryUtc;
 
             TradeResult result;
+
             try
             {
-                result = robot.PlaceStopOrder(
-                    tradeType,
-                    robot.SymbolName,
-                    volume,
-                    envelope.Intent.RequestedEntry,
-                    label,
-                    stopPips,
-                    targetPips,
-                    ProtectionType.Relative,
-                    expiration,
-                    "CFIP DEMO PENDING STOP",
-                    false);
+                result =
+                    action ==
+                        ExecutionAction.PendingStop
+                        ? robot.PlaceStopOrder(
+                            tradeType,
+                            robot.SymbolName,
+                            volume,
+                            envelope.Intent.RequestedEntry,
+                            label,
+                            stopPips,
+                            targetPips,
+                            ProtectionType.Relative,
+                            expiration,
+                            "CFIP DEMO PENDING STOP",
+                            false)
+                        : robot.PlaceLimitOrder(
+                            tradeType,
+                            robot.SymbolName,
+                            volume,
+                            envelope.Intent.RequestedEntry,
+                            label,
+                            stopPips,
+                            targetPips,
+                            ProtectionType.Relative,
+                            expiration,
+                            "CFIP DEMO PENDING LIMIT",
+                            false);
             }
             catch (Exception ex)
             {
                 Remember(key);
-                reason = "PENDING STOP SUBMISSION EXCEPTION";
-                report = BuildReport(
-                    envelope,
-                    BrokerReportStatus.RecoveryRequired,
-                    nowUtc,
-                    null,
-                    ex.Message);
+
+                reason =
+                    action ==
+                        ExecutionAction.PendingStop
+                        ? "PENDING STOP SUBMISSION EXCEPTION"
+                        : "PENDING LIMIT SUBMISSION EXCEPTION";
+
+                report =
+                    BuildReport(
+                        envelope,
+                        action,
+                        BrokerReportStatus.RecoveryRequired,
+                        nowUtc,
+                        null,
+                        ex.Message);
+
                 return false;
             }
 
@@ -221,13 +315,21 @@ namespace CFIP.cBot.Execution
 
             if (result == null)
             {
-                reason = "NULL PENDING STOP RESULT";
-                report = BuildReport(
-                    envelope,
-                    BrokerReportStatus.RecoveryRequired,
-                    nowUtc,
-                    null,
-                    reason);
+                reason =
+                    action ==
+                        ExecutionAction.PendingStop
+                        ? "NULL PENDING STOP RESULT"
+                        : "NULL PENDING LIMIT RESULT";
+
+                report =
+                    BuildReport(
+                        envelope,
+                        action,
+                        BrokerReportStatus.RecoveryRequired,
+                        nowUtc,
+                        null,
+                        reason);
+
                 return false;
             }
 
@@ -237,56 +339,114 @@ namespace CFIP.cBot.Execution
                 reason =
                     result.Error.HasValue
                         ? result.Error.Value.ToString()
-                        : "BROKER REJECTED PENDING STOP";
-                report = BuildReport(
-                    envelope,
-                    BrokerReportStatus.Rejected,
-                    nowUtc,
-                    result,
-                    reason);
+                        : action ==
+                            ExecutionAction.PendingStop
+                            ? "BROKER REJECTED PENDING STOP"
+                            : "BROKER REJECTED PENDING LIMIT";
+
+                report =
+                    BuildReport(
+                        envelope,
+                        action,
+                        BrokerReportStatus.Rejected,
+                        nowUtc,
+                        result,
+                        reason);
+
                 return false;
             }
 
-            reason = "PENDING ORDER #" + result.PendingOrder.Id;
-            report = BuildReport(
-                envelope,
-                BrokerReportStatus.Confirmed,
-                nowUtc,
-                result,
-                reason);
+            reason =
+                action ==
+                    ExecutionAction.PendingStop
+                    ? "PENDING STOP #" +
+                      result.PendingOrder.Id
+                    : "PENDING LIMIT #" +
+                      result.PendingOrder.Id;
+
+            report =
+                BuildReport(
+                    envelope,
+                    action,
+                    BrokerReportStatus.Confirmed,
+                    nowUtc,
+                    result,
+                    reason);
+
             return true;
+        }
+
+        // Compatibility wrapper for the previously extracted Pending Stop path.
+        // The mutation owner remains this single coordinator.
+        public bool TryExecuteStop(
+            Robot robot,
+            SignalEnvelope envelope,
+            DateTime nowUtc,
+            double maximumMarginUsagePercent,
+            double marginBufferPercent,
+            out BrokerExecutionReport report,
+            out string reason)
+        {
+            if (envelope == null ||
+                envelope.Intent == null ||
+                envelope.Intent.Action !=
+                    ExecutionAction.PendingStop)
+            {
+                report = null;
+                reason = "PENDING STOP ACTION REQUIRED";
+                return false;
+            }
+
+            return TryExecute(
+                robot,
+                envelope,
+                nowUtc,
+                maximumMarginUsagePercent,
+                marginBufferPercent,
+                out report,
+                out reason);
         }
 
         private static BrokerExecutionReport BuildReport(
             SignalEnvelope envelope,
+            ExecutionAction action,
             BrokerReportStatus status,
             DateTime nowUtc,
             TradeResult result,
             string reason)
         {
             long? pendingId =
-                result != null && result.PendingOrder != null
+                result != null &&
+                result.PendingOrder != null
                     ? result.PendingOrder.Id
                     : (long?)null;
 
             return new BrokerExecutionReport(
                 envelope.Identity,
-                BrokerAction.SubmitPendingStop,
+                action ==
+                    ExecutionAction.PendingLimit
+                    ? BrokerAction.SubmitPendingLimit
+                    : BrokerAction.SubmitPendingStop,
                 status,
                 nowUtc,
                 nowUtc,
-                status == BrokerReportStatus.Confirmed
+                status ==
+                    BrokerReportStatus.Confirmed
                     ? nowUtc
                     : (DateTime?)null,
-                result != null && result.Position != null
+                result != null &&
+                result.Position != null
                     ? result.Position.Id
                     : (long?)null,
                 pendingId,
                 null,
                 null,
                 null,
-                pendingId.HasValue ? pendingId.Value.ToString() : "",
-                result != null && result.Error.HasValue
+                pendingId.HasValue
+                    ? pendingId.Value.ToString()
+                    : "",
+                result != null &&
+                result.Error.HasValue
                     ? result.Error.Value.ToString()
                     : "",
                 reason,
@@ -299,15 +459,22 @@ namespace CFIP.cBot.Execution
                 return;
 
             _rememberedOrder.Enqueue(key);
-            while (_rememberedOrder.Count > MaxRememberedKeys)
-                _rememberedKeys.Remove(_rememberedOrder.Dequeue());
+
+            while (_rememberedOrder.Count >
+                   MaxRememberedKeys)
+            {
+                _rememberedKeys.Remove(
+                    _rememberedOrder.Dequeue());
+            }
         }
 
-        private static bool IsFinitePositivePendingExecution(double value)
+        private static bool IsFinitePositivePendingExecution(
+            double value)
         {
-            return !double.IsNaN(value) &&
-                   !double.IsInfinity(value) &&
-                   value > 0;
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                value > 0;
         }
     }
 }
