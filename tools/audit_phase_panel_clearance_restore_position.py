@@ -22,8 +22,10 @@ restore = read("src/CFIP.Indicator/UI/Panel/Theme/PanelRestoreButtonLayout.cs")
 workflow = read(".github/workflows/source-check.yml")
 phase = read("docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md")
 
-m = re.search(r"PanelBottomClearances*=s*(d+)", constants)
-require(m and int(m.group(1)) == 50, "panel bottom clearance must be exactly 50px")
+require(
+    "private const int PanelBottomClearance = 50;" in constants,
+    "panel bottom clearance must be exactly 50px",
+)
 
 require(
     "PanelBottomClearance" in surface and
@@ -32,8 +34,10 @@ require(
     "50px panel clearance must remain an internal bottom margin",
 )
 
-m = re.search(r"PanelRestoreBottomClearances*=s*(d+)", constants)
-require(m and int(m.group(1)) == 50, "hidden restore button bottom clearance must be 50px")
+require(
+    "private const int PanelRestoreBottomClearance = 50;" in constants,
+    "hidden restore button bottom clearance must be 50px",
+)
 
 require(
     "PanelRestoreBottomClearance" in layout and
