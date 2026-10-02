@@ -234,25 +234,27 @@ namespace cAlgo
                 Tp4 = IsFinitePositive(tp4)
                     ? NormalizePrice(tp4)
                     : 0,
-                Risk = Math.Max(
-                    Symbol.PipSize,
-                    risk),
+                Risk = risk,
                 Tp1RR =
-                    IsFinitePositive(tp1)
-                        ? Math.Abs(tp1 - entry) / risk
-                        : 0,
+                    RiskRewardGeometryRule.CalculateNominalRR(
+                        entry,
+                        tp1,
+                        risk),
                 Tp2RR =
-                    IsFinitePositive(tp2)
-                        ? Math.Abs(tp2 - entry) / risk
-                        : 0,
+                    RiskRewardGeometryRule.CalculateNominalRR(
+                        entry,
+                        tp2,
+                        risk),
                 Tp3RR =
-                    IsFinitePositive(tp3)
-                        ? Math.Abs(tp3 - entry) / risk
-                        : 0,
+                    RiskRewardGeometryRule.CalculateNominalRR(
+                        entry,
+                        tp3,
+                        risk),
                 Tp4RR =
-                    IsFinitePositive(tp4)
-                        ? Math.Abs(tp4 - entry) / risk
-                        : 0,
+                    RiskRewardGeometryRule.CalculateNominalRR(
+                        entry,
+                        tp4,
+                        risk),
                 StopQuality = 100,
                 Tp1Quality = 100,
                 Tp2Quality = 100,
