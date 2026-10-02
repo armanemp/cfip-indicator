@@ -1851,7 +1851,7 @@ Phase record: `docs/PHASE-CI-19-SIGNAL-TARGET-QUALITY-COHERENCE-2026-10-02.md`.
 
 Status: IMPLEMENTATION COMPLETE — verification pending for the CI20C branch.
 
-CI20C establishes explicit same-chart cBot presence detection using cTrader `ChartRobots`, separates that from heartbeat freshness, makes Indicator execution capability require a Running cBot plus fresh state, and adds event-driven cBot rebind on Indicator Added/Removed/Modified.
+CI20C establishes explicit same-chart exact-instance cBot binding and heartbeat freshness are separated, makes Indicator execution capability require a Running cBot plus fresh state, and adds event-driven cBot rebind on Indicator Added/Removed/Modified.
 
 The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTING**, and **CONNECTED** instead of conflating these states.
 
