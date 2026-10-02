@@ -10,7 +10,7 @@ namespace CFIP.cBot.Shadow.Tests
             new DateTime(2026, 10, 2, 4, 0, 0, DateTimeKind.Utc);
 
         private static ShadowBrokerSnapshot Safe =
-            new ShadowBrokerSnapshot(true, 0, 0, "XAUUSD", 2650, 2650.1, 0.1);
+            new ShadowBrokerSnapshot(0, 0, "XAUUSD", 2650, 2650.1, 0.1);
 
         private static void Main()
         {
@@ -21,7 +21,6 @@ namespace CFIP.cBot.Shadow.Tests
             Version();
             IdentityMismatch();
             Symbol();
-            Permission();
             Capacity();
             Quote();
             WrongSide();
@@ -132,25 +131,10 @@ namespace CFIP.cBot.Shadow.Tests
                    "wrong symbol must block");
         }
 
-        private static void Permission()
-        {
-            ShadowBrokerSnapshot broker =
-                new ShadowBrokerSnapshot(false, 0, 0, "XAUUSD", 2650, 2650.1, 0.1);
-
-            ShadowHostResult r = Validate(
-                Build(1, TradeDirection.Buy, ExecutionAction.Market, "K8",
-                    Now.AddMinutes(5), 100, 99, 101, SignalStage.Confirmed),
-                broker);
-
-            Assert(r.State == ShadowHostState.Blocked &&
-                   r.Reason == "TRADING PERMISSION BLOCKED",
-                   "trading permission block must be explicit");
-        }
-
         private static void Capacity()
         {
             ShadowBrokerSnapshot broker =
-                new ShadowBrokerSnapshot(true, 1, 0, "XAUUSD", 2650, 2650.1, 0.1);
+                new ShadowBrokerSnapshot(1, 0, "XAUUSD", 2650, 2650.1, 0.1);
 
             ShadowHostResult r = Validate(
                 Build(1, TradeDirection.Buy, ExecutionAction.Market, "K9",
@@ -165,7 +149,7 @@ namespace CFIP.cBot.Shadow.Tests
         private static void Quote()
         {
             ShadowBrokerSnapshot broker =
-                new ShadowBrokerSnapshot(true, 0, 0, "XAUUSD", double.NaN, 2650.1, 0.1);
+                new ShadowBrokerSnapshot(0, 0, "XAUUSD", double.NaN, 2650.1, 0.1);
 
             ShadowHostResult r = Validate(
                 Build(1, TradeDirection.Buy, ExecutionAction.Market, "K10",
@@ -250,7 +234,7 @@ namespace CFIP.cBot.Shadow.Tests
             ShadowHostResult blocked =
                 c.Observe(
                     e,
-                    new ShadowBrokerSnapshot(true, 1, 0, "XAUUSD", 2650, 2650.1, 0.1),
+                    new ShadowBrokerSnapshot(1, 0, "XAUUSD", 2650, 2650.1, 0.1),
                     ContractVersion.Current,
                     6,
                     Now);
