@@ -8,7 +8,6 @@ using CFIP.cBot.Shadow;
 namespace CFIP.cBot
 {
     [Robot(
-        Name = "CFIP Execution cBot",
         TimeZone = TimeZones.UTC,
         AccessRights = AccessRights.None)]
     public sealed class CFIPExecutionBot : Robot
