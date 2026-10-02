@@ -6497,9 +6497,10 @@ namespace cAlgo
                 File.ReadAllText(planEligibilityPath);
 
             Assert(
-                planEligibility.Contains("if (!_decision.TriggerReady)") &&
-                planEligibility.Contains("return false;"),
-                "execution plan creation remains TriggerReady-gated even while preview is visible");
+                planEligibility.Contains("EntryActionabilityPolicy.RequiresConfirmedTrigger(") &&
+                planEligibility.Contains("M5OnlyConfirmedTrigger") &&
+                !planEligibility.Contains("if (!_decision.TriggerReady)"),
+                "execution plan creation uses mode-aware trigger gating while preview remains pre-trigger");
 
             Assert(
                 !File.ReadAllText(
