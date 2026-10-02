@@ -1867,7 +1867,7 @@ Implementation branch: phase/m4-time-session-history-persistence-2026-10-02.
 Completed in this phase:
 - CanonicalTimeRule owns UTC normalization and UTC trading-day/90-day period boundaries.
 - Session/EOD, DailyLoss, archive and related timing owners consume the same canonical time semantics.
-- DailyLoss persistence is account-scope aware and safely migrates the former account-number-only key.
+- DailyLoss persistence is account-scope aware; the former account-number-only key is intentionally not auto-adopted because broker ownership cannot be proven safely.
 - Deterministic M4 runtime contracts and accumulated full-chain audit are added.
 
 Verification/manual boundary:
