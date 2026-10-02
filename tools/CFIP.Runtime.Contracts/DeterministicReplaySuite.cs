@@ -811,6 +811,7 @@ namespace cAlgo
                 RiskPips = riskPips;
                 TargetPips = targetPips;
                 Spread = spread;
+                Fingerprint = string.Empty;
                 Fingerprint = Serialize();
             }
 
@@ -829,6 +830,8 @@ namespace cAlgo
 
             internal static ReplayGeometrySnapshot Create(
                 ReplayPlanGeometry geometry,
+                ExecutionMode entryMode,
+                bool entryLate,
                 RiskRewardMathResult rr,
                 ExecutionIntentGeometryResult intent,
                 double spread)
@@ -923,6 +926,8 @@ namespace cAlgo
                 Decision = decision;
                 Trigger = trigger;
                 Geometry = geometry;
+                EntryMode = entryMode;
+                EntryLate = entryLate;
                 Risk = rr.Risk;
                 Reward = rr.Reward;
                 NominalRR = rr.NominalRR;
@@ -955,6 +960,8 @@ namespace cAlgo
             internal ReplayDecisionSnapshot Decision { get; }
             internal ReplayTriggerSnapshot Trigger { get; }
             internal ReplayPlanGeometry Geometry { get; }
+            internal ExecutionMode EntryMode { get; }
+            internal bool EntryLate { get; }
             internal double Risk { get; }
             internal double Reward { get; }
             internal double NominalRR { get; }
@@ -990,6 +997,8 @@ namespace cAlgo
                 builder.Append(Decision.Serialize()).Append("|");
                 builder.Append(Trigger.Serialize()).Append("|");
                 builder.Append(Geometry.Serialize()).Append("|");
+                builder.Append(EntryMode.ToString()).Append("|");
+                builder.Append(EntryLate).Append("|");
                 builder.Append(F(Risk)).Append("|");
                 builder.Append(F(Reward)).Append("|");
                 builder.Append(F(NominalRR)).Append("|");
@@ -1104,24 +1113,24 @@ namespace cAlgo
                 if (ScenarioName == "fast breakout")
                 {
                     Assert(
-                        Geometry.Mode == ExecutionMode.BreakoutMarket &&
-                        !Geometry.IsLate,
+                        EntryMode == ExecutionMode.BreakoutMarket &&
+                        !EntryLate,
                         "CI-16 fast breakout resolves to timely breakout geometry");
                 }
 
                 if (ScenarioName == "slow breakout")
                 {
                     Assert(
-                        Geometry.Mode == ExecutionMode.BreakoutMarket &&
-                        !Geometry.IsLate,
+                        EntryMode == ExecutionMode.BreakoutMarket &&
+                        !EntryLate,
                         "CI-16 slow breakout resolves to breakout geometry");
                 }
 
                 if (ScenarioName == "retest")
                 {
                     Assert(
-                        Geometry.Mode == ExecutionMode.RetestMarket &&
-                        !Geometry.IsLate,
+                        EntryMode == ExecutionMode.RetestMarket &&
+                        !EntryLate,
                         "CI-16 retest resolves to retest geometry");
                 }
 
