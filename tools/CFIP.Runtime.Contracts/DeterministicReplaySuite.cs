@@ -1091,10 +1091,50 @@ namespace cAlgo
                     ScenarioName);
 
                 Assert(
-                    Trigger.M5Ready == Decision.Blocked ||
-                    Trigger.Confirmed == false ||
-                    Trigger.Confirmed == true,
-                    "CI-16 trigger state is explicit: " + ScenarioName);
+                    Trigger.M5Ready &&
+                    (!Trigger.UseM1 || Trigger.Confirmed),
+                    "CI-16 trigger readiness is explicit for actionable replay inputs: " + ScenarioName);
+
+                if (ScenarioName == "fast breakout")
+                {
+                    Assert(
+                        Geometry.Mode == ExecutionMode.BreakoutMarket &&
+                        !Geometry.IsLate,
+                        "CI-16 fast breakout resolves to timely breakout geometry");
+                }
+
+                if (ScenarioName == "slow breakout")
+                {
+                    Assert(
+                        Geometry.Mode == ExecutionMode.BreakoutMarket &&
+                        !Geometry.IsLate,
+                        "CI-16 slow breakout resolves to breakout geometry");
+                }
+
+                if (ScenarioName == "retest")
+                {
+                    Assert(
+                        Geometry.Mode == ExecutionMode.RetestMarket &&
+                        !Geometry.IsLate,
+                        "CI-16 retest resolves to retest geometry");
+                }
+
+                if (ScenarioName == "high spread")
+                {
+                    Assert(
+                        EffectiveRR < NominalRR &&
+                        EffectiveRR >= MinimumRr,
+                        "CI-16 high spread reduces effective RR without crossing the minimum");
+                }
+
+                if (ScenarioName == "range market" ||
+                    ScenarioName == "compression" ||
+                    ScenarioName == "weak single-zone setup")
+                {
+                    Assert(
+                        !Actionable,
+                        "CI-16 non-trending/weak fixtures remain non-actionable");
+                }
 
                 if (ScenarioName == "M1 confirmation late in M5")
                 {
