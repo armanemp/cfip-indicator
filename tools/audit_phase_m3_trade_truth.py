@@ -16,9 +16,11 @@ contracts = read("src/CFIP.Contracts/AlertEnvelope.cs")
 delivery = read("src/CFIP.Indicator/Core/Runtime/AlertDelivery.cs")
 queue = read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs")
 alerts = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
+alert_identity = read("src/CFIP.Indicator/Trading/Alerts/CanonicalAlertEnvelopeBuilder.cs")
 processor = read("src/CFIP.Indicator/UI/Popup/AlertDeliveryProcessor.cs")
 snapshot = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs")
 snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
+visual_identity = read("src/CFIP.Indicator/UI/Chart/SignalVisualIdentityBuilder.cs")
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 closed = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
@@ -54,6 +56,13 @@ require(
 )
 
 require(
+    "BuildCanonicalAlertEnvelope(" in alert_identity and
+    "IsBlockedCandidateAlert(" in alert_identity and
+    "ResolveAlertSignalStage(" in alert_identity,
+    "M3: canonical alert identity/blocked-stage owner is incomplete",
+)
+
+require(
     "Notifications.PlaySound" not in alerts and
     "ProcessQueuedAlertDelivery();" in cycle,
     "M3: sound must stay transport-owned by the queued delivery processor",
@@ -80,15 +89,17 @@ require(
     "public string PlanId;" in snapshot and
     "public string SourceTimeframe;" in snapshot and
     "public long Revision;" in snapshot and
-    "PopulateCanonicalVisualIdentity(" in snapshot_builder,
+    "PopulateCanonicalVisualIdentity(" in snapshot_builder and
+    "ResolveProviderSignalId(" in visual_identity and
+    "ProviderScenarioIdentityRule.ResolveSourceTimeframe(" in visual_identity,
     "M3: visual snapshot is missing canonical trade identity",
 )
 
 require(
-    "ResolveProviderSignalId(" in alerts and
-    "ResolveProviderScenarioId(" in alerts and
-    "ResolveProviderPlanId(" in alerts and
-    "ProviderScenarioIdentityRule.ResolveSourceTimeframe(" in alerts,
+    "ResolveProviderSignalId(" in alert_identity and
+    "ResolveProviderScenarioId(" in alert_identity and
+    "ResolveProviderPlanId(" in alert_identity and
+    "ProviderScenarioIdentityRule.ResolveSourceTimeframe(" in alert_identity,
     "M3: alert identity must reuse the canonical provider identity resolvers",
 )
 
