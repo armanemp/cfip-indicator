@@ -1,3 +1,15 @@
+## Candidate handoff hardening
+
+A second live-path seam was found after the PlanBuilder correction: actionable `TradeOpportunityCandidate` objects could still copy Entry/SL/TP from the presentation preview even though Actionability had already approved the canonical actual-entry geometry.
+
+Closed:
+- actionable candidates now rebind their executable preview from `CanonicalTradePathGeometry`;
+- candidate Entry/SL/TP/Risk/RR are therefore the same geometry that passed Actionability;
+- non-actionable WATCH/presentation candidates remain preview-oriented so early source visibility is not coupled to executable planning;
+- the canonical static audit now enforces this provider/cBot handoff contract.
+
+This does not lower any quality, RR or risk gate.
+
 # Canonical Trade-Path Geometry — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
