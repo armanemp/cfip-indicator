@@ -44,7 +44,7 @@ namespace CFIP.cBot
             DefaultValue = 1,
             MinValue = 1,
             MaxValue = 10)]
-        public int MaxDemoMarketExecutionsPerSession { get; set; }
+        public int MaxDemoExecutionsPerSession { get; set; }
 
         [Parameter(
             "Max Execution Margin Usage %",
@@ -117,7 +117,7 @@ namespace CFIP.cBot
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
                 EnableDemoPendingStopExecution ? "ARMED" : "DISARMED",
                 EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
-                MaxDemoMarketExecutionsPerSession,
+                MaxDemoExecutionsPerSession,
                 ProviderStaleAfterSeconds,
                 ContractVersion.Current);
 
@@ -210,7 +210,7 @@ namespace CFIP.cBot
                 return;
 
             if (_sessionExecutions >=
-                Math.Max(1, MaxDemoMarketExecutionsPerSession))
+                Math.Max(1, MaxDemoExecutionsPerSession))
             {
                 LogBlockedState("DEMO SESSION EXECUTION CAP REACHED");
                 return;
