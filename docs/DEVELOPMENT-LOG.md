@@ -3303,3 +3303,19 @@ Verification status:
 - Local source checkout/build was not available in this environment; repository CI is the authoritative compile/static verification boundary.
 - GitHub API exposed no completed workflow runs for the new phase branch at implementation time.
 - Target-terminal acceptance is intentionally still manual for sound playback, popup behavior and marker/line timing.
+
+## 2026-10-02 — M4 Time / Session / History / Persistence Truth
+
+Implemented on phase/m4-time-session-history-persistence-2026-10-02.
+
+- Added Core/Math/CanonicalTimeRule as the single owner for UTC normalization, UTC-day identity, exact day boundaries, half-open UTC intervals and deterministic 90-day archive periods.
+- Migrated SessionWindowRule, DailyLoss accounting/guard/persistence and EOD lifecycle checks to the canonical time owner.
+- Migrated signal timing, broker refresh, calculation readiness, economic-news timing, news protection/calendar and buffered-persistence timestamp normalization away from machine-local ToUniversalTime conversions.
+- Made DailyLoss persistence account-scope aware using the existing canonical broker/account/live-state identity token, with safe read/migrate behavior from the previous account-number-only key.
+- Kept 90-day outcome/runtime archives append-oriented and preserved existing History marker/buffered persistence ownership.
+- Added M4TimeHistoryContracts and an accumulated M4 source audit.
+- The M4 audit explicitly rechecks the whole analysis -> signal -> plan -> presentation -> provider -> cBot -> broker lifecycle -> outcome/history chain.
+
+Verification status:
+- Required repository gates are running on the M4 implementation head.
+- Target-terminal verification remains required for exact broker session-time behavior, restart-mid-day persistence, History folder/readback and EOD/cBot reconnect behavior.
