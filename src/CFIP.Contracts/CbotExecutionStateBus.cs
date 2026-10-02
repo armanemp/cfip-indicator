@@ -51,6 +51,39 @@ namespace CFIP.Contracts
                 Options);
         }
 
+        public static string SerializePresence(
+            CbotPresenceSnapshot snapshot)
+        {
+            return JsonSerializer.Serialize(
+                snapshot,
+                Options);
+        }
+
+        public static bool TryDeserializePresence(
+            string payload,
+            out CbotPresenceSnapshot? snapshot)
+        {
+            snapshot = null;
+
+            if (string.IsNullOrWhiteSpace(payload))
+                return false;
+
+            try
+            {
+                snapshot =
+                    JsonSerializer.Deserialize<CbotPresenceSnapshot>(
+                        payload,
+                        Options);
+
+                return snapshot != null;
+            }
+            catch
+            {
+                snapshot = null;
+                return false;
+            }
+        }
+
         public static bool TryDeserialize(
             string payload,
             out CbotExecutionStateSnapshot? snapshot)
