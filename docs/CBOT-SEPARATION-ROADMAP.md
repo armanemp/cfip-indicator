@@ -685,7 +685,11 @@ Acceptance:
 
 ### CBOT-3 — cBot host and shadow execution
 
-Create `CFIP.cBot` and wire it to the Indicator contract.
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2801 PASS; Runtime Acceptance #2610 PASS; cTrader Compile #2794 PASS.
+
+The cBot host is now wired to the canonical Indicator contract.
 
 Shadow mode is a temporary validation mode only; it must never coexist with a live Indicator executor. The legacy execution path may remain only on a validation branch/snapshot used as a parity oracle and must not be shipped as a second live engine.
 
@@ -694,7 +698,10 @@ Initially:
 - receive;
 - validate;
 - identify;
-- log;
+- expiry/revision ordering;
+- idempotency deduplication;
+- broker-state capacity checks;
+- shadow eligibility logging;
 - simulate submission.
 
 No live broker mutation yet.
@@ -703,7 +710,7 @@ Acceptance:
 
 - Market/Aggressive/Stop/Limit intents are distinguishable;
 - duplicate intents are suppressed;
-- scenario-scoped retry identity works;
+- scenario-scoped identity is preserved through SignalId/ScenarioId/PlanId/IdempotencyKey;
 - one-position capacity is enforced;
 - restart does not duplicate a pending action;
 - offline/missing Indicator is fail-closed;
