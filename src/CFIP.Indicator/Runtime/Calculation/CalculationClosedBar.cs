@@ -141,12 +141,13 @@ namespace cAlgo
             ReconcilePreTradePlanDirection(
                 closedM5);
 
+            // Analysis policy is independent from broker arming. AutoTrading
+            // controls mutation only; it must never change the decision itself.
             EnsureSignalPlan(
                 closedM5,
-                AutoTradingEnabled &&
-                !ConfirmedSignalsOnly
-                    ? DecisionPolicyMode.Soft
-                    : DecisionPolicyMode.Confirmed);
+                ConfirmedSignalsOnly
+                    ? DecisionPolicyMode.Confirmed
+                    : DecisionPolicyMode.Soft);
 
             // Alerting reads the exact Plan created by the authoritative
             // actionability gate, eliminating Decision-vs-Plan price drift.
