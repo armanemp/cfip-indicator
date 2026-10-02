@@ -191,15 +191,28 @@ namespace cAlgo
                 return false;
             }
 
-            double tp1RR =
-                RiskRewardMathRule.CalculateRR(
+            RiskRewardMathResult rrGeometry =
+                RiskRewardMathRule.Evaluate(
+                    direction,
                     entry,
                     stop,
-                    tp1);
+                    tp1,
+                    spread,
+                    0,
+                    Math.Max(0, MaximumRewardRR),
+                    0);
+
+            double tp1RR =
+                rrGeometry.Valid
+                    ? rrGeometry.NominalRR
+                    : 0;
 
             if (!IsFinitePositive(tp1RR))
             {
-                reason = "TP1 RR INVALID";
+                reason =
+                    string.IsNullOrWhiteSpace(rrGeometry.Reason)
+                        ? "TP1 RR INVALID"
+                        : rrGeometry.Reason;
                 return false;
             }
 
