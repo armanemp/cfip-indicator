@@ -36,17 +36,17 @@ if "class CFIPIndicator : Indicator" not in market_exec:
     errors.append("automatic market host seam missing")
 if "CFIP cBot handoff" not in market_exec:
     errors.append("automatic market path missing explicit cBot handoff marker")
-if re.search(r"(?:ExecuteMarketOrder|ExecuteMarketRangeOrder)s*(", market_exec):
+if re.search(r"(?:ExecuteMarketOrder|ExecuteMarketRangeOrder)\s*\(", market_exec):
     errors.append("automatic market orchestration still contains broker mutation")
-if re.search(r"(?:ExecuteMarketOrder|ExecuteMarketRangeOrder)s*(", market_trade):
+if re.search(r"(?:ExecuteMarketOrder|ExecuteMarketRangeOrder)\s*\(", market_trade):
     errors.append("automatic market trigger still contains broker mutation")
-if re.search(r"(?:ExecuteMarketOrder|ExecuteMarketRangeOrder)s*(", range_calc):
+if re.search(r"(?:ExecuteMarketOrder|ExecuteMarketRangeOrder)\s*\(", range_calc):
     errors.append("automatic market range calculator still contains broker mutation")
 if (INDICATOR / "Trading/Execution/BrokerMarketOrderMutation.cs").exists():
     errors.append("legacy Indicator market mutation owner still exists")
-if not re.search(r"ExecuteMarketOrders*(", mutation):
+if not re.search(r"ExecuteMarketOrder\s*\(", mutation):
     errors.append("cBot market mutation owner missing ExecuteMarketOrder")
-if not re.search(r"ExecuteMarketRangeOrders*(", mutation):
+if not re.search(r"ExecuteMarketRangeOrder\s*\(", mutation):
     errors.append("cBot market mutation owner missing ExecuteMarketRangeOrder")
 if "new MarketExecutionProfile(" not in provider:
     errors.append("provider does not project canonical MarketExecutionProfile")
