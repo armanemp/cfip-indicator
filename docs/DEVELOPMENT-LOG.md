@@ -1,3 +1,16 @@
+## 2026-10-02 — Opportunity Mining / Execution Zone Selection
+
+- Deep audit found fixed source priority in ExecutionZoneCandidateSelector: first M5 FVG/OB/M15 FVG/OB could win before comparing the whole valid candidate set.
+- Replaced first-match behavior with canonical scored selection using zone quality, distance from market, age and explicit confluence.
+- Added same-timeframe M5 FVG+OB and M15 FVG+OB composite candidates.
+- Added M5/M15 cross-timeframe overlap candidates so source-frame confluence can materially improve entry-zone selection.
+- M15 receives a bounded priority bonus while M5 remains the entry-precision layer.
+- Actual existing zone quality is now carried into selection instead of relying only on fixed source constants.
+- Final actionability, RR, risk and cBot execution gates remain unchanged.
+- Added a dedicated static regression audit to CI.
+- Full pre-analysis -> M15 -> M5 -> M1(optional) -> entry geometry -> SL/TP/RR -> signal/alert -> cBot -> broker/protection -> outcome chain re-audited.
+- No profitability claim is made from this structural improvement; empirical validation remains required.
+
 ## 2026-10-02 — cBot Attachment / Alert Audio Hardening
 
 - Root-caused the false CBOT NOT ATTACHED state: chart discovery compared Type.Name with the display label instead of the actual stable class type.
