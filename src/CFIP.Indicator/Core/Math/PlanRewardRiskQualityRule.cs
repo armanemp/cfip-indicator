@@ -6,25 +6,40 @@ namespace cAlgo
     {
         public bool Allowed { get; }
         public string Reason { get; }
+        public double Risk { get; }
+        public double Reward { get; }
+        public double EffectiveRisk { get; }
         public double RiskAtr { get; }
         public double NominalRR { get; }
         public double EffectiveRR { get; }
         public double RequiredRR { get; }
+        public double MaximumRR { get; }
 
         public PlanRewardRiskQualityResult(
             bool allowed,
             string reason,
+            double risk,
+            double reward,
+            double effectiveRisk,
             double riskAtr,
             double nominalRR,
             double effectiveRR,
-            double requiredRR)
+            double requiredRR,
+            double maximumRR)
         {
             Allowed = allowed;
             Reason = reason ?? string.Empty;
+            Risk = Math.Max(0, risk);
+            Reward = Math.Max(0, reward);
+            EffectiveRisk = Math.Max(0, effectiveRisk);
             RiskAtr = Math.Max(0, riskAtr);
             NominalRR = Math.Max(0, nominalRR);
             EffectiveRR = Math.Max(0, effectiveRR);
             RequiredRR = Math.Max(0, requiredRR);
+            MaximumRR =
+                double.IsInfinity(maximumRR)
+                    ? double.PositiveInfinity
+                    : Math.Max(0, maximumRR);
         }
     }
 
@@ -39,6 +54,7 @@ namespace cAlgo
         internal const double AdaptiveStopExcessRrMultiplier = 0.25;
         internal const double EffectiveRrBaseFactor = 0.90;
         internal const double EffectiveRrAbsoluteReduction = 0.15;
+
         public static PlanRewardRiskQualityResult Evaluate(
             int direction,
             double entry,
@@ -53,12 +69,13 @@ namespace cAlgo
             double riskFloor)
         {
             if ((direction != 1 && direction != -1) ||
-                !IsFinitePositiveRewardRisk(entry) ||
-                !IsFinitePositiveRewardRisk(stop) ||
-                !IsFinitePositiveRewardRisk(tp1) ||
-                !IsFinitePositiveRewardRisk(atr))
+                !IsFinitePositive(entry) ||
+                !IsFinitePositive(stop) ||
+                !IsFinitePositive(tp1) ||
+                !IsFinitePositive(atr))
             {
-                return CreateRewardRiskBlocked("INVALID REWARD/RISK GEOMETRY");
+                return CreateRewardRiskBlocked(
+                    "INVALID REWARD/RISK GEOMETRY");
             }
 
             bool validStop =
@@ -78,14 +95,20 @@ namespace cAlgo
                 return CreateRewardRiskBlocked("TP1 SIDE INVALID");
 
             double boundedBase =
-                Math.Max(BaseMinimumRrFloor, baseMinimumRR);
+                Math.Max(
+                    BaseMinimumRrFloor,
+                    baseMinimumRR);
 
             double preferred =
-                Math.Max(PreferredStopRiskAtrFloor, preferredStopRiskAtr);
+                Math.Max(
+                    PreferredStopRiskAtrFloor,
+                    preferredStopRiskAtr);
 
             double maximumStopRisk =
                 Math.Max(
-                    Math.Max(preferred, MaximumStopRiskAtrFloor),
+                    Math.Max(
+                        preferred,
+                        MaximumStopRiskAtrFloor),
                     maximumStopRiskAtr);
 
             double rawRisk =
@@ -95,10 +118,14 @@ namespace cAlgo
                 return CreateRewardRiskBlocked("EMPTY RISK");
 
             double riskAtr =
-                rawRisk / Math.Max(SymbolTickFloor(), atr);
+                rawRisk /
+                Math.Max(
+                    SymbolTickFloor(),
+                    atr);
 
             if (!IsFinitePositiveRewardRisk(riskAtr))
-                return CreateRewardRiskBlocked("RISK ATR INVALID");
+                return CreateRewardRiskBlocked(
+                    "RISK ATR INVALID");
 
             if (riskAtr > maximumStopRisk)
             {
@@ -107,21 +134,30 @@ namespace cAlgo
                     "STOP RISK TOO HIGH • " +
                     riskAtr.ToString("F2") +
                     " ATR > " +
-                    maximum.ToString("F2"),
+                    maximumStopRisk.ToString("F2"),
+                    0,
+                    0,
+                    0,
                     riskAtr,
                     0,
                     0,
-                    adaptiveRequired);
+                    boundedBase,
+                    RiskRewardMathRule.NormalizeMaximumRR(
+                        maximumRewardRR,
+                        boundedBase));
             }
 
             double stopExcess =
-                Math.Max(0, riskAtr - preferred);
+                Math.Max(
+                    0,
+                    riskAtr - preferred);
 
             double adaptiveRequired =
                 boundedBase +
                 Math.Min(
                     AdaptiveStopExcessRrCap,
-                    stopExcess * AdaptiveStopExcessRrMultiplier);
+                    stopExcess *
+                    AdaptiveStopExcessRrMultiplier);
 
             RiskRewardMathResult geometry =
                 RiskRewardMathRule.Evaluate(
@@ -135,51 +171,45 @@ namespace cAlgo
                     riskFloor);
 
             if (!geometry.Valid)
-                return CreateRewardRiskBlocked(
-                    geometry.Reason == "RR BELOW MINIMUM"
-                        ? "RR BELOW MINIMUM"
-                        : geometry.Reason);
-
-            double risk = geometry.Risk;
-            double reward = geometry.Reward;
-            double nominalRR = geometry.NominalRR;
-            double effectiveRR = geometry.EffectiveRR;
-
-            if (!IsFinitePositiveRewardRisk(nominalRR) ||
-                !IsFinitePositiveRewardRisk(effectiveRR))
-                return CreateRewardRiskBlocked("RR INVALID");
-
-            if (nominalRR < adaptiveRequired)
             {
                 return new PlanRewardRiskQualityResult(
                     false,
-                    "REWARD TOO LOW FOR STOP • RR " +
-                    nominalRR.ToString("F2") +
-                    " < " +
-                    adaptiveRequired.ToString("F2"),
+                    geometry.Reason == "RR BELOW MINIMUM"
+                        ? "REWARD TOO LOW FOR STOP"
+                        : geometry.Reason,
+                    geometry.Risk,
+                    geometry.Reward,
+                    geometry.EffectiveRisk,
                     riskAtr,
-                    nominalRR,
-                    effectiveRR,
-                    adaptiveRequired);
+                    geometry.NominalRR,
+                    geometry.EffectiveRR,
+                    adaptiveRequired,
+                    geometry.MaximumRR);
             }
 
             double minimumEffectiveRR =
                 Math.Max(
-                    boundedBase * EffectiveRrBaseFactor,
-                    boundedBase - EffectiveRrAbsoluteReduction);
+                    boundedBase *
+                    EffectiveRrBaseFactor,
+                    boundedBase -
+                    EffectiveRrAbsoluteReduction);
 
-            if (effectiveRR < minimumEffectiveRR)
+            if (geometry.EffectiveRR < minimumEffectiveRR)
             {
                 return new PlanRewardRiskQualityResult(
                     false,
                     "RR TOO LOW AFTER SPREAD • " +
-                    effectiveRR.ToString("F2") +
+                    geometry.EffectiveRR.ToString("F2") +
                     " < " +
                     minimumEffectiveRR.ToString("F2"),
+                    geometry.Risk,
+                    geometry.Reward,
+                    geometry.EffectiveRisk,
                     riskAtr,
-                    nominalRR,
-                    effectiveRR,
-                    adaptiveRequired);
+                    geometry.NominalRR,
+                    geometry.EffectiveRR,
+                    adaptiveRequired,
+                    geometry.MaximumRR);
             }
 
             return new PlanRewardRiskQualityResult(
@@ -187,10 +217,14 @@ namespace cAlgo
                 riskAtr > preferred + 0.35
                     ? "REWARD/RISK ACCEPTED • WIDE STOP REQUIRES EXTRA REWARD"
                     : "REWARD/RISK ACCEPTED",
+                geometry.Risk,
+                geometry.Reward,
+                geometry.EffectiveRisk,
                 riskAtr,
-                nominalRR,
-                effectiveRR,
-                adaptiveRequired);
+                geometry.NominalRR,
+                geometry.EffectiveRR,
+                adaptiveRequired,
+                geometry.MaximumRR);
         }
 
         private static PlanRewardRiskQualityResult CreateRewardRiskBlocked(
@@ -199,6 +233,10 @@ namespace cAlgo
             return new PlanRewardRiskQualityResult(
                 false,
                 reason,
+                0,
+                0,
+                0,
+                0,
                 0,
                 0,
                 0,
@@ -215,7 +253,7 @@ namespace cAlgo
 
         private static double SymbolTickFloor()
         {
-            return 1e-12;
+            return RiskRewardMathRule.DistanceFloor;
         }
     }
 }
