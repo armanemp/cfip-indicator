@@ -36,19 +36,9 @@ namespace cAlgo
                  _plan.Direction == -1))
                 return _plan.Direction;
 
-            if (decisionReady &&
-                _decision != null)
+            if (_decision != null &&
+                _decision.Direction != 0)
                 return _decision.Direction;
-
-            int decisionPresentationDirection =
-                _decision == null
-                    ? 0
-                    : SignalVisualLifecycleRule.ResolveDirectionalPresentationDirection(
-                        0,
-                        _decision.Direction);
-
-            if (decisionPresentationDirection != 0)
-                return decisionPresentationDirection;
 
             if (reactionReady &&
                 _reaction != null)
