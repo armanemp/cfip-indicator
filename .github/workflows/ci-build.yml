@@ -30,6 +30,9 @@ jobs:
       - run: dotnet build tools/CFIP.Execution.Contracts/CFIP.Execution.Contracts.csproj --configuration Release --no-restore
       - run: dotnet run --project tools/CFIP.Execution.Contracts/CFIP.Execution.Contracts.csproj --configuration Release --no-build
 
+      - run: dotnet restore tools/CFIP.cBot.Shadow.Tests/CFIP.cBot.Shadow.Tests.csproj
+      - run: dotnet build tools/CFIP.cBot.Shadow.Tests/CFIP.cBot.Shadow.Tests.csproj --configuration Release --no-restore
+      - run: dotnet run --project tools/CFIP.cBot.Shadow.Tests/CFIP.cBot.Shadow.Tests.csproj --configuration Release --no-build
       - run: dotnet restore preflight/CFIP.Preflight.Probe.csproj
       - run: dotnet build preflight/CFIP.Preflight.Probe.csproj --configuration Release --no-restore
       - run: dotnet restore preflight/CFIP.Preflight.csproj
