@@ -46,8 +46,37 @@ namespace cAlgo
                         SymbolName,
                         StringComparison.Ordinal))
                 {
+                    bool changed =
+                        _cBotExecutionState == null ||
+                        _cBotExecutionState.Revision != snapshot.Revision ||
+                        !string.Equals(
+                            _cBotExecutionState.RuntimeState,
+                            snapshot.RuntimeState,
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            _cBotExecutionState.Reason,
+                            snapshot.Reason,
+                            StringComparison.Ordinal) ||
+                        _cBotExecutionState.MarketExecutionEnabled !=
+                            snapshot.MarketExecutionEnabled ||
+                        _cBotExecutionState.PendingStopExecutionEnabled !=
+                            snapshot.PendingStopExecutionEnabled ||
+                        _cBotExecutionState.PendingLimitExecutionEnabled !=
+                            snapshot.PendingLimitExecutionEnabled ||
+                        _cBotExecutionState.AggressiveExecutionEnabled !=
+                            snapshot.AggressiveExecutionEnabled ||
+                        _cBotExecutionState.ManagementExecutionEnabled !=
+                            snapshot.ManagementExecutionEnabled ||
+                        _cBotExecutionState.ManagedPositions !=
+                            snapshot.ManagedPositions ||
+                        _cBotExecutionState.ManagedPendingOrders !=
+                            snapshot.ManagedPendingOrders;
+
                     _cBotExecutionState = snapshot;
                     _cBotStateReadError = string.Empty;
+
+                    if (changed)
+                        InvalidatePanelExecutionProtectionStateCache();
                 }
                 else if (string.IsNullOrWhiteSpace(payload))
                 {

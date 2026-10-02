@@ -131,3 +131,4 @@ jobs:
       - run: python tools/audit_phase_ci20_panel_options.py
       - run: python tools/audit_phase_m3_trade_truth.py
       - run: python tools/audit_phase_m4_time_history.py
+      - run: python tools/audit_phase_m5_panel_live.py

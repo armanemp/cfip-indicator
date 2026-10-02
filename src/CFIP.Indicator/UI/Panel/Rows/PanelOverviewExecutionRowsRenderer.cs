@@ -24,7 +24,7 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
-                "AUTO EXEC  " +
+                "EXECUTION BOT  " +
                 GetAutoTradingPanelState(),
                 GetAutoTradingPanelColor(),
                 true,
@@ -37,6 +37,14 @@ namespace cAlgo
                 "  •  " +
                 CbotExecutionScenarioPanelText(),
                 CbotExecutionStatePanelColor(),
+                false,
+                contentWidth);
+
+            AddPanelRow(
+                ref slot,
+                "CBOT PROTECTION  " +
+                GetAutoProtectionPanelState(),
+                GetAutoProtectionPanelColor(),
                 false,
                 contentWidth);
 
@@ -114,7 +122,7 @@ namespace cAlgo
 
             AddPanelRow(
                 ref slot,
-                "AUTO ORDERS  " +
+                "CBOT ORDERS  " +
                 GetAutoOrdersPanelState(),
                 GetAutoOrdersPanelColor(),
                 false,

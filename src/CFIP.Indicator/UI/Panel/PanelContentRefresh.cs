@@ -31,6 +31,10 @@ namespace cAlgo
 
             try
             {
+                // Pull the freshest cBot heartbeat before building the one panel
+                // snapshot used by every live row in this refresh.
+                RefreshCbotExecutionStateIfDue();
+
                 if (ownsVisualSnapshot)
                 {
                     _renderSignalVisualSnapshot =
@@ -41,7 +45,9 @@ namespace cAlgo
                 }
 
                 RenderPanelRows(
-                    PanelContentWidth());
+                    EffectivePanelContentWidth());
+
+                _panelContentRefreshSequence++;
 
                 _lastPanelContentRefreshUtc =
                     nowUtc;

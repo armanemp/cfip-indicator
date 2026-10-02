@@ -380,6 +380,9 @@ namespace cAlgo
                 private bool _initializationDataReady;
                 private DateTime _lastPanelRenderUtc = DateTime.MinValue;
                 private DateTime _lastPanelContentRefreshUtc = DateTime.MinValue;
+                private int _panelContentRefreshSequence;
+                private int _panelOverflowCount;
+                private bool _panelOverflowReported;
                 private DateTime _lastCalculationCompletedUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
                 private int _lastReactionM5 = -1;

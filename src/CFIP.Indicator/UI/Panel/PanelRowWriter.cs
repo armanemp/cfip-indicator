@@ -104,7 +104,20 @@ namespace cAlgo
             int width)
         {
             if (slot >= PanelRowCount)
+            {
+                _panelOverflowCount++;
+
+                if (!_panelOverflowReported)
+                {
+                    _panelOverflowReported = true;
+                    Print(
+                        "CFIP panel row capacity exceeded | capacity={0} | firstOverflowAt={1}",
+                        PanelRowCount,
+                        _panelContentRefreshSequence);
+                }
+
                 return;
+            }
 
             EnsurePanelRow(slot);
 

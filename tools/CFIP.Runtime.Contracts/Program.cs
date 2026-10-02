@@ -106,6 +106,7 @@ namespace cAlgo
             VerifyOutcomeMemoryIdentitySemantics();
             VerifyPersistenceHealthSemantics();
             M4TimeHistoryContracts.Run();
+            M5PanelContracts.Run();
             VerifySignalTraceLineageSemantics();
             VerifyFrameRegimeSemantics();
             VerifySmartThresholdRegimeSemantics();

@@ -14,6 +14,20 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private int EffectivePanelWidth()
+        {
+            return PanelDimensionRule.EffectiveWidth(
+                PanelWidth);
+        }
+
+        private int EffectivePanelContentWidth()
+        {
+            return PanelDimensionRule.EffectiveContentWidth(
+                PanelWidth,
+                PanelPadding,
+                PanelBorderThickness);
+        }
+
         private void SetPanelRestoreAlignment()
                                         {
                                             if (_panelRestoreButton == null)
