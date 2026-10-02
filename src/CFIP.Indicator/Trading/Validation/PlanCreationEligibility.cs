@@ -24,7 +24,16 @@ namespace cAlgo
             if (!_decision.EntryAllowed)
                 return false;
 
-            if (!_decision.TriggerReady)
+            // The generic Decision.TriggerReady flag is intentionally not a
+            // global plan-creation gate. RetestMarket is a zone-driven entry
+            // and may be planned before the generic closed-bar trigger fires.
+            // Breakout and predictive pending modes remain trigger-dependent.
+            if (EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    _executionModel == null
+                        ? ExecutionMode.None
+                        : _executionModel.Mode,
+                    M5OnlyConfirmedTrigger) &&
+                !_decision.TriggerReady)
                 return false;
 
             // Plan is an analytical artifact. Current-quote actionability is evaluated

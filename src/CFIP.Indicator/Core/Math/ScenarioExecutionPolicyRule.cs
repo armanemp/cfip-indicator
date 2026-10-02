@@ -34,7 +34,8 @@ namespace cAlgo
         internal static ScenarioExecutionPolicyResult Evaluate(
             TradeOpportunityCandidate candidate,
             Decision decision,
-            OpportunityLane expectedLane)
+            OpportunityLane expectedLane,
+            bool m5OnlyConfirmedTrigger)
         {
             if (candidate == null)
                 return BlockScenarioExecutionPolicy("NO SCENARIO");
@@ -56,7 +57,14 @@ namespace cAlgo
             if (!decision.EntryAllowed)
                 return BlockScenarioExecutionPolicy("CANONICAL DECISION BLOCKED");
 
-            if (!decision.TriggerReady)
+            // RetestMarket is zone-driven and does not require the generic
+            // Decision.TriggerReady flag. The candidate must still pass the live
+            // actionability gate, including current quote, M15 direction, RR,
+            // location/timing, trap-risk and indicator-fusion checks.
+            if (EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    candidate.ExecutionMode,
+                    m5OnlyConfirmedTrigger) &&
+                !decision.TriggerReady)
                 return BlockScenarioExecutionPolicy("CANONICAL TRIGGER NOT READY");
 
             if (!decision.ActionableNow)
@@ -114,6 +122,7 @@ namespace cAlgo
             Plan plan,
             Decision decision,
             double priceTolerance,
+            bool m5OnlyConfirmedTrigger,
             out TradeOpportunityCandidate selected,
             out string reason)
         {
@@ -139,7 +148,11 @@ namespace cAlgo
             {
                 TradeOpportunityCandidate candidate = candidates[i];
                 ScenarioExecutionPolicyResult policy =
-                    Evaluate(candidate, decision, plan.Lane);
+                    Evaluate(
+                        candidate,
+                        decision,
+                        plan.Lane,
+                        m5OnlyConfirmedTrigger);
 
                 if (!policy.CandidateEligible ||
                     !policy.ExecutionAuthorized)
@@ -173,13 +186,13 @@ namespace cAlgo
             IReadOnlyList<TradeOpportunityCandidate> candidates,
             Decision decision,
             int direction,
+            bool m5OnlyConfirmedTrigger,
             out TradeOpportunityCandidate selected)
         {
             selected = null;
 
             if (decision == null ||
                 !decision.EntryAllowed ||
-                !decision.TriggerReady ||
                 decision.Direction != direction ||
                 candidates == null)
                 return false;
@@ -193,7 +206,8 @@ namespace cAlgo
                         decision,
                         candidate == null
                             ? OpportunityLane.Tactical
-                            : candidate.Lane);
+                            : candidate.Lane,
+                        m5OnlyConfirmedTrigger);
 
                 if (!policy.CandidateEligible ||
                     !policy.ExecutionAuthorized)

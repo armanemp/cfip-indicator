@@ -1,3 +1,22 @@
+## 2026-10-03 — Retest trigger-path hardening
+
+Status: implementation complete, verification pending.
+
+Root cause:
+- valid zone-driven RetestMarket actionability could still be vetoed downstream by a global Decision.TriggerReady requirement in plan creation and scenario authorization.
+
+Fix:
+- added canonical mode-aware trigger requirement in EntryActionabilityPolicy;
+- PlanCreationEligibility, ScenarioExecutionPolicyRule and TriggerGate now share it;
+- RetestMarket remains zone-driven, while BreakoutMarket and predictive pending modes retain confirmed-trigger requirements;
+- added deterministic runtime contract coverage and accumulated static regression audit.
+
+Quality boundary:
+- no public threshold was lowered;
+- M15 remains canonical execution, M5 remains tuning/entry precision, M1 optional;
+- full Pre-analysis -> M15 -> M5 -> M1 -> Entry/SL/TP/RR -> Signal -> cBot -> Broker -> Protection -> Outcome chain re-audited.
+
+Phase record: docs/PHASE-RETEST-TRIGGER-PATH-HARDENING-2026-10-03.md.
 ## 2026-10-02 — Opportunity Mining / Execution Zone Selection
 
 - Deep audit found fixed source priority in ExecutionZoneCandidateSelector: first M5 FVG/OB/M15 FVG/OB could win before comparing the whole valid candidate set.

@@ -119,6 +119,7 @@ namespace cAlgo
             VerifyAggressiveRiskAndFillSemantics();
             VerifyActionabilityThresholdTransparency();
             VerifyEntryActionabilityF6();
+            VerifyRetestTriggerModeSemantics();
             VerifyIndependentTimeframeScenarioSemanticsF7();
             VerifyMtfPrimaryTimeframeSignals();
             VerifyMtfPrimaryLocationEvidence();
@@ -6496,9 +6497,10 @@ namespace cAlgo
                 File.ReadAllText(planEligibilityPath);
 
             Assert(
-                planEligibility.Contains("if (!_decision.TriggerReady)") &&
-                planEligibility.Contains("return false;"),
-                "execution plan creation remains TriggerReady-gated even while preview is visible");
+                planEligibility.Contains("EntryActionabilityPolicy.RequiresConfirmedTrigger(") &&
+                planEligibility.Contains("M5OnlyConfirmedTrigger") &&
+                !planEligibility.Contains("if (!_decision.TriggerReady)"),
+                "execution plan creation uses mode-aware trigger gating while preview remains pre-trigger");
 
             Assert(
                 !File.ReadAllText(
@@ -6848,7 +6850,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     strategic,
                     decision,
-                    OpportunityLane.Strategic);
+                    OpportunityLane.Strategic,
+                    true);
 
             Assert(
                 strategicPolicy.CandidateEligible &&
@@ -6875,7 +6878,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     independent,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 independentPolicy.CandidateEligible &&
@@ -6902,7 +6906,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     m15,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 m15Policy.CandidateEligible &&
@@ -6934,7 +6939,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     presentationOnly,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 !presentationPolicy.CandidateEligible &&
@@ -6956,7 +6962,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     mismatch,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 !mismatchPolicy.CandidateEligible &&
@@ -7002,6 +7009,7 @@ namespace cAlgo
                     plan,
                     decision,
                     0.001,
+                    true,
                     out TradeOpportunityCandidate selected,
                     out string reason) &&
                 selected == tactical &&
@@ -7015,7 +7023,8 @@ namespace cAlgo
                 ScenarioExecutionPolicyRule.Evaluate(
                     tactical,
                     decision,
-                    OpportunityLane.Tactical);
+                    OpportunityLane.Tactical,
+                    true);
 
             Assert(
                 !blockedPolicy.CandidateEligible &&
@@ -9914,6 +9923,93 @@ namespace cAlgo
                 m1.Context == "RETEST PRE-ZONE M1",
                 "G2 EntryTrapRiskRule preserves strong M1 block and context");
         }
+        private static void VerifyRetestTriggerModeSemantics()
+        {
+            Assert(
+                !EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.RetestMarket,
+                    true),
+                "RetestMarket remains zone-driven when M5 confirmed-trigger mode is enabled");
+
+            Assert(
+                EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.BreakoutMarket,
+                    true) &&
+                EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.ContinuationStop,
+                    true) &&
+                EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.ReversalLimit,
+                    true),
+                "breakout and predictive pending modes remain trigger-dependent");
+
+            Assert(
+                !EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.BreakoutMarket,
+                    false) &&
+                !EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    ExecutionMode.ContinuationStop,
+                    false),
+                "disabling M5 confirmed-trigger mode removes the trigger requirement");
+
+            Decision retestDecision =
+                new Decision
+                {
+                    Direction = 1,
+                    EntryAllowed = true,
+                    TriggerReady = false,
+                    ActionableNow = true
+                };
+
+            TradeOpportunityCandidate retest =
+                new TradeOpportunityCandidate
+                {
+                    Direction = 1,
+                    Lane = OpportunityLane.Tactical,
+                    ExecutionMode = ExecutionMode.RetestMarket,
+                    ActionableNow = true,
+                    PresentationOnly = false
+                };
+
+            ScenarioExecutionPolicyResult retestPolicy =
+                ScenarioExecutionPolicyRule.Evaluate(
+                    retest,
+                    retestDecision,
+                    OpportunityLane.Tactical,
+                    true);
+
+            Assert(
+                retestPolicy.CandidateEligible &&
+                retestPolicy.ExecutionAuthorized,
+                "Retest scenario remains executable without generic TriggerReady");
+
+            TradeOpportunityCandidate breakout =
+                new TradeOpportunityCandidate
+                {
+                    Direction = 1,
+                    Lane = OpportunityLane.Tactical,
+                    ExecutionMode = ExecutionMode.BreakoutMarket,
+                    ActionableNow = true,
+                    PresentationOnly = false
+                };
+
+            ScenarioExecutionPolicyResult breakoutPolicy =
+                ScenarioExecutionPolicyRule.Evaluate(
+                    breakout,
+                    retestDecision,
+                    OpportunityLane.Tactical,
+                    true);
+
+            Assert(
+                !breakoutPolicy.ExecutionAuthorized &&
+                breakoutPolicy.ExecutionReason ==
+                    "CANONICAL TRIGGER NOT READY",
+                "Breakout scenario still requires confirmed trigger");
+
+            Console.WriteLine(
+                "Retest mode-aware trigger contracts PASS");
+        }
+
         private static void VerifyEntryActionabilityF6()
         {
             Assert(

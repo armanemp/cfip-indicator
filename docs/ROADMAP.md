@@ -1,3 +1,40 @@
+# Current focus — RETEST TRIGGER-PATH HARDENING — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Root cause found:
+- in-zone RetestMarket actionability was mode-aware, but PlanCreationEligibility and ScenarioExecutionPolicyRule still applied Decision.TriggerReady as a global veto;
+- this could remove a valid zone-driven Retest before Plan/Scenario/cBot handoff.
+
+Completed:
+- added canonical EntryActionabilityPolicy.RequiresConfirmedTrigger(...);
+- plan creation now requires TriggerReady only for trigger-dependent modes;
+- scenario authorization consumes the same mode-aware rule;
+- TriggerGate delegates to the same canonical owner;
+- added deterministic Runtime Acceptance coverage and a dedicated accumulated static audit.
+
+Quality/safety:
+- no public entry-quality, confidence, MTF, evidence, RR or risk threshold was lowered;
+- M15 remains the canonical execution timeframe;
+- M5 remains tuning/entry-precision;
+- M1 remains optional confirmation;
+- Breakout and predictive pending modes remain trigger-dependent.
+
+Full-chain audit:
+Pre-analysis -> M15 decision -> M5 tuning/zone -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Alert -> cBot -> Broker -> Protection -> Outcome/history.
+
+Verification:
+- Retest trigger-path audit;
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile;
+- target-terminal Retest/Breakout/Pending behavior.
+
+Phase record: docs/PHASE-RETEST-TRIGGER-PATH-HARDENING-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
 # Current focus — CBOT-6M + TRADE QUALITY HARDENING — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

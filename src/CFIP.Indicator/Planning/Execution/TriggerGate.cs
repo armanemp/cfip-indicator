@@ -77,8 +77,9 @@ namespace cAlgo
             int direction,
             ExecutionMode mode)
         {
-            if (mode == ExecutionMode.RetestMarket ||
-                !M5OnlyConfirmedTrigger)
+            if (!EntryActionabilityPolicy.RequiresConfirmedTrigger(
+                    mode,
+                    M5OnlyConfirmedTrigger))
                 return true;
 
             if (ClosedBarTriggerReady(

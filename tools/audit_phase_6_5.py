@@ -54,6 +54,8 @@ for token in (
     "BreakoutLateExtensionFloorAtr = 0.10",
     "RetestLateDistanceFloorAtr = 0.05",
     "public static bool IsRetestReady(",
+    "public static bool RequiresConfirmedTrigger(",
+
     "public static bool ShouldBlockTrapRisk(",
     "public static double ResolveAnchor(",
     "public static double ResolveActualEntry(",
@@ -117,9 +119,23 @@ check(
 )
 
 check(
-    "canonical plan creation still requires confirmed trigger",
-    "_decision.TriggerReady" in plan_gate and
-    "if (!_decision.TriggerReady)" in plan_gate,
+    "plan creation uses mode-aware trigger policy",
+    "EntryActionabilityPolicy.RequiresConfirmedTrigger(" in plan_gate and
+    "M5OnlyConfirmedTrigger" in plan_gate and
+    "ExecutionMode.None" in plan_gate,
+)
+
+check(
+    "scenario execution uses the same mode-aware trigger policy",
+    "EntryActionabilityPolicy.RequiresConfirmedTrigger(" in read(
+        "src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs"
+    ),
+)
+
+check(
+    "trigger gate delegates to the canonical mode-aware policy",
+    "EntryActionabilityPolicy.RequiresConfirmedTrigger(" in trigger and
+    "if (mode == ExecutionMode.RetestMarket" not in trigger,
 )
 
 retest_match = re.search(

@@ -257,6 +257,7 @@ namespace cAlgo
                         Math.Max(
                             Symbol.TickSize * 2,
                             Symbol.PipSize * 0.10),
+                        M5OnlyConfirmedTrigger,
                         out selected,
                         out reason) &&
                     selected != null)
