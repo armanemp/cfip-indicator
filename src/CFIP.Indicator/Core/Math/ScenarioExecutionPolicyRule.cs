@@ -75,13 +75,31 @@ namespace cAlgo
                     "M5",
                     StringComparison.OrdinalIgnoreCase);
 
-            if (independentTimeframe)
+            bool primaryExecutionTimeframe =
+                string.Equals(
+                    candidate.SourceTimeframe == null
+                        ? ""
+                        : candidate.SourceTimeframe.Trim(),
+                    "M15",
+                    StringComparison.OrdinalIgnoreCase);
+
+            if (independentTimeframe &&
+                !primaryExecutionTimeframe)
             {
                 return new ScenarioExecutionPolicyResult(
                     true,
                     false,
-                    "INDEPENDENT TIMEFRAME STRUCTURALLY ELIGIBLE",
-                    "OBSERVE-ONLY TF SCENARIO");
+                    "INDEPENDENT HTF STRUCTURALLY ELIGIBLE",
+                    "OBSERVE-ONLY HTF SCENARIO");
+            }
+
+            if (primaryExecutionTimeframe)
+            {
+                return new ScenarioExecutionPolicyResult(
+                    true,
+                    true,
+                    "PRIMARY M15 SCENARIO ELIGIBLE",
+                    "M15 SCENARIO EXECUTION AUTHORIZED");
             }
 
             return new ScenarioExecutionPolicyResult(
