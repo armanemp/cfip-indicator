@@ -55,8 +55,9 @@ check(
 )
 check(
     "HTF structural levels participate in entry-zone discovery",
-    '"M15 STRUCTURE"' in candidates and
-    '"H1 STRUCTURE"' in candidates and
+    'timeframe + " STRUCTURE"' in candidates and
+    '"M15"' in core and
+    '"H1"' in core and
     "FindSwingLowBelow(" in candidates and
     "FindSwingHighAbove(" in candidates,
 )
