@@ -3161,8 +3161,8 @@ for token in (
     if token not in decision_code:
         raise SystemExit(f"Decision model missing Phase 9.4 field: {token}")
 
-if "_decision.ActionableNow" not in plan_eligibility.read_text(encoding="utf-8"):
-    raise SystemExit("Plan creation must consume ActionableNow")
+if "_decision.ActionableNow" in plan_eligibility.read_text(encoding="utf-8"):
+    raise SystemExit("Plan creation must not be blocked by live ActionableNow state")
 
 registry_code = plan_registry.read_text(encoding="utf-8")
 parallel_code = parallel_builder.read_text(encoding="utf-8")
