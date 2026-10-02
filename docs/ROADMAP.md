@@ -2648,3 +2648,23 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+
+
+## 2026-10-02 — Opportunity Discovery + cBot Truth + SL/TP Coverage
+
+Phase implementation prepared on the latest main base.
+
+Completed in this unit:
+- scored entry-zone selection across M5/M15 FVG/OB, same-frame confluence, M5↔M15 confluence and M15/H1 structural levels;
+- reward-path-aware zone choice using canonical structural stop and TP1 reward feasibility;
+- forward target FVG discovery without requiring current-bar retest;
+- unretested quality-aware M5/HTF stop FVG discovery;
+- reachable strong-HTF counter-M5 tactical lane with stricter counter-lane gates;
+- stable cBot/Indicator type identities;
+- independent cBot presence heartbeat plus exact instance heartbeat execution truth;
+- bounded sound delivery fallback and explicit queue/sound diagnostics;
+- larger left-aligned panel alert messages.
+
+Contracts preserved: M15 canonical execution reference; M5 trigger/tuning/precision; M1 optional; H1+ context/reward; existing final RR/risk/regime/news/broker gates.
+
+Next position-engine focus: trace-driven candidate-family/rejection mining, followed by measured multi-scenario coverage improvements without blind threshold lowering.
