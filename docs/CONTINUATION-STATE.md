@@ -1640,3 +1640,21 @@ Requested UI correction:
 Repository verification is pending. Operator action after merge: `git pull --ff-only`.
 
 Phase record: `docs/PHASE-PANEL-CLEARANCE-RESTORE-POSITION.md`.
+
+
+### Indicator Naming + cBot Launch + MTF Panel Direction Correction — 2026-10-02
+
+Status: **IMPLEMENTATION IN PROGRESS** on branch `phase/indicator-name-cbot-launch-mtf-panel-2026-10-02`.
+
+Scope:
+- expose stable cTrader names for Indicator and cBot;
+- keep cBot default host timeframe at M5 for initial chart launch;
+- fix MTF panel Neutral wording by exposing directional BULL/BEAR bias without changing
+  canonical Frame.Direction;
+- remove stale Quick Execution height reservation from the live panel renderer.
+
+Repository verification is pending.
+
+Operator action after merge: `git pull --ff-only`.
+
+Phase record: `docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md`.
