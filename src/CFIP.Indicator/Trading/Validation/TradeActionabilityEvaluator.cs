@@ -87,12 +87,10 @@ namespace cAlgo
                     "RISK UNAVAILABLE");
 
             double tp1RR =
-                IsFinitePositive(preview.Tp1)
-                    ? Math.Abs(
-                        preview.Tp1 -
-                        actualEntry) /
-                      risk
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    actualEntry,
+                    preview.Tp1,
+                    risk);
 
             bool qualityReady =
                 !RequirePrecisionEntry ||
