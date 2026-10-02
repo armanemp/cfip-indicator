@@ -79,6 +79,7 @@ namespace cAlgo
             VerifyUnifiedSubmissionGate();
             VerifyVisualAndExecutionControls();
             VerifyResponsivePanelRuntime();
+            VerifyPanelLiveContentRefresh();
             VerifyDirectionalExecutionFillAcceptance();
             VerifyAggressiveEntryPolicy();
             VerifyTradePlanRegistry();
@@ -6634,6 +6635,56 @@ namespace cAlgo
             Assert(
                 writer.Contains("if (row.Text != nextText)"),
                 "panel writer skips duplicate text writes");
+        }
+
+        private static void VerifyPanelLiveContentRefresh()
+        {
+            string heartbeatPath = Path.Combine(
+                "src", "CFIP.Indicator", "Runtime", "Supervision", "RuntimePanelHeartbeat.cs");
+            string contentPath = Path.Combine(
+                "src", "CFIP.Indicator", "UI", "Panel", "PanelContentRefresh.cs");
+            string statePath = Path.Combine(
+                "src", "CFIP.Indicator", "Indicator", "State.cs");
+            string visibilityPath = Path.Combine(
+                "src", "CFIP.Indicator", "UI", "Panel", "PanelVisibility.cs");
+            string livePath = Path.Combine(
+                "src", "CFIP.Indicator", "Runtime", "Supervision", "PanelHeartbeatLiveState.cs");
+
+            string heartbeat = File.ReadAllText(heartbeatPath);
+            string content = File.ReadAllText(contentPath);
+            string state = File.ReadAllText(statePath);
+            string visibility = File.ReadAllText(visibilityPath);
+            string live = File.ReadAllText(livePath);
+
+            Assert(
+                content.Contains("PanelContentRefreshMilliseconds = 500") &&
+                content.Contains("ShouldRefreshPanelContent(") &&
+                content.Contains("RenderPanelRows(") &&
+                !content.Contains("RenderPanel();"),
+                "panel content refresh is a bounded row-only refresh");
+
+            Assert(
+                heartbeat.Contains("RefreshPanelContentIfDue(") &&
+                heartbeat.Contains("UpdatePanelHeartbeatRows(") &&
+                heartbeat.Contains("UpdatePanelHeartbeatLiveRows("),
+                "runtime heartbeat drives full content refresh before volatile row overlays");
+
+            Assert(
+                state.Contains("_lastPanelContentRefreshUtc"),
+                "panel content refresh has dedicated runtime cadence state");
+
+            Assert(
+                visibility.Contains("_lastPanelContentRefreshUtc =\n                                            DateTime.MinValue"),
+                "panel restore/reset forces immediate content refresh");
+
+            Assert(
+                live.Contains("double liveMarket =") &&
+                live.Contains("Symbol.Bid") &&
+                live.Contains("Symbol.Ask") &&
+                live.Contains("_lastMarket = liveMarket"),
+                "live panel RR uses the current executable-side quote");
+
+            Console.WriteLine("Panel live content refresh contract PASS");
         }
 
         private static void VerifyTradePlanRegistry()
