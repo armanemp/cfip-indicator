@@ -74,6 +74,16 @@ require(
     "pinned to the last closed M5 candle" in signal_renderer,
     "signal arrow renderer must use the current chart bar",
 )
+require(
+    "Bars.Count - 1" in read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs") and
+    "active-plan direction arrow is live guidance" in
+    read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs"),
+    "active plan arrow must remain live rather than pinned to creation bar",
+)
+require(
+    "!snapshot.LivePosition" not in watch_gate,
+    "directional WATCH guidance must remain available while a live position is active",
+)
 watch_gate_start = watch_renderer.find("bool showDirectionalWatch")
 watch_gate_end = watch_renderer.find(
     "if ((showConfirmedSignal || showDirectionalWatch)",
