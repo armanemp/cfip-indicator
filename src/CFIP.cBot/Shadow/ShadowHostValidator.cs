@@ -297,6 +297,64 @@ namespace CFIP.cBot.Shadow
             return true;
         }
 
+        public static ShadowHostResult RevalidateBrokerSafety(
+            SignalEnvelope envelope,
+            ShadowBrokerSnapshot broker)
+        {
+            if (envelope == null ||
+                envelope.Identity == null)
+            {
+                return Block(
+                    "NO SNAPSHOT",
+                    false,
+                    0,
+                    "",
+                    "",
+                    "",
+                    "");
+            }
+
+            if (envelope.Intent == null ||
+                envelope.Intent.Action == ExecutionAction.None)
+            {
+                return new ShadowHostResult(
+                    ShadowHostState.Observing,
+                    "NO EXECUTION INTENT",
+                    false,
+                    envelope.Identity.Revision,
+                    envelope.Identity.SignalId,
+                    envelope.Identity.ScenarioId,
+                    envelope.Identity.PlanId,
+                    envelope.Identity.IdempotencyKey);
+            }
+
+            if (!ValidateBrokerSafety(
+                    envelope.Identity,
+                    envelope.Intent,
+                    broker,
+                    out string reason))
+            {
+                return Block(
+                    reason,
+                    false,
+                    envelope.Identity.Revision,
+                    envelope.Identity.SignalId,
+                    envelope.Identity.ScenarioId,
+                    envelope.Identity.PlanId,
+                    envelope.Identity.IdempotencyKey);
+            }
+
+            return new ShadowHostResult(
+                ShadowHostState.Ready,
+                "SHADOW ELIGIBLE • BROKER MUTATION DISARMED",
+                false,
+                envelope.Identity.Revision,
+                envelope.Identity.SignalId,
+                envelope.Identity.ScenarioId,
+                envelope.Identity.PlanId,
+                envelope.Identity.IdempotencyKey);
+        }
+
         private static bool ValidateBrokerSafety(
             ContractIdentity identity,
             ExecutionIntent intent,
