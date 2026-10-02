@@ -5,54 +5,54 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private void PopulateCanonicalVisualIdentity(
-                            SignalVisualSnapshot snapshot,
-                            int closedM5,
-                            int direction)
-                        {
-                            if (snapshot == null)
-                                return;
+    SignalVisualSnapshot snapshot,
+    int closedM5,
+    int direction)
+        {
+    if (snapshot == null)
+                return;
 
-                            string signalId =
-                                ResolveProviderSignalId(
-                                    closedM5);
+    string signalId =
+                ResolveProviderSignalId(
+                    closedM5);
 
-                            OpportunityLane lane =
-                                ResolveProviderLane();
+    OpportunityLane lane =
+                ResolveProviderLane();
 
-                            string scenarioId =
-                                ResolveProviderScenarioId(
-                                    signalId,
-                                    lane,
-                                    direction);
+    string scenarioId =
+                ResolveProviderScenarioId(
+                    signalId,
+                    lane,
+                    direction);
 
-                            string planId =
-                                ResolveProviderPlanId(
-                                    signalId);
+    string planId =
+                ResolveProviderPlanId(
+                    signalId);
 
-                            TradeOpportunityCandidate scenario = null;
-                            _tradePlanRegistry.TryGetCandidate(
-                                scenarioId,
-                                out scenario);
+    TradeOpportunityCandidate scenario = null;
+    _tradePlanRegistry.TryGetCandidate(
+                scenarioId,
+                out scenario);
 
-                            snapshot.SignalId =
-                                signalId ?? "";
+    snapshot.SignalId =
+                signalId ?? "";
 
-                            snapshot.ScenarioId =
-                                scenarioId ?? "";
+    snapshot.ScenarioId =
+                scenarioId ?? "";
 
-                            snapshot.PlanId =
-                                planId ?? "";
+    snapshot.PlanId =
+                planId ?? "";
 
-                            snapshot.SourceTimeframe =
-                                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
-                                    scenario,
-                                    ProviderScenarioIdentityRule.CanonicalM5);
+    snapshot.SourceTimeframe =
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    scenario,
+                    ProviderScenarioIdentityRule.CanonicalM5);
 
-                            snapshot.Revision =
-                                Math.Max(
-                                    1,
-                                    _cfipProviderRevision);
-                        }
+    snapshot.Revision =
+                Math.Max(
+                    1,
+                    _cfipProviderRevision);
+        }
 
     }
 }
