@@ -1,6 +1,7 @@
 using System;
 using CFIP.Contracts;
 using CFIP.cBot.Shadow;
+using CFIP.cBot.Execution;
 
 namespace CFIP.cBot.Shadow.Tests
 {
@@ -27,7 +28,10 @@ namespace CFIP.cBot.Shadow.Tests
             RevisionRules();
             ProviderRevisionMismatch();
             CoordinatorRecheck();
-            Console.WriteLine("CBOT-P3 shadow host behavioral contracts PASS");
+            MarketProfileValidation();
+            MissingExecutionLabel();
+            InvalidMarketLadder();
+            Console.WriteLine("CBOT-P4A market handoff behavioral contracts PASS");
         }
 
         private static void Ready(
@@ -310,6 +314,156 @@ namespace CFIP.cBot.Shadow.Tests
                         Now, expiry, "fixture");
 
             return new SignalEnvelope(id, stage, plan, intent, Now);
+        }
+
+        private static void MarketProfileValidation()
+        {
+            ExecutionIntent intent =
+                new ExecutionIntent(
+                    new ContractIdentity(
+                        ContractVersion.Current,
+                        "M1",
+                        "S1",
+                        "P1",
+                        "XAUUSD",
+                        TradeDirection.Buy,
+                        OpportunityLane.Tactical,
+                        "M5",
+                        Now,
+                        10,
+                        Now.AddMinutes(5),
+                        1,
+                        "C1",
+                        "K-MARKET"),
+                    ExecutionAction.Market,
+                    100,
+                    99,
+                    101,
+                    1000,
+                    "UNIT",
+                    Now,
+                    Now.AddMinutes(5),
+                    "fixture",
+                    "CFIP-SMART|CFIP-I:TEST",
+                    new MarketExecutionProfile(
+                        2,
+                        10,
+                        10,
+                        false,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        null,
+                        null));
+
+            Assert(
+                MarketExecutionIntentRule.Validate(
+                    intent,
+                    out string reason) &&
+                reason == "OK",
+                "valid market execution profile must pass");
+        }
+
+        private static void MissingExecutionLabel()
+        {
+            ExecutionIntent intent =
+                new ExecutionIntent(
+                    new ContractIdentity(
+                        ContractVersion.Current,
+                        "M2",
+                        "S2",
+                        "P2",
+                        "XAUUSD",
+                        TradeDirection.Buy,
+                        OpportunityLane.Tactical,
+                        "M5",
+                        Now,
+                        10,
+                        Now.AddMinutes(5),
+                        2,
+                        "C2",
+                        "K-MISSING-LABEL"),
+                    ExecutionAction.Market,
+                    100,
+                    99,
+                    101,
+                    1000,
+                    "UNIT",
+                    Now,
+                    Now.AddMinutes(5),
+                    "fixture",
+                    "",
+                    new MarketExecutionProfile(
+                        2,
+                        10,
+                        10,
+                        false,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        null,
+                        null));
+
+            Assert(
+                !MarketExecutionIntentRule.Validate(
+                    intent,
+                    out string reason) &&
+                reason == "MISSING EXECUTION LABEL",
+                "missing broker label must fail closed");
+        }
+
+        private static void InvalidMarketLadder()
+        {
+            ExecutionIntent intent =
+                new ExecutionIntent(
+                    new ContractIdentity(
+                        ContractVersion.Current,
+                        "M3",
+                        "S3",
+                        "P3",
+                        "XAUUSD",
+                        TradeDirection.Buy,
+                        OpportunityLane.Tactical,
+                        "M5",
+                        Now,
+                        10,
+                        Now.AddMinutes(5),
+                        3,
+                        "C3",
+                        "K-BAD-LADDER"),
+                    ExecutionAction.Market,
+                    100,
+                    99,
+                    101,
+                    1000,
+                    "UNIT",
+                    Now,
+                    Now.AddMinutes(5),
+                    "fixture",
+                    "CFIP-SMART|CFIP-I:TEST",
+                    new MarketExecutionProfile(
+                        2,
+                        10,
+                        10,
+                        true,
+                        20,
+                        100,
+                        10,
+                        100,
+                        30,
+                        null,
+                        null));
+
+            Assert(
+                !MarketExecutionIntentRule.Validate(
+                    intent,
+                    out string reason) &&
+                reason == "INVALID MARKET TP LADDER",
+                "non-progressive ladder must fail closed");
         }
 
         private static void Assert(bool ok, string message)
