@@ -360,16 +360,6 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
-                    TryAutoTrade(
-                        closedM5);
-                    return true;
-                },
-                index,
-                "AUTOMATIC MARKET EXECUTION");
-
-            RunCalculationStage(
-                () =>
-                {
                     SynchronizeLiveBrokerState();
                     return true;
                 },
