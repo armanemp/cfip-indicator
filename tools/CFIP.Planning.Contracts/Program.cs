@@ -19,6 +19,7 @@ namespace cAlgo
             VerifyLifecycleTransitions();
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
+            VerifyCanonicalRiskRewardMath();
             VerifyTargetPipelineD7();
             VerifyTargetObstacleCachePolicyF9();
             VerifyTargetSelectionConsistency();
@@ -1205,7 +1206,9 @@ namespace cAlgo
                     0.05,
                     2.0,
                     1.0,
-                    2.0);
+                    2.0,
+                    12.0,
+                    0.01);
 
             Assert(
                 !weakReward.Allowed &&
@@ -1223,7 +1226,9 @@ namespace cAlgo
                     0.05,
                     2.0,
                     1.0,
-                    1.8);
+                    1.8,
+                    12.0,
+                    0.01);
 
             Assert(
                 !wideStop.Allowed &&
@@ -1241,7 +1246,9 @@ namespace cAlgo
                     0.30,
                     2.0,
                     1.0,
-                    2.0);
+                    2.0,
+                    12.0,
+                    0.01);
 
             Assert(
                 !spreadHeavy.Allowed &&
@@ -1259,7 +1266,9 @@ namespace cAlgo
                     0.05,
                     2.0,
                     1.0,
-                    2.0);
+                    2.0,
+                    12.0,
+                    0.01);
 
             Assert(
                 valid.Allowed &&
@@ -1277,12 +1286,150 @@ namespace cAlgo
                     0.05,
                     2.0,
                     1.0,
-                    2.0);
+                    2.0,
+                    12.0,
+                    0.01);
 
             Assert(
                 sell.Allowed &&
                 sell.NominalRR > 2.4,
                 "SELL reward-risk symmetry");
+        }
+
+        private static void VerifyCanonicalRiskRewardMath()
+        {
+            RiskRewardMathResult buy =
+                RiskRewardMathRule.Evaluate(
+                    1,
+                    100.0,
+                    98.0,
+                    106.0,
+                    0.20,
+                    2.0,
+                    12.0,
+                    0.01);
+
+            RiskRewardMathResult sell =
+                RiskRewardMathRule.Evaluate(
+                    -1,
+                    100.0,
+                    102.0,
+                    94.0,
+                    0.20,
+                    2.0,
+                    12.0,
+                    0.01);
+
+            Assert(
+                buy.Valid &&
+                sell.Valid &&
+                Math.Abs(buy.Risk - 2.0) < 1e-12 &&
+                Math.Abs(buy.Reward - 6.0) < 1e-12 &&
+                Math.Abs(buy.EffectiveRisk - 2.20) < 1e-12 &&
+                Math.Abs(buy.NominalRR - 3.0) < 1e-12 &&
+                Math.Abs(buy.EffectiveRR - (6.0 / 2.20)) < 1e-12,
+                "CI-14 canonical BUY geometry");
+
+            Assert(
+                Math.Abs(
+                    buy.NominalRR -
+                    sell.NominalRR) < 1e-12 &&
+                Math.Abs(
+                    buy.EffectiveRR -
+                    sell.EffectiveRR) < 1e-12,
+                "CI-14 BUY/SELL RR mirror");
+
+            RiskRewardMathResult floor =
+                RiskRewardMathRule.Evaluate(
+                    1,
+                    100.0,
+                    99.9995,
+                    100.0045,
+                    0,
+                    0,
+                    40.0,
+                    0.01);
+
+            Assert(
+                floor.Valid &&
+                Math.Abs(floor.Risk - 0.01) < 1e-12 &&
+                Math.Abs(floor.NominalRR - 0.45) < 1e-12,
+                "CI-14 pip-floor boundary");
+
+            RiskRewardMathResult spread =
+                RiskRewardMathRule.Evaluate(
+                    1,
+                    100.0,
+                    98.0,
+                    104.0,
+                    0.50,
+                    0,
+                    12.0,
+                    0.01);
+
+            Assert(
+                spread.Valid &&
+                Math.Abs(spread.NominalRR - 2.0) < 1e-12 &&
+                Math.Abs(spread.EffectiveRR - (4.0 / 2.50)) < 1e-12,
+                "CI-14 spread-adjusted RR is deterministic");
+
+            RiskRewardMathResult wrongSide =
+                RiskRewardMathRule.Evaluate(
+                    1,
+                    100.0,
+                    98.0,
+                    99.0,
+                    0,
+                    0,
+                    12.0,
+                    0.01);
+
+            Assert(
+                !wrongSide.Valid &&
+                wrongSide.Reason == "TARGET WRONG SIDE",
+                "CI-14 wrong-side target contract");
+
+            Assert(
+                Math.Abs(
+                    RiskRewardMathRule.TargetFromRR(
+                        1,
+                        100.0,
+                        2.0,
+                        3.0) -
+                    106.0) < 1e-12 &&
+                Math.Abs(
+                    RiskRewardMathRule.TargetFromRR(
+                        -1,
+                        100.0,
+                        2.0,
+                        3.0) -
+                    94.0) < 1e-12,
+                "CI-14 synthetic target mirror");
+
+            Assert(
+                Math.Abs(
+                    RiskRewardMathRule.DirectionalProgressRR(
+                        1,
+                        100.0,
+                        106.0,
+                        2.0,
+                        0.01) -
+                    3.0) < 1e-12 &&
+                Math.Abs(
+                    RiskRewardMathRule.DirectionalProgressRR(
+                        -1,
+                        100.0,
+                        94.0,
+                        2.0,
+                        0.01) -
+                    3.0) < 1e-12 &&
+                RiskRewardMathRule.DirectionalProgressRR(
+                    1,
+                    100.0,
+                    99.0,
+                    2.0,
+                    0.01) < 0,
+                "CI-14 live progress RR mirror");
         }
 
         private static void Assert(bool condition, string name)
