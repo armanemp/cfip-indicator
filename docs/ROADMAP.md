@@ -440,7 +440,7 @@ Phase report: docs/PHASE-CBOT-DEMO-LIVE-MARKET-2026-10-02.md.
 
 ## CBOT-P4B — Aggressive Authority + Panel Geometry Integrity — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — merged to `main` on 2026-10-02 as `33dd37f225fb9e2677070f122b5068b0c2df2e92`.**
 
 Scope:
 - fix panel content clipping by synchronizing the inner panel-stack height with the final outer panel height;
@@ -452,6 +452,14 @@ Scope:
 No analytical threshold, confidence, RR, Entry, SL, TP or risk tuning is included.
 
 Phase report: `docs/PHASE-CBOT-P4B-AGGRESSIVE-PANEL-GEOMETRY-2026-10-02.md`.
+
+Verification:
+- Source / Architecture run `36983568671`: **PASS**;
+- Runtime Acceptance run `36983568612`: **PASS**;
+- cTrader Compile/Build run `36983568641`: **PASS**;
+- P4B deterministic panel/Aggressive audit: **PASS**.
+
+Target-terminal acceptance remains manual.
 
 Next: **CBOT-P4C — Pending Stop authority extraction**.
 
