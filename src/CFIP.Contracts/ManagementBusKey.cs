@@ -15,7 +15,7 @@ namespace CFIP.Contracts
         public static string ReportKeyForInstance(string instanceId) =>
             "CFIPManagementReports" + Hash(instanceId);
 
-        private static string Hash(string value)
+        private static string Hash(string? value)
         {
             ulong hash = OffsetBasis;
             value = value ?? "";
@@ -45,7 +45,7 @@ namespace CFIP.Contracts
         public static string Serialize(ManagementCommand[] commands) =>
             JsonSerializer.Serialize(commands ?? Array.Empty<ManagementCommand>(), Options);
 
-        public static bool TryDeserialize(string payload, out ManagementCommand[] commands)
+        public static bool TryDeserialize(string payload, out ManagementCommand[]? commands)
         {
             commands = null;
             if (string.IsNullOrWhiteSpace(payload))
@@ -53,8 +53,10 @@ namespace CFIP.Contracts
 
             try
             {
-                commands = JsonSerializer.Deserialize<ManagementCommand[]>(payload, Options);
-                return commands != null;
+                ManagementCommand[]? parsed =
+                    JsonSerializer.Deserialize<ManagementCommand[]>(payload, Options);
+                commands = parsed;
+                return parsed != null;
             }
             catch
             {
@@ -78,7 +80,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out BrokerExecutionReport[] reports)
+            out BrokerExecutionReport[]? reports)
         {
             reports = null;
             if (string.IsNullOrWhiteSpace(payload))
@@ -86,8 +88,10 @@ namespace CFIP.Contracts
 
             try
             {
-                reports = JsonSerializer.Deserialize<BrokerExecutionReport[]>(payload, Options);
-                return reports != null;
+                BrokerExecutionReport[]? parsed =
+                    JsonSerializer.Deserialize<BrokerExecutionReport[]>(payload, Options);
+                reports = parsed;
+                return parsed != null;
             }
             catch
             {

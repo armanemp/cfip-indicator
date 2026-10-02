@@ -157,51 +157,13 @@ namespace cAlgo
         private int ResolvePanelMaximumHeight(
             int configuredMaxHeight)
         {
-            int observedChartHeight = 0;
-
-            try
-            {
-                observedChartHeight =
-                    (int)Math.Round(
-                        Math.Max(
-                            0,
-                            Chart.Height));
-            }
-            catch
-            {
-                observedChartHeight = 0;
-            }
-
-            if (observedChartHeight >= 220)
-            {
-                _panelGeometryBaselineChartHeight =
-                    Math.Max(
-                        _panelGeometryBaselineChartHeight,
-                        observedChartHeight);
-            }
-
-            int viewportHeight =
-                _panelGeometryBaselineChartHeight > 0
-                    ? _panelGeometryBaselineChartHeight
-                    : observedChartHeight;
-
-            viewportHeight =
-                Math.Max(
-                    260,
-                    viewportHeight -
-                    Math.Max(0, PanelMargin) * 2 -
-                    8);
-
-            // Never size the panel from a transient zero/collapsed chart height.
-            // Long content is bounded by the ScrollViewer below this surface.
+            // Panel geometry is an overlay concern. Never derive its size from
+            // a live chart viewport because the chart viewport may be transiently affected
+            // by the control tree during attachment/layout. Long content is already
+            // bounded by the ScrollViewer.
             return Math.Max(
                 220,
-                Math.Min(
-                    configuredMaxHeight,
-                    Math.Max(
-                        220,
-                        (int)Math.Round(
-                            viewportHeight * 0.85))));
+                configuredMaxHeight);
         }
 
         private void SetPanelAlignment()

@@ -81,7 +81,8 @@ panel_key = read("src/CFIP.Indicator/UI/Panel/PanelRenderOptimization.cs")
 require(
     "Math.Min(" in panel_factory and
     "260" in panel_factory and
-    "Never add an unconstrained panel" in panel_factory,
+    "int bootstrapHeight" in panel_factory and
+    "Height =\n                                                bootstrapHeight" in panel_factory,
     "indicator panel must start from small finite bootstrap geometry",
 )
 require(

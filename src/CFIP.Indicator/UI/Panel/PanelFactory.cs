@@ -21,8 +21,6 @@ namespace cAlgo
                         
                                     try
                                     {
-                                        CapturePanelGeometryBaseline();
-
                                         int bootstrapWidth =
                                             Math.Max(
                                                 260,
@@ -227,10 +225,9 @@ namespace cAlgo
                         
                                         SetPanelAlignment();
 
-                                        // Never add an unconstrained panel to the main chart.
-                                        // The first layout pass must have a finite geometry or
-                                        // cTrader may collapse the chart area while measuring
-                                        // the control tree.
+                                        // The panel is an explicitly sized overlay control. Its
+                                        // geometry must remain independent of the chart viewport so
+                                        // the control cannot participate in a chart-height feedback loop.
                                         Chart.AddControl(
                                             _panel);
                         
@@ -255,28 +252,5 @@ namespace cAlgo
                                     }
                                 }
 
-        private void CapturePanelGeometryBaseline()
-        {
-            int observedHeight = 0;
-
-            try
-            {
-                observedHeight =
-                    (int)Math.Round(
-                        Math.Max(
-                            0,
-                            Chart.Height));
-            }
-            catch
-            {
-                observedHeight = 0;
-            }
-
-            // Chart controls are overlay controls. Capture a finite viewport
-            // before attachment so a transient collapsed Chart.Height cannot
-            // feed back into the control's own measurement.
-            if (observedHeight >= 220)
-                _panelGeometryBaselineChartHeight = observedHeight;
-        }
     }
 }

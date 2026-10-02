@@ -19,8 +19,8 @@ if "availableChartHeight" in main_renderer:
     errors.append("panel renderer must not size itself from the transient Chart.Height block")
 if "_panelStack.Height" not in visual:
     errors.append("panel stack height must track final outer panel height")
-if "CapturePanelGeometryBaseline()" not in factory or "_panelGeometryBaselineChartHeight" not in factory:
-    errors.append("panel geometry baseline must be captured before Chart.AddControl")
+if "Chart.Height" in factory or "Chart.Height" in layout:
+    errors.append("panel geometry must not read Chart.Height")
 if "Chart.AddControl(" not in factory:
     errors.append("panel must keep the supported chart-control API")
 

@@ -2,6 +2,30 @@
 
 For every future phase, modify the existing canonical production owner directly. Do not create parallel hotfix files, duplicate executors, compatibility wrappers, alternate calculation paths, alternate identity formatters, or detached patch subsystems when the existing owner can be corrected. Any obsolete owner created by an extraction must be deleted in the same phase, and all audits/docs must point to the single surviving owner.
 
+## Build Warning / Panel Height Integrity — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending on branch.
+
+Scope:
+- eliminate the 9 locally observed Release-build warnings without null-suppression or artificial field references;
+- make nullable transport initialization explicit in the shared Contracts project;
+- remove dead last-pending-signal state;
+- remove the panel's remaining Chart.Height-derived geometry feedback path;
+- disable Indicator AutoRescale because the transparent Provider Heartbeat writes a non-price provider revision series;
+- preserve the canonical overlay panel, bounded ScrollViewer, 50px bottom clearance and cBot execution boundary;
+- add a dedicated acceptance audit covering warning cleanup and chart-height safety.
+
+Root cause:
+- CFIPReadOnlyProvider writes the provider revision to a transparent output series;
+- cTrader documents AutoRescale as chart auto-rescaling and its default as enabled; the revision is metadata, not price data;
+- panel maximum-height resolution was still reading Chart.Height, so a transient chart viewport could influence the next panel geometry calculation.
+
+Invariant:
+Panel geometry and indicator chart scaling must never be driven by provider metadata or a transient chart viewport.
+
+Phase record: docs/PHASE-BUILD-WARNING-PANEL-HEIGHT-INTEGRITY-2026-10-02.md.
+
+Next staged phase after acceptance: CBOT-P5 — Protection / Lifecycle / Recovery completion; signal-quality/target-quality work remains a separate evidence-driven phase.
 ## CBOT-P4E — Management Command + Remaining Broker Mutation Authority — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #197 as `996cd9cb4872608674269c205b7a03b33ab9e812`.**

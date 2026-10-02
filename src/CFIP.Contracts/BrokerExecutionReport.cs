@@ -19,6 +19,6 @@ namespace CFIP.Contracts
         string Reason,
         long AttemptRevision)
     {
-        public string CommandIdempotencyKey { get; init; }
+        public string CommandIdempotencyKey { get; init; } = string.Empty;
     }
 }

@@ -265,7 +265,6 @@ namespace cAlgo
                 private string _dailyLossStateReason = "NOT EVALUATED";
 
                 private DateTime _lastRestrictionAlertUtc = DateTime.MinValue;
-                private int _lastPendingSignalM5 = -1;
                 private int _lastPendingCleanupM5 = -1;
                 private int _lastAutoTradingReminderM5 = -1;
                 private int _lastVisualDirection = 0;
@@ -378,7 +377,6 @@ namespace cAlgo
                     EntrySignalTiming.NotMeasured();
         private string _lastPanelPresentationKey = "";
         private int _panelLiveRow = -1;
-        private int _panelGeometryBaselineChartHeight;
         private int _panelPositionRow = -1;
         private int _panelExitRow = -1;
         private DateTime _lastLiveStructuralPulseUtc = DateTime.MinValue;
