@@ -1,3 +1,15 @@
+## CI-17A — Panel live-content refresh correction — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Root cause: the runtime heartbeat intentionally skipped the full RenderPanel path, but the full renderer also short-circuited on an incomplete presentation key, so mutable panel content could remain stale. Implemented a bounded 500 ms content-only refresh that builds one snapshot and updates row content without rebuilding the panel layout. The panel is reset for immediate refresh on restore, and the live RR row now uses the current Bid/Ask quote.
+
+No strategy thresholds, decision/execution policy, public parameters or broker mutation paths changed.
+
+A deterministic Runtime Contract and audit_phase_ci_17a.py were added and accumulated after CI-17.
+
+Target-terminal visual responsiveness remains a manual acceptance boundary.
+
 # CFIP Indicator — Development and Continuity Log
 
 This file records implementation history so development can resume safely in a new chat without reconstructing prior work from conversation history.

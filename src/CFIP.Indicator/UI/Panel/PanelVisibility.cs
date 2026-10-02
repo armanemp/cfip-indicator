@@ -18,6 +18,10 @@ namespace cAlgo
                                 {
                                     _panelHidden =
                                         !_panelHidden;
+
+                                    if (!_panelHidden)
+                                        _lastPanelContentRefreshUtc =
+                                            DateTime.MinValue;
                         
                                     if (_panel != null)
                                         _panel.IsVisible =
@@ -79,6 +83,8 @@ namespace cAlgo
                                     _panelToggleButton = null;
                                     _panelRestoreButton = null;
                                     _panelHidden = false;
+                                    _lastPanelContentRefreshUtc =
+                                        DateTime.MinValue;
                                     _lastReactionAlertBar = -1;
                                     _panelStableHeader = "";
                                     _panelStableHeaderSinceUtc =

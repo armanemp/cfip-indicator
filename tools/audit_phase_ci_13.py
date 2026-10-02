@@ -254,9 +254,10 @@ check(
 )
 
 check(
-    "roadmap advances the implementation state to CI-14",
-    "Current implementation phase: CI-14 — Canonical risk/reward and protection mathematics."
-    in roadmap,
+    "roadmap records CI-14 historical closeout and current certification state",
+    "CI-14" in roadmap and
+    "## 2.0.1 — Current certification state" in roadmap and
+    ("CI-17A" in roadmap or "CI-17" in roadmap)
 )
 
 if errors:

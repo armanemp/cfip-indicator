@@ -23,7 +23,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 
 ## Active phase
 
-**CI-17 — Target-terminal cTrader validation — repository package merged; real target-terminal/manual acceptance remains pending.**
+**CI-17A — Panel live-content refresh correction — implementation complete; repository verification pending, then CI-17 target-terminal acceptance continues.**
 
 Repository package status: **MERGED — PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.**
 
@@ -1477,5 +1477,5 @@ The remaining boundary is intentionally manual: target-terminal initialization/t
 
 Operator action: run `git pull --ff-only` on local `main`.
 
-Next gated phase after manual evidence: **CI-FINAL — Full-stack Calculation Integrity Certification**.
+Next gated phase after CI-17 terminal evidence: **CI-FINAL — Full-stack Calculation Integrity Certification**.
 

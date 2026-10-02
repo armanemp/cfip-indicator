@@ -173,27 +173,9 @@ check(
     "CI-05" in roadmap and
     "CI-05 implementation record" in roadmap and
     "CI-05 final closeout" in continuation and
-    any(marker in roadmap for marker in (
-        "Current implementation phase: CI-05",
-        "Current implementation phase: CI-06",
-        "Current implementation phase: CI-07",
-        "Current implementation phase: CI-08",
-        "Current implementation phase: CI-09",
-        "Current implementation phase: CI-10",
-        "Current implementation phase: CI-11",
-        "Current implementation phase: CI-12",
-    )) and
-    any(marker in continuation for marker in (
-        "**CI-05 — FVG lifecycle",
-        "**CI-06 — Order Block lifecycle",
-        "**CI-07 — Market regime, MTF and context audit",
-        "**CI-08 — Divergence, WaveTrend, reaction and early-signal audit",
-        "**CI-07 — MTF / regime / market context",
-        "Current implementation phase: **CI-09",
-        "Current implementation phase: **CI-10",
-        "Current implementation phase: **CI-11",
-        "Current implementation phase: **CI-12",
-    ))
+    "## 2.0.1 — Current certification state" in roadmap and
+    ("CI-17A" in roadmap or "CI-17" in roadmap) and
+    "CI-17" in continuation
 )
 
 # No second production FVG lifecycle class is permitted.
