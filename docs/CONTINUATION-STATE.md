@@ -1,3 +1,34 @@
+## Current Continuation — 2026-10-02 — cBot Attachment / Alert Audio Hardening
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Current branch: hotfix/cbot-attachment-audio-observability-2026-10-02.
+
+Root causes corrected:
+- chart-object type identity now matches the real cBot/Indicator class names instead of comparing Type.Name with a human display name;
+- physical chart attachment is no longer inferred from an empty LocalStorage heartbeat;
+- alert sound delivery retries the semantic cue when a configured custom sound file fails;
+- alert queue/sound delivery now exposes explicit runtime trace messages;
+- queued alerts are drained in a bounded batch and remain timer-driven.
+
+Safety/strategy contracts preserved:
+- M15 remains canonical trade-decision/execution reference;
+- M5 remains trigger/tuning/entry precision;
+- M1 remains optional confirmation;
+- H1+ remains context/reward support;
+- no confidence/RR/risk threshold was reduced for signal-frequency reasons;
+- single-plan broker capacity remains until CBOT-6M.
+
+Verification required:
+- Source/Architecture CI;
+- cTrader compile/build;
+- target-terminal cBot attachment and reconnect;
+- target-terminal alert-to-sound acceptance.
+
+Next work unit: CBOT-6M concurrent multi-scenario execution.
+
+Operator action after merge: git pull --ff-only.
+
 ## CBOT-P9 — Unified Alert Rail / Visual Coherence / cBot Signal Preflight — 2026-10-02
 
 Status: **VERIFIED COMPLETE — automated gates PASS; target-terminal visual acceptance remains manual.**
