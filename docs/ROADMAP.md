@@ -768,6 +768,18 @@ M2–M28 may continue in parallel, but any phase touching execution/protection/p
 
 ## M3 — Single Trade Truth Chain
 
+Status: **IMPLEMENTATION COMPLETE — verification pending on phase branch.**
+
+2026-10-02 implementation:
+- added immutable CFIP.Contracts.AlertEnvelope carrying the same ContractIdentity used by the Indicator→cBot provider boundary;
+- routed popup and sound through the same AlertDelivery envelope;
+- blocked/restriction candidates no longer produce the normal signal sound or chart signal marker;
+- removed the obsolete visual-alert side-channel state so chart presentation remains snapshot-owned;
+- extended SignalVisualSnapshot with SignalId/ScenarioId/PlanId/SourceTimeframe/Revision;
+- made main plan labels resolve the real canonical source timeframe instead of a hard-coded (MTF) tag;
+- added an accumulated tools/audit_phase_m3_trade_truth.py whole-chain audit and wired it into Source/Architecture CI.
+
+
 ### هدف
 حل ریشه‌ای mismatch بین pre-analysis، signal، scenario، plan، panel، chart، alert، execution و outcome.
 

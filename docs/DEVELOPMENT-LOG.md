@@ -3285,3 +3285,21 @@ synchronization call.
 No strategy threshold, Decision, Plan, risk or broker authority is changed.
 
 Phase record: `docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md`.
+## 2026-10-02 — M3 Single Trade Truth / Alert–Chart Coherence
+
+Implemented on phase/m3-trade-truth-alert-chart-coherence-2026-10-02.
+
+- Added immutable CFIP.Contracts.AlertEnvelope so popup/sound delivery retains SignalId/ScenarioId/PlanId/SourceTimeframe/Revision identity.
+- Refactored AlertDelivery to carry the canonical envelope while preserving the single bounded delivery queue.
+- Updated AlertEngine to use the existing provider identity resolvers and to suppress normal sound/visual signal side effects for blocked candidate alerts.
+- Removed the obsolete _lastVisualAlert* presentation side-channel.
+- Extended SignalVisualSnapshot with canonical opportunity identity.
+- Prevented directional watch markers while EntryAllowed is false or a pending/live broker state owns the chart.
+- Replaced the hard-coded main-plan (MTF) label with the canonical source timeframe from the current visual snapshot, with the existing deterministic fallback.
+- Corrected compact signal-label anchoring so labels sit to the left of the 40-candle line start with a horizontal gap; white text and no background remain unchanged.
+- Added and accumulated tools/audit_phase_m3_trade_truth.py and wired it into Source/Architecture CI.
+
+Verification status:
+- Local source checkout/build was not available in this environment; repository CI is the authoritative compile/static verification boundary.
+- GitHub API exposed no completed workflow runs for the new phase branch at implementation time.
+- Target-terminal acceptance is intentionally still manual for sound playback, popup behavior and marker/line timing.

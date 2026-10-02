@@ -366,6 +366,11 @@ namespace cAlgo
             snapshot.AuthoritativeDirection =
                 visualDirection;
 
+            PopulateCanonicalVisualIdentity(
+                snapshot,
+                closedM5,
+                visualDirection);
+
             snapshot.HtfAnchorDirection =
                 _decision == null ? 0 : _decision.HtfAnchorDirection;
             snapshot.HtfAlignment =

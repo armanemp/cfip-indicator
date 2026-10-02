@@ -2816,28 +2816,41 @@ if "RemovePlanLabel(" not in pending_code:
 
 ALERT_ENGINE = ROOT / "Trading" / "Alerts" / "AlertEngine.cs"
 alert_engine_code = ALERT_ENGINE.read_text(encoding="utf-8")
-if "RememberVisualSignalAlert(" not in alert_engine_code:
+if "BuildCanonicalAlertEnvelope(" not in alert_engine_code:
     raise SystemExit(
-        "Alert delivery must update the visual signal marker state"
+        "AlertEngine must construct the canonical AlertEnvelope"
+    )
+if "Notifications.PlaySound" in alert_engine_code:
+    raise SystemExit(
+        "AlertEngine must not own audible transport"
+    )
+if "new AlertDelivery(" not in alert_engine_code or "envelope," not in alert_engine_code:
+    raise SystemExit(
+        "AlertEngine must enqueue the canonical alert envelope"
     )
 
 STATE_CODE = INDICATOR_STATE.read_text(encoding="utf-8")
-for required in (
+for obsolete in (
     "_lastVisualAlertM5",
     "_lastVisualAlertDirection",
     "_lastVisualAlertKind",
     "_lastVisualAlertUtc",
+    "RememberVisualSignalAlert(",
 ):
-    if required not in STATE_CODE:
+    if obsolete in STATE_CODE or obsolete in alert_engine_code:
         raise SystemExit(
-            f"Visual alert state missing: {required}"
+            f"Obsolete visual-alert side channel remains: {obsolete}"
         )
 
 ALERT_SIGNAL_RENDERER = ROOT / "UI" / "Chart" / "AlertSignalRenderer.cs"
 alert_signal_renderer_code = ALERT_SIGNAL_RENDERER.read_text(encoding="utf-8")
 if "RenderLatestAlertSignalMarker(" not in alert_signal_renderer_code:
     raise SystemExit(
-        "Alert signal renderer must own persistent alert markers"
+        "Alert signal renderer cleanup contract is missing"
+    )
+if "Chart.DrawIcon(" in alert_signal_renderer_code:
+    raise SystemExit(
+        "Legacy alert mirror must never create a second chart marker"
     )
 
 cleanup_code = (

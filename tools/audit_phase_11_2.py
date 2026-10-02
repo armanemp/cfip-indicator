@@ -48,7 +48,7 @@ require(
 )
 require(
     ANCHOR,
-    r"CompactPlanLabelMinimumGapBars[\s\S]*?LabelLeftOffsetBars[\s\S]*?lineLeft \+ offset",
+    r"CompactPlanLabelMinimumGapBars[\s\S]*?LabelLeftOffsetBars[\s\S]*?lineLeft - offset",
     "stable compact label anchor",
 )
 require(

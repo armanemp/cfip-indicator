@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CFIP.Contracts;
 
 namespace cAlgo
 {
@@ -6551,12 +6552,27 @@ namespace cAlgo
                 pendingRenderer.Contains("RemovePlanLabel("),
                 "pending levels render through compact semantic boxes");
 
+            string alertDeliveryPath = Path.Combine(
+                "src", "CFIP.Indicator", "Core", "Runtime", "AlertDelivery.cs");
+            string alertContractPath = Path.Combine(
+                "src", "CFIP.Contracts", "AlertEnvelope.cs");
+
             Assert(
-                alertEngine.Contains("RememberVisualSignalAlert(") &&
-                state.Contains("_lastVisualAlertM5") &&
-                state.Contains("_lastVisualAlertDirection") &&
-                alertRenderer.Contains("RenderLatestAlertSignalMarker("),
-                "audible signal alert has a non-authoritative visual presentation path");
+                !alertEngine.Contains("RememberVisualSignalAlert(") &&
+                !state.Contains("_lastVisualAlertM5") &&
+                !state.Contains("_lastVisualAlertDirection") &&
+                alertRenderer.Contains("RenderLatestAlertSignalMarker(") &&
+                File.Exists(alertDeliveryPath) &&
+                File.Exists(alertContractPath) &&
+                File.ReadAllText(alertDeliveryPath).Contains("AlertEnvelope Envelope") &&
+                File.ReadAllText(alertContractPath).Contains("VisualMarkAllowed"),
+                "audible signal alerts use canonical envelope delivery without a second visual authority");
+
+            Assert(
+                File.ReadAllText(alertEnginePath).Contains("BuildCanonicalAlertEnvelope(") &&
+                File.ReadAllText(alertEnginePath).Contains("EnableSoundAlerts &&") &&
+                File.ReadAllText(alertEnginePath).Contains("!blockedCandidateAlert"),
+                "blocked signal alert side effects are suppressed at the alert authority");
 
             string protectionPath = Path.Combine(
                 "src", "CFIP.Indicator", "Trading", "LiveManagement", "ProtectionManager.cs");
@@ -8656,6 +8672,54 @@ namespace cAlgo
                 "degraded runtime cannot be re-armed before recovery");
         }
 
+        private static AlertDelivery BuildTestAlertDelivery(
+            string key,
+            string message,
+            bool critical,
+            DateTime eventUtc,
+            bool playSound,
+            string soundTypeName,
+            string soundFilePath,
+            bool showPopup)
+        {
+            ContractIdentity identity =
+                new ContractIdentity(
+                    ContractVersion.Current,
+                    key,
+                    "TEST-SCENARIO|" + key,
+                    "TEST-PLAN|" + key,
+                    "TEST",
+                    CFIP.Contracts.TradeDirection.None,
+                    CFIP.Contracts.OpportunityLane.Tactical,
+                    "M5",
+                    eventUtc,
+                    0,
+                    null,
+                    1,
+                    key,
+                    "TEST|" + key);
+
+            AlertEnvelope envelope =
+                new AlertEnvelope(
+                    identity,
+                    critical
+                        ? SignalStage.Confirmed
+                        : SignalStage.Watch,
+                    "TEST-ALERT|" + key,
+                    key,
+                    message,
+                    critical,
+                    true,
+                    eventUtc);
+
+            return new AlertDelivery(
+                envelope,
+                playSound,
+                soundTypeName,
+                soundFilePath,
+                showPopup);
+        }
+
         private static void VerifyAlertDeliveryQueueSemantics()
         {
             DateTime now = Utc(12, 0);
@@ -8663,7 +8727,7 @@ namespace cAlgo
                 new AlertDeliveryQueue(3);
 
             AlertDelivery normal1 =
-                new AlertDelivery(
+                BuildTestAlertDelivery(
                     "NORMAL|1",
                     "normal-1",
                     false,
@@ -8674,7 +8738,7 @@ namespace cAlgo
                     true);
 
             AlertDelivery normal2 =
-                new AlertDelivery(
+                BuildTestAlertDelivery(
                     "NORMAL|2",
                     "normal-2",
                     false,
@@ -8685,7 +8749,7 @@ namespace cAlgo
                     true);
 
             AlertDelivery critical =
-                new AlertDelivery(
+                BuildTestAlertDelivery(
                     "CRITICAL|1",
                     "critical-1",
                     true,
@@ -8726,7 +8790,7 @@ namespace cAlgo
                 queue.Enqueue(normal1) &&
                 queue.Enqueue(normal2) &&
                 queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "NORMAL|3",
                         "normal-3",
                         false,
@@ -8736,7 +8800,7 @@ namespace cAlgo
                         "",
                         false)) &&
                 !queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "NORMAL|4",
                         "normal-4",
                         false,
@@ -8752,7 +8816,7 @@ namespace cAlgo
             queue.Enqueue(normal1);
             queue.Enqueue(normal2);
             queue.Enqueue(
-                new AlertDelivery(
+                BuildTestAlertDelivery(
                     "NORMAL|3",
                     "normal-3",
                     false,
@@ -8764,7 +8828,7 @@ namespace cAlgo
 
             Assert(
                 queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "CRITICAL|2",
                         "critical-2",
                         true,
@@ -8780,7 +8844,7 @@ namespace cAlgo
 
             Assert(
                 !queue.Enqueue(
-                    new AlertDelivery(
+                    BuildTestAlertDelivery(
                         "EMPTY",
                         "",
                         false,

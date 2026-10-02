@@ -1,29 +1,31 @@
 using System;
+using CFIP.Contracts;
 
 namespace cAlgo
 {
     internal struct AlertDelivery
     {
         public AlertDelivery(
-            string key,
-            string message,
-            bool critical,
-            DateTime enqueuedUtc,
+            AlertEnvelope envelope,
             bool playSound,
             string soundTypeName,
             string soundFilePath,
             bool showPopup)
         {
-            Key = key;
-            Message = message;
-            Critical = critical;
-            EnqueuedUtc = enqueuedUtc;
+            Envelope = envelope;
+            Key = envelope == null ? "" : envelope.AlertKey;
+            Message = envelope == null ? "" : envelope.Message;
+            Critical = envelope != null && envelope.Critical;
+            EnqueuedUtc = envelope == null
+                ? DateTime.MinValue
+                : envelope.EventUtc;
             PlaySound = playSound;
             SoundTypeName = soundTypeName;
             SoundFilePath = soundFilePath;
             ShowPopup = showPopup;
         }
 
+        public AlertEnvelope Envelope { get; }
         public string Key { get; }
         public string Message { get; }
         public bool Critical { get; }

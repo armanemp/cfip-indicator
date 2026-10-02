@@ -9,6 +9,7 @@ using System.Linq;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
+using CFIP.Contracts;
 
 namespace cAlgo
 {
@@ -98,6 +99,14 @@ namespace cAlgo
                                     _alertCooldowns.Remove(staleKey);
                             }
                 
+                            AlertEnvelope envelope =
+                                BuildCanonicalAlertEnvelope(
+                                    key,
+                                    message,
+                                    direction,
+                                    critical,
+                                    now);
+
                             _lastAlertMessage =
                                 message;
                 
@@ -109,14 +118,18 @@ namespace cAlgo
                 
                             _lastAlertUtc =
                                 now;
-
-                            RememberVisualSignalAlert(
-                                key,
-                                direction,
-                                now);
                 
+                            bool blockedCandidateAlert =
+                                IsBlockedCandidateAlert(
+                                    key,
+                                    message);
+
+                            // Restriction/blocked candidates may show the configured
+                            // diagnostic popup, but never emit the normal signal sound
+                            // or chart marker.
                             bool playSound =
-                                EnableSoundAlerts;
+                                EnableSoundAlerts &&
+                                !blockedCandidateAlert;
 
                             SoundType soundType =
                                 ResolveAlertSoundType(
@@ -142,16 +155,19 @@ namespace cAlgo
                             if (playSound ||
                                 showPopup)
                             {
-                                _alertDeliveryQueue.Enqueue(
-                                    new AlertDelivery(
-                                        key,
-                                        message,
-                                        critical,
-                                        now,
-                                        playSound,
-                                        soundType.ToString(),
-                                        SoundFilePath,
-                                        showPopup));
+                                if (!_alertDeliveryQueue.Enqueue(
+                                        new AlertDelivery(
+                                            envelope,
+                                            playSound,
+                                            soundType.ToString(),
+                                            SoundFilePath,
+                                            showPopup)))
+                                {
+                                    Print(
+                                        "CFIP alert delivery queue rejected [{0}] revision={1}",
+                                        envelope.AlertId,
+                                        envelope.Identity.Revision);
+                                }
                             }
 
                             if (EnableEmailAlerts &&
@@ -236,41 +252,6 @@ namespace cAlgo
                                 key.StartsWith("EARLY|", StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith("REACTION|", StringComparison.OrdinalIgnoreCase) ||
                                 key.StartsWith("REVERSAL|", StringComparison.OrdinalIgnoreCase);
-                        }
-
-        private void RememberVisualSignalAlert(
-                            string key,
-                            int direction,
-                            DateTime now)
-                        {
-                            if (!IsVisualSignalAlertKey(key) ||
-                                direction == 0)
-                                return;
-
-                            int alertM5 =
-                                ExtractVisualAlertM5(
-                                    key,
-                                    _lastEvaluatedM5);
-
-                            if (alertM5 < 0)
-                                return;
-
-                            int separator =
-                                key.IndexOf('|');
-
-                            _lastVisualAlertKind =
-                                separator > 0
-                                    ? key.Substring(
-                                        0,
-                                        separator)
-                                    : "SIGNAL";
-
-                            _lastVisualAlertM5 =
-                                alertM5;
-                            _lastVisualAlertDirection =
-                                direction;
-                            _lastVisualAlertUtc =
-                                now;
                         }
 
         private int ExtractVisualAlertM5(

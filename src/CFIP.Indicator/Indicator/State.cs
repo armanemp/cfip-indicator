@@ -272,14 +272,6 @@ namespace cAlgo
                 private int _lastAlertDirection;
                 private bool _lastAlertCritical;
                 private DateTime _lastAlertUtc = DateTime.MinValue;
-
-                // Presentation bridge for audible signal events. This is not an
-                // execution authority; it only guarantees that a signal which
-                // emitted an alert also has a persistent on-chart marker.
-                private int _lastVisualAlertM5 = -1;
-                private int _lastVisualAlertDirection;
-                private string _lastVisualAlertKind = "";
-                private DateTime _lastVisualAlertUtc = DateTime.MinValue;
                 private int _authoritativeDirection;
                 private string _authoritativeState = "WAITING";
         

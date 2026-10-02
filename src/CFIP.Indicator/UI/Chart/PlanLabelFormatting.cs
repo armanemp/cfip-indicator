@@ -36,8 +36,64 @@ namespace cAlgo
 
         private string PlanTimeframeTag()
         {
-            // The canonical main plan is a multi-timeframe consensus.
-            return "(MTF)";
+            string snapshotSource =
+                _renderSignalVisualSnapshot == null
+                    ? ""
+                    : _renderSignalVisualSnapshot.SourceTimeframe;
+
+            string source =
+                string.IsNullOrWhiteSpace(snapshotSource)
+                    ? ResolveCanonicalPlanSourceTimeframe()
+                    : snapshotSource.Trim().ToUpperInvariant();
+
+            return
+                "(" +
+                source +
+                ")";
+        }
+
+        private string ResolveCanonicalPlanSourceTimeframe()
+        {
+            int closedM5 =
+                _plan != null
+                    ? _plan.CreatedM5
+                    : _lastEvaluatedM5;
+
+            if (closedM5 < 0 &&
+                _m5Bars != null &&
+                _m5Bars.Count > 1)
+                closedM5 =
+                    _m5Bars.Count - 2;
+
+            string signalId =
+                ResolveProviderSignalId(
+                    closedM5);
+
+            int direction =
+                _plan != null
+                    ? _plan.Direction
+                    : (_decision == null
+                        ? 0
+                        : _decision.Direction);
+
+            OpportunityLane lane =
+                ResolveProviderLane();
+
+            string scenarioId =
+                ResolveProviderScenarioId(
+                    signalId,
+                    lane,
+                    direction);
+
+            TradeOpportunityCandidate scenario = null;
+            _tradePlanRegistry.TryGetCandidate(
+                scenarioId,
+                out scenario);
+
+            return
+                ProviderScenarioIdentityRule.ResolveSourceTimeframe(
+                    scenario,
+                    ProviderScenarioIdentityRule.CanonicalM5);
         }
 
         private string ScenarioTimeframeTag(
