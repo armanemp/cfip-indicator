@@ -1,3 +1,25 @@
+## CI-20B — Protection / cBot / Signal Hardening — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci20b-protection-cbot-signal-hardening-2026-10-02`.**
+
+Canonical corrections:
+- live BE/SL/trailing calculation is consolidated in `IntelligentProtectionRule`;
+- `ProtectionManager` no longer owns a second copy of BE/trailing arithmetic;
+- cBot management commands now expire after a bounded age and publish a terminal Expired report;
+- Indicator retires Expired management commands from its local queue;
+- only qualified M15/H1 aligned pullbacks can pass neutral-M5 confirmation; opposite M5 remains blocked;
+- smart-gate M5 regime lookup is reused within the same cycle.
+
+Deterministic regression coverage:
+- intelligent protection BUY/SELL symmetry;
+- server-side BE competition prevention;
+- monotonic stop protection;
+- fail-closed non-finite protection;
+- qualified neutral-M5 primary pullback acceptance and rejection cases.
+
+No public confidence/RR/strategy threshold was lowered.
+
+Phase record: `docs/PHASE-CI-20B-PROTECTION-CBOT-SIGNAL-HARDENING-2026-10-02.md`.
 ## CI-19 — Signal / Target Quality Coherence — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending on branch.**
