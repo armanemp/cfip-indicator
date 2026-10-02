@@ -37,8 +37,7 @@ namespace cAlgo
                 ResolveProviderScenarioId(
                     signalId,
                     lane,
-                    direction,
-                    closedM5);
+                    direction);
 
             string planId =
                 ResolveProviderPlanId(
