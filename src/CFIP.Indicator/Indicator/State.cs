@@ -390,6 +390,7 @@ namespace cAlgo
                 private bool _initializationDataRequested;
                 private bool _initializationDataReady;
                 private DateTime _lastPanelRenderUtc = DateTime.MinValue;
+                private DateTime _lastPanelContentRefreshUtc = DateTime.MinValue;
                 private DateTime _lastCalculationCompletedUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
                 private int _lastReactionM5 = -1;
