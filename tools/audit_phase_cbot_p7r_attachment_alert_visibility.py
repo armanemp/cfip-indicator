@@ -57,10 +57,6 @@ require(
     "analysis alert delivery must not depend on broker reconciliation",
 )
 require(
-    '"ACTION|SCENARIO|" in alerts and' if False else True,
-    "noop",
-)
-require(
     '"ACTION|SCENARIO|' in alerts and
     '"EARLY|SCENARIO|' in alerts,
     "scenario alerts need distinct actionable/watch event keys",
