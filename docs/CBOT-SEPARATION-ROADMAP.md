@@ -577,7 +577,7 @@ This preserves the project's existing safety matrix.
 
 The implementation order is **CBOT-0 → CBOT-Preflight → CBOT-1 → CBOT-2 → CBOT-3 → CBOT-4 → CBOT-5 → CBOT-6 → CBOT-7**. CBOT-Preflight is a no-trade blocking gate, not a separate product rewrite phase.
 
-### CBOT-0 — Boundary inventory and freeze
+### CBOT-0 — Boundary inventory and freeze (historical baseline; superseded as the active start gate by CBOT-P0)
 
 Machine gate: `tools/audit_cbot_boundary.py` inventories direct broker mutations, broker/account lifecycle access, and execution-related parameter usage. It is wired into Source/Architecture CI during the separation track.
 
@@ -604,7 +604,7 @@ Acceptance:
 - every analytical owner remains with Indicator;
 - no ambiguous “shared executor” remains.
 
-### CBOT-Preflight — cTrader host capability proof (blocking gate after CBOT-0)
+### CBOT-Preflight — cTrader host capability proof (required before live mutation cutover)
 
 After CBOT-0 is accepted and before creating the Contracts project, prove the supported local cTrader integration surface on the actual target environment.
 
@@ -1056,3 +1056,10 @@ No production C# behavior is changed by this revision.
 Final audit correction: CBOT-0 is the first implementation phase and can begin from repository truth. CBOT-Preflight is a blocking no-trade capability gate that must pass before CBOT-1 Contracts are implemented. This keeps the one-phase workflow intact while ensuring no unproven cTrader handoff is used for the actual migration.
 
 No production C# behavior is changed by this documentation correction.
+
+
+## Active parallel schedule — 2026-10-02
+
+The active execution-separation schedule is CBOT-P0 → P1 → P2 → P3 → P4 → P5 → P6 → P7 → P8, running in parallel with M2 onward. The historical M29–M38 sections remain as detailed ownership/reference material and are not a second authority.
+
+Hard rule: a migrated execution path is physically removed from the Indicator only after its cBot replacement, caller migration, deterministic parity and source gate pass. This prevents both broken functionality and a permanent dual executor.
