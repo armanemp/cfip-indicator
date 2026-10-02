@@ -15,6 +15,7 @@ namespace CFIP.cBot.Shadow.Tests
         private static void Main()
         {
             Ready(TradeDirection.Buy, ExecutionAction.Market, 1, "K1");
+            Ready(TradeDirection.Sell, ExecutionAction.Aggressive, -1, "K1A");
             Ready(TradeDirection.Sell, ExecutionAction.PendingLimit, -1, "K2");
             ObserveNoIntent();
             Expiry();
