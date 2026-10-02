@@ -52,7 +52,7 @@ require(
     "primary source location evidence must affect display priority",
 )
 require(
-    '"OB+FVG "' in panel and
+    "OB+FVG " in panel and
     '" • OB "' in panel and
     '" • FVG "' in panel,
     "panel must expose source OB/FVG evidence",
