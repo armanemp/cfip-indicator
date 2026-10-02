@@ -177,12 +177,8 @@ namespace cAlgo
                                                                     availableChartHeight))
                                                             : configuredMaxHeight;
                                         
-                                                    int quickExecutionHeight =
-                                                        QuickExecutionRowHeight;
-                                        
                                                     int fixedHeight =
                                                         PanelHeaderHeight +
-                                                        quickExecutionHeight +
                                                         buttonAreaHeight +
                                                         padding * 2 +
                                                         border * 2;
