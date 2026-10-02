@@ -90,7 +90,7 @@ check(
 )
 check(
     "stable instance-scope managed label matching exists",
-    "InstanceMarker = "|CFIP-I:"" in identity and
+    'InstanceMarker = "|CFIP-I:"' in identity and
     "MatchesManagedLabel(" in identity and
     "MatchesManagedPendingLabel(" in identity,
 )
@@ -123,9 +123,9 @@ check(
     "ForSymbol(" in bus and
     "CbotPresenceSnapshot" in bus and
     "PublishPresence(" in publisher and
-    "PublishPresence("STARTING")" in bot and
-    "PublishPresence("RUNNING")" in bot and
-    "PublishPresence("STOPPED")" in bot,
+    'PublishPresence("STARTING")' in bot and
+    'PublishPresence("RUNNING")' in bot and
+    'PublishPresence("STOPPED")' in bot,
 )
 check(
     "Indicator uses fresh exact-instance heartbeat for execution capability",
