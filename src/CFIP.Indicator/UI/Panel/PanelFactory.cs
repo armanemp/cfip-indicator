@@ -189,8 +189,8 @@ namespace cAlgo
                                                     bootstrapWidth,
                                                 Height =
                                                     bootstrapHeight,
-                                                MinWidth = 260,
-                                                MaxWidth = 760,
+                                                MinWidth = 220,
+                                                MaxWidth = 700,
                                                 MinHeight = 170,
                                                 MaxHeight = 420,
                                                 IsHitTestVisible =
