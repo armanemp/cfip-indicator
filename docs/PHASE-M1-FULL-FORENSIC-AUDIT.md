@@ -72,7 +72,7 @@ This applies particularly to live panel refresh, chart rendering, audio timing, 
 - No new trading feature, indicator, threshold tuning or execution policy was introduced.
 - No broker-mutation authority was expanded.
 - No existing analytical authority was duplicated.
-- The only production-relevant code change in M1 is an audit-tool baseline correction from 564 to 568.
+- M1 changes are limited to audit tooling/documentation: the cBot boundary audit baseline/parser was aligned with the authoritative 568-parameter inventory. No production trading behavior changed.
 - Open/manual items are explicitly assigned to later roadmap phases; none is silently dropped.
 
 ## 5. Required regression boundary for later phases
