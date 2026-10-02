@@ -1,3 +1,37 @@
+## CBOT-P5 continuation — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/cbot-p5-reconciliation-protection`.**
+
+Canonical signal/execution roles:
+- **M15 = trade-decision / execution reference timeframe**
+- **M5 = trigger, entry tuning and entry-precision layer**
+- M1 = optional confirmation
+- H1+ = context/reward support
+- host Chart TF = presentation only
+
+Completed in P5:
+- dedicated cBot broker reconciliation owner;
+- startup/reconnect reconciliation gate before new execution;
+- ambiguity detection for duplicate managed objects and simultaneous position+pending state;
+- protection-health validation for broker-confirmed positions;
+- fail-closed execution while recovery is unresolved;
+- missing-protection recovery through the existing ManagementExecutionCoordinator only;
+- lifecycle/protection/recovery fields added to the cBot state contract;
+- Indicator panel reflects the broker recovery/protection state without gaining broker authority.
+
+Verification pending:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- P5 dedicated audit;
+- target-terminal restart/reconnect/manual broker validation.
+
+No public signal/RR/risk threshold was lowered.
+
+Next work unit: audit the entire pre-analysis → M15 decision → M5 tuning/trigger → entry geometry → signal/alert → contract → cBot → broker-confirmation chain again, then proceed to CBOT-P6 account/execution risk ownership.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
 ## CI-21 continuation — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**

@@ -5,6 +5,7 @@ using CFIP.Contracts;
 using CFIP.cBot.Binding;
 using CFIP.cBot.Execution;
 using CFIP.cBot.Shadow;
+using CFIP.cBot.Recovery;
 
 namespace CFIP.cBot
 {
@@ -104,6 +105,12 @@ namespace CFIP.cBot
         private readonly CbotExecutionStatePublisher _statePublisher =
             new CbotExecutionStatePublisher();
 
+        private readonly CbotBrokerReconciliation _brokerReconciliation =
+            new CbotBrokerReconciliation();
+
+        private CbotBrokerReconciliationResult _reconciliation;
+        private DateTime _nextBrokerReconciliationUtc = DateTime.MinValue;
+
         private ShadowHostState _state =
             ShadowHostState.Waiting;
 
@@ -156,6 +163,7 @@ namespace CFIP.cBot
             SubscribeBrokerLifecycleEvents();
             RefreshIndicatorBinding(true);
             ReloadSignalStore(true);
+            ReconcileBrokerState(true);
             PublishExecutionState("CBOT STARTED", true);
         }
 
@@ -172,10 +180,13 @@ namespace CFIP.cBot
             ReloadSignalStore(false);
 
             DateTime nowUtc = Server.TimeInUtc;
+            ReconcileBrokerState(false);
             PublishExecutionState("HEARTBEAT", false);
 
             if (EnableDemoManagementExecution &&
-                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId) &&
+                _reconciliation != null &&
+                !_reconciliation.RecoveryRequired)
             {
                 _management.Process(
                     this,
@@ -240,6 +251,8 @@ namespace CFIP.cBot
                     ? ""
                     : envelope.Intent.ExecutionLabel ?? "";
 
+            ReconcileBrokerState(false);
+
             PublishExecutionState("SIGNAL OBSERVED", false);
 
             ShadowHostResult shadowResult =
@@ -256,6 +269,30 @@ namespace CFIP.cBot
                     ? "SHADOW STATE UNAVAILABLE"
                     : shadowResult.Reason ?? "SHADOW STATE",
                 false);
+
+            if (_reconciliation != null &&
+                _reconciliation.RecoveryRequired)
+            {
+                if (EnableDemoManagementExecution &&
+                    TryRecoverProtection(
+                        envelope,
+                        nowUtc))
+                {
+                    ReconcileBrokerState(true);
+                }
+
+                if (_reconciliation != null &&
+                    _reconciliation.RecoveryRequired)
+                {
+                    LogBlockedState(
+                        "BROKER RECOVERY REQUIRED • " +
+                        (_reconciliation.Reason ?? "UNKNOWN"));
+                    PublishExecutionState(
+                        "RECOVERY REQUIRED",
+                        true);
+                    return;
+                }
+            }
 
             bool executionEnabled =
                 EnableDemoMarketExecution ||
@@ -539,6 +576,8 @@ namespace CFIP.cBot
         {
             RefreshIndicatorBinding(true);
 
+            ReconcileBrokerState(true);
+
             if (!string.IsNullOrWhiteSpace(
                     _boundIndicatorInstanceId))
                 PublishExecutionState(
@@ -565,6 +604,8 @@ namespace CFIP.cBot
 
             RefreshIndicatorBinding(true);
 
+            ReconcileBrokerState(true);
+
             if (wasBound &&
                 string.IsNullOrWhiteSpace(
                     _boundIndicatorInstanceId))
@@ -579,6 +620,8 @@ namespace CFIP.cBot
         {
             RefreshIndicatorBinding(true);
 
+            ReconcileBrokerState(true);
+
             if (!string.IsNullOrWhiteSpace(
                     _boundIndicatorInstanceId))
                 PublishExecutionState(
@@ -589,39 +632,127 @@ namespace CFIP.cBot
         private void SubscribeBrokerLifecycleEvents()
         {
             Positions.Opened +=
-                args => PublishExecutionState(
-                    "POSITION OPENED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "POSITION OPENED",
+                        true);
+                };
 
             Positions.Modified +=
-                args => PublishExecutionState(
-                    "POSITION MODIFIED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "POSITION MODIFIED",
+                        true);
+                };
 
             Positions.Closed +=
-                args => PublishExecutionState(
-                    "POSITION CLOSED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "POSITION CLOSED",
+                        true);
+                };
 
             PendingOrders.Created +=
-                args => PublishExecutionState(
-                    "PENDING CREATED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING CREATED",
+                        true);
+                };
 
             PendingOrders.Modified +=
-                args => PublishExecutionState(
-                    "PENDING MODIFIED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING MODIFIED",
+                        true);
+                };
 
             PendingOrders.Filled +=
-                args => PublishExecutionState(
-                    "PENDING FILLED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING FILLED",
+                        true);
+                };
 
             PendingOrders.Cancelled +=
-                args => PublishExecutionState(
-                    "PENDING CANCELLED",
-                    true);
+                args =>
+                {
+                    ReconcileBrokerState(true);
+                    PublishExecutionState(
+                        "PENDING CANCELLED",
+                        true);
+                };
+        }
+
+        private void ReconcileBrokerState(bool force)
+        {
+            if (string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+                return;
+
+            DateTime now = Server.TimeInUtc;
+
+            if (!force &&
+                now < _nextBrokerReconciliationUtc)
+                return;
+
+            _nextBrokerReconciliationUtc =
+                now.AddMilliseconds(500);
+
+            _reconciliation =
+                _brokerReconciliation.Evaluate(
+                    this,
+                    _boundIndicatorInstanceId,
+                    _activeManagedExecutionLabel);
+
+            if (_reconciliation != null &&
+                !string.IsNullOrWhiteSpace(
+                    _reconciliation.ExecutionLabel))
+            {
+                _activeManagedExecutionLabel =
+                    _reconciliation.ExecutionLabel;
+            }
+        }
+
+        private bool TryRecoverProtection(
+            SignalEnvelope envelope,
+            DateTime nowUtc)
+        {
+            if (envelope == null ||
+                envelope.Intent == null ||
+                _reconciliation == null ||
+                !_reconciliation.RecoveryRequired ||
+                _reconciliation.ManagedPositions != 1)
+                return false;
+
+            if (envelope.Identity == null ||
+                envelope.Intent.Identity == null ||
+                !envelope.Intent.Identity.Equals(
+                    envelope.Identity))
+                return false;
+
+            if (string.IsNullOrWhiteSpace(
+                    envelope.Intent.ExecutionLabel))
+                return false;
+
+            return _management.TryRecoverProtectionFromSignal(
+                this,
+                _boundIndicatorInstanceId,
+                nowUtc,
+                envelope,
+                out _,
+                out _);
         }
 
         private void PublishExecutionState(
@@ -678,6 +809,7 @@ namespace CFIP.cBot
                     ? ""
                     : _lastSignalEnvelope.Identity.ScenarioId ?? "",
                 _lastSignalEnvelope,
+                _reconciliation,
                 force);
         }
 

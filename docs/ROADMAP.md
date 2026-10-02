@@ -1,4 +1,30 @@
 ## Permanent Development Rule — Canonical Owners / No Patches
+## CBOT-P5 — Protection / Lifecycle / Recovery — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/cbot-p5-reconciliation-protection`.**
+
+Scope:
+- add explicit broker-state reconciliation to the cBot startup/reconnect path;
+- block new execution while managed broker state is ambiguous or protection is missing/invalid;
+- recover missing broker protection only through the existing canonical cBot management mutation owner;
+- publish lifecycle/protection/recovery truth to the Indicator panel;
+- preserve M15 as the execution/trade-decision timeframe and M5 as trigger/tuning/entry-precision.
+
+No second execution engine, no analytical-rule duplication, and no broker mutation has been reintroduced into the Indicator.
+
+Phase record: `docs/PHASE-CBOT-P5-RECONCILIATION-PROTECTION-2026-10-02.md`.
+
+Verification:
+- Source / Architecture: pending;
+- Runtime Acceptance: pending;
+- cTrader Compile/Build: pending;
+- CBOT-P5 reconciliation audit: pending;
+- target-terminal restart/reconnect/protection validation remains manual.
+
+Next: continue end-to-end chain verification and then CBOT-P6 account/execution risk authority, without weakening M15/M5 signal-role separation.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
 ## CI-21 — Primary M15 Signal Visibility / M5 Entry Tuning — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**

@@ -1,3 +1,22 @@
+## CBOT-P5 — Protection / Lifecycle / Recovery — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/cbot-p5-reconciliation-protection`.**
+
+Deep audit finding:
+- cBot already published broker lifecycle events, but startup/reconnect did not have a dedicated reconciliation gate that classified ambiguous managed broker state or protection defects before new execution.
+
+Canonical corrections:
+- one cBot reconciliation owner now classifies managed broker position/pending state;
+- unresolved duplicate/mixed/invalid protection state blocks new execution;
+- existing ManagementExecutionCoordinator is the only broker mutation owner used for missing-protection recovery;
+- cBot state publication now carries lifecycle/protection/recovery information;
+- Indicator panel consumes that state as observation only.
+
+The full signal chain remains:
+`Pre-analysis → M15 decision → M5 trigger/tuning → entry plan → contract → cBot safety → broker → broker-confirmed lifecycle`.
+
+No duplicate execution engine and no public strategy/RR/risk threshold change was introduced.
+
 ## CI-21 — Primary M15 Signal Visibility / M5 Entry Tuning — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #211 as `49e71227e830c9de39f35bb4f3bd3b9d0cd2d498`.**

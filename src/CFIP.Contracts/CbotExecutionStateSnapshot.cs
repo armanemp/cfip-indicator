@@ -30,5 +30,11 @@ namespace CFIP.Contracts
         double? Target,
         string ExecutionLabel,
         string ExecutionScenarioId,
-        long SignalRevision);
+        long SignalRevision)
+    {
+        public string LifecycleState { get; init; } = "UNKNOWN";
+        public string ProtectionState { get; init; } = "UNKNOWN";
+        public bool RecoveryRequired { get; init; }
+        public string RecoveryReason { get; init; } = string.Empty;
+    }
 }
