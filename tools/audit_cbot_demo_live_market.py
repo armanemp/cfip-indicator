@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused audit for the demo-only market execution bridge."""
+"""Focused audit for the demo-only Market / Market-Range execution bridge."""
 from pathlib import Path
 import re
 import sys
@@ -30,10 +30,10 @@ if 'DefaultValue = false)]' not in bot:
     errors.append("demo execution must default to false")
 
 if "ExecuteMarketOrder(" not in coord:
-    errors.append("demo market coordinator has no market mutation")
+    errors.append("demo market coordinator has no Market mutation")
 
-if "ExecuteMarketRangeOrder(" in coord:
-    errors.append("demo coordinator must not use Market Range")
+if "ExecuteMarketRangeOrder(" not in coord:
+    errors.append("demo market coordinator has no Market-Range mutation")
 
 if "CFIP DEMO" not in coord:
     errors.append("demo coordinator must use explicit demo comment")
@@ -48,6 +48,6 @@ if errors:
     sys.exit(1)
 
 print("CBOT DEMO LIVE MARKET AUDIT: PASS")
-print("Market mutation owner: DemoMarketExecutionCoordinator")
+print("Market / Market-Range mutation owner: DemoMarketExecutionCoordinator")
 print("Demo-only guard: PASS")
 print("Default execution arm: OFF")
