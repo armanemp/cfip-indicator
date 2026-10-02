@@ -1,6 +1,6 @@
 ## CBOT-P4B + Panel Geometry Integrity — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+Status: **VERIFIED COMPLETE — merged to `main` as `33dd37f225fb9e2677070f122b5068b0c2df2e92`.**
 
 Panel:
 - final outer panel height is now propagated to the internal panel StackPanel;
@@ -16,7 +16,7 @@ cBot:
 
 No analytical threshold, confidence, RR, Entry, SL, TP or risk tuning was performed.
 
-Manual target-terminal acceptance remains required for real cTrader panel geometry/responsiveness and demo execution.
+Verification: Source/Architecture `36983568671` PASS; Runtime `36983568612` PASS; cTrader Compile/Build `36983568641` PASS; P4B audit PASS. Manual target-terminal acceptance remains required for real cTrader panel geometry/responsiveness and demo execution.
 
 ## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
 
