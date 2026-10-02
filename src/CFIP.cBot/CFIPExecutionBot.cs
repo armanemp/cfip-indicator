@@ -11,7 +11,7 @@ namespace CFIP.cBot
 #pragma warning disable CS0612
     [Robot(
         "CFIP Smart Execution Bot",
-        DefaultTimeFrame = "M5",
+        DefaultTimeFrame = "M15",
         TimeZone = TimeZones.UTC,
         AccessRights = AccessRights.None)]
     public sealed class CFIPExecutionBot : Robot
@@ -81,11 +81,24 @@ namespace CFIP.cBot
                 return;
             }
 
+            if (Bars == null ||
+                Bars.TimeFrame != TimeFrame.Minute15)
+            {
+                Print(
+                    "CFIP cBot BLOCKED | execution timeframe must be M15 | actual={0}",
+                    Bars == null
+                        ? "UNKNOWN"
+                        : Bars.TimeFrame.ToString());
+                Stop();
+                return;
+            }
+
             Print(
-                "CFIP DEMO cBot START | state={0} | marketExecution={1} | " +
-                "maxSessionExecutions={2} | staleAfter={3}s | contractVersion={4}",
+                "CFIP M15 cBot START | state={0} | marketExecution={1} | " +
+                "aggressiveExecution={2} | maxSessionExecutions={3} | staleAfter={4}s | contractVersion={5}",
                 StartupState,
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
+                EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
                 MaxDemoMarketExecutionsPerSession,
                 ProviderStaleAfterSeconds,
                 ContractVersion.Current);
