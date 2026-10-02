@@ -233,7 +233,7 @@ namespace cAlgo
             double riskFloor)
         {
             if (!IsPositiveFinite(risk))
-                return Block("RISK INVALID");
+                return CreateInvalidResult("RISK INVALID");
 
             double stop =
                 direction == 1
@@ -351,7 +351,7 @@ namespace cAlgo
                 : entry - normalizedRisk * rewardRisk;
         }
 
-        private static RiskRewardMathResult Block(
+        private static RiskRewardMathResult CreateInvalidResult(
             string reason)
         {
             return new RiskRewardMathResult(
@@ -374,7 +374,7 @@ namespace cAlgo
                 value > 0;
         }
 
-        private static bool IsFiniteNonNegative(double value)
+        private static bool IsFiniteNonNegativeDistance(double value)
         {
             return
                 !double.IsNaN(value) &&
