@@ -1,3 +1,16 @@
+## 2026-10-03 — Actionable candidate / provider geometry cohesion
+
+Found and closed a live handoff seam after canonical Plan geometry was implemented: actionable `TradeOpportunityCandidate` still populated executable fields from the presentation preview.
+
+Implemented:
+- canonical geometry is rebound into actionable candidates;
+- provider/cBot candidate Entry, Stop and TP stages now share the same actual-entry path that passed Actionability;
+- non-actionable source/presentation candidates remain intentionally preview-oriented;
+- `ParallelOpportunityBuilder.cs` was split so orchestration and candidate construction have separate owners;
+- accumulated architecture checks now recognize the split candidate builder and enforce canonical candidate handoff.
+
+No signal-quality/RR/risk threshold was reduced.
+
 ## 2026-10-03 — Canonical trade-path single-owner correction
 
 Implemented on `phase/canonical-trade-path-geometry-2026-10-03`.
