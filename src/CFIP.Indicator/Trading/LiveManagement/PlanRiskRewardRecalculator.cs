@@ -12,36 +12,28 @@ namespace cAlgo
                 return;
 
             _plan.Tp1RR =
-                _plan.Tp1 > 0
-                    ? Math.Abs(
-                        _plan.Tp1 -
-                        _plan.Entry) /
-                      _plan.Risk
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    _plan.Entry,
+                    _plan.Tp1,
+                    _plan.Risk);
 
             _plan.Tp2RR =
-                _plan.Tp2 > 0
-                    ? Math.Abs(
-                        _plan.Tp2 -
-                        _plan.Entry) /
-                      _plan.Risk
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    _plan.Entry,
+                    _plan.Tp2,
+                    _plan.Risk);
 
             _plan.Tp3RR =
-                _plan.Tp3 > 0
-                    ? Math.Abs(
-                        _plan.Tp3 -
-                        _plan.Entry) /
-                      _plan.Risk
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    _plan.Entry,
+                    _plan.Tp3,
+                    _plan.Risk);
 
             _plan.Tp4RR =
-                _plan.Tp4 > 0
-                    ? Math.Abs(
-                        _plan.Tp4 -
-                        _plan.Entry) /
-                      _plan.Risk
-                    : 0;
+                RiskRewardGeometryRule.CalculateNominalRR(
+                    _plan.Entry,
+                    _plan.Tp4,
+                    _plan.Risk);
         }
     }
 }
