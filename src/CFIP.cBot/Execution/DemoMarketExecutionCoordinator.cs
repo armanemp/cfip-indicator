@@ -106,6 +106,20 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
+            string marginReason;
+            if (!TryConstrainVolumeForMargin(
+                    robot,
+                    envelope.Identity.Direction == TradeDirection.Buy
+                        ? TradeType.Buy
+                        : TradeType.Sell,
+                    volume,
+                    out volume,
+                    out marginReason))
+            {
+                reason = marginReason;
+                return false;
+            }
+
             int managedPositions = 0;
             foreach (Position position in robot.Positions)
             {
