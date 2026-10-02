@@ -6,7 +6,7 @@ def read(path: str) -> str:
     return (ROOT / path).read_text(encoding='utf-8')
 
 rule = read('src/CFIP.Indicator/Core/Math/ExecutionZoneSelectionRule.cs')
-selector = read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelector.cs')
+selector = read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelector.cs') + read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCore.cs') + read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCandidates.cs')
 zone = read('src/CFIP.Indicator/Planning/Execution/ExecutionZoneBuilder.cs')
 architecture = read('tools/verify_architecture.py')
 workflow = read('.github/workflows/source-check.yml')
