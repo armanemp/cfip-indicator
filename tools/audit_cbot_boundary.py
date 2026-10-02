@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """CBOT-0 boundary inventory and execution-authority freeze audit.
 
-This is a read-only inventory gate. It must not change production behavior.
-It scans the current Indicator source tree for direct broker mutation APIs,
+This is a read-only boundary gate after the initial cBot cutover.
+It scans the current Indicator source tree for remaining direct broker mutation APIs,
 broker/account state access, execution-related parameters, and parameter usage
 across analytical/execution/UI domains.
 
@@ -38,7 +38,6 @@ BROKER_MUTATION_APIS = (
 )
 
 KNOWN_BROKER_MUTATION_OWNERS = {
-    "Trading/Execution/BrokerMarketOrderMutation.cs",
     "Trading/Execution/BrokerPendingOrderPlacement.cs",
     "Trading/Execution/BrokerLimitOrderPlacement.cs",
     "Trading/Execution/BrokerPendingOrderCancellation.cs",
@@ -159,12 +158,30 @@ def classify_parameter(
 
 def main() -> int:
     errors: list[str] = []
+    cbot_market = (
+        ROOT.parent /
+        "CFIP.cBot" /
+        "Execution" /
+        "DemoMarketExecutionCoordinator.cs"
+    )
+
     cs_files = sorted(PROD.rglob("*.cs"))
     if not cs_files:
         print("ERROR: production C# tree is missing")
         return 1
 
     texts = {rel(path): read_text(path) for path in cs_files}
+
+    if not cbot_market.exists():
+        errors.append("cBot Market execution owner is missing")
+    else:
+        cbot_market_code = read_text(cbot_market)
+        if "ExecuteMarketOrder" not in cbot_market_code or "ExecuteMarketRangeOrder" not in cbot_market_code:
+            errors.append("cBot Market owner must expose Market and Market-Range broker mutation")
+        if "Account.IsLive" not in (
+            ROOT.parent / "CFIP.cBot" / "CFIPExecutionBot.cs"
+        ).read_text(encoding="utf-8"):
+            errors.append("cBot Market execution must retain the hard live-account guard")
 
     # 1) Exact direct broker mutation inventory.
     mutation_hits: list[tuple[str, str, str]] = []
