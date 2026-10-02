@@ -150,18 +150,8 @@ namespace cAlgo
                                                         Color.Black)
                                             };
                         
-                                        _closeButton =
-                                            new Button();
-                        
-                                        _cancelButton =
-                                            new Button();
-                        
-                                        _closeButton.Click +=
-                                            args => CloseAllPositions();
-                        
-                                        _cancelButton.Click +=
-                                            args => CancelAllOrders();
-                        
+                                        // The Indicator panel is analysis/presentation only.
+                                        // Broker Close/Cancel actions belong to the cBot surface.
                                         // Moved (per user request): the hide/show toggle now lives at
                                         // the bottom of the box, to the left of Close/Cancel, instead
                                         // of the header. It must be added to _buttonStack BEFORE the
@@ -172,12 +162,6 @@ namespace cAlgo
                                         if (_panelToggleButton != null)
                                             _buttonStack.AddChild(
                                                 _panelToggleButton);
-                        
-                                        _buttonStack.AddChild(
-                                            _closeButton);
-                        
-                                        _buttonStack.AddChild(
-                                            _cancelButton);
                         
                                         _panelHeaderStack.AddChild(
                                             _panelHeaderTitle);
