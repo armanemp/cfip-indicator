@@ -56,8 +56,8 @@ namespace cAlgo
                     NormalizePrice(
                         price + verticalGap);
 
-                Color whiteTextColor =
-                    Color.White;
+                Color labelTextColor =
+                    GetReadableLabelTextColor(color);
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -77,7 +77,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[safeBar],
                             labelPrice,
-                            whiteTextColor);
+                            labelTextColor);
                 }
 
                 if (label == null)
@@ -90,22 +90,20 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    whiteTextColor;
+                    labelTextColor;
                 label.FontSize =
-                    Math.Max(
-                        8,
-                        PanelFontSize);
+                    CompactPlanLabelFontSize;
                 label.FontFamily =
                     string.IsNullOrWhiteSpace(
                         PanelFontFamily)
                         ? "Arial"
                         : PanelFontFamily;
                 label.IsBold =
-                    PanelBold;
+                    true;
                 label.HorizontalAlignment =
                     HorizontalAlignment.Left;
                 label.VerticalAlignment =
-                    VerticalAlignment.Bottom;
+                    VerticalAlignment.Center;
                 label.IsInteractive =
                     false;
             }

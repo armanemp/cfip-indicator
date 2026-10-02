@@ -795,6 +795,21 @@ Acceptance:
 - no cBot re-implementation of the decision engine;
 - execution rejects unsafe broker conditions immediately before mutation.
 
+### CBOT-P8 — Progressive protection / broker-confirmed state sync
+
+Cross-cutting hardening before CBOT-6M: the Indicator now has a single broker-confirmed protection-state adoption owner. The plan stop may only move protectively; broker target/stop regressions become explicit recovery. Confirmed management reports may update observed state immediately, while accepted/unconfirmed commands cannot manufacture broker state.
+
+Acceptance:
+- broker-confirmed state is reused by calculation, lifecycle and chart/panel owners;
+- BUY/SELL stop and active-target state cannot regress;
+- the existing IntelligentProtectionRule remains the only live trailing policy;
+- cBot remains the sole broker mutation authority;
+- no single-plan capacity rule is removed here.
+
+Phase record: `docs/PHASE-CBOT-P8-PROGRESSIVE-PROTECTION-STATE-SYNC-2026-10-02.md`.
+
+### CBOT-6M — Concurrent multi-scenario execution (required follow-on)
+
 ### CBOT-6M — Concurrent multi-scenario execution (required follow-on)
 
 This is a separate execution-capacity phase required by the user's multi-opportunity requirement.

@@ -1,3 +1,27 @@
+## CBOT-P8 — Progressive Protection / Broker-Confirmed State Sync — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Completed:
+- one canonical broker-confirmed protection-state adoption owner;
+- confirmed management reports and position events now update execution state only after broker confirmation;
+- BUY/SELL stop progression remains protective-only;
+- broker stop/target regressions fail into explicit recovery instead of rewriting the plan backward;
+- active broker target remains separate from the future TP1→TP4 ladder;
+- full-chain and M15/M5-role audit is accumulated in Source/Architecture;
+- no new broker mutation authority and no new execution capacity were introduced.
+
+Phase record: `docs/PHASE-CBOT-P8-PROGRESSIVE-PROTECTION-STATE-SYNC-2026-10-02.md`.
+
+Verification:
+- Source / Architecture: pending;
+- Runtime Acceptance: pending;
+- cTrader Compile/Build: pending;
+- P8 dedicated audit: pending;
+- target-terminal trailing/SL/TP confirmation and reconnect validation: manual.
+
+Next required work: complete verification, then implement **CBOT-6M concurrent multi-scenario execution** before removing the single-plan gate.
+
 ## CBOT-P7R — Attachment Truth / Alert Visibility / Parallel Scenario Presentation — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

@@ -1,3 +1,21 @@
+## CBOT-P8 — Progressive Protection / Broker-Confirmed State Sync — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+The canonical protection state synchronizer now owns adoption of broker-confirmed Entry/SL/active-TP data. Confirmed broker state can advance the plan protectively; backward/invalid broker protection is reported as recovery and never silently rewrites protected state.
+
+The same owner is consumed by broker refresh, confirmed management reports, position modification and confirmation paths. The future TP1→TP4 analytical ladder remains separate from the currently active broker target.
+
+Full chain remains mandatory every phase:
+`Pre-analysis → M15 → M5 → M1(optional) → entry → signal/alert → contract → cBot → broker → confirmation → lifecycle/protection → chart/panel`.
+
+M15 remains the canonical trade-decision/execution reference; M5 remains trigger/tuning/entry precision; Chart TF is presentation only.
+
+Phase record: `docs/PHASE-CBOT-P8-PROGRESSIVE-PROTECTION-STATE-SYNC-2026-10-02.md`.
+
+Next work unit after verification: CBOT-6M multi-scenario execution with per-ScenarioId lifecycle, risk, idempotency and independent protection.
+
+
 ## CBOT-P7R — Attachment Truth / Alert Visibility / Parallel Scenario Presentation — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending.**

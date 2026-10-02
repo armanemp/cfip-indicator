@@ -43,6 +43,12 @@ namespace cAlgo
             // before authoritative broker facts are read again.
             InvalidatePanelExecutionProtectionStateCache();
 
+            double previousBrokerStop =
+                _activeBrokerStop;
+
+            double previousBrokerTarget =
+                _activeBrokerTarget;
+
             _activeBrokerStop = 0;
             _activeBrokerTarget = 0;
 
@@ -97,20 +103,43 @@ namespace cAlgo
                     ? 1
                     : -1;
 
-            if (IsFinitePositive(position.EntryPrice))
-                _plan.Entry =
-                    NormalizePrice(position.EntryPrice);
+            bool protectionStateChanged =
+                ApplyBrokerConfirmedProtectionState(
+                    position.Id,
+                    position.EntryPrice,
+                    brokerStopValid
+                        ? position.StopLoss
+                        : (double?)null,
+                    brokerTargetValid
+                        ? position.TakeProfit
+                        : (double?)null,
+                    true);
 
-            if (brokerStopValid)
+            if (protectionStateChanged &&
+                !double.IsNaN(previousBrokerStop) &&
+                !double.IsInfinity(previousBrokerStop) &&
+                IsFinitePositive(previousBrokerStop) &&
+                IsFinitePositive(_activeBrokerStop) &&
+                !ProtectionProgressionRule.ShouldAdvanceStop(
+                    direction,
+                    previousBrokerStop,
+                    _activeBrokerStop) &&
+                !SamePrice(previousBrokerStop, _activeBrokerStop))
             {
-                _activeBrokerStop =
-                    NormalizePrice(position.StopLoss.Value);
+                MarkBrokerProtectionRegression(
+                    "BROKER STOP REGRESSED FROM LAST CONFIRMED STATE");
             }
 
-            if (brokerTargetValid)
+            if (IsFinitePositive(previousBrokerTarget) &&
+                IsFinitePositive(_activeBrokerTarget) &&
+                !ProtectionProgressionRule.ShouldAdvanceTarget(
+                    direction,
+                    previousBrokerTarget,
+                    _activeBrokerTarget,
+                    true))
             {
-                _activeBrokerTarget =
-                    NormalizePrice(position.TakeProfit.Value);
+                MarkBrokerProtectionRegression(
+                    "BROKER TARGET REGRESSED FROM LAST CONFIRMED STATE");
             }
 
             bool protectionRequired =

@@ -148,10 +148,12 @@ namespace cAlgo
                                                     {
                                                         // TradeResult success is the mutation confirmation.
                                                         // Only now may the plan adopt the new protected stop.
-                                                        _plan.Stop =
-                                                            NormalizePrice(desiredStop);
-                                                        _activeBrokerStop =
-                                                            _plan.Stop;
+                                                        ApplyBrokerConfirmedProtectionState(
+                                                            planPosition.Id,
+                                                            planPosition.EntryPrice,
+                                                            planPosition.StopLoss,
+                                                            planPosition.TakeProfit,
+                                                            true);
                                                         _pendingProtectedStopCandidate =
                                                             0;
                                                     }
@@ -169,11 +171,12 @@ namespace cAlgo
                                                 brokerStopValid &&
                                                 planPosition.StopLoss.HasValue)
                                             {
-                                                _plan.Stop =
-                                                    NormalizePrice(
-                                                        planPosition.StopLoss.Value);
-                                                _activeBrokerStop =
-                                                    _plan.Stop;
+                                                ApplyBrokerConfirmedProtectionState(
+                                                    planPosition.Id,
+                                                    planPosition.EntryPrice,
+                                                    planPosition.StopLoss,
+                                                    planPosition.TakeProfit,
+                                                    true);
                                             }
                                         }
 
