@@ -30,8 +30,9 @@ def require(cond, msg):
         errors.append(msg)
 
 require(
-    "SignalVisualLifecycleRule.ResolveDirectionalPresentationDirection(" in snapshot and
-    "_decision.Direction" in snapshot,
+    "if (_decision != null &&" in snapshot and
+    "_decision.Direction != 0" in snapshot and
+    "return _decision.Direction;" in snapshot,
     "visual direction must retain a directional Decision even before actionability",
 )
 require(
