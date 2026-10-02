@@ -189,8 +189,29 @@ Optimization نباید correctness را قربانی کند.
 
 ## M0 — Adoption / Freeze / Baseline
 
-### هدف
-این فایل تنها roadmap اجرایی پروژه شود.
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Repository baseline and continuity freeze were completed on branch `phase/master-roadmap-single-source-2026-10-02`.
+
+Verified implementation/continuity HEAD before closeout: `6ceab05142fab7f2ac2bf9bbfd6f6346bd1023bc6`.
+
+Verification:
+- Source / Architecture #2756: **PASS**;
+- Runtime Acceptance Contracts #2565: **PASS**;
+- cTrader Compile #2749: **PASS**.
+
+Completed:
+- established this file as the single active development roadmap;
+- reconciled accumulated historical audit continuity anchors without creating a second roadmap;
+- verified repository baseline, parameter surface and execution-boundary inventory;
+- preserved the existing Indicator execution architecture without production behavior change;
+- documented the local Indicator → Contracts → cBot target boundary;
+- documented that target-terminal/manual broker acceptance remains a later certification boundary.
+
+Operator action after merge: `git pull --ff-only`.
+
+### پذیرش
+Baseline reproducible and all M0 finding/continuity blockers have a disposition.
 
 ### کارها
 - ثبت branch/commit/working-tree.
@@ -1624,7 +1645,9 @@ Mxx+1 — Title
 
 # 18. Current Starting Point
 
-**Canonical implementation start after this roadmap is installed: M0 — Adoption / Freeze / Baseline.**
+**Canonical implementation start after M0 closeout: M1 — Full Forensic Audit.**
+
+M0 — Adoption / Freeze / Baseline is **VERIFIED COMPLETE** on repository evidence.
 
 No other roadmap, prompt, continuation note or planning document may override this file.
 
