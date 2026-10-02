@@ -21,8 +21,9 @@ checks = {
     "shared Indicator display/type identity exists":
         'DisplayName = "CFIP Smart Indicator"' in contracts_indicator and
         'TypeName = "CFIPIndicator"' in contracts_indicator,
-    "Indicator uses shared display identity":
-        "IndicatorIdentity.DisplayName" in indicator,
+    "Indicator keeps stable cTrader display registration":
+        '"CFIP Smart Indicator"' in indicator and
+        "[Indicator(" in indicator,
     "cBot-to-indicator binding accepts stable indicator type":
         "IndicatorIdentity.TypeName" in binding and
         "candidate.Type.Name" in binding,
