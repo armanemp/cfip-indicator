@@ -9913,7 +9913,9 @@ namespace cAlgo
                 m1.Block &&
                 m1.Reason == EntryTrapRiskPolicy.AdverseM1Reason &&
                 m1.Context == "RETEST PRE-ZONE M1",
-                "G2 EntryTrapRiskRule preserves s        private static void VerifyRetestTriggerModeSemantics()
+                "G2 EntryTrapRiskRule preserves strong M1 block and context");
+        }
+        private static void VerifyRetestTriggerModeSemantics()
         {
             Assert(
                 !EntryActionabilityPolicy.RequiresConfirmedTrigger(
@@ -9946,8 +9948,6 @@ namespace cAlgo
                 "Retest mode-aware trigger contracts PASS");
         }
 
-trong M1 block and context");
-        }
         private static void VerifyEntryActionabilityF6()
         {
             Assert(
