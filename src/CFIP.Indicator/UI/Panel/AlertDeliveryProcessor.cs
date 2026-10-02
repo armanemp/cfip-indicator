@@ -66,24 +66,33 @@ namespace cAlgo
 
             try
             {
-                SoundType soundType;
+                SoundType parsedSoundType;
 
-                if (!Enum.TryParse<SoundType>(
+                if (Enum.TryParse<SoundType>(
                         delivery.SoundTypeName,
                         true,
-                        out soundType))
+                        out parsedSoundType))
                 {
-                    soundType = AlertSoundType;
+                    Notifications.PlaySound(parsedSoundType);
+
+                    Print(
+                        "CFIP ALERT SOUND DELIVERED | id={0} | source=SEMANTIC | cue={1}",
+                        delivery.Envelope == null
+                            ? ""
+                            : delivery.Envelope.AlertId,
+                        parsedSoundType);
+
+                    return;
                 }
 
-                Notifications.PlaySound(soundType);
+                Notifications.PlaySound(AlertSoundType);
 
                 Print(
-                    "CFIP ALERT SOUND DELIVERED | id={0} | source=SEMANTIC | cue={1}",
+                    "CFIP ALERT SOUND DELIVERED | id={0} | source=DEFAULT | cue={1}",
                     delivery.Envelope == null
                         ? ""
                         : delivery.Envelope.AlertId,
-                    soundType);
+                    AlertSoundType);
             }
             catch (Exception ex)
             {
