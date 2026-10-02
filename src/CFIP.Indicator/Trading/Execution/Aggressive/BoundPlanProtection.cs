@@ -151,7 +151,6 @@ namespace cAlgo
                                                         ApplyBrokerConfirmedProtectionState(
                                                             planPosition.Id,
                                                             planPosition.EntryPrice,
-                                                            planPosition.EntryPrice,
                                                             planPosition.StopLoss,
                                                             planPosition.TakeProfit,
                                                             true);
@@ -174,7 +173,6 @@ namespace cAlgo
                                             {
                                                 ApplyBrokerConfirmedProtectionState(
                                                     planPosition.Id,
-                                                    planPosition.EntryPrice,
                                                     planPosition.EntryPrice,
                                                     planPosition.StopLoss,
                                                     planPosition.TakeProfit,
