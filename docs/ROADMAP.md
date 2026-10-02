@@ -180,6 +180,18 @@ The benchmark completion does **not** constitute production package promotion.
 Detailed Track 19 record:
 `docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md`
 
+## 2.0.1 — Current certification state — 2026-10-02
+
+**Active blocking track: CI-17 — Target-terminal cTrader validation.**
+
+Repository implementation package: **merged** in PR #174, merge commit `194ab90030f668ea3a42f0e709d42ca3238383ae`.
+
+CI-17 implementation HEAD `9a71b1dbac09e41759458a404ce4675dc4972f92` passed Source/Architecture, Runtime Acceptance Contracts and cTrader Compile before merge.
+
+The remaining acceptance boundary is the real target cTrader terminal/broker: M1/M5 timing, initialization/data readiness, Bid/Ask execution geometry, market/pending fill and slippage, cancellation/expiration, restart/reconnect, chart/panel responsiveness and end-to-end Decision → Plan → Execution synchronization.
+
+**CI-FINAL must not be certified until those manual evidence items are recorded.** Track 12A / cBot separation remains gated behind CI-FINAL.
+
 Machine-enforced baseline facts for the Phase 0.1 verification commit:
 
 - 398 production C# source files;
@@ -902,7 +914,7 @@ Phase document: `docs/PHASE-CI-10-TRIGGER-LIFECYCLE.md`
 CI-11 entry-geometry and causal signal-timing integrity are retained as a
 completed historical continuity item.
 
-Current implementation phase: CI-12
+Historical continuation marker: CI-12 was the implementation phase at that point.
 ## CI-12 — Structural SL
 
 CI-12 structural-stop integrity is retained as a completed historical
@@ -1007,9 +1019,8 @@ Safety/manual boundary:
 - no second decision/plan/broker-mutation authority introduced;
 - target-terminal replay, panel/chart rendering, broker lifecycle and empirical TP/signal-quality validation remain manual acceptance boundaries.
 
-**Current implementation phase: CI-17 — Target-terminal cTrader validation.**
-**CI-14, CI-15 and CI-16 are VERIFIED COMPLETE.**
-**Next implementation phase: CI-17 — Target-terminal cTrader validation.**
+Historical continuation marker: CI-14, CI-15 and CI-16 were verified before CI-17.
+
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
 
 ### CI-15 closeout — 2026-10-02
