@@ -118,15 +118,6 @@ namespace cAlgo
                           " • TF:" +
                           names[i];
 
-                candidate.Stage =
-                    (candidate.PrimarySignalState ?? "PRIMARY") +
-                    " • " +
-                    (candidate.ActionableNow
-                        ? "M5 ENTRY WINDOW"
-                        : candidate.M5TuningAligned
-                            ? "M5 TUNING • WAIT"
-                            : "M5 TUNING • CONFLICT");
-
                 EnrichScenarioEvidence(
                     candidate,
                     frame,
