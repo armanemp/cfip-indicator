@@ -47,14 +47,16 @@ private double SelectTarget(
                                                 minimumRR > maximumRR)
                                                 return 0;
                                 
-                                            return NormalizePrice(
-                                                direction == 1
-                                                    ? entry +
-                                                      risk *
-                                                      minimumRR
-                                                    : entry -
-                                                      risk *
-                                                      minimumRR);
+                                            double synthetic =
+                                                RiskRewardMathRule.TargetFromRR(
+                                                    direction,
+                                                    entry,
+                                                    risk,
+                                                    minimumRR);
+
+                                            return IsFinitePositive(synthetic)
+                                                ? NormalizePrice(synthetic)
+                                                : 0;
                                         }
     }
 }
