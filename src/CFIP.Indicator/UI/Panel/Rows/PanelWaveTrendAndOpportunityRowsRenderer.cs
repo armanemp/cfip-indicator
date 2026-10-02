@@ -90,6 +90,27 @@ namespace cAlgo
                                 : opportunity.M5TuningAligned
                                     ? " • M5✓"
                                     : " • TUNE";
+
+                        if (opportunity.SourceFvgObConfluence)
+                        {
+                            laneSummary +=
+                                " • OB+FVG " +
+                                Math.Min(
+                                    opportunity.SourceFvgQuality,
+                                    opportunity.SourceOrderBlockQuality);
+                        }
+                        else if (opportunity.SourceOrderBlockQuality > 0)
+                        {
+                            laneSummary +=
+                                " • OB " +
+                                opportunity.SourceOrderBlockQuality;
+                        }
+                        else if (opportunity.SourceFvgQuality > 0)
+                        {
+                            laneSummary +=
+                                " • FVG " +
+                                opportunity.SourceFvgQuality;
+                        }
                     }
                 }
 
