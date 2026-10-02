@@ -133,9 +133,7 @@ namespace cAlgo
                         ? "NO-PLAN"
                         : planSnapshot.PlanRisk
                             .ToString("R", CultureInfo.InvariantCulture),
-                    _lifecycleState.ToString(),
-                    _autoTradingState ?? "",
-                    _autoTradingReason ?? "");
+                    _lifecycleState.ToString());
 
             if (string.Equals(
                     fingerprint,
@@ -193,6 +191,9 @@ namespace cAlgo
 
             PublishProviderHeartbeat(
                 observedUtc);
+
+            PublishDeviceSignalEnvelope(
+                _cfipProviderEnvelope);
         }
 
         private string ResolveProviderSignalId(
