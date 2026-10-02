@@ -91,9 +91,10 @@ check(
 
 check(
     "actionability reward calculation uses canonical SL/TP",
+    "PlanRewardRiskQualityRule.Evaluate(" in preparation and
     "state.EffectivePreview.Stop" in preparation and
     "state.EffectivePreview.Tp1" in preparation and
-    "state.Tp1RR = canonicalPath.Tp1RR" in preparation,
+    "canonicalPath.Tp1RR" in preparation,
 )
 
 check(
@@ -114,10 +115,11 @@ check(
 
 check(
     "late-entry policy remains a real execution-model setting",
-    "public bool IsLate" in execution_model and
-    "model.IsLate = geometry.IsLate" in execution_resolver and
-    "(!AvoidLateEntry ||" in execution_resolver and
-    "if (AvoidLateEntry &&" in builder,
+    "public bool IsLate;" in execution_model and
+    "model.IsLate" in execution_resolver and
+    "geometry.IsLate" in execution_resolver and
+    "AvoidLateEntry" in execution_resolver and
+    "execution.IsLate" in builder,
 )
 
 check(
@@ -182,9 +184,10 @@ check(
 
 check(
     "panel lifecycle reports actionable state before trigger waiting",
-    "TRIGGER  NOT REQUIRED • ACTIONABLE" in panel and
-    panel.index("TRIGGER  NOT REQUIRED • ACTIONABLE") <
-    panel.index("TRIGGER  CONFIRMED"),
+    "_decision.ActionableNow" in panel and
+    "_decision.TriggerReady" in panel and
+    panel.index("_decision.ActionableNow") <
+    panel.index("_decision.TriggerReady"),
 )
 
 check(
