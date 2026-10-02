@@ -145,7 +145,7 @@ check(
             "_w1Frame =",
         )
     )
-    and calc.count("AnalyzeFrame(") >= 7,
+    and calc.count("AnalyzeFrameCached(") >= 7,
 )
 check(
     "runtime contract tests frame-regime direction independence and symmetry",
