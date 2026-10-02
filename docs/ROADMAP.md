@@ -361,7 +361,7 @@ Phase report: `docs/PHASE-CBOT-P3-CBOT-HOST-SHADOW.md`.
 
 ## MTF-P1 — Primary M15/H1 Signal Layer + Panel Separation
 
-Status: **IMPLEMENTED — repository verification pending on this branch; target-terminal evidence remains manual.**
+Status: **VERIFIED COMPLETE — repository gates passed on implementation HEAD `c811967d8462229e8efc5f14af1f48cc3e3e72b2`; target-terminal evidence remains manual.**
 
 Decision:
 - M15 and H1 are the primary visible signal sources.
