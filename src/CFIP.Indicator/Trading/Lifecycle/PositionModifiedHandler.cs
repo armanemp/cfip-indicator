@@ -48,17 +48,16 @@ namespace cAlgo
                                             out bool brokerStopValid,
                                             out bool brokerTargetValid);
 
-                                    _activeBrokerStop =
+                                    ApplyBrokerConfirmedProtectionState(
+                                        position.Id,
+                                        position.EntryPrice,
                                         brokerStopValid
-                                            ? NormalizePrice(
-                                                position.StopLoss.Value)
-                                            : 0;
-
-                                    _activeBrokerTarget =
+                                            ? position.StopLoss
+                                            : (double?)null,
                                         brokerTargetValid
-                                            ? NormalizePrice(
-                                                position.TakeProfit.Value)
-                                            : 0;
+                                            ? position.TakeProfit
+                                            : (double?)null,
+                                        true);
 
                                     if (_plan != null &&
                                         _plan.IsLivePosition &&
