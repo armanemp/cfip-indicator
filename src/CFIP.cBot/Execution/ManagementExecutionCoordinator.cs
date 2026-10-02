@@ -107,6 +107,195 @@ namespace CFIP.cBot.Execution
             return false;
         }
 
+        public bool TryRecoverProtectionFromSignal(
+            Robot robot,
+            string instanceId,
+            DateTime nowUtc,
+            SignalEnvelope envelope,
+            out BrokerExecutionReport report,
+            out string status)
+        {
+            report = null;
+            status = "PROTECTION RECOVERY NOT ATTEMPTED";
+
+            if (robot == null ||
+                string.IsNullOrWhiteSpace(instanceId) ||
+                envelope == null ||
+                envelope.Identity == null ||
+                envelope.Intent == null)
+            {
+                status = "PROTECTION RECOVERY INPUT INVALID";
+                return false;
+            }
+
+            if (envelope.Intent.Identity == null ||
+                !envelope.Intent.Identity.Equals(envelope.Identity))
+            {
+                status = "PROTECTION RECOVERY IDENTITY MISMATCH";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                    envelope.Intent.ExecutionLabel))
+            {
+                status = "PROTECTION RECOVERY LABEL MISSING";
+                return false;
+            }
+
+            Position position = null;
+            int count = 0;
+
+            foreach (Position candidate in robot.Positions)
+            {
+                if (candidate == null ||
+                    !string.Equals(
+                        candidate.SymbolName,
+                        robot.SymbolName,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        candidate.Label,
+                        envelope.Intent.ExecutionLabel,
+                        StringComparison.Ordinal))
+                    continue;
+
+                position = candidate;
+                count++;
+            }
+
+            if (count != 1 ||
+                position == null)
+            {
+                status =
+                    count == 0
+                        ? "PROTECTION RECOVERY POSITION ABSENT"
+                        : "PROTECTION RECOVERY POSITION AMBIGUOUS";
+                return false;
+            }
+
+            bool stopMissing =
+                !position.StopLoss.HasValue ||
+                !Finite(position.StopLoss.Value);
+
+            bool targetMissing =
+                !position.TakeProfit.HasValue ||
+                !Finite(position.TakeProfit.Value);
+
+            if (!stopMissing &&
+                !targetMissing)
+            {
+                report =
+                    new BrokerExecutionReport(
+                        envelope.Identity,
+                        BrokerAction.None,
+                        BrokerReportStatus.Confirmed,
+                        nowUtc,
+                        null,
+                        nowUtc,
+                        position.Id,
+                        null,
+                        position.EntryPrice,
+                        position.StopLoss,
+                        position.TakeProfit,
+                        string.Empty,
+                        string.Empty,
+                        "PROTECTION ALREADY COMPLETE",
+                        envelope.Identity.Revision)
+                    {
+                        CommandIdempotencyKey =
+                            "RECOVERY|" +
+                            instanceId +
+                            "|" +
+                            envelope.Identity.Revision +
+                            "|" +
+                            position.Id
+                    };
+
+                status = "PROTECTION ALREADY COMPLETE";
+                return true;
+            }
+
+            double? desiredStop =
+                stopMissing &&
+                Finite(envelope.Intent.Stop)
+                    ? envelope.Intent.Stop
+                    : position.StopLoss;
+
+            double? desiredTarget =
+                targetMissing &&
+                Finite(envelope.Intent.InitialTarget)
+                    ? envelope.Intent.InitialTarget
+                    : position.TakeProfit;
+
+            if ((!desiredStop.HasValue ||
+                 !Finite(desiredStop.Value)) &&
+                (!desiredTarget.HasValue ||
+                 !Finite(desiredTarget.Value)))
+            {
+                status = "PROTECTION RECOVERY LEVELS UNAVAILABLE";
+                return false;
+            }
+
+            ManagementCommand command =
+                new ManagementCommand(
+                    envelope.Identity,
+                    ManagementCommandType.ModifyProtection,
+                    envelope.Identity.Revision,
+                    position.Id,
+                    null,
+                    desiredStop,
+                    desiredTarget,
+                    null,
+                    nowUtc,
+                    "CBOT STARTUP PROTECTION RECOVERY",
+                    "RECOVERY|" +
+                    instanceId +
+                    "|" +
+                    envelope.Identity.Revision +
+                    "|" +
+                    position.Id)
+                {
+                    ExecutionLabel =
+                        envelope.Intent.ExecutionLabel
+                };
+
+            TryLoadReports(
+                robot,
+                instanceId,
+                out List<BrokerExecutionReport> reports);
+
+            BrokerExecutionReport existing =
+                FindLatestReport(
+                    reports,
+                    command.CommandIdempotencyKey);
+
+            if (existing != null &&
+                existing.Status == BrokerReportStatus.Confirmed)
+            {
+                report = existing;
+                status = existing.Reason ?? "PROTECTION RECOVERY CONFIRMED";
+                return true;
+            }
+
+            Protect(
+                robot,
+                instanceId,
+                nowUtc,
+                command,
+                reports,
+                out status);
+
+            report =
+                FindLatestReport(
+                    reports,
+                    command.CommandIdempotencyKey);
+
+            return
+                report != null &&
+                (report.Status == BrokerReportStatus.Confirmed ||
+                 report.Status == BrokerReportStatus.Accepted ||
+                 report.Status == BrokerReportStatus.RecoveryRequired);
+        }
+
         private void ExecuteOne(
             Robot robot,
             string instanceId,
