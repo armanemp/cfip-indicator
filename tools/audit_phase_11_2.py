@@ -69,18 +69,8 @@ require(PANEL_MAIN, r"UpdateProcessingHeartbeatLamp\(\)", "lamp refresh hook")
 require(PANEL_PIPE, r"PIPELINE[\s\S]*?QUALITY[\s\S]*?PIPELINE REASON", "signal pipeline panel diagnostics")
 require(PANEL_ROWS, r"RenderPanelSignalPipelineRows\(", "pipeline renderer wired to overview")
 require(MARKET, r"CanRunAutomaticEntry\(\)[\s\S]*?RefreshLiveDecisionActionability\(\s*closedM5\s*\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true\)", "final market runtime, actionability and suitability refresh")
-agg_code = AGG.read_text(encoding="utf-8")
-for token in (
-    "CanRunAutomaticEntry(",
-    "EnsureTradingPermission(",
-    "PassesAutoTradeSafetyGuards(",
-    "BuildExecutionIntent(",
-    "BrokerConfirmationPolicy.CanAdoptPosition(",
-    "EnsureBrokerProtectionForPosition(",
-    '"RECOVERY"',
-):
-    if token not in agg_code:
-        raise SystemExit("missing aggressive broker execution safety/authority: " + token)
+if AGG.exists():
+    raise SystemExit("legacy Indicator aggressive broker owner must remain removed after CBOT-P4A")
 
 require(
     AGG_FINAL,

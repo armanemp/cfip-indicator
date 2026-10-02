@@ -1301,13 +1301,7 @@ for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
     if "SignalVisualSnapshot snapshot" not in visual_code or "snapshot.Stop" not in visual_code:
         raise SystemExit(f"Plan levels must render through the canonical visual snapshot: {visual_path.name}")
 
-for broker_path in (
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
-    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs",
-):
-    broker_code = broker_path.read_text(encoding="utf-8")
-    if "GetActiveBrokerStopPrice()" not in broker_code or "GetActiveBrokerTargetPrice()" not in broker_code:
-        raise SystemExit(f"Live trade reporting must use broker-confirmed protection: {broker_path.name}")
+# Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
 
 for pending_path in (
     ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
@@ -1328,8 +1322,6 @@ for token in (
         raise SystemExit(f"Broker-confirmed pending reporting field missing: {token}")
 
 for entry_path in (
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs",
-    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
     ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
 ):
@@ -1413,68 +1405,10 @@ if "BuildDecision(" not in closed_calculation_code or "mtf);" not in closed_calc
 if not RUNTIME_CONTRACT_PROJECT.exists() or "ClosedBarReferenceRule.cs" not in RUNTIME_CONTRACT_PROJECT.read_text(encoding="utf-8"):
     raise SystemExit("Runtime acceptance project must compile the closed-bar reference contract")
 
-# Phase 6.3 controlled intrabar aggressive-entry contract.
-AGGRESSIVE_POLICY = ROOT / "Core" / "Execution" / "AggressiveEntryPolicy.cs"
-AGGRESSIVE_ELIGIBILITY = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs"
-AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveTradeExecution.cs"
-AGGRESSIVE_BROKER_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
-AGGRESSIVE_FILL = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs"
-AGGRESSIVE_PREP = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs"
-REACTION_ANALYZER = ROOT / "Analysis" / "Reaction" / "ReactionAnalyzer.cs"
-
-for required_path in (
-    AGGRESSIVE_POLICY,
-    AGGRESSIVE_ELIGIBILITY,
-    AGGRESSIVE_EXECUTION,
-    AGGRESSIVE_BROKER_EXECUTION,
-    AGGRESSIVE_FILL,
-    AGGRESSIVE_PREP,
-    REACTION_ANALYZER,
-):
-    if not required_path.exists():
-        raise SystemExit(f"Phase 6.3 aggressive-entry owner is missing: {required_path.name}")
-
-aggressive_policy_code = AGGRESSIVE_POLICY.read_text(encoding="utf-8")
-aggressive_eligibility_code = AGGRESSIVE_ELIGIBILITY.read_text(encoding="utf-8")
-aggressive_execution_code = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
-aggressive_broker_execution_code = AGGRESSIVE_BROKER_EXECUTION.read_text(encoding="utf-8")
-aggressive_fill_code = AGGRESSIVE_FILL.read_text(encoding="utf-8")
-aggressive_prep_code = AGGRESSIVE_PREP.read_text(encoding="utf-8")
-reaction_code = REACTION_ANALYZER.read_text(encoding="utf-8")
-
-if "RequiredQualifyingSamples = 2" not in aggressive_policy_code:
-    raise SystemExit("Aggressive-entry policy must require two qualifying intrabar samples")
-for required_token in ("ObserveReactionSample(", "ResetQualification()", "GetQualificationStateText()"):
-    if required_token not in aggressive_policy_code:
-        raise SystemExit(f"Aggressive-entry policy state owner missing: {required_token}")
-
-if "_aggressiveEntryPolicy" not in aggressive_eligibility_code:
-    raise SystemExit("Aggressive eligibility must consume the canonical aggressive-entry policy")
-if "_aggressiveEntryPolicy.ObserveReactionSample(" not in aggressive_eligibility_code:
-    raise SystemExit("Aggressive eligibility must require policy qualification")
-if '"AGGRESSIVE • INTRABAR ARMED"' not in aggressive_eligibility_code:
-    raise SystemExit("Aggressive eligibility must expose explicit intrabar armed state")
-if "_aggressiveEntryPolicy.ResetQualification();" not in aggressive_eligibility_code:
-    raise SystemExit("Aggressive eligibility must invalidate failed reaction state")
-
-if "_reaction.Direction" not in aggressive_prep_code:
-    raise SystemExit("Aggressive execution preparation must use the qualified reaction direction")
-if "BuildStructuralStop(" not in aggressive_prep_code:
-    raise SystemExit("Aggressive execution must retain structural stop authority")
-if "SelectStructuralAutoTarget(" not in aggressive_prep_code:
-    raise SystemExit("Aggressive execution must retain structural target authority")
-
-if "ExecutionIntentKind.Market" not in aggressive_broker_execution_code:
-    raise SystemExit("Aggressive policy must remain an explicit market execution path")
-if "BrokerConfirmationPolicy.CanAdoptPosition(" not in aggressive_broker_execution_code:
-    raise SystemExit("Aggressive execution must remain broker-confirmation driven")
-
-if "_aggressiveEntryPolicy.ResetQualification();" not in aggressive_fill_code:
-    raise SystemExit("Confirmed aggressive fill must consume the intrabar qualification latch")
-
-if "_m5Bars.Count - 1" not in reaction_code:
-    raise SystemExit("Aggressive intrabar policy must retain current open M5 reaction identity")
-
+# Phase 6.3 — aggressive execution authority has moved out of the live Indicator path.
+AGGRESSIVE_STAGE_CODE = (ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs").read_text(encoding="utf-8")
+if "TryAggressiveAutoTrade(" in AGGRESSIVE_STAGE_CODE:
+    raise SystemExit("Indicator calculation cycle must not retain aggressive broker execution")
 # Phase 6.4 compact 40-bar plan-level visual contract.
 if "CompactPlanLineLengthBars = 40" not in visual_line_code:
     raise SystemExit("Plan level renderer must use the fixed 40-bar compact span")
@@ -1716,23 +1650,7 @@ for execution_path in [
     if "ManagedPositionCount() >=" in execution_code:
         raise SystemExit(f"Duplicate position-capacity calculation remains in {execution_path.name}")
 
-AUTO_MARKET_EXECUTION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
-AUTO_MARKET_CODE = AUTO_MARKET_EXECUTION.read_text(encoding="utf-8")
-if (
-    "SetAutoTradingState" not in AUTO_MARKET_CODE or
-    "protectionOk" not in AUTO_MARKET_CODE or
-    '"RECOVERY"' not in AUTO_MARKET_CODE
-):
-    raise SystemExit("Market execution must expose broker protection recovery in auto state")
-
-AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
-AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
-if (
-    "SetAutoTradingState" not in AGGRESSIVE_CODE or
-    "protectionOk" not in AGGRESSIVE_CODE or
-    '"RECOVERY"' not in AGGRESSIVE_CODE
-):
-    raise SystemExit("Aggressive execution must expose broker protection recovery in auto state")
+# Market/Aggressive broker state ownership moved to cBot in CBOT-P4A.
 
 AUTO_STATE = ROOT / "Trading" / "Execution" / "State" / "AutoTradingStateStore.cs"
 AUTO_STATE_CODE = AUTO_STATE.read_text(encoding="utf-8")
@@ -2075,23 +1993,8 @@ for consumer_name in (
         if declaration in code:
             raise SystemExit(f"Broker protection validation duplicated in {consumer_name}: {declaration}")
 
-# Cross-path automatic execution consistency.
+# Cross-path execution consistency for the remaining Indicator pending boundary.
 CROSS_PATH_CONTRACTS = {
-    "AutomaticMarketBrokerExecution.cs": (
-        "TryValidateAutomaticMarketSubmission(",
-        "TryExecuteMarketOrder(",
-        "BrokerConfirmationPolicy.CanAdoptPosition(",
-        "TryAcceptAutomaticMarketFill(",
-        "EnsureBrokerProtectionForPosition(",
-    ),
-    "AggressiveBrokerExecution.cs": (
-        "BuildExecutionIntent(",
-        "ValidateExecutionIntent(",
-        "TryExecuteMarketOrder(",
-        "BrokerConfirmationPolicy.CanAdoptPosition(",
-        "TryProcessAcceptedAggressiveFill(",
-        "EnsureBrokerProtectionForPosition(",
-    ),
     "ContinuationStopPlacement.cs": (
         "TryPrepareContinuationStop(",
         "ValidatePendingSubmission(",
@@ -2217,65 +2120,9 @@ for path, token in (
     if not path.exists() or token not in path.read_text(encoding="utf-8"):
         raise SystemExit(f"Aggressive execution owner missing or incomplete: {path}")
 
-AGGRESSIVE_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
-AGGRESSIVE_RUNTIME_CODE = AGGRESSIVE_RUNTIME.read_text(encoding="utf-8")
-if AGGRESSIVE_RUNTIME.stat().st_size > 8192:
-    raise SystemExit("AggressiveBrokerExecution.cs must remain an execution orchestration boundary")
-for token in (
-    "EnsureTradingPermission(",
-    "PassesAutoTradeSafetyGuards(",
-    "BuildExecutionIntent(",
-    "TryExecuteMarketOrder(",
-    "BrokerConfirmationPolicy.CanAdoptPosition(",
-    "TryProcessAcceptedAggressiveFill(",
-    "EnsureBrokerProtectionForPosition(",
-    '"RECOVERY"',
-):
-    if token not in AGGRESSIVE_RUNTIME_CODE:
-        raise SystemExit(f"Aggressive execution boundary missing: {token}")
-# Automatic-market execution boundary.
-AUTO_MARKET_PRETRADE = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTrade.cs"
-AUTO_MARKET_PRETRADE_CODE = AUTO_MARKET_PRETRADE.read_text(encoding="utf-8")
-for token in (
-    "PassAutomaticMarketPreTradeEligibility(",
-    "TryPrepareAutomaticMarketExecution(",
-):
-    if token not in AUTO_MARKET_PRETRADE_CODE:
-        raise SystemExit(f"Automatic-market orchestration call missing: {token}")
-if AUTO_MARKET_PRETRADE.stat().st_size > 4096:
-    raise SystemExit("AutomaticMarketPreTrade.cs must remain an orchestration boundary")
-
-AUTO_MARKET_ELIGIBILITY = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs"
-AUTO_MARKET_PREPARATION = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketExecutionPreparation.cs"
-for path, token in (
-    (AUTO_MARKET_ELIGIBILITY, "ValidateSingleExecutionCapacity("),
-    (AUTO_MARKET_PREPARATION, "TryPrepareExecutablePlan("),
-):
-    if not path.exists() or token not in path.read_text(encoding="utf-8"):
-        raise SystemExit(f"Automatic-market owner missing or incomplete: {path}")
-
-AUTO_MARKET_RUNTIME = ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketBrokerExecution.cs"
-AUTO_MARKET_RUNTIME_CODE = AUTO_MARKET_RUNTIME.read_text(encoding="utf-8")
-if AUTO_MARKET_RUNTIME.stat().st_size > 8192:
-    raise SystemExit("AutomaticMarketBrokerExecution.cs must remain an execution orchestration boundary")
-for token in (
-    "TryValidateAutomaticMarketSubmission(",
-    "TryExecuteMarketOrder(",
-    "BrokerConfirmationPolicy.CanAdoptPosition(",
-    "TryAcceptAutomaticMarketFill(",
-    "TryResolveAutomaticPostFillTarget(",
-    "EnsureBrokerProtectionForPosition(",
-):
-    if token not in AUTO_MARKET_RUNTIME_CODE:
-        raise SystemExit(f"Automatic-market execution boundary missing: {token}")
-for required_path in (
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs",
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs",
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs",
-):
-    if not required_path.exists():
-        raise SystemExit(f"Automatic-market execution owner missing: {required_path}")
-
+# Aggressive broker execution owner was removed from the Indicator in CBOT-P4A.
+# Automatic-market broker execution owner was removed in the same cutover.
+# Automatic Market broker mutation is cBot-owned after CBOT-P4A.
 # Live target progression boundary.
 TARGET_PROGRESSION = ROOT / "Trading" / "LiveManagement" / "TargetProgression.cs"
 TARGET_PROGRESSION_CODE = TARGET_PROGRESSION.read_text(encoding="utf-8")
@@ -2478,8 +2325,6 @@ if "GetManagedLivePositionForPlan()" not in PARTIAL_CODE:
 if "PARTIAL CLOSE • BREAK-EVEN REJECTED" not in PARTIAL_CODE:
     raise SystemExit("Partial break-even rejection recovery path is missing")
 
-AGGRESSIVE_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveBrokerExecution.cs"
-AGGRESSIVE_CODE = AGGRESSIVE_EXECUTION.read_text(encoding="utf-8")
 BROKER_PROTECTION_EXECUTION = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
 BROKER_PROTECTION_CODE = BROKER_PROTECTION_EXECUTION.read_text(encoding="utf-8")
 BOUND_PLAN_PROTECTION = ROOT / "Trading" / "Execution" / "Aggressive" / "BoundPlanProtection.cs"
@@ -2498,10 +2343,7 @@ if "_plan.PositionId" not in BROKER_PROTECTION_CODE:
 if "ORPHAN MANAGED POSITION" not in ORPHAN_PROTECTION_CODE:
     raise SystemExit("Orphan broker protection must use its own protection context")
 
-AGGRESSIVE_FILL_HANDLER = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs"
-AGGRESSIVE_FILL_CODE = AGGRESSIVE_FILL_HANDLER.read_text(encoding="utf-8")
-if "FILL MISMATCH" not in AGGRESSIVE_FILL_CODE:
-    raise SystemExit("Aggressive accepted-fill handler must explicitly handle fill-envelope mismatch")
+# Aggressive accepted-fill authority moves with the cBot execution phase.
 
 PROTECTION_RUNTIME = ROOT / "Trading" / "Execution" / "Aggressive" / "BrokerProtectionExecution.cs"
 PROTECTION_CODE = PROTECTION_RUNTIME.read_text(encoding="utf-8")
@@ -2678,7 +2520,6 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
 MUTATION_ALLOWED_FILES = {
-    "BrokerMarketOrderMutation.cs",
     "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
@@ -2687,7 +2528,6 @@ MUTATION_ALLOWED_FILES = {
     "BrokerPositionCloseMutation.cs",
 }
 REQUIRED_BROKER_MUTATION_FILES = {
-    "BrokerMarketOrderMutation.cs",
     "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
@@ -2799,13 +2639,13 @@ if "_executionToggleSyncing = true" not in EXECUTION_CONTROLS_SYNC_CODE:
 CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
 CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")
 pending_idx = CALC_STAGE_CODE.find('"PREDICTIVE PENDING EXECUTION"')
-aggressive_idx = CALC_STAGE_CODE.find('"AGGRESSIVE AUTO EXECUTION"')
 plan_idx = CALC_STAGE_CODE.find('"PLAN CREATION"')
-market_idx = CALC_STAGE_CODE.find('"AUTOMATIC MARKET EXECUTION"')
-if min(pending_idx, aggressive_idx, plan_idx, market_idx) < 0 or not (
-    pending_idx < aggressive_idx < plan_idx < market_idx
-):
-    raise SystemExit("Execution priority must be pending -> aggressive -> plan -> market")
+if min(pending_idx, plan_idx) < 0 or not pending_idx < plan_idx:
+    raise SystemExit("Remaining Indicator execution stage ordering must keep pending before plan materialization")
+if "AGGRESSIVE AUTO EXECUTION" in CALC_STAGE_CODE:
+    raise SystemExit("Aggressive broker execution must not remain in Indicator calculation stages")
+if "AUTOMATIC MARKET EXECUTION" in CALC_STAGE_CODE:
+    raise SystemExit("Automatic Market broker execution must not remain in Indicator calculation stages")
 
 LIVE_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 LIVE_CYCLE_CODE = LIVE_CYCLE.read_text(encoding="utf-8")
@@ -3103,7 +2943,6 @@ ROW_EXPECTATIONS = {
     "Rows/PanelExecutionRowsRenderer.cs": "RenderPanelExecutionRows",
     "Rows/PanelTradePlanRowsRenderer.cs": "RenderPanelTradePlanRows",
     "Rows/PanelContextRowsRenderer.cs": "RenderPanelContextRows",
-    "Rows/PanelAutoTradingRowsRenderer.cs": "RenderPanelAutoTradingRows",
 }
 for relative, method in ROW_EXPECTATIONS.items():
     path = PANEL_ROOT / relative
@@ -3322,8 +3161,8 @@ for token in (
     if token not in decision_code:
         raise SystemExit(f"Decision model missing Phase 9.4 field: {token}")
 
-if "_decision.ActionableNow" not in plan_eligibility.read_text(encoding="utf-8"):
-    raise SystemExit("Plan creation must consume ActionableNow")
+if "_decision.ActionableNow" in plan_eligibility.read_text(encoding="utf-8"):
+    raise SystemExit("Plan creation must not be blocked by live ActionableNow state")
 
 registry_code = plan_registry.read_text(encoding="utf-8")
 parallel_code = parallel_builder.read_text(encoding="utf-8")

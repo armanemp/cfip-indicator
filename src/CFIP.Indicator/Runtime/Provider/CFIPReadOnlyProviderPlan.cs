@@ -25,12 +25,21 @@ namespace cAlgo
             if (sourceIntent == null ||
                 _cfipProviderExecutionIntentM5 != closedM5)
             {
+                // The Indicator publishes an execution intent only when the
+                // current quote has passed the same live actionability gate used
+                // by presentation. The analytical Plan itself remains publishable
+                // before that moment.
                 if (_plan == null ||
                     _decision == null ||
                     !_decision.EntryAllowed ||
+                    !_decision.ActionableNow ||
                     _plan.CreatedM5 != closedM5 ||
                     direction == 0 ||
                     _plan.Direction != direction)
+                    return null;
+
+                if (_plan.EntryMode != ExecutionMode.RetestMarket &&
+                    _plan.EntryMode != ExecutionMode.BreakoutMarket)
                     return null;
 
                 double planTarget =
@@ -113,6 +122,13 @@ namespace cAlgo
                     signalId,
                     "");
 
+            MarketExecutionProfile marketProfile =
+                action == ExecutionAction.Market
+                    ? BuildCanonicalMarketExecutionProfile(
+                        sourceIntent,
+                        closedM5)
+                    : null;
+
             return new CFIP.Contracts.ExecutionIntent(
                 identity,
                 action,
@@ -125,7 +141,85 @@ namespace cAlgo
                 SizingMode.ToString(),
                 observedUtc,
                 expiryUtc,
-                sourceIntent.Source ?? "");
+                sourceIntent.Source ?? "",
+                "CFIP-SMART",
+                marketProfile);
+        }
+
+        private MarketExecutionProfile BuildCanonicalMarketExecutionProfile(
+            cAlgo.ExecutionIntent sourceIntent,
+            int closedM5)
+        {
+            if (sourceIntent == null ||
+                _m5Bars == null ||
+                closedM5 < 1 ||
+                closedM5 >= _m5Bars.Count)
+                return null;
+
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsQuoteValid ||
+                !IsFinitePositive(priceSnapshot.PipSize))
+                return null;
+
+            double atr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            if (!IsFinitePositive(atr))
+                return null;
+
+            double atrPips =
+                atr /
+                Math.Max(
+                    priceSnapshot.PipSize,
+                    1e-9);
+
+            double maximum =
+                atrPips *
+                Math.Max(
+                    0.08,
+                    Math.Min(
+                        0.20,
+                        Math.Max(
+                            0.08,
+                            MaximumEntryExtensionAtr * 0.50)));
+
+            double desired =
+                Math.Max(
+                    Math.Max(
+                        0.10,
+                        priceSnapshot.SpreadPips * 1.10),
+                    atrPips * 0.02);
+
+            double rangePips =
+                Math.Max(
+                    0.10,
+                    Math.Min(
+                        maximum,
+                        desired));
+
+            if (!IsFinitePositive(rangePips))
+                return null;
+
+            return new MarketExecutionProfile(
+                rangePips,
+                Math.Abs(
+                    sourceIntent.StopPips),
+                Math.Abs(
+                    sourceIntent.TargetPips),
+                false,
+                0,
+                0,
+                0,
+                0,
+                Math.Abs(
+                    sourceIntent.TargetPips),
+                null,
+                null);
         }
 
         private PlanSnapshot BuildCanonicalPlanSnapshot(

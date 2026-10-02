@@ -66,7 +66,7 @@ namespace cAlgo
             }
         }
 
-        private void TryEnsureAutomaticPlan(
+        private void EnsureCanonicalPlan(
             int closedM5)
         {
             // A confirmed predictive pending order is its own executable plan. Do not
@@ -81,23 +81,31 @@ namespace cAlgo
             RefreshLiveDecisionActionability(
                 closedM5);
 
-            if (!AutoTradingEnabled ||
-                _plan != null ||
+            if (_plan != null ||
                 _decision == null ||
                 _decision.Direction == 0)
                 return;
 
-            // Do not latch plan creation to a single M5 attempt. Actionability
-            // is quote-sensitive and may become true later in the same closed
-            // M5 bar (for example when price enters a retest zone or reaches
-            // a breakout trigger). EnsureSignalPlan is idempotent and owns the
-            // actual creation gates, so it is safe to retry here on each live
-            // calculation until a plan is created.
+            // Plan materialization is analysis-owned. Broker actionability remains a
+            // separate live gate consumed by the cBot-facing intent publisher.
             EnsureSignalPlan(
                 closedM5,
-                ConfirmedSignalsOnly
-                    ? DecisionPolicyMode.Confirmed
-                    : DecisionPolicyMode.Soft);
+                DecisionPolicyMode.Confirmed);
+        }
+
+        private void TryEnsureAutomaticPlan(
+            int closedM5)
+        {
+            // "Automatic" here means automatic analysis-plan materialization.
+            // It must never depend on Auto Trading and must never mutate the broker.
+            if (_decision == null ||
+                _decision.Direction == 0 ||
+                _plan != null)
+                return;
+
+            EnsureSignalPlan(
+                closedM5,
+                DecisionPolicyMode.Confirmed);
         }
 
         private void UpdateExecutionModel(

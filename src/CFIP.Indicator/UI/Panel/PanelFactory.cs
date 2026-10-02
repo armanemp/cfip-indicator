@@ -21,6 +21,20 @@ namespace cAlgo
                         
                                     try
                                     {
+                                        int bootstrapWidth =
+                                            Math.Max(
+                                                260,
+                                                Math.Min(
+                                                    760,
+                                                    PanelWidth));
+
+                                        int bootstrapHeight =
+                                            Math.Max(
+                                                180,
+                                                Math.Min(
+                                                    260,
+                                                    PanelMaxHeight));
+
                                         _panelHeaderStack =
                                             new StackPanel
                                             {
@@ -77,6 +91,14 @@ namespace cAlgo
                                         _panelScroll =
                                             new ScrollViewer
                                             {
+                                                Width =
+                                                    Math.Max(
+                                                        240,
+                                                        bootstrapWidth - 8),
+                                                Height =
+                                                    Math.Max(
+                                                        120,
+                                                        bootstrapHeight - 70),
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
                                                 VerticalAlignment =
@@ -99,6 +121,10 @@ namespace cAlgo
                                             {
                                                 Orientation =
                                                     Orientation.Vertical,
+                                                Width =
+                                                    bootstrapWidth,
+                                                Height =
+                                                    bootstrapHeight,
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
                                                 VerticalAlignment =
@@ -124,34 +150,15 @@ namespace cAlgo
                                                         Color.Black)
                                             };
                         
-                                        _closeButton =
-                                            new Button();
-                        
-                                        _cancelButton =
-                                            new Button();
-                        
-                                        _closeButton.Click +=
-                                            args => CloseAllPositions();
-                        
-                                        _cancelButton.Click +=
-                                            args => CancelAllOrders();
-                        
-                                        // Moved (per user request): the hide/show toggle now lives at
-                                        // the bottom of the box, to the left of Close/Cancel, instead
-                                        // of the header. It must be added to _buttonStack BEFORE the
-                                        // other two buttons so it renders left-most in this
-                                        // horizontal StackPanel.
+                                        // The Indicator panel is analysis/presentation only.
+                                        // Broker Close/Cancel actions belong to the cBot surface.
+                                        // The hide/show toggle is the only interactive control
+                                        // owned by the Indicator panel. Broker actions are cBot-owned.
                                         CreatePanelToggleButton();
                         
                                         if (_panelToggleButton != null)
                                             _buttonStack.AddChild(
                                                 _panelToggleButton);
-                        
-                                        _buttonStack.AddChild(
-                                            _closeButton);
-                        
-                                        _buttonStack.AddChild(
-                                            _cancelButton);
                         
                                         _panelHeaderStack.AddChild(
                                             _panelHeaderTitle);
@@ -178,6 +185,14 @@ namespace cAlgo
                                             {
                                                 Child =
                                                     _panelStack,
+                                                Width =
+                                                    bootstrapWidth,
+                                                Height =
+                                                    bootstrapHeight,
+                                                MinWidth = 260,
+                                                MaxWidth = 760,
+                                                MinHeight = 170,
+                                                MaxHeight = 420,
                                                 IsHitTestVisible =
                                                     true,
                                                 BackgroundColor =
@@ -208,6 +223,12 @@ namespace cAlgo
                                                         PanelCornerRadius)
                                             };
                         
+                                        SetPanelAlignment();
+
+                                        // Never add an unconstrained panel to the main chart.
+                                        // The first layout pass must have a finite geometry or
+                                        // cTrader may collapse the chart area while measuring
+                                        // the control tree.
                                         Chart.AddControl(
                                             _panel);
                         
@@ -227,8 +248,6 @@ namespace cAlgo
                                         _panelScroll = null;
                                         _panelRows.Clear();
                                         _buttonStack = null;
-                                        _closeButton = null;
-                                        _cancelButton = null;
                                         _panelToggleButton = null;
                                         _panelRestoreButton = null;
                                     }

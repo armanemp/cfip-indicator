@@ -54,9 +54,43 @@ require(
     "MTF context rows must use the unified display-direction path",
 )
 require(
+    "_closeButton" not in panel_context and
+    "_cancelButton" not in panel_context and
+    "_closeButton" not in panel_main and
+    "_cancelButton" not in panel_main,
+    "Indicator panel must not expose direct broker Close/Cancel controls",
+)
+require(
+    "PRIMARY M15/H1" in panel_context and
+    "_m15Frame.Direction" in panel_context and
+    "_h1Frame.Direction" in panel_context,
+    "primary M15/H1 alignment must use exact resolved source direction",
+)
+require(
     "QuickExecutionRowHeight" not in panel_main and
     "SyncQuickExecutionControls();" not in panel_main,
     "panel render path must not reserve obsolete quick-execution UI height",
+)
+panel_factory = read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs")
+parallel_renderer = read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs")
+panel_key = read("src/CFIP.Indicator/UI/Panel/PanelRenderOptimization.cs")
+require(
+    "Math.Min(" in panel_factory and
+    "260" in panel_factory and
+    "Never add an unconstrained panel" in panel_factory,
+    "indicator panel must start from small finite bootstrap geometry",
+)
+require(
+    "FramePresentationKey(_m15Frame)" in panel_key and
+    "FramePresentationKey(_h1Frame)" in panel_key and
+    "FramePresentationKey(_m5Frame)" in panel_key,
+    "panel key must invalidate when primary MTF frames change",
+)
+require(
+    "PRIMARY_M15_SIGNAL" in parallel_renderer and
+    "PRIMARY_H1_SIGNAL" in parallel_renderer and
+    '"WATCH"' in parallel_renderer,
+    "primary M15/H1 visual markers must remain distinct from canonical execution state",
 )
 require(
     "VerifyPanelFrameDirectionPresentation();" in runtime and

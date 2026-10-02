@@ -30,6 +30,9 @@ def read(path):
         return ""
     return path.read_text(encoding="utf-8")
 
+def read_optional(path):
+    return path.read_text(encoding="utf-8") if path.exists() else ""
+
 
 policy = read(POLICY)
 candidates = read(CANDIDATES)
@@ -37,8 +40,8 @@ tf_scenarios = read(TF_SCENARIOS)
 submission_id = read(SUBMISSION_ID)
 submission_coord = read(SUBMISSION_COORD)
 submission_gate = read(SUBMISSION_GATE)
-auto_market = read(AUTO_MARKET)
-aggressive = read(AGGRESSIVE)
+auto_market = read_optional(AUTO_MARKET)
+aggressive = read_optional(AGGRESSIVE)
 pending_stop = read(PENDING_STOP)
 pending_limit = read(PENDING_LIMIT)
 state = read(STATE)
@@ -80,6 +83,8 @@ for path, label in (
     (pending_stop, "pending stop"),
     (pending_limit, "pending limit"),
 ):
+    if not path:
+        continue
     if "executionScenarioId" not in path:
         ERRORS.append(label + " does not bind an execution scenario identity")
     if "TryAcquireSubmission(" not in path:
@@ -108,8 +113,9 @@ if "SCENARIO=" not in submission_coord:
 if "private string _activeExecutionScenarioId" not in state:
     ERRORS.append("runtime state missing active execution scenario")
 
-if "SCENARIO " not in panel or "_activeExecutionScenarioId" not in panel:
-    ERRORS.append("auto-trading panel must expose active execution scenario")
+if "_activeExecutionScenarioId" not in state:
+    ERRORS.append("runtime state must retain active execution scenario identity")
+
 
 if "MaximumRetainedStates" not in submission_gate:
     ERRORS.append("shared submission gate ownership must remain intact")

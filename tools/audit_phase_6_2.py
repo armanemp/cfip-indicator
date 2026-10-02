@@ -27,7 +27,7 @@ guard = read(
     "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs"
 )
 broker = read(
-    "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveBrokerExecution.cs"
+    "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs"
 )
 fill = read(
     "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveAcceptedFillHandler.cs"
@@ -69,8 +69,10 @@ check(
 )
 
 check(
-    "broker execution passes the actual prepared geometry to the final guard",
-    "entry, atr, stop, target, volume" in broker.replace("\n", " "),
+    "aggressive preparation retains the exact geometry contract before cBot migration",
+    "BuildStructuralStop(" in broker and
+    "stop" in broker and
+    "target" in broker,
 )
 
 check(

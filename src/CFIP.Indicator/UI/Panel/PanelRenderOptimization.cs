@@ -53,6 +53,14 @@ namespace cAlgo
                 snapshot.PlanActive ? "1" : "0",
                 snapshot.PendingOrder ? "1" : "0",
                 snapshot.LivePosition ? "1" : "0",
+                FramePresentationKey(_m1Frame),
+                FramePresentationKey(_m5Frame),
+                FramePresentationKey(_m15Frame),
+                FramePresentationKey(_m30Frame),
+                FramePresentationKey(_h1Frame),
+                FramePresentationKey(_h4Frame),
+                FramePresentationKey(_d1Frame),
+                FramePresentationKey(_w1Frame),
                 snapshot.Confidence,
                 snapshot.SmartQuality,
                 snapshot.TimeframeAgreement,
@@ -87,7 +95,38 @@ namespace cAlgo
                 GetAutoTradingPanelState(),
                 GetAutoOrdersPanelState(),
                 GetAutoProtectionPanelState(),
+                RetainedPanelCompatibilityKey(),
                 _brokerProtectionRecoveryRequired ? "1" : "0");
+        }
+
+        private string RetainedPanelCompatibilityKey()
+        {
+            // These public parameters remain for backward-compatible saved settings.
+            // The Indicator no longer instantiates or wires broker-action controls;
+            // reading them here gives the retained configuration an explicit runtime
+            // owner without restoring the obsolete execution UI.
+            return string.Join(
+                ":",
+                ActionButtonHeight,
+                ActionButtonMargin,
+                ActionButtonWidth,
+                AlwaysShowSafetyButtons ? "1" : "0",
+                PanelButtonGap,
+                ShowTradeActionButtons ? "1" : "0");
+        }
+
+        private string FramePresentationKey(
+            Frame frame)
+        {
+            if (frame == null)
+                return "NULL";
+
+            return string.Join(
+                ":",
+                frame.Index,
+                frame.Direction,
+                frame.Quality,
+                frame.Evidence);
         }
 
         private string PriceKey(

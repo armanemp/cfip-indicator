@@ -78,8 +78,6 @@ namespace cAlgo
                                     _automaticOrdersQuickToggle = null;
                                     _panelRows.Clear();
                                     _buttonStack = null;
-                                    _closeButton = null;
-                                    _cancelButton = null;
                                     _panelToggleButton = null;
                                     _panelRestoreButton = null;
                                     _panelHidden = false;

@@ -10,7 +10,6 @@ def read(relative: str) -> str:
 
 rule = read("Core/Math/ExecutionProtectionPanelStateRule.cs")
 panel = read("UI/Panel/PanelExecutionState.cs")
-auto_rows = read("UI/Panel/Rows/PanelAutoTradingRowsRenderer.cs")
 overview_rows = read("UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs")
 optimization = read("UI/Panel/PanelRenderOptimization.cs")
 state = read("Indicator/State.cs")
@@ -48,25 +47,13 @@ auto_color = panel.split("private Color GetAutoTradingPanelColor()", 1)[1].split
 if "_decision" in auto_color or "_reaction" in auto_color:
     raise SystemExit("Auto-trade panel color must not infer operational state from decision/reaction")
 
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoProtectionPanelState()",
-    "GetAutoTradingPanelColor()",
-    "GetAutoOrdersPanelColor()",
-    "GetAutoProtectionPanelColor()",
-):
-    if token not in auto_rows:
-        raise SystemExit(f"G4 auto/protection row must consume canonical panel-state helper: {token}")
-
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoTradingPanelColor()",
-    "GetAutoOrdersPanelColor()",
-):
-    if token not in overview_rows:
-        raise SystemExit(f"G4 overview execution row must consume canonical state helper: {token}")
+PANEL_ROWS = read("UI/Panel/PanelRowsRenderer.cs")
+if "RenderPanelAutoTradingRows(" in PANEL_ROWS:
+    raise SystemExit("Indicator panel must not render the removed Auto Trading execution block")
+if "GetCanonicalSignalPanelStatus()" not in PANEL_ROWS.replace("\n", " "):
+    signal_status = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
+    if "GetCanonicalSignalPanelStatus()" not in signal_status:
+        raise SystemExit("Indicator panel must expose canonical analysis signal status")
 
 for token in (
     "GetAutoTradingPanelState()",
@@ -91,6 +78,6 @@ if "ExecutionProtectionPanelStateRule.cs" not in runtime_csproj:
     raise SystemExit("G4 runtime contract project must compile the new Core state rule")
 
 print("CR7.4 / G4 panel execution/protection state audit PASS")
-print("Execution panel state: canonical runtime/lifecycle semantics")
-print("Broker protection panel state: broker-confirmed SL/TP semantics")
-print("Analysis/reaction readiness cannot manufacture operational panel state")
+print("Legacy execution panel block: removed from Indicator")
+print("Canonical signal state: analysis-owned")
+print("Broker protection/execution UI: cBot-owned in the staged migration")

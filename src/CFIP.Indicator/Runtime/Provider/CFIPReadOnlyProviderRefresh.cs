@@ -115,6 +115,7 @@ namespace cAlgo
                         ? "0"
                         : canonicalIntent.InitialTarget
                             .ToString("R", CultureInfo.InvariantCulture),
+                    _decision != null && _decision.ActionableNow ? "ACTIONABLE" : "WAIT",
                     expiryKey,
                     planSnapshot == null
                         ? "NO-PLAN"

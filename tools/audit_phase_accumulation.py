@@ -12,12 +12,9 @@ def read(rel: str) -> str:
 
 # Phase accumulation gate: every phase must keep the automatic trade/order
 # pipeline coupled to one decision, one submission gate and one protection owner.
-auto_market = read("Trading/Execution/AutomaticMarket/AutomaticMarketBrokerExecution.cs")
-aggressive = read("Trading/Execution/Aggressive/AggressiveBrokerExecution.cs")
 pending_stop = read("Trading/Pending/Placement/ContinuationStopPlacement.cs")
 pending_limit = read("Trading/Pending/Placement/ReversalLimitPlacement.cs")
 ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
-market_mutation = read("Trading/Execution/BrokerMarketOrderMutation.cs")
 pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 protection = read("Trading/LiveManagement/ProtectionManager.cs")
@@ -35,8 +32,6 @@ popup_core = read("Indicator/Parameters/12_alerts_core.cs")
 popup_advanced = read("Indicator/Parameters/12_alerts_advanced.cs")
 
 execution_paths = {
-    "automatic-market": auto_market,
-    "aggressive-market": aggressive,
     "pending-stop": pending_stop,
     "pending-limit": pending_limit,
 }
@@ -45,15 +40,10 @@ for name, source in execution_paths.items():
         if token not in source:
             raise SystemExit(f"{name}: missing shared {token}")
 
-if "ValidateSingleExecutionCapacity(" not in read("Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs"):
-    raise SystemExit("automatic-market: canonical capacity gate missing")
-if "ValidateSingleExecutionCapacity(" not in read("Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs"):
-    raise SystemExit("aggressive-market: canonical capacity gate missing")
 if "ValidateSingleExecutionCapacity(" not in read("Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs"):
     raise SystemExit("pending: canonical capacity gate missing")
 
 for source_name, source in (
-    ("market mutation", market_mutation),
     ("pending-stop mutation", pending_mutation),
     ("pending-limit mutation", limit_mutation),
 ):
@@ -160,64 +150,16 @@ if "public bool PopupBold" not in popup_core or "DefaultValue = true" not in pop
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must not create backgrounds")
 
-# Phase 7.4 / G4 — panel execution/protection state semantics.
-g4_rule = read("Core/Math/ExecutionProtectionPanelStateRule.cs")
-g4_panel = read("UI/Panel/PanelExecutionState.cs")
-g4_auto_rows = read("UI/Panel/Rows/PanelAutoTradingRowsRenderer.cs")
-g4_overview_rows = read("UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs")
-g4_panel_key = read("UI/Panel/PanelRenderOptimization.cs")
+# Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
+g4_overview_rows = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
+panel_rows = read("UI/Panel/PanelRowsRenderer.cs")
 
-for token in (
-    "ResolveAutoTrading(",
-    "ResolveAutoOrders(",
-    "ResolveProtection(",
-):
-    if token not in g4_rule:
-        raise SystemExit(f"G4 canonical state rule missing: {token}")
+if "RenderPanelAutoTradingRows(" in panel_rows:
+    raise SystemExit("legacy Auto Trading execution rows must not be rendered by Indicator")
 
-for token in (
-    "ExecutionProtectionPanelStateRule.ResolveAutoTrading(",
-    "ExecutionProtectionPanelStateRule.ResolveAutoOrders(",
-    "ExecutionProtectionPanelStateRule.ResolveProtection(",
-    "_brokerProtectionRecoveryRequired",
-    "IsExistingManagedStopHealthy(",
-):
-    if token not in g4_panel:
-        raise SystemExit(f"G4 panel state ownership missing: {token}")
+if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
+    raise SystemExit("canonical signal status must remain visible in the overview panel")
 
-if "_decision" in g4_panel.split("private Color GetAutoTradingPanelColor()",1)[1].split("private string GetAutoOrdersPanelState()",1)[0]:
-    raise SystemExit("G4 Auto Trade color cannot infer runtime state from decision")
-if "_reaction" in g4_panel.split("private Color GetAutoTradingPanelColor()",1)[1].split("private string GetAutoOrdersPanelState()",1)[0]:
-    raise SystemExit("G4 Auto Trade color cannot infer runtime state from reaction")
-
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoTradingPanelColor()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoOrdersPanelColor()",
-    "GetAutoProtectionPanelState()",
-    "GetAutoProtectionPanelColor()",
-):
-    if token not in g4_auto_rows:
-        raise SystemExit(f"G4 Auto Trading rows missing canonical helper: {token}")
-
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoTradingPanelColor()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoOrdersPanelColor()",
-):
-    if token not in g4_overview_rows:
-        raise SystemExit(f"G4 overview execution rows missing canonical helper: {token}")
-
-for token in (
-    "GetAutoTradingPanelState()",
-    "GetAutoOrdersPanelState()",
-    "GetAutoProtectionPanelState()",
-    "_brokerProtectionRecoveryRequired",
-):
-    if token not in g4_panel_key:
-        raise SystemExit(f"G4 panel presentation cache key missing state: {token}")
 
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
@@ -227,7 +169,7 @@ if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PA
     raise SystemExit("public parameter contract changed unexpectedly")
 
 print("Phase 9.10 accumulated auto-trade/protection audit PASS")
-print("Automatic market / aggressive / pending paths: shared submission + server-protection hooks PASS")
+print("Remaining Indicator pending paths: shared submission + server-protection hooks PASS")
 print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")

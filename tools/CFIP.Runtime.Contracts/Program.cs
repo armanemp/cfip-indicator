@@ -6510,22 +6510,23 @@ namespace cAlgo
 
             Assert(
                 pendingExecution >= 0 &&
-                aggressiveExecution > pendingExecution &&
-                planCreation > aggressiveExecution &&
-                marketExecution > planCreation,
-                "execution priority is predictive pending -> aggressive -> plan -> market");
+                planCreation >= pendingExecution &&
+                aggressiveExecution < 0 &&
+                marketExecution < 0,
+                "execution priority is pending -> plan; Market/Aggressive broker execution is cBot-owned");
 
             Assert(
                 calculationStage.Contains("TrySmartPendingOrders(") &&
-                calculationStage.Contains("TryAggressiveAutoTrade(") &&
-                calculationStage.Contains("TryAutoTrade("),
-                "all automatic execution paths remain connected");
+                calculationStage.Contains("EnsureCanonicalPlan(") &&
+                !calculationStage.Contains("TryAggressiveAutoTrade(") &&
+                !calculationStage.Contains("TryAutoTrade("),
+                "Indicator calculation keeps analysis/plan stages and removes broker execution paths");
 
             Assert(
-                calculation.Contains("TryEnsureAutomaticPlan(") &&
+                calculation.Contains("EnsureCanonicalPlan(") &&
                 calculation.Contains("RenderPredictionObjects(") &&
                 calculation.Contains("RenderLatestAlertSignalMarker("),
-                "live cycle retains plan plus prediction/alert presentation orchestration");
+                "live cycle retains canonical plan plus prediction/alert presentation orchestration");
 
             Assert(
                 predictiveSelector.Contains("TrySelectPredictivePendingLevel(") &&

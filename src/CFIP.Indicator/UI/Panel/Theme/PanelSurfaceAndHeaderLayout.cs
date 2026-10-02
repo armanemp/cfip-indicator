@@ -124,11 +124,11 @@ namespace cAlgo
                                                             PanelFontSize);
                                         
                                                     _panelHeaderTitle.ForegroundColor =
-                                                        AutoTradingPanelColor();
+                                                        GetCanonicalSignalPanelStatusColor();
                                         
                                                     _panelHeaderTitle.Text =
                                                         "CFIP SMART  •  " +
-                                                        AutoTradingPanelLine();
+                                                        GetCanonicalSignalPanelStatus();
                                         
                                                     _panelHeaderTitle.LineHeight =
                                                         Math.Max(

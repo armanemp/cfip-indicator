@@ -23,7 +23,12 @@ partial = read("Trading/LiveManagement/PartialTakeProfitExecutor.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
 level_hits = read("Trading/LiveManagement/ActivePlanLevelExitHandler.cs")
 server_ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
-market_mutation = read("Trading/Execution/BrokerMarketOrderMutation.cs")
+cbot_market = (
+    ROOT.parent /
+    "CFIP.cBot" /
+    "Execution" /
+    "DemoMarketExecutionCoordinator.cs"
+).read_text(encoding="utf-8")
 pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 state = read("Indicator/State.cs")
@@ -168,8 +173,8 @@ for token in (
 ):
     if token not in server_ladder:
         raise SystemExit(f"Server TP ladder contract missing: {token}")
-if "TryExecuteMarketRangeOrderWithTakeProfitLadder" not in market_mutation:
-    raise SystemExit("Market-range server TP mutation owner missing")
+if "ExecuteMarketRangeOrder(" not in cbot_market or "ExecuteMarketOrder(" not in cbot_market:
+    raise SystemExit("cBot must own Market / Market-Range broker mutation")
 if "TryPlaceStopOrderWithTakeProfitLadder" not in pending_mutation:
     raise SystemExit("Pending stop server TP mutation owner missing")
 if "TryPlaceLimitOrderWithTakeProfitLadder" not in limit_mutation:
@@ -178,5 +183,5 @@ if "TryPlaceLimitOrderWithTakeProfitLadder" not in limit_mutation:
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
 print("Pending lines: no M5 mapping dependency")
-print("AUTO TRADE/AUTO ORDERS: status-only surfaces bound to canonical settings/runtime state")
-print("Execution status: synchronized from canonical settings/runtime state without a UI mutation path")
+print("Indicator execution controls: broker-action UI removed; analysis panel is canonical")
+print("Market / Market-Range broker mutation: owned by CFIP.cBot")

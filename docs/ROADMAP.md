@@ -438,7 +438,22 @@ Target-terminal acceptance:
 
 Phase report: docs/PHASE-CBOT-DEMO-LIVE-MARKET-2026-10-02.md.
 
-Next implementation phase: reissue CBOT-P4A — Market / Market Range broker-mutation extraction from current main so the legacy Indicator Market mutation owner is physically removed after this bridge's target-terminal parity evidence.
+## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
+
+Status: **IMPLEMENTED — repository verification pending; target-terminal parity remains manual.**
+
+This phase performs the physical Market / Market Range owner switch from Indicator to cBot:
+- Indicator no longer contains the Market broker-mutation owner;
+- the legacy Indicator automatic-market and aggressive-market broker execution stages are removed from the live calculation path;
+- cBot consumes the canonical plan-derived MarketExecutionProfile and owns Market / Market-Range submission;
+- Indicator plan materialization is no longer tied to Indicator Auto Trading;
+- Indicator panel no longer exposes Close/Cancel broker-action buttons or the old Auto Trading / Auto Orders execution-status block;
+- panel bootstrap geometry is finite before Chart.AddControl to prevent chart-area collapse during first measure;
+- canonical signal presentation is separated from live quote actionability.
+
+Remaining CBOT-P4 migrations are deliberately staged: Aggressive, Pending Stop, Pending Limit, Cancel, Close/Partial, SL, and TP/server-ladder mutations remain with their current Indicator owners until their replacement passes parity and owner-removal verification.
+
+See docs/PHASE-CBOT-P4A-MARKET-RANGE-AUTHORITY-CUTOVER-2026-10-02.md.
 
 ## CBOT-P4 — Broker Mutation Extraction
 

@@ -42,7 +42,7 @@ namespace cAlgo
                                                     int buttonMargin =
                                                         Math.Max(
                                                             0,
-                                                            ActionButtonMargin);
+                                                            PanelPadding);
                                         
                                                     int toggleSideForLayout =
                                                         Math.Max(
@@ -107,38 +107,6 @@ namespace cAlgo
                                                                     PanelToggleWidth,
                                                                     PanelToggleHeight)));
 
-                                                    int halfGap =
-                                                        Math.Max(
-                                                            0,
-                                                            buttonGap / 2);
-
-                                                    int horizontalFootprint =
-                                                        ShowPanelToggleButton
-                                                            ? toggleSide +
-                                                              buttonMargin * 3 +
-                                                              halfGap * 3
-                                                            : buttonMargin * 2 +
-                                                              buttonGap;
-
-                                                    int availableButtonWidth =
-                                                        Math.Max(
-                                                            0,
-                                                            contentWidth -
-                                                            horizontalFootprint);
-
-                                                    int eachButtonWidth =
-                                                        Math.Max(
-                                                            70,
-                                                            Math.Min(
-                                                                Math.Max(
-                                                                    70,
-                                                                    ActionButtonWidth),
-                                                                availableButtonWidth / 2));
-
-                                                    bool showSafetyButtons =
-                                                        ShowTradeActionButtons ||
-                                                        AlwaysShowSafetyButtons;
-
                                                     ApplyPanelSurfaceAndHeaderLayout(
                                                         contentWidth,
                                                         panelHeight,
@@ -158,14 +126,10 @@ namespace cAlgo
                                                         buttons;
 
                                                     ApplyPanelActionButtonsLayout(
-                                                        buttonHeight,
-                                                        buttonGap,
                                                         buttonMargin,
-                                                        eachButtonWidth,
                                                         toggleSide,
                                                         border,
-                                                        borderAlpha,
-                                                        showSafetyButtons);
+                                                        borderAlpha);
 
                                                     ApplyPanelRestoreButtonLayout(
                                                         borderAlpha,
