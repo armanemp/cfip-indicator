@@ -64,9 +64,10 @@ namespace CFIP.cBot.Shadow
             if (sameCurrent)
             {
                 if (_lastResult != null &&
-                    _lastResult.State != ShadowHostState.Ready &&
-                    _lastResult.State != ShadowHostState.Observing &&
-                    _lastResult.State != ShadowHostState.Blocked)
+                    (_lastResult.State == ShadowHostState.Expired ||
+                     _lastResult.State == ShadowHostState.Duplicate ||
+                     (_lastResult.State == ShadowHostState.Blocked &&
+                      !IsTransientBrokerBlock(_lastResult.Reason))))
                 {
                     return _lastResult;
                 }
