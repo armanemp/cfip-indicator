@@ -162,8 +162,10 @@ namespace cAlgo
             // by the control tree during attachment/layout. Long content is already
             // bounded by the ScrollViewer.
             return Math.Max(
-                220,
-                configuredMaxHeight);
+                260,
+                Math.Min(
+                    1200,
+                    configuredMaxHeight));
         }
 
         private void SetPanelAlignment()
