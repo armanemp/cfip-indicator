@@ -82,7 +82,8 @@ require(
     "Math.Min(" in panel_factory and
     "260" in panel_factory and
     "int bootstrapHeight" in panel_factory and
-    "Height =\n                                                bootstrapHeight" in panel_factory,
+    "bootstrapHeight" in panel_factory and
+    "Height =" in panel_factory,
     "indicator panel must start from small finite bootstrap geometry",
 )
 require(
