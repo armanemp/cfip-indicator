@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import sys
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
@@ -61,14 +62,19 @@ workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/ROADMAP.md")
 phase_doc = read("docs/PHASE-CR5-4-PENDING-FILL-ABSOLUTE-RECONCILIATION.md")
 
+
+def has_pending_snapshot(source):
+    normalized = re.sub(r"\s+", " ", source)
+    return (
+        "Plan pendingSnapshot = CapturePendingOrderPlanSnapshot(" in normalized and
+        "_pendingOrderPlanSnapshot = pendingSnapshot;" in normalized
+    )
+
+
 check(
     "pending Stop/Limit placement preserves an absolute snapshot from ExecutionIntent",
-    "Plan pendingSnapshot" in stop_placement and
-    "Plan pendingSnapshot" in limit_placement and
-    "_pendingOrderPlanSnapshot = pendingSnapshot" in stop_placement and
-    "_pendingOrderPlanSnapshot = pendingSnapshot" in limit_placement and
-    "CapturePendingOrderPlanSnapshot(" in stop_placement and
-    "CapturePendingOrderPlanSnapshot(" in limit_placement,
+    has_pending_snapshot(stop_placement) and
+    has_pending_snapshot(limit_placement),
 )
 
 check(

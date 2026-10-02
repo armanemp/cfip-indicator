@@ -24,9 +24,7 @@ namespace cAlgo
                     : SymbolName;
 
             string timeframe =
-                Bars == null
-                    ? "UNKNOWN"
-                    : Bars.TimeFrame.ToString();
+                ExecutionTimeframePolicy.PrimaryExecution;
 
             return OutcomeMemoryIdentityRule.BuildMemoryKey(
                 symbol,
@@ -43,9 +41,7 @@ namespace cAlgo
                     : SymbolName;
 
             string timeframe =
-                Bars == null
-                    ? "UNKNOWN"
-                    : Bars.TimeFrame.ToString();
+                ExecutionTimeframePolicy.PrimaryExecution;
 
             return OutcomeMemoryIdentityRule.BuildLegacyMemoryKey(
                 symbol,

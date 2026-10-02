@@ -1250,7 +1250,7 @@ startup_seed_code = CALC_STARTUP_SEED.read_text(encoding="utf-8")
 for forbidden in (
     "TryAutoTrade(",
     "TryAggressiveAutoTrade(",
-    "TrySmartPendingOrders(",
+    "RefreshPendingExecutionIntent(",
     "ProcessLiveCalculationStages(",
 ):
     if forbidden in startup_seed_code:
@@ -1303,13 +1303,20 @@ for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
 
 # Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
 
-for pending_path in (
-    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
-    ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
-):
-    pending_code = pending_path.read_text(encoding="utf-8")
-    if "ReportConfirmedPendingOrderPlacement(" not in pending_code:
-        raise SystemExit(f"Pending-order reporting boundary missing: {pending_path.name}")
+# Pending Stop is cBot-owned after CBOT-P4C. Indicator must only prepare
+# immutable intent; Reversal Limit remains on the staged Indicator path until P4D.
+continuation_stop_code = (
+    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
+).read_text(encoding="utf-8")
+if "PrepareContinuationStopForCbot(" not in continuation_stop_code:
+    raise SystemExit("Pending Stop intent-only preparation owner is missing")
+if "PlaceStopOrder(" in continuation_stop_code:
+    raise SystemExit("Pending Stop broker mutation leaked back into Indicator")
+
+reversal_limit_path = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs"
+reversal_limit_code = reversal_limit_path.read_text(encoding="utf-8")
+if "ReportConfirmedPendingOrderPlacement(" not in reversal_limit_code:
+    raise SystemExit("Pending Limit reporting boundary missing")
 
 PENDING_REPORTER = ROOT / "Trading" / "Pending" / "Placement" / "PendingOrderConfirmationReporter.cs"
 PENDING_REPORTER_CODE = PENDING_REPORTER.read_text(encoding="utf-8")
@@ -1321,15 +1328,11 @@ for token in (
     if token not in PENDING_REPORTER_CODE:
         raise SystemExit(f"Broker-confirmed pending reporting field missing: {token}")
 
-for entry_path in (
-    ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs",
-    ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs",
-):
-    entry_code = entry_path.read_text(encoding="utf-8")
-    if "CanRunAutomaticEntry()" not in entry_code:
-        raise SystemExit(f"Runtime entry gate missing: {entry_path.name}")
-    if "ApplyRuntimeEntryGate()" not in entry_code:
-        raise SystemExit(f"Runtime entry block action missing: {entry_path.name}")
+entry_code = reversal_limit_code
+if "CanRunAutomaticEntry()" not in entry_code:
+    raise SystemExit("Runtime entry gate missing: ReversalLimitPlacement.cs")
+if "ApplyRuntimeEntryGate()" not in entry_code:
+    raise SystemExit("Runtime entry block action missing: ReversalLimitPlacement.cs")
 
 # Phase 6.1 closed-bar decision contract.
 CLOSED_BAR_RULE = ROOT / "Core" / "Math" / "ClosedBarReferenceRule.cs"
@@ -1996,10 +1999,7 @@ for consumer_name in (
 # Cross-path execution consistency for the remaining Indicator pending boundary.
 CROSS_PATH_CONTRACTS = {
     "ContinuationStopPlacement.cs": (
-        "TryPrepareContinuationStop(",
-        "ValidatePendingSubmission(",
-        "TryPlaceStopOrder(",
-        "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+        "PrepareContinuationStopForCbot(",
     ),
     "ReversalLimitPlacement.cs": (
         "TryPrepareReversalLimit(",
@@ -2046,13 +2046,12 @@ PENDING_STOP_CODE = PENDING_STOP.read_text(encoding="utf-8")
 if PENDING_STOP.stat().st_size > 4096:
     raise SystemExit("ContinuationStopPlacement.cs must remain a placement orchestration boundary")
 for token in (
-    "TryPrepareContinuationStop(",
-    "ValidatePendingSubmission(",
-    "TryPlaceStopOrder(",
-    "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+    "PrepareContinuationStopForCbot(",
 ):
     if token not in PENDING_STOP_CODE:
-        raise SystemExit(f"Continuation stop ownership call missing: {token}")
+        raise SystemExit(f"Continuation stop intent owner missing: {token}")
+if "PlaceStopOrder(" in PENDING_STOP_CODE:
+    raise SystemExit("Continuation stop broker mutation remains in Indicator")
 
 PENDING_STOP_PREP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPreparation.cs"
 if not PENDING_STOP_PREP.exists() or "BuildStructuralStop(" not in PENDING_STOP_PREP.read_text(encoding="utf-8"):
@@ -2520,7 +2519,6 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
 MUTATION_ALLOWED_FILES = {
-    "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
@@ -2528,7 +2526,6 @@ MUTATION_ALLOWED_FILES = {
     "BrokerPositionCloseMutation.cs",
 }
 REQUIRED_BROKER_MUTATION_FILES = {
-    "BrokerPendingOrderPlacement.cs",
     "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
@@ -2638,7 +2635,7 @@ if "_executionToggleSyncing = true" not in EXECUTION_CONTROLS_SYNC_CODE:
 
 CALC_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationStageIsolation.cs"
 CALC_STAGE_CODE = CALC_STAGE.read_text(encoding="utf-8")
-pending_idx = CALC_STAGE_CODE.find('"PREDICTIVE PENDING EXECUTION"')
+pending_idx = CALC_STAGE_CODE.find('"PENDING INTENT PREPARATION"')
 plan_idx = CALC_STAGE_CODE.find('"PLAN CREATION"')
 if min(pending_idx, plan_idx) < 0 or not pending_idx < plan_idx:
     raise SystemExit("Remaining Indicator execution stage ordering must keep pending before plan materialization")

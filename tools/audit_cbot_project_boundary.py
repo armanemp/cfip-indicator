@@ -25,7 +25,10 @@ MUTATIONS = (
     "ModifyTakeProfit(",
 )
 
-ALLOWED_CBOT_MUTATION_OWNER = "Execution/DemoMarketExecutionCoordinator.cs"
+ALLOWED_CBOT_MUTATION_OWNERS = {
+    "Execution/DemoMarketExecutionCoordinator.cs",
+    "Execution/DemoPendingOrderExecutionCoordinator.cs",
+}
 errors = []
 
 if not CONTRACTS.exists():
@@ -59,14 +62,12 @@ for path in CBOT.rglob("*.cs"):
                 (path.relative_to(CBOT).as_posix(), token)
             )
 
-if not any(
-    path == ALLOWED_CBOT_MUTATION_OWNER
-    for path, _ in mutation_hits
-):
-    errors.append("cBot demo market mutation owner is missing")
+for owner in ALLOWED_CBOT_MUTATION_OWNERS:
+    if not any(path == owner for path, _ in mutation_hits):
+        errors.append("cBot broker mutation owner is missing: " + owner)
 
 for path, token in mutation_hits:
-    if path != ALLOWED_CBOT_MUTATION_OWNER:
+    if path not in ALLOWED_CBOT_MUTATION_OWNERS:
         errors.append(
             f"cBot broker mutation escaped single owner: {path}::{token}"
         )
@@ -77,6 +78,7 @@ required_bot_tokens = (
     'DefaultTimeFrame = "M15"',
     "EnableDemoMarketExecution",
     "EnableDemoAggressiveExecution",
+    "EnableDemoPendingStopExecution",
     "MaxExecutionMarginUsagePercent",
     "ExecutionMarginBufferPercent",
     "Account.IsLive",
@@ -101,7 +103,7 @@ if errors:
     sys.exit(1)
 
 print("CBOT DEMO MARKET BOUNDARY AUDIT: PASS")
-print("cBot broker mutation owner: 1")
-print("Allowed owner: " + ALLOWED_CBOT_MUTATION_OWNER)
+print("cBot broker mutation owners: 2")
+print("Allowed owners: " + ", ".join(sorted(ALLOWED_CBOT_MUTATION_OWNERS)))
 print("Demo live-account guard: PASS")
 print("Indicator project reference: 0")

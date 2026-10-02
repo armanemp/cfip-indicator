@@ -4,10 +4,11 @@ Status: **IMPLEMENTATION COMPLETE — repository verification pending on branch.
 
 ## Decision
 
-- M15 is the canonical execution timeframe.
+- M15 is the canonical internal execution clock.
+- Indicator and cBot can be attached to any Chart TF; Chart TF is host/presentation-only.
 - M5 and M1 are defensive tuning layers: they refine timing/location and can block adverse microstructure but do not replace M15.
 - H1, H4, D1 and W1 are higher-timeframe context/reward-path layers.
-- The cBot defaults to M15 and fails closed when hosted on another timeframe.
+- cBot launch default remains M15 for convenience, without a runtime host-timeframe guard.
 
 ## Risk / price contract
 

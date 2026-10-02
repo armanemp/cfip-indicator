@@ -1,8 +1,9 @@
 ## Active execution timeframe decision — 2026-10-02
 
 The execution boundary is now standardized on **M15**:
-- cBot default host timeframe = M15;
-- non-M15 cBot host is fail-closed;
+- cBot launch default may remain M15 for operator convenience;
+- runtime execution is host-timeframe independent: no non-M15 guard;
+- M15 is the internal execution clock and Chart TF is never an execution input;
 - Indicator canonical actionability requires the closed M15 frame to be available and aligned with the candidate direction;
 - M5 and M1 remain defensive tuning layers;
 - H1/H4/D1/W1 remain higher-timeframe context and reward-path layers.
@@ -49,7 +50,7 @@ Baseline reviewed from `main` at `473d5f1c89afaf8880bb16092e5d9b16b98d0395`:
 Important source examples confirmed during this audit:
 
 - `Trading/Execution/BrokerMarketOrderMutation.cs` directly calls market-order broker APIs.
-- `Trading/Execution/BrokerPendingOrderPlacement.cs` and pending placement owners handle broker pending mutation.
+- `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` and pending placement owners handle broker pending mutation.
 - `Trading/Execution/BrokerPendingOrderCancellation.cs` handles pending cancellation.
 - `Trading/Execution/BrokerPositionCloseMutation.cs` handles broker position close mutation.
 - `Trading/Execution/BrokerStopLossMutation.cs` and `BrokerTakeProfitMutation.cs` handle protection mutation.

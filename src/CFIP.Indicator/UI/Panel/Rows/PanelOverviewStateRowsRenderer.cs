@@ -77,9 +77,7 @@ namespace cAlgo
             AddPanelRow(
                 ref slot,
                 SymbolName +
-                "  •  " +
-                Bars.TimeFrame +
-                "  •  " +
+                "  •  EXEC M15  •  " +
                 Server.TimeInUtc.ToString(
                     "HH:mm:ss") +
                 " UTC",

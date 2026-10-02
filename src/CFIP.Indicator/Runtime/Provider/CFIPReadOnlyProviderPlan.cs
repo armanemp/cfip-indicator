@@ -92,6 +92,13 @@ namespace cAlgo
             if (action == ExecutionAction.None)
                 return null;
 
+            string executionLabel =
+                ManagedExecutionLabel();
+
+            if (string.IsNullOrWhiteSpace(
+                    executionLabel))
+                return null;
+
             DateTime? expiryUtc =
                 action == ExecutionAction.PendingStop ||
                 action == ExecutionAction.PendingLimit
@@ -142,7 +149,7 @@ namespace cAlgo
                 observedUtc,
                 expiryUtc,
                 sourceIntent.Source ?? "",
-                "CFIP-SMART",
+                executionLabel,
                 marketProfile);
         }
 
@@ -222,11 +229,22 @@ namespace cAlgo
                 null);
         }
 
+        private static bool IsPendingCanonicalIntent(
+            CFIP.Contracts.ExecutionIntent canonicalIntent)
+        {
+            return canonicalIntent != null &&
+                (canonicalIntent.Action ==
+                    ExecutionAction.PendingStop ||
+                 canonicalIntent.Action ==
+                    ExecutionAction.PendingLimit);
+        }
+
         private PlanSnapshot BuildCanonicalPlanSnapshot(
             int direction,
             CFIP.Contracts.ExecutionIntent canonicalIntent)
         {
             if (_plan != null &&
+                !IsPendingCanonicalIntent(canonicalIntent) &&
                 (direction == 0 ||
                  _plan.Direction == direction))
             {
@@ -265,6 +283,7 @@ namespace cAlgo
             }
 
             if (_setupPreview != null &&
+                !IsPendingCanonicalIntent(canonicalIntent) &&
                 (direction == 0 ||
                  _setupPreview.Direction == direction))
             {

@@ -330,12 +330,12 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
-                    TrySmartPendingOrders(
+                    RefreshPendingExecutionIntent(
                         closedM5);
                     return true;
                 },
                 index,
-                "PREDICTIVE PENDING EXECUTION");
+                "PENDING INTENT PREPARATION");
 
             RunCalculationStage(
                 () =>

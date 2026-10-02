@@ -18,6 +18,7 @@ namespace CFIP.cBot.Shadow.Tests
             Ready(TradeDirection.Buy, ExecutionAction.Market, 1, "K1");
             Ready(TradeDirection.Sell, ExecutionAction.Aggressive, -1, "K1A");
             Ready(TradeDirection.Sell, ExecutionAction.PendingLimit, -1, "K2");
+            Ready(TradeDirection.Buy, ExecutionAction.PendingStop, 1, "K2STOP");
             ObserveNoIntent();
             Expiry();
             Version();
@@ -314,7 +315,7 @@ namespace CFIP.cBot.Shadow.Tests
                     symbol,
                     direction,
                     OpportunityLane.Tactical,
-                    "M5",
+                    "M15",
                     Now.AddMinutes(-1),
                     10,
                     expiry,

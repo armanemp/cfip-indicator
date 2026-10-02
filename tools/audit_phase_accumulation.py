@@ -13,9 +13,13 @@ def read(rel: str) -> str:
 # Phase accumulation gate: every phase must keep the automatic trade/order
 # pipeline coupled to one decision, one submission gate and one protection owner.
 pending_stop = read("Trading/Pending/Placement/ContinuationStopPlacement.cs")
+pending_stop_preparation = read("Trading/Pending/Placement/ContinuationStopPreparation.cs")
 pending_limit = read("Trading/Pending/Placement/ReversalLimitPlacement.cs")
 ladder = read("Trading/Execution/ServerSideTakeProfitLadder.cs")
-pending_mutation = read("Trading/Execution/BrokerPendingOrderPlacement.cs")
+ROOT_REPO = Path(__file__).resolve().parents[1]
+pending_cbot = (
+    ROOT_REPO / "src" / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
+).read_text(encoding="utf-8")
 limit_mutation = read("Trading/Execution/BrokerLimitOrderPlacement.cs")
 protection = read("Trading/LiveManagement/ProtectionManager.cs")
 target_progression = read("Trading/LiveManagement/TargetProgression.cs")
@@ -36,19 +40,29 @@ execution_paths = {
     "pending-limit": pending_limit,
 }
 for name, source in execution_paths.items():
-    for token in ("TryAcquireSubmission(", "TryBuildServerSideTakeProfitLadder("):
-        if token not in source:
-            raise SystemExit(f"{name}: missing shared {token}")
+    if name == "pending-stop":
+        for token in (
+            "PrepareContinuationStopForCbot(",
+        ):
+            if token not in source:
+                raise SystemExit(f"{name}: missing intent-only token {token}")
+        if "PlaceStopOrder(" in source:
+            raise SystemExit("pending-stop: Indicator broker mutation remains")
+        if "ExecutionIntentKind.Stop" not in pending_stop_preparation:
+            raise SystemExit("pending-stop: canonical Stop intent construction missing")
+    else:
+        for token in ("TryAcquireSubmission(", "TryBuildServerSideTakeProfitLadder("):
+            if token not in source:
+                raise SystemExit(f"{name}: missing shared {token}")
 
 if "ValidateSingleExecutionCapacity(" not in read("Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs"):
     raise SystemExit("pending: canonical capacity gate missing")
 
-for source_name, source in (
-    ("pending-stop mutation", pending_mutation),
-    ("pending-limit mutation", limit_mutation),
-):
-    if "StopLossBreakEven" not in source:
-        raise SystemExit(f"{source_name}: server break-even transport missing")
+if "PlaceStopOrder(" not in pending_cbot:
+    raise SystemExit("cBot Pending Stop mutation owner missing")
+if "StopLossBreakEven" not in ladder:
+    raise SystemExit("server break-even transport missing from canonical ladder")
+
 
 for token in (
     "SmartBreakEvenRule.Evaluate(",

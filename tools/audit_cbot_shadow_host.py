@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CBOT-P3 static gate for the deterministic shadow host under demo-market handoff."""
+"""CBOT-P3 static gate for the deterministic shadow host under demo execution handoff."""
 from pathlib import Path
 import re
 import sys
@@ -133,6 +133,19 @@ check(
         "HttpClient",
         "WebSocket",
     )),
+)
+
+check(
+    "host execution is chart-timeframe independent",
+    "Bars.TimeFrame != TimeFrame.Minute15" not in host and
+    'DefaultTimeFrame = "M15"' in host,
+)
+
+check(
+    "Pending Stop action is routed through the host",
+    "ExecutionAction.PendingStop" in host and
+    "EnableDemoPendingStopExecution" in host and
+    "DemoPendingOrderExecutionCoordinator" in host,
 )
 
 check(

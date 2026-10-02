@@ -16,6 +16,7 @@ target = (IND / "Planning" / "TradePlan" / "TargetStageSelector.cs").read_text(e
 bot = (BOT / "CFIPExecutionBot.cs").read_text(encoding="utf-8")
 coord = (BOT / "Execution" / "DemoMarketExecutionCoordinator.cs").read_text(encoding="utf-8")
 margin = (BOT / "Risk" / "ExecutionMarginBudgetRule.cs").read_text(encoding="utf-8")
+safety = (BOT / "Execution" / "BrokerExecutionSafety.cs").read_text(encoding="utf-8")
 
 if "PrimaryExecution = \"M15\"" not in policy:
     errors.append("M15 primary execution policy missing")
@@ -31,16 +32,32 @@ if "public double NetReward" not in rr:
     errors.append("RiskRewardMathResult must expose spread-adjusted net reward")
 if "TargetFromRR(" not in target or "IncludeSpreadInRiskSizing" not in target:
     errors.append("synthetic target path must consume spread-aware target geometry")
+if "Bars.TimeFrame != TimeFrame.Minute15" in bot:
+    errors.append("cBot must not bind execution to host chart timeframe")
+if "Bars.TimeFrame" in action:
+    errors.append("Indicator actionability must not read host chart timeframe")
+pending_indicator = (IND / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs").read_text(encoding="utf-8")
+if "PrepareContinuationStopForCbot(" not in pending_indicator:
+    errors.append("Indicator Pending Stop path must prepare a cBot intent")
+if "PlaceStopOrder(" in pending_indicator:
+    errors.append("Indicator Pending Stop placement mutation remains")
+if (IND / "Trading" / "Execution" / "BrokerPendingOrderPlacement.cs").exists():
+    errors.append("migrated Indicator Pending Stop broker owner still exists")
+pending = (BOT / "Execution" / "DemoPendingOrderExecutionCoordinator.cs").read_text(encoding="utf-8")
+if "class DemoPendingOrderExecutionCoordinator" not in pending or "PlaceStopOrder(" not in pending:
+    errors.append("cBot Pending Stop mutation owner missing")
+if "ExecutionAction.PendingStop" not in bot:
+    errors.append("cBot Pending Stop action routing missing")
+if "EnableDemoPendingStopExecution" not in bot:
+    errors.append("cBot Pending Stop arm missing")
 if "DefaultTimeFrame = \"M15\"" not in bot:
     errors.append("cBot default timeframe must be M15")
-if "Bars.TimeFrame != TimeFrame.Minute15" not in bot:
-    errors.append("cBot must fail closed outside M15")
 if "class ExecutionMarginBudgetRule" not in margin or "AllowedMargin" not in margin:
     errors.append("cBot margin budget owner missing")
-if ("TryConstrainVolumeForMargin(" not in coord or
-        "ExecutionMarginBudgetRule.AllowedMargin" not in coord or
-        "ExecutionMarginBudgetRule.ScaleVolumeToBudget" not in coord or
-        "NormalizeVolumeInUnits" not in coord):
+if ("BrokerExecutionSafety.TryConstrainVolumeForMargin(" not in coord or
+        "BrokerExecutionSafety.CountManagedPositions(" not in coord or
+        "BrokerExecutionSafety.CountManagedPending(" not in coord or
+        "NormalizeVolumeInUnits" not in safety):
     errors.append("broker-side final volume cap missing")
 if "Execution Margin Usage" not in bot or "Execution Margin Buffer" not in bot:
     errors.append("cBot execution margin safety settings missing")

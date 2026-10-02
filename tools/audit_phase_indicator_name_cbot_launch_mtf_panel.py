@@ -35,7 +35,11 @@ require(
     '"CFIP Smart Execution Bot"' in cbot and
     'DefaultTimeFrame = "M15"' in cbot and
     "[Robot(" in cbot,
-    "cBot must expose stable launch name and M15 default host timeframe",
+    "cBot must expose stable launch name and M15 execution-clock default",
+)
+require(
+    "Bars.TimeFrame != TimeFrame.Minute15" not in cbot,
+    "cBot must not bind runtime execution to host Chart TF",
 )
 require(
     "PanelFrameDirectionRule.ResolveDisplayDirection" in panel_format and

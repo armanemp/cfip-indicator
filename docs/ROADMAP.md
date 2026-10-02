@@ -1,12 +1,41 @@
+## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
+
+Status: VERIFIED COMPLETE — all repository gates passed on final head; PR #195 ready to merge.
+
+Completed:
+- M15 is the internal execution clock; Chart timeframe is host/presentation-only;
+- Indicator/cBot runtime no longer rejects or branches on host Chart TF for execution;
+- Pending Stop broker mutation moved completely to src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs;
+- shared cBot margin/capacity safety owner prevents duplicate helper implementations;
+- Pending Stop trigger uses current spread through canonical PendingEntryPriceRule;
+- Indicator Pending Stop path is intent-only;
+- active audits and documentation were reconciled;
+- Pending Stop lifecycle snapshot is preserved across Indicator to cBot handoff;
+- the canonical instance-scoped execution label is transported in CFIP.Contracts.ExecutionIntent and consumed by cBot broker execution/state ownership.
+
+Verification on final implementation head c700e3adbc3557bf1278024df870a15a6e308b69:
+- Source / Architecture 36991157739 / workflow #3025: PASS;
+- Runtime Acceptance Contracts 36991157724 / workflow #2834: PASS;
+- cTrader Compile/Build 36991157712 / workflow #3018: PASS;
+- CBOT-P4C acceptance audit: PASS;
+- CR5.4 absolute pending-fill reconciliation audit: PASS;
+- CI-15 execution-geometry/broker-boundary audit: PASS;
+- M15 / Risk / Spread audit: PASS;
+- CR1.8 / A11 identity audit: PASS.
+
+Target-terminal acceptance remains manual. No profitability claim is made from this structural migration alone.
+
+Next staged migration after merge: CBOT-P4D — Pending Limit authority extraction.
+
 ## MTF-EXECUTION-M15 — Primary Execution + Smart Margin/Spread Risk — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` in implementation commit `0a45bb251d28a5542fa7580d886d3af8b25184b7`.**
 
 Decision for the active execution architecture:
-- **M15 = primary execution timeframe** and the only chart timeframe used for the cBot host by default.
-- **M5 + M1 = defensive tuning layers** used to refine timing/location and block adverse microstructure; they do not replace M15 as the execution frame.
-- **H1 + H4 + D1 + W1 = higher-timeframe context/reward-path layers** used to establish context and extend target selection when valid structural targets exist.
-- cBot execution is fail-closed outside M15.
+- **M15 = internal primary execution clock**. The Indicator and cBot may be attached to any Chart TF; Chart TF is host/presentation-only and must not alter execution identity or logic.
+- **M5 + M1 = defensive tuning layers** for entry timing/location and adverse microstructure; they refine or block an M15 setup but do not become a competing execution clock.
+- **H1 + H4 + D1 + W1 = higher-timeframe context/reward-path layers** used for context and extended target selection.
+- cBot runtime is host-timeframe independent.
 
 Risk/price contract:
 - requested volume remains risk-based from the Indicator's canonical stop geometry;

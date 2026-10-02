@@ -1,3 +1,9 @@
+## CBOT-P4C closeout note — 2026-10-02
+
+Pending Stop extraction is now implemented in src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs. The old Indicator mutation owner Trading/Execution/BrokerPendingOrderPlacement.cs has been deleted. Indicator retains only analytical preparation and immutable execution intent publication.
+
+The internal execution clock is M15. Chart timeframe is not an execution input. M5/M1 remain defensive tuning and H1+ remains higher-timeframe context/reward support.
+
 # CBOT-P0 — Execution Dependency-Closure Inventory
 
 Date: 2026-10-02
@@ -11,7 +17,7 @@ This document is the concrete extraction map for the current broker/account/life
 | Owner | Direct APIs | Current role | Required destination |
 | --- | --- | --- | --- |
 | `Trading/Execution/BrokerMarketOrderMutation.cs` | ExecuteMarketOrder, ExecuteMarketRangeOrder | Market + market-range broker mutation | cBot |
-| `Trading/Execution/BrokerPendingOrderPlacement.cs` | PlaceStopOrder | Stop-order mutation | cBot |
+| `Trading/Execution/BrokerPendingOrderPlacement.cs` | PlaceStopOrder | Stop-order mutation | **MIGRATED in CBOT-P4C** |
 | `Trading/Execution/BrokerLimitOrderPlacement.cs` | PlaceLimitOrder | Limit-order mutation | cBot |
 | `Trading/Execution/BrokerPendingOrderCancellation.cs` | CancelPendingOrder | Pending cancellation | cBot |
 | `Trading/Execution/BrokerPositionCloseMutation.cs` | ClosePosition | Full/partial close | cBot |
@@ -111,7 +117,11 @@ The same managed identity and ScenarioId-scoped idempotency semantics must survi
 
 No step may remove an Indicator caller before its cBot replacement is available and verified.
 
-## 6. Explicit non-transfer set
+## 6. P4C migration record
+
+Pending Stop broker mutation now lives only in `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs`; Indicator keeps only analytical preparation and immutable intent publication. The old Indicator mutation owner was deleted. The cBot host itself remains Chart-TF independent.
+
+## 7. Explicit non-transfer set
 
 Do not move wholesale:
 

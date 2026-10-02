@@ -1,10 +1,30 @@
+## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
+
+Status: VERIFIED COMPLETE — final repository gates passed; PR #195 ready to merge.
+
+Completed:
+- deleted the migrated Indicator Pending Stop broker owner;
+- created a single cBot Pending Stop mutation coordinator;
+- centralized broker capacity and margin volume capping in BrokerExecutionSafety;
+- made Pending Stop trigger calculation spread-aware on the executable side;
+- removed Pending Stop broker submission, permission and submission-gate ownership from Indicator;
+- made provider and memory/archive identity use internal M15 rather than host Chart TF;
+- updated active audit scripts and operational documentation;
+- added Pending Entry spread, Pending Stop shadow, and M15 host-independence checks;
+- preserved the absolute Pending Stop lifecycle snapshot across the Indicator to cBot boundary;
+- moved broker label ownership to the existing canonical instance-scoped identity carried by ExecutionIntent; no second label formatter was added.
+
+No new strategy engine or duplicate execution engine was added.
+
+Verification: Source/Architecture #3025 PASS; Runtime #2834 PASS; cTrader Compile #3018 PASS; P4C audit PASS; CR5.4, CI-15, M15/Risk/Spread and CR1.8/A11 audits PASS. Target-terminal acceptance remains manual.
+
 ## MTF-EXECUTION-M15 + Smart Margin/Spread Risk — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` in implementation commit `0a45bb251d28a5542fa7580d886d3af8b25184b7`.**
 
 Completed:
 - M15 is the canonical execution timeframe;
-- cBot default host timeframe changed from M5 to M15 and non-M15 cBot startup is fail-closed;
+- cBot launch default is M15, but runtime host timeframe is ignored for execution;
 - M15 agreement is required by canonical actionability;
 - M5/M1 remain defensive tuning layers;
 - H1+ remains higher-timeframe context/reward-path support;

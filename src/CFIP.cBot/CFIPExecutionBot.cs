@@ -17,8 +17,7 @@ namespace CFIP.cBot
     public sealed class CFIPExecutionBot : Robot
     {
 #pragma warning restore CS0612
-        private const string ManagedLabel = "CFIP-SMART";
-        private const string StartupState = "DEMO-MARKET";
+        private const string StartupState = "DEMO";
 
         [Parameter(
             "Enable Demo Market Execution",
@@ -27,18 +26,24 @@ namespace CFIP.cBot
         public bool EnableDemoMarketExecution { get; set; }
 
         [Parameter(
+            "Enable Demo Pending Stop Execution",
+            Group = "Execution",
+            DefaultValue = false)]
+        public bool EnableDemoPendingStopExecution { get; set; }
+
+        [Parameter(
             "Enable Demo Aggressive Execution",
             Group = "Execution",
             DefaultValue = false)]
         public bool EnableDemoAggressiveExecution { get; set; }
 
         [Parameter(
-            "Max Demo Market Executions Per Session",
+            "Max Demo Executions Per Session",
             Group = "Safety",
             DefaultValue = 1,
             MinValue = 1,
             MaxValue = 10)]
-        public int MaxDemoMarketExecutionsPerSession { get; set; }
+        public int MaxDemoExecutionsPerSession { get; set; }
 
         [Parameter(
             "Max Execution Margin Usage %",
@@ -67,6 +72,9 @@ namespace CFIP.cBot
         private readonly DemoMarketExecutionCoordinator _market =
             new DemoMarketExecutionCoordinator();
 
+        private readonly DemoPendingOrderExecutionCoordinator _pending =
+            new DemoPendingOrderExecutionCoordinator();
+
         private readonly ShadowHostCoordinator _shadow =
             new ShadowHostCoordinator();
 
@@ -81,6 +89,7 @@ namespace CFIP.cBot
         private DateTime _nextBindingCheckUtc = DateTime.MinValue;
         private DateTime _nextSignalReloadUtc = DateTime.MinValue;
         private string _boundIndicatorInstanceId = "";
+        private string _activeManagedExecutionLabel = "";
 
         protected override void OnStart()
         {
@@ -97,25 +106,18 @@ namespace CFIP.cBot
                 return;
             }
 
-            if (Bars == null ||
-                Bars.TimeFrame != TimeFrame.Minute15)
-            {
-                Print(
-                    "CFIP cBot BLOCKED | execution timeframe must be M15 | actual={0}",
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString());
-                Stop();
-                return;
-            }
-
+            // Chart timeframe is host-only. CFIP execution is driven by the
+            // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
             Print(
-                "CFIP M15 cBot START | state={0} | marketExecution={1} | " +
-                "aggressiveExecution={2} | maxSessionExecutions={3} | staleAfter={4}s | contractVersion={5}",
+                "CFIP cBot START | hostTimeframe={0} | execTimeframe=M15 | state={1} | " +
+                "marketExecution={2} | pendingStopExecution={3} | aggressiveExecution={4} | " +
+                "maxSessionExecutions={5} | staleAfter={6}s | contractVersion={7}",
+                Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 StartupState,
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
+                EnableDemoPendingStopExecution ? "ARMED" : "DISARMED",
                 EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
-                MaxDemoMarketExecutionsPerSession,
+                MaxDemoExecutionsPerSession,
                 ProviderStaleAfterSeconds,
                 ContractVersion.Current);
 
@@ -177,6 +179,11 @@ namespace CFIP.cBot
                 return;
             }
 
+            _activeManagedExecutionLabel =
+                envelope.Intent == null
+                    ? ""
+                    : envelope.Intent.ExecutionLabel ?? "";
+
             ShadowHostResult shadowResult =
                 _shadow.Observe(
                     envelope,
@@ -189,14 +196,17 @@ namespace CFIP.cBot
 
             bool executionEnabled =
                 EnableDemoMarketExecution ||
+                EnableDemoPendingStopExecution ||
                 EnableDemoAggressiveExecution;
 
             bool actionEnabled =
                 envelope.Intent != null &&
                 (envelope.Intent.Action == ExecutionAction.Aggressive
                     ? EnableDemoAggressiveExecution
-                    : envelope.Intent.Action == ExecutionAction.Market &&
-                      EnableDemoMarketExecution);
+                    : envelope.Intent.Action == ExecutionAction.PendingStop
+                        ? EnableDemoPendingStopExecution
+                        : envelope.Intent.Action == ExecutionAction.Market &&
+                          EnableDemoMarketExecution);
 
             if (!executionEnabled ||
                 !actionEnabled ||
@@ -205,16 +215,46 @@ namespace CFIP.cBot
                 return;
 
             if (_sessionExecutions >=
-                Math.Max(1, MaxDemoMarketExecutionsPerSession))
+                Math.Max(1, MaxDemoExecutionsPerSession))
             {
                 LogBlockedState("DEMO SESSION EXECUTION CAP REACHED");
+                return;
+            }
+
+            if (envelope.Intent.Action == ExecutionAction.PendingStop)
+            {
+                if (_pending.TryExecuteStop(
+                        this,
+                        envelope,
+                        nowUtc,
+                        MaxExecutionMarginUsagePercent,
+                        ExecutionMarginBufferPercent,
+                        out BrokerExecutionReport pendingReport,
+                        out string pendingReason))
+                {
+                    _sessionExecutions++;
+                }
+
+                if (pendingReport != null)
+                {
+                    Print(
+                        "CFIP DEMO PENDING STOP | status={0} | action={1} | " +
+                        "revision={2} | pending={3} | reason={4}",
+                        pendingReport.Status,
+                        pendingReport.Action,
+                        pendingReport.AttemptRevision,
+                        pendingReport.BrokerPendingOrderId.HasValue
+                            ? pendingReport.BrokerPendingOrderId.Value.ToString()
+                            : "",
+                        pendingReason);
+                }
+
                 return;
             }
 
             if (_market.TryExecute(
                     this,
                     envelope,
-                    ManagedLabel,
                     nowUtc,
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
@@ -255,6 +295,7 @@ namespace CFIP.cBot
                     out string reason))
             {
                 _boundIndicatorInstanceId = "";
+                _activeManagedExecutionLabel = "";
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
                 return false;
@@ -265,6 +306,7 @@ namespace CFIP.cBot
             if (string.IsNullOrWhiteSpace(instanceId))
             {
                 _boundIndicatorInstanceId = "";
+                _activeManagedExecutionLabel = "";
                 LogBlockedState("CFIP INDICATOR INSTANCE ID UNAVAILABLE");
                 return false;
             }
@@ -311,6 +353,9 @@ namespace CFIP.cBot
 
         private ShadowBrokerSnapshot ReadBrokerSnapshot()
         {
+            string managedLabel =
+                _activeManagedExecutionLabel ?? "";
+
             int managedPositions = 0;
             foreach (Position position in Positions)
             {
@@ -321,7 +366,7 @@ namespace CFIP.cBot
                         StringComparison.Ordinal) &&
                     string.Equals(
                         position.Label,
-                        ManagedLabel,
+                        managedLabel,
                         StringComparison.Ordinal))
                     managedPositions++;
             }
@@ -336,7 +381,7 @@ namespace CFIP.cBot
                         StringComparison.Ordinal) &&
                     string.Equals(
                         order.Label,
-                        ManagedLabel + "-PENDING",
+                        managedLabel + "-PENDING",
                         StringComparison.Ordinal))
                     managedPendingOrders++;
             }

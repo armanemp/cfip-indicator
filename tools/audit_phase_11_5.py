@@ -15,6 +15,7 @@ SUBMISSION_GATE = ROOT / "src/CFIP.Indicator/Core/Execution/SubmissionGate.cs"
 AUTO_MARKET = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketBrokerExecution.cs"
 AGGRESSIVE = ROOT / "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveBrokerExecution.cs"
 PENDING_STOP = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/ContinuationStopPlacement.cs"
+PENDING_STOP_CBOT = ROOT / "src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs"
 PENDING_LIMIT = ROOT / "src/CFIP.Indicator/Trading/Pending/Placement/ReversalLimitPlacement.cs"
 STATE = ROOT / "src/CFIP.Indicator/Indicator/State.cs"
 PANEL = ROOT / "src/CFIP.Indicator/Trading/Execution/State/AutoTradingStateStore.cs"
@@ -30,6 +31,7 @@ def read(path):
         return ""
     return path.read_text(encoding="utf-8")
 
+
 def read_optional(path):
     return path.read_text(encoding="utf-8") if path.exists() else ""
 
@@ -43,6 +45,7 @@ submission_gate = read(SUBMISSION_GATE)
 auto_market = read_optional(AUTO_MARKET)
 aggressive = read_optional(AGGRESSIVE)
 pending_stop = read(PENDING_STOP)
+pending_stop_cbot = read(PENDING_STOP_CBOT)
 pending_limit = read(PENDING_LIMIT)
 state = read(STATE)
 panel = read(PANEL)
@@ -80,7 +83,6 @@ if "ExecutionAuthorized" not in policy:
 for path, label in (
     (auto_market, "automatic market"),
     (aggressive, "aggressive market"),
-    (pending_stop, "pending stop"),
     (pending_limit, "pending limit"),
 ):
     if not path:
@@ -89,6 +91,22 @@ for path, label in (
         ERRORS.append(label + " does not bind an execution scenario identity")
     if "TryAcquireSubmission(" not in path:
         ERRORS.append(label + " does not use the shared submission gate")
+
+# P4C deliberately moved Pending Stop broker mutation into the cBot. The
+# Indicator binds the pending intent to its scenario identity; the cBot
+# preserves that identity and provides broker-side idempotency.
+if (
+    "_activeExecutionScenarioId" not in pending_stop or
+    "ResolveDirectionExecutionScenarioId(" not in pending_stop
+):
+    ERRORS.append("pending stop does not bind an execution scenario identity")
+
+if (
+    "envelope.Identity.ScenarioId" not in pending_stop_cbot or
+    "envelope.Identity.IdempotencyKey" not in pending_stop_cbot or
+    "BrokerAction.SubmitPendingStop" not in pending_stop_cbot
+):
+    ERRORS.append("pending stop cBot owner does not preserve scenario/idempotency identity")
 
 for token in (
     "ScenarioId { get; }",
@@ -115,7 +133,6 @@ if "private string _activeExecutionScenarioId" not in state:
 
 if "_activeExecutionScenarioId" not in state:
     ERRORS.append("runtime state must retain active execution scenario identity")
-
 
 if "MaximumRetainedStates" not in submission_gate:
     ERRORS.append("shared submission gate ownership must remain intact")

@@ -99,9 +99,7 @@ namespace cAlgo
             SetPanelRow(
                 _panelClockRow,
                 SymbolName +
-                "  •  " +
-                Bars.TimeFrame +
-                "  •  " +
+                "  •  EXEC M15  •  " +
                 now.ToString(
                     "HH:mm:ss") +
                 " UTC",
