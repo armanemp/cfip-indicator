@@ -25,6 +25,13 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
+            if (intent.Action == ExecutionAction.Market &&
+                intent.Identity.Revision <= 0)
+            {
+                reason = "INVALID MARKET REVISION";
+                return false;
+            }
+
             if (intent.Identity.Direction != TradeDirection.Buy &&
                 intent.Identity.Direction != TradeDirection.Sell)
             {
