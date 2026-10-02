@@ -35,6 +35,7 @@ namespace cAlgo
             VerifyEarlyPredictionScoreSemantics();
             VerifyWaveTrendEvidence();
             VerifyParallelOpportunityRule();
+            VerifyCbotPresenceContract();
             VerifyParallelScenarioSelectionSemantics();
             VerifyMicroReactionClosedBarSemantics();
             VerifyMtfContextIntegrity();
@@ -4227,7 +4228,7 @@ namespace cAlgo
                     75,
                     4,
                     4,
-                    1,
+                    -1,
                     -1,
                     84,
                     72,
@@ -4249,7 +4250,7 @@ namespace cAlgo
                     86,
                     5,
                     5,
-                    1,
+                    -1,
                     -1,
                     84,
                     72,
@@ -4262,7 +4263,28 @@ namespace cAlgo
             Assert(
                 counterStrong.Allowed &&
                 counterStrong.Lane == OpportunityLane.CounterHtfTactical,
-                "very strong LTF RR opportunity can survive a strong HTF conflict");
+                "very strong HTF-aligned counter-M5 opportunity can qualify through the stricter lane");
+
+            TacticalOpportunityResult oppositeWithoutHtfSupport =
+                TacticalOpportunityRule.Evaluate(
+                    1,
+                    98,
+                    92,
+                    5,
+                    5,
+                    -1,
+                    -1,
+                    62,
+                    72,
+                    2.80,
+                    70,
+                    1.75,
+                    82,
+                    2.20);
+
+            Assert(
+                !oppositeWithoutHtfSupport.Allowed,
+                "counter-M5 direction remains blocked when HTF support is not strong enough");
         }
 
         private static void VerifyIndependentEvidenceGroupSemantics()
@@ -11169,6 +11191,40 @@ namespace cAlgo
 
             Console.WriteLine(
                 "Panel frame direction presentation contracts PASS");
+        }
+
+        private static void VerifyCbotPresenceContract()
+        {
+            CbotPresenceSnapshot snapshot =
+                new CbotPresenceSnapshot(
+                    ContractVersion.Current,
+                    "CFIPExecutionBot|EURUSD",
+                    "CFIPExecutionBot",
+                    "CFIP Smart Execution Bot",
+                    "EURUSD",
+                    DateTime.UtcNow,
+                    "RUNNING",
+                    true,
+                    "indicator-instance-1");
+
+            string payload =
+                CbotExecutionStateCodec.SerializePresence(
+                    snapshot);
+
+            Assert(
+                CbotExecutionStateCodec.TryDeserializePresence(
+                    payload,
+                    out CbotPresenceSnapshot restored) &&
+                restored != null &&
+                restored.ContractVersion ==
+                    ContractVersion.Current &&
+                restored.CbotTypeName ==
+                    "CFIPExecutionBot" &&
+                restored.Symbol ==
+                    "EURUSD" &&
+                restored.BoundIndicatorInstanceId ==
+                    "indicator-instance-1",
+                "cBot presence snapshot round-trips through the canonical device contract");
         }
 
         private static void Assert(bool condition, string name)
