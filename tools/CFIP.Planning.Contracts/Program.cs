@@ -20,6 +20,7 @@ namespace cAlgo
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
             VerifyCanonicalRiskRewardMath();
+            VerifyExecutionIntentGeometry();
             VerifyTargetPipelineD7();
             VerifyTargetObstacleCachePolicyF9();
             VerifyTargetSelectionConsistency();
@@ -879,6 +880,94 @@ namespace cAlgo
                 "stable identity replacement");
         }
 
+
+        private static void VerifyExecutionIntentGeometry()
+        {
+            ExecutionIntentGeometryResult buy =
+                ExecutionIntentGeometryRule.Evaluate(
+                    1,
+                    100.00,
+                    98.00,
+                    106.00,
+                    0.10);
+
+            ExecutionIntentGeometryResult sell =
+                ExecutionIntentGeometryRule.Evaluate(
+                    -1,
+                    100.00,
+                    102.00,
+                    94.00,
+                    0.10);
+
+            Assert(
+                buy.Valid &&
+                Math.Abs(buy.Entry - 100.00) < 1e-12 &&
+                Math.Abs(buy.StopPips - 20.0) < 1e-12 &&
+                Math.Abs(buy.TargetPips - 60.0) < 1e-12,
+                "CI-15 BUY intent geometry projection");
+
+            Assert(
+                sell.Valid &&
+                Math.Abs(sell.Entry - 100.00) < 1e-12 &&
+                Math.Abs(sell.StopPips - 20.0) < 1e-12 &&
+                Math.Abs(sell.TargetPips - 60.0) < 1e-12,
+                "CI-15 SELL intent geometry projection");
+
+            Assert(
+                Math.Abs(buy.StopPips - sell.StopPips) < 1e-12 &&
+                Math.Abs(buy.TargetPips - sell.TargetPips) < 1e-12,
+                "CI-15 BUY/SELL intent pip symmetry");
+
+            ExecutionIntentGeometryResult wrongBuy =
+                ExecutionIntentGeometryRule.Evaluate(
+                    1,
+                    100.00,
+                    102.00,
+                    106.00,
+                    0.10);
+
+            ExecutionIntentGeometryResult wrongSell =
+                ExecutionIntentGeometryRule.Evaluate(
+                    -1,
+                    100.00,
+                    98.00,
+                    94.00,
+                    0.10);
+
+            Assert(
+                !wrongBuy.Valid &&
+                wrongBuy.Reason == "WRONG-SIDE GEOMETRY" &&
+                !wrongSell.Valid &&
+                wrongSell.Reason == "WRONG-SIDE GEOMETRY",
+                "CI-15 wrong-side intent geometry fails closed");
+
+            ExecutionIntentGeometryResult invalidPip =
+                ExecutionIntentGeometryRule.Evaluate(
+                    1,
+                    100.00,
+                    98.00,
+                    106.00,
+                    0);
+
+            Assert(
+                !invalidPip.Valid &&
+                invalidPip.Reason == "INVALID GEOMETRY",
+                "CI-15 invalid pip size fails closed");
+
+            ExecutionIntentGeometryResult subPip =
+                ExecutionIntentGeometryRule.Evaluate(
+                    1,
+                    100.0000,
+                    99.9995,
+                    100.0045,
+                    0.01);
+
+            Assert(
+                subPip.Valid &&
+                Math.Abs(subPip.StopPips - 0.05) < 1e-12 &&
+                Math.Abs(subPip.TargetPips - 0.45) < 1e-12,
+                "CI-15 intent preserves physical sub-pip distances");
+        }
 
         private static void VerifyTargetPipelineD7()
         {

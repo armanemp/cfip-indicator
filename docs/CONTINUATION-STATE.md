@@ -1408,32 +1408,25 @@ The next blocking implementation phase is **CI-14 — Canonical risk/reward and 
 
 The user's reported cross-component symptoms remain an explicit empirical acceptance concern: CI-14 must remove RR-semantic drift first; CI-15 must trace exact Entry/SL/TP through every execution path; CI-16 must use deterministic counterexamples to distinguish genuinely missing analytical evidence from downstream gating or synchronization loss; CI-17 then validates the same semantics on the target cTrader terminal.
 
-### CI-14 closeout — 2026-10-02
+### CI-15 closeout — 2026-10-02
 
-Status: **VERIFIED COMPLETE — PR #171 merged to `main` as `54e2cffb6909be1c5e5183eeacb7dd838e473151`.**
+Status: **VERIFIED COMPLETE — PR #172 merged to `main`.**
 
-Implementation HEAD: `371577118c6c5d6450ce856d232374a291afdb61`.
+Implementation HEAD: `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`.
 
 Verification:
-- Source/Architecture: **PASS** — run #2691;
-- Runtime Acceptance Contracts: **PASS** — run #2500;
-- cTrader Compile/Build: **PASS** — run #2684;
-- Planning Contracts: **PASS** — final compile/contract output reported `Planning contracts OK`;
-- accumulated Source/Architecture audit chain through CI-14: **PASS**.
+- Source/Architecture #2707: **PASS**;
+- Runtime Acceptance Contracts #2516: **PASS**;
+- cTrader Compile/Build #2700: **PASS**;
+- Planning Contracts: **PASS** — `Planning contracts OK`.
 
-Implementation closeout:
-- canonical `RiskRewardMathRule` is the single RR/protection geometry owner;
-- candidate, plan, actionability, execution, live lifecycle and panel LIVE-RR/heartbeat consumers are aligned to that owner;
-- the pip-floor/raw-risk semantic mismatch was removed;
-- CI-14 deterministic contracts and static audit are active and passing.
+CI-15 completed the final intent handoff audit across Automatic Market, Aggressive Market, Pending Stop and Pending Limit. The validated `ExecutionIntent` is now the authoritative bridge from final geometry to broker submission, and exact intent geometry is retained in submission telemetry.
 
-Boundaries:
+Safety:
 - no public parameter name/type/DefaultValue changed;
-- no strategy/RR/confidence/entry/SL/TP/risk/execution threshold was tuned;
+- no strategy/RR/confidence/Entry/SL/TP/risk/execution threshold was tuned;
 - no second decision or execution authority introduced;
-- target-terminal timing, broker lifecycle, panel latency and empirical signal-quality/profitability remain manual acceptance boundaries.
+- target-terminal and empirical broker/outcome validation remain manual.
 
-Next implementation response: **CI-15 — End-to-end execution-geometry and broker-boundary audit.**
-CI-16 remains the deterministic weak/missing-signal diagnostic phase, and CI-17 remains target-terminal validation.
-
+Next implementation response: **CI-16 — Deterministic replay, latency and counterexample suite.**
 Operator action: run `git pull --ff-only` on local `main`.

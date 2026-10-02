@@ -13,6 +13,7 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OssIndicatorSettings.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/RiskRewardMathRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionIntentGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/PlanRewardRiskQualityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetSelectionRequiredRrRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/TargetLadderOption.cs" />

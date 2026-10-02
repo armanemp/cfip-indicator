@@ -1012,35 +1012,37 @@ Safety/manual boundary:
 **Next implementation phase: CI-15 — End-to-end execution-geometry and broker-boundary audit.**
 **Prompt 8 / CR8.4 remains paused until CI-FINAL.**
 
-### CI-14 closeout — 2026-10-02
+### CI-15 closeout — 2026-10-02
 
-Status: **VERIFIED COMPLETE — PR #171 merged to `main` as `54e2cffb6909be1c5e5183eeacb7dd838e473151`.**
+Status: **VERIFIED COMPLETE — PR #172 merged to `main`.**
 
-Implementation head: `371577118c6c5d6450ce856d232374a291afdb61`.
+Implementation HEAD: `52679d319ecd03d5bbf0358cf319e0d4e96e9b2a`.
 
 Completed:
-- one canonical `RiskRewardMathRule` now owns risk, reward, nominal RR, effective RR, RR bounds, synthetic targets and directional live-progress RR;
-- candidate selection, plan materialization/integrity, actionability, market/aggressive/pending validation, live lifecycle and panel LIVE-RR/heartbeat all consume the same calculation semantics;
-- the stored-risk versus raw-risk pip-floor mismatch was eliminated;
-- deterministic BUY/SELL, spread, pip-floor, wrong-side, synthetic-target and live-progress contracts were added;
-- accumulated CR4.8/CR5.8 audit assumptions were reconciled with the canonical ownership model;
-- the CI-14 audit was repaired and verified as an executable Python gate rather than only documentation text.
+- introduced one canonical `ExecutionIntentGeometryRule` for final intent-side geometry and exact pip projection;
+- `ExecutionIntentBuilder` and `ExecutionIntentValidation` now share and re-check the same Entry/SL/TP→StopPips/TargetPips projection;
+- Automatic Market retains the validated intent through the broker handoff instead of submitting independently reconstructed raw values;
+- Aggressive Market consumes the exact validated intent at the broker boundary;
+- Pending Stop/Limit server protection and submission telemetry consume the same pending intent;
+- bounded execution telemetry now records the exact intent geometry for later broker-confirmation comparison;
+- deterministic Planning Contracts cover BUY/SELL symmetry, wrong-side rejection, invalid pip size and sub-pip geometry;
+- accumulated architecture verification also forced the Pending placement orchestration files back under the established byte-size ceiling and rejected duplicate helper ownership.
 
-Verification on the final implementation HEAD:
-- Source/Architecture: **PASS** — run #2691;
-- Runtime Acceptance Contracts: **PASS** — run #2500;
-- cTrader Compile/Build: **PASS** — run #2684;
-- Planning Contracts: **PASS** — final compile/contract workflow output reported `Planning contracts OK`;
-- accumulated Source/Architecture audits through CI-14: **PASS**.
+Verification on final implementation HEAD:
+- Source/Architecture: **PASS** — run #2707;
+- Runtime Acceptance Contracts: **PASS** — run #2516;
+- cTrader Compile/Build: **PASS** — run #2700;
+- Planning Contracts: **PASS** — final compile output reported `Planning contracts OK`;
+- accumulated Source/Architecture audits through CI-15: **PASS**.
 
 Safety/manual boundary:
-- no public parameter names/types/defaults were changed;
-- no strategy, RR, confidence, entry, SL/TP, risk or execution threshold was tuned;
+- no public parameter names/types/defaults changed;
+- no confidence, decision, Entry, SL, TP, RR, risk or execution threshold was tuned;
 - no second decision or execution authority was introduced;
-- target-terminal timing, broker lifecycle, panel rendering latency and empirical signal-quality/profitability validation remain manual acceptance work.
+- target-terminal quote timing, broker-specific fill/slippage, pending-fill timing, reconnect/reload and empirical signal quality remain manual acceptance boundaries.
 
-The user's cross-component mismatch concern remains open as the next diagnostic chain: CI-15 traces exact Entry/SL/TP/intent values through every execution/broker boundary before any strategy tuning is considered.
+The concrete seam fixed in CI-15 was validation-to-submission drift: the system could validate an `ExecutionIntent` and then submit a separately passed Entry/SL/TP projection. CI-15 removes that drift without changing the trading policy itself.
 
-Next phase: **CI-15 — End-to-end execution-geometry and broker-boundary audit.**
+Next phase: **CI-16 — Deterministic replay, latency and counterexample suite.**
 
 Operator action: run `git pull --ff-only` on local `main`.

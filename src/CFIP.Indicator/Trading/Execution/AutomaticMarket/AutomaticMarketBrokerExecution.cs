@@ -38,14 +38,35 @@ namespace cAlgo
                 { ApplyRuntimeEntryGate(); return; }
 
                 string submissionReason;
+                ExecutionIntent validatedIntent;
                 if (!TryValidateAutomaticMarketSubmission(
-                        closedM5, type, entry, target, volume,
+                        closedM5,
+                        type,
+                        entry,
+                        target,
+                        volume,
+                        out validatedIntent,
                         out submissionReason))
                 {
                     _autoExecutionBlockReason = submissionReason;
                     SetAutoTradingState("BLOCKED", submissionReason);
                     return;
                 }
+
+                if (validatedIntent == null)
+                {
+                    _autoExecutionBlockReason = "VALIDATED EXECUTION INTENT UNAVAILABLE";
+                    SetAutoTradingState("BLOCKED", _autoExecutionBlockReason);
+                    return;
+                }
+
+                // Broker submission must consume the exact validated intent,
+                // not a separately reconstructed Entry/SL/TP projection.
+                entry = validatedIntent.RequestedEntry;
+                stopPips = validatedIntent.StopPips;
+                targetPips = validatedIntent.TargetPips;
+                target = validatedIntent.Target;
+                volume = validatedIntent.Volume;
 
                 string submissionGateReason;
                 SubmissionAttemptIdentity submissionIdentity;
@@ -71,7 +92,9 @@ namespace cAlgo
                 }
 
                 double marketRangePips =
-                    CalculateAutomaticMarketRangePips(closedM5, entry);
+                    CalculateAutomaticMarketRangePips(
+                        closedM5,
+                        validatedIntent.RequestedEntry);
 
                 if (marketRangePips <= 0)
                 {
@@ -84,7 +107,11 @@ namespace cAlgo
                 StopLossBreakEven serverBreakEven;
                 bool useServerTakeProfitLadder =
                     TryBuildServerSideTakeProfitLadder(
-                        entry, target, volume, out serverTakeProfits, out serverBreakEven);
+                        validatedIntent.RequestedEntry,
+                        validatedIntent.Target,
+                        validatedIntent.Volume,
+                        out serverTakeProfits,
+                        out serverBreakEven);
 
                 TradeResult result;
                 try
@@ -107,7 +134,10 @@ namespace cAlgo
                     throw;
                 }
 
-                RecordSubmission(submissionIdentity, result);
+                RecordSubmission(
+                    submissionIdentity,
+                    result,
+                    validatedIntent);
 
                 if (result == null)
                 {

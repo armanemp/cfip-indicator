@@ -133,8 +133,11 @@ namespace cAlgo
 
         private void RecordSubmission(
             SubmissionAttemptIdentity identity,
-            TradeResult result)
+            TradeResult result,
+            ExecutionIntent intent = null)
         {
+            string intentTrace =
+                FormatExecutionIntentTrace(intent);
             bool confirmed =
                 result != null &&
                 result.IsSuccessful &&
@@ -150,7 +153,8 @@ namespace cAlgo
             RecordExecutionTelemetry(
                 identity,
                 result,
-                confirmed);
+                confirmed,
+                intent);
 
             RecordExecutionTelemetryHistory(
                 identity.Path.ToString(),
@@ -167,6 +171,8 @@ namespace cAlgo
                 " • SCENARIO=" +
                 identity.ScenarioId +
                 " • " +
+                intentTrace +
+                " • " +
                 (result == null
                     ? "BROKER RETURNED NULL"
                     : result.Error.HasValue
@@ -174,6 +180,32 @@ namespace cAlgo
                         : result.IsSuccessful
                             ? "BROKER ACCEPTED"
                             : "BROKER REJECTED"));
+        }
+
+        private string FormatExecutionIntentTrace(
+            ExecutionIntent intent)
+        {
+            if (intent == null)
+                return "INTENT=NONE";
+
+            return
+                "INTENT ENTRY=" +
+                Price(intent.RequestedEntry) +
+                " TRIGGER=" +
+                Price(intent.Trigger) +
+                " SL=" +
+                Price(intent.Stop) +
+                " TP=" +
+                Price(intent.Target) +
+                " SL_PIPS=" +
+                intent.StopPips.ToString("F4") +
+                " TP_PIPS=" +
+                intent.TargetPips.ToString("F4") +
+                " VOL=" +
+                intent.Volume.ToString("F0") +
+                " M5=" +
+                intent.CreatedM5;
+
         }
 
         private void RecordSubmissionFailure(
@@ -202,7 +234,8 @@ namespace cAlgo
         private void RecordExecutionTelemetry(
             SubmissionAttemptIdentity identity,
             TradeResult result,
-            bool confirmed)
+            bool confirmed,
+            ExecutionIntent intent)
         {
             _lastExecutionTelemetryPath =
                 identity.Path.ToString();
@@ -220,6 +253,8 @@ namespace cAlgo
                 _lastExecutionTelemetryReason =
                     "SCENARIO " +
                     identity.ScenarioId +
+                    " • " +
+                    FormatExecutionIntentTrace(intent) +
                     " • BROKER RETURNED NULL";
                 return;
             }
@@ -241,6 +276,8 @@ namespace cAlgo
             _lastExecutionTelemetryReason =
                 "SCENARIO " +
                 identity.ScenarioId +
+                " • " +
+                FormatExecutionIntentTrace(intent) +
                 " • " +
                 outcomeReason;
         }

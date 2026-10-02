@@ -11,10 +11,11 @@ namespace cAlgo
             double entry,
             double target,
             double volume,
+            out ExecutionIntent marketIntent,
             out string reason)
         {
             reason = "";
-            ExecutionIntent marketIntent;
+            marketIntent = null;
 
             if (!CanRunAutomaticEntry())
             {
