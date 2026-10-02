@@ -15,7 +15,6 @@ namespace CFIP.cBot.Shadow
     }
 
     public sealed record ShadowBrokerSnapshot(
-        bool TradingPermissionAllowed,
         int ManagedPositionCount,
         int ManagedPendingOrderCount,
         string Symbol,
