@@ -14,6 +14,8 @@ Completed:
 - live actionability validates Entry/Mode consistency and uses canonical SL/TP1/RR;
 - PlanInputPreparation consumes the canonical path;
 - PlanBuilder no longer rebuilds StructuralStop/TargetLevels/TargetSelection/TP metadata;
+- actionable OpportunityCandidate payloads now rebind to the exact canonical Entry/SL/TP/RR geometry before Provider/cBot handoff;
+- parallel opportunity orchestration and candidate construction are split into separate production owners to preserve the 20KB module boundary;
 - bounded path cache preserves live-path performance;
 - trace/panel lifecycle ordering treats `ActionableNow` as authoritative before generic TriggerReady presentation;
 - dedicated canonical trade-path audit and accumulated architecture enforcement updated.
