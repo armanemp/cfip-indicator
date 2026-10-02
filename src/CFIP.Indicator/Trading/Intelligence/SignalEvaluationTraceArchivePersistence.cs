@@ -54,9 +54,7 @@ namespace cAlgo
 
             string timeframe =
                 SanitizeArchivePart(
-                    Bars == null
-                        ? "UNKNOWN"
-                        : Bars.TimeFrame.ToString());
+                    ExecutionTimeframePolicy.PrimaryExecution);
 
             string identity =
                 symbol +
