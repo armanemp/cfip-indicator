@@ -54,6 +54,19 @@ require(
     "MTF context rows must use the unified display-direction path",
 )
 require(
+    "_closeButton" not in panel_context and
+    "_cancelButton" not in panel_context and
+    "_closeButton" not in panel_main and
+    "_cancelButton" not in panel_main,
+    "Indicator panel must not expose direct broker Close/Cancel controls",
+)
+require(
+    "PRIMARY M15/H1" in panel_context and
+    "_m15Frame.Direction" in panel_context and
+    "_h1Frame.Direction" in panel_context,
+    "primary M15/H1 alignment must use exact resolved source direction",
+)
+require(
     "QuickExecutionRowHeight" not in panel_main and
     "SyncQuickExecutionControls();" not in panel_main,
     "panel render path must not reserve obsolete quick-execution UI height",
