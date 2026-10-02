@@ -153,7 +153,7 @@ namespace cAlgo
 
                     new ReplayScenario(
                         Names[8], 1, 99.75, 100.80, false, false, false,
-                        false, true, false, 0.04, 63, 67, 1, 68, 65, 0.05,
+                        false, false, true, 0.04, 63, 67, 1, 68, 65, 0.05,
                         false, false, false, 0),
 
                     new ReplayScenario(
