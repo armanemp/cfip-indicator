@@ -16,5 +16,27 @@ namespace cAlgo
             return ScoreMarketFrame(
                 frame);
         }
+
+        private Frame AnalyzeFrameCached(
+            Frame current,
+            Bars bars,
+            int index)
+        {
+            if (bars == null ||
+                index < 0 ||
+                index >= bars.Count)
+                return null;
+
+            if (current != null &&
+                ReferenceEquals(
+                    current.Bars,
+                    bars) &&
+                current.Index == index)
+                return current;
+
+            return AnalyzeFrame(
+                bars,
+                index);
+        }
     }
 }
