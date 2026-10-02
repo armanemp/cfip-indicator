@@ -1,6 +1,8 @@
 ## CBOT-P1 — Platform-Neutral Contracts — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — verification pending.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Verification: Source / Architecture #2778 PASS; Runtime Acceptance #2587 PASS; cTrader Compile #2771 PASS.
 
 Created the canonical platform-neutral Indicator ↔ cBot contract layer under `src/CFIP.Contracts` with immutable Signal/Plan/Execution/Management/Broker/Lifecycle records and identity/revision/idempotency fields.
 
