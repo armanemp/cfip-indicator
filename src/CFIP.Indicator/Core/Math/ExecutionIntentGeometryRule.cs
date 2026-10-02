@@ -53,7 +53,7 @@ namespace cAlgo
                 !IsPositiveFiniteGeometry(target) ||
                 !IsPositiveFiniteGeometry(pipSize))
             {
-                return InvalidGeometry("INVALID GEOMETRY");
+                return CreateRejectedGeometry("INVALID GEOMETRY");
             }
 
             if (!PriceProtectionRule.ValidateStop(
@@ -67,7 +67,7 @@ namespace cAlgo
                     target,
                     0))
             {
-                return InvalidGeometry("WRONG-SIDE GEOMETRY");
+                return CreateRejectedGeometry("WRONG-SIDE GEOMETRY");
             }
 
             double stopPips =
@@ -81,7 +81,7 @@ namespace cAlgo
             if (!IsPositiveFiniteGeometry(stopPips) ||
                 !IsPositiveFiniteGeometry(targetPips))
             {
-                return InvalidGeometry("INVALID PIP GEOMETRY");
+                return CreateRejectedGeometry("INVALID PIP GEOMETRY");
             }
 
             return new ExecutionIntentGeometryResult(
@@ -94,7 +94,7 @@ namespace cAlgo
                 targetPips);
         }
 
-        private static ExecutionIntentGeometryResult InvalidGeometry(string reason)
+        private static ExecutionIntentGeometryResult CreateRejectedGeometry(string reason)
         {
             return new ExecutionIntentGeometryResult(
                 false,
