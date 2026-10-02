@@ -10,11 +10,39 @@ namespace cAlgo
         {
             if (!ShowUnifiedPanel ||
                 _panel == null ||
-                _panelRows.Count == 0 ||
-                _plan == null)
+                _panelRows.Count == 0)
                 return;
 
             int width = EffectivePanelContentWidth();
+
+            if (_plan == null)
+            {
+                if (_panelLiveRow >= 0)
+                    SetPanelRow(
+                        _panelLiveRow,
+                        "",
+                        PanelSecondaryTextColor,
+                        false,
+                        width);
+
+                if (_panelPositionRow >= 0)
+                    SetPanelRow(
+                        _panelPositionRow,
+                        "",
+                        PanelSecondaryTextColor,
+                        false,
+                        width);
+
+                if (_panelExitRow >= 0)
+                    SetPanelRow(
+                        _panelExitRow,
+                        "",
+                        PanelSecondaryTextColor,
+                        false,
+                        width);
+
+                return;
+            }
 
             double liveMarket =
                 _plan.Direction > 0
