@@ -53,10 +53,18 @@ namespace CFIP.cBot
         [Parameter(
             "Max Demo Executions Per Session",
             Group = "Safety",
-            DefaultValue = 1,
+            DefaultValue = 3,
+            MinValue = 1,
+            MaxValue = 20)]
+        public int MaxDemoExecutionsPerSession { get; set; }
+
+        [Parameter(
+            "Max Concurrent Scenarios",
+            Group = "Safety",
+            DefaultValue = 3,
             MinValue = 1,
             MaxValue = 10)]
-        public int MaxDemoExecutionsPerSession { get; set; }
+        public int MaxConcurrentScenarios { get; set; }
 
         [Parameter(
             "Max Execution Margin Usage %",
@@ -154,7 +162,7 @@ namespace CFIP.cBot
             Print(
                 "CFIP cBot START | hostTimeframe={0} | execTimeframe=M15 | state={1} | " +
                 "marketExecution={2} | pendingStopExecution={3} | pendingLimitExecution={4} | aggressiveExecution={5} | managementExecution={6} | " +
-                "maxSessionExecutions={7} | staleAfter={8}s | managementMaxAge={9}s | contractVersion={10}",
+                "maxSessionExecutions={7} | maxConcurrentScenarios={8} | staleAfter={9}s | managementMaxAge={10}s | contractVersion={11}",
                 Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 StartupState,
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
@@ -163,6 +171,7 @@ namespace CFIP.cBot
                 EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
                 EnableDemoManagementExecution ? "ARMED" : "DISARMED",
                 MaxDemoExecutionsPerSession,
+                MaxConcurrentScenarios,
                 ProviderStaleAfterSeconds,
                 ManagementCommandMaxAgeSeconds,
                 ContractVersion.Current);
@@ -215,16 +224,78 @@ namespace CFIP.cBot
                 }
             }
 
+            bool hasScenarioBatch =
+                CfipDeviceSignalTransport.TryReadScenarioBatch(
+                    this,
+                    _boundIndicatorInstanceId,
+                    out SignalScenarioBatch scenarioBatch,
+                    out string scenarioBatchReason);
+
+            if (hasScenarioBatch)
+            {
+                if (scenarioBatch == null ||
+                    scenarioBatch.ContractVersion != ContractVersion.Current ||
+                    !string.Equals(
+                        scenarioBatch.IndicatorInstanceId,
+                        _boundIndicatorInstanceId,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        scenarioBatch.Symbol,
+                        SymbolName,
+                        StringComparison.Ordinal))
+                {
+                    LogBlockedState("SCENARIO BATCH CONTRACT OR IDENTITY MISMATCH");
+                    return;
+                }
+
+                SignalEnvelope[] scenarios =
+                    scenarioBatch.Scenarios ??
+                    Array.Empty<SignalEnvelope>();
+
+                if (scenarios.Length == 0)
+                {
+                    PublishExecutionState(
+                        "NO EXECUTABLE SCENARIOS",
+                        false);
+                    return;
+                }
+
+                for (int scenarioIndex = 0;
+                     scenarioIndex < scenarios.Length;
+                     scenarioIndex++)
+                {
+                    ProcessSignalEnvelope(
+                        scenarios[scenarioIndex],
+                        nowUtc);
+                }
+
+                return;
+            }
+
             if (!CfipDeviceSignalTransport.TryRead(
                     this,
                     _boundIndicatorInstanceId,
                     out SignalEnvelope envelope,
                     out string transportReason))
             {
-                LogBlockedState(transportReason);
+                LogBlockedState(
+                    string.IsNullOrWhiteSpace(scenarioBatchReason)
+                        ? transportReason
+                        : scenarioBatchReason);
                 return;
             }
 
+            ProcessSignalEnvelope(
+                envelope,
+                nowUtc);
+
+            return;
+        }
+
+        private void ProcessSignalEnvelope(
+            SignalEnvelope envelope,
+            DateTime nowUtc)
+        {
             if (envelope.Identity == null)
             {
                 LogBlockedState("SIGNAL IDENTITY UNAVAILABLE");
@@ -326,6 +397,7 @@ namespace CFIP.cBot
                     _executionSettings,
                     _dailyLossGuard,
                     pendingAction,
+                    MaxConcurrentScenarios,
                     nowUtc,
                     out string environmentReason))
             {
@@ -400,6 +472,7 @@ namespace CFIP.cBot
                     nowUtc,
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
+                    MaxConcurrentScenarios,
                     out BrokerExecutionReport report,
                     out string executionReason))
             {
@@ -420,7 +493,6 @@ namespace CFIP.cBot
                     executionReason);
             }
         }
-
         private bool RefreshIndicatorBinding(bool force)
         {
             DateTime now = Server.TimeInUtc;
