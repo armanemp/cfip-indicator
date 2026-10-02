@@ -76,7 +76,8 @@ namespace cAlgo
                     observedUtc);
 
             DateTime endExclusive =
-                start.AddDays(90);
+                start.AddDays(
+                    CanonicalTimeRule.OutcomeArchivePeriodDays);
 
             return
                 OutcomeArchiveDirectory +
@@ -137,7 +138,8 @@ namespace cAlgo
             {
                 DateTime observed =
                     observedUtc.HasValue
-                        ? observedUtc.Value.ToUniversalTime()
+                        ? CanonicalTimeRule.EnsureUtc(
+                            observedUtc.Value)
                         : Server.TimeInUtc;
 
                 StringBuilder row =
