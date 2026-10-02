@@ -146,7 +146,7 @@ namespace cAlgo
                 canonicalPath.EntryMode != state.LiveMode ||
                 Math.Abs(
                     canonicalPath.Entry -
-                    state.ActualEntry) >
+                    execution.ActualEntry) >
                 entryConsistencyTolerance)
             {
                 failure =
@@ -157,6 +157,13 @@ namespace cAlgo
 
             state.CanonicalPath =
                 canonicalPath;
+
+            // The live quote remains the reference for zone/late/timing checks,
+            // while the executable Entry stays pinned to the materialized
+            // execution model so SL/TP/RR cannot drift away from the Plan.
+            state.ActualEntry =
+                canonicalPath.Entry;
+
             state.EffectivePreview =
                 canonicalPath.Preview;
 
