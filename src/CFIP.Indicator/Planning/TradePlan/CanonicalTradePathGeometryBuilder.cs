@@ -310,9 +310,19 @@ namespace cAlgo
                 out tp4Source,
                 out tp4Quality);
 
-            int htfTargetCount =
-                CountHtfTargets(
-                    selected);
+            int htfTargetCount = 0;
+
+            if (IsHtfSource(tp1Source))
+                htfTargetCount++;
+
+            if (IsHtfSource(tp2Source))
+                htfTargetCount++;
+
+            if (IsHtfSource(tp3Source))
+                htfTargetCount++;
+
+            if (IsHtfSource(tp4Source))
+                htfTargetCount++;
 
             path =
                 new CanonicalTradePathGeometry(
