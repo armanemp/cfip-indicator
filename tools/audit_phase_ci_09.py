@@ -167,12 +167,9 @@ check(
     "CI-09 continuity is recorded without losing historical markers",
     "CI-08 implementation record" in roadmap and
     "CI-09 implementation record" in continuation and
-    any(marker in roadmap for marker in (
-        "Current implementation phase: CI-09",
-        "Current implementation phase: CI-10",
-        "Current implementation phase: CI-11",
-        "Current implementation phase: CI-12",
-    ))
+    "## 2.0.1 — Current certification state" in roadmap and
+    ("CI-17A" in roadmap or "CI-17" in roadmap) and
+    "CI-17" in continuation
 )
 
 print("CI-09 DECISION ENGINE MATHEMATICAL INTEGRITY SUMMARY")
