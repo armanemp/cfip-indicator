@@ -1,3 +1,23 @@
+## CBOT-P6 — Account / Execution Risk + Connection Truth — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Completed:
+- direct same-chart cBot presence/state is now part of Indicator connection truth;
+- exact-instance heartbeat remains required for executable cBot capability;
+- cBot final execution environment gate checks trading permission, account safety, single-plan capacity, session, live spread/plan-risk and daily loss;
+- execution settings are read from the bound Indicator instance instead of duplicated public parameters;
+- final broker volume/margin normalization remains in the cBot broker safety owner;
+- the full pre-analysis → M15 → M5 → entry → signal/alert → contract → cBot → broker lifecycle was re-audited during the phase.
+
+Canonical rule remains:
+M15 = trade decision/execution reference; M5 = trigger/tuning/entry precision; M1 optional confirmation; H1+ context/reward; Chart TF presentation only.
+
+Phase record: docs/PHASE-CBOT-P6-ACCOUNT-RISK-CONNECTION-2026-10-02.md.
+
+
+Next: continue full-chain verification and then physical execution/UI cutover work without introducing duplicate authorities.
+
 ## CBOT-P5 continuation — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/cbot-p5-reconciliation-protection`.**
