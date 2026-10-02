@@ -1,4 +1,36 @@
 ## Permanent Development Rule — Canonical Owners / No Patches
+## CI-21 — Primary M15 Signal Visibility / M5 Entry Tuning — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch `phase/ci-21-primary-m15-signal-visibility`.**
+
+Scope:
+- preserve **M15 as the canonical execution/trade-decision timeframe**;
+- preserve **M5 as trigger, entry-tuning and microstructure-defence timeframe**;
+- validate M15/H1 primary source readiness before downstream entry-plan construction;
+- keep a qualified primary setup visible when plan geometry/preview is temporarily unavailable;
+- make presentation-only primary state explicitly non-executable;
+- prevent the generic parallel-candidate quality margin from hiding a qualified primary source setup.
+
+Root causes confirmed:
+- primary source candidates could be discarded by geometry/execution/preview/reward-path construction before presentation;
+- generic parallel quality margin could suppress a source-quality M15/H1 setup;
+- execution boundary was not explicit for a plan-less presentation state.
+
+No public confidence, RR, risk, spread or strategy threshold was lowered.
+
+Phase record: `docs/PHASE-CI-21-PRIMARY-M15-SIGNAL-VISIBILITY.md`.
+
+Verification:
+- Source / Architecture: pending;
+- Runtime Acceptance: pending;
+- cTrader Compile/Build: pending;
+- CI-21 dedicated audit: pending;
+- target-terminal M15/M5 validation and empirical signal-quality validation remain manual.
+
+Next: continue the full pre-analysis → M15 decision → M5 trigger/tuning → entry → cBot execution chain audit, with every phase checking that the visual setup state and executable state remain consistent.
+
+Operator action after merge: run `git pull --ff-only` on local `main`.
+
 ## Build Warning / Panel Height Integrity — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #198 as `396c72513fc5043bd348e5ceb5c74894da72c395`.**
