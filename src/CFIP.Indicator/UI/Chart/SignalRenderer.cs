@@ -27,7 +27,9 @@ namespace cAlgo
                 return;
 
             int visualDirection =
-                snapshot.AuthoritativeDirection;
+                snapshot.AuthoritativeDirection != 0
+                    ? snapshot.AuthoritativeDirection
+                    : snapshot.DecisionDirection;
 
             int hostBar =
                 MapM5ToChart(
@@ -92,7 +94,9 @@ namespace cAlgo
                         ArrowOffsetAtr));
 
             string arrowState =
-                "CONFIRMED";
+                ResolveSignalArrowState(
+                    snapshot,
+                    visualDirection);
 
             bool showCurrentStateArrow =
                 ShowSignalArrow;
@@ -174,7 +178,9 @@ namespace cAlgo
 
                             DrawIcon(
                                 P + "M1_TRIGGER",
-                                ChartIconType.Circle,
+                                (snapshot.DecisionDirection == 1
+                                     ? ChartIconType.UpArrow
+                                     : ChartIconType.DownArrow),
                                 triggerBar,
                                 price,
                                 SignalArrowColorFor(
@@ -209,6 +215,57 @@ namespace cAlgo
                                     Math.Min(
                                         alternate,
                                         Bars.Count - 1));
+                        }
+
+        private string ResolveTriggerArrowState(
+                            SignalVisualSnapshot snapshot)
+                        {
+                            if (snapshot == null)
+                                return "WATCH";
+
+                            int required =
+                                Math.Max(
+                                    1,
+                                    snapshot.TriggerRuntimeRequired);
+
+                            int score =
+                                Math.Max(
+                                    0,
+                                    snapshot.TriggerRuntimeScore);
+
+                            if (score >= required + 1)
+                                return "STRONG";
+
+                            if (score >= required)
+                                return "CONFIRMED";
+
+                            return "WATCH";
+                        }
+
+        private string ResolveSignalArrowState(
+                            SignalVisualSnapshot snapshot,
+                            int direction)
+                        {
+                            if (snapshot == null ||
+                                direction == 0)
+                                return "WATCH";
+
+                            if (snapshot.LivePosition ||
+                                snapshot.ActionableNow)
+                            {
+                                return
+                                    snapshot.SmartQuality >=
+                                    SmartStrongSetupQuality ||
+                                    snapshot.Confidence >=
+                                    HighConfidenceThreshold
+                                        ? "STRONG"
+                                        : "CONFIRMED";
+                            }
+
+                            if (snapshot.DecisionEntryAllowed)
+                                return "CONFIRMED";
+
+                            return "WATCH";
                         }
 
         private Color SignalArrowColorFor(

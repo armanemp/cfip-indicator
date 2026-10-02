@@ -99,7 +99,7 @@ Edit the smallest authoritative module that owns the behavior.
 | Reversal limit preparation | `Trading/Pending/Placement/ReversalLimitPreparation.cs` |
 | Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
 | Pending stop-order mutation | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
-| Pending limit-order mutation | `Trading/Execution/BrokerLimitOrderPlacement.cs` |
+| Pending limit-order mutation | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
 | Pending cancellation mutation | `Trading/Execution/BrokerPendingOrderCancellation.cs` |
 | Stop-loss mutation | `Trading/Execution/BrokerStopLossMutation.cs` |
 | Take-profit mutation | `Trading/Execution/BrokerTakeProfitMutation.cs` |

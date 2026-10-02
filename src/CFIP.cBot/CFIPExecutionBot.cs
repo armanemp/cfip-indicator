@@ -32,6 +32,12 @@ namespace CFIP.cBot
         public bool EnableDemoPendingStopExecution { get; set; }
 
         [Parameter(
+            "Enable Demo Pending Limit Execution",
+            Group = "Execution",
+            DefaultValue = false)]
+        public bool EnableDemoPendingLimitExecution { get; set; }
+
+        [Parameter(
             "Enable Demo Aggressive Execution",
             Group = "Execution",
             DefaultValue = false)]
@@ -110,12 +116,13 @@ namespace CFIP.cBot
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
             Print(
                 "CFIP cBot START | hostTimeframe={0} | execTimeframe=M15 | state={1} | " +
-                "marketExecution={2} | pendingStopExecution={3} | aggressiveExecution={4} | " +
-                "maxSessionExecutions={5} | staleAfter={6}s | contractVersion={7}",
+                "marketExecution={2} | pendingStopExecution={3} | pendingLimitExecution={4} | aggressiveExecution={5} | " +
+                "maxSessionExecutions={6} | staleAfter={7}s | contractVersion={8}",
                 Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 StartupState,
                 EnableDemoMarketExecution ? "ARMED" : "DISARMED",
                 EnableDemoPendingStopExecution ? "ARMED" : "DISARMED",
+                EnableDemoPendingLimitExecution ? "ARMED" : "DISARMED",
                 EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
                 MaxDemoExecutionsPerSession,
                 ProviderStaleAfterSeconds,
@@ -197,6 +204,7 @@ namespace CFIP.cBot
             bool executionEnabled =
                 EnableDemoMarketExecution ||
                 EnableDemoPendingStopExecution ||
+                EnableDemoPendingLimitExecution ||
                 EnableDemoAggressiveExecution;
 
             bool actionEnabled =
@@ -205,7 +213,9 @@ namespace CFIP.cBot
                     ? EnableDemoAggressiveExecution
                     : envelope.Intent.Action == ExecutionAction.PendingStop
                         ? EnableDemoPendingStopExecution
-                        : envelope.Intent.Action == ExecutionAction.Market &&
+                        : envelope.Intent.Action == ExecutionAction.PendingLimit
+                            ? EnableDemoPendingLimitExecution
+                            : envelope.Intent.Action == ExecutionAction.Market &&
                           EnableDemoMarketExecution);
 
             if (!executionEnabled ||
@@ -221,9 +231,10 @@ namespace CFIP.cBot
                 return;
             }
 
-            if (envelope.Intent.Action == ExecutionAction.PendingStop)
+            if (envelope.Intent.Action == ExecutionAction.PendingStop ||
+                envelope.Intent.Action == ExecutionAction.PendingLimit)
             {
-                if (_pending.TryExecuteStop(
+                if (_pending.TryExecute(
                         this,
                         envelope,
                         nowUtc,
@@ -238,7 +249,7 @@ namespace CFIP.cBot
                 if (pendingReport != null)
                 {
                     Print(
-                        "CFIP DEMO PENDING STOP | status={0} | action={1} | " +
+                        "CFIP DEMO PENDING | status={0} | action={1} | " +
                         "revision={2} | pending={3} | reason={4}",
                         pendingReport.Status,
                         pendingReport.Action,

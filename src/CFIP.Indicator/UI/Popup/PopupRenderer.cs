@@ -194,10 +194,12 @@ namespace cAlgo
                                 critical;
 
                             _popupUntilUtc =
-                                TimeInUtc.AddSeconds(
-                                    Math.Max(
-                                        1,
-                                        PopupDurationSeconds));
+                                KeepPopupUntilNextAlert
+                                    ? DateTime.MaxValue
+                                    : TimeInUtc.AddSeconds(
+                                        Math.Max(
+                                            1,
+                                            PopupDurationSeconds));
                         }
     }
 }

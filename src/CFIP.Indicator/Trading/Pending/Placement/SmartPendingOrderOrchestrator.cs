@@ -248,23 +248,14 @@ namespace cAlgo
                 return;
             }
 
-            if (!AutomaticOrdersEnabled)
-            {
-                _autoOrdersBlockReason =
-                    "PENDING LIMIT • WAITING FOR CBOT P4D";
-                return;
-            }
-
             if (arbiter.Choice ==
                 PendingArbiterChoice.ReversalLimit)
             {
-                CheckReversalProtection();
-
-                if (PlaceReversalLimit(
+                if (PrepareReversalLimitForCbot(
                         closedM5))
                 {
                     _autoOrdersBlockReason =
-                        "ORDER PLACED";
+                        "PENDING LIMIT • READY FOR CBOT";
                 }
 
                 return;

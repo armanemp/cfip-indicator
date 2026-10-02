@@ -35,7 +35,7 @@ required = {
     "orchestrator prevents silent fallback": (
         "if (!arbiter.HasChoice)" in orchestrator and
         "PENDING STOP • READY FOR CBOT" in orchestrator and
-        "PENDING LIMIT • WAITING FOR CBOT P4D" in orchestrator and
+        "PENDING LIMIT • READY FOR CBOT" in orchestrator and
         "PENDING EXECUTION BLOCKED" in orchestrator and
         "return;" in orchestrator
     ),

@@ -1303,8 +1303,8 @@ for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
 
 # Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
 
-# Pending Stop is cBot-owned after CBOT-P4C. Indicator must only prepare
-# immutable intent; Reversal Limit remains on the staged Indicator path until P4D.
+# Pending Stop and Pending Limit are cBot-owned after CBOT-P4C/P4D.
+# Indicator prepares immutable intent and lifecycle snapshots only.
 continuation_stop_code = (
     ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
 ).read_text(encoding="utf-8")
@@ -1315,24 +1315,24 @@ if "PlaceStopOrder(" in continuation_stop_code:
 
 reversal_limit_path = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs"
 reversal_limit_code = reversal_limit_path.read_text(encoding="utf-8")
-if "ReportConfirmedPendingOrderPlacement(" not in reversal_limit_code:
-    raise SystemExit("Pending Limit reporting boundary missing")
-
-PENDING_REPORTER = ROOT / "Trading" / "Pending" / "Placement" / "PendingOrderConfirmationReporter.cs"
-PENDING_REPORTER_CODE = PENDING_REPORTER.read_text(encoding="utf-8")
 for token in (
-    "order.TargetPrice",
-    "order.StopLoss",
-    "order.TakeProfit",
+    "PrepareReversalLimitForCbot(",
+    "CapturePendingOrderPlanSnapshot(",
 ):
-    if token not in PENDING_REPORTER_CODE:
-        raise SystemExit(f"Broker-confirmed pending reporting field missing: {token}")
+    if token not in reversal_limit_code:
+        raise SystemExit(f"Pending Limit intent boundary missing: {token}")
+if "PlaceLimitOrder(" in reversal_limit_code:
+    raise SystemExit("Pending Limit broker mutation leaked back into Indicator")
 
-entry_code = reversal_limit_code
-if "CanRunAutomaticEntry()" not in entry_code:
-    raise SystemExit("Runtime entry gate missing: ReversalLimitPlacement.cs")
-if "ApplyRuntimeEntryGate()" not in entry_code:
-    raise SystemExit("Runtime entry block action missing: ReversalLimitPlacement.cs")
+PENDING_CBOT = ROOT.parent / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
+PENDING_CBOT_CODE = PENDING_CBOT.read_text(encoding="utf-8")
+for token in (
+    "ExecutionAction.PendingLimit",
+    "PlaceLimitOrder(",
+    "BrokerAction.SubmitPendingLimit",
+):
+    if token not in PENDING_CBOT_CODE:
+        raise SystemExit(f"cBot Pending Limit mutation contract missing: {token}")
 
 # Phase 6.1 closed-bar decision contract.
 CLOSED_BAR_RULE = ROOT / "Core" / "Math" / "ClosedBarReferenceRule.cs"
@@ -2003,9 +2003,8 @@ CROSS_PATH_CONTRACTS = {
     ),
     "ReversalLimitPlacement.cs": (
         "TryPrepareReversalLimit(",
-        "ValidatePendingSubmission(",
-        "TryPlaceLimitOrder(",
-        "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+        "PrepareReversalLimitForCbot(",
+        "CapturePendingOrderPlanSnapshot(",
     ),
 }
 for filename, tokens in CROSS_PATH_CONTRACTS.items():
@@ -2063,9 +2062,8 @@ if PENDING_LIMIT.stat().st_size > 4096:
     raise SystemExit("ReversalLimitPlacement.cs must remain a placement orchestration boundary")
 for token in (
     "TryPrepareReversalLimit(",
-    "ValidatePendingSubmission(",
-    "TryPlaceLimitOrder(",
-    "BrokerConfirmationPolicy.CanAdoptPendingOrder(",
+    "PrepareReversalLimitForCbot(",
+    "CapturePendingOrderPlanSnapshot(",
 ):
     if token not in PENDING_LIMIT_CODE:
         raise SystemExit(f"Reversal limit ownership call missing: {token}")
@@ -2077,6 +2075,13 @@ if (
     PENDING_LIMIT_PREP.read_text(encoding="utf-8")
 ):
     raise SystemExit("Reversal limit preparation owner missing")
+
+PENDING_CBOT = ROOT.parent / "CFIP.cBot" / "Execution" / "DemoPendingOrderExecutionCoordinator.cs"
+if (
+    not PENDING_CBOT.exists() or
+    "PlaceLimitOrder(" not in PENDING_CBOT.read_text(encoding="utf-8")
+):
+    raise SystemExit("cBot Pending Limit broker mutation owner missing")
 
 PENDING_SUBMISSION = ROOT / "Trading" / "Pending" / "Placement" / "PendingSubmissionValidator.cs"
 if not PENDING_SUBMISSION.exists():
@@ -2519,14 +2524,12 @@ for p in sorted(UI_ROOT.rglob("*.cs")):
 PRODUCTION_ROOT = ROOT
 MUTATION_ALLOWED_ROOT = ROOT / "Trading" / "Execution"
 MUTATION_ALLOWED_FILES = {
-    "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
     "BrokerTakeProfitMutation.cs",
     "BrokerPositionCloseMutation.cs",
 }
 REQUIRED_BROKER_MUTATION_FILES = {
-    "BrokerLimitOrderPlacement.cs",
     "BrokerPendingOrderCancellation.cs",
     "BrokerStopLossMutation.cs",
     "BrokerTakeProfitMutation.cs",

@@ -1,3 +1,20 @@
+## CBOT-P4D — Pending Limit Authority + Signal/Popup Continuity — 2026-10-02
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Scope:
+- move Pending Limit broker mutation completely to the existing cBot pending execution owner;
+- remove the obsolete Indicator Pending Limit broker owner;
+- keep Indicator responsible for analysis, scenario, intent and absolute lifecycle snapshot only;
+- expose a dedicated cBot Pending Limit arm while preserving demo-only/fail-closed execution;
+- restore arrow-only direction visibility for early/watch/confirmed/strong states using three directional intensity colors;
+- keep popup at BottomRight, persistent until next alert/manual close, and restrict popup delivery to important canonical alert families;
+- preserve M15 internal execution independence from host Chart TF.
+
+No new strategy engine, duplicate signal engine, duplicate broker owner, or alternate label formatter is introduced.
+
+Next staged execution migration after verification: CBOT-P4E — Pending cancellation authority extraction.
+
 ## CBOT-P4C — Pending Stop Authority + Host-Timeframe Independence — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to main via PR #195 as 7b8648091bde26753b1e0fcff3d75984a1f1b9eb.**
