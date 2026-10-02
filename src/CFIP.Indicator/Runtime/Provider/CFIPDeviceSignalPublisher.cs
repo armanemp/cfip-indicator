@@ -21,7 +21,7 @@ namespace cAlgo
             try
             {
                 string key =
-                    SignalBusKey.ForIndicatorInstance(InstanceId);
+                    SignalBusKey.ForInstance(InstanceId);
 
                 string payload =
                     SignalEnvelopeCodec.Serialize(envelope);
