@@ -46,13 +46,13 @@ namespace cAlgo
         [Parameter("Sound File Path", Group = "12 · ALERTS — ADVANCED", DefaultValue = "")]
         public string SoundFilePath { get; set; }
 
-        [Parameter("Popup Position", Group = "12 · ALERTS — ADVANCED", DefaultValue = PanelCorner.BottomLeft)]
+        [Parameter("Popup Position", Group = "12 · ALERTS — ADVANCED", DefaultValue = PanelCorner.BottomRight)]
         public PanelCorner PopupPosition { get; set; }
 
         [Parameter("Popup Width", Group = "12 · ALERTS — ADVANCED", DefaultValue = 400, MinValue = 220, MaxValue = 700)]
         public int PopupWidth { get; set; }
 
-        [Parameter("Keep Popup Until Next Alert", Group = "12 · ALERTS — ADVANCED", DefaultValue = false)]
+        [Parameter("Keep Popup Until Next Alert", Group = "12 · ALERTS — ADVANCED", DefaultValue = true)]
         public bool KeepPopupUntilNextAlert { get; set; }
 
         [Parameter("Show Popup Close Button", Group = "12 · ALERTS — ADVANCED", DefaultValue = true)]
