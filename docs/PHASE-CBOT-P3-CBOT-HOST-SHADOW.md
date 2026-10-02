@@ -57,7 +57,7 @@ No per-tick persistence or unbounded memory was introduced.
 
 The cBot reads only:
 
-- trading permission;
+- managed position/pending capacity;
 - managed positions with `CFIP-SMART`;
 - managed pending orders with `CFIP-SMART-PENDING`;
 - Bid / Ask;
