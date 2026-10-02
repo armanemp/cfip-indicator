@@ -38,14 +38,14 @@ namespace cAlgo
                 return RejectPlanRewardStructure("TP1 DIRECTION INVALID");
 
             double minimumRR =
-                Math.Max(
-                    Tp1MinimumRR,
-                    MinimumRequiredRR());
+                RiskRewardPolicyRule.NormalizeMinimum(
+                    MinimumRequiredRR(),
+                    Tp1MinimumRR);
 
             double maximumRR =
-                Math.Max(
-                    minimumRR,
-                    MaximumRewardRR);
+                RiskRewardPolicyRule.NormalizeMaximum(
+                    MaximumRewardRR,
+                    minimumRR);
 
             if (!IsFinitePositive(minimumRR) ||
                 !IsFinitePositive(maximumRR))
