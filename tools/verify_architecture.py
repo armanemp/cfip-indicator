@@ -1657,7 +1657,14 @@ for execution_path in [
 
 AUTO_STATE = ROOT / "Trading" / "Execution" / "State" / "AutoTradingStateStore.cs"
 AUTO_STATE_CODE = AUTO_STATE.read_text(encoding="utf-8")
-if '"RECOVERY"' not in AUTO_STATE_CODE or "PanelWarningColor" not in AUTO_STATE_CODE:
+PANEL_EXECUTION_STATE_CODE = (
+    ROOT / "UI" / "Panel" / "PanelExecutionState.cs"
+).read_text(encoding="utf-8")
+if (
+    "RecoveryRequired" not in PANEL_EXECUTION_STATE_CODE or
+    '"RECOVERY REQUIRED • "' not in PANEL_EXECUTION_STATE_CODE or
+    "ExecutionPanelStateKind.RecoveryRequired" not in PANEL_EXECUTION_STATE_CODE
+):
     raise SystemExit("Recovery state must remain visibly distinct in the auto-trading panel")
 
 required_method_files = {
