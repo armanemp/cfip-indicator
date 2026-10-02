@@ -141,7 +141,7 @@ namespace cAlgo
                 !livePlan &&
                 _decision != null &&
                 _decision.EntryAllowed &&
-                _decision.ActionableNow &&
+                _decision.TriggerReady &&
                 _decision.Direction != 0;
 
             bool preTradePlanVisible =
@@ -384,6 +384,10 @@ namespace cAlgo
                     : _decision.TopDownStage ?? "HTF SEARCH";
 
             snapshot.DecisionReady = decisionReady;
+            snapshot.DecisionEntryAllowed =
+                _decision != null &&
+                _decision.EntryAllowed &&
+                _decision.Direction != 0;
             snapshot.ActionableNow =
                 _decision != null &&
                 _decision.ActionableNow;
