@@ -31,6 +31,7 @@ namespace CFIP.cBot.Shadow.Tests
             MarketProfileValidation();
             MissingExecutionLabel();
             InvalidMarketLadder();
+            ManagedLabelParity();
             Console.WriteLine("CBOT-P4A market handoff behavioral contracts PASS");
         }
 
@@ -494,6 +495,39 @@ namespace CFIP.cBot.Shadow.Tests
                     out string reason) &&
                 reason == "INVALID MARKET TP LADDER",
                 "non-progressive ladder must fail closed");
+        }
+
+        private static void ManagedLabelParity()
+        {
+            Assert(
+                ManagedExecutionLabelRule.Matches(
+                    "CFIP-SMART",
+                    "CFIP-SMART"),
+                "base managed label must match");
+
+            Assert(
+                ManagedExecutionLabelRule.Matches(
+                    "CFIP-SMART|CFIP-I:123",
+                    "CFIP-SMART"),
+                "legacy instance-scoped managed label must match");
+
+            Assert(
+                ManagedExecutionLabelRule.Matches(
+                    "CFIP-SMART-PENDING",
+                    "CFIP-SMART"),
+                "pending managed label must match base ownership");
+
+            Assert(
+                !ManagedExecutionLabelRule.Matches(
+                    "OTHER-SMART",
+                    "CFIP-SMART"),
+                "foreign label must not match");
+
+            Assert(
+                !ManagedExecutionLabelRule.Matches(
+                    "CFIP-SMART-X",
+                    "CFIP-SMART-X2"),
+                "near-match labels must not cross ownership");
         }
 
         private static void Assert(bool ok, string message)
