@@ -125,6 +125,10 @@ namespace CFIP.cBot
         private CbotIndicatorExecutionSettings _executionSettings;
 
         private CbotBrokerReconciliationResult _reconciliation;
+        private readonly Dictionary<string, SignalEnvelope> _scenarioEnvelopes =
+            new Dictionary<string, SignalEnvelope>(StringComparer.Ordinal);
+        private readonly Dictionary<string, CbotBrokerReconciliationResult> _scenarioReconciliations =
+            new Dictionary<string, CbotBrokerReconciliationResult>(StringComparer.Ordinal);
         private DateTime _nextBrokerReconciliationUtc = DateTime.MinValue;
 
         private ShadowHostState _state =
@@ -269,6 +273,7 @@ namespace CFIP.cBot
                         nowUtc);
                 }
 
+                SweepScenarioProtectionStates(nowUtc);
                 return;
             }
 
@@ -289,6 +294,7 @@ namespace CFIP.cBot
                 envelope,
                 nowUtc);
 
+            SweepScenarioProtectionStates(nowUtc);
             return;
         }
 
@@ -311,13 +317,16 @@ namespace CFIP.cBot
                 return;
             }
 
+            TrackScenarioEnvelope(envelope);
+
             _lastSignalEnvelope = envelope;
             _activeManagedExecutionLabel =
                 envelope.Intent == null
                     ? ""
                     : envelope.Intent.ExecutionLabel ?? "";
 
-            ReconcileBrokerState(false);
+            _reconciliation =
+                ReconcileScenarioState(envelope, nowUtc);
 
             PublishExecutionState("SIGNAL OBSERVED", false);
 
@@ -478,6 +487,130 @@ namespace CFIP.cBot
                     executionReason);
             }
         }
+        private void TrackScenarioEnvelope(
+            SignalEnvelope envelope)
+        {
+            if (envelope == null ||
+                envelope.Identity == null ||
+                string.IsNullOrWhiteSpace(
+                    envelope.Identity.ScenarioId) ||
+                envelope.Intent == null ||
+                string.IsNullOrWhiteSpace(
+                    envelope.Intent.ExecutionLabel))
+                return;
+
+            string key =
+                envelope.Identity.ScenarioId.Trim();
+
+            _scenarioEnvelopes[key] =
+                envelope;
+
+            if (_scenarioEnvelopes.Count > 32)
+            {
+                string removeKey = null;
+
+                foreach (KeyValuePair<string, SignalEnvelope> item in
+                         _scenarioEnvelopes)
+                {
+                    removeKey = item.Key;
+                    break;
+                }
+
+                if (!string.IsNullOrWhiteSpace(removeKey))
+                {
+                    _scenarioEnvelopes.Remove(removeKey);
+                    _scenarioReconciliations.Remove(removeKey);
+                }
+            }
+        }
+
+        private CbotBrokerReconciliationResult ReconcileScenarioState(
+            SignalEnvelope envelope,
+            DateTime nowUtc)
+        {
+            if (envelope == null ||
+                envelope.Identity == null ||
+                envelope.Intent == null)
+            {
+                return null;
+            }
+
+            string label =
+                envelope.Intent.ExecutionLabel ?? "";
+
+            CbotBrokerReconciliationResult result =
+                _brokerReconciliation.Evaluate(
+                    this,
+                    _boundIndicatorInstanceId,
+                    label);
+
+            string scenarioId =
+                envelope.Identity.ScenarioId ?? "";
+
+            if (!string.IsNullOrWhiteSpace(scenarioId))
+            {
+                _scenarioReconciliations[scenarioId] =
+                    result;
+            }
+
+            return result;
+        }
+
+        private void SweepScenarioProtectionStates(
+            DateTime nowUtc)
+        {
+            if (_scenarioEnvelopes.Count == 0)
+                return;
+
+            foreach (KeyValuePair<string, SignalEnvelope> item in
+                     _scenarioEnvelopes)
+            {
+                SignalEnvelope envelope = item.Value;
+
+                if (envelope == null ||
+                    envelope.Identity == null ||
+                    envelope.Intent == null ||
+                    string.IsNullOrWhiteSpace(
+                        envelope.Intent.ExecutionLabel))
+                    continue;
+
+                CbotBrokerReconciliationResult result =
+                    _brokerReconciliation.Evaluate(
+                        this,
+                        _boundIndicatorInstanceId,
+                        envelope.Intent.ExecutionLabel);
+
+                _scenarioReconciliations[item.Key] =
+                    result;
+
+                if (result == null ||
+                    !result.RecoveryRequired ||
+                    result.ManagedPositions != 1 ||
+                    !EnableDemoManagementExecution)
+                    continue;
+
+                _activeManagedExecutionLabel =
+                    envelope.Intent.ExecutionLabel;
+
+                _lastSignalEnvelope =
+                    envelope;
+
+                _reconciliation =
+                    result;
+
+                if (TryRecoverProtection(
+                        envelope,
+                        nowUtc))
+                {
+                    _scenarioReconciliations[item.Key] =
+                        _brokerReconciliation.Evaluate(
+                            this,
+                            _boundIndicatorInstanceId,
+                            envelope.Intent.ExecutionLabel);
+                }
+            }
+        }
+
         private bool RefreshIndicatorBinding(bool force)
         {
             DateTime now = Server.TimeInUtc;
@@ -496,6 +629,8 @@ namespace CFIP.cBot
                 _boundIndicatorInstanceId = "";
                 _activeManagedExecutionLabel = "";
                 _executionSettings = null;
+                _scenarioEnvelopes.Clear();
+                _scenarioReconciliations.Clear();
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
                 return false;
