@@ -66,10 +66,11 @@ require(
 
 require(
     "MemoryAccountScopeToken()" in daily_persistence and
-    "LegacyDailyLossStorageKey()" in daily_persistence and
-    "ReadDailyLossState(" in daily_persistence and
-    "CanonicalTimeRule.IsSameUtcDay(" in daily_persistence,
-    "M4: daily-loss persistence must be account-scoped and migration-safe",
+    "DailyLossStorageKey()" in daily_persistence and
+    "CanonicalTimeRule.IsSameUtcDay(" in daily_persistence and
+    "LegacyDailyLossStorageKey" not in daily_persistence and
+    "ReadDailyLossState" not in daily_persistence,
+    "M4: daily-loss persistence must be account-scoped without unsafe legacy adoption",
 )
 
 require(
