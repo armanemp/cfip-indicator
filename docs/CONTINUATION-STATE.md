@@ -1589,3 +1589,24 @@ Known boundary:
 Operator action after merge: `git pull --ff-only`.
 
 Phase record: `docs/PHASE-MTF-P1-PRIMARY-M15-H1-PANEL.md`.
+
+
+### MTF-P2 — Primary M15/H1 Location Evidence: OB/FVG Provenance — 2026-10-02
+
+Status: **IMPLEMENTED — repository verification pending on branch `phase/mtf-primary-location-obfvg-2026-10-02`.**
+
+Completed:
+- primary M15/H1 candidates retain source-frame FVG quality;
+- primary M15/H1 candidates retain source-frame Order Block quality;
+- source OB+FVG confluence is preserved explicitly;
+- canonical LocationEvidenceRule remains the only location score owner;
+- primary source location evidence participates in deterministic display priority;
+- panel diagnostics show source OB/FVG evidence together with M5/M1 tuning.
+
+No public parameter, trading threshold, RR, Entry, SL, TP, confidence, risk or broker mutation authority changed.
+
+Manual boundary: target-terminal source-frame timing, simultaneous primary presentation, panel readability and empirical signal outcomes.
+
+Operator action after merge: `git pull --ff-only`.
+
+Phase record: `docs/PHASE-MTF-P2-PRIMARY-LOCATION-OBFVG.md`.
