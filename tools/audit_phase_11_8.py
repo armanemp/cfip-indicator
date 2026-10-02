@@ -127,9 +127,23 @@ if "envelope.Intent.ExecutionLabel" not in cbot_host:
         "cBot host must use the transported execution label for broker-state ownership"
     )
 
-if "PendingOrderLabel()" not in pending_limit:
+if (
+    "PlaceLimitOrder(" not in pending_stop_cbot or
+    "ExecutionAction.PendingLimit" not in pending_stop_cbot or
+    "BrokerAction.SubmitPendingLimit" not in pending_stop_cbot
+):
     errors.append(
-        "pending limit submission remains instance-scoped through the canonical Indicator owner"
+        "pending limit cBot broker owner is missing"
+    )
+
+if "PlaceLimitOrder(" in pending_limit:
+    errors.append(
+        "pending limit Indicator broker mutation must remain removed"
+    )
+
+if "PrepareReversalLimitForCbot(" not in pending_limit:
+    errors.append(
+        "pending limit Indicator must expose the canonical intent-only handoff"
     )
 
 if "ManagedExecutionLabel()" not in labels or "InstanceId" not in labels:
