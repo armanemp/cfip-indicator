@@ -2746,3 +2746,14 @@ Preserved: M15 canonical execution timeframe; M5 trigger/tuning/precision; M1 op
 Phase record: docs/PHASE-OPPORTUNITY-DISCOVERY-CBOT-TRUTH-2026-10-02.md
 
 Next: trace-driven candidate-family mining using SignalEvaluationTrace + outcome history to identify measured rejection/missed-opportunity bottlenecks.
+
+
+### Additional 2026-10-02 hardening — position coverage / cBot presence
+
+Follow-up within the opportunity-discovery phase:
+- forward target FVGs are now discoverable without current-bar retest, using quality-aware selection relative to entry;
+- M5/HTF structural-stop FVGs are now discoverable without current-bar retest, using quality-aware selection relative to entry;
+- cBot publishes an independent symbol presence heartbeat before Indicator binding, while exact instance heartbeat remains the execution truth;
+- strong-HTF counter-M5 scenario discovery is no longer structurally unreachable; stricter counter-lane quality/RR requirements remain.
+
+No public quality threshold was lowered.
