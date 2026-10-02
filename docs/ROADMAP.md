@@ -7,6 +7,7 @@ Increase the number of genuinely good setups captured by the Indicator without w
 
 Implemented:
 - replaced fixed-priority execution-zone selection with canonical scored selection;
+- execution-only FVG lookup now compares valid FVG candidates by quality, distance and freshness instead of always selecting the nearest candidate;
 - compare M5 FVG, M5 OB, M15 FVG and M15 OB candidates instead of stopping at the first available source;
 - score actual zone quality together with distance-to-market and zone age;
 - explicitly reward same-timeframe OB+FVG overlap;
