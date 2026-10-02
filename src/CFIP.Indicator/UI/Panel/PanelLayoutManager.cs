@@ -16,20 +16,16 @@ namespace cAlgo
     {
         private int EffectivePanelWidth()
         {
-            return Math.Max(
-                220,
-                Math.Min(
-                    700,
-                    PanelWidth));
+            return PanelDimensionRule.EffectiveWidth(
+                PanelWidth);
         }
 
         private int EffectivePanelContentWidth()
         {
-            return Math.Max(
-                200,
-                EffectivePanelWidth() -
-                2 * Math.Max(0, PanelPadding) -
-                2 * Math.Max(0, PanelBorderThickness));
+            return PanelDimensionRule.EffectiveContentWidth(
+                PanelWidth,
+                PanelPadding,
+                PanelBorderThickness);
         }
 
         private void SetPanelRestoreAlignment()
