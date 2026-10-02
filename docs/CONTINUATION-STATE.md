@@ -1593,7 +1593,7 @@ Phase record: `docs/PHASE-MTF-P1-PRIMARY-M15-H1-PANEL.md`.
 
 ### MTF-P2 — Primary M15/H1 Location Evidence: OB/FVG Provenance — 2026-10-02
 
-Status: **IMPLEMENTED — repository verification pending on branch `phase/mtf-primary-location-obfvg-2026-10-02`.**
+Status: **VERIFIED COMPLETE — implementation HEAD `c811967d8462229e8efc5f14af1f48cc3e3e72b2`.**
 
 Completed:
 - primary M15/H1 candidates retain source-frame FVG quality;
