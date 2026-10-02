@@ -53,6 +53,10 @@ namespace cAlgo
                     providerScenario,
                     ProviderScenarioIdentityRule.CanonicalM5);
 
+            string scenarioBatchFingerprint =
+                BuildScenarioBatchFingerprint(
+                    closedM5);
+
             DateTime createdUtc =
                 _m5Bars.OpenTimes[closedM5];
 
@@ -121,6 +125,7 @@ namespace cAlgo
                         ? "NO-PLAN"
                         : planSnapshot.PlanRisk
                             .ToString("R", CultureInfo.InvariantCulture),
+                    scenarioBatchFingerprint,
                     _lifecycleState.ToString(),
                     _autoTradingState ?? "",
                     _autoTradingReason ?? "");
@@ -181,6 +186,12 @@ namespace cAlgo
 
             PublishDeviceSignalEnvelope(
                 _cfipProviderEnvelope);
+
+            PublishDeviceSignalScenarioBatch(
+                BuildScenarioBatch(
+                    _cfipProviderEnvelope,
+                    closedM5,
+                    observedUtc));
 
             PublishProviderHeartbeat(
                 observedUtc);
