@@ -33,9 +33,15 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (envelope.Intent.Action != ExecutionAction.Market)
+            bool marketAction =
+                envelope.Intent.Action == ExecutionAction.Market;
+
+            bool aggressiveAction =
+                envelope.Intent.Action == ExecutionAction.Aggressive;
+
+            if (!marketAction && !aggressiveAction)
             {
-                reason = "DEMO BRIDGE SUPPORTS MARKET ACTION ONLY";
+                reason = "DEMO BRIDGE SUPPORTS MARKET AND AGGRESSIVE ACTIONS ONLY";
                 return false;
             }
 
@@ -204,6 +210,7 @@ namespace CFIP.cBot.Execution
             try
             {
                 bool useMarketRange =
+                    marketAction &&
                     marketRangePips > 0;
 
                 result =
@@ -226,7 +233,9 @@ namespace CFIP.cBot.Execution
                             executionLabel,
                             stopPips,
                             targetPips,
-                            "CFIP DEMO",
+                            aggressiveAction
+                                ? "CFIP DEMO AGGRESSIVE"
+                                : "CFIP DEMO",
                             false);
             }
             catch (Exception ex)
@@ -315,10 +324,12 @@ namespace CFIP.cBot.Execution
             return new BrokerExecutionReport(
                 envelope.Identity,
                 envelope.Intent != null &&
-                envelope.Intent.MarketProfile != null &&
-                envelope.Intent.MarketProfile.MarketRangePips > 0
-                    ? BrokerAction.SubmitMarketRange
-                    : BrokerAction.SubmitMarket,
+                envelope.Intent.Action == ExecutionAction.Aggressive
+                    ? BrokerAction.SubmitAggressive
+                    : envelope.Intent.MarketProfile != null &&
+                      envelope.Intent.MarketProfile.MarketRangePips > 0
+                        ? BrokerAction.SubmitMarketRange
+                        : BrokerAction.SubmitMarket,
                 status,
                 nowUtc,
                 nowUtc,
