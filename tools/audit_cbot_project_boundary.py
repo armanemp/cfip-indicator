@@ -74,9 +74,11 @@ for path, token in mutation_hits:
 bot = (CBOT / "CFIPExecutionBot.cs").read_text(encoding="utf-8")
 required_bot_tokens = (
     '"CFIP Smart Execution Bot"',
-    'DefaultTimeFrame = "M5"',
+    'DefaultTimeFrame = "M15"',
     "EnableDemoMarketExecution",
     "EnableDemoAggressiveExecution",
+    "MaxExecutionMarginUsagePercent",
+    "ExecutionMarginBufferPercent",
     "Account.IsLive",
     "CfipIndicatorChartBinding.TryFind(",
     "CfipDeviceSignalTransport.TryRead(",
