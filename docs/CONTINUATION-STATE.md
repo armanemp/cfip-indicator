@@ -1,3 +1,17 @@
+## CBOT-P1 — Platform-Neutral Contracts — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Canonical contract boundary is now present in `src/CFIP.Contracts`.
+
+Required contract families: ContractIdentity, PlanSnapshot, SignalEnvelope, ExecutionIntent, ManagementCommand, BrokerExecutionReport, LifecycleEvent, ContractVersion.
+
+The P1 schema audit is `tools/audit_cbot_contract_schema.py`. No cTrader dependency or mutable setter is permitted in Contracts.
+
+Existing Indicator internal models are intentionally not copied into cBot. P2 will expose the canonical Contracts from the Indicator.
+
+Next: **CBOT-P2 — Read-Only Indicator Provider**.
+
 ## CBOT-P0 — Immediate parallel separation — 2026-10-02
 
 Status: **VERIFIED COMPLETE — 2026-10-02.**
