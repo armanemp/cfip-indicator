@@ -86,9 +86,10 @@ require(
     "canonical cBot connection presentation owner is missing",
 )
 for token in (
-    "CBOT NOT CONNECTED",
+    "CBOT NOT ATTACHED",
     "CBOT RECONNECTING",
     "CBOT CONNECTED",
+    "CBOT CONNECTING",
 ):
     require(token in reader, "missing canonical connection state: " + token)
 
