@@ -33,7 +33,7 @@ Daily-loss accounting now uses one UTC-day identity for:
 - persisted state;
 - lock/alert identity.
 
-The persistent key is now account-scope aware using broker/account-type/live-vs-demo identity. A read of the former account-number-only key remains available solely for one-time safe migration, after which canonical storage is used.
+The persistent key is now account-scope aware using broker/account-type/live-vs-demo identity. The former account-number-only key is intentionally not auto-adopted because broker ownership cannot be proven safely; the current account identity remains the only authoritative scope.
 
 Realized P/L and floating P/L remain separate inputs to the existing DailyLossRule; no threshold change was introduced.
 
