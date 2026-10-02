@@ -395,7 +395,20 @@ Phase report: `docs/PHASE-MTF-P2-PRIMARY-LOCATION-OBFVG.md`.
 
 ## CBOT-DEMO-MARKET — Demo-only Market Execution Bridge — 2026-10-02
 
-Status: **IMPLEMENTATION COMPLETE — repository verification pending; target-terminal verification required.**
+Status: **VERIFIED COMPLETE — 2026-10-02.**
+
+Repository merge commit: `8ea385e2aa782ae24aa4f4a7941aee64bf4b685b`.
+
+Verification on final implementation head `ba981da85e9ee06216f6c5ac3d7b4f2b4f4c6453`:
+- Runtime Acceptance: PASS (run `36976202827`);
+- cTrader Compile/Build: PASS (run `36976202817`);
+- Source/Architecture: PASS (run `36976202805`).
+
+Target-terminal evidence remains manual: attach exactly one `CFIP Smart Indicator` and this cBot to the same M5 chart, keep Indicator execution switches OFF, enable only the cBot demo-market switch on a demo account, and verify one bounded Market execution with broker-confirmed SL/TP.
+
+The SDK `CS0612` warning for `IndicatorAttribute(string)` is suppressed only at the stable display-name attribute boundary; the equivalent cBot name warning is handled the same way. No strategy threshold, RR, Entry, SL, TP, risk or analytical score was retuned.
+
+This phase is a validation bridge. Final production migration still requires the reissued CBOT-P4A Market / Market Range extraction from the current `main`, followed by Aggressive, Pending, Close, protection, lifecycle, account-risk and recovery migration.
 
 Purpose: provide a bounded local/demo execution path while the remaining broker-mutation migration continues phase-by-phase.
 
