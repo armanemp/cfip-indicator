@@ -26,7 +26,7 @@ namespace cAlgo
             int width = PanelContentWidth();
 
             double liveMarket =
-                _plan.Direction == 1
+                _plan.Direction > 0
                     ? Symbol.Bid
                     : Symbol.Ask;
 
