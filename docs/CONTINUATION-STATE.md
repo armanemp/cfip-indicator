@@ -1,3 +1,13 @@
+## TRADE-SYNC-01 — Analysis → Signal → cBot parity — 2026-10-02
+
+Implemented on `phase/cbot-p4a-market-range-extraction`.
+
+The cBot now binds to the named `CFIP Smart Indicator` attached to the same chart, copies its exact parameter values into the cBot-hosted analysis instance, and detects configuration changes through a bounded periodic fingerprint check. Missing or duplicate named Indicator instances fail closed.
+
+The Indicator's analytical plan/decision path is now independent of the broker-arm state. `EnableAutoTrading` controls execution eligibility, not whether the analytical decision/plan is built.
+
+Verification added: `tools/audit_trade_sync.py`.
+
 ## CBOT-P4A — Market / Market Range Broker Mutation Extraction — 2026-10-02
 
 Status: **IMPLEMENTATION COMPLETE — CI/target-terminal verification pending.**
