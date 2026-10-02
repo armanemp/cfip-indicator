@@ -1,3 +1,15 @@
+## 2026-10-03 — Canonical trade-path geometry
+
+Deep audit found a live-path mismatch: presentation SetupPreview could be based on IdealEntry while live actionability evaluated current ActualEntry against the preview's Stop/TP1. Plan creation, however, already uses ActualEntry when building its structural stop and target ladder.
+
+Correction:
+- added CanonicalTradePathGeometry;
+- one builder derives actual-entry structural SL and TP1..TP4 and validates the reward path;
+- live actionability consumes that canonical path and rejects entry/mode drift;
+- bounded caching preserves runtime performance;
+- trace/panel state now reports ActionableNow before generic TriggerReady state.
+
+No public quality/RR/risk threshold was lowered.
 ## 2026-10-03 — Retest trigger-path hardening
 
 Deep audit found a concrete signal-to-trade path defect: RetestMarket is intentionally zone-driven, but PlanCreationEligibility and ScenarioExecutionPolicyRule still treated Decision.TriggerReady as a global prerequisite. That could suppress valid in-zone Retest proposals before Plan/Scenario/cBot handoff.
