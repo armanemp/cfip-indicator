@@ -105,6 +105,11 @@ require(
     "directional arrow must hide when no direction is available",
 )
 
+require(
+    "!snapshot.LivePosition" in watch_gate,
+    "directional WATCH layer must yield while the active-plan arrow owns live execution guidance",
+)
+
 # Multiple scenario presentation receives stable #N prefixes.
 require(
     "int displayNumber = 0;" in parallel_renderer and
