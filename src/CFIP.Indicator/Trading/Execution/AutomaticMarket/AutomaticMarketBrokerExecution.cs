@@ -16,6 +16,12 @@ namespace cAlgo
         {
             try
             {
+                if (!CanRunAutomaticEntry())
+                {
+                    ApplyRuntimeEntryGate();
+                    return;
+                }
+
                 string submissionReason;
                 ExecutionIntent validatedIntent;
 
