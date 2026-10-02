@@ -2023,3 +2023,19 @@ Verification/manual boundary:
 - M5 implementation is complete on `phase/m5-panel-live-responsiveness-2026-10-02`; Source/Architecture, Runtime Acceptance Contracts and cTrader Compile/Build all PASS.
 - Target-terminal validation remains required for actual panel latency, cBot state presentation, live refresh/flicker, and reconnect behavior.
 - Next implementation phase: **M6 — Alert Synchronization / External Watchdog**.
+
+
+## Current continuation — 2026-10-02 — Position engine + cBot truth
+
+The current development unit is concentrated on position discovery through execution handoff.
+
+Implemented on the latest-main-based phase branch:
+- reward-aware execution-zone scoring and M15/H1 structural entry candidates;
+- forward opposing FVG targets and unretested quality-aware structural-stop FVG candidates;
+- strong-HTF counter-M5 discovery lane is reachable while final actionability gates remain intact;
+- stable cBot type identity and independent symbol presence heartbeat;
+- exact instance/symbol/fresh-heartbeat execution truth;
+- alert sound fallback/diagnostics;
+- larger left-aligned panel alert rail.
+
+Do not lower the public decision/RR/risk thresholds in response to low signal frequency without replay evidence. The next position task is to mine SignalEvaluationTrace + outcome history for measured missed/rejected setup families.
