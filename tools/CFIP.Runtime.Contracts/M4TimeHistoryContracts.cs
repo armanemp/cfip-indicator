@@ -178,6 +178,17 @@ namespace cAlgo
                 !SessionWindowRule.IsInside(
                     sameDayEnd,
                     6,
+                    20) &&
+                SessionWindowRule.IsInside(
+                    new DateTime(
+                        2026,
+                        10,
+                        2,
+                        12,
+                        0,
+                        0,
+                        DateTimeKind.Unspecified),
+                    6,
                     20),
                 "same-day session is inclusive at start and exclusive at end");
 
