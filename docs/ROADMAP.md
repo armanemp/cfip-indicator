@@ -2,6 +2,30 @@
 
 For every future phase, modify the existing canonical production owner directly. Do not create parallel hotfix files, duplicate executors, compatibility wrappers, alternate calculation paths, alternate identity formatters, or detached patch subsystems when the existing owner can be corrected. Any obsolete owner created by an extraction must be deleted in the same phase, and all audits/docs must point to the single surviving owner.
 
+## CI-18 — Signal / Panel Coherence — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — verification pending on branch.**
+
+Deep audit found two root causes of the reported mismatch between visible price direction, panel state and missing opportunities:
+- directional Decision state could be hidden as WAITING because the visual snapshot only exposed it after EntryAllowed/TriggerReady;
+- continuation context was evaluated before an actual in-zone Retest in EntryGeometryRule, so a valid trend pullback could be converted to WAITING FOR TRIGGER and never reach actionability.
+
+Completed in canonical owners:
+- preserve directional Decision visibility before trade actionability;
+- expose MARKET BIAS separately from SIGNAL readiness;
+- align M15/H1 panel direction with the shared FrameDirection presentation rule;
+- expose trigger score, required score, M1 direction and runtime reason;
+- move M5OnlyConfirmedTrigger enforcement to mode-specific actionability so Breakout remains trigger-dependent while Retest stays zone-driven;
+- make in-zone Retest take precedence over generic continuation waiting;
+- require the ExecutionModel itself to be Ready before actionability can pass;
+- add deterministic Retest geometry coverage and the accumulated CI-18 coherence audit.
+
+No public strategy threshold was lowered. Final ActionableNow quality/RR, trap-risk, divergence, indicator-fusion, regime and market gates remain active.
+
+Phase record: `docs/PHASE-CI-18-SIGNAL-PANEL-COHERENCE-2026-10-02.md`.
+
+Next: after repository acceptance, proceed to the evidence-driven signal-quality/target-quality phase and then intelligent progressive trailing/target management.
+
 ## Build Warning / Panel Height Integrity — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` via PR #198 as `396c72513fc5043bd348e5ceb5c74894da72c395`.**
