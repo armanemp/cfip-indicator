@@ -199,6 +199,11 @@ namespace cAlgo
         {
             RefreshCbotExecutionStateIfDue();
 
+            if (HasFreshCbotHeartbeat())
+                return
+                    "CBOT CONNECTED • HEARTBEAT LIVE • " +
+                    CbotExecutionStatePanelText();
+
             ChartRobot chartRobot;
             string chartState;
             string chartReason;
@@ -211,7 +216,12 @@ namespace cAlgo
                 if (chartRobot != null)
                     return
                         "CBOT " +
-                        chartState.ToUpperInvariant();
+                        chartState.ToUpperInvariant() +
+                        " • WAITING FOR HEARTBEAT";
+
+                if (_cBotExecutionState != null)
+                    return
+                        "CBOT RECONNECTING • HEARTBEAT STALE";
 
                 return
                     chartReason ==
@@ -220,40 +230,23 @@ namespace cAlgo
                         : chartReason;
             }
 
-            if (_cBotExecutionState == null)
-                return
-                    "CBOT CONNECTING • HEARTBEAT PENDING";
-
-            double ageSeconds =
-                Math.Max(
-                    0,
-                    (TimeInUtc -
-                     _cBotExecutionState.ObservedUtc).TotalSeconds);
-
-            if (ageSeconds > 3.0)
-                return
-                    "CBOT RECONNECTING • HEARTBEAT STALE • " +
-                    ageSeconds.ToString("F1") +
-                    "s";
-
             return
-                "CBOT CONNECTED • " +
-                CbotExecutionStatePanelText();
+                _cBotExecutionState == null
+                    ? "CBOT CONNECTING • HEARTBEAT PENDING"
+                    : "CBOT RECONNECTING • HEARTBEAT STALE";
         }
 
         private bool IsCbotExecutionStateFresh()
         {
-            if (_cBotExecutionState == null)
-                return false;
-
-            ChartRobot chartRobot;
-            string chartState;
-            string chartReason;
-
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
+            if (_cBotExecutionState == null ||
+                !string.Equals(
+                    _cBotExecutionState.IndicatorInstanceId,
+                    InstanceId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    _cBotExecutionState.Symbol,
+                    SymbolName,
+                    StringComparison.Ordinal))
                 return false;
 
             double ageSeconds =
@@ -263,6 +256,11 @@ namespace cAlgo
             return
                 ageSeconds >= 0 &&
                 ageSeconds <= 3.0;
+        }
+
+        private bool HasFreshCbotHeartbeat()
+        {
+            return IsCbotExecutionStateFresh();
         }
 
         private string CbotExecutionStatePanelText()
@@ -358,14 +356,8 @@ namespace cAlgo
             string chartState;
             string chartReason;
 
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
-                return false;
-
             return
-                IsCbotExecutionStateFresh() &&
+                HasFreshCbotHeartbeat() &&
                 (_cBotExecutionState.MarketExecutionEnabled ||
                  _cBotExecutionState.AggressiveExecutionEnabled);
         }
@@ -378,14 +370,8 @@ namespace cAlgo
             string chartState;
             string chartReason;
 
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
-                return false;
-
             return
-                IsCbotExecutionStateFresh() &&
+                HasFreshCbotHeartbeat() &&
                 (_cBotExecutionState.PendingStopExecutionEnabled ||
                  _cBotExecutionState.PendingLimitExecutionEnabled);
         }
@@ -398,14 +384,8 @@ namespace cAlgo
             string chartState;
             string chartReason;
 
-            if (!IsChartCbotRunning(
-                    out chartRobot,
-                    out chartState,
-                    out chartReason))
-                return false;
-
             return
-                IsCbotExecutionStateFresh() &&
+                HasFreshCbotHeartbeat() &&
                 _cBotExecutionState.ManagementExecutionEnabled;
         }
 
