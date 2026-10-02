@@ -297,6 +297,7 @@ namespace cAlgo
                 private StackPanel _panelAlertMessageStack;
                 private readonly List<TextBlock> _panelAlertMessageRows =
                     new List<TextBlock>(5);
+                private long _panelAlertRevision;
         
                 private const string P = "CFIP_";
                 private const string H = "CFIP_H_";
