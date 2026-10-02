@@ -7,77 +7,81 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private AlertEnvelope BuildCanonicalAlertEnvelope(
-    string key,
-    string message,
-    int direction,
-    bool critical,
-    DateTime now)
+            string key,
+            string message,
+            int direction,
+            bool critical,
+            DateTime now)
         {
-    int closedM5 =
+            int closedM5 =
                 ExtractVisualAlertM5(
                     key,
                     _lastEvaluatedM5);
 
-    if (closedM5 < 0 &&
+            if (closedM5 < 0 &&
                 _m5Bars != null &&
                 _m5Bars.Count > 1)
+            {
                 closedM5 =
                     _m5Bars.Count - 2;
+            }
 
-    if (direction == 0)
+            if (direction == 0)
+            {
                 direction =
                     GetAuthoritativeDirection();
+            }
 
-    OpportunityLane lane =
+            OpportunityLane lane =
                 ResolveProviderLane();
 
-    string signalId =
+            string signalId =
                 ResolveProviderSignalId(
                     closedM5);
 
-    string scenarioId =
+            string scenarioId =
                 ResolveProviderScenarioId(
                     signalId,
                     lane,
                     direction);
 
-    string planId =
+            string planId =
                 ResolveProviderPlanId(
                     signalId);
 
-    TradeOpportunityCandidate scenario = null;
-    _tradePlanRegistry.TryGetCandidate(
+            TradeOpportunityCandidate scenario = null;
+            _tradePlanRegistry.TryGetCandidate(
                 scenarioId,
                 out scenario);
 
-    string sourceTimeframe =
+            string sourceTimeframe =
                 ProviderScenarioIdentityRule.ResolveSourceTimeframe(
                     scenario,
                     ProviderScenarioIdentityRule.CanonicalM5);
 
-    DateTime createdUtc =
+            DateTime createdUtc =
                 _m5Bars != null &&
                 closedM5 >= 0 &&
                 closedM5 < _m5Bars.Count
                     ? _m5Bars.OpenTimes[closedM5]
                     : now;
 
-    long revision =
+            long revision =
                 Math.Max(
                     1,
                     _cfipProviderRevision);
 
-    bool blockedCandidate =
+            bool blockedCandidate =
                 IsBlockedCandidateAlert(
                     key,
                     message);
 
-    SignalStage stage =
+            SignalStage stage =
                 ResolveAlertSignalStage(
                     key,
                     blockedCandidate);
 
-    ContractIdentity identity =
+            ContractIdentity identity =
                 new ContractIdentity(
                     ContractVersion.Current,
                     signalId,
@@ -100,7 +104,7 @@ namespace cAlgo
                     revision.ToString(
                         CultureInfo.InvariantCulture));
 
-    string alertId =
+            string alertId =
                 "CFIP-ALERT|" +
                 signalId +
                 "|" +
@@ -113,7 +117,7 @@ namespace cAlgo
                 "|" +
                 key;
 
-    return new AlertEnvelope(
+            return new AlertEnvelope(
                 identity,
                 stage,
                 alertId,
@@ -126,10 +130,10 @@ namespace cAlgo
         }
 
         private bool IsBlockedCandidateAlert(
-    string key,
-    string message)
+            string key,
+            string message)
         {
-    return
+            return
                 (key ?? "").StartsWith(
                     "RESTRICT|",
                     StringComparison.OrdinalIgnoreCase) ||
@@ -139,16 +143,20 @@ namespace cAlgo
         }
 
         private SignalStage ResolveAlertSignalStage(
-    string key,
-    bool blockedCandidate)
+            string key,
+            bool blockedCandidate)
         {
-    if (blockedCandidate)
+            if (blockedCandidate)
+            {
                 return SignalStage.Blocked;
+            }
 
-    if (string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(key))
+            {
                 return SignalStage.Watch;
+            }
 
-    if (key.StartsWith(
+            if (key.StartsWith(
                     "ACTION|",
                     StringComparison.OrdinalIgnoreCase) ||
                 key.StartsWith(
@@ -160,22 +168,28 @@ namespace cAlgo
                 key.StartsWith(
                     "PENDING-",
                     StringComparison.OrdinalIgnoreCase))
+            {
                 return SignalStage.Confirmed;
+            }
 
-    if (key.StartsWith(
+            if (key.StartsWith(
                     "EARLY|",
                     StringComparison.OrdinalIgnoreCase) ||
                 key.StartsWith(
                     "WATCH|",
                     StringComparison.OrdinalIgnoreCase))
+            {
                 return SignalStage.Watch;
+            }
 
-    if (key.StartsWith(
+            if (key.StartsWith(
                     "REACTION|",
                     StringComparison.OrdinalIgnoreCase))
+            {
                 return SignalStage.Prediction;
+            }
 
-    if (key.StartsWith(
+            if (key.StartsWith(
                     "REVERSAL|",
                     StringComparison.OrdinalIgnoreCase) ||
                 key.StartsWith(
@@ -190,10 +204,11 @@ namespace cAlgo
                 key.StartsWith(
                     "POSITION-OPEN|",
                     StringComparison.OrdinalIgnoreCase))
+            {
                 return SignalStage.Active;
+            }
 
-    return SignalStage.Confirmed;
+            return SignalStage.Confirmed;
         }
-
     }
 }
