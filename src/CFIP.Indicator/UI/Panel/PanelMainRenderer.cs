@@ -107,13 +107,6 @@ namespace cAlgo
                                                                 40,
                                                                 PanelToggleHeight));
 
-                                                    int toggleWidth =
-                                                        Math.Max(
-                                                            22,
-                                                            Math.Min(
-                                                                40,
-                                                                PanelToggleWidth));
-
                                                     int toggleHeight =
                                                         Math.Max(
                                                             22,
