@@ -6884,6 +6884,33 @@ namespace cAlgo
                     "OBSERVE-ONLY HTF SCENARIO",
                 "H1 timeframe scenario remains structurally evaluable but observe-only for execution");
 
+            TradeOpportunityCandidate m15 =
+                new TradeOpportunityCandidate
+                {
+                    ScenarioId = "TF-M15-BUY",
+                    SourceTimeframe = "M15",
+                    BasePlanTimeframe = "M5",
+                    Lane = OpportunityLane.Tactical,
+                    Direction = 1,
+                    CreatedM5 = 100,
+                    Quality = 91,
+                    Tp1RR = 3.2,
+                    ActionableNow = true
+                };
+
+            ScenarioExecutionPolicyResult m15Policy =
+                ScenarioExecutionPolicyRule.Evaluate(
+                    m15,
+                    decision,
+                    OpportunityLane.Tactical);
+
+            Assert(
+                m15Policy.CandidateEligible &&
+                m15Policy.ExecutionAuthorized &&
+                m15Policy.ExecutionReason ==
+                    "M15 SCENARIO EXECUTION AUTHORIZED",
+                "M15 timeframe scenario is execution-authorized when the canonical decision is actionable");
+
             Assert(
                 independent.BasePlanTimeframe == "M5",
                 "timeframe scenario explicitly declares M5 as its canonical plan geometry base");
