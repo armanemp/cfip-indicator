@@ -269,7 +269,8 @@ namespace cAlgo
                     BrokerExecutionReport report = reports[i];
                     if (report == null ||
                         string.IsNullOrWhiteSpace(report.CommandIdempotencyKey) ||
-                        report.Status != BrokerReportStatus.Confirmed)
+                        (report.Status != BrokerReportStatus.Confirmed &&
+                         report.Status != BrokerReportStatus.Expired))
                         continue;
 
                     if (_confirmedManagementKeys.Add(report.CommandIdempotencyKey))
