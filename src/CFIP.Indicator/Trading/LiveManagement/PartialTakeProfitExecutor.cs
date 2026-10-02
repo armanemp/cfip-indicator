@@ -191,12 +191,13 @@ namespace cAlgo
                                 {
                                     // Broker mutation has succeeded; only now may the
                                     // in-memory plan adopt the broker-confirmed protection.
-                                    _plan.Stop =
-                                        NormalizePrice(
-                                            breakEvenPrice);
-
-                                    _activeBrokerStop =
-                                        _plan.Stop;
+                                    ApplyBrokerConfirmedProtectionState(
+                                        position.Id,
+                                        position.EntryPrice,
+                                        position.EntryPrice,
+                                        position.StopLoss,
+                                        position.TakeProfit,
+                                        true);
 
                                     _brokerProtectionRecoveryRequired =
                                         false;
