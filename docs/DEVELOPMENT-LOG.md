@@ -1,3 +1,23 @@
+## CBOT-P4B + Panel Geometry Integrity — 2026-10-02
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+Panel:
+- final outer panel height is now propagated to the internal panel StackPanel;
+- panel sizing no longer depends solely on the transient live Chart.Height;
+- a finite pre-control viewport baseline is captured before Chart.AddControl;
+- long content remains bounded by the ScrollViewer.
+
+cBot:
+- ExecutionAction.Aggressive is accepted by the single demo mutation coordinator;
+- an explicit Enable Demo Aggressive Execution switch was added;
+- Aggressive broker reports use SubmitAggressive;
+- Indicator Aggressive broker mutation owners were removed in the migrated path.
+
+No analytical threshold, confidence, RR, Entry, SL, TP or risk tuning was performed.
+
+Manual target-terminal acceptance remains required for real cTrader panel geometry/responsiveness and demo execution.
+
 ## CBOT-P4A — Market / Market Range Authority Cutover — 2026-10-02
 
 Status: **VERIFIED COMPLETE — merged to `main` on 2026-10-02 as `dee53a3dfa1cbfab7f4b7ec4826298739559d19c`.**
