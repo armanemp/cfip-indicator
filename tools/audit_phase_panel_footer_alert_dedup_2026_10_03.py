@@ -51,6 +51,9 @@ check(
 )
 
 check(
+    "ContractIdentity identity" in queue and
+    "identity.CreatedClosedM5" in queue and
+    "delivery.Envelope.AlertKey" in queue and
     "_pendingAlertIds" in queue and
     "_pendingAlertIds.Contains(alertId)" in queue and
     "_pendingAlertIds.Add(alertId)" in queue and
@@ -61,7 +64,8 @@ check(
 
 check(
     'queue.Enqueue(normal1) &&\n                !queue.Enqueue(normal1)' in contracts and
-    "same alert may be re-armed after it is actually delivered" in contracts,
+    "same alert may be re-armed after it is actually delivered" in contracts and
+    "AlertDeliveryQueueContracts.Run();" in contracts,
     "runtime contracts must cover queue duplicate suppression and post-delivery rearming",
 )
 
@@ -95,6 +99,7 @@ mtf_arrows = read("UI/Chart/MtfTrendArrowRenderer.cs")
 
 check(
     "PanelFooterMinHeight = 34" in constants and
+    "PanelFooterButtonInternalMargin = 2" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
     "ResolvePanelFooterAreaHeight(" in visual and
@@ -138,6 +143,7 @@ check(
     "private bool SendUnifiedAlert(" in alerts and
     "return delivered;" in alerts and
     "retryable=true" in alerts and
+    "if (queued &&" in alerts and
     "Notifications.PlaySound(" not in alerts,
     "alert acknowledgement must occur at queue acceptance and playback must stay centralized",
 )
@@ -175,6 +181,8 @@ check(
 )
 
 check(
+    "_lastRenderedPanelAlertRevision" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
+    "if (_lastRenderedPanelAlertRevision ==" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "RefreshPanelAlertFooterGeometry();" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "ResolvePanelFooterAreaHeight(" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "_buttonStack.Height" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
