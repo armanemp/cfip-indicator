@@ -189,9 +189,9 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Label text intentionally matches the canonical line color.
-            return PlanLinePresentationRule.ResolveColor(
-                semanticColor);
+            // Final chart contract: compact level labels are background-free
+            // and always use white text for maximum readability.
+            return Color.White;
         }
 
         private void RemovePlanLabel(
