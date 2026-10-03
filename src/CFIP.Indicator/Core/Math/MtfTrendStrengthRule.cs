@@ -9,6 +9,7 @@ namespace cAlgo
         public int Score { get; }
         public int HigherTimeframeScore { get; }
         public int HigherTimeframeDirection { get; }
+        public string Tier { get; }
 
         public MtfTrendStrengthResult(
             int direction,
@@ -22,6 +23,7 @@ namespace cAlgo
             Score = score;
             HigherTimeframeScore = higherTimeframeScore;
             HigherTimeframeDirection = higherTimeframeDirection;
+            Tier = tier ?? "NONE";
         }
     }
 
@@ -48,28 +50,18 @@ namespace cAlgo
             double[] weights,
             double livePrice)
         {
-            return Evaluate(
-                frames,
-                weights,
-                livePrice,
-                0);
+            return Evaluate(frames, weights, livePrice);
         }
 
         public static MtfTrendStrengthResult Evaluate(
             Frame[] frames,
             double[] weights,
-            double livePrice,
-            int preferredDirection)
+            double livePrice)
         {
             if (frames == null ||
                 frames.Length == 0 ||
                 !NumericGuards.IsFinitePositive(livePrice))
-                return new MtfTrendStrengthResult(0, 0, 0, 0, 0);
-
-            preferredDirection =
-                preferredDirection == 1 || preferredDirection == -1
-                    ? preferredDirection
-                    : 0;
+                return EmptyResult();
 
             double weightedBull = 0;
             double weightedBear = 0;
@@ -154,10 +146,7 @@ namespace cAlgo
                     bullAverage,
                     bearAverage);
 
-            int arrowDirection =
-                preferredDirection != 0
-                    ? preferredDirection
-                    : overallDirection;
+            int arrowDirection = overallDirection;
 
             double selectedStrength =
                 arrowDirection == 1
@@ -204,10 +193,7 @@ namespace cAlgo
                     htfBullAverage,
                     htfBearAverage);
 
-            int higherScoreDirection =
-                preferredDirection != 0
-                    ? preferredDirection
-                    : htfDirection;
+            int higherScoreDirection = htfDirection;
 
             double htfSelectedStrength =
                 higherScoreDirection == 1
@@ -240,9 +226,22 @@ namespace cAlgo
                     htfScore,
                     0,
                     100),
-                htfDirection);
+                htfDirection,
+                ResolveTier(level));
         }
 
+        private static MtfTrendStrengthResult EmptyResult()
+        {
+            return new MtfTrendStrengthResult(0, 0, 0, 0, 0, "NONE");
+        }
+
+        private static string ResolveTier(int level)
+        {
+            if (level <= 0) return "NONE";
+            if (level <= 3) return "WEAK";
+            if (level <= 6) return "MEDIUM";
+            return "STRONG";
+        }
 
         private static int ResolveDominantDirection(
             double bull,
