@@ -101,23 +101,15 @@ namespace cAlgo
 
             if (showCurrentStateArrow)
             {
-                DrawIcon(
-                    P + "WATCH_ARROW",
-                    visualDirection == 1
-                        ? ChartIconType.UpArrow
-                        : ChartIconType.DownArrow,
+                RenderMtfTrendStrengthArrowStack(
+                    snapshot,
+                    visualDirection,
                     arrowBar,
-                    visualDirection == 1
-                        ? Bars.LowPrices[arrowBar] - offset
-                        : Bars.HighPrices[arrowBar] + offset,
-                    SignalArrowColorFor(
-                        visualDirection,
-                        arrowState));
+                    offset);
             }
             else
             {
-                Chart.RemoveObject(
-                    P + "WATCH_ARROW");
+                RemoveMtfTrendStrengthArrowStack();
             }
 
             Chart.RemoveObject(
@@ -214,6 +206,85 @@ namespace cAlgo
                                         alternate,
                                         Bars.Count - 1));
                         }
+
+        private void RenderMtfTrendStrengthArrowStack(
+                            SignalVisualSnapshot snapshot,
+                            int direction,
+                            int bar,
+                            double baseOffset)
+                        {
+                            RemoveMtfTrendStrengthArrowStack();
+
+                            if (!ShowMtfStrengthArrowStack ||
+                                snapshot == null ||
+                                direction == 0 ||
+                                snapshot.MtfTrendStrengthLevel <= 0)
+                                return;
+
+                            int level =
+                                Math.Max(
+                                    1,
+                                    Math.Min(
+                                        9,
+                                        snapshot.MtfTrendStrengthLevel));
+
+                            int count =
+                                ((level - 1) % 3) + 1;
+
+                            string state =
+                                level <= 3
+                                    ? "WATCH"
+                                    : level <= 6
+                                        ? "CONFIRMED"
+                                        : "STRONG";
+
+                            double spacing =
+                                Math.Max(
+                                    Symbol.PipSize * 0.5,
+                                    baseOffset *
+                                    Math.Max(
+                                        0.35,
+                                        MtfArrowStackSpacingAtr /
+                                        Math.Max(
+                                            0.02,
+                                            ArrowOffsetAtr)));
+
+                            ChartIconType type =
+                                direction == 1
+                                    ? ChartIconType.UpArrow
+                                    : ChartIconType.DownArrow;
+
+                            for (int i = 0;
+                                 i < count;
+                                 i++)
+                            {
+                                double distance =
+                                    baseOffset +
+                                    spacing * i;
+
+                                double price =
+                                    direction == 1
+                                        ? Bars.LowPrices[bar] - distance
+                                        : Bars.HighPrices[bar] + distance;
+
+                                DrawIcon(
+                                    P + "WATCH_ARROW_" + (i + 1),
+                                    type,
+                                    bar,
+                                    price,
+                                    SignalArrowColorFor(
+                                        direction,
+                                        state));
+                            }
+                        }
+
+        private void RemoveMtfTrendStrengthArrowStack()
+        {
+            Chart.RemoveObject(P + "WATCH_ARROW");
+            Chart.RemoveObject(P + "WATCH_ARROW_1");
+            Chart.RemoveObject(P + "WATCH_ARROW_2");
+            Chart.RemoveObject(P + "WATCH_ARROW_3");
+        }
 
         private string ResolveTriggerArrowState(
                             SignalVisualSnapshot snapshot)
