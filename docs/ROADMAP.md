@@ -1,3 +1,36 @@
+# Current focus — SMART REALTIME UI / AUDIO / SIGNAL PRESENTATION HARDENING — 2026-10-03
+
+Status: IMPLEMENTED — automated verification pending; target-terminal validation pending.
+
+Completed in this phase:
+- nine-level higher-timeframe arrow strength presentation using H1/H4/D1/W1 evidence;
+- canonical single-owner stacked arrow renderer with deterministic 1/2/3 arrow cleanup;
+- live panel header refresh independent from full panel layout optimization;
+- single panel-header content owner for initialization and realtime states;
+- cBot lifecycle/execution audio module for Start/Stop, live-disarmed, confirmed/rejected execution and blocked state;
+- cBot execution-log placeholder corrections;
+- dedicated Source/Architecture audit wired for this phase.
+
+Architecture preserved:
+history/outcomes -> all MTF evidence -> M15 canonical decision -> M5 tuning/entry precision -> optional M1 trigger -> current quote -> current Market/Aggressive OR future Stop/Limit -> cBot -> broker -> protection -> outcome/history.
+
+Quality preserved:
+- no confidence/RR/risk gate was lowered;
+- stagnant-market reward floors remain active;
+- multiple ScenarioIds remain bounded and idempotent;
+- Indicator remains broker-mutation-free;
+- live execution remains explicitly armable and OFF by default.
+
+Verification boundary:
+- repository CI/build remains required;
+- target-terminal audio, attachment, stacked-arrow transitions, same-tick handoff, live-arm, multi-scenario and restart/reconnect behavior remain required before real-money activation.
+
+Phase record: docs/PHASE-SMART-REALTIME-UI-AUDIO-HARDENING-2026-10-03.md.
+
+Operator action after verified merge: git pull --ff-only on local main.
+
+---
+
 # Current focus — CBOT LIVE / REALTIME COMPLETION — 2026-10-03
 
 Status: IMPLEMENTED — repository verification pending.
