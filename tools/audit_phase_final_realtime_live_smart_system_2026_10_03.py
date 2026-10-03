@@ -105,7 +105,7 @@ require(
     'public void PlayExecutionRejected(' in audio and
     "_audio.PlayStarted(" in bot and
     "_audio.PlayStopped(" in bot and
-    "_audio.PlayBlocked(" in bot and
+    "_audio.PlayBlocked(" in bot,
     "cBot lifecycle/block/execution audio must have one modular owner",
 )
 
