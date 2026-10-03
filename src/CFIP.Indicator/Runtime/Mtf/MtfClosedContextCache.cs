@@ -80,6 +80,7 @@ namespace cAlgo
 
         public void StoreStableContext(
             Bars m1,
+            Bars m2,
             Bars m5,
             Bars m15,
             Bars m30,
