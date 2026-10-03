@@ -39,8 +39,6 @@ namespace cAlgo
                 "|" +
                 (identity.ScenarioId ?? string.Empty) +
                 "|" +
-                (identity.PlanId ?? string.Empty) +
-                "|" +
                 identity.CreatedClosedM5.ToString(
                     CultureInfo.InvariantCulture) +
                 "|" +
