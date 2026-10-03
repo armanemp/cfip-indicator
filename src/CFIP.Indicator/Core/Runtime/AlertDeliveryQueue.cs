@@ -31,6 +31,10 @@ namespace cAlgo
             string alertId =
                 GetAlertId(delivery);
 
+            // Transport idempotency must be independent of alert-envelope revision
+            // and generated AlertId text. Recalculation/reconnect may create a new
+            // envelope instance for the same causal event; the canonical identity
+            // below keeps that event pending only once.
             // Idempotency at the transport boundary prevents the same canonical
             // event from being queued twice by independent calculation/timer
             // callers while still allowing the same key to be re-alerted later
@@ -125,10 +129,28 @@ namespace cAlgo
         private static string GetAlertId(
             AlertDelivery delivery)
         {
-            if (delivery.Envelope == null)
+            if (delivery.Envelope == null ||
+                delivery.Envelope.Identity == null)
                 return "";
 
-            return delivery.Envelope.AlertId ?? "";
+            ContractIdentity identity =
+                delivery.Envelope.Identity;
+
+            return
+                (identity.Symbol ?? string.Empty) +
+                "|" +
+                (identity.SignalId ?? string.Empty) +
+                "|" +
+                (identity.ScenarioId ?? string.Empty) +
+                "|" +
+                (identity.PlanId ?? string.Empty) +
+                "|" +
+                identity.CreatedClosedM5.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture) +
+                "|" +
+                identity.Direction.ToString() +
+                "|" +
+                (delivery.Envelope.AlertKey ?? string.Empty);
         }
 
         private void RemovePendingAlertId(
