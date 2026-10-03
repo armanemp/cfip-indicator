@@ -34,6 +34,13 @@ check("100 ms signal-store handoff cadence",
       "SignalReloadIntervalMilliseconds = 100" in bot and
       "SignalReloadIntervalMilliseconds" in bot)
 
+reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
+
+check("200 ms cBot state visibility cadence and case-insensitive discovery",
+      "CbotStateReadIntervalMilliseconds = 200" in reader and
+      "OrdinalIgnoreCase" in reader and
+      "ChartRobots" in reader)
+
 check("live-unarmed cBot stays attached and publishes blocked truth",
       "_liveExecutionDisarmed" in bot and
       "LIVE DISARMED" in bot and
