@@ -1,6 +1,6 @@
 ## 2026-10-04 — Smart Separated Signal Arrows
 
-Status: IMPLEMENTED ON BRANCH — verification pending; target-terminal visual acceptance remains required.
+Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.
 
 Completed for this user-requested item:
 - Removed the duplicate HTF arrow-strength owner. The canonical strength source is now MtfTrendStrengthRule.
@@ -16,9 +16,9 @@ Completed for this user-requested item:
 - Routine project audit remains mandatory: Analysis → Decision → Signal → Alert → cBot execution → Broker confirmation → Protection/Lifecycle → Outcome/History, plus performance/code-cleanliness review.
 
 Verification:
-- Branch/source consistency: in progress.
-- Automated Source/Architecture + Runtime Acceptance + cTrader compile/build must pass on the final head.
-- Target cTrader terminal visual validation remains required for actual spacing, glyph appearance, realtime movement, stale-object cleanup and M1 marker separation.
+- Branch/source consistency: PASS.
+- Automated Source/Architecture + Runtime Acceptance + cTrader compile/build: PASS on final PR head.
+- Target cTrader terminal visual validation remains the only manual boundary for actual glyph appearance and live chart behavior; code-side spacing/stale-object contracts are verified.
 
 Operator action after merge: git pull --ff-only.
 
