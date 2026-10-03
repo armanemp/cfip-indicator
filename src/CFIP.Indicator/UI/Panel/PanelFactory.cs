@@ -177,12 +177,19 @@ namespace cAlgo
                                                 _processingLamp);
                         
                                         CreatePanelRows();
+                                        CreatePanelTrendTimeframeLampRow();
                         
                                         _panelStack.AddChild(
                                             _panelHeaderStack);
                         
                                         _panelStack.AddChild(
                                             _panelScroll);
+                        
+                                        // Fixed MTF trend status row: deliberately outside
+                                        // the ScrollViewer so it remains visible while rows scroll.
+                                        if (_panelTrendTimeframeLampRow != null)
+                                            _panelStack.AddChild(
+                                                _panelTrendTimeframeLampRow);
                         
                                         _panelStack.AddChild(
                                             _buttonStack);
@@ -252,6 +259,7 @@ namespace cAlgo
                                         _panelHeaderTitle = null;
                                         _panelRowsStack = null;
                                         _panelScroll = null;
+                                        RemovePanelTrendTimeframeLampRow();
                                         _panelRows.Clear();
                                         _buttonStack = null;
                                         _panelToggleButton = null;
