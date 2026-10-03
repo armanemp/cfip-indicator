@@ -187,7 +187,6 @@ namespace CFIP.cBot
         private DateTime _nextBindingCheckUtc = DateTime.MinValue;
         private DateTime _nextSignalReloadUtc = DateTime.MinValue;
         private string _boundIndicatorInstanceId = "";
-        private bool _indicatorAutoAttachAttempted;
         private string _activeManagedExecutionLabel = "";
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
@@ -934,79 +933,24 @@ namespace CFIP.cBot
                     out ChartIndicator indicator,
                     out string reason))
             {
-                if (string.Equals(
-                        reason,
-                        "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART",
-                        StringComparison.Ordinal) &&
-                    !_indicatorAutoAttachAttempted)
-                {
-                    _indicatorAutoAttachAttempted = true;
+                // The custom Indicator is a local chart algorithm and must be
+                // attached explicitly by the operator. Never call
+                // ChartIndicators.Add(name) here: that re-enters cTrader's
+                // algorithm-resolution path during cBot restart/reload and can
+                // surface a Local/Cloud selection prompt.
+                Print(
+                    "CFIP ANALYSIS BIND | unresolved | reason={0} | chart={1} | action=ATTACH LOCAL INDICATOR",
+                    reason,
+                    SymbolName);
 
-                    try
-                    {
-                        ChartIndicator attached =
-                            ChartIndicators.Add(
-                                CfipIndicatorChartBinding.DisplayName);
-
-                        if (attached != null)
-                        {
-                            Print(
-                                "CFIP ANALYSIS BIND | auto-attached indicator | instance={0}",
-                                attached.InstanceId);
-
-                            if (CfipIndicatorChartBinding.TryFind(
-                                    this,
-                                    attached.InstanceId,
-                                    out indicator,
-                                    out reason))
-                            {
-                                _indicatorAutoAttachAttempted = false;
-                            }
-                        }
-                        else
-                        {
-                            Print(
-                                "CFIP ANALYSIS BIND | auto-attach returned null | displayName={0} | typeName={1}",
-                                CfipIndicatorChartBinding.DisplayName,
-                                CfipIndicatorChartBinding.TypeName);
-                        }
-                    }
-                    catch (Exception attachException)
-                    {
-                        Print(
-                            "CFIP ANALYSIS BIND | auto-attach failed | {0}",
-                            attachException.Message);
-                    }
-                }
-
-                if (indicator == null)
-                {
-                    Print(
-                        "CFIP ANALYSIS BIND | unresolved | reason={0} | chart={1}",
-                        reason,
-                        SymbolName);
-
-                    foreach (ChartIndicator candidate in ChartIndicators.Custom)
-                    {
-                        if (candidate == null)
-                            continue;
-
-                        Print(
-                            "CFIP ANALYSIS BIND | chart indicator | name={0} | type={1} | instance={2}",
-                            candidate.Name ?? "",
-                            candidate.Type == null ? "" : candidate.Type.Name,
-                            candidate.InstanceId ?? "");
-                    }
-
-                    _boundIndicatorInstanceId = "";
-                    _activeManagedExecutionLabel = "";
-                    _executionSettings = null;
-                    _scenarioEnvelopes.Clear();
-                    _scenarioReconciliations.Clear();
-                    _state = ShadowHostState.Blocked;
-                    LogBlockedState(reason);
-                    return false;
-                }
+                _boundIndicatorInstanceId = "";
+                _activeManagedExecutionLabel = "";
+                _executionSettings = null;
+                _scenarioEnvelopes.Clear();
+                _scenarioReconciliations.Clear();
+                _state = ShadowHostState.Blocked;
+                LogBlockedState(reason);
+                return false;
             }
 
             string instanceId = indicator.InstanceId ?? "";
@@ -1028,8 +972,6 @@ namespace CFIP.cBot
                 return true;
 
             _boundIndicatorInstanceId = instanceId;
-            _indicatorAutoAttachAttempted = false;
-
             _idempotencyStore.Reload(
                 this,
                 _boundIndicatorInstanceId,
