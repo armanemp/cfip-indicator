@@ -59,7 +59,7 @@ namespace cAlgo
                                     0,
                                     0,
                                     0,
-                                    PanelAlertMessageGap)
+                                    0)
                         };
 
                     row.IsVisible = false;
