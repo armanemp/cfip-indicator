@@ -76,6 +76,19 @@ Presence wording distinguishes:
 - detected cBot presence with unresolved binding,
 - actual NOT ATTACHED discovery failure.
 
+## Multi-timeframe analysis / M15 tuning / lower-timeframe entry / all-timeframe risk-reward
+
+The execution contract is explicitly multi-timeframe:
+
+1. M1, M5, M15, M30, H1, H4, D1 and W1 are analyzed from one aligned closed-bar market context. M1 is deliberately a low-weight/optional confirmation input so it cannot dominate the decision.
+2. The directional signal is produced from the combined timeframe evidence. M15 is the canonical tuning/reference layer used to validate the final directional setup; it is not the sole analytical source.
+3. M5 provides the primary lower-timeframe entry geometry and live entry precision. M1 may refine the micro-entry and now also contributes bounded micro-structure/target context when enabled.
+4. Stop selection evaluates lower and higher timeframe structural candidates. The current stop pipeline now accepts M1 micro structure plus M5, M15, M30, H1, H4, D1 and W1 structural candidates, then applies the existing risk envelope and reward-path checks.
+5. Target construction already evaluates M5 plus M15, M30, H1, H4, D1 and W1 reward levels; M1 micro swing/FVG/OB targets are now added as bounded candidates. Minimum RR, obstacle checks and normalization remain mandatory.
+6. The final Entry/SL/TP selection is therefore a constrained optimization problem over multi-timeframe evidence: reject invalid/wrong-side/high-risk candidates first, then prefer valid geometry with stronger structural support and attainable reward path. No timeframe may bypass the common safety gates.
+
+This corrects the earlier overly narrow interpretation that M15 was the only analysis layer. M15 is the final tuning/reference layer inside a simultaneous multi-timeframe engine.
+
 ## Safety invariants retained
 
 - Indicator remains broker-mutation-free.
