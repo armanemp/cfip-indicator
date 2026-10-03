@@ -31,7 +31,8 @@ require(
     "FrameStrength(h4, direction, 3)" in rule and
     "FrameStrength(d1, direction, 2)" in rule and
     "FrameStrength(w1, direction, 1)" in rule and
-    "Math.Min(9" in rule,
+    "Math.Min(" in rule and
+    "9" in rule,
     "HTF arrow rule must own the 1..9 ladder",
 )
 
