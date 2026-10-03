@@ -34,19 +34,10 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (!settings.EnableAutoTrading)
-            {
-                reason = "AUTO TRADING DISABLED IN INDICATOR";
-                return false;
-            }
-
-            if (pendingAction &&
-                !settings.EnableAutomaticOrders)
-            {
-                reason = "AUTOMATIC ORDERS DISABLED IN INDICATOR";
-                return false;
-            }
-
+            // Broker execution authority belongs to the cBot's explicit
+            // market/pending modes. Indicator Auto Trading / Automatic Orders
+            // remain analysis-side compatibility settings and are not a hidden
+            // broker permission gate.
             if (settings.UseMarketHoursGuard &&
                 !IsInsideSession(
                     nowUtc,
