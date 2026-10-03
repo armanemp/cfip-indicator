@@ -50,6 +50,11 @@ namespace cAlgo
             else if (candidate.Tp1RR >= 2.0)
                 bonus += 2;
 
+            if (candidate.RewardDistanceAtr >= 2.0)
+                bonus += 4;
+            else if (candidate.RewardDistanceAtr >= 1.5)
+                bonus += 2;
+
             if (IsFiniteNonNegativeQuality(candidate.EntryDistanceAtr))
             {
                 if (candidate.EntryDistanceAtr <= 0.50)
