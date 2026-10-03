@@ -117,18 +117,18 @@ namespace cAlgo
                                                         "TOP-DOWN  " +
                                                         (_decision.TopDownStage ?? "HTF SEARCH") +
                                                         "  •  HTF " +
-                                                        _decision.HtfAnchorDirection +
-                                                        "/" +
+                                                        DirectionText(_decision.HtfAnchorDirection) +
+                                                        "/A" +
                                                         _decision.HtfAlignment +
                                                         "/S" +
                                                         _decision.HtfAbsoluteStrength +
                                                         "  •  MID " +
-                                                        _decision.MidframeDirection +
-                                                        "/" +
+                                                        DirectionText(_decision.MidframeDirection) +
+                                                        "/A" +
                                                         _decision.MidframeAlignment +
                                                         "/S" +
                                                         _decision.MidframeAbsoluteStrength +
-                                                        "  •  ENTRY " +
+                                                        "  •  ENTRY/A" +
                                                         _decision.EntryFrameAlignment +
                                                         "/S" +
                                                         _decision.EntryFrameAbsoluteStrength,
