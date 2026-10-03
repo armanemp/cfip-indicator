@@ -1,3 +1,11 @@
+## Phase 7.4 — MaximumOpenPositions semantics
+
+Historical continuity marker preserved for the consolidated roadmap.
+
+Established and retained the supported single-plan capacity contract: Maximum Open Positions remains hard-constrained to 1 until an explicitly certified multi-position execution phase changes the contract.
+
+This continuity record is historical/architectural only and does not authorize additional broker capacity by itself.
+
 ## 2026-10-03 — cBot Shadow Multi-Scenario Truth
 
 Status: implementation complete, automated verification PASS; target-terminal acceptance pending.

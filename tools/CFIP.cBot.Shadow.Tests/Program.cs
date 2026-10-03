@@ -15,6 +15,7 @@ namespace CFIP.cBot.Shadow.Tests
         private static void Main()
         {
             VerifyMarginBudget();
+            LifecycleState();
             Ready(TradeDirection.Buy, ExecutionAction.Market, 1, "K1");
             Ready(TradeDirection.Sell, ExecutionAction.Aggressive, -1, "K1A");
             Ready(TradeDirection.Sell, ExecutionAction.PendingLimit, -1, "K2");
@@ -355,6 +356,45 @@ namespace CFIP.cBot.Shadow.Tests
                 firstResult.ScenarioId != secondResult.ScenarioId &&
                 firstRecheck.ScenarioId == firstResult.ScenarioId,
                 "independent ScenarioIds must keep separate shadow results when they share one provider revision");
+        }
+
+        private static void LifecycleState()
+        {
+            Assert(
+                CFIP.cBot.Execution.CbotExecutionLifecycleRule.AllowsExecution(
+                    "READY / RECONCILED",
+                    false),
+                "READY / RECONCILED must allow effective execution state");
+
+            Assert(
+                CFIP.cBot.Execution.CbotExecutionLifecycleRule.AllowsExecution(
+                    "ACTIVE / RECONCILED",
+                    false),
+                "ACTIVE / RECONCILED must allow effective execution state");
+
+            Assert(
+                CFIP.cBot.Execution.CbotExecutionLifecycleRule.AllowsExecution(
+                    "ACTIVE / MULTI-SCENARIO",
+                    false),
+                "ACTIVE / MULTI-SCENARIO must allow effective execution state");
+
+            Assert(
+                CFIP.cBot.Execution.CbotExecutionLifecycleRule.AllowsExecution(
+                    "PENDING / MULTI-SCENARIO",
+                    false),
+                "PENDING / MULTI-SCENARIO must allow effective execution state");
+
+            Assert(
+                !CFIP.cBot.Execution.CbotExecutionLifecycleRule.AllowsExecution(
+                    "RECOVERY REQUIRED",
+                    true),
+                "RECOVERY REQUIRED must remain fail-closed");
+
+            Assert(
+                !CFIP.cBot.Execution.CbotExecutionLifecycleRule.AllowsExecution(
+                    "UNKNOWN",
+                    false),
+                "UNKNOWN lifecycle must remain fail-closed");
         }
 
         private static void VerifyMarginBudget()

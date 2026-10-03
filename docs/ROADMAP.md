@@ -1,3 +1,35 @@
+# Current focus — CBOT EFFECTIVE LIFECYCLE STATE — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Finding closed:
+- reconciliation states use descriptive values such as ACTIVE / RECONCILED and ACTIVE / MULTI-SCENARIO;
+- cBot state publication previously required exact READY/ACTIVE/PENDING strings;
+- this could make an armed healthy cBot appear effectively OFF in the Indicator panel.
+
+Canonical correction:
+- one CbotExecutionLifecycleRule now defines READY/ACTIVE/PENDING state families;
+- recoveryRequired always fails closed;
+- CbotExecutionStatePublisher consumes that owner;
+- behavioral and static regression coverage added;
+- previous ScenarioId-scoped reconciliation and restart idempotency contracts remain intact.
+
+Full-chain audit:
+Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Signal/Alert -> ScenarioBatch -> cBot preflight -> per-ScenarioId broker truth -> effective lifecycle state -> broker execution -> confirmation -> protection -> outcome/history.
+
+Verification:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- lifecycle effective-state audit;
+- target-terminal panel/armed/recovery validation.
+
+Phase record: docs/PHASE-CBOT-EFFECTIVE-LIFECYCLE-STATE-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 # Current focus — CBOT SHADOW MULTI-SCENARIO TRUTH — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.

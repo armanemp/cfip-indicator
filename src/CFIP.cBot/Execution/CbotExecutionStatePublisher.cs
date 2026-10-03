@@ -201,19 +201,12 @@ namespace CFIP.cBot.Execution
                 pendingLimitExecutionEnabled;
 
             bool lifecycleAllowsExecution =
-                reconciliation == null ||
-                string.Equals(
-                    reconciliation.LifecycleState,
-                    "READY",
-                    StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(
-                    reconciliation.LifecycleState,
-                    "ACTIVE",
-                    StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(
-                    reconciliation.LifecycleState,
-                    "PENDING",
-                    StringComparison.OrdinalIgnoreCase);
+                CbotExecutionLifecycleRule.AllowsExecution(
+                    reconciliation == null
+                        ? string.Empty
+                        : reconciliation.LifecycleState,
+                    reconciliation != null &&
+                    reconciliation.RecoveryRequired);
 
             snapshot = snapshot with
             {
