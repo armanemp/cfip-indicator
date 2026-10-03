@@ -7,7 +7,7 @@ line_rule = (ROOT / "src/CFIP.Indicator/Core/Math/PlanLinePresentationRule.cs").
 labels = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs").read_text(encoding="utf-8")
 anchor = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs").read_text(encoding="utf-8")
 plan = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs").read_text(encoding="utf-8")
-arrows = (ROOT / "src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs").read_text(encoding="utf-8")
+arrows = (ROOT / "src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs").read_text(encoding="utf-8")
 clearer = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanObjectClearer.cs").read_text(encoding="utf-8")
 alert_marker = (ROOT / "src/CFIP.Indicator/UI/Chart/AlertSignalRenderer.cs").read_text(encoding="utf-8")
 
@@ -24,10 +24,10 @@ check("plan thickness contract is one pixel", "return MinimumThickness;" in line
 check("plan labels are background-free", "Chart.DrawRectangle(" not in labels and 'name + "_BOX"' in labels)
 check("plan labels are white", "return Color.White;" in labels)
 check("labels share the exact signal price and sit left with a deterministic gap", "NormalizePrice(price)" in labels and "lineLeft - offset" in anchor and "CompactPlanLabelMinimumGapBars = 3" in anchor)
-check("active plan uses canonical stacked-arrow renderer", "RenderStackedSignalArrows(" in plan and 'P + "ARROW"' not in plan)
+check("active plan uses canonical stacked-arrow renderer", "RenderMtfTrendStrengthArrowStack(" in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
-check("directional marker lifecycle has one owner", "RenderStackedSignalArrows(" in plan and "RenderStackedSignalArrows(" in (ROOT / "src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs").read_text(encoding="utf-8"))
+check("directional marker lifecycle has one owner", "RenderMtfTrendStrengthArrowStack(" in plan and "RenderMtfTrendStrengthArrowStack(" in (ROOT / "src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs").read_text(encoding="utf-8"))
 check("legacy alert mirror cannot create second signal marker", 'P + "ALERT_SIGNAL"' in alert_marker and "Chart.DrawIcon" not in alert_marker)
 
 if errors:
