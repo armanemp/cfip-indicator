@@ -31,14 +31,14 @@ No HTTP, sockets, database, Cloud service, second decision engine, multi-positio
 
 ## 2. Direct broker mutation inventory
 
-The P4E migration removes the remaining Indicator broker-mutation owners. The Indicator now has zero direct mutation calls for cancellation, close/partial-close, stop, absolute TP, TP-by-pips and server TP ladder paths.
+The completed P4E/P4A/P4C migration removed the remaining Indicator broker-mutation owners. The Indicator now has zero direct mutation calls for cancellation, close/partial-close, stop, absolute TP, TP-by-pips and server TP ladder paths.
 
-| Broker API | Current Indicator owner | Call-site count | Future cBot responsibility |
+| Broker API | Current cBot owner | Call-site count | Responsibility |
 | --- | --- | ---: | --- |
-| `ExecuteMarketOrder` | `Trading/Execution/BrokerMarketOrderMutation.cs` | 2 | Market + aggressive market submission |
-| `ExecuteMarketRangeOrder` | `Trading/Execution/BrokerMarketOrderMutation.cs` | 2 | Market-range submission |
-| `PlaceStopOrder` | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` | 2 | Pending Stop submission |
-| `PlaceLimitOrder` | `Trading/Execution/BrokerLimitOrderPlacement.cs` | 2 | Pending Limit submission |
+| `ExecuteMarketOrder` | `src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs` | 1 | Demo market submission |
+| `ExecuteMarketRangeOrder` | `src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs` | 1 | Demo market-range submission |
+| `PlaceStopOrder` | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` | 1 | Demo Pending Stop submission |
+| `PlaceLimitOrder` | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` | 1 | Demo Pending Limit submission |
 | `CancelPendingOrder` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | Pending cancellation |
 | `ClosePosition` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | Full/partial position close mutation |
 | `ModifyStopLossPrice` | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | 1 | Protective SL mutation |
@@ -89,9 +89,8 @@ Future cBot ownership:
 ### Broker protection/mutation
 
 - `BrokerProtectionCoordinator.cs` is a **split boundary**: deterministic geometry/validation stays with the Indicator-side analytical owner; broker mutation/reconciliation moves to the cBot.
-- `BrokerStopLossMutation.cs`
-- `BrokerTakeProfitMutation.cs`
-- `BrokerPositionCloseMutation.cs`
+- `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` — broker management mutation owner
+- legacy Indicator mutation owners are deleted and guarded by `tools/audit_cbot_boundary.py`
 - `Trading/LiveManagement/ProtectionManager.cs` is split: stop/target reasoning remains analytical; broker mutation moves to the cBot.
 - `PartialTakeProfitExecutor.cs` is split: decision remains Indicator; close mutation moves to the cBot.
 - target progression selection remains Indicator; broker TP mutation moves to cBot.
