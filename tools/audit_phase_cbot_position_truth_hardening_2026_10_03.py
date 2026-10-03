@@ -59,8 +59,10 @@ check(
     "_reconciliation =\n                        ReconcileScenarioState(" in bot
 )
 check(
-    "cBot management is not blocked by unrelated scenario recovery",
-    'if (EnableDemoManagementExecution &&\n                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))' in bot
+    "cBot management is gated by the effective account-scoped arm",
+    "EffectiveManagementExecutionEnabled" in bot and
+    "ManagementExecutionCoordinator" in bot and
+    "TryRecoverProtection(" in bot
 )
 check(
     "signal preflight validates contract and complete execution identity",
@@ -92,10 +94,13 @@ check(
     "RefreshIndicatorBinding" in bot
 )
 check(
-    "live-account execution remains fail-closed",
-    "if (Account.IsLive)" in bot and
-    'live account detected' in bot and
-    "this build is demo-only" in bot
+    "live-account execution is explicit and fail-closed when unarmed",
+    "Account.IsLive" in bot and
+    "EnableLiveMarketExecution" in bot and
+    "EnableLivePendingStopExecution" in bot and
+    "EnableLivePendingLimitExecution" in bot and
+    "LIVE EXECUTION NOT ARMED" in
+    read("src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs")
 )
 check(
     "CBOT-6M identity and capacity boundary remains present",

@@ -43,6 +43,16 @@ namespace cAlgo
             else if (candidate.WaveTrendQuality >= 70)
                 bonus += 2;
 
+            if (candidate.VolumeProfileConfluence)
+                bonus += 3;
+
+            if (candidate.VolumeProfileQuality >= 85)
+                bonus += 3;
+            else if (candidate.VolumeProfileQuality >= 75)
+                bonus += 2;
+            else if (candidate.VolumeProfileQuality >= 68)
+                bonus += 1;
+
             if (candidate.Tp1RR >= 4.0)
                 bonus += 6;
             else if (candidate.Tp1RR >= 3.0)

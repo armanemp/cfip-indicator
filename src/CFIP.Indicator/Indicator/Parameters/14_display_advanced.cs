@@ -33,5 +33,6 @@ namespace cAlgo
 
         [Parameter("Show Early Arrow", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
         public bool ShowEarlyArrow { get; set; }
+
     }
 }

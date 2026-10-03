@@ -25,7 +25,10 @@ def check(name, condition):
 policy = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskPolicy.cs")
 action_policy = read("src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs")
 risk_rule = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs")
-evaluator = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+evaluator = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityDecisionGate.cs")
+)
 retest_context = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityRetestContext.cs")
 decision = read("src/CFIP.Indicator/Core/Models/Decision.cs")
 orchestration = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")

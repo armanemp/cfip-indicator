@@ -261,7 +261,11 @@ namespace CFIP.cBot.Execution
                 RecoveryReason =
                     reconciliation == null
                         ? string.Empty
-                        : reconciliation.Reason
+                        : reconciliation.Reason,
+                ExecutionAccountMode =
+                    robot.Account != null && robot.Account.IsLive
+                        ? "LIVE"
+                        : "DEMO"
             };
 
             if (!force &&

@@ -152,6 +152,20 @@ namespace cAlgo
                         atr,
                         riskAtr);
 
+                if (string.Equals(
+                        candidate.Timeframe,
+                        "M1",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    // M1 can tighten risk, but it must never outweigh a
+                    // materially stronger higher-timeframe structural anchor.
+                    score -= Math.Min(
+                        8,
+                        Math.Max(
+                            0,
+                            riskAtr - 0.45) * 10);
+                }
+
                 // Prefer structurally valid stops that leave a larger
                 // reward path after accounting for stop width.
                 score +=
@@ -194,6 +208,23 @@ namespace cAlgo
         {
             if (candidate == null)
                 return 0;
+
+            if (candidate.Timeframe == "M1")
+            {
+                if (_m1Bars == null)
+                    return atr;
+
+                int m1Index =
+                    ClosedIndex(
+                        _m1Bars,
+                        _m5Bars.OpenTimes[closedM5]);
+
+                if (m1Index < 10)
+                    return atr;
+
+                double microAtr = Atr(_m1Bars, m1Index);
+                return microAtr > 0 ? microAtr : atr;
+            }
 
             if (candidate.Timeframe == "M5")
                 return atr;

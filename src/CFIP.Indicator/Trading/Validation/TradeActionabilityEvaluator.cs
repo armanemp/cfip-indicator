@@ -114,6 +114,14 @@ namespace cAlgo
             double tp1RR =
                 rewardRisk.NominalRR;
 
+            double tp1DistanceAtr =
+                Math.Abs(
+                    preview.Tp1 -
+                    actualEntry) /
+                Math.Max(
+                    atr,
+                    1e-9);
+
             DivergenceResult divergence =
                 _m5Frame == null
                     ? DivergenceResult.CreateNoDivergence()
@@ -125,6 +133,23 @@ namespace cAlgo
                         _m5Frame.RegularDivergenceBear,
                         _m5Frame.HiddenDivergenceBull,
                         _m5Frame.HiddenDivergenceBear);
+
+            if (!OpportunityMagnitudeRule.IsMeaningful(
+                    regime,
+                    tp1DistanceAtr))
+            {
+                return new TradeActionabilityResult(
+                    false,
+                    0,
+                    0,
+                    0,
+                    entryDistanceAtr,
+                    Math.Max(0, tp1RR),
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    "TP1 MOVE TOO SMALL FOR REGIME");
+            }
 
             if (!rewardRisk.Allowed)
             {
@@ -143,9 +168,6 @@ namespace cAlgo
                     rewardRisk.Reason);
             }
 
-            // M15 is the canonical execution timeframe. M5/M1 remain
-            // defensive tuning inputs and may only refine/block an M15 setup;
-            // H1+ remains higher-timeframe context for reward-path selection.
             int primaryM15Index =
                 _lastMtfClosedContext == null
                     ? -1
@@ -356,11 +378,6 @@ namespace cAlgo
                     m5AdverseEvidenceKnown ||
                     m1AdverseEvidenceKnown);
 
-
-            // Live actionability must consume the same indicator-fusion quality
-            // that guards confirmed Decision/automatic execution. A stale M5
-            // fusion snapshot is fail-closed so an old indicator state cannot
-            // reopen an otherwise blocked setup.
             string indicatorGateReason = string.Empty;
 
             if (_m5Frame != null)
@@ -417,187 +434,25 @@ namespace cAlgo
                         (int)Math.Round(
                             trapRisk.Risk * 0.18)));
 
-            if (!string.IsNullOrEmpty(indicatorGateReason))
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    indicatorGateReason);
-
-            if (!qualityReady)
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "EXECUTION ZONE QUALITY");
-
-            if (!IsActionabilityTriggerReady(
-                    closedM5,
-                    direction,
-                    liveMode))
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "M5 TRIGGER");
-
-            if (liveMode == ExecutionMode.WaitingForTrigger)
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "WAITING FOR TRIGGER");
-
-            if (liveMode == ExecutionMode.None)
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "OUTSIDE EXECUTION WINDOW");
-
-            if (tp1RR < rewardRisk.RequiredRR)
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "RR BELOW ACTIONABLE FLOOR");
-
-            if (late)
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "LATE / PRICE EXTENDED");
-
-            if (microConflict)
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "ENTRY MOMENTUM CONFLICT");
-
-            if (opposingRegularDivergence &&
-                divergence.Quality >= 78)
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "OPPOSING REGULAR DIVERGENCE");
-
-            if (trapRisk.Block &&
-                EntryActionabilityPolicy.ShouldBlockTrapRisk(
-                    liveMode))
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    EntryTrapRiskPolicy.FormatPresentationReason(
-                        trapRisk.Reason,
-                        trapRisk.Context));
-
-            if (locationQuality <
-                ActionabilityThresholdPolicy.EffectiveUpstreamEntryLocationQuality(
-                    MinimumEntryQuality))
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "ENTRY LOCATION QUALITY");
-
-            if (timingQuality <
-                ActionabilityThresholdPolicy.EffectiveUpstreamEntryTimingQuality())
-                return new TradeActionabilityResult(
-                    false,
-                    locationQuality,
-                    timingQuality,
-                    pricePositionQuality,
-                    entryDistanceAtr,
-                    tp1RR,
-                    divergence.Quality,
-                    divergence.Direction,
-                    divergence.Type,
-                    "ENTRY TIMING");
-
-            return new TradeActionabilityResult(
-                true,
+            return BuildTradeActionabilityResult(
+                closedM5,
+                direction,
+                liveMode,
                 locationQuality,
                 timingQuality,
                 pricePositionQuality,
                 entryDistanceAtr,
                 tp1RR,
-                divergence.Quality,
-                divergence.Direction,
-                divergence.Type,
-                supportiveHiddenDivergence
-                    ? "ACTIONABLE • HIDDEN DIVERGENCE CONFIRM"
-                    : "ACTIONABLE");
-        }
+                divergence,
+                indicatorGateReason,
+                qualityReady,
+                late,
+                microConflict,
+                opposingRegularDivergence,
+                supportiveHiddenDivergence,
+                trapRisk,
+                rewardRisk.RequiredRR);
 
+        }
     }
 }

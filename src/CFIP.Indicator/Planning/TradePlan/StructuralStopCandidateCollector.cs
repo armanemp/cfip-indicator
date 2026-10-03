@@ -22,6 +22,65 @@ namespace cAlgo
                                     List<Level> candidates =
                                         new List<Level>();
 
+                            if (UseM1Trigger &&
+                                _m1Bars != null)
+                            {
+                                DateTime reference = _m5Bars.OpenTimes[closedM5];
+                                int m1Index = ClosedIndex(_m1Bars, reference);
+
+                                if (m1Index >= 10)
+                                {
+                                    double m1Atr = Atr(_m1Bars, m1Index);
+                                    if (!IsFinitePositive(m1Atr))
+                                        m1Atr = atr;
+
+                                    double swing = direction == 1
+                                        ? FindSwingLowBelow(_m1Bars, m1Index, entry)
+                                        : FindSwingHighAbove(_m1Bars, m1Index, entry);
+
+                                    AddLevel(
+                                        candidates,
+                                        swing,
+                                        "M1_MICRO_STRUCTURE_STOP",
+                                        "M1",
+                                        0,
+                                        Math.Max(1.0, SwingStructureWeight * 0.45));
+
+                                    Zone microFvg = FindNearestFvg(
+                                        _m1Bars,
+                                        m1Index,
+                                        direction,
+                                        m1Atr,
+                                        false,
+                                        entry,
+                                        true);
+
+                                    if (microFvg != null)
+                                        AddLevel(
+                                            candidates,
+                                            direction == 1 ? microFvg.Low : microFvg.High,
+                                            "M1_MICRO_FVG_STOP",
+                                            "M1",
+                                            microFvg.Age,
+                                            Math.Max(1.0, (FvgWeight + SmartStopZoneBonus) * 0.45));
+
+                                    Zone microOb = FindNearestOrderBlock(
+                                        _m1Bars,
+                                        m1Index,
+                                        direction,
+                                        m1Atr);
+
+                                    if (microOb != null)
+                                        AddLevel(
+                                            candidates,
+                                            direction == 1 ? microOb.Low : microOb.High,
+                                            "M1_MICRO_ORDER_BLOCK_STOP",
+                                            "M1",
+                                            microOb.Age,
+                                            Math.Max(1.0, (OrderBlockWeight + SmartStopZoneBonus) * 0.45));
+                                }
+                            }
+
                             if (UseM5StructureForStop)
                             {
                                 double swing =

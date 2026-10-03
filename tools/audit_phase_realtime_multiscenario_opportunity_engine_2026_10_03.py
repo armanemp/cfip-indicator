@@ -21,7 +21,10 @@ def check(name, condition):
 
 candidate = read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs")
 future = read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
-builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+builder = (
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+)
 stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs")
@@ -129,10 +132,19 @@ check(
 )
 
 check(
-    "live trading remains fail-closed while realtime demo execution is available",
-    "if (Account.IsLive)" in bot and
-    "this build is demo-only" in bot and
-    "Enable Demo Market Execution" in bot
+    "live trading is explicitly account-scoped and default-off",
+    "Enable Live Market Execution" in bot and
+    "Enable Live Pending Stop Execution" in bot and
+    "Enable Live Pending Limit Execution" in bot and
+    "Account.IsLive" in bot and
+    "EffectiveMarketExecutionEnabled" in bot
+)
+
+check(
+    "tiny stagnant opportunities are blocked before current/future execution",
+    "OpportunityMagnitudeRule.IsMeaningful(" in read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") and
+    "OpportunityMagnitudeRule.IsMeaningful(" in future and
+    "TP1 MOVE TOO SMALL FOR REGIME" in read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
 )
 
 check(

@@ -47,7 +47,7 @@ namespace cAlgo
 
             if (!signalPresentationAllowed)
             {
-                Chart.RemoveObject(P + "WATCH_ARROW");
+                RemoveMtfTrendStrengthArrowStack();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -63,7 +63,7 @@ namespace cAlgo
 
             if (visualDirection == 0)
             {
-                Chart.RemoveObject(P + "WATCH_ARROW");
+                RemoveMtfTrendStrengthArrowStack();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -91,33 +91,22 @@ namespace cAlgo
                         0.02,
                         ArrowOffsetAtr));
 
-            string arrowState =
-                ResolveSignalArrowState(
-                    snapshot,
-                    visualDirection);
-
             bool showCurrentStateArrow =
                 ShowSignalArrow;
 
             if (showCurrentStateArrow)
             {
-                DrawIcon(
-                    P + "WATCH_ARROW",
-                    visualDirection == 1
-                        ? ChartIconType.UpArrow
-                        : ChartIconType.DownArrow,
+                RenderMtfTrendStrengthArrowStack(
+                    snapshot,
+                    ResolveArrowStackDirection(
+                        snapshot,
+                        visualDirection),
                     arrowBar,
-                    visualDirection == 1
-                        ? Bars.LowPrices[arrowBar] - offset
-                        : Bars.HighPrices[arrowBar] + offset,
-                    SignalArrowColorFor(
-                        visualDirection,
-                        arrowState));
+                    offset);
             }
             else
             {
-                Chart.RemoveObject(
-                    P + "WATCH_ARROW");
+                RemoveMtfTrendStrengthArrowStack();
             }
 
             Chart.RemoveObject(
@@ -401,8 +390,7 @@ namespace cAlgo
         
         private void ClearWatchObjects()
                         {
-                            Chart.RemoveObject(
-                                P + "WATCH_ARROW");
+                            RemoveMtfTrendStrengthArrowStack();
                 
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");

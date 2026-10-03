@@ -1,3 +1,51 @@
+## 2026-10-03 — Integrated realtime/live/MTF + audio + panel header hardening
+
+Implementation branch: `phase/mtf-realtime-all-engines-smart-arrows-2026-10-03`.
+
+User-requirement integration recorded:
+- realtime current quote state, historical evidence and forward-looking pending opportunities remain distinct evidence/execution layers;
+- all requested timeframes contribute simultaneously to the analysis graph while preserving the M15 decision/entry-reference contract and lower-timeframe precision roles;
+- cBot owns broker execution for present/future scenarios and has bounded multi-scenario capacity plus account-scoped live controls;
+- stagnant RANGE/COMPRESSION opportunities are protected by magnitude/RR quality rules rather than by increasing low-value trade frequency;
+- nine-level smart trend arrows derive strength from HTF dominance and render 1/2/3 arrows in each weak/medium/strong tier;
+- Start/Stop and broker execution/recovery audio are centralized in the cBot lifecycle audio module;
+- panel header presentation is now a separate realtime owner and no longer relies on a static creation-time title.
+
+Verification remains pending until the exact branch head passes accumulated Source/Architecture, Runtime Acceptance and cTrader Compile gates. Target-terminal behavior remains a manual acceptance boundary.
+
+## 2026-10-03 — Realtime Live Execution + Signal Truth Unification
+
+Status: implementation complete; verification pending; PR #240 open.
+
+Implemented:
+- explicit account-scoped Live execution arms, default OFF, for Market / Pending Stop / Pending Limit / Aggressive / Management;
+- removed the unconditional live-account hard stop and kept execution fail-closed until the live arm for the requested action is enabled;
+- bounded simultaneous ScenarioId capacity from both cBot and Indicator settings;
+- Indicator Maximum Open Positions now supports 1..10 and defaults to 3;
+- cBot signal-store reload cadence reduced to 100ms;
+- new volatility-relative TP1 opportunity magnitude gate for current and future candidates;
+- RANGE low-RR floor strengthened to 2.00;
+- reaction/actionable alert direction now follows canonical SignalVisualSnapshot authority;
+- cBot LIVE/DEMO mode is published into the shared execution state and surfaced by the Indicator;
+- updated legacy realtime/position-truth audits so they validate explicit Live mode rather than the superseded demo-only assumption.
+
+Important safety:
+- Indicator remains broker-mutation-free;
+- M15 remains canonical decision/execution reference;
+- M5 remains trigger/tuning/entry precision and M1 remains optional;
+- existing geometry, volume, margin, spread, market-hours and daily-loss protections remain active;
+- live execution is default OFF;
+- same ScenarioId idempotency and per-scenario capacity remain intact.
+
+Verification boundary:
+Source/Architecture and Runtime Acceptance must pass, followed by actual cTrader target-terminal validation for Live execution, simultaneous scenarios, pending fills, audio playback, attachment state, reconnect/restart and UI/chart/popup direction parity.
+
+Phase record: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
@@ -3715,3 +3763,41 @@ Verification status:
 - Propagated composite quality into scenario PlanSnapshot quality so Indicator ranking and cBot payload quality are aligned.
 - No public confidence/RR/risk gate was lowered to force more signals.
 - Full-chain audit remains mandatory; target-terminal multi-scenario validation is still required before operational adoption.
+
+## 2026-10-03 — Realtime/Live Execution + Volume Profile Intelligence
+
+Implementation continued on codex/realtime-live-signal-unification-2026-10-03 / PR #240.
+
+Completed in this unit:
+- live account routing became explicit and default-OFF per broker mutation action;
+- current actionable scenarios remain immediate Market/Aggressive executions, while future scenarios remain Pending Stop/Limit orders;
+- cBot owns bounded simultaneous ScenarioId capacity independently of the Indicator legacy single-plan capacity;
+- signal-store reload cadence is 100 ms;
+- tiny stagnant-market opportunities receive a volatility-relative magnitude gate and RANGE receives the stronger 2.00 TP1-RR floor;
+- cBot attachment/presence and alert-sound transport seams remain observable through canonical state/queue owners;
+- the previously supplied Volume Profile source was verified as unused in the repository and has now been integrated as a lightweight M15 POC/VAL/VAH evidence layer with closed-bar caching and bounded quality/ranking influence.
+
+Verification status:
+- Runtime Acceptance and cTrader Compile were green on the PR #240 head before the final follow-up edits;
+- Source/Architecture initially failed at the architecture verifier because PR #240 incorrectly changed the Indicator certified single-plan MaximumOpenPositions contract to 1..10; this was corrected by restoring that contract and making cBot concurrency the sole broker-side capacity owner;
+- repository CI must be rerun against the latest branch head after these follow-up edits;
+- target-terminal acceptance remains required for live arm, same-tick handoff, simultaneous scenarios, future pending fill lifecycle, cBot attachment, audible sound and restart/reconnect.
+
+Operator action after merge: git pull --ff-only on local main.
+
+Phase records: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md, docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md.
+
+
+## 2026-10-03 — True Multi-Timeframe Analysis / M15 Tuning / Lower-TF Entry / All-TF Risk-Reward
+
+Corrected the execution interpretation so M15 is not treated as the only analysis timeframe.
+
+Implementation:
+- all aligned M1/M5/M15/M30/H1/H4/D1/W1 frames remain simultaneous inputs to the decision stack;
+- M15 is the final signal-tuning/reference layer, while the combined multi-timeframe evidence determines directional consensus;
+- M5 remains the primary entry-precision layer and M1 is an optional lower-weight micro-entry/confirmation layer;
+- structural stop selection now accepts M1 micro structure in addition to M5 and M15/M30/H1/H4/D1/W1 structure, while existing risk-envelope/reward-path gates remain mandatory;
+- target construction now adds bounded M1 micro swing/FVG/OB candidates to the existing M5 + M15/M30/H1/H4/D1/W1 target pool;
+- the final trade geometry remains constrained by direction, structural validity, spread, risk, RR, target obstacles, target spacing, actionability and broker preflight.
+
+The older wording that described M15 as the execution analysis clock is superseded by this multi-timeframe contract. M15 remains the canonical signal/reference identity where traceability/history contracts require it, but the analysis itself is simultaneous across the complete aligned timeframe set.

@@ -52,28 +52,17 @@ namespace cAlgo
                             0.02,
                             ArrowOffsetAtr));
 
-                DrawIcon(
-                    P + "WATCH_ARROW",
-                    visualDirection == 1
-                        ? ChartIconType.UpArrow
-                        : ChartIconType.DownArrow,
+                RenderMtfTrendStrengthArrowStack(
+                    snapshot,
+                    ResolveArrowStackDirection(
+                        snapshot,
+                        visualDirection),
                     hostBar,
-                    visualDirection == 1
-                        ? Bars.LowPrices[hostBar] - watchOffset
-                        : Bars.HighPrices[hostBar] + watchOffset,
-                    SignalArrowColorFor(
-                        visualDirection,
-                        snapshot.Confidence >=
-                            HighConfidenceThreshold
-                            ? "STRONG"
-                            : showConfirmedSignal
-                                ? "CONFIRMED"
-                                : "WATCH"));
+                    watchOffset);
             }
             else
             {
-                Chart.RemoveObject(
-                    P + "WATCH_ARROW");
+                RemoveMtfTrendStrengthArrowStack();
             }
         }
 

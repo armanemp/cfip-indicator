@@ -1,9 +1,10 @@
 namespace cAlgo
 {
     /// <summary>
-    /// Canonical timeframe roles for the active execution architecture.
-    /// M15 is the execution clock. M5/M1 are defensive tuning layers.
-    /// H1+ provide higher-timeframe context and extended reward-path evidence.
+    /// Canonical timeframe roles for the active multi-timeframe architecture.
+    /// Every loaded timeframe contributes analysis context simultaneously.
+    /// M15 is the canonical signal-tuning/reference layer, not the only analysis layer.
+    /// M5/M1 refine the live entry; M15+ provide structural/risk/reward context.
     /// </summary>
     internal static class ExecutionTimeframePolicy
     {
