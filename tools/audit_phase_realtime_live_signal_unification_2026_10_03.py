@@ -112,14 +112,16 @@ check(
 )
 
 check(
-    "all timeframe analysis roles remain explicit",
-    "M15Frame" in provider and
-    "_m15Frame" in actionability and
-    "_m30Frame" in actionability and
-    "_h1Frame" in actionability and
-    "_h4Frame" in actionability and
-    "_d1Frame" in actionability and
-    "_w1Frame" in actionability
+    "all timeframe analysis remains wired into the decision stack",
+    "request.M1Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "request.M5Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "request.M15Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "request.M30Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "request.H1Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "request.H4Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "request.D1Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "request.W1Frame" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "context.W1" in read("src/CFIP.Indicator/Analysis/Market/Decision/TimeframeAgreementAnalyzer.cs")
 )
 
 check(
