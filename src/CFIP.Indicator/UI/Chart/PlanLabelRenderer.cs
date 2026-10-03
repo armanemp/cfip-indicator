@@ -85,7 +85,7 @@ namespace cAlgo
                         ? "Arial"
                         : PanelFontFamily;
                 label.IsBold =
-                    true;
+                    false;
                 label.HorizontalAlignment =
                     HorizontalAlignment.Left;
                 label.VerticalAlignment =
