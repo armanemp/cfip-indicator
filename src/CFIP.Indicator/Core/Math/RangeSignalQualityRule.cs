@@ -40,8 +40,7 @@ namespace cAlgo
             int structuralConfirmations,
             int confidence,
             int smartQuality,
-            int edge,
-            double tp1RR)
+            int edge)
         {
             Direction = direction;
             RangePosition = rangePosition;
@@ -60,7 +59,6 @@ namespace cAlgo
             Confidence = confidence;
             SmartQuality = smartQuality;
             Edge = edge;
-            Tp1RR = tp1RR;
         }
     }
 
@@ -174,11 +172,6 @@ namespace cAlgo
                     false,
                     "RANGE NO-TRADE • NO DISPLACEMENT");
 
-            if (IsRangeFinitePositive(input.Tp1RR) &&
-                input.Tp1RR < 2.25)
-                return new RangeSignalQualityResult(
-                    false,
-                    "RANGE NO-TRADE • LOW RR");
 
             return new RangeSignalQualityResult(
                 true,
@@ -187,13 +180,5 @@ namespace cAlgo
                     : "RANGE REVERSAL QUALIFIED");
         }
 
-        private static bool IsRangeFinitePositive(
-            double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value > 0;
-        }
     }
 }
