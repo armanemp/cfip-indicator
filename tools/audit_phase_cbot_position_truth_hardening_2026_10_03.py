@@ -87,10 +87,21 @@ check(
     "RefreshIndicatorBinding" in bot
 )
 check(
+    "live-account execution remains fail-closed",
+    "if (Account.IsLive)" in bot and
+    'live account detected' in bot and
+    "this build is demo-only" in bot
+)
+check(
     "CBOT-6M identity and capacity boundary remains present",
     "ScenarioId" in sixm and
     "Max Concurrent Scenarios" in sixm and
     "CountManagedScenarioObjects(" in sixm
+)
+check(
+    "concurrent scenario capacity remains bounded by cBot configuration",
+    "Max Concurrent Scenarios" in bot and
+    "MaxValue = 10" in bot
 )
 check(
     "dedicated position-truth audit is accumulated into Source/Architecture CI",
