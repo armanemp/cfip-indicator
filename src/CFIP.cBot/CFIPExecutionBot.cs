@@ -934,9 +934,9 @@ namespace CFIP.cBot
                     out string reason))
             {
                 // The custom Indicator is a local chart algorithm and must be
-                // attached explicitly by the operator. Never call
-                // ChartIndicators.Add(name) here: that re-enters cTrader's
-                // algorithm-resolution path during cBot restart/reload and can
+                // attached explicitly by the operator. Never create/resolve it
+                // from this lifecycle path: doing so re-enters cTrader's
+                // algorithm-resolution flow during cBot restart/reload and can
                 // surface a Local/Cloud selection prompt.
                 Print(
                     "CFIP ANALYSIS BIND | unresolved | reason={0} | chart={1} | action=ATTACH LOCAL INDICATOR",
