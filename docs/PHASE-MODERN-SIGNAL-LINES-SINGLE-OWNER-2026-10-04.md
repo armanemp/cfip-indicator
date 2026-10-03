@@ -26,7 +26,10 @@ The phase removes that dual interpretation at the shared presentation-state boun
 - Exactly 40 chart bars, ending at the latest chart candle.
 - No infinite extension.
 - Semantic line colors remain intact, with one canonical full-opacity cTrader-like treatment (255) applied uniformly to every signal/plan line.
-- Labels remain white, background-free and horizontally separated from the line start.
+- Labels are white text inside a compact filled box.
+- The box uses exactly the same semantic/full-opacity color as its line.
+- The box's right edge is attached to the exact right endpoint of the 40-bar line.
+- The text is padded inside the box; no separate label renderer or alternate anchor exists.
 - Expired/invalid objects continue to be removed by the existing lifecycle owners.
 
 ## Verification status
@@ -44,3 +47,7 @@ No new renderer, alternate geometry engine, or parallel signal-line logic was in
 ## cTrader visual reference audit — 2026-10-04
 
 Official cTrader documentation and current chart examples were reviewed. The native horizontal-line visual language is intentionally minimal: horizontal, solid, thin and crisp, with price-axis context. CFIP adopts that visual language through the existing PlanLineRenderer and does not introduce a second renderer. The project-specific 40-bar span remains unchanged because it is an explicit CFIP presentation contract.
+
+## Final label-box contract — 2026-10-04
+
+The plan-level price label is a cTrader-style compact price tag: filled rectangle, same color as the associated level line, white bold text, compact geometry, and exact attachment to the line's right endpoint. `PlanLabelRenderer` is the sole owner; `PlanLabelRenderCoordinator` supplies the canonical presentation state and endpoint.
