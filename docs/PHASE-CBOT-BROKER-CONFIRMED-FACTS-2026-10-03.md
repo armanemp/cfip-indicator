@@ -52,6 +52,7 @@ Target terminal:
 - immediate panel state changes without waiting for a later tick;
 - pending placement shows pending state;
 - pending fill transitions to active state from broker events;
-- missing/invalid broker protection remains fail-closed.
+- missing/invalid broker protection remains fail-closed;
+- a broker-created Position with incomplete protection is reported as RecoveryRequired rather than as a clean Confirmed execution.
 
 Operator action after merge: git pull --ff-only on local main.
