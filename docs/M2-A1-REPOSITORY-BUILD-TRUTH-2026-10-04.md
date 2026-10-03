@@ -32,11 +32,11 @@ This document records the first executable M2-A gate. It audits repository/build
 
 The primary solution contains only the three production projects. The repository also contains executable contract/preflight/benchmark verification projects that are outside this solution graph.
 
-Impact: a normal solution build can succeed while one or more repository-level contract harnesses or preflight projects are not compiled. This creates a distinction between “production solution builds” and “repository verification graph”.
+Impact: a normal Visual Studio solution build does not cover repository-level contract/preflight verification projects. The authoritative CI workflow does explicitly build those verification projects, so this is primarily a local-build discoverability/manifest issue rather than an untested-CI issue.
 
 Root cause: verification projects evolved as separate tools but were not represented in the primary solution/build orchestration.
 
-Required remediation: define one authoritative build manifest (without making test/harness code part of production assemblies) that explicitly builds the production graph plus all mandatory verification graphs. Prefer a solution or CI orchestration layer that references each project rather than relying on scattered script knowledge.
+Required remediation: keep the authoritative CI build manifest explicit and consider a dedicated verification solution/manifest for local developer builds. Do not place harness code into production assemblies.
 
 No remediation is marked complete yet.
 
@@ -160,3 +160,17 @@ Continue M2-A.2 from this baseline:
 **duplicate/near-duplicate files, partial classes, conditional compilation, generated/obsolete/unreachable artifacts, and build reachability reconciliation.**
 
 No feature tuning or signal/visual changes should begin until the repository/build truth gate has a complete disposition.
+
+### M2-A.1-007 — Production Indicator project was not directly compiled by CI
+
+**Classification:** production build-gate gap  
+**Severity:** High  
+**Status:** ROOT-CORRECTED / VERIFICATION PENDING
+
+Before this audit correction, `.github/workflows/ci-build.yml` built `tools/CFIP.Indicator.CI` (a separate full-source mirror) but did not directly restore/build `src/CFIP.Indicator/CFIP.Indicator.csproj`.
+
+That left the actual production project file, its own project metadata and its exact dependency graph outside the direct CI compile gate. The mirror is useful as an additional invariant but cannot be treated as a substitute for the production project.
+
+Root correction: CI now directly restores/builds `src/CFIP.Indicator/CFIP.Indicator.csproj` and retains the mirror as an additional source-compilation check.
+
+Verification: the updated workflow must pass on the exact post-correction HEAD before this finding can be marked fully verified.
