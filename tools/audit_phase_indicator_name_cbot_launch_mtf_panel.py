@@ -43,7 +43,8 @@ require(
 )
 require(
     (
-        "PanelTimeframePresentationRule.Resolve" in panel_format and
+        "PanelTimeframePresentationRule" in panel_format and
+        ".Resolve(" in panel_format and
         "PanelFrameDirectionRule.ResolveDisplayDirection" in frame_rule
     ) and
     "PanelFrameDirectionRule.ResolveLabel" in frame_rule,
