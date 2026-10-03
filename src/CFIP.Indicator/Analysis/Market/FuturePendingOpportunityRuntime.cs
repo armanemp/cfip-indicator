@@ -6,6 +6,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private const int LiveOpportunityRefreshIntervalMilliseconds = 100;
+
         private void AddFuturePendingOpportunityCandidates(int closedM5)
         {
             if (_decision == null ||
@@ -325,7 +327,8 @@ namespace cAlgo
                 _lastLiveOpportunityRefreshM5 != closedM5;
 
             if (!newM5 &&
-                (now - _lastLiveOpportunityRefreshUtc).TotalMilliseconds < 200)
+                (now - _lastLiveOpportunityRefreshUtc).TotalMilliseconds <
+                    LiveOpportunityRefreshIntervalMilliseconds)
                 return;
 
             _lastLiveOpportunityRefreshM5 = closedM5;
