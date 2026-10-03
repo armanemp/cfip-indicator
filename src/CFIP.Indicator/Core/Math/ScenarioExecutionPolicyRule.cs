@@ -75,8 +75,8 @@ namespace cAlgo
                     candidate.MinimumRequiredRewardDistanceAtr,
                     adaptiveRewardFloor);
 
-            if (!IsFinitePositive(candidate.RewardDistanceAtr) ||
-                !IsFinitePositive(requiredRewardFloor) ||
+            if (!NumericGuards.IsFinitePositive(candidate.RewardDistanceAtr) ||
+                !NumericGuards.IsFinitePositive(requiredRewardFloor) ||
                 candidate.RewardDistanceAtr <
                 requiredRewardFloor)
             {
@@ -315,14 +315,6 @@ namespace cAlgo
                 false,
                 reason,
                 reason);
-        }
-
-        private static bool IsFinitePositive(double value)
-        {
-            return
-                !double.IsNaN(value) &&
-                !double.IsInfinity(value) &&
-                value > 0;
         }
 
         private static bool IsScenarioPriceClose(
