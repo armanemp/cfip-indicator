@@ -24,3 +24,11 @@ Then run:
 ```bash
 dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release
 ```
+
+
+## Corrective verification — 2026-10-04
+- Removed the literal escaped-newline token that caused `PlanLabelRenderer.cs` compilation failure.
+- Removed the obsolete one-bar label-gap owner; exact `2 * Symbol.PipSize` clearance is now the sole spacing contract.
+- Updated architecture verification to reject rectangles/markers and white-only legacy label assumptions.
+- cTrader indicator CI compile for commit `9b9c11b3...` passed; local cTrader build must be re-run after pulling the corrected branch/main commit.
+- Runtime acceptance CI was already failing on `main` before this correction, so it is tracked separately and is not attributed to this visual-label change.
