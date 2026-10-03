@@ -52,7 +52,7 @@ check(
 check(
     "the nine levels map to three real strength tiers",
     "score < LevelMinimumScore" in trend and
-    "Math.Ceiling(" in trend and
+    "NumericGuards.ClampInt(" in trend and
     "Math.Min(9, level)" not in trend or "NumericGuards.ClampInt" in trend,
 )
 
@@ -94,7 +94,7 @@ check(
 )
 
 check(
-    "preferred direction is passed into the single strength evaluator",
+    "direction override is absent from the single strength evaluator",
     "preferredDirection" not in builder and
     "MtfTrendStrengthRule.Evaluate(" in builder,
 )
