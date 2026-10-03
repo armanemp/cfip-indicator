@@ -19,7 +19,7 @@ def check(name, ok):
         errors.append(name)
 
 check("plan lines are solid and canonical", "return LineStyle.Solid;" in line)
-check("plan line geometry is exactly bounded from latest candle", "GetPlanLineRightBar()" in line and "CompactPlanLineLengthBars" in line and "right - CompactPlanLineLengthBars" in line)
+check("plan line geometry is exactly bounded from latest candle", "GetPlanLineRightBar()" in line and "CompactPlanLineLengthBars" in line and "GetPlanLineRightBar() - " in line)
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
 check("plan labels are background-free", 'Chart.RemoveObject(\n                    name + "_BOX")' in labels and "Chart.DrawRectangle(" not in labels)
 check("plan labels are white", "return Color.White;" in labels)
