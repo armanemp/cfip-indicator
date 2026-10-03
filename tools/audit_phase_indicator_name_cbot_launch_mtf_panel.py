@@ -42,14 +42,13 @@ require(
     "cBot must not bind runtime execution to host Chart TF",
 )
 require(
-    (
-        "PanelTimeframePresentationRule" in panel_format and
-        ".Resolve(" in panel_format and
-        "PanelFrameDirectionRule.ResolveDisplayDirection" in frame_rule
-    ) and
+    "PanelTimeframePresentationRule" in panel_format and
+    "Resolve(" in panel_format and
+    "PanelFrameDirectionRule.ResolveDisplayDirection" in frame_rule and
     "PanelFrameDirectionRule.ResolveLabel" in frame_rule,
     "panel frame text must use the canonical shared directional-bias presentation rule",
 )
+
 require(
     "BULL BIAS" in frame_rule and
     "BEAR BIAS" in frame_rule and
