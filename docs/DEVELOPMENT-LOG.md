@@ -3744,3 +3744,10 @@ Verification status:
 - extended the accumulated hardening audit for these invariants.
 
 Verification authority remains Source/Architecture CI plus cTrader Compile/Build; target-terminal acceptance is still mandatory for real attachment/audio/live behavior.
+
+
+## 2026-10-03 — cBot live/realtime completion
+
+Closed two runtime seams found in the live/realtime pass: bound Indicator attachment identity was not republished at the binding transition, and the normal Calculate path could skip queued sound servicing after an early/exceptional cycle. The cBot now republishes attachment truth immediately, and the Indicator services the sound queue from the Calculate finally boundary while retaining the IsLastBar guard and single delivery owner.
+
+No strategy, quality, RR, risk, MTF role or broker-authority threshold was lowered.
