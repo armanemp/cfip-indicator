@@ -25,7 +25,6 @@ namespace CFIP.cBot.Shadow
         private readonly Dictionary<string, ShadowHostResult> _lastResultByScenario =
             new Dictionary<string, ShadowHostResult>(StringComparer.Ordinal);
 
-        private DateTime _lastBrokerRecheckUtc = DateTime.MinValue;
         private ShadowHostResult _lastResult;
 
         public long LastAcceptedRevision =>
@@ -270,9 +269,6 @@ namespace CFIP.cBot.Shadow
                 scenarioKey ?? string.Empty] =
                 nowUtc;
 
-            // Compatibility telemetry only. Per-scenario timing above is
-            // the authoritative recheck gate.
-            _lastBrokerRecheckUtc = nowUtc;
         }
 
         private long GetLastRevision(
