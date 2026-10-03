@@ -90,7 +90,7 @@ Full-chain audit:
 Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Signal/Alert -> ScenarioBatch -> cBot preflight -> per-ScenarioId broker truth -> management policy -> broker mutation -> confirmation -> protection -> outcome/history.
 
 Safety:
-- live accounts remain blocked;
+- live accounts were blocked during the historical phase recorded here; current live behavior is governed by the explicit default-OFF Live execution arm;
 - cBot remains sole broker mutation owner;
 - M15/M5/M1 role separation unchanged;
 - no signal-quality, RR, risk, margin, spread, daily-loss or concurrency threshold is lowered;
