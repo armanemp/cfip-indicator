@@ -317,7 +317,6 @@ namespace CFIP.cBot.Execution
             }
             catch (Exception ex)
             {
-                Remember(key);
                 if (idempotencyStore != null)
                     idempotencyStore.RecordAttempt(
                         robot,
@@ -342,8 +341,6 @@ namespace CFIP.cBot.Execution
 
                 return false;
             }
-
-            Remember(key);
 
             if (result == null)
             {
@@ -409,6 +406,8 @@ namespace CFIP.cBot.Execution
                       result.PendingOrder.Id
                     : "PENDING LIMIT #" +
                       result.PendingOrder.Id;
+
+            Remember(key);
 
             report =
                 BuildReport(
