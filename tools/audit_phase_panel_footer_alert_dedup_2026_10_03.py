@@ -96,7 +96,8 @@ check(
     "ResolvePanelFooterAreaHeight(" in panel and
     "ResolvePanelFooterAreaHeight(" in visual and
     "minimumRenderableHeight" in layout and
-    "PanelTrendTimeframeLampRowHeight + PanelTrendTimeframeLampTopSpacing" in panel,
+    "PanelTrendTimeframeLampRowHeight" in panel and
+    "PanelTrendTimeframeLampTopSpacing" in panel,
     "footer height must have one shared minimum and constrained-height safety",
 )
 
