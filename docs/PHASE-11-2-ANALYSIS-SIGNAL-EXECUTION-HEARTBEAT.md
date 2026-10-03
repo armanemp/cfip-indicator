@@ -77,3 +77,18 @@ Automated verification proves source/contract/compile correctness. Target-termin
 ## Next phase
 
 Next: Phase 11.3 — execution rejection forensics, missed-actionable cohorts and evidence-driven threshold refinement using accumulated runtime logs and outcomes.
+
+## 2026-10-04 visual-contract correction — superseding label-side rule
+
+The prior wording in this historical phase note that described left-aligned chart text is superseded by the current canonical chart-object geometry.
+
+The final contract is:
+
+- the canonical 40-bar signal/plan line remains unchanged;
+- the label anchor is a bounded number of chart bars before the line start;
+- ChartText.HorizontalAlignment = Right is used at that pre-line anchor, so the visible text extends further left and cannot grow back across the signal line;
+- label Y remains the normalized exact level price;
+- text remains white and background-free;
+- prediction, pending, parallel and active-plan level labels all use the same production UpsertPlanLabel drawing owner.
+
+This correction resolves the presentation-semantics mismatch without introducing a second renderer, alternate line geometry, or alternate signal behavior.
