@@ -128,12 +128,10 @@ namespace cAlgo
                         Math.Max(
                             0,
                             Symbol.Ask - Symbol.Bid),
-                        Math.Max(
-                            Tp1MinimumRR,
-                            MinimumRequiredRRForRegime(
-                                _decision == null
-                                    ? "UNKNOWN"
-                                    : _decision.Regime)),
+                        ResolveAdaptiveRequiredRR(
+                            risk,
+                            atr,
+                            ResolvePlanTargetSelectionLane()),
                         PreferredStopRiskAtr,
                         maximumRiskAtr,
                         Math.Max(0, MaximumRewardRR),
@@ -372,12 +370,10 @@ namespace cAlgo
                 return 0;
 
             double requiredRR =
-                Math.Max(
-                    Tp1MinimumRR,
-                    MinimumRequiredRRForRegime(
-                        _decision == null
-                            ? "UNKNOWN"
-                            : _decision.Regime));
+                ResolveAdaptiveRequiredRR(
+                    risk,
+                    atr,
+                    ResolvePlanTargetSelectionLane());
 
             double maximumRR =
                 Math.Max(
