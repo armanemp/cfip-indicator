@@ -334,6 +334,11 @@ namespace cAlgo
             return _managementCommandsPersistenceDirty;
         }
 
+        private void MarkManagementCommandPersistenceFlushed()
+        {
+            _managementCommandsPersistenceDirty = false;
+        }
+
         private bool FlushManagementCommandPersistenceToLocalStorage()
         {
             if (!_managementCommandsPersistenceDirty)
@@ -346,7 +351,6 @@ namespace cAlgo
                     ManagementCommandCodec.Serialize(_managementCommands),
                     LocalStorageScope.Device);
 
-                _managementCommandsPersistenceDirty = false;
                 return true;
             }
             catch (Exception ex)
