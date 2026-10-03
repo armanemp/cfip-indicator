@@ -59,6 +59,9 @@ namespace cAlgo
                             ? "SELL"
                             : "WAIT";
 
+                string cbot =
+                    ResolvePanelHeaderCbotState();
+
                 text =
                     "CFIP SMART  •  " +
                     GetCanonicalSignalPanelStatus() +
@@ -66,6 +69,8 @@ namespace cAlgo
                     m15Text +
                     "  H1 " +
                     h1Text +
+                    "  •  " +
+                    cbot +
                     "  •  " +
                     Server.TimeInUtc.ToString(
                         "HH:mm:ss",
@@ -75,7 +80,9 @@ namespace cAlgo
             string key =
                 text +
                 "|" +
-                GetCanonicalSignalPanelStatus();
+                GetCanonicalSignalPanelStatus() +
+                "|" +
+                ResolvePanelHeaderCbotState();
 
             if (string.Equals(
                     key,
