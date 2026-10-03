@@ -79,11 +79,13 @@ namespace cAlgo
                                     // deeper warm-up used by optional historical studies.
                                     // This lets the decision engine start while the
                                     // terminal continues to supply additional history.
-                                    return _m5Bars != null &&
+                                    return _m2Bars != null &&
+                                           _m5Bars != null &&
                                            _m15Bars != null &&
                                            _m30Bars != null &&
                                            _h1Bars != null &&
                                            _h4Bars != null &&
+                                           _m2Bars.Count >= 50 &&
                                            _m5Bars.Count >= 60 &&
                                            _m15Bars.Count >= 50 &&
                                            _m30Bars.Count >= 45 &&
