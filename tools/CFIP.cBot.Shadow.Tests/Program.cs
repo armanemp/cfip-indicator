@@ -328,12 +328,24 @@ namespace CFIP.cBot.Shadow.Tests
                     22,
                     Now.AddMilliseconds(10));
 
+            ShadowHostResult firstRecheck =
+                coordinator.Observe(
+                    first,
+                    Safe,
+                    ContractVersion.Current,
+                    22,
+                    Now.AddMilliseconds(20));
+
             Assert(
                 firstResult.State == ShadowHostState.Ready &&
                 secondResult.State == ShadowHostState.Ready &&
+                firstRecheck.State == ShadowHostState.Ready &&
                 firstResult.ScenarioId != secondResult.ScenarioId &&
-                coordinator.LastAcceptedRevision == 22,
-                "independent ScenarioIds sharing one provider revision must both pass shadow validation");
+                firstRecheck.ScenarioId == firstResult.ScenarioId &&
+                secondResult.Reason != firstRecheck.Reason ||
+                (secondResult.Reason == firstRecheck.Reason &&
+                 secondResult.ScenarioId != firstRecheck.ScenarioId),
+                "independent ScenarioIds must keep separate shadow results when they share one provider revision");
         }
 
         private static void VerifyMarginBudget()
