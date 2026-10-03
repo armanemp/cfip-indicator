@@ -5,6 +5,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 bot = ROOT / "src/CFIP.cBot/CFIPExecutionBot.cs"
+capacity = ROOT / "src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs"
 workflow = ROOT / ".github/workflows/source-check.yml"
 errors = []
 
@@ -14,6 +15,7 @@ def check(name, ok):
         errors.append(name)
 
 bot_text = bot.read_text(encoding="utf-8") if bot.exists() else ""
+capacity_text = capacity.read_text(encoding="utf-8") if capacity.exists() else ""
 workflow_text = workflow.read_text(encoding="utf-8") if workflow.exists() else ""
 
 check(
@@ -32,8 +34,9 @@ check(
 
 check(
     "multi-scenario capacity remains cBot-owned and scenario-aware",
-    "CountManagedScenarioObjects(" in bot_text and
-    "MaxConcurrentScenarios" in bot_text
+    "CountManagedScenarioObjects(" in capacity_text and
+    "MaxConcurrentScenarios" in bot_text and
+    "CONCURRENT SCENARIO CAPACITY BLOCKED" in capacity_text
 )
 
 check(
