@@ -34,7 +34,7 @@ namespace cAlgo
                                     if (_prediction != null &&
                                         _prediction.Direction != 0)
                                         return
-                                            (_prediction.Direction == 1 ? "BUY" : "SELL") +
+                                            DirectionText(_prediction.Direction) +
                                             " PREDICTED • SHARE " +
                                             _prediction.DirectionalShare +
                                             " • STR " +
