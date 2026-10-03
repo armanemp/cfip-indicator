@@ -44,6 +44,7 @@ check(
     "int alertRailHeight" in panel and
     "GetPanelAlertMessageRailHeight()" in panel and
     "alertRailHeight > 0" in panel and
+    "PanelTrendTimeframeLampRowHeight" in panel and
     "PanelTrendTimeframeLampTopSpacing" in panel,
     "panel scroll budget must reserve the real alert footer and two-line MTF rail",
 )
