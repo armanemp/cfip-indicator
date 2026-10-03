@@ -3,6 +3,7 @@
 // ============================================================================
 
 using System;
+using CFIP.Contracts;
 using cAlgo.API;
 
 namespace cAlgo
@@ -209,9 +210,11 @@ namespace cAlgo
                 LifecycleState.ExitRequested,
                 "ACTIVE PLAN REVERSAL");
 
-            if (!TryClosePosition(
+            ManagementCommandRequestStatus closeStatus =
+                TryClosePosition(
                     livePosition,
-                    "ACTIVE PLAN REVERSAL"))
+                    "ACTIVE PLAN REVERSAL");
+            if (!closeStatus.IsAccepted())
             {
                 SetLifecycleState(
                     LifecycleState.RecoveryRequired,
