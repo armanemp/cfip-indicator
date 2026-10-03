@@ -9,8 +9,7 @@ namespace cAlgo
             SignalVisualSnapshot snapshot,
             int direction,
             int bar,
-            double offset,
-            string fallbackState)
+            double offset)
         {
             if (snapshot == null ||
                 direction == 0 ||
