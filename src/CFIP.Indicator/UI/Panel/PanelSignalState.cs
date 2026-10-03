@@ -76,11 +76,9 @@ namespace cAlgo
                                         GetMarketBiasDirection();
 
                                     string marketBiasLabel =
-                                        marketBiasDirection == 1
-                                            ? "BULL BIAS"
-                                            : marketBiasDirection == -1
-                                                ? "BEAR BIAS"
-                                                : "NEUTRAL";
+                                        PanelFrameDirectionRule.ResolveLabel(
+                                            0,
+                                            marketBiasDirection);
 
                                     return
                                         "MARKET BIAS  •  M15 " +
