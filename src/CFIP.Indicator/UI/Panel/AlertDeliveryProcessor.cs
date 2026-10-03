@@ -21,11 +21,9 @@ namespace cAlgo
             {
                 processed++;
 
-                // Sound delivery is intentionally independent from panel presentation.
-                // A panel rendering problem must never suppress a realtime audio cue.
-                if (next.PlaySound)
-                    DeliverAlertSound(next);
-
+                // Keep panel delivery and sound delivery separate. A presentation
+                // failure must never suppress realtime sound, and sound playback
+                // is owned by the last-bar Calculate path.
                 try
                 {
                     RecordPanelAlertDelivery(next);
@@ -37,6 +35,43 @@ namespace cAlgo
                         next.Key,
                         ex.Message);
                 }
+
+                if (!next.PlaySound ||
+                    _alertSoundDeliveryQueue == null)
+                    continue;
+
+                if (!_alertSoundDeliveryQueue.Enqueue(next))
+                {
+                    Print(
+                        "CFIP ALERT SOUND QUEUE REJECTED | id={0}",
+                        next.Envelope == null
+                            ? ""
+                            : next.Envelope.AlertId);
+                }
+            }
+        }
+
+        private void ProcessQueuedAlertSoundDelivery()
+        {
+            // cTrader indicator sound playback stays on the realtime last-bar
+            // Calculate boundary rather than the timer/panel rendering path.
+            if (!IsLastBar ||
+                _alertSoundDeliveryQueue == null ||
+                _alertSoundDeliveryQueue.Count == 0)
+                return;
+
+            int processed = 0;
+
+            while (processed < MaxAlertDeliveriesPerPump &&
+                   _alertSoundDeliveryQueue.TryDequeue(
+                       out AlertDelivery next))
+            {
+                processed++;
+
+                if (!next.PlaySound)
+                    continue;
+
+                DeliverAlertSound(next);
             }
         }
 
