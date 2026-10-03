@@ -471,6 +471,16 @@ namespace CFIP.cBot
                             ? pendingReport.BrokerPendingOrderId.Value.ToString()
                             : "",
                         pendingReason);
+
+                    ReconcileBrokerState(true);
+
+                    PublishExecutionState(
+                        pendingReport.Status ==
+                        BrokerReportStatus.Confirmed
+                            ? "BROKER PENDING ORDER CONFIRMED"
+                            : "PENDING SUBMISSION RESULT • " +
+                              pendingReport.Status,
+                        true);
                 }
 
                 return;
@@ -494,14 +504,40 @@ namespace CFIP.cBot
             {
                 Print(
                     "CFIP DEMO MARKET | status={0} | action={1} | " +
-                    "revision={2} | position={3} | reason={4}",
+                    "revision={2} | position={3} | entry={4} | stop={5} | " +
+                    "target={6} | reason={7}",
                     report.Status,
                     report.Action,
                     report.AttemptRevision,
                     report.BrokerPositionId.HasValue
                         ? report.BrokerPositionId.Value.ToString()
                         : "",
+                    report.ConfirmedEntry.HasValue
+                        ? report.ConfirmedEntry.Value.ToString(
+                            "G17",
+                            System.Globalization.CultureInfo.InvariantCulture)
+                        : "",
+                    report.ConfirmedStop.HasValue
+                        ? report.ConfirmedStop.Value.ToString(
+                            "G17",
+                            System.Globalization.CultureInfo.InvariantCulture)
+                        : "",
+                    report.ConfirmedTarget.HasValue
+                        ? report.ConfirmedTarget.Value.ToString(
+                            "G17",
+                            System.Globalization.CultureInfo.InvariantCulture)
+                        : "",
                     executionReason);
+
+                ReconcileBrokerState(true);
+
+                PublishExecutionState(
+                    report.Status ==
+                    BrokerReportStatus.Confirmed
+                        ? "BROKER POSITION CONFIRMED"
+                        : "MARKET SUBMISSION RESULT • " +
+                          report.Status,
+                    true);
             }
         }
 

@@ -1,3 +1,36 @@
+## Current focus — CBOT BROKER-CONFIRMED EXECUTION FACTS — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Closed:
+- successful market execution now publishes actual broker Entry/SL/TP through the existing BrokerExecutionReport fields;
+- a broker-created Position without valid SL/TP is surfaced as RecoveryRequired rather than a clean execution confirmation;
+- market/pending submission results immediately trigger broker reconciliation and cBot state republish;
+- pending-order requests are not mislabeled as broker-confirmed fill facts;
+- pending fill lifecycle events continue to derive active state from the real broker Position.
+
+Full-chain audit:
+Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Signal/Alert -> cBot preflight -> per-ScenarioId truth -> broker submission -> broker-confirmed facts -> protection -> management -> outcome/history.
+
+Safety:
+- broker mutation remains cBot-owned;
+- missing protection remains fail-closed;
+- M15/M5/M1 role separation remains intact;
+- all existing quality/RR/risk/margin/spread/daily-loss/concurrency gates remain unchanged.
+
+Verification:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- dedicated broker-confirmed-facts audit;
+- target-terminal fill/pending/panel-latency validation.
+
+Phase record: docs/PHASE-CBOT-BROKER-CONFIRMED-FACTS-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 # Current focus — CBOT EFFECTIVE LIFECYCLE STATE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
