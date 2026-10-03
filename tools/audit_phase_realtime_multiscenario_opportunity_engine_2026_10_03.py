@@ -116,11 +116,25 @@ check(
     "ExecutionAction.PendingLimit" in provider
 )
 
+on_tick_match = re.search(
+    r"protected override void OnTick\(\)[\\s\\S]*?(?=protected override void OnTimer\(\))",
+    bot,
+)
+on_timer_match = re.search(
+    r"protected override void OnTimer\(\)[\\s\\S]*?(?=private void ProcessSignalEnvelope\()",
+    bot,
+)
+
 check(
-    "cBot consumes the scenario batch on every incoming tick with bounded concurrency",
-    "protected override void OnTick()" in bot and
-    "TryReadScenarioBatch(" in bot and
-    "for (int scenarioIndex = 0;" in bot and
+    "cBot has one canonical realtime signal-consumption clock on OnTimer, not OnTick",
+    on_tick_match is not None and
+    on_timer_match is not None and
+    "TryReadScenarioBatch(" not in on_tick_match.group(0) and
+    "TryRead(" not in on_tick_match.group(0) and
+    "ProcessSignalEnvelope(" not in on_tick_match.group(0) and
+    "SweepScenarioProtectionStates(" not in on_tick_match.group(0) and
+    "TryReadScenarioBatch(" in on_timer_match.group(0) and
+    "for (int i = 0; i < scenarios.Length; i++)" in on_timer_match.group(0) and
     "MaxValue = 10" in bot
 )
 
