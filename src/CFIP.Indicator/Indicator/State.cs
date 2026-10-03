@@ -298,6 +298,8 @@ namespace cAlgo
         
                 private readonly AlertDeliveryQueue _alertDeliveryQueue =
                     new AlertDeliveryQueue(16);
+                private readonly AlertDeliveryQueue _alertSoundDeliveryQueue =
+                    new AlertDeliveryQueue(8);
 
                 private Queue<AlertDelivery> _panelAlertHistory =
                     new Queue<AlertDelivery>(5);
