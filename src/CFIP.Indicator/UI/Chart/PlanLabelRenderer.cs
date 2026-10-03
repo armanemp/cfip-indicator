@@ -176,8 +176,8 @@ namespace cAlgo
                 double labelPrice =
                     NormalizePrice(price);
 
-                // Level text is deliberately background-free and reuses the
-                // exact semantic color of its corresponding line.
+                // Level text is deliberately background-free and follows the current
+                // canonical white-text contract.
                 Color labelTextColor =
                     GetReadableLabelTextColor(
                         semanticColor);
