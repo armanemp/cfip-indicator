@@ -1677,3 +1677,11 @@ This file is the master restart index. Existing phase documents remain evidence/
 After merge to main: git pull --ff-only.
 
 Then begin at checklist item 1.1 and record every disposition in this document or in a linked phase record.
+
+### Additional confirmed M2 lifecycle findings
+
+22. cBot SubscribeBrokerLifecycleEvents() attaches seven anonymous broker/PendingOrder handlers, but OnStop() does not unsubscribe those handlers. This is a lifecycle ownership/leak risk and requires named handler ownership with deterministic unsubscribe.
+23. Indicator FinalizeAsyncInitialization() performs multiple event subscriptions inside one try/catch; a failure in a later subscription can leave earlier subscriptions active while initialization continues. Partial-hook rollback is required.
+24. Indicator initialization OnTimer() synchronously calls RenderPanel() during data-wait cycles. This can amplify startup latency and panel responsiveness problems; it must be measured and architecturally scheduled under the existing panel owner.
+25. Indicator still listens to broker lifecycle events. Their necessity must be proven handler-by-handler because cBot is now the sole broker mutation authority; unnecessary listeners are execution-boundary residue, not an invitation to create another state owner.
+26. Indicator OnDestroy() has mixed shutdown ordering: buffered persistence is flushed before timer/event teardown, while outcome/history persistence occurs later. A single explicit shutdown/quiescence contract is required to prevent late callbacks from racing with persisted terminal state.
