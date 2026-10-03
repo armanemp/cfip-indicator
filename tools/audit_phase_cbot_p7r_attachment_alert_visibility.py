@@ -144,10 +144,10 @@ require(
 )
 
 require(
-    "return Color.White;" in label_renderer and
     "GetReadableLabelTextColor(" in label_renderer and
+    "PlanLinePresentationRule.ResolveColor(" in label_renderer and
     "labelTextColor" in label_renderer,
-    "compact level labels must use the canonical white text contract",
+    "compact level labels must use the canonical semantic line-color contract",
 )
 require(
     "CompactPlanLabelFontSize = 8.5" in label_renderer and
