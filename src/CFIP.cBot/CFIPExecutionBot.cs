@@ -480,6 +480,7 @@ namespace CFIP.cBot
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
                     MaxConcurrentScenarios,
+                    _idempotencyStore,
                     out BrokerExecutionReport report,
                     out string executionReason))
             {
