@@ -448,3 +448,10 @@ Evidence commits for M2.169/M2.175: daf856bc98f249f5208c37f16c1b235fa028f353, 1b
 ### M2.170 remediation — stale execution-owner documentation
 
 **ROOT-CORRECTED / CLASSIFIED.** The current editing guide had one stale Indicator market-mutation owner path and now points to the cBot DemoMarketExecutionCoordinator. Older audit/roadmap documents that intentionally describe the pre-cutover Indicator ownership are retained as historical evidence and are not current architecture authority. Current operational documentation must point to the cBot mutation owners and platform-neutral contracts.
+
+
+### Management terminal-state hardening
+
+**ROOT-CORRECTED.** Broker `Expired` reports are no longer stored in the confirmation set. `AlreadyExpired` is a distinct request status with bounded FIFO retention, so an expired command can never be reported to a consumer as broker-confirmed. Confirmed and expired terminal identities remain deterministic and separately owned.
+
+Evidence commits: b00e744a1bf055bf4d6248124323a8cfd5b6751a, 5a8cbb627b8e3bebb2dc2a10059912ccf885b653.
