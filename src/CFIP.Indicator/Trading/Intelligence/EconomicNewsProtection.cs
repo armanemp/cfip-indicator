@@ -1,4 +1,5 @@
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -124,9 +125,11 @@ namespace cAlgo
                 if (pending != null &&
                     CancelPendingBeforeHighImpactNews)
                 {
-                    if (TryCancelPendingOrder(
+                    ManagementCommandRequestStatus cancelStatus =
+                        TryCancelPendingOrder(
                             pending,
-                            "HIGH IMPACT NEWS"))
+                            "HIGH IMPACT NEWS");
+                    if (cancelStatus.IsAccepted())
                     {
                         ArchiveEconomicNewsRisk(
                             closedM5,
