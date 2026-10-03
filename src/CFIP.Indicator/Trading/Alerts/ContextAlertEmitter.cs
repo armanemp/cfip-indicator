@@ -84,8 +84,7 @@ namespace cAlgo
                                         DrawIcon(
                                             P + "BOS_MARKER",
                                             structuralDirection == 1
-                                                ? ChartIconType.UpArrow
-                                                : ChartIconType.DownArrow,
+                                                ? ChartIconType.UpTriangle : ChartIconType.DownTriangle,
                                             bar,
                                             structuralDirection == 1
                                                 ? Bars.LowPrices[bar]
