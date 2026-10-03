@@ -3733,3 +3733,14 @@ Verification status:
 - Propagated composite quality into scenario PlanSnapshot quality so Indicator ranking and cBot payload quality are aligned.
 - No public confidence/RR/risk gate was lowered to force more signals.
 - Full-chain audit remains mandatory; target-terminal multi-scenario validation is still required before operational adoption.
+
+## 2026-10-03 — Realtime intelligence / audio / attachment closure follow-up
+
+- separated queued alert panel delivery from sound playback so the sole sound owner runs on the Indicator realtime Calculate/IsLastBar path;
+- added bounded history + forecast evidence to execution-priority ordering without altering eligibility or creating a second decision engine;
+- applied the same priority model to future pending scenarios;
+- strengthened RANGE/COMPRESSION minimum reward excursions to suppress undersized stagnant-market trades;
+- hardened cTrader chart-instance name matching while preserving stable type and InstanceId identity;
+- extended the accumulated hardening audit for these invariants.
+
+Verification authority remains Source/Architecture CI plus cTrader Compile/Build; target-terminal acceptance is still mandatory for real attachment/audio/live behavior.
