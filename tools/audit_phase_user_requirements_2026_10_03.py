@@ -24,8 +24,8 @@ range_quality = read("src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs")
 decision = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
 prediction = read("src/CFIP.Indicator/Trading/Intelligence/Prediction/EarlyPredictionEngine.cs")
 mtf_prediction = read("src/CFIP.Indicator/Core/Math/MtfEarlyPredictionFusionRule.cs")
-trend = read("src/CFIP.Indicator/Core/Math/HtfTrendArrowStrengthRule.cs")
-arrows = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
+trend = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
+arrows = read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
 audio = read("src/CFIP.cBot/Execution/CbotLifecycleAudioService.cs")
 header = read("src/CFIP.Indicator/UI/Panel/PanelHeaderRenderer.cs")
 workflow = read(".github/workflows/source-check.yml")
@@ -100,12 +100,12 @@ check(
 )
 check(
     "nine-level HTF smart arrow model exists",
-    "internal static class HtfTrendArrowStrengthRule" in trend and
-    "FrameStrength(h1, direction, 3)" in trend and
-    "FrameStrength(h4, direction, 3)" in trend and
-    "FrameStrength(d1, direction, 2)" in trend and
-    "FrameStrength(w1, direction, 1)" in trend and
-    "int arrowCount" in arrows and
+    "internal static class MtfTrendStrengthRule" in trend and
+    "One owner for the complete nine-level trend model" in trend and
+    "normalizedStrength * 9.0" in trend and
+    "quality * 0.40" in trend and
+    "directionalScore * 0.40" in trend and
+    "int count" in arrows and
     '"WATCH_ARROW"' in arrows and
     '"WATCH_ARROW_2"' in arrows and
     '"WATCH_ARROW_3"' in arrows
