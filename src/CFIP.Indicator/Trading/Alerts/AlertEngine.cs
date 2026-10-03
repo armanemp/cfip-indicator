@@ -334,40 +334,81 @@ if (SuppressDuplicateAlerts)
                         {
                             if (!UseSemanticAlertSounds)
                                 return AlertSoundType;
-                
-                            if (key.StartsWith(
+
+                            string normalized =
+                                key ?? string.Empty;
+
+                            // One canonical semantic map: every alert family receives
+                            // a deliberate cTrader built-in cue instead of falling through
+                            // to the same generic sound. The physical playback owner
+                            // remains AlertDeliveryProcessor.
+                            if (normalized.StartsWith(
                                     "SL|",
                                     StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
+                                normalized.StartsWith(
                                     "INVALID",
                                     StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
+                                normalized.StartsWith(
                                     "RESTRICT|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "REVERSAL|",
                                     StringComparison.OrdinalIgnoreCase))
                                 return SoundType.NegativeNotification;
-                
-                            if (key.StartsWith(
+
+                            if (normalized.StartsWith(
+                                    "REVERSAL|",
+                                    StringComparison.OrdinalIgnoreCase))
+                                return SoundType.Doorbell;
+
+                            if (normalized.StartsWith(
                                     "TP",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "AUTO",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "ACTION|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "HIGH|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "SMART|",
                                     StringComparison.OrdinalIgnoreCase))
                                 return SoundType.PositiveNotification;
-                
+
+                            if (normalized.StartsWith(
+                                    "ACTION|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "HIGH|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "SMART|",
+                                    StringComparison.OrdinalIgnoreCase))
+                                return SoundType.Confirmation;
+
+                            if (normalized.StartsWith(
+                                    "WATCH|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "EARLY|",
+                                    StringComparison.OrdinalIgnoreCase))
+                                return SoundType.Announcement;
+
+                            if (normalized.StartsWith(
+                                    "REACTION|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "AUTO-REACTION|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "FILL-MISMATCH|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "PENDING-",
+                                    StringComparison.OrdinalIgnoreCase))
+                                return SoundType.Doorbell;
+
+                            if (normalized.StartsWith(
+                                    "FILL|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "EXECUTION|",
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                normalized.StartsWith(
+                                    "AUTO|",
+                                    StringComparison.OrdinalIgnoreCase))
+                                return SoundType.Confirmation;
+
                             return critical
-                                ? SoundType.Confirmation
+                                ? SoundType.NegativeNotification
                                 : SoundType.Announcement;
                         }
     }
