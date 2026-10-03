@@ -195,6 +195,23 @@ namespace cAlgo
             if (candidate == null)
                 return 0;
 
+            if (candidate.Timeframe == "M1")
+            {
+                if (_m1Bars == null)
+                    return atr;
+
+                int m1Index =
+                    ClosedIndex(
+                        _m1Bars,
+                        _m5Bars.OpenTimes[closedM5]);
+
+                if (m1Index < 10)
+                    return atr;
+
+                double microAtr = Atr(_m1Bars, m1Index);
+                return microAtr > 0 ? microAtr : atr;
+            }
+
             if (candidate.Timeframe == "M5")
                 return atr;
 
