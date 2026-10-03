@@ -242,8 +242,7 @@ namespace CFIP.cBot
             _sessionExecutions = 0;
 
             _audio.PlayStarted(
-                this,
-                Account.IsLive);
+                this);
 
             // Chart timeframe is host-only. CFIP execution is driven by the
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
@@ -1485,8 +1484,7 @@ namespace CFIP.cBot
             UnsubscribeIndicatorLifecycleEvents();
 
             _audio.PlayStopped(
-                this,
-                Account.IsLive);
+                this);
 
             Print(
                 "CFIP cBot STOP | account={0} | state={1} | executions={2} | " +
