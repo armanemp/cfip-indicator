@@ -9,6 +9,12 @@ namespace cAlgo
 
         private void ProcessQueuedAlertDelivery()
         {
+            // cTrader documents PlaySound for indicators as a real-time API and
+            // recommends invoking it from the last-bar path. Keep queued audio
+            // events intact until the indicator is on the live bar.
+            if (!IsLastBar)
+                return;
+
             if (_alertDeliveryQueue == null ||
                 _alertDeliveryQueue.Count == 0)
                 return;
