@@ -21,7 +21,8 @@ namespace cAlgo
                             double target,
                             double volume,
                             int closedM5,
-                            string source)
+                            string source,
+                            bool captureProviderIntent = true)
                         {
                             entry = NormalizePrice(entry);
                             stop = NormalizePrice(stop);
@@ -57,7 +58,8 @@ namespace cAlgo
                                     Source = source
                                 };
 
-                            CaptureProviderExecutionIntent(intent);
+                            if (captureProviderIntent)
+                                CaptureProviderExecutionIntent(intent);
 
                             return intent;
                         }
