@@ -2,16 +2,16 @@ using System;
 
 namespace cAlgo
 {
+    internal struct PanelTimeframePresentationState
+    {
+        public int Direction;
+        public int Strength;
+        public string DirectionLabel;
+        public bool Ready;
+    }
+
     public partial class CFIPIndicator : Indicator
     {
-        private struct PanelTimeframePresentationState
-        {
-            public int Direction;
-            public int Strength;
-            public string DirectionLabel;
-            public bool Ready;
-        }
-
         private PanelTimeframePresentationState ResolvePanelTimeframeState(
             Frame frame)
         {
