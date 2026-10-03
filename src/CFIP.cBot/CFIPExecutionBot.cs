@@ -248,16 +248,10 @@ namespace CFIP.cBot
                 EffectiveAggressiveExecutionEnabled ||
                 EffectiveManagementExecutionEnabled);
 
-            if (Account.IsLive &&
-                !EffectiveMarketExecutionEnabled &&
-                !EffectivePendingStopExecutionEnabled &&
-                !EffectivePendingLimitExecutionEnabled &&
-                !EffectiveAggressiveExecutionEnabled &&
-                !EffectiveManagementExecutionEnabled)
-            {
-                _audio.PlayLiveDisarmed(this);
-            }
-
+            // Startup has one canonical audible lifecycle event. Live
+            // disarm state is published through execution state/panel diagnostics,
+            // not as a second startup sound.
+            
             // Chart timeframe is host-only. CFIP execution is driven by the
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
             Print(

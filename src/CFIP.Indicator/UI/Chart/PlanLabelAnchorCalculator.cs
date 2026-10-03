@@ -13,7 +13,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int CompactPlanLabelWidthBars = 8;
         private const int CompactPlanLabelMinimumGapBars = 3;
 
         private int GetCompactPlanLabelAnchorBar(
@@ -37,25 +36,6 @@ namespace cAlgo
                 Math.Min(
                     Bars.Count - 1,
                     lineLeft - offset));
-        }
-
-        private int GetLabelBoxRightBar(
-            int lineLeft)
-        {
-            if (Bars == null ||
-                Bars.Count < 2)
-                return 0;
-
-            int labelBar =
-                GetCompactPlanLabelAnchorBar(
-                    lineLeft);
-
-            return Math.Max(
-                labelBar,
-                Math.Min(
-                    Bars.Count - 1,
-                    labelBar +
-                    CompactPlanLabelWidthBars));
         }
     }
 }

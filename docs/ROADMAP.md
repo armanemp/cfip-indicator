@@ -672,7 +672,7 @@ Completed:
 - all eligible alerts use the bounded canonical AlertDeliveryQueue and are shown in a five-row panel message rail beside the Hide/Show control;
 - message color is derived from the canonical alert direction/priority semantics;
 - sound remains on the same queued event boundary and no direct AlertEngine sound/popup side effect exists;
-- canonical BUY/SELL level rendering remains symmetric: Solid, finite, 40-bar geometry, shared thickness, background-free labels and semantic line/text color;
+- canonical BUY/SELL level rendering remains symmetric: Solid, fixed 1px, finite 40-bar geometry, background-free white labels aligned to the exact signal price and positioned left of the line with the canonical horizontal gap;
 - cBot now has one dedicated SignalEnvelope preflight owner for identity, timestamp, staleness and symbol scope before execution branching;
 - full Pre-analysis → M15 → M5 → M1(optional) → entry/SL/TP → signal → alert → contract → cBot → broker/protection → outcome chain was re-audited;
 - no multi-position capacity was enabled early and the single-plan safety contract remains intact until CBOT-6M is completed.

@@ -36,25 +36,8 @@ namespace cAlgo
                             Bars.Count - 1,
                             bar));
 
-                double labelAtr =
-                    safeBar >= 2
-                        ? Atr(
-                            Bars,
-                            Math.Max(
-                                1,
-                                safeBar - 1))
-                        : 0;
-
-                double verticalGap =
-                    Math.Max(
-                        Symbol.PipSize * 5,
-                        labelAtr > 0
-                            ? labelAtr * 0.04
-                            : Symbol.PipSize * 6);
-
                 double labelPrice =
-                    NormalizePrice(
-                        price + verticalGap);
+                    NormalizePrice(price);
 
                 Color labelTextColor =
                     GetReadableLabelTextColor(color);
@@ -121,10 +104,7 @@ namespace cAlgo
             double price,
             Color color,
             bool visible,
-            int lineLeft,
-            int labelBar,
-            int boxRightBar,
-            double boxHalfHeight)
+            int labelBar)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -140,10 +120,7 @@ namespace cAlgo
                 text,
                 price,
                 color,
-                lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
         }
 
         private void DrawCompactPlanLabel(
@@ -151,10 +128,7 @@ namespace cAlgo
             string text,
             double price,
             Color semanticColor,
-            int lineLeft,
-            int labelBar,
-            int boxRightBar,
-            double boxHalfHeight)
+            int labelBar)
         {
             try
             {
@@ -182,9 +156,6 @@ namespace cAlgo
                     GetReadableLabelTextColor(
                         semanticColor);
 
-                // Remove any legacy rectangle left by pre-9.8 versions.
-                Chart.RemoveObject(
-                    name + "_BOX");
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -245,8 +216,8 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Compact level labels have no background, so the only visual
-            // styling authority is the exact color of the corresponding line.
+            // Compact level labels have no background; the current
+            // presentation contract uses white text for every signal level.
             return Color.White;
         }
 
