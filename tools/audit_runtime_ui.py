@@ -164,7 +164,7 @@ if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessage
 
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
 if "return Color.White;" not in labels_renderer:
-    raise SystemExit("All compact plan-level text must use canonical white text")
+    raise SystemExit("All compact plan-level text must use the canonical semantic line color")
 if "Chart.DrawRectangle(" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must own the cTrader-style filled label box")
 if "box.IsFilled" not in compact_label_renderer:
