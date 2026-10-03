@@ -48,19 +48,19 @@ require(
 
 require(
     "class MtfTrendStrengthRule" in trend and
-    "preferredDirection" in trend and
     "ResolveNineLevel" in trend and
-    "LevelStartScore = 55.0" in trend and
-    "LevelStepScore = 5.0" in trend and
+    "LevelMinimumScore = 35" in trend and
+    "LevelBandSize = 5" in trend and
+    "ResolveTier" in trend and
     "MtfTrendStrengthLevel" in arrow and
     "HtfTrendArrowStrengthRule" not in arrow,
     "canonical MTF smart arrow rule must own the 9-level strength ladder",
 )
 
 require(
-    "RenderStackedSignalArrows(" in renderer and
-    "RemoveStackedSignalArrows();" in renderer and
-    "RenderStackedSignalArrows(" in presentation and
+    "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
+    "RenderStackedSignalArrows(" in arrow and
+    "RemoveStackedSignalArrows();" in arrow and
     '"WATCH_ARROW"' in arrow and
     '"WATCH_ARROW_2"' in arrow and
     '"WATCH_ARROW_3"' in arrow and
