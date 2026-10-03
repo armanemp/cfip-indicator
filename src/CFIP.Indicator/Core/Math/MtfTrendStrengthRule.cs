@@ -275,7 +275,7 @@ namespace cAlgo
                 100.0 *
                 primary /
                 total,
-                50.0,
+                0.0,
                 100.0);
         }
 
