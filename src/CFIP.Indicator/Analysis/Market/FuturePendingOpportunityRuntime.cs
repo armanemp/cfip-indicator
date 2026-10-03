@@ -268,6 +268,17 @@ namespace cAlgo
         private void RefreshLiveParallelOpportunityStates(
             int closedM5)
         {
+            DateTime now = Server.TimeInUtc;
+            bool newM5 =
+                _lastLiveOpportunityRefreshM5 != closedM5;
+
+            if (!newM5 &&
+                (now - _lastLiveOpportunityRefreshUtc).TotalMilliseconds < 200)
+                return;
+
+            _lastLiveOpportunityRefreshM5 = closedM5;
+            _lastLiveOpportunityRefreshUtc = now;
+
             if (_opportunityCandidates == null ||
                 _opportunityCandidates.Count == 0)
                 return;
