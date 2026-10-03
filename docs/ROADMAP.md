@@ -28,7 +28,7 @@ Phase record: `docs/PHASE-CBOT-LIVE-REALTIME-COMPLETION-2026-10-03.md`.
 Verification note — 2026-10-03:
 - cTrader Compile: PASS (run #3584 / 37125403700).
 - Runtime Acceptance Contracts: PASS (run #3400 / 37125403702).
-- Source/Architecture run #3591 exposed two stale/static-audit assumptions; both were corrected on the phase branch. The latest correction is committed as `28d67d7a2b1a248290f8ed91c18f5aaf664fffdf`; no new PR workflow was observed for that API-created commit, so Source/Architecture is not marked green until GitHub re-runs it.
+- Source/Architecture run #3591 exposed stale/static-audit assumptions; the remaining M3 sound-owner assertion was corrected to the canonical `ProcessQueuedAlertSoundDelivery()` owner in commit `111b124857fb98061d3c31e0f6d889c19ea4176f`. Targeted source verification now matches the production owner; GitHub has not started a new PR workflow for the API-created commit, so the aggregate Source/Architecture gate remains pending.
 
 
 Status: IMPLEMENTED — automated verification pending; target-terminal validation pending.
