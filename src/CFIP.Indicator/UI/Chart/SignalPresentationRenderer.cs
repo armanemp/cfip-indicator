@@ -27,6 +27,7 @@ namespace cAlgo
                 ShowEarlyWatch &&
                 !snapshot.PendingOrder &&
                 !snapshot.LivePosition &&
+                snapshot.DecisionEntryAllowed &&
                 visualDirection != 0 &&
                 IsStrongWatchSnapshot(snapshot) &&
                 IsSignalOpportunityVisuallyMeaningful(snapshot);
