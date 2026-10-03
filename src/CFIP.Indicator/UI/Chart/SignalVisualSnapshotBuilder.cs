@@ -206,8 +206,6 @@ namespace cAlgo
             snapshot.ReactionDirection =
                 _reaction == null ? 0 : _reaction.Direction;
 
-            ApplyMtfTrendStrength(snapshot);
-
             int strongPredictionConfidence =
                 Math.Max(
                     Math.Max(
@@ -367,6 +365,13 @@ namespace cAlgo
 
             snapshot.AuthoritativeDirection =
                 visualDirection;
+
+            // The canonical signal direction is known here. Resolve the
+            // presentation strength against that same direction so the arrow
+            // stack never has a second strength owner.
+            ApplyMtfTrendStrength(
+                snapshot,
+                visualDirection);
 
             PopulateCanonicalVisualIdentity(
                 snapshot,
