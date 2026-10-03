@@ -146,26 +146,16 @@ namespace cAlgo
             double bearShare = 100.0 - bullShare;
 
             int direction =
-                bullShare >= 50.0
-                    ? 1
-                    : -1;
+                bullShare == bearShare
+                    ? 0
+                    : bullShare > bearShare
+                        ? 1
+                        : -1;
 
             double dominance =
                 Math.Max(
                     bullShare,
                     bearShare);
-
-            // 50% = no directional edge. 95% = maximum display strength.
-            // Level 1..9 is a presentation intensity, never an execution score.
-            int level =
-                (int)Math.Floor(
-                    (dominance - 50.0) /
-                    5.0);
-
-            if (dominance <= 50.0)
-                level = 0;
-            else
-                level = Math.Max(1, Math.Min(9, level));
 
             double normalizedHtf =
                 htfTotal <= 0
@@ -183,6 +173,30 @@ namespace cAlgo
                         ? 1
                         : -1;
 
+            // H1+ is the requested arrow authority. When HTF data exists, arrow
+            // intensity is derived from HTF dominance; the full MTF score remains
+            // available for context and diagnostics.
+            double arrowDominance =
+                htfTotal > 0
+                    ? normalizedHtf
+                    : dominance;
+
+            int level =
+                (int)Math.Floor(
+                    (arrowDominance - 50.0) /
+                    5.0);
+
+            if (arrowDominance <= 50.0)
+                level = 0;
+            else
+                level = Math.Max(1, Math.Min(9, level));
+
+            int arrowDirection =
+                htfTotal > 0 &&
+                htfDirection != 0
+                    ? htfDirection
+                    : direction;
+
             int score =
                 (int)Math.Round(dominance);
 
@@ -195,7 +209,7 @@ namespace cAlgo
                             normalizedHtf)));
 
             return new MtfTrendStrengthResult(
-                direction,
+                arrowDirection,
                 level,
                 score,
                 htfScore,
