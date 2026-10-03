@@ -45,11 +45,11 @@ namespace cAlgo
 
             double breakEven =
                 Clamp(
-                    0.45 +
-                    risk * 0.12 +
-                    Math.Max(0, 70 - quality) * 0.002,
-                    0.35,
-                    1.00);
+                    0.28 +
+                    risk * 0.08 +
+                    Math.Max(0, 72 - quality) * 0.002,
+                    0.25,
+                    0.75);
 
             double trailStart =
                 Clamp(
