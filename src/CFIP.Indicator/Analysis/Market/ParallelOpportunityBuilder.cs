@@ -107,6 +107,19 @@ namespace cAlgo
 
         }
 
+        private void AddOpportunityCandidate(
+            TradeOpportunityCandidate candidate)
+        {
+            if (candidate == null)
+                return;
+
+            _tradePlanRegistry.UpsertScenario(
+                candidate,
+                Math.Max(
+                    Symbol.PipSize * 2,
+                    0));
+        }
+
         private bool ShouldPresentOpportunityCandidate(
             TradeOpportunityCandidate candidate)
         {
