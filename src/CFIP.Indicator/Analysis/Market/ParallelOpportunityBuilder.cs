@@ -191,7 +191,7 @@ namespace cAlgo
                 return _m15VolumeProfile;
 
             _m15VolumeProfile =
-                VolumeProfileAnalyzer.Build(
+                VolumeProfileAnalyzer.BuildSnapshot(
                     _m15Bars,
                     closedM15,
                     96,
