@@ -72,10 +72,8 @@ namespace cAlgo
                     closedM5,
                     newClosedBar);
 
-                // Keep sound playback on the realtime Indicator Calculate /
-                // IsLastBar boundary; timer-driven work handles panel rendering.
-                ProcessQueuedAlertSoundDelivery();
-
+                // Timer-driven work handles panel presentation; audible delivery
+                // remains owned by the realtime Indicator Calculate / IsLastBar boundary.
                 CompleteRuntimeFaultCycle();
             }
             catch (OutOfMemoryException)
@@ -101,8 +99,14 @@ namespace cAlgo
             }
             finally
             {
+                // Always service queued sound on the Indicator's realtime
+                // Calculate boundary, including recoverable/early-return cycles.
+                // ProcessQueuedAlertSoundDelivery itself enforces IsLastBar.
                 if (_initializationReady)
+                {
+                    ProcessQueuedAlertSoundDelivery();
                     _lastCalculationCompletedUtc = TimeInUtc;
+                }
 
                 PublishProviderHeartbeatValue(index);
 
