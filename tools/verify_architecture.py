@@ -1077,6 +1077,31 @@ panel_optimization_code = PANEL_OPTIMIZATION.read_text(encoding="utf-8")
 
 if "RenderPanel();" in panel_heartbeat_code:
     raise SystemExit("Panel heartbeat must not invoke the full panel renderer")
+
+# M2 panel ownership gate: lifecycle/error/readiness paths must invalidate the
+# canonical content owner rather than synchronously invoking the heavy renderer.
+PANEL_CONTENT_REFRESH = ROOT / "UI" / "Panel" / "PanelContentRefresh.cs"
+PANEL_SECONDARY_REFRESH_PATHS = (
+    ROOT / "Runtime" / "Calculation" / "CalculationReadinessStateStore.cs",
+    ROOT / "Runtime" / "Calculation" / "RuntimeFaultBoundary.cs",
+    ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs",
+    ROOT / "Runtime" / "Cbot" / "CbotChartLifecycleEvents.cs",
+)
+if not PANEL_CONTENT_REFRESH.exists():
+    raise SystemExit("Canonical panel content-refresh owner is missing")
+panel_content_refresh_code = PANEL_CONTENT_REFRESH.read_text(encoding="utf-8")
+if "RequestPanelContentRefresh(" not in panel_content_refresh_code:
+    raise SystemExit("Canonical panel content-refresh owner must expose invalidation")
+for secondary_path in PANEL_SECONDARY_REFRESH_PATHS:
+    secondary_code = secondary_path.read_text(encoding="utf-8")
+    if "RenderPanel();" in secondary_code:
+        raise SystemExit(
+            f"{secondary_path.name} must not synchronously invoke the full panel renderer"
+        )
+    if "RequestPanelContentRefresh(" not in secondary_code:
+        raise SystemExit(
+            f"{secondary_path.name} must route panel refresh through the canonical content owner"
+        )
 if "UpdatePanelHeartbeatRows(" not in panel_heartbeat_code or "UpdatePanelHeartbeatLiveRows(" not in panel_heartbeat_code:
     raise SystemExit("Panel heartbeat must refresh lightweight live state directly")
 if "ShouldRunSafetySupervisor(" not in panel_heartbeat_code:
