@@ -224,6 +224,7 @@ namespace CFIP.cBot
                     _boundIndicatorInstanceId,
                     nowUtc,
                     ManagementCommandMaxAgeSeconds,
+                    _executionSettings,
                     out string managementStatus);
 
                 if (!string.IsNullOrWhiteSpace(managementStatus) &&
