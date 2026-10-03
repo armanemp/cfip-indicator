@@ -3320,3 +3320,9 @@ Regression discipline:
 
 Final follow-up commit on this phase branch: d40cff97baa37a36a78fbbf22e487ae15930ac0f.
 Operator action after verified merge: `git pull --ff-only` on local `main`.
+
+
+## 2026-10-03 — Final verification boundary for UI / Signal / Alert Quality
+Integrated implementation is complete on phase/ui-signal-alert-quality-final2-2026-10-03. Final source changes cover canonical MTF presentation state, canonical alert event identity/delivery, compact footer/popup geometry, canonical signal arrows/lines, reward/RR opportunity presentation gates, and fail-closed presentation-only primary candidates.
+
+Repository acceptance boundary: cTrader Compile and Runtime Acceptance passed on the same functional code revision; the accumulated Source/Architecture gate still requires a user-authenticated synchronize/push event before main merge. Target-terminal validation remains required for actual cTrader Local/Cloud prompt behavior, audible playback and visual geometry.
