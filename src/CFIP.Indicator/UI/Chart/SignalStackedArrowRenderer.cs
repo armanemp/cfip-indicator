@@ -39,11 +39,9 @@ namespace cAlgo
                 ((strength - 1) % 3) + 1;
 
             string state =
-                strength <= 3
-                    ? "WATCH"
-                    : strength <= 6
-                        ? "CONFIRMED"
-                        : "STRONG";
+                string.IsNullOrWhiteSpace(snapshot.MtfTrendStrengthTier)
+                    ? "WEAK"
+                    : snapshot.MtfTrendStrengthTier;
 
             Color arrowColor =
                 SignalArrowColorFor(
@@ -56,7 +54,7 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize * 3,
                     Math.Max(
-                        offset * 0.75,
+                        offset * 1.5,
                         Symbol.TickSize * 8));
 
             for (int i = 0;
