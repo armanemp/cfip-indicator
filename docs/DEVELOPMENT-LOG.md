@@ -12,6 +12,7 @@ Corrections:
 - A dedicated static audit protects these ownership boundaries.
 
 No calculation threshold, decision authority, execution policy, risk rule or broker mutation boundary was changed.
+- A second display contradiction was closed: Decision could read READY while Entry Gate read BLOCKED; readiness could also say ENTRY CONFIRMED while entry still waited. The UI now distinguishes setup confirmation, trigger waiting and current actionability.
 
 ---
 
