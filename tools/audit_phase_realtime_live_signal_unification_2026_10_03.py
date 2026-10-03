@@ -126,7 +126,7 @@ check(
 
 check(
     "M15 is tuning/reference while lower timeframes refine entry",
-    "canonical multi-timeframe architecture" in read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs") and
+    "Canonical timeframe roles for the active multi-timeframe architecture." in read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs") and
     "M15 is the canonical signal-tuning/reference layer" in read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs") and
     "M5/M1 refine the live entry" in read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs")
 )
@@ -206,9 +206,10 @@ check(
 
 check(
     "operator continuity docs contain this phase",
-    "REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION" in roadmap and
-    "REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION" in continuation and
-    "PR #240" in continuation and
+    "Realtime / Live Execution + Volume Profile Intelligence" in roadmap and
+    "Current continuation" in continuation and
+    "Realtime/Live Execution + Volume Profile Intelligence" in continuation and
+    "Realtime all-timeframe intelligence + smart arrows" in continuation and
     "Realtime Live Execution + Signal Truth Unification" in phase
 )
 
