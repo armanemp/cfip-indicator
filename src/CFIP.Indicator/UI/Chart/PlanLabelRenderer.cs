@@ -14,7 +14,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
-        private const int CompactPlanLabelGapBars = 1;
+        // cTrader ChartText uses time/bar coordinates on X; it has no pip-based horizontal X offset.\n        // Keep the canonical visual gap stable and owned by this renderer.\n        private const int CompactPlanLabelGapBars = 1;
 
         private void DrawPlanLabel(
             string name,
@@ -145,7 +145,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[textBar],
                             labelPrice,
-                            Color.White);
+                            labelColor);
                 }
 
                 if (label == null)
@@ -178,71 +178,4 @@ namespace cAlgo
                 label.IsInteractive =
                     false;
 
-                // Remove legacy rectangle objects left by previous versions.
-                Chart.RemoveObject(name + "_BOX");
-            Chart.RemoveObject(name + "_ANCHOR");
-
-                // A tiny native circle marks the exact line/label junction.
-                // It is one chart object, not a filled panel/box.
-                string markerName =
-                    name + "_ANCHOR";
-
-                ChartIcon marker =
-                    Chart.FindObject(markerName)
-                    as ChartIcon;
-
-                if (marker == null)
-                {
-                    ChartObject existingMarker =
-                        Chart.FindObject(markerName);
-
-                    if (existingMarker != null)
-                        Chart.RemoveObject(markerName);
-
-                    marker =
-                        Chart.DrawIcon(
-                            markerName,
-                            ChartIconType.Circle,
-                            Bars.OpenTimes[lineLeftBar],
-                            labelPrice,
-                            labelColor);
-                }
-
-                if (marker != null)
-                {
-                    marker.Time =
-                        Bars.OpenTimes[lineLeftBar];
-                    marker.Y =
-                        labelPrice;
-                    marker.Color =
-                        labelColor;
-                    marker.IconType =
-                        ChartIconType.Circle;
-                    marker.IsInteractive =
-                        false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP native plan label failed: {0}",
-                    ex.Message);
-            }
-        }
-
-        private Color GetReadableLabelTextColor(
-            Color semanticColor)
-        {
-            // Text is always white; its canonical filled background is rendered
-            // by DrawCompactPlanLabel using the exact line semantic color.
-            return Color.White;
-        }
-
-        private void RemovePlanLabel(
-            string name)
-        {
-            Chart.RemoveObject(name);
-            Chart.RemoveObject(name + "_BOX");
-        }
-    }
-}
+                // Remove all legacy label geometry. The label is text-only.\n                Chart.RemoveObject(name + "_BOX");\n            Chart.RemoveObject(name + "_ANCHOR");\n        }\n\n}
