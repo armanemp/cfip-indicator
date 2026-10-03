@@ -1,6 +1,6 @@
 # CBOT Shadow Multi-Scenario Truth — 2026-10-03
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.
 
 ## Finding
 
@@ -56,11 +56,12 @@ Indicator candidate mining -> M15 decision -> M5 trigger/entry precision -> M1 o
 
 Automated:
 
-- Source/Architecture;
+- Source/Architecture: PASS;
 
-- Runtime Acceptance;
 
-- cTrader Compile/Build;
+- Runtime Acceptance: PASS;
+
+- cTrader Compile/Build: PASS;
 
 - dedicated shadow multi-scenario audit;
 - stale-candidate/current-closed-M5 materialization audit.
