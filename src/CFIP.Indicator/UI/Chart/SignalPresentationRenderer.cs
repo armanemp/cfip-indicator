@@ -58,16 +58,23 @@ namespace cAlgo
                     snapshot,
                     visualDirection,
                     hostBar,
-     
+                    watchOffset,
+                    ResolveSignalArrowState(
+                        snapshot,
+                        visualDirection));
+            }
+            else
+            {
+                RemoveStackedSignalArrows();
+            }
+        }
+
         private bool IsSignalOpportunityVisuallyMeaningful(
             SignalVisualSnapshot snapshot)
         {
             if (snapshot == null)
                 return false;
 
-            // A canonical actionable decision already passed the full
-            // TradeActionabilityEvaluator, including the regime-aware TP1
-            // opportunity-magnitude gate, so it is safe to render.
             if (snapshot.ActionableNow)
                 return true;
 
@@ -114,8 +121,6 @@ namespace cAlgo
                     return false;
             }
 
-            // Decision-only previews must still carry a valid reward/RR signal;
-            // otherwise they remain panel diagnostics rather than chart arrows.
             if (snapshot.ActionableTp1RR > 0 &&
                 snapshot.ActionableTp1RR <
                     Math.Max(
@@ -124,16 +129,6 @@ namespace cAlgo
                 return false;
 
             return true;
-        }
-               watchOffset,
-                    ResolveSignalArrowState(
-                        snapshot,
-                        visualDirection));
-            }
-            else
-            {
-                RemoveStackedSignalArrows();
-            }
         }
 
         private bool IsStrongWatchSnapshot(
