@@ -9,6 +9,7 @@ Completed:
 - Decision, Entry Gate and readiness rows no longer use overlapping READY/CONFIRMED/BLOCKED wording; setup confirmation, trigger waiting, entry waiting and current actionability are distinguished.
 - WaveTrend evidence text and color now use WaveTrend direction, with explicit CONFLICT when it opposes the trade direction.
 - No strategy, risk, RR, execution, M15/M5/M1 role or cBot broker-ownership rule was changed.
+- Obsolete duplicate realtime-header formatting/color helpers were removed after the dedicated header owner became canonical.
 - Added a dedicated semantic/visual consistency audit and wired it into Source/Architecture CI.
 
 Full-chain routine audit:
