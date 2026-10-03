@@ -21,21 +21,42 @@ check(
     "ResolvePanelTimeframeState(" in state and
     "PanelFrameDirectionRule.ResolveDisplayDirection(" in state and
     "ResolveLabel(" in state and
-    "NativeIndicatorsReady" in state,
-    "panel timeframe state must have one canonical direction/readiness/label resolver",
+    "NativeIndicatorsReady" in state and
+    "public Color Color;" in state and
+    "StrongBuyArrowColor" in state and
+    "StrongSellArrowColor" in state and
+    "ConfirmedBuyArrowColor" in state and
+    "ConfirmedSellArrowColor" in state and
+    "CautionBuyArrowColor" in state and
+    "CautionSellArrowColor" in state and
+    "Color = PanelSecondaryTextColor" in state,
+    "panel timeframe state must own canonical direction/readiness/label/color semantics",
 )
 
 check(
     "ResolvePanelTimeframeState(frame)" in lamp and
+    "state.Color" in lamp and
     "FrameDirection(frame)" not in lamp and
     "ResolveFrameTrendStrength(" not in lamp,
-    "timeframe lamps must consume the canonical presentation state without local direction/strength logic",
+    "timeframe lamps must consume the canonical presentation state without local direction/strength/color logic",
 )
 
 check(
     "ResolvePanelTimeframeState(frame)" in text_format and
+    "PanelTimeframePresentationState state" in text_format and
     "PanelFrameDirectionRule.ResolveDisplayDirection(" not in text_format,
     "timeframe text must consume the same canonical presentation state as the lamp",
+)
+
+rows = read("UI/Panel/Rows/PanelContextRowsRenderer.cs")
+check(
+    "m1FrameState.Color" in rows and
+    "m5FrameState.Color" in rows and
+    "m15FrameState.Color" in rows and
+    "m30FrameState.Color" in rows and
+    "h1FrameState.Color" in rows and
+    "h4FrameState.Color" in rows,
+    "MTF text rows must use the same canonical timeframe presentation color as lamps",
 )
 
 check(
