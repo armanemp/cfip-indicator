@@ -161,3 +161,4 @@ jobs:
       - run: python tools/audit_phase_panel_semantic_consistency_2026_10_03.py
       - run: python tools/audit_phase_volume_profile_evidence_2026_10_03.py
       - run: python tools/audit_phase_cbot_local_cloud_lifecycle_2026_10_03.py
+      - run: python tools/audit_phase_signal_drawing_canonical_2026_10_03.py
