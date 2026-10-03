@@ -63,6 +63,10 @@ CbotExecutionIdempotencyStore persists execution-attempt state in Device-scoped 
 - Indicator broker-mutation authority is unchanged: the cBot remains the sole broker mutation owner.
 - Concurrent capacity remains bounded by Max Concurrent Scenarios.
 
+## Verification feedback incorporated
+
+The first cTrader compile gate exposed two integration defects in the initial implementation: one missing Market coordinator argument and one inaccessible Contracts hash helper. Both were corrected on this branch before final verification. A serialization-escape issue in the new Device store was also corrected before the current compile cycle.
+
 ## Verification required
 
 Automated:
