@@ -1136,70 +1136,82 @@ namespace CFIP.cBot
                     true);
         }
 
+        private bool _brokerLifecycleEventsSubscribed;
+
         private void SubscribeBrokerLifecycleEvents()
         {
-            Positions.Opened +=
-                args =>
-                {
-                    ReconcileBrokerState(true);
-                    PublishExecutionState(
-                        "POSITION OPENED",
-                        true);
-                };
+            if (_brokerLifecycleEventsSubscribed)
+                return;
 
-            Positions.Modified +=
-                args =>
-                {
-                    ReconcileBrokerState(true);
-                    PublishExecutionState(
-                        "POSITION MODIFIED",
-                        true);
-                };
+            Positions.Opened += OnPositionOpened;
+            Positions.Modified += OnPositionModified;
+            Positions.Closed += OnPositionClosed;
 
-            Positions.Closed +=
-                args =>
-                {
-                    ReconcileBrokerState(true);
-                    PublishExecutionState(
-                        "POSITION CLOSED",
-                        true);
-                };
+            PendingOrders.Created += OnPendingOrderCreated;
+            PendingOrders.Modified += OnPendingOrderModified;
+            PendingOrders.Filled += OnPendingOrderFilled;
+            PendingOrders.Cancelled += OnPendingOrderCancelled;
 
-            PendingOrders.Created +=
-                args =>
-                {
-                    ReconcileBrokerState(true);
-                    PublishExecutionState(
-                        "PENDING CREATED",
-                        true);
-                };
+            _brokerLifecycleEventsSubscribed = true;
+        }
 
-            PendingOrders.Modified +=
-                args =>
-                {
-                    ReconcileBrokerState(true);
-                    PublishExecutionState(
-                        "PENDING MODIFIED",
-                        true);
-                };
+        private void UnsubscribeBrokerLifecycleEvents()
+        {
+            if (!_brokerLifecycleEventsSubscribed)
+                return;
 
-            PendingOrders.Filled +=
-                args =>
-                {
-                    ReconcileBrokerState(true);
-                    PublishExecutionState(
-                        "PENDING FILLED",
-                        true);
-                };
+            Positions.Opened -= OnPositionOpened;
+            Positions.Modified -= OnPositionModified;
+            Positions.Closed -= OnPositionClosed;
 
-            PendingOrders.Cancelled +=
-                args =>
-                {
-                    ReconcileBrokerState(true);
-                    PublishExecutionState(
-                        "PENDING CANCELLED",
-                        true);
-                };
+            PendingOrders.Created -= OnPendingOrderCreated;
+            PendingOrders.Modified -= OnPendingOrderModified;
+            PendingOrders.Filled -= OnPendingOrderFilled;
+            PendingOrders.Cancelled -= OnPendingOrderCancelled;
+
+            _brokerLifecycleEventsSubscribed = false;
+        }
+
+        private void OnPositionOpened(PositionOpenedEventArgs args)
+        {
+            ReconcileBrokerState(true);
+            PublishExecutionState("POSITION OPENED", true);
+        }
+
+        private void OnPositionModified(PositionModifiedEventArgs args)
+        {
+            ReconcileBrokerState(true);
+            PublishExecutionState("POSITION MODIFIED", true);
+        }
+
+        private void OnPositionClosed(PositionClosedEventArgs args)
+        {
+            ReconcileBrokerState(true);
+            PublishExecutionState("POSITION CLOSED", true);
+        }
+
+        private void OnPendingOrderCreated(PendingOrderCreatedEventArgs args)
+        {
+            ReconcileBrokerState(true);
+            PublishExecutionState("PENDING CREATED", true);
+        }
+
+        private void OnPendingOrderModified(PendingOrderModifiedEventArgs args)
+        {
+            ReconcileBrokerState(true);
+            PublishExecutionState("PENDING MODIFIED", true);
+        }
+
+        private void OnPendingOrderFilled(PendingOrderFilledEventArgs args)
+        {
+            ReconcileBrokerState(true);
+            PublishExecutionState("PENDING FILLED", true);
+        }
+
+        private void OnPendingOrderCancelled(PendingOrderCancelledEventArgs args)
+        {
+            ReconcileBrokerState(true);
+            PublishExecutionState("PENDING CANCELLED", true);
         }
 
         private void ReconcileBrokerState(bool force)
@@ -1351,6 +1363,7 @@ namespace CFIP.cBot
                 "CBOT STOPPED",
                 true);
 
+            UnsubscribeBrokerLifecycleEvents();
             UnsubscribeIndicatorLifecycleEvents();
 
             _audio.PlayStopped(
