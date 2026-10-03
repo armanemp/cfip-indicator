@@ -98,7 +98,9 @@ namespace cAlgo
             {
                 RenderMtfTrendStrengthArrowStack(
                     snapshot,
-                    visualDirection,
+                    ResolveArrowStackDirection(
+                        snapshot,
+                        visualDirection),
                     arrowBar,
                     offset);
             }
@@ -200,6 +202,25 @@ namespace cAlgo
                                     Math.Min(
                                         alternate,
                                         Bars.Count - 1));
+                        }
+
+        private int ResolveArrowStackDirection(
+                            SignalVisualSnapshot snapshot,
+                            int fallbackDirection)
+                        {
+                            if (snapshot == null)
+                                return fallbackDirection;
+
+                            if (snapshot.HtfTrendDirection == 1 ||
+                                snapshot.HtfTrendDirection == -1)
+                            {
+                                return snapshot.HtfTrendDirection;
+                            }
+
+                            return snapshot.MtfTrendDirection == 1 ||
+                                   snapshot.MtfTrendDirection == -1
+                                ? snapshot.MtfTrendDirection
+                                : fallbackDirection;
                         }
 
         private void RenderMtfTrendStrengthArrowStack(
