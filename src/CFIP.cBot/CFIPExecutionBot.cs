@@ -481,6 +481,7 @@ namespace CFIP.cBot
                 if (EffectiveManagementExecutionEnabled &&
                     TryRecoverProtection(
                         envelope,
+                        _reconciliation,
                         nowUtc))
                 {
                     _reconciliation =
