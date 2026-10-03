@@ -3466,3 +3466,25 @@ The panel alert rail now performs an immediate lightweight footer geometry refre
 Current panel correction is now based on actual visible geometry rather than a large fixed footer reserve. The Footer content minimum is 40px, the two-line MTF rail is 38px, outer panel padding is counted only once, and alert text is no-wrap/ellipsis within the audit-required 20px row. Signal-family sound is deduplicated across semantic stages for one closed-M5 event, and MTF arrows have their own chart-object namespace.
 
 cTrader Local/Cloud: the repository does not add Cloud execution. cTrader documentation states that cloud synchronisation makes created/installed algorithms and updates available across apps; Windows/Mac can adjust synchronisation, while custom indicators execute locally on Windows/Mac and cBot local/cloud execution is selectable. This makes repeated Local/Cloud reconciliation a terminal synchronization/instance-state issue rather than a CFIP source-code execution path.
+
+## 2026-10-04 — Modern Signal Lines / Single Presentation State
+
+Status: IMPLEMENTED — repository verification pending; target-terminal visual acceptance remains manual.
+
+Completed in this phase:
+- Preserved the existing canonical PlanLineRenderer as the only production owner for signal/plan line geometry; no second line renderer was introduced.
+- Introduced PlanLevelVisualState as the single presentation-state owner for ENTRY, IDEAL_ENTRY, TRIGGER, SL, TP1..TP4 and ACTIVE_TP visibility/distinctness.
+- RenderLevelLines and RenderPlanLabels now consume the same level state instead of independently recalculating visibility/distinctness.
+- Trigger visibility now has one canonical rule for line and label presentation, preventing line/label disagreement.
+- All signal/plan lines retain the established visual contract: Solid, 1px, finite 40-bar span ending at the latest candle, no infinite extension.
+- Existing semantic colors and background-free label contract are preserved; modernization is achieved through one consistent, uncluttered presentation path rather than a parallel visual language.
+- Pending and parallel opportunity lines continue to delegate to PlanLineRenderer; no alternate geometry owner was added.
+- Routine single-owner / no-duality audit remains part of the phase acceptance.
+
+Verification:
+- Source changes implemented on the phase branch.
+- Local cTrader build is not available in this environment.
+- GitHub CI/PR verification is required before claiming repository gates green.
+- Target-terminal visual acceptance remains required for actual chart appearance, label spacing and stale-object behavior.
+
+Operator action after merge: git pull --ff-only.
