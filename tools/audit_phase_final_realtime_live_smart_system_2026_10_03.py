@@ -127,7 +127,7 @@ require(
 )
 
 require(
-    "ActionableNow" in bot and
+    "ActionableNow" in read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs") and
     "FutureOrderReady" in read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs") and
     "PendingStop" in bot and
     "PendingLimit" in bot,
