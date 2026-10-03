@@ -1114,7 +1114,8 @@ VISUAL_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
 VISUAL_CALC = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 VISUAL_LINE_RENDERER = ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"
-VISUAL_LINE_PRESENTATION_RULE = ROOT / "Core" / "Math" / "PlanLinePresentationRule.cs"
+VISUAL_LINE_PRESENTATION_RULE = ROOT / "UI" / "Chart" / "PlanLinePresentationRule.cs"
+VISUAL_LINE_THICKNESS_RULE = ROOT / "Core" / "Math" / "PlanLineThicknessRule.cs"
 VISUAL_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 VISUAL_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 VISUAL_LABEL_REMOVER = ROOT / "UI" / "Chart" / "PlanLabelRemover.cs"
@@ -1130,6 +1131,7 @@ for required_path in (
     VISUAL_PLAN_RENDERER,
     VISUAL_LINE_RENDERER,
     VISUAL_LINE_PRESENTATION_RULE,
+    VISUAL_LINE_THICKNESS_RULE,
     CONTROL_FACTORY,
     CONTROL_PRESENTATION_RULE,
 ):
