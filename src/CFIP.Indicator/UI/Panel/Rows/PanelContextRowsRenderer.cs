@@ -20,9 +20,7 @@ namespace cAlgo
                                                     AddPanelRow(
                                                         ref slot,
                                                         "LIVE REACTION  •  " +
-                                                        (_reaction.Direction == 1
-                                                            ? "BUY"
-                                                            : "SELL") +
+                                                        DirectionText(_reaction.Direction) +
                                                         "  •  Q" +
                                                         _reaction.Confidence +
                                                         "  •  EVID " +
