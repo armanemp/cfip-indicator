@@ -14,6 +14,7 @@ def check(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 signal_state = read("UI/Panel/PanelSignalState.cs")
+frame_rule = read("Core/Math/PanelFrameDirectionRule.cs")
 canonical = read("UI/Panel/PanelCanonicalSignalStatus.cs")
 header = read("UI/Panel/PanelHeaderLiveState.cs")
 context = read("UI/Panel/Rows/PanelContextRowsRenderer.cs")
@@ -25,8 +26,9 @@ check(
     "m15State.DirectionLabel" in signal_state and
     "h1State.DirectionLabel" in signal_state and
     "m5State.DirectionLabel" in signal_state and
-    '"BULL BIAS"' in signal_state and
-    '"BEAR BIAS"' in signal_state,
+    "PanelFrameDirectionRule.ResolveLabel(" in signal_state and
+    '"BULL BIAS"' in frame_rule and
+    '"BEAR BIAS"' in frame_rule,
     "market-bias row must consume canonical timeframe labels",
 )
 
