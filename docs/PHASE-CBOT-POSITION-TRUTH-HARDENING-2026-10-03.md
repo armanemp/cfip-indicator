@@ -1,6 +1,6 @@
 # CBOT Position Truth / Restart Idempotency Hardening — 2026-10-03
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.
 
 ## Purpose
 
@@ -66,6 +66,10 @@ CbotExecutionIdempotencyStore persists execution-attempt state in Device-scoped 
 ## Verification feedback incorporated
 
 The first cTrader compile gate exposed two integration defects in the initial implementation: one missing Market coordinator argument and one inaccessible Contracts hash helper. Both were corrected on this branch before final verification. A serialization-escape issue in the new Device store was also corrected before the current compile cycle.
+
+## Verification status
+
+The automated Source/Architecture audit, Runtime Acceptance and cTrader Compile/Build passed for the implementation merged through PR #227. A follow-up per-scenario recovery-truth regression was then added on `main` and is being re-run through the same verification path.
 
 ## Verification required
 
