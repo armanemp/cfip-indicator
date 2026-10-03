@@ -17,8 +17,8 @@ policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
 alert = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 calc = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
-arrow_rule = read("src/CFIP.Indicator/Core/Math/HtfTrendArrowStrengthRule.cs")
-arrow = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
+arrow_rule = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
+arrow = read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
 renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
 presentation = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 header = read("src/CFIP.Indicator/UI/Panel/PanelHeaderLiveState.cs")
@@ -47,7 +47,7 @@ require(
 )
 
 require(
-    "internal static class HtfTrendArrowStrengthRule" in arrow_rule and
+    "internal static class MtfTrendStrengthRule" in arrow_rule and
     "FrameStrength(h1, direction, 3)" in arrow_rule and
     "FrameStrength(h4, direction, 3)" in arrow_rule and
     "FrameStrength(d1, direction, 2)" in arrow_rule and
@@ -56,9 +56,9 @@ require(
 )
 
 require(
-    "RenderStackedSignalArrows(" in renderer and
-    "RemoveStackedSignalArrows();" in renderer and
-    "RenderStackedSignalArrows(" in presentation and
+    "RenderMtfTrendStrengthArrowStack(" in renderer and
+    "RemoveMtfTrendStrengthArrowStack();" in renderer and
+    "RenderMtfTrendStrengthArrowStack(" in presentation and
     '"WATCH_ARROW"' in arrow and
     '"WATCH_ARROW_2"' in arrow and
     '"WATCH_ARROW_3"' in arrow,
@@ -67,7 +67,7 @@ require(
 
 require(
     "if (visualDirection == 0)" in renderer and
-    "RemoveStackedSignalArrows();" in renderer,
+    "RemoveMtfTrendStrengthArrowStack();" in renderer,
     "directionless arrows must be hidden",
 )
 
