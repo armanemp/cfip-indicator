@@ -179,11 +179,11 @@ check(
     "nine-level HTF-strength arrow stack is presentation-only and bounded",
     "class MtfTrendStrengthRule" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
     "MtfTrendStrengthLevel" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs") and
-    "MtfTrendStrengthRule.Evaluate(" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
-    "((level - 1) % 3) + 1" in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") and
-    'level <= 3' in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") and
-    'level <= 6' in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") and
-    'state = "STRONG"' in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
+    "ApplyMtfTrendStrength(snapshot)" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
+    "((level - 1) % 3) + 1" in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs") and
+    'level <= 3' in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs") and
+    'level <= 6' in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs") and
+    'state =' in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
 )
 
 check(
