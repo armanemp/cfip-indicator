@@ -19,6 +19,7 @@ header = read("UI/Panel/PanelHeaderLiveState.cs")
 context = read("UI/Panel/Rows/PanelContextRowsRenderer.cs")
 decision = read("UI/Panel/Rows/PanelDecisionRowsRenderer.cs")
 wave = read("UI/Panel/Rows/PanelWaveTrendAndOpportunityRowsRenderer.cs")
+prediction = read("UI/Panel/PanelPredictionState.cs")
 
 check(
     "m15State.DirectionLabel" in signal_state and
@@ -58,6 +59,14 @@ check(
     '"WATCH / BLOCKED"' not in decision and
     '_decision.EntryAllowed\n                                                            ? "READY"' not in decision,
     "decision and entry-gate panel states must not expose contradictory READY/BLOCKED meanings",
+)
+
+check(
+    '"ENTRY CONFIRMED"' not in prediction and
+    '"ENTRY ACTIONABLE"' in prediction and
+    '"SETUP CONFIRMED • WAITING ENTRY"' in prediction and
+    '"SETUP QUALIFIED • WAITING TRIGGER"' in prediction,
+    "prediction readiness must distinguish actionable entry from confirmed setup",
 )
 
 check(
