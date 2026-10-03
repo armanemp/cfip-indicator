@@ -26,7 +26,6 @@ binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
 alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.cs")
 signal_renderer = (
     read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") +
-    read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs") +
     read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
 )
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
@@ -105,7 +104,7 @@ require(
 )
 require(
     "visualDirection == 0" in signal_renderer and
-    "WATCH_ARROW" in signal_renderer and
+    "TREND_ARROW_1" in signal_renderer and
     "RemoveObject" in signal_renderer,
     "directional arrow must hide when no direction is available",
 )
