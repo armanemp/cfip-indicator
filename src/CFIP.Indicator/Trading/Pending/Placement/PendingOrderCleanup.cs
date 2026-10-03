@@ -1,4 +1,5 @@
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -38,9 +39,11 @@ namespace cAlgo
                 {
                     ResetPendingInvalidationHysteresis();
 
-                    if (!TryCancelPendingOrder(
+                    ManagementCommandRequestStatus cancelStatus =
+                        TryCancelPendingOrder(
                             order,
-                            "STALE PENDING ORDER"))
+                            "STALE PENDING ORDER");
+                    if (!cancelStatus.IsAccepted())
                     {
                         SetLifecycleState(
                             LifecycleState.RecoveryRequired,
