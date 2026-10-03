@@ -613,6 +613,7 @@ expected_models = {
     "CanonicalPriceSnapshot",
     "MarketStateFrameSnapshot", "MarketStateSnapshot",
     "StructuralStopGeometrySnapshot",
+    "M2PrecisionSnapshot",
 }
 if {p.stem for p in model_files} != expected_models:
     raise SystemExit("Domain model file isolation failed")
