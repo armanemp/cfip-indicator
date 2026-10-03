@@ -68,10 +68,18 @@ require(
 
 require(
     "Chart.DrawText(" in label and
+    label.count("Chart.DrawText(") == 1 and
+    "private void UpsertPlanLabel(" in label and
     "Chart.DrawRectangle(" not in label and
     "NormalizePrice(price);" in label and
     'name + "_BOX"' in label,
-    "canonical chart labels must be exact-price, background-free text with legacy-object cleanup only",
+    "canonical chart labels must be exact-price, background-free text with one drawing owner and legacy-object cleanup only",
+)
+
+require(
+    "HorizontalAlignment.Right" in label and
+    "HorizontalAlignment.Left" not in label,
+    "canonical chart labels must render entirely to the left of their anchor/line",
 )
 
 require(
