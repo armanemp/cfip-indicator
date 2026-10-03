@@ -2167,7 +2167,7 @@ namespace cAlgo
                     true, true, true,
                     true, true, false,
                     70, 4, 2,
-                    85, 82, 0, 2.0);
+                    85, 82, 0);
 
             RangeSignalQualityResult middleResult =
                 RangeSignalQualityRule.Evaluate(
@@ -2186,7 +2186,7 @@ namespace cAlgo
                     false, true, true,
                     true, true, false,
                     70, 5, 2,
-                    85, 82, 0, 2.0);
+                    85, 82, 0);
 
             RangeSignalQualityResult liquidityResult =
                 RangeSignalQualityRule.Evaluate(
@@ -2205,7 +2205,7 @@ namespace cAlgo
                     true, true, true,
                     true, true, false,
                     72, 6, 3,
-                    89, 84, 8, 2.50);
+                    89, 84, 8);
 
             RangeSignalQualityResult reversalResult =
                 RangeSignalQualityRule.Evaluate(
@@ -2224,7 +2224,7 @@ namespace cAlgo
                     false, true, true,
                     true, false, true,
                     68, 6, 3,
-                    88, 83, 5, 2.25);
+                    88, 83, 5);
 
             RangeSignalQualityResult breakoutResult =
                 RangeSignalQualityRule.Evaluate(
@@ -2236,25 +2236,6 @@ namespace cAlgo
                 breakoutResult.Reason ==
                     "RANGE BREAKOUT QUALIFIED",
                 "strong range breakout");
-
-            RangeSignalQualityInput lowRewardReversal =
-                new RangeSignalQualityInput(
-                    1, 0.18, 0.20, 70, 14,
-                    true, true, true,
-                    true, true, false,
-                    72, 6, 3,
-                    89, 84, 8, 2.24);
-
-            RangeSignalQualityResult lowRewardResult =
-                RangeSignalQualityRule.Evaluate(
-                    "RANGE",
-                    lowRewardReversal);
-
-            Assert(
-                !lowRewardResult.Allowed &&
-                lowRewardResult.Reason ==
-                    "RANGE NO-TRADE • LOW RR",
-                "range low-RR rejection");
 
             RangeSignalQualityResult compression =
                 RangeSignalQualityRule.Evaluate(
