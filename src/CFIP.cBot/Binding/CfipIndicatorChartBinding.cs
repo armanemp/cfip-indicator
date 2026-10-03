@@ -61,14 +61,23 @@ namespace CFIP.cBot.Binding
                 if (candidate == null)
                     continue;
 
+                string candidateName =
+                    candidate.Name ?? string.Empty;
+
                 bool instanceNameMatches =
                     string.Equals(
-                        candidate.Name,
+                        candidateName,
                         DisplayName,
                         StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(
-                        candidate.Name,
+                        candidateName,
                         TypeName,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    candidateName.StartsWith(
+                        DisplayName + " ",
+                        StringComparison.OrdinalIgnoreCase) ||
+                    candidateName.StartsWith(
+                        TypeName + " ",
                         StringComparison.OrdinalIgnoreCase);
 
                 string candidateTypeName =
