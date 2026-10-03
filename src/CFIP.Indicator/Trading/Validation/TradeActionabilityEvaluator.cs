@@ -114,6 +114,14 @@ namespace cAlgo
             double tp1RR =
                 rewardRisk.NominalRR;
 
+            double tp1DistanceAtr =
+                Math.Abs(
+                    preview.Tp1 -
+                    actualEntry) /
+                Math.Max(
+                    atr,
+                    1e-9);
+
             DivergenceResult divergence =
                 _m5Frame == null
                     ? DivergenceResult.CreateNoDivergence()
@@ -125,6 +133,23 @@ namespace cAlgo
                         _m5Frame.RegularDivergenceBear,
                         _m5Frame.HiddenDivergenceBull,
                         _m5Frame.HiddenDivergenceBear);
+
+            if (!OpportunityMagnitudeRule.IsMeaningful(
+                    regime,
+                    tp1DistanceAtr))
+            {
+                return new TradeActionabilityResult(
+                    false,
+                    0,
+                    0,
+                    0,
+                    entryDistanceAtr,
+                    Math.Max(0, tp1RR),
+                    divergence.Quality,
+                    divergence.Direction,
+                    divergence.Type,
+                    "TP1 MOVE TOO SMALL FOR REGIME");
+            }
 
             if (!rewardRisk.Allowed)
             {
