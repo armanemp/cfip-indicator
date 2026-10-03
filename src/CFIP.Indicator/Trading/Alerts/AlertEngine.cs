@@ -191,7 +191,7 @@ if (SuppressDuplicateAlerts)
 
                             // Restriction/blocked candidates remain diagnostic panel messages
                             // and never emit the normal signal sound or chart marker.
-                            AlertSoundPolicy.Decision soundDecision =
+                            AlertSoundDecision soundDecision =
                                 AlertSoundPolicy.ResolveAlertSound(
                                     normalizedKey,
                                     UseSemanticAlertSounds,
