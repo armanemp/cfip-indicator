@@ -5,7 +5,7 @@ namespace cAlgo
 {
     internal static class VolumeProfileAnalyzer
     {
-        public static VolumeProfileSnapshot Build(
+        public static VolumeProfileSnapshot BuildSnapshot(
             Bars bars,
             int closedIndex,
             int lookbackBars,
@@ -39,8 +39,8 @@ namespace cAlgo
                 double barLow = bars.LowPrices[i];
                 double barHigh = bars.HighPrices[i];
 
-                if (!FinitePositive(barLow) ||
-                    !FinitePositive(barHigh) ||
+                if (!IsVolumeFinitePositive(barLow) ||
+                    !IsVolumeFinitePositive(barHigh) ||
                     barHigh < barLow)
                     continue;
 
@@ -48,8 +48,8 @@ namespace cAlgo
                 high = Math.Max(high, barHigh);
             }
 
-            if (!FinitePositive(low) ||
-                !FinitePositive(high) ||
+            if (!IsVolumeFinitePositive(low) ||
+                !IsVolumeFinitePositive(high) ||
                 high <= low)
                 return VolumeProfileSnapshot.Empty;
 
@@ -64,7 +64,7 @@ namespace cAlgo
                 (high - low) /
                 bins;
 
-            if (!FinitePositive(binSize))
+            if (!IsVolumeFinitePositive(binSize))
                 return VolumeProfileSnapshot.Empty;
 
             double[] volumeByBin =
@@ -81,9 +81,9 @@ namespace cAlgo
                         0,
                         bars.TickVolumes[i]);
 
-                if (!FinitePositive(volume) ||
-                    !FinitePositive(barLow) ||
-                    !FinitePositive(barHigh) ||
+                if (!IsVolumeFinitePositive(volume) ||
+                    !IsVolumeFinitePositive(barLow) ||
+                    !IsVolumeFinitePositive(barHigh) ||
                     barHigh < barLow)
                     continue;
 
@@ -144,7 +144,7 @@ namespace cAlgo
                 }
             }
 
-            if (!FinitePositive(totalVolume))
+            if (!IsVolumeFinitePositive(totalVolume))
                 return VolumeProfileSnapshot.Empty;
 
             int pocIndex = 0;
@@ -159,7 +159,7 @@ namespace cAlgo
                 }
             }
 
-            if (!FinitePositive(pocVolume))
+            if (!IsVolumeFinitePositive(pocVolume))
                 return VolumeProfileSnapshot.Empty;
 
             double targetVolume =
@@ -259,7 +259,7 @@ namespace cAlgo
                     index));
         }
 
-        private static bool FinitePositive(double value)
+        private static bool IsVolumeFinitePositive(double value)
         {
             return
                 !double.IsNaN(value) &&
