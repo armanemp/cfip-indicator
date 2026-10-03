@@ -42,6 +42,13 @@ private List<Level> BuildTargetLevels(
 
                                             List<Level> levels =
                                                 new List<Level>();
+
+                                            AddM1MicroTargetContext(
+                                                levels,
+                                                closedM5,
+                                                direction,
+                                                entry,
+                                                atr);
                                 
                                             if (_m5Bars == null ||
                                                 atr <= 0 ||
