@@ -51,3 +51,16 @@ Official cTrader documentation and current chart examples were reviewed. The nat
 ## Final label-box contract — 2026-10-04
 
 The plan-level price label is a cTrader-style compact price tag: filled rectangle, same color as the associated level line, white bold text, compact geometry, and exact attachment to the line's right endpoint. `PlanLabelRenderer` is the sole owner; `PlanLabelRenderCoordinator` supplies the canonical presentation state and endpoint.
+
+
+## Final geometry correction — 2026-10-04
+
+The visual contract is now explicit and non-overlapping:
+
+- canonical plan line: Solid, 1 px, finite 40-chart-bar span ending at the latest candle;
+- canonical label: filled cTrader-style compact tag using the exact level color and white text;
+- label position: outside the line, to the left of the line's left endpoint;
+- fixed two-bar separation prevents the tag from touching or covering the signal line;
+- line and label share the same canonical level state/color owner;
+- no second line renderer or label renderer is introduced;
+- stale label-box objects remain under the same canonical label name and are updated/removed by the existing owner.
