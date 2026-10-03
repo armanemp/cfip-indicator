@@ -92,7 +92,6 @@ namespace cAlgo
                     entry,
                     EntryLineColor,
                     true,
-                    lineLeft,
                     labelBar);
             }
             else
@@ -120,7 +119,6 @@ namespace cAlgo
                 idealEntry,
                 PanelAccentColor,
                 ShowEntry && idealDistinct,
-                    lineLeft,
                     labelBar);
 
             bool triggerDistinct =
@@ -145,7 +143,6 @@ namespace cAlgo
                 ShowTrigger &&
                 triggerDistinct &&
                 !snapshot.LivePosition,
-                    lineLeft,
                     labelBar);
 
             double displayStop = stop;
@@ -160,7 +157,6 @@ namespace cAlgo
                 displayStop,
                 SlLineColor,
                 ShowSL,
-                    lineLeft,
                     labelBar);
 
             bool tp1Distinct =
@@ -183,7 +179,6 @@ namespace cAlgo
                 TpLineColor,
                 ShowTP1 &&
                 tp1Distinct,
-                    lineLeft,
                     labelBar);
 
             bool tp2Distinct =
@@ -210,7 +205,6 @@ namespace cAlgo
                 Tp2LineColor,
                 ShowTP2 &&
                 tp2Distinct,
-                    lineLeft,
                     labelBar);
 
             bool tp3Distinct =
@@ -237,7 +231,6 @@ namespace cAlgo
                 Tp3LineColor,
                 ShowTP3 &&
                 tp3Distinct,
-                    lineLeft,
                     labelBar);
 
             bool tp4Distinct =
@@ -264,7 +257,6 @@ namespace cAlgo
                 Tp4LineColor,
                 ShowTP4 &&
                 tp4Distinct,
-                    lineLeft,
                     labelBar);
 
             double activeBrokerTarget =
@@ -302,7 +294,6 @@ namespace cAlgo
                  ShowTP3 ||
                  ShowTP4) &&
                 activeBrokerTargetDistinct,
-                    lineLeft,
                     labelBar);
         }
     }
