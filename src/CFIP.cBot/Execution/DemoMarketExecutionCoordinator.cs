@@ -20,6 +20,7 @@ namespace CFIP.cBot.Execution
             double maximumMarginUsagePercent,
             double marginBufferPercent,
             int maximumConcurrentScenarios,
+            CbotExecutionIdempotencyStore idempotencyStore,
             out BrokerExecutionReport report,
             out string reason)
         {
@@ -57,6 +58,15 @@ namespace CFIP.cBot.Execution
             if (_rememberedKeys.Contains(key))
             {
                 reason = "DUPLICATE IDEMPOTENCY KEY";
+                return false;
+            }
+
+            if (idempotencyStore != null &&
+                !idempotencyStore.CanAttempt(
+                    key,
+                    nowUtc,
+                    out reason))
+            {
                 return false;
             }
 
@@ -279,6 +289,12 @@ namespace CFIP.cBot.Execution
             catch (Exception ex)
             {
                 Remember(key);
+                if (idempotencyStore != null)
+                    idempotencyStore.RecordAttempt(
+                        robot,
+                        key,
+                        false,
+                        nowUtc);
                 reason = "BROKER SUBMISSION EXCEPTION";
                 report = BuildReport(
                     envelope,
@@ -290,6 +306,12 @@ namespace CFIP.cBot.Execution
             }
 
             Remember(key);
+                if (idempotencyStore != null)
+                    idempotencyStore.RecordAttempt(
+                        robot,
+                        key,
+                        false,
+                        nowUtc);
 
             if (result == null)
             {
@@ -328,6 +350,13 @@ namespace CFIP.cBot.Execution
                 nowUtc,
                 result,
                 reason);
+
+            if (idempotencyStore != null)
+                idempotencyStore.RecordAttempt(
+                    robot,
+                    key,
+                    true,
+                    nowUtc);
 
             return true;
         }
