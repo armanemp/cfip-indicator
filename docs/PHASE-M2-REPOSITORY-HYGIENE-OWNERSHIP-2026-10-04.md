@@ -263,11 +263,12 @@ It must not be rewritten to pretend historical work used today's count. Current 
 
 ### K — Newly confirmed M2 findings
 
-- [x] M2.166 Management-command request acceptance was incorrectly conflated with broker confirmation: `RequestManagementCommand` returned `false` for a newly queued command, while callers treated `false` as broker rejection/recovery. Root cause fixed in `ManagementCommandRequestCoordinator`: already-queued and successfully persisted requests now return `true`; broker confirmation remains exclusively report-driven through `ProcessManagementReports`.
+- [ ] M2.166 Management-command request acceptance is conflated with broker confirmation: `RequestManagementCommand` returns `false` both for a newly queued request and for rejection/storage failure, while callers use the boolean as if it were a broker-mutation result. A temporary boolean fix was intentionally reverted because it would make queued requests look broker-confirmed. The correct root fix requires one explicit Request/Confirmed/Rejected status contract consumed consistently by all management callers.
 - [ ] M2.167 Synchronous `LocalStorage.SetString + Flush` is still used in the management-command publication path. This is a confirmed hot-path persistence/performance risk and must be redesigned around buffered/asynchronous ownership before the persistence/performance phase can close it.
 - [ ] M2.168 `ProcessManagementReports` synchronously reads LocalStorage from the management-request path. This couples broker-state reconciliation to storage latency and needs the same buffered ownership treatment as M2.167.
 - [ ] M2.169 Several Indicator helper names (`TryClosePosition`, `TryModifyStopLoss`, `TryModifyTakeProfit`, `TryCancelPendingOrder`) still read like broker mutations although they now publish commands. This is a semantic/maintenance hazard; naming should be normalized without introducing a second API owner.
 - [ ] M2.170 Historical execution-boundary documents still reference removed Indicator broker owners such as `BrokerMarketOrderMutation.cs` / `BrokerLimitOrderPlacement.cs`. These are documentation/audit drift findings and must be classified explicitly rather than treated as current production files.
+- [ ] M2.171 The management-command API has no explicit submission-state type, forcing callers to infer semantic meaning from `bool`; this is the root contract defect behind M2.166 and must be eliminated without adding a parallel management bus.
 
 ### J — Build/test hygiene
 
