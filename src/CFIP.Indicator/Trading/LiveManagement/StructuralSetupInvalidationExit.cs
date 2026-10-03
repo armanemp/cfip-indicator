@@ -3,6 +3,7 @@
 // ============================================================================
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -181,12 +182,12 @@ namespace cAlgo
                                                 LifecycleState.ExitRequested,
                                                 "STRUCTURAL INVALIDATION");
                                 
-                                            bool closeAccepted =
+                                            ManagementCommandRequestStatus closeStatus =
                                                 TryClosePosition(
                                                     position,
                                                     "STRUCTURAL INVALIDATION");
 
-                                            if (!closeAccepted)
+                                            if (!closeStatus.IsAccepted())
                                             {
                                                 SetLifecycleState(
                                                     LifecycleState.RecoveryRequired,
@@ -210,7 +211,7 @@ namespace cAlgo
                                                 LiveInvalidationRule.RecordExitM5(
                                                     _lastExitM5,
                                                     closedM5,
-                                                    closeAccepted);
+                                                    closeStatus.IsBrokerConfirmed());
 
                                             // _plan remains authoritative until OnPositionClosed confirms
                                             // that the broker position is actually gone.
