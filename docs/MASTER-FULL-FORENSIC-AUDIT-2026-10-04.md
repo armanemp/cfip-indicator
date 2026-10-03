@@ -1678,7 +1678,10 @@ After merge to main: git pull --ff-only.
 
 Then begin at checklist item 1.1 and record every disposition in this document or in a linked phase record.
 
-### Additional confirmed M2 lifecycle findings
+### Additional confirmed M2 lifecycle findings — historical baseline before remediation
+
+> **Status:** This numbered list is the pre-remediation evidence snapshot. Items superseded by M2 are intentionally retained as audit history; the M2 remediation checkpoints below are the current disposition and authority.
+
 
 22. cBot SubscribeBrokerLifecycleEvents() attaches seven anonymous broker/PendingOrder handlers, but OnStop() does not unsubscribe those handlers. This is a lifecycle ownership/leak risk and requires named handler ownership with deterministic unsubscribe.
 23. Indicator FinalizeAsyncInitialization() performs multiple event subscriptions inside one try/catch; a failure in a later subscription can leave earlier subscriptions active while initialization continues. Partial-hook rollback is required.
@@ -1710,3 +1713,8 @@ The management command path has been root-corrected during M2: request submissio
 ### Management terminal-state hardening evidence — 2026-10-04
 
 Expired management reports are now represented separately from broker-confirmed identities (`AlreadyExpired`), with bounded FIFO retention. This prevents terminal expiry from being reinterpreted as broker confirmation and preserves the single request/confirmation truth across the Indicator → Contracts → cBot boundary.
+
+
+### M2.188 current disposition — panel refresh ownership
+
+The master audit baseline identified synchronous panel rendering during readiness/startup and lifecycle paths as a responsiveness risk. The remaining secondary direct `RenderPanel()` calls were re-audited and removed from calculation-readiness, runtime-fault, closed-bar MTF-wait, and cBot chart-lifecycle paths. Those paths now invalidate the canonical `PanelContentRefresh` owner via `RequestPanelContentRefresh()`. `RenderPanel()` remains the single full-layout renderer, while the runtime heartbeat remains the single normal content-refresh clock. This is an ownership/performance correction, not a strategy or execution change.
