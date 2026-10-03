@@ -1,3 +1,36 @@
+## 2026-10-03 — Realtime Live Execution + Signal Truth Unification
+
+Status: implementation complete; verification pending; PR #240 open.
+
+Implemented:
+- explicit account-scoped Live execution arms, default OFF, for Market / Pending Stop / Pending Limit / Aggressive / Management;
+- removed the unconditional live-account hard stop and kept execution fail-closed until the live arm for the requested action is enabled;
+- bounded simultaneous ScenarioId capacity from both cBot and Indicator settings;
+- Indicator Maximum Open Positions now supports 1..10 and defaults to 3;
+- cBot signal-store reload cadence reduced to 100ms;
+- new volatility-relative TP1 opportunity magnitude gate for current and future candidates;
+- RANGE low-RR floor strengthened to 2.00;
+- reaction/actionable alert direction now follows canonical SignalVisualSnapshot authority;
+- cBot LIVE/DEMO mode is published into the shared execution state and surfaced by the Indicator;
+- updated legacy realtime/position-truth audits so they validate explicit Live mode rather than the superseded demo-only assumption.
+
+Important safety:
+- Indicator remains broker-mutation-free;
+- M15 remains canonical decision/execution reference;
+- M5 remains trigger/tuning/entry precision and M1 remains optional;
+- existing geometry, volume, margin, spread, market-hours and daily-loss protections remain active;
+- live execution is default OFF;
+- same ScenarioId idempotency and per-scenario capacity remain intact.
+
+Verification boundary:
+Source/Architecture and Runtime Acceptance must pass, followed by actual cTrader target-terminal validation for Live execution, simultaneous scenarios, pending fills, audio playback, attachment state, reconnect/restart and UI/chart/popup direction parity.
+
+Phase record: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
