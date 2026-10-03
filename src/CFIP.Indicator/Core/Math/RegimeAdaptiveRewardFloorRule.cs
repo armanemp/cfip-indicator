@@ -20,13 +20,17 @@ namespace cAlgo
             switch (normalized)
             {
                 case MarketRegimeIdentity.Compression:
-                    return Math.Max(baseFloor, 1.00);
+                    // Compression is the most adverse regime for tiny
+                    // excursions. Require a materially useful reward path.
+                    return Math.Max(baseFloor, 1.20);
 
                 case MarketRegimeIdentity.Range:
-                    return Math.Max(baseFloor, 0.85);
+                    // Range conditions can repeatedly trigger small mean-reversion
+                    // moves. Keep executable reward above a one-ATR excursion.
+                    return Math.Max(baseFloor, 1.00);
 
                 case MarketRegimeIdentity.Transition:
-                    return Math.Max(baseFloor, 0.75);
+                    return Math.Max(baseFloor, 0.85);
 
                 default:
                     return baseFloor;
