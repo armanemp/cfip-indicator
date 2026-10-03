@@ -93,6 +93,8 @@ namespace cAlgo
                     key,
                     "REACTION|",
                     "AUTO-REACTION|",
+                    "BOS|",
+                    "MSS|",
                     "SWEEP|"))
                 return SoundType.Doorbell;
 
