@@ -48,3 +48,5 @@ Required:
 - target-terminal realized quality review.
 
 Operator action after verified merge: git pull --ff-only on local main.
+
+- CI iteration note: compile/runtime/source regressions from the first hardening pass are being closed before merge; terminal-specific validation remains separate.
