@@ -300,7 +300,7 @@ namespace cAlgo
                     closedM5);
 
             double minimumRewardDistanceAtr =
-                RegimeAdaptiveRewardFloorRule.Resolve(
+                RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(
                     _decision == null
                         ? "UNKNOWN"
                         : _decision.Regime,
