@@ -63,25 +63,34 @@ namespace cAlgo
 
         private string GetMarketBiasText()
                                 {
-                                    int m15 =
-                                        FrameDirection(_m15Frame);
+                                    PanelTimeframePresentationState m15State =
+                                        ResolvePanelTimeframeState(_m15Frame);
 
-                                    int h1 =
-                                        FrameDirection(_h1Frame);
+                                    PanelTimeframePresentationState h1State =
+                                        ResolvePanelTimeframeState(_h1Frame);
 
-                                    int m5 =
-                                        FrameDirection(_m5Frame);
+                                    PanelTimeframePresentationState m5State =
+                                        ResolvePanelTimeframeState(_m5Frame);
+
+                                    int marketBiasDirection =
+                                        GetMarketBiasDirection();
+
+                                    string marketBiasLabel =
+                                        marketBiasDirection == 1
+                                            ? "BULL BIAS"
+                                            : marketBiasDirection == -1
+                                                ? "BEAR BIAS"
+                                                : "NEUTRAL";
 
                                     return
                                         "MARKET BIAS  •  M15 " +
-                                        DirectionText(m15) +
+                                        m15State.DirectionLabel +
                                         "  •  H1 " +
-                                        DirectionText(h1) +
+                                        h1State.DirectionLabel +
                                         "  •  M5 " +
-                                        DirectionText(m5) +
+                                        m5State.DirectionLabel +
                                         "  •  " +
-                                        DirectionText(
-                                            GetMarketBiasDirection());
+                                        marketBiasLabel;
                                 }
 
         private int GetAuthoritativeDirection()
