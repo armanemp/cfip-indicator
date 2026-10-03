@@ -8,13 +8,10 @@ namespace cAlgo
         public static int ResolveThickness(
             int configuredThickness)
         {
-            if (configuredThickness < MinimumThickness)
-                return MinimumThickness;
-
-            if (configuredThickness > MaximumThickness)
-                return MaximumThickness;
-
-            return configuredThickness;
+            // The public parameter remains backward-compatible, but the
+            // canonical chart presentation is intentionally fixed at one
+            // pixel for all signal/plan level lines.
+            return MinimumThickness;
         }
     }
 }

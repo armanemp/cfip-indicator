@@ -100,8 +100,8 @@ watch_gate = (
 )
 require(
     watch_gate_start >= 0 and
-    "snapshot.DecisionEntryAllowed" not in watch_gate,
-    "directional WATCH arrow must not be coupled to EntryAllowed",
+    "snapshot.DecisionEntryAllowed" in watch_gate,
+    "directional WATCH arrow must be blocked when canonical entry is not allowed",
 )
 require(
     "visualDirection == 0" in signal_renderer and

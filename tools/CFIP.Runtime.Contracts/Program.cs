@@ -10672,14 +10672,14 @@ namespace cAlgo
         {
             Assert(
                 PlanLinePresentationRule.ResolveThickness(1) == 1 &&
-                PlanLinePresentationRule.ResolveThickness(2) == 2 &&
-                PlanLinePresentationRule.ResolveThickness(3) == 3,
-                "G3 configured thickness 1/2/3 maps to actual thickness 1/2/3");
+                PlanLinePresentationRule.ResolveThickness(2) == 1 &&
+                PlanLinePresentationRule.ResolveThickness(3) == 1,
+                "UI signal line contract fixes all configured thickness values to one pixel");
 
             Assert(
                 PlanLinePresentationRule.ResolveThickness(0) == 1 &&
-                PlanLinePresentationRule.ResolveThickness(4) == 3,
-                "G3 thickness resolver clamps only outside the public 1..3 contract");
+                PlanLinePresentationRule.ResolveThickness(4) == 1,
+                "UI signal line thickness remains one pixel outside the public compatibility input range");
         }
 
         private static void VerifyTargetObstacleCacheKeyHashSemantics()

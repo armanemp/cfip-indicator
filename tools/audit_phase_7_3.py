@@ -45,15 +45,15 @@ check(
     "class PlanLinePresentationRule" in rule and
     "MinimumThickness = 1" in rule and
     "MaximumThickness = 3" in rule and
-    "ResolveThickness(" in rule
+    "ResolveThickness(" in rule and
+    "return MinimumThickness;" in rule
 )
 
 check(
-    "configured thickness is consumed without the former forced-one clamp",
+    "configured thickness is consumed by the canonical resolver",
     "PlanLinePresentationRule.ResolveThickness(" in renderer and
     "LevelLineThickness" in renderer and
-    "Math.Min(1" not in renderer and
-    "Math.Min(1," not in renderer
+    "return MinimumThickness;" in rule
 )
 
 check(
@@ -73,10 +73,10 @@ check(
     "deterministic runtime contract covers 1/2/3 and safe bounds",
     "VerifyPlanLineThicknessG3();" in contracts and
     "PlanLinePresentationRule.ResolveThickness(1) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(2) == 2" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(3) == 3" in contracts and
+    "PlanLinePresentationRule.ResolveThickness(2) == 1" in contracts and
+    "PlanLinePresentationRule.ResolveThickness(3) == 1" in contracts and
     "PlanLinePresentationRule.ResolveThickness(0) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(4) == 3" in contracts
+    "PlanLinePresentationRule.ResolveThickness(4) == 1" in contracts
 )
 
 check(

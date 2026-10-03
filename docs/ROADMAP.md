@@ -3280,3 +3280,19 @@ The panel alert rail now performs an immediate lightweight footer geometry refre
 Current panel correction is now based on actual visible geometry rather than a large fixed footer reserve. The Footer content minimum is 40px, the two-line MTF rail is 38px, outer panel padding is counted only once, and alert text is no-wrap/ellipsis within the audit-required 20px row. Signal-family sound is deduplicated across semantic stages for one closed-M5 event, and MTF arrows have their own chart-object namespace.
 
 cTrader Local/Cloud: the repository does not add Cloud execution. cTrader documentation states that cloud synchronisation makes created/installed algorithms and updates available across apps; Windows/Mac can adjust synchronisation, while custom indicators execute locally on Windows/Mac and cBot local/cloud execution is selectable. This makes repeated Local/Cloud reconciliation a terminal synchronization/instance-state issue rather than a CFIP source-code execution path.
+
+
+## 2026-10-03 — Integrated UI / signal / alert quality hardening
+
+This phase addresses the remaining panel footer, repeated alert, timeframe-status synchronization, chart marker/line presentation, and weak/low-reward signal-presentation issues reported during live visual review.
+
+Completed in the phase branch:
+- compact footer geometry reduced to a 36px minimum with 18px alert rows and no phantom final-row margin;
+- a canonical PanelTimeframePresentationRule now feeds both MTF lamps and panel status text, while the render key tracks all presentation inputs that can change the resolved state;
+- alert event identity no longer depends on volatile provider SignalId values during plan/trace rebuilds;
+- confirmed chart arrows require canonical ActionableNow, early/watch arrows require the existing strong-watch contract plus meaningful reward/RR presentation;
+- trade-facing parallel opportunities now require concrete reward distance and TP1 RR before user-facing presentation, while presentation-only primary fallbacks no longer emit trade alerts;
+- level-line rendering remains Solid with a canonical fixed thickness of 1 and left-of-line labels;
+- cTrader Local/Cloud behavior remains a terminal synchronization boundary; the source project keeps stable algorithm identity and introduces no Cloud transport.
+
+Phase audit: tools/audit_phase_ui_signal_alert_quality_2026_10_03.py.

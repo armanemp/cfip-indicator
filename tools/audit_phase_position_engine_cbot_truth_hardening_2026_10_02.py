@@ -142,7 +142,7 @@ check(
 )
 check(
     "panel messages are readable and left-aligned",
-    "PanelAlertMessageRowHeight = 20" in panel and
+    "PanelAlertMessageRowHeight = 18" in panel and
     "Math.Max(10, PanelFontSize - 1)" in panel and
     "TextAlignment.Left" in panel and
     "HorizontalAlignment.Left" in panel,
