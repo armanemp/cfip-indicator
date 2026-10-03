@@ -158,13 +158,29 @@ check(
 
 check(
     "MaxRememberedSignalSoundGroups = 256" in processor and
-    "IsSignalSoundAlertKey(" in processor and
     "_rememberedSignalSoundGroups" in processor and
     "_rememberedSignalSoundGroupOrder" in processor and
     "Contains(groupKey)" in processor and
     "CreatedClosedM5" in processor and
-    '"SIGNAL|"' in processor,
-    "signal sound dedup must retain multiple recent event fingerprints rather than only the last group",
+    "delivery.Key ?? string.Empty" in processor and
+    "one cue per distinct semantic stage" in processor,
+    "signal sound dedup must preserve distinct semantic alert stages while suppressing exact repeats",
+)
+
+sound_map = read("Trading/Alerts/AlertEngine.cs")
+check(
+    "SoundType.Doorbell" in sound_map and
+    "SoundType.PositiveNotification" in sound_map and
+    "SoundType.NegativeNotification" in sound_map and
+    "SoundType.Confirmation" in sound_map and
+    "SoundType.Announcement" in sound_map and
+    '"WATCH|"' in sound_map and
+    '"REACTION|"' in sound_map and
+    '"ACTION|"' in sound_map and
+    '"TP"' in sound_map and
+    '"SL|"' in sound_map and
+    '"REVERSAL|"' in sound_map,
+    "canonical alert sound mapping must use the full cTrader built-in semantic cue set",
 )
 
 check(
