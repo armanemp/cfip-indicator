@@ -146,3 +146,4 @@ jobs:
       - run: python tools/audit_phase_position_engine_cbot_truth_hardening_2026_10_02.py
       - run: python tools/audit_phase_cbot_attachment_audio_2026_10_02.py
       - run: python tools/audit_phase_cbot_position_truth_hardening_2026_10_03.py
+      - run: python tools/audit_phase_cbot_shadow_multiscenario_truth_2026_10_03.py
