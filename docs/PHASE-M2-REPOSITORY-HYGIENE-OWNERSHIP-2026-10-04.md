@@ -439,5 +439,7 @@ Evidence commits: 5d8467c486cb5fe321fa2cdbbad44831f2a7fc8b, 6c49940cb84cba9fff30
 
 ### Modernization disposition — current M2 work
 
-The management command path is being modernized as a deterministic local state owner plus deferred persistence, rather than by adding another queue/cache or an arbitrary timer gate. The existing runtime heartbeat and buffered-persistence owner are reused. The request/confirmation boundary is explicit and platform-neutral, and broker confirmation remains the only authority for adopted protection state. Remaining modernization work is the semantic helper rename, broker-listener necessity audit, contract/build-graph validation, and authoritative CI/runtime verification.
-\n\nEvidence commits for M2.169/M2.175: daf856bc98f249f5208c37f16c1b235fa028f353, 1bd942e8f544957b3903b414f02c1cb3406b1e2f, 74f80be779dedb02512798f36f7c123549f57272.\n
+The management command path is being modernized as a deterministic local state owner plus deferred persistence, rather than by adding another queue/cache or an arbitrary timer gate. The existing runtime heartbeat and buffered-persistence owner are reused. The request/confirmation boundary is explicit and platform-neutral, and broker confirmation remains the only authority for adopted protection state. Remaining modernization work is contract/build-graph validation and authoritative CI/runtime verification.
+
+
+Evidence commits for M2.169/M2.175: daf856bc98f249f5208c37f16c1b235fa028f353, 1bd942e8f544957b3903b414f02c1cb3406b1e2f, 74f80be779dedb02512798f36f7c123549f57272.
