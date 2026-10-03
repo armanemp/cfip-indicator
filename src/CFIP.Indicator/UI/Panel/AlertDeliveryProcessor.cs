@@ -142,6 +142,7 @@ namespace cAlgo
             AlertDelivery delivery)
         {
             bool attemptedCustomFile =
+                !UseSemanticAlertSounds &&
                 !string.IsNullOrWhiteSpace(
                     delivery.SoundFilePath);
 
