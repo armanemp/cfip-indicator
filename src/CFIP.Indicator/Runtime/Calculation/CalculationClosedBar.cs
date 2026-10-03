@@ -12,6 +12,7 @@ namespace cAlgo
             MtfClosedContext mtf)
         {
             int m1Index = mtf.M1;
+            int m2Index = mtf.M2;
             int m15Index = mtf.M15;
             int m30Index = mtf.M30;
             int h1Index = mtf.H1;
@@ -52,6 +53,20 @@ namespace cAlgo
             {
                 _m1Frame = null;
             }
+
+            _m2Frame =
+                m2Index >= 20
+                    ? AnalyzeFrameCached(
+                        _m2Frame,
+                        _m2Bars,
+                        m2Index)
+                    : null;
+
+            _m2PrecisionSnapshot =
+                M2PrecisionRule.Evaluate(
+                    _m2Frame,
+                    m2Index,
+                    _m5Frame == null ? 0 : _m5Frame.Direction);
 
             _m5Frame =
                 AnalyzeFrameCached(
