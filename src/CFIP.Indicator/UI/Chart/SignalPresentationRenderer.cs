@@ -56,10 +56,7 @@ namespace cAlgo
                     snapshot,
                     visualDirection,
                     hostBar,
-                    watchOffset,
-                    ResolveSignalArrowState(
-                        snapshot,
-                        visualDirection));
+                    watchOffset);
             }
             else
             {
