@@ -38,24 +38,5 @@ namespace cAlgo
                     Bars.Count - 1,
                     lineLeft - offset));
         }
-
-        private int GetLabelBoxRightBar(
-            int lineLeft)
-        {
-            if (Bars == null ||
-                Bars.Count < 2)
-                return 0;
-
-            int labelBar =
-                GetCompactPlanLabelAnchorBar(
-                    lineLeft);
-
-            return Math.Max(
-                labelBar,
-                Math.Min(
-                    Bars.Count - 1,
-                    labelBar +
-                    CompactPlanLabelWidthBars));
-        }
     }
 }
