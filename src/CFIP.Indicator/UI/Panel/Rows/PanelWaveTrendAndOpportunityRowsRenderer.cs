@@ -96,9 +96,7 @@ namespace cAlgo
                     laneSummary +=
                         opportunity.LabelPrefix +
                         " " +
-                        (opportunity.Direction == 1
-                            ? "BUY"
-                            : "SELL") +
+                        DirectionText(opportunity.Direction) +
                         " " +
                         opportunity.Tp1RR.ToString("F2") +
                         "R/" +
