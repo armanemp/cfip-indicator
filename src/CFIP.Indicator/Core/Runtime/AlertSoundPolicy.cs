@@ -9,21 +9,21 @@ namespace cAlgo
     /// transport-level sound grouping. This class decides the cue; it never
     /// performs delivery.
     /// </summary>
-    internal static class AlertSoundPolicy
+    internal readonly struct AlertSoundDecision
     {
-        internal readonly struct Decision
+        public AlertSoundDecision(SoundType soundType, string groupKey)
         {
-            public Decision(SoundType soundType, string groupKey)
-            {
-                SoundType = soundType;
-                GroupKey = groupKey;
-            }
-
-            public SoundType SoundType { get; }
-            public string GroupKey { get; }
+            SoundType = soundType;
+            GroupKey = groupKey;
         }
 
-        public static Decision ResolveAlertSound(
+        public SoundType SoundType { get; }
+        public string GroupKey { get; }
+    }
+
+    internal static class AlertSoundPolicy
+    {
+        public static AlertSoundDecision ResolveAlertSound(
             string key,
             bool useSemanticSounds,
             SoundType configuredSoundType,
@@ -36,7 +36,7 @@ namespace cAlgo
                     ? ResolveSemanticSound(normalizedKey, envelope)
                     : configuredSoundType;
 
-            return new Decision(
+            return new AlertSoundDecision(
                 soundType,
                 BuildGroupKey(normalizedKey, envelope, symbolName));
         }
