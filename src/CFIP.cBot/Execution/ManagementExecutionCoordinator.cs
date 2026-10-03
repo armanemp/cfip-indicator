@@ -134,17 +134,10 @@ namespace CFIP.cBot.Execution
                         nowUtc,
                         out string cooldownReason))
                 {
-                    StoreReport(
-                        robot,
-                        instanceId,
-                        reports,
-                        BuildReport(
-                            command,
-                            BrokerAction.None,
-                            BrokerReportStatus.Accepted,
-                            nowUtc,
-                            null,
-                            cooldownReason));
+                    // Keep the command queued. A cooldown is a temporary execution
+                    // deferment, not an Accepted broker fact. Persisting Accepted here
+                    // would move the command into the confirmation-only branch and
+                    // could prevent it from ever reaching broker mutation.
                     status = cooldownReason;
                     return true;
                 }
