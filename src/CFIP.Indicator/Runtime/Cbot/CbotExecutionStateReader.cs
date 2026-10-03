@@ -8,6 +8,7 @@ namespace cAlgo
     {
         private CbotExecutionStateSnapshot _cBotExecutionState;
         private CbotPresenceSnapshot _cBotPresence;
+        private const int CbotStateReadIntervalMilliseconds = 200;
         private DateTime _nextCbotStateReadUtc = DateTime.MinValue;
         private string _cBotStateReadError = string.Empty;
 
@@ -31,7 +32,7 @@ namespace cAlgo
                         string.Equals(
                             candidate.Name,
                             CbotIdentity.DisplayName,
-                            StringComparison.Ordinal);
+                            StringComparison.OrdinalIgnoreCase);
 
                     string candidateTypeName =
                         candidate.Type == null
@@ -47,14 +48,14 @@ namespace cAlgo
                         string.Equals(
                             candidateTypeName,
                             CbotIdentity.TypeName,
-                            StringComparison.Ordinal) ||
+                            StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(
                             candidateTypeText,
                             CbotIdentity.TypeName,
                             StringComparison.Ordinal) ||
                         candidateTypeText.EndsWith(
                             "." + CbotIdentity.TypeName,
-                            StringComparison.Ordinal);
+                            StringComparison.OrdinalIgnoreCase);
 
                     if (!instanceNameMatches &&
                         !typeNameMatches)
@@ -127,7 +128,7 @@ namespace cAlgo
                 return;
 
             _nextCbotStateReadUtc =
-                now.AddMilliseconds(750);
+                now.AddMilliseconds(CbotStateReadIntervalMilliseconds);
 
             try
             {
