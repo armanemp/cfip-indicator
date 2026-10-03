@@ -24,6 +24,7 @@ This sub-phase closes the unfinished Footer and Alert/Popup parts of the larger 
 - Email delivery now occurs only after canonical AlertDeliveryQueue acceptance.
 - Alert rail rendering is revision-driven. Existing row controls are reused and skipped when `_panelAlertRevision` has not changed, reducing needless chart-control writes on realtime panel refreshes.
 - Character budget now accounts for the visible bullet prefix so the manual truncation boundary matches the actual rendered text more closely.
+- Alert-rail visibility remains lifecycle-driven even when the alert revision is unchanged, preventing hide/show transitions from leaving a stale invisible rail.
 
 ## Alert/Popup lifecycle
 
