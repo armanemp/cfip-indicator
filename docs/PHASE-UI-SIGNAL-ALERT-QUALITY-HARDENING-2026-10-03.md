@@ -46,6 +46,11 @@ Integrated correction phase for the user-reported panel, alert, chart drawing an
 - Current cTrader documentation states that cloud synchronisation distributes created/installed algos and updates across cTrader apps, while custom indicators execute locally on Windows/Mac and Cloud execution is for cBots. The repeated Local/Cloud reconciliation prompt is therefore a terminal synchronization/algorithm-state concern rather than an indicator source-code transport path.
 - No source-code suppression of the terminal prompt was added because that would hide the platform boundary instead of fixing it.
 
+## Final follow-up hardening
+- The accumulated MTF-panel audit was corrected to assert the actual canonical method declarations (`ResolveDisplayDirection(` / `ResolveLabel(`) rather than requiring a qualified-call spelling that never existed in the owner file.
+- Presentation-only primary M15/H1 candidates are now rejected before any public marker is drawn. They remain diagnostic source context in the analysis pipeline but cannot produce a misleading chart signal arrow/line surface.
+- The integrated UI audit now explicitly verifies that presentation-only candidates are filtered before primary marker drawing.
+
 ## Verification
 - Static integrated audit added: tools/audit_phase_ui_signal_alert_quality_2026_10_03.py.
 - Existing footer/alert and accumulated position/UI audits were updated for the 36px/18px compact geometry.
