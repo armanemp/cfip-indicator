@@ -2,6 +2,7 @@
 // Single-responsibility lifecycle module.
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using cAlgo.API;
@@ -21,9 +22,11 @@ namespace cAlgo
                                         if (!IsManagedPendingOrder(order))
                                             continue;
                         
-                                        if (!TryCancelPendingOrder(
+                                        ManagementCommandRequestStatus cancelStatus =
+                                            TryCancelPendingOrder(
                                                 order,
-                                                "PENDING CIRCUIT BREAKER"))
+                                                "PENDING CIRCUIT BREAKER");
+                                        if (!cancelStatus.IsAccepted())
                                             allCancelledOrAbsent = false;
                                     }
                         
