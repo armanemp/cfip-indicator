@@ -556,6 +556,7 @@ namespace cAlgo
                                     _panelAlertMessageRows.Clear();
                                     _panelAlertMessageStack = null;
                                     _alertDeliveryQueue.ClearPendingAlerts();
+                                    _alertSoundDeliveryQueue.ClearPendingAlerts();
                                     base.OnDestroy();
                                 }
     }
