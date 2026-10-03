@@ -40,43 +40,5 @@ namespace cAlgo
             return "CBOT LINK";
         }
 
-        private static string NormalizePanelHeaderState(
-            string state)
-        {
-            if (string.IsNullOrWhiteSpace(state))
-                return "WAIT";
-
-            string normalized =
-                state.Trim()
-                    .Replace(
-                        "SMART ACTION",
-                        string.Empty,
-                        StringComparison.OrdinalIgnoreCase)
-                    .Trim();
-
-            return string.IsNullOrWhiteSpace(normalized)
-                ? "WAIT"
-                : normalized;
-        }
-
-        private Color ResolvePanelHeaderColor(
-            int direction,
-            string signal)
-        {
-            if (signal.IndexOf(
-                    "BLOCKED",
-                    StringComparison.OrdinalIgnoreCase) >= 0)
-                return PanelWarningColor;
-
-            if (signal.IndexOf(
-                    "ACTIONABLE",
-                    StringComparison.OrdinalIgnoreCase) >= 0)
-                return TpLineColor;
-
-            if (direction != 0)
-                return PanelAccentColor;
-
-            return PanelSecondaryTextColor;
-        }
     }
 }
