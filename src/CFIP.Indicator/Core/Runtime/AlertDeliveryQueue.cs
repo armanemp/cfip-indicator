@@ -28,11 +28,15 @@ namespace cAlgo
 
             if (Count >= _capacity)
             {
-                if (delivery.Critical)
+                // Sound-bearing alerts are user-visible signal events too.
+                // Preserve them under burst conditions by evicting the oldest
+                // normal diagnostic message before allowing the audio event to
+                // enter the bounded transport.
+                if (delivery.Critical || delivery.PlaySound)
                 {
                     if (_normal.Count > 0)
                         _normal.Dequeue();
-                    else if (_critical.Count > 0)
+                    else if (delivery.Critical && _critical.Count > 0)
                         _critical.Dequeue();
                     else
                         return false;
