@@ -11,8 +11,8 @@ Current closure:
 - WaveTrend evidence text and color share one evidence-direction owner, and disagreement with trade direction is explicitly marked CONFLICT.
 - Trading/business rules were not changed; this phase is presentation-semantics hardening.
 
-Next verification boundary:
-Source/Architecture + Runtime Acceptance + cTrader Compile/Build, then target-terminal visual parity checks.
+Remaining acceptance boundary:
+Manual target-terminal cTrader validation for MTF lamp/text/header parity, Top-Down readability, WaveTrend conflict presentation and alert/chart behavior. The automated Source/Runtime/Compile gates for this phase already passed before merge.
 
 Operator action after verified merge: `git pull --ff-only`.
 
