@@ -18,6 +18,9 @@ namespace cAlgo
         private readonly HashSet<string> _confirmedManagementKeys =
             new HashSet<string>(StringComparer.Ordinal);
 
+        private readonly Queue<string> _confirmedManagementOrder =
+            new Queue<string>();
+
         private long _managementCommandRevision;
 
         private bool TryCancelPendingOrder(PendingOrder order, string context)
@@ -275,6 +278,7 @@ namespace cAlgo
 
                     if (_confirmedManagementKeys.Add(report.CommandIdempotencyKey))
                     {
+                        _confirmedManagementOrder.Enqueue(report.CommandIdempotencyKey);
                         newConfirmation = true;
 
                         if (report.Status == BrokerReportStatus.Confirmed)
@@ -335,19 +339,11 @@ namespace cAlgo
         private void TrimConfirmedKeys()
         {
             while (_confirmedManagementKeys.Count >
-                   MaxRememberedManagementConfirmations)
+                   MaxRememberedManagementConfirmations &&
+                   _confirmedManagementOrder.Count > 0)
             {
-                string remove = null;
-                foreach (string key in _confirmedManagementKeys)
-                {
-                    remove = key;
-                    break;
-                }
-
-                if (remove == null)
-                    break;
-
-                _confirmedManagementKeys.Remove(remove);
+                string oldest = _confirmedManagementOrder.Dequeue();
+                _confirmedManagementKeys.Remove(oldest);
             }
         }
 
