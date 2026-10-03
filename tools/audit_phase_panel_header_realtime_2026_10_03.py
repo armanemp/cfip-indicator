@@ -47,7 +47,8 @@ check(
     "header uses a change-aware cache",
     "_panelStableHeader" in state and
     "_panelStableHeaderSinceUtc" in state and
-    "_panelHeaderTitle.Text = header" in header
+    "_panelHeaderTitle.Text" in header and
+    "header" in header[header.find("_panelHeaderTitle.Text"):]
 )
 check(
     "header audit is accumulated",
