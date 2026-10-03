@@ -44,6 +44,16 @@ namespace cAlgo
         public double Tp2;
         public double Tp3;
         public double Tp4;
+        public double ZoneLow;
+        public double ZoneHigh;
+        public double ZoneTolerance;
+
+        // Intrabar opportunity state. Structural geometry is reused; these fields
+        // are refreshed from the live quote so scenarios can enter/arm without
+        // waiting for the next closed M5 bar.
+        public bool FutureOrderReady;
+        public double FutureOrderDistanceAtr;
+        public string FutureOrderSource;
 
         public string Source;
         public string Stage;

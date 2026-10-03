@@ -48,8 +48,21 @@ namespace cAlgo
                 decision.Direction == 0)
                 return BlockScenarioExecutionPolicy("NO CANONICAL DECISION");
 
-            if (candidate.Direction != decision.Direction)
+            bool futurePending =
+                IsFuturePendingCandidate(candidate);
+
+            // Current market scenarios remain direction-locked to the canonical
+            // M15 decision. Future pending scenarios are allowed to represent a
+            // separate continuation or reversal path, because their job is to
+            // wait at a pre-planned future level rather than enter now.
+            if (!futurePending &&
+                candidate.Direction != decision.Direction)
                 return BlockScenarioExecutionPolicy("SCENARIO / DECISION DIRECTION MISMATCH");
+
+            if (futurePending &&
+                candidate.ExecutionMode == ExecutionMode.ContinuationStop &&
+                candidate.Direction != decision.Direction)
+                return BlockScenarioExecutionPolicy("FUTURE STOP / DECISION DIRECTION MISMATCH");
 
             if (candidate.Lane != expectedLane)
                 return BlockScenarioExecutionPolicy("SCENARIO / PLAN LANE MISMATCH");
@@ -57,18 +70,31 @@ namespace cAlgo
             if (!decision.EntryAllowed)
                 return BlockScenarioExecutionPolicy("CANONICAL DECISION BLOCKED");
 
-            // RetestMarket is zone-driven and does not require the generic
-            // Decision.TriggerReady flag. The candidate must still pass the live
-            // actionability gate, including current quote, M15 direction, RR,
-            // location/timing, trap-risk and indicator-fusion checks.
-            if (EntryActionabilityPolicy.RequiresConfirmedTrigger(
+            // Future pending orders are deliberately armed before the trigger is
+            // touched. Their prerequisite is the dedicated pending-quality path,
+            // not the current market-entry ActionableNow flag.
+            if (!futurePending &&
+                EntryActionabilityPolicy.RequiresConfirmedTrigger(
                     candidate.ExecutionMode,
                     m5OnlyConfirmedTrigger) &&
                 !decision.TriggerReady)
                 return BlockScenarioExecutionPolicy("CANONICAL TRIGGER NOT READY");
 
-            if (!decision.ActionableNow)
+            if (!futurePending &&
+                !decision.ActionableNow)
                 return BlockScenarioExecutionPolicy("CANONICAL DECISION NOT ACTIONABLE");
+
+            if (futurePending)
+            {
+                if (!candidate.FutureOrderReady)
+                    return BlockScenarioExecutionPolicy("FUTURE ORDER NOT ARMED");
+
+                return new ScenarioExecutionPolicyResult(
+                    true,
+                    true,
+                    "FUTURE PENDING SCENARIO ELIGIBLE",
+                    "FUTURE PENDING SCENARIO EXECUTION AUTHORIZED");
+            }
 
             if (!candidate.ActionableNow)
                 return BlockScenarioExecutionPolicy(
@@ -115,6 +141,15 @@ namespace cAlgo
                 true,
                 "CANONICAL CANDIDATE ELIGIBLE",
                 "CANONICAL SCENARIO EXECUTION AUTHORIZED");
+        }
+
+        private static bool IsFuturePendingCandidate(
+            TradeOpportunityCandidate candidate)
+        {
+            return candidate != null &&
+                candidate.FutureOrderReady &&
+                (candidate.ExecutionMode == ExecutionMode.ContinuationStop ||
+                 candidate.ExecutionMode == ExecutionMode.ReversalLimit);
         }
 
         internal static bool TryResolvePlanScenario(

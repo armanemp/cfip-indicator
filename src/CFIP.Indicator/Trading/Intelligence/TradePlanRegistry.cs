@@ -196,6 +196,38 @@ namespace cAlgo
                 maximumVisible);
         }
 
+        public IReadOnlyList<TradeOpportunityCandidate> SelectScenariosForExecution()
+        {
+            List<TradeOpportunityCandidate> items =
+                new List<TradeOpportunityCandidate>();
+
+            foreach (TradeOpportunityCandidate candidate in _entries.Values)
+            {
+                if (candidate == null ||
+                    candidate.PresentationOnly ||
+                    !candidate.ExecutionPolicyAllowed)
+                    continue;
+
+                bool current =
+                    candidate.ActionableNow;
+
+                bool future =
+                    candidate.FutureOrderReady &&
+                    (candidate.ExecutionMode ==
+                        ExecutionMode.ContinuationStop ||
+                     candidate.ExecutionMode ==
+                        ExecutionMode.ReversalLimit);
+
+                if (!current && !future)
+                    continue;
+
+                items.Add(candidate);
+            }
+
+            items.Sort(CompareCandidates);
+            return items;
+        }
+
         public bool Contains(
             string id)
         {

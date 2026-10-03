@@ -1,3 +1,40 @@
+## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Purpose:
+- continuously refresh current-quote opportunity state without rebuilding structural M5 geometry on every tick;
+- support simultaneous current-market execution scenarios and future pending-order scenarios;
+- keep M15 as canonical trade-decision/execution reference, M5 as trigger/tuning/entry precision, M1 optional, H1+ context/reward;
+- keep historical calibration and forward prediction as separate evidence layers.
+
+Completed:
+- intrabar candidate state refresh on a bounded 200 ms cadence;
+- live market actionability refresh from the current quote;
+- future Continuation Stop and Reversal Limit scenario construction before price reaches the planned level;
+- provider batch support for current actionable and future pending scenarios in the same revision;
+- isolation of future-order preparation from the canonical live provider intent;
+- scenario-scoped execution remains bounded by cBot Max Concurrent Scenarios;
+- dedicated realtime static regression audit added to Source/Architecture CI.
+
+Full-chain audit:
+Past/history -> pre-analysis -> M15 decision -> M5 tuning/trigger -> M1 optional -> current quote actionability -> current Market/Aggressive OR future Stop/Limit -> ScenarioBatch -> cBot preflight -> broker execution/placement -> broker confirmation -> protection/management -> outcome/history.
+
+Safety:
+- no quality/RR/risk threshold was lowered;
+- live accounts remain blocked in the current demo-only cBot build;
+- Indicator remains broker-mutation-free;
+- same ScenarioId remains idempotent;
+- future pending scenarios are not presented as current market entries.
+
+Verification:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- dedicated realtime multi-scenario audit;
+- target-terminal latency, same-tick handoff, concurrent positions, future pending placement, invalidation and restart/reconnect.
+
+---
 ## 2026-10-03 — cBot Management Policy Hardening corrective seam
 
 Post-implementation review found a retryability defect in the broker-modification cooldown path: a command that was temporarily deferred could be represented as an intermediate broker acknowledgment and then remain in confirmation-only processing.
