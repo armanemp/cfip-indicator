@@ -1,3 +1,46 @@
+# Current focus — CBOT SHADOW MULTI-SCENARIO TRUTH — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Finding closed:
+
+- SignalScenarioBatch permits independent ScenarioIds to share a provider revision;
+
+- ShadowHostCoordinator previously used one global last revision/idempotency pair;
+
+- a valid second ScenarioId in the same batch could therefore hit REVISION CONFLICT before broker execution.
+
+Canonical correction:
+
+- last revision/idempotency state is now keyed by ScenarioId;
+
+- same-scenario replay/conflict semantics remain strict;
+
+- global last-accepted values remain telemetry only;
+
+- cBot still processes every scenario from the batch and broker mutation ownership remains unchanged.
+
+Full-chain audit:
+
+Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Signal/Alert -> ScenarioBatch -> cBot preflight -> ShadowHost per-ScenarioId truth -> broker reconciliation -> execution -> confirmation -> protection -> outcome/history.
+
+Verification:
+
+- Source/Architecture;
+
+- Runtime Acceptance;
+
+- cTrader Compile/Build;
+
+- dedicated shadow multi-scenario audit;
+
+- target-terminal two-independent-ScenarioIds/same-revision, duplicate replay and independent protection/reconciliation validation.
+
+Phase record: docs/PHASE-CBOT-SHADOW-MULTISCENARIO-TRUTH-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
 # Current focus — CBOT POSITION TRUTH / RESTART IDEMPOTENCY HARDENING — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.
