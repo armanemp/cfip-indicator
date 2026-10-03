@@ -70,8 +70,7 @@ namespace CFIP.cBot.Execution
 
             string[] rows =
                 payload.Split(
-                    new[] { '
-' },
+                    new[] { '\n' },
                     StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0;
@@ -80,7 +79,7 @@ namespace CFIP.cBot.Execution
                  i++)
             {
                 string[] fields =
-                    rows[i].Split('	');
+                    rows[i].Split('\t');
 
                 if (fields.Length != 3)
                     continue;
@@ -230,10 +229,9 @@ namespace CFIP.cBot.Execution
                     item.Value.AttemptedUtc.Ticks
                         .ToString(
                             CultureInfo.InvariantCulture) +
-                    "	" +
-                    item.Value.Confirmed.ToString(
-                        CultureInfo.InvariantCulture) +
-                    "	" +
+                    "\t" +
+                    item.Value.Confirmed.ToString() +
+                    "\t" +
                     encodedKey;
             }
 
@@ -242,8 +240,7 @@ namespace CFIP.cBot.Execution
                 robot.LocalStorage.SetString(
                     StoreKey(),
                     string.Join(
-                        "
-",
+                        "\n",
                         rows),
                     LocalStorageScope.Device);
                 robot.LocalStorage.Flush(
