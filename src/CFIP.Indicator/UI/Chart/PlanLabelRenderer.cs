@@ -14,6 +14,9 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
+        private const int CompactPlanLabelWidthBars = 6;
+        private const double CompactPlanLabelHeightRangeFactor = 0.18;
+        private const double CompactPlanLabelMinimumHeightPips = 5.0;
 
         private void DrawPlanLabel(
             string name,
@@ -137,25 +140,113 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                int safeLabelBar =
+                int rightBar =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
                             labelBar));
 
-                // The label is horizontally separated from the line,
-                // not vertically displaced from it. This keeps the price
-                // annotation visually attached to its exact level.
+                int leftBar =
+                    Math.Max(
+                        0,
+                        rightBar - CompactPlanLabelWidthBars);
+
                 double labelPrice =
                     NormalizePrice(price);
 
-                // Level text is deliberately background-free and follows the current
-                // canonical white-text contract.
-                Color labelTextColor =
-                    GetReadableLabelTextColor(
+                double rangeSum = 0.0;
+                int sampleCount = 0;
+                int firstSample =
+                    Math.Max(
+                        0,
+                        rightBar - 8);
+
+                for (int i = firstSample;
+                     i <= rightBar;
+                     i++)
+                {
+                    double high =
+                        Bars.HighPrices[i];
+                    double low =
+                        Bars.LowPrices[i];
+
+                    if (!double.IsNaN(high) &&
+                        !double.IsInfinity(high) &&
+                        !double.IsNaN(low) &&
+                        !double.IsInfinity(low) &&
+                        high >= low)
+                    {
+                        rangeSum += high - low;
+                        sampleCount++;
+                    }
+                }
+
+                double averageRange =
+                    sampleCount > 0
+                        ? rangeSum / sampleCount
+                        : Symbol.PipSize *
+                          CompactPlanLabelMinimumHeightPips;
+
+                double minimumHeight =
+                    Symbol.PipSize *
+                    CompactPlanLabelMinimumHeightPips;
+
+                double halfHeight =
+                    Math.Max(
+                        minimumHeight,
+                        averageRange *
+                        CompactPlanLabelHeightRangeFactor);
+
+                Color labelColor =
+                    PlanLinePresentationRule.ResolveColor(
                         semanticColor);
 
+                ChartRectangle box =
+                    Chart.FindObject(name + "_BOX")
+                    as ChartRectangle;
+
+                if (box == null)
+                {
+                    ChartObject existing =
+                        Chart.FindObject(name + "_BOX");
+
+                    if (existing != null)
+                        Chart.RemoveObject(name + "_BOX");
+
+                    box =
+                        Chart.DrawRectangle(
+                            name + "_BOX",
+                            leftBar,
+                            labelPrice + halfHeight,
+                            rightBar,
+                            labelPrice - halfHeight,
+                            labelColor,
+                            1,
+                            LineStyle.Solid);
+                }
+
+                if (box == null)
+                    return;
+
+                box.Time1 =
+                    Bars.OpenTimes[leftBar];
+                box.Y1 =
+                    labelPrice + halfHeight;
+                box.Time2 =
+                    Bars.OpenTimes[rightBar];
+                box.Y2 =
+                    labelPrice - halfHeight;
+                box.Color =
+                    labelColor;
+                box.Thickness =
+                    1;
+                box.LineStyle =
+                    LineStyle.Solid;
+                box.IsFilled =
+                    true;
+                box.IsInteractive =
+                    false;
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -173,9 +264,9 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            Bars.OpenTimes[safeLabelBar],
+                            Bars.OpenTimes[leftBar],
                             labelPrice,
-                            labelTextColor);
+                            Color.White);
                 }
 
                 if (label == null)
@@ -184,11 +275,11 @@ namespace cAlgo
                 label.Text =
                     text;
                 label.Time =
-                    Bars.OpenTimes[safeLabelBar];
+                    Bars.OpenTimes[leftBar];
                 label.Y =
                     labelPrice;
                 label.Color =
-                    labelTextColor;
+                    Color.White;
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
