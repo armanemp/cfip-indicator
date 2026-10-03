@@ -39,7 +39,7 @@ namespace cAlgo
                 null, order, null, null, null, null, null, null, null, null, null, null, context);
         }
 
-        private ManagementCommandRequestStatus TryClosePosition(Position position, string context, double? volumeInUnits = null)
+        private ManagementCommandRequestStatus RequestClosePosition(Position position, string context, double? volumeInUnits = null)
         {
             if (position == null)
                 return ManagementCommandRequestStatus.Rejected;
