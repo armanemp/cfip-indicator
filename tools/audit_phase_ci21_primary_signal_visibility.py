@@ -24,7 +24,8 @@ def check(name, condition):
 
 builder = (
     read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
-    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs") +
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidatePresentation.cs")
 )
 timeframes = read("src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs")
 candidate = read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs")
