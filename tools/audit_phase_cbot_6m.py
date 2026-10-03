@@ -40,7 +40,7 @@ reconciliation = read("src/CFIP.cBot/Recovery/CbotBrokerReconciliation.cs")
 management = read("src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs")
 workflow = read(".github/workflows/source-check.yml")
 quality_rule = read("src/CFIP.Indicator/Core/Math/TradeOpportunityQualityRule.cs")
-quality_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+quality_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs")
 quality_selection = read("src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs")
 quality_batch = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs")
 
@@ -69,7 +69,7 @@ check(
     "candidate carries the execution mode and requested volume",
     "public ExecutionMode ExecutionMode;" in candidate and
     "public double RequestedVolume;" in candidate and
-    "ExecutionMode = execution.Mode" in parallel
+    "ExecutionMode = execution.Mode" in quality_builder
 )
 check(
     "M15 is the only independent timeframe authorized for automatic execution",

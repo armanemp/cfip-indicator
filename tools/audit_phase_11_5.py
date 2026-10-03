@@ -7,7 +7,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs"
-CANDIDATES = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
+CANDIDATES = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs"
 TF_SCENARIOS = ROOT / "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
 SUBMISSION_ID = ROOT / "src/CFIP.Indicator/Core/Execution/SubmissionAttemptIdentity.cs"
 SUBMISSION_COORD = ROOT / "src/CFIP.Indicator/Trading/Execution/SubmissionGateCoordinator.cs"
