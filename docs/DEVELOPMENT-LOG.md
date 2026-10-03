@@ -2,6 +2,11 @@
 
 Status: implementation complete, verification pending.
 
+Additional execution-chain hardening:
+- ShadowHost cached results and broker recheck timestamps are now ScenarioId-scoped;
+- ScenarioBatch materialization is explicitly bound to the current closed M5, preventing stale opportunity candidates from reaching cBot handoff;
+- legacy shadow audit now validates the scenario-scoped recheck contract instead of requiring global state.
+
 Deep execution-chain audit found that SignalScenarioBatch allows several independent ScenarioIds to carry the same provider revision, while ShadowHostCoordinator stored only one global last revision/idempotency pair. The second scenario could therefore be rejected as REVISION CONFLICT before broker execution.
 
 Implemented:
