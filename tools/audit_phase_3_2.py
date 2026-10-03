@@ -43,15 +43,13 @@ checks = {
         'Parameter("Minimum Reward Quality Floor"' in params
     ),
     "early prediction scoring has one canonical math owner": (
-        "EarlyPredictionScoreRule.Evaluate(" in early and
+        "MtfEarlyPredictionFusionRule.Evaluate(" in early and
+        "internal static EarlyPredictionScoreResult Finalize(" in early_rule and
         "M5Weight = 0.55" in early_rule and
         "M15Weight = 0.45" in early_rule and
         "LiquidityForecastBonus = 8.0" in early_rule and
-        "* 0.55" not in early and
-        "* 0.45" not in early and
-        "+= 8" not in early and
-        "+= 2" not in early and
-        "+= 1" not in early
+        "EarlyPredictionScoreRule.Finalize(" in read("src/CFIP.Indicator/Core/Math/MtfEarlyPredictionFusionRule.cs") and
+        "Math.Max(buy, sell)" not in read("src/CFIP.Indicator/Core/Math/MtfEarlyPredictionFusionRule.cs")
     ),
     "early prediction exposes directional share and absolute strength": (
         "DirectionalShare" in prediction and
