@@ -275,7 +275,19 @@ namespace cAlgo
                     ExecutionPolicyReason = "PENDING POLICY EVALUATION"
                 };
 
-            return true;
+            ScenarioExecutionPolicyResult policy =
+                ScenarioExecutionPolicyRule.Evaluate(
+                    candidate,
+                    _decision,
+                    candidate.Lane,
+                    M5OnlyConfirmedTrigger);
+
+            candidate.ExecutionPolicyAllowed =
+                policy.ExecutionAuthorized;
+            candidate.ExecutionPolicyReason =
+                policy.ExecutionReason;
+
+            return policy.ExecutionAuthorized;
         }
 
         private void RefreshLiveParallelOpportunityStates(
