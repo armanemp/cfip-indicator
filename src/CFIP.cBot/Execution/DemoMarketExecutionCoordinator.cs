@@ -306,6 +306,9 @@ namespace CFIP.cBot.Execution
             }
 
             Remember(key);
+
+            if (result == null)
+            {
                 if (idempotencyStore != null)
                     idempotencyStore.RecordAttempt(
                         robot,
@@ -313,8 +316,6 @@ namespace CFIP.cBot.Execution
                         false,
                         nowUtc);
 
-            if (result == null)
-            {
                 reason = "NULL TRADE RESULT";
                 report = BuildReport(
                     envelope,
@@ -339,6 +340,14 @@ namespace CFIP.cBot.Execution
                     nowUtc,
                     result,
                     reason);
+
+                if (idempotencyStore != null)
+                    idempotencyStore.RecordAttempt(
+                        robot,
+                        key,
+                        false,
+                        nowUtc);
+
                 return false;
             }
 
