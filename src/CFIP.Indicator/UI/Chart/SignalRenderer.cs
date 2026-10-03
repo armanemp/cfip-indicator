@@ -211,16 +211,23 @@ namespace cAlgo
                             if (snapshot == null)
                                 return fallbackDirection;
 
-                            if (snapshot.HtfTrendDirection == 1 ||
-                                snapshot.HtfTrendDirection == -1)
+                            if ((snapshot.HtfTrendDirection == 1 ||
+                                 snapshot.HtfTrendDirection == -1) &&
+                                snapshot.HtfTrendDirection ==
+                                fallbackDirection)
                             {
                                 return snapshot.HtfTrendDirection;
                             }
 
-                            return snapshot.MtfTrendDirection == 1 ||
-                                   snapshot.MtfTrendDirection == -1
-                                ? snapshot.MtfTrendDirection
-                                : fallbackDirection;
+                            if ((snapshot.MtfTrendDirection == 1 ||
+                                 snapshot.MtfTrendDirection == -1) &&
+                                snapshot.MtfTrendDirection ==
+                                fallbackDirection)
+                            {
+                                return snapshot.MtfTrendDirection;
+                            }
+
+                            return fallbackDirection;
                         }
 
         private void RenderMtfTrendStrengthArrowStack(
