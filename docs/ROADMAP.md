@@ -1,3 +1,40 @@
+## Current focus — CBOT MANAGEMENT POLICY HARDENING — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Closed:
+- cBot now reads the execution-sensitive live-management controls required to authorize protection, partial close and TP progression;
+- ManagementExecutionCoordinator applies one canonical CbotManagementPolicyRule before broker mutation;
+- partial close is blocked when partial TP is disabled;
+- SL/BreakEven protection mutation is blocked when broker protection is disabled, while startup safety recovery remains fail-closed;
+- TP advance requires both live-exit management and broker TP sync;
+- broker protection/TP mutations are throttled by a position-scoped BrokerModifyCooldownMs;
+- full close and pending cancellation remain available for safety lifecycle operations;
+- deterministic cBot behavioral coverage and Source/Architecture audit are added.
+
+Full-chain audit:
+Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Signal/Alert -> ScenarioBatch -> cBot preflight -> per-ScenarioId broker truth -> management policy -> broker mutation -> confirmation -> protection -> outcome/history.
+
+Safety:
+- live accounts remain blocked;
+- cBot remains sole broker mutation owner;
+- M15/M5/M1 role separation unchanged;
+- no signal-quality, RR, risk, margin, spread, daily-loss or concurrency threshold is lowered;
+- emergency full-close/pending-cancel lifecycle commands are not disabled by ordinary TP/protection toggles.
+
+Verification:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- dedicated management-policy audit;
+- target-terminal management/protection/cooldown validation.
+
+Phase record: docs/PHASE-CBOT-MANAGEMENT-POLICY-HARDENING-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 ## Current focus — CBOT BROKER-CONFIRMED EXECUTION FACTS — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
