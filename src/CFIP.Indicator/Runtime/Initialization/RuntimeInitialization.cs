@@ -387,7 +387,7 @@ namespace cAlgo
             if (_initializationReady)
             {
                 HandleRuntimeHeartbeat();
-                ProcessQueuedAlertDelivery();
+                ProcessQueuedAlertPresentation();
                 return;
             }
 
