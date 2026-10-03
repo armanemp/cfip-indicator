@@ -443,3 +443,8 @@ The management command path is being modernized as a deterministic local state o
 
 
 Evidence commits for M2.169/M2.175: daf856bc98f249f5208c37f16c1b235fa028f353, 1bd942e8f544957b3903b414f02c1cb3406b1e2f, 74f80be779dedb02512798f36f7c123549f57272.
+
+
+### M2.170 remediation — stale execution-owner documentation
+
+**ROOT-CORRECTED / CLASSIFIED.** The current editing guide had one stale Indicator market-mutation owner path and now points to the cBot DemoMarketExecutionCoordinator. Older audit/roadmap documents that intentionally describe the pre-cutover Indicator ownership are retained as historical evidence and are not current architecture authority. Current operational documentation must point to the cBot mutation owners and platform-neutral contracts.
