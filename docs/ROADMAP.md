@@ -1,3 +1,27 @@
+## 2026-10-03 — Compiler Warning Cleanup / Candidate Reward-Distance Integrity
+
+Status: IMPLEMENTED ON MAIN — commit `18c793ef320cbb2d087d17190b6c427197c5ec9d`.
+
+Findings:
+- Release build reported CS0649 for `TradeOpportunityCandidate.RewardDistanceAtr` and `MinimumRequiredRewardDistanceAtr`.
+- The fields were present in the canonical candidate contract and consumed by `ScenarioExecutionPolicyRule`, but the main materialized parallel-candidate builder did not assign them.
+
+Completed:
+- `RewardDistanceAtr` is now populated from the canonical reward distance returned by `PlanRewardRiskQualityRule`, normalized by the candidate M5 ATR.
+- `MinimumRequiredRewardDistanceAtr` is now populated from the existing `RegimeAdaptiveRewardFloorRule` using the existing `MinimumTpSpacingAtr` and `MinimumSlAtr` inputs.
+- No new public parameter, hidden threshold, decision rule or execution authority was introduced.
+- The dedicated panel/footer audit now also verifies these assignments.
+
+Verification:
+- User-provided Release build before this fix: succeeded with 2 CS0649 warnings, 0 errors.
+- Runtime/Source verification after the previous panel fix was successful for Runtime; Build/Verify workflows were still running at the time of the last status check.
+- Final local Release build after this commit must be re-run by the operator to confirm the warning count is 0.
+
+Operator action:
+`git pull --ff-only`, then `dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release`.
+
+---
+
 ## 2026-10-03 — FINAL REALTIME / LIVE / SMART SYSTEM INTEGRATION
 
 Status: MERGED TO MAIN — PR #243 — merge commit `7af17f4fa65142468c76501399ee5082bf0f0f42`.
