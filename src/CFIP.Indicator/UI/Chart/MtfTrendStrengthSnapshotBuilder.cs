@@ -6,8 +6,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private void ApplyMtfTrendStrength(
-            SignalVisualSnapshot snapshot,
-            int preferredDirection)
+            SignalVisualSnapshot snapshot)
         {
             if (snapshot == null)
                 return;
@@ -41,8 +40,7 @@ namespace cAlgo
                     Symbol.Ask > 0 &&
                     Symbol.Bid > 0
                         ? (Symbol.Ask + Symbol.Bid) * 0.5
-                        : Symbol.Ask,
-                    preferredDirection);
+                        : Symbol.Ask);
 
             snapshot.MtfTrendDirection =
                 trendStrength.Direction;
@@ -50,6 +48,8 @@ namespace cAlgo
                 trendStrength.Level;
             snapshot.MtfTrendStrengthScore =
                 trendStrength.Score;
+            snapshot.MtfTrendStrengthTier =
+                trendStrength.Tier;
             snapshot.HtfTrendDirection =
                 trendStrength.HigherTimeframeDirection;
             snapshot.HtfTrendStrengthScore =
