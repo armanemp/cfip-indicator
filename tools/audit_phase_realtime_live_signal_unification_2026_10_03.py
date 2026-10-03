@@ -68,11 +68,12 @@ check(
 )
 
 check(
-    "multi-scenario capacity is bounded by both cBot and Indicator",
+    "multi-scenario capacity is owned and bounded by the cBot",
     "EffectiveConcurrentScenarioLimit" in bot and
-    "Math.Min(" in bot and
-    "MaximumOpenPositions" in settings and
-    "MaxValue = 10" in bot
+    "Math.Max(" in bot and
+    "Max Concurrent Scenarios" in bot and
+    'DefaultValue = 3' in bot and
+    "maximumOpenPositions != 1" in settings
 )
 
 check(
