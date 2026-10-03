@@ -9,12 +9,11 @@ using cAlgo.API.Internals;
 // CFIP Indicator — PlanRenderCoordinator.cs
 // Single-responsibility chart plan renderer.
 
-
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                                private void RenderPlan(
+        private void RenderPlan(
             SignalVisualSnapshot snapshot)
         {
             if (_plan == null ||
@@ -44,29 +43,26 @@ namespace cAlgo
             }
             else
             {
-            // The active-plan direction arrow is live guidance: keep it on
-            // the current chart bar so it continuously follows the active path.
-            int hostBar =
-                Bars.Count - 1;
-            double atr =
-                Atr(
-                    Bars,
+                int hostBar = Bars.Count - 1;
+                double atr =
+                    Atr(
+                        Bars,
+                        Math.Max(
+                            1,
+                            Math.Min(
+                                Bars.Count - 1,
+                                hostBar)));
+                double offset =
                     Math.Max(
-                        1,
-                        Math.Min(
-                            Bars.Count - 1,
-                            hostBar)));
-            double offset =
-                Math.Max(
-                    Symbol.PipSize * 2,
-                    atr * 0.18);
-            RenderStackedSignalArrows(
-                snapshot,
-                snapshot.PlanDirection,
-                hostBar,
-                offset);
-            }
+                        Symbol.PipSize * 2,
+                        atr * 0.18);
 
+                RenderStackedSignalArrows(
+                    snapshot,
+                    snapshot.PlanDirection,
+                    hostBar,
+                    offset);
+            }
         }
 
         private void RenderSetupPreview(
@@ -88,8 +84,196 @@ namespace cAlgo
                 RenderPlanLabels(snapshot, true);
             else
                 RemovePlanLabels();
-            RemoveStackedSignalArrows();
 
+            RemoveStackedSignalArrows();
+        }
+
+        private PlanLevelVisualState BuildPlanLevelVisualState(
+            SignalVisualSnapshot snapshot,
+            bool preview)
+        {
+            double entry =
+                preview ? snapshot.SetupEntry : snapshot.Entry;
+            double idealEntry =
+                preview ? snapshot.SetupIdealEntry : snapshot.IdealEntry;
+            double trigger =
+                preview ? snapshot.SetupTrigger : snapshot.Trigger;
+            double stop =
+                preview ? snapshot.SetupStop : snapshot.Stop;
+            double tp1 =
+                preview ? snapshot.SetupTp1 : snapshot.Tp1;
+            double tp2 =
+                preview ? snapshot.SetupTp2 : snapshot.Tp2;
+            double tp3 =
+                preview ? snapshot.SetupTp3 : snapshot.Tp3;
+            double tp4 =
+                preview ? snapshot.SetupTp4 : snapshot.Tp4;
+            double activeTarget =
+                snapshot.BrokerTarget;
+
+            bool idealDistinct =
+                IsFinitePositive(idealEntry) &&
+                !SamePrice(idealEntry, entry);
+
+            bool triggerDistinct =
+                IsFinitePositive(trigger) &&
+                !SamePrice(trigger, entry) &&
+                !SamePrice(trigger, idealEntry);
+
+            bool triggerAllowed =
+                preview
+                    ? true
+                    : snapshot.TriggerVisible && !snapshot.LivePosition;
+
+            bool tp1Distinct =
+                IsFinitePositive(tp1) &&
+                !SamePrice(tp1, entry) &&
+                !SamePrice(tp1, trigger) &&
+                !SamePrice(tp1, idealEntry);
+
+            bool tp2Distinct =
+                IsFinitePositive(tp2) &&
+                !SamePrice(tp2, entry) &&
+                !SamePrice(tp2, trigger) &&
+                !SamePrice(tp2, idealEntry) &&
+                !SamePrice(tp2, tp1);
+
+            bool tp3Distinct =
+                IsFinitePositive(tp3) &&
+                !SamePrice(tp3, entry) &&
+                !SamePrice(tp3, trigger) &&
+                !SamePrice(tp3, idealEntry) &&
+                !SamePrice(tp3, tp1) &&
+                !SamePrice(tp3, tp2);
+
+            bool tp4Distinct =
+                IsFinitePositive(tp4) &&
+                !SamePrice(tp4, entry) &&
+                !SamePrice(tp4, trigger) &&
+                !SamePrice(tp4, idealEntry) &&
+                !SamePrice(tp4, tp1) &&
+                !SamePrice(tp4, tp2) &&
+                !SamePrice(tp4, tp3);
+
+            bool activeTargetDistinct =
+                !preview &&
+                snapshot.ActiveBrokerTargetVisible &&
+                IsFinitePositive(activeTarget) &&
+                !SamePrice(activeTarget, entry) &&
+                !SamePrice(activeTarget, idealEntry) &&
+                !SamePrice(activeTarget, trigger) &&
+                !SamePrice(activeTarget, stop) &&
+                !SamePrice(activeTarget, tp1) &&
+                !SamePrice(activeTarget, tp2) &&
+                !SamePrice(activeTarget, tp3) &&
+                !SamePrice(activeTarget, tp4);
+
+            List<PlanLevelVisual> levels =
+                new List<PlanLevelVisual>
+                {
+                    new PlanLevelVisual(
+                        "ENTRY",
+                        "ENTRY_LABEL",
+                        entry,
+                        EntryLineColor,
+                        ShowEntry,
+                        false),
+
+                    new PlanLevelVisual(
+                        "IDEAL_ENTRY",
+                        "IDEAL_ENTRY_LABEL",
+                        idealEntry,
+                        PanelAccentColor,
+                        ShowEntry && idealDistinct,
+                        false),
+
+                    new PlanLevelVisual(
+                        "TRIGGER",
+                        "TRIGGER_LABEL",
+                        trigger,
+                        TriggerLineColor,
+                        ShowTrigger &&
+                        triggerDistinct &&
+                        triggerAllowed,
+                        false),
+
+                    new PlanLevelVisual(
+                        "SL",
+                        "SL_LABEL",
+                        stop,
+                        SlLineColor,
+                        ShowSL,
+                        true),
+
+                    new PlanLevelVisual(
+                        "TP1",
+                        "TP1_LABEL",
+                        tp1,
+                        TpLineColor,
+                        ShowTP1 && tp1Distinct,
+                        true),
+
+                    new PlanLevelVisual(
+                        "TP2",
+                        "TP2_LABEL",
+                        tp2,
+                        Tp2LineColor,
+                        ShowTP2 && tp2Distinct,
+                        true),
+
+                    new PlanLevelVisual(
+                        "TP3",
+                        "TP3_LABEL",
+                        tp3,
+                        Tp3LineColor,
+                        ShowTP3 && tp3Distinct,
+                        true),
+
+                    new PlanLevelVisual(
+                        "TP4",
+                        "TP4_LABEL",
+                        tp4,
+                        Tp4LineColor,
+                        ShowTP4 && tp4Distinct,
+                        true),
+
+                    new PlanLevelVisual(
+                        "ACTIVE_TP",
+                        "ACTIVE_TP_LABEL",
+                        activeTarget,
+                        PanelAccentColor,
+                        (ShowTP1 ||
+                         ShowTP2 ||
+                         ShowTP3 ||
+                         ShowTP4) &&
+                        activeTargetDistinct,
+                        true)
+                };
+
+            return new PlanLevelVisualState(
+                entry,
+                idealEntry,
+                trigger,
+                stop,
+                tp1,
+                tp2,
+                tp3,
+                tp4,
+                activeTarget,
+                levels);
+        }
+
+        private void RemoveAllPlanLevelLines()
+        {
+            RemovePlanLine(P + "ENTRY");
+            RemovePlanLine(P + "IDEAL_ENTRY");
+            RemovePlanLine(P + "TRIGGER");
+            RemovePlanLine(P + "SL");
+            RemovePlanLine(P + "TP1");
+            RemovePlanLine(P + "TP2");
+            RemovePlanLine(P + "TP3");
+            RemovePlanLine(P + "TP4");
+            RemovePlanLine(P + "ACTIVE_TP");
         }
 
         private void RenderLevelLines(
@@ -98,15 +282,7 @@ namespace cAlgo
         {
             if (snapshot == null)
             {
-                RemovePlanLine(P + "ENTRY");
-                RemovePlanLine(P + "IDEAL_ENTRY");
-                RemovePlanLine(P + "TRIGGER");
-                RemovePlanLine(P + "SL");
-                RemovePlanLine(P + "TP1");
-                RemovePlanLine(P + "TP2");
-                RemovePlanLine(P + "TP3");
-                RemovePlanLine(P + "TP4");
-                RemovePlanLine(P + "ACTIVE_TP");
+                RemoveAllPlanLevelLines();
                 return;
             }
 
@@ -114,120 +290,33 @@ namespace cAlgo
                 preview
                     ? snapshot.SetupPreviewActive
                     : snapshot.PlanActive;
+
             if (!active ||
                 snapshot.PendingOrder ||
                 !ShowLevelLines)
             {
-                RemovePlanLine(P + "ENTRY");
-                RemovePlanLine(P + "IDEAL_ENTRY");
-                RemovePlanLine(P + "TRIGGER");
-                RemovePlanLine(P + "SL");
-                RemovePlanLine(P + "TP1");
-                RemovePlanLine(P + "TP2");
-                RemovePlanLine(P + "TP3");
-                RemovePlanLine(P + "TP4");
-                RemovePlanLine(P + "ACTIVE_TP");
+                RemoveAllPlanLevelLines();
                 return;
             }
 
-            double entry = preview ? snapshot.SetupEntry : snapshot.Entry;
-            double idealEntry = preview ? snapshot.SetupIdealEntry : snapshot.IdealEntry;
-            double trigger = preview ? snapshot.SetupTrigger : snapshot.Trigger;
-            double stop = preview ? snapshot.SetupStop : snapshot.Stop;
-            double tp1 = preview ? snapshot.SetupTp1 : snapshot.Tp1;
-            double tp2 = preview ? snapshot.SetupTp2 : snapshot.Tp2;
-            double tp3 = preview ? snapshot.SetupTp3 : snapshot.Tp3;
-            double tp4 = preview ? snapshot.SetupTp4 : snapshot.Tp4;
-            DrawPlanLine(P + "ENTRY", entry, EntryLineColor, ShowEntry);
+            PlanLevelVisualState state =
+                BuildPlanLevelVisualState(
+                    snapshot,
+                    preview);
 
-            bool idealDistinct =
-                IsFinitePositive(idealEntry) &&
-                !SamePrice(idealEntry, entry);
-            DrawPlanLine(
-                P + "IDEAL_ENTRY",
-                idealEntry,
-                PanelAccentColor,
-                ShowEntry && idealDistinct);
+            for (int i = 0;
+                 i < state.Levels.Count;
+                 i++)
+            {
+                PlanLevelVisual level =
+                    state.Levels[i];
 
-            bool triggerDistinct =
-                IsFinitePositive(trigger) &&
-                !SamePrice(trigger, entry) &&
-                (!idealDistinct || !SamePrice(trigger, idealEntry));
-            bool triggerVisible =
-                preview
-                    ? triggerDistinct
-                    : snapshot.TriggerVisible && triggerDistinct;
-            DrawPlanLine(
-                P + "TRIGGER",
-                trigger,
-                TriggerLineColor,
-                ShowTrigger && triggerVisible);
-
-            DrawPlanLine(
-                P + "SL",
-                stop,
-                SlLineColor,
-                ShowSL);
-
-            bool tp1Distinct =
-                IsFinitePositive(tp1) &&
-                !SamePrice(tp1, entry) &&
-                !SamePrice(tp1, trigger);
-            DrawPlanLine(
-                P + "TP1",
-                tp1,
-                TpLineColor,
-                ShowTP1 && tp1Distinct);
-
-            bool tp2Distinct =
-                IsFinitePositive(tp2) &&
-                (!tp1Distinct || !SamePrice(tp2, tp1)) &&
-                !SamePrice(tp2, entry) &&
-                !SamePrice(tp2, trigger);
-            DrawPlanLine(
-                P + "TP2",
-                tp2,
-                Tp2LineColor,
-                ShowTP2 && tp2Distinct);
-
-            bool tp3Distinct =
-                IsFinitePositive(tp3) &&
-                (!tp2Distinct || !SamePrice(tp3, tp2)) &&
-                !SamePrice(tp3, entry) &&
-                !SamePrice(tp3, trigger);
-            DrawPlanLine(
-                P + "TP3",
-                tp3,
-                Tp3LineColor,
-                ShowTP3 && tp3Distinct);
-
-            bool tp4Distinct =
-                IsFinitePositive(tp4) &&
-                (!tp3Distinct || !SamePrice(tp4, tp3)) &&
-                !SamePrice(tp4, entry) &&
-                !SamePrice(tp4, trigger);
-            DrawPlanLine(
-                P + "TP4",
-                tp4,
-                Tp4LineColor,
-                ShowTP4 && tp4Distinct);
-
-            double activeBrokerTarget = snapshot.BrokerTarget;
-            bool activeBrokerTargetDistinct =
-                !preview &&
-                snapshot.ActiveBrokerTargetVisible &&
-                !SamePrice(activeBrokerTarget, entry) &&
-                !SamePrice(activeBrokerTarget, tp1) &&
-                !SamePrice(activeBrokerTarget, tp2) &&
-                !SamePrice(activeBrokerTarget, tp3) &&
-                !SamePrice(activeBrokerTarget, tp4);
-            DrawPlanLine(
-                P + "ACTIVE_TP",
-                activeBrokerTarget,
-                PanelAccentColor,
-                !preview &&
-                (ShowTP1 || ShowTP2 || ShowTP3 || ShowTP4) &&
-                activeBrokerTargetDistinct);
+                DrawPlanLine(
+                    P + level.Key,
+                    level.Price,
+                    level.Color,
+                    level.Visible);
+            }
         }
     }
 }
