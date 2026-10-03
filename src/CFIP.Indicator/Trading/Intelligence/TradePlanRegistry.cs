@@ -137,6 +137,17 @@ namespace cAlgo
             if (actionable != 0)
                 return actionable;
 
+            if (IsFinitePriority(left.ExecutionPriorityScore) ||
+                IsFinitePriority(right.ExecutionPriorityScore))
+            {
+                int priority =
+                    right.ExecutionPriorityScore.CompareTo(
+                        left.ExecutionPriorityScore);
+
+                if (priority != 0)
+                    return priority;
+            }
+
             int quality =
                 right.Quality.CompareTo(
                     left.Quality);
@@ -168,6 +179,14 @@ namespace cAlgo
             return string.CompareOrdinal(
                 left.Id,
                 right.Id);
+        }
+
+        private static bool IsFinitePriority(
+            double value)
+        {
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value);
         }
 
         private static int LaneRank(
