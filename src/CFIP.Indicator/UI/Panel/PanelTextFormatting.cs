@@ -127,11 +127,17 @@ namespace cAlgo
         private string FrameText(
                                     Frame frame)
                                 {
+                                    return FrameText(
+                                        frame,
+                                        ResolvePanelTimeframeState(frame));
+                                }
+
+        private string FrameText(
+                                    Frame frame,
+                                    PanelTimeframePresentationState state)
+                                {
                                     if (frame == null)
                                         return "WAIT";
-                        
-                                    PanelTimeframePresentationState state =
-                                        ResolvePanelTimeframeState(frame);
 
                                     string zones =
                                         "FVG " +
