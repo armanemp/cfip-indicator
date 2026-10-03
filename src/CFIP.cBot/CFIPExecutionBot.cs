@@ -191,27 +191,27 @@ namespace CFIP.cBot
         private bool EffectiveMarketExecutionEnabled =>
             Account.IsLive
                 ? EnableLiveMarketExecution
-                : EffectiveMarketExecutionEnabled;
+                : EnableDemoMarketExecution;
 
         private bool EffectivePendingStopExecutionEnabled =>
             Account.IsLive
                 ? EnableLivePendingStopExecution
-                : EffectivePendingStopExecutionEnabled;
+                : EnableDemoPendingStopExecution;
 
         private bool EffectivePendingLimitExecutionEnabled =>
             Account.IsLive
                 ? EnableLivePendingLimitExecution
-                : EffectivePendingLimitExecutionEnabled;
+                : EnableDemoPendingLimitExecution;
 
         private bool EffectiveAggressiveExecutionEnabled =>
             Account.IsLive
                 ? EnableLiveAggressiveExecution
-                : EffectiveAggressiveExecutionEnabled;
+                : EnableDemoAggressiveExecution;
 
         private bool EffectiveManagementExecutionEnabled =>
             Account.IsLive
                 ? EnableLiveManagementExecution
-                : EffectiveManagementExecutionEnabled;
+                : EnableDemoManagementExecution;
 
         private int EffectiveSessionExecutionCap =>
             Math.Max(
