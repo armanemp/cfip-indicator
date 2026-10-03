@@ -1170,6 +1170,16 @@ if "GetPlanLineLeftBar" not in visual_line_code:
 if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
     raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
 
+# Canonical chart label ownership and side-of-line geometry.
+if "private void UpsertPlanLabel(" not in plan_label_renderer_code:
+    raise SystemExit("Plan labels must have one shared ChartText owner")
+if plan_label_renderer_code.count("Chart.DrawText(") != 1:
+    raise SystemExit("Plan labels must have exactly one production Chart.DrawText owner")
+if "HorizontalAlignment.Right" not in plan_label_renderer_code:
+    raise SystemExit("Plan labels must render to the left of their anchor")
+if "HorizontalAlignment.Left" in plan_label_renderer_code:
+    raise SystemExit("Plan label renderer must not use left anchor alignment")
+
 if "CreateExecutionToggle(" not in control_factory_code:
     raise SystemExit("Execution controls must use the shared status ToggleButton presentation")
 if "IsEnabled = false" not in control_factory_code:
