@@ -101,7 +101,7 @@ namespace cAlgo
                 Position position =
                     positionsToClose[i];
 
-                TryClosePosition(
+                RequestClosePosition(
                     position,
                     "END OF SESSION");
             }
