@@ -74,7 +74,6 @@ CONSUMERS = {
     "ShowSignalLabels": ["UI/Chart/PlanLabelRenderCoordinator.cs"],
     "ShowLevelPriceLabels": ["UI/Chart/PlanLabelRenderCoordinator.cs"],
     "ShowContextEventMarker": ["UI/Chart/OutcomeMarkerRenderer.cs"],
-    "LabelLeftOffsetBars": ["UI/Chart/PlanLabelAnchorCalculator.cs"],
     "ShowPredictionObjects": ["UI/Chart/PredictionRenderer.cs"],
     "ArrowOffsetAtr": ["UI/Chart/SignalStackedArrowRenderer.cs"],
     "MinimumArrowOffsetPips": ["UI/Chart/SignalStackedArrowRenderer.cs"],
