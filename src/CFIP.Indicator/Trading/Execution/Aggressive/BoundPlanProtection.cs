@@ -3,6 +3,7 @@
 // ============================================================================
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -101,7 +102,7 @@ namespace cAlgo
 
                                         bool mutationRequired = false;
                                         bool mutationSucceeded = true;
-                                        bool stopMutationSucceeded = false;
+                                        ManagementCommandRequestStatus stopMutationStatus = false;
 
                                         if (IsValidManagedStop(
                                                 direction,
@@ -138,13 +139,13 @@ namespace cAlgo
                                                             "LIVE PROTECTION • SL");
 
                                                     mutationSucceeded =
-                                                        stopMutationSucceeded &&
+                                                        stopMutationStatus.IsAccepted() &&
                                                         mutationSucceeded;
 
                                                     stopConfirmed =
-                                                        stopMutationSucceeded;
+                                                        stopMutationStatus.IsBrokerConfirmed();
 
-                                                    if (stopMutationSucceeded)
+                                                    if (stopMutationStatus.IsBrokerConfirmed())
                                                     {
                                                         // TradeResult success is the mutation confirmation.
                                                         // Only now may the plan adopt the new protected stop.
@@ -234,18 +235,18 @@ namespace cAlgo
                                                 {
                                                     mutationRequired = true;
 
-                                                    bool targetMutationSucceeded =
+                                                    ManagementCommandRequestStatus targetMutationStatus =
                                                         TryModifyTakeProfit(
                                                             planPosition,
                                                             normalizedTarget,
                                                             "LIVE PROTECTION • TP");
 
                                                     mutationSucceeded =
-                                                        targetMutationSucceeded &&
+                                                        targetMutationStatus.IsAccepted() &&
                                                         mutationSucceeded;
 
                                                     targetConfirmed =
-                                                        targetMutationSucceeded;
+                                                        targetMutationStatus.IsBrokerConfirmed();
                                                 }
                                                 else if (materiallyDifferent)
                                                 {
