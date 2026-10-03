@@ -10,11 +10,15 @@ namespace CFIP.cBot.Execution
         private const int MaxReports = 128;
         private const int RetryDelaySeconds = 1;
 
+        private readonly Dictionary<long, DateTime> _lastProtectionMutationUtcByPosition =
+            new Dictionary<long, DateTime>();
+
         public bool Process(
             Robot robot,
             string instanceId,
             DateTime nowUtc,
             int maximumCommandAgeSeconds,
+            CbotIndicatorExecutionSettings settings,
             out string status)
         {
             status = "NO MANAGEMENT COMMAND";
@@ -91,6 +95,48 @@ namespace CFIP.cBot.Execution
                             null,
                             validationReason));
                     status = validationReason;
+                    return true;
+                }
+
+                if (!CbotManagementPolicyRule.Allows(
+                        command.Command,
+                        settings,
+                        out string policyReason))
+                {
+                    StoreReport(
+                        robot,
+                        instanceId,
+                        reports,
+                        BuildReport(
+                            command,
+                            BrokerAction.None,
+                            BrokerReportStatus.Rejected,
+                            nowUtc,
+                            null,
+                            policyReason));
+                    status = policyReason;
+                    return true;
+                }
+
+                if (!TryAllowProtectionMutation(
+                        robot,
+                        command,
+                        settings,
+                        nowUtc,
+                        out string cooldownReason))
+                {
+                    StoreReport(
+                        robot,
+                        instanceId,
+                        reports,
+                        BuildReport(
+                            command,
+                            BrokerAction.None,
+                            BrokerReportStatus.Accepted,
+                            nowUtc,
+                            null,
+                            cooldownReason));
+                    status = cooldownReason;
                     return true;
                 }
 
@@ -886,6 +932,81 @@ namespace CFIP.cBot.Execution
             status = confirmedAfter
                 ? "TARGET ADVANCE CONFIRMED"
                 : "TARGET ADVANCE ACCEPTED";
+        }
+
+        private bool TryAllowProtectionMutation(
+            Robot robot,
+            ManagementCommand command,
+            CbotIndicatorExecutionSettings settings,
+            DateTime nowUtc,
+            out string reason)
+        {
+            reason = "OK";
+
+            if (command == null ||
+                settings == null ||
+                (command.Command != ManagementCommandType.ModifyProtection &&
+                 command.Command != ManagementCommandType.BreakEven &&
+                 command.Command != ManagementCommandType.AdvanceTarget))
+                return true;
+
+            Position position =
+                FindPosition(
+                    robot,
+                    command);
+
+            if (position == null)
+                return true;
+
+            int cooldownMs =
+                Math.Max(
+                    100,
+                    Math.Min(
+                        5000,
+                        settings.BrokerModifyCooldownMs));
+
+            if (_lastProtectionMutationUtcByPosition.TryGetValue(
+                    position.Id,
+                    out DateTime lastUtc))
+            {
+                TimeSpan elapsed =
+                    nowUtc - lastUtc;
+
+                if (elapsed.TotalMilliseconds < cooldownMs)
+                {
+                    reason =
+                        "BROKER MODIFY COOLDOWN • " +
+                        Math.Max(
+                            0,
+                            cooldownMs -
+                            (int)Math.Max(
+                                0,
+                                elapsed.TotalMilliseconds)) +
+                        "ms";
+                    return false;
+                }
+            }
+
+            _lastProtectionMutationUtcByPosition[
+                position.Id] = nowUtc;
+
+            if (_lastProtectionMutationUtcByPosition.Count > 256)
+            {
+                long removeId = -1;
+
+                foreach (KeyValuePair<long, DateTime> item in
+                         _lastProtectionMutationUtcByPosition)
+                {
+                    removeId = item.Key;
+                    break;
+                }
+
+                if (removeId >= 0)
+                    _lastProtectionMutationUtcByPosition.Remove(
+                        removeId);
+            }
+
+            return true;
         }
 
         private static bool Validate(
