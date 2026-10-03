@@ -94,7 +94,7 @@ checks = {
         "_pendingProtectedStopCandidate" in live and
         "_pendingProtectedStopCandidate" in bound and
         "stopMutationSucceeded" in bound and
-        "TryModifyStopLoss(" in bound and
+        "RequestModifyStopLoss(" in bound and
         "ApplyBrokerConfirmedProtectionState(" in bound and
         "NormalizePrice(desiredStop)" in bound
     ),
