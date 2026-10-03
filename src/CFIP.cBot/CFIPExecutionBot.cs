@@ -1254,8 +1254,8 @@ namespace CFIP.cBot
             UnsubscribeIndicatorLifecycleEvents();
 
             Print(
-                "CFIP DEMO cBot STOP | state={0} | executions={1} | " +
-                "sessionMs={2}",
+                "CFIP cBot STOP | account={0} | state={1} | executions={2} | " +
+                "sessionMs={3}",
                 EffectiveAccountMode,
                 _state,
                 _sessionExecutions,
