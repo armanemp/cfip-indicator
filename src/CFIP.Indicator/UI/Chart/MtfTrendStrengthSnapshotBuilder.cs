@@ -41,8 +41,7 @@ namespace cAlgo
                     Symbol.Ask > 0 &&
                     Symbol.Bid > 0
                         ? (Symbol.Ask + Symbol.Bid) * 0.5
-                        : Symbol.Ask,
-                    preferredDirection);
+                        : Symbol.Ask);
 
             snapshot.MtfTrendDirection =
                 trendStrength.Direction;
