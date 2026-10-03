@@ -14,8 +14,11 @@ def read(rel):
     return path.read_text(encoding="utf-8")
 
 header = read("src/CFIP.Indicator/UI/Panel/PanelHeaderRenderer.cs")
+live_header = read("src/CFIP.Indicator/UI/Panel/PanelHeaderLiveState.cs")
 panel = read("src/CFIP.Indicator/UI/Panel/PanelMainRenderer.cs")
 refresh = read("src/CFIP.Indicator/UI/Panel/PanelContentRefresh.cs")
+heartbeat = read("src/CFIP.Indicator/Runtime/Supervision/RuntimePanelHeartbeat.cs")
+startup = read("src/CFIP.Indicator/Runtime/Initialization/StartupDataHelpers.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 workflow = read(".github/workflows/source-check.yml")
 
@@ -30,8 +33,9 @@ check(
 )
 check(
     "header reads current canonical signal state",
-    "GetCanonicalSignalPanelStatus()" in header and
-    "GetAuthoritativeDirection()" in header
+    "UpdatePanelHeaderLiveState()" in live_header and
+    "GetCanonicalSignalPanelStatus()" in live_header and
+    "FrameDirection(_m15Frame)" in live_header
 )
 check(
     "header reads current cBot runtime truth",
@@ -40,15 +44,16 @@ check(
 )
 check(
     "header is refreshed by live panel paths",
-    "RefreshPanelHeader();" in panel and
-    "RefreshPanelHeader();" in refresh
+    "UpdatePanelHeaderLiveState();" in panel and
+    "UpdatePanelHeaderLiveState();" in refresh and
+    "UpdatePanelHeaderLiveState();" in heartbeat and
+    "UpdatePanelHeaderLiveState();" in startup
 )
 check(
     "header uses a change-aware cache",
-    "_panelStableHeader" in state and
-    "_panelStableHeaderSinceUtc" in state and
-    "_panelHeaderTitle.Text" in header and
-    "header" in header[header.find("_panelHeaderTitle.Text"):]
+    "_lastPanelHeaderLiveKey" in state and
+    "_panelHeaderTitle.Text" in live_header and
+    "_lastPanelHeaderLiveKey = key" in live_header
 )
 check(
     "header audit is accumulated",
