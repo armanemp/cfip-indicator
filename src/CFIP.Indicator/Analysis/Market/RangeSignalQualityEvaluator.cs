@@ -191,8 +191,7 @@ namespace cAlgo
                     structuralConfirmations,
                     confidence,
                     smartQuality,
-                    edge,
-                    0);
+                    edge);
 
             return RangeSignalQualityRule.Evaluate(
                 regime.Regime,
