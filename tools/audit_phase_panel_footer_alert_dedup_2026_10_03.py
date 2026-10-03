@@ -91,26 +91,31 @@ context_alerts = read("Trading/Alerts/ContextAlertEmitter.cs")
 constants = read("UI/Panel/PanelConstants.cs")
 
 check(
-    "PanelFooterMinHeight = 132" in constants and
+    "PanelFooterMinHeight = 48" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
     "ResolvePanelFooterAreaHeight(" in visual and
-    "minimumRenderableHeight" in layout,
+    "minimumRenderableHeight" in layout and
+    "PanelTrendTimeframeLampRowHeight + PanelTrendTimeframeLampTopSpacing" in panel,
     "footer height must have one shared minimum and constrained-height safety",
 )
 
 check(
     "Math.Max(1, _panelTrendTimeframeLampRow.Width)" in lamp and
     "rowWidth / cellCount" in lamp and
+    "FontSize = 10" in lamp and
     "Math.Max(224" not in lamp and
     "Math.Max(28" not in lamp,
     "MTF lamp cells must divide the real panel width without narrow-panel overflow",
 )
 
 check(
-    "PanelStatusLampFontSize = 18" in constants and
+    "PanelStatusLampFontSize = 20" in constants and
+    "PanelStatusLampWidth = 30" in constants and
+    "PanelStatusLampHeight = 30" in constants and
     "PanelStatusLampFontSize" in lamp and
-    "PanelStatusLampFontSize" in heartbeat,
+    "PanelStatusLampFontSize" in heartbeat and
+    "PanelAlertMessageVisibleCapacity = 2" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "header and MTF lamps must share the enlarged status-lamp geometry",
 )
 

@@ -7,6 +7,13 @@ namespace cAlgo
     {
         private const int MaxAlertDeliveriesPerPump = 4;
 
+        // Multiple semantic signal alerts can legitimately target the same M5
+        // market event (WATCH/REACTION/ACTION, parallel lanes, etc.). They remain
+        // visible in the panel, but only one sound is emitted per event and
+        // direction; a higher-priority escalation may replace a lower one.
+        private string _lastSignalSoundGroupKey = string.Empty;
+        private int _lastSignalSoundPriority;
+
         private void ProcessQueuedAlertDelivery()
         {
             if (_alertDeliveryQueue == null ||
@@ -36,7 +43,7 @@ namespace cAlgo
                         ex.Message);
                 }
 
-                if (!next.PlaySound ||
+                if (!ShouldQueueAlertSound(next) ||
                     _alertSoundDeliveryQueue == null)
                     continue;
 
@@ -49,6 +56,99 @@ namespace cAlgo
                             : next.Envelope.AlertId);
                 }
             }
+        }
+
+        private int ResolveSignalSoundPriority(
+            string key)
+        {
+            string normalized =
+                key ?? string.Empty;
+
+            if (normalized.StartsWith(
+                    "ACTION|",
+                    StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith(
+                    "HIGH|",
+                    StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith(
+                    "SMART|",
+                    StringComparison.OrdinalIgnoreCase))
+                return 3;
+
+            if (normalized.StartsWith(
+                    "EARLY|",
+                    StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith(
+                    "WATCH|",
+                    StringComparison.OrdinalIgnoreCase))
+                return 2;
+
+            if (normalized.StartsWith(
+                    "REACTION|",
+                    StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith(
+                    "AUTO-REACTION|",
+                    StringComparison.OrdinalIgnoreCase))
+                return 1;
+
+            return 0;
+        }
+
+        private bool ShouldQueueAlertSound(
+            AlertDelivery delivery)
+        {
+            if (!delivery.PlaySound)
+                return false;
+
+            int priority =
+                ResolveSignalSoundPriority(
+                    delivery.Key);
+
+            if (priority <= 0 ||
+                delivery.Envelope == null ||
+                delivery.Envelope.Identity == null)
+                return true;
+
+            string signalId =
+                delivery.Envelope.Identity.SignalId ?? string.Empty;
+
+            int createdClosedM5 =
+                delivery.Envelope.Identity.CreatedClosedM5;
+
+            if (string.IsNullOrWhiteSpace(signalId) ||
+                createdClosedM5 < 0)
+                return true;
+
+            string groupKey =
+                (SymbolName ?? string.Empty) +
+                "|" +
+                signalId +
+                "|" +
+                createdClosedM5.ToString() +
+                "|" +
+                delivery.Direction.ToString();
+
+            if (string.Equals(
+                    groupKey,
+                    _lastSignalSoundGroupKey,
+                    StringComparison.OrdinalIgnoreCase) &&
+                priority <= _lastSignalSoundPriority)
+            {
+                Print(
+                    "CFIP ALERT SOUND SUPPRESSED | group={0} | priority={1} | previousPriority={2}",
+                    groupKey,
+                    priority,
+                    _lastSignalSoundPriority);
+                return false;
+            }
+
+            _lastSignalSoundGroupKey =
+                groupKey;
+
+            _lastSignalSoundPriority =
+                priority;
+
+            return true;
         }
 
         private void ProcessQueuedAlertSoundDelivery()

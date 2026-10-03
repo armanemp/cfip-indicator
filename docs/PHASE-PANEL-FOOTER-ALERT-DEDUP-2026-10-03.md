@@ -54,3 +54,14 @@ The AlertEngine acknowledgement boundary was also corrected. Cooldown and last-a
 after AlertDeliveryQueue accepts the event, SendUnifiedAlert returns that acceptance, and canonical local
 WATCH/REACTION/ACTION/RESTRICTION guards advance only after successful enqueue. Queue rejection is therefore
 retryable instead of being incorrectly remembered as a delivered event.
+
+
+## 2026-10-03 — Second-pass panel/audio correction
+
+Implemented on `main` after live visual/audio feedback:
+
+- Footer reserve reduced from 132px to 48px content-height minimum; with the default 9px panel padding this produces a 66px footer area instead of the oversized previous reserve.
+- The five-message in-memory alert history is retained, while only the two latest messages are rendered in the compact footer rail so the panel footer stays visible.
+- The actual MTF rail geometry is now included in the final panel-height equation; previously the height budget reserved the rail for scroll calculation but omitted it from the final panel height.
+- M1/M5/M15/M30/H1/H4/D1/W1 labels now inherit the exact semantic color of their lamp. Status lamps were enlarged slightly through the shared panel constants.
+- Indicator signal sounds now use a second semantic-event gate: same signal/bar/direction can produce one sound, while a later higher-priority escalation may produce the next sound. Panel messages remain independent, so multiple scenarios are still visible without multiple identical/near-identical audio cues.

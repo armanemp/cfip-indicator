@@ -7,6 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const int PanelAlertMessageCapacity = 5;
+        private const int PanelAlertMessageVisibleCapacity = 2;
         private const int PanelAlertMessageRowHeight = 20;
         private const int PanelAlertMessageGap = 1;
         private const int PanelAlertMessageMaxCharacters = 132;
@@ -27,7 +28,7 @@ namespace cAlgo
                         BackgroundColor = Color.FromArgb(0, Color.Black)
                     };
 
-                for (int i = 0; i < PanelAlertMessageCapacity; i++)
+                for (int i = 0; i < PanelAlertMessageVisibleCapacity; i++)
                 {
                     TextBlock row =
                         new TextBlock
@@ -117,7 +118,7 @@ namespace cAlgo
                     Math.Max(
                         0,
                         messages.Count -
-                        PanelAlertMessageCapacity);
+                        PanelAlertMessageVisibleCapacity);
 
                 int rowIndex = 0;
 
@@ -187,7 +188,7 @@ namespace cAlgo
 
             int rows =
                 Math.Min(
-                    PanelAlertMessageCapacity,
+                    PanelAlertMessageVisibleCapacity,
                     _panelAlertHistory.Count);
 
             return

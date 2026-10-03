@@ -3263,3 +3263,8 @@ This current hardening includes the all-timeframe realtime intelligence path, M1
 
 ### VOLUME PROFILE EVIDENCE
 The Volume Profile evidence phase is part of the consolidated realtime/live architecture and remains contextual evidence only.
+
+
+## 2026-10-03 — Panel footer / alert sound / popup visibility correction
+
+The latest UI feedback resulted in a second hardening pass on the same panel/alert phase. The implementation keeps the full five-event alert history in memory, but renders a compact two-message rail; adds the MTF rail to the final panel-height calculation; enlarges the shared panel lamps and color-locks timeframe labels to the lamp semantic color; and adds a signal-event sound gate so parallel WATCH/REACTION/ACTION alerts do not produce duplicate or triplicate audio for the same M5 event. The indicator/cBot execution architecture is unchanged: analysis and panel presentation remain in the Indicator, while broker execution remains cBot-owned.

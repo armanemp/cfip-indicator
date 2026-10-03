@@ -15,9 +15,9 @@ namespace cAlgo
         private const int PanelBottomClearance = 50;
         private const int PanelRestoreBottomClearance = 50;
 
-        private const int PanelFooterMinHeight = 132;
-        private const int PanelStatusLampFontSize = 18;
-        private const int PanelStatusLampWidth = 28;
-        private const int PanelStatusLampHeight = 28;
+        private const int PanelFooterMinHeight = 48;
+        private const int PanelStatusLampFontSize = 20;
+        private const int PanelStatusLampWidth = 30;
+        private const int PanelStatusLampHeight = 30;
     }
 }

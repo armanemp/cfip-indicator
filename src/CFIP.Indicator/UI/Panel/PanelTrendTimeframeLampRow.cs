@@ -6,11 +6,11 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int PanelTrendTimeframeLampRowHeight = 50;
-        private const int PanelTrendTimeframeLampTopSpacing = 4;
-        private const int PanelTrendTimeframeLampBottomSpacing = 3;
-        private const int PanelTrendTimeframeLampIndicatorHeight = 23;
-        private const int PanelTrendTimeframeLampLabelHeight = 16;
+        private const int PanelTrendTimeframeLampRowHeight = 54;
+        private const int PanelTrendTimeframeLampTopSpacing = 3;
+        private const int PanelTrendTimeframeLampBottomSpacing = 2;
+        private const int PanelTrendTimeframeLampIndicatorHeight = 26;
+        private const int PanelTrendTimeframeLampLabelHeight = 17;
 
         private StackPanel _panelTrendTimeframeLampRow;
         private readonly List<StackPanel> _panelTrendTimeframeLampCells =
@@ -83,7 +83,7 @@ namespace cAlgo
                         Width = 42,
                         Height = PanelTrendTimeframeLampLabelHeight,
                         FontFamily = "Arial",
-                        FontSize = 9,
+                        FontSize = 10,
                         FontWeight = FontWeight.Bold,
                         TextAlignment = TextAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Top,
@@ -181,10 +181,8 @@ namespace cAlgo
                             : PanelStatusLampFontSize - 2;
 
                 label.Text = labels[i];
-                label.ForegroundColor =
-                    PanelSecondaryTextColor;
 
-                indicator.ForegroundColor =
+                Color lampColor =
                     direction == 1
                         ? (strength >= 3
                             ? StrongBuyArrowColor
@@ -198,6 +196,9 @@ namespace cAlgo
                                     ? ConfirmedSellArrowColor
                                     : CautionSellArrowColor)
                             : PanelSecondaryTextColor;
+
+                indicator.ForegroundColor = lampColor;
+                label.ForegroundColor = lampColor;
             }
         }
 
