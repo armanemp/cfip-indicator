@@ -8,10 +8,9 @@ namespace cAlgo
     {
         private const int MaxAlertDeliveriesPerPump = 4;
 
-        // Multiple semantic signal alerts can legitimately target the same M5
-        // market event (WATCH/REACTION/ACTION, parallel lanes, etc.). They remain
-        // visible in the panel, but only one sound is emitted per event and
-        // direction; a higher-priority escalation may replace a lower one.
+        // Multiple semantic signal stages can legitimately belong to the same M5
+        // market event. Each distinct canonical alert key gets its own semantic cue;
+        // exact repeats are still deduplicated by this bounded delivery fingerprint.
         private const int MaxRememberedSignalSoundGroups = 256;
         private readonly HashSet<string> _rememberedSignalSoundGroups =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -175,37 +174,25 @@ namespace cAlgo
                 IsSignalSoundAlertKey(
                     delivery.Key);
 
-            if (signalFamily)
-            {
-                // WATCH/REACTION/ACTION/SMART/EARLY are one user-facing
-                // signal event family. Only one audible cue is allowed for
-                // the same symbol + closed-M5 + direction, even when the
-                // semantic stage/key changes between deliveries.
-                groupKey =
-                    "SIGNAL|" +
-                    (SymbolName ?? string.Empty) +
-                    "|" +
-                    createdClosedM5.ToString() +
-                    "|" +
-                    delivery.Direction.ToString();
-            }
-            else
-            {
-                groupKey =
-                    (SymbolName ?? string.Empty) +
-                    "|" +
-                    signalId +
-                    "|" +
-                    delivery.Envelope.Identity.ScenarioId +
-                    "|" +
-                    delivery.Envelope.Identity.PlanId +
-                    "|" +
-                    createdClosedM5.ToString() +
-                    "|" +
-                    delivery.Direction.ToString() +
-                    "|" +
-                    (delivery.Key ?? string.Empty);
-            }
+            // The alert key is part of the sound fingerprint. This preserves
+            // one cue per distinct semantic stage (WATCH, REACTION, ACTION, TP, SL,
+            // REVERSAL, execution outcome, etc.) while exact duplicate deliveries
+            // remain silent. Signal-family classification is retained for diagnostics
+            // and priority handling, but never collapses distinct stages into one cue.
+            groupKey =
+                (SymbolName ?? string.Empty) +
+                "|" +
+                signalId +
+                "|" +
+                delivery.Envelope.Identity.ScenarioId +
+                "|" +
+                delivery.Envelope.Identity.PlanId +
+                "|" +
+                createdClosedM5.ToString() +
+                "|" +
+                delivery.Direction.ToString() +
+                "|" +
+                (delivery.Key ?? string.Empty);
 
 
             if (_rememberedSignalSoundGroups.Contains(groupKey))
