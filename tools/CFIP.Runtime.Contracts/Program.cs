@@ -8917,6 +8917,24 @@ namespace cAlgo
 
             Assert(
                 queue.Enqueue(normal1) &&
+                !queue.Enqueue(normal1) &&
+                queue.Count == 1,
+                "identical canonical alert cannot be queued twice while pending");
+
+            Assert(
+                queue.TryDequeue(out alert) &&
+                alert.Message == "normal-1",
+                "deduplicated alert remains deliverable exactly once");
+
+            Assert(
+                queue.Enqueue(normal1) &&
+                queue.Count == 1,
+                "same alert may be re-armed after it is actually delivered");
+
+            queue = new AlertDeliveryQueue(3);
+
+            Assert(
+                queue.Enqueue(normal1) &&
                 queue.Enqueue(normal2) &&
                 queue.Enqueue(
                     BuildTestAlertDelivery(

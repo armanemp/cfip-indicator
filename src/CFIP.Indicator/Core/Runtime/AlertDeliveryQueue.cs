@@ -10,6 +10,8 @@ namespace cAlgo
             new Queue<AlertDelivery>();
         private readonly Queue<AlertDelivery> _normal =
             new Queue<AlertDelivery>();
+        private readonly HashSet<string> _pendingAlertIds =
+            new HashSet<string>(StringComparer.Ordinal);
 
         public AlertDeliveryQueue(int capacity)
         {
@@ -26,16 +28,37 @@ namespace cAlgo
             if (string.IsNullOrWhiteSpace(delivery.Message))
                 return false;
 
+            string alertId =
+                GetAlertId(delivery);
+
+            // Idempotency at the transport boundary prevents the same canonical
+            // event from being queued twice by independent calculation/timer
+            // callers while still allowing the same key to be re-alerted later
+            // after it has actually been delivered and its normal cooldown expires.
+            if (!string.IsNullOrWhiteSpace(alertId) &&
+                _pendingAlertIds.Contains(alertId))
+                return false;
+
             if (Count >= _capacity)
             {
                 if (delivery.Critical)
                 {
                     if (_normal.Count > 0)
-                        _normal.Dequeue();
+                    {
+                        AlertDelivery evicted =
+                            _normal.Dequeue();
+                        RemovePendingAlertId(evicted);
+                    }
                     else if (_critical.Count > 0)
-                        _critical.Dequeue();
+                    {
+                        AlertDelivery evicted =
+                            _critical.Dequeue();
+                        RemovePendingAlertId(evicted);
+                    }
                     else
+                    {
                         return false;
+                    }
                 }
                 else
                 {
@@ -47,6 +70,9 @@ namespace cAlgo
                 _critical.Enqueue(delivery);
             else
                 _normal.Enqueue(delivery);
+
+            if (!string.IsNullOrWhiteSpace(alertId))
+                _pendingAlertIds.Add(alertId);
 
             return true;
         }
@@ -74,12 +100,14 @@ namespace cAlgo
             if (_critical.Count > 0)
             {
                 delivery = _critical.Dequeue();
+                RemovePendingAlertId(delivery);
                 return true;
             }
 
             if (_normal.Count > 0)
             {
                 delivery = _normal.Dequeue();
+                RemovePendingAlertId(delivery);
                 return true;
             }
 
@@ -91,6 +119,26 @@ namespace cAlgo
         {
             _critical.Clear();
             _normal.Clear();
+            _pendingAlertIds.Clear();
+        }
+
+        private static string GetAlertId(
+            AlertDelivery delivery)
+        {
+            if (delivery.Envelope == null)
+                return "";
+
+            return delivery.Envelope.AlertId ?? "";
+        }
+
+        private void RemovePendingAlertId(
+            AlertDelivery delivery)
+        {
+            string alertId =
+                GetAlertId(delivery);
+
+            if (!string.IsNullOrWhiteSpace(alertId))
+                _pendingAlertIds.Remove(alertId);
         }
     }
 }

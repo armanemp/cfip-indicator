@@ -124,15 +124,27 @@ namespace cAlgo
                                                             0,
                                                             PanelPadding);
                                         
+                                                    // Reserve the real footer/alert rail before calculating
+                                                    // the ScrollViewer budget. Otherwise the scroll content can
+                                                    // consume the vertical space required by the footer.
+                                                    int alertRailHeight =
+                                                        GetPanelAlertMessageRailHeight();
+
                                                     int buttonContentHeight =
                                                         Math.Max(
                                                             buttonHeight,
-                                                            ShowPanelToggleButton
-                                                                ? toggleHeight
-                                                                : 0);
-                                        
+                                                            Math.Max(
+                                                                ShowPanelToggleButton
+                                                                    ? toggleHeight
+                                                                    : 0,
+                                                                alertRailHeight));
+
+                                                    bool hasBottomContent =
+                                                        ShowPanelToggleButton ||
+                                                        alertRailHeight > 0;
+
                                                     int buttonAreaHeight =
-                                                        buttons
+                                                        hasBottomContent
                                                             ? buttonContentHeight +
                                                               buttonMargin * 2
                                                             : 0;
@@ -151,6 +163,8 @@ namespace cAlgo
                                                     int fixedHeight =
                                                         PanelHeaderHeight +
                                                         PanelTrendTimeframeLampRowHeight +
+                                                        PanelTrendTimeframeLampTopSpacing +
+                                                        PanelTrendTimeframeLampBottomSpacing +
                                                         buttonAreaHeight +
                                                         padding * 2 +
                                                         border * 2;

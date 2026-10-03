@@ -6,10 +6,18 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int PanelTrendTimeframeLampRowHeight = 24;
+        private const int PanelTrendTimeframeLampRowHeight = 52;
+        private const int PanelTrendTimeframeLampTopSpacing = 8;
+        private const int PanelTrendTimeframeLampBottomSpacing = 5;
+        private const int PanelTrendTimeframeLampIndicatorHeight = 27;
+        private const int PanelTrendTimeframeLampLabelHeight = 18;
 
         private StackPanel _panelTrendTimeframeLampRow;
-        private readonly List<TextBlock> _panelTrendTimeframeLampCells =
+        private readonly List<StackPanel> _panelTrendTimeframeLampCells =
+            new List<StackPanel>(8);
+        private readonly List<TextBlock> _panelTrendTimeframeLampIndicators =
+            new List<TextBlock>(8);
+        private readonly List<TextBlock> _panelTrendTimeframeLampLabels =
             new List<TextBlock>(8);
 
         private void CreatePanelTrendTimeframeLampRow()
@@ -22,8 +30,14 @@ namespace cAlgo
                 {
                     Orientation = Orientation.Horizontal,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Top,
                     Height = PanelTrendTimeframeLampRowHeight,
+                    Margin =
+                        new Thickness(
+                            0,
+                            PanelTrendTimeframeLampTopSpacing,
+                            0,
+                            PanelTrendTimeframeLampBottomSpacing),
                     BackgroundColor = Color.FromArgb(0, Color.Black)
                 };
 
@@ -35,14 +49,25 @@ namespace cAlgo
 
             for (int i = 0; i < labels.Length; i++)
             {
-                TextBlock cell =
-                    new TextBlock
+                StackPanel cell =
+                    new StackPanel
                     {
-                        Text = "● " + labels[i],
+                        Orientation = Orientation.Vertical,
                         Width = 42,
                         Height = PanelTrendTimeframeLampRowHeight,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        BackgroundColor = Color.FromArgb(0, Color.Black)
+                    };
+
+                TextBlock indicator =
+                    new TextBlock
+                    {
+                        Text = "●",
+                        Width = 42,
+                        Height = PanelTrendTimeframeLampIndicatorHeight,
                         FontFamily = "Arial",
-                        FontSize = 9,
+                        FontSize = 13,
                         FontWeight = FontWeight.Bold,
                         TextAlignment = TextAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -51,7 +76,28 @@ namespace cAlgo
                         BackgroundColor = Color.FromArgb(0, Color.Black)
                     };
 
+                TextBlock label =
+                    new TextBlock
+                    {
+                        Text = labels[i],
+                        Width = 42,
+                        Height = PanelTrendTimeframeLampLabelHeight,
+                        FontFamily = "Arial",
+                        FontSize = 9,
+                        FontWeight = FontWeight.Bold,
+                        TextAlignment = TextAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        ForegroundColor = PanelSecondaryTextColor,
+                        BackgroundColor = Color.FromArgb(0, Color.Black)
+                    };
+
+                cell.AddChild(indicator);
+                cell.AddChild(label);
+
                 _panelTrendTimeframeLampCells.Add(cell);
+                _panelTrendTimeframeLampIndicators.Add(indicator);
+                _panelTrendTimeframeLampLabels.Add(label);
                 _panelTrendTimeframeLampRow.AddChild(cell);
             }
 
@@ -60,8 +106,10 @@ namespace cAlgo
 
         private void UpdatePanelTrendTimeframeLamps()
         {
-            if (_panelTrendTimeframeLampCells == null ||
-                _panelTrendTimeframeLampCells.Count < 8)
+            if (_panelTrendTimeframeLampIndicators == null ||
+                _panelTrendTimeframeLampLabels == null ||
+                _panelTrendTimeframeLampIndicators.Count < 8 ||
+                _panelTrendTimeframeLampLabels.Count < 8)
                 return;
 
             Frame[] frames =
@@ -85,13 +133,32 @@ namespace cAlgo
                 Math.Max(
                     28,
                     rowWidth /
-                    Math.Max(1, _panelTrendTimeframeLampCells.Count));
+                    Math.Max(
+                        1,
+                        _panelTrendTimeframeLampCells.Count));
 
-            for (int i = 0; i < _panelTrendTimeframeLampCells.Count; i++)
+            for (int i = 0;
+                 i < _panelTrendTimeframeLampIndicators.Count &&
+                 i < _panelTrendTimeframeLampLabels.Count;
+                 i++)
             {
-                TextBlock cell = _panelTrendTimeframeLampCells[i];
+                TextBlock indicator =
+                    _panelTrendTimeframeLampIndicators[i];
+
+                TextBlock label =
+                    _panelTrendTimeframeLampLabels[i];
+
+                StackPanel cell =
+                    _panelTrendTimeframeLampCells[i];
+
                 cell.Width = cellWidth;
-                Frame frame = i < frames.Length ? frames[i] : null;
+                indicator.Width = cellWidth;
+                label.Width = cellWidth;
+
+                Frame frame =
+                    i < frames.Length
+                        ? frames[i]
+                        : null;
 
                 int direction =
                     frame == null
@@ -99,14 +166,23 @@ namespace cAlgo
                         : FrameDirection(frame);
 
                 int strength =
-                    ResolveFrameTrendStrength(frame, direction);
+                    ResolveFrameTrendStrength(
+                        frame,
+                        direction);
 
-                cell.Text =
-                    "● " +
-                    labels[i] +
-                    (strength >= 3 ? " ▲" : strength == 2 ? " •" : "");
+                indicator.Text = "●";
+                indicator.FontSize =
+                    strength >= 3
+                        ? 15
+                        : strength == 2
+                            ? 14
+                            : 13;
 
-                cell.ForegroundColor =
+                label.Text = labels[i];
+                label.ForegroundColor =
+                    PanelSecondaryTextColor;
+
+                indicator.ForegroundColor =
                     direction == 1
                         ? (strength >= 3
                             ? StrongBuyArrowColor
@@ -155,6 +231,8 @@ namespace cAlgo
         private void RemovePanelTrendTimeframeLampRow()
         {
             _panelTrendTimeframeLampCells.Clear();
+            _panelTrendTimeframeLampIndicators.Clear();
+            _panelTrendTimeframeLampLabels.Clear();
             _panelTrendTimeframeLampRow = null;
         }
     }

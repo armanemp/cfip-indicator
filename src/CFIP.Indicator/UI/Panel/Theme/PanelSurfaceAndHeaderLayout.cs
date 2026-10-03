@@ -186,6 +186,12 @@ namespace cAlgo
                                                                 contentWidth);
                                                         _panelTrendTimeframeLampRow.Height =
                                                             PanelTrendTimeframeLampRowHeight;
+                                                        _panelTrendTimeframeLampRow.Margin =
+                                                            new Thickness(
+                                                                0,
+                                                                PanelTrendTimeframeLampTopSpacing,
+                                                                0,
+                                                                PanelTrendTimeframeLampBottomSpacing);
                                                     }
                                         
                                                     _buttonStack.Width =
