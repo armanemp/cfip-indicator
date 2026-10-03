@@ -1688,3 +1688,9 @@ Then begin at checklist item 1.1 and record every disposition in this document o
 
 27. cBot has two realtime signal-consumption clocks: OnTick() and a 100ms OnTimer() both read signal/scenario transport and call ProcessSignalEnvelope(). This is a duplicate execution-consumption path and requires one canonical consumer/queue.
 28. cBot also repeats binding/settings/store/reconciliation work across OnTick and OnTimer. This can amplify CPU/IO and produce ordering differences; ownership and scheduling must be centralized rather than patched with more guards.
+
+29. Scenario protection sweep is O(N) broker reconciliation per retained scenario and currently runs from both realtime clocks, multiplying cost and potentially making protection behavior depend on scenario count/frequency.
+30. Scenario retention uses dictionary-count cap (32) and removes the first enumerated key without an explicit temporal/expiry contract; the retained scenario set is therefore not proven to be oldest-first.
+31. Indicator binding refresh can reset instance state while execution settings have a separate cache rule that returns when settings are non-null. Same-instance configuration changes must be proven to invalidate settings, especially across ChartIndicator Modified events.
+32. The cBot timer forces signal-store reload every cycle (~100ms), bypassing the non-forced reload cadence used by OnTick. This is a second transport refresh policy and must be centralized.
+33. Scenario recovery in SweepScenarioProtectionStates writes scenario-local data into global fields (`_activeManagedExecutionLabel`, `_lastSignalEnvelope`, `_reconciliation`). This can let one scenario's recovery context leak into another scenario's global execution/presentation state; recovery must remain scenario-scoped until a canonical promotion rule exists.
