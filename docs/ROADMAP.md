@@ -1,3 +1,27 @@
+## 2026-10-03 — Panel Timeframe Visual Parity + cBot Local/Cloud Lifecycle
+
+Status: IMPLEMENTED ON MAIN — automated verification pending; target-terminal Local/Cloud prompt acceptance remains manual.
+
+Completed:
+- M1/M5/M15/M30/H1/H4/D1/W1 panel text rows now consume the same canonical `PanelTimeframePresentationState` as the lamp rail.
+- Direction, readiness, strength and semantic color are resolved once per timeframe; the lamp and written status no longer have independent color mapping.
+- Unready frames fail closed to WAIT/secondary presentation instead of displaying a directional color with zero strength.
+- The cBot no longer calls `ChartIndicators.Add("CFIP Smart Indicator")` during restart/reload/binding recovery.
+- Missing Indicator is now fail-closed with an explicit local-attachment diagnostic; existing IndicatorAdded/Removed/Modified rebinding remains.
+- Stable Indicator/cBot type names, assembly names and AlgoName values remain deterministic.
+
+Root-cause records:
+- `docs/PHASE-PANEL-TIMEFRAME-SINGLE-SOURCE-2026-10-03.md` + dedicated parity audit.
+- `docs/PHASE-CBOT-LOCAL-CLOUD-LIFECYCLE-2026-10-03.md` + dedicated lifecycle audit.
+
+Verification:
+- Source/Architecture, Runtime Acceptance and cTrader Compile must pass on the exact main head.
+- Target terminal must confirm lamp/text parity and that repeated local cBot restart/reload does not re-enter a Local/Cloud selection flow.
+
+Operator action:
+`git pull --ff-only`
+
+---
 ## 2026-10-03 — Panel Footer/Lamp Geometry + Deep Alert Coherence Hardening
 
 Status: IMPLEMENTED ON MAIN — pending Source/Runtime/Build verification and manual cTrader visual acceptance.
