@@ -41,7 +41,7 @@ The per-ScenarioId single-active-object rule remains intact, so multiple indepen
 
 cBot signal-store reload cadence was reduced from 500 ms to 100 ms.
 
-The cBot still processes the published ScenarioBatch on every tick and keeps broker reconciliation independently throttled.
+The cBot processes the published ScenarioBatch on every tick and now also polls the same transport every 100 ms through its cTrader Timer. A revision/scenario-aware handoff guard prevents the timer from redundantly replaying an envelope that was already observed on a market tick. Broker reconciliation and management remain independently controlled.
 
 M15 remains the canonical decision/execution timeframe; M5 remains the trigger/entry-tuning layer and M1 optional.
 
