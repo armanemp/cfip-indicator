@@ -62,10 +62,24 @@ check("CFIP binding uses custom chart indicators plus stable type/name diagnosti
       "seen=" in binding and
       "TypeName" in binding)
 
+check("cBot presence publishes the actual chart-instance identity",
+      "robot.InstanceId ?? string.Empty" in publisher)
+
+check("indicator can prove attachment from a fresh bound cBot presence",
+      "HasFreshCbotPresenceForCurrentIndicator()" in reader and
+      "CBOT CONNECTED • ATTACHED" in reader)
+
+check("multiple matching cBots resolve by exact cBot InstanceId",
+      "CbotInstanceId" in reader and
+      "candidate.InstanceId" in reader)
+
 check("sound delivery is restricted to indicator live last-bar execution",
       "if (!IsLastBar)" in audio and
       "Notifications.PlaySound" in audio and
       "SoundType" in audio)
+
+check("critical alert queue never evicts an existing critical event",
+      "Keep already-buffered critical alerts intact" in read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs"))
 
 check("adaptive stagnant-market reward floor is canonical",
       "RegimeAdaptiveRewardFloorRule" in floor and

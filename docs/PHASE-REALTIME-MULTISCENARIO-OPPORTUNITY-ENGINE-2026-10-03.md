@@ -43,7 +43,7 @@ Forward view remains supplied by the existing EarlyPrediction layer plus predict
 - Future Stop/Limit opportunities are placed by the cBot as broker-managed pending orders and wait for their future trigger.
 - Independent ScenarioIds may coexist up to the cBot Max Concurrent Scenarios bound.
 - Same ScenarioId remains idempotent.
-- Live accounts remain fail-closed in the current demo-only execution build.
+- Live accounts are supported by the same broker mutation owners, but EnableLiveExecution remains an explicit arm and is OFF by default; when unarmed, broker mutation is fail-closed.
 
 ## Performance
 
@@ -65,3 +65,14 @@ Required:
 - target-terminal validation of current market reaction, same-tick cBot handoff, multiple independent ScenarioIds, future pending placement, invalidation, idempotency, restart/reconnect and panel/alert latency.
 
 Operator action after verified merge: git pull --ff-only.
+## 2026-10-03 live/attachment/audio hardening follow-up
+
+- Corrected cBot presence identity to publish the real cBot InstanceId instead of a synthesized type/symbol token.
+- The Indicator now treats a fresh cBot heartbeat as proof of exact attachment when the cBot explicitly reports the current Indicator InstanceId, even when direct chart-robot enumeration is temporarily unavailable.
+- Ambiguous matching cBot instances can be resolved by the exact published cBot InstanceId.
+- Critical queued alerts are no longer allowed to evict an already-buffered critical alert under queue pressure.
+- Broker trade comments now distinguish CFIP LIVE from CFIP DEMO, removing misleading demo labels on live orders.
+- The accumulated live hardening audit now covers these identity and queue invariants.
+
+Repository CI remains the verification authority for source/runtime/compile gates. Target-terminal validation is still required for actual cTrader chart attachment, live arm, broker fill/placement, audio playback, restart/reconnect and observed realtime latency.
+

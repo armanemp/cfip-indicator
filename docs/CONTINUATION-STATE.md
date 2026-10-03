@@ -2367,3 +2367,28 @@ Verification must include:
 - independent protection/reconciliation on multiple broker objects.
 
 Operator action after merge: git pull --ff-only.
+
+
+## 2026-10-03 — Live Realtime cBot / Attachment / Audio Hardening
+
+Status: IMPLEMENTATION COMPLETE — repository verification pending on the current branch HEAD.
+
+Completed:
+- realtime present/future multi-scenario engine retained;
+- explicit live-account arm remains OFF by default and broker mutation stays cBot-owned;
+- exact cBot/Indicator attachment identity now uses the actual cBot InstanceId plus bound Indicator InstanceId;
+- Indicator panel can report ATTACHED from the cBot heartbeat instead of falling back to a false NOT ATTACHED when chart enumeration is unavailable;
+- critical alert queue preserves already-buffered critical/audio-worthy signal events under burst pressure;
+- live broker comments no longer say DEMO;
+- accumulated live-hardening audit now covers these invariants.
+
+Current target chain:
+Indicator historical/pre-analysis -> M15 canonical decision -> M5 trigger/tuning -> M1 optional confirmation -> intrabar live actionability -> current Market/Aggressive OR future Pending Stop/Limit -> SignalScenarioBatch -> cBot 100ms handoff -> broker -> broker confirmation/protection -> outcome/history.
+
+Verification:
+- Runtime Acceptance on the preceding hardening head: PASS.
+- cTrader Build on the preceding hardening head: FAIL only because the first attachment-fallback implementation indexed a ChartRobots collection incorrectly; corrected immediately by using enumeration.
+- The corrected head is awaiting the new Source/Architecture + Runtime + Build CI cycle.
+- Target-terminal validation remains mandatory for live arm, exact attachment display, same-tick placement, simultaneous scenarios, pending-order invalidation, audio playback and restart/reconnect.
+
+Operator action after verified merge: git pull --ff-only.

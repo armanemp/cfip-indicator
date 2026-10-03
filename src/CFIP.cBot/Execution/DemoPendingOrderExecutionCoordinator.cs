@@ -300,7 +300,7 @@ namespace CFIP.cBot.Execution
                             targetPips,
                             ProtectionType.Relative,
                             expiration,
-                            "CFIP DEMO PENDING STOP",
+                            robot.Account.IsLive ? "CFIP LIVE PENDING STOP" : "CFIP DEMO PENDING STOP",
                             false)
                         : robot.PlaceLimitOrder(
                             tradeType,
@@ -312,7 +312,7 @@ namespace CFIP.cBot.Execution
                             targetPips,
                             ProtectionType.Relative,
                             expiration,
-                            "CFIP DEMO PENDING LIMIT",
+                            robot.Account.IsLive ? "CFIP LIVE PENDING LIMIT" : "CFIP DEMO PENDING LIMIT",
                             false);
             }
             catch (Exception ex)
