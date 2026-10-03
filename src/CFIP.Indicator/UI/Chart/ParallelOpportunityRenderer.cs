@@ -189,7 +189,6 @@ namespace cAlgo
                             displayNumber),
                         candidate.Entry,
                         EntryLineColor,
-                        left,
                         labelBar);
 
                     RenderOpportunityLabel(
@@ -204,7 +203,6 @@ namespace cAlgo
                             displayNumber),
                         candidate.Stop,
                         SlLineColor,
-                        left,
                         labelBar);
 
                     RenderOpportunityLabel(
@@ -219,7 +217,6 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp1,
                         TpLineColor,
-                        left,
                         labelBar);
 
                     RenderOpportunityLabel(
@@ -234,7 +231,6 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp2,
                         Tp2LineColor,
-                        left,
                         labelBar);
 
                     RenderOpportunityLabel(
@@ -249,7 +245,6 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp3,
                         Tp3LineColor,
-                        left,
                         labelBar);
 
                     RenderOpportunityLabel(
@@ -264,7 +259,6 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp4,
                         Tp4LineColor,
-                        left,
                         labelBar);
                 }
                 else
@@ -302,7 +296,6 @@ namespace cAlgo
             string text,
             double price,
             Color color,
-            int lineLeft,
             int labelBar)
         {
             RenderCompactPlanLabel(
@@ -311,7 +304,6 @@ namespace cAlgo
                 price,
                 color,
                 true,
-                lineLeft,
                 labelBar);
         }
 
