@@ -1,3 +1,21 @@
+## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
+
+Status: IMPLEMENTATION COMPLETE — verification pending on `phase/semantic-consistency-hardening-2026-10-03`.
+
+Current closure:
+- Market Bias, primary M15/H1 alignment and the realtime header use the same canonical MTF timeframe labels.
+- Timeframe consumers no longer turn canonical BULL BIAS/BEAR BIAS states back into BUY/SELL.
+- Top-Down HTF/MID direction display no longer leaks raw 1/-1 values.
+- WaveTrend evidence text and color share one evidence-direction owner, and disagreement with trade direction is explicitly marked CONFLICT.
+- Trading/business rules were not changed; this phase is presentation-semantics hardening.
+
+Next verification boundary:
+Source/Architecture + Runtime Acceptance + cTrader Compile/Build, then target-terminal visual parity checks.
+
+Operator action after verified merge: `git pull --ff-only`.
+
+---
+
 ## 2026-10-03 — Current Integrated User-Requirement Hardening
 
 Status: MERGED TO MAIN — PR #243 — merge commit `7af17f4fa65142468c76501399ee5082bf0f0f42`. Pre-merge Compile/Runtime/Source verification passed.
