@@ -6,21 +6,6 @@ namespace CFIP.cBot.Execution
     {
         public static bool Allows(
             ManagementCommandType command,
-            CbotIndicatorExecutionSettings settings,
-            out string reason)
-        {
-            return Allows(
-                command,
-                settings != null && settings.EnableLiveExitManagement,
-                settings != null && settings.EnablePartialTakeProfit,
-                settings != null && settings.AutoBrokerProtection,
-                settings != null && settings.AutoProtectBrokerPositions,
-                settings != null && settings.SyncBrokerTakeProfit,
-                out reason);
-        }
-
-        public static bool Allows(
-            ManagementCommandType command,
             bool enableLiveExitManagement,
             bool enablePartialTakeProfit,
             bool autoBrokerProtection,
