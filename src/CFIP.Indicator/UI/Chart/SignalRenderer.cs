@@ -224,6 +224,18 @@ namespace cAlgo
                             return "WATCH";
                         }
 
+        // Compatibility facade only: the strength/state owner remains MtfTrendStrengthRule.
+        private string ResolveSignalArrowState(
+            SignalVisualSnapshot snapshot,
+            int direction)
+        {
+            if (snapshot == null || direction == 0)
+                return "WATCH";
+
+            return MtfTrendStrengthRule.ResolveMtfTrendStrengthState(
+                snapshot.MtfTrendStrengthLevel);
+        }
+
         private Color SignalArrowColorFor(
                             int direction,
                             string state)
