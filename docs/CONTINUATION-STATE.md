@@ -1,5 +1,31 @@
 ## 2026-10-03 — Current Integrated User-Requirement Hardening
 
+Status: IMPLEMENTED — automated verification pending on branch phase/final-realtime-live-smart-system-2026-10-03.
+
+This is now the consolidated continuation branch for the current realtime/live work. The indicator remains analysis/signal only and the cBot remains the broker-mutation owner.
+
+Verified by construction:
+- M15 canonical decision/reference; M5 entry precision/tuning; M1 optional confirmation;
+- simultaneous all-timeframe analytical context across M1/M5/M15/M30/H1/H4/D1/W1;
+- current ActionableNow versus future FutureOrderReady semantics;
+- bounded multi-scenario ScenarioId execution and reconciliation;
+- adaptive reward-distance protection against tiny stagnant-market excursions;
+- explicit LIVE execution arms, default OFF;
+- realtime signal sound queue separated from panel presentation;
+- cBot lifecycle/block/execution audio under one modular owner;
+- nine-level HTF smart arrows;
+- dedicated realtime panel header owner;
+- fixed one-row MTF trend lamps outside panel scrolling content;
+- final integration audit and phase documentation.
+
+Current verification boundary: CI must pass on the exact final head; terminal acceptance remains mandatory for actual cTrader sound, attachment, same-tick handoff, pending lifecycle, restart/reconnect and live broker mutation.
+
+Operator action after verified merge: git pull --ff-only.
+
+---
+
+## 2026-10-03 — Current Integrated User-Requirement Hardening
+
 Status: IMPLEMENTED — verification pending on branch `phase/mtf-realtime-all-engines-smart-arrows-2026-10-03`.
 
 Completed in the current continuation unit:
