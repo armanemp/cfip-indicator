@@ -47,6 +47,7 @@ No new realtime calculation loop was introduced.
 - cTrader Compile: PASS.
 - User local Release build exposed one CS0219 warning from an unused `buttonMargin` local in `PanelMainRenderer`; that declaration has been removed at the root.
 - Target-terminal visual acceptance remains manual for exact arrow rendering/placement, 40-bar line length, label gap/readability and stale-object removal.
+- The user's local Release-build CS0219 warning from `PanelMainRenderer.buttonMargin` was eliminated before this phase closeout; local confirmation after pulling the merged head remains required.
 
 Operator action:
 `git pull --ff-only`
