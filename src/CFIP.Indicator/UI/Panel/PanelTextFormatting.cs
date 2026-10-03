@@ -17,14 +17,9 @@ namespace cAlgo
         private int FrameDirection(
                                     Frame frame)
                                 {
-                                    return frame == null
-                                        ? 0
-                                        : PanelFrameDirectionRule.ResolveDisplayDirection(
-                                            frame.Direction,
-                                            frame.BullScore,
-                                            frame.BearScore,
-                                            frame.TrendBull,
-                                            frame.TrendBear);
+                                    return PanelTimeframePresentationRule
+                                        .Resolve(frame)
+                                        .Direction;
                                 }
         
         private string GetStablePanelState(
@@ -136,18 +131,12 @@ namespace cAlgo
                                     if (frame == null)
                                         return "WAIT";
                         
-                                    int displayDirection =
-                                        PanelFrameDirectionRule.ResolveDisplayDirection(
-                                            frame.Direction,
-                                            frame.BullScore,
-                                            frame.BearScore,
-                                            frame.TrendBull,
-                                            frame.TrendBear);
+                                    PanelTimeframePresentationState presentation =
+                                        PanelTimeframePresentationRule.Resolve(
+                                            frame);
 
                                     string directionLabel =
-                                        PanelFrameDirectionRule.ResolveLabel(
-                                            frame.Direction,
-                                            displayDirection);
+                                        presentation.Label;
 
                                     string zones =
                                         "FVG " +
