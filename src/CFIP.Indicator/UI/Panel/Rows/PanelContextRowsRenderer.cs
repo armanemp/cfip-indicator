@@ -125,9 +125,9 @@ namespace cAlgo
                                                         : "CALIBRATING";
 
                                                 string primaryDirections =
-                                                    DirectionText(primaryM15Direction) +
+                                                    m15FrameState.DirectionLabel +
                                                     "/" +
-                                                    DirectionText(primaryH1Direction);
+                                                    h1FrameState.DirectionLabel;
 
                                                 AddPanelRow(
                                                     ref slot,
