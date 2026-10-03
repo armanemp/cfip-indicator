@@ -57,6 +57,15 @@ namespace cAlgo
         public double FutureOrderDistanceAtr;
         public string FutureOrderSource;
 
+        // These fields are ranking evidence only. They never override the
+        // canonical eligibility policy or create a second execution model.
+        public int ForecastAlignmentScore;
+        public int HistoricalSupportScore;
+        public int HistoricalCalibrationSamples;
+        public double HistoricalObservedWinRate;
+        public double HistoricalAverageRealizedR;
+        public double ExecutionPriorityScore;
+
         public string Source;
         public string Stage;
         public string LabelPrefix;
