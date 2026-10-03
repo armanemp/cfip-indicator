@@ -23,7 +23,10 @@ namespace cAlgo
                     return Math.Max(baseFloor, 1.20);
 
                 case MarketRegimeIdentity.Range:
-                    return Math.Max(baseFloor, 1.00);
+                    // A range setup must have enough geometric travel to support
+                    // the canonical 2.25 TP1-RR floor. A 1 ATR candidate can
+                    // otherwise survive this gate and later present a weak TP.
+                    return Math.Max(baseFloor, 2.25);
 
                 case MarketRegimeIdentity.Transition:
                     return Math.Max(baseFloor, 0.85);
