@@ -113,7 +113,10 @@ namespace cAlgo
                 ActionButtonWidth,
                 AlwaysShowSafetyButtons ? "1" : "0",
                 PanelButtonGap,
-                ShowTradeActionButtons ? "1" : "0");
+                ShowTradeActionButtons ? "1" : "0",
+                // Retain the legacy saved setting in the presentation key
+                // without allowing it to expand canonical signal geometry.
+                FullWidthLevelLines ? "1" : "0");
         }
 
         private string FramePresentationKey(

@@ -19,11 +19,11 @@ def check(name, ok):
         errors.append(name)
 
 check("plan lines are solid and canonical", "return LineStyle.Solid;" in line)
-check("plan line geometry is exactly bounded from latest candle", "GetPlanLineRightBar()" in line and "CompactPlanLineLengthBars" in line and "GetPlanLineRightBar() -" in line)
+check("plan line geometry is fixed to 40 bars from latest candle", "CompactPlanLineLengthBars = 40" in line and "GetPlanLineRightBar()" in line and "GetPlanLineRightBar() -" in line and "if (FullWidthLevelLines)" not in line.split("private int GetPlanLineLeftBar", 1)[1])
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
 check("plan labels are background-free", 'Chart.RemoveObject(\n                    name + "_BOX")' in labels and "Chart.DrawRectangle(" not in labels)
 check("plan labels are white", "return Color.White;" in labels)
-check("labels are left of line start with deterministic gap", "lineLeft - offset" in anchor and "CompactPlanLabelMinimumGapBars = 3" in anchor)
+check("labels share the exact signal price and sit left with a deterministic gap", "NormalizePrice(price)" in labels and "lineLeft - offset" in anchor and "CompactPlanLabelMinimumGapBars = 3" in anchor)
 check("active plan uses canonical stacked-arrow renderer", "RenderStackedSignalArrows(" in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
