@@ -202,35 +202,6 @@ namespace cAlgo
             }
         }
 
-        private int ResolveFrameTrendStrength(
-            Frame frame,
-            int direction)
-        {
-            if (frame == null ||
-                direction == 0 ||
-                !frame.NativeIndicatorsReady)
-                return 0;
-
-            int score =
-                direction == 1
-                    ? frame.BullScore
-                    : frame.BearScore;
-
-            double adx =
-                double.IsNaN(frame.Adx) ||
-                double.IsInfinity(frame.Adx)
-                    ? 0
-                    : frame.Adx;
-
-            if (score >= 70 || adx >= 25)
-                return 3;
-
-            if (score >= 55 || adx >= 20)
-                return 2;
-
-            return 1;
-        }
-
         private void RemovePanelTrendTimeframeLampRow()
         {
             _panelTrendTimeframeLampCells.Clear();
