@@ -126,7 +126,7 @@ namespace cAlgo
                     CancelPendingBeforeHighImpactNews)
                 {
                     ManagementCommandRequestStatus cancelStatus =
-                        TryCancelPendingOrder(
+                        RequestCancelPendingOrder(
                             pending,
                             "HIGH IMPACT NEWS");
                     if (cancelStatus.IsAccepted())
