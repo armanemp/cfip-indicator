@@ -115,6 +115,11 @@ namespace cAlgo
                 IsFinitePositive(idealEntry) &&
                 !SamePrice(idealEntry, entry);
 
+            bool idealAllowed =
+                preview
+                    ? idealDistinct
+                    : snapshot.IdealEntryVisible && idealDistinct;
+
             bool triggerDistinct =
                 IsFinitePositive(trigger) &&
                 !SamePrice(trigger, entry) &&
@@ -184,7 +189,7 @@ namespace cAlgo
                         "IDEAL_ENTRY_LABEL",
                         idealEntry,
                         PanelAccentColor,
-                        ShowEntry && idealDistinct,
+                        ShowEntry && idealAllowed,
                         false),
 
                     new PlanLevelVisual(
