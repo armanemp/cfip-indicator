@@ -622,3 +622,52 @@ Open:
 - full conditional-compilation, generated-file, unreachable-source and semantic duplicate analysis.
 
 **Next exact work item:** continue M2-A.2/A.3 from the reconciled repository truth; do not move to M2-B until the remaining M2-A build/reachability checks are dispositioned.
+
+
+## 2026-10-04 — M2-A.2/A.3 deep repository scan
+
+### Verified
+
+- Recursive tree: **1122 tracked files** at the audited M2 HEAD.
+- No backup/copy/temp/bak/old/generated-looking source artifacts were found by filename heuristic.
+- No tracked build-output artifacts (`bin/`, `obj/`, DLL/PDB, VS user state) were found.
+- No `#if/#elif/#else/#endif/#define/#undef` conditional-compilation directives were found by repository search in the audited source scopes. Conditional-compilation dead-code risk therefore remains low, but not yet globally closed because reflection/string reachability still requires source-graph analysis.
+- Only four duplicate basenames exist:
+  1. `Program.cs` across independent executable harnesses;
+  2. `README.md` at root/OSS/benchmark scopes;
+  3. `global.json` at root and nested .NET 8 benchmark scope;
+  4. `ExecutionIntent.cs` in `CFIP.Contracts` and Indicator internal models.
+- The two `ExecutionIntent` types are currently proven to have different semantic roles:
+  - `CFIP.Contracts.ExecutionIntent` is the cross-boundary immutable execution contract.
+  - `cAlgo.ExecutionIntent` is an internal Indicator planning/model object carrying trigger/zone/M5 creation metadata.
+  They are therefore **not currently classified as duplicate owners**, but the identical type name is a maintainability/architecture ambiguity.
+
+### Findings
+
+**M2-A.2-F01 — Identical `ExecutionIntent` type name across boundary and internal model.**  
+Status: **OPEN — naming/architecture clarity**.  
+No behavior change should be made until all references are traced. If renamed,
+the internal type must be renamed only once and all consumers migrated together;
+no alias/parallel compatibility type should be introduced.
+
+**M2-A.2-F02 — Nested .NET SDK manifest is intentional but needs explicit build-boundary documentation.**  
+`tools/CFIP.StockIndicators.Benchmark/global.json` pins .NET 8 while the
+repository root pins .NET 6. This is currently coherent because the benchmark
+has its own SDK boundary and CI explicitly uses .NET 8.  
+Status: **VERIFIED INTENTIONAL**, documentation normalization still desirable.
+
+**M2-A.2-F03 — Manual-source contract harnesses remain the main build-graph drift risk.**  
+The selected `Compile Include="../../src/..."` lists in Decision/Planning/
+Execution/Runtime contract harnesses are test coverage manifests, not production
+owners. Their exact source selection must still be reconciled against their
+contract scope and the full Indicator CI build.  
+Status: **OPEN**.
+
+### Dead-code scan disposition
+
+Filename-level backup/generated scan: **PASS**.  
+Conditional-compilation scan: **PASS for discovered directives**.  
+Full symbol reachability, reflection/string entry points, unused members,
+dead event/timer/chart/persistence paths: **NOT CLOSED** and remain mandatory
+for M2-A/B.
+
