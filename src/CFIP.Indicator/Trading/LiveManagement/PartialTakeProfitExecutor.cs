@@ -4,6 +4,7 @@
 // ============================================================================
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using cAlgo.API;
@@ -77,7 +78,7 @@ namespace cAlgo
                     closeVolume >=
                     position.VolumeInUnits;
 
-                bool closeAccepted =
+                ManagementCommandRequestStatus closeStatus =
                     TryClosePosition(
                         position,
                         "PARTIAL CLOSE • " + tag,
@@ -85,7 +86,7 @@ namespace cAlgo
                             ? (double?)null
                             : closeVolume);
 
-                if (!closeAccepted)
+                if (!closeStatus.IsAccepted())
                 {
                     Print(
                         "CFIP partial close rejected ({0}).",
@@ -181,13 +182,13 @@ namespace cAlgo
 
                             if (breakEvenGeometryValid)
                             {
-                                bool breakEvenApplied =
+                                ManagementCommandRequestStatus breakEvenStatus =
                                     TryModifyStopLoss(
                                         position,
                                         NormalizePrice(breakEvenPrice),
                                         "PARTIAL BREAK-EVEN");
 
-                                if (breakEvenApplied)
+                                if (breakEvenStatus.IsBrokerConfirmed())
                                 {
                                     // Broker mutation has succeeded; only now may the
                                     // in-memory plan adopt the broker-confirmed protection.
