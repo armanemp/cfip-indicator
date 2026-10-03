@@ -8,7 +8,7 @@ namespace cAlgo
         // 1-3 weak, 4-6 medium, 7-9 strong.
         // H1 contributes the base trend strength, H4 adds confirmation,
         // D1 adds higher-order confirmation and W1 supplies the final bias.
-        public static int Resolve(
+        public static int ResolveStrength(
             Frame h1,
             Frame h4,
             Frame d1,
