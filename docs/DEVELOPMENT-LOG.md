@@ -1,3 +1,32 @@
+## 2026-10-03 — Single-Owner / No-Duality Repair
+
+Status: VERIFIED COMPLETE — merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
+
+Root causes closed:
+- cBot startup had two audio cues: canonical Start plus an immediate Live-disarmed cue.
+- Active Plan and WATCH/Reaction had separate directional-arrow ownership.
+- Several chart label paths retained obsolete box/vertical-offset semantics instead of one exact-price presentation.
+- Historical audits still encoded superseded line/label contracts.
+
+Corrections:
+- One startup cue is owned by `CbotLifecycleAudioService.PlayStarted`; Live DISARMED remains state/panel information, not a second cue.
+- Active signal arrows converge on the canonical stacked-arrow renderer.
+- Signal/plan lines converge on `PlanLineRenderer`: Solid, fixed 1px, exactly 40 bars from the latest candle.
+- Pending/parallel lines delegate to that owner.
+- All compact labels converge on one renderer/formatter: exact signal price, white/no-background text, source timeframe once, pip distance where applicable, left-of-line with minimum horizontal gap.
+- Added a dedicated Single-Owner / No-Duality source audit and accumulated it in CI.
+- Resolved contradictory legacy audits without creating alternate production behavior.
+
+Verification on final implementation head:
+Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
+
+Manual target-terminal validation remains required.
+Operator action: `git pull --ff-only`.
+
+Next gated work: Signal Quality + TP/SL/RR + OB/FVG + full MTF chain audit.
+
+---
+
 ## 2026-10-03 — Canonical Signal-Line Visual Repair
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #249, merge commit `fb7dee65275ddb1d8e81d0090eb2a0472eadf633`.

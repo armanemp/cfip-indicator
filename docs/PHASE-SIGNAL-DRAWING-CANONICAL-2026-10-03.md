@@ -1,6 +1,6 @@
 # Sub-phase 2 — Canonical Signal Drawing Hardening (2026-10-03)
 
-Status: VERIFIED COMPLETE — code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c` passed Source/Architecture, Runtime Acceptance and cTrader Compile.
+Status: VERIFIED COMPLETE — canonical drawing implementation plus Single-Owner / No-Duality repair merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
 
 ## Scope
 
@@ -52,3 +52,18 @@ No new realtime calculation loop was introduced.
 Operator action:
 `git pull --ff-only`
 Then rerun `dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release` locally; the `buttonMargin` CS0219 warning should be absent.
+
+
+## Final duality-repair closeout — 2026-10-03
+
+- cBot startup now emits one canonical `PlayStarted` lifecycle cue; the redundant Live-disarmed startup cue was removed.
+- Signal/plan line geometry has one owner: Solid, 1px, exactly 40 bars from the latest candle.
+- Pending and parallel signal lines delegate to the same line owner.
+- All compact chart labels use one renderer and one formatter: exact price, white text, no background, left-of-line anchor with a deterministic gap.
+- Historical audit contracts that conflicted with the current visual contract were updated instead of reintroducing duplicate production behavior.
+- Dedicated Single-Owner / No-Duality audit passed on the final implementation head.
+
+Final repository verification on merge head `2e670514e90deeb46a3f140d1383446f0292c64d`:
+Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
+
+Manual cTrader terminal acceptance remains required for the actual audible startup cue and exact visual line/label rendering.
