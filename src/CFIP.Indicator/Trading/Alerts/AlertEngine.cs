@@ -250,7 +250,8 @@ if (SuppressDuplicateAlerts)
 
                             bool delivered = queued;
 
-                            if (EnableEmailAlerts &&
+                            if (queued &&
+                                EnableEmailAlerts &&
                                 !string.IsNullOrWhiteSpace(
                                     SenderEmail) &&
                                 !string.IsNullOrWhiteSpace(
