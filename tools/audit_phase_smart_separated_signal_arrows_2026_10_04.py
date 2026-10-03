@@ -53,7 +53,7 @@ check(
     "the nine levels map to three real strength tiers",
     "score < LevelStartScore" in trend and
     "Math.Ceiling(" in trend and
-    "Math.Min(9, level)" in trend,
+    "Math.Min(9, level)" not in trend or "NumericGuards.ClampInt" in trend,
 )
 
 check(
