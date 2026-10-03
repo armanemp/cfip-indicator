@@ -3102,14 +3102,14 @@ if "ApplyWaveTrendEvidence(" not in wt_analyzer_code or "WaveTrendQuality" not i
 label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
-    raise SystemExit("Plan labels must use the canonical text-color resolver")
+    raise SystemExit("Plan labels must use the canonical semantic text-color resolver")
 compact_label_color = label_code[label_code.find("private void DrawCompactPlanLabel("):]
 if "return Color.White;" not in label_code:
     raise SystemExit("Plan labels must use the canonical white text contract")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
 if "Chart.DrawRectangle(" not in compact_label_code:
-    raise SystemExit("Plan price labels must own the canonical filled cTrader-style box")
+    raise SystemExit("Plan price labels must remain background-free")
 if "box.IsFilled" not in compact_label_code:
     raise SystemExit("Plan price label box must be filled")
 if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
