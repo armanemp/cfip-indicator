@@ -44,8 +44,8 @@ require(
 require(
     "PanelTimeframePresentationRule" in panel_format and
     ".Resolve(" in panel_format and
-    "PanelFrameDirectionRule.ResolveDisplayDirection" in frame_rule and
-    "PanelFrameDirectionRule.ResolveLabel" in frame_rule,
+    "ResolveDisplayDirection(" in frame_rule and
+    "ResolveLabel(" in frame_rule,
     "panel frame text must use the canonical shared timeframe-presentation rule and the shared bias resolver",
 )
 
