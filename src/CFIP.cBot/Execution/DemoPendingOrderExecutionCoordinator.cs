@@ -344,6 +344,9 @@ namespace CFIP.cBot.Execution
             }
 
             Remember(key);
+
+            if (result == null)
+            {
                 if (idempotencyStore != null)
                     idempotencyStore.RecordAttempt(
                         robot,
@@ -351,8 +354,6 @@ namespace CFIP.cBot.Execution
                         false,
                         nowUtc);
 
-            if (result == null)
-            {
                 reason =
                     action ==
                         ExecutionAction.PendingStop
@@ -390,6 +391,13 @@ namespace CFIP.cBot.Execution
                         nowUtc,
                         result,
                         reason);
+
+                if (idempotencyStore != null)
+                    idempotencyStore.RecordAttempt(
+                        robot,
+                        key,
+                        false,
+                        nowUtc);
 
                 return false;
             }
