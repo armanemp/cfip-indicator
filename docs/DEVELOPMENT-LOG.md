@@ -1,3 +1,19 @@
+
+## 2026-10-04 — Smart Trend Arrow Single-Owner Hardening
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+- Replaced the previous dominance-only nine-level calculation with a canonical signed multi-timeframe evidence model combining structural direction, frame quality, directional score and live EMA/ATR pressure.
+- Kept M1 out of trend authority while retaining M5/M15/M30/H1/H4/D1/W1 in the shared model.
+- Made 1–3 / 4–6 / 7–9 explicit WEAK / MEDIUM / STRONG tiers.
+- Removed the duplicate HtfTrendArrowStrengthRule.
+- Removed the duplicate SignalStackedArrowRenderer.
+- Routed SignalRenderer, SignalPresentationRenderer, PlanRenderCoordinator and cleanup through MtfTrendArrowRenderer.
+- Added deterministic minimum arrow separation and legacy object cleanup.
+- Extended single-owner/realtime/signal-drawing audits so a duplicate arrow owner cannot silently return.
+
+Manual acceptance remains required for actual cTrader glyph spacing, live level transitions and stale-object cleanup after reload.
+
 ## 2026-10-03 — Single-Owner / No-Duality Repair
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
