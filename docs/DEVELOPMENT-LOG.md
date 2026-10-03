@@ -3771,3 +3771,18 @@ Verification status:
 Operator action after merge: git pull --ff-only on local main.
 
 Phase records: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md, docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md.
+
+
+## 2026-10-03 — True Multi-Timeframe Analysis / M15 Tuning / Lower-TF Entry / All-TF Risk-Reward
+
+Corrected the execution interpretation so M15 is not treated as the only analysis timeframe.
+
+Implementation:
+- all aligned M1/M5/M15/M30/H1/H4/D1/W1 frames remain simultaneous inputs to the decision stack;
+- M15 is the final signal-tuning/reference layer, while the combined multi-timeframe evidence determines directional consensus;
+- M5 remains the primary entry-precision layer and M1 is an optional lower-weight micro-entry/confirmation layer;
+- structural stop selection now accepts M1 micro structure in addition to M5 and M15/M30/H1/H4/D1/W1 structure, while existing risk-envelope/reward-path gates remain mandatory;
+- target construction now adds bounded M1 micro swing/FVG/OB candidates to the existing M5 + M15/M30/H1/H4/D1/W1 target pool;
+- the final trade geometry remains constrained by direction, structural validity, spread, risk, RR, target obstacles, target spacing, actionability and broker preflight.
+
+The older wording that described M15 as the execution analysis clock is superseded by this multi-timeframe contract. M15 remains the canonical signal/reference identity where traceability/history contracts require it, but the analysis itself is simultaneous across the complete aligned timeframe set.
