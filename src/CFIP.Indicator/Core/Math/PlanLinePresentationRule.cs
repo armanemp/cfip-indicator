@@ -8,13 +8,10 @@ namespace cAlgo
         public static int ResolveThickness(
             int configuredThickness)
         {
-            if (configuredThickness < MinimumThickness)
-                return MinimumThickness;
-
-            if (configuredThickness > MaximumThickness)
-                return MaximumThickness;
-
-            return configuredThickness;
+            // Signal/plan level geometry has one visual contract: one-pixel
+            // solid lines. The parameter remains readable for compatibility,
+            // but it cannot create a second visual language.
+            return MinimumThickness;
         }
     }
 }
