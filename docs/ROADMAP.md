@@ -1,3 +1,19 @@
+## 2026-10-04 — M2 Repository Hygiene / Ownership — Current-main Restart
+
+Status: **IN PROGRESS — not closed.**
+
+M2 was recreated from the current `main` baseline after detecting that the earlier M2 branch was 41 commits behind and would have overwritten the current 3522-line roadmap with a truncated 96-line version. The stale branch is not a merge candidate.
+
+Current M2 focus: repository truth, dead/unreachable code, duplicate semantic ownership, build graph, conditional compilation, lifecycle duplication, contract/documentation drift, dependency direction, and persistence/lifecycle hazards. Newly confirmed findings include management-request state conflation and synchronous LocalStorage use in the management path.
+
+Phase document: `docs/PHASE-M2-REPOSITORY-HYGIENE-OWNERSHIP-2026-10-04.md`
+
+No production strategy tuning or parallel owner has been introduced.
+
+Operator action after merge: git pull --ff-only
+
+---
+
 ## 2026-10-04 — Master Full Forensic Audit Baseline
 
 Status: **BASELINE CREATED — audit execution pending.**
