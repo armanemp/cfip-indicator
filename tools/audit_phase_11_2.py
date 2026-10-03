@@ -53,9 +53,11 @@ require(
 )
 require(
     LABEL,
-    r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Left",
-    "left-aligned level labels",
+    r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Right",
+    "right-anchored level labels rendered to the left of the line",
 )
+if "HorizontalAlignment.Left" in LABEL.read_text(encoding="utf-8"):
+    raise SystemExit("plan level labels must not use left anchor alignment; it expands text back toward the line")
 require(
     LABEL,
     r"double labelPrice\s*=\s*\n\s*NormalizePrice\(price\)",
