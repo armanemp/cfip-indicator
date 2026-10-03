@@ -116,9 +116,11 @@ namespace cAlgo
                             ? "WRONG DIRECTION PENDING ORDER"
                             : "PENDING POLICY SUPERSEDED";
 
-                if (!TryCancelPendingOrder(
+                ManagementCommandRequestStatus cancelStatus =
+                    TryCancelPendingOrder(
                         order,
-                        reason))
+                        reason);
+                if (!cancelStatus.IsAccepted())
                 {
                     SetLifecycleState(
                         LifecycleState.RecoveryRequired,
