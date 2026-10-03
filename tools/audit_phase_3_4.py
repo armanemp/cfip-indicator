@@ -72,8 +72,11 @@ checks = {
         processor.index("RecordPanelAlertDelivery(next)") <
         processor.index("Notifications.PlaySound(")
     ),
+calculation = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
+
     "queue is drained at calculation/initialization boundaries": (
-        "ProcessQueuedAlertDelivery();" in initialization
+        "ProcessQueuedAlertPresentation();" in initialization and
+        "ProcessQueuedAlertSoundDelivery();" in calculation
     ),
     "queue is cleared on destroy": (
         "_alertDeliveryQueue.ClearPendingAlerts();" in initialization
