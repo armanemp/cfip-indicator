@@ -40,6 +40,7 @@ namespace cAlgo
                 Bars == null ||
                 Bars.Count < 2)
             {
+                RemoveStackedSignalArrows();
                 Chart.RemoveObject(P + "ARROW");
             }
             else
@@ -65,20 +66,16 @@ namespace cAlgo
                     ? Bars.LowPrices[hostBar] - offset
                     : Bars.HighPrices[hostBar] + offset;
 
-            DrawIcon(
-                P + "ARROW",
-                snapshot.PlanDirection == 1
-                    ? ChartIconType.UpArrow
-                    : ChartIconType.DownArrow,
+            RenderStackedSignalArrows(
+                snapshot,
+                snapshot.PlanDirection,
                 hostBar,
-                y,
-                SignalArrowColorFor(
-                    snapshot.PlanDirection,
-                    snapshot.LivePosition
-                        ? "CONFIRMED"
-                        : snapshot.SmartQuality >= SmartStrongSetupQuality
-                            ? "STRONG"
-                            : "CONFIRMED"));
+                offset,
+                snapshot.LivePosition
+                    ? "CONFIRMED"
+                    : snapshot.SmartQuality >= SmartStrongSetupQuality
+                        ? "STRONG"
+                        : "CONFIRMED");
             }
 
         }
