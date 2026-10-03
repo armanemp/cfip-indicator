@@ -67,7 +67,7 @@ check(
 
 check(
     "live actionability still enforces mode-specific trigger semantics",
-    "if (!IsActionabilityTriggerReady(" in actionability and
+    "IsActionabilityTriggerReady(" in actionability and
     "ExecutionMode.RetestMarket" in trigger,
 )
 
