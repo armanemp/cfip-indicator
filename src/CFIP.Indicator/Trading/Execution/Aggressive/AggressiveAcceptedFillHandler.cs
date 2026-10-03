@@ -34,12 +34,12 @@ namespace cAlgo
                     LifecycleState.ExitRequested,
                     "AGGRESSIVE FILL MISMATCH");
 
-                bool closed =
+                ManagementCommandRequestStatus closeStatus =
                     TryClosePosition(
                         result.Position,
                         "AGGRESSIVE FILL MISMATCH");
 
-                if (!closed)
+                if (!closeStatus.IsAccepted())
                 {
                     SetLifecycleState(
                         LifecycleState.RecoveryRequired,
