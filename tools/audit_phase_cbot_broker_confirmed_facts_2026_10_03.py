@@ -27,8 +27,10 @@ architecture = read("docs/ARCHITECTURE.md")
 
 require(
     "result.Position.StopLoss.Value" in market and
-    "result.Position.TakeProfit.Value" in market,
-    "market BrokerExecutionReport must carry broker-confirmed Stop/Target facts",
+    "result.Position.TakeProfit.Value" in market and
+    "BrokerReportStatus.RecoveryRequired" in market and
+    "BROKER PROTECTION INCOMPLETE" in market,
+    "market BrokerExecutionReport must carry broker-confirmed Stop/Target facts and fail into recovery when protection is incomplete",
 )
 require(
     "ConfirmedEntry" in snapshot and
