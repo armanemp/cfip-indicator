@@ -60,21 +60,11 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize * 2,
                     atr * 0.18);
-            double y =
-                snapshot.PlanDirection == 1
-                    ? Bars.LowPrices[hostBar] - offset
-                    : Bars.HighPrices[hostBar] + offset;
-
             RenderStackedSignalArrows(
                 snapshot,
                 snapshot.PlanDirection,
                 hostBar,
-                offset,
-                snapshot.LivePosition
-                    ? "CONFIRMED"
-                    : snapshot.SmartQuality >= SmartStrongSetupQuality
-                        ? "STRONG"
-                        : "CONFIRMED");
+                offset);
             }
 
         }
