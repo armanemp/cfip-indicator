@@ -28,10 +28,23 @@ namespace cAlgo
                     if (candidate == null)
                         continue;
 
+                    string candidateName =
+                        candidate.Name ?? string.Empty;
+
                     bool instanceNameMatches =
                         string.Equals(
-                            candidate.Name,
+                            candidateName,
                             CbotIdentity.DisplayName,
+                            StringComparison.OrdinalIgnoreCase) ||
+                        candidateName.StartsWith(
+                            CbotIdentity.DisplayName + " ",
+                            StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(
+                            candidateName,
+                            CbotIdentity.TypeName,
+                            StringComparison.OrdinalIgnoreCase) ||
+                        candidateName.StartsWith(
+                            CbotIdentity.TypeName + " ",
                             StringComparison.OrdinalIgnoreCase);
 
                     string candidateTypeName =
