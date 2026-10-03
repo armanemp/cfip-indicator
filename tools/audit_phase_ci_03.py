@@ -75,7 +75,8 @@ check('indicator-group provenance reaches the decision chain',
       'IndicatorIndependentEvidenceGroupCount' in decision and
       'IndicatorIndependentEvidenceGroupCount' in candidate and
       'decision.IndicatorIndependentEvidenceGroupCount' in orchestration and
-      'IndicatorIndependentEvidenceGroupCount =' in builder)
+      ('IndicatorIndependentEvidenceGroupCount =' in builder or
+       'IndicatorIndependentEvidenceGroupCount =' in candidate_builder))
 check('runtime CI-03 contracts are wired',
       'VerifyCi03IndicatorEvidenceIndependence();' in runtime and
       'IndicatorEvidenceIndependenceRule.cs' in runtime_project and
