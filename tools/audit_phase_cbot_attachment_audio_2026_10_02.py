@@ -46,8 +46,9 @@ checks = {
         "while (processed < MaxAlertDeliveriesPerPump" in processor,
     "runtime startup logs effective audio configuration":
         '"CFIP ALERT AUDIO | enabled=' in initialization,
-    "timer remains an alert delivery boundary":
-        "ProcessQueuedAlertDelivery();" in initialization and
+    "timer remains the panel presentation boundary and Calculate owns realtime sound":
+        "ProcessQueuedAlertPresentation();" in initialization and
+        "ProcessQueuedAlertSoundDelivery();" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs") and
         "OnTimer()" in initialization,
 }
 
