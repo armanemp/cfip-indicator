@@ -7,6 +7,11 @@ namespace CFIP.cBot.Shadow
     public sealed class ShadowHostCoordinator
     {
         private const int MaxSeenIdempotencyKeys = 128;
+        private readonly Dictionary<string, long> _lastAcceptedRevisionByScenario =
+            new Dictionary<string, long>(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> _lastAcceptedIdempotencyKeyByScenario =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+
         private readonly HashSet<string> _seenIdempotencyKeys =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly Queue<string> _seenOrder =
@@ -72,11 +77,20 @@ namespace CFIP.cBot.Shadow
                 return mismatch;
             }
 
+            string scenarioKey =
+                identity.ScenarioId ?? string.Empty;
+
+            long lastScenarioRevision =
+                GetLastRevision(scenarioKey);
+
+            string lastScenarioIdempotencyKey =
+                GetLastIdempotencyKey(scenarioKey);
+
             bool sameCurrent =
-                identity.Revision == _lastAcceptedRevision &&
+                identity.Revision == lastScenarioRevision &&
                 string.Equals(
                     identity.IdempotencyKey,
-                    _lastAcceptedIdempotencyKey,
+                    lastScenarioIdempotencyKey,
                     StringComparison.Ordinal);
 
             if (sameCurrent)
@@ -127,8 +141,8 @@ namespace CFIP.cBot.Shadow
                         envelope,
                         broker,
                         contractVersion,
-                        _lastAcceptedRevision,
-                        _lastAcceptedIdempotencyKey,
+                        lastScenarioRevision,
+                        lastScenarioIdempotencyKey,
                         nowUtc);
 
             _lastResult = result;
@@ -140,6 +154,7 @@ namespace CFIP.cBot.Shadow
                  !IsTransientBrokerBlock(result.Reason)))
             {
                 Remember(
+                    scenarioKey,
                     identity.Revision,
                     identity.IdempotencyKey);
             }
@@ -148,9 +163,23 @@ namespace CFIP.cBot.Shadow
         }
 
         private void Remember(
+            string scenarioKey,
             long revision,
             string idempotencyKey)
         {
+            scenarioKey =
+                scenarioKey ?? string.Empty;
+
+            if (revision >
+                GetLastRevision(scenarioKey))
+            {
+                _lastAcceptedRevisionByScenario[scenarioKey] =
+                    revision;
+            }
+
+            _lastAcceptedIdempotencyKeyByScenario[scenarioKey] =
+                idempotencyKey ?? "";
+
             if (revision > _lastAcceptedRevision)
                 _lastAcceptedRevision = revision;
 
@@ -170,6 +199,26 @@ namespace CFIP.cBot.Shadow
 
                 _seenIdempotencyKeys.Remove(oldest);
             }
+        }
+
+        private long GetLastRevision(
+            string scenarioKey)
+        {
+            return _lastAcceptedRevisionByScenario.TryGetValue(
+                scenarioKey ?? string.Empty,
+                out long revision)
+                ? revision
+                : -1;
+        }
+
+        private string GetLastIdempotencyKey(
+            string scenarioKey)
+        {
+            return _lastAcceptedIdempotencyKeyByScenario.TryGetValue(
+                scenarioKey ?? string.Empty,
+                out string key)
+                ? key ?? string.Empty
+                : string.Empty;
         }
 
         private static bool IsTransientBrokerBlock(
