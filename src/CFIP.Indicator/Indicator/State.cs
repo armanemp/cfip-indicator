@@ -62,6 +62,10 @@ namespace cAlgo
                 private readonly Dictionary<int, TradeSetupPreview> _parallelPreviewCache =
                     new Dictionary<int, TradeSetupPreview>();
 
+                private VolumeProfileSnapshot _m15VolumeProfile =
+                    VolumeProfileSnapshot.Empty;
+                private int _m15VolumeProfileClosedIndex = -1;
+
                 private DateTime _lastLiveOpportunityRefreshUtc = DateTime.MinValue;
                 private int _lastLiveOpportunityRefreshM5 = -1;
                 private bool _suppressProviderIntentCapture;
