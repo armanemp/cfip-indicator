@@ -2478,3 +2478,6 @@ Verification state:
 - cTrader target-terminal validation remains required for actual live execution, audible sound and chart attachment behavior.
 
 Operator action after merge: git pull --ff-only.
+
+### Realtime / Live Execution + Volume Profile Intelligence
+Current continuation: this consolidated branch carries realtime/live execution unification together with all-timeframe intelligence, future pending scenarios, smart arrows and panel/audio hardening.
