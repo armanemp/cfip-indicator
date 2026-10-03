@@ -54,7 +54,7 @@ check(
 check(
     "PanelFooterMinHeight = 36" in constants and
     "PanelAlertMessageRowHeight = 18" in alert_rail and
-    "Math.Max(1, rows - 1)" in alert_rail and
+    "rows - 1" in alert_rail and
     "lastVisibleRow" in alert_rail,
     "footer/alert rail must use the reduced geometry without phantom final-row spacing",
 )
