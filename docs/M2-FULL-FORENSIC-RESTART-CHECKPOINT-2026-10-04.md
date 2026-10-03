@@ -155,7 +155,7 @@ Current branch:
 `phase/M2-repository-hygiene-ownership-current`
 
 Current audited HEAD:
-`16d3c0513e62333eeb0f1b40d68ab8e099729ffe`
+`14be58c6082ae82395ec791f8a3ec2e423470eb2`
 
 PR:
 `#257`
@@ -186,7 +186,7 @@ Already root-corrected during the current M2 effort and must be re-verified, not
 
 ## Current forensic progress
 
-**M2-A.1 is audited and remains OPEN.** Findings are recorded in `docs/M2-A1-REPOSITORY-BUILD-TRUTH-2026-10-04.md`.
+**M2-A.1 and M2-A.2 are audited and remain OPEN.** Findings are recorded in `docs/M2-A1-REPOSITORY-BUILD-TRUTH-2026-10-04.md` and `docs/M2-A2-DUPLICATE-PARTIAL-REACHABILITY-2026-10-04.md`.
 
 Key open build-architecture findings: the primary solution excludes verification projects; 52 platform-neutral source files are compiled into multiple contract harness assemblies; the Runtime Contracts harness has 168 explicit source includes; and the Indicator CI mirror separately compiles the full Indicator tree. These are architecture/build findings, not yet remediated.
 
@@ -194,7 +194,7 @@ Key open build-architecture findings: the primary solution excludes verification
 
 **Do not jump to a new feature.**
 
-Continue at **M2-A.2: duplicate/near-duplicate files, partial classes, conditional compilation, generated/obsolete/unreachable artifacts, and build reachability reconciliation**, then progress sequentially through M2-A → M2-I.
+Continue at **M2-A.3: complete build reachability and source ownership mapping**, including project compile/exclude rules, CI/preflight/shadow/benchmark graphs, entrypoints, callbacks, reflection/string-based activation, and files that exist but are unreachable; then progress sequentially through M2-A → M2-I.
 
 The next chat must read this checkpoint and continue from the first not-yet-closed M2 gate. It must not assume that a prior summary means a gate is complete.
 
