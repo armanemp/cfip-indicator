@@ -1,3 +1,40 @@
+## Current focus — LIVE REALTIME EXECUTION / ATTACHMENT / AUDIO / QUALITY HARDENING — 2026-10-03
+
+Status: IMPLEMENTED — automated verification pending; target-terminal validation pending.
+
+Purpose:
+- make current-quote execution handoff fast and deterministic without moving analysis ownership into the cBot;
+- keep future Stop/Limit opportunities separate from current market entries;
+- keep multiple independent ScenarioIds bounded by the cBot concurrency contract;
+- remove hidden Indicator execution switches from the cBot broker permission path;
+- reject low-value micro-opportunities in stagnant RANGE/COMPRESSION conditions through an adaptive reward floor;
+- keep live execution explicitly armed and fail-closed when not armed;
+- make CFIP chart attachment and alert sound delivery observable and reliable.
+
+Completed:
+- live-unarmed cBot stays attached and publishes a visible LIVE DISARMED state;
+- shared signal-store reload is bounded to 100 ms while Indicator intrabar opportunity refresh remains 200 ms;
+- cBot market/pending execution modes are the broker execution authority;
+- cBot effective execution state is reflected back to the Indicator panel without the old Indicator-setting false blocker;
+- CFIP binding scans Custom indicators first and reports candidate/type diagnostics when discovery fails;
+- adaptive reward floors are applied to current/future builders and rechecked at the final execution policy;
+- sound delivery stays on the realtime last-bar path with semantic fallback;
+- existing historical memory/calibration and future prediction layers remain in the full decision chain.
+
+Full-chain audit:
+Past/history -> pre-analysis -> M15 decision -> M5 trigger/tuning -> optional M1 -> current quote -> current Market/Aggressive OR future Stop/Limit -> ScenarioBatch -> cBot preflight -> broker/account safety -> broker mutation -> broker confirmation -> protection/management -> outcome/history.
+
+Safety:
+- live arm remains explicitly OFF by default;
+- no confidence, RR or risk threshold was lowered;
+- stagnant-market protection rejects small reward excursions instead of increasing signal frequency;
+- Indicator remains broker-mutation-free;
+- ScenarioId identity/idempotency and bounded concurrency remain mandatory.
+
+Operator action after verified merge: git pull --ff-only.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
