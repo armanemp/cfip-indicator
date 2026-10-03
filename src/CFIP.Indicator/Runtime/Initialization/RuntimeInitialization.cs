@@ -141,6 +141,10 @@ namespace cAlgo
             _initializationStartedUtc = TimeInUtc;
 
             RequestBars(
+                TimeFrame.Minute2,
+                bars => _m2Bars = bars);
+
+            RequestBars(
                 TimeFrame.Minute5,
                 bars => _m5Bars = bars);
 
@@ -232,6 +236,7 @@ namespace cAlgo
                 return;
             }
 
+            RegisterNative(_m2Bars);
             RegisterNative(_m5Bars);
             RegisterNative(_m15Bars);
             RegisterNative(_m30Bars);
