@@ -122,9 +122,7 @@ namespace cAlgo
             Color color,
             bool visible,
             int lineLeft,
-            int labelBar,
-            int boxRightBar,
-            double boxHalfHeight)
+            int labelBar)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -141,9 +139,7 @@ namespace cAlgo
                 price,
                 color,
                 lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
         }
 
         private void DrawCompactPlanLabel(
@@ -152,9 +148,7 @@ namespace cAlgo
             double price,
             Color semanticColor,
             int lineLeft,
-            int labelBar,
-            int boxRightBar,
-            double boxHalfHeight)
+            int labelBar)
         {
             try
             {
@@ -182,9 +176,6 @@ namespace cAlgo
                     GetReadableLabelTextColor(
                         semanticColor);
 
-                // Remove any legacy rectangle left by pre-9.8 versions.
-                Chart.RemoveObject(
-                    name + "_BOX");
 
                 ChartText label =
                     Chart.FindObject(name)
