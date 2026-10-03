@@ -3524,3 +3524,8 @@ Operator action after merge: git pull --ff-only.
 ## 21B. 2026-10-04 — Smart Trend Arrow Recovery / Single-Owner Lifecycle
 
 The canonical MTF trend-arrow path was recovered on main. Trend arrows are independent of trade actionability, use one nine-level strength owner, and render once per calculation cycle. Weak/medium/strong remain three levels each; M1 remains a Circle precision marker. See docs/PHASE-SMART-TREND-ARROWS-RECOVERY-2026-10-04.md.
+
+
+## 2026-10-04 — Arrow + Signal-Line Deep Presentation Audit
+
+Canonical presentation re-audited end-to-end. Final contract: one MTF trend-arrow owner with 9 strength levels (1–3 weak, 4–6 medium, 7–9 strong), M1 Circle precision marker only; signal/plan lines Solid + 1px + exactly 40 chart-bar geometry ending at latest candle; labels are regular-weight white text in a filled box matching the line color, with the box attached to the exact line endpoint. Historical audits that contradicted this current contract were reconciled so they cannot reintroduce duplicate/obsolete rendering paths.
