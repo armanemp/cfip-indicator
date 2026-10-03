@@ -86,45 +86,9 @@ namespace cAlgo
             if (vwapBear)
                 sell += EarlyPredictionScoreRule.VwapBonus;
 
-            double total = buy + sell;
-
-            if (!NumericGuards.IsFiniteValue(total) ||
-                total <= 0)
-            {
-                return new EarlyPredictionScoreResult(
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0);
-            }
-
-            double strongest = Math.Max(buy, sell);
-
-            int share =
-                NumericGuards.ClampInt(
-                    (int)Math.Round(
-                        100.0 *
-                        strongest /
-                        total),
-                    0,
-                    100);
-
-            int direction =
-                buy > sell
-                    ? 1
-                    : sell > buy
-                        ? -1
-                        : 0;
-
-            return new EarlyPredictionScoreResult(
+            return EarlyPredictionScoreRule.Finalize(
                 buy,
-                sell,
-                total,
-                Math.Max(0, strongest),
-                share,
-                direction);
+                sell);
         }
     }
 }
