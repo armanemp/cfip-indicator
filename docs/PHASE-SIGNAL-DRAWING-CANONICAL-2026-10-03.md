@@ -11,7 +11,7 @@ This sub-phase closes the Arrow / Signal Marker / Signal Line / Label portion of
 1. The active-plan path rendered a separate `P + "ARROW"` object while WATCH/reaction states used `WATCH_ARROW*`. That created two directional-marker lifecycles and made stale-object cleanup depend on state transitions.
 2. Plan-level line thickness still accepted a configurable 1–3px range, while the required visual contract is a single 1px solid line.
 3. Compact signal-level labels reused semantic line colors. The current project presentation contract requires readable white text with no label background.
-4. Label anchoring was already left of the line start, but it required an explicit deterministic gap contract so the line and label cannot visually touch.
+4. Label anchoring was left of the line start, but the label was also vertically offset from the price level. That made the annotation look detached from its line. The contract requires the label to share the exact line price and use horizontal separation only.
 5. The legacy alert mirror correctly did not draw a second marker, but its ownership needs to remain explicit as the canonical signal renderer evolves.
 
 ## Corrections
@@ -21,8 +21,9 @@ This sub-phase closes the Arrow / Signal Marker / Signal Line / Label portion of
 - M1 trigger remains a separate `Circle` marker and is not treated as a directional signal arrow.
 - BUY/SELL direction remains explicit through `ChartIconType.UpArrow` / `DownArrow`.
 - Signal/plan level lines are now one-pixel and solid through `PlanLinePresentationRule`.
+- Signal/plan level lines are fixed to exactly 40 chart bars from the latest candle; the legacy `FullWidthLevelLines` switch cannot expand them.
 - Compact labels are background-free and use canonical white text.
-- Label anchoring remains at least three bars to the left of the line start.
+- Compact labels sit at the exact level price and are separated from the line only horizontally, with a deterministic minimum three-bar gap.
 - Expired/invalid drawing lifecycle continues to remove all plan, watch and legacy marker objects before rendering the current canonical snapshot.
 - The legacy alert mirror remains prohibited from drawing a second signal marker.
 
