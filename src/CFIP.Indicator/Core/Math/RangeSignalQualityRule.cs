@@ -21,7 +21,6 @@ namespace cAlgo
         public int Confidence { get; }
         public int SmartQuality { get; }
         public int Edge { get; }
-        public double Tp1RR { get; }
 
         public RangeSignalQualityInput(
             int direction,
