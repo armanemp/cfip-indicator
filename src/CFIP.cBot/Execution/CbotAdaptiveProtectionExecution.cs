@@ -127,6 +127,175 @@ namespace CFIP.cBot.Execution
             }
         }
 
+        public static bool TryPlacePending(
+            Robot robot,
+            SignalEnvelope envelope,
+            ExecutionAction action,
+            TradeType tradeType,
+            double volume,
+            string label,
+            double stopPips,
+            double targetPips,
+            DateTime? expiration,
+            string commentPrefix,
+            out TradeResult result)
+        {
+            result = null;
+
+            MarketExecutionProfile profile =
+                envelope == null || envelope.Intent == null
+                    ? null
+                    : envelope.Intent.MarketProfile;
+
+            if (profile == null ||
+                !profile.UseServerTakeProfitLadder ||
+                !Positive(profile.Tp1Pips) ||
+                !Positive(profile.FinalTpPips) ||
+                !Positive(profile.Tp1Volume))
+                return false;
+
+            double firstVolume =
+                robot.Symbol.NormalizeVolumeInUnits(
+                    profile.Tp1Volume,
+                    RoundingMode.Down);
+
+            if (!Positive(firstVolume) || firstVolume >= volume)
+                return false;
+
+            bool hasSecond =
+                Positive(profile.Tp2Pips) &&
+                Positive(profile.Tp2Volume);
+
+            double secondVolume = 0;
+
+            if (hasSecond)
+            {
+                secondVolume =
+                    robot.Symbol.NormalizeVolumeInUnits(
+                        profile.Tp2Volume,
+                        RoundingMode.Down);
+
+                if (!Positive(secondVolume) ||
+                    firstVolume + secondVolume >= volume)
+                    return false;
+            }
+
+            try
+            {
+                RelativeStopLossProtection stopProtection =
+                    new RelativeStopLossProtection(stopPips);
+
+                RelativeTakeProfitProtections takeProfits =
+                    hasSecond
+                        ? new RelativeTakeProfitProtections(
+                            new RelativeTakeProfitProtection(
+                                firstVolume,
+                                profile.Tp1Pips),
+                            new RelativeTakeProfitProtection(
+                                secondVolume,
+                                profile.Tp2Pips),
+                            new RelativeTakeProfitLastProtection(
+                                profile.FinalTpPips))
+                        : new RelativeTakeProfitProtections(
+                            new RelativeTakeProfitProtection(
+                                firstVolume,
+                                profile.Tp1Pips),
+                            new RelativeTakeProfitLastProtection(
+                                profile.FinalTpPips));
+
+                StopLossBreakEven breakEven =
+                    profile.BreakEvenTriggerPips.HasValue &&
+                    profile.BreakEvenOffsetPips.HasValue &&
+                    Positive(profile.BreakEvenTriggerPips.Value)
+                        ? new StopLossBreakEven(
+                            profile.BreakEvenTriggerPips.Value,
+                            Math.Max(
+                                0,
+                                profile.BreakEvenOffsetPips.Value))
+                        : null;
+
+                string comment =
+                    action == ExecutionAction.PendingStop
+                        ? commentPrefix + " PENDING STOP"
+                        : commentPrefix + " PENDING LIMIT";
+
+                result =
+                    action == ExecutionAction.PendingStop
+                        ? robot.PlaceStopOrder(
+                            tradeType,
+                            robot.SymbolName,
+                            volume,
+                            envelope.Intent.RequestedEntry,
+                            label,
+                            stopProtection,
+                            takeProfits,
+                            expiration,
+                            comment,
+                            false,
+                            StopTriggerMethod.Trade,
+                            breakEven)
+                        : robot.PlaceLimitOrder(
+                            tradeType,
+                            robot.SymbolName,
+                            volume,
+                            envelope.Intent.RequestedEntry,
+                            label,
+                            stopProtection,
+                            takeProfits,
+                            expiration,
+                            comment,
+                            false,
+                            breakEven);
+
+                return result != null;
+            }
+            catch (Exception)
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        public static TradeResult PlaceLegacyPending(
+            Robot robot,
+            ExecutionAction action,
+            TradeType tradeType,
+            double volume,
+            double requestedEntry,
+            string label,
+            double stopPips,
+            double targetPips,
+            DateTime? expiration,
+            string commentPrefix)
+        {
+            return
+                action == ExecutionAction.PendingStop
+                    ? robot.PlaceStopOrder(
+                        tradeType,
+                        robot.SymbolName,
+                        volume,
+                        requestedEntry,
+                        label,
+                        stopPips,
+                        targetPips,
+                        ProtectionType.Relative,
+                        expiration,
+                        commentPrefix + " PENDING STOP",
+                        false)
+                    : robot.PlaceLimitOrder(
+                        tradeType,
+                        robot.SymbolName,
+                        volume,
+                        requestedEntry,
+                        label,
+                        stopPips,
+                        targetPips,
+                        ProtectionType.Relative,
+                        expiration,
+                        commentPrefix + " PENDING LIMIT",
+                        false);
+        }
+
         public static TradeResult ExecuteLegacy(
             Robot robot,
             bool marketAction,
