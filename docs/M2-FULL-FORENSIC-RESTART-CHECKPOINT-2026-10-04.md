@@ -154,8 +154,8 @@ CI/runtime/terminal PASS must never be inferred from static inspection.
 Current branch:
 `phase/M2-repository-hygiene-ownership-current`
 
-Current HEAD at checkpoint creation:
-`42e9566dd2ed2ce1e564de99ff55d16c85e73186`
+Current audited HEAD:
+`16d3c0513e62333eeb0f1b40d68ab8e099729ffe`
 
 PR:
 `#257`
@@ -164,7 +164,7 @@ PR state:
 - open;
 - non-draft;
 - mergeable=false;
-- one commit behind main at the latest inspected state;
+- branch currently diverges from main; latest branch/head state is recorded in PR #257;
 - no usable workflow/status result for the current HEAD, therefore no CI PASS is claimed.
 
 Already root-corrected during the current M2 effort and must be re-verified, not blindly repeated:
@@ -184,11 +184,17 @@ Already root-corrected during the current M2 effort and must be re-verified, not
 - targeted duplicate-owner sweep;
 - canonical panel refresh ownership.
 
+## Current forensic progress
+
+**M2-A.1 is audited and remains OPEN.** Findings are recorded in `docs/M2-A1-REPOSITORY-BUILD-TRUTH-2026-10-04.md`.
+
+Key open build-architecture findings: the primary solution excludes verification projects; 52 platform-neutral source files are compiled into multiple contract harness assemblies; the Runtime Contracts harness has 168 explicit source includes; and the Indicator CI mirror separately compiles the full Indicator tree. These are architecture/build findings, not yet remediated.
+
 ## Exact next continuation point
 
 **Do not jump to a new feature.**
 
-Restart the audit at **M2-A.1: repository/build truth**, then progress sequentially through M2-A → M2-I.
+Continue at **M2-A.2: duplicate/near-duplicate files, partial classes, conditional compilation, generated/obsolete/unreachable artifacts, and build reachability reconciliation**, then progress sequentially through M2-A → M2-I.
 
 The next chat must read this checkpoint and continue from the first not-yet-closed M2 gate. It must not assume that a prior summary means a gate is complete.
 
