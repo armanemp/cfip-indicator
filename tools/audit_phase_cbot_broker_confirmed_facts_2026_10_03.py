@@ -19,6 +19,7 @@ def require(condition, message):
 
 market = read("src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs")
 bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
+report = read("src/CFIP.Contracts/BrokerExecutionReport.cs")
 snapshot = read("src/CFIP.Contracts/CbotExecutionStateSnapshot.cs")
 publisher = read("src/CFIP.cBot/Execution/CbotExecutionStatePublisher.cs")
 management = read("src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs")
@@ -33,9 +34,9 @@ require(
     "market BrokerExecutionReport must carry broker-confirmed Stop/Target facts and fail into recovery when protection is incomplete",
 )
 require(
-    "ConfirmedEntry" in snapshot and
-    "ConfirmedStop" in snapshot and
-    "ConfirmedTarget" in snapshot,
+    "ConfirmedEntry" in report and
+    "ConfirmedStop" in report and
+    "ConfirmedTarget" in report,
     "BrokerExecutionReport confirmed-fact fields are missing",
 )
 require(
