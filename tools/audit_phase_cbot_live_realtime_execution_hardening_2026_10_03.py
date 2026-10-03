@@ -28,6 +28,8 @@ parallel = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.c
 future = read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
 policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
 floor = read("src/CFIP.Indicator/Core/Math/RegimeAdaptiveRewardFloorRule.cs")
+provider_plan = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderPlan.cs")
+decision_alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.cs")
 workflow = read(".github/workflows/source-check.yml")
 
 check("100 ms signal-store handoff cadence",

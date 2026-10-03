@@ -325,6 +325,9 @@ namespace cAlgo
 
             string source = "CONFIRMED";
 
+            if (!IsCanonicalPlanRewardEligible(closedM5))
+                return;
+
             if (AlertOnSmartDecision &&
                 _decision.SmartQuality >=
                     SmartStrongSetupQuality &&
