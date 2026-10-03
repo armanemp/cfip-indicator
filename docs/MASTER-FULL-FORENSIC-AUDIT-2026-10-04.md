@@ -104,7 +104,15 @@ Market Data → Canonical Price/Time Context → MTF Closed Context → Primitiv
 14. Signal/plan/scenario/execution identities must remain distinct through the full chain.
 15. The calculation-integrity program forbids threshold tuning as a substitute for correctness proof.
 
-## 7. Complete repository structure — machine inventory
+## 7. Newly confirmed M2 findings (source-based)
+
+16. `ManagementCommandRequestCoordinator.RequestManagementCommand` previously returned `false` after successfully publishing a new management command, while callers such as live-exit/protection/pending-cleanup paths interpreted `false` as mutation rejection. This violated the project rule that accepted/requested state must not be confused with broker-confirmed state. Root cause fixed on M2 branch commit `5c2d41e74e6e410d9103eeb5c3b050b786986b13`: successful queue acceptance and already-queued idempotent requests now return `true`; broker confirmation remains report-driven.
+17. The same management-command path performs synchronous `LocalStorage.SetString` + `Flush`, creating a confirmed hot-path persistence/latency risk. This remains open for a later persistence/performance closure; no workaround or duplicate bus is permitted.
+18. `ProcessManagementReports` synchronously reads LocalStorage from the request path, coupling command acceptance to persistence latency; this remains an open ownership/performance finding.
+19. Indicator management helper names still imply direct broker mutation even though their current implementation publishes contracts/commands. This is a semantic naming/maintenance hazard and should be normalized at the canonical owner rather than by adding aliases.
+20. Historical boundary documents still mention removed Indicator broker owner files (for example `BrokerMarketOrderMutation.cs` and `BrokerLimitOrderPlacement.cs`) while the current branch no longer contains those files. This is documentation/audit drift and must be classified separately from production defects.
+
+## 8. Complete repository structure — machine inventory
 
 The following list is generated from the recursive Git tree of the audited main commit.
 
