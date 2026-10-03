@@ -28,7 +28,7 @@ labels = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 label_renderer = read("UI/Chart/PlanLabelRenderer.cs")
 candidate = read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
 alerts_calc = read("Runtime/Calculation/CalculationDecisionAlerts.cs")
-csproj = (ROOT / "CFIP.Indicator.csproj").read_text(encoding="utf-8")
+csproj = (IND / "CFIP.Indicator.csproj").read_text(encoding="utf-8")
 indicator = read("Indicator/CFIPIndicator.cs")
 
 check(
