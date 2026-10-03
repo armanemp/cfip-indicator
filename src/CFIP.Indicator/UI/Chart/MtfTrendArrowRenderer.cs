@@ -81,8 +81,9 @@ namespace cAlgo
             double spacing =
                 Math.Max(
                     Symbol.PipSize * 2.5,
-                    atr * 0.08,
-                    baseOffset * 0.50);
+                    Math.Max(
+                        atr * 0.08,
+                        baseOffset * 0.50));
 
             ChartIconType type =
                 direction == 1
