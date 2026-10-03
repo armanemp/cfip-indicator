@@ -91,18 +91,8 @@ namespace cAlgo
                         0.02,
                         ArrowOffsetAtr));
 
-            if (ShowSignalArrow)
-            {
-                RenderStackedSignalArrows(
-                    snapshot,
-                    visualDirection,
-                    arrowBar,
-                    offset);
-            }
-            else
-            {
-                RemoveStackedSignalArrows();
-            }
+            // Canonical MTF trend arrows are rendered once by the calculation
+            // lifecycle and are independent of trade actionability.
 
             Chart.RemoveObject(
                 P + "REACTION_ARROW");
