@@ -17,7 +17,7 @@ policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
 alert = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 calc = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
-arrow_rule = read("src/CFIP.Indicator/Core/Math/HtfTrendArrowStrengthRule.cs")
+trend = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
 arrow = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
 presentation = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
@@ -47,12 +47,14 @@ require(
 )
 
 require(
-    "internal static class HtfTrendArrowStrengthRule" in arrow_rule and
-    "FrameStrength(h1, direction, 3)" in arrow_rule and
-    "FrameStrength(h4, direction, 3)" in arrow_rule and
-    "FrameStrength(d1, direction, 2)" in arrow_rule and
-    "FrameStrength(w1, direction, 1)" in arrow_rule,
-    "HTF smart arrow rule must own the 9-level strength ladder",
+    "class MtfTrendStrengthRule" in trend and
+    "preferredDirection" in trend and
+    "ResolveNineLevel" in trend and
+    "LevelStartScore = 55.0" in trend and
+    "LevelStepScore = 5.0" in trend and
+    "MtfTrendStrengthLevel" in arrow and
+    "HtfTrendArrowStrengthRule" not in arrow,
+    "canonical MTF smart arrow rule must own the 9-level strength ladder",
 )
 
 require(
@@ -61,14 +63,17 @@ require(
     "RenderStackedSignalArrows(" in presentation and
     '"WATCH_ARROW"' in arrow and
     '"WATCH_ARROW_2"' in arrow and
-    '"WATCH_ARROW_3"' in arrow,
-    "stacked arrows must have one canonical renderer and stale-marker cleanup",
+    '"WATCH_ARROW_3"' in arrow and
+    "Symbol.PipSize * 3" in arrow and
+    "offset * 0.75" in arrow,
+    "stacked arrows must have one canonical renderer, deterministic level mapping and real separation",
 )
 
 require(
     "if (visualDirection == 0)" in renderer and
-    "RemoveStackedSignalArrows();" in renderer,
-    "directionless arrows must be hidden",
+    "RemoveStackedSignalArrows();" in renderer and
+    "ChartIconType.Circle" in renderer,
+    "directionless arrows must be hidden and M1 trigger must not become a second directional arrow",
 )
 
 require(
