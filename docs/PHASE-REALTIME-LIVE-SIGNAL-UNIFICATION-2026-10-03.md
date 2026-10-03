@@ -156,3 +156,6 @@ Target terminal acceptance still needs to verify on an actual cTrader installati
 ## Operator action after merge
 
 `git pull --ff-only`
+
+## Realtime all-timeframe intelligence + smart arrows
+The phase is part of the consolidated realtime/live architecture and preserves the all-timeframe analysis chain, M15 canonical reference, M5 entry refinement, M1 optional confirmation, future pending-order scenarios, nine-level HTF arrows, modular audio and realtime panel truth.
