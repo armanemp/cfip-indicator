@@ -39,7 +39,7 @@ require(
     'P + "WATCH_ARROW"' in renderer and
     'P + "WATCH_ARROW_2"' in renderer and
     'P + "WATCH_ARROW_3"' in renderer and
-    "HtfTrendArrowStrengthRule.Resolve(" in renderer and
+    "HtfTrendArrowStrengthRule.ResolveStrength(" in renderer and
     "RemoveStackedSignalArrows();" in renderer,
     "canonical signal renderer must own all stacked arrow markers",
 )
