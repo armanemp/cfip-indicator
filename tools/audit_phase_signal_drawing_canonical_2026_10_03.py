@@ -24,6 +24,8 @@ check("plan thickness contract is one pixel", "return MinimumThickness;" in line
 check("plan labels are background-free", "Chart.DrawRectangle(" not in labels and 'name + "_BOX"' in labels)
 check("plan labels are white", "return Color.White;" in labels)
 check("labels share the exact signal price and sit left with a deterministic gap", "NormalizePrice(price)" in labels and "lineLeft - offset" in anchor and "CompactPlanLabelMinimumGapBars = 3" in anchor)
+check("all chart level text shares one drawing owner", "private void UpsertPlanLabel(" in labels and labels.count("Chart.DrawText(") == 1)
+check("level text renders on the left side of its anchor/line", "HorizontalAlignment.Right" in labels and "HorizontalAlignment.Left" not in labels)
 check("active plan uses canonical stacked-arrow renderer", "RenderStackedSignalArrows(" in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
