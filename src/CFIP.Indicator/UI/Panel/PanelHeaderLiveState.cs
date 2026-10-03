@@ -45,24 +45,11 @@ namespace cAlgo
                 PanelTimeframePresentationState h1State =
                     ResolvePanelTimeframeState(_h1Frame);
 
-                int m15Direction =
-                    m15State.Direction;
-                int h1Direction =
-                    h1State.Direction;
-
                 string m15Text =
-                    m15Direction == 1
-                        ? "BUY"
-                        : m15Direction == -1
-                            ? "SELL"
-                            : "WAIT";
+                    m15State.DirectionLabel;
 
                 string h1Text =
-                    h1Direction == 1
-                        ? "BUY"
-                        : h1Direction == -1
-                            ? "SELL"
-                            : "WAIT";
+                    h1State.DirectionLabel;
 
                 string cbot =
                     ResolvePanelHeaderCbotState();
