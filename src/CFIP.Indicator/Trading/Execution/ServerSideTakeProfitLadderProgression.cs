@@ -1,4 +1,5 @@
 using System;
+using CFIP.Contracts;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -121,14 +122,16 @@ namespace cAlgo
             _lastServerTpLadderMutationM5 = closedM5;
             _lastServerTpLadderMutationKind = "SERVER-LADDER-AFTER-TP1";
 
-                if (!TryModifyTakeProfitLadder(
+                ManagementCommandRequestStatus tp1Status =
+                    TryModifyTakeProfitLadder(
                         position,
                         tp2Volume,
                         tp2Pips,
                         null,
                         null,
                         finalPips,
-                        "LIVE TARGET PROGRESSION • AFTER TP1"))
+                        "LIVE TARGET PROGRESSION • AFTER TP1");
+                if (!tp1Status.IsBrokerConfirmed())
                     return false;
 
                 _activeBrokerTarget =
@@ -272,14 +275,16 @@ namespace cAlgo
             _lastServerTpLadderMutationM5 = closedM5;
             _lastServerTpLadderMutationKind = "SERVER-LADDER";
 
-                if (!TryModifyTakeProfitLadder(
+                ManagementCommandRequestStatus ladderStatus =
+                    TryModifyTakeProfitLadder(
                         position,
                         tp1Volume,
                         tp1Pips,
                         tp2Volume,
                         tp2Pips,
                         finalPips,
-                        "LIVE TARGET PROGRESSION"))
+                        "LIVE TARGET PROGRESSION");
+                if (!ladderStatus.IsBrokerConfirmed())
                     return false;
 
                 _activeBrokerTarget =
@@ -413,10 +418,12 @@ namespace cAlgo
             _lastServerTpLadderMutationM5 = closedM5;
             _lastServerTpLadderMutationKind = "SERVER-LADDER-AFTER-TP2";
 
-            if (!TryModifyTakeProfitPips(
+            ManagementCommandRequestStatus finalTargetStatus =
+                TryModifyTakeProfitPips(
                     position,
                     targetPips,
-                    "POST-TP2 FINAL TARGET"))
+                    "POST-TP2 FINAL TARGET");
+            if (!finalTargetStatus.IsBrokerConfirmed())
                 return false;
 
             _activeBrokerTarget =
