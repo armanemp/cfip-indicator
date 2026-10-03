@@ -94,7 +94,7 @@ constants = read("UI/Panel/PanelConstants.cs")
 mtf_arrows = read("UI/Chart/MtfTrendArrowRenderer.cs")
 
 check(
-    "PanelFooterMinHeight = 40" in constants and
+    "PanelFooterMinHeight = 36" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
     "ResolvePanelFooterAreaHeight(" in visual and
@@ -167,7 +167,7 @@ check(
 )
 
 check(
-    "PanelFooterMinHeight = 40" in constants and
+    "PanelFooterMinHeight = 36" in constants and
     "return contentHeight;" in layout and
     "PanelTrendTimeframeLampRowHeight = 38" in lamp and
     "PanelTrendTimeframeLampIndicatorHeight = 22" in lamp,
