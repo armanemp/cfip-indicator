@@ -24,8 +24,8 @@ range_quality = read("src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs")
 decision = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
 prediction = read("src/CFIP.Indicator/Trading/Intelligence/Prediction/EarlyPredictionEngine.cs")
 mtf_prediction = read("src/CFIP.Indicator/Core/Math/MtfEarlyPredictionFusionRule.cs")
-trend = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
-arrows = read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
+trend = read("src/CFIP.Indicator/Core/Math/HtfTrendArrowStrengthRule.cs")
+arrows = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 audio = read("src/CFIP.cBot/Execution/CbotLifecycleAudioService.cs")
 header = read("src/CFIP.Indicator/UI/Panel/PanelHeaderRenderer.cs")
 workflow = read(".github/workflows/source-check.yml")
@@ -100,11 +100,15 @@ check(
 )
 check(
     "nine-level HTF smart arrow model exists",
-    "Math.Max(1, Math.Min(9" in trend and
-    "int count = ((level - 1) % 3) + 1;" in arrows and
-    '"WATCH"' in arrows and
-    '"CONFIRMED"' in arrows and
-    '"STRONG"' in arrows
+    "internal static class HtfTrendArrowStrengthRule" in trend and
+    "FrameStrength(h1, direction, 3)" in trend and
+    "FrameStrength(h4, direction, 3)" in trend and
+    "FrameStrength(d1, direction, 2)" in trend and
+    "FrameStrength(w1, direction, 1)" in trend and
+    "int arrowCount" in arrows and
+    '"WATCH_ARROW"' in arrows and
+    '"WATCH_ARROW_2"' in arrows and
+    '"WATCH_ARROW_3"' in arrows
 )
 
 # Stagnant-market quality / magnitude.
@@ -132,6 +136,7 @@ check(
 check(
     "panel header is a dedicated realtime presentation owner",
     "private void RefreshPanelHeader()" in header and
+    "UpdatePanelHeaderLiveState()" in header and
     "GetCanonicalSignalPanelStatus()" in header and
     "IsCbotExecutionStateFresh()" in header
 )
@@ -139,7 +144,8 @@ check(
     "new integration audits are accumulated",
     "python tools/audit_phase_cbot_lifecycle_audio_2026_10_03.py" in workflow and
     "python tools/audit_phase_panel_header_realtime_2026_10_03.py" in workflow and
-    "python tools/audit_phase_user_requirements_2026_10_03.py" in workflow
+    "python tools/audit_phase_user_requirements_2026_10_03.py" in workflow and
+    "python tools/audit_phase_final_realtime_live_smart_system_2026_10_03.py" in workflow
 )
 
 if errors:
