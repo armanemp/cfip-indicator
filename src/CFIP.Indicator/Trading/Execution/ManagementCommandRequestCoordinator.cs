@@ -109,6 +109,9 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
+        // Returns true only when the request is already confirmed or successfully
+        // accepted into the canonical management bus. It does NOT mean broker
+        // mutation is confirmed; ProcessManagementReports() reconciles confirmation.
         private bool RequestManagementCommand(
             ManagementCommandType command,
             Position position,
@@ -157,7 +160,11 @@ namespace cAlgo
             {
                 if (current[i] != null &&
                     string.Equals(current[i].CommandIdempotencyKey, key, StringComparison.Ordinal))
-                    return false;
+                {
+                    // The command is already accepted into the canonical bus.
+                    // Callers must not interpret "not yet broker-confirmed" as rejection.
+                    return true;
+                }
             }
 
             ManagementCommand request =
@@ -198,13 +205,13 @@ namespace cAlgo
                     ManagementCommandCodec.Serialize(commands.ToArray()),
                     LocalStorageScope.Device);
                 LocalStorage.Flush(LocalStorageScope.Device);
+                return true;
             }
             catch (Exception ex)
             {
                 Print("CFIP MANAGEMENT COMMAND WRITE FAILED | {0}", ex.Message);
+                return false;
             }
-
-            return false;
         }
 
         private ManagementCommand[] LoadManagementCommands()
