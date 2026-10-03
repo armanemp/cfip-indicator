@@ -54,6 +54,25 @@ namespace cAlgo
                                                     false,
                                                     contentWidth);
                                     
+                                                PanelTimeframePresentationState m2FrameState =
+                                                    ResolvePanelTimeframeState(_m2Frame);
+
+                                                AddPanelRow(
+                                                    ref slot,
+                                                    "M2   " +
+                                                    FrameText(
+                                                        _m2Frame,
+                                                        m2FrameState) +
+                                                    (_m2PrecisionSnapshot != null &&
+                                                     _m2PrecisionSnapshot.IsUsable
+                                                        ? (_m2PrecisionSnapshot.AlignsWithM5
+                                                            ? "  •  MICRO-ALIGNED"
+                                                            : "  •  MICRO-CONFLICT")
+                                                        : "  •  WAIT"),
+                                                    m2FrameState.Color,
+                                                    false,
+                                                    contentWidth);
+
                                                 PanelTimeframePresentationState m5FrameState =
                                                     ResolvePanelTimeframeState(_m5Frame);
 
