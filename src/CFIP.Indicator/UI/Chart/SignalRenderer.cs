@@ -68,9 +68,6 @@ namespace cAlgo
                 return;
             }
 
-            int arrowBar =
-                hostBar;
-
             // Canonical MTF trend arrows are rendered once by the calculation
             // lifecycle and are independent of trade actionability.
 
