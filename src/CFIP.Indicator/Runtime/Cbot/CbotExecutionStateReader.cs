@@ -83,9 +83,8 @@ namespace cAlgo
             {
                 if (HasFreshCbotPresenceForCurrentIndicator())
                 {
-                    for (int i = 0; i < ChartRobots.Count; i++)
+                    foreach (ChartRobot candidate in ChartRobots)
                     {
-                        ChartRobot candidate = ChartRobots[i];
                         if (candidate == null)
                             continue;
 
