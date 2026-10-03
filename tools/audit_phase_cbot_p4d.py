@@ -146,8 +146,9 @@ check(
 )
 check(
     "DecisionDirection != 0" in signal_presentation and
-    "MinimumEarlyConfidence" in signal_presentation,
-    "non-actionable directional watch must retain an evidence floor",
+    "IsStrongWatchSnapshot(snapshot)" in signal_presentation and
+    "IsSignalOpportunityVisuallyMeaningful(snapshot)" in signal_presentation,
+    "non-actionable directional watch must retain the canonical strong-evidence and reward floor",
 )
 check(
     "DecisionDirection" in snapshot_builder and
