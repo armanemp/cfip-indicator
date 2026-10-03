@@ -364,7 +364,10 @@ namespace CFIP.cBot
                         envelope,
                         nowUtc))
                 {
-                    ReconcileBrokerState(true);
+                    _reconciliation =
+                        ReconcileScenarioState(
+                            envelope,
+                            nowUtc);
                 }
 
                 if (_reconciliation != null &&
