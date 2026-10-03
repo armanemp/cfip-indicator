@@ -146,12 +146,12 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
             raise SystemExit(f"{chart_path.name}: forbidden non-solid line style {forbidden}")
 
 compact_label_renderer = labels[labels.find("private void DrawCompactPlanLabel("):]
-if "return semanticColor" not in compact_label_renderer:
-    raise SystemExit("level labels must reuse the exact semantic line color")
+if "return Color.White;" not in labels:
+    raise SystemExit("level labels must use canonical white text")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
     raise SystemExit("plan signal line thickness must use the canonical presentation rule")
-if "MinimumThickness = 1" not in line_presentation_rule or "MaximumThickness = 3" not in line_presentation_rule:
-    raise SystemExit("plan signal line thickness must preserve the public 1..3 contract")
+if "MinimumThickness = 1" not in line_presentation_rule or "return MinimumThickness;" not in line_presentation_rule:
+    raise SystemExit("plan signal line thickness must preserve the canonical one-pixel contract")
 if "Math.Min(1" in line:
     raise SystemExit("plan signal line renderer must not force valid thickness back to one")
 if "line.Thickness" not in prediction_line or "1;" not in prediction_line:
