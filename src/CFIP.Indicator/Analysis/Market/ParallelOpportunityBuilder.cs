@@ -174,6 +174,36 @@ namespace cAlgo
             return candidate.Quality >= minimumQuality;
         }
 
+        private VolumeProfileSnapshot GetM15VolumeProfileSnapshot()
+        {
+            int closedM15 =
+                _lastMtfClosedContext == null
+                    ? (_m15Bars == null ? -1 : _m15Bars.Count - 2)
+                    : _lastMtfClosedContext.M15;
+
+            if (_m15Bars == null ||
+                closedM15 < 0 ||
+                closedM15 >= _m15Bars.Count)
+                return VolumeProfileSnapshot.Empty;
+
+            if (_m15VolumeProfileClosedIndex == closedM15 &&
+                _m15VolumeProfile.IsValid)
+                return _m15VolumeProfile;
+
+            _m15VolumeProfile =
+                VolumeProfileAnalyzer.Build(
+                    _m15Bars,
+                    closedM15,
+                    96,
+                    48,
+                    70);
+
+            _m15VolumeProfileClosedIndex =
+                closedM15;
+
+            return _m15VolumeProfile;
+        }
+
         private TradeOpportunityCandidate BuildLaneCandidate(
             int closedM5,
             OpportunityLane lane,
@@ -409,6 +439,56 @@ namespace cAlgo
                         : sourceTimeframe.Trim(),
                 BasePlanTimeframe = "M5"
             };
+
+            double candidateAtr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            VolumeProfileSnapshot volumeProfile =
+                GetM15VolumeProfileSnapshot();
+
+            VolumeProfileEvidenceResult volumeProfileEvidence =
+                VolumeProfileEvidenceRule.Evaluate(
+                    volumeProfile,
+                    direction,
+                    candidate.Entry,
+                    candidateAtr);
+
+            candidate.VolumeProfileQuality =
+                volumeProfileEvidence.Quality;
+            candidate.VolumeProfileConfluence =
+                volumeProfileEvidence.Confluence;
+            candidate.VolumeProfileLocation =
+                volumeProfileEvidence.Location;
+            candidate.VolumeProfilePoc =
+                volumeProfile.IsValid
+                    ? volumeProfile.POC
+                    : 0;
+            candidate.VolumeProfileValueAreaLow =
+                volumeProfile.IsValid
+                    ? volumeProfile.VAL
+                    : 0;
+            candidate.VolumeProfileValueAreaHigh =
+                volumeProfile.IsValid
+                    ? volumeProfile.VAH
+                    : 0;
+
+            // Volume Profile is contextual evidence, never a standalone
+            // directional authority. Give only a small bounded quality lift
+            // when it agrees with the structural entry location.
+            if (volumeProfileEvidence.Confluence)
+            {
+                candidate.Quality =
+                    Math.Min(
+                        100,
+                        candidate.Quality +
+                        (volumeProfileEvidence.Quality >= 85
+                            ? 3
+                            : volumeProfileEvidence.Quality >= 75
+                                ? 2
+                                : 1));
+            }
 
             double stopPips =
                 Math.Abs(
