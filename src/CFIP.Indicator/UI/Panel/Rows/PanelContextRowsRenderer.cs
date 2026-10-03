@@ -161,21 +161,29 @@ namespace cAlgo
                                     
                                                 if (SmartWeeklyContext)
                                                 {
+                                                    PanelTimeframePresentationState d1FrameState =
+                                                        ResolvePanelTimeframeState(_d1Frame);
+
                                                     AddPanelRow(
                                                         ref slot,
                                                         "D1   " +
-                                                        FrameText(_d1Frame),
-                                                        PanelDirectionColor(
-                                                            FrameDirection(_d1Frame)),
+                                                        FrameText(
+                                                            _d1Frame,
+                                                            d1FrameState),
+                                                        d1FrameState.Color,
                                                         false,
                                                         contentWidth);
                                     
+                                                    PanelTimeframePresentationState w1FrameState =
+                                                        ResolvePanelTimeframeState(_w1Frame);
+
                                                     AddPanelRow(
                                                         ref slot,
                                                         "W1   " +
-                                                        FrameText(_w1Frame),
-                                                        PanelDirectionColor(
-                                                            FrameDirection(_w1Frame)),
+                                                        FrameText(
+                                                            _w1Frame,
+                                                            w1FrameState),
+                                                        w1FrameState.Color,
                                                         false,
                                                         contentWidth);
                                                 }
