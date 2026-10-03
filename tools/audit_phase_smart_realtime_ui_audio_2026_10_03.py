@@ -10,6 +10,7 @@ def read(path):
 
 rule = read("src/CFIP.Indicator/Core/Math/HtfTrendArrowStrengthRule.cs")
 renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
+stacked = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 presentation = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 header = read("src/CFIP.Indicator/UI/Panel/PanelHeaderLiveState.cs")
 layout = read("src/CFIP.Indicator/UI/Panel/Theme/PanelSurfaceAndHeaderLayout.cs")
@@ -36,11 +37,12 @@ require(
 
 require(
     "RenderStackedSignalArrows(" in renderer and
-    'P + "WATCH_ARROW"' in renderer and
-    'P + "WATCH_ARROW_2"' in renderer and
-    'P + "WATCH_ARROW_3"' in renderer and
-    "HtfTrendArrowStrengthRule.ResolveStrength(" in renderer and
-    "RemoveStackedSignalArrows();" in renderer,
+    "RenderStackedSignalArrows(" in stacked and
+    'P + "WATCH_ARROW"' in stacked and
+    'P + "WATCH_ARROW_2"' in stacked and
+    'P + "WATCH_ARROW_3"' in stacked and
+    "HtfTrendArrowStrengthRule.ResolveStrength(" in stacked and
+    "RemoveStackedSignalArrows();" in stacked,
     "canonical signal renderer must own all stacked arrow markers",
 )
 
