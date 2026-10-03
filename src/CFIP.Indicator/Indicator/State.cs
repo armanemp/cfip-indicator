@@ -307,6 +307,7 @@ namespace cAlgo
                 private readonly List<TextBlock> _panelAlertMessageRows =
                     new List<TextBlock>(5);
                 private long _panelAlertRevision;
+                private long _lastRenderedPanelAlertRevision = -1;
         
                 private const string P = "CFIP_";
                 private const string H = "CFIP_H_";
