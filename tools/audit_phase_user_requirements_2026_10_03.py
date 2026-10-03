@@ -29,6 +29,10 @@ arrows = read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
 audio = read("src/CFIP.cBot/Execution/CbotLifecycleAudioService.cs")
 header = read("src/CFIP.Indicator/UI/Panel/PanelHeaderRenderer.cs")
 workflow = read(".github/workflows/source-check.yml")
+calculation = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
+scenario_policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
+provider_plan = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderPlan.cs")
+reward_floor = read("src/CFIP.Indicator/Core/Math/RegimeAdaptiveRewardFloorRule.cs")
 
 def check(name, ok):
     print(f"{'PASS' if ok else 'FAIL'} | {name}")
