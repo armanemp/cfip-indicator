@@ -150,7 +150,7 @@ namespace CFIP.cBot.Binding
         }
 
         private static int SafeCount(
-            IReadOnlyList<ChartIndicator> indicators)
+            IReadonlyList<ChartIndicator> indicators)
         {
             try
             {
