@@ -1,3 +1,26 @@
+## 2026-10-03 — cBot Shadow Multi-Scenario Truth
+
+Status: implementation complete, verification pending.
+
+Deep execution-chain audit found that SignalScenarioBatch allows several independent ScenarioIds to carry the same provider revision, while ShadowHostCoordinator stored only one global last revision/idempotency pair. The second scenario could therefore be rejected as REVISION CONFLICT before broker execution.
+
+Implemented:
+
+- per-ScenarioId last accepted revision;
+
+- per-ScenarioId last accepted idempotency key;
+
+- preserved global last-accepted properties for telemetry compatibility;
+
+- dedicated static audit and CI wiring;
+
+- phase/roadmap/continuation records.
+
+Safety and M15/M5/M1 role contracts remain unchanged.
+
+Phase record: docs/PHASE-CBOT-SHADOW-MULTISCENARIO-TRUTH-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
 ## 2026-10-03 — cBot Position Truth / Restart Idempotency Hardening
 
 Status: implementation complete, verification pending.
