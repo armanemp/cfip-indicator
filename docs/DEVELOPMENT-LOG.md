@@ -1,3 +1,18 @@
+## 2026-10-03 — Integrated realtime/live/MTF + audio + panel header hardening
+
+Implementation branch: `phase/mtf-realtime-all-engines-smart-arrows-2026-10-03`.
+
+User-requirement integration recorded:
+- realtime current quote state, historical evidence and forward-looking pending opportunities remain distinct evidence/execution layers;
+- all requested timeframes contribute simultaneously to the analysis graph while preserving the M15 decision/entry-reference contract and lower-timeframe precision roles;
+- cBot owns broker execution for present/future scenarios and has bounded multi-scenario capacity plus account-scoped live controls;
+- stagnant RANGE/COMPRESSION opportunities are protected by magnitude/RR quality rules rather than by increasing low-value trade frequency;
+- nine-level smart trend arrows derive strength from HTF dominance and render 1/2/3 arrows in each weak/medium/strong tier;
+- Start/Stop and broker execution/recovery audio are centralized in the cBot lifecycle audio module;
+- panel header presentation is now a separate realtime owner and no longer relies on a static creation-time title.
+
+Verification remains pending until the exact branch head passes accumulated Source/Architecture, Runtime Acceptance and cTrader Compile gates. Target-terminal behavior remains a manual acceptance boundary.
+
 ## 2026-10-03 — Realtime Live Execution + Signal Truth Unification
 
 Status: implementation complete; verification pending; PR #240 open.
