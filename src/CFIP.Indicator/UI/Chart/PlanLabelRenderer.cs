@@ -22,80 +22,24 @@ namespace cAlgo
             double price,
             Color color)
         {
-            try
-            {
-                if (!IsFinitePositive(price) ||
-                    Bars == null ||
-                    Bars.Count < 2)
-                    return;
+            if (!IsFinitePositive(price) ||
+                Bars == null ||
+                Bars.Count < 2)
+                return;
 
-                int safeBar =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            bar));
+            int safeBar =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        bar));
 
-                double labelPrice =
-                    NormalizePrice(price);
-
-                Color labelTextColor =
-                    GetReadableLabelTextColor(color);
-
-                ChartText label =
-                    Chart.FindObject(name)
-                    as ChartText;
-
-                if (label == null)
-                {
-                    ChartObject existing =
-                        Chart.FindObject(name);
-
-                    if (existing != null)
-                        Chart.RemoveObject(name);
-
-                    label =
-                        Chart.DrawText(
-                            name,
-                            text,
-                            Bars.OpenTimes[safeBar],
-                            labelPrice,
-                            labelTextColor);
-                }
-
-                if (label == null)
-                    return;
-
-                label.Text =
-                    text;
-                label.Time =
-                    Bars.OpenTimes[safeBar];
-                label.Y =
-                    labelPrice;
-                label.Color =
-                    labelTextColor;
-                label.FontSize =
-                    CompactPlanLabelFontSize;
-                label.FontFamily =
-                    string.IsNullOrWhiteSpace(
-                        PanelFontFamily)
-                        ? "Arial"
-                        : PanelFontFamily;
-                label.IsBold =
-                    true;
-                label.HorizontalAlignment =
-                    HorizontalAlignment.Left;
-                label.VerticalAlignment =
-                    VerticalAlignment.Center;
-                label.IsInteractive =
-                    false;
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP plan label failed: {0}",
-                    ex.Message);
-            }
+            UpsertPlanLabel(
+                name,
+                text,
+                safeBar,
+                price,
+                color);
         }
 
         private void RenderCompactPlanLabel(
@@ -130,6 +74,33 @@ namespace cAlgo
             Color semanticColor,
             int labelBar)
         {
+            if (!IsFinitePositive(price) ||
+                Bars == null ||
+                Bars.Count < 2)
+                return;
+
+            int safeLabelBar =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        labelBar));
+
+            UpsertPlanLabel(
+                name,
+                text,
+                safeLabelBar,
+                price,
+                semanticColor);
+        }
+
+        private void UpsertPlanLabel(
+            string name,
+            string text,
+            int labelBar,
+            double price,
+            Color semanticColor)
+        {
             try
             {
                 if (Bars == null ||
@@ -137,25 +108,15 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                int safeLabelBar =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            labelBar));
-
-                // The label is horizontally separated from the line,
-                // not vertically displaced from it. This keeps the price
-                // annotation visually attached to its exact level.
                 double labelPrice =
                     NormalizePrice(price);
 
-                // Level text is deliberately background-free and follows the current
-                // canonical white-text contract.
+                if (!IsFinitePositive(labelPrice))
+                    return;
+
                 Color labelTextColor =
                     GetReadableLabelTextColor(
                         semanticColor);
-
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -173,7 +134,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            Bars.OpenTimes[safeLabelBar],
+                            Bars.OpenTimes[labelBar],
                             labelPrice,
                             labelTextColor);
                 }
@@ -184,7 +145,7 @@ namespace cAlgo
                 label.Text =
                     text;
                 label.Time =
-                    Bars.OpenTimes[safeLabelBar];
+                    Bars.OpenTimes[labelBar];
                 label.Y =
                     labelPrice;
                 label.Color =
@@ -198,8 +159,14 @@ namespace cAlgo
                         : PanelFontFamily;
                 label.IsBold =
                     true;
+
+                // cTrader ChartText alignment is relative to the object's
+                // anchor point. The anchor is deliberately placed before the
+                // 40-bar line start; Right alignment makes the visible text
+                // extend further left, guaranteeing the annotation stays on
+                // the left side rather than growing back toward the line.
                 label.HorizontalAlignment =
-                    HorizontalAlignment.Left;
+                    HorizontalAlignment.Right;
                 label.VerticalAlignment =
                     VerticalAlignment.Center;
                 label.IsInteractive =
@@ -208,7 +175,7 @@ namespace cAlgo
             catch (Exception ex)
             {
                 Print(
-                    "CFIP compact plan label failed: {0}",
+                    "CFIP plan label failed: {0}",
                     ex.Message);
             }
         }
