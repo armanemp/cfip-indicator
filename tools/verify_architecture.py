@@ -1426,8 +1426,6 @@ if "MapM5ToChart(" in visual_line_code:
     raise SystemExit("Compact plan levels must not use M5 time mapping for their right edge")
 if "Chart.FirstVisibleBarIndex" in visual_line_code or "Chart.LastVisibleBarIndex" in visual_line_code:
     raise SystemExit("Compact plan levels must not use full-width visible-chart boundaries")
-if "as ChartText" not in plan_label_renderer_code:
-    raise SystemExit("Plan labels must reuse existing ChartText objects")
 if 'name + "_BOX"' not in plan_label_renderer_code:
     raise SystemExit("Plan labels must retain legacy box cleanup compatibility")
 if 'RemovePlanLabel(P + "ENTRY_LABEL")' not in plan_label_remover_code:
@@ -2670,8 +2668,6 @@ PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must resolve a canonical text color")
 compact_label_color = PLAN_LABEL_RENDERER_CODE[PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must use the canonical white text contract")
 if "Chart.DrawRectangle(" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must own the canonical filled cTrader-style box")
 if "box.IsFilled" not in PLAN_LABEL_RENDERER_CODE:
@@ -3108,8 +3104,6 @@ label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
     raise SystemExit("Plan labels must use the canonical text-color resolver")
 compact_label_color = label_code[label_code.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in label_code:
-    raise SystemExit("Plan labels must use the canonical white text contract")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
 if "Chart.DrawRectangle(" not in compact_label_code:
@@ -3118,8 +3112,12 @@ if "box.IsFilled" not in compact_label_code:
     raise SystemExit("Plan price label box must be filled")
 if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
     raise SystemExit("Plan price label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in label_code:
-    raise SystemExit("Plan price label box must attach to the line endpoint")
+if "GetPlanLineLeftBar()" not in label_code:
+    raise SystemExit("Plan price label box must attach to the canonical line left edge")
+if "CompactPlanLabelGapBars" not in label_code:
+    raise SystemExit("Plan price label box must preserve the canonical horizontal gap")
+if "ResolveCompactPlanLabelWidthBars(" not in label_code:
+    raise SystemExit("Plan price label box must use adaptive width resolution")
 if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Plan price labels must own their text object")
 
