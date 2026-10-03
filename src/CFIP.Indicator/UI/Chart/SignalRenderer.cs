@@ -47,7 +47,7 @@ namespace cAlgo
 
             if (!signalPresentationAllowed)
             {
-                RemoveStackedSignalArrows();
+                RemoveMtfTrendStrengthArrowStack();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -63,7 +63,7 @@ namespace cAlgo
 
             if (visualDirection == 0)
             {
-                RemoveStackedSignalArrows();
+                RemoveMtfTrendStrengthArrowStack();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -91,23 +91,17 @@ namespace cAlgo
                         0.02,
                         ArrowOffsetAtr));
 
-            string arrowState =
-                ResolveSignalArrowState(
-                    snapshot,
-                    visualDirection);
-
             if (ShowSignalArrow)
             {
-                RenderStackedSignalArrows(
+                RenderMtfTrendStrengthArrowStack(
                     snapshot,
-                    visualDirection,
+                    ResolveArrowStackDirection(snapshot, visualDirection),
                     arrowBar,
-                    offset,
-                    arrowState);
+                    offset);
             }
             else
             {
-                RemoveStackedSignalArrows();
+                RemoveMtfTrendStrengthArrowStack();
             }
 
             Chart.RemoveObject(
@@ -225,32 +219,6 @@ namespace cAlgo
                                 return "STRONG";
 
                             if (score >= required)
-                                return "CONFIRMED";
-
-                            return "WATCH";
-                        }
-
-        private string ResolveSignalArrowState(
-                            SignalVisualSnapshot snapshot,
-                            int direction)
-                        {
-                            if (snapshot == null ||
-                                direction == 0)
-                                return "WATCH";
-
-                            if (snapshot.LivePosition ||
-                                snapshot.ActionableNow)
-                            {
-                                return
-                                    snapshot.SmartQuality >=
-                                    SmartStrongSetupQuality ||
-                                    snapshot.Confidence >=
-                                    HighConfidenceThreshold
-                                        ? "STRONG"
-                                        : "CONFIRMED";
-                            }
-
-                            if (snapshot.DecisionEntryAllowed)
                                 return "CONFIRMED";
 
                             return "WATCH";
@@ -391,7 +359,7 @@ namespace cAlgo
         
         private void ClearWatchObjects()
                         {
-                            RemoveStackedSignalArrows();
+                            RemoveMtfTrendStrengthArrowStack();
                 
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");
