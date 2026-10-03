@@ -2668,8 +2668,12 @@ if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
 compact_label_color = PLAN_LABEL_RENDERER_CODE[PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel("):]
 if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical white text contract")
-if "Chart.DrawRectangle(" in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must remain background-free")
+if "Chart.DrawRectangle(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must own the canonical filled cTrader-style box")
+if "box.IsFilled" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan label box must be filled")
+if "PlanLinePresentationRule.ResolveColor(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan label box must reuse canonical line color")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
@@ -3104,8 +3108,14 @@ if "return Color.White;" not in label_code:
     raise SystemExit("Plan labels must use the canonical white text contract")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
-if "Chart.DrawRectangle(" in compact_label_code:
-    raise SystemExit("Plan price labels must remain background-free")
+if "Chart.DrawRectangle(" not in compact_label_code:
+    raise SystemExit("Plan price labels must own the canonical filled cTrader-style box")
+if "box.IsFilled" not in compact_label_code:
+    raise SystemExit("Plan price label box must be filled")
+if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
+    raise SystemExit("Plan price label box must reuse canonical line color")
+if "GetPlanLineRightBar()" not in label_code:
+    raise SystemExit("Plan price label box must attach to the line endpoint")
 if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Plan price labels must own their text object")
 
