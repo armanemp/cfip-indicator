@@ -13,55 +13,9 @@ namespace cAlgo
             Chart.RemoveObject(
                 P + "REACTION_ARROW");
 
-            bool showConfirmedSignal =
-                ShowSignalArrow &&
-                snapshot.DecisionEntryAllowed &&
-                snapshot.DecisionDirection != 0;
-
-            bool showDirectionalWatch =
-                ShowEarlyArrow &&
-                ShowEarlyWatch &&
-                !snapshot.PendingOrder &&
-                !snapshot.LivePosition &&
-                visualDirection != 0 &&
-                snapshot.Confidence >=
-                    Math.Max(
-                        40,
-                        MinimumEarlyConfidence);
-
-            if ((showConfirmedSignal || showDirectionalWatch) &&
-                visualDirection != 0)
-            {
-                double watchAtr =
-                    Atr(
-                        Bars,
-                        Math.Max(
-                            1,
-                            Math.Min(
-                                Bars.Count - 1,
-                                hostBar)));
-
-                double watchOffset =
-                    Math.Max(
-                        Symbol.PipSize *
-                        Math.Max(
-                            0.5,
-                            MinimumArrowOffsetPips),
-                        watchAtr *
-                        Math.Max(
-                            0.02,
-                            ArrowOffsetAtr));
-
-                RenderStackedSignalArrows(
-                    snapshot,
-                    visualDirection,
-                    hostBar,
-                    watchOffset);
-            }
-            else
-            {
-                RemoveStackedSignalArrows();
-            }
+            // Canonical MTF trend arrows are independent of decision
+            // actionability. The calculation lifecycle owns their rendering.
+            RemoveStackedSignalArrows();
         }
 
         private bool IsStrongWatchSnapshot(
