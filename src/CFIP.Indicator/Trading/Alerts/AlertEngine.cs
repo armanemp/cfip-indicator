@@ -32,10 +32,12 @@ namespace cAlgo
             ContractIdentity identity =
                 envelope.Identity;
 
+            // SignalId/plan revisions are producer metadata and may change
+            // during a plan rebuild. Alert event identity must remain anchored to
+            // the semantic scenario + closed M5 + direction, otherwise the same
+            // event can be delivered again after recalculation.
             return
                 (identity.Symbol ?? string.Empty) +
-                "|" +
-                (identity.SignalId ?? string.Empty) +
                 "|" +
                 (identity.ScenarioId ?? string.Empty) +
                 "|" +
