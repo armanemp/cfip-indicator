@@ -8,7 +8,9 @@ Closed a multi-scenario execution bottleneck in ShadowHostCoordinator:
 
 - independent scenarios may share the same provider revision;
 
-- same-scenario duplicate/revision-conflict behavior remains strict.
+- same-scenario duplicate/revision-conflict behavior remains strict;
+- cached result/recheck timing is isolated per ScenarioId;
+- ScenarioBatch materialization rejects stale candidates by requiring the current closed M5.
 
 No execution/risk/quality threshold was lowered.
 
