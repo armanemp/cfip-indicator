@@ -21,14 +21,22 @@ namespace cAlgo
             {
                 processed++;
 
-                // One canonical alert event feeds both presentation channels:
-                // the bounded panel alert rail first, then the optional sound cue.
-                RecordPanelAlertDelivery(next);
+                // Sound delivery is intentionally independent from panel presentation.
+                // A panel rendering problem must never suppress a realtime audio cue.
+                if (next.PlaySound)
+                    DeliverAlertSound(next);
 
-                if (!next.PlaySound)
-                    continue;
-
-                DeliverAlertSound(next);
+                try
+                {
+                    RecordPanelAlertDelivery(next);
+                }
+                catch (Exception ex)
+                {
+                    Print(
+                        "CFIP alert panel delivery failed [{0}]: {1}",
+                        next.Key,
+                        ex.Message);
+                }
             }
         }
 
