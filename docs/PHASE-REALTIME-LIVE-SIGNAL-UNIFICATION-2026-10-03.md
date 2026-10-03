@@ -1,6 +1,6 @@
 # CFIP — Realtime / Live Execution / Signal Truth Unification — 2026-10-03
 
-Status: IMPLEMENTATION COMPLETE — automated verification pending; target-terminal acceptance still required.
+Status: IMPLEMENTATION COMPLETE — PR #240 open; automated verification pending; target-terminal acceptance still required.
 
 ## Objective
 
