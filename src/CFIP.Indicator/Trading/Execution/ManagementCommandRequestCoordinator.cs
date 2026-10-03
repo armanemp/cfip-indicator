@@ -71,7 +71,7 @@ namespace cAlgo
         private ManagementCommandRequestStatus TryModifyTakeProfit(Position position, double price, string context)
         {
             if (position == null || !IsFinitePositive(price))
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             return RequestManagementCommand(
                 ManagementCommandType.ModifyProtection,
@@ -140,7 +140,7 @@ namespace cAlgo
 
             string executionLabel = ManagedExecutionLabel();
             if (string.IsNullOrWhiteSpace(executionLabel))
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             long? positionId = position == null ? (long?)null : position.Id;
             long? pendingId = pendingOrder == null ? (long?)null : pendingOrder.Id;
