@@ -64,30 +64,43 @@ namespace cAlgo
             double volume;
             ExecutionIntent intent;
 
-            bool prepared =
-                mode == ExecutionMode.ContinuationStop
-                    ? TryPrepareContinuationStop(
-                        closedM5,
-                        out direction,
-                        out atr,
-                        out entry,
-                        out stop,
-                        out target,
-                        out stopPips,
-                        out targetPips,
-                        out volume,
-                        out intent)
-                    : TryPrepareReversalLimit(
-                        closedM5,
-                        out direction,
-                        out atr,
-                        out entry,
-                        out stop,
-                        out target,
-                        out stopPips,
-                        out targetPips,
-                        out volume,
-                        out intent);
+            bool prepared;
+
+            // Future-order discovery reuses the exact analytical preparation
+            // geometry, but it must not replace the canonical live provider
+            // intent that represents the current market-entry path.
+            _suppressProviderIntentCapture = true;
+            try
+            {
+                prepared =
+                    mode == ExecutionMode.ContinuationStop
+                        ? TryPrepareContinuationStop(
+                            closedM5,
+                            out direction,
+                            out atr,
+                            out entry,
+                            out stop,
+                            out target,
+                            out stopPips,
+                            out targetPips,
+                            out volume,
+                            out intent)
+                        : TryPrepareReversalLimit(
+                            closedM5,
+                            out direction,
+                            out atr,
+                            out entry,
+                            out stop,
+                            out target,
+                            out stopPips,
+                            out targetPips,
+                            out volume,
+                            out intent);
+            }
+            finally
+            {
+                _suppressProviderIntentCapture = false;
+            }
 
             if (!prepared ||
                 intent == null ||
