@@ -2392,3 +2392,15 @@ Verification:
 - Target-terminal validation remains mandatory for live arm, exact attachment display, same-tick placement, simultaneous scenarios, pending-order invalidation, audio playback and restart/reconnect.
 
 Operator action after verified merge: git pull --ff-only.
+
+
+## CBOT Live / Realtime Completion — 2026-10-03
+
+Implemented on `phase/cbot-live-realtime-completion-2026-10-03`:
+- immediate publication of the exact bound Indicator InstanceId after successful chart binding;
+- explicit unattached presence on binding loss;
+- realtime sound queue servicing from Calculate finally while IsLastBar remains enforced by the single audio delivery owner;
+- all existing live-arm, present/future, multi-scenario, reward-floor and history/forecast contracts preserved.
+
+Verification pending: Source/Architecture, Runtime Acceptance, cTrader Compile/Build and target-terminal attachment/audio/execution/reconnect acceptance.
+Operator action after merge: `git pull --ff-only` on local `main`.
