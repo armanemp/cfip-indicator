@@ -3194,7 +3194,8 @@ for token in ("Dictionary<string, TradeOpportunityCandidate>", "Upsert(", "Snaps
         raise SystemExit(f"Multi-plan registry contract missing: {token}")
 if (
     "_tradePlanRegistry.Upsert(" not in parallel_code and
-    "_tradePlanRegistry.UpsertScenario(" not in parallel_code
+    "_tradePlanRegistry.UpsertScenario(" not in parallel_code and
+    "_tradePlanRegistry.UpsertScenario(" not in parallel_candidate_builder_code
 ):
     raise SystemExit(
         "Parallel opportunity builder must register every materialized candidate"
