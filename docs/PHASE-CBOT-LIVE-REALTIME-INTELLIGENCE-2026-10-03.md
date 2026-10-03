@@ -72,3 +72,29 @@ Run:
     git pull --ff-only
 
 For live, enable **Enable Live Execution** explicitly only after the target terminal has passed the live-arm acceptance checklist.
+
+## Realtime intelligence / audio / attachment follow-up — 2026-10-03
+
+### Additional implementation
+- Alert presentation and alert sound are now separated. The timer updates the panel rail; sound-bearing events are retained in a dedicated queue and played from the Indicator realtime `Calculate() + IsLastBar` path.
+- Current/future scenario candidates now carry forecast alignment and contextual empirical calibration evidence into a bounded execution-priority score. This score is used only to order eligible scenarios; it cannot authorize a blocked candidate or replace the canonical decision.
+- Future pending candidates receive the same history/forecast ranking treatment as current candidates.
+- RANGE minimum executable reward excursion is now 1.00 ATR and COMPRESSION is 1.20 ATR; TRANSITION remains 0.85 ATR. The existing RR, stop, quality and broker safety gates remain in force.
+- Chart attachment name matching now tolerates cTrader instance-name suffixes while retaining exact stable type/InstanceId matching.
+
+### Runtime contract
+The execution chain remains:
+history/outcomes → pre-analysis → M15 decision → M5 trigger/tuning → optional M1 → live quote actionability → current Market/Aggressive OR future Stop/Limit → cBot preflight → broker execution/placement → broker confirmation → protection → outcome/history.
+
+No look-ahead candle data is introduced. Forecast/history are evidence layers, not an independent execution engine.
+
+### Verification
+Repository source/architecture verification must cover:
+- audio owner is realtime Indicator Calculate/IsLastBar, not timer playback;
+- history + forecast fields and execution-priority ordering are present;
+- strengthened stagnant-regime reward floors are enforced at candidate/policy boundaries;
+- Indicator/cBot attachment diagnostics remain stable-instance based.
+
+Target terminal remains required for actual cTrader sound playback, chart binding, live execution, same-tick latency, simultaneous scenarios and restart/reconnect behavior.
+
+Operator action after verified merge: `git pull --ff-only`.
