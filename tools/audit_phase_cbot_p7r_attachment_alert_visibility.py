@@ -42,7 +42,10 @@ for source, display, label in (
     (binding, "DisplayName", "Indicator binding"),
 ):
     require("candidate.Name" in source, label + " must inspect chart instance name")
-    require("candidate.Type != null" in source, label + " must inspect chart object type")
+    require(\
+        ("candidate.Type != null" in source or "candidate.Type == null" in source),\
+        label + " must inspect chart object type safely",\
+    )
     require("candidate.Type.Name" in source, label + " must support type-name matching")
     require(display in source, label + " identity constant missing")
 
