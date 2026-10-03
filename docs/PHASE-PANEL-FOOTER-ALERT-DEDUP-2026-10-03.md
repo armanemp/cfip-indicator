@@ -33,3 +33,24 @@ Static/source audits and Runtime Acceptance Contracts are automated. Actual cTra
 ## Follow-up — compiler warning cleanup
 
 The Release build exposed CS0649 on `TradeOpportunityCandidate.RewardDistanceAtr` and `MinimumRequiredRewardDistanceAtr`. The canonical parallel-candidate builder now assigns both from the existing ATR/reward geometry and the existing `RegimeAdaptiveRewardFloorRule`; no new public threshold or behavior gate was introduced.
+
+
+## Second-pass correction — 2026-10-03
+
+The footer now has a shared minimum-height owner of 132px and the full footer reserve is applied before
+ScrollViewer sizing. The maximum-height resolver also protects a minimum renderable viewport so the footer
+cannot be clipped merely because PanelMaxHeight is configured low.
+
+The M1/M5/M15/M30/H1/H4/D1/W1 rail now uses the exact real content width divided into eight equal cells.
+Lamp-to-label spacing is tighter, lamp strength tiers are 18/17/16px, and the header heartbeat lamp uses
+the same 18px font and 28px geometry.
+
+The deep alert review found that the canonical primary ScenarioId could be announced twice: once by the
+parallel scenario alert owner and again by the generic canonical ACTION/WATCH owner. The primary canonical
+ScenarioId is now excluded from the parallel user-facing alert loop; independent simultaneous scenarios
+remain eligible.
+
+The AlertEngine acknowledgement boundary was also corrected. Cooldown and last-alert state now commit only
+after AlertDeliveryQueue accepts the event, SendUnifiedAlert returns that acceptance, and canonical local
+WATCH/REACTION/ACTION/RESTRICTION guards advance only after successful enqueue. Queue rejection is therefore
+retryable instead of being incorrectly remembered as a delivered event.

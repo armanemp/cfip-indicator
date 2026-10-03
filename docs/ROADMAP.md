@@ -1,3 +1,26 @@
+## 2026-10-03 — Panel Footer/Lamp Geometry + Deep Alert Coherence Hardening
+
+Status: IMPLEMENTED ON MAIN — pending Source/Runtime/Build verification and manual cTrader visual acceptance.
+
+Completed:
+- Footer uses one shared 132px minimum content height and is fully reserved before ScrollViewer budgeting.
+- Minimum fixed geometry is enforced so constrained PanelMaxHeight values cannot clip the footer.
+- Eight timeframe lamps divide the real panel content width into equal cells with no narrow-panel overflow.
+- Lamp/label spacing is tightened; lamp strength tiers are 18/17/16px.
+- Header heartbeat lamp uses the same 18px font and 28px geometry.
+- Canonical primary ScenarioId is suppressed from the parallel user-facing alert loop, preventing canonical ACTION/WATCH duplication while preserving independent simultaneous scenarios.
+- SendUnifiedAlert now acknowledges delivery only after successful queue acceptance; cooldown and alert-state commits, plus local WATCH/REACTION/ACTION/RESTRICTION retry guards, follow that acknowledgement.
+- Existing blocked-alert silence, bounded queue and single production sound owner remain intact.
+- The existing panel/footer audit now includes the second-pass geometry and alert-coherence checks.
+
+Manual acceptance must confirm: taller footer with every bottom item visible; equal left/right MTF spacing; compact lamp-to-label spacing; enlarged header lamp; one canonical primary alert; visible independent scenario alerts; blocked-alert silence; and audible delivery.
+
+Operator action:
+git pull --ff-only
+then run the Release build locally.
+
+---
+
 ## 2026-10-03 — Compiler Warning Cleanup / Candidate Reward-Distance Integrity
 
 Status: IMPLEMENTED ON MAIN — commit `18c793ef320cbb2d087d17190b6c427197c5ec9d`.

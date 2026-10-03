@@ -82,4 +82,56 @@ check(
     "new footer/alert dedup audit must run in Source/Architecture CI",
 )
 
+# Second-pass footer/alert coherence checks.
+layout = read("UI/Panel/PanelLayoutManager.cs")
+visual = read("UI/Panel/Theme/PanelVisualSettings.cs")
+heartbeat = read("UI/Panel/ProcessingHeartbeatLamp.cs")
+decision_alerts = read("Runtime/Calculation/CalculationDecisionAlerts.cs")
+context_alerts = read("Trading/Alerts/ContextAlertEmitter.cs")
+constants = read("UI/Panel/PanelConstants.cs")
+
+check(
+    "PanelFooterMinHeight = 132" in constants and
+    "ResolvePanelFooterAreaHeight(" in layout and
+    "ResolvePanelFooterAreaHeight(" in panel and
+    "ResolvePanelFooterAreaHeight(" in visual and
+    "minimumRenderableHeight" in layout,
+    "footer height must have one shared minimum and constrained-height safety",
+)
+
+check(
+    "Math.Max(1, _panelTrendTimeframeLampRow.Width)" in lamp and
+    "rowWidth / cellCount" in lamp and
+    "Math.Max(224" not in lamp and
+    "Math.Max(28" not in lamp,
+    "MTF lamp cells must divide the real panel width without narrow-panel overflow",
+)
+
+check(
+    "PanelStatusLampFontSize = 18" in constants and
+    "PanelStatusLampFontSize" in lamp and
+    "PanelStatusLampFontSize" in heartbeat,
+    "header and MTF lamps must share the enlarged status-lamp geometry",
+)
+
+check(
+    "string canonicalScenarioId = string.Empty;" in decision_alerts and
+    "candidateScenarioId" in decision_alerts and
+    "ResolveProviderScenarioId(" in decision_alerts,
+    "the primary canonical scenario must not be emitted by both alert owners",
+)
+
+check(
+    "private bool SendUnifiedAlert(" in alerts and
+    "return delivered;" in alerts and
+    "retryable=true" in alerts and
+    "Notifications.PlaySound(" not in alerts,
+    "alert acknowledgement must occur at queue acceptance and playback must stay centralized",
+)
+
+check(
+    "StructuralEvidenceRule.HasCanonicalStructuralEvent(" in context_alerts,
+    "structural alerts must retain one canonical structural event owner",
+)
+
 print("Panel footer / MTF lamp / alert dedup audit PASS")
