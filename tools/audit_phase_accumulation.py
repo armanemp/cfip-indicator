@@ -176,8 +176,14 @@ if "RecordPanelAlertDelivery(" not in read("UI/Panel/AlertDeliveryProcessor.cs")
     raise SystemExit("panel alert delivery handoff is missing")
 if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRenderer.cs"):
     raise SystemExit("panel alert semantic color owner is missing")
-if "Chart.DrawRectangle(" in labels:
-    raise SystemExit("level label renderer must not create backgrounds")
+if "Chart.DrawRectangle(" not in labels:
+    raise SystemExit("level label renderer must own the canonical filled cTrader-style box")
+if "box.IsFilled" not in labels:
+    raise SystemExit("level label box must be filled")
+if "PlanLinePresentationRule.ResolveColor(" not in labels:
+    raise SystemExit("level label box must reuse canonical line color")
+if "GetPlanLineRightBar()" not in labels:
+    raise SystemExit("level label box must attach to the line endpoint")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
 g4_overview_rows = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
@@ -203,6 +209,6 @@ print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("Plan Level Line Thickness: canonical 1px mapping for all configured values")
-print("All compact level label text: white / background-free")
+print("All compact level labels: white text inside canonical line-colored filled boxes")
 print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")
