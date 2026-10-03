@@ -321,7 +321,7 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp1MinimumRR,
+                                            adaptiveRR[0],
                                             lane);
                         
                                     p.Target2 =
@@ -331,7 +331,7 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp2MinimumRR,
+                                            adaptiveRR[1],
                                             lane);
                         
                                     p.Target3 =
@@ -341,7 +341,7 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp3MinimumRR,
+                                            adaptiveRR[2],
                                             lane);
                         
                                     p.Target4 =
@@ -351,7 +351,7 @@ namespace cAlgo
                                             p.Entry,
                                             risk,
                                             p.Direction,
-                                            Tp4MinimumRR,
+                                            adaptiveRR[3],
                                             lane);
                         
                                     p.Target =
