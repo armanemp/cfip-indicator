@@ -12,7 +12,7 @@ Pre-analysis/history -> M15 decision -> M5 trigger/tuning -> M1 optional confirm
 ## Implemented
 
 - Structural parallel opportunity geometry remains cached to the current closed M5 instead of being rebuilt on every tick.
-- A separate live opportunity-state refresh runs intrabar on a bounded 200 ms cadence, or immediately when the M5 changes.
+- A separate live opportunity-state refresh runs intrabar on a bounded 100 ms cadence, or immediately when the M5 changes.
 - Live market candidates re-evaluate actionability from the current quote without rebuilding their structural Entry/SL/TP geometry.
 - Future Continuation Stop and Reversal Limit candidates can be armed before the current trigger/entry is reached.
 - Future pending discovery reuses the existing analytical pending preparation, structural SL/TP and RR validation rather than introducing a second geometry owner.
