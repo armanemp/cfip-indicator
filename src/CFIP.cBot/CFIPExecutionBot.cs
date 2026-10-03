@@ -18,7 +18,7 @@ namespace CFIP.cBot
     public sealed class CFIPExecutionBot : Robot
     {
 #pragma warning restore CS0612
-        private const string StartupState = "DEMO";
+        private const string StartupState = "READY";
 
         [Parameter(
             "Enable Demo Market Execution",
@@ -51,12 +51,50 @@ namespace CFIP.cBot
         public bool EnableDemoManagementExecution { get; set; }
 
         [Parameter(
+            "Enable Live Market Execution",
+            Group = "Live Execution",
+            DefaultValue = false)]
+        public bool EnableLiveMarketExecution { get; set; }
+
+        [Parameter(
+            "Enable Live Pending Stop Execution",
+            Group = "Live Execution",
+            DefaultValue = false)]
+        public bool EnableLivePendingStopExecution { get; set; }
+
+        [Parameter(
+            "Enable Live Pending Limit Execution",
+            Group = "Live Execution",
+            DefaultValue = false)]
+        public bool EnableLivePendingLimitExecution { get; set; }
+
+        [Parameter(
+            "Enable Live Aggressive Execution",
+            Group = "Live Execution",
+            DefaultValue = false)]
+        public bool EnableLiveAggressiveExecution { get; set; }
+
+        [Parameter(
+            "Enable Live Management Execution",
+            Group = "Live Execution",
+            DefaultValue = false)]
+        public bool EnableLiveManagementExecution { get; set; }
+
+        [Parameter(
             "Max Demo Executions Per Session",
             Group = "Safety",
             DefaultValue = 3,
             MinValue = 1,
             MaxValue = 20)]
         public int MaxDemoExecutionsPerSession { get; set; }
+
+        [Parameter(
+            "Max Live Executions Per Session",
+            Group = "Safety",
+            DefaultValue = 3,
+            MinValue = 1,
+            MaxValue = 20)]
+        public int MaxLiveExecutionsPerSession { get; set; }
 
         [Parameter(
             "Max Concurrent Scenarios",
@@ -150,6 +188,50 @@ namespace CFIP.cBot
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
 
+        private bool EffectiveMarketExecutionEnabled =>
+            Account.IsLive
+                ? EnableLiveMarketExecution
+                : EffectiveMarketExecutionEnabled;
+
+        private bool EffectivePendingStopExecutionEnabled =>
+            Account.IsLive
+                ? EnableLivePendingStopExecution
+                : EffectivePendingStopExecutionEnabled;
+
+        private bool EffectivePendingLimitExecutionEnabled =>
+            Account.IsLive
+                ? EnableLivePendingLimitExecution
+                : EffectivePendingLimitExecutionEnabled;
+
+        private bool EffectiveAggressiveExecutionEnabled =>
+            Account.IsLive
+                ? EnableLiveAggressiveExecution
+                : EffectiveAggressiveExecutionEnabled;
+
+        private bool EffectiveManagementExecutionEnabled =>
+            Account.IsLive
+                ? EnableLiveManagementExecution
+                : EffectiveManagementExecutionEnabled;
+
+        private int EffectiveSessionExecutionCap =>
+            Math.Max(
+                1,
+                Account.IsLive
+                    ? MaxLiveExecutionsPerSession
+                    : MaxDemoExecutionsPerSession);
+
+        private int EffectiveConcurrentScenarioLimit =>
+            Math.Max(
+                1,
+                Math.Min(
+                    Math.Max(1, MaxConcurrentScenarios),
+                    _executionSettings == null
+                        ? 1
+                        : Math.Max(1, _executionSettings.MaximumOpenPositions)));
+
+        private string EffectiveAccountMode =>
+            Account.IsLive ? "LIVE" : "DEMO";
+
         protected override void OnStart()
         {
             _startedUtc = Server.TimeInUtc;
@@ -157,30 +239,22 @@ namespace CFIP.cBot
             _tickCount = 0;
             _sessionExecutions = 0;
 
-            if (Account.IsLive)
-            {
-                Print(
-                    "CFIP DEMO cBot BLOCKED | live account detected | " +
-                    "this build is demo-only");
-                Stop();
-                return;
-            }
-
             // Chart timeframe is host-only. CFIP execution is driven by the
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
             Print(
-                "CFIP cBot START | hostTimeframe={0} | execTimeframe=M15 | state={1} | " +
-                "marketExecution={2} | pendingStopExecution={3} | pendingLimitExecution={4} | aggressiveExecution={5} | managementExecution={6} | " +
-                "maxSessionExecutions={7} | maxConcurrentScenarios={8} | staleAfter={9}s | managementMaxAge={10}s | contractVersion={11}",
+                "CFIP cBot START | account={0} | hostTimeframe={1} | execTimeframe=M15 | state={2} | " +
+                "marketExecution={3} | pendingStopExecution={4} | pendingLimitExecution={5} | aggressiveExecution={6} | managementExecution={7} | " +
+                "maxSessionExecutions={8} | maxConcurrentScenarios={9} | staleAfter={10}s | managementMaxAge={11}s | contractVersion={12}",
+                EffectiveAccountMode,
                 Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 StartupState,
-                EnableDemoMarketExecution ? "ARMED" : "DISARMED",
-                EnableDemoPendingStopExecution ? "ARMED" : "DISARMED",
-                EnableDemoPendingLimitExecution ? "ARMED" : "DISARMED",
-                EnableDemoAggressiveExecution ? "ARMED" : "DISARMED",
-                EnableDemoManagementExecution ? "ARMED" : "DISARMED",
-                MaxDemoExecutionsPerSession,
-                MaxConcurrentScenarios,
+                EffectiveMarketExecutionEnabled ? "ARMED" : "DISARMED",
+                EffectivePendingStopExecutionEnabled ? "ARMED" : "DISARMED",
+                EffectivePendingLimitExecutionEnabled ? "ARMED" : "DISARMED",
+                EffectiveAggressiveExecutionEnabled ? "ARMED" : "DISARMED",
+                EffectiveManagementExecutionEnabled ? "ARMED" : "DISARMED",
+                EffectiveSessionExecutionCap,
+                EffectiveConcurrentScenarioLimit,
                 ProviderStaleAfterSeconds,
                 ManagementCommandMaxAgeSeconds,
                 ContractVersion.Current);
@@ -216,7 +290,7 @@ namespace CFIP.cBot
             ReconcileBrokerState(false);
             PublishExecutionState("HEARTBEAT", false);
 
-            if (EnableDemoManagementExecution &&
+            if (EffectiveManagementExecutionEnabled &&
                 !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
             {
                 _management.Process(
@@ -360,7 +434,7 @@ namespace CFIP.cBot
             if (_reconciliation != null &&
                 _reconciliation.RecoveryRequired)
             {
-                if (EnableDemoManagementExecution &&
+                if (EffectiveManagementExecutionEnabled &&
                     TryRecoverProtection(
                         envelope,
                         nowUtc))
@@ -385,10 +459,10 @@ namespace CFIP.cBot
             }
 
             bool executionEnabled =
-                EnableDemoMarketExecution ||
-                EnableDemoPendingStopExecution ||
-                EnableDemoPendingLimitExecution ||
-                EnableDemoAggressiveExecution;
+                EffectiveMarketExecutionEnabled ||
+                EffectivePendingStopExecutionEnabled ||
+                EffectivePendingLimitExecutionEnabled ||
+                EffectiveAggressiveExecutionEnabled;
 
             bool pendingAction =
                 envelope.Intent != null &&
@@ -422,13 +496,13 @@ namespace CFIP.cBot
             bool actionEnabled =
                 envelope.Intent != null &&
                 (envelope.Intent.Action == ExecutionAction.Aggressive
-                    ? EnableDemoAggressiveExecution
+                    ? EffectiveAggressiveExecutionEnabled
                     : envelope.Intent.Action == ExecutionAction.PendingStop
-                        ? EnableDemoPendingStopExecution
+                        ? EffectivePendingStopExecutionEnabled
                         : envelope.Intent.Action == ExecutionAction.PendingLimit
-                            ? EnableDemoPendingLimitExecution
+                            ? EffectivePendingLimitExecutionEnabled
                             : envelope.Intent.Action == ExecutionAction.Market &&
-                          EnableDemoMarketExecution);
+                          EffectiveMarketExecutionEnabled);
 
             if (!executionEnabled ||
                 !actionEnabled ||
@@ -437,9 +511,9 @@ namespace CFIP.cBot
                 return;
 
             if (_sessionExecutions >=
-                Math.Max(1, MaxDemoExecutionsPerSession))
+                EffectiveSessionExecutionCap)
             {
-                LogBlockedState("DEMO SESSION EXECUTION CAP REACHED");
+                LogBlockedState("SESSION EXECUTION CAP REACHED");
                 return;
             }
 
@@ -449,10 +523,11 @@ namespace CFIP.cBot
                 if (_pending.TryExecute(
                         this,
                         envelope,
+                        Account.IsLive,
                         nowUtc,
                         MaxExecutionMarginUsagePercent,
                         ExecutionMarginBufferPercent,
-                        MaxConcurrentScenarios,
+                        EffectiveConcurrentScenarioLimit,
                         _idempotencyStore,
                         out BrokerExecutionReport pendingReport,
                         out string pendingReason))
@@ -463,8 +538,9 @@ namespace CFIP.cBot
                 if (pendingReport != null)
                 {
                     Print(
-                        "CFIP DEMO PENDING | status={0} | action={1} | " +
+                        "CFIP {0} PENDING | status={1} | action={2} | " +
                         "revision={2} | pending={3} | reason={4}",
+                        EffectiveAccountMode,
                         pendingReport.Status,
                         pendingReport.Action,
                         pendingReport.AttemptRevision,
@@ -490,6 +566,7 @@ namespace CFIP.cBot
             if (_market.TryExecute(
                     this,
                     envelope,
+                    Account.IsLive,
                     nowUtc,
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
@@ -504,9 +581,10 @@ namespace CFIP.cBot
             if (report != null)
             {
                 Print(
-                    "CFIP DEMO MARKET | status={0} | action={1} | " +
+                    "CFIP {0} MARKET | status={1} | action={2} | " +
                     "revision={2} | position={3} | entry={4} | stop={5} | " +
                     "target={6} | reason={7}",
+                    EffectiveAccountMode,
                     report.Status,
                     report.Action,
                     report.AttemptRevision,
@@ -639,7 +717,7 @@ namespace CFIP.cBot
                 if (result == null ||
                     !result.RecoveryRequired ||
                     result.ManagedPositions != 1 ||
-                    !EnableDemoManagementExecution)
+                    !EffectiveManagementExecutionEnabled)
                     continue;
 
                 _activeManagedExecutionLabel =
@@ -1129,11 +1207,11 @@ namespace CFIP.cBot
             {
                 runtimeState = "ACTIVE";
             }
-            else if (EnableDemoMarketExecution ||
-                     EnableDemoPendingStopExecution ||
-                     EnableDemoPendingLimitExecution ||
-                     EnableDemoAggressiveExecution ||
-                     EnableDemoManagementExecution)
+            else if (EffectiveMarketExecutionEnabled ||
+                     EffectivePendingStopExecutionEnabled ||
+                     EffectivePendingLimitExecutionEnabled ||
+                     EffectiveAggressiveExecutionEnabled ||
+                     EffectiveManagementExecutionEnabled)
             {
                 runtimeState = "ARMED";
             }
@@ -1149,11 +1227,11 @@ namespace CFIP.cBot
                 ++_stateRevision,
                 runtimeState,
                 reason ?? string.Empty,
-                EnableDemoMarketExecution,
-                EnableDemoPendingStopExecution,
-                EnableDemoPendingLimitExecution,
-                EnableDemoAggressiveExecution,
-                EnableDemoManagementExecution,
+                EffectiveMarketExecutionEnabled,
+                EffectivePendingStopExecutionEnabled,
+                EffectivePendingLimitExecutionEnabled,
+                EffectiveAggressiveExecutionEnabled,
+                EffectiveManagementExecutionEnabled,
                 _activeManagedExecutionLabel,
                 _lastSignalEnvelope == null ||
                 _lastSignalEnvelope.Identity == null
