@@ -1256,6 +1256,7 @@ namespace CFIP.cBot
             Print(
                 "CFIP DEMO cBot STOP | state={0} | executions={1} | " +
                 "sessionMs={2}",
+                EffectiveAccountMode,
                 _state,
                 _sessionExecutions,
                 (Server.TimeInUtc - _startedUtc).TotalMilliseconds);
