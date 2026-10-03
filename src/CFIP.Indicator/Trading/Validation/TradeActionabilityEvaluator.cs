@@ -452,5 +452,6 @@ namespace cAlgo
                 trapRisk,
                 rewardRisk.RequiredRR);
 
+        }
     }
 }
