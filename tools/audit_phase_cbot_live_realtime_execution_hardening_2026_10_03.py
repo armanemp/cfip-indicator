@@ -77,6 +77,11 @@ check("CFIP binding uses custom chart indicators plus stable type/name diagnosti
 check("cBot presence publishes the actual chart-instance identity",
       "robot.InstanceId ?? string.Empty" in publisher)
 
+check("cBot republishes bound Indicator identity immediately after attachment discovery",
+      'PublishPresence("ATTACHED")' in bot and
+      'PublishPresence("INDICATOR NOT ATTACHED")' in bot)
+
+
 check("indicator can prove attachment from a fresh bound cBot presence",
       "HasFreshCbotPresenceForCurrentIndicator()" in reader and
       "CBOT CONNECTED • ATTACHED" in reader)
@@ -94,6 +99,12 @@ check("sound delivery is restricted to indicator realtime Calculate/last-bar exe
       "IsLastBar" in audio and
       "ProcessQueuedAlertSoundDelivery();" in calculation_cycle and
       "ProcessQueuedAlertPresentation();" in initialization)
+
+check("queued sound is serviced from the Calculate finally boundary even on early/exceptional cycles",
+      "finally" in calculation_cycle and
+      "ProcessQueuedAlertSoundDelivery();" in calculation_cycle and
+      "if (_initializationReady)" in calculation_cycle)
+
 
 check("critical alert queue never evicts an existing critical event",
       "Keep already-buffered critical alerts intact" in read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs"))
