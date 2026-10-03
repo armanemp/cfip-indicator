@@ -23,6 +23,7 @@ namespace cAlgo
 
                                     int[] closedIndices =
                                     {
+                                        context.M1,
                                         context.M5,
                                         context.M15,
                                         context.M30,
@@ -34,6 +35,7 @@ namespace cAlgo
                         
                                     Frame[] frames =
                                     {
+                                        _m1Frame,
                                         _m5Frame,
                                         _m15Frame,
                                         _m30Frame,
@@ -45,6 +47,7 @@ namespace cAlgo
                         
                                     Bars[] bars =
                                     {
+                                        _m1Bars,
                                         _m5Bars,
                                         _m15Bars,
                                         _m30Bars,
@@ -56,6 +59,7 @@ namespace cAlgo
                         
                                     double[] weights =
                                     {
+                                        UseM1Trigger ? Math.Max(1.0, M5Weight * 0.35) : 0,
                                         Math.Max(0, M5Weight),
                                         Math.Max(0, M15Weight),
                                         Math.Max(0, M30Weight),
@@ -67,6 +71,7 @@ namespace cAlgo
                         
                                     bool[] enabled =
                                     {
+                                        UseM1Trigger,
                                         true,
                                         true,
                                         M30Weight > 0,
