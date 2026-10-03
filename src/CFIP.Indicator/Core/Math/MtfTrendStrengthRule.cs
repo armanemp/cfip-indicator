@@ -211,6 +211,22 @@ namespace cAlgo
                 htfDirection);
         }
 
+        public static string ResolveMtfTrendStrengthState(int level)
+        {
+            int safeLevel =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        9,
+                        level));
+
+            return safeLevel <= 3
+                ? "WATCH"
+                : safeLevel <= 6
+                    ? "CONFIRMED"
+                    : "STRONG";
+        }
+
         private static int ResolveStructuralDirection(Frame frame)
         {
             if (frame.Direction == 1 ||
