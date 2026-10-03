@@ -1685,3 +1685,6 @@ Then begin at checklist item 1.1 and record every disposition in this document o
 24. Indicator initialization OnTimer() synchronously calls RenderPanel() during data-wait cycles. This can amplify startup latency and panel responsiveness problems; it must be measured and architecturally scheduled under the existing panel owner.
 25. Indicator still listens to broker lifecycle events. Their necessity must be proven handler-by-handler because cBot is now the sole broker mutation authority; unnecessary listeners are execution-boundary residue, not an invitation to create another state owner.
 26. Indicator OnDestroy() has mixed shutdown ordering: buffered persistence is flushed before timer/event teardown, while outcome/history persistence occurs later. A single explicit shutdown/quiescence contract is required to prevent late callbacks from racing with persisted terminal state.
+
+27. cBot has two realtime signal-consumption clocks: OnTick() and a 100ms OnTimer() both read signal/scenario transport and call ProcessSignalEnvelope(). This is a duplicate execution-consumption path and requires one canonical consumer/queue.
+28. cBot also repeats binding/settings/store/reconciliation work across OnTick and OnTimer. This can amplify CPU/IO and produce ordering differences; ownership and scheduling must be centralized rather than patched with more guards.
