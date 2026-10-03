@@ -227,10 +227,13 @@ namespace cAlgo
                 return false;
             }
 
-            _lastExitM5 =
-                Math.Max(
-                    _lastExitM5,
-                    closedM5);
+            if (closeStatus.IsBrokerConfirmed())
+            {
+                _lastExitM5 =
+                    Math.Max(
+                        _lastExitM5,
+                        closedM5);
+            }
 
             SetAutoTradingState(
                 "EXIT_REQUESTED",
