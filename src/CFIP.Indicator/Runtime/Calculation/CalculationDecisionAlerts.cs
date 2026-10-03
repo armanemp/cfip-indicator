@@ -250,6 +250,7 @@ namespace cAlgo
 
                 bool primaryWatch =
                     candidate.IsPrimaryTimeframeSignal &&
+                    !candidate.PresentationOnly &&
                     !actionable;
 
                 if (!actionable &&
