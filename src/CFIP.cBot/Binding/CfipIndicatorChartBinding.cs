@@ -120,10 +120,22 @@ namespace CFIP.cBot.Binding
                             : candidate.Type.ToString()));
                 }
 
+                int customCount = 0;
+                try
+                {
+                    customCount =
+                        robot.ChartIndicators.Custom == null
+                            ? 0
+                            : robot.ChartIndicators.Custom.Count;
+                }
+                catch
+                {
+                }
+
                 reason =
                     "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" +
                     " • custom=" +
-                    SafeCount(robot.ChartIndicators.Custom) +
+                    customCount +
                     " • total=" +
                     candidates.Count +
                     (diagnostics.Count == 0
@@ -149,19 +161,5 @@ namespace CFIP.cBot.Binding
             return true;
         }
 
-        private static int SafeCount(
-            IReadonlyList<ChartIndicator> indicators)
-        {
-            try
-            {
-                return indicators == null
-                    ? 0
-                    : indicators.Count;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
     }
 }
