@@ -142,7 +142,7 @@ namespace cAlgo
                                         case "SETUP WATCH":
                                             return prefix + "WATCH";
                                         case "CONFIRMED":
-                                            return prefix + "READY";
+                                            return prefix + "CONFIRMED";
                                         case "REACTION":
                                             return prefix + "REACTION";
                                         case "PREDICTION":
