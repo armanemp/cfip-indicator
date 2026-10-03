@@ -164,11 +164,12 @@ namespace cAlgo
                                     ? Bars.LowPrices[triggerBar] - offset
                                     : Bars.HighPrices[triggerBar] + offset;
 
+                            // M1 is the trigger/precision layer, not a second
+                            // directional signal arrow. Keep it as a Circle so
+                            // it cannot overlap the canonical arrow stack.
                             DrawIcon(
                                 P + "M1_TRIGGER",
-                                (snapshot.DecisionDirection == 1
-                                     ? ChartIconType.UpArrow
-                                     : ChartIconType.DownArrow),
+                                ChartIconType.Circle,
                                 triggerBar,
                                 price,
                                 SignalArrowColorFor(
