@@ -144,6 +144,29 @@ namespace cAlgo
             }
         }
 
+        private Color SignalArrowColorFor(
+                            int direction,
+                            string state)
+                        {
+                            if (state == "REACTION")
+                                return BlockedReactionArrowColor;
+                
+                            if (state == "WATCH")
+                                return direction == 1
+                                    ? CautionBuyArrowColor
+                                    : CautionSellArrowColor;
+                
+                            if (state == "CONFIRMED")
+                                return direction == 1
+                                    ? ConfirmedBuyArrowColor
+                                    : ConfirmedSellArrowColor;
+                
+                            return direction == 1
+                                ? StrongBuyArrowColor
+                                : StrongSellArrowColor;
+                        }
+        
+
         private void RemoveStackedSignalArrows()
         {
             Chart.RemoveObject(
