@@ -74,9 +74,10 @@ checks = {
         processor.index("RecordPanelAlertDelivery(next)") <
         processor.index("Notifications.PlaySound(")
     ),
-    "queue is drained at calculation/initialization boundaries": (
+    "alert presentation is drained from the timer-owned initialization boundary and sound from Calculate": (
         "ProcessQueuedAlertPresentation();" in initialization and
-        "ProcessQueuedAlertSoundDelivery();" in calculation
+        "ProcessQueuedAlertSoundDelivery();" in calculation and
+        "OnTimer()" in initialization
     ),
     "queue is cleared on destroy": (
         "_alertDeliveryQueue.ClearPendingAlerts();" in initialization
