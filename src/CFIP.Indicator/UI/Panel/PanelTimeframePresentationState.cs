@@ -10,6 +10,7 @@ namespace cAlgo
         public int Strength;
         public string DirectionLabel;
         public bool Ready;
+        public Color Color;
     }
 
     public partial class CFIPIndicator : Indicator
@@ -17,14 +18,16 @@ namespace cAlgo
         private PanelTimeframePresentationState ResolvePanelTimeframeState(
             Frame frame)
         {
-            if (frame == null)
+            if (frame == null ||
+                !frame.NativeIndicatorsReady)
             {
                 return new PanelTimeframePresentationState
                 {
                     Direction = 0,
                     Strength = 0,
                     DirectionLabel = "WAIT",
-                    Ready = false
+                    Ready = false,
+                    Color = PanelSecondaryTextColor
                 };
             }
 
@@ -36,17 +39,15 @@ namespace cAlgo
                     frame.TrendBull,
                     frame.TrendBear);
 
-            if (direction == 0 || !frame.NativeIndicatorsReady)
+            if (direction == 0)
             {
                 return new PanelTimeframePresentationState
                 {
-                    Direction = direction,
+                    Direction = 0,
                     Strength = 0,
-                    DirectionLabel =
-                        PanelFrameDirectionRule.ResolveLabel(
-                            frame.Direction,
-                            direction),
-                    Ready = frame.NativeIndicatorsReady
+                    DirectionLabel = "NEUTRAL",
+                    Ready = true,
+                    Color = PanelSecondaryTextColor
                 };
             }
 
@@ -68,6 +69,19 @@ namespace cAlgo
                         ? 2
                         : 1;
 
+            Color color =
+                direction == 1
+                    ? strength >= 3
+                        ? StrongBuyArrowColor
+                        : strength == 2
+                            ? ConfirmedBuyArrowColor
+                            : CautionBuyArrowColor
+                    : strength >= 3
+                        ? StrongSellArrowColor
+                        : strength == 2
+                            ? ConfirmedSellArrowColor
+                            : CautionSellArrowColor;
+
             return new PanelTimeframePresentationState
             {
                 Direction = direction,
@@ -76,7 +90,8 @@ namespace cAlgo
                     PanelFrameDirectionRule.ResolveLabel(
                         frame.Direction,
                         direction),
-                Ready = true
+                Ready = true,
+                Color = color
             };
         }
     }
