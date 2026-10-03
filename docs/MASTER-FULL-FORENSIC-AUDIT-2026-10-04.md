@@ -106,11 +106,12 @@ Market Data → Canonical Price/Time Context → MTF Closed Context → Primitiv
 
 ## 7. Newly confirmed M2 findings (source-based)
 
-16. `ManagementCommandRequestCoordinator.RequestManagementCommand` previously returned `false` after successfully publishing a new management command, while callers such as live-exit/protection/pending-cleanup paths interpreted `false` as mutation rejection. This violated the project rule that accepted/requested state must not be confused with broker-confirmed state. Root cause fixed on M2 branch commit `5c2d41e74e6e410d9103eeb5c3b050b786986b13`: successful queue acceptance and already-queued idempotent requests now return `true`; broker confirmation remains report-driven.
+16. `ManagementCommandRequestCoordinator.RequestManagementCommand` currently returns a single `bool` that conflates at least three states: invalid/rejected, newly queued, and broker-confirmed/already confirmed. Callers such as live-exit/protection/pending-cleanup paths can therefore interpret a queued request as a broker rejection, while changing the bool to mean acceptance would cause other callers to treat queued state as broker-confirmed. A temporary boolean fix was deliberately reverted because it would violate broker-confirmed-state authority. The root fix is an explicit Request/Confirmed/Rejected status contract with one canonical owner.
 17. The same management-command path performs synchronous `LocalStorage.SetString` + `Flush`, creating a confirmed hot-path persistence/latency risk. This remains open for a later persistence/performance closure; no workaround or duplicate bus is permitted.
 18. `ProcessManagementReports` synchronously reads LocalStorage from the request path, coupling command acceptance to persistence latency; this remains an open ownership/performance finding.
 19. Indicator management helper names still imply direct broker mutation even though their current implementation publishes contracts/commands. This is a semantic naming/maintenance hazard and should be normalized at the canonical owner rather than by adding aliases.
-20. Historical boundary documents still mention removed Indicator broker owner files (for example `BrokerMarketOrderMutation.cs` and `BrokerLimitOrderPlacement.cs`) while the current branch no longer contains those files. This is documentation/audit drift and must be classified separately from production defects.
+20. Historical boundary documents still mention removed Indicator broker owner files
+21. The absence of an explicit management-request submission-state contract is itself a source-of-truth defect; no parallel command bus may be introduced to solve it. (for example `BrokerMarketOrderMutation.cs` and `BrokerLimitOrderPlacement.cs`) while the current branch no longer contains those files. This is documentation/audit drift and must be classified separately from production defects.
 
 ## 8. Complete repository structure — machine inventory
 
