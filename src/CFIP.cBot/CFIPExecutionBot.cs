@@ -190,8 +190,8 @@ namespace CFIP.cBot
         private string _activeManagedExecutionLabel = "";
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
-        private long _lastObservedEnvelopeRevision = -1;
-        private string _lastObservedEnvelopeScenarioId = "";
+        private readonly Dictionary<string, long> _lastObservedScenarioRevisions =
+            new Dictionary<string, long>(StringComparer.Ordinal);
         private string _lastObservedEnvelopeInstanceId = "";
 
         private bool EffectiveMarketExecutionEnabled =>
@@ -323,16 +323,16 @@ namespace CFIP.cBot
             string instanceId =
                 _boundIndicatorInstanceId ?? "";
 
-            if (string.Equals(
+            if (!string.Equals(
                     instanceId,
                     _lastObservedEnvelopeInstanceId,
-                    StringComparison.Ordinal) &&
-                string.Equals(
+                    StringComparison.Ordinal))
+                return true;
+
+            if (_lastObservedScenarioRevisions.TryGetValue(
                     scenarioId,
-                    _lastObservedEnvelopeScenarioId,
-                    StringComparison.Ordinal) &&
-                envelope.Identity.Revision <=
-                    _lastObservedEnvelopeRevision)
+                    out long lastRevision) &&
+                envelope.Identity.Revision <= lastRevision)
                 return false;
 
             return true;
@@ -440,10 +440,11 @@ namespace CFIP.cBot
 
             TrackScenarioEnvelope(envelope);
 
-            _lastObservedEnvelopeRevision =
-                envelope.Identity.Revision;
-            _lastObservedEnvelopeScenarioId =
+            string scenarioId =
                 envelope.Identity.ScenarioId ?? "";
+
+            _lastObservedScenarioRevisions[scenarioId] =
+                envelope.Identity.Revision;
             _lastObservedEnvelopeInstanceId =
                 _boundIndicatorInstanceId ?? "";
 
@@ -853,6 +854,7 @@ namespace CFIP.cBot
                 _executionSettings = null;
                 _scenarioEnvelopes.Clear();
                 _scenarioReconciliations.Clear();
+                _lastObservedScenarioRevisions.Clear();
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
                 return false;
@@ -884,6 +886,7 @@ namespace CFIP.cBot
 
             _scenarioEnvelopes.Clear();
             _scenarioReconciliations.Clear();
+            _lastObservedScenarioRevisions.Clear();
 
             _executionSettings = null;
             RefreshExecutionSettings(true);
