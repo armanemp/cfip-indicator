@@ -19,9 +19,7 @@ namespace cAlgo
             }
 
             string direction =
-                _decision.Direction == 1
-                    ? "BUY"
-                    : "SELL";
+                DirectionText(_decision.Direction);
 
             if (!_decision.EntryAllowed)
                 return "SIGNAL  •  " + direction + "  •  BLOCKED";
@@ -37,28 +35,26 @@ namespace cAlgo
 
         private string GetPrimaryTimeframeSignalPanelStatus()
         {
+            PanelTimeframePresentationState m15State =
+                ResolvePanelTimeframeState(_m15Frame);
+
+            PanelTimeframePresentationState h1State =
+                ResolvePanelTimeframeState(_h1Frame);
+
             int m15 =
-                FrameDirection(_m15Frame);
+                m15State.Direction;
 
             int h1 =
-                FrameDirection(_h1Frame);
+                h1State.Direction;
 
             if (m15 == 0 && h1 == 0)
                 return string.Empty;
 
             string m15Text =
-                m15 == 1
-                    ? "BUY"
-                    : m15 == -1
-                        ? "SELL"
-                        : "WAIT";
+                m15State.DirectionLabel;
 
             string h1Text =
-                h1 == 1
-                    ? "BUY"
-                    : h1 == -1
-                        ? "SELL"
-                        : "WAIT";
+                h1State.DirectionLabel;
 
             if (m15 != 0 &&
                 h1 != 0 &&
@@ -66,7 +62,7 @@ namespace cAlgo
             {
                 return
                     "PRIMARY M15/H1  •  " +
-                    (m15 == 1 ? "BUY" : "SELL") +
+                    m15Text +
                     "  •  M5/M1 TUNING";
             }
 

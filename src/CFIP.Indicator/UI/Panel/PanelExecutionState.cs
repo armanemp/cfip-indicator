@@ -324,9 +324,13 @@ namespace cAlgo
             if (model.Mode ==
                 ExecutionMode.WaitingForTrigger)
                 return
-                    model.Direction == 1
-                        ? "BUY WAIT • ENTRY MUST REACH TRIGGER ABOVE"
-                        : "SELL WAIT • ENTRY MUST REACH TRIGGER BELOW";
+                    DirectionText(model.Direction) +
+                    " WAIT • ENTRY MUST REACH TRIGGER " +
+                    (model.Direction == 1
+                        ? "ABOVE"
+                        : model.Direction == -1
+                            ? "BELOW"
+                            : "UNKNOWN");
 
             if (!IsFinitePositive(entry))
                 return "NOT EXECUTABLE";

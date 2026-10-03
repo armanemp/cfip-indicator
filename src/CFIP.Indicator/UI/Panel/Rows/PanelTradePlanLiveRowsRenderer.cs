@@ -53,10 +53,8 @@ namespace cAlgo
                 AddPanelRow(
                     ref slot,
                     "POSITION  •  " +
-                    (managedPosition.TradeType ==
-                         TradeType.Buy
-                        ? "BUY"
-                        : "SELL") +
+                    DirectionText(
+                        managedPosition.TradeType) +
                     "  #" +
                     managedPosition.Id +
                     "  •  VOL " +

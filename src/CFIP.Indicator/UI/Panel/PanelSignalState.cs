@@ -63,25 +63,32 @@ namespace cAlgo
 
         private string GetMarketBiasText()
                                 {
-                                    int m15 =
-                                        FrameDirection(_m15Frame);
+                                    PanelTimeframePresentationState m15State =
+                                        ResolvePanelTimeframeState(_m15Frame);
 
-                                    int h1 =
-                                        FrameDirection(_h1Frame);
+                                    PanelTimeframePresentationState h1State =
+                                        ResolvePanelTimeframeState(_h1Frame);
 
-                                    int m5 =
-                                        FrameDirection(_m5Frame);
+                                    PanelTimeframePresentationState m5State =
+                                        ResolvePanelTimeframeState(_m5Frame);
+
+                                    int marketBiasDirection =
+                                        GetMarketBiasDirection();
+
+                                    string marketBiasLabel =
+                                        PanelFrameDirectionRule.ResolveLabel(
+                                            0,
+                                            marketBiasDirection);
 
                                     return
                                         "MARKET BIAS  •  M15 " +
-                                        DirectionText(m15) +
+                                        m15State.DirectionLabel +
                                         "  •  H1 " +
-                                        DirectionText(h1) +
+                                        h1State.DirectionLabel +
                                         "  •  M5 " +
-                                        DirectionText(m5) +
+                                        m5State.DirectionLabel +
                                         "  •  " +
-                                        DirectionText(
-                                            GetMarketBiasDirection());
+                                        marketBiasLabel;
                                 }
 
         private int GetAuthoritativeDirection()
@@ -119,9 +126,8 @@ namespace cAlgo
                                                 : "WAITING";
 
                                     string prefix =
-                                        direction == 1
-                                            ? "BUY "
-                                            : "SELL ";
+                                        DirectionText(direction) +
+                                        " ";
 
                                     switch (snapshot.Stage)
                                     {
@@ -136,7 +142,7 @@ namespace cAlgo
                                         case "SETUP WATCH":
                                             return prefix + "WATCH";
                                         case "CONFIRMED":
-                                            return prefix + "READY";
+                                            return prefix + "CONFIRMED";
                                         case "REACTION":
                                             return prefix + "REACTION";
                                         case "PREDICTION":
@@ -145,6 +151,23 @@ namespace cAlgo
                                             return prefix + "WATCH";
                                     }
                                 }
+
+        private string DirectionText(int direction)
+        {
+            if (direction == 1)
+                return "BUY";
+            if (direction == -1)
+                return "SELL";
+            return "NEUTRAL";
+        }
+
+        private string DirectionText(TradeType tradeType)
+        {
+            return
+                tradeType == TradeType.Buy
+                    ? "BUY"
+                    : "SELL";
+        }
 
         private string GetSignalSynchronizationText()
                                 {
@@ -175,11 +198,9 @@ namespace cAlgo
 
                                     return
                                         "STATE " +
-                                        (direction == 1
-                                            ? "BUY"
-                                            : direction == -1
-                                                ? "SELL"
-                                                : "WAIT") +
+                                        (direction == 0
+                                            ? "WAIT"
+                                            : DirectionText(direction)) +
                                         " | " +
                                         (aligned
                                             ? "ALIGNED"

@@ -1,3 +1,11 @@
+## 12. روتین اجباری — semantic/visual consistency across consumers
+
+1. هر state یا direction باید یک owner معنایی داشته باشد و UI consumer آن را دوباره به vocabulary دیگری تبدیل نکند.
+2. اگر بین bias، trade direction، trigger state، evidence state یا broker state تفاوت واقعی وجود دارد، این تفاوت باید در متن صریح باشد؛ متن و رنگ متناقض یا ambiguous مجاز نیست.
+3. رنگ هر سطر/چراغ باید از همان stateای مشتق شود که متن آن را توصیف می‌کند؛ conflict باید صریح نمایش داده شود، نه با متن directional و رنگ neutral پنهان بماند.
+4. مقادیر عددی داخلی مانند direction = 1/-1 نباید مستقیم در UI کاربر نمایش داده شوند وقتی owner متنی canonical وجود دارد.
+5. این ممیزی باید در هر فاز UI، signal، alert، execution و realtime دوباره اجرا و در گزارش فاز ثبت شود.
+
 # CFIP Indicator — ROUTINE
 
 این فایل حافظه عملیاتی ثابت پروژه است و در شروع هر نوبت باید با وضعیت واقعی ریپو تطبیق داده شود.

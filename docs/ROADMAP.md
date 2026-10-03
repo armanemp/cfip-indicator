@@ -1,3 +1,30 @@
+## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
+
+Status: IMPLEMENTATION COMPLETE — verification pending on branch `phase/semantic-consistency-hardening-2026-10-03`.
+
+Completed:
+- Market Bias, primary M15/H1 alignment and realtime header no longer re-encode canonical timeframe direction into a competing BUY/SELL vocabulary.
+- MTF labels remain sourced from PanelTimeframePresentationState.DirectionLabel.
+- Top-Down HTF/MID direction text no longer exposes raw numeric direction values; ENTRY retains alignment/strength without inventing a second EntryFrameDirection owner.
+- Decision, Entry Gate and readiness rows no longer use overlapping READY/CONFIRMED/BLOCKED wording; setup confirmation, trigger waiting, entry waiting and current actionability are distinguished.
+- Canonical SignalVisualSnapshot stage CONFIRMED is preserved as CONFIRMED in authoritative panel state instead of being relabeled READY.
+- WaveTrend evidence text and color now use WaveTrend direction, with explicit CONFLICT when it opposes the trade direction.
+- No strategy, risk, RR, execution, M15/M5/M1 role or cBot broker-ownership rule was changed.
+- Obsolete duplicate realtime-header formatting/color helpers were removed after the dedicated header owner became canonical.
+- Added a dedicated semantic/visual consistency audit and wired it into Source/Architecture CI.
+
+Full-chain routine audit:
+Analysis -> MTF -> Decision -> Signal -> Alert -> cBot execution -> Broker confirmation -> Protection/Lifecycle -> Outcome/History.
+
+Verification:
+- Source/Architecture, Runtime Acceptance and cTrader Compile/Build on the exact branch head.
+- Target-terminal visual inspection for lamp/text/header parity, Top-Down readability, WaveTrend conflict state and alert presentation.
+
+Operator action:
+`git pull --ff-only`
+
+---
+
 ## 2026-10-03 — Panel Timeframe Visual Parity + cBot Local/Cloud Lifecycle
 
 Status: IMPLEMENTED ON MAIN — automated verification pending; target-terminal Local/Cloud prompt acceptance remains manual.

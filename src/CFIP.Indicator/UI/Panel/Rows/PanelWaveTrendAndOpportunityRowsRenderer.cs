@@ -10,8 +10,40 @@ namespace cAlgo
             int contentWidth,
             int direction)
         {
-            if (UseWaveTrendEvidence)
+            if (UseWaveTrendEvidence &&
+                _m5Frame != null)
             {
+                int waveTrendDirection =
+                    _m5Frame.WaveTrendDirection == 1
+                        ? 1
+                        : _m5Frame.WaveTrendDirection == -1
+                            ? -1
+                            : 0;
+
+                bool waveTrendConflict =
+                    waveTrendDirection != 0 &&
+                    direction != 0 &&
+                    waveTrendDirection != direction;
+
+                string waveTrendState =
+                    _m5Frame.WaveTrendBullCross
+                        ? "BULL CROSS"
+                        : _m5Frame.WaveTrendBearCross
+                            ? "BEAR CROSS"
+                            : waveTrendDirection == 1
+                                ? "BULL"
+                                : waveTrendDirection == -1
+                                    ? "BEAR"
+                                    : "NEUTRAL";
+
+                if (waveTrendConflict)
+                    waveTrendState += " • CONFLICT";
+
+                Color waveTrendColor =
+                    waveTrendConflict
+                        ? PanelWarningColor
+                        : PanelDirectionColor(waveTrendDirection);
+
                 AddPanelRow(
                     ref slot,
                     "WAVETREND  " +
@@ -21,18 +53,8 @@ namespace cAlgo
                     "  •  Q " +
                     _m5Frame.WaveTrendQuality +
                     "  •  " +
-                    (_m5Frame.WaveTrendBullCross
-                        ? "BULL CROSS"
-                        : _m5Frame.WaveTrendBearCross
-                            ? "BEAR CROSS"
-                            : _m5Frame.WaveTrendBull
-                                ? "BULL"
-                                : _m5Frame.WaveTrendBear
-                                    ? "BEAR"
-                                    : "NEUTRAL"),
-                    _m5Frame.WaveTrendDirection == direction
-                        ? PanelDirectionColor(direction)
-                        : PanelSecondaryTextColor,
+                    waveTrendState,
+                    waveTrendColor,
                     false,
                     contentWidth);
             }
@@ -74,9 +96,7 @@ namespace cAlgo
                     laneSummary +=
                         opportunity.LabelPrefix +
                         " " +
-                        (opportunity.Direction == 1
-                            ? "BUY"
-                            : "SELL") +
+                        DirectionText(opportunity.Direction) +
                         " " +
                         opportunity.Tp1RR.ToString("F2") +
                         "R/" +

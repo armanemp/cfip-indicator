@@ -20,20 +20,20 @@ namespace cAlgo
                                                         _decision.Direction;
                                     
                                                     string decisionState =
-                                                        direction == 1
-                                                            ? "BUY"
-                                                            : direction == -1
-                                                                ? "SELL"
-                                                                : "NEUTRAL";
+                                                        DirectionText(direction);
                                     
                                                     AddPanelRow(
                                                         ref slot,
                                                         "DECISION  •  " +
                                                         decisionState +
                                                         "  •  " +
-                                                        (_decision.EntryAllowed
-                                                            ? "READY"
-                                                            : "WATCH / BLOCKED"),
+                                                        (_decision.ActionableNow
+                                                            ? "ACTIONABLE"
+                                                            : !_decision.EntryAllowed
+                                                                ? "BLOCKED"
+                                                                : !_decision.TriggerReady
+                                                                    ? "WATCH"
+                                                                    : "CONFIRMED"),
                                                         PanelDirectionColor(
                                                             direction),
                                                         true,
@@ -62,7 +62,11 @@ namespace cAlgo
                                                         "ENTRY GATE  " +
                                                         (_decision.ActionableNow
                                                             ? "ACTIONABLE"
-                                                            : "BLOCKED") +
+                                                            : !_decision.EntryAllowed
+                                                                ? "BLOCKED"
+                                                                : !_decision.TriggerReady
+                                                                    ? "WAITING TRIGGER"
+                                                                    : "WAITING ENTRY") +
                                                         "  •  " +
                                                         (_decision.ActionabilityReason ??
                                                          "NOT EVALUATED") +
@@ -85,11 +89,7 @@ namespace cAlgo
                                                         "  •  Q" +
                                                         _decision.DivergenceQuality +
                                                         "  •  DIR " +
-                                                        (_decision.DivergenceDirection == 1
-                                                            ? "BUY"
-                                                            : _decision.DivergenceDirection == -1
-                                                                ? "SELL"
-                                                                : "NONE"),
+                                                        DirectionText(_decision.DivergenceDirection),
                                                         _decision.DivergenceDirection == -direction &&
                                                         _decision.DivergenceQuality >= 70
                                                             ? SlLineColor
@@ -117,18 +117,18 @@ namespace cAlgo
                                                         "TOP-DOWN  " +
                                                         (_decision.TopDownStage ?? "HTF SEARCH") +
                                                         "  •  HTF " +
-                                                        _decision.HtfAnchorDirection +
-                                                        "/" +
+                                                        DirectionText(_decision.HtfAnchorDirection) +
+                                                        "/A" +
                                                         _decision.HtfAlignment +
                                                         "/S" +
                                                         _decision.HtfAbsoluteStrength +
                                                         "  •  MID " +
-                                                        _decision.MidframeDirection +
-                                                        "/" +
+                                                        DirectionText(_decision.MidframeDirection) +
+                                                        "/A" +
                                                         _decision.MidframeAlignment +
                                                         "/S" +
                                                         _decision.MidframeAbsoluteStrength +
-                                                        "  •  ENTRY " +
+                                                        "  •  ENTRY/A" +
                                                         _decision.EntryFrameAlignment +
                                                         "/S" +
                                                         _decision.EntryFrameAbsoluteStrength,
@@ -248,9 +248,7 @@ AddPanelRow(
                                                         AddPanelRow(
                                                             ref slot,
                                                             "EARLY WATCH  •  " +
-                                                            (_prediction.Direction == 1
-                                                                ? "BUY"
-                                                                : "SELL") +
+                                                            DirectionText(_prediction.Direction) +
                                                             "  •  SHARE " +
                                                             _prediction.DirectionalShare +
                                                             "  •  STRENGTH " +

@@ -19,8 +19,13 @@ namespace cAlgo
                                     if (_decision == null)
                                         return "NO DECISION";
                         
+                                    if (_decision.ActionableNow)
+                                        return "ENTRY ACTIONABLE";
+
                                     if (_decision.EntryAllowed)
-                                        return "ENTRY CONFIRMED";
+                                        return _decision.TriggerReady
+                                            ? "SETUP CONFIRMED • WAITING ENTRY"
+                                            : "SETUP QUALIFIED • WAITING TRIGGER";
                         
                                     if (_reaction != null &&
                                         _reaction.EntryAllowed)
@@ -29,7 +34,7 @@ namespace cAlgo
                                     if (_prediction != null &&
                                         _prediction.Direction != 0)
                                         return
-                                            (_prediction.Direction == 1 ? "BUY" : "SELL") +
+                                            DirectionText(_prediction.Direction) +
                                             " PREDICTED • SHARE " +
                                             _prediction.DirectionalShare +
                                             " • STR " +
@@ -45,8 +50,12 @@ namespace cAlgo
         private Color PredictionReadinessColor()
                                 {
                                     if (_decision != null &&
-                                        _decision.EntryAllowed)
+                                        _decision.ActionableNow)
                                         return TpLineColor;
+
+                                    if (_decision != null &&
+                                        _decision.EntryAllowed)
+                                        return PanelAccentColor;
                         
                                     if (_reaction != null &&
                                         _reaction.EntryAllowed)

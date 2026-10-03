@@ -20,9 +20,7 @@ namespace cAlgo
                                                     AddPanelRow(
                                                         ref slot,
                                                         "LIVE REACTION  •  " +
-                                                        (_reaction.Direction == 1
-                                                            ? "BUY"
-                                                            : "SELL") +
+                                                        DirectionText(_reaction.Direction) +
                                                         "  •  Q" +
                                                         _reaction.Confidence +
                                                         "  •  EVID " +
@@ -125,9 +123,9 @@ namespace cAlgo
                                                         : "CALIBRATING";
 
                                                 string primaryDirections =
-                                                    DirectionText(primaryM15Direction) +
+                                                    m15FrameState.DirectionLabel +
                                                     "/" +
-                                                    DirectionText(primaryH1Direction);
+                                                    h1FrameState.DirectionLabel;
 
                                                 AddPanelRow(
                                                     ref slot,
@@ -205,15 +203,6 @@ namespace cAlgo
                                     
             
         }
-        private string DirectionText(int direction)
-        {
-            if (direction == 1)
-                return "BUY";
-            if (direction == -1)
-                return "SELL";
-            return "NEUTRAL";
-        }
-
         private int FrameQuality(Frame frame)
         {
             return frame == null

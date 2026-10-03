@@ -1,3 +1,22 @@
+## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
+
+Branch: `phase/semantic-consistency-hardening-2026-10-03`.
+
+Finding:
+The panel already had a canonical MTF presentation state, but several consumers translated the same state again. This created avoidable contradictions such as BULL/BEAR BIAS in one surface and BUY/SELL in another. WaveTrend also mixed its own evidence text with a color derived from a separate trade-direction state.
+
+Corrections:
+- Market Bias, primary M15/H1 alignment and the live header now consume the canonical timeframe DirectionLabel.
+- Top-Down HTF/MID directions are rendered as text instead of raw numeric values; ENTRY keeps its existing alignment/strength semantics without inventing a second direction owner.
+- WaveTrend color now follows WaveTrend direction and explicitly marks conflict with the trade direction.
+- A dedicated static audit protects these ownership boundaries.
+
+No calculation threshold, decision authority, execution policy, risk rule or broker mutation boundary was changed.
+- A second display contradiction was closed: Decision could read READY while Entry Gate read BLOCKED; readiness could also say ENTRY CONFIRMED while entry still waited. The UI now distinguishes setup confirmation, trigger waiting and current actionability.
+- The same stage mapping was also normalized so SignalVisualSnapshot CONFIRMED is not re-labeled READY by authoritative panel formatting.
+
+---
+
 ## 2026-10-03 — Integrated realtime/live/MTF + audio + panel header hardening
 
 Implementation branch: `phase/mtf-realtime-all-engines-smart-arrows-2026-10-03`.
