@@ -67,10 +67,15 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "PENDING_ENTRY_LABEL",
-                "PENDING " +
-                typeText +
-                " " +
-                Price(snapshot.PendingEntry),
+                BuildCanonicalLevelLabel(
+                    "PENDING " + typeText,
+                    "ENTRY",
+                    snapshot.PendingEntry,
+                    snapshot.PendingEntry,
+                    false,
+                    false,
+                    0,
+                    PlanTimeframeTag()),
                 snapshot.PendingEntry,
                 TriggerLineColor,
                 ShowTrigger,
@@ -78,8 +83,15 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "PENDING_SL_LABEL",
-                "SL " +
-                Price(snapshot.PendingStop),
+                BuildCanonicalLevelLabel(
+                    "PENDING " + typeText,
+                    "SL",
+                    snapshot.PendingStop,
+                    snapshot.PendingEntry,
+                    true,
+                    false,
+                    0,
+                    PlanTimeframeTag()),
                 snapshot.PendingStop,
                 SlLineColor,
                 ShowSL,
@@ -87,8 +99,15 @@ namespace cAlgo
 
             RenderCompactPlanLabel(
                 P + "PENDING_TP_LABEL",
-                "TP " +
-                Price(snapshot.PendingTarget),
+                BuildCanonicalLevelLabel(
+                    "PENDING " + typeText,
+                    "TP",
+                    snapshot.PendingTarget,
+                    snapshot.PendingEntry,
+                    true,
+                    false,
+                    0,
+                    PlanTimeframeTag()),
                 snapshot.PendingTarget,
                 TpLineColor,
                 ShowTP1,
