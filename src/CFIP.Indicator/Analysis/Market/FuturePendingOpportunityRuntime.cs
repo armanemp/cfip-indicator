@@ -362,6 +362,10 @@ namespace cAlgo
                         candidate.Tp3 = refreshed.Tp3;
                         candidate.Tp4 = refreshed.Tp4;
                         candidate.Risk = refreshed.Risk;
+                         candidate.RewardDistanceAtr =
+                             refreshed.RewardDistanceAtr;
+                         candidate.MinimumRequiredRewardDistanceAtr =
+                             refreshed.MinimumRequiredRewardDistanceAtr;
                         candidate.Tp1RR = refreshed.Tp1RR;
                         candidate.RequestedVolume = refreshed.RequestedVolume;
                         candidate.ZoneLow = refreshed.ZoneLow;
