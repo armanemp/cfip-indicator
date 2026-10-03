@@ -79,6 +79,9 @@ namespace cAlgo
                 }
             }
 
+            bool managementCommandsPending =
+                HasPendingManagementCommandPersistence();
+
             bool shouldFlushLocalStorage =
                 force ||
                 _dailyLossPersistenceForceFlush ||
@@ -89,6 +92,7 @@ namespace cAlgo
                 localStoragePending)
             {
                 bool managementCommandsWritten =
+                    !managementCommandsPending ||
                     FlushManagementCommandPersistenceToLocalStorage();
 
                 try
@@ -100,28 +104,28 @@ namespace cAlgo
                             LocalStorageScope.Type);
                     }
 
-                    if (managementCommandsWritten &&
-                        !HasPendingManagementCommandPersistence())
+                    if (managementCommandsPending &&
+                        managementCommandsWritten)
                     {
                         LocalStorage.Flush(
                             LocalStorageScope.Device);
+
+                        MarkManagementCommandPersistenceFlushed();
                     }
 
-                    if (managementCommandsWritten)
-                        _managementCommandsPersistenceDirtyResetGuard();
+                    if (_outcomeMemoryPersistenceDirty ||
+                        _dailyLossPersistenceDirty)
+                    {
+                        _outcomeMemoryPersistenceDirty = false;
+                        _dailyLossPersistenceDirty = false;
+                        _dailyLossPersistenceForceFlush = false;
+                    }
                 }
                 catch (Exception ex)
                 {
                     Print(
                         "CFIP buffered LocalStorage flush failed: {0}",
                         ex.Message);
-                }
-
-                if (managementCommandsWritten)
-                {
-                    _outcomeMemoryPersistenceDirty = false;
-                    _dailyLossPersistenceDirty = false;
-                    _dailyLossPersistenceForceFlush = false;
                 }
             }
 
