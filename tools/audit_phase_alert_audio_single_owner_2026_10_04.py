@@ -13,7 +13,7 @@ processor = PROCESSOR.read_text(encoding="utf-8")
 
 checks = [
     ("single alert sound policy", policy.count("class AlertSoundPolicy") == 1),
-    ("engine delegates sound semantics", "AlertSoundPolicy.Resolve(" in engine),
+    ("engine delegates sound semantics", "AlertSoundPolicy.ResolveAlertSound(" in engine),
     ("engine has no duplicate sound classifier", "ResolveAlertSoundType(" not in engine),
     ("processor has no sound classifier", "ResolveSignalSoundPriority(" not in processor and "IsSignalSoundAlertKey(" not in processor),
     ("delivery carries canonical sound group", "SoundGroupKey" in delivery),
