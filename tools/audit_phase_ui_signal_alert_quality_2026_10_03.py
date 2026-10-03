@@ -35,8 +35,11 @@ check(
     "internal readonly struct PanelTimeframePresentationState" in state and
     "internal static class PanelTimeframePresentationRule" in rule and
     "PanelTimeframePresentationRule" in text_format and
-    "PanelTimeframePresentationRule.Resolve(" in lamp and
-    "PanelTimeframePresentationRule.Resolve(" in render_key,
+    ".Resolve(" in text_format and
+    "PanelTimeframePresentationRule" in lamp and
+    ".Resolve(" in lamp and
+    "PanelTimeframePresentationRule" in render_key and
+    ".Resolve(" in render_key,
     "timeframe status must have one canonical presentation owner",
 )
 
