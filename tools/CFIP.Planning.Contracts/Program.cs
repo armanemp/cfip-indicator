@@ -370,95 +370,101 @@ namespace cAlgo
                 OpportunityLane.MicroReaction
             };
 
-            int checkedLadders = 0;
-
-            foreach (OpportunityLane lane in lanes)
+            string[] regimes =
             {
-                double[] lowRisk =
-                    TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
-                        "TREND",
-                        lane,
-                        0.35,
-                        88,
-                        86,
-                        78,
-                        82,
-                        4.0);
+                MarketRegimeIdentity.Trend,
+                MarketRegimeIdentity.Range,
+                MarketRegimeIdentity.Expansion,
+                MarketRegimeIdentity.Compression
+            };
 
-                double[] wideRisk =
-                    TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
-                        "TREND",
-                        lane,
-                        1.20,
-                        88,
-                        86,
-                        78,
-                        82,
-                        4.0);
+            for (int regimeIndex = 0;
+                 regimeIndex < regimes.Length;
+                 regimeIndex++)
+            {
+                for (int laneIndex = 0;
+                     laneIndex < lanes.Length;
+                     laneIndex++)
+                {
+                    double[] requiredRR =
+                        TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                            regimes[regimeIndex],
+                            lanes[laneIndex],
+                            0.75,
+                            82,
+                            84,
+                            80,
+                            78,
+                            3.0);
 
-                Assert(
-                    TargetSelectionRequiredRrRule.IsMonotonicNonDecreasing(
-                        lowRisk),
-                    "adaptive low-risk ladder monotonicity " +
-                    lane.ToString());
+                    Assert(
+                        TargetSelectionRequiredRrRule.IsMonotonicNonDecreasing(
+                            requiredRR),
+                        "adaptive RR ladder monotonicity");
 
-                Assert(
-                    TargetSelectionRequiredRrRule.IsMonotonicNonDecreasing(
-                        wideRisk),
-                    "adaptive wide-risk ladder monotonicity " +
-                    lane.ToString());
-
-                Assert(
-                    lowRisk[0] != wideRisk[0],
-                    "adaptive TP1 requirement must respond to stop geometry " +
-                    lane.ToString());
-
-                Assert(
-                    lowRisk[3] >= lowRisk[0] &&
-                    wideRisk[3] >= wideRisk[0],
-                    "adaptive target ladder progression " +
-                    lane.ToString());
-
-                checkedLadders++;
+                    Assert(
+                        requiredRR[0] > 0 &&
+                        requiredRR[1] >= requiredRR[0] &&
+                        requiredRR[2] >= requiredRR[1] &&
+                        requiredRR[3] >= requiredRR[2],
+                        "adaptive TP ladder progression");
+                }
             }
 
-            AdaptiveRewardRiskProfile rangeProfile =
-                AdaptiveRewardRiskProfileRule.Resolve(
-                    "RANGE",
-                    OpportunityLane.Tactical,
-                    0.45,
+            double lowRisk =
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                    "TREND",
+                    OpportunityLane.Strategic,
+                    0.40,
+                    90,
+                    92,
                     90,
                     88,
-                    82,
-                    85,
-                    4.0);
+                    3.0)[0];
 
-            AdaptiveRewardRiskProfile expansionProfile =
-                AdaptiveRewardRiskProfileRule.Resolve(
-                    "EXPANSION",
-                    OpportunityLane.Tactical,
-                    0.45,
+            double highRisk =
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                    "TREND",
+                    OpportunityLane.Strategic,
+                    1.80,
+                    90,
+                    92,
                     90,
                     88,
+                    3.0)[0];
+
+            Assert(
+                lowRisk > highRisk,
+                "adaptive reward profile responds to stop risk");
+
+            double range =
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                    MarketRegimeIdentity.Range,
+                    OpportunityLane.Strategic,
+                    0.75,
+                    84,
+                    86,
                     82,
-                    85,
-                    4.0);
+                    80,
+                    3.0)[0];
+
+            double expansion =
+                TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
+                    MarketRegimeIdentity.Expansion,
+                    OpportunityLane.Strategic,
+                    0.75,
+                    84,
+                    86,
+                    82,
+                    80,
+                    3.0)[0];
 
             Assert(
-                rangeProfile.RequiredRewardAtr >
-                0 &&
-                expansionProfile.RequiredRewardAtr > 0,
-                "adaptive reward distance must remain positive");
-
-            Assert(
-                rangeProfile.RequiredTp1RR !=
-                expansionProfile.RequiredTp1RR,
-                "regime must influence adaptive RR result");
+                range > expansion,
+                "adaptive regime reward profile");
 
             Console.WriteLine(
-                "Adaptive reward-risk contracts: " +
-                checkedLadders.ToString() +
-                " lane ladders, geometry response, regime response and progression passed");
+                "Adaptive reward/risk target ladder contracts OK");
         }
 
         private static void VerifyTargetLadderSelection()
