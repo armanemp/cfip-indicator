@@ -168,9 +168,6 @@ namespace cAlgo
                     rewardRisk.Reason);
             }
 
-            // M15 is the canonical execution timeframe. M5/M1 remain
-            // defensive tuning inputs and may only refine/block an M15 setup;
-            // H1+ remains higher-timeframe context for reward-path selection.
             int primaryM15Index =
                 _lastMtfClosedContext == null
                     ? -1
@@ -381,10 +378,6 @@ namespace cAlgo
                     m5AdverseEvidenceKnown ||
                     m1AdverseEvidenceKnown);
 
-            // Live actionability must consume the same indicator-fusion quality
-            // that guards confirmed Decision/automatic execution. A stale M5
-            // fusion snapshot is fail-closed so an old indicator state cannot
-            // reopen an otherwise blocked setup.
             string indicatorGateReason = string.Empty;
 
             if (_m5Frame != null)
