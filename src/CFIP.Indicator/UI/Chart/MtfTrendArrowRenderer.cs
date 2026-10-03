@@ -90,7 +90,7 @@ namespace cAlgo
                         : Bars.HighPrices[bar] + distance;
 
                 DrawIcon(
-                    P + "WATCH_ARROW_" + (i + 1),
+                    P + "MTF_ARROW_" + (i + 1),
                     type,
                     bar,
                     price,
@@ -102,10 +102,9 @@ namespace cAlgo
 
         private void RemoveMtfTrendStrengthArrowStack()
         {
-            Chart.RemoveObject(P + "WATCH_ARROW");
-            Chart.RemoveObject(P + "WATCH_ARROW_1");
-            Chart.RemoveObject(P + "WATCH_ARROW_2");
-            Chart.RemoveObject(P + "WATCH_ARROW_3");
+            Chart.RemoveObject(P + "MTF_ARROW_1");
+            Chart.RemoveObject(P + "MTF_ARROW_2");
+            Chart.RemoveObject(P + "MTF_ARROW_3");
         }
     }
 }

@@ -62,10 +62,10 @@ namespace cAlgo
             if (contentHeight <= 0)
                 return 0;
 
-            return contentHeight +
-                   Math.Max(
-                       0,
-                       PanelPadding) * 2;
+            // PanelPadding is already part of the outer panel geometry.
+            // Do not charge it again to the footer or the lower panel grows
+            // independently of its actual visible content.
+            return contentHeight;
         }
 
         private void SetPanelRestoreAlignment()

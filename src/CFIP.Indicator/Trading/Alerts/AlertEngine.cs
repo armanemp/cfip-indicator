@@ -15,6 +15,69 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private const int MaxRememberedAlertEventKeys = 512;
+        private readonly HashSet<string> _rememberedAlertEventKeys =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Queue<string> _rememberedAlertEventKeyOrder =
+            new Queue<string>(MaxRememberedAlertEventKeys);
+
+        private string BuildAlertEventDedupKey(
+            AlertEnvelope envelope,
+            string normalizedKey)
+        {
+            if (envelope == null ||
+                envelope.Identity == null)
+                return string.Empty;
+
+            ContractIdentity identity =
+                envelope.Identity;
+
+            return
+                (identity.Symbol ?? string.Empty) +
+                "|" +
+                (identity.SignalId ?? string.Empty) +
+                "|" +
+                (identity.ScenarioId ?? string.Empty) +
+                "|" +
+                (identity.PlanId ?? string.Empty) +
+                "|" +
+                identity.CreatedClosedM5.ToString(
+                    CultureInfo.InvariantCulture) +
+                "|" +
+                identity.Direction.ToString() +
+                "|" +
+                (normalizedKey ?? string.Empty);
+        }
+
+        private bool IsRememberedAlertEvent(
+            string eventKey)
+        {
+            return
+                !string.IsNullOrWhiteSpace(eventKey) &&
+                _rememberedAlertEventKeys.Contains(eventKey);
+        }
+
+        private void RememberAlertEvent(
+            string eventKey)
+        {
+            if (string.IsNullOrWhiteSpace(eventKey) ||
+                _rememberedAlertEventKeys.Contains(eventKey))
+                return;
+
+            _rememberedAlertEventKeys.Add(eventKey);
+            _rememberedAlertEventKeyOrder.Enqueue(eventKey);
+
+            while (_rememberedAlertEventKeyOrder.Count >
+                   MaxRememberedAlertEventKeys)
+            {
+                string expired =
+                    _rememberedAlertEventKeyOrder.Dequeue();
+
+                _rememberedAlertEventKeys.Remove(
+                    expired);
+            }
+        }
+
                         private bool SendUnifiedAlert(
                             string key,
                             string message,
@@ -114,6 +177,20 @@ if (SuppressDuplicateAlerts)
                                     normalizedKey,
                                     message);
 
+                            string alertEventKey =
+                                BuildAlertEventDedupKey(
+                                    envelope,
+                                    normalizedKey);
+
+                            if (IsRememberedAlertEvent(
+                                    alertEventKey))
+                            {
+                                Print(
+                                    "CFIP ALERT DUPLICATE SUPPRESSED | event={0} | retryable=false",
+                                    alertEventKey);
+                                return false;
+                            }
+
                             // Restriction/blocked candidates remain diagnostic panel messages
                             // and never emit the normal signal sound or chart marker.
                             bool playSound =
@@ -155,6 +232,9 @@ if (SuppressDuplicateAlerts)
                             }
                             else
                             {
+                                RememberAlertEvent(
+                                    alertEventKey);
+
                                 _alertCooldowns[normalizedKey] = now;
 
                                 _lastAlertMessage =

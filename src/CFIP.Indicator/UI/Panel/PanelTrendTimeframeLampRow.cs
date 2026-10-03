@@ -6,11 +6,11 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int PanelTrendTimeframeLampRowHeight = 54;
-        private const int PanelTrendTimeframeLampTopSpacing = 3;
-        private const int PanelTrendTimeframeLampBottomSpacing = 2;
-        private const int PanelTrendTimeframeLampIndicatorHeight = 26;
-        private const int PanelTrendTimeframeLampLabelHeight = 17;
+        private const int PanelTrendTimeframeLampRowHeight = 38;
+        private const int PanelTrendTimeframeLampTopSpacing = 2;
+        private const int PanelTrendTimeframeLampBottomSpacing = 1;
+        private const int PanelTrendTimeframeLampIndicatorHeight = 22;
+        private const int PanelTrendTimeframeLampLabelHeight = 12;
 
         private StackPanel _panelTrendTimeframeLampRow;
         private readonly List<StackPanel> _panelTrendTimeframeLampCells =

@@ -98,6 +98,22 @@ namespace cAlgo
             return 0;
         }
 
+        private bool IsSignalSoundAlertKey(
+            string key)
+        {
+            string normalized =
+                key ?? string.Empty;
+
+            return
+                normalized.StartsWith("WATCH|", StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith("REACTION|", StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith("ACTION|", StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith("HIGH|", StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith("SMART|", StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith("EARLY|", StringComparison.OrdinalIgnoreCase) ||
+                normalized.StartsWith("AUTO-REACTION|", StringComparison.OrdinalIgnoreCase);
+        }
+
         private bool ShouldQueueAlertSound(
             AlertDelivery delivery)
         {
@@ -123,14 +139,43 @@ namespace cAlgo
                 createdClosedM5 < 0)
                 return true;
 
-            string groupKey =
-                (SymbolName ?? string.Empty) +
-                "|" +
-                signalId +
-                "|" +
-                createdClosedM5.ToString() +
-                "|" +
-                delivery.Direction.ToString();
+            string groupKey;
+
+            bool signalFamily =
+                IsSignalSoundAlertKey(
+                    delivery.Key);
+
+            if (signalFamily)
+            {
+                // WATCH/REACTION/ACTION/SMART/EARLY are one user-facing
+                // signal event family. Only one audible cue is allowed for
+                // the same symbol + closed-M5 + direction, even when the
+                // semantic stage/key changes between deliveries.
+                groupKey =
+                    "SIGNAL|" +
+                    (SymbolName ?? string.Empty) +
+                    "|" +
+                    createdClosedM5.ToString() +
+                    "|" +
+                    delivery.Direction.ToString();
+            }
+            else
+            {
+                groupKey =
+                    (SymbolName ?? string.Empty) +
+                    "|" +
+                    signalId +
+                    "|" +
+                    delivery.Envelope.Identity.ScenarioId +
+                    "|" +
+                    delivery.Envelope.Identity.PlanId +
+                    "|" +
+                    createdClosedM5.ToString() +
+                    "|" +
+                    delivery.Direction.ToString() +
+                    "|" +
+                    (delivery.Key ?? string.Empty);
+            }
 
             if (_rememberedSignalSoundGroups.Contains(groupKey))
             {

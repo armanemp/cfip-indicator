@@ -118,7 +118,8 @@ check(
     "PanelStatusLampHeight = 30" in constants and
     "PanelStatusLampFontSize" in lamp and
     "PanelStatusLampFontSize" in heartbeat and
-    "PanelAlertMessageVisibleCapacity = 2" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
+    "PanelAlertMessageVisibleCapacity = 2" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
+    "TextTrimming = TextTrimming.Ellipsis" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "header and MTF lamps must share the enlarged status-lamp geometry",
 )
 
@@ -145,11 +146,31 @@ check(
 check(
     "signal sound is idempotent across interleaved alert events",
     "MaxRememberedSignalSoundGroups = 256" in processor and
+    "IsSignalSoundAlertKey(" in processor and
     "_rememberedSignalSoundGroups" in processor and
     "_rememberedSignalSoundGroupOrder" in processor and
     "Contains(groupKey)" in processor and
     "CreatedClosedM5" in processor,
+    "SIGNAL|" in processor,
     "signal sound dedup must retain multiple recent event fingerprints rather than only the last group",
+)
+
+check(
+    "MTF arrow stack uses its own object namespace",
+    '"MTF_ARROW_1"' in mtf_arrows and
+    '"WATCH_ARROW_1"' not in mtf_arrows and
+    'ChartIconType.UpArrow' in mtf_arrows and
+    'ChartIconType.DownArrow' in mtf_arrows,
+    "MTF trend arrows must never overwrite canonical signal arrows",
+)
+
+check(
+    "footer is compact and does not double-count outer padding",
+    "PanelFooterMinHeight = 40" in constants and
+    "return contentHeight;" in layout and
+    "PanelTrendTimeframeLampRowHeight = 38" in lamp and
+    "PanelTrendTimeframeLampIndicatorHeight = 22" in lamp,
+    "footer geometry must be compact at the actual content boundary",
 )
 
 check(

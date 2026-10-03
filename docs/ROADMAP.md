@@ -3273,3 +3273,9 @@ The latest UI feedback resulted in a second hardening pass on the same panel/ale
 ## 2026-10-03 — Live alert footer relayout hardening
 
 The panel alert rail now performs an immediate lightweight footer geometry refresh on delivery, so timer-delivered alerts are visible without waiting for a later full panel render. Signal sound deduplication uses a bounded recent event set keyed by symbol/signal/bar/direction, preventing interleaved WATCH/REACTION/ACTION events from producing repeated audio while retaining the compact two-message visual rail.
+
+## 2026-10-03 — Third-pass panel/alert/terminal correction
+
+Current panel correction is now based on actual visible geometry rather than a large fixed footer reserve. The Footer content minimum is 40px, the two-line MTF rail is 38px, outer panel padding is counted only once, and alert text is no-wrap/ellipsis within the audit-required 20px row. Signal-family sound is deduplicated across semantic stages for one closed-M5 event, and MTF arrows have their own chart-object namespace.
+
+cTrader Local/Cloud: the repository does not add Cloud execution. cTrader documentation states that cloud synchronisation makes created/installed algorithms and updates available across apps; Windows/Mac can adjust synchronisation, while custom indicators execute locally on Windows/Mac and cBot local/cloud execution is selectable. This makes repeated Local/Cloud reconciliation a terminal synchronization/instance-state issue rather than a CFIP source-code execution path.

@@ -72,3 +72,16 @@ Implemented on `main` after live visual/audio feedback:
 A timer-delivered alert now immediately recalculates only the compact footer geometry. The panel keeps its existing scroll content height as far as the configured maximum allows, expands the Footer to the real two-row alert rail, and updates the button-stack height without invoking the expensive full panel row renderer.
 
 Signal audio deduplication now stores a bounded set of recent `symbol | signalId | CreatedClosedM5 | direction` event fingerprints. Interleaving different alerts cannot reset the dedup state, and the same signal event therefore reaches audible playback at most once during the retained window.
+
+
+## 2026-10-03 — Third-pass forensic correction
+
+The previous 132px footer reserve was not actually eliminated because the visible lower stack also included the MTF rail and the footer resolver duplicated outer panel padding. The canonical fix is now:
+
+- Footer content minimum: 40px.
+- MTF two-line rail: 38px including compact top/bottom spacing.
+- Footer resolver returns content height only; outer panel padding is charged exactly once.
+- Alert rows remain the audit-required 20px height, but now use no-wrap + ellipsis so the visible text cannot escape the row.
+- Signal-family audio is one event per symbol/closed-M5/direction across WATCH/REACTION/ACTION/SMART/EARLY variants.
+- MTF trend arrows use a dedicated `MTF_ARROW_1..3` namespace and therefore cannot overwrite/remove canonical signal arrows.
+- The repeated Local/Cloud prompt was traced to cTrader's synchronization/algorithm-source behavior, not to a repository Cloud transport; local-first operation must be selected at the terminal level.

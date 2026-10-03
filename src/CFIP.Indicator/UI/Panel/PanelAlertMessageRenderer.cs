@@ -46,6 +46,14 @@ namespace cAlgo
                             HorizontalAlignment = HorizontalAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,
                             TextAlignment = TextAlignment.Left,
+                            TextWrapping = TextWrapping.NoWrap,
+                            TextTrimming = TextTrimming.Ellipsis,
+                            LineHeight =
+                                Math.Max(
+                                    12,
+                                    Math.Min(
+                                        18,
+                                        PanelFontSize)),
                             Margin =
                                 new Thickness(
                                     0,
