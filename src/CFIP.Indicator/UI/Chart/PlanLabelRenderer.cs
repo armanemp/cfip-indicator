@@ -14,10 +14,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
-        private const int CompactPlanLabelWidthBars = 9;
         private const int CompactPlanLabelGapBars = 1;
-        private const double CompactPlanLabelHeightRangeFactor = 0.12;
-        private const double CompactPlanLabelMinimumHeightPips = 4.0;
 
         private void DrawPlanLabel(
             string name,
@@ -106,8 +103,11 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                // The label belongs to the LEFT edge of the same canonical
-                // line. It must never float at the chart's right edge.
+                // Native cTrader-style presentation:
+                // the line owns the geometry; the label is only ChartText.
+                // Do not create a second chart shape/rectangle. Rectangle
+                // objects are price/time geometry and become visually large
+                // or unstable when zoom/scale changes.
                 int lineLeftBar =
                     Math.Max(
                         0,
@@ -115,111 +115,17 @@ namespace cAlgo
                             Bars.Count - 1,
                             labelBar));
 
-                int rightBar =
+                int textBar =
                     Math.Max(
                         0,
                         lineLeftBar - CompactPlanLabelGapBars);
 
-                int leftBar =
-                    Math.Max(
-                        0,
-                        rightBar - CompactPlanLabelWidthBars);
-
                 double labelPrice =
                     NormalizePrice(price);
-
-                double rangeSum = 0.0;
-                int sampleCount = 0;
-                int firstSample =
-                    Math.Max(
-                        0,
-                        rightBar - 8);
-
-                for (int i = firstSample;
-                     i <= rightBar;
-                     i++)
-                {
-                    double high =
-                        Bars.HighPrices[i];
-                    double low =
-                        Bars.LowPrices[i];
-
-                    if (!double.IsNaN(high) &&
-                        !double.IsInfinity(high) &&
-                        !double.IsNaN(low) &&
-                        !double.IsInfinity(low) &&
-                        high >= low)
-                    {
-                        rangeSum += high - low;
-                        sampleCount++;
-                    }
-                }
-
-                double averageRange =
-                    sampleCount > 0
-                        ? rangeSum / sampleCount
-                        : Symbol.PipSize *
-                          CompactPlanLabelMinimumHeightPips;
-
-                double minimumHeight =
-                    Symbol.PipSize *
-                    CompactPlanLabelMinimumHeightPips;
-
-                double halfHeight =
-                    Math.Max(
-                        minimumHeight,
-                        averageRange *
-                        CompactPlanLabelHeightRangeFactor);
 
                 Color labelColor =
                     PlanLinePresentationRule.ResolveColor(
                         semanticColor);
-
-                ChartRectangle box =
-                    Chart.FindObject(name + "_BOX")
-                    as ChartRectangle;
-
-                if (box == null)
-                {
-                    ChartObject existing =
-                        Chart.FindObject(name + "_BOX");
-
-                    if (existing != null)
-                        Chart.RemoveObject(name + "_BOX");
-
-                    box =
-                        Chart.DrawRectangle(
-                            name + "_BOX",
-                            leftBar,
-                            labelPrice + halfHeight,
-                            rightBar,
-                            labelPrice - halfHeight,
-                            labelColor,
-                            1,
-                            LineStyle.Solid);
-                }
-
-                if (box == null)
-                    return;
-
-                box.Time1 =
-                    Bars.OpenTimes[leftBar];
-                box.Y1 =
-                    labelPrice + halfHeight;
-                box.Time2 =
-                    Bars.OpenTimes[rightBar];
-                box.Y2 =
-                    labelPrice - halfHeight;
-                box.Color =
-                    labelColor;
-                box.Thickness =
-                    1;
-                box.LineStyle =
-                    LineStyle.Solid;
-                box.IsFilled =
-                    true;
-                box.IsInteractive =
-                    false;
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -237,7 +143,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            Bars.OpenTimes[leftBar],
+                            Bars.OpenTimes[textBar],
                             labelPrice,
                             Color.White);
                 }
@@ -247,11 +153,6 @@ namespace cAlgo
 
                 label.Text =
                     text;
-
-                int textBar =
-                    leftBar +
-                    ((rightBar - leftBar) / 2);
-
                 label.Time =
                     Bars.OpenTimes[textBar];
                 label.Y =
@@ -267,17 +168,64 @@ namespace cAlgo
                         : PanelFontFamily;
                 label.IsBold =
                     false;
+
+                // Right-align against the anchor so the complete text stays
+                // on the label side of the line and never crosses its start.
                 label.HorizontalAlignment =
-                    HorizontalAlignment.Center;
+                    HorizontalAlignment.Right;
                 label.VerticalAlignment =
                     VerticalAlignment.Center;
                 label.IsInteractive =
                     false;
+
+                // Remove legacy rectangle objects left by previous versions.
+                Chart.RemoveObject(name + "_BOX");
+            Chart.RemoveObject(name + "_ANCHOR");
+
+                // A tiny native circle marks the exact line/label junction.
+                // It is one chart object, not a filled panel/box.
+                string markerName =
+                    name + "_ANCHOR";
+
+                ChartIcon marker =
+                    Chart.FindObject(markerName)
+                    as ChartIcon;
+
+                if (marker == null)
+                {
+                    ChartObject existingMarker =
+                        Chart.FindObject(markerName);
+
+                    if (existingMarker != null)
+                        Chart.RemoveObject(markerName);
+
+                    marker =
+                        Chart.DrawIcon(
+                            markerName,
+                            ChartIconType.Circle,
+                            Bars.OpenTimes[lineLeftBar],
+                            labelPrice,
+                            labelColor);
+                }
+
+                if (marker != null)
+                {
+                    marker.Time =
+                        Bars.OpenTimes[lineLeftBar];
+                    marker.Y =
+                        labelPrice;
+                    marker.Color =
+                        labelColor;
+                    marker.IconType =
+                        ChartIconType.Circle;
+                    marker.IsInteractive =
+                        false;
+                }
             }
             catch (Exception ex)
             {
                 Print(
-                    "CFIP compact plan label failed: {0}",
+                    "CFIP native plan label failed: {0}",
                     ex.Message);
             }
         }
