@@ -326,7 +326,11 @@ namespace cAlgo
                 return
                     DirectionText(model.Direction) +
                     " WAIT • ENTRY MUST REACH TRIGGER " +
-                    (model.Direction == 1 ? "ABOVE" : "BELOW");
+                    (model.Direction == 1
+                        ? "ABOVE"
+                        : model.Direction == -1
+                            ? "BELOW"
+                            : "UNKNOWN");
 
             if (!IsFinitePositive(entry))
                 return "NOT EXECUTABLE";
