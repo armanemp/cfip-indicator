@@ -449,6 +449,7 @@ namespace cAlgo
                 late,
                 microConflict,
                 opposingRegularDivergence,
+                supportiveHiddenDivergence,
                 trapRisk,
                 rewardRisk.RequiredRR);
 
