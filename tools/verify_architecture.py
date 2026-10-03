@@ -609,6 +609,7 @@ expected_models = {
     "SignalEvaluationTrace",
     "EntryGeometrySnapshot",
     "EntrySignalTiming",
+    "VolumeProfileSnapshot",
     "CanonicalPriceSnapshot",
     "MarketStateFrameSnapshot", "MarketStateSnapshot",
     "StructuralStopGeometrySnapshot",
