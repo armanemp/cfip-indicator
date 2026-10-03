@@ -8,7 +8,7 @@ namespace cAlgo
     {
         private const int PanelAlertMessageCapacity = 5;
         private const int PanelAlertMessageVisibleCapacity = 2;
-        private const int PanelAlertMessageRowHeight = 20;
+        private const int PanelAlertMessageRowHeight = 18;
         private const int PanelAlertMessageGap = 1;
         private const int PanelAlertMessageMaxCharacters = 132;
 
@@ -52,7 +52,7 @@ namespace cAlgo
                                 Math.Max(
                                     12,
                                     Math.Min(
-                                        18,
+                                        16,
                                         PanelFontSize)),
                             Margin =
                                 new Thickness(
