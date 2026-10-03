@@ -24,6 +24,8 @@ CbotExecutionStatePublisher now consumes this single rule instead of duplicating
 
 Behavioral coverage was added for READY / RECONCILED, ACTIVE / RECONCILED, ACTIVE / MULTI-SCENARIO, PENDING / MULTI-SCENARIO, RECOVERY REQUIRED and UNKNOWN.
 
+The Indicator execution-status synchronizer now also derives checked-state styling from the same effective cBot snapshot, eliminating a second local-vs-authoritative visual mismatch.
+
 ## Preserved execution chain
 
 Indicator analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> SignalEnvelope/ScenarioBatch -> cBot preflight -> per-ScenarioId reconciliation -> effective lifecycle state -> execution -> broker confirmation -> protection -> management -> history/panel state.
