@@ -20,6 +20,7 @@ namespace cAlgo
             bool late,
             bool microConflict,
             bool opposingRegularDivergence,
+            bool supportiveHiddenDivergence,
             EntryTrapRiskResult trapRisk,
             double requiredRR)
         {
