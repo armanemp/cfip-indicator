@@ -1,6 +1,6 @@
 # Sub-phase 1 — Footer + Alert/Popup Lifecycle Hardening (2026-10-03)
 
-Status: IMPLEMENTATION COMPLETE — verification pending on the exact branch head.
+Status: VERIFIED COMPLETE — merged to `main` via PR #248, merge commit `94edfb5f52f98bea21f0e25d0a74b3cce49fa700`.
 
 ## Scope
 
