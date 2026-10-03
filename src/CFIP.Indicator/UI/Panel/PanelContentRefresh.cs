@@ -34,7 +34,7 @@ namespace cAlgo
                 // Pull the freshest cBot heartbeat before building the one panel
                 // snapshot used by every live row in this refresh.
                 RefreshCbotExecutionStateIfDue();
-                RefreshPanelHeader();
+                UpdatePanelHeaderLiveState();
 
                 if (ownsVisualSnapshot)
                 {
