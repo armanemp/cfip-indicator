@@ -152,7 +152,7 @@ require(
 require(
     "CompactPlanLabelFontSize = 8.5" in label_renderer and
     "label.IsBold" in label_renderer and
-    "Chart.DrawRectangle(" not in label_renderer,
+    "Chart.DrawRectangle(" in label_renderer and "box.IsFilled" in label_renderer,
     "compact level labels must retain the modern lightweight text-only presentation",
 )
 
