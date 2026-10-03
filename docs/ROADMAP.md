@@ -87,7 +87,7 @@ Completed:
 - Legacy `P + "ARROW"` active-plan ownership was removed from rendering/cleanup.
 - BUY/SELL remains `UpArrow` / `DownArrow`; M1 trigger remains a separate Circle marker.
 - Signal/plan level lines are Solid, fixed at 1px, finite 40-bar geometry.
-- Compact labels are white, background-free and anchored left of line start with a deterministic gap.
+- Compact labels are white text inside compact boxes matching their line color and attached to the exact line endpoint.
 - Expired/invalid marker/line objects continue to be removed through the canonical lifecycle.
 - The dead `buttonMargin` local that caused the user's Release-build CS0219 warning was removed from `PanelMainRenderer`.
 - Legacy drawing audits/contracts were updated to enforce the new visual contract.
