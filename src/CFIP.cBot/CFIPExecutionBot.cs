@@ -136,6 +136,9 @@ namespace CFIP.cBot
         private readonly CbotExecutionEnvironmentGate _executionEnvironment =
             new CbotExecutionEnvironmentGate();
 
+        private readonly CbotRuntimeAudioCoordinator _audio =
+            new CbotRuntimeAudioCoordinator();
+
         private readonly Risk.CbotDailyLossGuard _dailyLossGuard =
             new Risk.CbotDailyLossGuard();
 
@@ -185,6 +188,10 @@ namespace CFIP.cBot
                 Account.IsLive &&
                 !EnableLiveExecution;
 
+            _audio.PlayStarted(
+                this,
+                !_liveExecutionDisarmed);
+
             SubscribeIndicatorLifecycleEvents();
             SubscribeBrokerLifecycleEvents();
 
@@ -229,6 +236,7 @@ namespace CFIP.cBot
                 Print(
                     "CFIP cBot LIVE DISARMED | broker mutation disabled | " +
                     "restart with Enable Live Execution = true to arm");
+                _audio.PlayLiveDisarmed(this);
             }
             else
             {
@@ -515,7 +523,7 @@ namespace CFIP.cBot
                 {
                     Print(
                         "CFIP {0} PENDING | status={1} | action={2} | " +
-                        "revision={2} | pending={3} | reason={4}",
+                        "revision={3} | pending={4} | reason={5}",
                         ExecutionEnvironmentLabel(),
                         pendingReport.Status,
                         pendingReport.Action,
@@ -524,6 +532,11 @@ namespace CFIP.cBot
                             ? pendingReport.BrokerPendingOrderId.Value.ToString()
                             : "",
                         pendingReason);
+
+                    if (pendingReport.Status == BrokerReportStatus.Confirmed)
+                        _audio.PlayExecutionConfirmed(this);
+                    else
+                        _audio.PlayExecutionRejected(this);
 
                     ReconcileBrokerState(true);
 
@@ -557,8 +570,8 @@ namespace CFIP.cBot
             {
                 Print(
                     "CFIP {0} MARKET | status={1} | action={2} | " +
-                    "revision={2} | position={3} | entry={4} | stop={5} | " +
-                    "target={6} | reason={7}",
+                    "revision={3} | position={4} | entry={5} | stop={6} | " +
+                    "target={7} | reason={8}",
                     ExecutionEnvironmentLabel(),
                     report.Status,
                     report.Action,
@@ -582,6 +595,11 @@ namespace CFIP.cBot
                             System.Globalization.CultureInfo.InvariantCulture)
                         : "",
                     executionReason);
+
+                if (report.Status == BrokerReportStatus.Confirmed)
+                    _audio.PlayExecutionConfirmed(this);
+                else
+                    _audio.PlayExecutionRejected(this);
 
                 ReconcileBrokerState(true);
 
@@ -912,6 +930,9 @@ namespace CFIP.cBot
                     ? "NONE"
                     : _boundIndicatorInstanceId,
                 _tickCount);
+            _audio.PlayBlocked(
+                this,
+                reason);
         }
 
         private void LogStateIfChanged(ShadowHostResult result)
@@ -1234,6 +1255,7 @@ namespace CFIP.cBot
 
         protected override void OnStop()
         {
+            _audio.PlayStopped(this);
             PublishPresence("STOPPED");
             PublishExecutionState(
                 "CBOT STOPPED",
@@ -1243,7 +1265,7 @@ namespace CFIP.cBot
 
             Print(
                 "CFIP cBot STOP | environment={0} | state={1} | executions={2} | " +
-                "sessionMs={2}",
+                "sessionMs={3}",
                 ExecutionEnvironmentLabel(),
                 _state,
                 _sessionExecutions,
