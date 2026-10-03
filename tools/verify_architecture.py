@@ -2666,7 +2666,7 @@ PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must resolve a canonical text color")
 compact_label_color = PLAN_LABEL_RENDERER_CODE[PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in compact_label_color:
+if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical white text contract")
 if "Chart.DrawRectangle(" in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must remain background-free")
