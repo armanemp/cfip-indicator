@@ -123,6 +123,27 @@ namespace cAlgo
                 normalized.StartsWith("AUTO-REACTION|", StringComparison.OrdinalIgnoreCase);
         }
 
+        private void RememberSignalSoundGroup(
+            string groupKey)
+        {
+            if (string.IsNullOrWhiteSpace(groupKey) ||
+                _rememberedSignalSoundGroups.Contains(groupKey))
+                return;
+
+            _rememberedSignalSoundGroups.Add(groupKey);
+            _rememberedSignalSoundGroupOrder.Enqueue(groupKey);
+
+            while (_rememberedSignalSoundGroupOrder.Count >
+                   MaxRememberedSignalSoundGroups)
+            {
+                string expiredGroup =
+                    _rememberedSignalSoundGroupOrder.Dequeue();
+
+                _rememberedSignalSoundGroups.Remove(
+                    expiredGroup);
+            }
+        }
+
         private bool ShouldQueueAlertSound(
             AlertDelivery delivery,
             out string groupKey)
@@ -186,26 +207,6 @@ namespace cAlgo
                     (delivery.Key ?? string.Empty);
             }
 
-        private void RememberSignalSoundGroup(
-            string groupKey)
-        {
-            if (string.IsNullOrWhiteSpace(groupKey) ||
-                _rememberedSignalSoundGroups.Contains(groupKey))
-                return;
-
-            _rememberedSignalSoundGroups.Add(groupKey);
-            _rememberedSignalSoundGroupOrder.Enqueue(groupKey);
-
-            while (_rememberedSignalSoundGroupOrder.Count >
-                   MaxRememberedSignalSoundGroups)
-            {
-                string expiredGroup =
-                    _rememberedSignalSoundGroupOrder.Dequeue();
-
-                _rememberedSignalSoundGroups.Remove(
-                    expiredGroup);
-            }
-        }
 
             if (_rememberedSignalSoundGroups.Contains(groupKey))
             {
