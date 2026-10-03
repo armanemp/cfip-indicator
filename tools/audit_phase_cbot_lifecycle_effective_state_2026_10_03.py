@@ -43,6 +43,13 @@ require(
     "publisher does not consume canonical lifecycle rule",
 )
 require(
+    "                            autoTrading" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs") and
+    "                        autoTrading" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs") and
+    "                            autoOrders" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs") and
+    "                        autoOrders" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs"),
+    "execution status styling is not derived from the authoritative effective cBot state",
+)
+require(
     '"ACTIVE / RECONCILED"' in test and
     '"ACTIVE / MULTI-SCENARIO"' in test and
     '"PENDING / MULTI-SCENARIO"' in test and
