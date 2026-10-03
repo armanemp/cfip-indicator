@@ -54,6 +54,11 @@ check(
     "MatchesInstanceScope(" in publisher
 )
 check(
+    "protection recovery preserves per-scenario reconciliation truth",
+    "TryRecoverProtection(" in bot and
+    "_reconciliation =\n                        ReconcileScenarioState(" in bot
+)
+check(
     "cBot management is not blocked by unrelated scenario recovery",
     'if (EnableDemoManagementExecution &&\n                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))' in bot
 )
