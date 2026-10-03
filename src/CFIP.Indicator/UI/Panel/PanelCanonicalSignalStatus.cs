@@ -62,7 +62,7 @@ namespace cAlgo
             {
                 return
                     "PRIMARY M15/H1  •  " +
-                    (m15 == 1 ? "BUY" : "SELL") +
+                    m15Text +
                     "  •  M5/M1 TUNING";
             }
 
