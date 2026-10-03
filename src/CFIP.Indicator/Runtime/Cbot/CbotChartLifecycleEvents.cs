@@ -68,7 +68,7 @@ namespace cAlgo
                     {
                         RefreshCbotExecutionStateIfDue(true);
                         InvalidatePanelExecutionProtectionStateCache();
-                        RenderPanel();
+                        RequestPanelContentRefresh();
                     }
                     catch (Exception ex)
                     {
