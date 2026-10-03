@@ -434,9 +434,5 @@ private TradeOpportunityCandidate BuildLaneCandidate(
                 ? geometry.NominalRR
                 : 0;
         }
-
-    }
-}
-
     }
 }
