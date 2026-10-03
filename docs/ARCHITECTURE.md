@@ -273,3 +273,12 @@ Mapping for the upcoming provider migration:
 - requested live management actions → `CFIP.Contracts.ManagementCommand`
 
 P2 must expose these canonical Contracts read-only from the Indicator. cBot must never reconstruct them from chart objects or private Indicator state. After P2/P3 parity, the temporary internal models can be reduced or removed as their callers are migrated.
+
+
+## M2 micro-precision contract — 2026-10-04
+
+M2 (2-minute) is a dedicated micro-precision evidence layer. cTrader officially exposes `TimeFrame.Minute2` / m2, so CFIP loads it through the same platform boundary as the other native timeframes. citeturn1search0
+
+Ownership is intentionally constrained: M2 has one closed-index source (`MtfClosedContext.M2`), one frame (`_m2Frame`) and one semantic evaluator (`M2PrecisionRule`). It may report micro alignment/conflict against the canonical M5 frame, but it does **not** vote in the directional decision, does not become an execution clock, and does not replace M5 trigger/entry precision ownership. This prevents M2 from becoming a competing decision engine.
+
+The panel exposes M2 through the same `PanelTimeframePresentationState` path as the other timeframe rows and marks its state as MICRO-ALIGNED, MICRO-CONFLICT or WAIT. No second panel renderer was introduced.
