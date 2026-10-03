@@ -1,6 +1,6 @@
 ## 2026-10-03 — cBot position truth / restart idempotency hardening
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.
 
 Closed the remaining CBOT-6M execution seam:
 - individual SignalEnvelope processing now adopts exact per-ScenarioId reconciliation;

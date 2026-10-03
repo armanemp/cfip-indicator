@@ -1,6 +1,6 @@
 # Current focus — CBOT POSITION TRUTH / RESTART IDEMPOTENCY HARDENING — 2026-10-03
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.
 
 This work unit closes the remaining execution-correctness seam after CBOT-6M:
 
@@ -25,6 +25,8 @@ Safety:
 - concurrent capacity remains explicitly bounded.
 
 Verification:
+- automated Source/Architecture, Runtime Acceptance and cTrader Compile/Build: PASS for PR #227;
+- follow-up recovery-truth regression is routed through the same audit path;
 - dedicated cBot position-truth audit;
 - Source/Architecture accumulated checks;
 - Runtime Acceptance;
