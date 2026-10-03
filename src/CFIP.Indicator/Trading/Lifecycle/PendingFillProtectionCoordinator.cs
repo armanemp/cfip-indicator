@@ -69,7 +69,7 @@ namespace cAlgo
                 Math.Max(Symbol.PipSize, 1e-9);
 
             ManagementCommandRequestStatus ladderStatus =
-                TryModifyTakeProfitLadder(
+                RequestModifyTakeProfitLadder(
                     position,
                     firstVolume,
                     firstPips,
