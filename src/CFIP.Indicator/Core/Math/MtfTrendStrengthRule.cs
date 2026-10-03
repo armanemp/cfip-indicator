@@ -209,18 +209,28 @@ namespace cAlgo
                     ? preferredDirection
                     : htfDirection;
 
-            int htfScore =
-                ResolveCompositeScore(
-                    higherScoreDirection == 1
+            double htfSelectedStrength =
+                higherScoreDirection == 1
+                    ? htfBullAverage
+                    : higherScoreDirection == -1
+                        ? htfBearAverage
+                        : 0;
+
+            double htfOppositeStrength =
+                higherScoreDirection == 1
+                    ? htfBearAverage
+                    : higherScoreDirection == -1
                         ? htfBullAverage
-                        : htfScoreDirection(higherScoreDirection, htfBearAverage, htfBullAverage),
-                    ResolveDominance(
-                        higherScoreDirection == 1
-                            ? htfBullAverage
-                            : htfBearAverage,
-                        higherScoreDirection == 1
-                            ? htfBearAverage
-                            : htfBullAverage));
+                        : 0;
+
+            int htfScore =
+                higherScoreDirection == 0
+                    ? 0
+                    : ResolveCompositeScore(
+                        htfSelectedStrength,
+                        ResolveDominance(
+                            htfSelectedStrength,
+                            htfOppositeStrength));
 
             return new MtfTrendStrengthResult(
                 arrowDirection,
@@ -233,15 +243,6 @@ namespace cAlgo
                 htfDirection);
         }
 
-        private static double htfScoreDirection(
-            int direction,
-            double primary,
-            double opposite)
-        {
-            return direction == -1
-                ? primary
-                : 0;
-        }
 
         private static int ResolveDominantDirection(
             double bull,
