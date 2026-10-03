@@ -62,6 +62,18 @@ require(
     "BROKER MODIFY COOLDOWN" in manager,
     "broker modification cooldown is not position-scoped",
 )
+
+cooldown_call = manager.find("if (!TryAllowProtectionMutation(")
+if cooldown_call >= 0:
+    execute_call = manager.find("ExecuteOne(", cooldown_call)
+    cooldown_block = manager[cooldown_call:execute_call]
+    require(
+        "StoreReport(" not in cooldown_block and
+        "BrokerReportStatus.Accepted" not in cooldown_block,
+        "cooldown deferment must not persist an Accepted broker fact that freezes the command",
+    )
+else:
+    require(False, "cooldown gate call is missing")
 require(
     "_management.Process(" in bot and
     "_executionSettings," in bot,
