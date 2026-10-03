@@ -157,4 +157,5 @@ jobs:
       - run: python tools/audit_phase_realtime_multiscenario_opportunity_engine_2026_10_03.py
       - run: python tools/audit_phase_realtime_live_signal_unification_2026_10_03.py
       - run: python tools/audit_phase_panel_footer_alert_dedup_2026_10_03.py
+      - run: python tools/audit_phase_panel_timeframe_single_source_2026_10_03.py
       - run: python tools/audit_phase_volume_profile_evidence_2026_10_03.py
