@@ -25,6 +25,7 @@ namespace cAlgo
         public int MtfTrendStrengthScore;
         public int HtfTrendDirection;
         public int HtfTrendStrengthScore;
+        public string MtfTrendStrengthTier;
         public string Stage;
         public bool DecisionReady;
         public bool DecisionEntryAllowed;
