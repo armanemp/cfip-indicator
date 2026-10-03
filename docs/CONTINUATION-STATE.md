@@ -84,7 +84,7 @@ Status: VERIFIED COMPLETE — implemented directly on `main`.
 Closure:
 - One canonical directional-arrow renderer now owns active Plan/WATCH/Reaction arrows.
 - Signal/plan lines are Solid, one-pixel and finite 40-bar geometry.
-- Labels are white/background-free with a deterministic left-of-line gap.
+- Labels are white regular-weight text inside filled line-colored boxes attached to the exact line endpoint.
 - User-reported Release-build CS0219 warning for dead `PanelMainRenderer.buttonMargin` was removed.
 - Source/Architecture, Runtime Acceptance and cTrader Compile all passed on code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c`.
 
