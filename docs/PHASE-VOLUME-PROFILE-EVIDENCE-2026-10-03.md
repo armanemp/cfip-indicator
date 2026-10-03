@@ -54,3 +54,6 @@ Required:
 
 Phase audit:
 tools/audit_phase_volume_profile_evidence_2026_10_03.py
+
+## VOLUME PROFILE EVIDENCE
+This phase remains part of the consolidated realtime/live intelligence architecture and uses the canonical opportunity candidate builder and ranking path.
