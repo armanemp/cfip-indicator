@@ -1,6 +1,6 @@
 ## 2026-10-03 — cBot Shadow Multi-Scenario Truth
 
-Status: implementation complete, verification pending.
+Status: implementation complete, automated verification PASS; target-terminal acceptance pending.
 
 Additional execution-chain hardening:
 - ShadowHost cached results and broker recheck timestamps are now ScenarioId-scoped;
@@ -24,6 +24,8 @@ Implemented:
 Safety and M15/M5/M1 role contracts remain unchanged.
 
 Phase record: docs/PHASE-CBOT-SHADOW-MULTISCENARIO-TRUTH-2026-10-03.md.
+
+Automated Source/Architecture, Runtime Acceptance and cTrader Compile/Build are PASS for the final implementation. Target-terminal acceptance remains the only outstanding verification boundary.
 
 Operator action after merge: git pull --ff-only.
 ## 2026-10-03 — cBot Position Truth / Restart Idempotency Hardening
