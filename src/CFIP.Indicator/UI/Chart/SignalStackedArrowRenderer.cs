@@ -65,6 +65,27 @@ namespace cAlgo
 
             int direction = snapshot.MtfTrendDirection;
 
+            // A canonical actionable/active plan owns the trade direction.
+            // Never display a contradictory MTF arrow above a live decision.
+            int decisionDirection =
+                snapshot.PlanDirection != 0
+                    ? snapshot.PlanDirection
+                    : snapshot.DecisionDirection;
+
+            bool decisionOwnsDirection =
+                snapshot.PlanActive ||
+                snapshot.ActionableNow ||
+                snapshot.DecisionEntryAllowed;
+
+            if (decisionOwnsDirection &&
+                decisionDirection != 0 &&
+                direction != 0 &&
+                decisionDirection != direction)
+            {
+                RemoveStackedSignalArrows();
+                return;
+            }
+
             if (direction == 0)
             {
                 RemoveStackedSignalArrows();
