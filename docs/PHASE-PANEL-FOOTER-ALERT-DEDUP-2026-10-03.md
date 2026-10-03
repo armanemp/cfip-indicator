@@ -28,3 +28,8 @@ Custom sound playback returns immediately on success, so it does not fall throug
 ## Verification boundary
 
 Static/source audits and Runtime Acceptance Contracts are automated. Actual cTrader visual geometry and audible terminal behavior remain target-terminal acceptance checks.
+
+
+## Follow-up — compiler warning cleanup
+
+The Release build exposed CS0649 on `TradeOpportunityCandidate.RewardDistanceAtr` and `MinimumRequiredRewardDistanceAtr`. The canonical parallel-candidate builder now assigns both from the existing ATR/reward geometry and the existing `RegimeAdaptiveRewardFloorRule`; no new public threshold or behavior gate was introduced.

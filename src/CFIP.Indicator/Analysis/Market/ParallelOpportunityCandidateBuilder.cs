@@ -214,6 +214,22 @@ namespace cAlgo
                     preview.Stop,
                     direction);
 
+            double candidateAtr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            string candidateRegime =
+                _decision == null
+                    ? "UNKNOWN"
+                    : _decision.Regime;
+
+            double minimumRequiredRewardDistanceAtr =
+                RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(
+                    candidateRegime,
+                    MinimumTpSpacingAtr,
+                    MinimumSlAtr);
+
             TradeActionabilityResult actionability =
                 EvaluateTradeActionability(
                     closedM5,
@@ -229,9 +245,7 @@ namespace cAlgo
                     preview.Entry,
                     preview.Stop,
                     preview.Tp1,
-                    Atr(
-                        _m5Bars,
-                        closedM5),
+                    candidateAtr,
                     Math.Max(
                         0,
                         Symbol.Ask - Symbol.Bid),
@@ -284,6 +298,14 @@ namespace cAlgo
                             ? quality
                             : execution.Quality)),
                 Risk = preview.Risk,
+                RewardDistanceAtr =
+                    IsFinitePositive(candidateAtr)
+                        ? rewardRisk.Reward / candidateAtr
+                        : 0,
+                MinimumRequiredRewardDistanceAtr =
+                    IsFinitePositive(minimumRequiredRewardDistanceAtr)
+                        ? minimumRequiredRewardDistanceAtr
+                        : 0,
                 Tp1RR = tp1RR,
                 Tp2RR = tp2RR,
                 Tp3RR = tp3RR,

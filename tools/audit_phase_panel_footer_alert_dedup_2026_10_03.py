@@ -64,6 +64,13 @@ check(
 )
 
 check(
+    "RewardDistanceAtr =" in read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs") and
+    "MinimumRequiredRewardDistanceAtr =" in read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs") and
+    "RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(" in read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs"),
+    "TradeOpportunityCandidate reward-distance fields must be assigned by the canonical parallel-candidate builder",
+)
+
+check(
     "Notifications.PlaySound(" not in alerts and
     processor.count("Notifications.PlaySound(") == 3 and
     "RecordPanelAlertDelivery(next)" in processor,
