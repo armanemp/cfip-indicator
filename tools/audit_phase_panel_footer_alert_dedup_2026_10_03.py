@@ -123,7 +123,7 @@ check(
 
 check(
     "private bool SendUnifiedAlert(" in alerts and
-    "return queued;" in alerts and
+    "return delivered;" in alerts and
     "retryable=true" in alerts and
     "Notifications.PlaySound(" not in alerts,
     "alert acknowledgement must occur at queue acceptance and playback must stay centralized",

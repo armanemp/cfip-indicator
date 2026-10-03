@@ -361,11 +361,6 @@ namespace cAlgo
                 BasePlanTimeframe = "M5"
             };
 
-            double candidateAtr =
-                Atr(
-                    _m5Bars,
-                    closedM5);
-
             VolumeProfileSnapshot volumeProfile =
                 GetM15VolumeProfileSnapshot();
 
