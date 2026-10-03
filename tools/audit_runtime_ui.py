@@ -67,8 +67,8 @@ if "MapM5ToChart(" in line or "anchorM5" in line:
     raise SystemExit("Plan-line geometry must not be tied to an M5 event-time anchor")
 if "MapM5ToChart(" in pending or "anchorBar" in pending:
     raise SystemExit("Pending level rendering must not discard levels because an M5 anchor cannot be mapped")
-if "GetPlanLineLeftBar(" not in labels:
-    raise SystemExit("Plan labels must reuse the canonical plan-line left edge")
+if "GetCompactPlanLabelAnchorBar(" not in labels:
+    raise SystemExit("Plan labels must consume the canonical compact-label anchor")
 if "GetCompactPlanLineLeftBar(" in labels:
     raise SystemExit("Legacy compact-line anchor helper must not remain")
 
@@ -162,17 +162,21 @@ for relative in (
 if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessageColor(" not in alert_rail:
     raise SystemExit("Unified panel alert rail is incomplete")
 
-compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in labels_renderer:
-    raise SystemExit("All compact plan-level text must use the canonical semantic line color")
-if "Chart.DrawRectangle(" not in compact_label_renderer:
-    raise SystemExit("Plan label renderer must own the cTrader-style filled label box")
-if "box.IsFilled" not in compact_label_renderer:
-    raise SystemExit("Plan label box must be filled")
-if "PlanLinePresentationRule.ResolveColor(" not in compact_label_renderer:
-    raise SystemExit("Plan label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in labels_renderer:
-    raise SystemExit("Plan label box must attach to the canonical line endpoint")
+compact_label_renderer = labels_renderer[labels_renderer.find("private void RenderCompactPlanLabel("):]
+if "GetReadableLabelTextColor" not in compact_label_renderer:
+    raise SystemExit("Compact plan labels must use the canonical semantic line-color owner")
+if "return ResolvePlanLineColor(semanticColor);" not in labels_renderer:
+    raise SystemExit("Compact plan labels must reuse canonical plan-line color")
+if "Chart.DrawRectangle(" in compact_label_renderer:
+    raise SystemExit("Compact plan labels must not create a rectangle background")
+if "_BOX" in compact_label_renderer:
+    raise SystemExit("Compact plan labels must not retain legacy box objects")
+if "_ANCHOR" in compact_label_renderer:
+    raise SystemExit("Compact plan labels must not retain legacy anchor markers")
+if "CompactPlanLabelGapPips = 2.0" not in labels_renderer:
+    raise SystemExit("Compact plan labels must preserve the exact 2-pip clearance contract")
+if "HorizontalAlignment.Right" not in compact_label_renderer:
+    raise SystemExit("Compact plan labels must align immediately before the line start")
 if "OrderVolume(" in server_ladder:
     raise SystemExit("Server TP ladder must use the current relative protection volume API")
 if "new RelativeTakeProfitProtection(" not in server_ladder:
@@ -183,10 +187,8 @@ if "!pendingValid" not in signal_snapshot or "!livePlan" not in signal_snapshot:
     raise SystemExit("Signal snapshot must suppress lower-priority signal layers during execution state")
 if "!snapshot.PendingOrder" not in signal_renderer or "!snapshot.LivePosition" not in signal_renderer:
     raise SystemExit("Signal alerts must yield while pending/live execution is authoritative")
-if "Chart.DrawRectangle(" not in labels_renderer:
-    raise SystemExit("Plan label renderer must own the canonical filled cTrader-style box")
-if "box.IsFilled" not in labels_renderer:
-    raise SystemExit("Plan label box must be filled")
+if "Chart.DrawRectangle(" in labels_renderer:
+    raise SystemExit("Plan label renderer must not create legacy filled boxes")
 if "_serverSideTakeProfitLadderActive" not in partial:
     raise SystemExit("Local partial-close path must know server TP authority")
 if "_serverSideTakeProfitLadderActive" not in target_progression:
@@ -211,7 +213,7 @@ if "PlaceLimitOrder(" not in pending_cbot:
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
 print("All level/prediction signal lines: solid-only")
-print("Level labels: white text inside canonical line-colored filled boxes, exact-price alignment")
+print("Level labels: native ChartText, semantic line color, no box/marker, exact 2-pip clearance")
 print("Alerts: unified panel rail + optional sound, no popup UI")
 print("Indicator execution controls: broker-action UI removed; analysis panel is canonical")
 print("Market / Market-Range broker mutation: owned by CFIP.cBot")
