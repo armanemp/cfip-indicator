@@ -152,6 +152,15 @@ namespace cAlgo
                                     }
                                 }
 
+        private string DirectionText(int direction)
+        {
+            if (direction == 1)
+                return "BUY";
+            if (direction == -1)
+                return "SELL";
+            return "NEUTRAL";
+        }
+
         private string DirectionText(TradeType tradeType)
         {
             return
