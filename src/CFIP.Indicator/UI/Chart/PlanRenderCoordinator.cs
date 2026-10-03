@@ -41,7 +41,6 @@ namespace cAlgo
                 Bars.Count < 2)
             {
                 RemoveStackedSignalArrows();
-                Chart.RemoveObject(P + "ARROW");
             }
             else
             {
@@ -99,7 +98,7 @@ namespace cAlgo
                 RenderPlanLabels(snapshot, true);
             else
                 RemovePlanLabels();
-            Chart.RemoveObject(P + "ARROW");
+            RemoveStackedSignalArrows();
 
         }
 
