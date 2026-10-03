@@ -17,6 +17,13 @@ namespace CFIP.cBot.Execution
         public double MaximumDailyLossPercent { get; }
         public int MaximumOpenPositions { get; }
         public bool OneOrderPerSignal { get; }
+        public bool EnableLiveExitManagement { get; }
+        public bool EnablePartialTakeProfit { get; }
+        public bool AutoBrokerProtection { get; }
+        public bool AutoProtectBrokerPositions { get; }
+        public bool SyncBrokerTakeProfit { get; }
+        public bool ManagedActionsOnly { get; }
+        public int BrokerModifyCooldownMs { get; }
 
         private CbotIndicatorExecutionSettings(
             bool enableAutoTrading,
@@ -29,7 +36,14 @@ namespace CFIP.cBot.Execution
             bool enableDailyLossLimit,
             double maximumDailyLossPercent,
             int maximumOpenPositions,
-            bool oneOrderPerSignal)
+            bool oneOrderPerSignal,
+            bool enableLiveExitManagement,
+            bool enablePartialTakeProfit,
+            bool autoBrokerProtection,
+            bool autoProtectBrokerPositions,
+            bool syncBrokerTakeProfit,
+            bool managedActionsOnly,
+            int brokerModifyCooldownMs)
         {
             EnableAutoTrading = enableAutoTrading;
             EnableAutomaticOrders = enableAutomaticOrders;
@@ -42,6 +56,18 @@ namespace CFIP.cBot.Execution
             MaximumDailyLossPercent = maximumDailyLossPercent;
             MaximumOpenPositions = maximumOpenPositions;
             OneOrderPerSignal = oneOrderPerSignal;
+            EnableLiveExitManagement = enableLiveExitManagement;
+            EnablePartialTakeProfit = enablePartialTakeProfit;
+            AutoBrokerProtection = autoBrokerProtection;
+            AutoProtectBrokerPositions = autoProtectBrokerPositions;
+            SyncBrokerTakeProfit = syncBrokerTakeProfit;
+            ManagedActionsOnly = managedActionsOnly;
+            BrokerModifyCooldownMs =
+                Math.Max(
+                    100,
+                    Math.Min(
+                        5000,
+                        brokerModifyCooldownMs));
         }
 
         public static bool TryRead(
@@ -101,7 +127,35 @@ namespace CFIP.cBot.Execution
                 !TryGetBool(
                     indicator,
                     "OneOrderPerSignal",
-                    out bool oneOrderPerSignal))
+                    out bool oneOrderPerSignal) ||
+                !TryGetBool(
+                    indicator,
+                    "EnableLiveExitManagement",
+                    out bool enableLiveExitManagement) ||
+                !TryGetBool(
+                    indicator,
+                    "EnablePartialTakeProfit",
+                    out bool enablePartialTakeProfit) ||
+                !TryGetBool(
+                    indicator,
+                    "AutoBrokerProtection",
+                    out bool autoBrokerProtection) ||
+                !TryGetBool(
+                    indicator,
+                    "AutoProtectBrokerPositions",
+                    out bool autoProtectBrokerPositions) ||
+                !TryGetBool(
+                    indicator,
+                    "SyncBrokerTakeProfit",
+                    out bool syncBrokerTakeProfit) ||
+                !TryGetBool(
+                    indicator,
+                    "ManagedActionsOnly",
+                    out bool managedActionsOnly) ||
+                !TryGetInt(
+                    indicator,
+                    "BrokerModifyCooldownMs",
+                    out int brokerModifyCooldownMs))
             {
                 reason = "INDICATOR EXECUTION SETTINGS INCOMPLETE";
                 return false;
@@ -134,7 +188,14 @@ namespace CFIP.cBot.Execution
                     enableDailyLossLimit,
                     maximumDailyLossPercent,
                     maximumOpenPositions,
-                    oneOrderPerSignal);
+                    oneOrderPerSignal,
+                    enableLiveExitManagement,
+                    enablePartialTakeProfit,
+                    autoBrokerProtection,
+                    autoProtectBrokerPositions,
+                    syncBrokerTakeProfit,
+                    managedActionsOnly,
+                    brokerModifyCooldownMs);
 
             return true;
         }
