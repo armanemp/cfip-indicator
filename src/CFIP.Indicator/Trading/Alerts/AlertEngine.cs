@@ -191,14 +191,17 @@ if (SuppressDuplicateAlerts)
 
                             // Restriction/blocked candidates remain diagnostic panel messages
                             // and never emit the normal signal sound or chart marker.
+                            AlertSoundPolicy.Decision soundDecision =
+                                AlertSoundPolicy.Resolve(
+                                    normalizedKey,
+                                    UseSemanticAlertSounds,
+                                    AlertSoundType,
+                                    envelope,
+                                    SymbolName);
+
                             bool playSound =
                                 EnableSoundAlerts &&
                                 !blockedCandidateAlert;
-
-                            SoundType soundType =
-                                ResolveAlertSoundType(
-                                    normalizedKey,
-                                    critical);
 
                             // Every eligible canonical alert is delivered to the same bounded transport.
                             // The panel rail is now the sole visual message surface; sound remains optional.
@@ -208,7 +211,7 @@ if (SuppressDuplicateAlerts)
                                         envelope,
                                         direction,
                                         playSound,
-                                        soundType.ToString(),
+                                        soundDecision.SoundType.ToString(),
                                         SoundFilePath));
 
                             Print(
@@ -328,47 +331,6 @@ if (SuppressDuplicateAlerts)
                             return fallback;
                         }
 
-        private SoundType ResolveAlertSoundType(
-                            string key,
-                            bool critical)
-                        {
-                            if (!UseSemanticAlertSounds)
-                                return AlertSoundType;
-                
-                            if (key.StartsWith(
-                                    "SL|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "INVALID",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "RESTRICT|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "REVERSAL|",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.NegativeNotification;
-                
-                            if (key.StartsWith(
-                                    "TP",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "AUTO",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "ACTION|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "HIGH|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                key.StartsWith(
-                                    "SMART|",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.PositiveNotification;
-                
-                            return critical
-                                ? SoundType.Confirmation
-                                : SoundType.Announcement;
-                        }
+
     }
 }
