@@ -1,3 +1,33 @@
+# Current Continuation State — 2026-10-03 Live Realtime cBot Hardening
+
+Status: IMPLEMENTED; CI verification in progress on PR #237.
+
+Current architecture contract:
+- Indicator: pre-analysis, historical/outcome memory, M15 canonical decision, M5 trigger/tuning/entry precision, optional M1 confirmation, HTF context, prediction/evidence, opportunity/scenario construction, chart/alerts/presentation.
+- cBot: current-quote Market/Aggressive execution, future Stop/Limit pending placement, broker/account risk, lifecycle, protection, management, reconciliation and recovery.
+- Contracts: immutable Indicator-to-cBot ScenarioBatch/ExecutionIntent boundary.
+- Current scenarios execute only when actionability is for now; future scenarios remain pending-order intents.
+- Multiple distinct ScenarioIds may coexist up to the cBot concurrency bound; duplicate ScenarioIds remain idempotent.
+
+Latest hardening:
+- live cBot remains attached with Enable Live Execution = false and stays broker-mutation fail-closed instead of stopping at startup;
+- live execution is explicitly armable by the cBot;
+- cBot signal-store reload is bounded to 100 ms and Indicator cBot-state visibility to 200 ms;
+- chart CFIP attachment discovery scans Custom indicators first and reports seen candidates on failure;
+- stagnant RANGE/COMPRESSION opportunities require a larger adaptive reward excursion;
+- alert sound is delivered from the realtime last-bar path and keeps normal queue priority semantics;
+- current and future opportunity builders share the adaptive reward-floor rule.
+
+Verification on the current PR head:
+- cTrader compile: latest run PASS;
+- Runtime acceptance: latest run PASS;
+- Source/Architecture: rerun is in progress after P7 contract alignment;
+- target cTrader terminal validation is still required for actual live-account attach/arm, same-tick handoff, simultaneous scenarios, audio playback, pending-order triggering, reconnect and broker-specific behavior.
+
+Operator action after verified merge: git pull --ff-only on local main.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
