@@ -431,7 +431,7 @@ Evidence commits: 5d8467c486cb5fe321fa2cdbbad44831f2a7fc8b, 6c49940cb84cba9fff30
 
 ### M2.169 semantic naming — management request owner
 
-**IN PROGRESS.** The management coordinator now exposes explicit request-status semantics internally, but the historical Try* helper names still need a single-owner rename to Request* so their API names cannot imply direct broker mutation. No parallel wrappers are being introduced.
+**ROOT-CORRECTED.** The management coordinator and its consumers now use explicit Request* helper names (RequestClosePosition, RequestCancelPendingOrder, RequestModifyStopLoss, RequestModifyTakeProfit, RequestModifyTakeProfitLadder, RequestModifyTakeProfitPips). The naming expresses request/coordination semantics without implying broker confirmation, and no compatibility wrapper was added.
 
 ### M2.175 broker lifecycle listeners — necessity audit
 
@@ -468,3 +468,12 @@ Evidence commits: b00e744a1bf055bf4d6248124323a8cfd5b6751a, 5a8cbb627b8e3bebb2dc
 ### M2.187 — duplicate/parallel-owner sweep
 
 **AUDIT RESULT.** Targeted executable-owner sweep found one canonical production owner for market broker mutation, pending broker mutation, management request coordination, plan line rendering, plan label rendering, and realtime signal envelope consumption. No second production executor/renderer was introduced by M2. Remaining same-name matches are either canonical consumers/builders or historical/audit guards, not competing owners. Full repository-wide semantic duplicate scan remains part of the M2 closure gate and is not being declared complete from this targeted pass.
+
+
+### M2.188 — canonical panel refresh ownership
+
+**ROOT-CORRECTED.** The normal ready-state panel path is already owned by `RefreshPanelContentIfDue()` under the runtime heartbeat. Four secondary paths still synchronously invoked the heavy `RenderPanel()` renderer: calculation-readiness updates, runtime-fault handling, closed-bar MTF-wait handling, and cBot chart-lifecycle events. These calls were replaced with the canonical `RequestPanelContentRefresh()` invalidation owned by `PanelContentRefresh.cs`; the heartbeat remains responsible for applying the content refresh. This removes competing panel refresh clocks and prevents lifecycle/error events from rebuilding panel layout outside the canonical UI owner.
+
+Evidence commits: c782be3f610f201ab377bc4bc1a3add4ef472c66, fa9e966239e9a11410c405fd320ffb6023a36dba, e58b113b020579acd81b500a242eb47631ec949b, 1cbff2996dfafb82dc6dd717458e0539d8a5f370, 9d1f404b37a30397fb1e3cd4d200f407a76e5b1a, b99172233f626a0c8017c1d578f9d7d864a6bbdd.
+
+**Modernization disposition:** retained `RenderPanel()` as the sole full-layout renderer; reused the existing heartbeat/content owner; introduced only a canonical invalidation primitive, not a second renderer, cache, timer, or workaround. This also respects cTrader's main-thread UI model and keeps UI work on the indicator lifecycle owner.
