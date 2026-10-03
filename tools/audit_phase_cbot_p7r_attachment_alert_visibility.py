@@ -145,7 +145,7 @@ require(
 )
 
 require(
-    "return semanticColor;" in label_renderer and
+    "return Color.White;" in label_renderer and
     "GetReadableLabelTextColor(" in label_renderer and
     "labelTextColor" in label_renderer,
     "compact level labels must use the exact semantic line color",
