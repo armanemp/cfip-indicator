@@ -100,7 +100,16 @@ namespace CFIP.cBot.Execution
 
                 if (!CbotManagementPolicyRule.Allows(
                         command.Command,
-                        settings,
+                        settings != null &&
+                        settings.EnableLiveExitManagement,
+                        settings != null &&
+                        settings.EnablePartialTakeProfit,
+                        settings != null &&
+                        settings.AutoBrokerProtection,
+                        settings != null &&
+                        settings.AutoProtectBrokerPositions,
+                        settings != null &&
+                        settings.SyncBrokerTakeProfit,
                         out string policyReason))
                 {
                     StoreReport(
