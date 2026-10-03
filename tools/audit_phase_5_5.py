@@ -34,8 +34,9 @@ geometry = read(
 computation = read(
     "src/CFIP.Indicator/Analysis/Market/ParallelScenarioComputation.cs"
 )
-parallel = read(
-    "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
+parallel = (
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
 )
 candidate_builder = read(
     "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs"
