@@ -104,7 +104,6 @@ namespace cAlgo
             double price,
             Color color,
             bool visible,
-            int lineLeft,
             int labelBar)
         {
             if (!visible ||
@@ -121,7 +120,6 @@ namespace cAlgo
                 text,
                 price,
                 color,
-                lineLeft,
                 labelBar);
         }
 
@@ -130,7 +128,6 @@ namespace cAlgo
             string text,
             double price,
             Color semanticColor,
-            int lineLeft,
             int labelBar)
         {
             try
