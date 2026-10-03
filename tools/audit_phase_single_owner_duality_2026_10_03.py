@@ -68,10 +68,12 @@ require(
 
 require(
     "Chart.DrawText(" in label and
-    "Chart.DrawRectangle(" not in label and
+    "Chart.DrawRectangle(" in label and
+    "box.IsFilled" in label and
     "NormalizePrice(price);" in label and
-    'name + "_BOX"' in label,
-    "canonical chart labels must be exact-price, background-free text with legacy-object cleanup only",
+    'name + "_BOX"' in label and
+    "PlanLinePresentationRule.ResolveColor(" in label,
+    "canonical chart labels must be exact-price, line-colored filled boxes with legacy-object cleanup only",
 )
 
 require(
