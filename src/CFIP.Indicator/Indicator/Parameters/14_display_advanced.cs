@@ -18,10 +18,6 @@ namespace cAlgo
 
         [Parameter("Show Context Event Marker", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
         public bool ShowContextEventMarker { get; set; }
-
-        [Parameter("Label Left Offset Bars", Group = "14 · DISPLAY — ADVANCED", DefaultValue = 3, MinValue = 3, MaxValue = 10)]
-        public int LabelLeftOffsetBars { get; set; }
-
         [Parameter("Show Prediction Objects", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
         public bool ShowPredictionObjects { get; set; }
 
