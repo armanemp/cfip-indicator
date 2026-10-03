@@ -64,6 +64,7 @@ namespace cAlgo
 
                 private DateTime _lastLiveOpportunityRefreshUtc = DateTime.MinValue;
                 private int _lastLiveOpportunityRefreshM5 = -1;
+                private bool _suppressProviderIntentCapture;
                 // Target-level construction is shared by all same-M5 scenario
                 // evaluations for a direction. Cache the deterministic closed-bar
                 // result and return a shallow copy to protect callers from mutation.
