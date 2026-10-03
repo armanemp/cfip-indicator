@@ -283,9 +283,10 @@ Completed:
 
 Quality/safety:
 - no public entry-quality, confidence, MTF, evidence, RR or risk threshold was lowered;
-- M15 remains the canonical execution timeframe;
-- M5 remains tuning/entry-precision;
-- M1 remains optional confirmation;
+- all aligned M1/M5/M15/M30/H1/H4/D1/W1 frames contribute simultaneous analysis;
+- M15 is the canonical signal-tuning/reference layer, not the only analysis source;
+- M5 provides lower-timeframe entry precision and M1 provides optional micro-entry/confirmation refinement;
+- SL/TP candidates are drawn from lower and higher timeframe structure and filtered by common risk/reward and obstacle constraints;
 - Breakout and predictive pending modes remain trigger-dependent.
 
 Full-chain audit:
