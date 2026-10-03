@@ -132,7 +132,7 @@ namespace cAlgo
                                                 {
                                                     mutationRequired = true;
 
-                                                    stopMutationSucceeded =
+                                                    ManagementCommandRequestStatus stopMutationStatus =
                                                         RequestModifyStopLoss(
                                                             planPosition,
                                                             normalizedStop,
@@ -168,7 +168,7 @@ namespace cAlgo
 
                                         if (stopConfirmed)
                                         {
-                                            if (!stopMutationSucceeded &&
+                                            if (!stopMutationStatus.IsBrokerConfirmed() &&
                                                 brokerStopValid &&
                                                 planPosition.StopLoss.HasValue)
                                             {
