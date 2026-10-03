@@ -62,17 +62,17 @@ namespace cAlgo
                         m2Index)
                     : null;
 
-            _m2PrecisionSnapshot =
-                M2PrecisionRule.Evaluate(
-                    _m2Frame,
-                    m2Index,
-                    _m5Frame == null ? 0 : _m5Frame.Direction);
-
             _m5Frame =
                 AnalyzeFrameCached(
                     _m5Frame,
                     _m5Bars,
                     closedM5);
+
+            _m2PrecisionSnapshot =
+                M2PrecisionRule.Evaluate(
+                    _m2Frame,
+                    m2Index,
+                    _m5Frame == null ? 0 : _m5Frame.Direction);
 
             _m15Frame =
                 AnalyzeFrameCached(
