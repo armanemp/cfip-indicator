@@ -2,6 +2,7 @@
 // Single-responsibility broker protection reconciliation.
 
 using System;
+using CFIP.Contracts;
 using cAlgo.API;
 
 namespace cAlgo
@@ -99,11 +100,13 @@ namespace cAlgo
                             if (!stopOk &&
                                 desiredStopValid)
                             {
-                                stopOk =
+                                ManagementCommandRequestStatus stopStatus =
                                     TryModifyStopLoss(
                                         position,
                                         NormalizePrice(stop),
                                         context + " • SL");
+                                stopOk =
+                                    stopStatus.IsBrokerConfirmed();
                             }
                             else if (currentStopValid &&
                                      desiredStopValid)
@@ -132,11 +135,13 @@ namespace cAlgo
                                              currentStop,
                                              normalizedStop))
                                 {
-                                    stopOk =
+                                    ManagementCommandRequestStatus stopStatus =
                                         TryModifyStopLoss(
                                             position,
                                             normalizedStop,
                                             context + " • SL");
+                                    stopOk =
+                                        stopStatus.IsBrokerConfirmed();
                                 }
                                 else
                                 {
@@ -186,11 +191,13 @@ namespace cAlgo
                                 !targetOk &&
                                 desiredTargetValid)
                             {
-                                targetOk =
+                                ManagementCommandRequestStatus targetStatus =
                                     TryModifyTakeProfit(
                                         position,
                                         NormalizePrice(effectiveTarget),
                                         context + " • TP");
+                                targetOk =
+                                    targetStatus.IsBrokerConfirmed();
                             }
                             else if (!_serverSideTakeProfitLadderActive &&
                                      targetOk &&
@@ -224,11 +231,13 @@ namespace cAlgo
                                                  direction,
                                                  atr)))
                                 {
-                                    targetOk =
+                                    ManagementCommandRequestStatus targetStatus =
                                         TryModifyTakeProfit(
                                             position,
                                             normalizedTarget,
                                             context + " • TP");
+                                    targetOk =
+                                        targetStatus.IsBrokerConfirmed();
                                 }
                                 else
                                 {
