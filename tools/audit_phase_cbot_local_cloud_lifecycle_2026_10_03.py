@@ -37,9 +37,13 @@ check(
     "cBot must keep event-driven chart Indicator lifecycle observation",
 )
 check(
-    "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" in bot and
+    "CFIP ANALYSIS BIND | unresolved" in bot and
     "ATTACH LOCAL INDICATOR" in bot,
-    "missing Indicator must fail closed with an explicit local-attachment diagnostic",
+    "missing Indicator must fail closed with an explicit local-attachment action",
+)
+check(
+    "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" in binding,
+    "binding must own the precise missing-Indicator diagnostic",
 )
 check(
     "ChartIndicators.Custom" in binding and
