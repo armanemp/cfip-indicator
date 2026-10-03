@@ -141,3 +141,14 @@ check(
 )
 
 print("Panel footer / MTF lamp / alert dedup audit PASS")
+
+
+check(
+    "signal sound is idempotent across interleaved alert events",
+    "MaxRememberedSignalSoundGroups = 256" in processor and
+    "_rememberedSignalSoundGroups" in processor and
+    "_rememberedSignalSoundGroupOrder" in processor and
+    "Contains(groupKey)" in processor and
+    "CreatedClosedM5" in processor,
+    "signal sound dedup must retain multiple recent event fingerprints rather than only the last group",
+)

@@ -11,8 +11,11 @@ namespace cAlgo
         // market event (WATCH/REACTION/ACTION, parallel lanes, etc.). They remain
         // visible in the panel, but only one sound is emitted per event and
         // direction; a higher-priority escalation may replace a lower one.
-        private string _lastSignalSoundGroupKey = string.Empty;
-        private int _lastSignalSoundPriority;
+        private const int MaxRememberedSignalSoundGroups = 256;
+        private readonly HashSet<string> _rememberedSignalSoundGroups =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Queue<string> _rememberedSignalSoundGroupOrder =
+            new Queue<string>(MaxRememberedSignalSoundGroups);
 
         private void ProcessQueuedAlertDelivery()
         {
@@ -128,28 +131,31 @@ namespace cAlgo
                 "|" +
                 delivery.Direction.ToString();
 
-            if (string.Equals(
-                    groupKey,
-                    _lastSignalSoundGroupKey,
-                    StringComparison.OrdinalIgnoreCase) &&
-                priority <= _lastSignalSoundPriority)
+            if (_rememberedSignalSoundGroups.Contains(groupKey))
             {
                 Print(
-                    "CFIP ALERT SOUND SUPPRESSED | group={0} | priority={1} | previousPriority={2}",
+                    "CFIP ALERT SOUND SUPPRESSED | group={0} | priority={1} | alreadyPlayed=true",
                     groupKey,
-                    priority,
-                    _lastSignalSoundPriority);
+                    priority);
                 return false;
             }
 
-            _lastSignalSoundGroupKey =
-                groupKey;
+            _rememberedSignalSoundGroups.Add(groupKey);
+            _rememberedSignalSoundGroupOrder.Enqueue(groupKey);
 
-            _lastSignalSoundPriority =
-                priority;
+            while (_rememberedSignalSoundGroupOrder.Count >
+                   MaxRememberedSignalSoundGroups)
+            {
+                string expiredGroup =
+                    _rememberedSignalSoundGroupOrder.Dequeue();
+
+                _rememberedSignalSoundGroups.Remove(
+                    expiredGroup);
+            }
 
             return true;
         }
+
 
         private void ProcessQueuedAlertSoundDelivery()
         {
