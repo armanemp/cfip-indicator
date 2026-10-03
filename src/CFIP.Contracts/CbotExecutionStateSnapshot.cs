@@ -40,5 +40,6 @@ namespace CFIP.Contracts
         public string ProtectionState { get; init; } = "UNKNOWN";
         public bool RecoveryRequired { get; init; }
         public string RecoveryReason { get; init; } = string.Empty;
+        public string ExecutionAccountMode { get; init; } = "UNKNOWN";
     }
 }
