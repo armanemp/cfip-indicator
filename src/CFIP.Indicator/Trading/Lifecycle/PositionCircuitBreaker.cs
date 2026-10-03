@@ -23,7 +23,7 @@ namespace cAlgo
                                             continue;
                         
                                         ManagementCommandRequestStatus closeStatus =
-                                            TryClosePosition(
+                                            RequestClosePosition(
                                                 position,
                                                 "END OF DAY");
                                         if (!closeStatus.IsAccepted())
