@@ -5,6 +5,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        // Canonical presentation owner: trade-facing candidates must satisfy
+        // quality/reward integrity here before any renderer consumes them.
         private bool ShouldPresentOpportunityCandidate(
             TradeOpportunityCandidate candidate)
         {
