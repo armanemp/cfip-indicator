@@ -14,6 +14,19 @@ namespace CFIP.cBot.Binding
             out ChartIndicator indicator,
             out string reason)
         {
+            return TryFind(
+                robot,
+                null,
+                out indicator,
+                out reason);
+        }
+
+        public static bool TryFind(
+            Robot robot,
+            string preferredInstanceId,
+            out ChartIndicator indicator,
+            out string reason)
+        {
             indicator = null;
             reason = "OK";
 
@@ -23,6 +36,7 @@ namespace CFIP.cBot.Binding
                 return false;
             }
 
+            ChartIndicator preferred = null;
             ChartIndicator match = null;
             int count = 0;
 
@@ -50,6 +64,21 @@ namespace CFIP.cBot.Binding
 
                 match = candidate;
                 count++;
+
+                if (!string.IsNullOrWhiteSpace(preferredInstanceId) &&
+                    string.Equals(
+                        candidate.InstanceId,
+                        preferredInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    preferred = candidate;
+                }
+            }
+
+            if (preferred != null)
+            {
+                indicator = preferred;
+                return true;
             }
 
             if (count == 0)
