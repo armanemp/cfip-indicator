@@ -467,8 +467,7 @@ namespace cAlgo
         
         private void ClearWatchObjects()
                         {
-                            Chart.RemoveObject(
-                                P + "WATCH_ARROW");
+                            RemoveMtfTrendStrengthArrowStack();
                 
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");
