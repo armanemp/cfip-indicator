@@ -48,18 +48,18 @@ require(
 )
 require(
     ANCHOR,
-    r"CompactPlanLabelMinimumGapBars[\s\S]*?LabelLeftOffsetBars[\s\S]*?lineLeft - offset",
-    "stable compact label anchor",
+    r"return GetPlanLineLeftBar\(\)",
+    "canonical compact label anchor at plan-line left endpoint",
 )
 require(
     LABEL,
-    r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Left",
-    "left-aligned level labels",
+    r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Right",
+    "right-aligned level labels at line start",
 )
 require(
     LABEL,
-    r"double labelPrice\s*=\s*\n\s*NormalizePrice\(price\)",
-    "exact-price level-label alignment",
+    r"CompactPlanLabelGapPips\s*=\s*2\.0",
+    "exact 2-pip label clearance",
 )
 require(LAMP, r'ForegroundColor\s*=\s*Color\.FromArgb', "processing lamp pulse color")
 require(LAMP, r'_processingLampPulseIndex\s*=\s*\(_processingLampPulseIndex \+ 1\) % 6', "processing lamp pulse state")
