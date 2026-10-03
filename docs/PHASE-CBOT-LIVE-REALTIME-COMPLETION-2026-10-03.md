@@ -48,6 +48,13 @@ History/outcomes -> pre-analysis -> M15 canonical decision -> M5 trigger/tuning/
 - Targeted inspection of the exact branch head confirms the AlertEngine has no direct `Notifications.PlaySound` call and the realtime Calculate path services the queued sound processor.
 - GitHub did not start a new aggregate Source/Architecture workflow for the API-created audit-only commit; therefore aggregate CI is not claimed green here.
 
+## Latest audit alignment — 2026-10-03
+
+- M3/M4 audit ownership now follows `ProcessQueuedAlertSoundDelivery()` as the canonical realtime sound boundary.
+- P7R attachment checks now validate the actual null-safe `candidate.Type.Name` access pattern rather than requiring a specific null-test spelling.
+- CR3.4 and the attachment/audio audit now distinguish timer-owned panel presentation from Calculate/IsLastBar-owned sound playback.
+- These are audit-owner corrections only; no duplicate production execution or alert owner was introduced.
+
 ## Verification
 
 Repository:

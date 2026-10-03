@@ -2,6 +2,8 @@
 
 Status: IMPLEMENTED — repository verification pending.
 
+- Latest accumulated source-audit fixes on the completion branch: M3/M4 now follow the canonical realtime sound owner; P7R and CR3.4/attachment-audio audits were corrected to match the null-safe type inspection and split timer-presentation/Calculate-sound ownership already present in production.
+
 Closed in this completion unit:
 - cBot republishes the exact bound Indicator InstanceId immediately after chart binding succeeds;
 - binding failure overwrites symbol-scoped presence with an explicit unattached state;
