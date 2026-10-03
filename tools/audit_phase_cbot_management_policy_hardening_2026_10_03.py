@@ -74,10 +74,9 @@ require(
     "management policy behavioral coverage is missing",
 )
 require(
-    "## 4. Execution-path split matrix" in boundary and
-    "Protection |" in boundary and
-    "broker mutation" in boundary and
-    "ManagementExecutionCoordinator.cs" in boundary,
+    "Execution-path split matrix" in boundary and
+    "ManagementExecutionCoordinator.cs" in boundary and
+    "actual broker mutation moves to the cBot" in boundary,
     "CBOT execution boundary documentation is missing the mutation ownership contract",
 )
 require(
