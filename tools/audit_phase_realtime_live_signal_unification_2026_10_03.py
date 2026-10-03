@@ -199,6 +199,12 @@ check(
 )
 
 check(
+    "extracted actionability gate owner is present",
+    "BuildTradeActionabilityResult(" in read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") and
+    "class CFIPIndicator" in read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityDecisionGate.cs")
+)
+
+check(
     "operator continuity docs contain this phase",
     "REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION" in roadmap and
     "REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION" in continuation and
