@@ -82,8 +82,7 @@ namespace cAlgo
                             normalized,
                             right,
                             normalized,
-                            PlanLinePresentationRule.ResolveColor(
-                                color),
+                            ResolvePlanLineColor(color),
                             thickness,
                             lineStyle);
                 }
@@ -100,8 +99,7 @@ namespace cAlgo
                 line.Y2 =
                     normalized;
                 line.Color =
-                    PlanLinePresentationRule.ResolveColor(
-                        color);
+                    ResolvePlanLineColor(color);
                 line.Thickness =
                     thickness;
                 line.LineStyle =
@@ -158,6 +156,12 @@ namespace cAlgo
             return
                 PlanLinePresentationRule.ResolveThickness(
                     LevelLineThickness);
+        }
+
+        private Color ResolvePlanLineColor(Color semanticColor)
+        {
+            // Single owner for semantic line color normalization. Labels consume this same resolver.
+            return Color.FromArgb(255, semanticColor);
         }
     }
 }
