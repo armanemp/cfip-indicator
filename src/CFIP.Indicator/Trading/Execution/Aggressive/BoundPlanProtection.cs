@@ -128,11 +128,14 @@ namespace cAlgo
                                                         NormalizePrice(planPosition.StopLoss.Value),
                                                         normalizedStop);
 
+                                                ManagementCommandRequestStatus stopMutationStatus =
+                                                    ManagementCommandRequestStatus.Rejected;
+
                                                 if (shouldAdvance)
                                                 {
                                                     mutationRequired = true;
 
-                                                    ManagementCommandRequestStatus stopMutationStatus =
+                                                    stopMutationStatus =
                                                         RequestModifyStopLoss(
                                                             planPosition,
                                                             normalizedStop,
