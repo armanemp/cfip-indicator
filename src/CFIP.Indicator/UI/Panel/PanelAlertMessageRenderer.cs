@@ -8,7 +8,7 @@ namespace cAlgo
     {
         private const int PanelAlertMessageCapacity = 5;
         private const int PanelAlertMessageVisibleCapacity = 2;
-        private const int PanelAlertMessageRowHeight = 20;
+        private const int PanelAlertMessageRowHeight = 18;
         private const int PanelAlertMessageGap = 1;
         private const int PanelAlertMessageMaxCharacters = 132;
 
@@ -339,12 +339,18 @@ namespace cAlgo
                         availableWidth);
                 row.Height =
                     PanelAlertMessageRowHeight;
+                bool lastVisibleRow =
+                    row == _panelAlertMessageRows[
+                        _panelAlertMessageRows.Count - 1];
+
                 row.Margin =
                     new Thickness(
                         0,
                         0,
                         0,
-                        PanelAlertMessageGap);
+                        lastVisibleRow
+                            ? 0
+                            : PanelAlertMessageGap);
             }
 
             UpdatePanelAlertMessageRail();
