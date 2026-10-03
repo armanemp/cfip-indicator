@@ -251,7 +251,8 @@ namespace cAlgo
 
             double[] requiredRR =
                 BuildTargetSelectionRequiredRR(
-                    rrStep,
+                    risk,
+                    atr,
                     lane);
 
             preview.Tp1 =
