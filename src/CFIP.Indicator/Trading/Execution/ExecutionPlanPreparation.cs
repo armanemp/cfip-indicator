@@ -74,32 +74,20 @@ namespace cAlgo
                                         selected[i].Price);
                             }
                 
-                            double rrStep =
-                                Math.Max(
-                                    0.10,
-                                    StructuralTpRrStep);
-
                             double[] requiredRR =
                                 BuildTargetSelectionRequiredRR(
-                                    rrStep,
+                                    risk,
+                                    atr,
                                     lane);
 
                             double fallbackRR =
                                 stageIndex == 0
-                                    ? Math.Max(
-                                        FallbackTp1RR,
-                                        requiredRR[0])
+                                    ? requiredRR[0]
                                     : stageIndex == 1
-                                        ? Math.Max(
-                                            FallbackTp2RR,
-                                            requiredRR[1])
+                                        ? requiredRR[1]
                                         : stageIndex == 2
-                                            ? Math.Max(
-                                                FallbackTp3RR,
-                                                requiredRR[2])
-                                            : Math.Max(
-                                                FallbackTp4RR,
-                                                requiredRR[3]);
+                                            ? requiredRR[2]
+                                            : requiredRR[3];
                 
                             bool requiresHtf =
                                 RequiresHtfRewardForTargetStage(

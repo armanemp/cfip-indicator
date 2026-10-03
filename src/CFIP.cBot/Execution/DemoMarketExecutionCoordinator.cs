@@ -268,34 +268,34 @@ namespace CFIP.cBot.Execution
             TradeResult result;
             try
             {
-                bool useMarketRange =
-                    marketAction &&
-                    marketRangePips > 0;
-
                 result =
-                    useMarketRange
-                        ? robot.ExecuteMarketRangeOrder(
+                    CbotAdaptiveProtectionExecution.TryExecute(
+                        robot,
+                        envelope,
+                        tradeType,
+                        volume,
+                        executionLabel,
+                        stopPips,
+                        targetPips,
+                        marketRangePips,
+                        aggressiveAction
+                            ? brokerCommentPrefix + " AGGRESSIVE"
+                            : brokerCommentPrefix,
+                        out TradeResult protectedResult)
+                        ? protectedResult
+                        : CbotAdaptiveProtectionExecution.ExecuteLegacy(
+                            robot,
+                            marketAction,
                             tradeType,
-                            robot.SymbolName,
                             volume,
                             marketRangePips,
                             envelope.Intent.RequestedEntry,
                             executionLabel,
                             stopPips,
                             targetPips,
-                            brokerCommentPrefix,
-                            false)
-                        : robot.ExecuteMarketOrder(
-                            tradeType,
-                            robot.SymbolName,
-                            volume,
-                            executionLabel,
-                            stopPips,
-                            targetPips,
                             aggressiveAction
                                 ? brokerCommentPrefix + " AGGRESSIVE"
-                                : brokerCommentPrefix,
-                            false);
+                                : brokerCommentPrefix);
             }
             catch (Exception ex)
             {

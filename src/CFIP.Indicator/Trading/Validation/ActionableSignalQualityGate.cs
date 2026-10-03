@@ -16,10 +16,8 @@ namespace cAlgo
                     string.Empty);
 
             double minimumTp1RR =
-                Math.Max(
-                    Tp1MinimumRR,
-                    MinimumRequiredRRForRegime(
-                        decision.Regime));
+                MinimumRequiredRRForRegime(
+                        decision.Regime);
 
             ActionabilityThresholdSnapshot thresholds =
                 ActionabilityThresholdPolicy.ResolveFinal(

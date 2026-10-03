@@ -15,6 +15,7 @@ namespace cAlgo
     {
         private const double CompactPlanLabelFontSize = 8.5;
         private const int CompactPlanLabelWidthBars = 7;
+        private const int CompactPlanLabelGapBars = 2;
         private const double CompactPlanLabelHeightRangeFactor = 0.12;
         private const double CompactPlanLabelMinimumHeightPips = 4.0;
 
@@ -140,17 +141,32 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                int rightBar =
+                // The label belongs OUTSIDE the line geometry.
+                // The line starts at GetPlanLineLeftBar(); the tag is placed
+                // immediately to its left with a fixed chart-bar gap.
+                int lineLeftBar =
+                    GetPlanLineLeftBar();
+
+                int tagRightBar =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
-                            labelBar));
+                            lineLeftBar -
+                            CompactPlanLabelGapBars));
 
-                int leftBar =
+                int tagLeftBar =
                     Math.Max(
                         0,
-                        rightBar - CompactPlanLabelWidthBars);
+                        tagRightBar -
+                        CompactPlanLabelWidthBars +
+                        1);
+
+                if (tagRightBar <= tagLeftBar)
+                {
+                    RemovePlanLabel(name);
+                    return;
+                }
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -160,16 +176,14 @@ namespace cAlgo
                 int firstSample =
                     Math.Max(
                         0,
-                        rightBar - 8);
+                        Bars.Count - 9);
 
                 for (int i = firstSample;
-                     i <= rightBar;
+                     i < Bars.Count;
                      i++)
                 {
-                    double high =
-                        Bars.HighPrices[i];
-                    double low =
-                        Bars.LowPrices[i];
+                    double high = Bars.HighPrices[i];
+                    double low = Bars.LowPrices[i];
 
                     if (!double.IsNaN(high) &&
                         !double.IsInfinity(high) &&
@@ -202,24 +216,27 @@ namespace cAlgo
                     PlanLinePresentationRule.ResolveColor(
                         semanticColor);
 
+                string boxName =
+                    name + "_BOX";
+
                 ChartRectangle box =
-                    Chart.FindObject(name + "_BOX")
+                    Chart.FindObject(boxName)
                     as ChartRectangle;
 
                 if (box == null)
                 {
                     ChartObject existing =
-                        Chart.FindObject(name + "_BOX");
+                        Chart.FindObject(boxName);
 
                     if (existing != null)
-                        Chart.RemoveObject(name + "_BOX");
+                        Chart.RemoveObject(boxName);
 
                     box =
                         Chart.DrawRectangle(
-                            name + "_BOX",
-                            leftBar,
+                            boxName,
+                            tagLeftBar,
                             labelPrice + halfHeight,
-                            rightBar,
+                            tagRightBar,
                             labelPrice - halfHeight,
                             labelColor,
                             1,
@@ -230,11 +247,11 @@ namespace cAlgo
                     return;
 
                 box.Time1 =
-                    Bars.OpenTimes[leftBar];
+                    Bars.OpenTimes[tagLeftBar];
                 box.Y1 =
                     labelPrice + halfHeight;
                 box.Time2 =
-                    Bars.OpenTimes[rightBar];
+                    Bars.OpenTimes[tagRightBar];
                 box.Y2 =
                     labelPrice - halfHeight;
                 box.Color =
@@ -252,6 +269,10 @@ namespace cAlgo
                     Chart.FindObject(name)
                     as ChartText;
 
+                int textBar =
+                    tagLeftBar +
+                    ((tagRightBar - tagLeftBar) / 2);
+
                 if (label == null)
                 {
                     ChartObject existing =
@@ -264,7 +285,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            Bars.OpenTimes[leftBar],
+                            Bars.OpenTimes[textBar],
                             labelPrice,
                             Color.White);
                 }
@@ -272,34 +293,21 @@ namespace cAlgo
                 if (label == null)
                     return;
 
-                label.Text =
-                    text;
-
-                int textBar =
-                    leftBar +
-                    ((rightBar - leftBar) / 2);
-
-                label.Time =
-                    Bars.OpenTimes[textBar];
-                label.Y =
-                    labelPrice;
-                label.Color =
-                    Color.White;
-                label.FontSize =
-                    CompactPlanLabelFontSize;
+                label.Text = text;
+                label.Time = Bars.OpenTimes[textBar];
+                label.Y = labelPrice;
+                label.Color = Color.White;
+                label.FontSize = CompactPlanLabelFontSize;
                 label.FontFamily =
-                    string.IsNullOrWhiteSpace(
-                        PanelFontFamily)
+                    string.IsNullOrWhiteSpace(PanelFontFamily)
                         ? "Arial"
                         : PanelFontFamily;
-                label.IsBold =
-                    false;
+                label.IsBold = false;
                 label.HorizontalAlignment =
                     HorizontalAlignment.Center;
                 label.VerticalAlignment =
                     VerticalAlignment.Center;
-                label.IsInteractive =
-                    false;
+                label.IsInteractive = false;
             }
             catch (Exception ex)
             {

@@ -69,6 +69,33 @@ namespace cAlgo
                     market,
                     peakRR);
 
+            bool momentumAligned =
+                _m5Frame != null &&
+                (_plan.Direction == 1
+                    ? _m5Frame.MomentumBull &&
+                      _m5Frame.StructureBull
+                    : _m5Frame.MomentumBear &&
+                      _m5Frame.StructureBear);
+
+            AdaptiveProtectionProfile protectionProfile =
+                AdaptiveProtectionProfileRule.Resolve(
+                    _decision == null
+                        ? "UNKNOWN"
+                        : _decision.Regime,
+                    _plan.Risk /
+                    Math.Max(
+                        Symbol.PipSize,
+                        atr),
+                    _decision == null
+                        ? 0
+                        : _decision.Confidence,
+                    _decision == null
+                        ? 0
+                        : _decision.SmartQuality,
+                    pressure,
+                    momentumAligned,
+                    SlRepriceBreathingAtr);
+
             IntelligentProtectionDecision decision =
                 IntelligentProtectionRule.Evaluate(
                     _plan.Direction,
@@ -85,7 +112,7 @@ namespace cAlgo
                         Symbol.TickSize,
                         MinimumProtectionDistancePriceForDirection(
                             _plan.Direction)),
-                    BreakEvenTriggerRR,
+                    protectionProfile.BreakEvenRewardAtr,
                     BreakEvenBufferPips,
                     RiskFreeLockPips,
                     MoveSlToBreakEven,
@@ -94,20 +121,14 @@ namespace cAlgo
                     structuralUpdate,
                     StructuralStopManagementOnly,
                     UseSwingStructureInTrail,
-                    SlRepriceStartRR,
-                    SmartTrailMinimumRR,
-                    TrailDistanceAtr,
-                    SmartTrailTightenAtRR,
+                    protectionProfile.TrailStartRewardAtr,
+                    protectionProfile.BreathingAtr,
+                    protectionProfile.TightenRewardAtr,
                     SmartTrailMomentumBonusAtr,
                     SlRepriceBreathingAtr,
                     pressure,
                     SmartExitPressureThreshold,
-                    _m5Frame != null &&
-                    (_plan.Direction == 1
-                        ? _m5Frame.MomentumBull &&
-                          _m5Frame.StructureBull
-                        : _m5Frame.MomentumBear &&
-                          _m5Frame.StructureBear),
+                    momentumAligned,
                     TrailStepAtr,
                     _serverSideBreakEvenActive,
                     _plan.Tp1);

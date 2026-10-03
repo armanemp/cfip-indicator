@@ -47,7 +47,7 @@ namespace cAlgo
 
             double baseTrigger =
                 riskPips *
-                Math.Max(0.50, triggerRR);
+                Math.Max(0.20, triggerRR);
 
             double spreadFloor =
                 spreadAware

@@ -13,8 +13,15 @@ namespace cAlgo
         [Parameter("Fallback SL ATR Multiplier", Group = "09 · Risk & Targets", DefaultValue = 1.00, MinValue = 0.1, MaxValue = 5)]
         public double FallbackSlAtr { get; set; }
 
-        [Parameter("TP1 Minimum RR", Group = "09 · Risk & Targets", DefaultValue = 2.00, MinValue = 0.5, MaxValue = 10)]
-        public double Tp1MinimumRR { get; set; }
+        // TP1 RR is deliberately not a fixed user target. The property exposes
+        // the canonical adaptive requirement derived from current geometry.
+        public double Tp1MinimumRR
+        {
+            get
+            {
+                return MinimumRequiredRR();
+            }
+        }
 
         [Parameter("TP2 Minimum RR", Group = "09 · Risk & Targets", DefaultValue = 3.20, MinValue = 0.8, MaxValue = 20)]
         public double Tp2MinimumRR { get; set; }

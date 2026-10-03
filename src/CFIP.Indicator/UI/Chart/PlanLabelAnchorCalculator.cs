@@ -1,4 +1,3 @@
-using System;
 using cAlgo.API;
 
 namespace cAlgo
@@ -11,9 +10,9 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            // Canonical plan labels share the exact right endpoint of the
-            // canonical plan-level line geometry.
-            return GetPlanLineRightBar();
+            // Anchor input delegates to the canonical line geometry.
+            // PlanLabelRenderer owns the actual left-of-line gap and width.
+            return GetPlanLineLeftBar();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace cAlgo
             double spreadPips,
             double pipSize,
             double minimumDistance,
-            double breakEvenTriggerRR,
+            double breakEvenTriggerRewardAtr,
             double breakEvenBufferPips,
             double riskFreeLockPips,
             bool moveToBreakEven,
@@ -50,10 +50,9 @@ namespace cAlgo
             bool structuralUpdate,
             bool structuralOnly,
             bool useSwingStructure,
-            double slRepriceStartRR,
-            double smartTrailMinimumRR,
+            double trailStartRewardAtr,
             double trailDistanceAtr,
-            double smartTrailTightenAtRR,
+            double tightenRewardAtr,
             double smartTrailMomentumBonusAtr,
             double slRepriceBreathingAtr,
             int exitPressure,
@@ -105,13 +104,16 @@ namespace cAlgo
                         riskPips,
                         tp1Pips,
                         Math.Max(0, spreadPips),
-                        Math.Max(0, breakEvenTriggerRR),
+                        Math.Max(
+                            0,
+                            breakEvenTriggerRewardAtr /
+                            Math.Max(1e-12, risk / atr)),
                         Math.Max(0, breakEvenBufferPips),
                         Math.Max(0, riskFreeLockPips),
                         spreadAwareBreakEven);
 
                 if (be.Allowed &&
-                    peakRR * riskPips >= be.TriggerPips)
+                    peakRR * risk / atr >= breakEvenTriggerRewardAtr)
                 {
                     double breakEven =
                         direction == 1
@@ -133,9 +135,8 @@ namespace cAlgo
                 enableStructuralRepricing &&
                 useSwingStructure &&
                 (structuralUpdate || !structuralOnly) &&
-                peakRR >= Math.Max(
-                    Math.Max(0, slRepriceStartRR),
-                    Math.Max(0, smartTrailMinimumRR)) &&
+                peakRR * risk / atr >=
+                Math.Max(0, trailStartRewardAtr) &&
                 IsFiniteProtectionPrice(structuralStop);
 
             if (structuralAllowed)
@@ -163,9 +164,8 @@ namespace cAlgo
 
             if (structuralUpdate &&
                 useSwingStructure &&
-                peakRR >= Math.Max(
-                    1.0,
-                    Math.Max(0, smartTrailTightenAtRR)) &&
+                peakRR * (risk / Math.Max(SymbolTickFloor(), atr)) >=
+                Math.Max(0, tightenRewardAtr) &&
                 IsFiniteProtectionPrice(structuralStop))
             {
                 double pressureTighten =

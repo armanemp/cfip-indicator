@@ -244,14 +244,10 @@ namespace cAlgo
                     Risk = risk
                 };
 
-            double rrStep =
-                Math.Max(
-                    0.10,
-                    StructuralTpRrStep);
-
             double[] requiredRR =
                 BuildTargetSelectionRequiredRR(
-                    rrStep,
+                    risk,
+                    atr,
                     lane);
 
             preview.Tp1 =
