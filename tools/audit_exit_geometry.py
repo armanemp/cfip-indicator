@@ -118,7 +118,7 @@ require(
     "tp1Volume",
     "tp2Volume",
     "finalPips",
-    "TryModifyTakeProfitLadder(",
+    "RequestModifyTakeProfitLadder(",
 )
 server_text = read(SERVER_LADDER)
 if "position.VolumeInUnits" not in server_text:
@@ -181,7 +181,7 @@ production_files = list((ROOT / "src" / "CFIP.Indicator").rglob("*.cs"))
 direct_tp_mutations = []
 for path in production_files:
     source = read(path)
-    if "TryModifyTakeProfit(" in source and path.name != "BrokerTakeProfitMutation.cs":
+    if "RequestModifyTakeProfit(" in source and path.name != "BrokerTakeProfitMutation.cs":
         direct_tp_mutations.append(str(path.relative_to(ROOT)))
 allowed = {
     "Trading/Execution/BrokerProtectionCoordinator.cs",
