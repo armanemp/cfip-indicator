@@ -20,6 +20,7 @@ namespace cAlgo
             _lastRenderedPanelAlertRevision = -1;
 
             try
+            {
                 _panelAlertMessageStack =
                     new StackPanel
                     {
@@ -211,6 +212,7 @@ namespace cAlgo
                 return;
 
             try
+            {
                 List<AlertDelivery> messages =
                     new List<AlertDelivery>(
                         _panelAlertHistory ??
