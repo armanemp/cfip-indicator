@@ -1,3 +1,27 @@
+## 2026-10-03 — Footer + Alert/Popup Lifecycle Hardening
+
+Branch: `phase/footer-alert-popup-hardening-2026-10-03`; merged to `main` via PR #248 as `94edfb5f52f98bea21f0e25d0a74b3cce49fa700`.
+
+Findings:
+- Footer height inflation came from mixing outer PanelPadding with internal footer button margins.
+- Alert queue transport identity needed to be independent of envelope revision.
+- Email could execute after canonical queue rejection.
+- Alert rail content was being revisited on normal renders even when its revision had not changed.
+
+Corrections:
+- Footer/button spacing semantics are separated from outer panel geometry.
+- Alert transport dedup uses canonical event identity plus AlertKey.
+- Email follows queue acceptance.
+- Alert rail content is revision-cached while visibility remains lifecycle-aware.
+- A deterministic runtime contract proves same-event rejection across revision/AlertId changes and re-arm after delivery.
+
+Verification:
+Source / Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
+
+Target-terminal cTrader footer/popup/audio behavior remains manual acceptance.
+
+---
+
 ## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
 
 Branch: `phase/semantic-consistency-hardening-2026-10-03`; merged to `main` via PR #247 as `5933386c26a787ee3297fc6af825d1d85b74a0c3`.
