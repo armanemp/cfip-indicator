@@ -25,6 +25,7 @@ namespace cAlgo
 
                 private Frame _m1Frame;
                 private Frame _m2Frame;
+                private M2PrecisionSnapshot _m2PrecisionSnapshot;
                 private Frame _m5Frame;
                 private Frame _m15Frame;
                 private Frame _m30Frame;
