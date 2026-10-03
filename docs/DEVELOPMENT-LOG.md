@@ -1,3 +1,31 @@
+## 2026-10-03 — Canonical Signal Drawing Hardening
+
+Implemented directly on `main`; code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c` passed Source/Architecture, Runtime Acceptance and cTrader Compile.
+
+Findings:
+- Active Plan and WATCH/Reaction had separate directional-arrow object ownership.
+- Level-line thickness still exposed the old 1..3px behavior.
+- Compact level labels used semantic line colors instead of the current white-text contract.
+- User local Release build exposed an unused `buttonMargin` warning after the footer spacing refactor.
+
+Corrections:
+- Unified directional arrow ownership and stale cleanup.
+- Fixed signal/plan line presentation to Solid + 1px + finite 40-bar geometry.
+- Standardized labels to white, background-free text with deterministic left-side anchoring.
+- Removed the dead `buttonMargin` local.
+- Updated accumulated audits/contracts to protect the new visual contract.
+
+Verification:
+- Source / Architecture: PASS.
+- Runtime Acceptance Contracts: PASS.
+- cTrader Compile: PASS.
+- Dedicated drawing audit: PASS.
+- Target-terminal visual acceptance remains manual.
+
+Next gated work: Signal Quality + TP/SL/RR + OB/FVG + MTF full-chain audit.
+
+---
+
 ## 2026-10-03 — Footer + Alert/Popup Lifecycle Hardening
 
 Branch: `phase/footer-alert-popup-hardening-2026-10-03`; merged to `main` via PR #248 as `94edfb5f52f98bea21f0e25d0a74b3cce49fa700`.

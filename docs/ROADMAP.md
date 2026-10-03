@@ -1,3 +1,30 @@
+## 2026-10-03 — Canonical Signal Drawing Hardening
+
+Status: VERIFIED COMPLETE — implemented directly on `main`. Code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c` passed Source/Architecture, Runtime Acceptance and cTrader Compile.
+
+Completed:
+- Active Plan directional arrows now share the canonical `RenderStackedSignalArrows` renderer with WATCH/Reaction.
+- Legacy `P + "ARROW"` active-plan ownership was removed from rendering/cleanup.
+- BUY/SELL remains `UpArrow` / `DownArrow`; M1 trigger remains a separate Circle marker.
+- Signal/plan level lines are Solid, fixed at 1px, finite 40-bar geometry.
+- Compact labels are white, background-free and anchored left of line start with a deterministic gap.
+- Expired/invalid marker/line objects continue to be removed through the canonical lifecycle.
+- The dead `buttonMargin` local that caused the user's Release-build CS0219 warning was removed from `PanelMainRenderer`.
+- Legacy drawing audits/contracts were updated to enforce the new visual contract.
+
+Verification:
+- Source / Architecture: PASS.
+- Runtime Acceptance Contracts: PASS.
+- cTrader Compile: PASS.
+- Dedicated signal-drawing audit: PASS.
+- Manual target-terminal visual acceptance remains required.
+
+Phase record: `docs/PHASE-SIGNAL-DRAWING-CANONICAL-2026-10-03.md`.
+
+Operator action: `git pull --ff-only`.
+
+---
+
 ## 2026-10-03 — Footer + Alert/Popup Lifecycle Hardening
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #248, merge commit `94edfb5f52f98bea21f0e25d0a74b3cce49fa700`.

@@ -1,6 +1,6 @@
 # Sub-phase 2 — Canonical Signal Drawing Hardening (2026-10-03)
 
-Status: IMPLEMENTATION COMPLETE — verification pending on the final main head.
+Status: VERIFIED COMPLETE — code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c` passed Source/Architecture, Runtime Acceptance and cTrader Compile.
 
 ## Scope
 
@@ -41,12 +41,12 @@ No new realtime calculation loop was introduced.
 
 ## Verification
 
-Required on final head:
-- Source / Architecture checks
-- Runtime Acceptance Contracts
-- cTrader Compile
-- canonical drawing audit
-- target-terminal visual acceptance for arrow shape/placement, 40-bar line length, left label gap, white text and stale-object removal.
+- Source / Architecture: PASS (155 successful steps; canonical drawing audit PASS).
+- Runtime Acceptance Contracts: PASS.
+- cTrader Compile: PASS.
+- User local Release build exposed one CS0219 warning from an unused `buttonMargin` local in `PanelMainRenderer`; that declaration has been removed at the root.
+- Target-terminal visual acceptance remains manual for exact arrow rendering/placement, 40-bar line length, label gap/readability and stale-object removal.
 
-Operator action after merge:
+Operator action:
 `git pull --ff-only`
+Then rerun `dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release` locally; the `buttonMargin` CS0219 warning should be absent.
