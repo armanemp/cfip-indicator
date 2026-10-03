@@ -3048,6 +3048,32 @@ Phase records:
 
 No claim of profitability, prediction accuracy or target-terminal certification is made by repository code/CI alone.
 
+## 21A. 2026-10-03 — Realtime All-Timeframe Intelligence / Smart Arrow Hardening
+
+Implementation branch: phase/mtf-realtime-all-engines-smart-arrows-2026-10-03.
+
+Scope completed in this implementation unit:
+- all aligned closed frames M1/M5/M15/M30/H1/H4/D1/W1 continue to feed the common analysis/decision stack;
+- Early Prediction now has an explicit all-timeframe fusion owner over M5/M15/M30/H1/H4/D1/W1;
+- live trend-strength presentation is recalculated from all active frames plus the current quote, with H1+ as higher-timeframe authority;
+- the chart displays weak/medium/strong 1/2/3-arrow intensity tiers as a presentation state only;
+- stagnant-market magnitude floors and RANGE RR floor are strengthened to reduce tiny low-value trade plans;
+- cBot attachment binding is exact-instance aware and emits deterministic chart-indicator diagnostics when unresolved;
+- current scenarios remain immediate Market/Aggressive actions, future scenarios remain Pending Stop/Limit orders;
+- cBot-side concurrent ScenarioId capacity remains bounded independently from the Indicator legacy analytical single-plan contract;
+- audio remains under the existing canonical queued delivery processor; actual audibility still requires target-terminal verification.
+
+Non-goals:
+- no claim of guaranteed profitability or predictive accuracy;
+- no automatic live arming by default;
+- no replacement of the M15 canonical decision/reference role;
+- no bypass of shared RR, structural-risk, spread, margin, daily-loss or broker-confirmation gates.
+
+Verification:
+- PR/CI must pass on the latest branch head;
+- cTrader target-terminal checks remain required for actual live broker mutation, sound audibility and attachment behavior.
+
+Operator action after merge: git pull --ff-only.
 # 22. Final cleanup rule for obsolete planning material
 
 Once M41 is accepted:
