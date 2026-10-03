@@ -433,10 +433,11 @@ Evidence commits: 5d8467c486cb5fe321fa2cdbbad44831f2a7fc8b, 6c49940cb84cba9fff30
 
 **IN PROGRESS.** The management coordinator now exposes explicit request-status semantics internally, but the historical Try* helper names still need a single-owner rename to Request* so their API names cannot imply direct broker mutation. No parallel wrappers are being introduced.
 
-### M2.175 broker lifecycle listeners — pending proof audit
+### M2.175 broker lifecycle listeners — necessity audit
 
-**OPEN.** The Indicator's read-only broker lifecycle listeners still require a handler-by-handler necessity proof against the cBot sole-mutation architecture. They will be removed only where their downstream consumer is unnecessary; no duplicate observation path will be added.
+**ROOT-CORRECTED / RETAINED BY PROOF.** All seven Indicator broker lifecycle listeners were traced to concrete read-only consumers: position-open recovery/protection binding, position-close outcome and lifecycle finalization, position-modification broker-confirmed protection state, and pending-order lifecycle/fill/cancel reconciliation. They do not mutate broker state. Removing them would break broker-confirmed state ownership, so they remain under the single Indicator lifecycle observer owner. No second broker observation layer was added.
 
 ### Modernization disposition — current M2 work
 
 The management command path is being modernized as a deterministic local state owner plus deferred persistence, rather than by adding another queue/cache or an arbitrary timer gate. The existing runtime heartbeat and buffered-persistence owner are reused. The request/confirmation boundary is explicit and platform-neutral, and broker confirmation remains the only authority for adopted protection state. Remaining modernization work is the semantic helper rename, broker-listener necessity audit, contract/build-graph validation, and authoritative CI/runtime verification.
+\n\nEvidence commits for M2.169/M2.175: daf856bc98f249f5208c37f16c1b235fa028f353, 1bd942e8f544957b3903b414f02c1cb3406b1e2f, 74f80be779dedb02512798f36f7c123549f57272.\n
