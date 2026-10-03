@@ -63,7 +63,7 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
-        private ManagementCommandRequestStatus TryModifyStopLoss(Position position, double price, string context)
+        private ManagementCommandRequestStatus RequestModifyStopLoss(Position position, double price, string context)
         {
             if (position == null || !IsFinitePositive(price))
                 return ManagementCommandRequestStatus.Rejected;
@@ -74,7 +74,7 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
-        private ManagementCommandRequestStatus TryModifyTakeProfit(Position position, double price, string context)
+        private ManagementCommandRequestStatus RequestModifyTakeProfit(Position position, double price, string context)
         {
             if (position == null || !IsFinitePositive(price))
                 return ManagementCommandRequestStatus.Rejected;
@@ -85,7 +85,7 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
-        private ManagementCommandRequestStatus TryModifyTakeProfitLadder(
+        private ManagementCommandRequestStatus RequestModifyTakeProfitLadder(
             Position position,
             double firstVolume,
             double firstTargetPips,
@@ -107,7 +107,7 @@ namespace cAlgo
                 finalTargetPips, context);
         }
 
-        private ManagementCommandRequestStatus TryModifyTakeProfitPips(Position position, double targetPips, string context)
+        private ManagementCommandRequestStatus RequestModifyTakeProfitPips(Position position, double targetPips, string context)
         {
             if (position == null || !IsFinitePositive(targetPips))
                 return ManagementCommandRequestStatus.Rejected;
