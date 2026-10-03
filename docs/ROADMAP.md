@@ -3154,3 +3154,20 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+
+## 2026-10-03 — Realtime intelligence + live execution closure follow-up
+
+Current work unit extends the realtime multi-scenario engine with:
+- realtime Indicator audio delivery on the Calculate/IsLastBar path;
+- a bounded history + forecast execution-priority layer shared by current and future scenarios;
+- stronger minimum reward excursion in RANGE/COMPRESSION to suppress undersized stagnant-market opportunities;
+- more tolerant cTrader chart-instance attachment matching while preserving stable type/InstanceId identity.
+
+Full-chain audit remains mandatory:
+pre-analysis/history → M15 decision → M5 trigger/tuning → M1 optional → Entry/SL/TP/RR → actionability → scenario/plan → signal/alert → scenario batch → cBot preflight → per-ScenarioId broker truth → effective lifecycle → broker execution/future pending placement → broker confirmation → protection → outcome/history.
+
+No look-ahead data is introduced. The cBot remains the only broker-mutation owner. Live execution remains explicitly armable and fail-closed when disarmed.
+
+Verification required before merge: Source/Architecture accumulated CI, cTrader Compile/Build, then target-terminal validation of attachment, audio, same-tick execution, multiple ScenarioIds, future pending orders, restart/reconnect and observed latency.
+
+Operator action after verified merge: `git pull --ff-only`.
