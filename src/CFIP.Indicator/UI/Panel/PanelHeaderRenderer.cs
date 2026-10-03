@@ -7,50 +7,9 @@ namespace cAlgo
     {
         private void RefreshPanelHeader()
         {
-            if (_panelHeaderTitle == null)
-                return;
-
-            int direction =
-                GetAuthoritativeDirection();
-
-            string state =
-                GetAuthoritativeState(
-                    direction);
-
-            string signal =
-                GetCanonicalSignalPanelStatus();
-
-            string cbot =
-                ResolvePanelHeaderCbotState();
-
-            string header =
-                "CFIP SMART  •  " +
-                NormalizePanelHeaderState(
-                    state) +
-                "  •  M15  •  " +
-                cbot +
-                "  •  " +
-                Server.TimeInUtc.ToString(
-                    "HH:mm:ss") +
-                " UTC";
-
-            if (string.Equals(
-                    header,
-                    _panelStableHeader,
-                    StringComparison.Ordinal))
-                return;
-
-            _panelStableHeader = header;
-            _panelStableHeaderSinceUtc =
-                Server.TimeInUtc;
-
-            _panelHeaderTitle.Text =
-                header;
-
-            _panelHeaderTitle.ForegroundColor =
-                ResolvePanelHeaderColor(
-                    direction,
-                    signal);
+            // Header content has one canonical realtime owner. This wrapper
+            // remains for legacy call sites while preventing stale duplicate state.
+            UpdatePanelHeaderLiveState();
         }
 
         private string ResolvePanelHeaderCbotState()
