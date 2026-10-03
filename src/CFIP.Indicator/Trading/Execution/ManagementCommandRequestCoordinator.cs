@@ -110,7 +110,7 @@ namespace cAlgo
         private ManagementCommandRequestStatus TryModifyTakeProfitPips(Position position, double targetPips, string context)
         {
             if (position == null || !IsFinitePositive(targetPips))
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             return RequestManagementCommand(
                 ManagementCommandType.AdvanceTarget,
@@ -134,8 +134,6 @@ namespace cAlgo
             double? ladderFinalTargetPips,
             string context)
         {
-            ProcessManagementReports();
-
             ContractIdentity identity =
                 _cfipProviderEnvelope == null ? null : _cfipProviderEnvelope.Identity;
 
@@ -159,7 +157,7 @@ namespace cAlgo
                 ladderSecondVolume, ladderSecondTargetPips, ladderFinalTargetPips);
 
             if (_confirmedManagementKeys.Contains(key))
-                return true;
+                return ManagementCommandRequestStatus.AlreadyConfirmed;
 
             ManagementCommand[] current = LoadManagementCommands();
             for (int i = 0; i < current.Length; i++)
