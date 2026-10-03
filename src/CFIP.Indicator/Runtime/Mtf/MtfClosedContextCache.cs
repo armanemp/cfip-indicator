@@ -6,6 +6,7 @@ namespace cAlgo
     internal sealed class MtfClosedContextCache
     {
         private Bars _m1;
+        private Bars _m2;
         private Bars _m5;
         private Bars _m15;
         private Bars _m30;
@@ -15,6 +16,7 @@ namespace cAlgo
         private Bars _w1;
 
         private int _m1Count = -1;
+        private int _m2Count = -1;
         private int _m5Count = -1;
         private int _m15Count = -1;
         private int _m30Count = -1;
@@ -27,6 +29,7 @@ namespace cAlgo
 
         public bool TryGetStableContext(
             Bars m1,
+            Bars m2,
             Bars m5,
             Bars m15,
             Bars m30,
@@ -39,6 +42,7 @@ namespace cAlgo
         {
             if (_context != null &&
                 ReferenceEquals(_m1, m1) &&
+                ReferenceEquals(_m2, m2) &&
                 ReferenceEquals(_m5, m5) &&
                 ReferenceEquals(_m15, m15) &&
                 ReferenceEquals(_m30, m30) &&
@@ -47,6 +51,7 @@ namespace cAlgo
                 ReferenceEquals(_d1, d1) &&
                 ReferenceEquals(_w1, w1) &&
                 _m1Count == Count(m1) &&
+                _m2Count == Count(m2) &&
                 _m5Count == Count(m5) &&
                 _m15Count == Count(m15) &&
                 _m30Count == Count(m30) &&
@@ -56,6 +61,7 @@ namespace cAlgo
                 _w1Count == Count(w1) &&
                 reference >= _context.Reference &&
                 IsReferenceStable(_m1, _m1Count, _context.M1, reference) &&
+                IsReferenceStable(_m2, _m2Count, _context.M2, reference) &&
                 IsReferenceStable(_m5, _m5Count, _context.M5, reference) &&
                 IsReferenceStable(_m15, _m15Count, _context.M15, reference) &&
                 IsReferenceStable(_m30, _m30Count, _context.M30, reference) &&
@@ -87,6 +93,7 @@ namespace cAlgo
                 return;
 
             _m1 = m1;
+            _m2 = m2;
             _m5 = m5;
             _m15 = m15;
             _m30 = m30;
@@ -96,6 +103,7 @@ namespace cAlgo
             _w1 = w1;
 
             _m1Count = Count(m1);
+            _m2Count = Count(m2);
             _m5Count = Count(m5);
             _m15Count = Count(m15);
             _m30Count = Count(m30);
@@ -110,6 +118,7 @@ namespace cAlgo
         public void Invalidate()
         {
             _m1 = null;
+            _m2 = null;
             _m5 = null;
             _m15 = null;
             _m30 = null;
@@ -118,6 +127,7 @@ namespace cAlgo
             _d1 = null;
             _w1 = null;
             _m1Count = -1;
+            _m2Count = -1;
             _m5Count = -1;
             _m15Count = -1;
             _m30Count = -1;
