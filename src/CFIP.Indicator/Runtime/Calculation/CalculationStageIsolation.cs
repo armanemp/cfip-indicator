@@ -281,6 +281,19 @@ namespace cAlgo
                 index,
                 "M1 TRIGGER RUNTIME");
 
+            // Structural opportunity geometry is rebuilt on closed M5; live
+            // actionability and future-order levels are refreshed from the
+            // current quote on a bounded intrabar cadence.
+            RunCalculationStage(
+                () =>
+                {
+                    RefreshLiveParallelOpportunityStates(
+                        closedM5);
+                    return true;
+                },
+                index,
+                "LIVE OPPORTUNITY STATE");
+
             RunCalculationStage(
                 () =>
                 {
