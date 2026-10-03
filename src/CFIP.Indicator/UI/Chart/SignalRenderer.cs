@@ -91,11 +91,6 @@ namespace cAlgo
                         0.02,
                         ArrowOffsetAtr));
 
-            string arrowState =
-                ResolveSignalArrowState(
-                    snapshot,
-                    visualDirection);
-
             bool showCurrentStateArrow =
                 ShowSignalArrow;
 
