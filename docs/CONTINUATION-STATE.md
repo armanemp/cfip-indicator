@@ -2626,6 +2626,6 @@ Permanent audit law: one behavior = one logic + one owner + one source of truth.
 
 Canonical restart/checkpoint document: docs/M2-FULL-FORENSIC-RESTART-CHECKPOINT-2026-10-04.md.
 
-Current restart HEAD: 42e9566dd2ed2ce1e564de99ff55d16c85e73186 on phase/M2-repository-hygiene-ownership-current, PR #257. PR is open/non-draft/mergeable=false; CI status is not claimed because no usable workflow/status result was returned for the inspected HEAD.
+Current restart HEAD: 68c5bd3436015710aaeac1cc6ce981435506c15e8 on phase/M2-repository-hygiene-ownership-current, PR #257. PR is open/non-draft/mergeable=false; CI status is not claimed because no usable workflow/status result was returned for the inspected HEAD.
 
-**Next exact work item:** M2-A.1 — repository/build truth. Do not jump to strategy tuning or a new feature until the sequential forensic audit reaches that gate.
+**Current M2-A position:** M2-A.1 repository/build truth has an active deep pass. Static inventory/build-graph review found 1122 tracked files, no tracked build/backup/generated artifacts, no discovered conditional-compilation directives, four duplicate basenames (all explained except the identical-but-semantically-distinct ExecutionIntent names), and four open build/architecture findings around manually selected contract harness sources, multiple Indicator compilation representations, solution-vs-CI scope, and permissive warning policy. These findings are recorded in docs/PHASE-M2-REPOSITORY-HYGIENE-OWNERSHIP-2026-10-04.md. **Next exact work item:** continue M2-A.2/A.3 symbol reachability, duplicate-type/semantic-owner and build-harness reconciliation; do not move to M2-B until M2-A is dispositioned.
