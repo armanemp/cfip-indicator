@@ -1,3 +1,30 @@
+## 2026-10-03 — Footer + Alert/Popup Lifecycle Hardening
+
+Status: VERIFIED COMPLETE — merged to `main` via PR #248, merge commit `94edfb5f52f98bea21f0e25d0a74b3cce49fa700`.
+
+Completed:
+- Footer minimum reduced from 40px to 34px without reusing outer PanelPadding as internal button margin.
+- Two-row alert rail reduced to 37px using 18px alert rows plus 1px gap, while preserving five retained events and readable compact presentation.
+- Alert transport dedup now uses canonical ContractIdentity fields plus AlertKey, so envelope revision/generated AlertId changes cannot re-queue the same pending causal event.
+- Email delivery is now gated by canonical queue acceptance, preventing a rejected duplicate from producing a second email side effect.
+- Alert rail content updates are revision-driven; panel lifecycle visibility remains synchronized independently.
+- Deterministic runtime coverage was added for revision-independent dedup and post-delivery re-arm.
+- Existing blocked-alert silence, canonical panel/sound delivery owner, and Indicator/cBot execution boundaries remain intact.
+
+Verification:
+- Source / Architecture: PASS.
+- Runtime Acceptance Contracts: PASS.
+- cTrader Compile: PASS.
+- Target-terminal visual/audio acceptance remains a manual cTrader boundary and was not performed in this environment.
+
+Full-chain routine audit:
+Analysis -> Decision -> Signal -> Alert -> cBot execution -> Broker confirmation -> Protection/Lifecycle -> Outcome/History.
+
+Operator action:
+`git pull --ff-only`
+
+---
+
 ## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #247, merge commit `5933386c26a787ee3297fc6af825d1d85b74a0c3`.
