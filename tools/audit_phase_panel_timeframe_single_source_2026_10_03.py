@@ -55,7 +55,9 @@ check(
     "m15FrameState.Color" in rows and
     "m30FrameState.Color" in rows and
     "h1FrameState.Color" in rows and
-    "h4FrameState.Color" in rows,
+    "h4FrameState.Color" in rows and
+    "d1FrameState.Color" in rows and
+    "w1FrameState.Color" in rows,
     "MTF text rows must use the same canonical timeframe presentation color as lamps",
 )
 
