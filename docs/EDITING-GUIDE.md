@@ -101,7 +101,7 @@ Edit the smallest authoritative module that owns the behavior.
 | Continuation stop preparation | `Trading/Pending/Placement/ContinuationStopPreparation.cs` |
 | Reversal limit orchestration | `Trading/Pending/Placement/ReversalLimitPlacement.cs` |
 | Reversal limit preparation | `Trading/Pending/Placement/ReversalLimitPreparation.cs` |
-| Market broker mutation | `Trading/Execution/BrokerMarketOrderMutation.cs` |
+| Market broker mutation | `src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs` |
 | Pending stop-order mutation | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
 | Pending limit-order mutation | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
 | Pending cancellation mutation | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` |
