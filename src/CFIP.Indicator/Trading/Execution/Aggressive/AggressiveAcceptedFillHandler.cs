@@ -35,7 +35,7 @@ namespace cAlgo
                     "AGGRESSIVE FILL MISMATCH");
 
                 ManagementCommandRequestStatus closeStatus =
-                    TryClosePosition(
+                    RequestClosePosition(
                         result.Position,
                         "AGGRESSIVE FILL MISMATCH");
 
