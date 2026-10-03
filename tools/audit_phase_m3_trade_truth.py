@@ -134,7 +134,7 @@ require(
 require(
     "ProcessDecisionOwnedWatchReactionAlerts(" in stages and
     "RenderCalculationState(" in stages and
-    "ProcessQueuedAlertDelivery();" in cycle,
+    "ProcessQueuedAlertSoundDelivery();" in cycle,
     "M3: calculation cycle must connect analysis, presentation and alert transport",
 )
 
