@@ -13,12 +13,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const double CompactPlanLabelFontSize = 8.5;\n        private const double CompactPlanLabelGapPips = 2.0;
-
-        // ChartText uses time/bar coordinates on X; cTrader does not expose
-        // a pip-based horizontal X offset. Keep one stable bar of visual
-        // separation, owned only by this renderer.
-        private const int CompactPlanLabelGapBars = 1;
+        private const double CompactPlanLabelFontSize = 8.5;
+        private const double CompactPlanLabelGapPips = 2.0;
 
         private void DrawPlanLabel(
             string name,
@@ -113,12 +109,12 @@ namespace cAlgo
                             labelBar));
 
                 int textBar =
-                    Math.Max(
-                        0,
-                        lineLeftBar - CompactPlanLabelGapBars);
+                    lineLeftBar;
 
                 double labelPrice =
-                    NormalizePrice(price);
+                    NormalizePrice(
+                        price +
+                        (CompactPlanLabelGapPips * Symbol.PipSize));
 
                 Color labelColor =
                     PlanLinePresentationRule.ResolveColor(
