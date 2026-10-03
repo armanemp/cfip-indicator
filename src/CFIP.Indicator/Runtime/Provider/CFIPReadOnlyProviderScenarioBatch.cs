@@ -90,6 +90,7 @@ namespace cAlgo
                 SignalEnvelope envelope;
                 if (!TryBuildScenarioEnvelope(
                         candidate,
+                        closedM5,
                         observedUtc,
                         out envelope))
                     continue;
@@ -110,6 +111,7 @@ namespace cAlgo
 
         private bool TryBuildScenarioEnvelope(
             TradeOpportunityCandidate candidate,
+            int closedM5,
             DateTime observedUtc,
             out SignalEnvelope envelope)
         {
@@ -117,9 +119,7 @@ namespace cAlgo
 
             if (!IsScenarioBatchExecutableCandidate(
                     candidate,
-                    candidate == null
-                        ? -1
-                        : candidate.CreatedM5))
+                    closedM5))
                 return false;
 
             string signalId =
