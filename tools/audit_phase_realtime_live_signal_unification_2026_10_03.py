@@ -96,7 +96,7 @@ check(
     "TimeSpan.FromMilliseconds(100)" in bot and
     "protected override void OnTimer()" in bot and
     "ShouldProcessRealtimeTimerEnvelope(" in bot and
-    "ReloadSignalStore(true)" in bot
+    "ReloadSignalStore(false)" in bot
 )
 
 check(
