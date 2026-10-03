@@ -136,11 +136,19 @@ management = read(
 )
 if "ProcessManagementReports()" not in management:
     errors.append(
-        "management command owner must reconcile broker reports before accepting mutation state"
+        "management command owner must reconcile broker reports on the canonical runtime heartbeat"
     )
-if "LocalStorage.Flush(" not in management:
+if "FlushManagementCommandPersistenceToLocalStorage()" not in management:
     errors.append(
-        "management command transport must persist the command queue"
+        "management command owner must expose deferred command serialization to the canonical persistence owner"
+    )
+if "HasPendingManagementCommandPersistence()" not in coordinator:
+    errors.append(
+        "buffered persistence coordinator must own management command dirty-state scheduling"
+    )
+if "LocalStorage.Flush(" in management:
+    errors.append(
+        "management command request owner must not synchronously flush LocalStorage"
     )
 
 for relative in (
