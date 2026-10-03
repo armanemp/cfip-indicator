@@ -14,9 +14,9 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
-        private const int CompactPlanLabelWidthBars = 6;
-        private const double CompactPlanLabelHeightRangeFactor = 0.18;
-        private const double CompactPlanLabelMinimumHeightPips = 5.0;
+        private const int CompactPlanLabelWidthBars = 5;
+        private const double CompactPlanLabelHeightRangeFactor = 0.12;
+        private const double CompactPlanLabelMinimumHeightPips = 4.0;
 
         private void DrawPlanLabel(
             string name,
@@ -274,8 +274,13 @@ namespace cAlgo
 
                 label.Text =
                     text;
+                int textBar =
+                    Math.Min(
+                        rightBar,
+                        leftBar + 1);
+
                 label.Time =
-                    Bars.OpenTimes[leftBar];
+                    Bars.OpenTimes[textBar];
                 label.Y =
                     labelPrice;
                 label.Color =
