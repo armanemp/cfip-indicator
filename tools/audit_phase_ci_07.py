@@ -47,8 +47,8 @@ production_files = list((ROOT / "src" / "CFIP.Indicator").rglob("*.cs"))
 
 
 check(
-    "MTF builder resolves exactly eight canonical closed indices",
-    mtf_builder.count("ClosedIndex(") == 8 and
+    "MTF builder resolves the nine closed indices (M2 micro-precision + eight canonical decision frames)",
+    mtf_builder.count("ClosedIndex(") == 9 and
     "reference," in mtf_builder and
     "TryGetStableContext(" in mtf_builder
 )
