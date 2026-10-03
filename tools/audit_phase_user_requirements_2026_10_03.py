@@ -114,8 +114,8 @@ check(
 # Stagnant-market quality / magnitude.
 check(
     "small reward excursions are rejected by regime-aware magnitude",
-    "OpportunityMagnitudeRule.IsMeaningful(" in magnitude or
-    "OpportunityMagnitudeRule.IsMeaningful(" in provider
+    "internal static bool IsMeaningful(" in magnitude and
+    "OpportunityMagnitudeRule.IsMeaningful(" in read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
 )
 check(
     "range signals require strong structural evidence and RR",
@@ -137,7 +137,7 @@ check(
     "panel header is a dedicated realtime presentation owner",
     "private void RefreshPanelHeader()" in header and
     "UpdatePanelHeaderLiveState()" in header and
-    "GetCanonicalSignalPanelStatus()" in header and
+    "GetCanonicalSignalPanelStatus()" in read("src/CFIP.Indicator/UI/Panel/PanelHeaderLiveState.cs") and
     "IsCbotExecutionStateFresh()" in header
 )
 check(
