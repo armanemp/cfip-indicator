@@ -14,7 +14,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
-        private const int CompactPlanLabelWidthBars = 5;
+        private const int CompactPlanLabelWidthBars = 7;
         private const double CompactPlanLabelHeightRangeFactor = 0.12;
         private const double CompactPlanLabelMinimumHeightPips = 4.0;
 
@@ -274,10 +274,10 @@ namespace cAlgo
 
                 label.Text =
                     text;
+
                 int textBar =
-                    Math.Min(
-                        rightBar,
-                        leftBar + 1);
+                    leftBar +
+                    ((rightBar - leftBar) / 2);
 
                 label.Time =
                     Bars.OpenTimes[textBar];
@@ -295,7 +295,7 @@ namespace cAlgo
                 label.IsBold =
                     true;
                 label.HorizontalAlignment =
-                    HorizontalAlignment.Left;
+                    HorizontalAlignment.Center;
                 label.VerticalAlignment =
                     VerticalAlignment.Center;
                 label.IsInteractive =
@@ -312,8 +312,8 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Compact level labels have no background; the current
-            // presentation contract uses white text for every signal level.
+            // Text is always white; its canonical filled background is rendered
+            // by DrawCompactPlanLabel using the exact line semantic color.
             return Color.White;
         }
 
