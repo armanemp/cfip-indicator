@@ -176,14 +176,12 @@ if "RecordPanelAlertDelivery(" not in read("UI/Panel/AlertDeliveryProcessor.cs")
     raise SystemExit("panel alert delivery handoff is missing")
 if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRenderer.cs"):
     raise SystemExit("panel alert semantic color owner is missing")
-if "Chart.DrawRectangle(" not in labels:
+if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must remain background-free")
-if "box.IsFilled" not in labels:
-    raise SystemExit("level label renderer must not require a box")
-if "PlanLinePresentationRule.ResolveColor(" not in labels:
-    raise SystemExit("level label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in labels:
-    raise SystemExit("level label box must attach to the line endpoint")
+if "return Color.White;" not in labels:
+    raise SystemExit("level label renderer must use white text")
+if "GetPlanLineLeftBar()" not in labels:
+    raise SystemExit("level label renderer must reuse the canonical line left edge")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
 g4_overview_rows = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
