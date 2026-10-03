@@ -101,7 +101,7 @@ namespace cAlgo
                                 desiredStopValid)
                             {
                                 ManagementCommandRequestStatus stopStatus =
-                                    TryModifyStopLoss(
+                                    RequestModifyStopLoss(
                                         position,
                                         NormalizePrice(stop),
                                         context + " • SL");
@@ -136,7 +136,7 @@ namespace cAlgo
                                              normalizedStop))
                                 {
                                     ManagementCommandRequestStatus stopStatus =
-                                        TryModifyStopLoss(
+                                        RequestModifyStopLoss(
                                             position,
                                             normalizedStop,
                                             context + " • SL");
@@ -192,7 +192,7 @@ namespace cAlgo
                                 desiredTargetValid)
                             {
                                 ManagementCommandRequestStatus targetStatus =
-                                    TryModifyTakeProfit(
+                                    RequestModifyTakeProfit(
                                         position,
                                         NormalizePrice(effectiveTarget),
                                         context + " • TP");
@@ -232,7 +232,7 @@ namespace cAlgo
                                                  atr)))
                                 {
                                     ManagementCommandRequestStatus targetStatus =
-                                        TryModifyTakeProfit(
+                                        RequestModifyTakeProfit(
                                             position,
                                             normalizedTarget,
                                             context + " • TP");
