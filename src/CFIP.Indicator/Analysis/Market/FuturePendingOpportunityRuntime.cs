@@ -304,16 +304,21 @@ namespace cAlgo
             _lastLiveOpportunityRefreshM5 = closedM5;
             _lastLiveOpportunityRefreshUtc = now;
 
-            if (_opportunityCandidates == null ||
-                _opportunityCandidates.Count == 0)
+            IReadOnlyList<TradeOpportunityCandidate> executionCandidates =
+                _tradePlanRegistry == null
+                    ? null
+                    : _tradePlanRegistry.Snapshot();
+
+            if (executionCandidates == null ||
+                executionCandidates.Count == 0)
                 return;
 
             for (int i = 0;
-                 i < _opportunityCandidates.Count;
+                 i < executionCandidates.Count;
                  i++)
             {
                 TradeOpportunityCandidate candidate =
-                    _opportunityCandidates[i];
+                    executionCandidates[i];
 
                 if (candidate == null ||
                     candidate.CreatedM5 != closedM5 ||
