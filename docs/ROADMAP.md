@@ -1,3 +1,20 @@
+## 2026-10-03 — Lifecycle Audio + Realtime Panel Header
+
+Status: IMPLEMENTED — verification pending.
+
+Completed:
+- cBot lifecycle/execution audio has a dedicated owner for Start, Stop, broker-confirmed execution, rejection and recovery.
+- Indicator signal audio remains exclusively owned by the Indicator alert-delivery boundary.
+- Panel header has a dedicated presentation owner and is refreshed from the current canonical signal state plus fresh cBot heartbeat/presence.
+- Header updates are change-aware to avoid unnecessary chart-control writes.
+- Existing M15/M5/M1/HTF timeframe-role contract, realtime current-vs-future scenarios, bounded multi-scenario execution, live-account explicit arming and stagnant-market reward protection remain unchanged.
+
+Verification:
+- cTrader Compile/Runtime/Source CI pending after this phase.
+- Target-terminal validation remains required for actual sound audibility and panel freshness.
+
+Operator action after verified merge: `git pull --ff-only` on local `main`.
+
 ## Current focus — REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — automated verification pending.
