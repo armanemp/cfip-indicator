@@ -29,7 +29,7 @@ namespace cAlgo
                     "PLAN-1",
                     "TEST",
                     TradeDirection.Buy,
-                    OpportunityLane.Tactical,
+                    CFIP.Contracts.OpportunityLane.Tactical,
                     "M5",
                     now,
                     10,
