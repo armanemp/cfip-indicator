@@ -148,19 +148,17 @@ check(
 )
 
 check(
-    "signal sound is idempotent across interleaved alert events",
     "MaxRememberedSignalSoundGroups = 256" in processor and
     "IsSignalSoundAlertKey(" in processor and
     "_rememberedSignalSoundGroups" in processor and
     "_rememberedSignalSoundGroupOrder" in processor and
     "Contains(groupKey)" in processor and
-    "CreatedClosedM5" in processor,
-    "SIGNAL|" in processor,
+    "CreatedClosedM5" in processor and
+    '"SIGNAL|"' in processor,
     "signal sound dedup must retain multiple recent event fingerprints rather than only the last group",
 )
 
 check(
-    "MTF arrow stack uses its own object namespace",
     '"MTF_ARROW_1"' in mtf_arrows and
     '"WATCH_ARROW_1"' not in mtf_arrows and
     'ChartIconType.UpArrow' in mtf_arrows and
@@ -169,7 +167,6 @@ check(
 )
 
 check(
-    "footer is compact and does not double-count outer padding",
     "PanelFooterMinHeight = 40" in constants and
     "return contentHeight;" in layout and
     "PanelTrendTimeframeLampRowHeight = 38" in lamp and
@@ -178,7 +175,6 @@ check(
 )
 
 check(
-    "alert rail relayouts immediately when a timer-delivered alert arrives",
     "RefreshPanelAlertFooterGeometry();" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "ResolvePanelFooterAreaHeight(" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "_buttonStack.Height" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
