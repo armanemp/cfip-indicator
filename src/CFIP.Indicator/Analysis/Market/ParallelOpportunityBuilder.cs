@@ -294,15 +294,31 @@ namespace cAlgo
                     execution,
                     preview);
 
+            double candidateAtr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            double minimumRewardDistanceAtr =
+                Math.Max(
+                    MinimumTpSpacingAtr,
+                    MinimumSlAtr * 0.75);
+
+            double rewardDistanceAtr =
+                candidateAtr > 0
+                    ? Math.Abs(
+                        preview.Tp1 -
+                        preview.Entry) /
+                      candidateAtr
+                    : 0;
+
             PlanRewardRiskQualityResult rewardRisk =
                 PlanRewardRiskQualityRule.Evaluate(
                     direction,
                     preview.Entry,
                     preview.Stop,
                     preview.Tp1,
-                    Atr(
-                        _m5Bars,
-                        closedM5),
+                    candidateAtr,
                     Math.Max(
                         0,
                         Symbol.Ask - Symbol.Bid),
@@ -355,6 +371,9 @@ namespace cAlgo
                             ? quality
                             : execution.Quality)),
                 Risk = preview.Risk,
+                RewardDistanceAtr = rewardDistanceAtr,
+                MinimumRequiredRewardDistanceAtr =
+                    minimumRewardDistanceAtr,
                 Tp1RR = tp1RR,
                 Tp2RR = tp2RR,
                 Tp3RR = tp3RR,
