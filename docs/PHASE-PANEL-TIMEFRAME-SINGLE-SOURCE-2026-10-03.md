@@ -20,7 +20,7 @@ Added:
 
 - src/CFIP.Indicator/UI/Panel/PanelTimeframePresentationState.cs
 
-The new canonical resolver derives display direction, direction label, readiness, and display strength.
+The new canonical resolver derives display direction, direction label, readiness, display strength, and the exact semantic display color. The same resolved Color is now consumed by both the MTF lamp rail and the written timeframe status row. An unready frame fails closed to WAIT + secondary presentation so it cannot appear directional in one part of the panel and neutral/white in another.
 
 Updated consumers:
 
@@ -44,7 +44,7 @@ and registered it in:
 
 - .github/workflows/source-check.yml
 
-The audit explicitly rejects reintroduced local direction/strength logic in the lamp and verifies shared state consumption.
+The audit explicitly rejects reintroduced local direction/strength/color logic in the lamp and verifies that all eight MTF text rows consume the canonical timeframe color. This closes the reported case where a timeframe lamp could be green while its written status was red or white.
 
 ## Status
 
