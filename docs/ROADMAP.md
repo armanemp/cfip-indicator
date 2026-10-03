@@ -1,3 +1,28 @@
+## 2026-10-04 — Canonical Chart-Label Side / Single-Owner Correction
+
+Status: IMPLEMENTED ON CORRECTIVE BRANCH — automated verification pending; target-terminal visual acceptance required.
+
+Root cause found after the previous 2026-10-03 duality closeout:
+- the chart level X-anchor was already placed before the 40-bar line start;
+- ChartText.HorizontalAlignment.Left made the visible text grow to the right from that anchor, pushing it back toward/over the line;
+- the label implementation also contained two duplicated ChartText mutation blocks (DrawPlanLabel and DrawCompactPlanLabel).
+
+Correction:
+- preserve the existing canonical line geometry and pre-line anchor;
+- use HorizontalAlignment.Right for the canonical chart-text owner so the complete annotation renders to the left of the line;
+- collapse all ChartText creation/update logic into one UpsertPlanLabel owner;
+- retain the existing wrapper methods only for call-site compatibility;
+- align Phase 11.2, M3, signal-drawing, Single-Owner/No-Duality and architecture audits with the same semantics;
+- keep exact price, white text, no background, source timeframe and pip-distance formatting unchanged.
+
+This is a presentation/ownership correction only. No strategy, signal quality, Entry/SL/TP, RR, risk, MTF, broker execution or cBot startup-audio semantics are changed.
+
+Full-chain routine audit:
+Analysis -> Decision -> SignalVisualSnapshot -> Drawing -> Alert -> cBot execution -> Broker confirmation -> Protection/Lifecycle -> Outcome/History.
+
+Operator action after merge: git pull --ff-only.
+Then run the Release build and visually confirm that Entry/Trigger/SL/TP labels sit completely to the left of their corresponding line starts with a readable horizontal gap.
+
 ## 2026-10-03 — Single-Owner / No-Duality Repair
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
