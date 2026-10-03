@@ -27,10 +27,12 @@ namespace cAlgo
                                             -1,
                                             -1,
                                             -1,
+                                            -1,
                                             -1);
 
                                     if (_mtfClosedContextCache.TryGetStableContext(
                                             _m1Bars,
+                                            _m2Bars,
                                             _m5Bars,
                                             _m15Bars,
                                             _m30Bars,
@@ -45,6 +47,7 @@ namespace cAlgo
                                     MtfClosedContext context =
                                         new MtfClosedContext(
                                             reference,
+                                            ClosedIndex(_m2Bars, reference),
                                             ClosedIndex(_m5Bars, reference),
                                             ClosedIndex(_m1Bars, reference),
                                             ClosedIndex(_m15Bars, reference),
@@ -56,6 +59,7 @@ namespace cAlgo
 
                                     _mtfClosedContextCache.StoreStableContext(
                                         _m1Bars,
+                                        _m2Bars,
                                         _m5Bars,
                                         _m15Bars,
                                         _m30Bars,
