@@ -102,10 +102,10 @@ check(
 check(
     "nine-level smart arrow model has one canonical owner",
     "class MtfTrendStrengthRule" in trend and
-    "preferredDirection" in trend and
     "ResolveNineLevel" in trend and
-    "LevelStartScore = 55.0" in trend and
-    "LevelStepScore = 5.0" in trend and
+    "LevelMinimumScore = 35" in trend and
+    "LevelBandSize = 5" in trend and
+    "ResolveTier" in trend and
     "int arrowCount" in arrows and
     '"WATCH_ARROW"' in arrows and
     '"WATCH_ARROW_2"' in arrows and
