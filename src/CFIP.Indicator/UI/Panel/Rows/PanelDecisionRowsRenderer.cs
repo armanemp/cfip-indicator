@@ -20,11 +20,7 @@ namespace cAlgo
                                                         _decision.Direction;
                                     
                                                     string decisionState =
-                                                        direction == 1
-                                                            ? "BUY"
-                                                            : direction == -1
-                                                                ? "SELL"
-                                                                : "NEUTRAL";
+                                                        DirectionText(direction);
                                     
                                                     AddPanelRow(
                                                         ref slot,
@@ -93,11 +89,7 @@ namespace cAlgo
                                                         "  •  Q" +
                                                         _decision.DivergenceQuality +
                                                         "  •  DIR " +
-                                                        (_decision.DivergenceDirection == 1
-                                                            ? "BUY"
-                                                            : _decision.DivergenceDirection == -1
-                                                                ? "SELL"
-                                                                : "NONE"),
+                                                        DirectionText(_decision.DivergenceDirection),
                                                         _decision.DivergenceDirection == -direction &&
                                                         _decision.DivergenceQuality >= 70
                                                             ? SlLineColor
