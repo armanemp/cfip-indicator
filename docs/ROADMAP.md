@@ -3535,3 +3535,8 @@ Verification:
 - Target-terminal visual acceptance remains required for actual chart appearance, label spacing and stale-object behavior.
 
 Operator action after merge: git pull --ff-only.
+
+
+## M2 current continuation — 2026-10-04
+
+M2 remains **IN PROGRESS**. The current production owner for management requests now uses an explicit platform-neutral request-status contract, broker-confirmed state is no longer inferred from a queued request, management command persistence/report I/O has been removed from the request hot path and routed through the existing runtime heartbeat + buffered persistence owner, and legacy management helper names have been aligned to Request* semantics. Indicator broker lifecycle listeners were audited and retained only because their read-only consumers are required for broker-confirmed lifecycle/protection reconciliation. Closure still requires contract/build-graph validation, Source/Architecture, Runtime Acceptance, cTrader Compile, and target-terminal verification.
