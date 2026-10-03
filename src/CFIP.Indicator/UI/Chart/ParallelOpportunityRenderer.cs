@@ -57,6 +57,12 @@ namespace cAlgo
                     IsSameAsLivePlan(candidate))
                     continue;
 
+                // Presentation-only candidates are diagnostic source context, not
+                // public signal surfaces. Keep them out of the chart marker/line namespace
+                // so weak or non-tradeable primary fallbacks cannot look like live signals.
+                if (candidate.PresentationOnly)
+                    continue;
+
                 displayNumber++;
 
                 string baseName =
@@ -118,9 +124,6 @@ namespace cAlgo
                     else
                         primaryH1Rendered = true;
                 }
-
-                if (candidate.PresentationOnly)
-                    continue;
 
                 RenderOpportunityLine(
                     baseName + "_ENTRY",
