@@ -99,6 +99,19 @@ check(
     "presentation-only primary fallbacks must not become user-facing trade alerts",
 )
 
+parallel_renderer = read("UI/Chart/ParallelOpportunityRenderer.cs")
+marker_start = parallel_renderer.find(
+    "                // Presentation-only candidates are diagnostic source context")
+marker_block_end = parallel_renderer.find(
+    "                if (candidate.IsPrimaryTimeframeSignal &&",
+    marker_start if marker_start >= 0 else 0)
+check(
+    marker_start >= 0 and
+    marker_block_end > marker_start and
+    parallel_renderer.find("if (candidate.PresentationOnly)", marker_start, marker_block_end) >= 0,
+    "presentation-only primary candidates must be rejected before any public marker is drawn",
+)
+
 check(
     '<AssemblyName>CFIPIndicator</AssemblyName>' in csproj and
     '<AlgoName>CFIP Smart Indicator</AlgoName>' in csproj and
