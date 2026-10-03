@@ -14,7 +14,11 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
-        // cTrader ChartText uses time/bar coordinates on X; it has no pip-based horizontal X offset.\n        // Keep the canonical visual gap stable and owned by this renderer.\n        private const int CompactPlanLabelGapBars = 1;
+
+        // ChartText uses time/bar coordinates on X; cTrader does not expose
+        // a pip-based horizontal X offset. Keep one stable bar of visual
+        // separation, owned only by this renderer.
+        private const int CompactPlanLabelGapBars = 1;
 
         private void DrawPlanLabel(
             string name,
@@ -37,10 +41,6 @@ namespace cAlgo
                             Bars.Count - 1,
                             bar));
 
-                // Prediction lines use their own configured backward span.
-                // Convert the prediction anchor into the exact line-left
-                // position, then delegate to the same compact tag renderer
-                // used by canonical plan/pending/parallel labels.
                 int lineLeft =
                     Math.Max(
                         0,
@@ -103,11 +103,8 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                // Native cTrader-style presentation:
-                // the line owns the geometry; the label is only ChartText.
-                // Do not create a second chart shape/rectangle. Rectangle
-                // objects are price/time geometry and become visually large
-                // or unstable when zoom/scale changes.
+                // The line owns geometry. The label is only native ChartText.
+                // No rectangle, panel or marker is created for the label.
                 int lineLeftBar =
                     Math.Max(
                         0,
@@ -158,7 +155,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    Color.White;
+                    GetReadableLabelTextColor(labelColor);
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
@@ -169,8 +166,6 @@ namespace cAlgo
                 label.IsBold =
                     false;
 
-                // Right-align against the anchor so the complete text stays
-                // on the label side of the line and never crosses its start.
                 label.HorizontalAlignment =
                     HorizontalAlignment.Right;
                 label.VerticalAlignment =
@@ -178,4 +173,32 @@ namespace cAlgo
                 label.IsInteractive =
                     false;
 
-                // Remove all legacy label geometry. The label is text-only.\n                Chart.RemoveObject(name + "_BOX");\n            Chart.RemoveObject(name + "_ANCHOR");\n        }\n\n}
+                // Clean up every legacy label shape deterministically.
+                Chart.RemoveObject(name + "_BOX");
+                Chart.RemoveObject(name + "_ANCHOR");
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP native plan label failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private Color GetReadableLabelTextColor(
+            Color semanticColor)
+        {
+            // Label text intentionally matches the canonical line color.
+            return PlanLinePresentationRule.ResolveColor(
+                semanticColor);
+        }
+
+        private void RemovePlanLabel(
+            string name)
+        {
+            Chart.RemoveObject(name);
+            Chart.RemoveObject(name + "_BOX");
+            Chart.RemoveObject(name + "_ANCHOR");
+        }
+    }
+}
