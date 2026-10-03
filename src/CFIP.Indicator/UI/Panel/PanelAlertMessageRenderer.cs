@@ -7,7 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const int PanelAlertMessageCapacity = 5;
-        private const int PanelAlertMessageRowHeight = 21;
+        private const int PanelAlertMessageRowHeight = 20;
         private const int PanelAlertMessageGap = 1;
         private const int PanelAlertMessageMaxCharacters = 132;
 
