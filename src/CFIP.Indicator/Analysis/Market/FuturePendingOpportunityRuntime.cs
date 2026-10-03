@@ -296,6 +296,12 @@ namespace cAlgo
                     ExecutionPolicyReason = "PENDING POLICY EVALUATION"
                 };
 
+            ApplyOpportunityIntelligenceRanking(
+                candidate,
+                candidate.Lane,
+                direction,
+                candidate.Quality);
+
             ScenarioExecutionPolicyResult policy =
                 ScenarioExecutionPolicyRule.Evaluate(
                     candidate,
