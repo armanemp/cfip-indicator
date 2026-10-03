@@ -429,6 +429,10 @@ namespace cAlgo
                 RenderManagedPendingOrder(
                     _renderSignalVisualSnapshot);
 
+                RenderCanonicalMtfTrendArrows(
+                    _renderSignalVisualSnapshot,
+                    index);
+
                 RenderParallelOpportunityCandidates(
                     closedM5);
 
