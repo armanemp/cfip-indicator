@@ -38,7 +38,7 @@ for token in (
 
 require(
     "CbotManagementPolicyRule.Allows(" in manager and
-    "CbotManagementPolicyRule.Allows(" in policy,
+    "static bool Allows(" in policy,
     "management commands do not pass through the canonical cBot policy owner",
 )
 require(
@@ -80,15 +80,16 @@ require(
     "cBot does not supply current execution policy to management owner",
 )
 require(
-    "CbotManagementPolicyRule.cs" in tests and
+    "using CFIP.cBot.Execution;" in tests and
     "ManagementPolicy();" in tests and
+    "CbotManagementPolicyRule.Allows(" in tests and
     "ManagementCommandType.AdvanceTarget" in tests,
     "management policy behavioral coverage is missing",
 )
 require(
-    "Execution-path split matrix" in boundary and
     "ManagementExecutionCoordinator.cs" in boundary and
-    "actual broker mutation moves to the cBot" in boundary,
+    "cBot — P4E" in boundary and
+    "Definition of extraction completeness" in boundary,
     "CBOT execution boundary documentation is missing the mutation ownership contract",
 )
 require(
