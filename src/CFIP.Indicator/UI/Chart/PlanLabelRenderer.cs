@@ -14,6 +14,10 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
+
+        // ChartText uses time/bar coordinates on X; cTrader does not expose
+        // a pip-based horizontal X offset. Keep one stable bar of visual
+        // separation, owned only by this renderer.
         private const int CompactPlanLabelGapBars = 1;
 
         private void DrawPlanLabel(
@@ -37,10 +41,6 @@ namespace cAlgo
                             Bars.Count - 1,
                             bar));
 
-                // Prediction lines use their own configured backward span.
-                // Convert the prediction anchor into the exact line-left
-                // position, then delegate to the same compact tag renderer
-                // used by canonical plan/pending/parallel labels.
                 int lineLeft =
                     Math.Max(
                         0,
@@ -103,11 +103,8 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                // Native cTrader-style presentation:
-                // the line owns the geometry; the label is only ChartText.
-                // Do not create a second chart shape/rectangle. Rectangle
-                // objects are price/time geometry and become visually large
-                // or unstable when zoom/scale changes.
+                // The line owns geometry. The label is only native ChartText.
+                // No rectangle, panel or marker is created for the label.
                 int lineLeftBar =
                     Math.Max(
                         0,
@@ -145,7 +142,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[textBar],
                             labelPrice,
-                            Color.White);
+                            labelColor);
                 }
 
                 if (label == null)
@@ -158,7 +155,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    Color.White;
+                    GetReadableLabelTextColor(labelColor);
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
@@ -169,8 +166,6 @@ namespace cAlgo
                 label.IsBold =
                     false;
 
-                // Right-align against the anchor so the complete text stays
-                // on the label side of the line and never crosses its start.
                 label.HorizontalAlignment =
                     HorizontalAlignment.Right;
                 label.VerticalAlignment =
@@ -178,49 +173,9 @@ namespace cAlgo
                 label.IsInteractive =
                     false;
 
-                // Remove legacy rectangle objects left by previous versions.
+                // Clean up every legacy label shape deterministically.
                 Chart.RemoveObject(name + "_BOX");
-            Chart.RemoveObject(name + "_ANCHOR");
-
-                // A tiny native circle marks the exact line/label junction.
-                // It is one chart object, not a filled panel/box.
-                string markerName =
-                    name + "_ANCHOR";
-
-                ChartIcon marker =
-                    Chart.FindObject(markerName)
-                    as ChartIcon;
-
-                if (marker == null)
-                {
-                    ChartObject existingMarker =
-                        Chart.FindObject(markerName);
-
-                    if (existingMarker != null)
-                        Chart.RemoveObject(markerName);
-
-                    marker =
-                        Chart.DrawIcon(
-                            markerName,
-                            ChartIconType.Circle,
-                            Bars.OpenTimes[lineLeftBar],
-                            labelPrice,
-                            labelColor);
-                }
-
-                if (marker != null)
-                {
-                    marker.Time =
-                        Bars.OpenTimes[lineLeftBar];
-                    marker.Y =
-                        labelPrice;
-                    marker.Color =
-                        labelColor;
-                    marker.IconType =
-                        ChartIconType.Circle;
-                    marker.IsInteractive =
-                        false;
-                }
+                Chart.RemoveObject(name + "_ANCHOR");
             }
             catch (Exception ex)
             {
@@ -233,9 +188,9 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Text is always white; its canonical filled background is rendered
-            // by DrawCompactPlanLabel using the exact line semantic color.
-            return Color.White;
+            // Label text intentionally matches the canonical line color.
+            return PlanLinePresentationRule.ResolveColor(
+                semanticColor);
         }
 
         private void RemovePlanLabel(
@@ -243,6 +198,7 @@ namespace cAlgo
         {
             Chart.RemoveObject(name);
             Chart.RemoveObject(name + "_BOX");
+            Chart.RemoveObject(name + "_ANCHOR");
         }
     }
 }

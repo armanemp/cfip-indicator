@@ -3630,3 +3630,19 @@ Verification:
 - Target-terminal and historical replay verification are required to measure whether weak signals disappear without eliminating valid low-risk/high-reward setups. cTrader supports visual backtesting/Market Replay and custom optimisation criteria for this type of validation. citeturn3search0turn1search0
 
 Operator action: git pull --ff-only, then run the Release build and the decision-contract test project before chart/runtime validation.
+
+
+## 2026-10-04 — Signal Label Color / Marker Removal / Stable Left Gap
+
+Implemented the next visual correction at the existing single label owner:
+- Removed the label anchor circles completely.
+- Label text now uses the exact canonical semantic line color.
+- Label presentation remains background-free and ChartText-only.
+- Text stays left of the exact line start using the existing single gap owner.
+- cTrader ChartText has time/bar X coordinates rather than a pip-based horizontal offset, so no fake price-space conversion is introduced.
+- No signal, strategy, TP/SL, MTF, alert, or execution logic was changed.
+
+See `docs/PHASE-SIGNAL-LABEL-COLOR-2PIP-2026-10-04.md`.
+
+Verification: repository-side source/audit changes implemented; local Release build and target cTrader visual acceptance remain required.
+Operator action after merge: `git pull --ff-only`.

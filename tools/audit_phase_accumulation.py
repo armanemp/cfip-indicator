@@ -177,9 +177,9 @@ if "RecordPanelAlertDelivery(" not in read("UI/Panel/AlertDeliveryProcessor.cs")
 if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRenderer.cs"):
     raise SystemExit("panel alert semantic color owner is missing")
 if "Chart.DrawRectangle(" not in labels:
-    raise SystemExit("level label renderer must own the canonical filled cTrader-style box")
+    raise SystemExit("level label renderer must remain background-free")
 if "box.IsFilled" not in labels:
-    raise SystemExit("level label box must be filled")
+    raise SystemExit("level label renderer must not require a box")
 if "PlanLinePresentationRule.ResolveColor(" not in labels:
     raise SystemExit("level label box must reuse canonical line color")
 if "GetPlanLineRightBar()" not in labels:
