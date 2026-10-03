@@ -12,7 +12,9 @@ That created a false single-scenario bottleneck before the actual broker executi
 
 ## Correction
 
-ShadowHostCoordinator now stores the last accepted revision and idempotency key per ScenarioId.
+ShadowHostCoordinator now stores the last accepted revision, idempotency key, cached result and broker-recheck timestamp per ScenarioId.
+
+The provider-side ScenarioBatch materialization path is also bound explicitly to the current closed M5. A stale candidate from the opportunity registry cannot be promoted into the current execution batch.
 
 The global LastAcceptedRevision and LastAcceptedIdempotencyKey properties remain available as telemetry for compatibility, but per-scenario validation is now the execution truth.
 
@@ -60,7 +62,8 @@ Automated:
 
 - cTrader Compile/Build;
 
-- dedicated shadow multi-scenario audit.
+- dedicated shadow multi-scenario audit;
+- stale-candidate/current-closed-M5 materialization audit.
 
 Target terminal:
 
