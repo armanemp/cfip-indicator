@@ -1,3 +1,28 @@
+# Current focus — CBOT LIVE / REALTIME COMPLETION — 2026-10-03
+
+Status: IMPLEMENTED — repository verification pending.
+
+Closed in this completion unit:
+- cBot republishes the exact bound Indicator InstanceId immediately after chart binding succeeds;
+- binding failure overwrites symbol-scoped presence with an explicit unattached state;
+- queued alert sound delivery is serviced from the Indicator Calculate finally boundary, while IsLastBar remains the single realtime audio guard;
+- existing current/future separation, multi-scenario execution, stagnant-market reward floor, history/forecast ranking and explicit live arm remain unchanged.
+
+Full-chain audit:
+history/outcomes -> pre-analysis -> M15 decision -> M5 trigger/tuning -> optional M1 -> current quote -> current Market/Aggressive OR future Stop/Limit -> ScenarioBatch -> cBot preflight -> broker -> confirmation -> protection/management -> outcome/history.
+
+Verification:
+- Source/Architecture accumulated audit;
+- Runtime Acceptance Contracts;
+- cTrader Compile/Build;
+- target-terminal attachment, audio, same-tick handoff, concurrent scenarios, future orders, restart/reconnect and live-arm acceptance.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+Phase record: `docs/PHASE-CBOT-LIVE-REALTIME-COMPLETION-2026-10-03.md`.
+
+---
+
 ## Current focus — LIVE REALTIME EXECUTION / ATTACHMENT / AUDIO / QUALITY HARDENING — 2026-10-03
 
 Verification note — 2026-10-03:
