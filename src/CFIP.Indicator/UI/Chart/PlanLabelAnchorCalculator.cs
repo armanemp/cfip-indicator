@@ -11,9 +11,11 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            // Canonical plan labels share the exact right endpoint of the
-            // canonical plan-level line geometry.
-            return GetPlanLineRightBar();
+            // Labels are anchored to the LEFT endpoint of the exact same
+            // line geometry. The label then sits immediately before the line,
+            // which keeps the annotation visually integrated with the level
+            // instead of floating on the chart's right edge.
+            return GetPlanLineLeftBar();
         }
     }
 }
