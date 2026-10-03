@@ -37,6 +37,11 @@ check(
     "ShadowHostValidator.Validate(" in coord
 )
 check(
+    "ScenarioBatch materialization is bound to the current closed M5",
+    "TryBuildScenarioEnvelope(\n                        candidate,\n                        closedM5," in batch and
+    "IsScenarioBatchExecutableCandidate(\n                    candidate,\n                    closedM5)" in batch
+)
+check(
     "batch envelopes may share a provider revision while retaining independent ScenarioIds",
     "candidate.ScenarioId" in batch and
     "candidate.CreatedM5 == closedM5" in batch and
