@@ -23,27 +23,27 @@ namespace cAlgo
 
         private long _managementCommandRevision;
 
-        private bool TryCancelPendingOrder(PendingOrder order, string context)
+        private ManagementCommandRequestStatus TryCancelPendingOrder(PendingOrder order, string context)
         {
             if (order == null)
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             return RequestManagementCommand(
                 ManagementCommandType.CancelPending,
                 null, order, null, null, null, null, null, null, null, null, null, null, context);
         }
 
-        private bool TryClosePosition(Position position, string context, double? volumeInUnits = null)
+        private ManagementCommandRequestStatus TryClosePosition(Position position, string context, double? volumeInUnits = null)
         {
             if (position == null)
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             double closeVolume = volumeInUnits.HasValue
                 ? Math.Max(0, Math.Min(volumeInUnits.Value, position.VolumeInUnits))
                 : position.VolumeInUnits;
 
             if (closeVolume <= 0)
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             double expectedRemaining =
                 Math.Max(0, position.VolumeInUnits - closeVolume);
@@ -57,10 +57,10 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
-        private bool TryModifyStopLoss(Position position, double price, string context)
+        private ManagementCommandRequestStatus TryModifyStopLoss(Position position, double price, string context)
         {
             if (position == null || !IsFinitePositive(price))
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             return RequestManagementCommand(
                 ManagementCommandType.ModifyProtection,
@@ -68,7 +68,7 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
-        private bool TryModifyTakeProfit(Position position, double price, string context)
+        private ManagementCommandRequestStatus TryModifyTakeProfit(Position position, double price, string context)
         {
             if (position == null || !IsFinitePositive(price))
                 return false;
@@ -79,7 +79,7 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
-        private bool TryModifyTakeProfitLadder(
+        private ManagementCommandRequestStatus TryModifyTakeProfitLadder(
             Position position,
             double firstVolume,
             double firstTargetPips,
@@ -92,7 +92,7 @@ namespace cAlgo
                 !IsFinitePositive(firstVolume) ||
                 !IsFinitePositive(firstTargetPips) ||
                 !IsFinitePositive(finalTargetPips))
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             return RequestManagementCommand(
                 ManagementCommandType.AdvanceTarget,
@@ -101,7 +101,7 @@ namespace cAlgo
                 finalTargetPips, context);
         }
 
-        private bool TryModifyTakeProfitPips(Position position, double targetPips, string context)
+        private ManagementCommandRequestStatus TryModifyTakeProfitPips(Position position, double targetPips, string context)
         {
             if (position == null || !IsFinitePositive(targetPips))
                 return false;
@@ -112,7 +112,7 @@ namespace cAlgo
                 null, null, null, null, null, context);
         }
 
-        private bool RequestManagementCommand(
+        private ManagementCommandRequestStatus RequestManagementCommand(
             ManagementCommandType command,
             Position position,
             PendingOrder pendingOrder,
@@ -136,7 +136,7 @@ namespace cAlgo
             if (identity == null ||
                 string.IsNullOrWhiteSpace(identity.PlanId) ||
                 identity.Symbol != (SymbolName ?? ""))
-                return false;
+                return ManagementCommandRequestStatus.Rejected;
 
             string executionLabel = ManagedExecutionLabel();
             if (string.IsNullOrWhiteSpace(executionLabel))
@@ -160,7 +160,7 @@ namespace cAlgo
             {
                 if (current[i] != null &&
                     string.Equals(current[i].CommandIdempotencyKey, key, StringComparison.Ordinal))
-                    return false;
+                    return ManagementCommandRequestStatus.AlreadyPending;
             }
 
             ManagementCommand request =
@@ -205,9 +205,10 @@ namespace cAlgo
             catch (Exception ex)
             {
                 Print("CFIP MANAGEMENT COMMAND WRITE FAILED | {0}", ex.Message);
+                return ManagementCommandRequestStatus.WriteFailed;
             }
 
-            return false;
+            return ManagementCommandRequestStatus.Queued;
         }
 
         private ManagementCommand[] LoadManagementCommands()
