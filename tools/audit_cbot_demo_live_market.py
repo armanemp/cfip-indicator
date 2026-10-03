@@ -44,7 +44,7 @@ if "ExecuteMarketOrder(" not in coord:
 if "ExecuteMarketRangeOrder(" not in coord:
     errors.append("demo market coordinator has no Market-Range mutation")
 
-if "CFIP MARKET" not in bot:
+if "MARKET SUBMISSION RESULT" not in bot:
     errors.append("cBot market execution path must remain observable")
 
 if "CS0612" not in indicator:
