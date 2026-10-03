@@ -81,7 +81,8 @@ namespace cAlgo
 
                             double[] requiredRR =
                                 BuildTargetSelectionRequiredRR(
-                                    rrStep,
+                                    risk,
+                                    atr,
                                     lane);
 
                             double fallbackRR =
