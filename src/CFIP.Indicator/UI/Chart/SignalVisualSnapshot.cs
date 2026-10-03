@@ -23,6 +23,7 @@ namespace cAlgo
         public int MtfTrendDirection;
         public int MtfTrendStrengthLevel;
         public int MtfTrendStrengthScore;
+        public string MtfTrendStrengthTier;
         public int HtfTrendDirection;
         public int HtfTrendStrengthScore;
         public string Stage;
