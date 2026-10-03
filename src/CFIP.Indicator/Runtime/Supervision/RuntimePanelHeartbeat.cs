@@ -63,6 +63,10 @@ namespace cAlgo
 
                 UpdatePanelHeartbeatLiveRows();
 
+                // Management reports are reconciled once per canonical runtime heartbeat.
+                // Request submission never performs synchronous report I/O.
+                ProcessManagementReports();
+
                 FlushBufferedPersistence(
                     now,
                     false);
