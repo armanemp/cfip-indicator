@@ -26,6 +26,10 @@ panel = read("src/CFIP.Indicator/UI/Panel/PanelExecutionState.cs")
 audio = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 parallel = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
 future = read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
+ranking = read("src/CFIP.Indicator/Analysis/Market/OpportunityIntelligenceRanking.cs")
+candidate = read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs")
+quality = read("src/CFIP.Indicator/Core/Math/TradeOpportunityQualityRule.cs")
+registry = read("src/CFIP.Indicator/Trading/Intelligence/TradePlanRegistry.cs")
 policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
 floor = read("src/CFIP.Indicator/Core/Math/RegimeAdaptiveRewardFloorRule.cs")
 provider_plan = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderPlan.cs")
@@ -83,11 +87,21 @@ check("sound delivery is restricted to indicator live last-bar execution",
 check("critical alert queue never evicts an existing critical event",
       "Keep already-buffered critical alerts intact" in read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs"))
 
-check("adaptive stagnant-market reward floor is canonical",
+check("adaptive stagnant-market reward floor is canonical and strengthened",
       "RegimeAdaptiveRewardFloorRule" in floor and
       "MarketRegimeIdentity.Compression" in floor and
+      "Math.Max(baseFloor, 1.20)" in floor and
       "Math.Max(baseFloor, 1.00)" in floor and
       "Math.Max(baseFloor, 0.85)" in floor)
+
+check("history + forecast are explicit ranking evidence",
+      "ForecastAlignmentScore" in candidate and
+      "HistoricalSupportScore" in candidate and
+      "HistoricalCalibrationSamples" in candidate and
+      "GetEmpiricalCalibrationSnapshot(" in ranking and
+      "CalculateExecutionPriorityScore(" in ranking and
+      "CalculateExecutionPriorityScore(" in quality and
+      "ExecutionPriorityScore" in registry)
 
 check("current and future opportunity builders consume the same floor",
       "RegimeAdaptiveRewardFloorRule.Resolve" in parallel and
