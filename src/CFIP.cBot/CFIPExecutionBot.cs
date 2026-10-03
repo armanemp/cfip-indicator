@@ -399,7 +399,7 @@ namespace CFIP.cBot
                 envelope.Identity.ScenarioId ?? "";
 
             string instanceId =
-                envelope.Identity.IndicatorInstanceId ?? "";
+                _boundIndicatorInstanceId ?? "";
 
             if (string.Equals(
                     instanceId,
@@ -513,7 +513,7 @@ namespace CFIP.cBot
             _lastObservedEnvelopeScenarioId =
                 envelope.Identity.ScenarioId ?? "";
             _lastObservedEnvelopeInstanceId =
-                envelope.Identity.IndicatorInstanceId ?? "";
+                _boundIndicatorInstanceId ?? "";
 
             _lastSignalEnvelope = envelope;
             _activeManagedExecutionLabel =
