@@ -211,7 +211,7 @@ namespace cAlgo
                 "ACTIVE PLAN REVERSAL");
 
             ManagementCommandRequestStatus closeStatus =
-                TryClosePosition(
+                RequestClosePosition(
                     livePosition,
                     "ACTIVE PLAN REVERSAL");
             if (!closeStatus.IsAccepted())
