@@ -23,7 +23,7 @@ check("plan line geometry is fixed to 40 bars from latest candle", "CompactPlanL
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
 check("plan labels use canonical filled line-colored boxes", "Chart.DrawRectangle(" in labels and "box.IsFilled" in labels and 'name + "_BOX"' in labels and "PlanLinePresentationRule.ResolveColor(" in labels)
 check("plan labels are white", "return Color.White;" in labels)
-check("labels share the exact signal price and sit left with a deterministic gap", "NormalizePrice(price)" in labels and "lineLeft - offset" in anchor and "CompactPlanLabelMinimumGapBars = 3" in anchor)
+check("labels share the exact signal price and attach to the canonical line endpoint", "NormalizePrice(price)" in labels and "GetPlanLineRightBar()" in labels and "right edge is attached" not in labels)
 check("active plan does not create a second arrow lifecycle", "RenderStackedSignalArrows(" not in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
