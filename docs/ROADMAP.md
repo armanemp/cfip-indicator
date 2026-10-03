@@ -1,3 +1,13 @@
+## 2026-10-04 — Native No-Box Signal Label Refinement
+
+The previous filled ChartRectangle label was rejected visually: it did not resemble native cTrader chart presentation and could make text appear outside/offset as zoom and price-range geometry changed. Official cTrader API documentation confirms ChartText is the native chart-bound text object with explicit horizontal/vertical anchoring, while rectangles are independent chart shapes. The canonical presentation is therefore changed to ChartText only, right-aligned against the line-start anchor, with the legacy rectangle explicitly removed. A single tiny native Circle ChartIcon marks the exact line/label junction; no panel/box is created. This minimizes chart objects and avoids a second price/time geometry surface.
+
+Verification contract: no strategy/signal/TP/SL/RR/MTF/execution behavior changes. Repository-side source contract updated; final cTrader Release build and live visual acceptance remain required.
+
+Operator: git pull --ff-only, Release build, inspect one live signal. Acceptance: thin solid 40-bar line; text fully contained and attached at its left start; no rectangle/background panel; no detached right-side text.
+
+---
+
 ## 2026-10-04 — Native cTrader Signal-Line Presentation Closure
 
 Status: IMPLEMENTED — terminal visual acceptance is the remaining boundary.
