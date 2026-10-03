@@ -74,7 +74,6 @@ namespace cAlgo
                 snapshot.PendingEntry,
                 TriggerLineColor,
                 ShowTrigger,
-                lineLeft,
                 labelBar);
 
             RenderCompactPlanLabel(
@@ -84,7 +83,6 @@ namespace cAlgo
                 snapshot.PendingStop,
                 SlLineColor,
                 ShowSL,
-                lineLeft,
                 labelBar);
 
             RenderCompactPlanLabel(
@@ -94,7 +92,6 @@ namespace cAlgo
                 snapshot.PendingTarget,
                 TpLineColor,
                 ShowTP1,
-                lineLeft,
                 labelBar);
         }
 
