@@ -113,3 +113,11 @@ print("Signal/plan line geometry: one owner / 40 bars / Solid / 1px")
 print("Pending + parallel lines: delegated to canonical line owner")
 print("Chart labels: one renderer / exact price / white / background-free")
 print("Label formatting + source timeframe: one canonical formatter")
+
+
+arrow_rule = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
+arrow_renderer = read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
+require("class MtfTrendStrengthResult" in arrow_rule, "trend strength result must have one canonical owner")
+require("private void RenderMtfTrendStrengthArrowStack(" in arrow_renderer, "trend arrows must have one canonical renderer")
+require("RenderStackedSignalArrows(" not in arrow_renderer, "legacy stacked renderer must not remain")
+require("HtfTrendArrowStrengthRule" not in arrow_rule, "legacy HTF strength owner must not remain")
