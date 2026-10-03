@@ -140,9 +140,6 @@ check(
     "structural alerts must retain one canonical structural event owner",
 )
 
-print("Panel footer / MTF lamp / alert dedup audit PASS")
-
-
 check(
     "signal sound is idempotent across interleaved alert events",
     "MaxRememberedSignalSoundGroups = 256" in processor and
@@ -160,3 +157,6 @@ check(
     "_buttonStack.Height" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "panel alert delivery must resize the live footer without waiting for a full panel render",
 )
+
+
+print("Panel footer / MTF lamp / alert dedup audit PASS")
