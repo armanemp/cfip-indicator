@@ -165,8 +165,14 @@ if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessage
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
 if "return Color.White;" not in labels_renderer:
     raise SystemExit("All compact plan-level text must use canonical white text")
-if "Chart.DrawRectangle(" in labels_renderer:
-    raise SystemExit("Plan label renderer must not create text backgrounds")
+if "Chart.DrawRectangle(" not in compact_label_renderer:
+    raise SystemExit("Plan label renderer must own the cTrader-style filled label box")
+if "box.IsFilled" not in compact_label_renderer:
+    raise SystemExit("Plan label box must be filled")
+if "PlanLinePresentationRule.ResolveColor(" not in compact_label_renderer:
+    raise SystemExit("Plan label box must reuse canonical line color")
+if "GetPlanLineRightBar()" not in labels_renderer:
+    raise SystemExit("Plan label box must attach to the canonical line endpoint")
 if "OrderVolume(" in server_ladder:
     raise SystemExit("Server TP ladder must use the current relative protection volume API")
 if "new RelativeTakeProfitProtection(" not in server_ladder:
@@ -203,7 +209,7 @@ if "PlaceLimitOrder(" not in pending_cbot:
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
 print("All level/prediction signal lines: solid-only")
-print("Level labels: white text, background-free, exact-price alignment")
+print("Level labels: white text inside canonical line-colored filled boxes, exact-price alignment")
 print("Alerts: unified panel rail + optional sound, no popup UI")
 print("Indicator execution controls: broker-action UI removed; analysis panel is canonical")
 print("Market / Market-Range broker mutation: owned by CFIP.cBot")

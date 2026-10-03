@@ -174,8 +174,7 @@ namespace cAlgo
                      ShowSignalLabels))
                 {
                     int labelBar =
-                        GetCompactPlanLabelAnchorBar(
-                            left);
+                        GetCompactPlanLabelAnchorBar();
 
                     RenderOpportunityLabel(
                         baseName + "_ENTRY_LABEL",

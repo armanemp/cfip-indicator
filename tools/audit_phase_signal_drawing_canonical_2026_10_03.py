@@ -21,7 +21,7 @@ def check(name, ok):
 check("plan lines are solid and canonical", "return LineStyle.Solid;" in line)
 check("plan line geometry is fixed to 40 bars from latest candle", "CompactPlanLineLengthBars = 40" in line and "GetPlanLineRightBar()" in line and "GetPlanLineRightBar() -" in line and "if (FullWidthLevelLines)" not in line.split("private int GetPlanLineLeftBar", 1)[1])
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
-check("plan labels are background-free", "Chart.DrawRectangle(" not in labels and 'name + "_BOX"' in labels)
+check("plan labels use canonical filled line-colored boxes", "Chart.DrawRectangle(" in labels and "box.IsFilled" in labels and 'name + "_BOX"' in labels and "PlanLinePresentationRule.ResolveColor(" in labels)
 check("plan labels are white", "return Color.White;" in labels)
 check("labels share the exact signal price and sit left with a deterministic gap", "NormalizePrice(price)" in labels and "lineLeft - offset" in anchor and "CompactPlanLabelMinimumGapBars = 3" in anchor)
 check("active plan uses canonical stacked-arrow renderer", "RenderStackedSignalArrows(" in plan and 'P + "ARROW"' not in plan)

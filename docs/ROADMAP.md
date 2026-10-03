@@ -118,7 +118,7 @@ Completed:
 - Legacy `P + "ARROW"` active-plan ownership was removed from rendering/cleanup.
 - BUY/SELL remains `UpArrow` / `DownArrow`; M1 trigger remains a separate Circle marker.
 - Signal/plan level lines are Solid, fixed at 1px, finite 40-bar geometry.
-- Compact labels are white, background-free and anchored left of line start with a deterministic gap.
+- Compact labels are white text inside compact boxes matching their line color and attached to the exact line endpoint.
 - Expired/invalid marker/line objects continue to be removed through the canonical lifecycle.
 - The dead `buttonMargin` local that caused the user's Release-build CS0219 warning was removed from `PanelMainRenderer`.
 - Legacy drawing audits/contracts were updated to enforce the new visual contract.
@@ -3497,3 +3497,25 @@ The panel alert rail now performs an immediate lightweight footer geometry refre
 Current panel correction is now based on actual visible geometry rather than a large fixed footer reserve. The Footer content minimum is 40px, the two-line MTF rail is 38px, outer panel padding is counted only once, and alert text is no-wrap/ellipsis within the audit-required 20px row. Signal-family sound is deduplicated across semantic stages for one closed-M5 event, and MTF arrows have their own chart-object namespace.
 
 cTrader Local/Cloud: the repository does not add Cloud execution. cTrader documentation states that cloud synchronisation makes created/installed algorithms and updates available across apps; Windows/Mac can adjust synchronisation, while custom indicators execute locally on Windows/Mac and cBot local/cloud execution is selectable. This makes repeated Local/Cloud reconciliation a terminal synchronization/instance-state issue rather than a CFIP source-code execution path.
+
+## 2026-10-04 — Modern Signal Lines / Single Presentation State
+
+Status: IMPLEMENTED — repository verification pending; target-terminal visual acceptance remains manual.
+
+Completed in this phase:
+- Preserved the existing canonical PlanLineRenderer as the only production owner for signal/plan line geometry; no second line renderer was introduced.
+- Introduced PlanLevelVisualState as the single presentation-state owner for ENTRY, IDEAL_ENTRY, TRIGGER, SL, TP1..TP4 and ACTIVE_TP visibility/distinctness.
+- RenderLevelLines and RenderPlanLabels now consume the same level state instead of independently recalculating visibility/distinctness.
+- Trigger visibility now has one canonical rule for line and label presentation, preventing line/label disagreement.
+- All signal/plan lines retain the established visual contract: Solid, 1px, finite 40-bar span ending at the latest candle, no infinite extension.
+- Semantic colors remain intact with one canonical full-opacity cTrader-like treatment (255) applied uniformly to every signal/plan line. Plan labels are now white text inside compact filled boxes using the exact associated line color; the box is attached to the line's exact right endpoint. Modernization remains one consistent presentation path rather than a parallel visual language.
+- Pending and parallel opportunity lines continue to delegate to PlanLineRenderer; no alternate geometry owner was added.
+- Routine single-owner / no-duality audit remains part of the phase acceptance.
+
+Verification:
+- Source changes implemented on the phase branch.
+- Local cTrader build is not available in this environment.
+- GitHub CI/PR verification is required before claiming repository gates green.
+- Target-terminal visual acceptance remains required for actual chart appearance, label spacing and stale-object behavior.
+
+Operator action after merge: git pull --ff-only.

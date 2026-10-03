@@ -82,7 +82,8 @@ namespace cAlgo
                             normalized,
                             right,
                             normalized,
-                            color,
+                            PlanLinePresentationRule.ResolveColor(
+                                color),
                             thickness,
                             lineStyle);
                 }
@@ -99,7 +100,8 @@ namespace cAlgo
                 line.Y2 =
                     normalized;
                 line.Color =
-                    color;
+                    PlanLinePresentationRule.ResolveColor(
+                        color);
                 line.Thickness =
                     thickness;
                 line.LineStyle =
