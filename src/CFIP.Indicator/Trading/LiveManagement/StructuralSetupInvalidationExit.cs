@@ -183,7 +183,7 @@ namespace cAlgo
                                                 "STRUCTURAL INVALIDATION");
                                 
                                             ManagementCommandRequestStatus closeStatus =
-                                                TryClosePosition(
+                                                RequestClosePosition(
                                                     position,
                                                     "STRUCTURAL INVALIDATION");
 
