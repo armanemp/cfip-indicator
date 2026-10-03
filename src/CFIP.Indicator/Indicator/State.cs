@@ -317,6 +317,7 @@ namespace cAlgo
                 private bool _panelHidden;
                 private Button _panelToggleButton;
                 private string _panelStableHeader = "";
+                private string _lastPanelHeaderLiveKey = "";
                 private DateTime _panelStableHeaderSinceUtc = DateTime.MinValue;
         private int _runtimeTpStageIndex = -1;
         private int _runtimeTpStagePlanCreatedM5 = -1;
