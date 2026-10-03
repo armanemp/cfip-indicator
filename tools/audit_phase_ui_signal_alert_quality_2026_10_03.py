@@ -48,7 +48,7 @@ check(
     "frame.TrendBear" in render_key and
     "frame.FvgBullQuality" in render_key and
     "frame.ObBullQuality" in render_key and
-    "presentation.Strength" in render_key,
+    "state.Strength" in render_key,
     "panel render key must invalidate when canonical timeframe status inputs change",
 )
 
