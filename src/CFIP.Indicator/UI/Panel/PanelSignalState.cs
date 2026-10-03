@@ -152,6 +152,14 @@ namespace cAlgo
                                     }
                                 }
 
+        private string DirectionText(TradeType tradeType)
+        {
+            return
+                tradeType == TradeType.Buy
+                    ? "BUY"
+                    : "SELL";
+        }
+
         private string GetSignalSynchronizationText()
                                 {
                                     SignalVisualSnapshot snapshot =
