@@ -181,7 +181,7 @@ production_files = list((ROOT / "src" / "CFIP.Indicator").rglob("*.cs"))
 direct_tp_mutations = []
 for path in production_files:
     source = read(path)
-    if "RequestModifyTakeProfit(" in source and path.name != "BrokerTakeProfitMutation.cs":
+    if "RequestModifyTakeProfit(" in source:
         direct_tp_mutations.append(str(path.relative_to(ROOT)))
 allowed = {
     "Trading/Execution/BrokerProtectionCoordinator.cs",
