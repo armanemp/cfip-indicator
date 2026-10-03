@@ -299,32 +299,30 @@ namespace CFIP.cBot.Execution
             try
             {
                 result =
-                    action ==
-                        ExecutionAction.PendingStop
-                        ? robot.PlaceStopOrder(
+                    CbotAdaptiveProtectionExecution.TryPlacePending(
+                        robot,
+                        envelope,
+                        action,
+                        tradeType,
+                        volume,
+                        label,
+                        stopPips,
+                        targetPips,
+                        expiration,
+                        brokerCommentPrefix,
+                        out TradeResult protectedResult)
+                        ? protectedResult
+                        : CbotAdaptiveProtectionExecution.PlaceLegacyPending(
+                            robot,
+                            action,
                             tradeType,
-                            robot.SymbolName,
                             volume,
                             envelope.Intent.RequestedEntry,
                             label,
                             stopPips,
                             targetPips,
-                            ProtectionType.Relative,
                             expiration,
-                            brokerCommentPrefix + " PENDING STOP",
-                            false)
-                        : robot.PlaceLimitOrder(
-                            tradeType,
-                            robot.SymbolName,
-                            volume,
-                            envelope.Intent.RequestedEntry,
-                            label,
-                            stopPips,
-                            targetPips,
-                            ProtectionType.Relative,
-                            expiration,
-                            brokerCommentPrefix + " PENDING LIMIT",
-                            false);
+                            brokerCommentPrefix);;
             }
             catch (Exception ex)
             {
