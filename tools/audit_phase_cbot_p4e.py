@@ -97,7 +97,7 @@ if (
     errors.append("cBot management integration missing")
 
 if not re.search(
-    r'\[Parameter\(\s*"Enable Demo Management Execution"'
+    r'\[Parameter\(\s*"Enable Management / Protection Execution"'
     r'[\s\S]*?DefaultValue\s*=\s*false',
     host,
 ):
