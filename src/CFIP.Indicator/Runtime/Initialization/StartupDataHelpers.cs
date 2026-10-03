@@ -51,6 +51,9 @@ namespace cAlgo
             if (_panelHeaderTitle == null)
                 return;
 
+            UpdatePanelHeaderLiveState();
+            return;
+
             string m5 =
                 _m5Bars == null
                     ? "-"
