@@ -15,9 +15,8 @@ namespace cAlgo
             AddPanelRow(
                 ref slot,
                 "TRADE PLAN  •  " +
-                (_plan.Direction == 1
-                    ? "BUY ACTIVE"
-                    : "SELL ACTIVE"),
+                DirectionText(_plan.Direction) +
+                " ACTIVE",
                 PanelDirectionColor(
                     _plan.Direction),
                 true,
