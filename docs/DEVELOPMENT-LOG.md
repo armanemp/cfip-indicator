@@ -1,3 +1,29 @@
+## 2026-10-04 — Smart Separated Signal Arrows
+
+Status: IMPLEMENTED ON BRANCH — verification pending; target-terminal visual acceptance remains required.
+
+Completed for this user-requested item:
+- Removed the duplicate HTF arrow-strength owner. The canonical strength source is now MtfTrendStrengthRule.
+- The nine-level model is one ladder: 1–3 = Weak 1/2/3, 4–6 = Medium 1/2/3, 7–9 = Strong 1/2/3.
+- Strength is derived from the existing multi-timeframe market evidence stack: frame quality, directional score, trend/momentum, ADX, EMA spread/slope, structure, OB/FVG location, independent indicator evidence, live pressure and conflict penalty.
+- The canonical directional arrow renderer consumes SignalVisualSnapshot.MtfTrendStrengthLevel only; it no longer recalculates a second strength value.
+- The authoritative direction is resolved first and then passed into the strength evaluator, so displayed strength cannot silently belong to another direction.
+- Arrow glyphs have deterministic vertical separation using both ATR-relative and minimum-pip clearance.
+- M1 trigger is now a Circle precision marker rather than a second directional arrow, eliminating a major overlap/ambiguity path.
+- Removed the unused duplicate MtfTrendArrowRenderer production path and its superseded HtfTrendArrowStrengthRule.
+- Removed the legacy fallback arrow-state owner from canonical call-sites.
+- Added a dedicated deep audit and accumulated it in Source/Architecture CI.
+- Routine project audit remains mandatory: Analysis → Decision → Signal → Alert → cBot execution → Broker confirmation → Protection/Lifecycle → Outcome/History, plus performance/code-cleanliness review.
+
+Verification:
+- Branch/source consistency: in progress.
+- Automated Source/Architecture + Runtime Acceptance + cTrader compile/build must pass on the final head.
+- Target cTrader terminal visual validation remains required for actual spacing, glyph appearance, realtime movement, stale-object cleanup and M1 marker separation.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 ## 2026-10-03 — Single-Owner / No-Duality Repair
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
