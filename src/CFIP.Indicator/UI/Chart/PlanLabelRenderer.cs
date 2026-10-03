@@ -257,7 +257,7 @@ namespace cAlgo
         {
             // Compact level labels have no background, so the only visual
             // styling authority is the exact color of the corresponding line.
-            return semanticColor;
+            return Color.White;
         }
 
         private void RemovePlanLabel(
