@@ -132,7 +132,7 @@ check(
 check(
     "phase documentation records the single-owner contract",
     "Smart Separated Signal Arrows" in phase and
-    "single owner" in phase.lower() and
+    ("single-owner" in phase.lower() or "single owner" in phase.lower()) and
     "git pull --ff-only" in phase,
 )
 
