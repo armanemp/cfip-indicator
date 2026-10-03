@@ -3210,3 +3210,6 @@ No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transpo
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
 ### Realtime all-timeframe intelligence + smart arrows
 This current hardening includes the all-timeframe realtime intelligence path, M15 canonical decision/reference, M5 entry refinement, optional M1 confirmation, future pending-order scenarios, nine-level HTF smart arrows, realtime panel truth and modular audio ownership.
+
+### VOLUME PROFILE EVIDENCE
+The Volume Profile evidence phase is part of the consolidated realtime/live architecture and remains contextual evidence only.
