@@ -34,10 +34,5 @@ namespace cAlgo
         [Parameter("Show Early Arrow", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
         public bool ShowEarlyArrow { get; set; }
 
-        [Parameter("Show MTF Strength Arrow Stack", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
-        public bool ShowMtfStrengthArrowStack { get; set; }
-
-        [Parameter("MTF Arrow Stack Spacing ATR", Group = "14 · DISPLAY — ADVANCED", DefaultValue = 0.09, MinValue = 0.03, MaxValue = 0.30, Step = 0.01)]
-        public double MtfArrowStackSpacingAtr { get; set; }
     }
 }
