@@ -116,6 +116,11 @@ namespace cAlgo
                 P + "WATCH_ARROW_2");
             Chart.RemoveObject(
                 P + "WATCH_ARROW_3");
+
+            // Remove the pre-canonical active-plan marker as well. All
+            // directional signal states now share one arrow renderer/lifecycle.
+            Chart.RemoveObject(
+                P + "ARROW");
         }
     }
 }
