@@ -1,3 +1,26 @@
+## 2026-10-03 — Canonical Signal-Line Visual Repair
+
+Status: VERIFIED COMPLETE — merged to `main` via PR #249, merge commit `fb7dee65275ddb1d8e81d0090eb2a0472eadf633`.
+
+Completed:
+- Signal/plan lines are fixed to Solid + 1px.
+- The canonical span is exactly 40 chart bars from the latest candle; legacy `FullWidthLevelLines` cannot expand signal geometry.
+- Compact level labels sit at the exact line price, use white text with no background, and remain left of the line start with a deterministic minimum three-bar horizontal gap.
+- Active Plan and WATCH/Reaction directional markers share the canonical stacked-arrow lifecycle.
+- The user's Release-build CS0219 warning from the dead `PanelMainRenderer.buttonMargin` local was removed.
+- Dedicated Drawing audit, Source/Architecture, Runtime Acceptance and cTrader Compile all passed on the final implementation head before merge.
+
+Manual acceptance boundary:
+Target cTrader terminal must still be used to visually confirm exact arrow shape/position, 40-bar line span, label spacing/readability and stale-object cleanup.
+
+Operator action:
+`git pull --ff-only`, then rerun:
+`dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release`
+
+Next gated phase: Signal Quality + TP/SL/RR + OB/FVG + full MTF chain audit.
+
+---
+
 ## 2026-10-03 — Canonical Signal Drawing Hardening
 
 Status: VERIFIED COMPLETE — implemented directly on `main`.
