@@ -186,5 +186,5 @@ namespace cAlgo
 
             return candidate.Quality >= minimumQuality;
         }
-
-        
+    }
+}
