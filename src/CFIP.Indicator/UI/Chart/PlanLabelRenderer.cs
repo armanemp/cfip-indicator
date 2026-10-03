@@ -113,8 +113,7 @@ namespace cAlgo
                         (CompactPlanLabelGapPips * Symbol.PipSize));
 
                 Color labelColor =
-                    PlanLinePresentationRule.ResolveColor(
-                        semanticColor);
+                    ResolvePlanLineColor(semanticColor);
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -181,8 +180,7 @@ namespace cAlgo
             Color semanticColor)
         {
             // Label text intentionally matches the canonical line color.
-            return PlanLinePresentationRule.ResolveColor(
-                semanticColor);
+            return ResolvePlanLineColor(semanticColor);
         }
 
         private void RemovePlanLabel(
