@@ -1664,3 +1664,30 @@ This file is the master restart index. Existing phase documents remain evidence/
 After merge to main: git pull --ff-only.
 
 Then begin at checklist item 1.1 and record every disposition in this document or in a linked phase record.
+
+## 16. M2 additions — newly mandatory cross-cutting risks
+
+The master audit now also explicitly covers these failure classes:
+
+1. Build-graph reachability versus file existence.
+2. Conditional-compilation dead code.
+3. Reflection/string-based reachability.
+4. Duplicate initialization and event subscription.
+5. Stale state after symbol/timeframe/history replacement.
+6. Chart-object naming collisions and cleanup ownership.
+7. Audit-script assertion drift.
+8. Local-vs-CI test-manifest drift.
+9. Release-vs-Debug semantic divergence.
+10. Golden-fixture staleness.
+11. Missing negative fixtures.
+12. Multi-scenario isolation regressions.
+13. Restart/reconnect identity leakage.
+14. Hidden mutable-singleton ownership.
+15. Historical documentation being mistaken for current authority.
+16. Calibration/history silently becoming live decision authority.
+17. Consumer-side reinterpretation of canonical values.
+18. Contract-version compatibility accidentally becoming a second semantic contract.
+19. Exception swallowing that hides dead/unreachable behavior.
+20. Async callbacks executing after owner disposal.
+
+These additions are mandatory audit targets and are not optional future improvements.
