@@ -52,7 +52,7 @@ checks = {
         "LiveInvalidationRule.RecordExitM5(" in structural
     ),
     "generic live-plan exit cannot advance bookkeeping on rejection": (
-        "if (!TryClosePosition(" in coordinator and
+        "if (!closeStatus.IsAccepted())" in coordinator and
         "LiveInvalidationRule.RecordExitM5(" in coordinator
     ),
     "explicit soft adverse-R flag preserves current default": (
