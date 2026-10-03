@@ -10,6 +10,14 @@ namespace cAlgo
             int visualDirection,
             int hostBar)
         {
+            if (!ShowEarlyWatch)
+            {
+                Chart.RemoveObject(
+                    P + "REACTION_ARROW");
+                RemoveStackedSignalArrows();
+                return;
+            }
+
             Chart.RemoveObject(
                 P + "REACTION_ARROW");
 
