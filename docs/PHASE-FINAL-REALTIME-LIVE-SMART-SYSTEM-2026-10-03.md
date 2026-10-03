@@ -1,6 +1,6 @@
 # CFIP — Final Realtime / Live / Smart System Integration — 2026-10-03
 
-Status: IMPLEMENTED — automated verification pending; target-terminal acceptance pending.
+Status: MERGED TO MAIN — PR #243 — merge commit `7af17f4fa65142468c76501399ee5082bf0f0f42`. Automated pre-merge Compile/Runtime/Source verification passed.
 
 ## Objective
 
@@ -75,7 +75,7 @@ Target-terminal acceptance remains required for:
 - live-account mutation with explicit arms;
 - fixed MTF lamp visibility during scroll and realtime header freshness.
 
-## Operator action after verified merge
+## Target-terminal acceptance and local update
 
 On the local main checkout:
 
