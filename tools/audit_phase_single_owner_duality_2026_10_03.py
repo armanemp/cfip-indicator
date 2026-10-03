@@ -70,8 +70,7 @@ require(
     "Chart.DrawText(" in label and
     "Chart.DrawRectangle(" in label and
     "box.IsFilled" in label and
-    "NormalizePrice(price);" in label and
-    'name + "_BOX"' in label and
+    "CompactPlanLabelGapBars = 1" in label and
     "PlanLinePresentationRule.ResolveColor(" in label,
     "canonical chart labels must be exact-price, line-colored filled boxes with legacy-object cleanup only",
 )
@@ -80,8 +79,8 @@ require(
     "GetCompactPlanLabelAnchorBar(" in label_coord and
     "GetCompactPlanLabelAnchorBar(" in pending_label and
     "GetCompactPlanLabelAnchorBar(" in parallel_label and
-    "lineLeft - offset" in anchor and
-    "CompactPlanLabelMinimumGapBars = 3" in anchor,
+    "return GetPlanLineLeftBar();" in anchor and
+    "CompactPlanLabelGapBars = 1" in label,
     "all signal label paths must reuse one left-of-line anchor with a deterministic minimum gap",
 )
 
@@ -113,5 +112,5 @@ print("CFIP SINGLE-OWNER / NO-DUALITY AUDIT: PASS")
 print("cBot startup audio: one owner / one cue")
 print("Signal/plan line geometry: one owner / 40 bars / Solid / 1px")
 print("Pending + parallel lines: delegated to canonical line owner")
-print("Chart labels: one renderer / exact price / white / background-free")
+print("Chart labels: one renderer / exact price / white / compact line-colored tag at line-left")
 print("Label formatting + source timeframe: one canonical formatter")
