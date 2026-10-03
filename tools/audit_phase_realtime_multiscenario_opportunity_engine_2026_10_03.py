@@ -21,7 +21,10 @@ def check(name, condition):
 
 candidate = read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs")
 future = read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
-builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+builder = (
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+)
 stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs")
