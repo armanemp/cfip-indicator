@@ -91,7 +91,7 @@ check(
 check(
     "cBot exposes a bounded management-command freshness policy",
     "Management Command Max Age Seconds" in cbot_host and
-    "DefaultValue = 30" in cbot_host and
+    "DefaultValue = 15" in cbot_host and
     "ManagementCommandMaxAgeSeconds" in cbot_host,
 )
 
