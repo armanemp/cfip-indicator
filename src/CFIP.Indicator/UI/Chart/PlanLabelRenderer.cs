@@ -31,13 +31,6 @@ namespace cAlgo
                     Bars.Count < 2)
                     return;
 
-                int anchor =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            bar));
-
                 int lineLeft =
                     GetPlanLineLeftBar();
 
