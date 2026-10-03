@@ -124,30 +124,17 @@ namespace cAlgo
                                                             0,
                                                             PanelPadding);
                                         
-                                                    // Reserve the real footer/alert rail before calculating
-                                                    // the ScrollViewer budget. Otherwise the scroll content can
-                                                    // consume the vertical space required by the footer.
+                                                    // Reserve an explicit footer minimum before calculating
+                                                    // the ScrollViewer budget so the bottom controls cannot
+                                                    // be pushed below the panel edge.
                                                     int alertRailHeight =
                                                         GetPanelAlertMessageRailHeight();
 
-                                                    int buttonContentHeight =
-                                                        Math.Max(
-                                                            buttonHeight,
-                                                            Math.Max(
-                                                                ShowPanelToggleButton
-                                                                    ? toggleHeight
-                                                                    : 0,
-                                                                alertRailHeight));
-
-                                                    bool hasBottomContent =
-                                                        ShowPanelToggleButton ||
-                                                        alertRailHeight > 0;
-
                                                     int buttonAreaHeight =
-                                                        hasBottomContent
-                                                            ? buttonContentHeight +
-                                                              buttonMargin * 2
-                                                            : 0;
+                                                        ResolvePanelFooterAreaHeight(
+                                                            buttonHeight,
+                                                            toggleHeight,
+                                                            alertRailHeight);
                                         
                                                     int configuredMaxHeight =
                                                         Math.Max(

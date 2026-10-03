@@ -28,6 +28,46 @@ namespace cAlgo
                 PanelBorderThickness);
         }
 
+        private int ResolvePanelFooterContentHeight(
+            int buttonHeight,
+            int toggleHeight,
+            int alertRailHeight)
+        {
+            if (!ShowPanelToggleButton &&
+                alertRailHeight <= 0)
+                return 0;
+
+            return Math.Max(
+                PanelFooterMinHeight,
+                Math.Max(
+                    buttonHeight,
+                    Math.Max(
+                        ShowPanelToggleButton
+                            ? toggleHeight
+                            : 0,
+                        alertRailHeight)));
+        }
+
+        private int ResolvePanelFooterAreaHeight(
+            int buttonHeight,
+            int toggleHeight,
+            int alertRailHeight)
+        {
+            int contentHeight =
+                ResolvePanelFooterContentHeight(
+                    buttonHeight,
+                    toggleHeight,
+                    alertRailHeight);
+
+            if (contentHeight <= 0)
+                return 0;
+
+            return contentHeight +
+                   Math.Max(
+                       0,
+                       PanelPadding) * 2;
+        }
+
         private void SetPanelRestoreAlignment()
                                         {
                                             if (_panelRestoreButton == null)
@@ -171,15 +211,27 @@ namespace cAlgo
         private int ResolvePanelMaximumHeight(
             int configuredMaxHeight)
         {
-            // Panel geometry is an overlay concern. Never derive its size from
-            // a live chart viewport because the chart viewport may be transiently affected
-            // by the control tree during attachment/layout. Long content is already
-            // bounded by the ScrollViewer.
+            int minimumRenderableHeight =
+                PanelHeaderHeight +
+                PanelTrendTimeframeLampRowHeight +
+                PanelTrendTimeframeLampTopSpacing +
+                PanelTrendTimeframeLampBottomSpacing +
+                PanelFooterMinHeight +
+                120 +
+                Math.Max(
+                    0,
+                    PanelPadding) * 2 +
+                Math.Max(
+                    0,
+                    PanelBorderThickness) * 2;
+
             return Math.Max(
                 260,
                 Math.Min(
                     1200,
-                    configuredMaxHeight));
+                    Math.Max(
+                        configuredMaxHeight,
+                        minimumRenderableHeight)));
         }
 
         private void SetPanelAlignment()

@@ -16,8 +16,8 @@ namespace cAlgo
                 new TextBlock
                 {
                     Text = "●",
-                    Width = 24,
-                    Height = 24,
+                    Width = PanelStatusLampWidth,
+                    Height = PanelStatusLampHeight,
                     HorizontalAlignment = HorizontalAlignment.Right,
                     VerticalAlignment = VerticalAlignment.Center,
                     TextAlignment = TextAlignment.Center,
@@ -25,7 +25,7 @@ namespace cAlgo
                         string.IsNullOrWhiteSpace(PanelFontFamily)
                             ? "Arial"
                             : PanelFontFamily,
-                    FontSize = 16,
+                    FontSize = PanelStatusLampFontSize,
                     FontWeight = FontWeight.ExtraBold,
                     ForegroundColor = Color.FromArgb(150, 80, 240, 150),
                     BackgroundColor = Color.FromArgb(0, 0, 0, 0)

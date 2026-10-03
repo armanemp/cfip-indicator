@@ -6,11 +6,11 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int PanelTrendTimeframeLampRowHeight = 52;
-        private const int PanelTrendTimeframeLampTopSpacing = 8;
-        private const int PanelTrendTimeframeLampBottomSpacing = 5;
-        private const int PanelTrendTimeframeLampIndicatorHeight = 27;
-        private const int PanelTrendTimeframeLampLabelHeight = 18;
+        private const int PanelTrendTimeframeLampRowHeight = 50;
+        private const int PanelTrendTimeframeLampTopSpacing = 4;
+        private const int PanelTrendTimeframeLampBottomSpacing = 3;
+        private const int PanelTrendTimeframeLampIndicatorHeight = 23;
+        private const int PanelTrendTimeframeLampLabelHeight = 16;
 
         private StackPanel _panelTrendTimeframeLampRow;
         private readonly List<StackPanel> _panelTrendTimeframeLampCells =
@@ -55,7 +55,7 @@ namespace cAlgo
                         Orientation = Orientation.Vertical,
                         Width = 42,
                         Height = PanelTrendTimeframeLampRowHeight,
-                        HorizontalAlignment = HorizontalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Top,
                         BackgroundColor = Color.FromArgb(0, Color.Black)
                     };
@@ -67,7 +67,7 @@ namespace cAlgo
                         Width = 42,
                         Height = PanelTrendTimeframeLampIndicatorHeight,
                         FontFamily = "Arial",
-                        FontSize = 13,
+                        FontSize = PanelStatusLampFontSize - 2,
                         FontWeight = FontWeight.Bold,
                         TextAlignment = TextAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -127,15 +127,17 @@ namespace cAlgo
             double rowWidth =
                 _panelTrendTimeframeLampRow == null
                     ? 336
-                    : Math.Max(224, _panelTrendTimeframeLampRow.Width);
+                    : Math.Max(1, _panelTrendTimeframeLampRow.Width);
+
+            int cellCount =
+                Math.Max(
+                    1,
+                    _panelTrendTimeframeLampCells.Count);
 
             double cellWidth =
                 Math.Max(
-                    28,
-                    rowWidth /
-                    Math.Max(
-                        1,
-                        _panelTrendTimeframeLampCells.Count));
+                    1,
+                    rowWidth / cellCount);
 
             for (int i = 0;
                  i < _panelTrendTimeframeLampIndicators.Count &&
@@ -173,10 +175,10 @@ namespace cAlgo
                 indicator.Text = "●";
                 indicator.FontSize =
                     strength >= 3
-                        ? 15
+                        ? PanelStatusLampFontSize
                         : strength == 2
-                            ? 14
-                            : 13;
+                            ? PanelStatusLampFontSize - 1
+                            : PanelStatusLampFontSize - 2;
 
                 label.Text = labels[i];
                 label.ForegroundColor =

@@ -15,7 +15,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-                        private void SendUnifiedAlert(
+                        private bool SendUnifiedAlert(
                             string key,
                             string message,
                             int direction,
@@ -23,9 +23,8 @@ namespace cAlgo
                         {
                             if (string.IsNullOrWhiteSpace(
                                     message))
-                                return;
-
-                            // A blocked candidate does not create a trade/signal
+                                return false;
+// A blocked candidate does not create a trade/signal
                             // side effect. An explicitly configured restriction alert
                             // is a user-facing diagnostic event and remains deliverable.
                             if (message.StartsWith(
@@ -38,9 +37,8 @@ namespace cAlgo
                                 !(key ?? "").StartsWith(
                                     "RESTRICT|",
                                     StringComparison.OrdinalIgnoreCase))
-                                return;
-                
-                            DateTime now =
+                                return false;
+DateTime now =
                                 TimeInUtc;
                 
                             if (direction == 0)
@@ -61,9 +59,8 @@ namespace cAlgo
                                 message.IndexOf(
                                     _lastRestrictionMessage,
                                     StringComparison.OrdinalIgnoreCase) >= 0)
-                                return;
-                
-                            if (SuppressDuplicateAlerts)
+                                return false;
+if (SuppressDuplicateAlerts)
                             {
                                 int cooldownSeconds =
                                     (normalizedKey.StartsWith(
@@ -82,10 +79,8 @@ namespace cAlgo
                                     Math.Max(
                                         1,
                                         cooldownSeconds))
-                                    return;
-                            }
-                
-                            _alertCooldowns[normalizedKey] = now;
+                                    return false;
+}
                 
                             // Light housekeeping so this dictionary can't grow forever over
                             // a long-running session — unique keys (per-plan TP/SL, daily
@@ -114,18 +109,6 @@ namespace cAlgo
                                     critical,
                                     now);
 
-                            _lastAlertMessage =
-                                message;
-                
-                            _lastAlertDirection =
-                                direction;
-                
-                            _lastAlertCritical =
-                                critical;
-                
-                            _lastAlertUtc =
-                                now;
-                
                             bool blockedCandidateAlert =
                                 IsBlockedCandidateAlert(
                                     normalizedKey,
@@ -166,10 +149,28 @@ namespace cAlgo
                             if (!queued)
                             {
                                 Print(
-                                    "CFIP ALERT QUEUE REJECTED | id={0} | revision={1}",
+                                    "CFIP ALERT QUEUE REJECTED | id={0} | revision={1} | retryable=true",
                                     envelope.AlertId,
                                     envelope.Identity.Revision);
                             }
+                            else
+                            {
+                                _alertCooldowns[normalizedKey] = now;
+
+                                _lastAlertMessage =
+                                    message;
+
+                                _lastAlertDirection =
+                                    direction;
+
+                                _lastAlertCritical =
+                                    critical;
+
+                                _lastAlertUtc =
+                                    now;
+                            }
+
+                            bool delivered = queued;
 
                             if (EnableEmailAlerts &&
                                 !string.IsNullOrWhiteSpace(
@@ -194,6 +195,8 @@ namespace cAlgo
                                 }
                             }
                 
+                            return delivered;
+
 
                         }
 

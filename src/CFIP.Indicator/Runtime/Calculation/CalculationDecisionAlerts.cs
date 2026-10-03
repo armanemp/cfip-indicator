@@ -87,23 +87,24 @@ namespace cAlgo
                     ? "BUY"
                     : "SELL";
 
-            SendUnifiedAlert(
-                WatchReactionAlertRule.BuildWatchAlertKey(
-                    closedM5,
-                    direction),
-                "CFIP " +
-                directionText +
-                " WATCH | CONF " +
-                _decision.Confidence +
-                " | SMART " +
-                _decision.SmartQuality +
-                " | " +
-                _decision.Reason,
-                direction,
-                false);
-
-            _lastEarlyAlertM5 =
-                closedM5;
+            if (SendUnifiedAlert(
+                    WatchReactionAlertRule.BuildWatchAlertKey(
+                        closedM5,
+                        direction),
+                    "CFIP " +
+                    directionText +
+                    " WATCH | CONF " +
+                    _decision.Confidence +
+                    " | SMART " +
+                    _decision.SmartQuality +
+                    " | " +
+                    _decision.Reason,
+                    direction,
+                    false))
+            {
+                _lastEarlyAlertM5 =
+                    closedM5;
+            }
         }
 
         private void ProcessDecisionOwnedReactionAlert()
@@ -170,16 +171,17 @@ namespace cAlgo
                     MinimumLiveReactionEvidence))
                 return;
 
-            SendUnifiedAlert(
-                WatchReactionAlertRule.BuildReactionAlertKey(
-                    reactionM5,
-                    _reaction.Direction),
-                _reaction.Reason,
-                _reaction.Direction,
-                false);
-
-            _lastReactionAlertBar =
-                reactionM5;
+            if (SendUnifiedAlert(
+                    WatchReactionAlertRule.BuildReactionAlertKey(
+                        reactionM5,
+                        _reaction.Direction),
+                    _reaction.Reason,
+                    _reaction.Direction,
+                    false))
+            {
+                _lastReactionAlertBar =
+                    reactionM5;
+            }
         }
 
         private void ProcessParallelOpportunityAlerts(
@@ -202,6 +204,17 @@ namespace cAlgo
                         2,
                         MaximumVisibleOpportunities));
 
+            string canonicalScenarioId = string.Empty;
+
+            if (_decision != null)
+            {
+                canonicalScenarioId =
+                    ResolveProviderScenarioId(
+                        ResolveProviderSignalId(closedM5),
+                        ResolveProviderLane(),
+                        _decision.Direction);
+            }
+
             int displayNumber = 0;
 
             for (int i = 0;
@@ -214,6 +227,18 @@ namespace cAlgo
                 if (candidate == null ||
                     (candidate.Direction != 1 &&
                      candidate.Direction != -1))
+                    continue;
+
+                string candidateScenarioId =
+                    string.IsNullOrWhiteSpace(candidate.ScenarioId)
+                        ? candidate.Id
+                        : candidate.ScenarioId;
+
+                if (!string.IsNullOrWhiteSpace(canonicalScenarioId) &&
+                    string.Equals(
+                        candidateScenarioId,
+                        canonicalScenarioId,
+                        StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 displayNumber++;
@@ -257,9 +282,7 @@ namespace cAlgo
 
                 string key =
                     keyPrefix +
-                    (string.IsNullOrWhiteSpace(candidate.ScenarioId)
-                        ? candidate.Id
-                        : candidate.ScenarioId) +
+                    candidateScenarioId +
                     "|" +
                     candidate.Direction +
                     "|" +
@@ -407,19 +430,20 @@ namespace cAlgo
                 " | " +
                 (_decision.ActionabilityReason ?? "ACTIONABLE");
 
-            SendUnifiedAlert(
-                "ACTION|" +
-                closedM5 +
-                "|" +
-                direction,
-                message,
-                direction,
-                true);
-
-            _lastActionableEntryAlertM5 =
-                closedM5;
-            _lastActionableEntryAlertDirection =
-                _decision.Direction;
+            if (SendUnifiedAlert(
+                    "ACTION|" +
+                    closedM5 +
+                    "|" +
+                    direction,
+                    message,
+                    direction,
+                    true))
+            {
+                _lastActionableEntryAlertM5 =
+                    closedM5;
+                _lastActionableEntryAlertDirection =
+                    _decision.Direction;
+            }
         }
 
         private void ProcessRestrictionAlert(
@@ -456,22 +480,23 @@ namespace cAlgo
                 if (!restrictionChanged)
                     return;
 
-                SendUnifiedAlert(
-                    "RESTRICT|" +
-                    restrictionMessage,
-                    "CFIP ENTRY BLOCKED | " +
-                    restrictionMessage,
-                    _decision.Direction,
-                    false);
+                if (SendUnifiedAlert(
+                        "RESTRICT|" +
+                        restrictionMessage,
+                        "CFIP ENTRY BLOCKED | " +
+                        restrictionMessage,
+                        _decision.Direction,
+                        false))
+                {
+                    _lastRestrictionMessage =
+                        restrictionMessage;
 
-                _lastRestrictionMessage =
-                    restrictionMessage;
+                    _lastRestrictionAlertUtc =
+                        TimeInUtc;
 
-                _lastRestrictionAlertUtc =
-                    TimeInUtc;
-
-                _lastRestrictionM5 =
-                    closedM5;
+                    _lastRestrictionM5 =
+                        closedM5;
+                }
 
                 return;
             }

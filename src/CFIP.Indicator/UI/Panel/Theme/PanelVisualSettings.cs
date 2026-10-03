@@ -58,27 +58,17 @@ namespace cAlgo
                                                                 40,
                                                                 PanelToggleWidth));
                                         
+                                                    // Reserve an explicit footer minimum before calculating
+                                                    // the ScrollViewer budget so the bottom controls cannot
+                                                    // be pushed below the panel edge.
                                                     int alertRailHeight =
                                                         GetPanelAlertMessageRailHeight();
 
-                                                    int buttonContentHeight =
-                                                        Math.Max(
-                                                            buttonHeight,
-                                                            Math.Max(
-                                                                ShowPanelToggleButton
-                                                                    ? toggleHeight
-                                                                    : 0,
-                                                                alertRailHeight));
-
-                                                    bool hasBottomContent =
-                                                        ShowPanelToggleButton ||
-                                                        alertRailHeight > 0;
-
                                                     int buttonAreaHeight =
-                                                        hasBottomContent
-                                                            ? buttonContentHeight +
-                                                              buttonMargin * 2
-                                                            : 0;
+                                                        ResolvePanelFooterAreaHeight(
+                                                            buttonHeight,
+                                                            toggleHeight,
+                                                            alertRailHeight);
                                         
                                                     int panelHeight =
                                                         headerHeight +

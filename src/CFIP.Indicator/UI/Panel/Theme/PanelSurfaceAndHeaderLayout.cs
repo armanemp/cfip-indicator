@@ -105,13 +105,12 @@ namespace cAlgo
 
                                                     if (_processingLamp != null)
                                                     {
-                                                        _processingLamp.Width = 24;
+                                                        _processingLamp.Width =
+                                                            PanelStatusLampWidth;
                                                         _processingLamp.Height =
-                                                            Math.Max(
-                                                                20,
-                                                                headerHeight - 4);
+                                                            PanelStatusLampHeight;
                                                         _processingLamp.Margin =
-                                                            new Thickness(4, 0, 0, 0);
+                                                            new Thickness(2, 0, 2, 0);
                                                     }
                                         
                                                     _panelHeaderTitle.FontFamily =
@@ -182,7 +181,7 @@ namespace cAlgo
                                                     {
                                                         _panelTrendTimeframeLampRow.Width =
                                                             Math.Max(
-                                                                200,
+                                                                1,
                                                                 contentWidth);
                                                         _panelTrendTimeframeLampRow.Height =
                                                             PanelTrendTimeframeLampRowHeight;
@@ -196,7 +195,7 @@ namespace cAlgo
                                         
                                                     _buttonStack.Width =
                                                         Math.Max(
-                                                            200,
+                                                            1,
                                                             contentWidth);
                                         
                                                     _buttonStack.Height =

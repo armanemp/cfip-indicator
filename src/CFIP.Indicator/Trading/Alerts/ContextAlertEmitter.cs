@@ -152,17 +152,18 @@ namespace cAlgo
                                 _lastEarlyAlertM5 !=
                                 closedM5)
                             {
-                                SendUnifiedAlert(
-                                    "EARLY|" +
-                                    closedM5 +
-                                    "|" +
-                                    _prediction.Direction,
-                                    _prediction.Reason,
-                                    _prediction.Direction,
-                                    false);
-                
-                                _lastEarlyAlertM5 =
-                                    closedM5;
+                                if (SendUnifiedAlert(
+                                        "EARLY|" +
+                                        closedM5 +
+                                        "|" +
+                                        _prediction.Direction,
+                                        _prediction.Reason,
+                                        _prediction.Direction,
+                                        false))
+                                {
+                                    _lastEarlyAlertM5 =
+                                        closedM5;
+                                }
                             }
                         }
     }

@@ -7,7 +7,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const int PanelAlertMessageCapacity = 5;
-        private const int PanelAlertMessageRowHeight = 20;
+        private const int PanelAlertMessageRowHeight = 21;
         private const int PanelAlertMessageGap = 1;
         private const int PanelAlertMessageMaxCharacters = 132;
 
@@ -218,10 +218,13 @@ namespace cAlgo
                     120,
                     availableWidth);
 
+            int railHeight =
+                GetPanelAlertMessageRailHeight();
+
             _panelAlertMessageStack.Height =
                 Math.Max(
                     PanelAlertMessageRowHeight,
-                    GetPanelAlertMessageRailHeight());
+                    railHeight);
 
             _panelAlertMessageStack.HorizontalAlignment =
                 HorizontalAlignment.Left;
