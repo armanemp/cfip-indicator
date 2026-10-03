@@ -177,6 +177,16 @@ namespace cAlgo
                                                         Math.Max(
                                                             100,
                                                             scrollHeight);
+
+                                                    if (_panelTrendTimeframeLampRow != null)
+                                                    {
+                                                        _panelTrendTimeframeLampRow.Width =
+                                                            Math.Max(
+                                                                200,
+                                                                contentWidth);
+                                                        _panelTrendTimeframeLampRow.Height =
+                                                            PanelTrendTimeframeLampRowHeight;
+                                                    }
                                         
                                                     _buttonStack.Width =
                                                         Math.Max(
