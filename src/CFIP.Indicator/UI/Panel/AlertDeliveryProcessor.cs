@@ -170,10 +170,6 @@ namespace cAlgo
                 createdClosedM5 < 0)
                 return true;
 
-            bool signalFamily =
-                IsSignalSoundAlertKey(
-                    delivery.Key);
-
             // The alert key is part of the sound fingerprint. This preserves
             // one cue per distinct semantic stage (WATCH, REACTION, ACTION, TP, SL,
             // REVERSAL, execution outcome, etc.) while exact duplicate deliveries
