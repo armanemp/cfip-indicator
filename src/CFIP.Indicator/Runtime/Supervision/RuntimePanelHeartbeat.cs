@@ -53,6 +53,7 @@ namespace cAlgo
 
                 UpdateProcessingHeartbeatLamp();
                 UpdatePanelHeaderLiveState();
+                UpdatePanelTrendTimeframeLamps();
 
                 RefreshPanelContentIfDue(
                     now);
