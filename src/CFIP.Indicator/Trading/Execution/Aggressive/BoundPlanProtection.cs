@@ -133,7 +133,7 @@ namespace cAlgo
                                                     mutationRequired = true;
 
                                                     stopMutationSucceeded =
-                                                        TryModifyStopLoss(
+                                                        RequestModifyStopLoss(
                                                             planPosition,
                                                             normalizedStop,
                                                             "LIVE PROTECTION • SL");
@@ -236,7 +236,7 @@ namespace cAlgo
                                                     mutationRequired = true;
 
                                                     ManagementCommandRequestStatus targetMutationStatus =
-                                                        TryModifyTakeProfit(
+                                                        RequestModifyTakeProfit(
                                                             planPosition,
                                                             normalizedTarget,
                                                             "LIVE PROTECTION • TP");
