@@ -1,3 +1,24 @@
+## 2026-10-03 — cBot position truth / restart idempotency hardening
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Closed the remaining CBOT-6M execution seam:
+- individual SignalEnvelope processing now adopts exact per-ScenarioId reconciliation;
+- aggregate instance reconciliation distinguishes valid independent scenarios from same-scenario ambiguity;
+- startup/aggregate state publisher discovers managed broker objects by Indicator-instance scope;
+- management processing no longer inherits unrelated recovery state;
+- cBot preflight validates contract version and complete execution identity;
+- market/pending idempotency is persisted in Device LocalStorage across cBot restart with bounded retry for failed attempts.
+
+No trading quality, RR or risk threshold was lowered. M15/M5/M1 role separation remains intact.
+
+Verification required:
+Source/Architecture, Runtime Acceptance, cTrader Compile/Build and target-terminal multi-scenario/restart/rebind/duplicate/protection evidence.
+
+Next: after this verification boundary, continue the remaining analytical quality work with the cBot kept as the sole broker mutation owner.
+
+Operator action after merge: git pull --ff-only.
+
 ## 2026-10-03 — Retest trigger-path hardening
 
 Deep audit found a concrete signal-to-trade path defect: RetestMarket is intentionally zone-driven, but PlanCreationEligibility and ScenarioExecutionPolicyRule still treated Decision.TriggerReady as a global prerequisite. That could suppress valid in-zone Retest proposals before Plan/Scenario/cBot handoff.

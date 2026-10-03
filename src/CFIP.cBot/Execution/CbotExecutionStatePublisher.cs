@@ -89,51 +89,67 @@ namespace CFIP.cBot.Execution
             double? stop = null;
             double? target = null;
 
-            if (!string.IsNullOrWhiteSpace(executionLabel))
+            string instanceScope =
+                CbotManagedObjectIdentityRule.InstanceMarker +
+                indicatorInstanceId;
+
+            foreach (Position position in robot.Positions)
             {
-                foreach (Position position in robot.Positions)
-                {
-                    if (position == null ||
-                        !string.Equals(
-                            position.SymbolName,
-                            robot.SymbolName,
-                            StringComparison.Ordinal) ||
-                        !CbotManagedObjectIdentityRule.MatchesManagedLabel(
+                if (position == null ||
+                    !string.Equals(
+                        position.SymbolName,
+                        robot.SymbolName,
+                        StringComparison.Ordinal))
+                    continue;
+
+                bool matches =
+                    !string.IsNullOrWhiteSpace(executionLabel)
+                        ? CbotManagedObjectIdentityRule.MatchesManagedLabel(
                             position.Label,
-                            executionLabel))
-                        continue;
+                            executionLabel)
+                        : CbotManagedObjectIdentityRule.MatchesInstanceScope(
+                            position.Label,
+                            instanceScope);
 
-                    managedPositions++;
+                if (!matches)
+                    continue;
 
-                    if (!positionId.HasValue)
-                    {
-                        positionId = position.Id;
-                        entry = position.EntryPrice;
-                        stop = position.StopLoss;
-                        target = position.TakeProfit;
-                    }
-                }
+                managedPositions++;
 
-                string pendingLabel =
-                    executionLabel + "-PENDING";
-
-                foreach (PendingOrder order in robot.PendingOrders)
+                if (!positionId.HasValue)
                 {
-                    if (order == null ||
-                        !string.Equals(
-                            order.SymbolName,
-                            robot.SymbolName,
-                            StringComparison.Ordinal) ||
-                        !CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
-                            order.Label,
-                            executionLabel))
-                        continue;
-
-                    managedPendingOrders++;
-
-                    if (!pendingOrderId.HasValue)
-                        pendingOrderId = order.Id;
+                    positionId = position.Id;
+                    entry = position.EntryPrice;
+                    stop = position.StopLoss;
+                    target = position.TakeProfit;
                 }
+            }
+
+            foreach (PendingOrder order in robot.PendingOrders)
+            {
+                if (order == null ||
+                    !string.Equals(
+                        order.SymbolName,
+                        robot.SymbolName,
+                        StringComparison.Ordinal))
+                    continue;
+
+                bool matches =
+                    !string.IsNullOrWhiteSpace(executionLabel)
+                        ? CbotManagedObjectIdentityRule.MatchesManagedPendingLabel(
+                            order.Label,
+                            executionLabel)
+                        : CbotManagedObjectIdentityRule.MatchesInstanceScope(
+                            order.Label,
+                            instanceScope + "-PENDING");
+
+                if (!matches)
+                    continue;
+
+                managedPendingOrders++;
+
+                if (!pendingOrderId.HasValue)
+                    pendingOrderId = order.Id;
             }
 
             long signalRevision =

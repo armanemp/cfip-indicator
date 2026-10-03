@@ -22,6 +22,7 @@ namespace CFIP.cBot.Execution
             double maximumMarginUsagePercent,
             double marginBufferPercent,
             int maximumConcurrentScenarios,
+            CbotExecutionIdempotencyStore idempotencyStore,
             out BrokerExecutionReport report,
             out string reason)
         {
@@ -68,8 +69,16 @@ namespace CFIP.cBot.Execution
 
             if (_rememberedKeys.Contains(key))
             {
-                reason =
-                    "DUPLICATE IDEMPOTENCY KEY";
+                reason = "DUPLICATE IDEMPOTENCY KEY";
+                return false;
+            }
+
+            if (idempotencyStore != null &&
+                !idempotencyStore.CanAttempt(
+                    key,
+                    nowUtc,
+                    out reason))
+            {
                 return false;
             }
 
@@ -308,7 +317,12 @@ namespace CFIP.cBot.Execution
             }
             catch (Exception ex)
             {
-                Remember(key);
+                if (idempotencyStore != null)
+                    idempotencyStore.RecordAttempt(
+                        robot,
+                        key,
+                        false,
+                        nowUtc);
 
                 reason =
                     action ==
@@ -328,10 +342,15 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            Remember(key);
-
             if (result == null)
             {
+                if (idempotencyStore != null)
+                    idempotencyStore.RecordAttempt(
+                        robot,
+                        key,
+                        false,
+                        nowUtc);
+
                 reason =
                     action ==
                         ExecutionAction.PendingStop
@@ -370,6 +389,13 @@ namespace CFIP.cBot.Execution
                         result,
                         reason);
 
+                if (idempotencyStore != null)
+                    idempotencyStore.RecordAttempt(
+                        robot,
+                        key,
+                        false,
+                        nowUtc);
+
                 return false;
             }
 
@@ -381,6 +407,8 @@ namespace CFIP.cBot.Execution
                     : "PENDING LIMIT #" +
                       result.PendingOrder.Id;
 
+            Remember(key);
+
             report =
                 BuildReport(
                     envelope,
@@ -389,6 +417,13 @@ namespace CFIP.cBot.Execution
                     nowUtc,
                     result,
                     reason);
+
+            if (idempotencyStore != null)
+                idempotencyStore.RecordAttempt(
+                    robot,
+                    key,
+                    true,
+                    nowUtc);
 
             return true;
         }

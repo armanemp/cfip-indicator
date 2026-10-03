@@ -1,3 +1,42 @@
+# Current focus — CBOT POSITION TRUTH / RESTART IDEMPOTENCY HARDENING — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+This work unit closes the remaining execution-correctness seam after CBOT-6M:
+
+- per-ScenarioId reconciliation is the authority for an individual scenario before broker mutation;
+- aggregate instance reconciliation no longer treats independent ScenarioIds as a false global ambiguity;
+- same-scenario duplicate position/pending state remains fail-closed recovery;
+- aggregate cBot state publishing discovers managed broker objects from exact Indicator-instance scope even before a scenario is selected;
+- management commands are not disabled by an unrelated scenario recovery state;
+- cBot SignalEnvelope preflight now enforces contract-version, Plan/Intent identity and stable execution identity;
+- Market/Pending execution idempotency persists across cBot restart with bounded retry semantics for failed attempts;
+- existing CBOT-6M capacity, margin, spread, daily-loss, RR and quality gates remain intact.
+
+Full-chain audit:
+Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Signal/Alert -> cBot preflight -> per-ScenarioId broker truth -> broker execution -> confirmation -> protection -> outcome/history.
+
+Safety:
+- live accounts remain blocked;
+- Indicator remains broker-mutation-free;
+- M15 remains canonical execution/trade decision reference;
+- M5 remains trigger/tuning/entry precision;
+- no public quality/RR/risk threshold is lowered;
+- concurrent capacity remains explicitly bounded.
+
+Verification:
+- dedicated cBot position-truth audit;
+- Source/Architecture accumulated checks;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- target-terminal multi-scenario, restart/rebind, duplicate-replay and independent-management/protection validation.
+
+Phase record: docs/PHASE-CBOT-POSITION-TRUTH-HARDENING-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 # Current focus — RETEST TRIGGER-PATH HARDENING — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.

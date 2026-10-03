@@ -116,6 +116,9 @@ namespace CFIP.cBot
         private readonly CbotBrokerReconciliation _brokerReconciliation =
             new CbotBrokerReconciliation();
 
+        private readonly CbotExecutionIdempotencyStore _idempotencyStore =
+            new CbotExecutionIdempotencyStore();
+
         private readonly CbotExecutionEnvironmentGate _executionEnvironment =
             new CbotExecutionEnvironmentGate();
 
@@ -187,6 +190,10 @@ namespace CFIP.cBot
             RefreshIndicatorBinding(true);
             RefreshExecutionSettings(true);
             ReloadSignalStore(true);
+            _idempotencyStore.Reload(
+                this,
+                _boundIndicatorInstanceId,
+                Server.TimeInUtc);
             ReconcileBrokerState(true);
             PublishExecutionState("CBOT STARTED", true);
         }
@@ -210,9 +217,7 @@ namespace CFIP.cBot
             PublishExecutionState("HEARTBEAT", false);
 
             if (EnableDemoManagementExecution &&
-                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId) &&
-                _reconciliation != null &&
-                !_reconciliation.RecoveryRequired)
+                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
             {
                 _management.Process(
                     this,
@@ -329,7 +334,10 @@ namespace CFIP.cBot
                     ? ""
                     : envelope.Intent.ExecutionLabel ?? "";
 
-            ReconcileBrokerState(false);
+            _reconciliation =
+                ReconcileScenarioState(
+                    envelope,
+                    nowUtc);
 
             PublishExecutionState("SIGNAL OBSERVED", false);
 
@@ -441,6 +449,7 @@ namespace CFIP.cBot
                         MaxExecutionMarginUsagePercent,
                         ExecutionMarginBufferPercent,
                         MaxConcurrentScenarios,
+                        _idempotencyStore,
                         out BrokerExecutionReport pendingReport,
                         out string pendingReason))
                 {
@@ -471,6 +480,7 @@ namespace CFIP.cBot
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
                     MaxConcurrentScenarios,
+                    _idempotencyStore,
                     out BrokerExecutionReport report,
                     out string executionReason))
             {
@@ -658,6 +668,11 @@ namespace CFIP.cBot
                 return true;
 
             _boundIndicatorInstanceId = instanceId;
+
+            _idempotencyStore.Reload(
+                this,
+                _boundIndicatorInstanceId,
+                now);
 
             _scenarioEnvelopes.Clear();
             _scenarioReconciliations.Clear();
