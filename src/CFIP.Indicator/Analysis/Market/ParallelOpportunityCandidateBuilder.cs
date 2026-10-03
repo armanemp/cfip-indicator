@@ -70,6 +70,23 @@ namespace cAlgo
                         minimumQuality,
                         true);
 
+            if (candidate.PresentationOnly)
+                return candidate.Quality >= minimumQuality;
+
+            // A trade-facing opportunity must carry a concrete, regime-appropriate
+            // reward distance. Zero/unknown reward is not a presentable opportunity.
+            if (!IsFinitePositive(candidate.RewardDistanceAtr) ||
+                !IsFinitePositive(candidate.MinimumRequiredRewardDistanceAtr) ||
+                candidate.RewardDistanceAtr <
+                    candidate.MinimumRequiredRewardDistanceAtr)
+                return false;
+
+            if (candidate.Tp1RR <
+                Math.Max(
+                    2.0,
+                    Tp1MinimumRR))
+                return false;
+
             return candidate.Quality >= minimumQuality;
         }
 
