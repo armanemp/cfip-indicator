@@ -29,6 +29,8 @@ namespace cAlgo
         public int CreatedM5;
         public int Quality;
         public double Risk;
+        public double RewardDistanceAtr;
+        public double MinimumRequiredRewardDistanceAtr;
         public double Tp1RR;
         public double Tp2RR;
         public double Tp3RR;
