@@ -54,6 +54,9 @@ check(
     "ContractIdentity identity" in queue and
     "identity.CreatedClosedM5" in queue and
     "delivery.Envelope.AlertKey" in queue and
+    "ContractIdentity identity" in queue and
+    "identity.CreatedClosedM5" in queue and
+    "delivery.Envelope.AlertKey" in queue and
     "_pendingAlertIds" in queue and
     "_pendingAlertIds.Contains(alertId)" in queue and
     "_pendingAlertIds.Add(alertId)" in queue and
@@ -173,10 +176,11 @@ check(
 )
 
 check(
-    "PanelFooterMinHeight = 40" in constants and
+    "PanelFooterMinHeight = 34" in constants and
     "return contentHeight;" in layout and
     "PanelTrendTimeframeLampRowHeight = 38" in lamp and
-    "PanelTrendTimeframeLampIndicatorHeight = 22" in lamp,
+    "PanelTrendTimeframeLampIndicatorHeight = 22" in lamp and
+    "PanelAlertMessageRowHeight = 18" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "footer geometry must be compact at the actual content boundary",
 )
 
