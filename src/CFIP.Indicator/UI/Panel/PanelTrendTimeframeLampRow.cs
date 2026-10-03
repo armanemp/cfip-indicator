@@ -162,15 +162,15 @@ namespace cAlgo
                         ? frames[i]
                         : null;
 
+                PanelTimeframePresentationState presentation =
+                    PanelTimeframePresentationRule.Resolve(
+                        frame);
+
                 int direction =
-                    frame == null
-                        ? 0
-                        : FrameDirection(frame);
+                    presentation.Direction;
 
                 int strength =
-                    ResolveFrameTrendStrength(
-                        frame,
-                        direction);
+                    presentation.Strength;
 
                 indicator.Text = "●";
                 indicator.FontSize =
