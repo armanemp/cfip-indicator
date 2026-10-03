@@ -11,9 +11,9 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            // Canonical plan labels share the exact right endpoint of the
+            // Canonical plan labels share the exact left endpoint of the
             // canonical plan-level line geometry.
-            return GetPlanLineRightBar();
+            return GetPlanLineLeftBar();
         }
     }
 }
