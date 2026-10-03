@@ -24,7 +24,10 @@ def require(condition, message):
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
 binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
 alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.cs")
-signal_renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
+signal_renderer = (
+    read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") +
+    read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
+)
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
 label_renderer = read("src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs")
