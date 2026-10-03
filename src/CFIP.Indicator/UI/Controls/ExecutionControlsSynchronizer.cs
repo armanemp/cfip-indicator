@@ -42,12 +42,12 @@ namespace cAlgo
                     _autoTradingQuickToggle.BackgroundColor =
                         Color.FromArgb(
                             105,
-                            AutoTradingEnabled
+                            autoTrading
                                 ? TpLineColor
                                 : Color.Black);
 
                     _autoTradingQuickToggle.BorderColor =
-                        AutoTradingEnabled
+                        autoTrading
                             ? TpLineColor
                             : PanelBorder;
 
@@ -76,12 +76,12 @@ namespace cAlgo
                     _automaticOrdersQuickToggle.BackgroundColor =
                         Color.FromArgb(
                             105,
-                            AutomaticOrdersEnabled
+                            autoOrders
                                 ? TriggerLineColor
                                 : Color.Black);
 
                     _automaticOrdersQuickToggle.BorderColor =
-                        AutomaticOrdersEnabled
+                        autoOrders
                             ? TriggerLineColor
                             : PanelBorder;
 
