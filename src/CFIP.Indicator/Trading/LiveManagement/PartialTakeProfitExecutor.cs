@@ -79,7 +79,7 @@ namespace cAlgo
                     position.VolumeInUnits;
 
                 ManagementCommandRequestStatus closeStatus =
-                    TryClosePosition(
+                    RequestClosePosition(
                         position,
                         "PARTIAL CLOSE • " + tag,
                         closingEverything
