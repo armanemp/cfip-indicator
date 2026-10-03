@@ -31,9 +31,13 @@ namespace cAlgo
                                                         "DECISION  •  " +
                                                         decisionState +
                                                         "  •  " +
-                                                        (_decision.EntryAllowed
-                                                            ? "READY"
-                                                            : "WATCH / BLOCKED"),
+                                                        (_decision.ActionableNow
+                                                            ? "ACTIONABLE"
+                                                            : !_decision.EntryAllowed
+                                                                ? "BLOCKED"
+                                                                : !_decision.TriggerReady
+                                                                    ? "WATCH"
+                                                                    : "CONFIRMED"),
                                                         PanelDirectionColor(
                                                             direction),
                                                         true,
@@ -62,7 +66,11 @@ namespace cAlgo
                                                         "ENTRY GATE  " +
                                                         (_decision.ActionableNow
                                                             ? "ACTIONABLE"
-                                                            : "BLOCKED") +
+                                                            : !_decision.EntryAllowed
+                                                                ? "BLOCKED"
+                                                                : !_decision.TriggerReady
+                                                                    ? "WAITING TRIGGER"
+                                                                    : "WAITING ENTRY") +
                                                         "  •  " +
                                                         (_decision.ActionabilityReason ??
                                                          "NOT EVALUATED") +
