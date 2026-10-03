@@ -31,11 +31,9 @@ Live remains fail-closed unless the live action is explicitly armed.
 
 ### 2. Multi-scenario / simultaneous position capacity
 
-The Indicator maximum-open-position parameter is now bounded to 1..10 and defaults to 3.
+The Indicator's legacy Maximum Open Positions contract remains certified at one active analytical plan. Broker-side simultaneous ScenarioIds are intentionally owned by the cBot, independently of that legacy Indicator capacity.
 
-The cBot computes an effective concurrent-scenario limit as:
-
-min(Cbot Max Concurrent Scenarios, Indicator Maximum Open Positions)
+The cBot computes its effective concurrent-scenario limit directly from Max Concurrent Scenarios, bounded by the cBot's own parameter contract.
 
 The per-ScenarioId single-active-object rule remains intact, so multiple independent scenarios can coexist while duplicate objects for one scenario remain blocked.
 
