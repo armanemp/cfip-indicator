@@ -219,7 +219,11 @@ namespace cAlgo
 
                 if (!ManagementCommandCodec.TryDeserialize(payload, out ManagementCommand[] commands) ||
                     commands == null)
-                    return Array.Empty<ManagementCommand>();
+                {
+                    _managementCommands = Array.Empty<ManagementCommand>();
+                    _managementCommandsLoaded = true;
+                    return _managementCommands;
+                }
 
                 List<ManagementCommand> unique = new List<ManagementCommand>();
                 HashSet<string> keys = new HashSet<string>(StringComparer.Ordinal);
