@@ -3024,6 +3024,29 @@ M1 must explicitly scan and disposition at least these risk families:
 
 ---
 
+## Realtime / Live Execution + Volume Profile Intelligence — 2026-10-03
+
+Status: implementation branch codex/realtime-live-signal-unification-2026-10-03; PR #240 remains the integration boundary. Repository CI must pass before merge; target-terminal acceptance remains manual.
+
+This current unit establishes:
+- current ActionableNow scenarios -> immediate Market/Aggressive cBot execution;
+- future FutureOrderReady scenarios -> Pending Stop/Limit placement;
+- multiple independent ScenarioIds with bounded cBot-owned concurrency;
+- explicit LIVE/DEMO account routing with live arms default OFF;
+- 100 ms signal-store handoff cadence;
+- magnitude filtering for tiny stagnant-market setups and stronger RANGE RR protection;
+- canonical arrow/popup direction synchronization;
+- explicit cBot attachment/presence truth and queued alert-audio delivery;
+- M15 closed-bar Volume Profile evidence (POC/VAL/VAH) cached by closed M15 index and used as bounded contextual confluence in opportunity quality/ranking.
+
+The Indicator legacy Maximum Open Positions remains the certified single-plan analytical capacity contract. The cBot owns broker-side simultaneous ScenarioId capacity so the two concerns are not incorrectly coupled.
+
+Phase records:
+- docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md
+- docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md
+
+No claim of profitability, prediction accuracy or target-terminal certification is made by repository code/CI alone.
+
 # 22. Final cleanup rule for obsolete planning material
 
 Once M41 is accepted:
@@ -3048,7 +3071,7 @@ During M0-M42, a newly discovered issue is handled as follows:
 - New feature idea: postponed until M42 unless required for an existing acceptance contract.
 - New indicator: forbidden before M14.
 - Threshold tuning: forbidden before OOS evidence.
-- Production live auto-execution remains forbidden before M42. A narrowly bounded demo-only Market execution bridge is allowed only under CBOT-DEMO-MARKET, with live-account rejection and explicit default DISARMED controls.
+- Production live auto-execution may be implemented through the cBot as an explicitly armed capability, but remains default-OFF and requires target-terminal evidence before operational adoption.
 
 This prevents the roadmap from becoming an endlessly expanding patch queue.
 ## MTF-P3 — Primary M15/H1 Provider Scenario Identity Cohesion
