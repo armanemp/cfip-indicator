@@ -1,3 +1,34 @@
+## 2026-10-04 — Master Full Forensic Audit Baseline
+
+Status: **BASELINE CREATED — audit execution pending.**
+
+Created `docs/MASTER-FULL-FORENSIC-AUDIT-2026-10-04.md` as the master restart index.
+
+Baseline inventory:
+- 1113 repository files / 82 directories;
+- 731 C# files;
+- 667 Indicator C# files;
+- 22 cBot C# files;
+- 22 Contracts C# files;
+- 204 Markdown documents;
+- 155 Python audit/tool files;
+- current machine-enforced public-parameter baseline: 548.
+
+The document contains:
+- complete recursive repository file inventory;
+- canonical architecture and end-to-end data/execution flow;
+- current ownership/source-of-truth map;
+- evidenced findings from prior forensic audits;
+- full numbered potential-problem/defect checklist;
+- line-by-line/code-by-code review method;
+- severity and closure evidence rules;
+- restart order for one-complete-phase-at-a-time remediation.
+
+This is a documentation/audit baseline only; no strategy threshold or production behavior was changed.
+
+Operator action:
+`git pull --ff-only`
+
 ## 2026-10-04 — Smart Separated Signal Arrows
 
 Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.
