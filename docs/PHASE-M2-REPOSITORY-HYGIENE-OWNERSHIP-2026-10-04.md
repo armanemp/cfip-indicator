@@ -415,3 +415,28 @@ Evidence commit: 7aa44cf88fd0fe1ed9a2fe54d178a7a2f99079b8.
 The architecture verifier was updated to understand the intentional `RuntimeInitializationLifecycle.cs` owner split and the canonical modern plan-label contract: adaptive filled box, semantic line color, contrast-aware text, and left-of-line placement. These are verifier alignment changes only; they do not weaken production assertions.
 
 Evidence commits: 61358e556defb3bbd84aa9a5fe2542154dd8a298 and 450cc7a8b2a4f2492886fdae4ebf792483054f68.
+
+
+### M2.166/M2.171 remediation — explicit management request status
+
+**ROOT-CORRECTED.** RequestManagementCommand no longer returns a boolean that conflates rejection, queued submission, pending idempotency and broker confirmation. The platform-neutral ManagementCommandRequestStatus contract now distinguishes Rejected, Queued, AlreadyPending, AlreadyConfirmed and WriteFailed, with one contract policy for accepted/confirmed interpretation. Protection and lifecycle consumers now use the explicit status; broker-confirmed protection is not adopted from a merely queued request.
+
+Evidence commits: 8d6c59857734fc055ea364410cf1473ecfef3406, 47a4a88d1f321f88c391395069f0976160343bb8, bc7156e22949df7e0b0e7e3f44a51b71bef5281a.
+
+### M2.167/M2.168 remediation — remove management persistence/report I/O from request hot path
+
+**ROOT-CORRECTED.** Management commands are now kept in the canonical in-memory command owner and marked dirty; serialization to LocalStorage and Device flush are deferred to the existing BufferedPersistenceCoordinator heartbeat/shutdown owner. ProcessManagementReports() is no longer called by request submission; it runs once per canonical runtime heartbeat, updates the same in-memory command state, and lets the existing persistence owner flush any resulting compaction. Failed device flushes retain the dirty state for retry.
+
+Evidence commits: 5d8467c486cb5fe321fa2cdbbad44831f2a7fc8b, 6c49940cb84cba9fff30345d9c2afaaa523d1262, 34db7435586ed12d197cc8e8257a792a2277ce77, d4e7990546bebab87234ee6156db83f1dfecca12, 1497a3c0c11bf33e87e9a93a3e96fafa0979c3d7.
+
+### M2.169 semantic naming — management request owner
+
+**IN PROGRESS.** The management coordinator now exposes explicit request-status semantics internally, but the historical Try* helper names still need a single-owner rename to Request* so their API names cannot imply direct broker mutation. No parallel wrappers are being introduced.
+
+### M2.175 broker lifecycle listeners — pending proof audit
+
+**OPEN.** The Indicator's read-only broker lifecycle listeners still require a handler-by-handler necessity proof against the cBot sole-mutation architecture. They will be removed only where their downstream consumer is unnecessary; no duplicate observation path will be added.
+
+### Modernization disposition — current M2 work
+
+The management command path is being modernized as a deterministic local state owner plus deferred persistence, rather than by adding another queue/cache or an arbitrary timer gate. The existing runtime heartbeat and buffered-persistence owner are reused. The request/confirmation boundary is explicit and platform-neutral, and broker confirmation remains the only authority for adopted protection state. Remaining modernization work is the semantic helper rename, broker-listener necessity audit, contract/build-graph validation, and authoritative CI/runtime verification.
