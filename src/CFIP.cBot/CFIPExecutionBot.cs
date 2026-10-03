@@ -739,6 +739,9 @@ namespace CFIP.cBot
                 _scenarioReconciliations.Clear();
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
+                // Publish symbol-scoped presence immediately so the Indicator
+                // can distinguish a real attachment loss from a stale heartbeat.
+                PublishPresence("INDICATOR NOT ATTACHED");
                 return false;
             }
 
@@ -777,6 +780,11 @@ namespace CFIP.cBot
                 "CFIP ANALYSIS BIND | state=READY | name={0} | instance={1}",
                 CfipIndicatorChartBinding.DisplayName,
                 _boundIndicatorInstanceId);
+
+            // Re-publish presence after binding because OnTick publishes before
+            // discovery. This makes BoundIndicatorInstanceId current immediately
+            // instead of waiting for the next 100 ms signal cycle.
+            PublishPresence("ATTACHED");
 
             return true;
         }
