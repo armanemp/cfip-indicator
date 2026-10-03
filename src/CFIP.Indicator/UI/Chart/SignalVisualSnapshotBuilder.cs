@@ -295,8 +295,7 @@ namespace cAlgo
             // presentation strength against that same direction so the arrow
             // stack never has a second strength owner.
             ApplyMtfTrendStrength(
-                snapshot,
-                visualDirection);
+                snapshot);
 
             PopulateCanonicalVisualIdentity(
                 snapshot,
