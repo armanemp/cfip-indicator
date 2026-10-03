@@ -58,7 +58,8 @@ namespace cAlgo
                                     Source = source
                                 };
 
-                            if (captureProviderIntent)
+                            if (captureProviderIntent &&
+                                !_suppressProviderIntentCapture)
                                 CaptureProviderExecutionIntent(intent);
 
                             return intent;
